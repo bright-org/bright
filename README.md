@@ -55,6 +55,12 @@ $ docker compose exec web mix test
 $ docker compose exec web mix credo
 ```
 
+Tips: 開発中は mix text.watch を起動しておくとファイルの変更に追従して自動でテストが実行されます
+
+```
+$ docker compose exec web mix test.watch
+```
+
 ## Cloud Storage
 
 開発環境では[fake-gcs-server](https://github.com/fsouza/fake-gcs-server)が起動します
