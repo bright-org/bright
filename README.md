@@ -4,14 +4,10 @@ Bright!!
 
 ## 環境情報
 
----
-
 - Elixir: 1.14 系
 - Phoenix: 1.7 系
 - Erlang: OTP 26 系
 - PostgreSQL: 14 系
-
----
 
 ## ローカル開発環境構築
 
