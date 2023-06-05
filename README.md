@@ -46,7 +46,16 @@ $ docker compose up -d
 $ docker compose down
 ```
 
-### Cloud Storage について
+## 開発中の作法
+
+mix test と mix credo が通過することを確認してください
+
+```
+$ docker compose exec web mix test
+$ docker compose exec web mix credo
+```
+
+## Cloud Storage
 
 開発環境では[fake-gcs-server](https://github.com/fsouza/fake-gcs-server)が起動します
 
