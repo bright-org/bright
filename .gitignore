@@ -35,3 +35,8 @@ bright-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Environment
+.env
+
+# Docker
+/docker-compose.override.yml

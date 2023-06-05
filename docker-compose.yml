@@ -1,0 +1,48 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      target: build_as_root
+      dockerfile: Dockerfile.dev
+    environment:
+      DB_HOST: db
+      BUCKET_NAME: bright_storage_local
+    links:
+      - db
+      - gcs
+    ports:
+      - 4000:4000
+    volumes:
+      - .:/work
+    working_dir: /work
+    command: "elixir --sname bright@web --cookie bright -S mix phx.server"
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+  livebook:
+    image: livebook/livebook
+    volumes:
+      - ./livebook:/data
+    ports:
+      - 8080:8080
+    environment:
+      - LIVEBOOK_COOKIE=bright
+      - LIVEBOOK_DEFAULT_RUNTIME=attached:bright@web:bright
+      - LIVEBOOK_TOKEN_ENABLED=false
+      - LIVEBOOK_HOME=/data
+  gcs:
+    image: fsouza/fake-gcs-server:1.45.2
+    ports:
+      - 4443:4443
+    command: -scheme http -public-host localhost
+    volumes:
+      - gcsdata:/storage/bright_storage_local
+volumes:
+  dbdata:
+  gcsdata:
