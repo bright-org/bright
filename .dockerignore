@@ -1,0 +1,10 @@
+/_build/
+/assets/node_modules/
+/deps/
+/doc/
+/docker_dev/
+/test/
+
+docker-compose.yml
+Dockerfile.dev
+docker-compose.override.yml
