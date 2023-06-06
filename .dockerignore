@@ -24,7 +24,7 @@ erl_crash.dump
 /priv/static/assets/
 /priv/static/cache_manifest.json
 
-/doc/
+/docs/
 /livebook/
 /docker_dev/
 /test/
