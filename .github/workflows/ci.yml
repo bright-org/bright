@@ -1,0 +1,58 @@
+name: CI for development
+
+# 起動タイミングは以下
+# 1. PR が open もしくは reopen した時、またはコミットなどにより head が更新された時
+# 2. main ブランチに push された時 (= main ブランチにマージされた時)
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  test:
+    name: Build & Test & FormatCheck & Credo
+    runs-on: ubuntu-latest
+
+    container:
+      image: hexpm/elixir:1.14.5-erlang-26.0-debian-bullseye-20230227-slim
+      env:
+        MIX_ENV: test
+        BUCKET_NAME: bright_storage_local
+
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Dependencies install
+        run: |
+          apt-get update -y && apt-get install -y build-essential inotify-tools npm git
+      - name: Install Dependencies
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+      - name: Run Test
+        run: |
+          mix deps.compile
+          mix compile --warnings-as-errors
+          mix test --warnings-as-errors
+        env:
+          DB_HOST: postgres
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
+
+      - name: Format Checks
+        run: |
+          mix format --check-formatted
+
+      - name: Credo Checks
+        run: |
+          mix credo
