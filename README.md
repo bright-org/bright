@@ -34,11 +34,17 @@ $ make setup # 最初の1回だけでOK
 $ docker compose up -d
 ```
 
-- Phoenix app
-  - http://localhost:4000/
-- Livebook
-  - http://localhost:8080/
-  - ※保存したデータは livebook ディレクトリに保存されます
+以下で Phoenix アプリケーションにつながります
+
+http://localhost:4000/
+
+開発補助に Livebook も用意しています。起動時に Phoenix アプリケーションに接続されるので、iex 代わりに使ってみてください
+
+※保存した Livebook ファイルは本リポジトリの /livebook ディレクトリ以下に保存されます
+
+なお、アプリケーション開発においては必須ではありません。重いので不要であれば docker-compose.yml の対象行を削除 or コメントアウトするなどしてください
+
+http://localhost:8080/
 
 #### 停止
 
