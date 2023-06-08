@@ -32,6 +32,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Dependencies install
+        run: |
+          apt-get update -y && apt-get install -y build-essential inotify-tools
       - name: Install Dependencies
         run: |
           mix local.rebar --force
