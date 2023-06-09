@@ -5,9 +5,31 @@ name: CI for development
 # 2. main ブランチに push された時 (= main ブランチにマージされた時)
 on:
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "docker_dev/**"
+      - "livebook/**"
+      - "Makefile"
+      - "docker-compose.yml"
+      - "Dockerfile.dev"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".gitignore"
+      - "README.md"
   push:
     branches:
       - "main"
+    paths-ignore:
+      - "docs/**"
+      - "docker_dev/**"
+      - "livebook/**"
+      - "Makefile"
+      - "docker-compose.yml"
+      - "Dockerfile.dev"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".gitignore"
+      - "README.md"
 
 jobs:
   test:
