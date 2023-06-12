@@ -12,7 +12,7 @@
 - 3.スキルパネル
 - 6.気になるスキル
 - 9.スキルアップ対象のスキル
-- 10.評価対象のスキル
+- 10.対象のスキルスコア
 
 ### ER図
 
@@ -54,6 +54,9 @@ erDiagram
   skill_panel_genres }o--|| skill_panels : ""
   users ||--o{ user_skill_panels : "気になる"
   user_skill_panels }o--|| skill_panels : "気になる"
+  users ||--o{ skill_improvements : "スキルアップを登録する"
+  skill_improvements ||--|| skill_classes : ""
+  skill_improvements ||--|| skill_units : ""
   users ||--o{ skill_scores : ""
   skill_scores ||--|| skill_classes : ""
   skill_scores ||--|{ skill_score_items : ""
@@ -104,6 +107,12 @@ erDiagram
   user_skill_panels {
     int user_id FK
     int skill_panel_id FK
+  }
+
+  skill_improvements {
+    int user_id FK
+    int skill_class_id FK
+    int skill_unit_id FK
   }
 
   skill_scores {
