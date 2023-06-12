@@ -1,0 +1,28 @@
+ARG ELIXIR_VERSION=1.14.5
+ARG OTP_VERSION=26.0
+ARG DEBIAN_VERSION=bullseye-20230227-slim
+
+ARG BASE_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
+ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
+
+FROM ${BASE_IMAGE} AS base
+
+RUN apt-get update -y && apt-get install -y build-essential inotify-tools npm git \
+  && apt-get clean && rm -f /var/lib/apt/lists/*_*
+
+FROM base AS setup_user
+ARG host_user_name
+ARG host_group_name
+ARG host_uid
+ARG host_gid
+
+RUN groupadd -g $host_gid $host_group_name \
+  && useradd -m -s /bin/bash -u $host_uid -g $host_gid $host_user_name
+
+USER $host_user_name
+
+FROM setup_user AS build_as_user
+RUN mix do local.hex --force, local.rebar --force, archive.install --force hex phx_new
+
+FROM base AS build_as_root
+RUN mix do local.hex --force, local.rebar --force, archive.install --force hex phx_new
