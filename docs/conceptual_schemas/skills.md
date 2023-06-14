@@ -11,6 +11,7 @@
 - 1.Brightユーザー
 - 3.スキルパネル
 - 6.気になるスキル
+- 9.スキルアップ対象のスキル
 - 10.対象のスキルスコア
 
 ### ER図
@@ -22,6 +23,9 @@ erDiagram
   "大分類／中分類（スキルユニット）" ||--|{ "小分類（スキル）" : ""
   "ジャンル" }o--o{ "スキルパネル" : ""
   "Brightユーザー" }o--o{ "スキルパネル" : "気になる"
+  "Brightユーザー" ||--o{ "スキルアップ" : "最大5件まで"
+  "スキルアップ" ||--|| "クラス" : ""
+  "スキルアップ" ||--|| "大分類／中分類（スキルユニット）" : ""
   "Brightユーザー" ||--o{ "スキルスコア" : ""
   "スキルスコア" ||--|| "クラス" : ""
   "スキルスコア" ||--|{ "スキルスコア詳細" : ""
@@ -33,6 +37,7 @@ erDiagram
 - スキルパネルは3ヶ月に1回見直される → 履歴を持つことになる
 - スキルユニットは複数のスキルパネルで共有される場合がある
 - スキルスコアはクラスごとに登録する ※スキルパネルごとではない
+- スキルアップはお気に入りのような概念で、「気になる」よりも強い関心を持っているイメージ
 
 ### テーブル定義案
 
@@ -49,6 +54,9 @@ erDiagram
   skill_panel_genres }o--|| skill_panels : ""
   users ||--o{ user_skill_panels : "気になる"
   user_skill_panels }o--|| skill_panels : "気になる"
+  users ||--o{ skill_improvements : "スキルアップを登録する"
+  skill_improvements ||--|| skill_classes : ""
+  skill_improvements ||--|| skill_units : ""
   users ||--o{ skill_scores : ""
   skill_scores ||--|| skill_classes : ""
   skill_scores ||--|{ skill_score_items : ""
@@ -99,6 +107,12 @@ erDiagram
   user_skill_panels {
     int user_id FK
     int skill_panel_id FK
+  }
+
+  skill_improvements {
+    int user_id FK
+    int skill_class_id FK
+    int skill_unit_id FK
   }
 
   skill_scores {
