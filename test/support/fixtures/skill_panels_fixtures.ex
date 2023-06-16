@@ -18,4 +18,18 @@ defmodule Bright.SkillPanelsFixtures do
 
     skill_panel
   end
+
+  @doc """
+  Generate a skill_class.
+  """
+  def skill_class_fixture(attrs \\ %{}) do
+    {:ok, skill_class} =
+      attrs
+      |> Enum.into(%{
+        name: "some name"
+      })
+      |> Bright.SkillPanels.create_skill_class()
+
+    skill_class
+  end
 end

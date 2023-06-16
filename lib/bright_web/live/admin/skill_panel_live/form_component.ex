@@ -21,6 +21,23 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
       >
         <.input field={@form[:locked_date]} type="date" label="Locked date" />
         <.input field={@form[:name]} type="text" label="Name" />
+        <.label>Skill classes</.label>
+        <.inputs_for :let={scf} field={@form[:skill_classes]}>
+          <input type="hidden" name="skill_panel[skill_classes_sort][]" value={scf.index} />
+          <.input field={scf[:name]} type="text" label="Name" />
+          <label class="cursor-pointer">
+            <input
+              type="checkbox"
+              name="skill_panel[skill_classes_drop][]"
+              value={scf.index}
+              class="hidden"
+            /> delete
+          </label>
+        </.inputs_for>
+        <label class="block cursor-pointer">
+          <input type="checkbox" name="skill_panel[skill_classes_sort][]" class="hidden" />
+          add skill class
+        </label>
         <:actions>
           <.button phx-disable-with="Saving...">Save Skill panel</.button>
         </:actions>
