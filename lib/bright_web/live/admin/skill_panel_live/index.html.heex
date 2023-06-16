@@ -1,0 +1,47 @@
+<.header>
+  Listing Skill panels
+  <:actions>
+    <.link patch={~p"/admin/skill_panels/new"}>
+      <.button>New Skill panel</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="skill_panels"
+  rows={@streams.skill_panels}
+  row_click={fn {_id, skill_panel} -> JS.navigate(~p"/admin/skill_panels/#{skill_panel}") end}
+>
+  <:col :let={{_id, skill_panel}} label="Locked date"><%= skill_panel.locked_date %></:col>
+  <:col :let={{_id, skill_panel}} label="Name"><%= skill_panel.name %></:col>
+  <:action :let={{_id, skill_panel}}>
+    <div class="sr-only">
+      <.link navigate={~p"/admin/skill_panels/#{skill_panel}"}>Show</.link>
+    </div>
+    <.link patch={~p"/admin/skill_panels/#{skill_panel}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, skill_panel}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: skill_panel.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="skill_panel-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/skill_panels")}
+>
+  <.live_component
+    module={BrightWeb.Admin.SkillPanelLive.FormComponent}
+    id={@skill_panel.id || :new}
+    title={@page_title}
+    action={@live_action}
+    skill_panel={@skill_panel}
+    patch={~p"/admin/skill_panels"}
+  />
+</.modal>
