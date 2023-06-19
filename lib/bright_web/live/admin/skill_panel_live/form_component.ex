@@ -48,7 +48,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
 
   @impl true
   def update(%{skill_panel: skill_panel} = assigns, socket) do
-    changeset = SkillPanels.change_skill_panel(skill_panel)
+    changeset = SkillPanels.change_skill_panel(skill_panel |> preload_associations())
 
     {:ok,
      socket
@@ -60,6 +60,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
   def handle_event("validate", %{"skill_panel" => skill_panel_params}, socket) do
     changeset =
       socket.assigns.skill_panel
+      |> preload_associations()
       |> SkillPanels.change_skill_panel(skill_panel_params)
       |> Map.put(:action, :validate)
 
@@ -88,7 +89,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
   defp save_skill_panel(socket, :new, skill_panel_params) do
     case SkillPanels.create_skill_panel(skill_panel_params) do
       {:ok, skill_panel} ->
-        notify_parent({:saved, skill_panel})
+        notify_parent({:saved, preload_associations(skill_panel)})
 
         {:noreply,
          socket
@@ -105,4 +106,6 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
+  defp preload_associations(skill_panel), do: skill_panel |> Bright.Repo.preload(:skill_classes)
 end
