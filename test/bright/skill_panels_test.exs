@@ -51,9 +51,13 @@ defmodule Bright.SkillPanelsTest do
       assert skill_panel == SkillPanels.get_skill_panel!(skill_panel.id)
     end
 
-    test "delete_skill_panel/1 deletes the skill_panel" do
+    test "delete_skill_panel/1 deletes the skill_panel with skill_classes" do
       skill_panel = insert(:skill_panel)
-      assert {:ok, %SkillPanel{}} = SkillPanels.delete_skill_panel(skill_panel)
+      insert_pair(:skill_class, skill_panel: skill_panel)
+
+      assert {:ok, %{skill_panel: %SkillPanel{}, skill_classes: {2, _}}} =
+               SkillPanels.delete_skill_panel(skill_panel)
+
       assert_raise Ecto.NoResultsError, fn -> SkillPanels.get_skill_panel!(skill_panel.id) end
     end
 

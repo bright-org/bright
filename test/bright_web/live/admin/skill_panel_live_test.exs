@@ -9,7 +9,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
   @invalid_attrs %{name: nil, locked_date: nil}
 
   defp create_skill_panel(_) do
-    skill_panel = insert(:skill_panel)
+    skill_panel = insert(:skill_panel, skill_classes: build_pair(:skill_class))
     %{skill_panel: skill_panel}
   end
 

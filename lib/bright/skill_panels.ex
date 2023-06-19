@@ -4,6 +4,7 @@ defmodule Bright.SkillPanels do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Multi
   alias Bright.Repo
 
   alias Bright.SkillPanels.SkillPanel
@@ -79,14 +80,17 @@ defmodule Bright.SkillPanels do
   ## Examples
 
       iex> delete_skill_panel(skill_panel)
-      {:ok, %SkillPanel{}}
+      {:ok, %{skill_panel: %SkillPanel{}, skill_classes: {count, nil}}
 
       iex> delete_skill_panel(skill_panel)
-      {:error, %Ecto.Changeset{}}
+      {:error, %{skill_panel: %Ecto.Changeset{}, skill_classes: _}}
 
   """
   def delete_skill_panel(%SkillPanel{} = skill_panel) do
-    Repo.delete(skill_panel)
+    Multi.new()
+    |> Multi.delete_all(:skill_classes, Ecto.assoc(skill_panel, :skill_classes))
+    |> Multi.delete(:skill_panel, skill_panel)
+    |> Repo.transaction()
   end
 
   @doc """
