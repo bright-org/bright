@@ -2,14 +2,14 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.SkillPanelsFixtures
+  import Bright.Factory
 
-  @create_attrs %{name: "some name", locked_date: "2023-06-15"}
-  @update_attrs %{name: "some updated name", locked_date: "2023-06-16"}
+  @create_attrs params_for(:skill_panel)
+  @update_attrs params_for(:locked_skill_panel)
   @invalid_attrs %{name: nil, locked_date: nil}
 
   defp create_skill_panel(_) do
-    skill_panel = skill_panel_fixture()
+    skill_panel = insert(:skill_panel)
     %{skill_panel: skill_panel}
   end
 
@@ -43,7 +43,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       html = render(index_live)
       assert html =~ "Skill panel created successfully"
-      assert html =~ "some name"
+      assert html =~ @create_attrs.name
     end
 
     test "updates skill_panel in listing", %{conn: conn, skill_panel: skill_panel} do
@@ -66,7 +66,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       html = render(index_live)
       assert html =~ "Skill panel updated successfully"
-      assert html =~ "some updated name"
+      assert html =~ @update_attrs.name
     end
 
     test "deletes skill_panel in listing", %{conn: conn, skill_panel: skill_panel} do
@@ -110,7 +110,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       html = render(show_live)
       assert html =~ "Skill panel updated successfully"
-      assert html =~ "some updated name"
+      assert html =~ @update_attrs.name
     end
   end
 end
