@@ -63,7 +63,7 @@ erDiagram
   skill_score_items ||--|| skills : ""
 
   skill_panels {
-    string version "バージョン"
+    date locked_date "固定した日"
     string name "スキルパネル名"
   }
 

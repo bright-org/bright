@@ -1,0 +1,39 @@
+<.header>
+  Skill panel <%= @skill_panel.id %>
+  <:subtitle>This is a skill_panel record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/admin/skill_panels/#{@skill_panel}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit skill_panel</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Locked date"><%= @skill_panel.locked_date %></:item>
+  <:item title="Name"><%= @skill_panel.name %></:item>
+  <:item title="Skill classes">
+    <ul>
+      <%= for skill_class <- @skill_panel.skill_classes do %>
+        <li><%= skill_class.name %></li>
+      <% end %>
+    </ul>
+  </:item>
+</.list>
+
+<.back navigate={~p"/admin/skill_panels"}>Back to skill_panels</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="skill_panel-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/skill_panels/#{@skill_panel}")}
+>
+  <.live_component
+    module={BrightWeb.Admin.SkillPanelLive.FormComponent}
+    id={@skill_panel.id}
+    title={@page_title}
+    action={@live_action}
+    skill_panel={@skill_panel}
+    patch={~p"/admin/skill_panels/#{@skill_panel}"}
+  />
+</.modal>
