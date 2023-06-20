@@ -1,0 +1,29 @@
+<.header>
+  User joined team <%= @user_joined_team.id %>
+  <:subtitle>This is a user_joined_team record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/user_joined_teams/#{@user_joined_team}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit user_joined_team</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Bright user"><%= @user_joined_team.bright_user_id %></:item>
+  <:item title="Team"><%= @user_joined_team.team_id %></:item>
+  <:item title="Is auther"><%= @user_joined_team.is_auther %></:item>
+  <:item title="Is primary team"><%= @user_joined_team.is_primary_team %></:item>
+</.list>
+
+<.back navigate={~p"/user_joined_teams"}>Back to user_joined_teams</.back>
+
+<.modal :if={@live_action == :edit} id="user_joined_team-modal" show on_cancel={JS.patch(~p"/user_joined_teams/#{@user_joined_team}")}>
+  <.live_component
+    module={BrightWeb.UserJoinedTeamLive.FormComponent}
+    id={@user_joined_team.id}
+    title={@page_title}
+    action={@live_action}
+    user_joined_team={@user_joined_team}
+    patch={~p"/user_joined_teams/#{@user_joined_team}"}
+  />
+</.modal>

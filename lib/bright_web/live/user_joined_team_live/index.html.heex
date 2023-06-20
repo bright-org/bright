@@ -1,0 +1,44 @@
+<.header>
+  Listing User joined teams
+  <:actions>
+    <.link patch={~p"/user_joined_teams/new"}>
+      <.button>New User joined team</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="user_joined_teams"
+  rows={@streams.user_joined_teams}
+  row_click={fn {_id, user_joined_team} -> JS.navigate(~p"/user_joined_teams/#{user_joined_team}") end}
+>
+  <:col :let={{_id, user_joined_team}} label="Bright user"><%= user_joined_team.bright_user_id %></:col>
+  <:col :let={{_id, user_joined_team}} label="Team"><%= user_joined_team.team_id %></:col>
+  <:col :let={{_id, user_joined_team}} label="Is auther"><%= user_joined_team.is_auther %></:col>
+  <:col :let={{_id, user_joined_team}} label="Is primary team"><%= user_joined_team.is_primary_team %></:col>
+  <:action :let={{_id, user_joined_team}}>
+    <div class="sr-only">
+      <.link navigate={~p"/user_joined_teams/#{user_joined_team}"}>Show</.link>
+    </div>
+    <.link patch={~p"/user_joined_teams/#{user_joined_team}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, user_joined_team}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: user_joined_team.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="user_joined_team-modal" show on_cancel={JS.patch(~p"/user_joined_teams")}>
+  <.live_component
+    module={BrightWeb.UserJoinedTeamLive.FormComponent}
+    id={@user_joined_team.id || :new}
+    title={@page_title}
+    action={@live_action}
+    user_joined_team={@user_joined_team}
+    patch={~p"/user_joined_teams"}
+  />
+</.modal>

@@ -1,0 +1,43 @@
+<.header>
+  Listing Teams
+  <:actions>
+    <.link patch={~p"/teams/new"}>
+      <.button>New Team</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="teams"
+  rows={@streams.teams}
+  row_click={fn {_id, team} -> JS.navigate(~p"/teams/#{team}") end}
+>
+  <:col :let={{_id, team}} label="Team name"><%= team.team_name %></:col>
+  <:col :let={{_id, team}} label="Enable hr functions"><%= team.enable_hr_functions %></:col>
+  <:col :let={{_id, team}} label="Auther bright user"><%= team.auther_bright_user_id %></:col>
+  <:action :let={{_id, team}}>
+    <div class="sr-only">
+      <.link navigate={~p"/teams/#{team}"}>Show</.link>
+    </div>
+    <.link patch={~p"/teams/#{team}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, team}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: team.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="team-modal" show on_cancel={JS.patch(~p"/teams")}>
+  <.live_component
+    module={BrightWeb.TeamLive.FormComponent}
+    id={@team.id || :new}
+    title={@page_title}
+    action={@live_action}
+    team={@team}
+    patch={~p"/teams"}
+  />
+</.modal>

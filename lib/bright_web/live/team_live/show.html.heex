@@ -1,0 +1,52 @@
+<.header>
+  Team <%= @team.id %>
+  <:subtitle>This is a team record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/teams/#{@team}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit team</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Team name"><%= @team.team_name %></:item>
+  <:item title="Enable hr functions"><%= @team.enable_hr_functions %></:item>
+  <!-- <:item title="Auther bright user"><%= @team.auther_bright_user_id %></:item> -->
+  <:item title="auther hadle name"><%= @team.auther_bright_user.handle_name %></:item>
+</.list>
+
+<.back navigate={~p"/teams"}>Back to teams</.back>
+
+<.modal :if={@live_action == :edit} id="team-modal" show on_cancel={JS.patch(~p"/teams/#{@team}")}>
+  <.live_component
+    module={BrightWeb.TeamLive.FormComponent}
+    id={@team.id}
+    title={@page_title}
+    action={@live_action}
+    team={@team}
+    patch={~p"/teams/#{@team}"}
+  />
+</.modal>
+
+<.table
+  id="bright_users"
+  rows={@streams.brigit_users}
+>
+  <:col :let={{_id, bright_user}} label="Handle name"><%= bright_user.handle_name %></:col>
+  <:col :let={{_id, bright_user}} label="Email"><%= bright_user.email %></:col>
+  <:col :let={{_id, bright_user}} label="Password"><%= bright_user.password %></:col>
+
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="bright_user-modal" show on_cancel={JS.patch(~p"/bright_users")}>
+  <.live_component
+    module={BrightWeb.BrightUserLive.FormComponent}
+    id={@bright_user.id || :new}
+    title={@page_title}
+    bright_user={@bright_user}
+    patch={~p"/bright_users"}
+  />
+</.modal>
+
+<br/>
+<%= inspect @team.brigit_users %>
