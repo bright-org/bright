@@ -14,6 +14,7 @@ Presentational Component を指す。
 - CoreComponents に定義されているコンポーネントは各所で積極的に使用
 - 基本的なパーツ（＝ドメイン知識に依存しないパーツ）は CoreComponents に定義
 - その他のパーツは CoreComponents ではなく `***Components` モジュールに定義
+  - `***_components.ex` ファイルを配置するディレクトリは CoreComponents と同じ `lib/bright_web/components`
 
 ## Phoenix.LiveComponent - ステートフルなコンポーネント
 
