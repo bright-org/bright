@@ -8,6 +8,9 @@ defmodule Bright.SkillPanels.SkillPanel do
 
   alias Bright.SkillPanels.SkillClass
 
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
+
   schema "skill_panels" do
     field :locked_date, :date
     field :name, :string

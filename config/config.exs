@@ -10,6 +10,9 @@ import Config
 config :bright,
   ecto_repos: [Bright.Repo]
 
+# Configures the repo
+config :bright, Bright.Repo, migration_primary_key: [name: :id, type: :binary_id]
+
 # Configures the endpoint
 config :bright, BrightWeb.Endpoint,
   url: [host: "localhost"],
