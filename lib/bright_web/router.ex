@@ -29,7 +29,7 @@ defmodule BrightWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    live_storybook "/storybook", backend_module: BrightWeb.Storybook
+    live_storybook("/storybook", backend_module: BrightWeb.Storybook)
   end
 
   scope "/admin", BrightWeb.Admin, as: :admin do
