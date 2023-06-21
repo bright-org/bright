@@ -54,7 +54,8 @@ defmodule Bright.MixProject do
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_machina, "~> 2.7", only: :test},
       {:faker, "~> 0.17", only: :test},
-      {:ecto_ulid_next, "~> 1.0"}
+      {:ecto_ulid_next, "~> 1.0"},
+      {:phoenix_storybook, "~> 0.5.0"}
     ]
   end
 
@@ -72,7 +73,7 @@ defmodule Bright.MixProject do
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind default", "esbuild default"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "tailwind storybook --minify", "phx.digest"]
     ]
   end
 end

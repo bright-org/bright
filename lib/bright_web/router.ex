@@ -1,5 +1,6 @@
 defmodule BrightWeb.Router do
   use BrightWeb, :router
+  import PhoenixStorybook.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -20,10 +21,15 @@ defmodule BrightWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/" do
+    storybook_assets()
+  end
+
   scope "/", BrightWeb do
     pipe_through :browser
 
     get "/", PageController, :home
+    live_storybook "/storybook", backend_module: BrightWeb.Storybook
   end
 
   scope "/admin", BrightWeb.Admin, as: :admin do
