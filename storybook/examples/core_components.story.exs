@@ -27,8 +27,6 @@ defmodule Storybook.Examples.CoreComponents do
   end
 
   @impl true
-  @slot :title
-  @slot :subtitle
   def render(assigns) do
     ~H"""
     <.header>
