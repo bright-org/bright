@@ -55,7 +55,7 @@ defmodule Bright.MixProject do
       {:ex_machina, "~> 2.7", only: :test},
       {:faker, "~> 0.17", only: :test},
       {:ecto_ulid_next, "~> 1.0"},
-      {:phoenix_storybook, "~> 0.5.0", only: :dev}
+      {:phoenix_storybook, "~> 0.5.0"}
     ]
   end
 
