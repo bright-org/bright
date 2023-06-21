@@ -20,4 +20,6 @@ Presentational Component を指す。
 
 Container Component を指す。
 
-LiveViewが状態を持つため、基本的には使う機会はないと思われる。
+- 状態を持つコンポーネントは扱いや考え方が難しくなるため極力使わず、コンポーネントの親となるLiveViewに状態を持たせる方針
+- コンポーネントに状態を持たせる方が明らかに簡潔になる場合は使ってもOK
+- `mix phx.gen.live` で生成されるコードの大半を流用する画面（管理機能等）で FormComponent をそのまま使うのもOK
