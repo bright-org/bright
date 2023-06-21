@@ -10,6 +10,9 @@ defmodule Storybook.Examples.CoreComponents do
 
   defstruct [:id, :first_name, :last_name]
 
+  @slot :title
+  @slot :subtitle
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok,
