@@ -11,13 +11,13 @@ Bright!!
 
 ## ローカル開発環境構築
 
-### Docker で開発環境を構築する場合 (Mac)
+### Docker で開発環境を構築する場合 (Mac, Linux)
 
 ```
 $ make setup # 最初の1回だけでOK
 ```
 
-### WSL2 などにおいて Docker で開発環境を構築する場合 (Windows, etc)
+### WSL2 などにおいて Docker で開発環境を構築する場合 (Windows)
 
 WSL2 などでは Docker コンテナ内で生成したファイルが root になり、開発上の障害になるので別途 Docker ファイル用意しています
 
@@ -37,6 +37,10 @@ $ docker compose up -d
 以下で Phoenix アプリケーションにつながります
 
 http://localhost:4000/
+
+
+Phoenix Storybook（コンポーネントの確認ができます）
+http://localhost:4000/storybook/welcome
 
 開発補助に Livebook も用意しています。起動時に Phoenix アプリケーションに接続されるので、iex 代わりに使ってみてください
 
