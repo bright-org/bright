@@ -1,6 +1,6 @@
-defmodule Bright.GoogleCloud.Storage do
+defmodule Bright.CloudStorage.GoogleCloud do
   @moduledoc """
-  Bright.GoogleCloud.Storage
+  GCS API
   """
 
   @doc """
@@ -81,11 +81,8 @@ defmodule Bright.GoogleCloud.Storage do
           [{:alt, "media"}],
           [{:decode, false}]
         )
+      File.write!(local_file_path, tesla.body)
 
-      :ok = File.write!(local_file_path, tesla.body)
-
-      # WHY: File.write! の結果を返さない
-      # MatchError を起こさずに処理終了できたときのみ :ok を返したいため
       :ok
     rescue
       exception in [MatchError, File.Error] ->
