@@ -10,9 +10,6 @@ defmodule Storybook.Examples.CoreComponents do
 
   defstruct [:id, :first_name, :last_name]
 
-  @slot :title
-  @slot :subtitle
-
   @impl true
   def mount(_params, _session, socket) do
     {:ok,
@@ -30,6 +27,8 @@ defmodule Storybook.Examples.CoreComponents do
   end
 
   @impl true
+  @slot :title
+  @slot :subtitle
   def render(assigns) do
     ~H"""
     <.header>
