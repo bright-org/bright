@@ -31,9 +31,3 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
-
-# Google Cloud Storage
-config :goth, disabled: true
-config :google_api_storage, base_url: System.get_env("GCS_BASE_URL", "http://gcs:4443")
-config :bright, :google_api_storage,
-  bucket_id: System.get_env("BUCKET_NAME", "bright_storage_local")

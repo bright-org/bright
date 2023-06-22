@@ -63,11 +63,6 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
-  # Google Cloud Storage
-  config :goth, disabled: false
-  config :bright, :google_api_storage,
-    bucket_id: System.get_env("BUCKET_NAME")
-
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
