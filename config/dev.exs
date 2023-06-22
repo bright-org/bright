@@ -83,5 +83,6 @@ config :swoosh, :api_client, false
 # Google Cloud Storage (fake server)
 config :goth, disabled: true
 config :google_api_storage, base_url: System.get_env("GCS_BASE_URL", "http://gcs:4443")
+
 config :bright, :google_api_storage,
   bucket_id: System.get_env("BUCKET_NAME", "bright_storage_local_dev")

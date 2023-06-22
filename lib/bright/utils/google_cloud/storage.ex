@@ -66,7 +66,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
   @doc """
   Get public url.
 
-  開発環境においては、クライアント端末からの参照を考慮して、localhostを指定している。
+  ローカル環境においてクライアント端末からの参照を考慮して、localhostを指定している。
 
   ## Examples
 
@@ -77,6 +77,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
     base_url =
       Application.fetch_env!(:google_api_storage, :base_url)
       |> String.replace("//gcs:", "//localhost:")
+
     bucket_id =
       Application.fetch_env!(:bright, :google_api_storage)
       |> Keyword.fetch!(:bucket_id)
@@ -98,10 +99,13 @@ defmodule Bright.Utils.GoogleCloud.Storage do
   @spec download!(storage_path :: String.t(), local_file_path :: String.t()) :: :ok
   def download!(storage_path, local_file_path) do
     try do
-      # [{:decode, false}]を渡すため%GoogleApi.Storage.V1.Model.Object{}ではなく、
-      # デコードなしの%Tesla.Envが返る。
-      # refs) GoogleApi.Storage.V1.Api.Objects.storage_objects_get and
-      # GoogleApi.Gax.Response
+      # NOTE:
+      # [{:decode, false}]を渡すことで、
+      # %GoogleApi.Storage.V1.Model.Object{}ではなく、
+      # %Tesla.Env{}（デコードなし）を取得している。
+      # refs:
+      # - GoogleApi.Storage.V1.Api.Objects.storage_objects_get
+      # - GoogleApi.Gax.Response
       {:ok, %Tesla.Env{} = tesla} =
         GoogleApi.Storage.V1.Api.Objects.storage_objects_get(
           get_connection!(),
@@ -110,6 +114,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
           [{:alt, "media"}],
           [{:decode, false}]
         )
+
       File.write!(local_file_path, tesla.body)
 
       :ok
@@ -127,29 +132,27 @@ defmodule Bright.Utils.GoogleCloud.Storage do
     |> MIME.type()
   end
 
-  @spec get_connection!() :: %Tesla.Client{}
-  defp get_connection!() do
+  @spec get_connection!() :: Tesla.Client.t()
+  defp get_connection! do
     case Application.get_env(:goth, :disabled) do
       true ->
         # dev環境ではローカルにつなぐためgothを用いない。
         GoogleApi.Storage.V1.Connection.new()
 
       _ ->
-        {:ok, token} = Goth.Token.fetch("https://www.googleapis.com/auth/cloud-platform")
-        GoogleApi.Storage.V1.Connection.new(token.token)
+        # NOTE: `Goth.Token.for_scope` is deprecated. クラウド接続タスク時に修正が必要です。
+        # see: https://github.com/peburrows/goth/blob/master/UPGRADE_GUIDE.md
+        # {:ok, token} = Goth.Token.for_scope("https://www.googleapis.com/auth/cloud-platform")
+        # GoogleApi.Storage.V1.Connection.new(token.token)
+        #
+        # 下記は仮コードです。上記対応時に削除。
+        GoogleApi.Storage.V1.Connection.new()
     end
   end
 
   @spec get_bucket_id!() :: binary()
-  defp get_bucket_id!() do
-    bucket_id =
-      Application.fetch_env!(:bright, :google_api_storage)
-      |> Keyword.fetch!(:bucket_id)
-
-    if is_binary(bucket_id) do
-      bucket_id
-    else
-      raise RuntimeError, "bucket_id is not string."
-    end
+  defp get_bucket_id! do
+    Application.fetch_env!(:bright, :google_api_storage)
+    |> Keyword.fetch!(:bucket_id)
   end
 end
