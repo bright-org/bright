@@ -26,7 +26,8 @@ config :bright, BrightWeb.Endpoint,
   secret_key_base: "NscRG+nu4wU6WCH+1dowaRxOfXxlk0W2K36n58kV8bo5e3d/wrsrs/1vqQ+Gj9Rg",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
+    storybook_tailwind: {Tailwind, :install_and_run, [:storybook, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -58,7 +59,8 @@ config :bright, BrightWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/bright_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/bright_web/(controllers|live|components)/.*(ex|heex)$",
+      ~r"storybook/.*(exs)$"
     ]
   ]
 
