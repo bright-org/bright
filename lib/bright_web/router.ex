@@ -10,6 +10,12 @@ defmodule BrightWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :admin do
+    # credo:disable-for-next-line
+    # TODO: Basic認証みたいな軽いアクセス制限を入れる
+    # See https://hexdocs.pm/plug/Plug.BasicAuth.html
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -41,6 +47,16 @@ defmodule BrightWeb.Router do
     live "/user_joined_teams/:id/show/edit", UserJoinedTeamLive.Show, :edit
 
 
+  end
+
+  scope "/admin", BrightWeb.Admin, as: :admin do
+    pipe_through [:browser, :admin]
+
+    live "/skill_panels", SkillPanelLive.Index, :index
+    live "/skill_panels/new", SkillPanelLive.Index, :new
+    live "/skill_panels/:id/edit", SkillPanelLive.Index, :edit
+    live "/skill_panels/:id", SkillPanelLive.Show, :show
+    live "/skill_panels/:id/show/edit", SkillPanelLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
