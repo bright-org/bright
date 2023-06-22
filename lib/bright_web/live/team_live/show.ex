@@ -1,6 +1,7 @@
 defmodule BrightWeb.TeamLive.Show do
   use BrightWeb, :live_view
 
+  alias Bright.Users
   alias Bright.Teams
 
   @impl true
@@ -15,7 +16,7 @@ defmodule BrightWeb.TeamLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:team, team)}
+     |> assign(:team, team)
      |> assign(:bright_users, Teams.get_team!(id))}
   end
 
