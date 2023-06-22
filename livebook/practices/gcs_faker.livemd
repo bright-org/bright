@@ -1,21 +1,25 @@
 # FakeGCSサーバでのアップロードと削除
 
+```elixir
+alias Bright.Utils.GoogleCloud.Storage
+```
+
 ## アップロード
 
 ```elixir
 obj_path = Path.join([:code.priv_dir(:bright), "static/images", "logo.svg"])
 gcs_path = "logo.svg"
 
-Bright.CloudStorage.upload_object!(obj_path, gcs_path)
+Storage.upload!(obj_path, gcs_path)
 ```
 
 ```elixir
-gcs_public_path = Bright.CloudStorage.get_object_public_url(gcs_path)
+gcs_public_path = Storage.public_url(gcs_path)
 IO.write(gcs_public_path)
 ```
 
 ## 削除
 
 ```elixir
-Bright.CloudStorage.delete_object!(gcs_path)
+Storage.delete!(gcs_path)
 ```
