@@ -11,13 +11,13 @@ Bright!!
 
 ## ローカル開発環境構築
 
-### Docker で開発環境を構築する場合 (Mac, Linux)
+### Docker で開発環境を構築する場合 (Mac, Rootless docker)
 
 ```
 $ make setup # 最初の1回だけでOK
 ```
 
-### WSL2 などにおいて Docker で開発環境を構築する場合 (Windows)
+### WSL2 などにおいて Docker で開発環境を構築する場合 (Windows, etc)
 
 WSL2 などでは Docker コンテナ内で生成したファイルが root になり、開発上の障害になるので別途 Docker ファイル用意しています
 
