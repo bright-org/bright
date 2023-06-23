@@ -66,8 +66,6 @@ defmodule Bright.Utils.GoogleCloud.Storage do
   @doc """
   Get public url.
 
-  ローカル環境においてクライアント端末からの参照を考慮して、localhostを指定している。
-
   ## Examples
 
       iex> Bright.CloudStorage.get_object_public_url("phoenix.png")
@@ -76,6 +74,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
   def public_url(path) do
     base_url =
       Application.fetch_env!(:google_api_storage, :base_url)
+      # ローカル環境においては、base_urlがアプリケーションからみたfake gcsのURLになるため、クライアント端末からみた参照URLになるようにreplaceしている。
       |> String.replace("//gcs:", "//localhost:")
 
     bucket_id =
@@ -83,45 +82,6 @@ defmodule Bright.Utils.GoogleCloud.Storage do
       |> Keyword.fetch!(:bucket_id)
 
     Path.join([base_url, bucket_id, path])
-  end
-
-  @doc """
-  Download an object to specified file path.
-
-  ## Examples
-
-      iex> Bright.CloudStorage.download_object!("phoenix.png", "./downloaded.png")
-      :ok
-
-      iex> Bright.CloudStorage.download_object!("not_found.png", "./downloaded.png")
-      ** (Bright.Exceptions.GcsError)
-  """
-  @spec download!(storage_path :: String.t(), local_file_path :: String.t()) :: :ok
-  def download!(storage_path, local_file_path) do
-    try do
-      # NOTE:
-      # [{:decode, false}]を渡すことで、
-      # %GoogleApi.Storage.V1.Model.Object{}ではなく、
-      # %Tesla.Env{}（デコードなし）を取得している。
-      # refs:
-      # - GoogleApi.Storage.V1.Api.Objects.storage_objects_get
-      # - GoogleApi.Gax.Response
-      {:ok, %Tesla.Env{} = tesla} =
-        GoogleApi.Storage.V1.Api.Objects.storage_objects_get(
-          get_connection!(),
-          get_bucket_id!(),
-          storage_path,
-          [{:alt, "media"}],
-          [{:decode, false}]
-        )
-
-      File.write!(local_file_path, tesla.body)
-
-      :ok
-    rescue
-      exception in [MatchError, File.Error] ->
-        reraise Bright.Exceptions.GcsError, [message: inspect(exception)], __STACKTRACE__
-    end
   end
 
   defp file_path_to_content_type(file_path) do
