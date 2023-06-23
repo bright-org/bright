@@ -34,3 +34,11 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Google Cloud Storage (fake server)
+config :goth, disabled: true
+config :google_api_storage, base_url: "http://gcs:4443"
+
+config :bright, :google_api_storage,
+  bucket_id: "test-bucket",
+  public_base_url: "http://localhost:4443"
