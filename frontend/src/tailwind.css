@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.skill-panel-outline {
+  outline: 1px solid #97acac;
+  outline-offset: 1;
+}
+
 @layer base {
   body {
     @apply text-sm tracking-tight;
@@ -21,11 +26,23 @@
   h5 {
     @apply text-lg font-bold tracking-tight self-center;
   }
+  .skill-table td {
+    @apply w-[130px];
+  }
+  .skill-table th {
+    @apply w-[130px];
+  }
   td {
-    @apply px-2 py-2 w-[130px] text-sm text-left;
+    @apply px-2 py-2 text-sm text-left;
   }
   th {
-    @apply px-2 py-2 w-[130px] text-sm text-left;
+    @apply px-2 py-2 text-sm text-left;
+  }
+  .skill-panel-table td {
+    @apply border-r border-b border-brightGray-200 h-10 box-border;
+  }
+  .skill-panel-table th {
+    @apply border-r border-b border-brightGray-200 h-10 box-border;
   }
   .button-toggle-active {
     @apply bg-brightGray-900 text-white rounded-full;
