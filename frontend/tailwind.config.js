@@ -89,16 +89,15 @@ module.exports = {
     },
     extend: {
       background: (theme) => ({
-        bgGoogle: "url('/dist/images/bg_google.png') no_repeat 10px center",
-        bgGithub:
-          "#0D1117 url('/dist/images/bgGithub.png') no_repeat 10px center",
+        bgGoogle: "url('./images/bg_google.png') no_repeat 10px center",
+        bgGithub: "#0D1117 url('./images/bgGithub.png') no_repeat 10px center",
         bgFacebook:
-          "#1877F2 url('/dist/images/bgFacebook.png') no_repeat 10px center",
+          "#1877F2 url('./images/bgFacebook.png') no_repeat 10px center",
         bgTwitter:
-          "#1DA1F2 url('/dist/images/bgTwitter.png') no_repeat 10px center",
+          "#1DA1F2 url('./images/bgTwitter.png') no_repeat 10px center",
       }),
       backgroundImage: (theme) => ({
-        bgJem: "url('/dist/images/bg_jem_title.png')",
+        bgJem: "url('./images/bg_jem_title.png')",
       }),
       backgroundSize: (theme) => ({
         bg_h_3: "auto 12px",
