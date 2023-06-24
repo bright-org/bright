@@ -8,10 +8,10 @@ defmodule Bright.Utils.GoogleCloud.Storage do
 
   ## Examples
 
-      iex> Bright.CloudStorage.upload_object!("./local_phoenix.png", "phoenix.png")
+      iex> Bright.Utils.GoogleCloud.Storage.upload!("./local_phoenix.png", "phoenix.png")
       :ok
 
-      iex> Bright.CloudStorage.upload_object!("./not_found.png", "phoenix.png")
+      iex> Bright.Utils.GoogleCloud.Storage.upload!("./not_found.png", "phoenix.png")
       ** (Bright.Exceptions.GcsError)
   """
   @spec upload!(local_file_path :: String.t(), storage_path :: String.t()) :: :ok
@@ -40,10 +40,10 @@ defmodule Bright.Utils.GoogleCloud.Storage do
 
   ## Examples
 
-      iex> Bright.CloudStorage.delete_object!("phoenix.png")
+      iex> Bright.Utils.GoogleCloud.Storage.delete!("phoenix.png")
       :ok
 
-      iex> Bright.CloudStorage.delete_object!("not_found.png")
+      iex> Bright.Utils.GoogleCloud.Storage.delete!("not_found.png")
       ** (Bright.Exceptions.GcsError)
   """
   @spec delete!(storage_path :: String.t()) :: :ok
@@ -68,7 +68,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
 
   ## Examples
 
-      iex> Bright.CloudStorage.get_object_public_url("phoenix.png")
+      iex> Bright.Utils.GoogleCloud.Storage.public_url("phoenix.png")
       "http://localhost:4443/<bucket_id>/phoenix.png"
   """
   def public_url(path) do
@@ -77,11 +77,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
       # ローカル環境においては、base_urlがアプリケーションからみたfake gcsのURLになるため、クライアント端末からみた参照URLになるようにreplaceしている。
       |> String.replace("//gcs:", "//localhost:")
 
-    bucket_id =
-      Application.fetch_env!(:bright, :google_api_storage)
-      |> Keyword.fetch!(:bucket_id)
-
-    Path.join([base_url, bucket_id, path])
+    Path.join([base_url, get_bucket_id!(), path])
   end
 
   defp file_path_to_content_type(file_path) do
