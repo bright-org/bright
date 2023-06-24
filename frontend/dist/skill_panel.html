@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./output.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link />
+  </head>
+  <body>
+    <div class="flex w-[1920px]">
+      <aside
+        class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-6 pl-3"
+      >
+        <img src="./images/common/logo.svg" width="163px" />
+        <ul class="grid gap-y-10 pl-5 pt-6">
+          <li>
+            <a class="!text-white text-base" href="./mypage.html">マイページ</a>
+          </li>
+          <li>
+            <a class="!text-white text-base" href="./growth_graph.html"
+              >キャリアパス</a
+            >
+          </li>
+          <li>
+            <a class="!text-white text-base" href="/mypage">スキルアップ</a>
+          </li>
+          <li>
+            <a class="!text-white text-base" href="/my_team.html"
+              >チームスキル分析</a
+            >
+          </li>
+        </ul>
+      </aside>
+      <main class="bg-background flex flex-col flex-1">
+        <!-- ヘッダー -->
+        <div
+          class="w-full flex justify-between py-2.5 px-12 border-brightGray-100 border-b bg-brightGray-50"
+        >
+          <h4>スキルパネル / Webアプリ開発 Elixir</h4>
+          <div class="flex gap-x-6">
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
+            >
+              <span class="material-icons text-xs">search</span>
+            </button>
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
+            >
+              <span class="material-icons text-xs">notifications_none</span>
+              <div
+                class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2"
+              >
+                1
+              </div>
+            </button>
+            <img
+              class="inline-block h-10 w-10 rounded-full"
+              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+            />
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
+            >
+              <span class="material-icons text-xs">settings</span>
+            </button>
+          </div>
+        </div>
+        <!-- スイッチ -->
+        <div class="flex gap-x-4 px-8 py-6">
+          <p>対象スキルの<br />切り替え</p>
+          <button
+            id="dropdownOffsetButton"
+            data-dropdown-toggle="dropdownOffset"
+            data-dropdown-offset-distance="-140"
+            data-dropdown-offset-skidding="150"
+            data-dropdown-placement="right"
+            class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+            type="button"
+          >
+            <span class="min-w-[6em]">スキルパネル</span>
+            <span
+              class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+              >expand_more</span
+            >
+          </button>
+          <!-- スキルパネル menu -->
+          <div
+            id="dropdownOffset"
+            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-sm shadow w-44 dark:bg-gray-700"
+          >
+            <ul
+              class="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownOffsetButton"
+            >
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >全スキルセット</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >エンジニア</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >インフラ</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >デザイナー</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >マーケッター</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <button
+            id="dropdownDefaultButton"
+            data-dropdown-toggle="dropdown"
+            class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+            type="button"
+          >
+            スキルセット
+            <span
+              class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+              >expand_more</span
+            >
+          </button>
+          <!-- スキルセット menu -->
+          <div
+            id="dropdown"
+            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+          >
+            <ul
+              class="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownDefaultButton"
+            >
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >全スキルセット</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >エンジニア</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >インフラ</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >デザイナー</a
+                >
+              </li>
+              <li>
+                <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                  >マーケッター</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <p>対象者の<br />切り替え</p>
+          <button
+            id="dropdownDefaultButton"
+            data-dropdown-toggle="dropdown"
+            class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+            type="button"
+          >
+            <span class="min-w-[6em]">個人</span>
+            <span
+              class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+              >expand_more</span
+            >
+          </button>
+          <!-- 個人 menu -->
+          <div
+            id="dropdown"
+            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+          >
+            <ul
+              class="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownDefaultButton"
+            >
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >Dashboard</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >Settings</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >Earnings</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >Sign out</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <button
+            id="dropdownDefaultButton"
+            data-dropdown-toggle="dropdown"
+            class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+            type="button"
+          >
+            <span class="min-w-[6em]">チーム</span>
+            <span
+              class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+              >expand_more</span
+            >
+          </button>
+          <!-- チーム menu -->
+          <div
+            id="dropdown"
+            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+          >
+            <ul
+              class="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownDefaultButton"
+            >
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >Dashboard</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >Settings</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >Earnings</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >Sign out</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <button
+            class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold"
+          >
+            自分に戻す
+          </button>
+        </div>
+        <!-- card -->
+        <div class="mx-8 p-6">
+          <div class="flex justify-end">
+            <ul
+              class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGreen-900 bg-brightGreen-50"
+            >
+              <li class="bg-white text-base">
+                <a href="#" class="inline-block p-4 pt-3" aria-current="page"
+                  >クラス1 零細Webアプリ開発がこなせる
+                  <span class="text-xl ml-4">52</span>％</a
+                >
+              </li>
+              <li class="">
+                <a href="#" class="inline-block p-4 pt-3"
+                  >クラス2 <span class="text-xl ml-4">52</span>％</a
+                >
+              </li>
+              <li class="">
+                <a href="#" class="inline-block p-4 pt-3"
+                  >クラス3 <span class="text-xl ml-4">52</span>％</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="bg-white shadow flex p-6 relative z-2">
+            <div class="w-[880px] flex flex-col">
+              <!-- プロフィール -->
+              <div class="flex w-[660px]">
+                <div
+                  class="bg-contain h-20 w-20 mr-5"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+                <div class="flex-1">
+                  <div class="flex justify-between pb-2 items-end">
+                    <div class="text-2xl font-bold">piacere</div>
+                  </div>
+                  <div
+                    class="flex justify-between pt-3 border-brightGray-100 border-t"
+                  >
+                    <div class="text-2xl">リードプログラマー</div>
+                    <div class="flex gap-x-6 mr-2">
+                      <button type="button">
+                        <img src="./images/common/twitter.svg" width="26px" />
+                      </button>
+                      <button type="button">
+                        <img src="./images/common/github.svg" width="26px" />
+                      </button>
+                      <button type="button">
+                        <img src="./images/common/facebook.svg" width="26px" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- グラフ -->
+              </div>
+              <div class="flex justify-end py-4 mr-32">
+                <button
+                  type="button"
+                  class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+                >
+                  ロールモデルを解除
+                </button>
+              </div>
+              <div class="flex">
+                <div class="w-14"></div>
+                <canvas id="lineChart" width="714"></canvas>
+                <div class="flex flex-col">
+                  <p class="py-8">ベテラン</p>
+                  <p class="py-16">平均</p>
+                  <p class="py-12">見習い</p>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="w-14 flex justify-center items-center">
+                  <button
+                    class="w-10 h-8 bg-brightGray-900 flex justify-center items-center rounded-sm"
+                  >
+                    <span class="material-icons text-white !text-3xl"
+                      >arrow_left</span
+                    >
+                  </button>
+                </div>
+                <div
+                  class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-10 flex justify-around items-center relative"
+                >
+                  <div class="h-24 w-24 flex justify-center items-center">
+                    <button
+                      class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                    >
+                      2022.12
+                    </button>
+                  </div>
+                  <div class="h-24 w-24 flex justify-center items-center">
+                    <button
+                      class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                    >
+                      2023.3
+                    </button>
+                  </div>
+                  <div class="h-24 w-24">
+                    <button
+                      class="h-24 w-24 rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-xs flex justify-center items-center flex-col"
+                    >
+                      <span class="material-icons !text-4xl">check</span>
+                      2022.12
+                    </button>
+                  </div>
+
+                  <div class="h-24 w-24 flex justify-center items-center">
+                    <button
+                      class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                    >
+                      2023.9
+                    </button>
+                  </div>
+                  <div class="h-24 w-24 flex justify-center items-center">
+                    <button
+                      class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                    >
+                      2023.12
+                    </button>
+                  </div>
+                </div>
+                <div class="flex justify-center items-center ml-2">
+                  <button
+                    class="w-10 h-8 bg-brightGray-300 flex justify-center items-center rounded-sm"
+                  >
+                    <span class="material-icons text-white !text-3xl"
+                      >arrow_right</span
+                    >
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="w-14"></div>
+                <div class="w-[714px] flex justify-between items-center">
+                  <div
+                    class="text-left flex items-center text-base hover:bg-brightGray-50 p-1"
+                  >
+                    <a
+                      class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded"
+                    >
+                      <img
+                        class="inline-block h-10 w-10 rounded-full"
+                        src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                      />
+                      <div>
+                        <p>nokichi</p>
+                        <p class="text-brightGray-300">アプリエンジニア</p>
+                      </div>
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+                  >
+                    ロールモデルに固定
+                  </button>
+                </div>
+                <div></div>
+              </div>
+
+              <div class="flex">
+                <div class="w-14 flex justify-center items-center">
+                  <button
+                    class="w-10 h-8 bg-brightGray-900 flex justify-center items-center rounded-sm"
+                  >
+                    <span class="material-icons text-white !text-3xl"
+                      >arrow_left</span
+                    >
+                  </button>
+                </div>
+                <div
+                  class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-10 flex justify-around items-center relative"
+                >
+                  <button
+                    class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200"
+                  >
+                    <span class="material-icons !text-base !text-brightGray-200"
+                      >close</span
+                    >
+                  </button>
+                  <div class="h-24 w-24">
+                    <button
+                      class="h-24 w-24 rounded-full bg-amethyst-50 border-white border-8 shadow text-amethyst-600 font-bold text-xs flex justify-center items-center flex-col"
+                    >
+                      <span class="material-icons !text-4xl">check</span>
+                      2022.12
+                    </button>
+                  </div>
+                  <div class="h-24 w-24 flex justify-center items-center">
+                    <button
+                      class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                    >
+                      2023.3
+                    </button>
+                  </div>
+                  <div class="h-24 w-24 flex justify-center items-center">
+                    <button
+                      class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                    >
+                      2023.6
+                    </button>
+                  </div>
+                  <div class="h-24 w-24 flex justify-center items-center">
+                    <button
+                      class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                    >
+                      2023.9
+                    </button>
+                  </div>
+                  <div class="h-24 w-24 flex justify-center items-center">
+                    <button
+                      class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                    >
+                      2023.12
+                    </button>
+                  </div>
+                </div>
+                <div class="flex justify-center items-center ml-2">
+                  <button
+                    class="w-10 h-8 bg-brightGray-900 flex justify-center items-center rounded-sm"
+                  >
+                    <span class="material-icons text-white !text-3xl"
+                      >arrow_right</span
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="w-[700px]">
+              <div class="flex justify-end">
+                <div
+                  class="bg-brightGray-50 text-brightGray-500 rounded-full inline-flex text-base font-bold mr-10"
+                >
+                  <button
+                    class="inline-flex items-center rounded-l-full px-8 py-2 button-toggle-active"
+                    id="grid"
+                  >
+                    成長パネル
+                  </button>
+                  <button
+                    class="inline-flex items-center rounded-r-full px-8 py-2"
+                    id="list"
+                  >
+                    スキルパネル
+                  </button>
+                </div>
+                <button
+                  class="text-base font-bold px-4 py-2 rounded !text-white bg-base"
+                >
+                  スキルアップする
+                </button>
+              </div>
+              <div class="w-[450px] mx-auto my-12">
+                <canvas id="radarChart" width="450" height="450"></canvas>
+              </div>
+              <div class="flex justify-center">
+                <p>
+                  あと<span class="text-error !text-2xl font-bold">8</span
+                  >%でベテランになれます。
+                </p>
+                <p>
+                  次のレベルまでのスキル数<span
+                    class="text-error !text-2xl font-bold"
+                    >10</span
+                  >個
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+  </body>
+</html>
