@@ -752,6 +752,14 @@ th {
   z-index: 50;
 }
 
+.m-8 {
+  margin: 2rem;
+}
+
+.m-10 {
+  margin: 2.5rem;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -880,6 +888,10 @@ th {
 
 .mb-10 {
   margin-bottom: 2.5rem;
+}
+
+.mt-10 {
+  margin-top: 2.5rem;
 }
 
 .block {
