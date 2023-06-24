@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=yes" />
+    <meta name="image" content="assets/images/ogp.png" />
+    <title>Bright</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" href="favicon.ico" />
+  </head>
+  <body class="bg-gray-100">
+    <main
+      class="flex h-screen items-center justify-center p-10 w-screen"
+      role="main"
+    >
+      <section class="bg-white -mt-10 p-8 rounded-lg">
+        <h1 class="font-bold text-center text-xl">
+          <span
+            class="bgJem bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:mr-1 before:w-6"
+            >ユーザー新規登録</span
+          >
+        </h1>
+
+        <form class="flex mt-8 relative">
+          <section
+            class="border-r border-solid border-gray-200 flex flex-col mt-5 max-w-xs pr-16 w-2/4"
+          >
+            <button
+              class="bgGoogle bg-h-5 border border-solid border-black max-w-xs mt-4 mx-auto px-4 py-2 rounded select-none text-black w-60 hover:opacity-50"
+            >
+              Google
+            </button>
+
+            <button
+              class="bgGithub bg-h-5 border border-github border-solid max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-60 hover:opacity-50"
+            >
+              GitHub
+            </button>
+
+            <button
+              class="bgFacebook bg-h-5 border border-facebook border-solid max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-60 hover:opacity-50"
+            >
+              Facebook
+            </button>
+
+            <button
+              class="bgTwitter bg-h-5 border border-twitter border-solid max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-60 hover:opacity-50"
+            >
+              Twitter
+            </button>
+          </section>
+
+          <p
+            class="absolute bg-white border border-solid border-gray-200 flex h-20 left-2/4 top-2/4 items-center justify-center -ml-10 -mt-10 rounded-full text-gray-300 w-20 z-2"
+          >
+            または
+          </p>
+
+          <section class="flex flex-col max-w-xs pt-0 pr-0 pl-16 w-2/4">
+            <label for="hn" class="mt-4">
+              <span class="font-bold text-xs">ハンドルネーム</span>
+              <input
+                id="hn"
+                type="text"
+                placeholder="ハンドルネーム"
+                class="border border-solid border-black max-w-xs px-4 py-2 rounded w-60"
+              />
+            </label>
+
+            <label for="email" class="mt-4">
+              <span class="font-bold text-xs">メールアドレス</span>
+              <input
+                id="email"
+                type="email"
+                placeholder="メールアドレス"
+                class="border border-solid border-black max-w-xs px-4 py-2 rounded w-60"
+              />
+            </label>
+
+            <label for="password" class="mt-4">
+              <span class="font-bold text-xs">パスワード</span>
+              <input
+                id="password"
+                type="password"
+                class="border border-solid border-black max-w-xs px-4 py-2 rounded w-60"
+              />
+            </label>
+
+            <button
+              class="bg-gradient-to-b from-brightGray-500 via-brightGray-700 to-brightGray-900 border border-solid border-black max-w-xs mt-8 px-4 py-2 rounded select-none text-white w-60 hover:opacity-50"
+            >
+              ログイン
+            </button>
+          </section>
+        </form>
+
+        <p class="mt-8 text-blue-700 text-center">
+          <a href="#" class="text-sm underline">ログインはこちら</a>
+        </p>
+      </section>
+    </main>
+
+    <style></style>
+  </body>
+</html>

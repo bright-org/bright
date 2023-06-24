@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./output.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link />
+  </head>
+  <body>
+    <div class="flex w-[1920px]">
+      <aside
+        class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-6 pl-3"
+      >
+        <img src="./images/common/logo.svg" width="163px" />
+        <ul class="grid gap-y-10 pl-5 pt-6">
+          <li>
+            <a class="!text-white text-base" href="/mypage">マイページ</a>
+          </li>
+          <li>
+            <a class="!text-white text-base" href="/mypage">キャリアパス</a>
+          </li>
+          <li>
+            <a class="!text-white text-base" href="/mypage">スキルアップ</a>
+          </li>
+          <li>
+            <a class="!text-white text-base" href="/mypage">チームスキル分析</a>
+          </li>
+        </ul>
+      </aside>
+      <main class="bg-background flex flex-col flex-1">
+        <!-- ヘッダー -->
+        <div
+          class="w-full flex justify-between py-2.5 px-12 border-brightGray-100 border-b bg-brightGray-50"
+        >
+          <h4>スキルパネル / Webアプリ開発 Elixir</h4>
+          <div class="flex gap-x-6">
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
+            >
+              <span class="material-icons text-xs">search</span>
+            </button>
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
+            >
+              <span class="material-icons text-xs">notifications_none</span>
+              <div
+                class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2"
+              >
+                1
+              </div>
+            </button>
+            <img
+              class="inline-block h-10 w-10 rounded-full"
+              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+            />
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
+            >
+              <span class="material-icons text-xs">settings</span>
+            </button>
+          </div>
+        </div>
+        <!-- スイッチ -->
+        <div class="px-8 py-6 bg-white">
+          <!-- スキルと対象の切り替え -->
+          <div class="flex gap-x-4">
+            <p>対象スキルの<br />切り替え</p>
+            <button
+              id="dropdownOffsetButton"
+              data-dropdown-toggle="dropdownOffset"
+              data-dropdown-offset-distance="-140"
+              data-dropdown-offset-skidding="150"
+              data-dropdown-placement="right"
+              class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+              type="button"
+            >
+              <span class="min-w-[6em]">スキルパネル</span>
+              <span
+                class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+                >expand_more</span
+              >
+            </button>
+            <!-- スキルパネル menu -->
+            <div
+              id="dropdownOffset"
+              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-sm shadow w-44 dark:bg-gray-700"
+            >
+              <ul
+                class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                aria-labelledby="dropdownOffsetButton"
+              >
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >全スキルセット</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >エンジニア</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >インフラ</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >デザイナー</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >マーケッター</a
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <button
+              id="dropdownDefaultButton"
+              data-dropdown-toggle="dropdown"
+              class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+              type="button"
+            >
+              スキルセット
+              <span
+                class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+                >expand_more</span
+              >
+            </button>
+            <!-- スキルセット menu -->
+            <div
+              id="dropdown"
+              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+            >
+              <ul
+                class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                aria-labelledby="dropdownDefaultButton"
+              >
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >全スキルセット</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >エンジニア</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >インフラ</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >デザイナー</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                    >マーケッター</a
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <p>対象の<br />切り替え</p>
+
+            <button
+              id="dropdownDefaultButton"
+              data-dropdown-toggle="dropdown"
+              class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+              type="button"
+            >
+              <span class="min-w-[6em]">チーム</span>
+              <span
+                class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+                >expand_more</span
+              >
+            </button>
+            <!-- チーム menu -->
+            <div
+              id="dropdown"
+              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+            >
+              <ul
+                class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                aria-labelledby="dropdownDefaultButton"
+              >
+                <li>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >Dashboard</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >Settings</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >Earnings</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >Sign out</a
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <button
+              class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold"
+            >
+              チームを作る
+            </button>
+          </div>
+          <!-- プロフィール -->
+          <div class="flex w-[660px] mt-6">
+            <div
+              class="bg-contain h-20 w-20 mr-5"
+              style="background-image: url('./images/sample/sample-image.png')"
+            ></div>
+            <div class="flex-1">
+              <div class="flex justify-between pb-2 items-end">
+                <div class="text-2xl font-bold">piacere</div>
+              </div>
+              <div
+                class="flex justify-between pt-3 border-brightGray-100 border-t"
+              >
+                <div class="text-2xl">リードプログラマー</div>
+                <div class="flex gap-x-6 mr-2">
+                  <button type="button">
+                    <img src="./images/common/twitter.svg" width="26px" />
+                  </button>
+                  <button type="button">
+                    <img src="./images/common/github.svg" width="26px" />
+                  </button>
+                  <button type="button">
+                    <img src="./images/common/facebook.svg" width="26px" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- グラフ -->
+          </div>
+        </div>
+
+        <!-- card -->
+        <div class="mx-8 p-6">
+          <!-- チームタイトル -->
+          <div class="flex">
+            <h3>
+              <span
+                class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center"
+                >group</span
+              >DMC Ph3
+            </h3>
+            <label
+              class="text-white bg-lapislazuli-300 ml-8 rounded-md font-bold px-3 py-1 inline-flex items-center"
+              >プライマリ</label
+            >
+          </div>
+          <!-- チームメンバー -->
+          <div class="flex gap-8 pt-7 flex-wrap">
+            <!-- 　メンバーデータ -->
+            <div class="flex w-[474px] shadow flex-col bg-white">
+              <ul
+                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+              >
+                <li class="bg-white text-base w-full">
+                  <a
+                    href="#"
+                    class="w-full py-3 text-center inline-block"
+                    aria-current="page"
+                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+              </ul>
+              <div class="flex justify-between px-6 pt-6 items-center">
+                <div class="text-2xl font-bold">piacere</div>
+                <div
+                  class="bg-test bg-contain h-20 w-20"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+              </div>
+              <div class="w-[400px] flex justify-center mx-auto">
+                <canvas id="radarChart" width="300" height="300"></canvas>
+              </div>
+              <div class="p-6 flex justify-between">
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                >
+                  1on1に誘う
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  この人と比較
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  スキルアップ確認
+                </button>
+              </div>
+            </div>
+
+            <!-- 　メンバーデータ -->
+            <div class="flex w-[474px] shadow flex-col bg-white">
+              <ul
+                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+              >
+                <li class="bg-white text-base w-full">
+                  <a
+                    href="#"
+                    class="w-full py-3 text-center inline-block"
+                    aria-current="page"
+                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+              </ul>
+              <div class="flex justify-between px-6 pt-6 items-center">
+                <div class="text-2xl font-bold">piacere</div>
+                <div
+                  class="bg-test bg-contain h-20 w-20"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+              </div>
+              <div class="w-[400px] flex justify-center mx-auto">
+                <canvas id="radarChart2" width="300" height="300"></canvas>
+              </div>
+              <div class="p-6 flex justify-between">
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                >
+                  1on1に誘う
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  この人と比較
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  スキルアップ確認
+                </button>
+              </div>
+            </div>
+
+            <!-- 　メンバーデータ -->
+            <div class="flex w-[474px] shadow flex-col bg-white">
+              <ul
+                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+              >
+                <li class="bg-white text-base w-full">
+                  <a
+                    href="#"
+                    class="w-full py-3 text-center inline-block"
+                    aria-current="page"
+                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+              </ul>
+              <div class="flex justify-between px-6 pt-6 items-center">
+                <div class="text-2xl font-bold">piacere</div>
+                <div
+                  class="bg-test bg-contain h-20 w-20"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+              </div>
+              <div class="w-[400px] flex justify-center mx-auto">
+                <canvas id="radarChart3" width="300" height="300"></canvas>
+              </div>
+              <div class="p-6 flex justify-between">
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                >
+                  1on1に誘う
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  この人と比較
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  スキルアップ確認
+                </button>
+              </div>
+            </div>
+
+            <!-- 　メンバーデータ -->
+            <div class="flex w-[474px] shadow flex-col bg-white">
+              <ul
+                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+              >
+                <li class="bg-white text-base w-full">
+                  <a
+                    href="#"
+                    class="w-full py-3 text-center inline-block"
+                    aria-current="page"
+                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+              </ul>
+              <div class="flex justify-between px-6 pt-6 items-center">
+                <div class="text-2xl font-bold">piacere</div>
+                <div
+                  class="bg-test bg-contain h-20 w-20"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+              </div>
+              <div class="w-[400px] flex justify-center mx-auto">
+                <canvas id="radarChart4" width="300" height="300"></canvas>
+              </div>
+              <div class="p-6 flex justify-between">
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                >
+                  1on1に誘う
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  この人と比較
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  スキルアップ確認
+                </button>
+              </div>
+            </div>
+
+            <!-- 　メンバーデータ -->
+            <div class="flex w-[474px] shadow flex-col bg-white">
+              <ul
+                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+              >
+                <li class="bg-white text-base w-full">
+                  <a
+                    href="#"
+                    class="w-full py-3 text-center inline-block"
+                    aria-current="page"
+                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+              </ul>
+              <div class="flex justify-between px-6 pt-6 items-center">
+                <div class="text-2xl font-bold">piacere</div>
+                <div
+                  class="bg-test bg-contain h-20 w-20"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+              </div>
+              <div class="w-[400px] flex justify-center mx-auto">
+                <canvas id="radarChart5" width="300" height="300"></canvas>
+              </div>
+              <div class="p-6 flex justify-between">
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                >
+                  1on1に誘う
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  この人と比較
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  スキルアップ確認
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- チームタイトル -->
+          <div class="flex pt-20">
+            <h3>
+              <span
+                class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center"
+                >group</span
+              >DMC Ph2 インフラ
+            </h3>
+            <button
+              class="text-lapislazuli-300 border border-lapislazuli-300 ml-8 rounded-md font-bold px-3 py-1 inline-flex items-center"
+            >
+              プライマリに設定
+            </button>
+          </div>
+          <!-- チームメンバー -->
+          <div class="flex gap-8 pt-7 flex-wrap">
+            <!-- 　メンバーデータ -->
+            <div class="flex w-[474px] shadow flex-col bg-white">
+              <ul
+                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+              >
+                <li class="bg-white text-base w-full">
+                  <a
+                    href="#"
+                    class="w-full py-3 text-center inline-block"
+                    aria-current="page"
+                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+              </ul>
+              <div class="flex justify-between px-6 pt-6 items-center">
+                <div class="text-2xl font-bold">piacere</div>
+                <div
+                  class="bg-test bg-contain h-20 w-20"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+              </div>
+              <div class="w-[400px] flex justify-center mx-auto">
+                <canvas id="radarChart6" width="300" height="300"></canvas>
+              </div>
+              <div class="p-6 flex justify-between">
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                >
+                  1on1に誘う
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  この人と比較
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  スキルアップ確認
+                </button>
+              </div>
+            </div>
+
+            <!-- 　メンバーデータ -->
+            <div class="flex w-[474px] shadow flex-col bg-white">
+              <ul
+                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+              >
+                <li class="bg-white text-base w-full">
+                  <a
+                    href="#"
+                    class="w-full py-3 text-center inline-block"
+                    aria-current="page"
+                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+              </ul>
+              <div class="flex justify-between px-6 pt-6 items-center">
+                <div class="text-2xl font-bold">piacere</div>
+                <div
+                  class="bg-test bg-contain h-20 w-20"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+              </div>
+              <div class="w-[400px] flex justify-center mx-auto">
+                <canvas id="radarChart7" width="300" height="300"></canvas>
+              </div>
+              <div class="p-6 flex justify-between">
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                >
+                  1on1に誘う
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  この人と比較
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  スキルアップ確認
+                </button>
+              </div>
+            </div>
+
+            <!-- 　メンバーデータ -->
+            <div class="flex w-[474px] shadow flex-col bg-white">
+              <ul
+                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+              >
+                <li class="bg-white text-base w-full">
+                  <a
+                    href="#"
+                    class="w-full py-3 text-center inline-block"
+                    aria-current="page"
+                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+                <li class="w-full">
+                  <a href="#" class="w-full py-3 text-center inline-block"
+                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                  >
+                </li>
+              </ul>
+              <div class="flex justify-between px-6 pt-6 items-center">
+                <div class="text-2xl font-bold">piacere</div>
+                <div
+                  class="bg-test bg-contain h-20 w-20"
+                  style="
+                    background-image: url('./images/sample/sample-image.png');
+                  "
+                ></div>
+              </div>
+              <div class="w-[400px] flex justify-center mx-auto">
+                <canvas id="radarChart8" width="300" height="300"></canvas>
+              </div>
+              <div class="p-6 flex justify-between">
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                >
+                  1on1に誘う
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  この人と比較
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-3 rounded border border-base"
+                >
+                  スキルアップ確認
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+
+    <script>
+      const radar = document.getElementById("radarChart");
+      const radar2 = document.getElementById("radarChart2");
+      const radar3 = document.getElementById("radarChart3");
+      const radar4 = document.getElementById("radarChart4");
+      const radar5 = document.getElementById("radarChart5");
+      const radar6 = document.getElementById("radarChart6");
+      const radar7 = document.getElementById("radarChart7");
+      const radar8 = document.getElementById("radarChart8");
+
+      const radarData = {
+        labels: [
+          "Elixir本来",
+          "ライブラリ",
+          "環境構築",
+          "関連スキル",
+          "デバッグ",
+          "テスト",
+        ],
+        datasets: [
+          {
+            data: [80, 63, 50, 67, 40, 78],
+            fill: true,
+            backgroundColor: "rgba(82, 204, 181,0.6)",
+            borderWidth: 1,
+            pointRadius: 0,
+          },
+        ],
+      };
+
+      const radarOptions = {
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          r: {
+            //グラフの最小値・最大値
+            min: 0,
+            max: 100,
+            //背景色
+            backgroundColor: "#EBFEFC",
+            ticks: {
+              min: 0, // 最小値
+              max: 100, // 最大値
+              stepSize: 10, // 目盛の間隔
+              display: false,
+            },
+            // グリッドライン
+            grid: {
+              color: "#ffffff",
+              lineWidth: 2,
+            },
+            // アングルライン
+            angleLines: {
+              color: "#ffffff",
+            },
+            pointLabels: {
+              font: {
+                size: 14,
+              },
+            },
+          },
+        },
+      };
+      new Chart(radar, {
+        type: "radar",
+        data: radarData,
+        options: radarOptions,
+      });
+
+      new Chart(radar2, {
+        type: "radar",
+        data: radarData,
+        options: radarOptions,
+      });
+
+      new Chart(radar3, {
+        type: "radar",
+        data: radarData,
+        options: radarOptions,
+      });
+
+      new Chart(radar4, {
+        type: "radar",
+        data: radarData,
+        options: radarOptions,
+      });
+
+      new Chart(radar5, {
+        type: "radar",
+        data: radarData,
+        options: radarOptions,
+      });
+
+      new Chart(radar6, {
+        type: "radar",
+        data: radarData,
+        options: radarOptions,
+      });
+
+      new Chart(radar7, {
+        type: "radar",
+        data: radarData,
+        options: radarOptions,
+      });
+
+      new Chart(radar8, {
+        type: "radar",
+        data: radarData,
+        options: radarOptions,
+      });
+    </script>
+  </body>
+</html>

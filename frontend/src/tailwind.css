@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-sm tracking-tight;
+  }
+  h1 {
+    @apply text-5xl font-bold tracking-tight self-center;
+  }
+  h2 {
+    @apply text-4xl font-bold tracking-tight self-center;
+  }
+  h3 {
+    @apply text-2xl font-bold tracking-tight self-center;
+  }
+  h4 {
+    @apply text-xl font-bold tracking-tight self-center;
+  }
+  h5 {
+    @apply text-lg font-bold tracking-tight self-center;
+  }
+  td {
+    @apply px-2 py-2 w-[130px] text-sm text-left;
+  }
+  th {
+    @apply px-2 py-2 w-[130px] text-sm text-left;
+  }
+  .button-toggle-active {
+    @apply bg-brightGray-900 text-white rounded-full;
+  }
+}
