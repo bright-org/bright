@@ -1455,6 +1455,11 @@ th {
   border-style: dashed;
 }
 
+.border-brightGray-900 {
+  --tw-border-opacity: 1;
+  border-color: rgba(46, 58, 58, var(--tw-border-opacity));
+}
+
 .border-brightGray-100 {
   --tw-border-opacity: 1;
   border-color: rgba(212, 219, 219, var(--tw-border-opacity));
@@ -1488,11 +1493,6 @@ th {
 .border-brightGray-50 {
   --tw-border-opacity: 1;
   border-color: rgba(239, 240, 240, var(--tw-border-opacity));
-}
-
-.border-brightGray-900 {
-  --tw-border-opacity: 1;
-  border-color: rgba(46, 58, 58, var(--tw-border-opacity));
 }
 
 .border-brightGray-300 {
@@ -1636,23 +1636,6 @@ th {
 
 .bg-opacity-70 {
   --tw-bg-opacity: 0.7;
-}
-
-.bg-gradient-to-b {
-  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
-}
-
-.from-brightGray-500 {
-  --tw-gradient-from: #688888;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(104, 136, 136, 0));
-}
-
-.via-brightGray-700 {
-  --tw-gradient-stops: var(--tw-gradient-from), #4D6363, var(--tw-gradient-to, rgba(77, 99, 99, 0));
-}
-
-.to-brightGray-900 {
-  --tw-gradient-to: #2E3A3A;
 }
 
 .bg-contain {
@@ -2153,15 +2136,15 @@ th {
 }
 
 .bg-github {
-  background: #0d1117 url("./images/bgGithub.png") no-repeat 10px center;
+  background: #0d1117 url("./images/bg_github.png") no-repeat 10px center;
 }
 
 .bg-facebook {
-  background: #1877f2 url("./images/bgFacebook.png") no-repeat 10px center;
+  background: #1877f2 url("./images/bg_facebook.png") no-repeat 10px center;
 }
 
 .bg-twitter {
-  background: #1da1f2 url("./images/bgTwitter.png") no-repeat 10px center;
+  background: #1da1f2 url("./images/bg_twitter.png") no-repeat 10px center;
 }
 
 .before\:absolute::before {

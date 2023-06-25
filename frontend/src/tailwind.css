@@ -46,13 +46,13 @@
   background: url("./images/bg_google.png") no-repeat 10px center;
 }
 .bg-github {
-  background: #0d1117 url("./images/bgGithub.png") no-repeat 10px center;
+  background: #0d1117 url("./images/bg_github.png") no-repeat 10px center;
 }
 .bg-facebook {
-  background: #1877f2 url("./images/bgFacebook.png") no-repeat 10px center;
+  background: #1877f2 url("./images/bg_facebook.png") no-repeat 10px center;
 }
 .bg-twitter {
-  background: #1da1f2 url("./images/bgTwitter.png") no-repeat 10px center;
+  background: #1da1f2 url("./images/bg_twitter.png") no-repeat 10px center;
 }
 
 @layer base {
