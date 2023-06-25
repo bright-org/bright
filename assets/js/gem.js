@@ -1,8 +1,6 @@
 // TODO: chart.jsのimportの位置がここで良いか確認
-// TODO: 直接gemのページを開かないと描画されない問題を解決すること
-// TODO: storybookではhooksが動作しない問題を解決すること
 
-import {Chart} from 'chart.js/auto';
+import { Chart } from 'chart.js/auto';
 export const gemHooks = {
   gem: {
     mounted() {
@@ -17,9 +15,35 @@ export const gemHooks = {
 const gem = () => {
   // TODO:データを受け渡せるようにする
   let element = document.getElementById('gem');
-  var data =  JSON.parse(element.dataset.data);
+  //var data = JSON.parse(element.dataset.data);
+
+  // // TODO 3の時のテスト
+  // var data = [90, 80, 75];
+  // var labels = ['Elixir本体', 'ライブラリ', '環境構築'];
+
+  // // TODO 4の時のテスト
+  // var data = [90, 80, 75, 60];
+  // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル'];
+
+  // // TODO 5の時のテスト
+  // var data = [90, 80, 75, 60, 90];
+  // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ'];
+
+  //TODO 6の時テスト
+  var data = [90, 80, 75, 60, 90, 45];
   var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ', 'テスト'];
-  var color = ["#82FAE9", "#40DEC6", "#52CCB5", "#82FAE9", "#40DEC6", "#52CCB5"];
+
+  // //TODO 7の時テスト
+  // var data = [90, 80, 75, 60, 90, 45, 60];
+  // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ', 'テスト', 'テスト'];
+
+  // //TODO 8の時テスト
+  // var data = [90, 80, 75, 60, 90, 45, 60, 45];
+  // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ', 'テスト', 'テスト', 'テスト'];
+
+
+  var color = getColorPattern(data.length);
+  console.log(color);
 
   var chartJson = {
     type: 'radar',
@@ -103,7 +127,7 @@ const gem = () => {
     img.onload = function () {
       for (var i = 0; i < data.length; i++) {
         let label = chart.scales.r.getPointLabelPosition(i);
-        context.drawImage(img, label.right + 2, label.top -5, 20, 20);
+        context.drawImage(img, label.right + 2, label.top - 5, 20, 20);
       }
     }
 
@@ -184,5 +208,33 @@ const gem = () => {
 
   });
 
+  function getColorPattern(length) {
+    const colors = ["#82FAE9", "#40DEC6", "#52CCB5"];
+    const pattern = [];
+    // lengthが3未満は描画できない前提
+
+    // lengthが4の時は先頭から2色の交互
+    if (length == 4) {
+      for (let i = 0; i < length; i++) {
+        pattern.push(colors[i % 2]);
+      }
+      return pattern;
+    }
+
+    // lengthが3で割り切れる時
+    if (length % 3 == 0) {
+      for (let i = 0; i < length; i++) {
+        pattern.push(colors[i % colors.length]);
+      }
+      return pattern;
+    }
+
+    // lengthが3で割り切れるない時は3色の繰り返しで、最後は先頭から2番目の色を代入
+    for (let i = 0; i < length - 1; i++) {
+      pattern.push(colors[i % colors.length]);
+    }
+    pattern.push(colors[1]);
+    return pattern;
+  }
 };
 
