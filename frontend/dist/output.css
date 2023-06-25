@@ -895,6 +895,10 @@ th {
   margin-left: 0.25rem;
 }
 
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
 .block {
   display: block;
 }
@@ -993,6 +997,10 @@ th {
 
 .h-1 {
   height: 0.25rem;
+}
+
+.h-3 {
+  height: 0.75rem;
 }
 
 .max-h-full {
@@ -1175,12 +1183,24 @@ th {
   width: 0.5rem;
 }
 
+.w-\[475px\] {
+  width: 475px;
+}
+
+.w-3 {
+  width: 0.75rem;
+}
+
 .min-w-\[6em\] {
   min-width: 6em;
 }
 
 .min-w-\[4em\] {
   min-width: 4em;
+}
+
+.min-w-\[3em\] {
+  min-width: 3em;
 }
 
 .max-w-xs {
@@ -1308,6 +1328,11 @@ th {
 .gap-x-2 {
   -moz-column-gap: 0.5rem;
        column-gap: 0.5rem;
+}
+
+.gap-x-1 {
+  -moz-column-gap: 0.25rem;
+       column-gap: 0.25rem;
 }
 
 .space-y-4 > :not([hidden]) ~ :not([hidden]) {
@@ -1483,6 +1508,11 @@ th {
   border-color: transparent;
 }
 
+.\!border-brightGray-200 {
+  --tw-border-opacity: 1 !important;
+  border-color: rgba(151, 172, 172, var(--tw-border-opacity)) !important;
+}
+
 .border-r-brightGray-200 {
   --tw-border-opacity: 1;
   border-right-color: rgba(151, 172, 172, var(--tw-border-opacity));
@@ -1491,6 +1521,26 @@ th {
 .border-b-brightGreen-600 {
   --tw-border-opacity: 1;
   border-bottom-color: rgba(0, 137, 113, var(--tw-border-opacity));
+}
+
+.border-b-brightGreen-300 {
+  --tw-border-opacity: 1;
+  border-bottom-color: rgba(18, 183, 163, var(--tw-border-opacity));
+}
+
+.border-b-lapislazuli-300 {
+  --tw-border-opacity: 1;
+  border-bottom-color: rgba(138, 115, 220, var(--tw-border-opacity));
+}
+
+.\!border-l-white {
+  --tw-border-opacity: 1 !important;
+  border-left-color: rgba(255, 255, 255, var(--tw-border-opacity)) !important;
+}
+
+.\!border-t-white {
+  --tw-border-opacity: 1 !important;
+  border-top-color: rgba(255, 255, 255, var(--tw-border-opacity)) !important;
 }
 
 .bg-white {
@@ -1581,6 +1631,11 @@ th {
 .bg-lapislazuli-50 {
   --tw-bg-opacity: 1;
   background-color: rgba(236, 231, 249, var(--tw-bg-opacity));
+}
+
+.bg-lapislazuli-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(66, 50, 199, var(--tw-bg-opacity));
 }
 
 .bg-opacity-70 {
@@ -1932,6 +1987,11 @@ th {
 .\!text-lg {
   font-size: 1.125rem !important;
   line-height: 1.75rem !important;
+}
+
+.\!text-xs {
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
 }
 
 .font-bold {
