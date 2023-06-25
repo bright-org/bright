@@ -8,6 +8,7 @@ services:
     environment:
       DB_HOST: db
       BUCKET_NAME: bright_storage_local
+      GCS_BASE_URL: http://gcs:4443
     links:
       - db
       - gcs

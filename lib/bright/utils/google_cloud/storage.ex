@@ -72,12 +72,10 @@ defmodule Bright.Utils.GoogleCloud.Storage do
       "http://localhost:4443/<bucket_id>/phoenix.png"
   """
   def public_url(path) do
-    base_url =
-      Application.fetch_env!(:google_api_storage, :base_url)
-      # ローカル環境においては、base_urlがアプリケーションからみたfake gcsのURLになるため、クライアント端末からみた参照URLになるようにreplaceしている。
-      |> String.replace("//gcs:", "//localhost:")
+    public_base_url =
+      get_public_base_url() || Application.fetch_env!(:google_api_storage, :base_url)
 
-    Path.join([base_url, get_bucket_id!(), path])
+    Path.join([public_base_url, get_bucket_id!(), path])
   end
 
   defp file_path_to_content_type(file_path) do
@@ -110,5 +108,10 @@ defmodule Bright.Utils.GoogleCloud.Storage do
   defp get_bucket_id! do
     Application.fetch_env!(:bright, :google_api_storage)
     |> Keyword.fetch!(:bucket_id)
+  end
+
+  defp get_public_base_url do
+    Application.fetch_env!(:bright, :google_api_storage)
+    |> Keyword.get(:public_base_url)
   end
 end
