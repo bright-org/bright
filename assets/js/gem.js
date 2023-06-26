@@ -3,10 +3,7 @@ export const gemHooks = {
   gem: {
     mounted() {
       gem(this.el);
-    },
-    updated() {
-      gem(this.el);
-    },
+    }
   }
 };
 
