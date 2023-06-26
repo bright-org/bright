@@ -38,7 +38,8 @@ defmodule Bright.AccountsTest do
   describe "get_user!/1" do
     test "raises if id is invalid" do
       assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(-1)
+        Ecto.ULID.generate()
+        |> Accounts.get_user!()
       end
     end
 
