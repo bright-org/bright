@@ -1,13 +1,7 @@
 import { Chart } from 'chart.js/auto';
-export const gemHooks = {
-  gem: {
-    mounted() {
-      gem(this.el);
-    }
-  }
-};
 
-const gem = (element) => {
+
+export const gem = (element) => {
   const dataset = element.dataset;
   const labels = JSON.parse(dataset.labels);
   const data = JSON.parse(dataset.data);

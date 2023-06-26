@@ -5,10 +5,10 @@
 // import * as Hooks from "./hooks";
 // import * as Params from "./params";
 // import * as Uploaders from "./uploaders";
-import {gemHooks} from './gem.js';
+import {Hooks} from './hooks/index.js';
 
 (function () {
-  window.storybook = {Hooks: gemHooks};
+  window.storybook = {Hooks: Hooks};
 })();
 
 
