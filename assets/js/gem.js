@@ -55,7 +55,7 @@ const gem = (element) => {
         r: {
           min: 0,
           max: 100,
-          backgroundColor: '#F6FDFD',
+          backgroundColor: '#D4F9F7',
           grid: {
             display: false
           },
