@@ -8,7 +8,8 @@ defmodule BrightWeb.GemComponents do
   Renders a gem
 
   ## Examples
-      <.gem />
+      <.gem data="[90, 80, 75, 60]" id="gem-single-skill4" labels={["Elixir本体", "ライブラリ", "環境構築", "関連スキル"]} data2="[]"/>
+      <.gem data="[50, 50, 50, 80, 80, 80]" id="gem-single-skill6-2-3" labels={["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]} data2="[80, 80, 80, 50, 50, 50]"/>
   """
   attr :id, :string, required: true
   attr :data, :string, required: true
