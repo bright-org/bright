@@ -10,7 +10,7 @@ defmodule Storybook.GemComponents.Gem do
         attributes: %{
           data: "[90, 80, 75, 60]",
           data2: "[]",
-          labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル"]
+          labels: ["エンジニア", "マーケター", "デザイナー", "インフラ"]
         }
       },
       %Variation{
