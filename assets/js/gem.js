@@ -16,31 +16,6 @@ const gem = (element) => {
   var data = JSON.parse(element.dataset.data);
   var labels = JSON.parse(element.dataset.labels);
 
-  // // TODO 3の時のテスト
-  // var data = [90, 80, 75];
-  // var labels = ['Elixir本体', 'ライブラリ', '環境構築'];
-
-  // // TODO 4の時のテスト
-  // var data = [90, 80, 75, 60];
-  // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル'];
-
-  // // TODO 5の時のテスト
-  // var data = [90, 80, 75, 60, 90];
-  // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ'];
-
-  //TODO 6の時テスト
-  //var data = [90, 80, 75, 60, 90, 45];
-  //var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ', 'テスト'];
-
-  // //TODO 7の時テスト
-  // var data = [90, 80, 75, 60, 90, 45, 60];
-  // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ', 'テスト', 'テスト'];
-
-  // //TODO 8の時テスト
-  // var data = [90, 80, 75, 60, 90, 45, 60, 45];
-  // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ', 'テスト', 'テスト', 'テスト'];
-
-
   var color = getColorPattern(data.length);
 
   var chartJson = {
