@@ -15,22 +15,24 @@ export const gemHooks = {
 const gem = (element) => {
   var data = JSON.parse(element.dataset.data);
   var labels = JSON.parse(element.dataset.labels);
+  var data2 = undefined;
 
-  var color = getColorPattern(data.length);
+  var color = getColorPattern(data.length, ["#82FAE9", "#40DEC6", "#52CCB5"]);
+  var color2 = getColorPattern(data.length, ["#E4BDE955", "#C063CD55", "#9510B155"]);
+
+  const datasets = [];
+  datasets.push(createData(data));
+
+  if (element.dataset.data2.length != 0) {
+    data2 = JSON.parse(element.dataset.data2);
+    datasets.push(createData(data2));
+  }
 
   var chartJson = {
     type: 'radar',
     data: {
       labels: labels,
-      datasets: [{
-        label: '',
-        data: data,
-        borderColor: '#FFFFFF00',
-        backgroundColor: '#FFFFFF00',
-        borderWidth: 0,
-        pointRadius: 0,
-      },
-      ]
+      datasets: datasets
     },
     options: {
       animation: false,
@@ -87,6 +89,12 @@ const gem = (element) => {
 
     for (var i = 0; i < data.length; i++) {
       fillSurface(chart, data, i, color[i]);
+    }
+
+    if (data2 !== undefined) {
+      for (var i = 0; i < data2.length; i++) {
+        fillSurface(chart, data2, i, color2[i]);
+      }
     }
 
     for (var i = 1; i < 5; i++) {
@@ -181,8 +189,7 @@ const gem = (element) => {
 
   });
 
-  function getColorPattern(length) {
-    const colors = ["#82FAE9", "#40DEC6", "#52CCB5"];
+  function getColorPattern(length, colors) {
     const pattern = [];
     // lengthが3未満は描画できない前提
 
@@ -208,6 +215,17 @@ const gem = (element) => {
     }
     pattern.push(colors[1]);
     return pattern;
+  }
+
+  function createData(data) {
+    return {
+      label: '',
+      data: data,
+      borderColor: '#FFFFFF00',
+      backgroundColor: '#FFFFFF00',
+      borderWidth: 0,
+      pointRadius: 0,
+    }
   }
 };
 

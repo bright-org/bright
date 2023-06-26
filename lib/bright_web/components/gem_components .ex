@@ -12,6 +12,7 @@ defmodule BrightWeb.GemComponents do
   """
   attr :id, :string, required: true
   attr :data, :string, required: true
+  attr :data2, :string, required: true
   attr :labels, :any, required: true
 
   def gem(assigns) do
@@ -24,6 +25,7 @@ defmodule BrightWeb.GemComponents do
       phx-update="ignore"
       style="width:600px;height:400px"
       data-data={@data}
+      data-data2={@data2}
       data-labels={labels}
     >
       <canvas></canvas>
