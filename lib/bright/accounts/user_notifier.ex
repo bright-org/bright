@@ -1,4 +1,6 @@
 defmodule Bright.Accounts.UserNotifier do
+  @moduledoc false
+
   import Swoosh.Email
 
   alias Bright.Mailer

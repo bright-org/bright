@@ -1,4 +1,6 @@
 defmodule BrightWeb.UserAuth do
+  @moduledoc false
+
   use BrightWeb, :verified_routes
 
   import Plug.Conn
