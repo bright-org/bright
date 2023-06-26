@@ -55,7 +55,6 @@ defmodule Bright.MixProject do
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_machina, "~> 2.7", only: :test},
       {:faker, "~> 0.17", only: :test},
-      {:mock, "~> 0.3.0", only: :test},
       {:ecto_ulid_next, "~> 1.0"},
       {:phoenix_storybook, "~> 0.5.0"},
       {:google_api_storage, "~> 0.34"},

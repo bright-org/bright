@@ -52,6 +52,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # see: https://github.com/fsouza/fake-gcs-action/
+      - name: Setup fake gcs server
+        uses: fsouza/fake-gcs-action@v0.4.1
+        with:
+          version: "1.45.2"
+          backend: memory
+          data: test
+          public-host: "localhost:4443"
+          external-url: "http://localhost:4443"
+          scheme: http
+          debug: 1
+
       - name: Cache deps and _build
         uses: actions/cache@v3
         with:
@@ -64,7 +76,11 @@ jobs:
 
       - name: Dependencies install
         run: |
-          apt-get update -y && apt-get install -y build-essential inotify-tools git
+          apt-get update -y && apt-get install -y build-essential inotify-tools git curl
+
+      - name: Check gcs (temporary run)
+        run: |
+          curl http://localhost:4443/storage/v1/b
 
       - name: Install Dependencies
         run: |
