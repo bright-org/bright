@@ -18,7 +18,7 @@ use Phoenix.Component
     #TODO: <div id="gem" の警告対応をすること
     ~H"""
     <div id="gem" phx-hook="gem" phx-update="ignore" style="width:600px;height:400px" data-data={@data} data-labels={labels}>
-      <canvas id="mychart"></canvas>
+      <canvas></canvas>
     </div>
     """
   end

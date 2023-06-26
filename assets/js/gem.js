@@ -4,16 +4,15 @@ import { Chart } from 'chart.js/auto';
 export const gemHooks = {
   gem: {
     mounted() {
-      gem();
+      gem(this.el);
     },
     updated() {
-      gem();
+      gem(this.el);
     },
   }
 };
 
-const gem = () => {
-  let element = document.getElementById('gem');
+const gem = (element) => {
   var data = JSON.parse(element.dataset.data);
   var labels = JSON.parse(element.dataset.labels);
 
@@ -104,7 +103,7 @@ const gem = () => {
     plugins: [{ beforeDatasetsDraw: beforeDatasetsDraw }]
   };
 
-  var ctx = document.getElementById('mychart');
+  var ctx = document.querySelector('#' + element.id + ' canvas');
   var myChart = new Chart(ctx, chartJson);
 
   function beforeDatasetsDraw(chart) {
