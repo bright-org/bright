@@ -76,7 +76,7 @@ defmodule Storybook.GemComponents.Gem do
         id: :skill6_2_1,
         attributes: %{
           data: "[90, 80, 75, 60, 90, 45]",
-          data2: "[100, 90, 85, 70, 100, 55]",
+          data2: "[80, 70, 65, 50, 80, 100]",
           labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]
         }
       },
@@ -84,7 +84,7 @@ defmodule Storybook.GemComponents.Gem do
         id: :skill6_2_2,
         attributes: %{
           data: "[90, 80, 75, 60, 90, 45]",
-          data2: "[80, 70, 65, 50, 80, 35]",
+          data2: "[100, 90, 20, 70, 100, 100]",
           labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]
         }
       },

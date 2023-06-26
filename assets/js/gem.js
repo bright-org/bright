@@ -15,8 +15,8 @@ const gem = (element) => {
   const labels = JSON.parse(dataset.labels);
   const data = JSON.parse(dataset.data);
   let data2 = undefined;
-  const color = getColorPattern(data.length, ["#82FAE9", "#40DEC6", "#52CCB5"]);
-  const color2 = getColorPattern(data.length, ["#E4BDE955", "#C063CD55", "#9510B155"]);
+  const color = getColorPattern(data.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"]);
+  const color2 = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"]);
   const datasets = [];
   datasets.push(createData(data));
 
@@ -84,14 +84,14 @@ const gem = (element) => {
     const context = chart.ctx;
     const data = chart.data.datasets[0].data;
 
-    for (let i = 0; i < data.length; i++) {
-      fillSurface(chart, data, i, color[i]);
-    }
-
     if (data2 !== undefined) {
       for (var i = 0; i < data2.length; i++) {
         fillSurface(chart, data2, i, color2[i]);
       }
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      fillSurface(chart, data, i, color[i]);
     }
 
     for (let i = 1; i < 5; i++) {
