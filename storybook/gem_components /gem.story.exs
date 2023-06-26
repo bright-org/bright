@@ -1,7 +1,7 @@
 defmodule Storybook.GemComponents.Gem do
   use PhoenixStorybook.Story, :component
 
-  @spec function :: (any -> any)
+
   def function, do: &Elixir.BrightWeb.GemComponents.gem/1
 
   def variations do

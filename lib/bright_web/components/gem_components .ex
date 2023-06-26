@@ -16,8 +16,8 @@ defmodule BrightWeb.GemComponents do
   attr :labels, :any, required: true
 
   def gem(assigns) do
-    labels = assigns.labels |> Jason.encode!()
-    # TODO: <div id="gem" の警告対応をすること
+    assigns = assign(assigns, :labels, assigns.labels |> Jason.encode!())
+
     ~H"""
     <div
       id={@id}
@@ -26,7 +26,7 @@ defmodule BrightWeb.GemComponents do
       style="width:600px;height:400px"
       data-data={@data}
       data-data2={@data2}
-      data-labels={labels}
+      data-labels={@labels}
     >
       <canvas></canvas>
     </div>
