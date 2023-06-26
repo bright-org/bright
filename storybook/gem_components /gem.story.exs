@@ -9,7 +9,8 @@ defmodule Storybook.GemComponents.Gem do
       %Variation{
         id: :skillgem,
         attributes: %{
-          data: "[90, 80, 75, 60, 90, 45]"
+          data: "[90, 80, 75, 60, 90, 45]",
+          labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]
         },
       }
     ]

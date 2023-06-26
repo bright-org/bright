@@ -13,9 +13,9 @@ export const gemHooks = {
 };
 
 const gem = () => {
-  // TODO:データを受け渡せるようにする
   let element = document.getElementById('gem');
-  //var data = JSON.parse(element.dataset.data);
+  var data = JSON.parse(element.dataset.data);
+  var labels = JSON.parse(element.dataset.labels);
 
   // // TODO 3の時のテスト
   // var data = [90, 80, 75];
@@ -30,8 +30,8 @@ const gem = () => {
   // var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ'];
 
   //TODO 6の時テスト
-  var data = [90, 80, 75, 60, 90, 45];
-  var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ', 'テスト'];
+  //var data = [90, 80, 75, 60, 90, 45];
+  //var labels = ['Elixir本体', 'ライブラリ', '環境構築', '関連スキル', 'デバッグ', 'テスト'];
 
   // //TODO 7の時テスト
   // var data = [90, 80, 75, 60, 90, 45, 60];
@@ -43,7 +43,6 @@ const gem = () => {
 
 
   var color = getColorPattern(data.length);
-  console.log(color);
 
   var chartJson = {
     type: 'radar',
@@ -215,7 +214,7 @@ const gem = () => {
 
     // lengthが4の時は先頭から2色の交互
     if (length == 4) {
-      for (let i = 0; i < length; i++) {
+      for (var i = 0; i < length; i++) {
         pattern.push(colors[i % 2]);
       }
       return pattern;
@@ -223,14 +222,14 @@ const gem = () => {
 
     // lengthが3で割り切れる時
     if (length % 3 == 0) {
-      for (let i = 0; i < length; i++) {
+      for (var i = 0; i < length; i++) {
         pattern.push(colors[i % colors.length]);
       }
       return pattern;
     }
 
     // lengthが3で割り切れるない時は3色の繰り返しで、最後は先頭から2番目の色を代入
-    for (let i = 0; i < length - 1; i++) {
+    for (var i = 0; i < length - 1; i++) {
       pattern.push(colors[i % colors.length]);
     }
     pattern.push(colors[1]);
