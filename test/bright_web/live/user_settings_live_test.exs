@@ -3,13 +3,13 @@ defmodule BrightWeb.UserSettingsLiveTest do
 
   alias Bright.Accounts
   import Phoenix.LiveViewTest
-  import Bright.AccountsFixtures
+  import Bright.Factory
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do
       {:ok, _lv, html} =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(insert(:user))
         |> live(~p"/users/settings")
 
       assert html =~ "Change Email"
@@ -28,7 +28,10 @@ defmodule BrightWeb.UserSettingsLiveTest do
   describe "update email form" do
     setup %{conn: conn} do
       password = valid_user_password()
-      user = user_fixture(%{password: password})
+
+      {:ok, user} =
+        params_for(:user_before_registration, password: password) |> Accounts.register_user()
+
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
 
@@ -85,7 +88,10 @@ defmodule BrightWeb.UserSettingsLiveTest do
   describe "update password form" do
     setup %{conn: conn} do
       password = valid_user_password()
-      user = user_fixture(%{password: password})
+
+      {:ok, user} =
+        params_for(:user_before_registration, password: password) |> Accounts.register_user()
+
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
 
@@ -160,7 +166,7 @@ defmodule BrightWeb.UserSettingsLiveTest do
 
   describe "confirm email" do
     setup %{conn: conn} do
-      user = user_fixture()
+      user = insert(:user)
       email = unique_user_email()
 
       token =

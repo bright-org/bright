@@ -2,12 +2,12 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.AccountsFixtures
+  import Bright.Factory
 
   alias Bright.Accounts
 
   setup do
-    user = user_fixture()
+    user = insert(:user)
 
     token =
       extract_user_token(fn url ->

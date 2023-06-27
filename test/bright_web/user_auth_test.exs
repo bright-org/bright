@@ -4,7 +4,7 @@ defmodule BrightWeb.UserAuthTest do
   alias Phoenix.LiveView
   alias Bright.Accounts
   alias BrightWeb.UserAuth
-  import Bright.AccountsFixtures
+  import Bright.Factory
 
   @cookie_key "_bright_web_user"
 
@@ -14,7 +14,7 @@ defmodule BrightWeb.UserAuthTest do
       |> Map.replace!(:secret_key_base, BrightWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    %{user: insert(:user), conn: conn}
   end
 
   describe "log_in_user/2" do
