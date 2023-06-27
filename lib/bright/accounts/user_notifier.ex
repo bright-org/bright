@@ -1,5 +1,7 @@
 defmodule Bright.Accounts.UserNotifier do
-  @moduledoc false
+  @moduledoc """
+  Bright ユーザーに対するメール通知を扱うスキーマ
+  """
 
   import Swoosh.Email
 

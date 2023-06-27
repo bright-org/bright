@@ -1,5 +1,7 @@
 defmodule Bright.Accounts.User do
-  @moduledoc false
+  @moduledoc """
+  Bright ユーザーを扱うスキーマ
+  """
 
   use Ecto.Schema
   import Ecto.Changeset

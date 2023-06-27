@@ -1,5 +1,7 @@
 defmodule Bright.Accounts.UserToken do
-  @moduledoc false
+  @moduledoc """
+  Bright ユーザーのトークン管理を扱うスキーマ
+  """
 
   use Ecto.Schema
   import Ecto.Query
