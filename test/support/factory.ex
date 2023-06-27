@@ -8,4 +8,5 @@ defmodule Bright.Factory do
   # SkillPanels context
   use Bright.SkillPanelFactory
   use Bright.SkillClassFactory
+  use Bright.SkillUnitFactory
 end
