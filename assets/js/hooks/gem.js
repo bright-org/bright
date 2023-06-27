@@ -192,17 +192,12 @@ export const gem = (element) => {
   const ctx = document.querySelector('#' + element.id + ' canvas');
   const myChart = new Chart(ctx, chartJson);
 
-
-
-
-
   ctx.addEventListener('click', function (event) {
     //padding rightで拡張した部分がクリック判定できるようにする
 
     const rect = ctx.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
     length = myChart.data.labels.length;
 
     // リンクの判定例
@@ -218,8 +213,6 @@ export const gem = (element) => {
       let judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
       if (judge) { alert('アイコンクリック：' + myChart.data.labels[i]) }
     }
-
   });
-
 };
 
