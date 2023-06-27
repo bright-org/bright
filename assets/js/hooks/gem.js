@@ -59,6 +59,33 @@ const fillSurface = (chart, data, index, color) => {
   context.fill();
 }
 
+const drawGridline = (chart, value, length) => {
+  const context = chart.ctx;
+  const v0 = chart.scales.r.getPointPositionForValue(0, value);
+  context.beginPath();
+  context.moveTo(v0.x, v0.y);
+  context.strokeStyle = "#FFFFFF44";
+
+  for (let i = 1; i < length; i++) {
+    chart.scales.r.getPointPositionForValue(i, value);
+    let v1 = chart.scales.r.getPointPositionForValue(i, value);
+    context.lineTo(v1.x, v1.y);
+  }
+  context.lineTo(v0.x, v0.y);
+  context.stroke();
+}
+
+const drawUnderline = (chart, i) => {
+  const context = chart.ctx;
+  const label = chart.scales.r.getPointLabelPosition(i);
+  context.beginPath();
+  context.lineWidth = 1;
+  context.strokeStyle = '#0000ff';
+  context.moveTo(label.left, label.bottom);
+  context.lineTo(label.right, label.bottom);
+  context.stroke();
+}
+
 export const gem = (element) => {
   const dataset = element.dataset;
   const labels = JSON.parse(dataset.labels);
@@ -164,32 +191,6 @@ export const gem = (element) => {
   }
 
 
-  function drawGridline(chart, value, length) {
-    const context = chart.ctx;
-    const v0 = chart.scales.r.getPointPositionForValue(0, value);
-    context.beginPath();
-    context.moveTo(v0.x, v0.y);
-    context.strokeStyle = "#FFFFFF44";
-
-    for (let i = 1; i < length; i++) {
-      chart.scales.r.getPointPositionForValue(i, value);
-      let v1 = chart.scales.r.getPointPositionForValue(i, value);
-      context.lineTo(v1.x, v1.y);
-    }
-    context.lineTo(v0.x, v0.y);
-    context.stroke();
-  }
-
-  function drawUnderline(chart, i) {
-    const context = chart.ctx;
-    const label = chart.scales.r.getPointLabelPosition(i);
-    context.beginPath();
-    context.lineWidth = 1;
-    context.strokeStyle = '#0000ff';
-    context.moveTo(label.left, label.bottom);
-    context.lineTo(label.right, label.bottom);
-    context.stroke();
-  }
 
   ctx.addEventListener('click', function (event) {
     //padding rightで拡張した部分がクリック判定できるようにする
