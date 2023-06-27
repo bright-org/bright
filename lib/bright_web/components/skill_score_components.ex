@@ -18,6 +18,7 @@ defmodule BrightWeb.SkillScoreComponents do
   def skill_gem(assigns) do
     assigns = assign(assigns, :labels, assigns.labels |> Jason.encode!())
     assigns = assign(assigns, :data, assigns.data |> Jason.encode!())
+
     ~H"""
     <div
       id={@id}
