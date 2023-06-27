@@ -1,6 +1,34 @@
 import { Chart } from 'chart.js/auto';
 
 
+const getColorPattern = (length, colors) => {
+  const pattern = [];
+  // lengthが3未満は描画できない前提
+
+  // lengthが4の時は先頭から2色の交互
+  if (length == 4) {
+    for (let i = 0; i < length; i++) {
+      pattern.push(colors[i % 2]);
+    }
+    return pattern;
+  }
+
+  // lengthが3で割り切れる時
+  if (length % 3 == 0) {
+    for (let i = 0; i < length; i++) {
+      pattern.push(colors[i % colors.length]);
+    }
+    return pattern;
+  }
+
+  // lengthが3で割り切れるない時は3色の繰り返しで、最後は先頭から2番目の色を代入
+  for (let i = 0; i < length - 1; i++) {
+    pattern.push(colors[i % colors.length]);
+  }
+  pattern.push(colors[1]);
+  return pattern;
+}
+
 export const gem = (element) => {
   const dataset = element.dataset;
   const labels = JSON.parse(dataset.labels);
@@ -176,34 +204,6 @@ export const gem = (element) => {
     }
 
   });
-
-  function getColorPattern(length, colors) {
-    const pattern = [];
-    // lengthが3未満は描画できない前提
-
-    // lengthが4の時は先頭から2色の交互
-    if (length == 4) {
-      for (let i = 0; i < length; i++) {
-        pattern.push(colors[i % 2]);
-      }
-      return pattern;
-    }
-
-    // lengthが3で割り切れる時
-    if (length % 3 == 0) {
-      for (let i = 0; i < length; i++) {
-        pattern.push(colors[i % colors.length]);
-      }
-      return pattern;
-    }
-
-    // lengthが3で割り切れるない時は3色の繰り返しで、最後は先頭から2番目の色を代入
-    for (let i = 0; i < length - 1; i++) {
-      pattern.push(colors[i % colors.length]);
-    }
-    pattern.push(colors[1]);
-    return pattern;
-  }
 
   function createData(data) {
     return {
