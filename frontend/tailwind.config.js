@@ -6,7 +6,6 @@ module.exports = {
   theme: {
     colors: {
       base: "#333333",
-      transparent: "transparent",
       brightGreen: {
         50: "#DCF2F0",
         100: "#A9E0D7",
@@ -89,27 +88,19 @@ module.exports = {
       },
     },
     extend: {
-      background: (theme) => ({
-        bgGoogle: "url('./images/bg_google.png') no_repeat 10px center",
-        bgGithub: "#0D1117 url('./images/bgGithub.png') no_repeat 10px center",
-        bgFacebook:
-          "#1877F2 url('./images/bgFacebook.png') no_repeat 10px center",
-        bgTwitter:
-          "#1DA1F2 url('./images/bgTwitter.png') no_repeat 10px center",
-      }),
       backgroundImage: (theme) => ({
-        bgJem: "url('./images/bg_jem_title.png')",
+        bgGem: "url('./images/bg_gem_title.png')",
+        bgGoogle: "url('./images/bg_google.png')",
+        bgGithub: "url('./images/bg_github.png')",
+        bgFacebook: "url('./images/bg_facebook.png')",
+        bgTwitter: "url('./images/bg_twitter.png')",
+      }),
+      backgroundPosition: (theme) => ({
+        "left-2.5": "10px center",
       }),
       backgroundSize: (theme) => ({
-        bg_h_3: "auto 12px",
-        bg_h_35: "auto 14px",
-        bg_h_4: "auto 16px",
-        bg_h_5: "auto 20px",
-      }),
-      borderColor: (theme) => ({
-        border_github: "#0D111",
-        border_facebook: "#1877F2",
-        border_twitter: "#1DA1F2",
+        5: "auto 20px",
+        6: "auto 24px",
       }),
     },
   },
