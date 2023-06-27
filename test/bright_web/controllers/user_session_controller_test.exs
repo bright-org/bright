@@ -1,10 +1,10 @@
 defmodule BrightWeb.UserSessionControllerTest do
   use BrightWeb.ConnCase, async: true
 
-  import Bright.AccountsFixtures
+  import Bright.Factory
 
   setup do
-    %{user: user_fixture()}
+    %{user: insert(:user)}
   end
 
   describe "POST /users/log_in" do

@@ -2,13 +2,13 @@ defmodule BrightWeb.UserConfirmationInstructionsLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.AccountsFixtures
+  import Bright.Factory
 
   alias Bright.Accounts
   alias Bright.Repo
 
   setup do
-    %{user: user_fixture()}
+    %{user: insert(:user)}
   end
 
   describe "Resend confirmation" do

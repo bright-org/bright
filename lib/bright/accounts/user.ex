@@ -10,6 +10,7 @@ defmodule Bright.Accounts.User do
   @foreign_key_type Ecto.ULID
 
   schema "users" do
+    field :name, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
