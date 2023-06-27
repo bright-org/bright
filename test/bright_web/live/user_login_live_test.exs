@@ -29,8 +29,7 @@ defmodule BrightWeb.UserLoginLiveTest do
     test "redirects if user login with valid credentials", %{conn: conn} do
       password = "123456789abcd"
 
-      {:ok, user} =
-        params_for(:user_before_registration, password: password) |> Accounts.register_user()
+      {:ok, user} = params_for(:user_before_registration, password: password) |> register_user()
 
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 
