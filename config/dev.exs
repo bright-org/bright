@@ -28,7 +28,8 @@ config :bright, BrightWeb.Endpoint,
   secret_key_base: "NscRG+nu4wU6WCH+1dowaRxOfXxlk0W2K36n58kV8bo5e3d/wrsrs/1vqQ+Gj9Rg",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
+    storybook_tailwind: {Tailwind, :install_and_run, [:storybook, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -60,7 +61,8 @@ config :bright, BrightWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/bright_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/bright_web/(controllers|live|components)/.*(ex|heex)$",
+      ~r"storybook/.*(exs)$"
     ]
   ]
 
@@ -79,3 +81,11 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# Google Cloud Storage (fake server)
+config :goth, disabled: true
+config :google_api_storage, base_url: System.get_env("GCS_BASE_URL", "http://localhost:4443")
+
+config :bright, :google_api_storage,
+  bucket_id: System.get_env("BUCKET_NAME", "bright_storage_local"),
+  public_base_url: System.get_env("GCS_PUBLIC_BASE_URL", "http://localhost:4443")
