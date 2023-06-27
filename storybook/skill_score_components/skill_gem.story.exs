@@ -1,7 +1,7 @@
-defmodule Storybook.GemComponents.Gem do
+defmodule Storybook.SkillScoreComponents.SkillGem do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &Elixir.BrightWeb.GemComponents.gem/1
+  def function, do: &Elixir.BrightWeb.SkillScoreComponents.skill_gem/1
 
   def variations do
     [
