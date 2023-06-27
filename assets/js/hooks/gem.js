@@ -86,13 +86,49 @@ const drawUnderline = (chart, i) => {
   context.stroke();
 }
 
+const beforeDatasetsDraw = (chart) => {
+  const context = chart.ctx;
+  const data = chart.data.datasets[0].data;
+  const data2 = chart.data.datasets[1].data;
+  const color = getColorPattern(data.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"]);
+  const color2 = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"]);
+
+  if (data2 !== undefined) {
+    for (var i = 0; i < data2.length; i++) {
+      fillSurface(chart, data2, i, color2[i]);
+    }
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    fillSurface(chart, data, i, color[i]);
+  }
+
+  for (let i = 1; i < 5; i++) {
+    drawGridline(chart, 20 * i, data.length);
+  }
+
+  const img = new Image();
+  img.src = "/images/icon_001.png";
+
+  ///padding rightで拡張しないと、一番右にに表示するアイコンが削れる
+  img.onload = function () {
+    for (let i = 0; i < data.length; i++) {
+      let label = chart.scales.r.getPointLabelPosition(i);
+      context.drawImage(img, label.right + 2, label.top - 5, 20, 20);
+    }
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    drawUnderline(chart, i)
+  }
+}
+
 export const gem = (element) => {
   const dataset = element.dataset;
   const labels = JSON.parse(dataset.labels);
   const data = JSON.parse(dataset.data);
   let data2 = undefined;
-  const color = getColorPattern(data.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"]);
-  const color2 = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"]);
+
   const datasets = [];
   datasets.push(createData(data));
 
@@ -156,39 +192,7 @@ export const gem = (element) => {
   const ctx = document.querySelector('#' + element.id + ' canvas');
   const myChart = new Chart(ctx, chartJson);
 
-  function beforeDatasetsDraw(chart) {
-    const context = chart.ctx;
-    const data = chart.data.datasets[0].data;
 
-    if (data2 !== undefined) {
-      for (var i = 0; i < data2.length; i++) {
-        fillSurface(chart, data2, i, color2[i]);
-      }
-    }
-
-    for (let i = 0; i < data.length; i++) {
-      fillSurface(chart, data, i, color[i]);
-    }
-
-    for (let i = 1; i < 5; i++) {
-      drawGridline(chart, 20 * i, data.length);
-    }
-
-    const img = new Image();
-    img.src = "/images/icon_001.png";
-
-    ///padding rightで拡張しないと、一番右にに表示するアイコンが削れる
-    img.onload = function () {
-      for (let i = 0; i < data.length; i++) {
-        let label = chart.scales.r.getPointLabelPosition(i);
-        context.drawImage(img, label.right + 2, label.top - 5, 20, 20);
-      }
-    }
-
-    for (let i = 0; i < data.length; i++) {
-      drawUnderline(chart, i)
-    }
-  }
 
 
 
