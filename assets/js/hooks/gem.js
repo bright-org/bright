@@ -39,6 +39,26 @@ const createData = (data) => {
   }
 }
 
+const fillSurface = (chart, data, index, color) => {
+  const context = chart.ctx;
+
+  const startValue = data[(index % data.length)];
+  const endValue = data[((index + 1) % data.length)];
+  const endIndex = ((index + 1) % data.length);
+
+  const v0 = chart.scales.r.getPointPositionForValue(0, 0);
+  const v1 = chart.scales.r.getPointPositionForValue(index, startValue);
+  const v2 = chart.scales.r.getPointPositionForValue(endIndex, endValue);
+  context.beginPath();
+  context.strokeStyle = color;
+  context.moveTo(v0.x, v0.y);
+  context.lineTo(v1.x, v1.y);
+  context.lineTo(v2.x, v2.y);
+  context.lineTo(v0.x, v0.y);
+  context.fillStyle = color;
+  context.fill();
+}
+
 export const gem = (element) => {
   const dataset = element.dataset;
   const labels = JSON.parse(dataset.labels);
@@ -143,25 +163,6 @@ export const gem = (element) => {
     }
   }
 
-  function fillSurface(chart, data, index, color) {
-    const context = chart.ctx;
-
-    const startValue = data[(index % data.length)];
-    const endValue = data[((index + 1) % data.length)];
-    const endIndex = ((index + 1) % data.length);
-
-    const v0 = chart.scales.r.getPointPositionForValue(0, 0);
-    const v1 = chart.scales.r.getPointPositionForValue(index, startValue);
-    const v2 = chart.scales.r.getPointPositionForValue(endIndex, endValue);
-    context.beginPath();
-    context.strokeStyle = color;
-    context.moveTo(v0.x, v0.y);
-    context.lineTo(v1.x, v1.y);
-    context.lineTo(v2.x, v2.y);
-    context.lineTo(v0.x, v0.y);
-    context.fillStyle = color;
-    context.fill();
-  }
 
   function drawGridline(chart, value, length) {
     const context = chart.ctx;
