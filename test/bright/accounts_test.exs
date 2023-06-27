@@ -87,7 +87,7 @@ defmodule Bright.AccountsTest do
 
     test "registers users with a hashed password" do
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(params_for(:user_with_password, email: email))
+      {:ok, user} = Accounts.register_user(params_for(:user_before_registration, email: email))
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -108,7 +108,7 @@ defmodule Bright.AccountsTest do
       changeset =
         Accounts.change_user_registration(
           %User{},
-          params_for(:user_with_password, email: email, password: password)
+          params_for(:user_before_registration, email: email, password: password)
         )
 
       assert changeset.valid?
