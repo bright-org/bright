@@ -89,13 +89,12 @@ const drawUnderline = (chart, i) => {
 const beforeDatasetsDraw = (chart) => {
   const context = chart.ctx;
   const data = chart.data.datasets[0].data;
-  const data2 = chart.data.datasets[1].data;
   const color = getColorPattern(data.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"]);
   const color2 = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"]);
 
-  if (data2 !== undefined) {
-    for (var i = 0; i < data2.length; i++) {
-      fillSurface(chart, data2, i, color2[i]);
+  if (chart.data.datasets[1] !== undefined) {
+    for (var i = 0; i < chart.data.datasets[1].data.length; i++) {
+      fillSurface(chart, chart.data.datasets[1].data, i, color2[i]);
     }
   }
 
@@ -181,14 +180,12 @@ export const skillGem = (element) => {
   const dataset = element.dataset;
   const labels = JSON.parse(dataset.labels);
   const data = JSON.parse(dataset.data);
-  let data2 = undefined;
 
   const datasets = [];
-  datasets.push(createData(data));
+  datasets.push(createData(data[0]));
 
-  if (dataset.data2.length != 0) {
-    data2 = JSON.parse(dataset.data2);
-    datasets.push(createData(data2));
+  if (data[1] !== undefined) {
+    datasets.push(createData(data[1]));
   }
 
   const ctx = document.querySelector('#' + element.id + ' canvas');
