@@ -7,6 +7,7 @@ defmodule Bright.UserFactory do
     quote do
       def user_factory do
         %Bright.Accounts.User{
+          name: sequence(:name, &"user_name_#{&1}"),
           email: sequence(:email, &"user#{&1}@example.com"),
           hashed_password: Bcrypt.hash_pwd_salt(valid_user_password())
         }

@@ -43,7 +43,10 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       email = unique_user_email()
 
       form =
-        form(lv, "#registration_form", user: params_for(:user_before_registration, email: email))
+        form(lv, "#registration_form",
+          user:
+            params_for(:user_before_registration, email: email) |> Map.take([:email, :password])
+        )
 
       render_submit(form)
       conn = follow_trigger_action(form, conn)
