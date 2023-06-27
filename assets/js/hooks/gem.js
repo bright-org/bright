@@ -1,6 +1,5 @@
 import { Chart } from 'chart.js/auto';
 
-
 const getColorPattern = (length, colors) => {
   const pattern = [];
   // lengthが3未満は描画できない前提
@@ -27,6 +26,17 @@ const getColorPattern = (length, colors) => {
   }
   pattern.push(colors[1]);
   return pattern;
+}
+
+const createData = (data) => {
+  return {
+    label: '',
+    data: data,
+    borderColor: '#FFFFFF00',
+    backgroundColor: '#FFFFFF00',
+    borderWidth: 0,
+    pointRadius: 0,
+  }
 }
 
 export const gem = (element) => {
@@ -205,15 +215,5 @@ export const gem = (element) => {
 
   });
 
-  function createData(data) {
-    return {
-      label: '',
-      data: data,
-      borderColor: '#FFFFFF00',
-      backgroundColor: '#FFFFFF00',
-      borderWidth: 0,
-      pointRadius: 0,
-    }
-  }
 };
 
