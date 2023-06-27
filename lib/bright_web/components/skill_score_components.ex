@@ -12,12 +12,14 @@ defmodule BrightWeb.SkillScoreComponents do
       <.skill_gem data="[50, 50, 50, 80, 80, 80]" id="gem-single-skill6-2-3" labels={["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]} data2="[80, 80, 80, 50, 50, 50]"/>
   """
   attr :id, :string, required: true
-  attr :data, :string, required: true
-  attr :data2, :string, required: true
+  attr :data, :any, required: true
+  attr :data2, :any, required: true
   attr :labels, :any, required: true
 
   def skill_gem(assigns) do
     assigns = assign(assigns, :labels, assigns.labels |> Jason.encode!())
+    assigns = assign(assigns, :data, assigns.data |> Jason.encode!())
+    assigns = assign(assigns, :data2, assigns.data2 |> Jason.encode!())
 
     ~H"""
     <div
