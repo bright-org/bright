@@ -6,7 +6,7 @@ defmodule BrightWeb.UserAuthTest do
   alias BrightWeb.UserAuth
   import Bright.AccountsFixtures
 
-  @remember_me_cookie "_bright_web_user_remember_me"
+  @cookie_key "_bright_web_user"
 
   setup %{conn: conn} do
     conn =
@@ -17,7 +17,7 @@ defmodule BrightWeb.UserAuthTest do
     %{user: user_fixture(), conn: conn}
   end
 
-  describe "log_in_user/3" do
+  describe "log_in_user/2" do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
@@ -36,11 +36,11 @@ defmodule BrightWeb.UserAuthTest do
       assert redirected_to(conn) == "/hello"
     end
 
-    test "writes a cookie if remember_me is configured", %{conn: conn, user: user} do
-      conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
-      assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
+    test "writes a cookie", %{conn: conn, user: user} do
+      conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user)
+      assert get_session(conn, :user_token) == conn.cookies[@cookie_key]
 
-      assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
+      assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@cookie_key]
       assert signed_token != get_session(conn, :user_token)
       assert max_age == 5_184_000
     end
@@ -53,13 +53,13 @@ defmodule BrightWeb.UserAuthTest do
       conn =
         conn
         |> put_session(:user_token, user_token)
-        |> put_req_cookie(@remember_me_cookie, user_token)
+        |> put_req_cookie(@cookie_key, user_token)
         |> fetch_cookies()
         |> UserAuth.log_out_user()
 
       refute get_session(conn, :user_token)
-      refute conn.cookies[@remember_me_cookie]
-      assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
+      refute conn.cookies[@cookie_key]
+      assert %{max_age: 0} = conn.resp_cookies[@cookie_key]
       assert redirected_to(conn) == ~p"/"
       refute Accounts.get_user_by_session_token(user_token)
     end
@@ -78,7 +78,7 @@ defmodule BrightWeb.UserAuthTest do
     test "works even if user is already logged out", %{conn: conn} do
       conn = conn |> fetch_cookies() |> UserAuth.log_out_user()
       refute get_session(conn, :user_token)
-      assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
+      assert %{max_age: 0} = conn.resp_cookies[@cookie_key]
       assert redirected_to(conn) == ~p"/"
     end
   end
@@ -91,15 +91,14 @@ defmodule BrightWeb.UserAuthTest do
     end
 
     test "authenticates user from cookies", %{conn: conn, user: user} do
-      logged_in_conn =
-        conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
+      logged_in_conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user)
 
-      user_token = logged_in_conn.cookies[@remember_me_cookie]
-      %{value: signed_token} = logged_in_conn.resp_cookies[@remember_me_cookie]
+      user_token = logged_in_conn.cookies[@cookie_key]
+      %{value: signed_token} = logged_in_conn.resp_cookies[@cookie_key]
 
       conn =
         conn
-        |> put_req_cookie(@remember_me_cookie, signed_token)
+        |> put_req_cookie(@cookie_key, signed_token)
         |> UserAuth.fetch_current_user([])
 
       assert conn.assigns.current_user.id == user.id
