@@ -123,21 +123,8 @@ const beforeDatasetsDraw = (chart) => {
   }
 }
 
-export const gem = (element) => {
-  const dataset = element.dataset;
-  const labels = JSON.parse(dataset.labels);
-  const data = JSON.parse(dataset.data);
-  let data2 = undefined;
-
-  const datasets = [];
-  datasets.push(createData(data));
-
-  if (dataset.data2.length != 0) {
-    data2 = JSON.parse(dataset.data2);
-    datasets.push(createData(data2));
-  }
-
-  const chartJson = {
+const createChartJson = (labels, datasets) => {
+  return ({
     type: 'radar',
     data: {
       labels: labels,
@@ -187,10 +174,25 @@ export const gem = (element) => {
       },
     },
     plugins: [{ beforeDatasetsDraw: beforeDatasetsDraw }]
-  };
+  })
+}
+
+export const gem = (element) => {
+  const dataset = element.dataset;
+  const labels = JSON.parse(dataset.labels);
+  const data = JSON.parse(dataset.data);
+  let data2 = undefined;
+
+  const datasets = [];
+  datasets.push(createData(data));
+
+  if (dataset.data2.length != 0) {
+    data2 = JSON.parse(dataset.data2);
+    datasets.push(createData(data2));
+  }
 
   const ctx = document.querySelector('#' + element.id + ' canvas');
-  const myChart = new Chart(ctx, chartJson);
+  const myChart = new Chart(ctx, createChartJson(labels, datasets));
 
   ctx.addEventListener('click', function (event) {
     //padding rightで拡張した部分がクリック判定できるようにする
