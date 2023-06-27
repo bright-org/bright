@@ -177,7 +177,7 @@ const createChartJson = (labels, datasets) => {
   })
 }
 
-export const gem = (element) => {
+export const skillGem = (element) => {
   const dataset = element.dataset;
   const labels = JSON.parse(dataset.labels);
   const data = JSON.parse(dataset.data);
