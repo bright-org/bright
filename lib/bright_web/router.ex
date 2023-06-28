@@ -25,7 +25,6 @@ defmodule BrightWeb.Router do
 
   scope "/", BrightWeb do
     pipe_through :browser
-    live "/mypages", MypageLive.Index, :index
 
     get "/", PageController, :home
   end
@@ -96,6 +95,7 @@ defmodule BrightWeb.Router do
       on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/mypages", MypageLive.Index, :index
     end
   end
 
