@@ -17,9 +17,8 @@ defmodule BrightWeb.Router do
     # credo:disable-for-next-line
     # TODO: Basic認証みたいな軽いアクセス制限を入れる
     # See https://hexdocs.pm/plug/Plug.BasicAuth.html
-    IO.inspect("admin p")
     plug :put_root_layout, html: {BrightWeb.AdminLayouts, :root}
-    #plug :put_layout, html: {BrightWeb.AdminLayouts, :app}
+    # plug :put_layout, html: {BrightWeb.AdminLayouts, :app}
   end
 
   pipeline :api do
