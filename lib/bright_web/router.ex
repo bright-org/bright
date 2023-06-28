@@ -28,27 +28,12 @@ defmodule BrightWeb.Router do
 
     get "/", PageController, :home
 
-    live "/bright_users", BrightUserLive.Index, :index
-    live "/bright_users/new", BrightUserLive.Index, :new
-    live "/bright_users/:id/edit", BrightUserLive.Index, :edit
-
-    live "/bright_users/:id", BrightUserLive.Show, :show
-    live "/bright_users/:id/show/edit", BrightUserLive.Show, :edit
-
     live "/teams", TeamLive.Index, :index
     live "/teams/new", TeamLive.Index, :new
     live "/teams/:id/edit", TeamLive.Index, :edit
 
     live "/teams/:id", TeamLive.Show, :show
     live "/teams/:id/show/edit", TeamLive.Show, :edit
-
-    live "/user_joined_teams", UserJoinedTeamLive.Index, :index
-    live "/user_joined_teams/new", UserJoinedTeamLive.Index, :new
-    live "/user_joined_teams/:id/edit", UserJoinedTeamLive.Index, :edit
-
-    live "/user_joined_teams/:id", UserJoinedTeamLive.Show, :show
-    live "/user_joined_teams/:id/show/edit", UserJoinedTeamLive.Show, :edit
-
 
   end
 

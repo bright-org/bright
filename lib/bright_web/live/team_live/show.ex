@@ -12,7 +12,8 @@ defmodule BrightWeb.TeamLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     team = Teams.get_team!(id)
-    bright_users = team.
+    # ユーザーをハンドル名に変換
+    # bright_users = team.
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))

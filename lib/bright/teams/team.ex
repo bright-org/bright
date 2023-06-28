@@ -2,13 +2,14 @@ defmodule Bright.Teams.Team do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
   schema "teams" do
-    field :team_name, :string
+    field :name, :string
     field :enable_hr_functions, :boolean, default: false
-    #field :auther_bright_user_id, :integer
-    belongs_to  :auther_bright_user, Bright.Users.BrightUser, references: :id
 
-    many_to_many :brigit_users, Bright.Users.BrightUser , join_through: Bright.Teams.UserJoinedTeam
+    # has_many :users, Bright.Accounts.User , join_through: Bright.Teams.UserJoinedTeam
+    has_many :member_users, Bright.Teams.TeamMemberUsers
 
     timestamps()
   end
@@ -16,7 +17,7 @@ defmodule Bright.Teams.Team do
   @doc false
   def changeset(team, attrs) do
     team
-    |> cast(attrs, [:team_name, :enable_hr_functions, :auther_bright_user_id])
-    |> validate_required([:team_name, :enable_hr_functions, :auther_bright_user_id])
+    |> cast(attrs, [:name, :enable_hr_functions])
+    |> validate_required([:name, :enable_hr_functions])
   end
 end

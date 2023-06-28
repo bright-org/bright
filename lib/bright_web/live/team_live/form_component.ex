@@ -2,14 +2,15 @@ defmodule BrightWeb.TeamLive.FormComponent do
   use BrightWeb, :live_component
 
   alias Bright.Teams
+  alias Bright.Users.BrightUser
 
   @impl true
   def render(assigns) do
+    IO.inspect("################ FormComponent render assigns")
+    IO.inspect(assigns)
     ~H"""
     <div>
       <.header>
-        <%= @title %>
-        <:subtitle>Use this form to manage team records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -19,11 +20,15 @@ defmodule BrightWeb.TeamLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:team_name]} type="text" label="Team name" />
-        <.input field={@form[:enable_hr_functions]} type="checkbox" label="Enable hr functions" />
-        <.input field={@form[:auther_bright_user_id]} type="number" label="Auther bright user" />
+        <.label>チーム名</.label>
+        <.input field={@form[:team_name]} type="text"/>
+        <.label>メンバー</.label>
+
+        <.label>サブチーム</.label>
+        # TODO
+
         <:actions>
-          <.button phx-disable-with="Saving...">Save Team</.button>
+          <.button phx-disable-with="Saving...">チームを作成し、上記メンバーに招待を送る</.button>
         </:actions>
       </.simple_form>
     </div>
@@ -89,4 +94,5 @@ defmodule BrightWeb.TeamLive.FormComponent do
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
 end

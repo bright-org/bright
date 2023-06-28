@@ -120,4 +120,64 @@ defmodule Bright.TeamsTest do
       assert %Ecto.Changeset{} = Teams.change_user_joined_team(user_joined_team)
     end
   end
+
+  describe "team_member_users" do
+    alias Bright.Teams.TeamMemberUsers
+
+    import Bright.TeamsFixtures
+
+    @invalid_attrs %{is_admin: nil, is_primary: nil, team_id: nil, user_id: nil}
+
+    test "list_team_member_users/0 returns all team_member_users" do
+      team_member_users = team_member_users_fixture()
+      assert Teams.list_team_member_users() == [team_member_users]
+    end
+
+    test "get_team_member_users!/1 returns the team_member_users with given id" do
+      team_member_users = team_member_users_fixture()
+      assert Teams.get_team_member_users!(team_member_users.id) == team_member_users
+    end
+
+    test "create_team_member_users/1 with valid data creates a team_member_users" do
+      valid_attrs = %{is_admin: true, is_primary: true, team_id: "7488a646-e31f-11e4-aace-600308960662", user_id: "7488a646-e31f-11e4-aace-600308960662"}
+
+      assert {:ok, %TeamMemberUsers{} = team_member_users} = Teams.create_team_member_users(valid_attrs)
+      assert team_member_users.is_admin == true
+      assert team_member_users.is_primary == true
+      assert team_member_users.team_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert team_member_users.user_id == "7488a646-e31f-11e4-aace-600308960662"
+    end
+
+    test "create_team_member_users/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Teams.create_team_member_users(@invalid_attrs)
+    end
+
+    test "update_team_member_users/2 with valid data updates the team_member_users" do
+      team_member_users = team_member_users_fixture()
+      update_attrs = %{is_admin: false, is_primary: false, team_id: "7488a646-e31f-11e4-aace-600308960668", user_id: "7488a646-e31f-11e4-aace-600308960668"}
+
+      assert {:ok, %TeamMemberUsers{} = team_member_users} = Teams.update_team_member_users(team_member_users, update_attrs)
+      assert team_member_users.is_admin == false
+      assert team_member_users.is_primary == false
+      assert team_member_users.team_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert team_member_users.user_id == "7488a646-e31f-11e4-aace-600308960668"
+    end
+
+    test "update_team_member_users/2 with invalid data returns error changeset" do
+      team_member_users = team_member_users_fixture()
+      assert {:error, %Ecto.Changeset{}} = Teams.update_team_member_users(team_member_users, @invalid_attrs)
+      assert team_member_users == Teams.get_team_member_users!(team_member_users.id)
+    end
+
+    test "delete_team_member_users/1 deletes the team_member_users" do
+      team_member_users = team_member_users_fixture()
+      assert {:ok, %TeamMemberUsers{}} = Teams.delete_team_member_users(team_member_users)
+      assert_raise Ecto.NoResultsError, fn -> Teams.get_team_member_users!(team_member_users.id) end
+    end
+
+    test "change_team_member_users/1 returns a team_member_users changeset" do
+      team_member_users = team_member_users_fixture()
+      assert %Ecto.Changeset{} = Teams.change_team_member_users(team_member_users)
+    end
+  end
 end

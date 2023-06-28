@@ -36,4 +36,21 @@ defmodule Bright.TeamsFixtures do
 
     user_joined_team
   end
+
+  @doc """
+  Generate a team_member_users.
+  """
+  def team_member_users_fixture(attrs \\ %{}) do
+    {:ok, team_member_users} =
+      attrs
+      |> Enum.into(%{
+        is_admin: true,
+        is_primary: true,
+        team_id: "7488a646-e31f-11e4-aace-600308960662",
+        user_id: "7488a646-e31f-11e4-aace-600308960662"
+      })
+      |> Bright.Teams.create_team_member_users()
+
+    team_member_users
+  end
 end

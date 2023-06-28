@@ -1,6 +1,6 @@
 defmodule Bright.Teams do
   @moduledoc """
-  The Teams context.
+  チームを操作するモジュール
   """
 
   import Ecto.Query, warn: false
@@ -36,12 +36,12 @@ defmodule Bright.Teams do
 
   """
   def get_team!(id) do
-
     Team
     |> Repo.get!(id)
-    |> Repo.preload(:auther_bright_user)
-    |> Repo.preload(:brigit_users)
+  end
 
+  def list_joined_teams_by_user_id(user_id) do
+    Repo.get_by(Team, user_id: user_id)
   end
 
   @doc """
@@ -60,6 +60,15 @@ defmodule Bright.Teams do
     %Team{}
     |> Team.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+      ユーザーリストに所属しているチーム数を付与
+  """
+  def put_team_count(users) do
+    # TODO　対象のユーザーが所属するチームの一覧の数を取得する
+    users
+    |> Enum.map(fn x -> Map.put(x, :team_count, 0) end)
   end
 
   @doc """
@@ -109,99 +118,156 @@ defmodule Bright.Teams do
     Team.changeset(team, attrs)
   end
 
-  alias Bright.Teams.UserJoinedTeam
+  alias Bright.Teams.TeamMemberUsers
 
   @doc """
-  Returns the list of user_joined_teams.
+  Returns the list of team_member_users.
 
   ## Examples
 
-      iex> list_user_joined_teams()
-      [%UserJoinedTeam{}, ...]
+      iex> list_team_member_users()
+      [%TeamMemberUsers{}, ...]
 
   """
-  def list_user_joined_teams do
-    Repo.all(UserJoinedTeam)
+  def list_team_member_users do
+    Repo.all(TeamMemberUsers)
   end
 
   @doc """
-  Gets a single user_joined_team.
+  Gets a single team_member_users.
 
-  Raises `Ecto.NoResultsError` if the User joined team does not exist.
+  Raises `Ecto.NoResultsError` if the Team member users does not exist.
 
   ## Examples
 
-      iex> get_user_joined_team!(123)
-      %UserJoinedTeam{}
+      iex> get_team_member_users!(123)
+      %TeamMemberUsers{}
 
-      iex> get_user_joined_team!(456)
+      iex> get_team_member_users!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_user_joined_team!(id), do: Repo.get!(UserJoinedTeam, id)
+  def get_team_member_users!(id), do: Repo.get!(TeamMemberUsers, id)
 
   @doc """
-  Creates a user_joined_team.
+  Creates a team_member_users.
 
   ## Examples
 
-      iex> create_user_joined_team(%{field: value})
-      {:ok, %UserJoinedTeam{}}
+      iex> create_team_member_users(%{field: value})
+      {:ok, %TeamMemberUsers{}}
 
-      iex> create_user_joined_team(%{field: bad_value})
+      iex> create_team_member_users(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user_joined_team(attrs \\ %{}) do
-    %UserJoinedTeam{}
-    |> UserJoinedTeam.changeset(attrs)
+  def create_team_member_users(attrs \\ %{}) do
+    %TeamMemberUsers{}
+    |> TeamMemberUsers.changeset(attrs)
     |> Repo.insert()
   end
 
+  def craete_team_member_users(attrs) do
+    attrs
+    |> Enum.each(fn x ->
+      create_team_member_users(x)
+    end)
+  end
+
   @doc """
-  Updates a user_joined_team.
+  Updates a team_member_users.
 
   ## Examples
 
-      iex> update_user_joined_team(user_joined_team, %{field: new_value})
-      {:ok, %UserJoinedTeam{}}
+      iex> update_team_member_users(team_member_users, %{field: new_value})
+      {:ok, %TeamMemberUsers{}}
 
-      iex> update_user_joined_team(user_joined_team, %{field: bad_value})
+      iex> update_team_member_users(team_member_users, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user_joined_team(%UserJoinedTeam{} = user_joined_team, attrs) do
-    user_joined_team
-    |> UserJoinedTeam.changeset(attrs)
+  def update_team_member_users(%TeamMemberUsers{} = team_member_users, attrs) do
+    team_member_users
+    |> TeamMemberUsers.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a user_joined_team.
+  Deletes a team_member_users.
 
   ## Examples
 
-      iex> delete_user_joined_team(user_joined_team)
-      {:ok, %UserJoinedTeam{}}
+      iex> delete_team_member_users(team_member_users)
+      {:ok, %TeamMemberUsers{}}
 
-      iex> delete_user_joined_team(user_joined_team)
+      iex> delete_team_member_users(team_member_users)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_user_joined_team(%UserJoinedTeam{} = user_joined_team) do
-    Repo.delete(user_joined_team)
+  def delete_team_member_users(%TeamMemberUsers{} = team_member_users) do
+    Repo.delete(team_member_users)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user_joined_team changes.
+  Returns an `%Ecto.Changeset{}` for tracking team_member_users changes.
 
   ## Examples
 
-      iex> change_user_joined_team(user_joined_team)
-      %Ecto.Changeset{data: %UserJoinedTeam{}}
+      iex> change_team_member_users(team_member_users)
+      %Ecto.Changeset{data: %TeamMemberUsers{}}
 
   """
-  def change_user_joined_team(%UserJoinedTeam{} = user_joined_team, attrs \\ %{}) do
-    UserJoinedTeam.changeset(user_joined_team, attrs)
+  def change_team_member_users(%TeamMemberUsers{} = team_member_users, attrs \\ %{}) do
+    TeamMemberUsers.changeset(team_member_users, attrs)
+  end
+
+  @doc """
+      チームおよびメンバーの登録
+  """
+  def create_team_multi(name, admin_user, member_users) do
+    # TODO 各ユーザーのチーム数をチェックして、最初のチームの場合はプライマリチームに設定する。
+    # TODO 作成者が人事チームの作成権限を持っている場合人事チームとして作成する。（要件再確認）
+
+    team_attr = %{
+      name: name,
+      enable_hr_functions: false
+    }
+
+    # 作成者本人が自動的に管理者となる
+    admin_attr = %{
+      user_id: admin_user.id,
+      is_admin: true,
+      # TODO プライマリチーム判定をユーザー単位で実行
+      is_primary: true
+    }
+
+    member_attr =
+      member_users
+      |> Enum.map(fn x ->
+        %{
+          user_id: x.id,
+          is_admin: false,
+          # TODO プライマリチーム判定をユーザー単位で実行
+          is_primary: true
+        }
+      end)
+
+    team_changeset =
+      %Team{}
+      |> Team.changeset(team_attr)
+
+    team_member_user_changesets =
+      [admin_attr | member_attr]
+      |> Enum.map(fn attrs ->
+        change_team_member_users(%TeamMemberUsers{}, attrs)
+      end)
+
+    team_and_members_changeset =
+      team_changeset
+      |> Ecto.Changeset.put_assoc(:member_users, team_member_user_changesets)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:team, team_and_members_changeset)
+    |> Repo.transaction()
   end
 end
