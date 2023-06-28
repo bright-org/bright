@@ -1,0 +1,8 @@
+<p>スキルパネル</p>
+
+<%= case @live_action do %>
+  <% :graph -> %>
+    <.graph />
+  <% :skills -> %>
+    <.skills />
+<% end %>
