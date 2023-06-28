@@ -15,5 +15,4 @@ defmodule BrightWeb.OnboardingLive.Index do
     socket
     |> assign(:page_title, "Listing Onboardings")
   end
-
 end
