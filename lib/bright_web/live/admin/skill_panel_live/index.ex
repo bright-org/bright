@@ -6,10 +6,17 @@ defmodule BrightWeb.Admin.SkillPanelLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :skill_panels, SkillPanels.list_skill_panels())}
+    {:ok,
+     socket
+     |> assign(:layout, {BrightWeb.AdminLayouts, "app"})
+     |> stream(:skill_panels, SkillPanels.list_skill_panels())}
   end
 
   @impl true
+  @spec handle_params(any, any, %{
+          :assigns => atom | %{:live_action => :edit | :index | :new, optional(any) => any},
+          optional(any) => any
+        }) :: {:noreply, map}
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
