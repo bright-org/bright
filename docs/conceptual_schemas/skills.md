@@ -48,8 +48,8 @@ erDiagram
   skill_panels ||--|{ skill_classes : ""
   skill_classes ||--|{ skill_class_units : ""
   skill_class_units }|--|| skill_units : ""
-  skill_units ||--|{ skill_subunit : ""
-  skill_subunit ||--|{ skills : ""
+  skill_units ||--|{ skill_categories : ""
+  skill_categories ||--|{ skills : ""
   genres ||--o{ skill_panel_genres : ""
   skill_panel_genres }o--|| skill_panels : ""
   users ||--o{ user_skill_panels : "気になる"
@@ -68,27 +68,30 @@ erDiagram
   }
 
   skill_classes {
-    int skill_panel_id FK
+    id skill_panel_id FK
     string name "クラス名"
   }
 
   skill_class_units {
-    int skill_class_id FK
-    int skill_unit_id FK
+    id skill_class_id FK
+    id skill_unit_id FK
+    int position
   }
 
   skill_units {
     string name "スキルユニット（大分類）名"
   }
 
-  skill_subunit {
-    int skill_unit_id FK
+  skill_categories {
+    id skill_unit_id FK
     string name "スキルユニット（中分類）名"
+    int position
   }
 
   skills {
-    int skill_subunit_id FK
+    id skill_categories_id FK
     string name "スキル（小分類）名"
+    int position
   }
 
   genres {
@@ -96,8 +99,8 @@ erDiagram
   }
 
   skill_panel_genres {
-    int skill_panel_id FK
-    int genre_id FK
+    id skill_panel_id FK
+    id genre_id FK
   }
 
   users {
@@ -105,24 +108,24 @@ erDiagram
   }
 
   user_skill_panels {
-    int user_id FK
-    int skill_panel_id FK
+    id user_id FK
+    id skill_panel_id FK
   }
 
   skill_improvements {
-    int user_id FK
-    int skill_class_id FK
-    int skill_unit_id FK
+    id user_id FK
+    id skill_class_id FK
+    id skill_unit_id FK
   }
 
   skill_scores {
-    int user_id FK
-    int skill_panel_id FK
+    id user_id FK
+    id skill_panel_id FK
   }
 
   skill_score_items {
-    int skill_score_id FK
-    int skill_id FK
+    id skill_score_id FK
+    id skill_id FK
     int score "enum（0: －、1: △、2: ◯）"
   }
 ```
