@@ -47,6 +47,16 @@ DB設計におけるルールを以下に記載する。
 最適なINDEXはプログラム実装からのSELECTの要件次第で変わるため、テーブルの設計時には主キーINDEX、ユニークINDEX以外は設計しない。
 対象のデータ利用する各機能担当により随時追加するものとする。
 
+## 外部キーのマイグレーション
+
+外部キーを作成する場合、データ削除はDBではなくアプリ側の制御下に置くため、以下のようにマイグレーションファイル中の `references` に `on_delete: :nothing` を指定する。
+
+```elixir
+add :skill_panel_id, references(:skill_panels, on_delete: :nothing), null: false
+```
+
+なお、 `mix phx.gen.***` でマイグレーションファイルを作成すると、自動で `on_delete: :nothing` が指定される。
+
 ## 基準時刻
 
 Datetime型項目の基準時刻はDB上は、すべてUTCとし必要に応じてコントローラーやビュー上でJSTに変換する。
