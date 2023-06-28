@@ -11,6 +11,5 @@ defmodule Bright.Repo.Migrations.CreateSkills do
     end
 
     create unique_index(:skills, [:skill_category_id, :position])
-    create index(:skills, [:skill_category_id])
   end
 end
