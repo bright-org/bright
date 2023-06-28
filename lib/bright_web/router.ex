@@ -62,6 +62,9 @@ defmodule BrightWeb.Router do
       pipe_through :browser
 
       live_storybook("/storybook", backend_module: BrightWeb.Storybook)
+
+      live "/teams", TeamMyTeamLive, :index
+      live "/teams/new", TeamCreateLive, :new
     end
 
     scope "/dev" do
@@ -107,6 +110,7 @@ defmodule BrightWeb.Router do
       on_mount: [{BrightWeb.UserAuth, :mount_current_user}] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
+
     end
   end
 end
