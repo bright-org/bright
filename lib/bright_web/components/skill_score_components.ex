@@ -22,7 +22,7 @@ defmodule BrightWeb.SkillScoreComponents do
     ~H"""
     <div
       id={@id}
-      phx-hook="skill_gem"
+      phx-hook="SkillGem"
       phx-update="ignore"
       style="width:600px;height:400px"
       data-data={@data}
