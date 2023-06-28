@@ -25,6 +25,7 @@ defmodule BrightWeb.Router do
 
   scope "/", BrightWeb do
     pipe_through :browser
+    live "/mypages", MypageLive.Index, :index
 
     get "/", PageController, :home
   end
