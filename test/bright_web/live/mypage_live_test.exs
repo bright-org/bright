@@ -16,7 +16,7 @@ defmodule BrightWeb.MypageLiveTest do
     end
 
     test "lists all mypages", %{conn: conn} do
-      {:ok, _index_live, html} = live(conn, ~p"/mypages")
+      {:ok, _index_live, html} = live(conn, ~p"/mypage")
 
       assert html =~ "マイページ"
     end

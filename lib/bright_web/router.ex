@@ -95,7 +95,7 @@ defmodule BrightWeb.Router do
       on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-      live "/mypages", MypageLive.Index, :index
+      live "/mypage", MypageLive.Index, :index
     end
   end
 
