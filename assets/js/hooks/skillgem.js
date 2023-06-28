@@ -194,6 +194,9 @@ export const skillGem = (element) => {
   myChart.canvas.parentNode.style.height = '426px';
   myChart.canvas.parentNode.style.width = '426px';
 
+  //myChart.canvas.parentNode.style.height = '200px';
+  //myChart.canvas.parentNode.style.width = '250px';
+
   ctx.addEventListener('click', function (event) {
     //padding rightで拡張した部分がクリック判定できるようにする
 
