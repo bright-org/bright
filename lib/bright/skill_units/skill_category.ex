@@ -14,9 +14,10 @@ defmodule Bright.SkillUnits.SkillCategory do
 
   schema "skill_categories" do
     field :name, :string
+    field :position, :integer
 
     belongs_to :skill_unit, SkillUnit
-    has_many :skills, Skill, on_replace: :delete
+    has_many :skills, Skill, preload_order: [asc: :position], on_replace: :delete
 
     timestamps()
   end
@@ -24,8 +25,8 @@ defmodule Bright.SkillUnits.SkillCategory do
   @doc false
   def changeset(skill_category, attrs) do
     skill_category
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :position])
     |> cast_assoc(:skills)
-    |> validate_required([:name])
+    |> validate_required([:name, :position])
   end
 end

@@ -72,9 +72,10 @@ erDiagram
     string name "クラス名"
   }
 
-  skill_classes_units {
+  skill_class_units {
     id skill_class_id FK
     id skill_unit_id FK
+    int position
   }
 
   skill_units {
@@ -84,11 +85,13 @@ erDiagram
   skill_categories {
     id skill_unit_id FK
     string name "スキルユニット（中分類）名"
+    int position
   }
 
   skills {
     id skill_categories_id FK
     string name "スキル（小分類）名"
+    int position
   }
 
   genres {

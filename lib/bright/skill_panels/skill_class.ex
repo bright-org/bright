@@ -7,7 +7,7 @@ defmodule Bright.SkillPanels.SkillClass do
   import Ecto.Changeset
 
   alias Bright.SkillPanels.SkillPanel
-  alias Bright.SkillUnits.SkillUnit
+  alias Bright.SkillUnits.SkillClassUnit
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -17,10 +17,11 @@ defmodule Bright.SkillPanels.SkillClass do
 
     belongs_to :skill_panel, SkillPanel
 
-    many_to_many :skill_units, SkillUnit,
-      join_through: "skill_classes_units",
-      unique: true,
+    has_many :skill_class_units, SkillClassUnit,
+      preload_order: [asc: :position],
       on_replace: :delete
+
+    has_many :skill_units, through: [:skill_class_units, :skill_unit]
 
     timestamps()
   end
@@ -29,12 +30,6 @@ defmodule Bright.SkillPanels.SkillClass do
   def changeset(skill_class, attrs) do
     skill_class
     |> cast(attrs, [:name])
-    |> put_assoc_skill_units(attrs[:skill_units])
     |> validate_required([:name])
   end
-
-  defp put_assoc_skill_units(changeset, nil), do: changeset
-
-  defp put_assoc_skill_units(changeset, skill_units),
-    do: put_assoc(changeset, :skill_units, skill_units)
 end

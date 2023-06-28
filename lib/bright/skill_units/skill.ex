@@ -13,6 +13,7 @@ defmodule Bright.SkillUnits.Skill do
 
   schema "skills" do
     field :name, :string
+    field :position, :integer
 
     belongs_to :skill_category, SkillCategory
 
@@ -22,7 +23,7 @@ defmodule Bright.SkillUnits.Skill do
   @doc false
   def changeset(skill, attrs) do
     skill
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :position])
+    |> validate_required([:name, :position])
   end
 end
