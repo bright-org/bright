@@ -54,15 +54,22 @@ defmodule Bright.AccountsTest do
       {:error, changeset} = Accounts.register_user(%{})
 
       assert %{
+               name: ["can't be blank"],
                password: ["can't be blank"],
                email: ["can't be blank"]
              } = errors_on(changeset)
     end
 
-    test "validates email and password when given" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
+    test "validates name and email and password when given" do
+      {:error, changeset} =
+        Accounts.register_user(%{
+          name: String.duplicate("a", 101),
+          email: "not valid",
+          password: "not valid"
+        })
 
       assert %{
+               name: ["should be at most 100 character(s)"],
                email: ["must have the @ sign and no spaces"],
                password: ["should be at least 12 character(s)"]
              } = errors_on(changeset)
@@ -70,9 +77,18 @@ defmodule Bright.AccountsTest do
 
     test "validates maximum values for email and password for security" do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long})
+
+      {:error, changeset} =
+        Accounts.register_user(%{name: too_long, email: too_long, password: too_long})
+
       assert "should be at most 160 character(s)" in errors_on(changeset).email
       assert "should be at most 72 character(s)" in errors_on(changeset).password
+    end
+
+    test "validates name uniqueness" do
+      %{name: name} = insert(:user)
+      {:error, changeset} = Accounts.register_user(%{name: name})
+      assert "has already been taken" in errors_on(changeset).name
     end
 
     test "validates email uniqueness" do
@@ -98,20 +114,22 @@ defmodule Bright.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:password, :email]
+      assert changeset.required == [:password, :email, :name]
     end
 
     test "allows fields to be set" do
+      name = unique_user_name()
       email = unique_user_email()
       password = valid_user_password()
 
       changeset =
         Accounts.change_user_registration(
           %User{},
-          params_for(:user_before_registration, email: email, password: password)
+          params_for(:user_before_registration, name: name, email: email, password: password)
         )
 
       assert changeset.valid?
+      assert get_change(changeset, :name) == name
       assert get_change(changeset, :email) == email
       assert get_change(changeset, :password) == password
       assert is_nil(get_change(changeset, :hashed_password))

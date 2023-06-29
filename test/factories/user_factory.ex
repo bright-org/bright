@@ -17,6 +17,7 @@ defmodule Bright.UserFactory do
         build(:user, password: valid_user_password(), hashed_password: nil)
       end
 
+      def unique_user_name, do: "user_name_#{System.unique_integer()}"
       def unique_user_email, do: "user#{System.unique_integer()}@example.com"
       def valid_user_password, do: "hello world!"
     end
