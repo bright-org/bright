@@ -221,3 +221,6 @@ export const SkillGem = {
   }
 }
 
+export const Hooks = {
+  SkillGem: SkillGem
+}
