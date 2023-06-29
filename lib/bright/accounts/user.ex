@@ -5,6 +5,9 @@ defmodule Bright.Accounts.User do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
+
+  alias Bright.Accounts.User
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -186,5 +189,15 @@ defmodule Bright.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  @doc """
+  Select confirmed user by email
+  """
+  def email_query(email) do
+    from u in User,
+      where:
+        u.email == ^email and
+          not is_nil(u.confirmed_at)
   end
 end

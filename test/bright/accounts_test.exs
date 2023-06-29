@@ -12,6 +12,12 @@ defmodule Bright.AccountsTest do
       refute Accounts.get_user_by_email("unknown@example.com")
     end
 
+    test "does not return the user if the email exists but confirmed_at is nil" do
+      refute Accounts.get_user_by_email("unknown@example.com")
+      user = insert(:user_not_confirmed)
+      refute Accounts.get_user_by_email(user.email)
+    end
+
     test "returns the user if the email exists" do
       %{id: id} = user = insert(:user)
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
@@ -26,6 +32,12 @@ defmodule Bright.AccountsTest do
     test "does not return the user if the password is not valid" do
       user = insert(:user)
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
+    end
+
+    test "does not return the user if the email and password are valid but confirmed_at is nil" do
+      user = insert(:user_not_confirmed)
+
+      refute Accounts.get_user_by_email_and_password(user.email, valid_user_password())
     end
 
     test "returns the user if the email and password are valid" do
@@ -201,7 +213,7 @@ defmodule Bright.AccountsTest do
 
   describe "update_user_email/2" do
     setup do
-      user = insert(:user)
+      user = insert(:user_not_confirmed)
       email = unique_user_email()
 
       token =
@@ -370,7 +382,7 @@ defmodule Bright.AccountsTest do
 
   describe "deliver_user_confirmation_instructions/2" do
     setup do
-      %{user: insert(:user)}
+      %{user: insert(:user_not_confirmed)}
     end
 
     test "sends token through notification", %{user: user} do
@@ -389,7 +401,7 @@ defmodule Bright.AccountsTest do
 
   describe "confirm_user/1" do
     setup do
-      user = insert(:user)
+      user = insert(:user_not_confirmed)
 
       token =
         extract_user_token(fn url ->
