@@ -17,7 +17,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
         conn
         |> log_in_user(insert(:user))
         |> live(~p"/users/register")
-        |> follow_redirect(conn, "/")
+        |> follow_redirect(conn, "/mypage")
 
       assert {:ok, _conn} = result
     end
@@ -28,9 +28,16 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       result =
         lv
         |> element("#registration_form")
-        |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
+        |> render_change(
+          user: %{
+            "name" => String.duplicate("a", 101),
+            "email" => "with spaces",
+            "password" => "too short"
+          }
+        )
 
       assert result =~ "Register"
+      assert result =~ "should be at most 100 character(s)"
       assert result =~ "must have the @ sign and no spaces"
       assert result =~ "should be at least 12 character"
     end
@@ -40,22 +47,25 @@ defmodule BrightWeb.UserRegistrationLiveTest do
     test "creates account and logs the user in", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
+      name = unique_user_name()
       email = unique_user_email()
 
       form =
         form(lv, "#registration_form",
           user:
-            params_for(:user_before_registration, email: email) |> Map.take([:email, :password])
+            params_for(:user_before_registration, name: name, email: email)
+            |> Map.take([:name, :email, :password])
         )
 
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/mypage"
 
       # Now do a logged in request and assert on the menu
       conn = get(conn, "/")
       response = html_response(conn, 200)
+      assert response =~ name
       assert response =~ email
       assert response =~ "Settings"
       assert response =~ "Log out"
