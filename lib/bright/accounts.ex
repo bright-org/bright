@@ -90,7 +90,11 @@ defmodule Bright.Accounts do
 
   """
   def change_user_registration(%User{} = user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
+    User.registration_changeset(user, attrs,
+      validate_name: false,
+      hash_password: false,
+      validate_email: false
+    )
   end
 
   ## Settings
