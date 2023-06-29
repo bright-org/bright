@@ -17,7 +17,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
         conn
         |> log_in_user(insert(:user))
         |> live(~p"/users/register")
-        |> follow_redirect(conn, "/")
+        |> follow_redirect(conn, "/mypage")
 
       assert {:ok, _conn} = result
     end
@@ -51,7 +51,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/mypage"
 
       # Now do a logged in request and assert on the menu
       conn = get(conn, "/")

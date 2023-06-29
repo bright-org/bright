@@ -16,7 +16,7 @@ defmodule BrightWeb.UserSessionControllerTest do
 
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/mypage"
 
       # Now do a logged in request and assert on the menu
       conn = get(conn, ~p"/")
@@ -52,7 +52,7 @@ defmodule BrightWeb.UserSessionControllerTest do
           }
         })
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/mypage"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Account created successfully"
     end
 
