@@ -11,8 +11,7 @@ defmodule Bright.Repo.Migrations.CreateTeamMemberUsers do
       timestamps()
     end
 
+    create unique_index(:team_member_users, [:team_id, :user_id])
     create index(:team_member_users, [:user_id])
-    create index(:team_member_users, [:team_id])
-    create unique_index(:team_member_users, [:user_id, :team_id])
   end
 end

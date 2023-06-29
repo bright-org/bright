@@ -9,6 +9,7 @@ config :bright, Bright.Repo,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
+
 # timeout: 120_000, # i think the default is 5000
 # ownership_timeout: 120_000 #i think the default is 5000
 
