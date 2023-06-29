@@ -62,7 +62,6 @@ defmodule BrightWeb.Router do
       pipe_through :browser
 
       live_storybook("/storybook", backend_module: BrightWeb.Storybook)
-
     end
 
     scope "/dev" do
