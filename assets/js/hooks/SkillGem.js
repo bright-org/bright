@@ -176,7 +176,7 @@ const createChartJson = (labels, datasets) => {
   })
 }
 
-export const SkillGem = (element) => {
+const drawSkillGem = (element) => {
   const dataset = element.dataset;
   const labels = JSON.parse(dataset.labels);
   const data = JSON.parse(dataset.data);
@@ -214,4 +214,10 @@ export const SkillGem = (element) => {
     }
   });
 };
+
+export const SkillGem = {
+  mounted() {
+    drawSkillGem(this.el);
+  }
+}
 
