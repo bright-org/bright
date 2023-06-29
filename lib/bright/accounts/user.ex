@@ -29,6 +29,12 @@ defmodule Bright.Accounts.User do
 
   ## Options
 
+    * `:validate_name` - Validates the uniqueness of the name, in case
+      you don't want to validate the uniqueness of the name (like when
+      using this changeset for validations on a LiveView form before
+      submitting the form), this option can be set to `false`.
+      Defaults to `true`.
+
     * `:hash_password` - Hashes the password so it can be stored securely
       in the database and ensures the password field is cleared to prevent
       leaks in the logs. If password hashing is not needed and clearing the
@@ -44,9 +50,17 @@ defmodule Bright.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:name, :email, :password])
+    |> validate_name(opts)
     |> validate_email(opts)
     |> validate_password(opts)
+  end
+
+  defp validate_name(changeset, opts) do
+    changeset
+    |> validate_required([:name])
+    |> validate_length(:name, max: 100)
+    |> maybe_validate_unique_name(opts)
   end
 
   defp validate_email(changeset, opts) do
@@ -66,6 +80,16 @@ defmodule Bright.Accounts.User do
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
     # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
     |> maybe_hash_password(opts)
+  end
+
+  defp maybe_validate_unique_name(changeset, opts) do
+    if Keyword.get(opts, :validate_name, true) do
+      changeset
+      |> unsafe_validate_unique(:name, Bright.Repo)
+      |> unique_constraint(:name)
+    else
+      changeset
+    end
   end
 
   defp maybe_hash_password(changeset, opts) do
