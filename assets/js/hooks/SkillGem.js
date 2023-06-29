@@ -122,7 +122,7 @@ const beforeDatasetsDraw = (chart) => {
   }
 }
 
-const createChartJson = (labels, datasets) => {
+const createChartFromJSON = (labels, datasets) => {
   return ({
     type: 'radar',
     data: {
@@ -189,7 +189,7 @@ const drawSkillGem = (element) => {
   }
 
   const ctx = document.querySelector('#' + element.id + ' canvas');
-  const myChart = new Chart(ctx, createChartJson(labels, datasets));
+  const myChart = new Chart(ctx, createChartFromJSON(labels, datasets));
 
   ctx.addEventListener('click', function (event) {
     // padding rightで拡張した部分がクリック判定できるようにする
