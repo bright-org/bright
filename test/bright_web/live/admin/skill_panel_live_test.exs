@@ -4,7 +4,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
   import Phoenix.LiveViewTest
   import Bright.Factory
 
-  @create_attrs params_for(:skill_panel)
+  @create_attrs params_for(:skill_panel) |> Map.put(:skill_classes, %{"0" => %{name: "Class 1"}})
   @update_attrs params_for(:locked_skill_panel)
   @invalid_attrs %{name: nil, locked_date: nil}
 
@@ -34,6 +34,8 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
       assert index_live
              |> form("#skill_panel-form", skill_panel: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
+
+      index_live |> element("label", "add skill class") |> render_click()
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @create_attrs)

@@ -24,11 +24,7 @@ defmodule Bright.SkillPanels.SkillPanel do
   def changeset(skill_panel, attrs) do
     skill_panel
     |> cast(attrs, [:locked_date, :name])
-    |> cast_assoc(:skill_classes,
-      with: &SkillClass.changeset/2,
-      sort_param: :skill_classes_sort,
-      drop_param: :skill_classes_drop
-    )
+    |> cast_assoc(:skill_classes)
     |> validate_required([:name])
   end
 end

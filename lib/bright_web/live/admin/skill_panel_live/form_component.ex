@@ -23,19 +23,18 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
         <.input field={@form[:name]} type="text" label="Name" />
         <.label>Skill classes</.label>
         <.inputs_for :let={scf} field={@form[:skill_classes]}>
-          <input type="hidden" name="skill_panel[skill_classes_sort][]" value={scf.index} />
-          <.input field={scf[:name]} type="text" label="Name" />
-          <label class="cursor-pointer">
-            <input
-              type="checkbox"
-              name="skill_panel[skill_classes_drop][]"
-              value={scf.index}
-              class="hidden"
-            /> delete
-          </label>
+          <div class="border p-4">
+            <.input field={scf[:name]} type="text" label="Name" />
+            <label
+              class="cursor-pointer"
+              phx-click={JS.push("delete_skill_class", value: %{id: scf.data.id, index: scf.index})}
+              phx-target={@myself}
+            >
+              delete
+            </label>
+          </div>
         </.inputs_for>
-        <label class="block cursor-pointer">
-          <input type="checkbox" name="skill_panel[skill_classes_sort][]" class="hidden" />
+        <label class="cursor-pointer" phx-click="add_skill_class" phx-target={@myself}>
           add skill class
         </label>
         <:actions>
@@ -74,6 +73,44 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
     save_skill_panel(socket, socket.assigns.action, skill_panel_params)
   end
 
+  def handle_event("add_skill_class", _value, socket) do
+    changeset = socket.assigns.changeset
+
+    skill_classes =
+      changeset.changes
+      |> Map.get(
+        :skill_classes,
+        Enum.map(changeset.data.skill_classes, &Bright.SkillPanels.SkillClass.changeset(&1, %{}))
+      )
+      |> Enum.concat([%Bright.SkillPanels.SkillClass{}])
+
+    changeset = Ecto.Changeset.put_assoc(changeset, :skill_classes, skill_classes)
+
+    {:noreply, assign_form(socket, changeset)}
+  end
+
+  def handle_event("delete_skill_class", %{"id" => id, "index" => index}, socket) do
+    changeset = socket.assigns.changeset
+
+    skill_classes =
+      changeset.changes
+      |> Map.get(
+        :skill_classes,
+        Enum.map(changeset.data.skill_classes, &Bright.SkillPanels.SkillClass.changeset(&1, %{}))
+      )
+      |> then(fn changesets ->
+        if id do
+          Enum.reject(changesets, &(&1.data.id === id))
+        else
+          List.delete_at(changesets, index)
+        end
+      end)
+
+    changeset = Ecto.Changeset.put_assoc(changeset, :skill_classes, skill_classes)
+
+    {:noreply, assign_form(socket, changeset)}
+  end
+
   defp save_skill_panel(socket, :edit, skill_panel_params) do
     skill_panel = preload_assoc(socket.assigns.skill_panel)
 
@@ -107,7 +144,9 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :form, to_form(changeset))
+    socket
+    |> assign(:changeset, changeset)
+    |> assign(:form, to_form(changeset))
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
