@@ -26,6 +26,8 @@ defmodule BrightWeb.Router do
   scope "/", BrightWeb do
     pipe_through :browser
 
+    live "/onboardings", OnboardingLive.Index, :index
+
     get "/", PageController, :home
   end
 
