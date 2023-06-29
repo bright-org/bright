@@ -8,7 +8,6 @@ defmodule BrightWeb.Admin.SkillPanelLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:layout, {BrightWeb.AdminLayouts, "app"})
      |> stream(:skill_panels, SkillPanels.list_skill_panels())}
   end
 

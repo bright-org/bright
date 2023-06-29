@@ -17,8 +17,12 @@ defmodule BrightWeb.Router do
     # credo:disable-for-next-line
     # TODO: Basic認証みたいな軽いアクセス制限を入れる
     # See https://hexdocs.pm/plug/Plug.BasicAuth.html
-    plug :put_root_layout, html: {BrightWeb.AdminLayouts, :root}
+    plug :put_root_layout, html: {BrightWeb.Layouts, :admin}
     # plug :put_layout, html: {BrightWeb.AdminLayouts, :app}
+  end
+
+  pipeline :no_header do
+    plug :put_root_layout, html: {BrightWeb.Layouts, :auth}
   end
 
   pipeline :api do
@@ -78,7 +82,7 @@ defmodule BrightWeb.Router do
   ## Authentication routes
 
   scope "/", BrightWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{BrightWeb.UserAuth, :redirect_if_user_is_authenticated}] do
