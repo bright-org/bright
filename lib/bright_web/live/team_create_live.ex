@@ -11,5 +11,4 @@ defmodule BrightWeb.TeamCreateLive do
     # TODO mount修正
     {:ok, socket}
   end
-
 end
