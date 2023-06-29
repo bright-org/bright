@@ -96,8 +96,8 @@ defmodule BrightWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
-      live "/panels/:skill_panel_id/graph", SkillPanelLive.Show, :graph
-      live "/panels/:skill_panel_id/skills", SkillPanelLive.Show, :skills
+      live "/panels/:skill_panel_id/graph", SkillPanelLive.Graph, :show
+      live "/panels/:skill_panel_id/skills", SkillPanelLive.Skills, :show
     end
   end
 
