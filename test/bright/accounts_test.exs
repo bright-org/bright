@@ -527,7 +527,7 @@ defmodule Bright.AccountsTest do
 
   describe "get_user_by_name/1" do
     test "only return the user if the name completely match" do
-      %{id: id} = user = insert(:user)
+      user = insert(:user)
       refute Accounts.get_user_by_name(user.name <> "1")
     end
 
