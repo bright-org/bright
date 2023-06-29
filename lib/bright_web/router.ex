@@ -28,12 +28,6 @@ defmodule BrightWeb.Router do
 
     get "/", PageController, :home
 
-    live "/teams", TeamLive.Index, :index
-    live "/teams/new", TeamLive.Index, :new
-    live "/teams/:id/edit", TeamLive.Index, :edit
-
-    live "/teams/:id", TeamLive.Show, :show
-    live "/teams/:id/show/edit", TeamLive.Show, :edit
   end
 
   scope "/admin", BrightWeb.Admin, as: :admin do
