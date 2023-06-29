@@ -524,4 +524,16 @@ defmodule Bright.AccountsTest do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
     end
   end
+
+  describe "get_user_by_name/1" do
+    test "only return the user if the name completely match" do
+      %{id: id} = user = insert(:user)
+      refute Accounts.get_user_by_name(user.name <> "1")
+    end
+
+    test "returns the user if the name exists" do
+      %{id: id} = user = insert(:user)
+      assert %User{id: ^id} = Accounts.get_user_by_name(user.name)
+    end
+  end
 end

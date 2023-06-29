@@ -354,4 +354,11 @@ defmodule Bright.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  @doc """
+  get user by name
+  """
+  def get_user_by_name(name) do
+    Repo.get_by(User, name: name)
+  end
 end
