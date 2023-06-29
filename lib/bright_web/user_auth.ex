@@ -8,12 +8,12 @@ defmodule BrightWeb.UserAuth do
 
   alias Bright.Accounts
 
-  # Make the remember me cookie valid for 60 days.
+  # Make the cookie valid for 60 days.
   # If you want bump or reduce this value, also change
   # the token expiry itself in UserToken.
   @max_age 60 * 60 * 24 * 60
-  @remember_me_cookie "_bright_web_user_remember_me"
-  @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
+  @cookie_key "_bright_web_user"
+  @cookie_options [sign: true, max_age: @max_age, same_site: "Lax"]
 
   @doc """
   Logs the user in.
@@ -27,23 +27,19 @@ defmodule BrightWeb.UserAuth do
   disconnected on log out. The line can be safely removed
   if you are not using LiveView.
   """
-  def log_in_user(conn, user, params \\ %{}) do
+  def log_in_user(conn, user) do
     token = Accounts.generate_user_session_token(user)
     user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> renew_session()
     |> put_token_in_session(token)
-    |> maybe_write_remember_me_cookie(token, params)
+    |> write_cookie(token)
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
-  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
-    put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
-  end
-
-  defp maybe_write_remember_me_cookie(conn, _token, _params) do
-    conn
+  defp write_cookie(conn, token) do
+    put_resp_cookie(conn, @cookie_key, token, @cookie_options)
   end
 
   # This function renews the session ID and erases the whole
@@ -82,13 +78,13 @@ defmodule BrightWeb.UserAuth do
 
     conn
     |> renew_session()
-    |> delete_resp_cookie(@remember_me_cookie)
+    |> delete_resp_cookie(@cookie_key)
     |> redirect(to: ~p"/")
   end
 
   @doc """
   Authenticates the user by looking into the session
-  and remember me token.
+  and cookie token.
   """
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
@@ -100,9 +96,9 @@ defmodule BrightWeb.UserAuth do
     if token = get_session(conn, :user_token) do
       {token, conn}
     else
-      conn = fetch_cookies(conn, signed: [@remember_me_cookie])
+      conn = fetch_cookies(conn, signed: [@cookie_key])
 
-      if token = conn.cookies[@remember_me_cookie] do
+      if token = conn.cookies[@cookie_key] do
         {token, put_token_in_session(conn, token)}
       else
         {nil, conn}

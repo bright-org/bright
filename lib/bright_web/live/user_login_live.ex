@@ -20,7 +20,6 @@ defmodule BrightWeb.UserLoginLive do
         <.input field={@form[:password]} type="password" label="Password" required />
 
         <:actions>
-          <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
           <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
             Forgot your password?
           </.link>
