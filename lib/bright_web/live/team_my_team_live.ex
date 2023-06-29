@@ -8,7 +8,6 @@ defmodule BrightWeb.TeamMyTeamLive do
   end
 
   def mount(_params, _session, socket) do
-    # TODO mount修正
     {:ok, socket}
   end
 end
