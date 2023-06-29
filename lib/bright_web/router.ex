@@ -26,8 +26,6 @@ defmodule BrightWeb.Router do
   scope "/", BrightWeb do
     pipe_through :browser
 
-    live "/onboardings", OnboardingLive.Index, :index
-
     get "/", PageController, :home
   end
 
@@ -98,6 +96,7 @@ defmodule BrightWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
+      live "/onboardings", OnboardingLive.Index, :index
     end
   end
 
