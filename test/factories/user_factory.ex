@@ -19,7 +19,7 @@ defmodule Bright.UserFactory do
       end
 
       def user_before_registration_factory do
-        build(:user, password: valid_user_password(), hashed_password: nil)
+        build(:user_not_confirmed, password: valid_user_password(), hashed_password: nil)
       end
 
       def unique_user_name, do: "user_name_#{System.unique_integer()}"
