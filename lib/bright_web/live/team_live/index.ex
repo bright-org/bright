@@ -8,12 +8,11 @@ defmodule BrightWeb.TeamLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    IO.inspect("##### BrightWeb.TeamLive.Index mount")
-    socket = socket
-    |> assign(:users, [])
-    |> stream(:teams, Teams.list_teams())
-    #{:ok, stream(socket, :teams, Teams.list_teams())}
-    IO.inspect(socket.assigns)
+    socket =
+      socket
+      |> assign(:users, [])
+      |> stream(:teams, Teams.list_teams())
+
     {:ok, socket}
   end
 
@@ -56,32 +55,31 @@ defmodule BrightWeb.TeamLive.Index do
 
   @impl true
   def handle_event("add_user", %{"handle_name" => handle_name}, socket) do
-
     current_users = socket.assigns.users
     user = Users.get_bright_user_by_handle_name(handle_name)
 
-    added_users = [user | current_users]
-    |> Enum.reverse()
+    added_users =
+      [user | current_users]
+      |> Enum.reverse()
 
-    socket = socket
-    |> assign(:users, added_users)
-
-    IO.inspect(socket)
+    socket =
+      socket
+      |> assign(:users, added_users)
 
     {:noreply, assign(socket, :users, added_users)}
-
   end
 
   def handle_event("remove_user", %{"id" => id}, socket) do
-
     current_users = socket.assigns.users
 
     # メンバー一時リストから削除
-    removed_users = current_users
-    |> Enum.reject(fn x -> x.id == id end)
+    removed_users =
+      current_users
+      |> Enum.reject(fn x -> x.id == id end)
 
-    socket = socket
-    |> assign(:users, removed_users)
+    socket =
+      socket
+      |> assign(:users, removed_users)
 
     {:noreply, socket}
   end

@@ -34,7 +34,6 @@ defmodule BrightWeb.Router do
 
     live "/teams/:id", TeamLive.Show, :show
     live "/teams/:id/show/edit", TeamLive.Show, :edit
-
   end
 
   scope "/admin", BrightWeb.Admin, as: :admin do

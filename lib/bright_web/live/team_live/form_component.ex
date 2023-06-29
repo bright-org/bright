@@ -6,12 +6,9 @@ defmodule BrightWeb.TeamLive.FormComponent do
 
   @impl true
   def render(assigns) do
-    IO.inspect("################ FormComponent render assigns")
-    IO.inspect(assigns)
     ~H"""
     <div>
-      <.header>
-      </.header>
+      <.header></.header>
 
       <.simple_form
         for={@form}
@@ -21,12 +18,11 @@ defmodule BrightWeb.TeamLive.FormComponent do
         phx-submit="save"
       >
         <.label>チーム名</.label>
-        <.input field={@form[:team_name]} type="text"/>
+        <.input field={@form[:team_name]} type="text" />
         <.label>メンバー</.label>
 
         <.label>サブチーム</.label>
         # TODO
-
         <:actions>
           <.button phx-disable-with="Saving...">チームを作成し、上記メンバーに招待を送る</.button>
         </:actions>
@@ -94,5 +90,4 @@ defmodule BrightWeb.TeamLive.FormComponent do
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
-
 end

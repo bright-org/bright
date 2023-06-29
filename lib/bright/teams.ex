@@ -40,10 +40,6 @@ defmodule Bright.Teams do
     |> Repo.get!(id)
   end
 
-  def list_joined_teams_by_user_id(user_id) do
-    Repo.get_by(Team, user_id: user_id)
-  end
-
   @doc """
   Creates a team.
 
@@ -60,15 +56,6 @@ defmodule Bright.Teams do
     %Team{}
     |> Team.changeset(attrs)
     |> Repo.insert()
-  end
-
-  @doc """
-      ユーザーリストに所属しているチーム数を付与
-  """
-  def put_team_count(users) do
-    # TODO　対象のユーザーが所属するチームの一覧の数を取得する
-    users
-    |> Enum.map(fn x -> Map.put(x, :team_count, 0) end)
   end
 
   @doc """
@@ -222,22 +209,30 @@ defmodule Bright.Teams do
   end
 
   @doc """
-      チームおよびメンバーの登録
+  ユーザーが所属するチームの一覧取得
+  """
+  def list_joined_teams_by_user_id(user_id) do
+    TeamMemberUsers
+    |> where([member_user], member_user.user_id == ^user_id)
+    |> preload(:team)
+    |> Repo.all()
+  end
+
+  @spec create_team_multi(any, atom | %{:id => any, optional(any) => any}, any) :: any
+  @doc """
+  チームおよびメンバーの一括登録
   """
   def create_team_multi(name, admin_user, member_users) do
-    # TODO 各ユーザーのチーム数をチェックして、最初のチームの場合はプライマリチームに設定する。
-    # TODO 作成者が人事チームの作成権限を持っている場合人事チームとして作成する。（要件再確認）
-
     team_attr = %{
       name: name,
       enable_hr_functions: false
     }
 
-    # 作成者本人が自動的に管理者となる
+    # 作成者本人は自動的に管理者となる
     admin_attr = %{
       user_id: admin_user.id,
       is_admin: true,
-      # TODO プライマリチーム判定をユーザー単位で実行
+      # プライマリ判定実装まで強制true
       is_primary: true
     }
 
@@ -247,8 +242,8 @@ defmodule Bright.Teams do
         %{
           user_id: x.id,
           is_admin: false,
-          # TODO プライマリチーム判定をユーザー単位で実行
-          is_primary: true
+          # メンバーのプライマリ判定は承認後に実施する為一旦falseとする
+          is_primary: false
         }
       end)
 
@@ -266,8 +261,11 @@ defmodule Bright.Teams do
       team_changeset
       |> Ecto.Changeset.put_assoc(:member_users, team_member_user_changesets)
 
-    Ecto.Multi.new()
-    |> Ecto.Multi.insert(:team, team_and_members_changeset)
-    |> Repo.transaction()
+    {:ok, result} =
+      Ecto.Multi.new()
+      |> Ecto.Multi.insert(:team, team_and_members_changeset)
+      |> Repo.transaction()
+
+    {:ok, Map.get(result, :team)}
   end
 end

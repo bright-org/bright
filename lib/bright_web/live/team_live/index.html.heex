@@ -7,44 +7,36 @@
   </:actions>
 </.header>
 
-
-
 <.modal :if={@live_action in [:new, :edit]} id="team-modal" show on_cancel={JS.patch(~p"/teams")}>
- 
   <h1>チーム作成</h1>
 
   <p>気になるからチームメンバーとして追加</p>
   # TODO
   <p>関わっているチームからサブチームとして追加</p>
   # TODO
-
   <div>
-  <p>ハンドル名からメンバーとして追加</p>
-  <form phx-submit="add_user">
-  <input name="handle_name" type="text">
-  <button>追加</button>
-  </form>
+    <p>ハンドル名からメンバーとして追加</p>
+    <form phx-submit="add_user">
+      <input name="handle_name" type="text" />
+      <button>追加</button>
+    </form>
   </div>
 
   <p>チーム名</p>
-  <input name="team_name" type="text"/><br/>
+  <input name="team_name" type="text" /><br />
 
   <p>メンバー</p>
-  <.table
-  id="added_user"
-  rows={@users}
-  >
+  <.table id="added_user" rows={@users}>
     <:col :let={user} label="ハンドル名"><%= user.handle_name %></:col>
     <:action :let={user}>
-    <.link
-      phx-click={JS.push("remove_user", value: %{id: user.id})}
-      data-confirm="を追加メンバーから削除しますがよろしいですか？"
-    >
-      Delete
-    </.link>
-  </:action>
+      <.link
+        phx-click={JS.push("remove_user", value: %{id: user.id})}
+        data-confirm="を追加メンバーから削除しますがよろしいですか？"
+      >
+        Delete
+      </.link>
+    </:action>
   </.table>
-
   <!-- <.live_component
     module={BrightWeb.TeamLive.FormComponent}
     id={@team.id || :new}

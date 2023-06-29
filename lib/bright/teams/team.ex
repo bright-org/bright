@@ -1,4 +1,7 @@
 defmodule Bright.Teams.Team do
+  @moduledoc """
+  チームを扱うスキーマ
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -8,7 +11,6 @@ defmodule Bright.Teams.Team do
     field :name, :string
     field :enable_hr_functions, :boolean, default: false
 
-    # has_many :users, Bright.Accounts.User , join_through: Bright.Teams.UserJoinedTeam
     has_many :member_users, Bright.Teams.TeamMemberUsers
 
     timestamps()

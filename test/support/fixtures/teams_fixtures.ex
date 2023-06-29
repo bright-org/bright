@@ -21,23 +21,6 @@ defmodule Bright.TeamsFixtures do
   end
 
   @doc """
-  Generate a user_joined_team.
-  """
-  def user_joined_team_fixture(attrs \\ %{}) do
-    {:ok, user_joined_team} =
-      attrs
-      |> Enum.into(%{
-        bright_user_id: 42,
-        team_id: 42,
-        is_auther: true,
-        is_primary_team: true
-      })
-      |> Bright.Teams.create_user_joined_team()
-
-    user_joined_team
-  end
-
-  @doc """
   Generate a team_member_users.
   """
   def team_member_users_fixture(attrs \\ %{}) do
