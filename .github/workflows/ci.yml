@@ -37,6 +37,7 @@ jobs:
       env:
         MIX_ENV: test
         BUCKET_NAME: bright_storage_local
+      options: --init
 
     services:
       postgres:
@@ -52,18 +53,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # see: https://github.com/fsouza/fake-gcs-action/
-      - name: Setup fake gcs server
-        uses: fsouza/fake-gcs-action@v0.4.1
-        with:
-          version: "1.45.2"
-          backend: memory
-          data: test
-          public-host: "localhost:4443"
-          external-url: "http://localhost:4443"
-          scheme: http
-          debug: 1
-
       - name: Cache deps and _build
         uses: actions/cache@v3
         with:
@@ -76,11 +65,35 @@ jobs:
 
       - name: Dependencies install
         run: |
-          apt-get update -y && apt-get install -y build-essential inotify-tools git curl
+          apt-get update -y && apt-get install -y build-essential inotify-tools git curl iproute2
 
-      - name: Check gcs (temporary run)
+      # see: https://github.com/fsouza/fake-gcs-action/
+      - name: Setup fake gcs server
+        uses: fsouza/fake-gcs-action@v0.4.1
+        with:
+          # version: "1.45.2"
+          # backend: memory
+          data: testdata
+          public-host: "storage.gcs.127.0.0.1.nip.io:4443"
+          external-url: "http://storage.gcs.127.0.0.1.nip.io:4443"
+          scheme: http
+          debug: 1
+
+      # - name: Check gcs (temporary run)
+      #   run: |
+      #     curl --insecure http://storage.gcs.127.0.0.1.nip.io:4443/storage/v1/b
+      #     curl http://storage.gcs.127.0.0.1.nip.io:4443/storage/v1/b
+      #     curl http://localhost:4443/storage/v1/b
+
+      - name: list buckets and objects with curl
+        shell: bash
         run: |
-          curl http://localhost:4443/storage/v1/b
+          echo "ss command:"
+          ss -ant
+          echo "List of buckets:"
+          curl --insecure http://storage.gcs.127.0.0.1.nip.io:4443/storage/v1/b
+          echo "Files in the bucket:"
+          curl --insecure http://storage.gcs.127.0.0.1.nip.io:4443/storage/v1/b/some-bucket/o
 
       - name: Install Dependencies
         run: |
