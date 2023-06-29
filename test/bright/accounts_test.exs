@@ -1,6 +1,7 @@
 defmodule Bright.AccountsTest do
   use Bright.DataCase
 
+  alias Bright.Repo
   alias Bright.Accounts
 
   import Bright.Factory
@@ -32,20 +33,6 @@ defmodule Bright.AccountsTest do
 
       assert %User{id: ^id} =
                Accounts.get_user_by_email_and_password(user.email, valid_user_password())
-    end
-  end
-
-  describe "get_user!/1" do
-    test "raises if id is invalid" do
-      assert_raise Ecto.NoResultsError, fn ->
-        Ecto.ULID.generate()
-        |> Accounts.get_user!()
-      end
-    end
-
-    test "returns the user with the given id" do
-      %{id: id} = user = insert(:user)
-      assert %User{id: ^id} = Accounts.get_user!(user.id)
     end
   end
 
@@ -189,7 +176,7 @@ defmodule Bright.AccountsTest do
       email = unique_user_email()
       {:ok, user} = Accounts.apply_user_email(user, valid_user_password(), %{email: email})
       assert user.email == email
-      assert Accounts.get_user!(user.id).email != email
+      assert Repo.get!(User, user.id).email != email
     end
   end
 
