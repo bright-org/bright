@@ -6,6 +6,7 @@ defmodule BrightWeb.UserConfirmationLiveTest do
 
   alias Bright.Accounts
   alias Bright.Repo
+  alias Bright.Accounts.User
 
   setup do
     %{user: insert(:user_not_confirmed)}
