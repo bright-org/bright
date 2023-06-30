@@ -13,4 +13,6 @@ defmodule Bright.Factory do
   use Bright.SkillPanelFactory
   use Bright.SkillClassFactory
   use Bright.SkillUnitFactory
+  use Bright.SkillCategoryFactory
+  use Bright.SkillFactory
 end

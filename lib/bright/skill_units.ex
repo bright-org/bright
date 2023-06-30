@@ -17,8 +17,8 @@ defmodule Bright.SkillUnits do
       [%SkillUnit{}, ...]
 
   """
-  def list_skill_units do
-    Repo.all(SkillUnit)
+  def list_skill_units(query \\ SkillUnit) do
+    Repo.all(query)
   end
 
   @doc """
