@@ -23,5 +23,4 @@ defmodule BrightWeb.Team.JoinedTeamComponent do
      socket
      |> assign(assigns)}
   end
-
 end
