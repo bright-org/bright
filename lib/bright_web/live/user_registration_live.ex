@@ -23,8 +23,6 @@ defmodule BrightWeb.UserRegistrationLive do
         id="registration_form"
         phx-submit="save"
         phx-change="validate"
-        phx-trigger-action={@trigger_submit}
-        action={~p"/users/log_in?_action=registered"}
         method="post"
       >
         <.error :if={@check_errors}>
@@ -48,7 +46,7 @@ defmodule BrightWeb.UserRegistrationLive do
 
     socket =
       socket
-      |> assign(trigger_submit: false, check_errors: false)
+      |> assign(check_errors: false)
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}
@@ -63,8 +61,7 @@ defmodule BrightWeb.UserRegistrationLive do
             &url(~p"/users/confirm/#{&1}")
           )
 
-        changeset = Accounts.change_user_registration(user)
-        {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
+        {:noreply, socket |> redirect(to: ~p"/users/finish_registration")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, socket |> assign(check_errors: true) |> assign_form(changeset)}

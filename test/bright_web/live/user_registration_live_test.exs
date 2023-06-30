@@ -44,31 +44,19 @@ defmodule BrightWeb.UserRegistrationLiveTest do
   end
 
   describe "register user" do
-    test "creates account and logs the user in", %{conn: conn} do
+    test "creates account and redirect finish registartion page", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       name = unique_user_name()
       email = unique_user_email()
 
-      form =
-        form(lv, "#registration_form",
-          user:
-            params_for(:user_before_registration, name: name, email: email)
-            |> Map.take([:name, :email, :password])
-        )
-
-      render_submit(form)
-      conn = follow_trigger_action(form, conn)
-
-      assert redirected_to(conn) == ~p"/mypage"
-
-      # Now do a logged in request and assert on the menu
-      conn = get(conn, "/")
-      response = html_response(conn, 200)
-      assert response =~ name
-      assert response =~ email
-      assert response =~ "Settings"
-      assert response =~ "Log out"
+      form(lv, "#registration_form",
+        user:
+          params_for(:user_before_registration, name: name, email: email)
+          |> Map.take([:name, :email, :password])
+      )
+      |> render_submit()
+      |> follow_redirect(conn, ~p"/users/finish_registration")
     end
 
     test "renders errors for duplicated email", %{conn: conn} do
