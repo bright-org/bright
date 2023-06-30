@@ -891,6 +891,10 @@ th {
   margin-right: 0.25rem;
 }
 
+.mt-12 {
+  margin-top: 3rem;
+}
+
 .mb-4 {
   margin-bottom: 1rem;
 }
@@ -1019,8 +1023,8 @@ th {
   width: 100vw;
 }
 
-.w-60 {
-  width: 15rem;
+.w-80 {
+  width: 20rem;
 }
 
 .w-40 {
@@ -1093,6 +1097,10 @@ th {
 
 .w-2\/4 {
   width: 50%;
+}
+
+.w-60 {
+  width: 15rem;
 }
 
 .w-\[1500px\] {
@@ -1673,8 +1681,8 @@ th {
   background-image: url('./images/bg_twitter.png');
 }
 
-.bg-6 {
-  background-size: auto 24px;
+.bg-8 {
+  background-size: auto 32px;
 }
 
 .bg-contain {
@@ -1959,9 +1967,13 @@ th {
   vertical-align: top;
 }
 
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+.font-notosans {
+  font-family: Noto Sans JP;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .text-xs {
@@ -1977,6 +1989,11 @@ th {
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
 .text-2xl {
@@ -2233,9 +2250,9 @@ th {
   display: inline-block;
 }
 
-.before\:h-6::before {
+.before\:h-8::before {
   content: "";
-  height: 1.5rem;
+  height: 2rem;
 }
 
 .before\:h-\[42px\]::before {
@@ -2248,9 +2265,9 @@ th {
   height: 38px;
 }
 
-.before\:w-6::before {
+.before\:w-8::before {
   content: "";
-  width: 1.5rem;
+  width: 2rem;
 }
 
 .before\:w-\[1px\]::before {

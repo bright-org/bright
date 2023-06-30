@@ -62,12 +62,12 @@ module.exports = {
         twitter: "#1DA1F2",
         github: "#0D1117",
       },
-      enginner: {
+      infra: {
         dark: "#51971A",
         light: "#8CEB14",
         dazzle: "#8CEB14",
       },
-      infra: {
+      enginner: {
         dark: "#165BC8",
         light: "#6BDDFE",
         dazzle: "#EEFBFF",
@@ -102,11 +102,14 @@ module.exports = {
       backgroundSize: (theme) => ({
         5: "auto 20px",
         6: "auto 24px",
+        7: "auto 28px",
+        8: "auto 32px",
       }),
+      fontFamily: {
+        notosans: ["Noto Sans JP"],
+      },
     },
   },
-  variants: {
-    extend: {},
-  },
+
   plugins: [],
 };

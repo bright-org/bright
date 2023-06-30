@@ -8,17 +8,17 @@
   <link rel="stylesheet" href="./output.css">
   <link rel="shortcut icon" href="favicon.ico">
 </head>
-<body class="bg-background">
+<body class="bg-background font-notosans">
 
 
 
 <main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
     <section class="bg-white -mt-10 px-20 py-10 rounded-lg">
-      <h1 class="font-bold text-center text-xl">
-        <span class="bg-bgGem bg-6 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:mr-1 before:w-6">2段階認証</span>
+      <h1 class="font-bold text-center text-3xl">
+        <span class="bg-bgGem bg-8 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-8 before:inline-block before:mr-1 before:w-8">2段階認証</span>
       </h1>
 
-      <p class="mt-8">端末もしくはメールに届いた認証コードを入力し「次へ進む」を押してください。</p>
+      <p class="mt-8">メールに届いた認証コードを入力し「次へ進む」を押してください。</p>
       <p class="text-link"><a href="#" class="text-sm underline">再送信する</a></p>
 
       <form class="flex mt-8">
@@ -28,9 +28,9 @@
             <input id="authcode" type="number" class="border border-solid border-black max-w-xs px-4 py-2 rounded w-60">
           </label>
 
-          <button class="bg-brightGray-900 border border-solid border-brightGray-900 max-w-xs mt-8 px-4 py-2 rounded select-none text-white w-60 hover:opacity-50">次に進む</button>
+          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs mt-8 px-4 py-2 rounded select-none text-white w-60 hover:opacity-50">次に進む</button>
 
-          <button class="bg-white border border-solid border-black mt-16 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">戻る</button>
+          <button class="bg-white border border-solid border-black font-bold mt-16 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">戻る</button>
         </section>
       </form>
     </section>
