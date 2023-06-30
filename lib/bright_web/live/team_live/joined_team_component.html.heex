@@ -6,7 +6,7 @@
     >
       <p>所属しているチームはありません。</p>
     </li>
-    <.table id="joined" rows={@joined_teams} calss="flex flex-col">
+    <.table id="joined" rows={@joined_teams}>
       <:col :let={team}>
         <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
           <%= # プライマリチームはアイコン色を変える

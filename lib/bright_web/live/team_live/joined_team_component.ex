@@ -8,7 +8,7 @@ defmodule BrightWeb.Team.JoinedTeamComponent do
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, joined_teams = [])}
+    {:ok, assign(socket, _joined_teams = [])}
   end
 
   @impl true
@@ -24,10 +24,4 @@ defmodule BrightWeb.Team.JoinedTeamComponent do
      |> assign(assigns)}
   end
 
-  @impl true
-  defp apply_action(socket, :index, _params) do
-    socket
-    |> assign(:page_title, "Listing Fuga fugas")
-    |> assign(:fuga_fuga, nil)
-  end
 end
