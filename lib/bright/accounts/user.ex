@@ -200,4 +200,9 @@ defmodule Bright.Accounts.User do
         u.email == ^email and
           not is_nil(u.confirmed_at)
   end
+
+  def email_query(email, confirmed: false) do
+    from u in User,
+      where: u.email == ^email
+  end
 end

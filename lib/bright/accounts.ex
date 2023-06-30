@@ -12,10 +12,14 @@ defmodule Bright.Accounts do
 
   @doc """
   Gets a user by email.
+  When `:confirmed` option is given, gets a user including not confirmed.
 
   ## Examples
 
       iex> get_user_by_email("foo@example.com")
+      %User{}
+
+      iex> get_user_by_email("foo@example.com", confirmed: false)
       %User{}
 
       iex> get_user_by_email("unknown@example.com")
@@ -24,6 +28,11 @@ defmodule Bright.Accounts do
   """
   def get_user_by_email(email) when is_binary(email) do
     User.email_query(email)
+    |> Repo.one()
+  end
+
+  def get_user_by_email(email, confirmed: false) when is_binary(email) do
+    User.email_query(email, confirmed: false)
     |> Repo.one()
   end
 
