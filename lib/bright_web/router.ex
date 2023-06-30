@@ -85,6 +85,7 @@ defmodule BrightWeb.Router do
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{BrightWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/users/register", UserRegistrationLive, :new
+      live "/users/finish_registration", UserFinishRegistrationLive, :show
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
@@ -110,7 +111,7 @@ defmodule BrightWeb.Router do
   end
 
   scope "/", BrightWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :no_header]
 
     delete "/users/log_out", UserSessionController, :delete
 

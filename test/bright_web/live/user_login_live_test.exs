@@ -2,7 +2,6 @@ defmodule BrightWeb.UserLoginLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Accounts
   import Bright.Factory
 
   describe "Log in page" do
@@ -29,7 +28,7 @@ defmodule BrightWeb.UserLoginLiveTest do
     test "redirects if user login with valid credentials", %{conn: conn} do
       password = "123456789abcd"
 
-      {:ok, user} = params_for(:user_before_registration, password: password) |> register_user()
+      user = create_user_with_password(password)
 
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 
