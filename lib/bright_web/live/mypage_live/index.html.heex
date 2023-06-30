@@ -1,623 +1,780 @@
-  <!-- プロフィール -->
-  <div class="flex justify-between py-8 px-10 bg-white">
-    <div class="w-[682px]">
-      <div class="flex">
-        <div class="bg-test bg-contain h-20 w-20 mr-5" style="
+<!-- プロフィール -->
+<div class="flex justify-between py-8 px-10 bg-white">
+  <div class="w-[682px]">
+    <div class="flex">
+      <div
+        class="bg-test bg-contain h-20 w-20 mr-5"
+        style="
             background-image: url('/dist/images/sample/sample-image.png');
-          "></div>
-        <div class="flex-1">
-          <div class="flex justify-between pb-2 items-end">
-            <div class="text-2xl font-bold">piacere</div>
-            <div class="flex gap-x-3">
-              <button type="button"
-                class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200">
-                <span class="material-icons md-18 mr-1 text-brightGray-200">share</span>
-                優秀なエンジニア紹介
-              </button>
+          "
+      >
+      </div>
+      <div class="flex-1">
+        <div class="flex justify-between pb-2 items-end">
+          <div class="text-2xl font-bold">piacere</div>
+          <div class="flex gap-x-3">
+            <button
+              type="button"
+              class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+            >
+              <span class="material-icons md-18 mr-1 text-brightGray-200">share</span> 優秀なエンジニア紹介
+            </button>
 
-              <button type="button"
-                class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200">
-                <span class="material-icons md-18 mr-1 text-brightGray-200">star</span>
-                気になる
-              </button>
-            </div>
+            <button
+              type="button"
+              class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+            >
+              <span class="material-icons md-18 mr-1 text-brightGray-200">star</span> 気になる
+            </button>
           </div>
-          <div class="flex justify-between pt-3 border-brightGray-100 border-t">
-            <div class="text-2xl">リードプログラマー</div>
-            <div class="flex gap-x-6 mr-2">
-              <button type="button">
-                <img src="./images/common/twitter.svg" width="26px" />
-              </button>
-              <button type="button">
-                <img src="./images/common/github.svg" width="26px" />
-              </button>
-              <button type="button">
-                <img src="./images/common/facebook.svg" width="26px" />
-              </button>
-            </div>
+        </div>
+        <div class="flex justify-between pt-3 border-brightGray-100 border-t">
+          <div class="text-2xl">リードプログラマー</div>
+          <div class="flex gap-x-6 mr-2">
+            <button type="button">
+              <img src="./images/common/twitter.svg" width="26px" />
+            </button>
+            <button type="button">
+              <img src="./images/common/github.svg" width="26px" />
+            </button>
+            <button type="button">
+              <img src="./images/common/facebook.svg" width="26px" />
+            </button>
           </div>
         </div>
       </div>
-      <div class="pt-5">
-        高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。
-      </div>
     </div>
+    <div class="pt-5">
+      高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。
+    </div>
+  </div>
+  <div>
+    <p class="text-sm !font-bold">
+      スキルセットジェム<span class="font-normal text-xs ml-4">※クリックすると詳細</span>
+    </p>
+    <div class="chart-container flex justify-center">
+      <canvas id="myChart" height="100" width="100"></canvas>
+    </div>
+  </div>
+</div>
+<!-- コンテンツ -->
+<div class="px-10 py-7 flex justify-between">
+  <div class="w-[850px] flex flex-col gap-y-6">
+    <!-- 他ユーザーやチームからの連絡 -->
     <div>
-      <p class="text-sm !font-bold">
-        スキルセットジェム<span class="font-normal text-xs ml-4">※クリックすると詳細</span>
-      </p>
-      <div class="chart-container flex justify-center">
-        <canvas id="myChart" height="100" width="100"></canvas>
+      <h5>他ユーザーやチームからの連絡</h5>
+      <div class="bg-white rounded-md mt-1">
+        <div class="text-sm font-medium text-center text-brightGray-200">
+          <ul class="flex content-between border-b border-brightGray-50">
+            <li class="w-full">
+              <a
+                href="#"
+                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+              >
+                採用（仮置き）
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+                他チームからの連絡（仮置き）
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+                他ユーザからの連絡（仮置き）
+              </a>
+            </li>
+            <li class="flex items-center">
+              <button
+                type="button"
+                id="dropmenu01"
+                data-dropdown-toggle="menu01"
+                class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
+              >
+                <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
+              </button>
+              <!-- Dropdown menu -->
+              <div
+                id="menu01"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+              >
+                <ul
+                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropmenu01"
+                >
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu1-1
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu1-2
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu1-3
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          <div class="pt-4 pb-1 px-8">
+            <ul class="flex gap-y-2.5 flex-col">
+              <li class="text-left flex items-center text-base">
+                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  person
+                </span>
+                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
+                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
+              </li>
+              <li class="text-left flex items-center text-base">
+                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  person
+                </span>
+                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
+                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
+              </li>
+              <li class="text-left flex items-center text-base">
+                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  person
+                </span>
+                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
+                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
+              </li>
+              <li class="text-left flex items-center text-base">
+                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  person
+                </span>
+                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
+                <span class="text-brightGray-300 font-bold pl-4 inline-block">8時間前</span>
+              </li>
+              <li class="text-left flex items-center text-base">
+                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  person
+                </span>
+                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
+                <span class="text-brightGray-300 font-bold pl-4 inline-block">1日前</span>
+              </li>
+            </ul>
+          </div>
+          <div class="flex justify-center gap-x-14 pb-3">
+            <button
+              type="button"
+              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
+            </button>
+            <button
+              type="button"
+              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
+    <div>
+      <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
+      <div class="bg-white rounded-md mt-1">
+        <div class="text-sm font-medium text-center text-brightGray-200">
+          <ul class="flex content-between border-b border-brightGray-50">
+            <li class="w-full">
+              <a
+                href="#"
+                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+              >
+                エンジニア
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">インフラ</a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">デザイナー</a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+                マーケッター
+              </a>
+            </li>
+          </ul>
+
+          <div class="py-4 px-7 flex gap-y-3 flex-col">
+            <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
+              <p class="font-bold w-36 text-left text-sm">
+                Webアプリ開発
+              </p>
+              <table class="table-fixed skill-table">
+                <thead>
+                  <tr>
+                    <th class="w-[110px]"></th>
+                    <th class="pl-8">クラス1</th>
+                    <th class="pl-8">クラス2</th>
+                    <th class="pl-8">クラス3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Elixir</td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+                      </p>
+                    </td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
+                      </p>
+                    </td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>PHP</td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+                      </p>
+                    </td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
+                      </p>
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Ruby</td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
+                      </p>
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
+              <p class="font-bold w-36 text-left text-sm">
+                Webアプリ開発
+              </p>
+              <table class="table-fixed skill-table">
+                <thead>
+                  <tr>
+                    <th class="w-[110px]"></th>
+                    <th class="pl-8">クラス1</th>
+                    <th class="pl-8">クラス2</th>
+                    <th class="pl-8">クラス3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Elixir</td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+                      </p>
+                    </td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
+                      </p>
+                    </td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>PHP</td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+                      </p>
+                    </td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
+                      </p>
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
+              <p class="font-bold w-36 text-left text-sm">PM</p>
+              <table class="table-fixed skill-table">
+                <thead>
+                  <tr>
+                    <th class="w-[110px]"></th>
+                    <th class="pl-8">クラス1</th>
+                    <th class="pl-8">クラス2</th>
+                    <th class="pl-8">クラス3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+                      </p>
+                    </td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
+                      </p>
+                    </td>
+                    <td>
+                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                        <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-x-14 pb-3">
+            <button
+              type="button"
+              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
+            </button>
+            <button
+              type="button"
+              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <!-- コンテンツ -->
-  <div class="px-10 py-7 flex justify-between">
-    <div class="w-[850px] flex flex-col gap-y-6">
-      <!-- 他ユーザーやチームからの連絡 -->
-      <div>
-        <h5>他ユーザーやチームからの連絡</h5>
-        <div class="bg-white rounded-md mt-1">
-          <div class="text-sm font-medium text-center text-brightGray-200">
-            <ul class="flex content-between border-b border-brightGray-50">
-              <li class="w-full">
-                <a href="#"
-                  class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2">採用（仮置き）</a>
+  <div class="w-[750px] flex flex-col gap-y-6">
+    <!-- 所属チームや気になるユーザーとの交流 -->
+    <div>
+      <h5>所属チームや気になるユーザーとの交流</h5>
+      <div class="bg-white rounded-md mt-1">
+        <div class="text-sm font-medium text-center text-brightGray-200">
+          <ul class="flex content-between border-b border-brightGray-50">
+            <li class="w-full">
+              <a
+                href="#"
+                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+              >
+                所属チーム
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+                気になるユーザー
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+                スキルアップ
+              </a>
+            </li>
+            <li class="flex items-center">
+              <button
+                type="button"
+                id="dropmenu02"
+                data-dropdown-toggle="menu02"
+                class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
+              >
+                <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
+              </button>
+              <!-- Dropdown menu -->
+              <div
+                id="menu02"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+              >
+                <ul
+                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropmenu02"
+                >
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu2-1
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu2-2
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu2-3
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          <div class="pt-4 px-6">
+            <ul class="flex gap-y-2.5 flex-col">
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+                <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  pentagon
+                </span>
+                中道洋介さんがスキルアップしました
+                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
               </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">他チームからの連絡（仮置き）</a>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+                <span class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  mail
+                </span>
+                チーム「Bright」からメッセージが届きました。
+                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
               </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">他ユーザからの連絡（仮置き）</a>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+                <span class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  mail
+                </span>
+                チーム「Elixir Fukuoka」からメッセージが届きました
+                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
               </li>
-              <li class="flex items-center">
-                <button type="button" id="dropmenu01" data-dropdown-toggle="menu01"
-                  class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center">
-                  <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
-                </button>
-                <!-- Dropdown menu -->
-                <div id="menu01"
-                  class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu01">
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu1-1</a>
-                    </li>
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu1-2</a>
-                    </li>
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu1-3</a>
-                    </li>
-                  </ul>
-                </div>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+                <span class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  celebration
+                </span>
+                小柳史郎さんからお祝いがありました。
+                <span class="text-brightGray-300 font-bold pl-4 inline-block">8時間前</span>
+              </li>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+                <span class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                  favorite
+                </span>
+                小柳史郎さんから推し活がありました。
+                <span class="text-brightGray-300 font-bold pl-4 inline-block">1日前</span>
               </li>
             </ul>
-            <div class="pt-4 pb-1 px-8">
-              <ul class="flex gap-y-2.5 flex-col">
-                <li class="text-left flex items-center text-base">
-                  <span
-                    class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">person</span>
-                  nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-                </li>
-                <li class="text-left flex items-center text-base">
-                  <span
-                    class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">person</span>
-                  nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-                </li>
-                <li class="text-left flex items-center text-base">
-                  <span
-                    class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">person</span>
-                  nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-                </li>
-                <li class="text-left flex items-center text-base">
-                  <span
-                    class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">person</span>
-                  nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                  <span class="text-brightGray-300 font-bold pl-4 inline-block">8時間前</span>
-                </li>
-                <li class="text-left flex items-center text-base">
-                  <span
-                    class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">person</span>
-                  nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                  <span class="text-brightGray-300 font-bold pl-4 inline-block">1日前</span>
-                </li>
-              </ul>
-            </div>
-            <div class="flex justify-center gap-x-14 pb-3">
-              <button type="button"
-                class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span>
-                前
-              </button>
-              <button type="button"
-                class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                次
-                <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-              </button>
-            </div>
           </div>
-        </div>
-      </div>
-      <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
-      <div>
-        <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
-        <div class="bg-white rounded-md mt-1">
-          <div class="text-sm font-medium text-center text-brightGray-200">
-            <ul class="flex content-between border-b border-brightGray-50">
-              <li class="w-full">
-                <a href="#"
-                  class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2">エンジニア</a>
-              </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">インフラ</a>
-              </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">デザイナー</a>
-              </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">マーケッター</a>
-              </li>
-            </ul>
-
-            <div class="py-4 px-7 flex gap-y-3 flex-col">
-              <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
-                <p class="font-bold w-36 text-left text-sm">
-                  Webアプリ開発
-                </p>
-                <table class="table-fixed skill-table">
-                  <thead>
-                    <tr>
-                      <th class="w-[110px]"></th>
-                      <th class="pl-8">クラス1</th>
-                      <th class="pl-8">クラス2</th>
-                      <th class="pl-8">クラス3</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Elixir</td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                        </p>
-                      </td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                        </p>
-                      </td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                        </p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>PHP</td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                        </p>
-                      </td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                        </p>
-                      </td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>Ruby</td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                        </p>
-                      </td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
-                <p class="font-bold w-36 text-left text-sm">
-                  Webアプリ開発
-                </p>
-                <table class="table-fixed skill-table">
-                  <thead>
-                    <tr>
-                      <th class="w-[110px]"></th>
-                      <th class="pl-8">クラス1</th>
-                      <th class="pl-8">クラス2</th>
-                      <th class="pl-8">クラス3</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Elixir</td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                        </p>
-                      </td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                        </p>
-                      </td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                        </p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>PHP</td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                        </p>
-                      </td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                        </p>
-                      </td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
-                <p class="font-bold w-36 text-left text-sm">PM</p>
-                <table class="table-fixed skill-table">
-                  <thead>
-                    <tr>
-                      <th class="w-[110px]"></th>
-                      <th class="pl-8">クラス1</th>
-                      <th class="pl-8">クラス2</th>
-                      <th class="pl-8">クラス3</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                        </p>
-                      </td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                        </p>
-                      </td>
-                      <td>
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                        </p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="flex justify-center gap-x-14 pb-3">
-              <button type="button"
-                class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span>
-                前
-              </button>
-              <button type="button"
-                class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                次
-                <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-              </button>
-            </div>
+          <div class="flex justify-center gap-x-14 pb-3">
+            <button
+              type="button"
+              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
+            </button>
+            <button
+              type="button"
+              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="w-[750px] flex flex-col gap-y-6">
-      <!-- 所属チームや気になるユーザーとの交流 -->
-      <div>
-        <h5>所属チームや気になるユーザーとの交流</h5>
-        <div class="bg-white rounded-md mt-1">
-          <div class="text-sm font-medium text-center text-brightGray-200">
-            <ul class="flex content-between border-b border-brightGray-50">
-              <li class="w-full">
-                <a href="#"
-                  class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2">所属チーム</a>
-              </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">気になるユーザー</a>
-              </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">スキルアップ</a>
-              </li>
-              <li class="flex items-center">
-                <button type="button" id="dropmenu02" data-dropdown-toggle="menu02"
-                  class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center">
-                  <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
-                </button>
-                <!-- Dropdown menu -->
-                <div id="menu02"
-                  class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu02">
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu2-1</a>
-                    </li>
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu2-2</a>
-                    </li>
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu2-3</a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-            </ul>
-            <div class="pt-4 px-6">
-              <ul class="flex gap-y-2.5 flex-col">
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
-                  <span
-                    class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">pentagon</span>
-                  中道洋介さんがスキルアップしました
-                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
-                  <span
-                    class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">mail</span>
-                  チーム「Bright」からメッセージが届きました。
-                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
-                  <span
-                    class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">mail</span>
-                  チーム「Elixir Fukuoka」からメッセージが届きました
-                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
-                  <span
-                    class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">celebration</span>
-                  小柳史郎さんからお祝いがありました。
-                  <span class="text-brightGray-300 font-bold pl-4 inline-block">8時間前</span>
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
-                  <span
-                    class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">favorite</span>
-                  小柳史郎さんから推し活がありました。
-                  <span class="text-brightGray-300 font-bold pl-4 inline-block">1日前</span>
-                </li>
-              </ul>
-            </div>
-            <div class="flex justify-center gap-x-14 pb-3">
-              <button type="button"
-                class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span>
-                前
+    <!-- 関わっているチーム -->
+    <div>
+      <h5>関わっているチーム</h5>
+      <div class="bg-white rounded-md mt-1">
+        <div class="text-sm font-medium text-center text-brightGray-200">
+          <ul class="flex content-between border-b border-brightGray-50">
+            <li class="w-full">
+              <a
+                href="#"
+                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+              >
+                所属チーム
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">管轄チーム</a>
+            </li>
+            <li class="flex items-center">
+              <button
+                type="button"
+                id="dropmenu03"
+                data-dropdown-toggle="menu03"
+                class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
+              >
+                <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
               </button>
-              <button type="button"
-                class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                次
-                <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 関わっているチーム -->
-      <div>
-        <h5>関わっているチーム</h5>
-        <div class="bg-white rounded-md mt-1">
-          <div class="text-sm font-medium text-center text-brightGray-200">
-            <ul class="flex content-between border-b border-brightGray-50">
-              <li class="w-full">
-                <a href="#"
-                  class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2">所属チーム</a>
+              <!-- Dropdown menu -->
+              <div
+                id="menu03"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+              >
+                <ul
+                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropmenu03"
+                >
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu03-1
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu03-2
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu03-3
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          <div class="pt-4 pb-1 px-6">
+            <ul class="flex gap-y-1.5 flex-col">
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
+                <span class="text-base !text-white bg-lapislazuli-900 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
+                  E
+                </span>
+                Elixir Fukuoka
               </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">管轄チーム</a>
-              </li>
-              <li class="flex items-center">
-                <button type="button" id="dropmenu03" data-dropdown-toggle="menu03"
-                  class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center">
-                  <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
-                </button>
-                <!-- Dropdown menu -->
-                <div id="menu03"
-                  class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu03">
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu03-1</a>
-                    </li>
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu03-2</a>
-                    </li>
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu03-3</a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-            </ul>
-            <div class="pt-4 pb-1 px-6">
-              <ul class="flex gap-y-1.5 flex-col">
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
-                  <span
-                    class="text-base !text-white bg-lapislazuli-900 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">E</span>
-                  Elixir Fukuoka
-                </li>
 
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
-                  <span
-                    class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">圧</span>
-                  圧倒的開発スピード
-                </li>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
+                <span class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
+                  圧
+                </span>
+                圧倒的開発スピード
+              </li>
 
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
-                  <span
-                    class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">S</span>
-                  S社案件開発
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
-                  <span
-                    class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">D</span>
-                  D社スマホアプリプロジェクト
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
-                  <span
-                    class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">A</span>
-                  A社スマホアプリプロジェクト
-                </li>
-              </ul>
-            </div>
-            <div class="flex justify-center gap-x-14 pb-3">
-              <button type="button"
-                class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span>
-                前
-              </button>
-              <button type="button"
-                class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                次
-                <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 気になる -->
-      <div>
-        <h5>気になる</h5>
-        <div class="bg-white rounded-md mt-1">
-          <div class="text-sm font-medium text-center text-brightGray-200">
-            <ul class="flex content-between border-b border-brightGray-50">
-              <li class="w-full">
-                <a href="#"
-                  class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2">参考になる人</a>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
+                <span class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
+                  S
+                </span>
+                S社案件開発
               </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">採用</a>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
+                <span class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
+                  D
+                </span>
+                D社スマホアプリプロジェクト
               </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">離任者</a>
-              </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">スキルパネル</a>
-              </li>
-              <li class="w-full">
-                <a href="#" class="py-3.5 w-full items-center justify-center inline-block">ジョブ</a>
-              </li>
-              <li class="flex items-center">
-                <button type="button" id="dropmenu04" data-dropdown-toggle="menu04"
-                  class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center">
-                  <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
-                </button>
-                <!-- Dropdown menu -->
-                <div id="menu04"
-                  class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu04">
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu4-1</a>
-                    </li>
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu4-2</a>
-                    </li>
-                    <li>
-                      <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">menu4-3</a>
-                    </li>
-                  </ul>
-                </div>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
+                <span class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
+                  A
+                </span>
+                A社スマホアプリプロジェクト
               </li>
             </ul>
-            <div class="pt-3 pb-1 px-6">
-              <ul class="flex flex-wrap gap-y-1">
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
-                  <a class="inline-flex items-center gap-x-6">
-                    <img class="inline-block h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
-                    <div>
-                      <p>nokichi</p>
-                      <p class="text-brightGray-300">アプリエンジニア</p>
-                    </div>
-                  </a>
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
-                  <a class="inline-flex items-center gap-x-6">
-                    <img class="inline-block h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
-                    <div>
-                      <p>nokichi</p>
-                      <p class="text-brightGray-300">アプリエンジニア</p>
-                    </div>
-                  </a>
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
-                  <a class="inline-flex items-center gap-x-6">
-                    <img class="inline-block h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
-                    <div>
-                      <p>nokichi</p>
-                      <p class="text-brightGray-300">アプリエンジニア</p>
-                    </div>
-                  </a>
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
-                  <a class="inline-flex items-center gap-x-6">
-                    <img class="inline-block h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
-                    <div>
-                      <p>nokichi</p>
-                      <p class="text-brightGray-300">アプリエンジニア</p>
-                    </div>
-                  </a>
-                </li>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
-                  <a class="inline-flex items-center gap-x-6">
-                    <img class="inline-block h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
-                    <div>
-                      <p>nokichi</p>
-                      <p class="text-brightGray-300">アプリエンジニア</p>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div class="flex justify-center gap-x-14 pb-3">
-              <button type="button"
-                class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span>
-                前
-              </button>
-              <button type="button"
-                class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center">
-                次
-                <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-              </button>
-            </div>
+          </div>
+          <div class="flex justify-center gap-x-14 pb-3">
+            <button
+              type="button"
+              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
+            </button>
+            <button
+              type="button"
+              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
+            </button>
           </div>
         </div>
       </div>
-      <!-- 検証 -->
     </div>
+    <!-- 気になる -->
+    <div>
+      <h5>気になる</h5>
+      <div class="bg-white rounded-md mt-1">
+        <div class="text-sm font-medium text-center text-brightGray-200">
+          <ul class="flex content-between border-b border-brightGray-50">
+            <li class="w-full">
+              <a
+                href="#"
+                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+              >
+                参考になる人
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">採用</a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">離任者</a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+                スキルパネル
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">ジョブ</a>
+            </li>
+            <li class="flex items-center">
+              <button
+                type="button"
+                id="dropmenu04"
+                data-dropdown-toggle="menu04"
+                class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
+              >
+                <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
+              </button>
+              <!-- Dropdown menu -->
+              <div
+                id="menu04"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+              >
+                <ul
+                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropmenu04"
+                >
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu4-1
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu4-2
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      menu4-3
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          <div class="pt-3 pb-1 px-6">
+            <ul class="flex flex-wrap gap-y-1">
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
+                <a class="inline-flex items-center gap-x-6">
+                  <img
+                    class="inline-block h-10 w-10 rounded-full"
+                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                  />
+                  <div>
+                    <p>nokichi</p>
+                    <p class="text-brightGray-300">アプリエンジニア</p>
+                  </div>
+                </a>
+              </li>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
+                <a class="inline-flex items-center gap-x-6">
+                  <img
+                    class="inline-block h-10 w-10 rounded-full"
+                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                  />
+                  <div>
+                    <p>nokichi</p>
+                    <p class="text-brightGray-300">アプリエンジニア</p>
+                  </div>
+                </a>
+              </li>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
+                <a class="inline-flex items-center gap-x-6">
+                  <img
+                    class="inline-block h-10 w-10 rounded-full"
+                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                  />
+                  <div>
+                    <p>nokichi</p>
+                    <p class="text-brightGray-300">アプリエンジニア</p>
+                  </div>
+                </a>
+              </li>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
+                <a class="inline-flex items-center gap-x-6">
+                  <img
+                    class="inline-block h-10 w-10 rounded-full"
+                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                  />
+                  <div>
+                    <p>nokichi</p>
+                    <p class="text-brightGray-300">アプリエンジニア</p>
+                  </div>
+                </a>
+              </li>
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
+                <a class="inline-flex items-center gap-x-6">
+                  <img
+                    class="inline-block h-10 w-10 rounded-full"
+                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                  />
+                  <div>
+                    <p>nokichi</p>
+                    <p class="text-brightGray-300">アプリエンジニア</p>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="flex justify-center gap-x-14 pb-3">
+            <button
+              type="button"
+              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
+            </button>
+            <button
+              type="button"
+              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+            >
+              次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 検証 -->
   </div>
+</div>

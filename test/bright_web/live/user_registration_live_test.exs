@@ -65,6 +65,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       # Now do a logged in request and assert on the menu
       conn = get(conn, "/")
       response = html_response(conn, 200)
+      assert response =~ "マイページ"
     end
 
     test "renders errors for duplicated email", %{conn: conn} do
