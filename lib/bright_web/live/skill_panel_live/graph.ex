@@ -1,0 +1,8 @@
+defmodule BrightWeb.SkillPanelLive.Graph do
+  use BrightWeb, :live_view
+
+  @impl true
+  def mount(_params, _session, socket) do
+    {:ok, socket}
+  end
+end
