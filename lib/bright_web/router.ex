@@ -112,7 +112,7 @@ defmodule BrightWeb.Router do
       live "/onboardings/skillpanel", OnboardingLive.Skillpanel, :index
       live "/panels/:skill_panel_id/graph", SkillPanelLive.Graph, :show
       live "/panels/:skill_panel_id/skills", SkillPanelLive.Skills, :show
-      live "/teams", TeamMyTeamLive, :index
+      live "/teams", MyTeamLive, :index
       live "/teams/new", TeamCreateLive, :new
     end
   end

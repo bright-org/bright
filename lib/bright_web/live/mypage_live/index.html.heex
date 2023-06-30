@@ -543,10 +543,10 @@
                 >
                   <li>
                     <a
-                      href="#"
+                      href="/teams/new"
                       class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
-                      menu03-1
+                      チームを作る
                     </a>
                   </li>
                   <li>
@@ -569,9 +569,19 @@
               </div>
             </li>
           </ul>
+          <.live_component
+            module={BrightWeb.Team.JoinedTeamComponent}
+            id={@current_user.id || :index}
+            user_id={@current_user.id}
+            patch={~p"/mypage"}
+          />
+          <!--
           <div class="pt-4 pb-1 px-6">
             <ul class="flex gap-y-1.5 flex-col">
               <a href="/teams">
+              <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
+               <p>所属しているチームはありません。</p>
+                 </li>
                 <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
                   <span class="text-base !text-white bg-lapislazuli-900 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
                     E
@@ -606,6 +616,7 @@
               </li>
             </ul>
           </div>
+-->
           <div class="flex justify-center gap-x-14 pb-3">
             <button
               type="button"
