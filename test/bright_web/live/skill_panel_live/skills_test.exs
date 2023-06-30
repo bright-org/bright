@@ -48,9 +48,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_class: skill_class
     } do
       [skill_unit_1, skill_unit_2] =
-        insert_list(2, :skill_unit, skill_class_units: [
-          %{skill_class_id: skill_class.id, position: 1}
-        ])
+        insert_list(2, :skill_unit,
+          skill_class_units: [
+            %{skill_class_id: skill_class.id, position: 1}
+          ]
+        )
+
       skill_unit_dummy = insert(:skill_unit, name: "紐づいていないダミー")
 
       skill_categories = insert_skill_categories_and_skills(skill_unit_1, [1, 1, 1])
@@ -70,7 +73,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_categories
       |> Enum.each(fn skill_category ->
         rowspan = length(skill_category.skills)
-        assert show_live |> element(~s{td[rowspan="#{rowspan}"]}, skill_category.name) |> has_element?()
+
+        assert show_live
+               |> element(~s{td[rowspan="#{rowspan}"]}, skill_category.name)
+               |> has_element?()
 
         skill_category.skills
         |> Enum.each(fn skill ->

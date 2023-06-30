@@ -13,16 +13,11 @@
   </div>
 
   <div class="mt-4">
-    <table
-        class="table-fixed skill-panel-table border-t border-l border-brightGray-200"
-    >
+    <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">
       <!-- 未実装：デザインまま START -->
       <tr>
-        <td
-          colspan="3"
-          width="420px"
-          class="!border-t !border-l-white !border-t-white !border-l"
-        ></td>
+        <td colspan="3" width="420px" class="!border-t !border-l-white !border-t-white !border-l">
+        </td>
         <td class="!border-l !border-brightGray-200">
           <div class="flex justify-center items-center">
             <p class="inline-flex flex-1 justify-center">piacere</p>
@@ -36,7 +31,6 @@
         </td>
       </tr>
       <!-- 未実装：デザインまま END -->
-
       <tr>
         <th class="bg-base text-white text-center w-[200px]">
           知識エリア
@@ -47,36 +41,33 @@
         <th class="bg-base text-white text-center w-[420px]">
           スキル
         </th>
-
         <!-- 未実装：デザインまま START -->
         <td>
           <div class="flex justify-center gap-x-2">
             <div class="min-w-[4em] flex items-center">
-              <span
-                class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1">
+              <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1">
                 68％
               </span>
             </div>
             <div class="min-w-[4em] flex items-center">
-              <span
-                class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1">
+              <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1">
                 12％
               </span>
             </div>
           </div>
         </td>
         <!-- 未実装：デザインまま END -->
-
       </tr>
 
       <%= for [col1, col2, col3] <- build_table_structure(@skill_units) do %>
         <tr>
           <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
-          <td :if={col2} rowspan={col2.size} class="align-top"><%= col2.skill_category.name %></td>
+          <td :if={col2} rowspan={col2.size} class="align-top">
+            <%= col2.skill_category.name %>
+          </td>
           <td>
             <div class="flex justify-between items-center">
               <p><%= col3.skill.name %></p>
-
               <!-- 未実装：デザインまま START -->
               <div class="flex justify-between items-center gap-x-2">
                 <button>
@@ -92,50 +83,48 @@
               <!-- 未実装：デザインまま END -->
             </div>
           </td>
-
           <!-- 未実装：デザインまま START -->
           <td>
             <div class="flex gap-x-4 px-4">
               <div class="flex items-center">
                 <input
-                    id="radio-1"
-                    type="radio"
-                    value=""
-                    name="elixir-radio-1"
-                    class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
+                  id="radio-1"
+                  type="radio"
+                  value=""
+                  name="elixir-radio-1"
+                  class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
                 <label
-                    for="radio-1"
-                    class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                    ></label>
+                  for="radio-1"
+                  class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
+                >
+                </label>
               </div>
               <div class="flex items-center">
                 <input
-                    checked
-                    id="radio-2"
-                    type="radio"
-                    value=""
-                    name="elixir-radio-1"
-                    class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
+                  checked
+                  id="radio-2"
+                  type="radio"
+                  value=""
+                  name="elixir-radio-1"
+                  class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
                 <label
-                    for="radio-2"
-                    class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                    ></label>
+                  for="radio-2"
+                  class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
+                >
+                </label>
               </div>
               <div class="flex items-center">
                 <input
-                    checked
-                    id="radio-3"
-                    type="radio"
-                    value=""
-                    name="elixir-radio-1"
-                    class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
-                <label
-                    for="radio-2"
-                    class="h-1 w-4 bg-brightGray-200 ml-1"
-                    ></label>
+                  checked
+                  id="radio-3"
+                  type="radio"
+                  value=""
+                  name="elixir-radio-1"
+                  class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label for="radio-2" class="h-1 w-4 bg-brightGray-200 ml-1"></label>
               </div>
             </div>
           </td>

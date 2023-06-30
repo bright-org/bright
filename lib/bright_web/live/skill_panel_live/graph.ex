@@ -15,6 +15,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
       |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
       |> List.first()
       |> Bright.Repo.preload(:skill_classes)
+
     skill_class =
       skill_panel.skill_classes
       # 別タスクでクラスを表すカラムを追加必要（？）
@@ -22,8 +23,8 @@ defmodule BrightWeb.SkillPanelLive.Graph do
       |> List.first()
 
     {:ok,
-      socket
-      |> assign(:skill_panel, skill_panel)
-      |> assign(:skill_class, skill_class)}
+     socket
+     |> assign(:skill_panel, skill_panel)
+     |> assign(:skill_class, skill_class)}
   end
 end

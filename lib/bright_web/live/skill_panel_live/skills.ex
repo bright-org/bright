@@ -11,22 +11,23 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Bright.Repo.preload([:skill_classes])
 
     {:ok,
-      socket
-      |> assign(:skill_panel, skill_panel)}
+     socket
+     |> assign(:skill_panel, skill_panel)}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply,
-      socket
-      |> load_skill_class(params["class"])
-      |> load_skill_units()}
+     socket
+     |> load_skill_class(params["class"])
+     |> load_skill_units()}
   end
 
   defp load_skill_class(socket, nil), do: load_skill_class(socket, "1")
 
   defp load_skill_class(socket, numth) do
     numth = String.to_integer(numth)
+
     skill_class =
       socket.assigns.skill_panel.skill_classes
       # 別タスクでクラスを表すカラムを追加必要（？）
@@ -43,7 +44,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     skill_units =
       Ecto.assoc(socket.assigns.skill_class, :skill_units)
-      |> preload([skill_categories: [:skills]])
+      |> preload(skill_categories: [:skills])
       |> SkillUnits.list_skill_units()
 
     socket
@@ -66,7 +67,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> Enum.flat_map(fn skill_unit ->
       skill_category_items =
         skill_unit.skill_categories
-        |> Enum.flat_map(& build_skill_category_table_structure/1)
+        |> Enum.flat_map(&build_skill_category_table_structure/1)
 
       build_skill_unit_table_structure(skill_unit, skill_category_items)
     end)
@@ -91,6 +92,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
         [nil, _], acc -> acc
         [%{size: size}, _], acc -> acc + size
       end)
+
     skill_unit_item = %{size: size, skill_unit: skill_unit}
 
     skill_category_items
