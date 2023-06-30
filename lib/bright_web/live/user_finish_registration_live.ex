@@ -1,8 +1,6 @@
 defmodule BrightWeb.UserFinishRegistrationLive do
   use BrightWeb, :live_view
 
-  alias Bright.Accounts
-
   def render(%{live_action: :show} = assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
