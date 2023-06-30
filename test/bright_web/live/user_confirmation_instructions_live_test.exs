@@ -8,7 +8,7 @@ defmodule BrightWeb.UserConfirmationInstructionsLiveTest do
   alias Bright.Repo
 
   setup do
-    %{user: insert(:user)}
+    %{user: insert(:user_not_confirmed)}
   end
 
   describe "Resend confirmation" do
