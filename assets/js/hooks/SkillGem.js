@@ -176,51 +176,44 @@ const createChartFromJSON = (labels, datasets) => {
   })
 }
 
-const drawSkillGem = (element) => {
-  const dataset = element.dataset;
-  const labels = JSON.parse(dataset.labels);
-  const data = JSON.parse(dataset.data);
-
-  const datasets = [];
-  datasets.push(createData(data[0]));
-
-  if (data[1] !== undefined) {
-    datasets.push(createData(data[1]));
-  }
-
-  const ctx = document.querySelector('#' + element.id + ' canvas');
-  const myChart = new Chart(ctx, createChartFromJSON(labels, datasets));
-
-  ctx.addEventListener('click', function (event) {
-    // padding rightで拡張した部分がクリック判定できるようにする
-
-    const rect = ctx.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const length = myChart.data.labels.length;
-
-    // リンクの判定例
-    for (let i = 0; i < length; i++) {
-      const label = myChart.scales.r.getPointLabelPosition(i);
-      const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
-      if (judge) { alert('リンククリック：' + myChart.data.labels[i]) }
-    }
-
-    // アイコン判定例
-    for (let i = 0; i < length; i++) {
-      const label = myChart.scales.r.getPointLabelPosition(i);
-      const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
-      if (judge) { alert('アイコンクリック：' + myChart.data.labels[i]) }
-    }
-  });
-};
-
 export const SkillGem = {
   mounted() {
-    drawSkillGem(this.el);
-  }
-}
+    const element = this.el;
+    const dataset = element.dataset;
+    const labels = JSON.parse(dataset.labels);
+    const data = JSON.parse(dataset.data);
 
-export const Hooks = {
-  SkillGem: SkillGem
+    const datasets = [];
+    datasets.push(createData(data[0]));
+
+    if (data[1] !== undefined) {
+      datasets.push(createData(data[1]));
+    }
+
+    const ctx = document.querySelector('#' + element.id + ' canvas');
+    const myChart = new Chart(ctx, createChartFromJSON(labels, datasets));
+
+    ctx.addEventListener('click', function (event) {
+      // padding rightで拡張した部分がクリック判定できるようにする
+
+      const rect = ctx.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const length = myChart.data.labels.length;
+
+      // リンクの判定例
+      for (let i = 0; i < length; i++) {
+        const label = myChart.scales.r.getPointLabelPosition(i);
+        const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
+        if (judge) { alert('リンククリック：' + myChart.data.labels[i]) }
+      }
+
+      // アイコン判定例
+      for (let i = 0; i < length; i++) {
+        const label = myChart.scales.r.getPointLabelPosition(i);
+        const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
+        if (judge) { alert('アイコンクリック：' + myChart.data.labels[i]) }
+      }
+    });
+  }
 }
