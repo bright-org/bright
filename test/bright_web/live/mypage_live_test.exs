@@ -1,7 +1,6 @@
 defmodule BrightWeb.MypageLiveTest do
   use BrightWeb.ConnCase
 
-  alias Bright.Accounts
   import Phoenix.LiveViewTest
   import Bright.Factory
 
@@ -9,8 +8,7 @@ defmodule BrightWeb.MypageLiveTest do
     setup %{conn: conn} do
       password = valid_user_password()
 
-      {:ok, user} =
-        params_for(:user_before_registration, password: password) |> Accounts.register_user()
+      user = create_user_with_password(password)
 
       %{conn: log_in_user(conn, user), user: user, password: password}
     end

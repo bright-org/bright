@@ -22,6 +22,10 @@ defmodule Bright.UserFactory do
         build(:user_not_confirmed, password: valid_user_password(), hashed_password: nil)
       end
 
+      def create_user_with_password(password) do
+        insert(:user, hashed_password: Bcrypt.hash_pwd_salt(password))
+      end
+
       def unique_user_name, do: "user_name_#{System.unique_integer()}"
       def unique_user_email, do: "user#{System.unique_integer()}@example.com"
       def valid_user_password, do: "hello world!"
