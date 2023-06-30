@@ -5,15 +5,15 @@
 // import * as Hooks from "./hooks";
 // import * as Params from "./params";
 // import * as Uploaders from "./uploaders";
-
-// (function () {
-//   window.storybook = { Hooks, Params, Uploaders };
-// })();
+import  * as hooks from "./hooks"
+(function () {
+  window.storybook = hooks;
+})();
 
 
 // If your components require alpinejs, you'll need to start
 // alpine after the DOM is loaded and pass in an onBeforeElUpdated
-// 
+//
 // import Alpine from 'alpinejs'
 // window.Alpine = Alpine
 // document.addEventListener('DOMContentLoaded', () => {
