@@ -111,7 +111,7 @@ defmodule BrightWeb.Router do
   end
 
   scope "/", BrightWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :no_header]
 
     delete "/users/log_out", UserSessionController, :delete
 
