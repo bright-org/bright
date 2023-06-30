@@ -1,4 +1,4 @@
-defmodule BrightWeb.MyTeam do
+defmodule BrightWeb.MyTeamLive do
   @moduledoc """
   マイチーム画面
   """
