@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
 module.exports = {
   mode: "jit",
   purge: ["./dist/**/*.html", "./src/**/*.{js,jsx,ts,tsx,vue}"],
@@ -106,10 +107,92 @@ module.exports = {
         8: "auto 32px",
       }),
       fontFamily: {
-        notosans: ["Noto Sans JP"],
+        sans: ["Noto Sans JP"],
       },
     },
   },
 
-  plugins: [],
+  plugins: [
+    plugin(function ({ addBase, addComponents, addUtilities, theme }) {
+      addBase({
+        body: {
+          fontSize: theme("fontSize.sm"),
+          letterSpacing: theme("letterSpacing.tight"),
+        },
+        h1: {
+          fontSize: theme("fontSize.5xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h2: {
+          fontSize: theme("fontSize.4xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h3: {
+          fontSize: theme("fontSize.2xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h4: {
+          fontSize: theme("fontSize.xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h5: {
+          fontSize: theme("fontSize.lg"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        td: {
+          textAlign: "left",
+          fontSize: theme("fontSize.sm"),
+          padding: theme("padding.2"),
+        },
+        th: {
+          textAlign: "left",
+          fontSize: theme("fontSize.sm"),
+          padding: theme("padding.2"),
+        },
+      });
+      addComponents({
+        ".skill-table td": {
+          width: "130px",
+        },
+        ".skill-table th": {
+          width: "130px",
+        },
+        ".skill-panel-table td": {
+          height: theme("height:10"),
+          borderRight: "1px",
+          borderColor: "#97ACAC",
+          borderBottom: "1px",
+          borderStyle: "solid",
+        },
+        ".skill-panel-table th": {
+          height: theme("height:10"),
+          borderRight: "1px",
+          borderColor: "#97ACAC",
+          borderBottom: "1px",
+          borderStyle: "solid",
+        },
+      });
+      addUtilities({
+        ".button-toggle-active": {
+          backgroundColor: "#2E3A3A",
+          color: "#ffffff",
+          borderRadius: "999999px",
+        },
+        ".skill-panel-outline": {
+          outline: "1px solid #97acac",
+          outlineOffset: "1",
+        },
+      });
+    }),
+  ],
 };

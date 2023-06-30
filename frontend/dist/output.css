@@ -373,7 +373,7 @@ ul {
  */
 
 html {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: Noto Sans JP;
   /* 1 */
   line-height: 1.5;
   /* 2 */
@@ -606,48 +606,54 @@ video {
 
 body {
   font-size: 0.875rem;
-  line-height: 1.25rem;
   letter-spacing: -0.025em;
 }
 
 h1 {
-  align-self: center;
   font-size: 3rem;
-  line-height: 1;
   font-weight: 700;
   letter-spacing: -0.025em;
+  align-self: center;
 }
 
 h2 {
-  align-self: center;
   font-size: 2.25rem;
-  line-height: 2.5rem;
   font-weight: 700;
   letter-spacing: -0.025em;
+  align-self: center;
 }
 
 h3 {
-  align-self: center;
   font-size: 1.5rem;
-  line-height: 2rem;
   font-weight: 700;
   letter-spacing: -0.025em;
+  align-self: center;
 }
 
 h4 {
-  align-self: center;
   font-size: 1.25rem;
-  line-height: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.025em;
+  align-self: center;
 }
 
 h5 {
-  align-self: center;
   font-size: 1.125rem;
-  line-height: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.025em;
+  align-self: center;
+}
+
+td {
+  text-align: left;
+  font-size: 0.875rem;
+  padding: 0.5rem;
+}
+
+th {
+  text-align: left;
+  font-size: 0.875rem;
+  padding: 0.5rem;
 }
 
 .skill-table td {
@@ -658,50 +664,18 @@ h5 {
   width: 130px;
 }
 
-td {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  text-align: left;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-th {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  text-align: left;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
 .skill-panel-table td {
-  box-sizing: border-box;
-  height: 2.5rem;
-  border-right-width: 1px;
-  border-bottom-width: 1px;
-  --tw-border-opacity: 1;
-  border-color: rgba(151, 172, 172, var(--tw-border-opacity));
+  border-right: 1px;
+  border-color: #97ACAC;
+  border-bottom: 1px;
+  border-style: solid;
 }
 
 .skill-panel-table th {
-  box-sizing: border-box;
-  height: 2.5rem;
-  border-right-width: 1px;
-  border-bottom-width: 1px;
-  --tw-border-opacity: 1;
-  border-color: rgba(151, 172, 172, var(--tw-border-opacity));
-}
-
-.button-toggle-active {
-  border-radius: 9999px;
-  --tw-bg-opacity: 1;
-  background-color: rgba(46, 58, 58, var(--tw-bg-opacity));
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  border-right: 1px;
+  border-color: #97ACAC;
+  border-bottom: 1px;
+  border-style: solid;
 }
 
 .fixed {
@@ -1967,10 +1941,6 @@ th {
   vertical-align: top;
 }
 
-.font-notosans {
-  font-family: Noto Sans JP;
-}
-
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
@@ -2151,73 +2121,17 @@ th {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.button-toggle-active {
+  background-color: #2E3A3A;
+  color: #ffffff;
+  border-radius: 999999px;
+}
+
 .skill-panel-outline {
   outline: 1px solid #97acac;
   outline-offset: 1;
-}
-
-.bg-google {
-  background: url("./images/bg_google.png") no_repeat 10px center;
-}
-
-.bg-github {
-  background: #0d1117 url("./images/bgGithub.png") no_repeat 10px center;
-}
-
-.bg-facebook {
-  background: #1877f2 url("./images/bgFacebook.png") no_repeat 10px center;
-}
-
-.bg-twitter {
-  background: #1da1f2 url("./images/bgTwitter.png") no_repeat 10px center;
-}
-
-.bg-jem {
-  background-image: url("./images/bg_jem_title.png");
-}
-
-.bg-h-3 {
-  background-size: auto 12px;
-}
-
-.bg-h-35 {
-  background-size: auto 14px;
-}
-
-.bg-h-4 {
-  background-size: auto 16px;
-}
-
-.bg-h-5 {
-  background-size: auto 20px;
-}
-
-.border-github {
-  border-color: #0d111e;
-}
-
-.border-facebook {
-  border-color: #1877f2;
-}
-
-.border-twitter {
-  border-color: #1da1f2;
-}
-
-.bg-google {
-  background: url("./images/bg_google.png") no-repeat 10px center;
-}
-
-.bg-github {
-  background: #0d1117 url("./images/bg_github.png") no-repeat 10px center;
-}
-
-.bg-facebook {
-  background: #1877f2 url("./images/bg_facebook.png") no-repeat 10px center;
-}
-
-.bg-twitter {
-  background: #1da1f2 url("./images/bg_twitter.png") no-repeat 10px center;
+  outline: 1px solid #97acac;
+  outline-offset: 1;
 }
 
 .before\:absolute::before {
