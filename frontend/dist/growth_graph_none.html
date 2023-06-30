@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./output.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link />
+  </head>
+  <body>
+    <div class="flex w-[1920px]">
+      <aside
+        class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-6 pl-3"
+      >
+        <img src="./images/common/logo.svg" width="163px" />
+        <ul class="grid gap-y-10 pl-5 pt-6">
+          <li>
+            <a class="!text-white text-base" href="./mypage.html">マイページ</a>
+          </li>
+          <li>
+            <a class="!text-white text-base" href="./growth_graph.html"
+              >キャリアパス</a
+            >
+          </li>
+          <li>
+            <a class="!text-white text-base" href="/mypage">スキルアップ</a>
+          </li>
+          <li>
+            <a class="!text-white text-base" href="/my_team.html"
+              >チームスキル分析</a
+            >
+          </li>
+        </ul>
+      </aside>
+      <main class="bg-background flex flex-col flex-1">
+        <!-- ヘッダー -->
+        <div
+          class="w-full flex justify-between py-2.5 px-12 border-brightGray-100 border-b bg-brightGray-50"
+        >
+          <h4>スキルパネル</h4>
+          <div class="flex gap-x-6">
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
+            >
+              <span class="material-icons text-xs">search</span>
+            </button>
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
+            >
+              <span class="material-icons text-xs">notifications_none</span>
+              <div
+                class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2"
+              >
+                1
+              </div>
+            </button>
+            <img
+              class="inline-block h-10 w-10 rounded-full"
+              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+            />
+            <button
+              type="button"
+              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
+            >
+              <span class="material-icons text-xs">settings</span>
+            </button>
+          </div>
+        </div>
+        <div
+          class="m-10 bg-white shadow flex justify-center items-center flex-1 h-full"
+        >
+          <div class="flex flex-col items-center text-center">
+            <p>スキルアップ項目がありません</p>
+            <p>
+              <span class="font-bold">新たなスキルアップを目指す</span
+              >から<br />スキルアップしたいスキルを選択しましょう
+            </p>
+            <button
+              class="text-base font-bold px-4 py-2 rounded !text-white bg-base mt-10"
+            >
+              新たなスキルアップを目指す
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+  </body>
+</html>
