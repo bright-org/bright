@@ -102,6 +102,8 @@ defmodule BrightWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
       live "/onboardings", OnboardingLive.Index, :index
+      live "/teams", TeamMyTeamLive, :index
+      live "/teams/new", TeamCreateLive, :new
     end
   end
 
