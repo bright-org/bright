@@ -32,8 +32,16 @@ defmodule Bright.SkillUnits.SkillUnit do
   def changeset(skill_unit, attrs) do
     skill_unit
     |> cast(attrs, [:name])
-    |> cast_assoc(:skill_categories)
-    |> cast_assoc(:skill_class_units)
+    |> cast_assoc(:skill_categories,
+      with: &SkillCategory.changeset/2,
+      sort_param: :skill_categories_sort,
+      drop_param: :skill_categories_drop
+    )
+    |> cast_assoc(:skill_class_units,
+      with: &SkillClassUnit.changeset/2,
+      sort_param: :skill_class_units_sort,
+      drop_param: :skill_class_units_drop
+    )
     |> validate_required([:name])
   end
 end
