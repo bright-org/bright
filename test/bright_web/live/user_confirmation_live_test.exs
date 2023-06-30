@@ -30,7 +30,7 @@ defmodule BrightWeb.UserConfirmationLiveTest do
         lv
         |> form("#confirmation_form")
         |> render_submit()
-        |> follow_redirect(conn, "/")
+        |> follow_redirect(conn, "/users/log_in")
 
       assert {:ok, conn} = result
 
