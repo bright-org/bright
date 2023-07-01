@@ -1,8 +1,4 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.skill-panel-outline {
-  outline: 1px solid #97acac;
-  outline-offset: 1;
-}
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap");

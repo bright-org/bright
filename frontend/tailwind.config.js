@@ -3,7 +3,7 @@ const plugin = require("tailwindcss/plugin");
 module.exports = {
   mode: "jit",
   purge: ["./dist/**/*.html", "./src/**/*.{js,jsx,ts,tsx,vue}"],
-  content: [],
+  content: ["./*.{html,js}"],
   theme: {
     colors: {
       base: "#333333",
@@ -92,6 +92,10 @@ module.exports = {
     extend: {
       backgroundImage: (theme) => ({
         bgGem: "url('./images/bg_gem_title.png')",
+        bgGemEnginner: "url('./images/bg_gem_enginner.png')",
+        bgGemInfra: "url('./images/bg_gem_infra.png')",
+        bgGemDesigner: "url('./images/bg_gem_designer.png')",
+        bgGemMarketer: "url('./images/bg_gem_marketer.png')",
         bgGoogle: "url('./images/bg_google.png')",
         bgGithub: "url('./images/bg_github.png')",
         bgFacebook: "url('./images/bg_facebook.png')",
@@ -105,10 +109,14 @@ module.exports = {
         6: "auto 24px",
         7: "auto 28px",
         8: "auto 32px",
+        9: "auto 34px",
       }),
-      fontFamily: {
-        sans: ["Noto Sans JP"],
-      },
+      fontFamily: (theme) => ({
+        notosans: ["Noto Sans JP"],
+      }),
+      rotate: (theme) => ({
+        225: "225deg",
+      }),
     },
   },
 
