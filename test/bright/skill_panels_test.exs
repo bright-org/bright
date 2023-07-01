@@ -66,4 +66,13 @@ defmodule Bright.SkillPanelsTest do
       assert %Ecto.Changeset{} = SkillPanels.change_skill_panel(skill_panel)
     end
   end
+
+  describe "skill_classes" do
+    test "list_skill_classs/0 returns all skill_classs" do
+      skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
+
+      assert SkillPanels.list_skill_classes()
+             |> Bright.Repo.preload(:skill_panel) == [skill_class]
+    end
+  end
 end

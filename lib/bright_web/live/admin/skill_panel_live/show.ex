@@ -10,7 +10,9 @@ defmodule BrightWeb.Admin.SkillPanelLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    skill_panel = SkillPanels.get_skill_panel!(id) |> Bright.Repo.preload(:skill_classes)
+    skill_panel =
+      SkillPanels.get_skill_panel!(id)
+      |> Bright.Repo.preload(skill_classes: :skill_units)
 
     {:noreply,
      socket

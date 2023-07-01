@@ -1,0 +1,49 @@
+<.header>
+  Skill unit <%= @skill_unit.id %>
+  <:subtitle>This is a skill_unit record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/admin/skill_units/#{@skill_unit}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit skill_unit</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @skill_unit.name %></:item>
+  <:item title="Skill categories">
+    <ul>
+      <%= for skill_category <- @skill_unit.skill_categories do %>
+        <li><%= skill_category.name %></li>
+      <% end %>
+    </ul>
+  </:item>
+  <:item title="Skill classes">
+    <ul>
+      <%= for %{skill_panel: skill_panel} = skill_class <- @skill_unit.skill_classes do %>
+        <li>
+          <.link navigate={~p"/admin/skill_panels/#{skill_panel}"}>
+            <%= "#{skill_panel.name} > #{skill_class.name}" %>
+          </.link>
+        </li>
+      <% end %>
+    </ul>
+  </:item>
+</.list>
+
+<.back navigate={~p"/admin/skill_units"}>Back to skill_units</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="skill_unit-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/skill_units/#{@skill_unit}")}
+>
+  <.live_component
+    module={BrightWeb.Admin.SkillUnitLive.FormComponent}
+    id={@skill_unit.id}
+    title={@page_title}
+    action={@live_action}
+    skill_unit={@skill_unit}
+    patch={~p"/admin/skill_units/#{@skill_unit}"}
+  />
+</.modal>
