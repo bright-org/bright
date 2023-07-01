@@ -36,8 +36,7 @@ jobs:
       image: hexpm/elixir:1.14.5-erlang-26.0-debian-bullseye-20230227-slim
       env:
         MIX_ENV: test
-        BUCKET_NAME: bright_storage_local
-      options: --init
+        GCS_BASE_URL: http://gcs:4443
 
     services:
       postgres:
@@ -48,6 +47,13 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      gcs:
+        image: fsouza/fake-gcs-server:1.45.2
+        ports:
+          - 4443:4443
+        options: --entrypoint "/bin/fake-gcs-server -h"
+        # options: --entrypoint "/bin/fake-gcs-server -data /data -scheme http -public-host localhost"
 
     steps:
       - name: Checkout code
@@ -65,35 +71,7 @@ jobs:
 
       - name: Dependencies install
         run: |
-          apt-get update -y && apt-get install -y build-essential inotify-tools git curl iproute2
-
-      # see: https://github.com/fsouza/fake-gcs-action/
-      - name: Setup fake gcs server
-        uses: fsouza/fake-gcs-action@v0.4.1
-        with:
-          # version: "1.45.2"
-          # backend: memory
-          data: testdata
-          public-host: "storage.gcs.127.0.0.1.nip.io:4443"
-          external-url: "http://storage.gcs.127.0.0.1.nip.io:4443"
-          scheme: http
-          debug: 1
-
-      # - name: Check gcs (temporary run)
-      #   run: |
-      #     curl --insecure http://storage.gcs.127.0.0.1.nip.io:4443/storage/v1/b
-      #     curl http://storage.gcs.127.0.0.1.nip.io:4443/storage/v1/b
-      #     curl http://localhost:4443/storage/v1/b
-
-      - name: list buckets and objects with curl
-        shell: bash
-        run: |
-          echo "ss command:"
-          ss -ant
-          echo "List of buckets:"
-          curl --insecure http://storage.gcs.127.0.0.1.nip.io:4443/storage/v1/b
-          echo "Files in the bucket:"
-          curl --insecure http://storage.gcs.127.0.0.1.nip.io:4443/storage/v1/b/some-bucket/o
+          apt-get update -y && apt-get install -y build-essential inotify-tools git
 
       - name: Install Dependencies
         run: |
