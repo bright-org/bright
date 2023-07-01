@@ -64,14 +64,25 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   @doc """
-  Renders a Profile
+  Renders a Profile small
 
   ## Examples
-      <.profile/>
+      <.profile_snall/>
   """
   def profile_small(assigns) do
     ~H"""
-    小さい
+    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
+      <a class="inline-flex items-center gap-x-6">
+        <img
+          class="inline-block h-10 w-10 rounded-full"
+          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+        />
+        <div>
+          <p>nokichi</p>
+          <p class="text-brightGray-300">アプリエンジニア</p>
+        </div>
+      </a>
+    </li>
     """
   end
 end
