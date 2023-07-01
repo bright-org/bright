@@ -36,7 +36,7 @@ jobs:
       image: hexpm/elixir:1.14.5-erlang-26.0-debian-bullseye-20230227-slim
       env:
         MIX_ENV: test
-        GCS_BASE_URL: http://gcs:4443
+        GCS_BASE_URL: https://gcs:4443
 
     services:
       postgres:
@@ -52,8 +52,7 @@ jobs:
         image: fsouza/fake-gcs-server:1.45.2
         ports:
           - 4443:4443
-        options: --entrypoint "/bin/fake-gcs-server -h"
-        # options: --entrypoint "/bin/fake-gcs-server -data /data -scheme http -public-host localhost"
+        # options: --entrypoint "/bin/fake-gcs-server -scheme http -public-host localhost"
 
     steps:
       - name: Checkout code
