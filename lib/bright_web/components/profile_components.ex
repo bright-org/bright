@@ -62,4 +62,16 @@ defmodule BrightWeb.ProfileComponents do
     </div>
     """
   end
+
+  @doc """
+  Renders a Profile
+
+  ## Examples
+      <.profile/>
+  """
+  def profile_small(assigns) do
+    ~H"""
+    小さい
+    """
+  end
 end
