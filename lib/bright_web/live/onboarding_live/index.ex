@@ -26,8 +26,8 @@ defmodule BrightWeb.OnboardingLive.Index do
     end
   end
 
-  defp apply_action(socket, :index, _params) do
-    onboarding = _params["onboarding"]
+  defp apply_action(socket, :index, params) do
+    onboarding = params["onboarding"]
 
     view_content =
       cond do
