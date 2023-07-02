@@ -12,6 +12,7 @@ defmodule BrightWeb.OnboardingLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl true
   def render(assigns) do
     case assigns[:view_content] do
       :select_skill_panel ->
