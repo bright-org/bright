@@ -172,10 +172,10 @@ module.exports = {
       });
       addComponents({
         ".skill-table td": {
-          width: "130px",
+          width: "110px",
         },
         ".skill-table th": {
-          width: "130px",
+          width: "140px",
         },
         ".skill-panel-table td": {
           height: theme("height:10"),

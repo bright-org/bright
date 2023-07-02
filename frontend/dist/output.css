@@ -666,11 +666,11 @@ th {
 }
 
 .skill-table td {
-  width: 130px;
+  width: 110px;
 }
 
 .skill-table th {
-  width: 130px;
+  width: 140px;
 }
 
 .skill-panel-table td {
@@ -800,6 +800,38 @@ input.coustom-checkbox:checked:after {
 
 .right-2 {
   right: 0.5rem;
+}
+
+.right-10 {
+  right: 2.5rem;
+}
+
+.top-10 {
+  top: 2.5rem;
+}
+
+.-right-10 {
+  right: -2.5rem;
+}
+
+.-top-10 {
+  top: -2.5rem;
+}
+
+.right-5 {
+  right: 1.25rem;
+}
+
+.top-5 {
+  top: 1.25rem;
+}
+
+.right-3 {
+  right: 0.75rem;
+}
+
+.top-3 {
+  top: 0.75rem;
 }
 
 .z-10 {
@@ -946,8 +978,16 @@ input.coustom-checkbox:checked:after {
   margin-left: 2rem;
 }
 
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
 .mr-1 {
   margin-right: 0.25rem;
+}
+
+.-mt-2 {
+  margin-top: -0.5rem;
 }
 
 .mt-2 {
@@ -972,6 +1012,10 @@ input.coustom-checkbox:checked:after {
 
 .ml-1 {
   margin-left: 0.25rem;
+}
+
+.mr-3 {
+  margin-right: 0.75rem;
 }
 
 .block {
@@ -1226,8 +1270,12 @@ input.coustom-checkbox:checked:after {
   width: 220px;
 }
 
-.w-36 {
-  width: 9rem;
+.w-\[150px\] {
+  width: 150px;
+}
+
+.\!w-\[110px\] {
+  width: 110px !important;
 }
 
 .w-\[110px\] {
@@ -1304,6 +1352,14 @@ input.coustom-checkbox:checked:after {
 
 .w-2 {
   width: 0.5rem;
+}
+
+.w-\[390px\] {
+  width: 390px;
+}
+
+.w-\[100px\] {
+  width: 100px;
 }
 
 .min-w-\[6em\] {
@@ -1457,6 +1513,11 @@ input.coustom-checkbox:checked:after {
   row-gap: 0.375rem;
 }
 
+.gap-x-5 {
+  -moz-column-gap: 1.25rem;
+       column-gap: 1.25rem;
+}
+
 .gap-x-3 {
   -moz-column-gap: 0.75rem;
        column-gap: 0.75rem;
@@ -1486,6 +1547,10 @@ input.coustom-checkbox:checked:after {
 .gap-x-1 {
   -moz-column-gap: 0.25rem;
        column-gap: 0.25rem;
+}
+
+.gap-y-4 {
+  row-gap: 1rem;
 }
 
 .space-y-4 > :not([hidden]) ~ :not([hidden]) {
@@ -2076,19 +2141,9 @@ input.coustom-checkbox:checked:after {
   padding-right: 1.25rem;
 }
 
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
-}
-
 .px-10 {
   padding-left: 2.5rem;
   padding-right: 2.5rem;
-}
-
-.py-7 {
-  padding-top: 1.75rem;
-  padding-bottom: 1.75rem;
 }
 
 .px-7 {
@@ -2104,6 +2159,16 @@ input.coustom-checkbox:checked:after {
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
+}
+
+.px-16 {
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+
+.py-20 {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .pt-6 {
@@ -2178,8 +2243,12 @@ input.coustom-checkbox:checked:after {
   padding-top: 5rem;
 }
 
-.pl-8 {
-  padding-left: 2rem;
+.pt-2 {
+  padding-top: 0.5rem;
+}
+
+.pl-4 {
+  padding-left: 1rem;
 }
 
 .pb-0 {
@@ -2190,8 +2259,16 @@ input.coustom-checkbox:checked:after {
   padding-top: 1.25rem;
 }
 
-.pl-4 {
-  padding-left: 1rem;
+.pl-8 {
+  padding-left: 2rem;
+}
+
+.pb-4 {
+  padding-bottom: 1rem;
+}
+
+.pt-14 {
+  padding-top: 3.5rem;
 }
 
 .text-left {
@@ -2282,6 +2359,14 @@ input.coustom-checkbox:checked:after {
 .\!text-xs {
   font-size: 0.75rem !important;
   line-height: 1rem !important;
+}
+
+.text-\[28px\] {
+  font-size: 28px;
+}
+
+.text-\[20px\] {
+  font-size: 20px;
 }
 
 .font-bold {
