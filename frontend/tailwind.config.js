@@ -54,7 +54,7 @@ module.exports = {
       },
       linePlaceholder: "#97ACAC",
       line: "#D4DBDB",
-      background: "#F9FAFA",
+      background: "#EFF0F0",
       error: "#E5323F",
       white: "#ffffff",
       link: "#001AAC",
