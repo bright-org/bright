@@ -109,7 +109,7 @@ defmodule BrightWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
       live "/onboardings", OnboardingLive.Index, :index
-      live "/onboardings/skillpanel", OnboardingLive.Skillpanel, :index
+      live "/onboardings/:onboarding", OnboardingLive.Index, :index
       live "/panels/:skill_panel_id/graph", SkillPanelLive.Graph, :show
       live "/panels/:skill_panel_id/skills", SkillPanelLive.Skills, :show
       live "/teams", TeamMyTeamLive, :index

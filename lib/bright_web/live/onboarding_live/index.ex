@@ -12,8 +12,33 @@ defmodule BrightWeb.OnboardingLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :index, _params) do
+  defp apply_action(socket, :index, params) do
+    onboarding = params["onboarding"]
+
+    view_content =
+      if onboarding == "select_skill_panel" do
+        :select_skill_panel
+      else
+        :select_career
+      end
+
     socket
     |> assign(:page_title, "Listing Onboardings")
+    |> assign(:view_content, view_content)
+  end
+
+  @impl true
+  def render(assigns) do
+    case assigns[:view_content] do
+      :select_skill_panel ->
+        ~H"""
+        <.select_skill_panel />
+        """
+
+      _ ->
+        ~H"""
+        <.select_career />
+        """
+    end
   end
 end
