@@ -113,6 +113,7 @@ module.exports = {
       }),
       fontFamily: (theme) => ({
         notosans: ["Noto Sans JP"],
+        sans: ["Noto Sans JP"],
       }),
       rotate: (theme) => ({
         225: "225deg",
@@ -126,6 +127,7 @@ module.exports = {
         body: {
           fontSize: theme("fontSize.sm"),
           letterSpacing: theme("letterSpacing.tight"),
+          color: "#333333",
         },
         h1: {
           fontSize: theme("fontSize.5xl"),
@@ -188,6 +190,42 @@ module.exports = {
           borderColor: "#97ACAC",
           borderBottom: "1px",
           borderStyle: "solid",
+        },
+        "input.coustom-checkbox": {
+          cursor: "pointer",
+          paddingLeft: 30,
+          verticalAlign: "middle",
+          position: "relative",
+          "&:before": {
+            content: "''",
+            display: "block",
+            position: "absolute",
+            backgroundColor: "#ffffff",
+            borderRadius: "0%",
+            border: "2px solid #2E3A3A",
+            width: "20px",
+            height: "20px",
+            transform: "translateY(-50%)",
+            top: "50%",
+            left: "0px",
+            borderRadius: "3px",
+          },
+          "&:after": {
+            content: "''",
+            display: "block",
+            position: "absolute",
+            borderBottom: "3px solid #2E3A3A",
+            borderLeft: "3px solid #2E3A3A",
+            opacity: "0",
+            height: "6px",
+            width: "12px",
+            transform: "rotate(-45deg)",
+            top: "4px",
+            left: "4px",
+          },
+          "&:checked:after": {
+            opacity: "1",
+          },
         },
       });
       addUtilities({
