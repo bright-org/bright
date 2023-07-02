@@ -1,5 +1,6 @@
 defmodule BrightWeb.OnboardingLive.Skillpanel do
   use BrightWeb, :live_view
+  import BrightWeb.OnbordingComponents
 
   @impl true
   def mount(_params, _session, socket) do
