@@ -35,6 +35,18 @@ defmodule Bright.TeamsTest do
       assert member_result.is_admin == false
       # ジョイン承認するまではかならず非プライマリチーム
       assert member_result.is_primary == false
+
+      name2 = Faker.Lorem.word()
+      # メンバーを追加しなくてもチーム作成は可能
+      assert {:ok, team2} = Teams.create_team_multi(name2, admin_user, [])
+      # メンバーは1名
+      assert Enum.count(team2.member_users) == 1
+      # チームメンバー(作成者)の属性確認
+      admin_result2 = Enum.find(team2.member_users, fn x -> x.user_id == admin_user.id end)
+      # 管理者
+      assert admin_result2.is_admin == true
+      # ２つ目以降のチームは非プライマリチーム
+      assert admin_result2.is_primary == false
     end
   end
 
@@ -50,7 +62,7 @@ defmodule Bright.TeamsTest do
 
       related_teams = Teams.list_joined_teams_by_user_id(user.id)
 
-      # 作成したチームも含めtジョインしたすべてのチームが取得できる
+      # 作成したチームも含めジョインしたすべてのチームが取得できる
       assert Enum.count(related_teams) == 2
       # 作成したチームの属性チェック
       admin_team_result = Enum.find(related_teams, fn x -> x.is_admin == true end)

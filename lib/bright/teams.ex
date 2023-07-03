@@ -232,8 +232,8 @@ defmodule Bright.Teams do
     admin_attr = %{
       user_id: admin_user.id,
       is_admin: true,
-      # プライマリ判定実装まで強制true
-      is_primary: true
+      # プライマリチーム判定
+      is_primary: is_primary(admin_user.id)
     }
 
     member_attr =
@@ -267,5 +267,22 @@ defmodule Bright.Teams do
       |> Repo.transaction()
 
     {:ok, Map.get(result, :team)}
+  end
+
+  @doc """
+  プライマリチーム判定
+
+  最初に所属したチームは自動的にプライマリチームになる
+  """
+  def is_primary(user_id) do
+    joined_team_count =
+      list_joined_teams_by_user_id(user_id)
+      |> Enum.count()
+
+    if joined_team_count == 0 do
+      true
+    else
+      false
+    end
   end
 end
