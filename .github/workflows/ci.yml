@@ -32,6 +32,13 @@ jobs:
     name: Build & Test & FormatCheck & Credo
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        # working-directory: checkoutする場所かつ、stepsのデフォルト作業位置
+        # servicesのマウントで使用する場所(github.workspace)とずらすために設定している
+        # refs: https://su-kun1899.hatenablog.com/entry/2023/01/25/090000
+        working-directory: srv
+
     container:
       image: hexpm/elixir:1.14.5-erlang-26.0-debian-bullseye-20230227-slim
       env:
@@ -52,11 +59,20 @@ jobs:
         image: fsouza/fake-gcs-server:1.45.2
         ports:
           - 4443:4443
-        # options: --entrypoint "/bin/fake-gcs-server -scheme http -public-host localhost"
+        # 起動オプションを設定するために独自チェックポイントを指定
+        volumes:
+          - ${{github.workspace}}/.github/workflows/gcs:/usr/bin/gcs
+        options: --entrypoint "/usr/bin/gcs/checkpoint.sh"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          path: srv
+
+      - name: Copy fake gcs checkpoint
+        run: |
+          cp -r .github/workflows/gcs ${{github.workspace}}/.github/workflows/gcs
 
       - name: Cache deps and _build
         uses: actions/cache@v3
