@@ -1,0 +1,43 @@
+<.header>
+  Skill category <%= @skill_category.id %>
+  <:subtitle>This is a skill_category record from your database.</:subtitle>
+  <:actions>
+    <.link
+      patch={~p"/admin/skill_categories/#{@skill_category}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
+      <.button>Edit skill_category</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @skill_category.name %></:item>
+  <:item title="Skills">
+    <ul>
+      <%= for skill <- @skill_category.skills do %>
+        <li><%= skill.name %></li>
+      <% end %>
+    </ul>
+  </:item>
+</.list>
+
+<.back navigate={~p"/admin/skill_units/#{@skill_category.skill_unit_id}"}>
+  Back to skill_unit
+</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="skill_category-modal"
+  show
+  on_cancel={JS.navigate(~p"/admin/skill_units/#{@skill_category.skill_unit_id}")}
+>
+  <.live_component
+    module={BrightWeb.Admin.SkillCategoryLive.FormComponent}
+    id={@skill_category.id}
+    title={@page_title}
+    action={@live_action}
+    skill_category={@skill_category}
+    navigate={~p"/admin/skill_units/#{@skill_category.skill_unit_id}"}
+  />
+</.modal>
