@@ -7,7 +7,7 @@
 // import * as Uploaders from "./uploaders";
 import  * as hooks from "./hooks"
 (function () {
-  window.storybook = hooks;
+  window.storybook = hooks
 })();
 
 
