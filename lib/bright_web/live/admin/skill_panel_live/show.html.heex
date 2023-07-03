@@ -16,7 +16,7 @@
       <%= for skill_class <- @skill_panel.skill_classes do %>
         <li>
           <%= skill_class.name %>
-          <ul>
+          <ul class="pl-4 list-disc">
             <%= for skill_unit <- skill_class.skill_units do %>
               <li>
                 <.link navigate={~p"/admin/skill_units/#{skill_unit}"}>

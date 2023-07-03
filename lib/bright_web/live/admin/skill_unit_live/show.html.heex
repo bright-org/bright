@@ -13,7 +13,14 @@
   <:item title="Skill categories">
     <ul>
       <%= for skill_category <- @skill_unit.skill_categories do %>
-        <li><%= skill_category.name %></li>
+        <li>
+          <%= skill_category.name %>
+          <ul class="pl-4 list-disc">
+            <%= for skill <- skill_category.skills do %>
+              <li><%= skill.name %></li>
+            <% end %>
+          </ul>
+        </li>
       <% end %>
     </ul>
   </:item>

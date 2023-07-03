@@ -6,7 +6,11 @@ defmodule BrightWeb.Admin.SkillUnitLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :skill_units, SkillUnits.list_skill_units())}
+    skill_units =
+      SkillUnits.list_skill_units()
+      |> Bright.Repo.preload(skill_classes: :skill_panel)
+
+    {:ok, stream(socket, :skill_units, skill_units)}
   end
 
   @impl true

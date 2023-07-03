@@ -12,7 +12,7 @@ defmodule BrightWeb.Admin.SkillUnitLive.Show do
   def handle_params(%{"id" => id}, _, socket) do
     skill_unit =
       SkillUnits.get_skill_unit!(id)
-      |> Bright.Repo.preload([:skill_categories, skill_classes: :skill_panel])
+      |> Bright.Repo.preload(skill_categories: :skills, skill_classes: :skill_panel)
 
     {:noreply,
      socket

@@ -13,6 +13,13 @@
   row_click={fn {_id, skill_unit} -> JS.navigate(~p"/admin/skill_units/#{skill_unit}") end}
 >
   <:col :let={{_id, skill_unit}} label="Name"><%= skill_unit.name %></:col>
+  <:col :let={{_id, %{skill_classes: skill_classes}}} label="Skill classes">
+    <ul>
+      <%= for skill_class <- skill_classes do %>
+        <li><%= "#{skill_class.skill_panel.name} > #{skill_class.name}" %></li>
+      <% end %>
+    </ul>
+  </:col>
   <:action :let={{_id, skill_unit}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/skill_units/#{skill_unit}"}>Show</.link>
