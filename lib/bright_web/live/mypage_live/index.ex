@@ -1,5 +1,6 @@
 defmodule BrightWeb.MypageLive.Index do
   use BrightWeb, :live_view
+  import BrightWeb.ProfileComponents
 
   @impl true
   def mount(_params, _session, socket) do
