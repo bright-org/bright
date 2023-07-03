@@ -9,7 +9,7 @@ defmodule Storybook.SkillScoreComponents.SkillGem do
         id: :skill4,
         attributes: %{
           data: [[90, 80, 75, 60]],
-          labels: ["エンジニア", "マーケター", "デザイナー", "インフラ"]
+          labels: ["エンジニア", "マーケター", "デザイナー", "インフラ"],
         }
       },
       %Variation{
