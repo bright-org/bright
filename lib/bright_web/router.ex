@@ -48,6 +48,7 @@ defmodule BrightWeb.Router do
     live "/skill_units/:id/edit", SkillUnitLive.Index, :edit
     live "/skill_units/:id", SkillUnitLive.Show, :show
     live "/skill_units/:id/show/edit", SkillUnitLive.Show, :edit
+    live "/skill_categories/:id/show/edit", SkillCategoryLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

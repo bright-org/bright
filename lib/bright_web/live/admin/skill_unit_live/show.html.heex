@@ -20,6 +20,9 @@
               <li><%= skill.name %></li>
             <% end %>
           </ul>
+          <.link navigate={~p"/admin/skill_categories/#{skill_category}/show/edit"}>
+            <.button>Edit skill_category</.button>
+          </.link>
         </li>
       <% end %>
     </ul>
