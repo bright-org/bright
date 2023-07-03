@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>TEST</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"
+  integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg=="
+  crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@next/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+<div style="width:400px">
+  <canvas id="mychart"></canvas>
+</div>
+<script>
+    var ctx = document.getElementById('mychart');
+    var myChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['エンジニア', 'インフラ', 'デザイナー', 'マーケッター'],
+        datasets: [{
+          label: 'ymn',
+          data: [40, 10, 10, 10],
+          // データライン
+          borderColor: '#00ff00',
+          backgroundColor: 'rgba(0, 256, 0, 0.5)',
+          borderWidth: 1,
+          pointRadius: 0,
+        },
+        {
+            label: 'ymn2',
+            data: [10, 20, 10, 10],
+            // データライン
+            borderColor: '#ff0000',
+            backgroundColor: 'rgba(256, 0, 0, 0.5)',
+            borderWidth: 1,
+            pointRadius: 0,
+          }
+        
+        ]
+        
+      },
+      options: {
+        scales: {
+          r: {
+            // 最小値・最大値
+            min: 0,
+            max: 100,
+            // 背景色
+            backgroundColor: '#eeffee',
+            // グリッドライン
+            grid: {
+              color: '#eeeeee',
+            },
+            // アングルライン
+            angleLines: {
+              color: '#eeeeee',
+            },
+            ticks: {
+                stepSize: 20
+            },
+            // ポイントラベル
+            pointLabels: {
+              color: '#000000',
+              //backdropColor: '#ddf',
+              backdropPadding: 5,
+              padding: 20,
+            },
+          },
+        },
+      },
+    });
+</script>
+</div>
+</body>
+</html>
+共有 :

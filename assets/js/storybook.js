@@ -5,10 +5,9 @@
 // import * as Hooks from "./hooks";
 // import * as Params from "./params";
 // import * as Uploaders from "./uploaders";
-import {Hooks} from './hooks/index.js';
-
+import  * as hooks from "./hooks"
 (function () {
-  window.storybook = {Hooks: Hooks};
+  window.storybook = hooks;
 })();
 
 

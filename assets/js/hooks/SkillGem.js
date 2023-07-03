@@ -2,10 +2,10 @@ import { Chart } from 'chart.js/auto';
 
 const getColorPattern = (length, colors) => {
   const pattern = [];
-  // lengthが3未満は描画できない前提
+  if (length < 3) return;
 
   // lengthが4の時は先頭から2色の交互
-  if (length == 4) {
+  if (length === 4) {
     for (let i = 0; i < length; i++) {
       pattern.push(colors[i % 2]);
     }
@@ -13,7 +13,7 @@ const getColorPattern = (length, colors) => {
   }
 
   // lengthが3で割り切れる時
-  if (length % 3 == 0) {
+  if (length % 3 === 0) {
     for (let i = 0; i < length; i++) {
       pattern.push(colors[i % colors.length]);
     }
@@ -68,7 +68,7 @@ const drawGridline = (chart, value, length) => {
 
   for (let i = 1; i < length; i++) {
     chart.scales.r.getPointPositionForValue(i, value);
-    let v1 = chart.scales.r.getPointPositionForValue(i, value);
+    const v1 = chart.scales.r.getPointPositionForValue(i, value);
     context.lineTo(v1.x, v1.y);
   }
   context.lineTo(v0.x, v0.y);
@@ -93,7 +93,7 @@ const beforeDatasetsDraw = (chart) => {
   const color2 = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"]);
 
   if (chart.data.datasets[1] !== undefined) {
-    for (var i = 0; i < chart.data.datasets[1].data.length; i++) {
+    for (let i = 0; i < chart.data.datasets[1].data.length; i++) {
       fillSurface(chart, chart.data.datasets[1].data, i, color2[i]);
     }
   }
@@ -109,10 +109,10 @@ const beforeDatasetsDraw = (chart) => {
   const img = new Image();
   img.src = "/images/icon_001.png";
 
-  ///padding rightで拡張しないと、一番右にに表示するアイコンが削れる
+  // padding rightで拡張しないと、一番右にに表示するアイコンが削れる
   img.onload = function () {
     for (let i = 0; i < data.length; i++) {
-      let label = chart.scales.r.getPointLabelPosition(i);
+      const label = chart.scales.r.getPointLabelPosition(i);
       context.drawImage(img, label.right + 2, label.top - 5, 20, 20);
     }
   }
@@ -122,7 +122,7 @@ const beforeDatasetsDraw = (chart) => {
   }
 }
 
-const createChartJson = (labels, datasets) => {
+const createChartFromJSON = (labels, datasets) => {
   return ({
     type: 'radar',
     data: {
@@ -131,7 +131,7 @@ const createChartJson = (labels, datasets) => {
     },
     options: {
       animation: false,
-      responsive: true,
+      responsive: false,
       maintainAspectRatio: false,
       layout: {
         padding: {
@@ -146,7 +146,7 @@ const createChartJson = (labels, datasets) => {
           display: false
         },
         tooltip: {
-          enabled: false,
+          enabled: false
         }
       },
       scales: {
@@ -176,48 +176,50 @@ const createChartJson = (labels, datasets) => {
   })
 }
 
-export const skillGem = (element) => {
-  const dataset = element.dataset;
-  const labels = JSON.parse(dataset.labels);
-  const data = JSON.parse(dataset.data);
+export const SkillGem = {
+  mounted() {
+    const element = this.el;
+    const dataset = element.dataset;
+    const labels = JSON.parse(dataset.labels);
+    const data = JSON.parse(dataset.data);
 
-  const datasets = [];
-  datasets.push(createData(data[0]));
+    const datasets = [];
+    datasets.push(createData(data[0]));
 
-  if (data[1] !== undefined) {
-    datasets.push(createData(data[1]));
+    if (data[1] !== undefined) {
+      datasets.push(createData(data[1]));
+    }
+
+    const ctx = document.querySelector('#' + element.id + ' canvas');
+    const myChart = new Chart(ctx, createChartFromJSON(labels, datasets));
+
+    myChart.canvas.parentNode.style.height = '426px';
+    myChart.canvas.parentNode.style.width = '426px';
+
+    //myChart.canvas.parentNode.style.height = '200px';
+    //myChart.canvas.parentNode.style.width = '250px';
+
+    ctx.addEventListener('click', function (event) {
+      // padding rightで拡張した部分がクリック判定できるようにする
+
+      const rect = ctx.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const length = myChart.data.labels.length;
+
+      // リンクの判定例
+      for (let i = 0; i < length; i++) {
+        const label = myChart.scales.r.getPointLabelPosition(i);
+        const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
+        if (judge) { alert('リンククリック：' + myChart.data.labels[i]) }
+      }
+
+      // アイコン判定例
+      for (let i = 0; i < length; i++) {
+        const label = myChart.scales.r.getPointLabelPosition(i);
+        const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
+        if (judge) { alert('アイコンクリック：' + myChart.data.labels[i]) }
+      }
+    });
   }
-
-  const ctx = document.querySelector('#' + element.id + ' canvas');
-  const myChart = new Chart(ctx, createChartJson(labels, datasets));
-
-  myChart.canvas.parentNode.style.height = '426px';
-  myChart.canvas.parentNode.style.width = '426px';
-
-  //myChart.canvas.parentNode.style.height = '200px';
-  //myChart.canvas.parentNode.style.width = '250px';
-
-  ctx.addEventListener('click', function (event) {
-    //padding rightで拡張した部分がクリック判定できるようにする
-
-    const rect = ctx.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    length = myChart.data.labels.length;
-
-    // リンクの判定例
-    for (let i = 0; i < length; i++) {
-      let label = myChart.scales.r.getPointLabelPosition(i);
-      let judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
-      if (judge) { alert('リンククリック：' + myChart.data.labels[i]) }
-    }
-
-    // アイコン判定例
-    for (let i = 0; i < length; i++) {
-      let label = myChart.scales.r.getPointLabelPosition(i);
-      let judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
-      if (judge) { alert('アイコンクリック：' + myChart.data.labels[i]) }
-    }
-  });
-};
-
+}

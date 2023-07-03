@@ -1,9 +1,5 @@
-import {skillGem} from './skillgem.js';
+import {SkillGem} from './SkillGem.js';
 
 export const Hooks = {
-  skill_gem: {
-    mounted() {
-      skillGem(this.el);
-    }
-  }
-};
+  SkillGem: SkillGem,
+}
