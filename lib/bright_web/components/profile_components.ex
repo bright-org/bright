@@ -1,6 +1,6 @@
 defmodule BrightWeb.ProfileComponents do
   @moduledoc """
-  Gem Components
+  Profile Components
   """
   use Phoenix.Component
 
