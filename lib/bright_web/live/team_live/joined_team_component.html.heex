@@ -1,4 +1,6 @@
 <div class="pt-4 pb-1 px-6">
+<.tab tabs={["所属チーム", "人材チーム"]}>
+  <p class="text-base">
   <ul class="flex gap-y-1.5 flex-col">
     <li
       :if={Enum.count(@joined_teams) == 0}
@@ -26,4 +28,7 @@
       </:col>
     </.table>
   </ul>
+  </p>
+  </.tab>
 </div>
+

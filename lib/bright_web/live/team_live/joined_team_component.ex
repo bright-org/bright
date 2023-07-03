@@ -5,6 +5,7 @@ defmodule BrightWeb.Team.JoinedTeamComponent do
   use BrightWeb, :live_component
 
   alias Bright.Teams
+  import BrightWeb.TabComponents
 
   @impl true
   def mount(socket) do
