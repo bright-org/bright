@@ -192,7 +192,7 @@ export const SkillGem = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas');
     const myChart = new Chart(ctx, createChartFromJSON(labels, datasets));
-    myChart.canvas.parentNode.style.height = isSkillSet ?  '200px' : '426px';
+    myChart.canvas.parentNode.style.height = isSkillSet ?  '150px' : '426px';
     myChart.canvas.parentNode.style.width =  isSkillSet ? '250px' : '426px';
 
     ctx.addEventListener('click', function (event) {

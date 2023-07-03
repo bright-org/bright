@@ -20,19 +20,13 @@ defmodule BrightWeb.SkillScoreComponents do
     assigns = assign(assigns, :data, assigns.data |> Jason.encode!())
 
     ~H"""
-    <div
-      id={@id}
-      phx-hook="SkillGem"
-      phx-update="ignore"
-      data-data={@data}
-      data-labels={@labels}
-    >
+    <div id={@id} phx-hook="SkillGem" phx-update="ignore" data-data={@data} data-labels={@labels}>
       <canvas></canvas>
     </div>
     """
   end
 
-    @doc """
+  @doc """
   Renders a Skill Set Gem
 
   ## Examples
