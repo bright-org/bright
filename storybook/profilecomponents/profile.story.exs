@@ -17,7 +17,8 @@ defmodule Storybook.Components.Profile do
           display_anxious_person: true,
           display_return_to_yourself: true,
           display_stock_candidates_for_employment: true,
-          display_adopt: true
+          display_adopt: true,
+          display_sns: true
         }
       }
     ]

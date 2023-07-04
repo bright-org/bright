@@ -8,7 +8,7 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person display_return_to_yourself display_stock_candidates_for_employment display_adopt/>
+      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person display_return_to_yourself display_stock_candidates_for_employment display_adopt display_sns/>
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
@@ -19,6 +19,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :display_return_to_yourself, :boolean, default: false
   attr :display_stock_candidates_for_employment, :boolean, default: false
   attr :display_adopt, :boolean, default: false
+  attr :display_sns, :boolean, default: false
 
   def profile(assigns) do
     assigns = assign(assigns, :icon_style, "background-image: url('#{assigns.icon_file_path}');")
@@ -127,19 +128,22 @@ defmodule BrightWeb.ProfileComponents do
               </button>
             </div>
           </div>
+
           <div class="flex justify-between pt-3 border-brightGray-100 border-t">
             <div class="text-2xl"><%= assigns.title %></div>
-            <div class="flex gap-x-6 mr-2">
-              <button type="button">
-                <img src="/images/common/twitter.svg" width="26px" />
-              </button>
-              <button type="button">
-                <img src="/images/common/github.svg" width="26px" />
-              </button>
-              <button type="button">
-                <img src="/images/common/facebook.svg" width="26px" />
-              </button>
-            </div>
+            <%= if assigns.display_sns do %>
+              <div class="flex gap-x-6 mr-2">
+                <button type="button">
+                  <img src="/images/common/twitter.svg" width="26px" />
+                </button>
+                <button type="button">
+                  <img src="/images/common/github.svg" width="26px" />
+                </button>
+                <button type="button">
+                  <img src="/images/common/facebook.svg" width="26px" />
+                </button>
+              </div>
+            <% end %>
           </div>
         </div>
       </div>
