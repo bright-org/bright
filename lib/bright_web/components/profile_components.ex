@@ -8,7 +8,7 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile title="リードプログラマー" user_name="piacere"/>
+      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。"/>
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
