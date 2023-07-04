@@ -131,7 +131,7 @@ const createChartFromJSON = (labels, datasets) => {
     },
     options: {
       animation: false,
-      responsive: false,
+      responsive: true,
       maintainAspectRatio: false,
       layout: {
         padding: {
@@ -182,7 +182,7 @@ export const SkillGem = {
     const dataset = element.dataset;
     const labels = JSON.parse(dataset.labels);
     const data = JSON.parse(dataset.data);
-
+    const isSmall = dataset.size == "sm";
     const datasets = [];
     datasets.push(createData(data[0]));
 
@@ -192,6 +192,8 @@ export const SkillGem = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas');
     const myChart = new Chart(ctx, createChartFromJSON(labels, datasets));
+    myChart.canvas.parentNode.style.height = isSmall ?  '165px' : '426px';
+    myChart.canvas.parentNode.style.width =  isSmall ? '250px' : '426px';
 
     ctx.addEventListener('click', function (event) {
       // padding rightで拡張した部分がクリック判定できるようにする
