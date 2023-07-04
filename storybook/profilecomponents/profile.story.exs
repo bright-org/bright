@@ -6,7 +6,10 @@ defmodule Storybook.Components.Profile do
   def variations do
     [
       %Variation{
-        id: :default
+        id: :default,
+        attributes: %{
+          user_name: "piacere"
+        }
       }
     ]
   end
