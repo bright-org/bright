@@ -9,7 +9,7 @@ const getColorPattern = (length, colors) => {
     for (let i = 0; i < length; i++) {
       pattern.push(colors[i % 2])
     }
-    return pattern;
+    return pattern
   }
 
   // lengthが3で割り切れる時
