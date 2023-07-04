@@ -8,7 +8,7 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person display_return_to_yourself display_stock_candidates_for_employment/>
+      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person display_return_to_yourself display_stock_candidates_for_employment display_adopt/>
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
@@ -18,6 +18,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :display_anxious_person, :boolean, default: false
   attr :display_return_to_yourself, :boolean, default: false
   attr :display_stock_candidates_for_employment, :boolean, default: false
+  attr :display_adopt, :boolean, default: false
 
   def profile(assigns) do
     assigns = assign(assigns, :icon_style, "background-image: url('#{assigns.icon_file_path}');")
@@ -109,12 +110,15 @@ defmodule BrightWeb.ProfileComponents do
                 </button>
               <% end %>
 
-              <button
-                type="button"
-                class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-              >
-                採用する
-              </button>
+              <%= if assigns.display_adopt do %>
+                <button
+                  type="button"
+                  class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+                >
+                  採用する
+                </button>
+              <% end %>
+
               <button
                 type="button"
                 class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
