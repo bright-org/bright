@@ -6,6 +6,14 @@ defmodule Storybook.SkillScoreComponents.SkillGem do
   def variations do
     [
       %Variation{
+        id: :skill4_sm,
+        attributes: %{
+          data: [[90, 80, 75, 60]],
+          labels: ["エンジニア", "マーケター", "デザイナー", "インフラ"],
+          size: "sm"
+        }
+      },
+      %Variation{
         id: :skill4,
         attributes: %{
           data: [[90, 80, 75, 60]],

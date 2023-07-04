@@ -14,31 +14,12 @@ defmodule BrightWeb.SkillScoreComponents do
   attr :id, :string, required: true
   attr :data, :list, required: true
   attr :labels, :list, required: true
+  attr :size, :string
 
   def skill_gem(assigns) do
     assigns = assign(assigns, :labels, assigns.labels |> Jason.encode!())
     assigns = assign(assigns, :data, assigns.data |> Jason.encode!())
-
-    ~H"""
-    <div id={@id} phx-hook="SkillGem" phx-update="ignore" data-data={@data} data-labels={@labels}>
-      <canvas></canvas>
-    </div>
-    """
-  end
-
-  @doc """
-  Renders a Skill Set Gem
-
-  ## Examples
-      <.skill_set_gem data="[90, 80, 75, 60]" id="gem-single-skill4" labels={["Elixir本体", "ライブラリ", "環境構築", "関連スキル"]} />
-  """
-  attr :id, :string, required: true
-  attr :data, :list, required: true
-  attr :labels, :list, required: true
-
-  def skill_set_gem(assigns) do
-    assigns = assign(assigns, :labels, assigns.labels |> Jason.encode!())
-    assigns = assign(assigns, :data, assigns.data |> Jason.encode!())
+    assigns = assign(assigns, :size, Map.get(assigns, :size) || "base")
 
     ~H"""
     <div
@@ -47,7 +28,7 @@ defmodule BrightWeb.SkillScoreComponents do
       phx-update="ignore"
       data-data={@data}
       data-labels={@labels}
-      data-type="skill-set"
+      data-size={@size}
     >
       <canvas></canvas>
     </div>
