@@ -30,7 +30,7 @@ defmodule Bright.SkillPanels.SkillClass do
   @doc false
   def changeset(skill_class, attrs) do
     skill_class
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :rank])
+    |> validate_required([:name, :rank])
   end
 end
