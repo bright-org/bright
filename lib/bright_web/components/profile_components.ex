@@ -8,7 +8,7 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person/>
+      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person display_return_to_yourself/>
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
@@ -16,6 +16,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :icon_file_path, :string, default: ""
   attr :display_excellent_person, :boolean, default: false
   attr :display_anxious_person, :boolean, default: false
+  attr :display_return_to_yourself, :boolean, default: false
 
   def profile(assigns) do
     assigns = assign(assigns, :icon_style, "background-image: url('#{assigns.icon_file_path}');")
@@ -89,12 +90,15 @@ defmodule BrightWeb.ProfileComponents do
                 </div>
               <% end %>
 
-              <button
-                type="button"
-                class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-              >
-                自分に戻す
-              </button>
+              <%= if assigns.display_return_to_yourself do %>
+                <button
+                  type="button"
+                  class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+                >
+                  自分に戻す
+                </button>
+              <% end %>
+
               <button
                 type="button"
                 class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
