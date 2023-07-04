@@ -31,8 +31,8 @@ defmodule Bright.SkillPanelsTest do
       valid_attrs =
         params_for(:locked_skill_panel)
         |> Map.put(:skill_classes, [
-          params_for(:skill_class),
-          params_for(:skill_class)
+          params_for(:skill_class, rank: nil),
+          params_for(:skill_class, rank: nil)
         ])
 
       {:ok, %SkillPanel{} = skill_panel} = SkillPanels.create_skill_panel(valid_attrs)
