@@ -84,6 +84,24 @@ defmodule BrightWeb.ProfileComponents do
               >
                 自分に戻す
               </button>
+              <button
+                type="button"
+                class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+              >
+                採用候補者としてストック
+              </button>
+              <button
+                type="button"
+                class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+              >
+                採用する
+              </button>
+              <button
+                type="button"
+                class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+              >
+                採用の調整
+              </button>
             </div>
           </div>
           <div class="flex justify-between pt-3 border-brightGray-100 border-t">
