@@ -8,12 +8,13 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png"/>
+      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person/>
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
   attr :detail, :string, default: ""
   attr :icon_file_path, :string, default: ""
+  attr :display_excellent_person, :boolean, default: false
 
   def profile(assigns) do
     assigns = assign(assigns, :icon_style, "background-image: url('#{assigns.icon_file_path}');")
@@ -26,12 +27,14 @@ defmodule BrightWeb.ProfileComponents do
           <div class="flex justify-between pb-2 items-end">
             <div class="text-2xl font-bold"><%= assigns.user_name %></div>
             <div class="flex gap-x-3">
-              <button
-                type="button"
-                class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGreen-300"
-              >
-                <span class="material-icons md-18 mr-1 text-brightGreen-300">share</span> 優秀な人として紹介
-              </button>
+              <%= if assigns.display_excellent_person do %>
+                <button
+                  type="button"
+                  class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGreen-300"
+                >
+                  <span class="material-icons md-18 mr-1 text-brightGreen-300">share</span> 優秀な人として紹介
+                </button>
+              <% end %>
 
               <button
                 type="button"
