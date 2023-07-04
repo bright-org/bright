@@ -8,23 +8,20 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。"/>
+      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png"/>
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
   attr :detail, :string, default: ""
+  attr :icon_file_path, :string, default: ""
 
   def profile(assigns) do
+    assigns = assign(assigns, :icon_style, "background-image: url('#{assigns.icon_file_path}');")
+
     ~H"""
     <div class="w-[850px] pt-4">
       <div class="flex">
-        <div
-          class="bg-test bg-contain h-20 w-20 mr-5"
-          style="
-            background-image: url('/images/sample/sample-image.png');
-          "
-        >
-        </div>
+        <div class="bg-test bg-contain h-20 w-20 mr-5" style={@icon_style}></div>
         <div class="flex-1">
           <div class="flex justify-between pb-2 items-end">
             <div class="text-2xl font-bold"><%= assigns.user_name %></div>
@@ -125,7 +122,7 @@ defmodule BrightWeb.ProfileComponents do
         </div>
       </div>
       <div class="pt-5">
-      <%= assigns.detail %>
+        <%= assigns.detail %>
       </div>
     </div>
     """
