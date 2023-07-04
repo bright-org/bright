@@ -15,7 +15,8 @@ defmodule Storybook.Components.Profile do
           icon_file_path: "/images/sample/sample-image.png",
           display_excellent_person: true,
           display_anxious_person: true,
-          display_return_to_yourself: true
+          display_return_to_yourself: true,
+          display_stock_candidates_for_employment: true
         }
       }
     ]
