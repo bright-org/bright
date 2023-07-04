@@ -15,7 +15,7 @@ defmodule Bright.SkillPanels.SkillPanel do
     field :locked_date, :date
     field :name, :string
 
-    has_many :skill_classes, SkillClass, on_replace: :delete
+    has_many :skill_classes, SkillClass, preload_order: [asc: :rank], on_replace: :delete
 
     timestamps()
   end

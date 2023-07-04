@@ -14,6 +14,7 @@ defmodule Bright.SkillPanels.SkillClass do
 
   schema "skill_classes" do
     field :name, :string
+    field :rank, :integer
 
     belongs_to :skill_panel, SkillPanel
 
