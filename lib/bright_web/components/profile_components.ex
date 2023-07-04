@@ -8,13 +8,14 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person/>
+      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person/>
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
   attr :detail, :string, default: ""
   attr :icon_file_path, :string, default: ""
   attr :display_excellent_person, :boolean, default: false
+  attr :display_anxious_person, :boolean, default: false
 
   def profile(assigns) do
     assigns = assign(assigns, :icon_style, "background-image: url('#{assigns.icon_file_path}');")
@@ -36,51 +37,57 @@ defmodule BrightWeb.ProfileComponents do
                 </button>
               <% end %>
 
-              <button
-                type="button"
-                id="dropcheckmenu"
-                data-dropdown-toggle="checkmenu"
-                class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-              >
-                <span class="material-icons md-18 mr-1 text-brightGray-200">star</span> 気になる
-              </button>
-              <!-- 気になるDropdown menu -->
-              <div id="checkmenu" class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]">
-                <ul class="p-2 text-left text-base" aria-labelledby="dropcheckmenu">
-                  <li>
-                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">気になるリスト</a>
-                  </li>
-                  <li>
-                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">メンバー候補</a>
-                  </li>
-                  <li>
-                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">
-                      java開発者リスト
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">
-                      Python開発者リスト
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">ジュニアエンジニア</a>
-                  </li>
-                  <li>
-                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">シニアエンジニア</a>
-                  </li>
-                  <li class="px-4 py-3 hover:bg-brightGray-50 flex justify-center gap-x-2">
-                    <input
-                      type="text"
-                      placeholder="リスト名を入力"
-                      class="px-2 py-1 border border-brightGray-900 rounded-sm flex-1 w-full text-base w-[220px]"
-                    />
-                    <button class="text-sm font-bold px-4 py-1 rounded text-white bg-base">
-                      新規作成
-                    </button>
-                  </li>
-                </ul>
-              </div>
+              <%= if assigns.display_anxious_person do %>
+                <button
+                  type="button"
+                  id="dropcheckmenu"
+                  data-dropdown-toggle="checkmenu"
+                  class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+                >
+                  <span class="material-icons md-18 mr-1 text-brightGray-200">star</span> 気になる
+                </button>
+                <!-- 気になるDropdown menu -->
+                <div id="checkmenu" class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]">
+                  <ul class="p-2 text-left text-base" aria-labelledby="dropcheckmenu">
+                    <li>
+                      <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">気になるリスト</a>
+                    </li>
+                    <li>
+                      <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">メンバー候補</a>
+                    </li>
+                    <li>
+                      <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">
+                        java開発者リスト
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">
+                        Python開発者リスト
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">
+                        ジュニアエンジニア
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="block px-4 py-3 hover:bg-brightGray-50 text-base">
+                        シニアエンジニア
+                      </a>
+                    </li>
+                    <li class="px-4 py-3 hover:bg-brightGray-50 flex justify-center gap-x-2">
+                      <input
+                        type="text"
+                        placeholder="リスト名を入力"
+                        class="px-2 py-1 border border-brightGray-900 rounded-sm flex-1 w-full text-base w-[220px]"
+                      />
+                      <button class="text-sm font-bold px-4 py-1 rounded text-white bg-base">
+                        新規作成
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              <% end %>
 
               <button
                 type="button"
