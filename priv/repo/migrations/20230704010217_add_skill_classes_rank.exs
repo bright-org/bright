@@ -3,11 +3,11 @@ defmodule Bright.Repo.Migrations.AddSkillClassesRank do
 
   def up do
     alter table(:skill_classes) do
-      add :rank, :integer, null: false, default: 1
+      add :rank, :integer, null: false
     end
 
     # 初期化用SQL
-    # - すでに存在するレコードが続くunique_index作成時にエラーになるため対応
+    # - すでに存在するレコードがunique_index作成時にエラーになるため対応
     execute "
     WITH rankings AS (
       SELECT id,
