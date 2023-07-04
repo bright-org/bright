@@ -7,8 +7,8 @@
 // import * as Uploaders from "./uploaders";
 import  * as hooks from "./hooks"
 (function () {
-  window.storybook = hooks;
-})();
+  window.storybook = hooks
+})()
 
 
 // If your components require alpinejs, you'll need to start
