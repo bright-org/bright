@@ -12,6 +12,7 @@ defmodule BrightWeb.ProfileComponents do
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
+  attr :detail, :string, default: ""
 
   def profile(assigns) do
     ~H"""
@@ -124,7 +125,7 @@ defmodule BrightWeb.ProfileComponents do
         </div>
       </div>
       <div class="pt-5">
-        高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。
+      <%= assigns.detail %>
       </div>
     </div>
     """

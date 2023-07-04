@@ -9,7 +9,8 @@ defmodule Storybook.Components.Profile do
         id: :default,
         attributes: %{
           user_name: "piacere",
-          title: "リードプログラマー"
+          title: "リードプログラマー",
+          detail: "高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。"
         }
       }
     ]
