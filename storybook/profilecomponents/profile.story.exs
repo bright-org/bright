@@ -8,7 +8,8 @@ defmodule Storybook.Components.Profile do
       %Variation{
         id: :default,
         attributes: %{
-          user_name: "piacere"
+          user_name: "piacere",
+          title: "リードプログラマー"
         }
       }
     ]

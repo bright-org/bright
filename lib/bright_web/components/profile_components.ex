@@ -8,9 +8,10 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile user_name="piacere"/>
+      <.profile title="リードプログラマー" user_name="piacere"/>
   """
   attr :user_name, :string, default: ""
+  attr :title, :string, default: ""
 
   def profile(assigns) do
     ~H"""
@@ -107,7 +108,7 @@ defmodule BrightWeb.ProfileComponents do
             </div>
           </div>
           <div class="flex justify-between pt-3 border-brightGray-100 border-t">
-            <div class="text-2xl">リードプログラマー</div>
+            <div class="text-2xl"><%= assigns.title %></div>
             <div class="flex gap-x-6 mr-2">
               <button type="button">
                 <img src="/images/common/twitter.svg" width="26px" />
