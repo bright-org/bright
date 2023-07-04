@@ -8,7 +8,7 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile
 
   ## Examples
-      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person display_return_to_yourself display_stock_candidates_for_employment display_adopt display_sns/>
+      <.profile title="リードプログラマー" user_name="piacere" detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。" icon_file_path="/images/sample/sample-image.png" display_excellent_person display_anxious_person display_return_to_yourself display_stock_candidates_for_employment display_adopt display_sns twitter_url="https://twitter.com/" facebook_url="https://www.facebook.com/" github_url="https://www.github.com/"/>
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
@@ -20,9 +20,15 @@ defmodule BrightWeb.ProfileComponents do
   attr :display_stock_candidates_for_employment, :boolean, default: false
   attr :display_adopt, :boolean, default: false
   attr :display_sns, :boolean, default: false
+  attr :twitter_url, :string, default: ""
+  attr :facebook_url, :string, default: ""
+  attr :github_url, :string, default: ""
 
   def profile(assigns) do
     assigns = assign(assigns, :icon_style, "background-image: url('#{assigns.icon_file_path}');")
+    assigns = assign(assigns, :twitter_url, "window.open('#{assigns.twitter_url}')")
+    assigns = assign(assigns, :facebook_url, "window.open('#{assigns.facebook_url}')")
+    assigns = assign(assigns, :github_url, "window.open('#{assigns.github_url}')")
 
     ~H"""
     <div class="w-[850px] pt-4">
@@ -133,13 +139,13 @@ defmodule BrightWeb.ProfileComponents do
             <div class="text-2xl"><%= assigns.title %></div>
             <%= if assigns.display_sns do %>
               <div class="flex gap-x-6 mr-2">
-                <button type="button">
+                <button type="button" onclick={@twitter_url}>
                   <img src="/images/common/twitter.svg" width="26px" />
                 </button>
-                <button type="button">
+                <button type="button" onclick={@github_url}>
                   <img src="/images/common/github.svg" width="26px" />
                 </button>
-                <button type="button">
+                <button type="button" onclick={@facebook_url}>
                   <img src="/images/common/facebook.svg" width="26px" />
                 </button>
               </div>
