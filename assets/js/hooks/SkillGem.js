@@ -107,13 +107,16 @@ const beforeDatasetsDraw = (chart) => {
   }
 
   const img = new Image()
-  img.src = "/images/icon_001.png"
+  img.src = "/images/icon_up_green.svg"
+
+  const iconWidth = 21
+  const iconHeight = 21
 
   // padding rightで拡張しないと、一番右にに表示するアイコンが削れる
   img.onload = function () {
     for (let i = 0; i < data.length; i++) {
       const label = chart.scales.r.getPointLabelPosition(i);
-      context.drawImage(img, label.right + 2, label.top - 5, 20, 20)
+      context.drawImage(img, label.right + 2, label.top - 4, iconWidth, iconHeight)
     }
   }
 
@@ -167,7 +170,7 @@ const createChartFromJSON = (labels, datasets) => {
           pointLabels: {
             color: '#0000FF',
             backdropPadding: 5,
-            padding: 20,
+            padding: 25,
           },
         },
       },
