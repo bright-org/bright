@@ -11,8 +11,8 @@ alias Bright.{Repo, SkillPanels, SkillUnits}
   SkillPanels.create_skill_panel(%{
     name: "Webアプリ開発 Elixir",
     skill_classes: [
-      %{name: "クラス1：零細Webアプリ開発がこなせる"},
-      %{name: "クラス2：小規模Webアプリ開発、マイクロサービス構築がこなせる"}
+      %{name: "零細Webアプリ開発がこなせる"},
+      %{name: "小規模Webアプリ開発、マイクロサービス構築がこなせる"}
     ]
   })
 ```
