@@ -36,7 +36,7 @@ jobs:
       image: hexpm/elixir:1.14.5-erlang-26.0-debian-bullseye-20230227-slim
       env:
         MIX_ENV: test
-        BUCKET_NAME: bright_storage_local
+        GCS_BASE_URL: http://gcs:4443
 
     services:
       postgres:
@@ -47,6 +47,11 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      gcs:
+        image: ghcr.io/s12m/fake-gcs-server:1.45.2
+        ports:
+          - 4443:4443
 
     steps:
       - name: Checkout code
