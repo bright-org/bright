@@ -15,7 +15,7 @@ defmodule Bright.SkillPanels.SkillPanel do
     field :locked_date, :date
     field :name, :string
 
-    has_many :skill_classes, SkillClass, on_replace: :delete
+    has_many :skill_classes, SkillClass, preload_order: [asc: :rank], on_replace: :delete
 
     timestamps()
   end
@@ -29,6 +29,27 @@ defmodule Bright.SkillPanels.SkillPanel do
       sort_param: :skill_classes_sort,
       drop_param: :skill_classes_drop
     )
+    |> change_skill_classes_rank()
     |> validate_required([:name])
   end
+
+  # 紐づくスキルクラスのrankを順に設定したchangesetを返す。
+  # - attrsは様々な形(atomキー, DynamicForm由来,...)があるためchangesetの状態で設定している。
+  defp change_skill_classes_rank(
+         %{
+           changes: %{skill_classes: skill_classes}
+         } = changeset
+       ) do
+    skill_classes_changeset =
+      skill_classes
+      |> Enum.with_index(1)
+      |> Enum.map(fn {skill_class_changeset, rank} ->
+        Map.update!(skill_class_changeset, :changes, &Map.put(&1, :rank, rank))
+      end)
+
+    changeset
+    |> Map.update!(:changes, &Map.put(&1, :skill_classes, skill_classes_changeset))
+  end
+
+  defp change_skill_classes_rank(changeset), do: changeset
 end
