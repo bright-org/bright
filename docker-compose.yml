@@ -38,10 +38,9 @@ services:
       - LIVEBOOK_TOKEN_ENABLED=false
       - LIVEBOOK_HOME=/data
   gcs:
-    image: fsouza/fake-gcs-server:1.45.2
+    image: ghcr.io/s12m/fake-gcs-server:1.45.2
     ports:
       - 4443:4443
-    command: -scheme http -public-host localhost
     volumes:
       - gcsdata:/storage/bright_storage_local
 volumes:
