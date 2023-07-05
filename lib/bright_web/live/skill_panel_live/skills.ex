@@ -19,26 +19,25 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   def handle_params(params, _url, socket) do
     {:noreply,
      socket
-     |> load_skill_class(params["class"])
-     |> load_skill_units()}
+     |> assign_skill_class(params["class"])
+     |> assign_skill_units()}
   end
 
-  defp load_skill_class(socket, nil), do: load_skill_class(socket, "1")
+  defp assign_skill_class(socket, nil), do: assign_skill_class(socket, "1")
 
-  defp load_skill_class(socket, numth) do
-    numth = String.to_integer(numth)
-
+  defp assign_skill_class(socket, rank) do
+    rank = String.to_integer(rank)
+    skill_classes = socket.assigns.skill_panel.skill_classes
     skill_class =
-      socket.assigns.skill_panel.skill_classes
-      # 別タスクでクラスを表すカラムを追加必要（？）
-      |> Enum.sort_by(& &1.inserted_at, {:asc, NaiveDateTime})
-      |> Enum.at(numth - 1)
+      skill_classes
+      |> Enum.find(& &1.rank == rank)
+      |> Kernel.||(List.last(skill_classes))
 
     socket
     |> assign(:skill_class, skill_class)
   end
 
-  defp load_skill_units(socket) do
+  defp assign_skill_units(socket) do
     # query chainを作るか専用の関数を作るか悩んだため、後で見直し
     import Ecto.Query, only: [preload: 2]
 

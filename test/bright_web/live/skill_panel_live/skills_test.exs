@@ -28,18 +28,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     setup do
       skill_panel = insert(:skill_panel)
-      skill_class = insert(:skill_class, skill_panel: skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, rank: 1)
 
       %{skill_panel: skill_panel, skill_class: skill_class}
     end
 
     test "shows content", %{
       conn: conn,
-      skill_panel: skill_panel
+      skill_panel: skill_panel,
+      skill_class: skill_class
     } do
       {:ok, _show_live, html} = live(conn, ~p"/panels/#{skill_panel}/skills")
 
       assert html =~ "スキルパネル"
+      assert html =~ skill_class.name
     end
 
     test "shows skills table", %{
@@ -83,6 +85,27 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
           assert show_live |> element("td", skill.name) |> has_element?()
         end)
       end)
+    end
+
+    test "shows the skill class by query string parameter", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, rank: 2)
+      {:ok, _show_live, html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=2")
+
+      assert html =~ skill_class_2.name
+    end
+
+    test "shows maximum skill class if requested unknown rank", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      unknown = 9999
+      {:ok, _show_live, html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=#{unknown}")
+
+      assert html =~ skill_class.name
     end
   end
 end
