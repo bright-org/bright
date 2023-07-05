@@ -8,7 +8,7 @@
 ```mermaid
 erDiagram
   user_profiles {
-    id	user_id	FK "ユーザーID"
+    id	user_id	FK "ユーザID"
     string title "称号"
     string detail "プロフィール詳細"
     string icon_file_path "アイコンファイルパス"
