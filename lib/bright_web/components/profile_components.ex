@@ -3,6 +3,7 @@ defmodule BrightWeb.ProfileComponents do
   Profile Components
   """
   use Phoenix.Component
+  import BrightWeb.BrightButtonComponents
 
   @doc """
   Renders a Profile
@@ -57,12 +58,7 @@ defmodule BrightWeb.ProfileComponents do
             <div class="text-2xl font-bold"><%= assigns.user_name %></div>
             <div class="flex gap-x-3">
               <%= if assigns.display_excellent_person do %>
-                <button
-                  type="button"
-                  class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGreen-300"
-                >
-                  <span class="material-icons md-18 mr-1 text-brightGreen-300">share</span> 優秀な人として紹介
-                </button>
+                <.excellent_person_button />
               <% end %>
 
               <%= if assigns.display_anxious_person do %>
