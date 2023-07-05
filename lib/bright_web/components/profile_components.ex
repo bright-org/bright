@@ -4,6 +4,7 @@ defmodule BrightWeb.ProfileComponents do
   """
   use Phoenix.Component
   import BrightWeb.BrightButtonComponents
+  import BrightWeb.SnsComponents
 
   @doc """
   Renders a Profile
@@ -45,9 +46,6 @@ defmodule BrightWeb.ProfileComponents do
     assigns =
       assigns
       |> assign(:icon_style, "background-image: url('#{assigns.icon_file_path}');")
-      |> assign(:twitter_url, "window.open('#{assigns.twitter_url}')")
-      |> assign(:facebook_url, "window.open('#{assigns.facebook_url}')")
-      |> assign(:github_url, "window.open('#{assigns.github_url}')")
 
     ~H"""
     <div class="w-[850px] pt-4">
@@ -86,17 +84,7 @@ defmodule BrightWeb.ProfileComponents do
           <div class="flex justify-between pt-3 border-brightGray-100 border-t">
             <div class="text-2xl"><%= assigns.title %></div>
             <%= if assigns.display_sns do %>
-              <div class="flex gap-x-6 mr-2">
-                <button type="button" onclick={@twitter_url}>
-                  <img src="/images/common/twitter.svg" width="26px" />
-                </button>
-                <button type="button" onclick={@github_url}>
-                  <img src="/images/common/github.svg" width="26px" />
-                </button>
-                <button type="button" onclick={@facebook_url}>
-                  <img src="/images/common/facebook.svg" width="26px" />
-                </button>
-              </div>
+              <.sns twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
             <% end %>
           </div>
         </div>
