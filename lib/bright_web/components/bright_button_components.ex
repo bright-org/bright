@@ -5,10 +5,10 @@ defmodule BrightWeb.BrightButtonComponents do
   use Phoenix.Component
 
   @doc """
-  Renders a Excellent Person Button
+  Renders a "Excellent Person" Button
 
   ## Examples
-
+      <.excellent_person_button />
   """
   def excellent_person_button(assigns) do
     ~H"""
@@ -22,10 +22,10 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
-  Renders a anxious_person_button
+  Renders a "Anxious Person" Button
 
   ## Examples
-
+      <.anxious_person_button />
   """
   def anxious_person_button(assigns) do
     ~H"""
@@ -82,10 +82,10 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
-  Renders a return_to_yourself_button
+  Renders a "Return to Yourself" Button
 
   ## Examples
-
+      <.return_to_yourself_button />
   """
   def return_to_yourself_button(assigns) do
     ~H"""
@@ -99,10 +99,10 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
-  Renders a stock_candidates_for_employment_button
+  Renders a "Stock Candidates For Employment" Button
 
   ## Examples
-
+      <.stock_candidates_for_employment_button />
   """
   def stock_candidates_for_employment_button(assigns) do
     ~H"""
@@ -116,10 +116,10 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
-  Renders a adopt_button
+  Renders a Adopt Button
 
   ## Examples
-
+      <.adopt_button />
   """
   def adopt_button(assigns) do
     ~H"""
@@ -133,12 +133,12 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
-  Renders a recruitment_coordination_button
+  Renders a "Recruitment Coordination" Button
 
   ## Examples
-
+      <.ecruitment_coordination_button />
   """
-  def recruitment_coordination_button(assigns) do
+  def ecruitment_coordination_button(assigns) do
     ~H"""
     <button
       type="button"
