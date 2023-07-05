@@ -49,7 +49,9 @@ DB設計におけるルールを以下に記載する。
 
 ## 外部キーのマイグレーション
 
-外部キーを作成する場合、データ削除はDBではなくアプリ側の制御下に置くため、以下のようにマイグレーションファイル中の `references` に `on_delete: :nothing` を指定する。
+関連テーブルのIDをカラムとして持つ場合、外部キーを必ず作成すること。
+
+外部キーを作成する上で、データ削除はDBではなくアプリ側の制御下に置くため、以下のようにマイグレーションファイル中の `references` に `on_delete: :nothing` を指定する。
 
 ```elixir
 add :skill_panel_id, references(:skill_panels, on_delete: :nothing), null: false

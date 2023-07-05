@@ -17,8 +17,10 @@ defmodule BrightWeb.SkillScoreComponents do
   attr :size, :string, default: "base", values: ["sm", "base"]
 
   def skill_gem(assigns) do
-    assigns = assign(assigns, :labels, assigns.labels |> Jason.encode!())
-    assigns = assign(assigns, :data, assigns.data |> Jason.encode!())
+    assigns =
+      assigns
+      |> assign(:labels, assigns.labels |> Jason.encode!())
+      |> assign(:data, assigns.data |> Jason.encode!())
 
     ~H"""
     <div
