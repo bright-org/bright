@@ -25,10 +25,12 @@ defmodule BrightWeb.ProfileComponents do
   attr :github_url, :string, default: ""
 
   def profile(assigns) do
-    assigns = assign(assigns, :icon_style, "background-image: url('#{assigns.icon_file_path}');")
-    assigns = assign(assigns, :twitter_url, "window.open('#{assigns.twitter_url}')")
-    assigns = assign(assigns, :facebook_url, "window.open('#{assigns.facebook_url}')")
-    assigns = assign(assigns, :github_url, "window.open('#{assigns.github_url}')")
+    assigns =
+      assigns
+      |> assign(:icon_style, "background-image: url('#{assigns.icon_file_path}');")
+      |> assign(:twitter_url, "window.open('#{assigns.twitter_url}')")
+      |> assign(:facebook_url, "window.open('#{assigns.facebook_url}')")
+      |> assign(:github_url, "window.open('#{assigns.github_url}')")
 
     ~H"""
     <div class="w-[850px] pt-4">
