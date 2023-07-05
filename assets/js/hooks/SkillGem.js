@@ -206,8 +206,9 @@ export const SkillGem = {
     myChart.canvas.parentNode.style.width =  isSmall ? '250px' : '426px'
 
     ctx.addEventListener('click', function (event) {
-      // padding rightで拡張した部分がクリック判定できるようにする
+      if (!isLink) return;
 
+      // padding rightで拡張した部分がクリック判定できるようにする
       const rect = ctx.getBoundingClientRect()
       const x = event.clientX - rect.left
       const y = event.clientY - rect.top
