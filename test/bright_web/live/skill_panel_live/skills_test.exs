@@ -96,16 +96,5 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert html =~ skill_class_2.name
     end
-
-    test "shows maximum skill class if requested unknown rank", %{
-      conn: conn,
-      skill_panel: skill_panel,
-      skill_class: skill_class
-    } do
-      unknown = 9999
-      {:ok, _show_live, html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=#{unknown}")
-
-      assert html =~ skill_class.name
-    end
   end
 end

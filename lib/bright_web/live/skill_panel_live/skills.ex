@@ -27,11 +27,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp assign_skill_class(socket, rank) do
     rank = String.to_integer(rank)
-    skill_classes = socket.assigns.skill_panel.skill_classes
-    skill_class =
-      skill_classes
-      |> Enum.find(& &1.rank == rank)
-      |> Kernel.||(List.last(skill_classes))
+    skill_class = socket.assigns.skill_panel.skill_classes |> Enum.find(&(&1.rank == rank))
 
     socket
     |> assign(:skill_class, skill_class)
