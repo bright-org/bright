@@ -18,6 +18,7 @@ defmodule Storybook.Components.Profile do
           display_return_to_yourself: true,
           display_stock_candidates_for_employment: true,
           display_adopt: true,
+          display_recruitment_coordination: true,
           display_sns: true,
           twitter_url: "https://twitter.com/",
           facebook_url: "https://www.facebook.com/",
