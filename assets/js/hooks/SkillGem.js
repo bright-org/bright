@@ -91,6 +91,7 @@ const beforeDatasetsDraw = (chart) => {
   const data = chart.data.datasets[0].data
   const color = getColorPattern(data.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"])
   const color2 = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
+  const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink)
 
   if (chart.data.datasets[1] !== undefined) {
     for (let i = 0; i < chart.data.datasets[1].data.length; i++) {
@@ -106,6 +107,9 @@ const beforeDatasetsDraw = (chart) => {
     drawGridline(chart, 20 * i, data.length)
   }
 
+  // リンク非表示はこれ以降は処理をしない
+  if (!isLink) return
+
   const img = new Image()
   img.src = "/images/icon_up_green.svg"
 
@@ -114,6 +118,7 @@ const beforeDatasetsDraw = (chart) => {
 
   // padding rightで拡張しないと、一番右にに表示するアイコンが削れる
   img.onload = function () {
+
     for (let i = 0; i < data.length; i++) {
       const label = chart.scales.r.getPointLabelPosition(i);
       context.drawImage(img, label.right + 2, label.top - 4, iconWidth, iconHeight)
@@ -125,7 +130,8 @@ const beforeDatasetsDraw = (chart) => {
   }
 }
 
-const createChartFromJSON = (labels, datasets) => {
+const createChartFromJSON = (labels, datasets, isLink) => {
+  const color = isLink ? "#0000FF" : "#000000"
   return ({
     type: 'radar',
     data: {
@@ -168,7 +174,7 @@ const createChartFromJSON = (labels, datasets) => {
             display: false
           },
           pointLabels: {
-            color: '#0000FF',
+            color: color,
             backdropPadding: 5,
             padding: 25,
           },
@@ -186,6 +192,7 @@ export const SkillGem = {
     const labels = JSON.parse(dataset.labels)
     const data = JSON.parse(dataset.data)
     const isSmall = dataset.size == "sm"
+    const isLink = JSON.parse(dataset.displayLink)
     const datasets = [];
     datasets.push(createData(data[0]));
 
@@ -194,7 +201,7 @@ export const SkillGem = {
     }
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
-    const myChart = new Chart(ctx, createChartFromJSON(labels, datasets))
+    const myChart = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
     myChart.canvas.parentNode.style.height = isSmall ?  '165px' : '426px'
     myChart.canvas.parentNode.style.width =  isSmall ? '250px' : '426px'
 
