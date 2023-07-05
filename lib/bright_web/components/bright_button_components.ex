@@ -136,9 +136,9 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a "Recruitment Coordination" Button
 
   ## Examples
-      <.ecruitment_coordination_button />
+      <.recruitment_coordination_button />
   """
-  def ecruitment_coordination_button(assigns) do
+  def recruitment_coordination_button(assigns) do
     ~H"""
     <button
       type="button"
