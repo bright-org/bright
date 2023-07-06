@@ -20,17 +20,12 @@ defmodule BrightWeb.TabComponents do
               href="#"
               class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
             >
-              採用（仮置き）
+              tab1
             </a>
           </li>
           <li class="w-full">
             <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
-              他チームからの連絡（仮置き）
-            </a>
-          </li>
-          <li class="w-full">
-            <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
-              他ユーザからの連絡（仮置き）
+              tab2
             </a>
           </li>
           <li class="flex items-center">
@@ -43,77 +38,11 @@ defmodule BrightWeb.TabComponents do
               <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
             </button>
             <!-- Dropdown menu -->
-            <div
-              id="menu01"
-              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-            >
-              <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu01">
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    menu1-1
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    menu1-2
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    menu1-3
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <.tab_menu />
           </li>
         </ul>
         <div class="pt-4 pb-1 px-8">
-          <ul class="flex gap-y-2.5 flex-col">
-            <li class="text-left flex items-center text-base">
-              <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                person
-              </span>
-              nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-              <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-            </li>
-            <li class="text-left flex items-center text-base">
-              <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                person
-              </span>
-              nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-              <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-            </li>
-            <li class="text-left flex items-center text-base">
-              <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                person
-              </span>
-              nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-              <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-            </li>
-            <li class="text-left flex items-center text-base">
-              <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                person
-              </span>
-              nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-              <span class="text-brightGray-300 font-bold pl-4 inline-block">8時間前</span>
-            </li>
-            <li class="text-left flex items-center text-base">
-              <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                person
-              </span>
-              nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-              <span class="text-brightGray-300 font-bold pl-4 inline-block">1日前</span>
-            </li>
-          </ul>
+          内容
         </div>
         <div class="flex justify-center gap-x-14 pb-3">
           <button
@@ -130,6 +59,26 @@ defmodule BrightWeb.TabComponents do
           </button>
         </div>
       </div>
+    </div>
+    """
+  end
+
+  def tab_menu(assigns) do
+    ~H"""
+    <div
+      id="menu01"
+      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+    >
+      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu01">
+        <li>
+          <a
+            href="#"
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            menu1-1
+          </a>
+        </li>
+      </ul>
     </div>
     """
   end
