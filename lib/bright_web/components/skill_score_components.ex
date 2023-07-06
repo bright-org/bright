@@ -15,6 +15,7 @@ defmodule BrightWeb.SkillScoreComponents do
   attr :data, :list, required: true
   attr :labels, :list, required: true
   attr :size, :string, default: "base", values: ["sm", "base"]
+  attr :display_link, :string, default: "true", values: ["true", "false"]
 
   def skill_gem(assigns) do
     assigns =
@@ -30,6 +31,7 @@ defmodule BrightWeb.SkillScoreComponents do
       data-data={@data}
       data-labels={@labels}
       data-size={@size}
+      data-display-link={@display_link}
     >
       <canvas></canvas>
     </div>

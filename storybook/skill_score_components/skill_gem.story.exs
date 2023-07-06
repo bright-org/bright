@@ -21,6 +21,14 @@ defmodule Storybook.SkillScoreComponents.SkillGem do
         }
       },
       %Variation{
+        id: :skill4_no_link,
+        attributes: %{
+          data: [[90, 80, 75, 60]],
+          labels: ["エンジニア", "マーケター", "デザイナー", "インフラ"],
+          display_link: "false"
+        }
+      },
+      %Variation{
         id: :skill5,
         attributes: %{
           data: [[90, 80, 75, 60, 90]],
