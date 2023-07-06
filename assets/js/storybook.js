@@ -18,6 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
   link.href = "https://fonts.googleapis.com/css?family=Material+Icons%7CMaterial+Icons+Outlined%7CMaterial+Icons+Round%7CMaterial+Icons+Sharp%7CMaterial+Icons+Two+Tone"
   link.rel="stylesheet"
   head.appendChild(link)
+
+  // scriptを記述する場所がないためjsで追加する
+  const js = document.createElement("script")
+  js.src = "https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"
+  head.appendChild(js)
 })
 
 
