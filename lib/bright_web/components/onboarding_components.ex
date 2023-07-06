@@ -2679,7 +2679,9 @@ defmodule BrightWeb.OnbordingComponents do
     ~H"""
     <section class="bg-white p-8 min-h-[720px] relative rounded-lg">
       <h1 class="font-bold text-3xl">
-        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">最初のスキルを選ぶ</span>
+        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
+          最初のスキルを選ぶ
+        </span>
       </h1>
 
       <div class="flex flex-col mt-4">
@@ -2691,27 +2693,39 @@ defmodule BrightWeb.OnbordingComponents do
             <ul class="flex flex-wrap mt-2 gap-4">
               <!-- スキル ここから -->
               <li>
-                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">Elixir</button>
+                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  Elixir
+                </button>
               </li>
               <!-- スキル ここまで (以降繰り返し) -->
               <li>
-                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">Java</button>
+                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  Java
+                </button>
               </li>
 
               <li>
-                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">PHP</button>
+                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  PHP
+                </button>
               </li>
 
               <li>
-                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">Python</button>
+                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  Python
+                </button>
               </li>
 
               <li>
-                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">Puby</button>
+                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  Puby
+                </button>
               </li>
 
               <li>
-                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">Java Script</button>
+                <button class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  Java Script
+                </button>
               </li>
             </ul>
           </section>
@@ -2723,15 +2737,21 @@ defmodule BrightWeb.OnbordingComponents do
             <ul class="flex flex-wrap mt-2 gap-4">
               <!-- スキル ここから -->
               <li>
-                <button class="bg-infra-dark block border border-solid border-infra-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">SQL</button>
+                <button class="bg-infra-dark block border border-solid border-infra-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  SQL
+                </button>
               </li>
               <!-- スキル ここまで (以降繰り返し) -->
               <li>
-                <button class="bg-infra-dark block border border-solid border-infra-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">DB</button>
+                <button class="bg-infra-dark block border border-solid border-infra-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  DB
+                </button>
               </li>
 
               <li>
-                <button class="bg-infra-dark block border border-solid border-infra-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">ネットワーク</button>
+                <button class="bg-infra-dark block border border-solid border-infra-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  ネットワーク
+                </button>
               </li>
             </ul>
           </section>
@@ -2743,15 +2763,21 @@ defmodule BrightWeb.OnbordingComponents do
             <ul class="flex flex-wrap mt-2 gap-4">
               <!-- スキル ここから -->
               <li>
-                <button class="bg-designer-dark block border border-solid border-designer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">Webデザイン</button>
+                <button class="bg-designer-dark block border border-solid border-designer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  Webデザイン
+                </button>
               </li>
               <!-- スキル ここまで (以降繰り返し) -->
               <li>
-                <button class="bg-designer-dark block border border-solid border-designer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">HTML/CSS</button>
+                <button class="bg-designer-dark block border border-solid border-designer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  HTML/CSS
+                </button>
               </li>
 
               <li>
-                <button class="bg-designer-dark block border border-solid border-designer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">Figma</button>
+                <button class="bg-designer-dark block border border-solid border-designer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  Figma
+                </button>
               </li>
             </ul>
           </section>
@@ -2763,11 +2789,15 @@ defmodule BrightWeb.OnbordingComponents do
             <ul class="flex flex-wrap mt-2 gap-4">
               <!-- スキル ここから -->
               <li>
-                <button class="bg-marketer-dark block border border-solid border-marketer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">GA4</button>
+                <button class="bg-marketer-dark block border border-solid border-marketer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  GA4
+                </button>
               </li>
               <!-- スキル ここまで (以降繰り返し) -->
               <li>
-                <button class="bg-marketer-dark block border border-solid border-marketer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">SEO</button>
+                <button class="bg-marketer-dark block border border-solid border-marketer-dark cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50">
+                  SEO
+                </button>
               </li>
             </ul>
           </section>
@@ -2777,7 +2807,12 @@ defmodule BrightWeb.OnbordingComponents do
       </div>
 
       <p class="mt-8">
-        <button onclick="location.href='/onboardings'" class="bg-white block border border-solid border-black font-bold mt-4 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">戻る</button>
+        <button
+          onclick="location.href='/onboardings'"
+          class="bg-white block border border-solid border-black font-bold mt-4 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50"
+        >
+          戻る
+        </button>
       </p>
     </section>
     """
