@@ -40,19 +40,25 @@ defmodule BrightWeb.TabComponents do
           tab2
         </a>
       </li>
-      <li class="flex items-center">
-        <button
-          type="button"
-          id="dropmenu01"
-          data-dropdown-toggle="menu01"
-          class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
-        >
-          <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
-        </button>
-        <!-- Dropdown menu -->
-        <.tab_menu />
-      </li>
+      <.tab_menu_button />
     </ul>
+    """
+  end
+
+  def tab_menu_button(assigns) do
+    ~H"""
+    <li class="flex items-center">
+      <button
+        type="button"
+        id="dropmenu01"
+        data-dropdown-toggle="menu01"
+        class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
+      >
+        <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
+      </button>
+      <!-- Dropdown menu -->
+      <.tab_menu />
+    </li>
     """
   end
 
