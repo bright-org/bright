@@ -3,7 +3,7 @@ defmodule BrightWeb.Layouts do
 
   use BrightWeb, :html
   import BrightWeb.MenuComponents
-  import BrightWeb.HeadComponents
+  import BrightWeb.LayoutComponents
 
   embed_templates "layouts/*"
 end

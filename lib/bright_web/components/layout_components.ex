@@ -1,6 +1,6 @@
-defmodule BrightWeb.HeadComponents do
+defmodule BrightWeb.LayoutComponents do
   @moduledoc """
-  Profile Components
+  LayoutComponents
   """
   use Phoenix.Component
 
@@ -8,7 +8,7 @@ defmodule BrightWeb.HeadComponents do
   Renders a Head
 
   ## Examples
-      <.head/>
+      <.header/>
   """
   def head(assigns) do
     ~H"""
