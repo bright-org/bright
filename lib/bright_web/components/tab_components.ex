@@ -10,13 +10,14 @@ defmodule BrightWeb.TabComponents do
   ## Examples
       <tab />
   """
+  slot :inner_block
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
         <.tab_header />
         <div class="pt-4 pb-1 px-8">
-          内容
+          <%= render_slot(@inner_block) %>
         </div>
         <.tab_footer />
       </div>

@@ -6,7 +6,8 @@ defmodule Storybook.Components.Tab do
   def variations do
     [
       %Variation{
-        id: :default
+        id: :default,
+        slots: ["内容"]
       }
     ]
   end
