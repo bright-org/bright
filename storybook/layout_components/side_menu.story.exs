@@ -1,7 +1,7 @@
-defmodule Storybook.Components.Menu do
+defmodule Storybook.Components.LayoutComponents do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &Elixir.BrightWeb.MenuComponents.menu/1
+  def function, do: &Elixir.BrightWeb.LayoutComponents.side_menu/1
 
   def variations do
     [
