@@ -27,21 +27,22 @@ defmodule BrightWeb.TabComponents do
   def tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-50">
-      <li class="w-full">
-        <a
-          href="#"
-          class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-        >
-          tab1
-        </a>
-      </li>
-      <li class="w-full">
-        <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
-          tab2
-        </a>
-      </li>
-      <.tab_menu_button />
+      <.tab_header_item />
     </ul>
+    """
+  end
+
+  def tab_header_item(assigns) do
+    # text-brightGreen-300 font-bold border-brightGreen-300 border-b-2
+    ~H"""
+    <li class="w-full">
+      <a
+        href="#"
+        class="py-3.5 w-full items-center justify-center inline-block"
+      >
+        tab1
+      </a>
+    </li>
     """
   end
 
