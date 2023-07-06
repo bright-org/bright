@@ -1,6 +1,6 @@
 defmodule BrightWeb.SkillCardComponents do
   @moduledoc """
-  Profile Components
+  Skill Card Components
   """
   use Phoenix.Component
 

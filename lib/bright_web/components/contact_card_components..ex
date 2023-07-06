@@ -1,6 +1,6 @@
 defmodule BrightWeb.ContactCardComponents do
   @moduledoc """
-  Profile Components
+  Contact Card Components
   """
   use Phoenix.Component
 
