@@ -2,8 +2,9 @@ defmodule BrightWeb.MypageLive.Index do
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
-  import BrightWeb.CommunicationCardComponents
+  import BrightWeb.ContactCardComponents
   import BrightWeb.SkillCardComponents
+  import BrightWeb.CommunicationCardComponents
 
   @impl true
   def mount(_params, _session, socket) do
