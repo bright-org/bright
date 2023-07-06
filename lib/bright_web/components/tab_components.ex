@@ -11,6 +11,7 @@ defmodule BrightWeb.TabComponents do
       <tab />
   """
   slot :inner_block
+
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
@@ -37,10 +38,7 @@ defmodule BrightWeb.TabComponents do
     # text-brightGreen-300 font-bold border-brightGreen-300 border-b-2
     ~H"""
     <li class="w-full">
-      <a
-        href="#"
-        class="py-3.5 w-full items-center justify-center inline-block"
-      >
+      <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
         tab1
       </a>
     </li>

@@ -7,7 +7,11 @@ defmodule Storybook.Components.Tab do
     [
       %Variation{
         id: :default,
-        slots: ["内容"]
+        slots: [
+          """
+          <p class="text-base">タブの中身</p>
+          """
+        ]
       }
     ]
   end
