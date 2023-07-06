@@ -5,7 +5,7 @@ defmodule BrightWeb.HeadComponents do
   use Phoenix.Component
 
   @doc """
-  Renders a Menu
+  Renders a Head
 
   ## Examples
       <.head/>
