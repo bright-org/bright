@@ -3,6 +3,7 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
   import BrightWeb.CommunicationCardComponents
+  import BrightWeb.SkillCardComponents
 
   @impl true
   def mount(_params, _session, socket) do
