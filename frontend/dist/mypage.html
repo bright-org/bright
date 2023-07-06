@@ -13,42 +13,74 @@
   <body class="w-[1920px]">
     <div class="flex">
       <aside
-        class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-6 pl-3"
+        class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
       >
-        <img src="./images/common/logo.svg" width="163px" />
-        <ul class="grid gap-y-10 pl-5 pt-6">
+        <img src="./images/common/logo.svg" width="163px" class="ml-4" />
+        <ul class="grid pt-2">
           <li>
-            <a class="!text-white text-base" href="/mypage">マイページ</a>
+            <a
+              class="!text-white bg-white bg-opacity-30 text-base py-4 inline-block pl-4 w-full mb-1"
+              href="/mypage"
+              >マイページ</a
+            >
           </li>
           <li>
-            <a class="!text-white text-base" href="/mypage">キャリアパス</a>
+            <a
+              class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+              href="/mypage"
+              >キャリアパス</a
+            >
           </li>
           <li>
-            <a class="!text-white text-base" href="/mypage">スキルアップ</a>
+            <a
+              class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+              href="/mypage"
+              >スキルアップ</a
+            >
           </li>
           <li>
-            <a class="!text-white text-base" href="/mypage">チームスキル分析</a>
+            <a
+              class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+              href="/mypage"
+              >チームスキル分析</a
+            >
           </li>
         </ul>
       </aside>
-      <main class="bg-background flex flex-col flex-1">
+      <main
+        class="bg-background flex flex-col flex-1 border-brightGray-100 border-r"
+      >
         <!-- ヘッダー -->
         <div
-          class="w-full flex justify-between py-2.5 px-12 border-brightGray-100 border-b bg-brightGray-50"
+          class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white"
         >
           <h4>マイページ</h4>
-          <div class="flex gap-x-6">
+          <div class="flex gap-x-5">
             <button
               type="button"
-              id="mega-menu-dropdown-button"
-              data-dropdown-toggle="mega-menu-dropdown"
-              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
+              class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9"
             >
-              <span class="material-icons text-xs">search</span>
+              <span
+                class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold material-icons-outlined"
+                >sms</span
+              >
+              カスタマーサクセスに連絡
             </button>
+
             <button
               type="button"
-              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
+              class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9"
+            >
+              <span
+                class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold"
+                >search</span
+              >
+              スキル保有者を検索
+            </button>
+
+            <button
+              type="button"
+              class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
             >
               <span class="material-icons text-xs">notifications_none</span>
               <div
@@ -63,7 +95,7 @@
             />
             <button
               type="button"
-              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
+              class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center"
             >
               <span class="material-icons text-xs">settings</span>
             </button>
@@ -176,8 +208,8 @@
         </div>
 
         <!-- プロフィール -->
-        <div class="flex justify-between py-8 px-10 bg-white">
-          <div class="w-[682px]">
+        <div class="flex justify-between py-6 px-10 bg-white">
+          <div class="w-[850px] pt-4">
             <div class="flex">
               <div
                 class="bg-test bg-contain h-20 w-20 mr-5"
@@ -191,17 +223,19 @@
                   <div class="flex gap-x-3">
                     <button
                       type="button"
-                      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+                      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGreen-300"
                     >
                       <span
-                        class="material-icons md-18 mr-1 text-brightGray-200"
+                        class="material-icons md-18 mr-1 text-brightGreen-300"
                         >share</span
                       >
-                      優秀なエンジニア紹介
+                      優秀な人として紹介
                     </button>
 
                     <button
                       type="button"
+                      id="dropcheckmenu"
+                      data-dropdown-toggle="checkmenu"
                       class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
                     >
                       <span
@@ -209,6 +243,80 @@
                         >star</span
                       >
                       気になる
+                    </button>
+                    <!-- 気になるDropdown menu -->
+                    <div
+                      id="checkmenu"
+                      class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]"
+                    >
+                      <ul
+                        class="p-2 text-left text-base"
+                        aria-labelledby="dropcheckmenu"
+                      >
+                        <li>
+                          <a
+                            href="#"
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                            >気になるリスト</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                            >メンバー候補</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                            >java開発者リスト</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                            >Python開発者リスト</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                            >ジュニアエンジニア</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                            >シニアエンジニア</a
+                          >
+                        </li>
+                        <li
+                          class="px-4 py-3 hover:bg-brightGray-50 flex justify-center gap-x-2"
+                        >
+                          <input
+                            type="text"
+                            placeholder="リスト名を入力"
+                            class="px-2 py-1 border border-brightGray-900 rounded-sm flex-1 w-full text-base w-[220px]"
+                          />
+                          <button
+                            class="text-sm font-bold px-4 py-1 rounded text-white bg-base"
+                          >
+                            新規作成
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+                    >
+                      自分に戻す
                     </button>
                   </div>
                 </div>
@@ -235,48 +343,69 @@
             </div>
           </div>
           <div>
-            <p class="text-sm !font-bold">
-              スキルセットジェム<span class="font-normal text-xs ml-4"
-                >※クリックすると詳細</span
+            <p class="text-base !font-bold">
+              スキルセットジェム<span class="font-normal text-xs ml-2"
+                >※クリックしてください</span
               >
             </p>
-            <div class="chart-container flex justify-center">
-              <canvas id="myChart" height="100" width="100"></canvas>
+            <div class="chart-container flex justify-center h-[176px]">
+              <canvas id="myChart" height="100px" width="100px"></canvas>
             </div>
           </div>
         </div>
         <!-- コンテンツ -->
-        <div class="px-10 py-7 flex justify-between">
+        <div class="px-10 py-3 flex justify-between">
           <div class="w-[850px] flex flex-col gap-y-6">
-            <!-- 他ユーザーやチームからの連絡 -->
+            <!-- 重要な連絡 -->
             <div>
-              <h5>他ユーザーやチームからの連絡</h5>
+              <h5>重要な連絡</h5>
               <div class="bg-white rounded-md mt-1">
                 <div
-                  class="text-sm font-medium text-center text-brightGray-200"
+                  class="text-sm font-medium text-center text-brightGray-500"
                 >
                   <ul
-                    class="flex content-between border-b border-brightGray-50"
+                    class="flex content-between border-b border-brightGray-200"
                   >
                     <li class="w-full">
                       <a
                         href="#"
+                        class="py-3.5 w-full items-center justify-center inline-block"
+                        >チーム招待</a
+                      >
+                    </li>
+                    <li class="w-full">
+                      <a
+                        href="#"
+                        class="py-3.5 w-full items-center justify-center inline-block"
+                        >デイリー</a
+                      >
+                    </li>
+                    <li class="w-full">
+                      <a
+                        href="#"
+                        class="py-3.5 w-full items-center justify-center inline-block"
+                        >ウイークリー</a
+                      >
+                    </li>
+                    <li class="w-full">
+                      <a
+                        href="#"
                         class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-                        >採用（仮置き）</a
+                        >採用の調整</a
                       >
                     </li>
                     <li class="w-full">
                       <a
                         href="#"
                         class="py-3.5 w-full items-center justify-center inline-block"
-                        >他チームからの連絡（仮置き）</a
+                        >スキルパネル更新</a
                       >
                     </li>
                     <li class="w-full">
                       <a
                         href="#"
                         class="py-3.5 w-full items-center justify-center inline-block"
-                        >他ユーザからの連絡（仮置き）</a
+                        >運営</a
                       >
                     </li>
                     <li class="flex items-center">
@@ -367,7 +496,7 @@
                         >
                         nakoさんからの紹介 / mikaさん / Web開発（Elixir）
                         <span
-                          class="text-brightGray-300 font-bold pl-4 inline-block"
+                          class="text-brightGray-200 font-bold pl-4 inline-block"
                           >8時間前</span
                         >
                       </li>
@@ -378,7 +507,7 @@
                         >
                         nakoさんからの紹介 / mikaさん / Web開発（Elixir）
                         <span
-                          class="text-brightGray-300 font-bold pl-4 inline-block"
+                          class="text-brightGray-200 font-bold pl-4 inline-block"
                           >1日前</span
                         >
                       </li>
@@ -414,10 +543,10 @@
               <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
               <div class="bg-white rounded-md mt-1">
                 <div
-                  class="text-sm font-medium text-center text-brightGray-200"
+                  class="text-sm font-medium text-center text-brightGray-500"
                 >
                   <ul
-                    class="flex content-between border-b border-brightGray-50"
+                    class="flex content-between border-b border-brightGray-200"
                   >
                     <li class="w-full">
                       <a
@@ -449,17 +578,17 @@
                     </li>
                   </ul>
 
-                  <div class="py-4 px-7 flex gap-y-3 flex-col">
+                  <div class="py-4 px-7 flex gap-y-2 flex-col">
                     <div
-                      class="bg-brightGray-10 rounded-md text-base flex p-5 content-between"
+                      class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between"
                     >
-                      <p class="font-bold w-36 text-left text-sm">
+                      <p class="font-bold w-[150px] text-left text-sm">
                         Webアプリ開発
                       </p>
-                      <table class="table-fixed skill-table">
+                      <table class="table-fixed skill-table -mt-2">
                         <thead>
                           <tr>
-                            <th class="w-[110px]"></th>
+                            <td></td>
                             <th class="pl-8">クラス1</th>
                             <th class="pl-8">クラス2</th>
                             <th class="pl-8">クラス3</th>
@@ -543,15 +672,15 @@
                     </div>
 
                     <div
-                      class="bg-brightGray-10 rounded-md text-base flex p-5 content-between"
+                      class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between"
                     >
-                      <p class="font-bold w-36 text-left text-sm">
+                      <p class="font-bold w-[150px] text-left text-sm">
                         Webアプリ開発
                       </p>
-                      <table class="table-fixed skill-table">
+                      <table class="table-fixed skill-table -mt-2">
                         <thead>
                           <tr>
-                            <th class="w-[110px]"></th>
+                            <td></td>
                             <th class="pl-8">クラス1</th>
                             <th class="pl-8">クラス2</th>
                             <th class="pl-8">クラス3</th>
@@ -620,13 +749,13 @@
                     </div>
 
                     <div
-                      class="bg-brightGray-10 rounded-md text-base flex p-5 content-between"
+                      class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between"
                     >
-                      <p class="font-bold w-36 text-left text-sm">PM</p>
+                      <p class="font-bold w-[150px] text-left text-sm">PM</p>
                       <table class="table-fixed skill-table">
                         <thead>
                           <tr>
-                            <th class="w-[110px]"></th>
+                            <td></td>
                             <th class="pl-8">クラス1</th>
                             <th class="pl-8">クラス2</th>
                             <th class="pl-8">クラス3</th>
@@ -698,35 +827,49 @@
             </div>
           </div>
           <div class="w-[750px] flex flex-col gap-y-6">
-            <!-- 所属チームや気になるユーザーとの交流 -->
+            <!-- さまざまな人たちとの交流 -->
             <div>
-              <h5>所属チームや気になるユーザーとの交流</h5>
+              <h5>さまざまな人たちとの交流</h5>
               <div class="bg-white rounded-md mt-1">
                 <div
-                  class="text-sm font-medium text-center text-brightGray-200"
+                  class="text-sm font-medium text-center text-brightGray-500"
                 >
                   <ul
-                    class="flex content-between border-b border-brightGray-50"
+                    class="flex content-between border-b border-brightGray-200"
                   >
-                    <li class="w-full">
-                      <a
-                        href="#"
-                        class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-                        >所属チーム</a
-                      >
-                    </li>
-                    <li class="w-full">
-                      <a
-                        href="#"
-                        class="py-3.5 w-full items-center justify-center inline-block"
-                        >気になるユーザー</a
-                      >
-                    </li>
                     <li class="w-full">
                       <a
                         href="#"
                         class="py-3.5 w-full items-center justify-center inline-block"
                         >スキルアップ</a
+                      >
+                    </li>
+                    <li class="w-full">
+                      <a
+                        href="#"
+                        class="py-3.5 w-full items-center justify-center inline-block"
+                        >1on1のお誘い</a
+                      >
+                    </li>
+                    <li class="w-full">
+                      <a
+                        href="#"
+                        class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                        >所属チームから</a
+                      >
+                    </li>
+                    <li class="w-full">
+                      <a
+                        href="#"
+                        class="py-3.5 w-full items-center justify-center inline-block"
+                        >「気になる」された</a
+                      >
+                    </li>
+                    <li class="w-full">
+                      <a
+                        href="#"
+                        class="py-3.5 w-full items-center justify-center inline-block"
+                        >運営公式チーム発足</a
                       >
                     </li>
                     <li class="flex items-center">
@@ -736,8 +879,7 @@
                         data-dropdown-toggle="menu02"
                         class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
                       >
-                        <span
-                          class="material-icons text-xs text-brightGreen-900"
+                        <span class="material-icons text-xs text-brightGray-900"
                           >more_vert</span
                         >
                       </button>
@@ -874,10 +1016,10 @@
               <h5>関わっているチーム</h5>
               <div class="bg-white rounded-md mt-1">
                 <div
-                  class="text-sm font-medium text-center text-brightGray-200"
+                  class="text-sm font-medium text-center text-brightGray-500"
                 >
                   <ul
-                    class="flex content-between border-b border-brightGray-50"
+                    class="flex content-between border-b border-brightGray-200"
                   >
                     <li class="w-full">
                       <a
@@ -891,6 +1033,13 @@
                         href="#"
                         class="py-3.5 w-full items-center justify-center inline-block"
                         >管轄チーム</a
+                      >
+                    </li>
+                    <li class="w-full">
+                      <a
+                        href="#"
+                        class="py-3.5 w-full items-center justify-center inline-block"
+                        >カスタムグループ</a
                       >
                     </li>
                     <li class="flex items-center">
@@ -908,31 +1057,39 @@
                       <!-- Dropdown menu -->
                       <div
                         id="menu03"
-                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                        class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]"
                       >
                         <ul
-                          class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                          aria-labelledby="dropmenu03"
+                          class="p-2 text-left text-base"
+                          aria-labelledby="dropmenu04"
                         >
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu03-1</a
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >チームを作る</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              data-modal-target="addTeamModal"
+                              data-modal-toggle="addTeamModal"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >人材チームへのチーム登録依頼</a
                             >
                           </li>
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu03-2</a
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >管理チームの編集</a
                             >
                           </li>
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu03-3</a
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >管理チームの削除</a
                             >
                           </li>
                         </ul>
@@ -944,49 +1101,81 @@
                       <li
                         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
                       >
-                        <span
-                          class="text-base !text-white bg-lapislazuli-900 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                          >E</span
-                        >
-                        Elixir Fukuoka
+                        <input
+                          type="checkbox"
+                          value=""
+                          class="coustom-checkbox w-4 h-4 mr-3"
+                        />
+                        <img
+                          src="./images/common/icons/team.svg"
+                          class="mr-2"
+                        />Elixir Fukuoka
                       </li>
 
                       <li
                         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
                       >
-                        <span
-                          class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                          >圧</span
-                        >
+                        <input
+                          type="checkbox"
+                          value=""
+                          class="coustom-checkbox w-4 h-4 mr-3"
+                        />
+                        <img
+                          src="./images/common/icons/other_team.svg"
+                          class="mr-2"
+                        />
                         圧倒的開発スピード
                       </li>
 
                       <li
                         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
                       >
-                        <span
-                          class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                          >S</span
-                        >
+                        <input
+                          type="checkbox"
+                          value=""
+                          class="coustom-checkbox w-4 h-4 mr-3"
+                        />
+                        <img
+                          src="./images/common/icons/management_team.svg"
+                          class="mr-2"
+                        />
                         S社案件開発
                       </li>
                       <li
                         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
                       >
-                        <span
-                          class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                          >D</span
-                        >
+                        <input
+                          type="checkbox"
+                          value=""
+                          class="coustom-checkbox w-4 h-4 mr-3"
+                        />
+                        <img
+                          src="./images/common/icons/coustom_group.svg"
+                          class="mr-2"
+                        />
                         D社スマホアプリプロジェクト
                       </li>
                       <li
                         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
                       >
-                        <span
-                          class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                          >A</span
+                        <input
+                          checked
+                          type="checkbox"
+                          value=""
+                          class="coustom-checkbox w-4 h-4 mr-3"
+                        />
+                        <img
+                          src="./images/common/icons/other_team.svg"
+                          class="mr-2"
+                        />
+                        D社スマホアプリプロジェクト
+                      </li>
+                      <li class="text-left py-2">
+                        <button
+                          class="text-base !text-sm font-bold px-3 py-1 rounded border border-brightGray-900"
                         >
-                        A社スマホアプリプロジェクト
+                          削除
+                        </button>
                       </li>
                     </ul>
                   </div>
@@ -1017,47 +1206,33 @@
             </div>
             <!-- 気になる -->
             <div>
-              <h5>気になる</h5>
+              <h5>関わっているユーザー</h5>
               <div class="bg-white rounded-md mt-1">
                 <div
-                  class="text-sm font-medium text-center text-brightGray-200"
+                  class="text-sm font-medium text-center text-brightGray-500"
                 >
                   <ul
-                    class="flex content-between border-b border-brightGray-50"
+                    class="flex content-between border-b border-brightGray-200"
                   >
                     <li class="w-full">
                       <a
                         href="#"
                         class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-                        >参考になる人</a
+                        >気になる人</a
                       >
                     </li>
                     <li class="w-full">
                       <a
                         href="#"
                         class="py-3.5 w-full items-center justify-center inline-block"
-                        >採用</a
+                        >チーム</a
                       >
                     </li>
                     <li class="w-full">
                       <a
                         href="#"
                         class="py-3.5 w-full items-center justify-center inline-block"
-                        >離任者</a
-                      >
-                    </li>
-                    <li class="w-full">
-                      <a
-                        href="#"
-                        class="py-3.5 w-full items-center justify-center inline-block"
-                        >スキルパネル</a
-                      >
-                    </li>
-                    <li class="w-full">
-                      <a
-                        href="#"
-                        class="py-3.5 w-full items-center justify-center inline-block"
-                        >ジョブ</a
+                        >採用候補者</a
                       >
                     </li>
                     <li class="flex items-center">
@@ -1072,40 +1247,63 @@
                           >more_vert</span
                         >
                       </button>
-                      <!-- Dropdown menu -->
+                      <!-- 関わっているユーザー Dropdown menu -->
                       <div
                         id="menu04"
-                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                        class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]"
                       >
                         <ul
-                          class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                          class="p-2 text-left text-base"
                           aria-labelledby="dropmenu04"
                         >
                           <li>
                             <a
+                              data-modal-target="defaultModal"
+                              data-modal-toggle="defaultModal"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                            >
+                              カスタムグループを作る
+                            </a>
+                          </li>
+                          <li>
+                            <a
                               href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu4-1</a
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >カスタムグループの編集</a
                             >
                           </li>
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu4-2</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu4-3</a
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >カスタムグループの削除</a
                             >
                           </li>
                         </ul>
                       </div>
                     </li>
                   </ul>
+                  <div class="overflow-hidden">
+                    <ul
+                      class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
+                    >
+                      <li class="py-2 w-[200px] border-r border-brightGray-50">
+                        キャリアの参考になる方々
+                      </li>
+                      <li
+                        class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+                      >
+                        優秀なエンジニアの方々
+                      </li>
+                      <li class="py-2 w-[200px] border-r border-brightGray-50">
+                        カスタムグループ３
+                      </li>
+                      <li class="py-2 w-[200px] border-r border-brightGray-50">
+                        カスタムグループ４
+                      </li>
+                    </ul>
+                  </div>
+
                   <div class="pt-3 pb-1 px-6">
                     <ul class="flex flex-wrap gap-y-1">
                       <li
@@ -1205,6 +1403,411 @@
                 </div>
               </div>
             </div>
+
+            <!-- チーム作成モーダル-->
+            <!-- Main modal -->
+            <div
+              id="defaultModal"
+              tabindex="-1"
+              aria-hidden="true"
+              class="bg-brightGray-900 bg-opacity-70 fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full"
+            >
+              <div class="relative w-[1500px] max-h-full">
+                <!-- close button -->
+                <button class="absolute right-5 top-5 z-10">
+                  <span class="material-icons !text-3xl text-brightGray-900"
+                    >close</span
+                  >
+                </button>
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-sm shadow p-16 pt-14">
+                  <!-- Modal header -->
+                  <h3 class="text-[28px] mb-4">カスタムグループを作る</h3>
+                  <!-- Modal body -->
+                  <div class="flex">
+                    <!-- modal left -->
+                    <div
+                      class="w-[790px] pr-10 border-r border-r-brightGray-200 border-dashed"
+                    >
+                      <p class="text-base">
+                        <span class="font-bold">気になる</span
+                        >からメンバーとして追加
+                      </p>
+                      <div
+                        class="bg-white rounded-md border border-brightGray-100 mt-2 mb-4"
+                      >
+                        <div
+                          class="text-sm font-medium text-center text-brightGray-200"
+                        >
+                          <ul
+                            class="flex content-between border-b border-brightGray-100"
+                          >
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                                >参考になる人</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >採用</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >離任者</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >スキルパネル</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >ジョブ</a
+                              >
+                            </li>
+                            <li class="flex items-center">
+                              <button
+                                type="button"
+                                id="dropmenu04"
+                                data-dropdown-toggle="menu04"
+                                class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
+                              >
+                                <span
+                                  class="material-icons text-xs text-brightGreen-900"
+                                  >more_vert</span
+                                >
+                              </button>
+                              <!-- Dropdown menu -->
+                              <div
+                                id="menu04"
+                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                              >
+                                <ul
+                                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                  aria-labelledby="dropmenu04"
+                                >
+                                  <li>
+                                    <a
+                                      href="#"
+                                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                      >menu4-1</a
+                                    >
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="#"
+                                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                      >menu4-2</a
+                                    >
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="#"
+                                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                      >menu4-3</a
+                                    >
+                                  </li>
+                                </ul>
+                              </div>
+                            </li>
+                          </ul>
+                          <div class="pt-3 pb-1 px-6">
+                            <ul class="flex flex-wrap gap-y-1">
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                              >
+                                <a class="inline-flex items-center gap-x-6">
+                                  <img
+                                    class="inline-block h-10 w-10 rounded-full"
+                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                  />
+                                  <div>
+                                    <p>nokichi</p>
+                                    <p class="text-brightGray-300">
+                                      アプリエンジニア
+                                    </p>
+                                  </div>
+                                </a>
+                              </li>
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                              >
+                                <a class="inline-flex items-center gap-x-6">
+                                  <img
+                                    class="inline-block h-10 w-10 rounded-full"
+                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                  />
+                                  <div>
+                                    <p>nokichi</p>
+                                    <p class="text-brightGray-300">
+                                      アプリエンジニア
+                                    </p>
+                                  </div>
+                                </a>
+                              </li>
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                              >
+                                <a class="inline-flex items-center gap-x-6">
+                                  <img
+                                    class="inline-block h-10 w-10 rounded-full"
+                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                  />
+                                  <div>
+                                    <p>nokichi</p>
+                                    <p class="text-brightGray-300">
+                                      アプリエンジニア
+                                    </p>
+                                  </div>
+                                </a>
+                              </li>
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                              >
+                                <a class="inline-flex items-center gap-x-6">
+                                  <img
+                                    class="inline-block h-10 w-10 rounded-full"
+                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                  />
+                                  <div>
+                                    <p>nokichi</p>
+                                    <p class="text-brightGray-300">
+                                      アプリエンジニア
+                                    </p>
+                                  </div>
+                                </a>
+                              </li>
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                              >
+                                <a class="inline-flex items-center gap-x-6">
+                                  <img
+                                    class="inline-block h-10 w-10 rounded-full"
+                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                  />
+                                  <div>
+                                    <p>nokichi</p>
+                                    <p class="text-brightGray-300">
+                                      アプリエンジニア
+                                    </p>
+                                  </div>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="flex justify-center gap-x-14 pb-3">
+                            <button
+                              type="button"
+                              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                            >
+                              <span
+                                class="material-icons md-18 mr-2 text-brightGray-200"
+                                >chevron_left</span
+                              >
+                              前
+                            </button>
+                            <button
+                              type="button"
+                              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                            >
+                              次
+                              <span
+                                class="material-icons md-18 ml-2 text-brightGray-900"
+                                >chevron_right</span
+                              >
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <p class="pb-2 text-base">
+                          <span class="font-bold">ハンドル名</span>または<span
+                            class="font-bold"
+                            >メールアドレス</span
+                          >からメンバーとして追加
+                        </p>
+
+                        <input
+                          type="autocomplete"
+                          placeholder="ハンドル名またはメールアドレスを入力してください"
+                          class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
+                        />
+
+                        <button
+                          class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5"
+                        >
+                          追加
+                        </button>
+                      </div>
+                    </div>
+                    <!-- modal-right -->
+                    <div class="w-[580px] pl-10 flex flex-col justify-between">
+                      <div>
+                        <h5 class="text-[20px]">新しいグループ</h5>
+                        <div class="bg-brightGray-10 rounded-sm px-10 py-6">
+                          <dl class="flex flex-wrap w-full">
+                            <dt
+                              class="font-bold w-[100px] flex items-center mb-10"
+                            >
+                              チーム名
+                            </dt>
+                            <dd class="w-[340px] mb-10">
+                              <input
+                                type="text"
+                                placeholder="新しいチーム名を入力してください"
+                                class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+                              />
+                            </dd>
+                            <dt class="font-bold w-[100px] mb-10">メンバー</dt>
+                            <dd class="w-[340px]">
+                              <ul class="flex flex-wrap gap-y-1">
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                >
+                                  <a
+                                    class="inline-flex items-center gap-x-6 w-full"
+                                  >
+                                    <img
+                                      class="inline-block h-10 w-10 rounded-full"
+                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                    />
+                                    <div class="flex-auto">
+                                      <p>nokichi</p>
+                                      <p class="text-brightGray-300">
+                                        アプリエンジニア
+                                      </p>
+                                    </div>
+                                    <button class="mx-4">
+                                      <span
+                                        class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                        >close</span
+                                      >
+                                    </button>
+                                  </a>
+                                </li>
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                >
+                                  <a
+                                    class="inline-flex items-center gap-x-6 w-full"
+                                  >
+                                    <img
+                                      class="inline-block h-10 w-10 rounded-full"
+                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                    />
+                                    <div class="flex-auto">
+                                      <p>nokichi</p>
+                                      <p class="text-brightGray-300">
+                                        アプリエンジニア
+                                      </p>
+                                    </div>
+                                    <button class="mx-4">
+                                      <span
+                                        class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                        >close</span
+                                      >
+                                    </button>
+                                  </a>
+                                </li>
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                >
+                                  <a
+                                    class="inline-flex items-center gap-x-6 w-full"
+                                  >
+                                    <img
+                                      class="inline-block h-10 w-10 rounded-full"
+                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                    />
+                                    <div class="flex-auto">
+                                      <p>nokichi</p>
+                                      <p class="text-brightGray-300">
+                                        アプリエンジニア
+                                      </p>
+                                    </div>
+                                    <button class="mx-4">
+                                      <span
+                                        class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                        >close</span
+                                      >
+                                    </button>
+                                  </a>
+                                </li>
+                              </ul>
+                            </dd>
+                          </dl>
+                        </div>
+                      </div>
+
+                      <div class="flex justify-center gap-x-4">
+                        <button
+                          class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                        >
+                          チームを作成し、上記メンバーに招待を送る
+                        </button>
+                        <button
+                          class="text-sm font-bold px-5 py-3 rounded border border-base"
+                        >
+                          キャンセル
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 人材チームへのチーム登録依頼Modal-->
+            <div
+              id="addTeamModal"
+              tabindex="-1"
+              aria-hidden="true"
+              class="bg-brightGray-900 bg-opacity-70 fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full"
+            >
+              <div class="relative">
+                <!-- close button -->
+                <button class="absolute right-3 top-3 z-10">
+                  <span class="material-icons !text-xl text-brightGray-900"
+                    >close</span
+                  >
+                </button>
+
+                <div class="relative bg-white rounded-sm shadow p-8">
+                  <div>
+                    <p class="pb-2 text-base font-bold">
+                      人材チームへのチーム登録依頼
+                    </p>
+
+                    <input
+                      type="autocomplete"
+                      placeholder="人材チーム名を入力"
+                      class="px-2 py-2 mb-4 border border-brightGray-100 rounded-sm flex-1 w-[420px]"
+                    />
+                    <div class="flex justify-end">
+                      <button
+                        class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
+                      >
+                        登録を依頼する
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- 検証 -->
           </div>
         </div>
