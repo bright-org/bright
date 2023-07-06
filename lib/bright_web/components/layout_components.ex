@@ -152,7 +152,6 @@ defmodule BrightWeb.LayoutComponents do
     """
   end
 
-
   @doc """
   Renders a Side Menu
 
