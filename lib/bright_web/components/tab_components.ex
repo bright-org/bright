@@ -44,21 +44,27 @@ defmodule BrightWeb.TabComponents do
         <div class="pt-4 pb-1 px-8">
           内容
         </div>
-        <div class="flex justify-center gap-x-14 pb-3">
-          <button
-            type="button"
-            class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-          >
-            <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
-          </button>
-          <button
-            type="button"
-            class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-          >
-            次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-          </button>
-        </div>
+        <.tab_footer />
       </div>
+    </div>
+    """
+  end
+
+  def tab_footer(assigns) do
+    ~H"""
+    <div class="flex justify-center gap-x-14 pb-3">
+      <button
+        type="button"
+        class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+      >
+        <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
+      </button>
+      <button
+        type="button"
+        class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+      >
+        次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
+      </button>
     </div>
     """
   end
