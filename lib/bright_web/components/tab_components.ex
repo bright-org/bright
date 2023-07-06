@@ -14,39 +14,45 @@ defmodule BrightWeb.TabComponents do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
-        <ul class="flex content-between border-b border-brightGray-50">
-          <li class="w-full">
-            <a
-              href="#"
-              class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-            >
-              tab1
-            </a>
-          </li>
-          <li class="w-full">
-            <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
-              tab2
-            </a>
-          </li>
-          <li class="flex items-center">
-            <button
-              type="button"
-              id="dropmenu01"
-              data-dropdown-toggle="menu01"
-              class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
-            >
-              <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
-            </button>
-            <!-- Dropdown menu -->
-            <.tab_menu />
-          </li>
-        </ul>
+        <.tab_header />
         <div class="pt-4 pb-1 px-8">
           内容
         </div>
         <.tab_footer />
       </div>
     </div>
+    """
+  end
+
+  def tab_header(assigns) do
+    ~H"""
+    <ul class="flex content-between border-b border-brightGray-50">
+      <li class="w-full">
+        <a
+          href="#"
+          class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+        >
+          tab1
+        </a>
+      </li>
+      <li class="w-full">
+        <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+          tab2
+        </a>
+      </li>
+      <li class="flex items-center">
+        <button
+          type="button"
+          id="dropmenu01"
+          data-dropdown-toggle="menu01"
+          class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
+        >
+          <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
+        </button>
+        <!-- Dropdown menu -->
+        <.tab_menu />
+      </li>
+    </ul>
     """
   end
 
