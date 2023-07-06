@@ -100,19 +100,25 @@ defmodule BrightWeb.ProfileComponents do
   Renders a Profile small
 
   ## Examples
-      <.profile_snall/>
+      <.profile_small
+        user_name="piacere"
+        title="リードプログラマー"
+        icon_file_path="/images/sample/sample-image.png"
+      />
   """
+  attr :user_name, :string, default: ""
+  attr :title, :string, default: ""
+  attr :detail, :string, default: ""
+  attr :icon_file_path, :string, default: ""
+
   def profile_small(assigns) do
     ~H"""
     <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
       <a class="inline-flex items-center gap-x-6">
-        <img
-          class="inline-block h-10 w-10 rounded-full"
-          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-        />
+        <img class="inline-block h-10 w-10 rounded-full" src={@icon_file_path} />
         <div>
-          <p>nokichi</p>
-          <p class="text-brightGray-300">アプリエンジニア</p>
+          <p><%= assigns.user_name %></p>
+          <p class="text-brightGray-300"><%= assigns.title %></p>
         </div>
       </a>
     </li>
