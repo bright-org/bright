@@ -16,6 +16,7 @@ defmodule BrightWeb.SkillCardComponents do
       <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
       <div class="bg-white rounded-md mt-1">
         <div class="text-sm font-medium text-center text-brightGray-200">
+          <!-- タブ -->
           <ul class="flex content-between border-b border-brightGray-50">
             <li class="w-full">
               <a
@@ -37,48 +38,9 @@ defmodule BrightWeb.SkillCardComponents do
               </a>
             </li>
           </ul>
-          <div class="py-4 px-7 flex gap-y-3 flex-col">
-            <%= for _i <- 1..3 do %>
-              <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
-                <p class="font-bold w-36 text-left text-sm">
-                  Webアプリ開発
-                </p>
-                <table class="table-fixed skill-table">
-                  <thead>
-                    <tr>
-                      <th class="w-[110px]"></th>
-                      <th class="pl-8">クラス1</th>
-                      <th class="pl-8">クラス2</th>
-                      <th class="pl-8">クラス3</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <%= for _j <- 1..3 do %>
-                      <tr>
-                        <td>Elixir</td>
-                        <td>
-                          <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                            <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                          </p>
-                        </td>
-                        <td>
-                          <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                            <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                          </p>
-                        </td>
-                        <td>
-                          <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                            <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                          </p>
-                        </td>
-                      </tr>
-                    <% end %>
-                  </tbody>
-                </table>
-              </div>
-            <% end %>
-          </div>
-
+          <!-- 内容 -->
+          <.skill_card_body />
+          <!-- フッター -->
           <div class="flex justify-center gap-x-14 pb-3">
             <button
               type="button"
@@ -95,6 +57,52 @@ defmodule BrightWeb.SkillCardComponents do
           </div>
         </div>
       </div>
+    </div>
+    """
+  end
+
+  def skill_card_body(assigns) do
+    ~H"""
+    <div class="py-4 px-7 flex gap-y-3 flex-col">
+      <%= for _i <- 1..3 do %>
+        <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
+          <p class="font-bold w-36 text-left text-sm">
+            Webアプリ開発
+          </p>
+          <table class="table-fixed skill-table">
+            <thead>
+              <tr>
+                <th class="w-[110px]"></th>
+                <th class="pl-8">クラス1</th>
+                <th class="pl-8">クラス2</th>
+                <th class="pl-8">クラス3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for _j <- 1..3 do %>
+                <tr>
+                  <td>Elixir</td>
+                  <td>
+                    <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                      <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+                    </p>
+                  </td>
+                  <td>
+                    <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                      <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
+                    </p>
+                  </td>
+                  <td>
+                    <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                      <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
+                    </p>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
     </div>
     """
   end
