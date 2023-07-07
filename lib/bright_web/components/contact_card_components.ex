@@ -78,19 +78,7 @@ defmodule BrightWeb.ContactCardComponents do
               </div>
             </li>
           </ul>
-          <div class="pt-4 pb-1 px-8">
-            <ul class="flex gap-y-2.5 flex-col">
-              <%= for _i <- 1..5 do %>
-                <li class="text-left flex items-center text-base">
-                  <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                    person
-                  </span>
-                  nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-                </li>
-              <% end %>
-            </ul>
-          </div>
+          <.contact_card_body />
           <div class="flex justify-center gap-x-14 pb-3">
             <button
               type="button"
@@ -107,6 +95,24 @@ defmodule BrightWeb.ContactCardComponents do
           </div>
         </div>
       </div>
+    </div>
+    """
+  end
+
+  def contact_card_body(assigns) do
+    ~H"""
+    <div class="pt-4 pb-1 px-8">
+      <ul class="flex gap-y-2.5 flex-col">
+        <%= for _i <- 1..5 do %>
+          <li class="text-left flex items-center text-base">
+            <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+              person
+            </span>
+            nakoさんからの紹介 / mikaさん / Web開発（Elixir）
+            <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
+          </li>
+        <% end %>
+      </ul>
     </div>
     """
   end
