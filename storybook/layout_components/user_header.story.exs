@@ -1,7 +1,7 @@
-defmodule Storybook.Components.Head do
+defmodule Storybook.Components.UserHeader do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &Elixir.BrightWeb.LayoutComponents.head/1
+  def function, do: &Elixir.BrightWeb.LayoutComponents.user_header/1
 
   def variations do
     [

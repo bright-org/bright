@@ -5,12 +5,12 @@ defmodule BrightWeb.LayoutComponents do
   use Phoenix.Component
 
   @doc """
-  Renders a Head
+  Renders a User Header
 
   ## Examples
-      <.head />
+      <.user_header />
   """
-  def head(assigns) do
+  def user_header(assigns) do
     ~H"""
     <div class="w-full flex justify-between py-2.5 px-12 border-brightGray-100 border-b bg-brightGray-50">
       <h4>マイページ</h4>
