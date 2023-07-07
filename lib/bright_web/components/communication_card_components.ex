@@ -1,43 +1,19 @@
-<!-- プロフィール -->
-<div class="flex justify-between py-8 px-10 bg-white">
-  <.profile
-    user_name="piacere"
-    title="リードプログラマー"
-    detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。"
-    icon_file_path="/images/sample/sample-image.png"
-    display_sns
-    twitter_url="https://twitter.com/"
-    github_url="https://www.github.com/"
-    facebook_url="https://www.facebook.com/"
-  />
-  <div>
-    <p class="text-sm !font-bold">
-      スキルセットジェム<span class="font-normal text-xs ml-4">※クリックすると詳細</span>
-    </p>
-    <div class="chart-container flex justify-center">
-      <.skill_gem
-        data={[[50, 60, 40, 30]]}
-        id="skill-gem-single-skill4"
-        labels={["エンジニア", "マーケター", "デザイナー", "インフラ"]}
-        size="sm"
-      />
-    </div>
-  </div>
-</div>
-<!-- コンテンツ -->
-<div class="px-10 py-7 flex justify-between">
-  <div class="w-[850px] flex flex-col gap-y-6">
-    <!-- 他ユーザーやチームからの連絡 -->
-    <.contact_card />
-    <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
-    <.skill_card />
-  </div>
-  <div class="w-[750px] flex flex-col gap-y-6">
-    <!-- 所属チームや気になるユーザーとの交流 -->
-    <.communication_card />
-    <!-- 関わっているチーム -->
+defmodule BrightWeb.CommunicationCardComponents do
+  @moduledoc """
+  Communication Card Components
+  """
+  use Phoenix.Component
+
+  @doc """
+  Renders a Communication Card
+
+  ## Examples
+      <.communication_card/>
+  """
+  def communication_card(assigns) do
+    ~H"""
     <div>
-      <h5>関わっているチーム</h5>
+      <h5>所属チームや気になるユーザーとの交流</h5>
       <div class="bg-white rounded-md mt-1">
         <div class="text-sm font-medium text-center text-brightGray-200">
           <ul class="flex content-between border-b border-brightGray-50">
@@ -50,32 +26,36 @@
               </a>
             </li>
             <li class="w-full">
-              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">管轄チーム</a>
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+                気になるユーザー
+              </a>
+            </li>
+            <li class="w-full">
+              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+                スキルアップ
+              </a>
             </li>
             <li class="flex items-center">
               <button
                 type="button"
-                id="dropmenu03"
-                data-dropdown-toggle="menu03"
+                id="dropmenu02"
+                data-dropdown-toggle="menu02"
                 class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
               >
                 <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
               </button>
               <!-- Dropdown menu -->
               <div
-                id="menu03"
+                id="menu02"
                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
               >
-                <ul
-                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                  aria-labelledby="dropmenu03"
-                >
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu02">
                   <li>
                     <a
-                      href="/teams/new"
+                      href="#"
                       class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
-                      チームを作る
+                      menu2-1
                     </a>
                   </li>
                   <li>
@@ -83,7 +63,7 @@
                       href="#"
                       class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
-                      menu03-2
+                      menu2-2
                     </a>
                   </li>
                   <li>
@@ -91,19 +71,26 @@
                       href="#"
                       class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
-                      menu03-3
+                      menu2-3
                     </a>
                   </li>
                 </ul>
               </div>
             </li>
           </ul>
-          <.live_component
-            module={BrightWeb.Team.JoinedTeamComponent}
-            id={@current_user.id || :index}
-            user_id={@current_user.id}
-            patch={~p"/mypage"}
-          />
+          <div class="pt-4 px-6">
+            <ul class="flex gap-y-2.5 flex-col">
+              <%= for _i <- 1..5 do %>
+                <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+                  <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                    pentagon
+                  </span>
+                  中道洋介さんがスキルアップしました
+                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
+                </li>
+              <% end %>
+            </ul>
+          </div>
           <div class="flex justify-center gap-x-14 pb-3">
             <button
               type="button"
@@ -121,8 +108,6 @@
         </div>
       </div>
     </div>
-    <!-- 気になる -->
-    <.intriguing_card />
-    <!-- 検証 -->
-  </div>
-</div>
+    """
+  end
+end
