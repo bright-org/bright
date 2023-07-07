@@ -14,16 +14,14 @@ defmodule BrightWeb.OnboardingLive.Index do
   end
 
   defp apply_action(socket, :index, params) do
-    view_content = _view_content(params["onboarding"])
-
     socket
     |> assign(:page_title, "Listing Onboardings")
-    |> assign(:view_content, view_content)
+    |> assign(:view_content, view_content(params["onboarding"]))
   end
 
-  defp _view_content("select_skill_panel"), do: :select_skill_panel
-  defp _view_content("select_skill_result"), do: :select_skill_result
-  defp _view_content(_), do: :select_career
+  defp view_content("select_skill_panel"), do: :select_skill_panel
+  defp view_content("select_skill_result"), do: :select_skill_result
+  defp view_content(_), do: :select_career
 
   @impl true
   def render(assigns) do
