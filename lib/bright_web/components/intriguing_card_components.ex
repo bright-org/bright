@@ -9,7 +9,7 @@ defmodule BrightWeb.IntriguingCardComponents do
   Renders a Intriguing Card
 
   ## Examples
-      <.intriguing_card/>
+      <.intriguing_card />
   """
   def intriguing_card(assigns) do
     ~H"""
