@@ -43,17 +43,17 @@ defmodule BrightWeb.TabComponents do
   attr :selected, :boolean, default: false
 
   def tab_header_item(assigns) do
-    class = "py-3.5 w-full items-center justify-center inline-block"
-    selected_class = " text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-    class = if assigns.selected, do: class <> selected_class, else: class
+    style = "py-3.5 w-full items-center justify-center inline-block"
+    selected_style = " text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+    style = if assigns.selected, do: style <> selected_style, else: style
 
     assigns =
       assigns
-      |> assign(:class, class)
+      |> assign(:style, style)
 
     ~H"""
     <li class="w-full">
-      <a href="#" phx-click="tab_click" class={@class}>
+      <a href="#" phx-click="tab_click" class={@style}>
         <%= render_slot(@inner_block) %>
       </a>
     </li>
