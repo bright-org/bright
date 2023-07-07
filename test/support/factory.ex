@@ -12,7 +12,12 @@ defmodule Bright.Factory do
   # SkillPanels context
   use Bright.SkillPanelFactory
   use Bright.SkillClassFactory
+
+  # SkillUnits context
   use Bright.SkillUnitFactory
   use Bright.SkillCategoryFactory
   use Bright.SkillFactory
+
+  # SkillScores context
+  use Bright.SkillScoreFactory
 end
