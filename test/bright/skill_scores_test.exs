@@ -4,17 +4,17 @@ defmodule Bright.SkillScoresTest do
 
   alias Bright.SkillScores
 
-  setup do
-    user = insert(:user)
-    skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
-
-    %{user: user, skill_class: skill_class}
-  end
-
   describe "skill_scores" do
     alias Bright.SkillScores.SkillScore
 
     @invalid_attrs %{level: :invalid}
+
+    setup do
+      user = insert(:user)
+      skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
+
+      %{user: user, skill_class: skill_class}
+    end
 
     test "list_skill_scores/0 returns all skill_scores", %{
       user: user,
@@ -30,8 +30,8 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      skill_score = %{id: id} = insert(:skill_score, user: user, skill_class: skill_class)
-      assert id == SkillScores.get_skill_score!(skill_score.id).id
+      skill_score = insert(:skill_score, user: user, skill_class: skill_class)
+      assert skill_score.id == SkillScores.get_skill_score!(skill_score.id).id
     end
 
     test "create_skill_score/1 with valid data creates a skill_score", %{
@@ -65,12 +65,12 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      skill_score = %{level: level} = insert(:skill_score, user: user, skill_class: skill_class)
+      skill_score = insert(:skill_score, user: user, skill_class: skill_class)
 
       assert {:error, %Ecto.Changeset{}} =
                SkillScores.update_skill_score(skill_score, @invalid_attrs)
 
-      assert %{level: ^level} = SkillScores.get_skill_score!(skill_score.id)
+      assert skill_score.level == SkillScores.get_skill_score!(skill_score.id).level
     end
 
     test "delete_skill_score/1 deletes the skill_score", %{
@@ -88,6 +88,104 @@ defmodule Bright.SkillScoresTest do
     } do
       skill_score = insert(:skill_score, user: user, skill_class: skill_class)
       assert %Ecto.Changeset{} = SkillScores.change_skill_score(skill_score)
+    end
+  end
+
+  describe "skill_score_items" do
+    alias Bright.SkillScores.SkillScoreItem
+
+    @invalid_attrs %{score: :invalid}
+
+    setup do
+      user = insert(:user)
+      skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
+      skill_score = insert(:skill_score, user: user, skill_class: skill_class)
+
+      # skill_unit = insert(:skill_unit, skill_classes: [skill_class])
+      skill_category = insert(:skill_category, skill_unit: build(:skill_unit), position: 1)
+      skill = insert(:skill, skill_category: skill_category, position: 1)
+
+      %{skill_score: skill_score, skill: skill}
+    end
+
+    test "list_skill_score_items/0 returns all skill_score_items", %{
+      skill_score: skill_score,
+      skill: skill
+    } do
+      skill_score_item = insert(:skill_score_item, skill_score: skill_score, skill: skill)
+
+      assert SkillScores.list_skill_score_items()
+             |> Enum.map(& &1.id) == [skill_score_item.id]
+    end
+
+    test "get_skill_score_item!/1 returns the skill_score_item with given id", %{
+      skill_score: skill_score,
+      skill: skill
+    } do
+      skill_score_item = insert(:skill_score_item, skill_score: skill_score, skill: skill)
+      assert SkillScores.get_skill_score_item!(skill_score_item.id).id == skill_score_item.id
+    end
+
+    test "create_skill_score_item/1 with valid data creates a skill_score_item", %{
+      skill_score: skill_score,
+      skill: skill
+    } do
+      valid_attrs = %{skill_score_id: skill_score.id, skill_id: skill.id, score: :high}
+
+      assert {:ok, %SkillScoreItem{} = skill_score_item} =
+               SkillScores.create_skill_score_item(valid_attrs)
+
+      assert skill_score_item.score == :high
+    end
+
+    test "create_skill_score_item/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = SkillScores.create_skill_score_item(@invalid_attrs)
+    end
+
+    test "update_skill_score_item/2 with valid data updates the skill_score_item", %{
+      skill_score: skill_score,
+      skill: skill
+    } do
+      skill_score_item = insert(:skill_score_item, skill_score: skill_score, skill: skill)
+      update_attrs = %{score: :high}
+
+      assert {:ok, %SkillScoreItem{} = skill_score_item} =
+               SkillScores.update_skill_score_item(skill_score_item, update_attrs)
+
+      assert skill_score_item.score == :high
+    end
+
+    test "update_skill_score_item/2 with invalid data returns error changeset", %{
+      skill_score: skill_score,
+      skill: skill
+    } do
+      skill_score_item = insert(:skill_score_item, skill_score: skill_score, skill: skill)
+
+      assert {:error, %Ecto.Changeset{}} =
+               SkillScores.update_skill_score_item(skill_score_item, @invalid_attrs)
+
+      assert skill_score_item.score ==
+               SkillScores.get_skill_score_item!(skill_score_item.id).score
+    end
+
+    test "delete_skill_score_item/1 deletes the skill_score_item", %{
+      skill_score: skill_score,
+      skill: skill
+    } do
+      skill_score_item = insert(:skill_score_item, skill_score: skill_score, skill: skill)
+      assert {:ok, %SkillScoreItem{}} = SkillScores.delete_skill_score_item(skill_score_item)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        SkillScores.get_skill_score_item!(skill_score_item.id)
+      end
+    end
+
+    test "change_skill_score_item/1 returns a skill_score_item changeset", %{
+      skill_score: skill_score,
+      skill: skill
+    } do
+      skill_score_item = insert(:skill_score_item, skill_score: skill_score, skill: skill)
+      assert %Ecto.Changeset{} = SkillScores.change_skill_score_item(skill_score_item)
     end
   end
 end
