@@ -40,12 +40,20 @@ defmodule BrightWeb.TabComponents do
   end
 
   slot :inner_block
+  attr :selected, :boolean, default: false
 
   def tab_header_item(assigns) do
-    # text-brightGreen-300 font-bold border-brightGreen-300 border-b-2
+    class = "py-3.5 w-full items-center justify-center inline-block"
+    selected_class = " text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+    class = if assigns.selected, do: class <> selected_class, else: class
+
+    assigns =
+      assigns
+      |> assign(:class, class)
+
     ~H"""
     <li class="w-full">
-      <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
+      <a href="#" class={@class}>
         <%= render_slot(@inner_block) %>
       </a>
     </li>
