@@ -15,31 +15,31 @@
 
 ```mermaid
 erDiagram
-  wants ||--|{ want_careers : ""
-  want_careers ||--|{ careers : ""
-  careers ||--|{ career_skill_panels : ""
-  career_skill_panels ||--|{ skill_panels : ""
+  onboarding_wants ||--|{ onboarding_want_jobs : ""
+  onboarding_want_jobs ||--|{ onboarding_jobs : ""
+  onboarding_jobs ||--|{ job_skill_panels : ""
+  job_skill_panels ||--|{ skill_panels : ""
   user_skill_panels ||--|{ skill_panels : ""
   skill_panels ||--|{ skill_classes : ""
   skill_classes ||--|{ skill_class_units : ""
   skill_class_units }|--|| skill_units : ""
 
-  wants {
-    string want "やりたいことや興味、関心があること"
+  onboarding_wants {
+    string name "やりたいことや興味、関心があること"
     int position "表示順"
   }
 
-  want_careers {
+  onboarding_want_jobs {
     id want_id FK
-    id career_id FK
+    id job_id FK
   }
 
-  careers {
-    string career "キャリアフィールド"
+  onboarding_jobs {
+    string name "キャリアフィールド"
     int position
   }
 
-  career_skill_panels {
+  job_skill_panels {
     id career_id FK
     id skill_panel_id FK
   }
