@@ -14,8 +14,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: "#FD4F00", //TODO: Phoenix Frameworkでもともとある定義　不要になった時点で削除又はこのコメントを削除
         base: "#333333",
+        brand: "#FD4F00", //TODO: Phoenix Frameworkでもともとある定義　不要になった時点で削除又はこのコメントを削除
         transparent: "transparent",
         brightGreen: {
           50: "#DCF2F0",
@@ -63,7 +63,7 @@ module.exports = {
         },
         linePlaceholder: "#97ACAC",
         line: "#D4DBDB",
-        background: "#F9FAFA",
+        background: "#EFF0F0",
         error: "#E5323F",
         white: "#ffffff",
         link: "#001AAC",
@@ -72,12 +72,12 @@ module.exports = {
           twitter: "#1DA1F2",
           github: "#0D1117",
         },
-        enginner: {
+        infra: {
           dark: "#51971A",
           light: "#8CEB14",
           dazzle: "#8CEB14",
         },
-        infra: {
+        enginner: {
           dark: "#165BC8",
           light: "#6BDDFE",
           dazzle: "#EEFBFF",
@@ -98,22 +98,34 @@ module.exports = {
           dazzle: "#FFE9EF",
         },
       },
-      extend: {
-        backgroundImage: (theme) => ({
-          bgGem: "url('./images/bg_gem_title.png')",
-          bgGoogle: "url('./images/bg_google.png')",
-          bgGithub: "url('./images/bg_github.png')",
-          bgFacebook: "url('./images/bg_facebook.png')",
-          bgTwitter: "url('./images/bg_twitter.png')",
-        }),
-        backgroundPosition: (theme) => ({
-          "left-2.5": "10px center",
-        }),
-        backgroundSize: (theme) => ({
-          5: "auto 20px",
-          6: "auto 24px",
-        }),
-      }
+      backgroundImage: (theme) => ({
+        bgGem: "url('./images/bg_gem_title.png')",
+        bgGemEnginner: "url('./images/bg_gem_enginner.png')",
+        bgGemInfra: "url('./images/bg_gem_infra.png')",
+        bgGemDesigner: "url('./images/bg_gem_designer.png')",
+        bgGemMarketer: "url('./images/bg_gem_marketer.png')",
+        bgGoogle: "url('./images/bg_google.png')",
+        bgGithub: "url('./images/bg_github.png')",
+        bgFacebook: "url('./images/bg_facebook.png')",
+        bgTwitter: "url('./images/bg_twitter.png')",
+      }),
+      backgroundPosition: (theme) => ({
+        "left-2.5": "10px center",
+      }),
+      backgroundSize: (theme) => ({
+        5: "auto 20px",
+        6: "auto 24px",
+        7: "auto 28px",
+        8: "auto 32px",
+        9: "auto 34px",
+      }),
+      fontFamily: (theme) => ({
+        notosans: ["Noto Sans JP"],
+        sans: ["Noto Sans JP"],
+      }),
+      rotate: (theme) => ({
+        225: "225deg",
+      }),
     },
   },
   plugins: [
@@ -161,6 +173,124 @@ module.exports = {
           }
         }
       }, { values })
+    }),
+    plugin(function ({ addBase, addComponents, addUtilities, theme }) {
+      addBase({
+        body: {
+          fontSize: theme("fontSize.sm"),
+          letterSpacing: theme("letterSpacing.tight"),
+          color: "#333333",
+        },
+        h1: {
+          fontSize: theme("fontSize.5xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h2: {
+          fontSize: theme("fontSize.4xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h3: {
+          fontSize: theme("fontSize.2xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h4: {
+          fontSize: theme("fontSize.xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h5: {
+          fontSize: theme("fontSize.lg"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        td: {
+          textAlign: "left",
+          fontSize: theme("fontSize.sm"),
+          padding: theme("padding.2"),
+        },
+        th: {
+          textAlign: "left",
+          fontSize: theme("fontSize.sm"),
+          padding: theme("padding.2"),
+        },
+      });
+      addComponents({
+        ".skill-table td": {
+          width: "110px",
+        },
+        ".skill-table th": {
+          width: "140px",
+        },
+        ".skill-panel-table td": {
+          height: theme("height:10"),
+          borderRight: "1px",
+          borderColor: "#97ACAC",
+          borderBottom: "1px",
+          borderStyle: "solid",
+        },
+        ".skill-panel-table th": {
+          height: theme("height:10"),
+          borderRight: "1px",
+          borderColor: "#97ACAC",
+          borderBottom: "1px",
+          borderStyle: "solid",
+        },
+        "input.coustom-checkbox": {
+          cursor: "pointer",
+          paddingLeft: 30,
+          verticalAlign: "middle",
+          position: "relative",
+          "&:before": {
+            content: "''",
+            display: "block",
+            position: "absolute",
+            backgroundColor: "#ffffff",
+            borderRadius: "0%",
+            border: "2px solid #2E3A3A",
+            width: "20px",
+            height: "20px",
+            transform: "translateY(-50%)",
+            top: "50%",
+            left: "0px",
+            borderRadius: "3px",
+          },
+          "&:after": {
+            content: "''",
+            display: "block",
+            position: "absolute",
+            borderBottom: "3px solid #2E3A3A",
+            borderLeft: "3px solid #2E3A3A",
+            opacity: "0",
+            height: "6px",
+            width: "12px",
+            transform: "rotate(-45deg)",
+            top: "4px",
+            left: "4px",
+          },
+          "&:checked:after": {
+            opacity: "1",
+          },
+        },
+      });
+      addUtilities({
+        ".button-toggle-active": {
+          backgroundColor: "#2E3A3A",
+          color: "#ffffff",
+          borderRadius: "999999px",
+        },
+        ".skill-panel-outline": {
+          outline: "1px solid #97acac",
+          outlineOffset: "1",
+        },
+      });
     })
   ]
 }
