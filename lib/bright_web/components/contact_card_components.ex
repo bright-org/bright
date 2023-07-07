@@ -8,7 +8,7 @@ defmodule BrightWeb.ContactCardComponents do
   Renders a Contact
 
   ## Examples
-      <.contact_card/>
+      <.contact_card />
   """
   def contact_card(assigns) do
     ~H"""
