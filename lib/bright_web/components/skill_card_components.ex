@@ -3,6 +3,7 @@ defmodule BrightWeb.SkillCardComponents do
   Skill Card Components
   """
   use Phoenix.Component
+  import BrightWeb.TabComponents
 
   @doc """
   Renders a Skill Card
@@ -14,49 +15,9 @@ defmodule BrightWeb.SkillCardComponents do
     ~H"""
     <div>
       <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
-      <div class="bg-white rounded-md mt-1">
-        <div class="text-sm font-medium text-center text-brightGray-200">
-          <!-- タブ -->
-          <ul class="flex content-between border-b border-brightGray-50">
-            <li class="w-full">
-              <a
-                href="#"
-                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-              >
-                エンジニア
-              </a>
-            </li>
-            <li class="w-full">
-              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">インフラ</a>
-            </li>
-            <li class="w-full">
-              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">デザイナー</a>
-            </li>
-            <li class="w-full">
-              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
-                マーケッター
-              </a>
-            </li>
-          </ul>
-          <!-- 内容 -->
-          <.skill_card_body />
-          <!-- フッター -->
-          <div class="flex justify-center gap-x-14 pb-3">
-            <button
-              type="button"
-              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-            >
-              <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
-            </button>
-            <button
-              type="button"
-              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-            >
-              次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <.tab tabs={["エンジニア", "インフラ", "デザイナー", "マーケッター"]}>
+        <.skill_card_body />
+      </.tab>
     </div>
     """
   end
