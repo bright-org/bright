@@ -10,13 +10,14 @@ defmodule BrightWeb.TabComponents do
   ## Examples
       <tab />
   """
+  attr :tabs, :list
   slot :inner_block
 
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
-        <.tab_header />
+        <.tab_header tabs={@tabs} />
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
@@ -26,20 +27,26 @@ defmodule BrightWeb.TabComponents do
     """
   end
 
+  attr :tabs, :list
+
   def tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-50">
-      <.tab_header_item />
+      <%= for item <- assigns.tabs do %>
+        <.tab_header_item><%= item %></.tab_header_item>
+      <% end %>
     </ul>
     """
   end
+
+  slot :inner_block
 
   def tab_header_item(assigns) do
     # text-brightGreen-300 font-bold border-brightGreen-300 border-b-2
     ~H"""
     <li class="w-full">
       <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
-        tab1
+        <%= render_slot(@inner_block) %>
       </a>
     </li>
     """
