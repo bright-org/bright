@@ -16,6 +16,7 @@ defmodule BrightWeb.CommunicationCardComponents do
       <h5>所属チームや気になるユーザーとの交流</h5>
       <div class="bg-white rounded-md mt-1">
         <div class="text-sm font-medium text-center text-brightGray-200">
+          <!-- ヘッダー -->
           <ul class="flex content-between border-b border-brightGray-50">
             <li class="w-full">
               <a
@@ -78,35 +79,28 @@ defmodule BrightWeb.CommunicationCardComponents do
               </div>
             </li>
           </ul>
-          <div class="pt-4 px-6">
-            <ul class="flex gap-y-2.5 flex-col">
-              <%= for _i <- 1..5 do %>
-                <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
-                  <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                    pentagon
-                  </span>
-                  中道洋介さんがスキルアップしました
-                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-          <div class="flex justify-center gap-x-14 pb-3">
-            <button
-              type="button"
-              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-            >
-              <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
-            </button>
-            <button
-              type="button"
-              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-            >
-              次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-            </button>
-          </div>
+          <!-- ボディ-->
+          <.communication_card_body />
         </div>
       </div>
+    </div>
+    """
+  end
+
+  def communication_card_body(assigns) do
+    ~H"""
+    <div class="pt-4 px-6">
+      <ul class="flex gap-y-2.5 flex-col">
+        <%= for _i <- 1..5 do %>
+          <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+            <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+              pentagon
+            </span>
+            中道洋介さんがスキルアップしました
+            <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
+          </li>
+        <% end %>
+      </ul>
     </div>
     """
   end
