@@ -1,6 +1,7 @@
 defmodule BrightWeb.OnboardingLive.Index do
   use BrightWeb, :live_view
-  import BrightWeb.OnbordingComponents
+
+  embed_templates "index/*"
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,19 +14,16 @@ defmodule BrightWeb.OnboardingLive.Index do
   end
 
   defp apply_action(socket, :index, params) do
-    onboarding = params["onboarding"]
-
-    view_content =
-      if onboarding == "select_skill_panel" do
-        :select_skill_panel
-      else
-        :select_career
-      end
+    view_content = _view_content(params["onboarding"])
 
     socket
     |> assign(:page_title, "Listing Onboardings")
     |> assign(:view_content, view_content)
   end
+
+  defp _view_content("select_skill_panel"), do: :select_skill_panel
+  defp _view_content("select_skill_result"), do: :select_skill_result
+  defp _view_content(_), do: :select_career
 
   @impl true
   def render(assigns) do
@@ -33,6 +31,11 @@ defmodule BrightWeb.OnboardingLive.Index do
       :select_skill_panel ->
         ~H"""
         <.select_skill_panel />
+        """
+
+      :select_skill_result ->
+        ~H"""
+        <.select_skill_result />
         """
 
       _ ->
