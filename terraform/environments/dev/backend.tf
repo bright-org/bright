@@ -9,10 +9,10 @@ terraform {
   }
 
   backend "remote" {
-    organization = "digi-dock-bright"
+    organization = "bright-org"
 
     workspaces {
-      name = "dev"
+      name = "bright-dev"
     }
   }
 }
