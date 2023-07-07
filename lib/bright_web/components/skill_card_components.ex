@@ -37,153 +37,46 @@ defmodule BrightWeb.SkillCardComponents do
               </a>
             </li>
           </ul>
-
           <div class="py-4 px-7 flex gap-y-3 flex-col">
-            <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
-              <p class="font-bold w-36 text-left text-sm">
-                Webアプリ開発
-              </p>
-              <table class="table-fixed skill-table">
-                <thead>
-                  <tr>
-                    <th class="w-[110px]"></th>
-                    <th class="pl-8">クラス1</th>
-                    <th class="pl-8">クラス2</th>
-                    <th class="pl-8">クラス3</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Elixir</td>
-                    <td>
-                      <a href="/panels/my_skill_panel_id/graph/">
-                        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                          <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                        </p>
-                      </a>
-                    </td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                      </p>
-                    </td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>PHP</td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                      </p>
-                    </td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                      </p>
-                    </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Ruby</td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                      </p>
-                    </td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
-              <p class="font-bold w-36 text-left text-sm">
-                Webアプリ開発
-              </p>
-              <table class="table-fixed skill-table">
-                <thead>
-                  <tr>
-                    <th class="w-[110px]"></th>
-                    <th class="pl-8">クラス1</th>
-                    <th class="pl-8">クラス2</th>
-                    <th class="pl-8">クラス3</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Elixir</td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                      </p>
-                    </td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                      </p>
-                    </td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>PHP</td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                      </p>
-                    </td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                      </p>
-                    </td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
-              <p class="font-bold w-36 text-left text-sm">PM</p>
-              <table class="table-fixed skill-table">
-                <thead>
-                  <tr>
-                    <th class="w-[110px]"></th>
-                    <th class="pl-8">クラス1</th>
-                    <th class="pl-8">クラス2</th>
-                    <th class="pl-8">クラス3</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                      </p>
-                    </td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                      </p>
-                    </td>
-                    <td>
-                      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                        <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                      </p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <%= for _i <- 1..3 do %>
+              <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
+                <p class="font-bold w-36 text-left text-sm">
+                  Webアプリ開発
+                </p>
+                <table class="table-fixed skill-table">
+                  <thead>
+                    <tr>
+                      <th class="w-[110px]"></th>
+                      <th class="pl-8">クラス1</th>
+                      <th class="pl-8">クラス2</th>
+                      <th class="pl-8">クラス3</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%= for _j <- 1..3 do %>
+                      <tr>
+                        <td>Elixir</td>
+                        <td>
+                          <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                            <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+                          </p>
+                        </td>
+                        <td>
+                          <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                            <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
+                          </p>
+                        </td>
+                        <td>
+                          <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+                            <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
+                          </p>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            <% end %>
           </div>
 
           <div class="flex justify-center gap-x-14 pb-3">
