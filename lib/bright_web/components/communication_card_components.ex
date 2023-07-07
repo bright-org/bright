@@ -80,15 +80,14 @@ defmodule BrightWeb.CommunicationCardComponents do
           </ul>
           <div class="pt-4 px-6">
             <ul class="flex gap-y-2.5 flex-col">
-
               <%= for _i <- 1..5 do %>
-              <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
-                <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                  pentagon
-                </span>
-                中道洋介さんがスキルアップしました
-                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-              </li>
+                <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+                  <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                    pentagon
+                  </span>
+                  中道洋介さんがスキルアップしました
+                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
+                </li>
               <% end %>
             </ul>
           </div>

@@ -80,41 +80,15 @@ defmodule BrightWeb.ContactCardComponents do
           </ul>
           <div class="pt-4 pb-1 px-8">
             <ul class="flex gap-y-2.5 flex-col">
-              <li class="text-left flex items-center text-base">
-                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                  person
-                </span>
-                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-              </li>
-              <li class="text-left flex items-center text-base">
-                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                  person
-                </span>
-                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-              </li>
-              <li class="text-left flex items-center text-base">
-                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                  person
-                </span>
-                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
-              </li>
-              <li class="text-left flex items-center text-base">
-                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                  person
-                </span>
-                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                <span class="text-brightGray-300 font-bold pl-4 inline-block">8時間前</span>
-              </li>
-              <li class="text-left flex items-center text-base">
-                <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-                  person
-                </span>
-                nakoさんからの紹介 / mikaさん / Web開発（Elixir）
-                <span class="text-brightGray-300 font-bold pl-4 inline-block">1日前</span>
-              </li>
+              <%= for _i <- 1..5 do %>
+                <li class="text-left flex items-center text-base">
+                  <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+                    person
+                  </span>
+                  nakoさんからの紹介 / mikaさん / Web開発（Elixir）
+                  <span class="text-brightGreen-300 font-bold pl-4 inline-block">1時間前</span>
+                </li>
+              <% end %>
             </ul>
           </div>
           <div class="flex justify-center gap-x-14 pb-3">
