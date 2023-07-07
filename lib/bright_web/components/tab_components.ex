@@ -53,7 +53,7 @@ defmodule BrightWeb.TabComponents do
 
     ~H"""
     <li class="w-full">
-      <a href="#" class={@class}>
+      <a href="#" phx-click="tab_click" class={@class}>
         <%= render_slot(@inner_block) %>
       </a>
     </li>
