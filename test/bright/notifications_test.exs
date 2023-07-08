@@ -3,10 +3,10 @@ defmodule Bright.NotificationsTest do
 
   alias Bright.Notifications
 
+  import Bright.Factory
+
   describe "notifications" do
     alias Bright.Notifications.Notification
-
-    import Bright.NotificationsFixtures
 
     @invalid_attrs %{
       message: nil,
@@ -19,22 +19,25 @@ defmodule Bright.NotificationsTest do
     }
 
     test "list_notifications/0 returns all notifications" do
-      notification = notification_fixture()
+      notification = insert(:notification)
       assert Notifications.list_notifications() == [notification]
     end
 
     test "get_notification!/1 returns the notification with given id" do
-      notification = notification_fixture()
+      notification = insert(:notification)
       assert Notifications.get_notification!(notification.id) == notification
     end
 
     test "create_notification/1 with valid data creates a notification" do
+      from_user = insert(:user)
+      to_user = insert(:user)
+
       valid_attrs = %{
         message: "some message",
         type: "some type",
         url: "some url",
-        from_user_id: "7488a646-e31f-11e4-aace-600308960662",
-        to_user_id: "7488a646-e31f-11e4-aace-600308960662",
+        from_user_id: from_user.id,
+        to_user_id: to_user.id,
         icon_type: "some icon_type",
         read_at: ~N[2023-07-07 10:08:00]
       }
@@ -45,8 +48,8 @@ defmodule Bright.NotificationsTest do
       assert notification.message == "some message"
       assert notification.type == "some type"
       assert notification.url == "some url"
-      assert notification.from_user_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert notification.to_user_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert notification.from_user_id == from_user.id
+      assert notification.to_user_id == to_user.id
       assert notification.icon_type == "some icon_type"
       assert notification.read_at == ~N[2023-07-07 10:08:00]
     end
@@ -56,14 +59,17 @@ defmodule Bright.NotificationsTest do
     end
 
     test "update_notification/2 with valid data updates the notification" do
-      notification = notification_fixture()
+      notification = insert(:notification)
+
+      from_user = insert(:user)
+      to_user = insert(:user)
 
       update_attrs = %{
         message: "some updated message",
         type: "some updated type",
         url: "some updated url",
-        from_user_id: "7488a646-e31f-11e4-aace-600308960668",
-        to_user_id: "7488a646-e31f-11e4-aace-600308960668",
+        from_user_id: from_user.id,
+        to_user_id: to_user.id,
         icon_type: "some updated icon_type",
         read_at: ~N[2023-07-08 10:08:00]
       }
@@ -74,14 +80,14 @@ defmodule Bright.NotificationsTest do
       assert notification.message == "some updated message"
       assert notification.type == "some updated type"
       assert notification.url == "some updated url"
-      assert notification.from_user_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert notification.to_user_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert notification.from_user_id == from_user.id
+      assert notification.to_user_id == to_user.id
       assert notification.icon_type == "some updated icon_type"
       assert notification.read_at == ~N[2023-07-08 10:08:00]
     end
 
     test "update_notification/2 with invalid data returns error changeset" do
-      notification = notification_fixture()
+      notification = insert(:notification)
 
       assert {:error, %Ecto.Changeset{}} =
                Notifications.update_notification(notification, @invalid_attrs)
@@ -90,13 +96,13 @@ defmodule Bright.NotificationsTest do
     end
 
     test "delete_notification/1 deletes the notification" do
-      notification = notification_fixture()
+      notification = insert(:notification)
       assert {:ok, %Notification{}} = Notifications.delete_notification(notification)
       assert_raise Ecto.NoResultsError, fn -> Notifications.get_notification!(notification.id) end
     end
 
     test "change_notification/1 returns a notification changeset" do
-      notification = notification_fixture()
+      notification = insert(:notification)
       assert %Ecto.Changeset{} = Notifications.change_notification(notification)
     end
   end

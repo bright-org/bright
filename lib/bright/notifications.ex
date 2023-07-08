@@ -19,6 +19,7 @@ defmodule Bright.Notifications do
   """
   def list_notifications do
     Repo.all(Notification)
+    |> Repo.preload([:from_user, :to_user])
   end
 
   @doc """
@@ -35,7 +36,8 @@ defmodule Bright.Notifications do
       ** (Ecto.NoResultsError)
 
   """
-  def get_notification!(id), do: Repo.get!(Notification, id)
+  def get_notification!(id),
+    do: Repo.get!(Notification, id) |> Repo.preload([:from_user, :to_user])
 
   @doc """
   Creates a notification.

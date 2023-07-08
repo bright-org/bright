@@ -15,4 +15,7 @@ defmodule Bright.Factory do
   use Bright.SkillUnitFactory
   use Bright.SkillCategoryFactory
   use Bright.SkillFactory
+
+  # NotificationsFactory context
+  use Bright.NotificationFactory
 end

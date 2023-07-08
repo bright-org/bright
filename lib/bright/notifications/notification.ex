@@ -1,13 +1,19 @@
 defmodule Bright.Notifications.Notification do
+  @moduledoc """
+  通知を扱うスキーマ
+  """
   use Ecto.Schema
   import Ecto.Changeset
+
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "notifications" do
     field :message, :string
     field :type, :string
     field :url, :string
-    field :from_user_id, Ecto.UUID
-    field :to_user_id, Ecto.UUID
+    belongs_to :from_user, Bright.Accounts.User
+    belongs_to :to_user, Bright.Accounts.User
     field :icon_type, :string
     field :read_at, :naive_datetime
 
