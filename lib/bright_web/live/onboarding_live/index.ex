@@ -1,6 +1,5 @@
 defmodule BrightWeb.OnboardingLive.Index do
   use BrightWeb, :live_view
-  import BrightWeb.OnboardingComponents
 
   embed_templates "index/*"
 
