@@ -9,13 +9,14 @@ alias Bright.Accounts
 user = Accounts.get_user_by_name("ymn")
 
 valid_attrs = %{
-  title: "some title",
+  title: "ほげほげプログラマー",
   user_id: user.id,
-  detail: "some detail",
-  icon_file_path: "some icon_file_path",
-  twitter_url: "some twitter_url",
-  facebook_url: "some facebook_url",
-  github_url: "some github_url"
+  detail: "ほげほげほげ、ふがふがふが",
+  icon_file_path:
+    "https://avatars.githubusercontent.com/u/13599847?s=400&u=bb92af43b8c3e0df81725d0660ad5d8680d26a97&v=4",
+  twitter_url: "https://twitter.com/",
+  facebook_url: "https://www.github.com/",
+  github_url: "https://www.facebook.com/"
 }
 
 UserProfiles.create_user_profile(valid_attrs)
