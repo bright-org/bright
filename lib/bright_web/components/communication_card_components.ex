@@ -24,13 +24,11 @@ defmodule BrightWeb.CommunicationCardComponents do
 
   def communication_card_body(assigns) do
     ~H"""
-    <div class="pt-4 px-6">
-      <ul class="flex gap-y-2.5 flex-col">
-        <%= for _i <- 1..5 do %>
-          <.communication_card_row />
-        <% end %>
-      </ul>
-    </div>
+    <ul class="flex gap-y-2.5 flex-col">
+      <%= for _i <- 1..5 do %>
+        <.communication_card_row />
+      <% end %>
+    </ul>
     """
   end
 
