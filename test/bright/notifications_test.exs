@@ -8,7 +8,15 @@ defmodule Bright.NotificationsTest do
 
     import Bright.NotificationsFixtures
 
-    @invalid_attrs %{message: nil, type: nil, url: nil, from_user_id: nil, to_user_id: nil, icon_type: nil, read_at: nil}
+    @invalid_attrs %{
+      message: nil,
+      type: nil,
+      url: nil,
+      from_user_id: nil,
+      to_user_id: nil,
+      icon_type: nil,
+      read_at: nil
+    }
 
     test "list_notifications/0 returns all notifications" do
       notification = notification_fixture()
@@ -21,9 +29,19 @@ defmodule Bright.NotificationsTest do
     end
 
     test "create_notification/1 with valid data creates a notification" do
-      valid_attrs = %{message: "some message", type: "some type", url: "some url", from_user_id: "7488a646-e31f-11e4-aace-600308960662", to_user_id: "7488a646-e31f-11e4-aace-600308960662", icon_type: "some icon_type", read_at: ~N[2023-07-07 10:08:00]}
+      valid_attrs = %{
+        message: "some message",
+        type: "some type",
+        url: "some url",
+        from_user_id: "7488a646-e31f-11e4-aace-600308960662",
+        to_user_id: "7488a646-e31f-11e4-aace-600308960662",
+        icon_type: "some icon_type",
+        read_at: ~N[2023-07-07 10:08:00]
+      }
 
-      assert {:ok, %Notification{} = notification} = Notifications.create_notification(valid_attrs)
+      assert {:ok, %Notification{} = notification} =
+               Notifications.create_notification(valid_attrs)
+
       assert notification.message == "some message"
       assert notification.type == "some type"
       assert notification.url == "some url"
@@ -39,9 +57,20 @@ defmodule Bright.NotificationsTest do
 
     test "update_notification/2 with valid data updates the notification" do
       notification = notification_fixture()
-      update_attrs = %{message: "some updated message", type: "some updated type", url: "some updated url", from_user_id: "7488a646-e31f-11e4-aace-600308960668", to_user_id: "7488a646-e31f-11e4-aace-600308960668", icon_type: "some updated icon_type", read_at: ~N[2023-07-08 10:08:00]}
 
-      assert {:ok, %Notification{} = notification} = Notifications.update_notification(notification, update_attrs)
+      update_attrs = %{
+        message: "some updated message",
+        type: "some updated type",
+        url: "some updated url",
+        from_user_id: "7488a646-e31f-11e4-aace-600308960668",
+        to_user_id: "7488a646-e31f-11e4-aace-600308960668",
+        icon_type: "some updated icon_type",
+        read_at: ~N[2023-07-08 10:08:00]
+      }
+
+      assert {:ok, %Notification{} = notification} =
+               Notifications.update_notification(notification, update_attrs)
+
       assert notification.message == "some updated message"
       assert notification.type == "some updated type"
       assert notification.url == "some updated url"
@@ -53,7 +82,10 @@ defmodule Bright.NotificationsTest do
 
     test "update_notification/2 with invalid data returns error changeset" do
       notification = notification_fixture()
-      assert {:error, %Ecto.Changeset{}} = Notifications.update_notification(notification, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Notifications.update_notification(notification, @invalid_attrs)
+
       assert notification == Notifications.get_notification!(notification.id)
     end
 
