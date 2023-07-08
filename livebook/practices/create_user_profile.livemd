@@ -1,0 +1,30 @@
+# User Profileを作るサンプル
+
+## Section
+
+```elixir
+alias Bright.UserProfiles
+alias Bright.Accounts
+
+user = Accounts.get_user_by_name("ymn")
+
+valid_attrs = %{
+  title: "some title",
+  user_id: user.id,
+  detail: "some detail",
+  icon_file_path: "some icon_file_path",
+  twitter_url: "some twitter_url",
+  facebook_url: "some facebook_url",
+  github_url: "some github_url"
+}
+
+UserProfiles.create_user_profile(valid_attrs)
+```
+
+```elixir
+UserProfiles.get_user_profile_by_name("ymn")
+```
+
+```elixir
+
+```

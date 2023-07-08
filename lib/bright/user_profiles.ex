@@ -7,6 +7,7 @@ defmodule Bright.UserProfiles do
   alias Bright.Repo
 
   alias Bright.UserProfiles.UserProfile
+  alias Bright.Accounts.User
 
   @doc """
   Returns the list of user_profiles.
@@ -54,6 +55,19 @@ defmodule Bright.UserProfiles do
     %UserProfile{}
     |> UserProfile.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def get_user_profile_by_name(name) do
+    user_name_query(name)
+    |> Repo.one()
+    |> Repo.preload(:user)
+  end
+
+  def user_name_query(name) do
+    from p in UserProfile,
+      inner_join: u in User,
+      on: p.user_id == u.id,
+      where: u.name == ^name
   end
 
   @doc """
