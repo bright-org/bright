@@ -66,7 +66,7 @@ module.exports = {
       infra: {
         dark: "#51971A",
         light: "#8CEB14",
-        dazzle: "#8CEB14",
+        dazzle: "#F2FFE1",
       },
       enginner: {
         dark: "#165BC8",
