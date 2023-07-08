@@ -1,4 +1,7 @@
 defmodule BrightWeb.MypageLive.Index do
+  alias Bright.UserProfiles
+  alias Bright.UserProfileFactory
+  alias Hex.API.User
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
@@ -6,10 +9,16 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.SkillCardComponents
   import BrightWeb.CommunicationCardComponents
   import BrightWeb.IntriguingCardComponents
+  alias Bright.UserProfiles
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    profile = UserProfiles.get_user_profile_by_name(socket.assigns.current_user.name)
+
+    {:ok,
+     socket
+     |> assign(:page_title, "Listing Mypages")
+     |> assign(:profile, profile)}
   end
 
   @impl true
