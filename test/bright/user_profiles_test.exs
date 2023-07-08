@@ -8,8 +8,6 @@ defmodule Bright.UserProfilesTest do
   describe "user_profiles" do
     alias Bright.UserProfiles.UserProfile
 
-    # import Bright.UserProfilesFixtures
-
     @invalid_attrs %{
       title: nil,
       user_id: nil,

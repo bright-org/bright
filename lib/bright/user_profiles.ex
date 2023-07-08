@@ -19,6 +19,7 @@ defmodule Bright.UserProfiles do
   """
   def list_user_profiles do
     Repo.all(UserProfile)
+    |> Repo.preload(:user)
   end
 
   @doc """
@@ -35,7 +36,7 @@ defmodule Bright.UserProfiles do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user_profile!(id), do: Repo.get!(UserProfile, id)
+  def get_user_profile!(id), do: Repo.get!(UserProfile, id) |> Repo.preload(:user)
 
   @doc """
   Creates a user_profile.

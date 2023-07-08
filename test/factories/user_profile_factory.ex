@@ -6,16 +6,14 @@ defmodule Bright.UserProfileFactory do
   defmacro __using__(_opts) do
     quote do
       def user_profile_factory do
-        user = insert(:user)
-
         %Bright.UserProfiles.UserProfile{
-          user_id: user.id,
+          user: build(:user),
           title: Faker.Lorem.word(),
           detail: "私は" <> Faker.Lorem.word() <> "です",
-          icon_file_path: "gs://" <> Faker.Lorem.word() <> "/" <> user.name,
-          twitter_url: "https://twitter.com/" <> user.name,
-          facebook_url: "https://www.facebook.com/" <> user.name,
-          github_url: "https://github.com/" <> user.name
+          icon_file_path: "gs://" <> Faker.Lorem.word() <> "/" <> Faker.Lorem.word(),
+          twitter_url: "https://twitter.com/" <> Faker.Lorem.word(),
+          facebook_url: "https://www.facebook.com/" <> Faker.Lorem.word(),
+          github_url: "https://github.com/" <> Faker.Lorem.word()
         }
       end
     end

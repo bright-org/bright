@@ -9,7 +9,7 @@ defmodule Bright.UserProfiles.UserProfile do
   @foreign_key_type Ecto.ULID
 
   schema "user_profiles" do
-    field :user_id, Ecto.ULID
+    belongs_to :user, Bright.Accounts.User
     field :title, :string
     field :detail, :string
     field :icon_file_path, :string
