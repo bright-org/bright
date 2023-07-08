@@ -13,777 +13,1372 @@
   </head>
   <body>
     <div class="flex w-[1920px]">
-      <aside
-        class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-6 pl-3"
-      >
-        <img src="./images/common/logo.svg" width="163px" />
-        <ul class="grid gap-y-10 pl-5 pt-6">
-          <li>
-            <a class="!text-white text-base" href="/mypage">マイページ</a>
-          </li>
-          <li>
-            <a class="!text-white text-base" href="/mypage">キャリアパス</a>
-          </li>
-          <li>
-            <a class="!text-white text-base" href="/mypage">スキルアップ</a>
-          </li>
-          <li>
-            <a class="!text-white text-base" href="/mypage">チームスキル分析</a>
-          </li>
-        </ul>
-      </aside>
-      <main class="bg-background flex flex-col flex-1">
-        <!-- ヘッダー -->
-        <div
-          class="w-full flex justify-between py-2.5 px-12 border-brightGray-100 border-b bg-brightGray-50"
+      <div class="flex">
+        <aside
+          class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
         >
-          <h4>スキルパネル / Webアプリ開発 Elixir</h4>
-          <div class="flex gap-x-6">
-            <button
-              type="button"
-              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
-            >
-              <span class="material-icons text-xs">search</span>
-            </button>
-            <button
-              type="button"
-              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
-            >
-              <span class="material-icons text-xs">notifications_none</span>
-              <div
-                class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2"
+          <img src="./images/common/logo.svg" width="163px" class="ml-4" />
+          <ul class="grid pt-2">
+            <li>
+              <a
+                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+                href="/mypage"
+                >マイページ</a
               >
-                1
-              </div>
-            </button>
-            <img
-              class="inline-block h-10 w-10 rounded-full"
-              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-            />
-            <button
-              type="button"
-              class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
-            >
-              <span class="material-icons text-xs">settings</span>
-            </button>
-          </div>
-        </div>
-        <!-- スイッチ -->
-        <div class="px-8 py-6 bg-white">
-          <!-- スキルと対象の切り替え -->
-          <div class="flex gap-x-4">
-            <p>対象スキルの<br />切り替え</p>
-            <button
-              id="dropdownOffsetButton"
-              data-dropdown-toggle="dropdownOffset"
-              data-dropdown-offset-distance="-140"
-              data-dropdown-offset-skidding="150"
-              data-dropdown-placement="right"
-              class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
-              type="button"
-            >
-              <span class="min-w-[6em]">スキルパネル</span>
-              <span
-                class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
-                >expand_more</span
+            </li>
+            <li>
+              <a
+                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+                href="/mypage"
+                >キャリアパス</a
               >
-            </button>
-            <!-- スキルパネル menu -->
-            <div
-              id="dropdownOffset"
-              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-sm shadow w-44 dark:bg-gray-700"
-            >
-              <ul
-                class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownOffsetButton"
+            </li>
+            <li>
+              <a
+                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+                href="/mypage"
+                >スキルアップ</a
               >
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >全スキルセット</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >エンジニア</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >インフラ</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >デザイナー</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >マーケッター</a
-                  >
-                </li>
-              </ul>
-            </div>
-
-            <button
-              id="dropdownDefaultButton"
-              data-dropdown-toggle="dropdown"
-              class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
-              type="button"
-            >
-              スキルセット
-              <span
-                class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
-                >expand_more</span
+            </li>
+            <li>
+              <a
+                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1 bg-opacity-30 bg-white"
+                href="/mypage"
+                >チームスキル分析</a
               >
-            </button>
-            <!-- スキルセット menu -->
-            <div
-              id="dropdown"
-              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-            >
-              <ul
-                class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownDefaultButton"
-              >
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >全スキルセット</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >エンジニア</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >インフラ</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >デザイナー</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
-                    >マーケッター</a
-                  >
-                </li>
-              </ul>
-            </div>
-
-            <p>対象の<br />切り替え</p>
-
-            <button
-              id="dropdownDefaultButton"
-              data-dropdown-toggle="dropdown"
-              class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
-              type="button"
-            >
-              <span class="min-w-[6em]">チーム</span>
-              <span
-                class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
-                >expand_more</span
-              >
-            </button>
-            <!-- チーム menu -->
-            <div
-              id="dropdown"
-              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-            >
-              <ul
-                class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownDefaultButton"
-              >
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >Dashboard</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >Settings</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >Earnings</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >Sign out</a
-                  >
-                </li>
-              </ul>
-            </div>
-
-            <button
-              data-modal-target="defaultModal"
-              data-modal-toggle="defaultModal"
-              class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold"
-            >
-              チームを作る
-            </button>
-          </div>
-
-          <!-- チーム作成モーダル
-           -->
-          <!-- Main modal -->
+            </li>
+          </ul>
+        </aside>
+        <main
+          class="bg-background flex flex-col flex-1 border-brightGray-100 border-r"
+        >
+          <!-- ヘッダー -->
           <div
-            id="defaultModal"
-            tabindex="-1"
-            aria-hidden="true"
-            class="bg-brightGray-900 bg-opacity-70 fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full"
+            class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white"
           >
-            <div class="relative w-[1500px] max-h-full">
-              <!-- Modal content -->
-              <div class="relative bg-white rounded-sm shadow p-16">
-                <!-- Modal header -->
-                <h3>チーム作成</h3>
-                <!-- Modal body -->
-                <div class="flex pt-8">
-                  <!-- modal left -->
+            <h4>チームスキル分析</h4>
+            <div class="flex gap-x-5">
+              <button
+                type="button"
+                class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
+              >
+                <span
+                  class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold material-icons-outlined"
+                  >sms</span
+                >
+                カスタマーサクセスに連絡
+              </button>
+
+              <button
+                type="button"
+                class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
+              >
+                <span
+                  class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold"
+                  >search</span
+                >
+                スキル保有者を検索
+              </button>
+
+              <button
+                type="button"
+                class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
+              >
+                <span class="material-icons text-xs">notifications_none</span>
+                <div
+                  class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2"
+                >
+                  1
+                </div>
+              </button>
+              <button class="hover:opacity-70">
+                <img
+                  class="inline-block h-10 w-10 rounded-full"
+                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                />
+              </button>
+              <button
+                type="button"
+                class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center"
+              >
+                <span class="material-icons text-xs">settings</span>
+              </button>
+            </div>
+          </div>
+          <!-- スイッチ -->
+          <div class="px-10 pt-4 pb-8 bg-white">
+            <!-- スキルと対象の切り替え -->
+            <div class="flex gap-x-4">
+              <p class="leading-tight">対象スキルの<br />切り替え</p>
+              <button
+                id="dropdownOffsetButton"
+                data-dropdown-toggle="dropdownOffset"
+                data-dropdown-offset-skidding="320"
+                data-dropdown-placement="bottom"
+                class="text-white bg-brightGreen-300 rounded-sm pl-3 flex items-center font-bold h-[35px]"
+                type="button"
+              >
+                <span class="min-w-[6em]">スキルパネル</span>
+                <span
+                  class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+                  >expand_more</span
+                >
+              </button>
+              <!-- スキルパネル menu -->
+              <div
+                id="dropdownOffset"
+                class="z-10 hidden bg-white rounded-sm shadow"
+              >
+                <div class="bg-white rounded-md mt-1">
                   <div
-                    class="w-[790px] pr-10 border-r border-r-brightGray-200 border-dashed"
+                    class="text-sm font-medium text-center text-brightGray-500"
                   >
-                    <p>
-                      <span class="font-bold">気になる</span
-                      >からメンバーとして追加
-                    </p>
-                    <div
-                      class="bg-white rounded-md border border-brightGray-100 mt-4 mb-8"
+                    <ul
+                      class="flex content-between border-b border-brightGray-200"
                     >
-                      <div
-                        class="text-sm font-medium text-center text-brightGray-200"
-                      >
-                        <ul
-                          class="flex content-between border-b border-brightGray-100"
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                          >エンジニア</a
                         >
-                          <li class="w-full">
-                            <a
-                              href="#"
-                              class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-                              >参考になる人</a
-                            >
-                          </li>
-                          <li class="w-full">
-                            <a
-                              href="#"
-                              class="py-3.5 w-full items-center justify-center inline-block"
-                              >採用</a
-                            >
-                          </li>
-                          <li class="w-full">
-                            <a
-                              href="#"
-                              class="py-3.5 w-full items-center justify-center inline-block"
-                              >離任者</a
-                            >
-                          </li>
-                          <li class="w-full">
-                            <a
-                              href="#"
-                              class="py-3.5 w-full items-center justify-center inline-block"
-                              >スキルパネル</a
-                            >
-                          </li>
-                          <li class="w-full">
-                            <a
-                              href="#"
-                              class="py-3.5 w-full items-center justify-center inline-block"
-                              >ジョブ</a
-                            >
-                          </li>
-                          <li class="flex items-center">
-                            <button
-                              type="button"
-                              id="dropmenu04"
-                              data-dropdown-toggle="menu04"
-                              class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
-                            >
-                              <span
-                                class="material-icons text-xs text-brightGreen-900"
-                                >more_vert</span
-                              >
-                            </button>
-                            <!-- Dropdown menu -->
-                            <div
-                              id="menu04"
-                              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-                            >
-                              <ul
-                                class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                aria-labelledby="dropmenu04"
-                              >
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    >menu4-1</a
-                                  >
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    >menu4-2</a
-                                  >
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    >menu4-3</a
-                                  >
-                                </li>
-                              </ul>
-                            </div>
-                          </li>
-                        </ul>
-                        <div class="pt-3 pb-1 px-6">
-                          <ul class="flex flex-wrap gap-y-1">
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">
-                                    アプリエンジニア
-                                  </p>
-                                </div>
-                              </a>
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">
-                                    アプリエンジニア
-                                  </p>
-                                </div>
-                              </a>
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">
-                                    アプリエンジニア
-                                  </p>
-                                </div>
-                              </a>
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">
-                                    アプリエンジニア
-                                  </p>
-                                </div>
-                              </a>
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">
-                                    アプリエンジニア
-                                  </p>
-                                </div>
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="flex justify-center gap-x-14 pb-3">
-                          <button
-                            type="button"
-                            class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-                          >
-                            <span
-                              class="material-icons md-18 mr-2 text-brightGray-200"
-                              >chevron_left</span
-                            >
-                            前
-                          </button>
-                          <button
-                            type="button"
-                            class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-                          >
-                            次
-                            <span
-                              class="material-icons md-18 ml-2 text-brightGray-900"
-                              >chevron_right</span
-                            >
-                          </button>
-                        </div>
+                      </li>
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block"
+                          >インフラ</a
+                        >
+                      </li>
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block"
+                          >デザイナー</a
+                        >
+                      </li>
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block"
+                          >マーケッター</a
+                        >
+                      </li>
+                    </ul>
+
+                    <div class="py-4 px-7 flex gap-y-2 flex-col">
+                      <div
+                        class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between"
+                      >
+                        <p class="font-bold w-[150px] text-left text-sm">
+                          Webアプリ開発
+                        </p>
+                        <table class="table-fixed skill-table -mt-2">
+                          <thead>
+                            <tr>
+                              <td></td>
+                              <th class="pl-8">クラス1</th>
+                              <th class="pl-8">クラス2</th>
+                              <th class="pl-8">クラス3</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Elixir</td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemHigh.svg"
+                                    class="mr-1"
+                                  />ベテラン
+                                </p>
+                              </td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemMiddle.svg"
+                                    class="mr-1"
+                                  />平均
+                                </p>
+                              </td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemLow.svg"
+                                    class="mr-1"
+                                  />見習い
+                                </p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>PHP</td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemHigh.svg"
+                                    class="mr-1"
+                                  />ベテラン
+                                </p>
+                              </td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemMiddle.svg"
+                                    class="mr-1"
+                                  />平均
+                                </p>
+                              </td>
+                              <td></td>
+                            </tr>
+                            <tr>
+                              <td>Ruby</td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemLow.svg"
+                                    class="mr-1"
+                                  />見習い
+                                </p>
+                              </td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div
+                        class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between"
+                      >
+                        <p class="font-bold w-[150px] text-left text-sm">
+                          Webアプリ開発
+                        </p>
+                        <table class="table-fixed skill-table -mt-2">
+                          <thead>
+                            <tr>
+                              <td></td>
+                              <th class="pl-8">クラス1</th>
+                              <th class="pl-8">クラス2</th>
+                              <th class="pl-8">クラス3</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Elixir</td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemHigh.svg"
+                                    class="mr-1"
+                                  />ベテラン
+                                </p>
+                              </td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemMiddle.svg"
+                                    class="mr-1"
+                                  />平均
+                                </p>
+                              </td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemLow.svg"
+                                    class="mr-1"
+                                  />見習い
+                                </p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>PHP</td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemHigh.svg"
+                                    class="mr-1"
+                                  />ベテラン
+                                </p>
+                              </td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemMiddle.svg"
+                                    class="mr-1"
+                                  />平均
+                                </p>
+                              </td>
+                              <td></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div
+                        class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between"
+                      >
+                        <p class="font-bold w-[150px] text-left text-sm">PM</p>
+                        <table class="table-fixed skill-table">
+                          <thead>
+                            <tr>
+                              <td></td>
+                              <th class="pl-8">クラス1</th>
+                              <th class="pl-8">クラス2</th>
+                              <th class="pl-8">クラス3</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td></td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemHigh.svg"
+                                    class="mr-1"
+                                  />ベテラン
+                                </p>
+                              </td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemMiddle.svg"
+                                    class="mr-1"
+                                  />平均
+                                </p>
+                              </td>
+                              <td>
+                                <p
+                                  class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+                                >
+                                  <img
+                                    src="./images/common/icons/jemLow.svg"
+                                    class="mr-1"
+                                  />見習い
+                                </p>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
-                    <p>
-                      <span class="font-bold">関わっているチーム</span
-                      >からサブチームとして追加
-                    </p>
-                    <div
-                      class="bg-white rounded-md my-4 border border-brightGray-100"
-                    >
-                      <div
-                        class="text-sm font-medium text-center text-brightGray-200"
-                      >
-                        <ul
-                          class="flex content-between border-b border-brightGray-100"
-                        >
-                          <li class="w-full">
-                            <a
-                              href="#"
-                              class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-                              >所属チーム</a
-                            >
-                          </li>
-                          <li class="w-full">
-                            <a
-                              href="#"
-                              class="py-3.5 w-full items-center justify-center inline-block"
-                              >管轄チーム</a
-                            >
-                          </li>
-                          <li class="flex items-center">
-                            <button
-                              type="button"
-                              id="dropmenu03"
-                              data-dropdown-toggle="menu03"
-                              class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
-                            >
-                              <span
-                                class="material-icons text-xs text-brightGreen-900"
-                                >more_vert</span
-                              >
-                            </button>
-                            <!-- Dropdown menu -->
-                            <div
-                              id="menu03"
-                              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-                            >
-                              <ul
-                                class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                aria-labelledby="dropmenu03"
-                              >
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    >menu03-1</a
-                                  >
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    >menu03-2</a
-                                  >
-                                </li>
-                                <li>
-                                  <a
-                                    href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    >menu03-3</a
-                                  >
-                                </li>
-                              </ul>
-                            </div>
-                          </li>
-                        </ul>
-                        <div class="pt-4 pb-1 px-6">
-                          <ul class="flex gap-y-1.5 flex-col">
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
-                            >
-                              <span
-                                class="text-base !text-white bg-lapislazuli-900 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                                >E</span
-                              >
-                              Elixir Fukuoka
-                            </li>
 
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
-                            >
-                              <span
-                                class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                                >圧</span
-                              >
-                              圧倒的開発スピード
-                            </li>
-
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
-                            >
-                              <span
-                                class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                                >S</span
-                              >
-                              S社案件開発
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
-                            >
-                              <span
-                                class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                                >D</span
-                              >
-                              D社スマホアプリプロジェクト
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
-                            >
-                              <span
-                                class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
-                                >A</span
-                              >
-                              A社スマホアプリプロジェクト
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="flex justify-center gap-x-14 pb-3">
-                          <button
-                            type="button"
-                            class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-                          >
-                            <span
-                              class="material-icons md-18 mr-2 text-brightGray-200"
-                              >chevron_left</span
-                            >
-                            前
-                          </button>
-                          <button
-                            type="button"
-                            class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-                          >
-                            次
-                            <span
-                              class="material-icons md-18 ml-2 text-brightGray-900"
-                              >chevron_right</span
-                            >
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="flex items-center">
-                      <p>
-                        <span class="font-bold">ハンドル名</span
-                        >からメンバーとして追加
-                      </p>
-                      <input
-                        type="autocomplete"
-                        placeholder="ハンドル名を入力してください"
-                        class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 ml-5"
-                      />
-
+                    <div class="flex justify-center gap-x-14 pb-3">
                       <button
-                        class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5"
+                        type="button"
+                        class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
                       >
-                        追加
+                        <span
+                          class="material-icons md-18 mr-2 text-brightGray-200"
+                          >chevron_left</span
+                        >
+                        前
+                      </button>
+                      <button
+                        type="button"
+                        class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                      >
+                        次
+                        <span
+                          class="material-icons md-18 ml-2 text-brightGray-900"
+                          >chevron_right</span
+                        >
                       </button>
                     </div>
                   </div>
-                  <!-- modal-right -->
-                  <div class="w-[580px] pl-10 flex flex-col justify-between">
-                    <div>
-                      <h5>新しいチーム</h5>
-                      <div class="bg-brightGray-10 rounded-sm p-10">
-                        <dl class="flex flex-wrap">
-                          <dt class="font-bold w-20 flex items-center mb-10">
-                            チーム名
-                          </dt>
-                          <dd class="w-[340px] mb-10">
-                            <input
-                              type="text"
-                              placeholder="新しいチーム名を入力してください"
-                              class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+                </div>
+              </div>
+
+              <button
+                id="dropdownDefaultButton"
+                data-dropdown-toggle="dropdown"
+                data-dropdown-offset-skidding="20"
+                data-dropdown-placement="bottom"
+                class="text-white bg-brightGreen-300 rounded-sm h-[35px] pl-3 flex items-center font-bold"
+                type="button"
+              >
+                スキルセット
+                <span
+                  class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+                  >expand_more</span
+                >
+              </button>
+              <!-- スキルセット menu -->
+              <div
+                id="dropdown"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+              >
+                <ul
+                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropdownDefaultButton"
+                >
+                  <li>
+                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                      >全スキルセット</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                      >エンジニア</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                      >インフラ</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                      >デザイナー</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-3 hover:bg-brightGray-50"
+                      >マーケッター</a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <p class="leading-tight ml-4">対象者の<br />切り替え</p>
+              <button
+                id="dropdownDefaultButton"
+                data-dropdown-toggle="dropdown2"
+                data-dropdown-offset-skidding="302"
+                data-dropdown-placement="bottom"
+                class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+                type="button"
+              >
+                <span class="min-w-[6em]">個人</span>
+                <span
+                  class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+                  >expand_more</span
+                >
+              </button>
+              <!-- 個人 menu -->
+              <div
+                id="dropdown2"
+                class="z-10 hidden bg-whiterounded-lg shadow w-[750px]"
+              >
+                <div class="bg-white rounded-md mt-1">
+                  <div
+                    class="text-sm font-medium text-center text-brightGray-500"
+                  >
+                    <ul
+                      class="flex content-between border-b border-brightGray-200"
+                    >
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                          >気になる人</a
+                        >
+                      </li>
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block"
+                          >チーム</a
+                        >
+                      </li>
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block"
+                          >採用候補者</a
+                        >
+                      </li>
+                    </ul>
+                    <div class="overflow-hidden">
+                      <ul
+                        class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
+                      >
+                        <li
+                          class="py-2 w-[200px] border-r border-brightGray-50"
+                        >
+                          キャリアの参考になる方々
+                        </li>
+                        <li
+                          class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+                        >
+                          優秀なエンジニアの方々
+                        </li>
+                        <li
+                          class="py-2 w-[200px] border-r border-brightGray-50"
+                        >
+                          カスタムグループ３
+                        </li>
+                        <li
+                          class="py-2 w-[200px] border-r border-brightGray-50"
+                        >
+                          カスタムグループ４
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="pt-3 pb-1 px-6">
+                      <ul class="flex flex-wrap gap-y-1">
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                        >
+                          <a class="inline-flex items-center gap-x-6">
+                            <img
+                              class="inline-block h-10 w-10 rounded-full"
+                              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                             />
-                          </dd>
-                          <dt class="font-bold w-20 mb-10">メンバー</dt>
-                          <dd class="w-[340px] mb-10">
+                            <div>
+                              <p>nokichi</p>
+                              <p class="text-brightGray-300">
+                                アプリエンジニア
+                              </p>
+                            </div>
+                          </a>
+                        </li>
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                        >
+                          <a class="inline-flex items-center gap-x-6">
+                            <img
+                              class="inline-block h-10 w-10 rounded-full"
+                              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                            />
+                            <div>
+                              <p>nokichi</p>
+                              <p class="text-brightGray-300">
+                                アプリエンジニア
+                              </p>
+                            </div>
+                          </a>
+                        </li>
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                        >
+                          <a class="inline-flex items-center gap-x-6">
+                            <img
+                              class="inline-block h-10 w-10 rounded-full"
+                              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                            />
+                            <div>
+                              <p>nokichi</p>
+                              <p class="text-brightGray-300">
+                                アプリエンジニア
+                              </p>
+                            </div>
+                          </a>
+                        </li>
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                        >
+                          <a class="inline-flex items-center gap-x-6">
+                            <img
+                              class="inline-block h-10 w-10 rounded-full"
+                              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                            />
+                            <div>
+                              <p>nokichi</p>
+                              <p class="text-brightGray-300">
+                                アプリエンジニア
+                              </p>
+                            </div>
+                          </a>
+                        </li>
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                        >
+                          <a class="inline-flex items-center gap-x-6">
+                            <img
+                              class="inline-block h-10 w-10 rounded-full"
+                              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                            />
+                            <div>
+                              <p>nokichi</p>
+                              <p class="text-brightGray-300">
+                                アプリエンジニア
+                              </p>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="flex justify-center gap-x-14 pb-3">
+                      <button
+                        type="button"
+                        class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                      >
+                        <span
+                          class="material-icons md-18 mr-2 text-brightGray-200"
+                          >chevron_left</span
+                        >
+                        前
+                      </button>
+                      <button
+                        type="button"
+                        class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                      >
+                        次
+                        <span
+                          class="material-icons md-18 ml-2 text-brightGray-900"
+                          >chevron_right</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                id="dropdownDefaultButton"
+                data-dropdown-toggle="dropdown3"
+                data-dropdown-offset-skidding="307"
+                data-dropdown-placement="bottom"
+                class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+                type="button"
+              >
+                <span class="min-w-[6em]">チーム</span>
+                <span
+                  class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"
+                  >expand_more</span
+                >
+              </button>
+              <!-- チーム menu -->
+              <div
+                id="dropdown3"
+                class="z-10 hidden bg-white rounded-lg shadow w-[750px]"
+              >
+                <div class="bg-white rounded-md mt-1">
+                  <div
+                    class="text-sm font-medium text-center text-brightGray-500"
+                  >
+                    <ul
+                      class="flex content-between border-b border-brightGray-200"
+                    >
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                          >所属チーム</a
+                        >
+                      </li>
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block"
+                          >管轄チーム</a
+                        >
+                      </li>
+                      <li class="w-full">
+                        <a
+                          href="#"
+                          class="py-3.5 w-full items-center justify-center inline-block"
+                          >カスタムグループ</a
+                        >
+                      </li>
+                    </ul>
+                    <div class="pt-4 pb-1 px-6">
+                      <ul class="flex gap-y-1.5 flex-col">
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                        >
+                          <img
+                            src="./images/common/icons/team.svg"
+                            class="mr-2"
+                          />Elixir Fukuoka
+                        </li>
+
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                        >
+                          <img
+                            src="./images/common/icons/other_team.svg"
+                            class="mr-2"
+                          />
+                          圧倒的開発スピード
+                        </li>
+
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                        >
+                          <img
+                            src="./images/common/icons/management_team.svg"
+                            class="mr-2"
+                          />
+                          S社案件開発
+                        </li>
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                        >
+                          <img
+                            src="./images/common/icons/coustom_group.svg"
+                            class="mr-2"
+                          />
+                          D社スマホアプリプロジェクト
+                        </li>
+                        <li
+                          class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                        >
+                          <img
+                            src="./images/common/icons/other_team.svg"
+                            class="mr-2"
+                          />
+                          D社スマホアプリプロジェクト
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="flex justify-center gap-x-14 pb-3">
+                      <button
+                        type="button"
+                        class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                      >
+                        <span
+                          class="material-icons md-18 mr-2 text-brightGray-200"
+                          >chevron_left</span
+                        >
+                        前
+                      </button>
+                      <button
+                        type="button"
+                        class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                      >
+                        次
+                        <span
+                          class="material-icons md-18 ml-2 text-brightGray-900"
+                          >chevron_right</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                data-modal-target="defaultModal"
+                data-modal-toggle="defaultModal"
+                class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold ml-auto"
+              >
+                チームを作る
+              </button>
+            </div>
+
+            <!-- チーム作成モーダル
+           -->
+            <!-- Main modal -->
+            <div
+              id="defaultModal"
+              tabindex="-1"
+              aria-hidden="true"
+              class="bg-brightGray-900 bg-opacity-70 fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full"
+            >
+              <div class="relative w-[1500px] max-h-full">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-sm shadow px-16 py-8">
+                  <!-- Modal header -->
+                  <h3>チームを作る</h3>
+                  <!-- Modal body -->
+                  <div class="flex pt-5">
+                    <!-- modal left -->
+                    <div
+                      class="w-[790px] pr-10 border-r border-r-brightGray-200 border-dashed"
+                    >
+                      <p class="text-base">
+                        <span class="font-bold">気になる</span
+                        >からメンバーとして追加
+                      </p>
+                      <div
+                        class="bg-white rounded border border-brightGray-100 mt-2 mb-8"
+                      >
+                        <div
+                          class="text-sm font-medium text-center text-brightGray-200"
+                        >
+                          <ul
+                            class="flex content-between border-b border-brightGray-100"
+                          >
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                                >参考になる人</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >採用</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >離任者</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >スキルパネル</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >ジョブ</a
+                              >
+                            </li>
+                          </ul>
+                          <div class="pt-3 pb-1 px-6">
                             <ul class="flex flex-wrap gap-y-1">
                               <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
                               >
-                                <a
-                                  class="inline-flex items-center gap-x-6 w-full"
-                                >
+                                <a class="inline-flex items-center gap-x-6">
                                   <img
                                     class="inline-block h-10 w-10 rounded-full"
                                     src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                                   />
-                                  <div class="flex-auto">
+                                  <div>
                                     <p>nokichi</p>
                                     <p class="text-brightGray-300">
                                       アプリエンジニア
                                     </p>
                                   </div>
-                                  <button class="mx-4">
-                                    <span
-                                      class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                      >close</span
-                                    >
-                                  </button>
                                 </a>
                               </li>
                               <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
                               >
-                                <a
-                                  class="inline-flex items-center gap-x-6 w-full"
-                                >
+                                <a class="inline-flex items-center gap-x-6">
                                   <img
                                     class="inline-block h-10 w-10 rounded-full"
                                     src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                                   />
-                                  <div class="flex-auto">
+                                  <div>
                                     <p>nokichi</p>
                                     <p class="text-brightGray-300">
                                       アプリエンジニア
                                     </p>
                                   </div>
-                                  <button class="mx-4">
-                                    <span
-                                      class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                      >close</span
-                                    >
-                                  </button>
                                 </a>
                               </li>
                               <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
                               >
-                                <a
-                                  class="inline-flex items-center gap-x-6 w-full"
-                                >
+                                <a class="inline-flex items-center gap-x-6">
                                   <img
                                     class="inline-block h-10 w-10 rounded-full"
                                     src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
                                   />
-                                  <div class="flex-auto">
+                                  <div>
                                     <p>nokichi</p>
                                     <p class="text-brightGray-300">
                                       アプリエンジニア
                                     </p>
                                   </div>
-                                  <button class="mx-4">
-                                    <span
-                                      class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                      >close</span
-                                    >
-                                  </button>
+                                </a>
+                              </li>
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                              >
+                                <a class="inline-flex items-center gap-x-6">
+                                  <img
+                                    class="inline-block h-10 w-10 rounded-full"
+                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                  />
+                                  <div>
+                                    <p>nokichi</p>
+                                    <p class="text-brightGray-300">
+                                      アプリエンジニア
+                                    </p>
+                                  </div>
+                                </a>
+                              </li>
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                              >
+                                <a class="inline-flex items-center gap-x-6">
+                                  <img
+                                    class="inline-block h-10 w-10 rounded-full"
+                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                  />
+                                  <div>
+                                    <p>nokichi</p>
+                                    <p class="text-brightGray-300">
+                                      アプリエンジニア
+                                    </p>
+                                  </div>
                                 </a>
                               </li>
                             </ul>
-                          </dd>
-                          <dt class="font-bold w-20 pt-1">サブチーム</dt>
-                          <dd class="w-[340px]">
+                          </div>
+                          <div class="flex justify-center gap-x-14 pb-3">
+                            <button
+                              type="button"
+                              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                            >
+                              <span
+                                class="material-icons md-18 mr-2 text-brightGray-200"
+                                >chevron_left</span
+                              >
+                              前
+                            </button>
+                            <button
+                              type="button"
+                              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                            >
+                              次
+                              <span
+                                class="material-icons md-18 ml-2 text-brightGray-900"
+                                >chevron_right</span
+                              >
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="text-base">
+                        <span class="font-bold">関わっているチーム</span
+                        >からサブチームとして追加
+                      </p>
+                      <div
+                        class="bg-white rounded mt-2 mb-6 border border-brightGray-100"
+                      >
+                        <div
+                          class="text-sm font-medium text-center text-brightGray-200"
+                        >
+                          <ul
+                            class="flex content-between border-b border-brightGray-100"
+                          >
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                                >所属チーム</a
+                              >
+                            </li>
+                            <li class="w-full">
+                              <a
+                                href="#"
+                                class="py-3.5 w-full items-center justify-center inline-block"
+                                >管轄チーム</a
+                              >
+                            </li>
+                          </ul>
+                          <div class="pt-4 pb-1 px-6">
                             <ul class="flex gap-y-1.5 flex-col">
                               <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded justify-between"
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
                               >
                                 <span
                                   class="text-base !text-white bg-lapislazuli-900 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
                                   >E</span
                                 >
-                                <p class="flex-1">Elixir Fukuoka</p>
-                                <button class="mx-4">
-                                  <span
-                                    class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                    >close</span
-                                  >
-                                </button>
+                                Elixir Fukuoka
                               </li>
 
                               <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded justify-between"
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
                               >
                                 <span
                                   class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
                                   >圧</span
                                 >
-                                <p class="flex-1">圧倒的開発スピード</p>
-                                <button class="mx-4">
-                                  <span
-                                    class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                    >close</span
-                                  >
-                                </button>
+                                圧倒的開発スピード
                               </li>
 
                               <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded justify-between"
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
                               >
                                 <span
                                   class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
                                   >S</span
                                 >
-                                <p class="flex-1">S社案件開発</p>
-                                <button class="mx-4">
-                                  <span
-                                    class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                    >close</span
-                                  >
-                                </button>
+                                S社案件開発
+                              </li>
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                              >
+                                <span
+                                  class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
+                                  >D</span
+                                >
+                                D社スマホアプリプロジェクト
+                              </li>
+                              <li
+                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                              >
+                                <span
+                                  class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
+                                  >A</span
+                                >
+                                A社スマホアプリプロジェクト
                               </li>
                             </ul>
-                          </dd>
-                        </dl>
+                          </div>
+                          <div class="flex justify-center gap-x-14 pb-3">
+                            <button
+                              type="button"
+                              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                            >
+                              <span
+                                class="material-icons md-18 mr-2 text-brightGray-200"
+                                >chevron_left</span
+                              >
+                              前
+                            </button>
+                            <button
+                              type="button"
+                              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                            >
+                              次
+                              <span
+                                class="material-icons md-18 ml-2 text-brightGray-900"
+                                >chevron_right</span
+                              >
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <p class="pb-2 text-base">
+                          <span class="font-bold">ハンドル名</span>または<span
+                            class="font-bold"
+                            >メールアドレス</span
+                          >からメンバーとして追加
+                        </p>
+
+                        <input
+                          type="autocomplete"
+                          placeholder="ハンドル名またはメールアドレスを入力してください"
+                          class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
+                        />
+
+                        <button
+                          class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5"
+                        >
+                          追加
+                        </button>
                       </div>
                     </div>
+                    <!-- modal-right -->
+                    <div class="w-[580px] pl-10 flex flex-col justify-between">
+                      <div>
+                        <h5 class="text-[20px]">新しいチーム</h5>
 
-                    <div class="flex justify-center gap-x-4">
+                        <div class="bg-brightGray-10 rounded-sm px-10 py-6">
+                          <dl class="flex flex-wrap w-full">
+                            <dt
+                              class="font-bold w-[100px] flex items-center mb-10 text-base"
+                            >
+                              チーム名
+                            </dt>
+                            <dd class="w-[340px] mb-10">
+                              <input
+                                type="text"
+                                placeholder="新しいチーム名を入力してください"
+                                class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+                              />
+                            </dd>
+                            <dt class="font-bold w-[100px] mb-10 text-base">
+                              メンバー
+                            </dt>
+                            <dd class="w-[340px] mb-10">
+                              <ul class="flex flex-wrap gap-y-1">
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                >
+                                  <a
+                                    class="inline-flex items-center gap-x-6 w-full"
+                                  >
+                                    <img
+                                      class="inline-block h-10 w-10 rounded-full"
+                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                    />
+                                    <div class="flex-auto">
+                                      <p>nokichi</p>
+                                      <p class="text-brightGray-300">
+                                        アプリエンジニア
+                                      </p>
+                                    </div>
+                                    <button class="mx-4">
+                                      <span
+                                        class="material-icons !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                        >close</span
+                                      >
+                                    </button>
+                                  </a>
+                                </li>
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                >
+                                  <a
+                                    class="inline-flex items-center gap-x-6 w-full"
+                                  >
+                                    <img
+                                      class="inline-block h-10 w-10 rounded-full"
+                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                    />
+                                    <div class="flex-auto">
+                                      <p>nokichi</p>
+                                      <p class="text-brightGray-300">
+                                        アプリエンジニア
+                                      </p>
+                                    </div>
+                                    <button class="mx-4">
+                                      <span
+                                        class="material-icons !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                        >close</span
+                                      >
+                                    </button>
+                                  </a>
+                                </li>
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                                >
+                                  <a
+                                    class="inline-flex items-center gap-x-6 w-full"
+                                  >
+                                    <img
+                                      class="inline-block h-10 w-10 rounded-full"
+                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                                    />
+                                    <div class="flex-auto">
+                                      <p>nokichi</p>
+                                      <p class="text-brightGray-300">
+                                        アプリエンジニア
+                                      </p>
+                                    </div>
+                                    <button class="mx-4">
+                                      <span
+                                        class="material-icons !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                        >close</span
+                                      >
+                                    </button>
+                                  </a>
+                                </li>
+                              </ul>
+                            </dd>
+                            <dt class="font-bold w-[100px] mb-10 text-base">
+                              サブチーム
+                            </dt>
+                            <dd class="w-[340px]">
+                              <ul class="flex gap-y-1.5 flex-col">
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded justify-between"
+                                >
+                                  <span
+                                    class="text-base !text-white bg-lapislazuli-900 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
+                                    >E</span
+                                  >
+                                  <p class="flex-1">Elixir Fukuoka</p>
+                                  <button class="mx-4">
+                                    <span
+                                      class="material-icons !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                      >close</span
+                                    >
+                                  </button>
+                                </li>
+
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded justify-between"
+                                >
+                                  <span
+                                    class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
+                                    >圧</span
+                                  >
+                                  <p class="flex-1">圧倒的開発スピード</p>
+                                  <button class="mx-4">
+                                    <span
+                                      class="material-icons !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                      >close</span
+                                    >
+                                  </button>
+                                </li>
+
+                                <li
+                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded justify-between"
+                                >
+                                  <span
+                                    class="text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
+                                    >S</span
+                                  >
+                                  <p class="flex-1">S社案件開発</p>
+                                  <button class="mx-4">
+                                    <span
+                                      class="material-icons !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                                      >close</span
+                                    >
+                                  </button>
+                                </li>
+                              </ul>
+                            </dd>
+                          </dl>
+                        </div>
+                      </div>
+
+                      <div class="flex justify-end gap-x-4">
+                        <button
+                          class="text-base font-bold px-4 py-3 rounded text-white bg-base"
+                        >
+                          チームを作成し、上記メンバーに招待を送る
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- プロフィール -->
+            <div class="w-[850px] pt-6">
+              <div class="flex">
+                <div
+                  class="bg-test bg-contain h-20 w-20 mr-5"
+                  style="
+                    background-image: url('/dist/images/sample/sample-image.png');
+                  "
+                ></div>
+                <div class="flex-1">
+                  <div class="flex justify-between pb-2 items-end">
+                    <div class="text-2xl font-bold">piacere</div>
+                    <div class="flex gap-x-3">
                       <button
-                        class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                        type="button"
+                        class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGreen-300"
                       >
-                        チームを作成し、上記メンバーに招待を送る
+                        <span
+                          class="material-icons md-18 mr-1 text-brightGreen-300"
+                          >share</span
+                        >
+                        優秀な人として紹介
                       </button>
+
                       <button
-                        class="text-sm font-bold px-5 py-3 rounded border border-base"
+                        type="button"
+                        id="dropcheckmenu"
+                        data-dropdown-toggle="checkmenu"
+                        class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
                       >
-                        キャンセル
+                        <span
+                          class="material-icons md-18 mr-1 text-brightGray-200"
+                          >star</span
+                        >
+                        気になる
+                      </button>
+                      <!-- 気になるDropdown menu -->
+                      <div
+                        id="checkmenu"
+                        class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]"
+                      >
+                        <ul
+                          class="p-2 text-left text-base"
+                          aria-labelledby="dropcheckmenu"
+                        >
+                          <li>
+                            <a
+                              href="#"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >気になるリスト</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >メンバー候補</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >java開発者リスト</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >Python開発者リスト</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >ジュニアエンジニア</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              >シニアエンジニア</a
+                            >
+                          </li>
+                          <li
+                            class="px-4 py-3 hover:bg-brightGray-50 flex justify-center gap-x-2"
+                          >
+                            <input
+                              type="text"
+                              placeholder="リスト名を入力"
+                              class="px-2 py-1 border border-brightGray-900 rounded-sm flex-1 w-full text-base w-[220px]"
+                            />
+                            <button
+                              class="text-sm font-bold px-4 py-1 rounded text-white bg-base"
+                            >
+                              新規作成
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+                      >
+                        自分に戻す
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="flex justify-between pt-3 border-brightGray-100 border-t"
+                  >
+                    <div class="text-2xl">リードプログラマー</div>
+                    <div class="flex gap-x-6 mr-2">
+                      <button type="button">
+                        <img src="./images/common/twitter.svg" width="26px" />
+                      </button>
+                      <button type="button">
+                        <img src="./images/common/github.svg" width="26px" />
+                      </button>
+                      <button type="button">
+                        <img src="./images/common/facebook.svg" width="26px" />
                       </button>
                     </div>
                   </div>
@@ -792,512 +1387,482 @@
             </div>
           </div>
 
-          <!-- プロフィール -->
-          <div class="flex w-[660px] mt-6">
-            <div
-              class="bg-contain h-20 w-20 mr-5"
-              style="background-image: url('./images/sample/sample-image.png')"
-            ></div>
-            <div class="flex-1">
-              <div class="flex justify-between pb-2 items-end">
-                <div class="text-2xl font-bold">piacere</div>
-              </div>
-              <div
-                class="flex justify-between pt-3 border-brightGray-100 border-t"
+          <!-- card -->
+          <div class="ml-24 p-6">
+            <!-- チームタイトル -->
+            <div class="flex items-center">
+              <h3>
+                <span
+                  class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center"
+                  >group</span
+                >DMC Ph3
+              </h3>
+              <label
+                class="text-white bg-lapislazuli-300 ml-8 rounded-md font-bold px-3 inline-flex items-center h-7"
+                >プライマリ</label
               >
-                <div class="text-2xl">リードプログラマー</div>
-                <div class="flex gap-x-6 mr-2">
-                  <button type="button">
-                    <img src="./images/common/twitter.svg" width="26px" />
+            </div>
+            <!-- チームメンバー -->
+            <div class="flex gap-8 pt-4 flex-wrap">
+              <!-- 　メンバーデータ -->
+              <div class="flex w-[474px] shadow flex-col bg-white">
+                <ul
+                  class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+                >
+                  <li class="bg-white text-base w-full">
+                    <a
+                      href="#"
+                      class="w-full py-3 text-center inline-block"
+                      aria-current="page"
+                      >レベル1 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                </ul>
+                <div class="flex justify-between px-6 pt-1 items-center">
+                  <div class="text-2xl font-bold">piacere</div>
+                  <div
+                    class="bg-test bg-contain h-20 w-20 mt-4"
+                    style="
+                      background-image: url('./images/sample/sample-image.png');
+                    "
+                  ></div>
+                </div>
+                <div class="w-[400px] flex justify-center mx-auto">
+                  <canvas id="radarChart" width="300" height="300"></canvas>
+                </div>
+                <div class="p-6 pt-0 flex justify-between">
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                  >
+                    1on1に誘う
                   </button>
-                  <button type="button">
-                    <img src="./images/common/github.svg" width="26px" />
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    この人と比較
                   </button>
-                  <button type="button">
-                    <img src="./images/common/facebook.svg" width="26px" />
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    スキルアップ確認
+                  </button>
+                </div>
+              </div>
+
+              <!-- 　メンバーデータ -->
+              <div class="flex w-[474px] shadow flex-col bg-white">
+                <ul
+                  class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+                >
+                  <li class="bg-white text-base w-full">
+                    <a
+                      href="#"
+                      class="w-full py-3 text-center inline-block"
+                      aria-current="page"
+                      >レベル1 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                </ul>
+                <div class="flex justify-between px-6 pt-1 items-center">
+                  <div class="text-2xl font-bold">piacere</div>
+                  <div
+                    class="bg-test bg-contain h-20 w-20 mt-4"
+                    style="
+                      background-image: url('./images/sample/sample-image.png');
+                    "
+                  ></div>
+                </div>
+                <div class="w-[400px] flex justify-center mx-auto">
+                  <canvas id="radarChart2" width="300" height="300"></canvas>
+                </div>
+                <div class="p-6 pt-0 flex justify-between">
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                  >
+                    1on1に誘う
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    この人と比較
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    スキルアップ確認
+                  </button>
+                </div>
+              </div>
+
+              <!-- 　メンバーデータ -->
+              <div class="flex w-[474px] shadow flex-col bg-white">
+                <ul
+                  class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+                >
+                  <li class="bg-white text-base w-full">
+                    <a
+                      href="#"
+                      class="w-full py-3 text-center inline-block"
+                      aria-current="page"
+                      >レベル1 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                </ul>
+                <div class="flex justify-between px-6 pt-1 items-center">
+                  <div class="text-2xl font-bold">piacere</div>
+                  <div
+                    class="bg-test bg-contain h-20 w-20 mt-4"
+                    style="
+                      background-image: url('./images/sample/sample-image.png');
+                    "
+                  ></div>
+                </div>
+                <div class="w-[400px] flex justify-center mx-auto">
+                  <canvas id="radarChart3" width="300" height="300"></canvas>
+                </div>
+                <div class="p-6 pt-0 flex justify-between">
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                  >
+                    1on1に誘う
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    この人と比較
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    スキルアップ確認
+                  </button>
+                </div>
+              </div>
+
+              <!-- 　メンバーデータ -->
+              <div class="flex w-[474px] shadow flex-col bg-white">
+                <ul
+                  class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+                >
+                  <li class="bg-white text-base w-full">
+                    <a
+                      href="#"
+                      class="w-full py-3 text-center inline-block"
+                      aria-current="page"
+                      >レベル1 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                </ul>
+                <div class="flex justify-between px-6 pt-1 items-center">
+                  <div class="text-2xl font-bold">piacere</div>
+                  <div
+                    class="bg-test bg-contain h-20 w-20 mt-4"
+                    style="
+                      background-image: url('./images/sample/sample-image.png');
+                    "
+                  ></div>
+                </div>
+                <div class="w-[400px] flex justify-center mx-auto">
+                  <canvas id="radarChart4" width="300" height="300"></canvas>
+                </div>
+                <div class="p-6 pt-0 flex justify-between">
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                  >
+                    1on1に誘う
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    この人と比較
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    スキルアップ確認
+                  </button>
+                </div>
+              </div>
+
+              <!-- 　メンバーデータ -->
+              <div class="flex w-[474px] shadow flex-col bg-white">
+                <ul
+                  class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+                >
+                  <li class="bg-white text-base w-full">
+                    <a
+                      href="#"
+                      class="w-full py-3 text-center inline-block"
+                      aria-current="page"
+                      >レベル1 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                </ul>
+                <div class="flex justify-between px-6 pt-1 items-center">
+                  <div class="text-2xl font-bold">piacere</div>
+                  <div
+                    class="bg-test bg-contain h-20 w-20 mt-4"
+                    style="
+                      background-image: url('./images/sample/sample-image.png');
+                    "
+                  ></div>
+                </div>
+                <div class="w-[400px] flex justify-center mx-auto">
+                  <canvas id="radarChart5" width="300" height="300"></canvas>
+                </div>
+                <div class="p-6 pt-0 flex justify-between">
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                  >
+                    1on1に誘う
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    この人と比較
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    スキルアップ確認
                   </button>
                 </div>
               </div>
             </div>
-            <!-- グラフ -->
-          </div>
-        </div>
-
-        <!-- card -->
-        <div class="mx-8 p-6">
-          <!-- チームタイトル -->
-          <div class="flex">
-            <h3>
-              <span
-                class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center"
-                >group</span
-              >DMC Ph3
-            </h3>
-            <label
-              class="text-white bg-lapislazuli-300 ml-8 rounded-md font-bold px-3 py-1 inline-flex items-center"
-              >プライマリ</label
-            >
-          </div>
-          <!-- チームメンバー -->
-          <div class="flex gap-8 pt-7 flex-wrap">
-            <!-- 　メンバーデータ -->
-            <div class="flex w-[474px] shadow flex-col bg-white">
-              <ul
-                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+            <!-- チームタイトル -->
+            <div class="flex pt-20 items-center">
+              <h3>
+                <span
+                  class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center"
+                  >group</span
+                >DMC Ph2 インフラ
+              </h3>
+              <button
+                class="text-lapislazuli-300 border border-lapislazuli-300 ml-8 rounded-md font-bold px-3 h-7 inline-flex items-center"
               >
-                <li class="bg-white text-base w-full">
-                  <a
-                    href="#"
-                    class="w-full py-3 text-center inline-block"
-                    aria-current="page"
-                    >レベル1 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル2 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル3 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-              </ul>
-              <div class="flex justify-between px-6 pt-6 items-center">
-                <div class="text-2xl font-bold">piacere</div>
-                <div
-                  class="bg-test bg-contain h-20 w-20"
-                  style="
-                    background-image: url('./images/sample/sample-image.png');
-                  "
-                ></div>
-              </div>
-              <div class="w-[400px] flex justify-center mx-auto">
-                <canvas id="radarChart" width="300" height="300"></canvas>
-              </div>
-              <div class="p-6 flex justify-between">
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                >
-                  1on1に誘う
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  この人と比較
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  スキルアップ確認
-                </button>
-              </div>
+                プライマリに設定
+              </button>
             </div>
+            <!-- チームメンバー -->
+            <div class="flex gap-8 pt-4 flex-wrap">
+              <!-- 　メンバーデータ -->
+              <div class="flex w-[474px] shadow flex-col bg-white">
+                <ul
+                  class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
+                >
+                  <li class="bg-white text-base w-full">
+                    <a
+                      href="#"
+                      class="w-full py-3 text-center inline-block"
+                      aria-current="page"
+                      >レベル1 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                </ul>
+                <div class="flex justify-between px-6 pt-1 items-center">
+                  <div class="text-2xl font-bold">piacere</div>
+                  <div
+                    class="bg-test bg-contain h-20 w-20 mt-4"
+                    style="
+                      background-image: url('./images/sample/sample-image.png');
+                    "
+                  ></div>
+                </div>
+                <div class="w-[400px] flex justify-center mx-auto">
+                  <canvas id="radarChart6" width="300" height="300"></canvas>
+                </div>
+                <div class="p-6 pt-0 flex justify-between">
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                  >
+                    1on1に誘う
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    この人と比較
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    スキルアップ確認
+                  </button>
+                </div>
+              </div>
 
-            <!-- 　メンバーデータ -->
-            <div class="flex w-[474px] shadow flex-col bg-white">
-              <ul
-                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
-              >
-                <li class="bg-white text-base w-full">
-                  <a
-                    href="#"
-                    class="w-full py-3 text-center inline-block"
-                    aria-current="page"
-                    >レベル1 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル2 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル3 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-              </ul>
-              <div class="flex justify-between px-6 pt-6 items-center">
-                <div class="text-2xl font-bold">piacere</div>
-                <div
-                  class="bg-test bg-contain h-20 w-20"
-                  style="
-                    background-image: url('./images/sample/sample-image.png');
-                  "
-                ></div>
-              </div>
-              <div class="w-[400px] flex justify-center mx-auto">
-                <canvas id="radarChart2" width="300" height="300"></canvas>
-              </div>
-              <div class="p-6 flex justify-between">
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+              <!-- 　メンバーデータ -->
+              <div class="flex w-[474px] shadow flex-col bg-white">
+                <ul
+                  class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
                 >
-                  1on1に誘う
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  この人と比較
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  スキルアップ確認
-                </button>
+                  <li class="bg-white text-base w-full">
+                    <a
+                      href="#"
+                      class="w-full py-3 text-center inline-block"
+                      aria-current="page"
+                      >レベル1 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                </ul>
+                <div class="flex justify-between px-6 pt-1 items-center">
+                  <div class="text-2xl font-bold">piacere</div>
+                  <div
+                    class="bg-test bg-contain h-20 w-20 mt-4"
+                    style="
+                      background-image: url('./images/sample/sample-image.png');
+                    "
+                  ></div>
+                </div>
+                <div class="w-[400px] flex justify-center mx-auto">
+                  <canvas id="radarChart7" width="300" height="300"></canvas>
+                </div>
+                <div class="p-6 pt-0 flex justify-between">
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                  >
+                    1on1に誘う
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    この人と比較
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
+                  >
+                    スキルアップ確認
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <!-- 　メンバーデータ -->
-            <div class="flex w-[474px] shadow flex-col bg-white">
-              <ul
-                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
-              >
-                <li class="bg-white text-base w-full">
-                  <a
-                    href="#"
-                    class="w-full py-3 text-center inline-block"
-                    aria-current="page"
-                    >レベル1 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル2 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル3 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-              </ul>
-              <div class="flex justify-between px-6 pt-6 items-center">
-                <div class="text-2xl font-bold">piacere</div>
-                <div
-                  class="bg-test bg-contain h-20 w-20"
-                  style="
-                    background-image: url('./images/sample/sample-image.png');
-                  "
-                ></div>
-              </div>
-              <div class="w-[400px] flex justify-center mx-auto">
-                <canvas id="radarChart3" width="300" height="300"></canvas>
-              </div>
-              <div class="p-6 flex justify-between">
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+              <!-- 　メンバーデータ -->
+              <div class="flex w-[474px] shadow flex-col bg-white">
+                <ul
+                  class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
                 >
-                  1on1に誘う
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  この人と比較
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  スキルアップ確認
-                </button>
-              </div>
-            </div>
-
-            <!-- 　メンバーデータ -->
-            <div class="flex w-[474px] shadow flex-col bg-white">
-              <ul
-                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
-              >
-                <li class="bg-white text-base w-full">
-                  <a
-                    href="#"
-                    class="w-full py-3 text-center inline-block"
-                    aria-current="page"
-                    >レベル1 <span class="text-xl ml-4">52</span>％</a
+                  <li class="bg-white text-base w-full">
+                    <a
+                      href="#"
+                      class="w-full py-3 text-center inline-block"
+                      aria-current="page"
+                      >レベル1 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                  <li class="w-full">
+                    <a href="#" class="w-full py-3 text-center inline-block"
+                      >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    >
+                  </li>
+                </ul>
+                <div class="flex justify-between px-6 pt-1 items-center">
+                  <div class="text-2xl font-bold">piacere</div>
+                  <div
+                    class="bg-test bg-contain h-20 w-20 mt-4"
+                    style="
+                      background-image: url('./images/sample/sample-image.png');
+                    "
+                  ></div>
+                </div>
+                <div class="w-[400px] flex justify-center mx-auto">
+                  <canvas id="radarChart8" width="300" height="300"></canvas>
+                </div>
+                <div class="p-6 pt-0 flex justify-between">
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
                   >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル2 <span class="text-xl ml-4">52</span>％</a
+                    1on1に誘う
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
                   >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル3 <span class="text-xl ml-4">52</span>％</a
+                    この人と比較
+                  </button>
+                  <button
+                    class="text-sm font-bold px-5 py-3 rounded border border-base"
                   >
-                </li>
-              </ul>
-              <div class="flex justify-between px-6 pt-6 items-center">
-                <div class="text-2xl font-bold">piacere</div>
-                <div
-                  class="bg-test bg-contain h-20 w-20"
-                  style="
-                    background-image: url('./images/sample/sample-image.png');
-                  "
-                ></div>
-              </div>
-              <div class="w-[400px] flex justify-center mx-auto">
-                <canvas id="radarChart4" width="300" height="300"></canvas>
-              </div>
-              <div class="p-6 flex justify-between">
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                >
-                  1on1に誘う
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  この人と比較
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  スキルアップ確認
-                </button>
-              </div>
-            </div>
-
-            <!-- 　メンバーデータ -->
-            <div class="flex w-[474px] shadow flex-col bg-white">
-              <ul
-                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
-              >
-                <li class="bg-white text-base w-full">
-                  <a
-                    href="#"
-                    class="w-full py-3 text-center inline-block"
-                    aria-current="page"
-                    >レベル1 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル2 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル3 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-              </ul>
-              <div class="flex justify-between px-6 pt-6 items-center">
-                <div class="text-2xl font-bold">piacere</div>
-                <div
-                  class="bg-test bg-contain h-20 w-20"
-                  style="
-                    background-image: url('./images/sample/sample-image.png');
-                  "
-                ></div>
-              </div>
-              <div class="w-[400px] flex justify-center mx-auto">
-                <canvas id="radarChart5" width="300" height="300"></canvas>
-              </div>
-              <div class="p-6 flex justify-between">
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                >
-                  1on1に誘う
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  この人と比較
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  スキルアップ確認
-                </button>
+                    スキルアップ確認
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-          <!-- チームタイトル -->
-          <div class="flex pt-20">
-            <h3>
-              <span
-                class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center"
-                >group</span
-              >DMC Ph2 インフラ
-            </h3>
-            <button
-              class="text-lapislazuli-300 border border-lapislazuli-300 ml-8 rounded-md font-bold px-3 py-1 inline-flex items-center"
-            >
-              プライマリに設定
-            </button>
-          </div>
-          <!-- チームメンバー -->
-          <div class="flex gap-8 pt-7 flex-wrap">
-            <!-- 　メンバーデータ -->
-            <div class="flex w-[474px] shadow flex-col bg-white">
-              <ul
-                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
-              >
-                <li class="bg-white text-base w-full">
-                  <a
-                    href="#"
-                    class="w-full py-3 text-center inline-block"
-                    aria-current="page"
-                    >レベル1 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル2 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル3 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-              </ul>
-              <div class="flex justify-between px-6 pt-6 items-center">
-                <div class="text-2xl font-bold">piacere</div>
-                <div
-                  class="bg-test bg-contain h-20 w-20"
-                  style="
-                    background-image: url('./images/sample/sample-image.png');
-                  "
-                ></div>
-              </div>
-              <div class="w-[400px] flex justify-center mx-auto">
-                <canvas id="radarChart6" width="300" height="300"></canvas>
-              </div>
-              <div class="p-6 flex justify-between">
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                >
-                  1on1に誘う
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  この人と比較
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  スキルアップ確認
-                </button>
-              </div>
-            </div>
-
-            <!-- 　メンバーデータ -->
-            <div class="flex w-[474px] shadow flex-col bg-white">
-              <ul
-                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
-              >
-                <li class="bg-white text-base w-full">
-                  <a
-                    href="#"
-                    class="w-full py-3 text-center inline-block"
-                    aria-current="page"
-                    >レベル1 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル2 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル3 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-              </ul>
-              <div class="flex justify-between px-6 pt-6 items-center">
-                <div class="text-2xl font-bold">piacere</div>
-                <div
-                  class="bg-test bg-contain h-20 w-20"
-                  style="
-                    background-image: url('./images/sample/sample-image.png');
-                  "
-                ></div>
-              </div>
-              <div class="w-[400px] flex justify-center mx-auto">
-                <canvas id="radarChart7" width="300" height="300"></canvas>
-              </div>
-              <div class="p-6 flex justify-between">
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                >
-                  1on1に誘う
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  この人と比較
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  スキルアップ確認
-                </button>
-              </div>
-            </div>
-
-            <!-- 　メンバーデータ -->
-            <div class="flex w-[474px] shadow flex-col bg-white">
-              <ul
-                class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
-              >
-                <li class="bg-white text-base w-full">
-                  <a
-                    href="#"
-                    class="w-full py-3 text-center inline-block"
-                    aria-current="page"
-                    >レベル1 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル2 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-                <li class="w-full">
-                  <a href="#" class="w-full py-3 text-center inline-block"
-                    >レベル3 <span class="text-xl ml-4">52</span>％</a
-                  >
-                </li>
-              </ul>
-              <div class="flex justify-between px-6 pt-6 items-center">
-                <div class="text-2xl font-bold">piacere</div>
-                <div
-                  class="bg-test bg-contain h-20 w-20"
-                  style="
-                    background-image: url('./images/sample/sample-image.png');
-                  "
-                ></div>
-              </div>
-              <div class="w-[400px] flex justify-center mx-auto">
-                <canvas id="radarChart8" width="300" height="300"></canvas>
-              </div>
-              <div class="p-6 flex justify-between">
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                >
-                  1on1に誘う
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  この人と比較
-                </button>
-                <button
-                  class="text-sm font-bold px-5 py-3 rounded border border-base"
-                >
-                  スキルアップ確認
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
 

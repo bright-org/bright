@@ -142,7 +142,7 @@ module.exports = {
           alignSelf: "center",
         },
         h3: {
-          fontSize: theme("fontSize.2xl"),
+          fontSize: "28px",
           fontWeight: theme("fontWeight.bold"),
           letterSpacing: theme("letterSpacing.tight"),
           alignSelf: "center",
