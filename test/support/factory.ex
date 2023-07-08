@@ -9,6 +9,9 @@ defmodule Bright.Factory do
   use Bright.UserFactory
   use Bright.UserTokenFactory
 
+  # UserProfiles context
+  use Bright.UserProfileFactory
+
   # SkillPanels context
   use Bright.SkillPanelFactory
   use Bright.SkillClassFactory
