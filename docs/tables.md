@@ -29,7 +29,7 @@ erDiagram
   notifications {
     id from_user_id	FK "送信元ユーザ"
     id to_user_id	FK "送信先ユーザ index"
-    string icon	"アイコン"
+    string icon_type	"アイコン種別"
     string message	"メッセージ内容"
     string type	"種別（タブ） index"
     string url "URL"
