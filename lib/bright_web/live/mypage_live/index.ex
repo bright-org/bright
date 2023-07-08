@@ -1,7 +1,5 @@
 defmodule BrightWeb.MypageLive.Index do
   alias Bright.UserProfiles
-  alias Bright.UserProfileFactory
-  alias Hex.API.User
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
