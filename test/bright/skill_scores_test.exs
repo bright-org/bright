@@ -38,10 +38,10 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      valid_attrs = %{level: :middle, user_id: user.id, skill_class_id: skill_class.id}
+      valid_attrs = %{level: :normal, user_id: user.id, skill_class_id: skill_class.id}
 
       assert {:ok, %SkillScore{} = skill_score} = SkillScores.create_skill_score(valid_attrs)
-      assert skill_score.level == :middle
+      assert skill_score.level == :normal
     end
 
     test "create_skill_score/1 with invalid data returns error changeset" do
@@ -53,12 +53,12 @@ defmodule Bright.SkillScoresTest do
       skill_class: skill_class
     } do
       skill_score = insert(:skill_score, user: user, skill_class: skill_class)
-      update_attrs = %{level: :middle}
+      update_attrs = %{level: :normal}
 
       assert {:ok, %SkillScore{} = skill_score} =
                SkillScores.update_skill_score(skill_score, update_attrs)
 
-      assert skill_score.level == :middle
+      assert skill_score.level == :normal
     end
 
     test "update_skill_score/2 with invalid data returns error changeset", %{

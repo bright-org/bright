@@ -10,7 +10,10 @@ defmodule Bright.SkillScores.SkillScore do
   @foreign_key_type Ecto.ULID
 
   schema "skill_scores" do
-    field :level, Ecto.Enum, values: [junior: 10, middle: 20, senior: 30], default: :junior
+    # NOTE: level
+    # スキルクラス単位のレベルを表します。
+    # 役職系の単語は誤解を招くため避けて命名しています。NG例: junior, middle, senior
+    field :level, Ecto.Enum, values: [beginner: 10, normal: 20, skilled: 30], default: :beginner
     field :percentage, :integer, default: 0
 
     belongs_to(:user, Bright.Accounts.User)
