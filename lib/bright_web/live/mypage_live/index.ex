@@ -31,7 +31,7 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   # 正式な処理が入るまでダミーデータを表示
-  def dummy_progiole do
+  def dummy_profile do
     %{
       user: %{name: "ダミー名前"},
       title: "ダミー称号",
