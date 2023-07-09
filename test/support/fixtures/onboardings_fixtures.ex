@@ -17,4 +17,19 @@ defmodule Bright.OnboardingsFixtures do
 
     user_onboardings
   end
+
+  @doc """
+  Generate a onboarding_want.
+  """
+  def onboarding_want_fixture(attrs \\ %{}) do
+    {:ok, onboarding_want} =
+      attrs
+      |> Enum.into(%{
+        name: "some name",
+        position: 42
+      })
+      |> Bright.Onboardings.create_onboarding_want()
+
+    onboarding_want
+  end
 end

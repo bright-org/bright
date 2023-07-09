@@ -55,6 +55,55 @@ defmodule BrightWeb.Router do
     live "/user_onboardings/:id/edit", UserOnboardingsLive.Index, :edit
     live "/user_onboardings/:id", UserOnboardingsLive.Show, :show
     live "/user_onboardings/:id/show/edit", UserOnboardingsLive.Show, :edit
+
+    live "/onboarding_wants", OnboardingWantLive.Index, :index
+    live "/onboarding_wants/new", OnboardingWantLive.Index, :new
+    live "/onboarding_wants/:id/edit", OnboardingWantLive.Index, :edit
+
+    live "/onboarding_wants/:id", OnboardingWantLive.Show, :show
+    live "/onboarding_wants/:id/show/edit", OnboardingWantLive.Show, :edit
+
+    live "/user_onboardings", UserOnboardingsLive.Index, :index
+    live "/user_onboardings/new", UserOnboardingsLive.Index, :new
+    live "/user_onboardings/:id/edit", UserOnboardingsLive.Index, :edit
+    live "/user_onboardings/:id", UserOnboardingsLive.Show, :show
+    live "/user_onboardings/:id/show/edit", UserOnboardingsLive.Show, :edit
+
+    live "/onboarding_wants", OnboardingWantLive.Index, :index
+    live "/onboarding_wants/new", OnboardingWantLive.Index, :new
+    live "/onboarding_wants/:id/edit", OnboardingWantLive.Index, :edit
+    live "/onboarding_wants/:id", OnboardingWantLive.Show, :show
+    live "/onboarding_wants/:id/show/edit", OnboardingWantLive.Show, :edit
+
+    live "/careerfields", CareerfieldsLive.Index, :index
+    live "/careerfields/new", CareerfieldsLive.Index, :new
+    live "/careerfields/:id/edit", CareerfieldsLive.Index, :edit
+    live "/careerfields/:id", CareerfieldsLive.Show, :show
+    live "/careerfields/:id/show/edit", CareerfieldsLive.Show, :edit
+
+    live "/jobs", JobLive.Index, :index
+    live "/jobs/new", JobLive.Index, :new
+    live "/jobs/:id/edit", JobLive.Index, :edit
+    live "/jobs/:id", JobLive.Show, :show
+    live "/jobs/:id/show/edit", JobLive.Show, :edit
+
+    live "/onboarding_want_jobs", OnboardingWantJobLive.Index, :index
+    live "/onboarding_want_jobs/new", OnboardingWantJobLive.Index, :new
+    live "/onboarding_want_jobs/:id/edit", OnboardingWantJobLive.Index, :edit
+    live "/onboarding_want_jobs/:id", OnboardingWantJobLive.Show, :show
+    live "/onboarding_want_jobs/:id/show/edit", OnboardingWantJobLive.Show, :edit
+
+    live "/job_skill_panels", JobSkillPanelsLive.Index, :index
+    live "/job_skill_panels/new", JobSkillPanelsLive.Index, :new
+    live "/job_skill_panels/:id/edit", JobSkillPanelsLive.Index, :edit
+    live "/job_skill_panels/:id", JobSkillPanelsLive.Show, :show
+    live "/job_skill_panels/:id/show/edit", JobSkillPanelsLive.Show, :edit
+
+    live "/user_skill_panels", UserSkillPanelsLive.Index, :index
+    live "/user_skill_panels/new", UserSkillPanelsLive.Index, :new
+    live "/user_skill_panels/:id/edit", UserSkillPanelsLive.Index, :edit
+    live "/user_skill_panels/:id", UserSkillPanelsLive.Show, :show
+    live "/user_skill_panels/:id/show/edit", UserSkillPanelsLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
