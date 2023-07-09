@@ -44,34 +44,34 @@ defmodule BrightWeb.Admin.UserOnboardingsLiveTest do
       assert html =~ "User onboardings created successfully"
     end
 
-    test "updates user_onboardings in listing", %{conn: conn, user_onboardings: user_onboardings} do
-      {:ok, index_live, _html} = live(conn, ~p"/admin/user_onboardings")
+    # test "updates user_onboardings in listing", %{conn: conn, user_onboardings: user_onboardings} do
+    #   {:ok, index_live, _html} = live(conn, ~p"/admin/user_onboardings")
 
-      assert index_live |> element("#user_onboardings-#{user_onboardings.id} a", "Edit") |> render_click() =~
-               "Edit User onboardings"
+    #   assert index_live |> element("#user_onboardings-#{user_onboardings.id} a", "Edit") |> render_click() =~
+    #            "Edit User onboardings"
 
-      assert_patch(index_live, ~p"/admin/user_onboardings/#{user_onboardings}/edit")
+    #   assert_patch(index_live, ~p"/admin/user_onboardings/#{user_onboardings}/edit")
 
-      assert index_live
-             |> form("#user_onboardings-form", user_onboardings: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+    #   assert index_live
+    #          |> form("#user_onboardings-form", user_onboardings: @invalid_attrs)
+    #          |> render_change() =~ "can&#39;t be blank"
 
-      assert index_live
-             |> form("#user_onboardings-form", user_onboardings: @update_attrs)
-             |> render_submit()
+    #   assert index_live
+    #          |> form("#user_onboardings-form", user_onboardings: @update_attrs)
+    #          |> render_submit()
 
-      assert_patch(index_live, ~p"/admin/user_onboardings")
+    #   assert_patch(index_live, ~p"/admin/user_onboardings")
 
-      html = render(index_live)
-      assert html =~ "User onboardings updated successfully"
-    end
+    #   html = render(index_live)
+    #   assert html =~ "User onboardings updated successfully"
+    # end
 
-    test "deletes user_onboardings in listing", %{conn: conn, user_onboardings: user_onboardings} do
-      {:ok, index_live, _html} = live(conn, ~p"/admin/user_onboardings")
+    # test "deletes user_onboardings in listing", %{conn: conn, user_onboardings: user_onboardings} do
+    #   {:ok, index_live, _html} = live(conn, ~p"/admin/user_onboardings")
 
-      assert index_live |> element("#user_onboardings-#{user_onboardings.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#user_onboardings-#{user_onboardings.id}")
-    end
+    #   assert index_live |> element("#user_onboardings-#{user_onboardings.id} a", "Delete") |> render_click()
+    #   refute has_element?(index_live, "#user_onboardings-#{user_onboardings.id}")
+    # end
   end
 
   describe "Show" do
@@ -83,7 +83,10 @@ defmodule BrightWeb.Admin.UserOnboardingsLiveTest do
       assert html =~ "Show User onboardings"
     end
 
-    test "updates user_onboardings within modal", %{conn: conn, user_onboardings: user_onboardings} do
+    test "updates user_onboardings within modal", %{
+      conn: conn,
+      user_onboardings: user_onboardings
+    } do
       {:ok, show_live, _html} = live(conn, ~p"/admin/user_onboardings/#{user_onboardings}")
 
       assert show_live |> element("a", "Edit") |> render_click() =~

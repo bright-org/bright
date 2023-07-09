@@ -33,7 +33,10 @@ defmodule BrightWeb.Admin.OnboardingWantLive.Index do
   end
 
   @impl true
-  def handle_info({BrightWeb.Admin.OnboardingWantLive.FormComponent, {:saved, onboarding_want}}, socket) do
+  def handle_info(
+        {BrightWeb.Admin.OnboardingWantLive.FormComponent, {:saved, onboarding_want}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :onboarding_wants, onboarding_want)}
   end
 

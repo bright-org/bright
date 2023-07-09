@@ -2,7 +2,10 @@
   Onboarding want <%= @onboarding_want.id %>
   <:subtitle>This is a onboarding_want record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/admin/onboarding_wants/#{@onboarding_want}/show/edit"} phx-click={JS.push_focus()}>
+    <.link
+      patch={~p"/admin/onboarding_wants/#{@onboarding_want}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
       <.button>Edit onboarding_want</.button>
     </.link>
   </:actions>
@@ -15,7 +18,12 @@
 
 <.back navigate={~p"/admin/onboarding_wants"}>Back to onboarding_wants</.back>
 
-<.modal :if={@live_action == :edit} id="onboarding_want-modal" show on_cancel={JS.patch(~p"/admin/onboarding_wants/#{@onboarding_want}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="onboarding_want-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/onboarding_wants/#{@onboarding_want}")}
+>
   <.live_component
     module={BrightWeb.Admin.OnboardingWantLive.FormComponent}
     id={@onboarding_want.id}

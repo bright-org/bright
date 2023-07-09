@@ -10,7 +10,9 @@
 <.table
   id="onboarding_wants"
   rows={@streams.onboarding_wants}
-  row_click={fn {_id, onboarding_want} -> JS.navigate(~p"/admin/onboarding_wants/#{onboarding_want}") end}
+  row_click={
+    fn {_id, onboarding_want} -> JS.navigate(~p"/admin/onboarding_wants/#{onboarding_want}") end
+  }
 >
   <:col :let={{_id, onboarding_want}} label="Name"><%= onboarding_want.name %></:col>
   <:col :let={{_id, onboarding_want}} label="Position"><%= onboarding_want.position %></:col>
@@ -30,7 +32,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="onboarding_want-modal" show on_cancel={JS.patch(~p"/admin/onboarding_wants")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="onboarding_want-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/onboarding_wants")}
+>
   <.live_component
     module={BrightWeb.Admin.OnboardingWantLive.FormComponent}
     id={@onboarding_want.id || :new}

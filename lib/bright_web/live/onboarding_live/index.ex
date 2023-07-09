@@ -8,7 +8,6 @@ defmodule BrightWeb.OnboardingLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     # {:ok, socket}
-    Onboardings.list_onboarding_wants() |> IO.inspect
     {:ok, stream(socket, :onboarding_wants, Onboardings.list_onboarding_wants())}
   end
 
@@ -29,11 +28,13 @@ defmodule BrightWeb.OnboardingLive.Index do
     <.select_skill_panel />
     """
   end
+
   def render(%{view_content: "select_skill_result"} = assigns) do
     ~H"""
     <.select_skill_result />
     """
   end
+
   def render(%{view_content: _} = assigns) do
     ~H"""
     <.select_career onboarding_wants={Onboardings.list_onboarding_wants()} />

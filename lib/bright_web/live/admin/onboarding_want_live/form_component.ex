@@ -54,7 +54,10 @@ defmodule BrightWeb.Admin.OnboardingWantLive.FormComponent do
   end
 
   defp save_onboarding_want(socket, :edit, onboarding_want_params) do
-    case Onboardings.update_onboarding_want(socket.assigns.onboarding_want, onboarding_want_params) do
+    case Onboardings.update_onboarding_want(
+           socket.assigns.onboarding_want,
+           onboarding_want_params
+         ) do
       {:ok, onboarding_want} ->
         notify_parent({:saved, onboarding_want})
 

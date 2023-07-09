@@ -10,9 +10,13 @@
 <.table
   id="user_onboardings"
   rows={@streams.user_onboardings_collection}
-  row_click={fn {_id, user_onboardings} -> JS.navigate(~p"/admin/user_onboardings/#{user_onboardings}") end}
+  row_click={
+    fn {_id, user_onboardings} -> JS.navigate(~p"/admin/user_onboardings/#{user_onboardings}") end
+  }
 >
-  <:col :let={{_id, user_onboardings}} label="Completed at"><%= user_onboardings.completed_at %></:col>
+  <:col :let={{_id, user_onboardings}} label="Completed at">
+    <%= user_onboardings.completed_at %>
+  </:col>
   <:action :let={{_id, user_onboardings}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/user_onboardings/#{user_onboardings}"}>Show</.link>
@@ -29,7 +33,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="user_onboardings-modal" show on_cancel={JS.patch(~p"/admin/user_onboardings")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="user_onboardings-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/user_onboardings")}
+>
   <.live_component
     module={BrightWeb.Admin.UserOnboardingsLive.FormComponent}
     id={@user_onboardings.id || :new}

@@ -49,7 +49,9 @@ defmodule BrightWeb.Admin.OnboardingWantLiveTest do
     test "updates onboarding_want in listing", %{conn: conn, onboarding_want: onboarding_want} do
       {:ok, index_live, _html} = live(conn, ~p"/admin/onboarding_wants")
 
-      assert index_live |> element("#onboarding_wants-#{onboarding_want.id} a", "Edit") |> render_click() =~
+      assert index_live
+             |> element("#onboarding_wants-#{onboarding_want.id} a", "Edit")
+             |> render_click() =~
                "Edit Onboarding want"
 
       assert_patch(index_live, ~p"/admin/onboarding_wants/#{onboarding_want}/edit")
@@ -72,7 +74,10 @@ defmodule BrightWeb.Admin.OnboardingWantLiveTest do
     test "deletes onboarding_want in listing", %{conn: conn, onboarding_want: onboarding_want} do
       {:ok, index_live, _html} = live(conn, ~p"/admin/onboarding_wants")
 
-      assert index_live |> element("#onboarding_wants-#{onboarding_want.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#onboarding_wants-#{onboarding_want.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#onboarding_wants-#{onboarding_want.id}")
     end
   end
