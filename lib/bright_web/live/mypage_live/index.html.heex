@@ -1,14 +1,14 @@
 <!-- プロフィール -->
 <div class="flex justify-between py-8 px-10 bg-white">
   <.profile
-    user_name="piacere"
-    title="リードプログラマー"
-    detail="高校・大学と野球部に入っていました。チームで開発を行うような仕事が得意です。メインで使っている言語はJavaで中規模～大規模のシステム開発を受け持っています。最近Elixirを学び始め、Elixirで仕事ができると嬉しいです。"
-    icon_file_path="/images/sample/sample-image.png"
+    user_name={@profile.user.name}
+    title={@profile.title}
+    detail={@profile.detail}
+    icon_file_path={@profile.icon_file_path}
     display_sns
-    twitter_url="https://twitter.com/"
-    github_url="https://www.github.com/"
-    facebook_url="https://www.facebook.com/"
+    twitter_url={@profile.twitter_url}
+    github_url={@profile.github_url}
+    facebook_url={@profile.facebook_url}
   />
   <div>
     <p class="text-sm !font-bold">

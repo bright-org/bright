@@ -100,5 +100,10 @@ defmodule Bright.UserProfilesTest do
       user_profile = insert(:user_profile)
       assert %Ecto.Changeset{} = UserProfiles.change_user_profile(user_profile)
     end
+
+    test "get_user_profile_by_name/1 returns a user_profile" do
+      user_profile = insert(:user_profile)
+      assert UserProfiles.get_user_profile_by_name(user_profile.user.name) == user_profile
+    end
   end
 end
