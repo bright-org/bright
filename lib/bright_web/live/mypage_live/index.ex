@@ -16,7 +16,7 @@ defmodule BrightWeb.MypageLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Listing Mypages")
-     |> assign(:profile, profile || dummy_progiole())}
+     |> assign(:profile, profile || dummy_profile())}
   end
 
   @impl true
