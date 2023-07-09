@@ -23,6 +23,7 @@ defmodule Bright.SkillPanels.SkillClass do
       on_replace: :delete
 
     has_many :skill_units, through: [:skill_class_units, :skill_unit]
+    has_many :skill_scores, Bright.SkillScores.SkillScore
 
     timestamps()
   end
