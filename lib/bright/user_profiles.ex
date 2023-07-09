@@ -57,13 +57,22 @@ defmodule Bright.UserProfiles do
     |> Repo.insert()
   end
 
+  @doc """
+  Gets a single user_profile.
+
+  ## Examples
+
+      iex> get_user_profile_by_name("name")
+      %UserProfile{}
+
+  """
   def get_user_profile_by_name(name) do
     user_name_query(name)
     |> Repo.one()
     |> Repo.preload(:user)
   end
 
-  def user_name_query(name) do
+  defp user_name_query(name) do
     from p in UserProfile,
       inner_join: u in User,
       on: p.user_id == u.id,
