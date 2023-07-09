@@ -16,7 +16,7 @@ defmodule BrightWeb.MypageLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Listing Mypages")
-     |> assign(:profile, profile)}
+     |> assign(:profile, profile || dummy_progiole())}
   end
 
   @impl true
@@ -28,5 +28,18 @@ defmodule BrightWeb.MypageLive.Index do
     socket
     |> assign(:page_title, "Listing Mypages")
     |> assign(:mypage, nil)
+  end
+
+  # 正式な処理が入るまでダミーデータを表示
+  def dummy_progiole do
+    %{
+      user: %{name: "ダミー名前"},
+      title: "ダミー称号",
+      detail: "ダミー詳細",
+      icon_file_path: "",
+      twitter_url: "",
+      github_url: "",
+      facebook_url: ""
+    }
   end
 end
