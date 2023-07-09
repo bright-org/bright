@@ -3,9 +3,13 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   embed_templates "index/*"
 
+  alias Bright.Onboardings
+
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    # {:ok, socket}
+    Onboardings.list_onboarding_wants() |> IO.inspect
+    {:ok, stream(socket, :onboarding_wants, Onboardings.list_onboarding_wants())}
   end
 
   @impl true
@@ -16,30 +20,23 @@ defmodule BrightWeb.OnboardingLive.Index do
   defp apply_action(socket, :index, params) do
     socket
     |> assign(:page_title, "Listing Onboardings")
-    |> assign(:view_content, view_content(params["onboarding"]))
+    |> assign(:view_content, params["onboarding"])
   end
 
-  defp view_content("select_skill_panel"), do: :select_skill_panel
-  defp view_content("select_skill_result"), do: :select_skill_result
-  defp view_content(_), do: :select_career
-
   @impl true
-  def render(assigns) do
-    case assigns[:view_content] do
-      :select_skill_panel ->
-        ~H"""
-        <.select_skill_panel />
-        """
-
-      :select_skill_result ->
-        ~H"""
-        <.select_skill_result />
-        """
-
-      _ ->
-        ~H"""
-        <.select_career />
-        """
-    end
+  def render(%{view_content: "select_skill_panel"} = assigns) do
+    ~H"""
+    <.select_skill_panel />
+    """
+  end
+  def render(%{view_content: "select_skill_result"} = assigns) do
+    ~H"""
+    <.select_skill_result />
+    """
+  end
+  def render(%{view_content: _} = assigns) do
+    ~H"""
+    <.select_career onboarding_wants={Onboardings.list_onboarding_wants()} />
+    """
   end
 end
