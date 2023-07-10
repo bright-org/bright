@@ -25,6 +25,16 @@ defmodule Bright.Factory do
   use Bright.SkillScoreFactory
   use Bright.SkillScoreItemFactory
 
+  # SkillReferences context
+  use Bright.SkillReferenceFactory
+
+  # SkillExams context
+  use Bright.SkillExamFactory
+  use Bright.SkillExamResultFactory
+
+  # SkillEvidences context
+  use Bright.SkillEvidenceFactory
+
   # NotificationsFactory context
   use Bright.NotificationFactory
 end
