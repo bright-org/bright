@@ -14,11 +14,6 @@ defmodule BrightWeb.ContactCardComponents do
   attr :datas, :list, default: []
 
   def contact_card(assigns) do
-    # ダミーデータ
-    assigns =
-      assigns
-      |> assign(:datas, dummy())
-
     ~H"""
     <div>
       <h5>重量な連絡</h5>
@@ -63,22 +58,4 @@ defmodule BrightWeb.ContactCardComponents do
 
   defp highlight(true), do: "text-brightGreen-300"
   defp highlight(false), do: "text-brightGray-300"
-
-  # ダミーデータ
-  defp dummy do
-    [
-      %{
-        icon_type: "person",
-        message: "nakoさんからの紹介 / mikaさん / Web開発（Elixir）",
-        time: 1,
-        highlight: true
-      },
-      %{
-        icon_type: "person",
-        message: "testさんからの紹介 / hogeさん / Web開発（Elixir）",
-        time: 8,
-        highlight: false
-      }
-    ]
-  end
 end
