@@ -8,9 +8,9 @@ defmodule BrightWeb.UserLoginLiveTest do
     test "renders log in page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/log_in")
 
-      assert html =~ "Log in"
-      assert html =~ "Register"
-      assert html =~ "Forgot your password?"
+      assert html =~ "ログイン"
+      assert html =~ "ユーザー新規作成はこちら"
+      assert html =~ "パスワードを忘れた方はこちら"
     end
 
     test "redirects if already logged in", %{conn: conn} do
@@ -60,7 +60,7 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       {:ok, _login_live, login_html} =
         lv
-        |> element("a", "Sign up")
+        |> element("a", "ユーザー新規作成はこちら")
         |> render_click()
         |> follow_redirect(conn, ~p"/users/register")
 
@@ -74,7 +74,7 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       {:ok, conn} =
         lv
-        |> element("a", "Forgot your password?")
+        |> element("a", "パスワードを忘れた方はこちら")
         |> render_click()
         |> follow_redirect(conn, ~p"/users/reset_password")
 

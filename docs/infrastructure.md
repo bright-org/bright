@@ -8,9 +8,9 @@
 | Cloud SQL | RDB（PostgreSQL）にデータを保存する |
 | Cloud Storage | アップロードされたファイルを保存する |
 
-## GCPリソースのプロビジョニング
+## 構成管理
 
-TODO: Terraform化
+[インフラ構成管理](../terraform/README.md)を参照すること。
 
 ## Phoenixアプリケーションのデプロイ
 

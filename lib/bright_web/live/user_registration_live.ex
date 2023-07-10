@@ -23,7 +23,6 @@ defmodule BrightWeb.UserRegistrationLive do
         id="registration_form"
         phx-submit="save"
         phx-change="validate"
-        method="post"
       >
         <.error :if={@check_errors}>
           Oops, something went wrong! Please check the errors below.
