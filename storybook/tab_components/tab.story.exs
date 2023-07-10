@@ -8,14 +8,20 @@ defmodule Storybook.Components.Tab do
       %Variation{
         id: :default,
         attributes: %{
-          tabs: ["tab1", "tab2"]
+          tabs: ["tab1", "tab2", "tab3"]
         },
         slots: [
-          """
-          <p class="text-base">タブの中身</p>
-          """
+          sample_slots()
         ]
       }
     ]
+  end
+
+  defp sample_slots do
+    """
+    <p class="text-base">タブの中身１２３４５６７８９１２３４５６７８９０</p><br>
+    <p class="text-base">タブの中身１２３４５６７８９１２３４５６７８９０</p><br>
+    <p class="text-base">タブの中身１２３４５６７８９１２３４５６７８９０</p><br>
+    """
   end
 end
