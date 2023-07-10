@@ -12,12 +12,13 @@ defmodule BrightWeb.TabComponents do
   """
   attr :tabs, :list
   slot :inner_block
+  attr :selected_index, :integer, default: 0
 
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
-        <.tab_header tabs={@tabs} />
+        <.tab_header tabs={@tabs} selected_index={@selected_index} />
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
@@ -28,12 +29,12 @@ defmodule BrightWeb.TabComponents do
   end
 
   attr :tabs, :list
-
+  attr :selected_index, :integer, default: 0
   def tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-50">
-      <%= for item <- assigns.tabs do %>
-        <.tab_header_item><%= item %></.tab_header_item>
+      <%= for {item, index} <- Enum.with_index(assigns.tabs) do %>
+        <.tab_header_item selected={index == assigns.selected_index}> <%= item %></.tab_header_item>
       <% end %>
     </ul>
     """
