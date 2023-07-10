@@ -50,7 +50,6 @@ defmodule Bright.Notifications do
   def list_notification_by_type(to_user_id, type) do
     type_query(to_user_id, type)
     |> Repo.all()
-    |> Repo.preload([:from_user, :to_user])
   end
 
   defp type_query(to_user_id, type) do
