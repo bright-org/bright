@@ -40,6 +40,26 @@ defmodule Bright.Notifications do
     do: Repo.get!(Notification, id) |> Repo.preload([:from_user, :to_user])
 
   @doc """
+  Returns the list of notifications by type.
+
+   ## Examples
+
+      iex> get_notification_by_type(user.id, "recruitment_coordination")
+      %Notification{}
+  """
+  def get_notification_by_type(to_user_id, type) do
+    type_query(to_user_id, type)
+    |> Repo.all()
+  end
+
+  defp type_query(to_user_id, type) do
+    from n in Notification,
+      where:
+        n.to_user_id == ^to_user_id and
+          n.type == ^type
+  end
+
+  @doc """
   Creates a notification.
 
   ## Examples
