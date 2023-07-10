@@ -10,9 +10,8 @@ defmodule Bright.SkillExams.SkillExamResult do
   @foreign_key_type Ecto.ULID
 
   schema "skill_exam_results" do
-    # 要件が決まっていませんので仮です。
+    # TODO: progressカラムはスキル試験の要件が決まっていませんので仮です。
     # 完了状態は必要のため定義しています。スキルパネルの表示判定に使用します。
-    # ↑コメントは本実装後に削除してください。
     field :progress, Ecto.Enum, values: [:wip, :done]
 
     belongs_to(:user, Bright.Accounts.User)
