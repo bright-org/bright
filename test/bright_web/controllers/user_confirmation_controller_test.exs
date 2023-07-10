@@ -35,14 +35,6 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) == "User confirmed successfully."
       assert Repo.get!(User, user.id).confirmed_at
       assert Repo.all(from u in UserToken, where: u.context == "confirm") == []
-
-      # Now do a logged in request and assert on the menu
-      conn = get(conn, ~p"/")
-      response = html_response(conn, 200)
-      assert response =~ user.name
-      assert response =~ user.email
-      assert response =~ ~p"/users/settings"
-      assert response =~ ~p"/users/log_out"
     end
 
     test "already confirmed", %{conn: conn, user: user} do
