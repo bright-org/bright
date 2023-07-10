@@ -8,21 +8,22 @@
 
 - `id`, `inserted_at`, `updated_at` は省略
 - 新しく定義したいテーブル
-  - `onboarding_wants`、`onboarding_want_jobs`、`careerfields`、`jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
+  - `onboarding_wants`、`onboarding_want_jobs`、`career_fields`、`jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
 - 既に定義案があるテーブル
   - `skill_panels`、`user_skill_panels`、`skill_panels`、`skill_classes`、`skill_class_units`
   - [概念データモデル スキル体系](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/skills.md) にて定義済み
 
-- `onboarding_want_jobs` は、jobsからcareerfieldsを逆引きするために使う。複数同じcareerfieldが引けた場合はユニーク化する。
-- `careerfields`、`jobs` はキャリアパスと共有するので、`onboarding_`をプレフィックスとしてつけない。
+- `onboarding_want_jobs` は、jobsからcareer_fieldsを逆引きするために使う。複数同じcareer_fieldが引けた場合はユニーク化する。
+- `career_fields`、`jobs` はキャリアパスと共有するので、`onboarding_`をプレフィックスとしてつけない。
 - `job_skill_panels` はjobsかskill_panelを逆引きするために使う。複数同じskill_panelが引けた場合はユニーク化する。
-- オンボーディングではskill_panelsを参照する際、skill_classes.rank=1で引く前提。
+- オンボーディングではskill_panelsを参照する際、skill_classes.class=1で引く前提。
+- user_onboardings.skill_panel_idは、マーケティング用途等でオンボーディング時にユーザーがどのスキルパネルを選択したか参照できるためのカラム。
 
 ```mermaid
 erDiagram
   onboarding_wants ||--|{ onboarding_want_jobs : ""
   onboarding_want_jobs ||--|{ jobs : ""
-  jobs }|--|| careerfields : ""
+  jobs }|--|| career_fields : ""
   jobs ||--|{ job_skill_panels : ""
   job_skill_panels ||--|{ skill_panels : ""
   user_skill_panels ||--|{ skill_panels : ""
@@ -35,6 +36,7 @@ erDiagram
   user_onboardings {
     id user_id FK
     datetime completed_at "オンボーディング完了日"
+    int skill_panel_id FK
   }
 
   onboarding_wants {
@@ -47,7 +49,7 @@ erDiagram
     id job_id FK
   }
 
-  careerfields {
+  career_fields {
     string name "キャリアフィールド名"
     string background_color "背景色"
     string button_color "ボタン色"
