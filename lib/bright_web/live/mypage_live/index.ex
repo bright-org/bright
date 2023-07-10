@@ -1,5 +1,4 @@
 defmodule BrightWeb.MypageLive.Index do
-  alias Faker.Vehicle.En
   alias Bright.UserProfiles
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
