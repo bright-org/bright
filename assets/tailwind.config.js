@@ -99,15 +99,15 @@ module.exports = {
         },
       },
       backgroundImage: (theme) => ({
-        bgGem: "url('./images/bg_gem_title.png')",
-        bgGemEnginner: "url('./images/bg_gem_enginner.png')",
-        bgGemInfra: "url('./images/bg_gem_infra.png')",
-        bgGemDesigner: "url('./images/bg_gem_designer.png')",
-        bgGemMarketer: "url('./images/bg_gem_marketer.png')",
-        bgGoogle: "url('./images/bg_google.png')",
-        bgGithub: "url('./images/bg_github.png')",
-        bgFacebook: "url('./images/bg_facebook.png')",
-        bgTwitter: "url('./images/bg_twitter.png')",
+        bgGem: "url('/images/bg_gem_title.png')",
+        bgGemEnginner: "url('/images/bg_gem_enginner.png')",
+        bgGemInfra: "url('/images/bg_gem_infra.png')",
+        bgGemDesigner: "url('/images/bg_gem_designer.png')",
+        bgGemMarketer: "url('/images/bg_gem_marketer.png')",
+        bgGoogle: "url('/images/bg_google.png')",
+        bgGithub: "url('/images/bg_github.png')",
+        bgFacebook: "url('/images/bg_facebook.png')",
+        bgTwitter: "url('/images/bg_twitter.png')",
       }),
       backgroundPosition: (theme) => ({
         "left-2.5": "10px center",
@@ -129,7 +129,6 @@ module.exports = {
     },
   },
   plugins: [
-    require("@tailwindcss/forms"),
     // Allows prefixing tailwind classes with LiveView classes to add rules
     // only when LiveView classes are applied, for example:
     //

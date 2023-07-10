@@ -31,8 +31,8 @@ defmodule Bright.SkillPanelsTest do
       valid_attrs =
         params_for(:locked_skill_panel)
         |> Map.put(:skill_classes, [
-          params_for(:skill_class, rank: nil),
-          params_for(:skill_class, rank: nil)
+          params_for(:skill_class, class: nil),
+          params_for(:skill_class, class: nil)
         ])
 
       {:ok, %SkillPanel{} = skill_panel} = SkillPanels.create_skill_panel(valid_attrs)
@@ -41,9 +41,9 @@ defmodule Bright.SkillPanelsTest do
       [valid_attrs_1, valid_attrs_2] = valid_attrs.skill_classes
 
       assert skill_class_1.name == valid_attrs_1.name
-      assert skill_class_1.rank == 1
+      assert skill_class_1.class == 1
       assert skill_class_2.name == valid_attrs_2.name
-      assert skill_class_2.rank == 2
+      assert skill_class_2.class == 2
     end
 
     test "create_skill_panel/1 with invalid data returns error changeset" do

@@ -14,7 +14,7 @@ defmodule Bright.SkillPanels.SkillClass do
 
   schema "skill_classes" do
     field :name, :string
-    field :rank, :integer
+    field :class, :integer
 
     belongs_to :skill_panel, SkillPanel
 
@@ -23,6 +23,7 @@ defmodule Bright.SkillPanels.SkillClass do
       on_replace: :delete
 
     has_many :skill_units, through: [:skill_class_units, :skill_unit]
+    has_many :skill_scores, Bright.SkillScores.SkillScore
 
     timestamps()
   end

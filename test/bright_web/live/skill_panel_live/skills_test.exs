@@ -28,7 +28,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     setup do
       skill_panel = insert(:skill_panel)
-      skill_class = insert(:skill_class, skill_panel: skill_panel, rank: 1)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
       %{skill_panel: skill_panel, skill_class: skill_class}
     end
@@ -94,7 +94,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       conn: conn,
       skill_panel: skill_panel
     } do
-      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, rank: 2)
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=2")
 
       assert show_live
