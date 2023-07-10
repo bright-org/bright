@@ -12,6 +12,8 @@ defmodule Bright.SkillExams.SkillExam do
   schema "skill_exams" do
     belongs_to(:skill, Bright.SkillUnits.Skill)
 
+    has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
+
     timestamps()
   end
 

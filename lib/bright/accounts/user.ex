@@ -20,6 +20,8 @@ defmodule Bright.Accounts.User do
     field :confirmed_at, :naive_datetime
 
     has_many :skill_scores, Bright.SkillScores.SkillScore
+    has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
+    has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
 
     timestamps()
   end
