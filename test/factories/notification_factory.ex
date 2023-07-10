@@ -12,7 +12,7 @@ defmodule Bright.NotificationFactory do
           icon_type: Faker.Lorem.word(),
           message: Faker.Lorem.word(),
           type: Faker.Lorem.word(),
-          url: "/" <> Faker.Lorem.word()
+          url: Faker.Internet.url()
         }
       end
     end
