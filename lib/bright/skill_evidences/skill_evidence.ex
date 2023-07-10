@@ -10,7 +10,7 @@ defmodule Bright.SkillEvidences.SkillEvidence do
   @foreign_key_type Ecto.ULID
 
   schema "skill_evidences" do
-    field :progress, Ecto.Enum, values: [wip: 10, help: 20, done: 30]
+    field :progress, Ecto.Enum, values: [:wip, :help, :done]
 
     belongs_to(:user, Bright.Accounts.User)
     belongs_to(:skill, Bright.SkillUnits.Skill)
