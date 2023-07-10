@@ -24,4 +24,7 @@ defmodule Bright.Factory do
   # SkillScores context
   use Bright.SkillScoreFactory
   use Bright.SkillScoreItemFactory
+
+  # NotificationsFactory context
+  use Bright.NotificationFactory
 end
