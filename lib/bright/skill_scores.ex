@@ -113,8 +113,9 @@ defmodule Bright.SkillScores do
       [%SkillScoreItem{}, ...]
 
   """
-  def list_skill_score_items do
-    Repo.all(SkillScoreItem)
+  def list_skill_score_items(query \\ SkillScoreItem) do
+    query
+    |> Repo.all()
   end
 
   @doc """

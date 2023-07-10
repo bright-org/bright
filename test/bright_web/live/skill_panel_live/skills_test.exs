@@ -5,8 +5,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   import Bright.Factory
 
   # スキルユニットのカテゴリとスキル生成用ヘルパ
-  defp insert_skill_categories_and_skills(skill_unit, nums) do
-    nums
+  #
+  # categories_num_skills:
+  #   それぞれのスキルカテゴリに作成するスキル数を格納した配列
+  #   [2,1,1] ~ 3つのスキルカテゴリを生成し、最初のスキルカテゴリには2つのスキルを生成
+  #
+  defp insert_skill_categories_and_skills(skill_unit, categories_num_skills) do
+    categories_num_skills
     |> Enum.with_index(1)
     |> Enum.map(fn {num_skills, position_category} ->
       skill_params =
@@ -99,6 +104,98 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert show_live
              |> element("h3", skill_class_2.name)
+             |> has_element?()
+    end
+  end
+
+  describe "Show skill score item" do
+    setup [:register_and_log_in_user]
+
+    setup %{score: score, user: user} do
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      skill_unit =
+        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+
+      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
+
+      if score do
+        insert(:skill_score_item,
+          skill_score: build(:skill_score, user: user, skill_class: skill_class),
+          skill: skill,
+          score: score
+        )
+      end
+
+      %{skill_panel: skill_panel, skill_class: skill_class, skill: skill}
+    end
+
+    @tag score: nil
+    test "shows mark when not registered", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      assert show_live
+             |> element(".score-mark-none")
+             |> has_element?()
+    end
+
+    @tag score: :low
+    test "shows mark when score: low", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      assert show_live
+             |> element(".score-mark-low")
+             |> has_element?()
+    end
+
+    @tag score: :middle
+    test "shows mark when score: middle", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      assert show_live
+             |> element(".score-mark-middle")
+             |> has_element?()
+    end
+
+    @tag score: :high
+    test "shows mark when score: high", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      assert show_live
+             |> element(".score-mark-high")
+             |> has_element?()
+    end
+  end
+
+  describe "Security" do
+    setup [:register_and_log_in_user]
+
+    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn} do
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      skill_unit =
+        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+
+      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
+
+      dummy_user = insert(:user)
+
+      insert(:skill_score_item,
+        skill_score: build(:skill_score, user: dummy_user, skill_class: skill_class),
+        skill: skill,
+        score: :high
+      )
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      refute show_live
+             |> element(".score-mark-high")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-mark-none")
              |> has_element?()
     end
   end
