@@ -28,6 +28,25 @@ defmodule Bright.NotificationsTest do
       assert Notifications.get_notification!(notification.id) == notification
     end
 
+    test "list_notification_by_type/0 returns all notifications" do
+      notification =
+        insert(:notification)
+        |> delete_user()
+
+      ret =
+        Notifications.list_notification_by_type(notification.to_user_id, notification.type)
+        |> Enum.at(0)
+        |> delete_user()
+
+      assert ret == notification
+    end
+
+    defp delete_user(notification) do
+      notification
+      |> Map.delete(:from_user)
+      |> Map.delete(:to_user)
+    end
+
     test "create_notification/1 with valid data creates a notification" do
       from_user = insert(:user)
       to_user = insert(:user)

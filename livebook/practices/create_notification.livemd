@@ -1,0 +1,32 @@
+# メッセージを作るサンプル
+
+## Section
+
+```elixir
+alias Bright.Notifications
+alias Bright.Accounts
+```
+
+```elixir
+user = Accounts.get_user_by_name("ymn")
+
+attr = %{
+  from_user_id: user.id,
+  to_user_id: user.id,
+  icon_type: "person",
+  message: "nako2さんからの紹介 / mikaさん / Web開発（Elixir）",
+  type: "recruitment_coordination",
+  url: "sss"
+}
+
+Notifications.create_notification(attr)
+```
+
+```elixir
+Notifications.list_notifications()
+```
+
+```elixir
+user = Accounts.get_user_by_name("ymn")
+Notifications.list_notification_by_type(user.id, "recruitment_coordination")
+```
