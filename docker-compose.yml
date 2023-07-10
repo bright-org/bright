@@ -19,7 +19,7 @@ services:
     working_dir: /work
     command: "elixir --sname bright@web --cookie bright -S mix phx.server"
   db:
-    image: postgres:14-alpine
+    image: postgres:15.3-alpine
     environment:
       POSTGRES_PASSWORD: postgres
     ports:
@@ -28,15 +28,17 @@ services:
       - dbdata:/var/lib/postgresql/data
   livebook:
     image: ghcr.io/livebook-dev/livebook
-    volumes:
-      - ./livebook:/data
-    ports:
-      - 8080:8080
     environment:
       - LIVEBOOK_COOKIE=bright
       - LIVEBOOK_DEFAULT_RUNTIME=attached:bright@web:bright
       - LIVEBOOK_TOKEN_ENABLED=false
       - LIVEBOOK_HOME=/data
+    links:
+      - web
+    ports:
+      - 8080:8080
+    volumes:
+      - ./livebook:/data
   gcs:
     image: ghcr.io/s12m/fake-gcs-server:1.45.2
     ports:
