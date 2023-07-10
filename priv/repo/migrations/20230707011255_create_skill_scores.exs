@@ -5,8 +5,8 @@ defmodule Bright.Repo.Migrations.CreateSkillScores do
     create table(:skill_scores) do
       add :user_id, references(:users, on_delete: :nothing), null: false
       add :skill_class_id, references(:skill_classes, on_delete: :nothing), null: false
-      add :level, :integer, null: false
-      add :percentage, :integer, null: false
+      add :level, :string, null: false
+      add :percentage, :float, null: false
 
       timestamps()
     end
@@ -16,7 +16,7 @@ defmodule Bright.Repo.Migrations.CreateSkillScores do
     create table(:skill_score_items) do
       add :skill_id, references(:skills, on_delete: :nothing), null: false
       add :skill_score_id, references(:skill_scores, on_delete: :nothing), null: false
-      add :score, :integer
+      add :score, :string
 
       timestamps()
     end

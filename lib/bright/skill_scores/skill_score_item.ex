@@ -10,7 +10,7 @@ defmodule Bright.SkillScores.SkillScoreItem do
   @foreign_key_type Ecto.ULID
 
   schema "skill_score_items" do
-    field :score, Ecto.Enum, values: [low: 10, middle: 20, high: 30]
+    field :score, Ecto.Enum, values: [:low, :middle, :high]
 
     belongs_to(:skill_score, Bright.SkillScores.SkillScore)
     belongs_to(:skill, Bright.SkillUnits.Skill)

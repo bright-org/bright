@@ -13,8 +13,8 @@ defmodule Bright.SkillScores.SkillScore do
     # NOTE: level
     # スキルクラス単位のレベルを表します。
     # 役職系の単語は誤解を招くため避けて命名しています。NG例: junior, middle, senior
-    field :level, Ecto.Enum, values: [beginner: 10, normal: 20, skilled: 30], default: :beginner
-    field :percentage, :integer, default: 0
+    field :level, Ecto.Enum, values: [:beginner, :normal, :skilled], default: :beginner
+    field :percentage, :float, default: 0.0
 
     belongs_to(:user, Bright.Accounts.User)
     belongs_to(:skill_class, Bright.SkillPanels.SkillClass)
