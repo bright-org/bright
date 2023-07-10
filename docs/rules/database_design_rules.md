@@ -44,7 +44,7 @@ DB設計におけるルールを以下に記載する。
 
 ## Ecto.Enumの利用
 
-いわゆる列挙型のカラムは、Ecto.Enumを利用してマッピングしてください。
+いわゆる列挙型のカラムは、Ecto.Enumを利用してマッピングすること。
 
 [Ecto.Enum](https://hexdocs.pm/ecto/Ecto.Enum.html)
 
