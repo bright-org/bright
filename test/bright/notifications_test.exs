@@ -28,6 +28,13 @@ defmodule Bright.NotificationsTest do
       assert Notifications.get_notification!(notification.id) == notification
     end
 
+    test "list_notification_by_type/0 returns all notifications" do
+      notification = insert(:notification)
+
+      assert Notifications.list_notification_by_type(notification.to_user_id, notification.type) ==
+               [notification]
+    end
+
     test "create_notification/1 with valid data creates a notification" do
       from_user = insert(:user)
       to_user = insert(:user)
