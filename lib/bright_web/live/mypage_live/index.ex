@@ -14,28 +14,27 @@ defmodule BrightWeb.MypageLive.Index do
   def mount(_params, _session, socket) do
     profile = UserProfiles.get_user_profile_by_name(socket.assigns.current_user.name)
 
-    recruitment_coordination =
+    contact_datas =
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
         "recruitment_coordination"
       )
-      |> Enum.map(&conveart_card/1)
+      |> Enum.map(&convert_to_card_item/1)
 
     {:ok,
      socket
      |> assign(:page_title, "Listing Mypages")
      |> assign(:profile, profile || dummy_profile())
-     |> assign(:recruitment_coordination, recruitment_coordination)}
+     |> assign(:contact_datas, contact_datas)}
   end
 
-  @spec conveart_card(map) :: any
-  def conveart_card(row) do
-    row
-    |> Map.take([:icon_type, :message, :inserted_at])
+  def convert_to_card_item(notification) do
+    notification
     # TODO 「何時間前」の計算を入れること
     |> Map.delete(:inserted_at)
     # TODO 「何時間前」の計算後の処理を書くこと
     |> Map.merge(%{time: 1, highlight: true})
+    |> Map.take([:icon_type, :message, :time, :highlight, :inserted_at])
   end
 
   @impl true
