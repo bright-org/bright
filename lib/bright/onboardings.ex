@@ -103,6 +103,7 @@ defmodule Bright.Onboardings do
   end
 
   alias Bright.Onboardings.OnboardingWant
+  # alias Bright.Accounts.User
 
   @doc """
   Returns the list of onboarding_wants.
@@ -115,6 +116,8 @@ defmodule Bright.Onboardings do
   """
   def list_onboarding_wants do
     Repo.all(OnboardingWant)
+    #    Repo.all(from(o in OnboardingWant, where: o.position == 1, order_by: [desc: o.position]))
+    # Repo.all(from o in OnboardingWant, join: u in User, on: o.inserted_at >= u.inserted_at)
   end
 
   @doc """
