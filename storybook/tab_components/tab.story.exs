@@ -13,6 +13,16 @@ defmodule Storybook.Components.Tab do
         slots: [
           sample_slots()
         ]
+      },
+      %Variation{
+        id: :selected_index_1,
+        attributes: %{
+          tabs: ["tab1", "tab2", "tab3"],
+          selected_index: 1
+        },
+        slots: [
+          sample_slots()
+        ]
       }
     ]
   end
