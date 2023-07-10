@@ -19,6 +19,8 @@ defmodule Bright.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
+    has_many :skill_scores, Bright.SkillScores.SkillScore
+
     timestamps()
   end
 
