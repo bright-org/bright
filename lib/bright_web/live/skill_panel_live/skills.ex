@@ -3,12 +3,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   alias Bright.SkillPanels
   alias Bright.SkillUnits
+  alias Bright.SkillScores
 
   @impl true
   def mount(params, _session, socket) do
+    current_user = socket.assigns.current_user
+
     skill_panel =
       SkillPanels.get_skill_panel!(params["skill_panel_id"])
-      |> Bright.Repo.preload([:skill_classes])
+      |> Bright.Repo.preload(
+        skill_classes: [skill_scores: Ecto.assoc(current_user, :skill_scores)]
+      )
 
     {:ok,
      socket
@@ -20,7 +25,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply,
      socket
      |> assign_skill_class(params["class"])
-     |> assign_skill_units()}
+     |> assign_skill_units()
+     |> assign_skill_score()
+     |> assign_skill_score_items_dict()}
   end
 
   defp assign_skill_class(socket, nil), do: assign_skill_class(socket, "1")
@@ -44,6 +51,40 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     socket
     |> assign(skill_units: skill_units)
+  end
+
+  defp assign_skill_score(socket) do
+    # NOTE: skill_scoreが存在しないときの生成処理について
+    # 管理側でスキルクラスを増やすなどの操作も想定し、
+    # アクセスしたタイミングでもって生成するようにしています。
+    skill_score =
+      socket.assigns.skill_class.skill_scores
+      # List.first(): preload時に絞り込んでいるためfirstで取得可能
+      |> List.first()
+      |> case do
+        nil ->
+          SkillScores.create_skill_score(%{
+            user_id: socket.assigns.current_user.id,
+            skill_class_id: socket.assigns.skill_class.id
+          })
+          |> elem(1)
+
+        skill_score ->
+          skill_score
+      end
+
+    socket
+    |> assign(skill_score: skill_score)
+  end
+
+  defp assign_skill_score_items_dict(socket) do
+    skill_score_items_dict =
+      Ecto.assoc(socket.assigns.skill_score, :skill_score_items)
+      |> SkillScores.list_skill_score_items()
+      |> Map.new(&{&1.skill_id, &1})
+
+    socket
+    |> assign(skill_score_items_dict: skill_score_items_dict)
   end
 
   defp build_table_structure(skill_units) do
@@ -96,5 +137,23 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       {skill_category_item, 0} -> [skill_unit_item] ++ skill_category_item
       {skill_category_item, _i} -> [nil] ++ skill_category_item
     end)
+  end
+
+  defp score_mark_class(nil) do
+    "score-mark-none h-1 w-4 bg-brightGray-200"
+  end
+
+  defp score_mark_class(skill_score_item) do
+    skill_score_item.score
+    |> case do
+      :high ->
+        "score-mark-high h-4 w-4 rounded-full bg-brightGreen-600"
+
+      :middle ->
+        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
+
+      :low ->
+        "score-mark-low h-1 w-4 bg-brightGray-200"
+    end
   end
 end
