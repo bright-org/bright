@@ -57,7 +57,6 @@ defmodule Bright.UserProfiles do
     |> Repo.insert()
   end
 
-
   @doc """
   Creates a blank user_profile.
 

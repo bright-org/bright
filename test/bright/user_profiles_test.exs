@@ -51,6 +51,21 @@ defmodule Bright.UserProfilesTest do
       assert user_profile.github_url == "some github_url"
     end
 
+    test "create_blank_user_profile/1 with valid data creates a user_profile" do
+      user = insert(:user)
+
+      assert {:ok, %UserProfile{} = user_profile} =
+               UserProfiles.create_blank_user_profile(user.id)
+
+      assert user_profile.title == nil
+      assert user_profile.user_id == user.id
+      assert user_profile.detail == nil
+      assert user_profile.icon_file_path == nil
+      assert user_profile.twitter_url == nil
+      assert user_profile.facebook_url == nil
+      assert user_profile.github_url == nil
+    end
+
     test "create_user_profile/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = UserProfiles.create_user_profile(@invalid_attrs)
     end
