@@ -8,8 +8,23 @@ defmodule BrightWeb.SkillCardComponents do
   @doc """
   Renders a Skill Card
 
+  ## Datas sample
+    [
+      %{
+        name: "Webアプリ開発",
+        panel_datas: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
+      },
+      %{
+        name: "AI開発",
+        panel_datas: [
+          %{name: "Elixir", levels: [:skilled, :normal, :none]},
+          %{name: "Python", levels: [:skilled, :none, :none]}
+        ]
+      }
+    ]
+
   ## Examples
-      <.skill_card />
+      <.skill_card datas={datas}/>
   """
 
   # TODO datasのデフォルトはマイページにロジックを書く時に消す
@@ -22,8 +37,8 @@ defmodule BrightWeb.SkillCardComponents do
       %{
         name: "AI開発",
         panel_datas: [
-          %{name: "Elixir", levels: [:skilled, :normal, :beginner]},
-          %{name: "Python", levels: [:skilled, :normal, :beginner]}
+          %{name: "Elixir", levels: [:skilled, :normal, :none]},
+          %{name: "Python", levels: [:skilled, :none, :none]}
         ]
       }
     ]
@@ -41,7 +56,7 @@ defmodule BrightWeb.SkillCardComponents do
 
   attr :datas, :list
 
-  def skill_card_body(assigns) do
+  defp skill_card_body(assigns) do
     ~H"""
     <div class="py-4 px-7 flex gap-y-3 flex-col">
       <%= for data <- assigns.datas do %>
@@ -53,7 +68,7 @@ defmodule BrightWeb.SkillCardComponents do
 
   attr :genre_data, :map
 
-  def skill_card_genre(assigns) do
+  defp skill_card_genre(assigns) do
     ~H"""
     <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
       <p class="font-bold w-36 text-left text-sm">
@@ -91,7 +106,14 @@ defmodule BrightWeb.SkillCardComponents do
     """
   end
 
-  attr :level, :atom, default: :skilled
+  attr :level, :atom
+
+  defp skill_card_genre_cell(%{level: :none} = assigns) do
+    ~H"""
+    <td>
+    </td>
+    """
+  end
 
   defp skill_card_genre_cell(assigns) do
     assigns =
