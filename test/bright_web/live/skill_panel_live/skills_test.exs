@@ -184,7 +184,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       # skill_1
       # lowからlowのキャンセル操作相当
       show_live
-      |> element(~s{#skill-score-item-1 div[phx-click="open"]})
+      |> element(~s{#skill-score-item-1 div[phx-click="edit"]})
       |> render_click()
 
       show_live
@@ -193,7 +193,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       # skill_2
       show_live
-      |> element(~s{#skill-score-item-2 div[phx-click="open"]})
+      |> element(~s{#skill-score-item-2 div[phx-click="edit"]})
       |> render_click()
 
       show_live
@@ -202,7 +202,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       # skill_3
       show_live
-      |> element(~s{#skill-score-item-3 div[phx-click="open"]})
+      |> element(~s{#skill-score-item-3 div[phx-click="edit"]})
       |> render_click()
 
       show_live

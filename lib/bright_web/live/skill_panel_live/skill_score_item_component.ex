@@ -4,7 +4,7 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
   alias Bright.SkillScores
 
   @impl true
-  def render(%{open: true} = assigns) do
+  def render(%{edit: true} = assigns) do
     ~H"""
     <div id={@id} class="flex justify-center gap-x-4 px-4">
       <label
@@ -49,13 +49,13 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
     """
   end
 
-  def render(%{open: false} = assigns) do
+  def render(%{edit: false} = assigns) do
     ~H"""
     <div id={@id} class="flex justify-center gap-x-4 px-4">
       <div class="flex items-center">
         <div
           class={["cursor-pointer", score_mark_class(@skill_score_item)]}
-          phx-click="open"
+          phx-click="edit"
           phx-target={@myself}
         />
       </div>
@@ -64,11 +64,11 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
   end
 
   @impl true
-  def handle_event("open", _params, socket) do
+  def handle_event("edit", _params, socket) do
     {:noreply,
      socket
      |> create_skill_score_item_if_not_existing()
-     |> assign(open: true)}
+     |> assign(edit: true)}
   end
 
   def handle_event("submit", %{"score" => score}, socket) do
@@ -78,7 +78,7 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
 
     {:noreply,
      socket
-     |> assign(skill_score_item: skill_score_item, open: false)}
+     |> assign(skill_score_item: skill_score_item, edit: false)}
   end
 
   defp create_skill_score_item_if_not_existing(%{assigns: %{skill_score_item: nil}} = socket) do
