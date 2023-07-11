@@ -20,7 +20,8 @@ defmodule Storybook.Components.Tab do
         attributes: %{
           tabs: ["tab1", "tab2", "tab3"],
           selected_index: 1,
-          next_enable: true
+          next_enable: true,
+          menu_enable: true
         },
         slots: [
           sample_slots()
