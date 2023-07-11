@@ -17,14 +17,13 @@ defmodule BrightWeb.TabComponents do
   attr :selected_index, :integer, default: 0
   attr :previous_enable, :boolean, default: false
   attr :next_enable, :boolean, default: false
-  attr :menu_enable, :boolean, default: false
   attr :menu_items, :list, default: []
 
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
-        <.tab_header id={@id} tabs={@tabs} selected_index={@selected_index} menu_enable={@menu_enable} menu_items={@menu_items} />
+        <.tab_header id={@id} tabs={@tabs} selected_index={@selected_index} menu_items={@menu_items} />
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
@@ -37,16 +36,15 @@ defmodule BrightWeb.TabComponents do
   attr :id, :string
   attr :tabs, :list
   attr :selected_index, :integer
-  attr :menu_enable, :boolean
   attr :menu_items, :list
 
   defp tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-50">
-      <%= for {item, index} <- Enum.with_index(assigns.tabs) do %>
-        <.tab_header_item selected={index == assigns.selected_index}> <%= item %></.tab_header_item>
+      <%= for {item, index} <- Enum.with_index(@tabs) do %>
+        <.tab_header_item selected={index == @selected_index}> <%= item %></.tab_header_item>
       <% end %>
-      <%= if assigns.menu_enable do %>
+      <%= if length(@menu_items) > 0 do %>
         <.tab_menu_button id={@id} menu_items={@menu_items}/>
       <% end %>
     </ul>
@@ -80,7 +78,7 @@ defmodule BrightWeb.TabComponents do
   defp tab_menu_button(assigns) do
     assigns =
       assigns
-      |> assign(:data_dropdown_toggl, assigns.id <> "_menu")
+      |> assign(:data_dropdown_toggle, assigns.id <> "_menu")
       |> assign(:button_id, assigns.id <> "_dropmenu")
 
     ~H"""
@@ -88,7 +86,7 @@ defmodule BrightWeb.TabComponents do
       <button
         type="button"
         id={@button_id}
-        data-dropdown-toggle={@data_dropdown_toggl}
+        data-dropdown-toggle={@data_dropdown_toggle}
         class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
       >
         <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
@@ -114,7 +112,7 @@ defmodule BrightWeb.TabComponents do
       class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
     >
       <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={@aria_labelledby}>
-      <%= for menu_item <- assigns.menu_items do %>
+      <%= for menu_item <- @menu_items do %>
       <.tab_menu_item menu_item={menu_item}/>
       <% end %>
       </ul>
@@ -131,7 +129,7 @@ defmodule BrightWeb.TabComponents do
             href={@menu_item.href}
             class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
           >
-            <%= assigns.menu_item.text %>
+            <%= @menu_item.text %>
           </a>
         </li>
     """
