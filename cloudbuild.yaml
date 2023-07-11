@@ -19,7 +19,7 @@ steps:
            '--region=asia-northeast1',
            '--tasks=1',
            '--max-retries=0',
-           '--execute-now']
+           '--execute-now', '--wait']
 
   # Cloud Runにデプロイ
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
