@@ -28,6 +28,32 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end)
   end
 
+  defp setup_skills(%{user: user, score: score}) do
+    skill_panel = insert(:skill_panel)
+    skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+    skill_unit =
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+
+    [%{skills: [skill_1, skill_2, skill_3]}] = insert_skill_categories_and_skills(skill_unit, [3])
+
+    if score do
+      insert(:skill_score_item,
+        skill_score: build(:skill_score, user: user, skill_class: skill_class),
+        skill: skill_1,
+        score: score
+      )
+    end
+
+    %{
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_1: skill_1,
+      skill_2: skill_2,
+      skill_3: skill_3
+    }
+  end
+
   describe "Show" do
     setup [:register_and_log_in_user]
 
@@ -109,27 +135,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   end
 
   describe "Show skill score item" do
-    setup [:register_and_log_in_user]
-
-    setup %{score: score, user: user} do
-      skill_panel = insert(:skill_panel)
-      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
-
-      skill_unit =
-        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
-
-      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
-
-      if score do
-        insert(:skill_score_item,
-          skill_score: build(:skill_score, user: user, skill_class: skill_class),
-          skill: skill,
-          score: score
-        )
-      end
-
-      %{skill_panel: skill_panel, skill_class: skill_class, skill: skill}
-    end
+    setup [:register_and_log_in_user, :setup_skills]
 
     @tag score: nil
     test "shows mark when not registered", %{conn: conn, skill_panel: skill_panel} do
@@ -168,34 +174,70 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
-  describe "Security" do
-    setup [:register_and_log_in_user]
+  describe "Input skill score item score" do
+    setup [:register_and_log_in_user, :setup_skills]
 
-    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn} do
-      skill_panel = insert(:skill_panel)
-      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
-
-      skill_unit =
-        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
-
-      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
-
-      dummy_user = insert(:user)
-
-      insert(:skill_score_item,
-        skill_score: build(:skill_score, user: dummy_user, skill_class: skill_class),
-        skill: skill,
-        score: :high
-      )
-
+    @tag score: :low
+    test "update scores", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
-      refute show_live
-             |> element(".score-mark-high")
+      # skill_1
+      # lowからlowのキャンセル操作相当
+      show_live
+      |> element(~s{#skill-score-item-1 div[phx-click="open"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{label[phx-value-score="low"]})
+      |> render_click()
+
+      # skill_2
+      show_live
+      |> element(~s{#skill-score-item-2 div[phx-click="open"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{label[phx-value-score="middle"]})
+      |> render_click()
+
+      # skill_3
+      show_live
+      |> element(~s{#skill-score-item-3 div[phx-click="open"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{label[phx-value-score="high"]})
+      |> render_click()
+
+      assert show_live
+             |> element("#skill-score-item-1 .score-mark-low")
              |> has_element?()
 
       assert show_live
-             |> element(".score-mark-none")
+             |> element("#skill-score-item-2 .score-mark-middle")
+             |> has_element?()
+
+      assert show_live
+             |> element("#skill-score-item-3 .score-mark-high")
+             |> has_element?()
+    end
+
+    @tag score: nil
+    test "create skill_score_item if not existing", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      show_live
+      |> element("#skill-score-item-1 .score-mark-none")
+      |> render_click()
+
+      show_live
+      |> element(~s{label[phx-value-score="high"]})
+      |> render_click()
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      assert show_live
+             |> element("#skill-score-item-1 .score-mark-high")
              |> has_element?()
     end
   end

@@ -27,7 +27,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_class(params["class"])
      |> assign_skill_units()
      |> assign_skill_score()
-     |> assign_skill_score_items_dict()}
+     |> assign_skill_score_item_dict()}
   end
 
   defp assign_skill_class(socket, nil), do: assign_skill_class(socket, "1")
@@ -77,14 +77,14 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(skill_score: skill_score)
   end
 
-  defp assign_skill_score_items_dict(socket) do
-    skill_score_items_dict =
+  defp assign_skill_score_item_dict(socket) do
+    skill_score_item_dict =
       Ecto.assoc(socket.assigns.skill_score, :skill_score_items)
       |> SkillScores.list_skill_score_items()
       |> Map.new(&{&1.skill_id, &1})
 
     socket
-    |> assign(skill_score_items_dict: skill_score_items_dict)
+    |> assign(skill_score_item_dict: skill_score_item_dict)
   end
 
   defp build_table_structure(skill_units) do
@@ -137,23 +137,5 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       {skill_category_item, 0} -> [skill_unit_item] ++ skill_category_item
       {skill_category_item, _i} -> [nil] ++ skill_category_item
     end)
-  end
-
-  defp score_mark_class(nil) do
-    "score-mark-none h-1 w-4 bg-brightGray-200"
-  end
-
-  defp score_mark_class(skill_score_item) do
-    skill_score_item.score
-    |> case do
-      :high ->
-        "score-mark-high h-4 w-4 rounded-full bg-brightGreen-600"
-
-      :middle ->
-        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
-
-      :low ->
-        "score-mark-low h-1 w-4 bg-brightGray-200"
-    end
   end
 end

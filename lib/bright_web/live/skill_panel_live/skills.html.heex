@@ -57,7 +57,7 @@
         <!-- 未実装：デザインまま END -->
       </tr>
 
-      <%= for [col1, col2, col3] <- build_table_structure(@skill_units) do %>
+      <%= for {[col1, col2, col3], ind} <- build_table_structure(@skill_units) |> Enum.with_index(1) do %>
         <tr>
           <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
           <td :if={col2} rowspan={col2.size} class="align-top">
@@ -82,12 +82,13 @@
             </div>
           </td>
           <td>
-            <div class="flex justify-center gap-x-4 px-4">
-              <div class="flex items-center">
-                <label class={["inline_block", score_mark_class(@skill_score_items_dict[col3.skill.id])]}>
-                </label>
-              </div>
-            </div>
+            <.live_component
+              module={BrightWeb.SkillPanelLive.SkillScoreItemComponent}
+              id={"skill-score-item-#{ind}"}
+              skill={col3.skill}
+              skill_score={@skill_score}
+              skill_score_item={@skill_score_item_dict[col3.skill.id]}
+              open={false} />
           </td>
         </tr>
       <% end %>
