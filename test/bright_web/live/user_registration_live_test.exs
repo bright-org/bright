@@ -8,7 +8,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
     test "renders registration page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register")
 
-      assert html =~ "Register for an account"
+      assert html =~ "ユーザー新規作成"
     end
 
     test "redirects if already logged in", %{conn: conn} do
@@ -35,7 +35,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
           }
         )
 
-      assert result =~ "Register"
+      assert result =~ "ユーザー新規作成"
       assert result =~ "should be at most 100 character(s)"
       assert result =~ "must have the @ sign and no spaces"
       assert result =~ "should be at least 12 character"
@@ -80,7 +80,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
 
       {:ok, _login_live, login_html} =
         lv
-        |> element("a", "Sign in")
+        |> element("a", "ログインはこちら")
         |> render_click()
         |> follow_redirect(conn, ~p"/users/log_in")
 
