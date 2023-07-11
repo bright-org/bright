@@ -57,6 +57,20 @@ defmodule Bright.UserProfiles do
     |> Repo.insert()
   end
 
+
+  @doc """
+  Creates a blank user_profile.
+
+  ## Examples
+
+      iex> create_user_profile(user_id)
+      {:ok, %UserProfile{}}
+
+  """
+  def create_blank_user_profile(user_id) do
+    create_user_profile(%{user_id: user_id})
+  end
+
   @doc """
   Gets a single user_profile.
 
