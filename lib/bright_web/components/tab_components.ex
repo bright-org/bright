@@ -36,11 +36,11 @@ defmodule BrightWeb.TabComponents do
 
   attr :id, :string
   attr :tabs, :list
-  attr :selected_index, :integer, default: 0
-  attr :menu_enable, :boolean, default: false
+  attr :selected_index, :integer
+  attr :menu_enable, :boolean
   attr :menu_items, :list
 
-  def tab_header(assigns) do
+  defp tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-50">
       <%= for {item, index} <- Enum.with_index(assigns.tabs) do %>
@@ -54,9 +54,9 @@ defmodule BrightWeb.TabComponents do
   end
 
   slot :inner_block
-  attr :selected, :boolean, default: false
+  attr :selected, :boolean
 
-  def tab_header_item(assigns) do
+  defp tab_header_item(assigns) do
     style = "py-3.5 w-full items-center justify-center inline-block"
     selected_style = " text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
     style = if assigns.selected, do: style <> selected_style, else: style
@@ -77,7 +77,7 @@ defmodule BrightWeb.TabComponents do
   attr :id, :string
   attr :menu_items, :list
 
-  def tab_menu_button(assigns) do
+  defp tab_menu_button(assigns) do
     assigns =
       assigns
       |> assign(:data_dropdown_toggl, assigns.id <> "_menu")
@@ -99,10 +99,48 @@ defmodule BrightWeb.TabComponents do
     """
   end
 
+  attr :menu_items, :list
+  attr :id, :string
+
+  defp tab_menu(assigns) do
+    assigns =
+      assigns
+      |> assign(:menu_id, assigns.id <> "_menu")
+      |> assign(:aria_labelledby, assigns.id <> "_dropmenu")
+
+    ~H"""
+    <div
+      id={@menu_id}
+      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+    >
+      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={@aria_labelledby}>
+      <%= for menu_item <- assigns.menu_items do %>
+      <.tab_menu_item menu_item={menu_item}/>
+      <% end %>
+      </ul>
+    </div>
+    """
+  end
+
+  attr :menu_item, :map
+
+  defp tab_menu_item(assigns) do
+    ~H"""
+        <li>
+          <a
+            href={@menu_item.href}
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            <%= assigns.menu_item.text %>
+          </a>
+        </li>
+    """
+  end
+
   attr :previous_enable, :boolean
   attr :next_enable, :boolean
 
-  def tab_footer(assigns) do
+  defp tab_footer(assigns) do
     previous_button_style =
       "#{page_button_enable_style(assigns.previous_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
 
@@ -141,42 +179,4 @@ defmodule BrightWeb.TabComponents do
 
   defp page_button_enable_style(true), do: "text-brightGray-900"
   defp page_button_enable_style(false), do: "text-brightGray-200"
-
-  attr :menu_items, :list
-  attr :id, :string
-
-  def tab_menu(assigns) do
-    assigns =
-      assigns
-      |> assign(:menu_id, assigns.id <> "_menu")
-      |> assign(:aria_labelledby, assigns.id <> "_dropmenu")
-
-    ~H"""
-    <div
-      id={@menu_id}
-      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-    >
-      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={@aria_labelledby}>
-      <%= for menu_item <- assigns.menu_items do %>
-      <.tab_menu_item menu_item={menu_item}/>
-      <% end %>
-      </ul>
-    </div>
-    """
-  end
-
-  attr :menu_item, :map
-
-  def tab_menu_item(assigns) do
-    ~H"""
-        <li>
-          <a
-            href={@menu_item.href}
-            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-          >
-            <%= assigns.menu_item.text %>
-          </a>
-        </li>
-    """
-  end
 end
