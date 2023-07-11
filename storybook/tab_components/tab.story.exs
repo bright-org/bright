@@ -21,7 +21,11 @@ defmodule Storybook.Components.Tab do
           tabs: ["tab1", "tab2", "tab3"],
           selected_index: 1,
           next_enable: true,
-          menu_enable: true
+          menu_enable: true,
+          menu_items: [
+            %{text: "test", href: "/storybook"},
+            %{text: "test2", href: "/storybook/core_components/button"}
+          ]
         },
         slots: [
           sample_slots()

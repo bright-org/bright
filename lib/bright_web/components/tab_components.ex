@@ -18,12 +18,13 @@ defmodule BrightWeb.TabComponents do
   attr :previous_enable, :boolean, default: false
   attr :next_enable, :boolean, default: false
   attr :menu_enable, :boolean, default: false
+  attr :menu_items, :list, default: []
 
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
-        <.tab_header id={@id} tabs={@tabs} selected_index={@selected_index} menu_enable={@menu_enable}/>
+        <.tab_header id={@id} tabs={@tabs} selected_index={@selected_index} menu_enable={@menu_enable} menu_items={@menu_items} />
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
@@ -37,6 +38,7 @@ defmodule BrightWeb.TabComponents do
   attr :tabs, :list
   attr :selected_index, :integer, default: 0
   attr :menu_enable, :boolean, default: false
+  attr :menu_items, :list
 
   def tab_header(assigns) do
     ~H"""
@@ -45,7 +47,7 @@ defmodule BrightWeb.TabComponents do
         <.tab_header_item selected={index == assigns.selected_index}> <%= item %></.tab_header_item>
       <% end %>
       <%= if assigns.menu_enable do %>
-        <.tab_menu_button id={@id}/>
+        <.tab_menu_button id={@id} menu_items={@menu_items}/>
       <% end %>
     </ul>
     """
@@ -73,6 +75,7 @@ defmodule BrightWeb.TabComponents do
   end
 
   attr :id, :string
+  attr :menu_items, :list
 
   def tab_menu_button(assigns) do
     assigns =
@@ -91,7 +94,7 @@ defmodule BrightWeb.TabComponents do
         <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
       </button>
       <!-- Dropdown menu -->
-      <.tab_menu id={@id}/>
+      <.tab_menu id={@id} menu_items={@menu_items}/>
     </li>
     """
   end
@@ -140,7 +143,6 @@ defmodule BrightWeb.TabComponents do
   defp page_button_enable_style(false), do: "text-brightGray-200"
 
   attr :menu_items, :list
-
   attr :id, :string
 
   def tab_menu(assigns) do
@@ -155,14 +157,15 @@ defmodule BrightWeb.TabComponents do
       class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
     >
       <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={@aria_labelledby}>
-      <.tab_menu_item />
-
+      <%= for menu_item <- assigns.menu_items do %>
+      <.tab_menu_item menu_item={menu_item}/>
+      <% end %>
       </ul>
     </div>
     """
   end
 
-  attr :menu_item, :map, default: %{text: "メニュー", href: "/storybook"}
+  attr :menu_item, :map
 
   def tab_menu_item(assigns) do
     ~H"""
