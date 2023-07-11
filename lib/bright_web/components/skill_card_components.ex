@@ -98,10 +98,10 @@ defmodule BrightWeb.SkillCardComponents do
   defp skill_card_genre_panel(assigns) do
     ~H"""
     <tr>
-    <td><%= assigns.panel_data.name %></td>
-    <%= for level <- assigns.panel_data.levels do %>
-    <.skill_card_genre_cell level={level}/>
-    <% end %>
+      <td><%= assigns.panel_data.name %></td>
+      <%= for level <- assigns.panel_data.levels do %>
+        <.skill_card_genre_cell level={level}/>
+      <% end %>
     </tr>
     """
   end
@@ -122,9 +122,9 @@ defmodule BrightWeb.SkillCardComponents do
 
     ~H"""
     <td>
-    <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-      <img src={@icon_path} class="mr-1" /><%= level_text(assigns.level) %>
-    </p>
+      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+        <img src={@icon_path} class="mr-1" /><%= level_text(assigns.level) %>
+      </p>
     </td>
     """
   end
