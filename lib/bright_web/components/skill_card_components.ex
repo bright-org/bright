@@ -8,15 +8,15 @@ defmodule BrightWeb.SkillCardComponents do
   @doc """
   Renders a Skill Card
 
-  ## Datas sample
+  ## Skills sample
     [
       %{
-        name: "Webアプリ開発",
-        panel_datas: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
+        genre_name: "Webアプリ開発",
+        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
       },
       %{
-        name: "AI開発",
-        panel_datas: [
+        genre_name: "AI開発",
+        skill_panels: [
           %{name: "Elixir", levels: [:skilled, :normal, :none]},
           %{name: "Python", levels: [:skilled, :none, :none]}
         ]
@@ -24,19 +24,19 @@ defmodule BrightWeb.SkillCardComponents do
     ]
 
   ## Examples
-      <.skill_card datas={datas}/>
+      <.skill_card skills={skills}/>
   """
 
   # TODO datasのデフォルトはマイページにロジックを書く時に消す
-  attr :datas, :list,
+  attr :skills, :list,
     default: [
       %{
-        name: "Webアプリ開発",
-        panel_datas: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
+        genre_name: "Webアプリ開発",
+        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
       },
       %{
-        name: "AI開発",
-        panel_datas: [
+        genre_name: "AI開発",
+        skill_panels: [
           %{name: "Elixir", levels: [:skilled, :normal, :none]},
           %{name: "Python", levels: [:skilled, :none, :none]}
         ]
@@ -48,20 +48,12 @@ defmodule BrightWeb.SkillCardComponents do
     <div>
       <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
       <.tab tabs={["エンジニア", "インフラ", "デザイナー", "マーケッター"]}>
-        <.skill_card_body datas={@datas} />
+        <div class="py-4 px-7 flex gap-y-3 flex-col">
+          <%= for skill <- assigns.skills do %>
+            <.skill_card_genre genre_data={skill} />
+          <% end %>
+        </div>
       </.tab>
-    </div>
-    """
-  end
-
-  attr :datas, :list
-
-  defp skill_card_body(assigns) do
-    ~H"""
-    <div class="py-4 px-7 flex gap-y-3 flex-col">
-      <%= for data <- assigns.datas do %>
-        <.skill_card_genre genre_data={data} />
-      <% end %>
     </div>
     """
   end
@@ -72,7 +64,7 @@ defmodule BrightWeb.SkillCardComponents do
     ~H"""
     <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
       <p class="font-bold w-36 text-left text-sm">
-        <%= assigns.genre_data.name %>
+        <%= assigns.genre_data.genre_name %>
       </p>
       <table class="table-fixed skill-table">
         <thead>
@@ -84,8 +76,8 @@ defmodule BrightWeb.SkillCardComponents do
           </tr>
         </thead>
         <tbody>
-          <%= for panel_data <- assigns.genre_data.panel_datas do %>
-            <.skill_card_genre_panel panel_data={panel_data} />
+          <%= for skill_panel <- assigns.genre_data.skill_panels do %>
+            <.skill_card_genre_panel skill_panel={skill_panel} />
           <% end %>
         </tbody>
       </table>
@@ -93,14 +85,14 @@ defmodule BrightWeb.SkillCardComponents do
     """
   end
 
-  attr :panel_data, :map
+  attr :skill_panel, :map
 
   defp skill_card_genre_panel(assigns) do
     ~H"""
     <tr>
-      <td><%= assigns.panel_data.name %></td>
-      <%= for level <- assigns.panel_data.levels do %>
-        <.skill_card_genre_cell level={level}/>
+      <td><%= assigns.skill_panel.name %></td>
+      <%= for level <- assigns.skill_panel.levels do %>
+        <.skill_gem level={level}/>
       <% end %>
     </tr>
     """
@@ -108,14 +100,14 @@ defmodule BrightWeb.SkillCardComponents do
 
   attr :level, :atom
 
-  defp skill_card_genre_cell(%{level: :none} = assigns) do
+  defp skill_gem(%{level: :none} = assigns) do
     ~H"""
     <td>
     </td>
     """
   end
 
-  defp skill_card_genre_cell(assigns) do
+  defp skill_gem(assigns) do
     assigns =
       assigns
       |> assign(:icon_path, icon_path(assigns.level))
