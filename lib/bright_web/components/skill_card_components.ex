@@ -11,32 +11,53 @@ defmodule BrightWeb.SkillCardComponents do
   ## Examples
       <.skill_card />
   """
+
+  # TODO datasのデフォルトはマイページにロジックを書く時に消す
+  attr :datas, :list,
+    default: [
+      %{
+        name: "Webアプリ開発",
+        panel_datas: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
+      },
+      %{
+        name: "AI開発",
+        panel_datas: [
+          %{name: "Elixir", levels: [:skilled, :normal, :beginner]},
+          %{name: "Python", levels: [:skilled, :normal, :beginner]}
+        ]
+      }
+    ]
+
   def skill_card(assigns) do
     ~H"""
     <div>
       <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
       <.tab tabs={["エンジニア", "インフラ", "デザイナー", "マーケッター"]}>
-        <.skill_card_body />
+        <.skill_card_body datas={@datas} />
       </.tab>
     </div>
     """
   end
 
+  attr :datas, :list
+
   def skill_card_body(assigns) do
     ~H"""
     <div class="py-4 px-7 flex gap-y-3 flex-col">
-      <%= for _i <- 1..3 do %>
-        <.skill_card_genre />
+      <%= for data <- assigns.datas do %>
+        <.skill_card_genre genre_data={data} />
       <% end %>
     </div>
     """
   end
 
+  attr :genre_data, :map
+
   def skill_card_genre(assigns) do
     ~H"""
     <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
       <p class="font-bold w-36 text-left text-sm">
-        Webアプリ開発
+        <%= assigns.genre_data.name %>
       </p>
       <table class="table-fixed skill-table">
         <thead>
@@ -48,8 +69,8 @@ defmodule BrightWeb.SkillCardComponents do
           </tr>
         </thead>
         <tbody>
-          <%= for _j <- 1..3 do %>
-            <.skill_card_genre_panel />
+          <%= for panel_data <- assigns.genre_data.panel_datas do %>
+            <.skill_card_genre_panel panel_data={panel_data} />
           <% end %>
         </tbody>
       </table>
@@ -57,7 +78,7 @@ defmodule BrightWeb.SkillCardComponents do
     """
   end
 
-  attr :panel_data, :map, default: %{name: "Elixir", levels: [:skilled, :normal, :beginner]}
+  attr :panel_data, :map
 
   defp skill_card_genre_panel(assigns) do
     ~H"""
