@@ -13,6 +13,8 @@ defmodule BrightWeb.TabComponents do
   attr :tabs, :list
   slot :inner_block
   attr :selected_index, :integer, default: 0
+  attr :previous_enable, :boolean, default: false
+  attr :next_enable, :boolean, default: false
 
   def tab(assigns) do
     ~H"""
@@ -22,7 +24,7 @@ defmodule BrightWeb.TabComponents do
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
-        <.tab_footer />
+        <.tab_footer previous_enable={@previous_enable} next_enable={@next_enable}/>
       </div>
     </div>
     """
@@ -30,6 +32,7 @@ defmodule BrightWeb.TabComponents do
 
   attr :tabs, :list
   attr :selected_index, :integer, default: 0
+
   def tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-50">
@@ -78,24 +81,48 @@ defmodule BrightWeb.TabComponents do
     """
   end
 
+  attr :previous_enable, :boolean
+  attr :next_enable, :boolean
+
   def tab_footer(assigns) do
+    previous_button_style =
+      "#{page_button_enable_style(assigns.previous_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+
+    next_button_style =
+      "#{page_button_enable_style(assigns.next_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+
+    previous_span_style =
+      "material-icons md-18 mr-2 #{page_button_enable_style(assigns.previous_enable)}"
+
+    next_span_style = "material-icons md-18 ml-2 #{page_button_enable_style(assigns.next_enable)}"
+
+    assigns =
+      assigns
+      |> assign(:previous_button_style, previous_button_style)
+      |> assign(:next_button_style, next_button_style)
+      |> assign(:previous_span_style, previous_span_style)
+      |> assign(:next_span_style, next_span_style)
+
     ~H"""
     <div class="flex justify-center gap-x-14 pb-3">
       <button
         type="button"
-        class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+        class={@previous_button_style}
       >
-        <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
+        <span class={@previous_span_style} >chevron_left</span> 前
       </button>
       <button
         type="button"
-        class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+        class={@next_button_style}
       >
-        次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
+        次 <span class={@next_span_style} >chevron_right</span>
       </button>
     </div>
     """
   end
+
+  defp page_button_enable_style(true), do: "text-brightGray-900"
+  defp page_button_enable_style(false), do: "text-brightGray-200"
 
   def tab_menu(assigns) do
     ~H"""

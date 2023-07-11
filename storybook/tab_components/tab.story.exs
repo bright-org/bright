@@ -8,7 +8,8 @@ defmodule Storybook.Components.Tab do
       %Variation{
         id: :default,
         attributes: %{
-          tabs: ["tab1", "tab2", "tab3"]
+          tabs: ["tab1", "tab2", "tab3"],
+          previous_enable: true
         },
         slots: [
           sample_slots()
@@ -18,7 +19,8 @@ defmodule Storybook.Components.Tab do
         id: :selected_index_1,
         attributes: %{
           tabs: ["tab1", "tab2", "tab3"],
-          selected_index: 1
+          selected_index: 1,
+          next_enable: true
         },
         slots: [
           sample_slots()
