@@ -49,12 +49,7 @@ defmodule BrightWeb.SkillCardComponents do
         </thead>
         <tbody>
           <%= for _j <- 1..3 do %>
-            <tr>
-              <td>Elixir</td>
-              <.skill_card_genre_cell />
-              <.skill_card_genre_cell />
-              <.skill_card_genre_cell />
-            </tr>
+            <.skill_card_genre_panel />
           <% end %>
         </tbody>
       </table>
@@ -62,9 +57,22 @@ defmodule BrightWeb.SkillCardComponents do
     """
   end
 
+  attr :panel_data, :map, default: %{name: "Elixir", levels: [:skilled, :normal, :beginner]}
+
+  defp skill_card_genre_panel(assigns) do
+    ~H"""
+    <tr>
+    <td><%= assigns.panel_data.name %></td>
+    <%= for level <- assigns.panel_data.levels do %>
+    <.skill_card_genre_cell level={level}/>
+    <% end %>
+    </tr>
+    """
+  end
+
   attr :level, :atom, default: :skilled
 
-  def skill_card_genre_cell(assigns) do
+  defp skill_card_genre_cell(assigns) do
     assigns =
       assigns
       |> assign(:icon_path, icon_path(assigns.level))
