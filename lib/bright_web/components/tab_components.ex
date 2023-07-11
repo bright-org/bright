@@ -129,6 +129,8 @@ defmodule BrightWeb.TabComponents do
   defp page_button_enable_style(true), do: "text-brightGray-900"
   defp page_button_enable_style(false), do: "text-brightGray-200"
 
+  attr :menu_items, :list
+
   def tab_menu(assigns) do
     ~H"""
     <div
@@ -136,16 +138,25 @@ defmodule BrightWeb.TabComponents do
       class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
     >
       <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu01">
-        <li>
-          <a
-            href="#"
-            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-          >
-            menu1-1
-          </a>
-        </li>
+      <.tab_menu_item />
+
       </ul>
     </div>
+    """
+  end
+
+  attr :menu_item, :map, default: %{text: "メニュー", href: "/storybook"}
+
+  def tab_menu_item(assigns) do
+    ~H"""
+        <li>
+          <a
+            href={@menu_item.href}
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            <%= assigns.menu_item.text %>
+          </a>
+        </li>
     """
   end
 end
