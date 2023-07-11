@@ -51,26 +51,29 @@ defmodule BrightWeb.SkillCardComponents do
           <%= for _j <- 1..3 do %>
             <tr>
               <td>Elixir</td>
-              <td>
-                <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                  <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                </p>
-              </td>
-              <td>
-                <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                  <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                </p>
-              </td>
-              <td>
-                <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                  <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                </p>
-              </td>
+              <.skill_card_genre_cell />
+              <.skill_card_genre_cell />
+              <.skill_card_genre_cell />
             </tr>
           <% end %>
         </tbody>
       </table>
     </div>
+    """
+  end
+
+  # TODO
+  # <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
+  # <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
+  # <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+
+  def skill_card_genre_cell(assigns) do
+    ~H"""
+    <td>
+    <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+      <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+    </p>
+    </td>
     """
   end
 end
