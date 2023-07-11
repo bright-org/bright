@@ -3,40 +3,55 @@ defmodule BrightWeb.UserRegistrationLive do
 
   alias Bright.Accounts
   alias Bright.Accounts.User
+  alias BrightWeb.UserAuthComponents
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Register for an account
-        <:subtitle>
-          Already registered?
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Sign in
-          </.link>
-          to your account now.
-        </:subtitle>
-      </.header>
+      <h1 class="font-bold text-center text-3xl">
+        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">ユーザー新規作成</span>
+      </h1>
 
-      <.simple_form
+      <.form
+        :let={_f}
         for={@form}
         id="registration_form"
+        class="flex mt-8 mx-auto relative"
         phx-submit="save"
         phx-change="validate"
       >
-        <.error :if={@check_errors}>
-          Oops, something went wrong! Please check the errors below.
-        </.error>
+        <section class="border-r border-solid border-brightGray-300 flex flex-col mt-5 pr-16 w-2/4">
+          <button class="bg-bgGoogle bg-5 bg-left-2.5 bg-no-repeat border border-solid border-black font-bold max-w-xs mt-4 mx-auto px-4 py-2 rounded select-none text-black w-full hover:opacity-50">Google</button>
 
-        <.input field={@form[:name]} type="text" label="Name" required />
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+          <button class="bg-bgGithub bg-5 bg-left-2.5 bg-sns-github bg-no-repeat border border-github border-solid font-bold max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-full hover:opacity-50">GitHub</button>
 
-        <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
-        </:actions>
-      </.simple_form>
-    </div>
+          <button class="bg-bgFacebook bg-5 bg-left-2.5 bg-sns-facebook bg-no-repeat border border-facebook border-solid font-bold max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-full hover:opacity-50">Facebook</button>
+
+          <button class="bg-bgTwitter bg-5 bg-left-2.5 bg-sns-twitter bg-no-repeat border border-twitter border-solid font-bold max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-full hover:opacity-50">Twitter</button>
+        </section>
+
+        <p class="absolute bg-white border border-solid border-brightGray-300 flex h-20 left-2/4 top-2/4 items-center justify-center -ml-10 -mt-10 rounded-full text-brightGray-500 text-xs w-20 z-2">または</p>
+
+        <section class="flex flex-col pt-0 pr-0 pl-16 w-2/4">
+          <label for="handle_name" class="mt-4">
+            <span class="block font-bold mb-2 text-xs">ハンドルネーム</span>
+            <UserAuthComponents.input field={@form[:name]} id="handle_name" type="text" label="Name" required />
+          </label>
+
+          <label for="email" class="mt-4">
+            <span class="block font-bold mb-2 text-xs">メールアドレス</span>
+            <UserAuthComponents.input field={@form[:email]} id="email" type="email" label="Email" required />
+          </label>
+
+          <label for="password" class="mt-4">
+            <span class="block font-bold mb-2 text-xs">パスワード</span>
+            <UserAuthComponents.input field={@form[:password]} id="password" type="password" required />
+          </label>
+
+          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs mt-12 px-4 py-2 rounded select-none text-white w-full hover:opacity-50">ユーザーを新規作成する</button>
+        </section>
+      </.form>
+
+      <p class="mt-8 text-link text-center text-xs"><.link navigate={~p"/users/log_in"} class="underline">ログインはこちら</.link></p>
     """
   end
 
