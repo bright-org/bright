@@ -67,34 +67,32 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
   def handle_event("open", _params, socket) do
     {:noreply,
      socket
-     |> create_skill_score_item_if_not_exist()
+     |> create_skill_score_item_if_not_existing()
      |> assign(open: true)}
   end
 
   def handle_event("submit", %{"score" => score}, socket) do
-    skill_score_item =
+    {:ok, skill_score_item} =
       socket.assigns.skill_score_item
       |> SkillScores.update_skill_score_item(%{score: score})
-      |> elem(1)
 
     {:noreply,
      socket
      |> assign(skill_score_item: skill_score_item, open: false)}
   end
 
-  defp create_skill_score_item_if_not_exist(%{assigns: %{skill_score_item: nil}} = socket) do
-    skill_score_item =
+  defp create_skill_score_item_if_not_existing(%{assigns: %{skill_score_item: nil}} = socket) do
+    {:ok, skill_score_item} =
       SkillScores.create_skill_score_item(%{
         skill_id: socket.assigns.skill.id,
         skill_score_id: socket.assigns.skill_score.id,
         score: :low
       })
-      |> elem(1)
 
     socket |> assign(skill_score_item: skill_score_item)
   end
 
-  defp create_skill_score_item_if_not_exist(socket), do: socket
+  defp create_skill_score_item_if_not_existing(socket), do: socket
 
   defp score_mark_class(nil) do
     "score-mark-none h-1 w-4 bg-brightGray-200"
