@@ -112,9 +112,9 @@ defmodule BrightWeb.TabComponents do
       class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
     >
       <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={@aria_labelledby}>
-      <%= for menu_item <- @menu_items do %>
-      <.tab_menu_item menu_item={menu_item}/>
-      <% end %>
+        <%= for menu_item <- @menu_items do %>
+          <.tab_menu_item menu_item={menu_item}/>
+        <% end %>
       </ul>
     </div>
     """
