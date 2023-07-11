@@ -40,6 +40,12 @@ defmodule BrightWeb.SkillCardComponents do
           %{name: "Elixir", levels: [:skilled, :normal, :none]},
           %{name: "Python", levels: [:skilled, :none, :none]}
         ]
+      },
+      %{
+        genre_name: "PM",
+        skill_panels: [
+          %{name: "", levels: [:skilled, :normal, :none]}
+        ]
       }
     ]
 
