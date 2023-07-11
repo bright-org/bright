@@ -50,7 +50,7 @@ defmodule BrightWeb.SkillCardComponents do
       <.tab tabs={["エンジニア", "インフラ", "デザイナー", "マーケッター"]}>
         <div class="py-4 px-7 flex gap-y-3 flex-col">
           <%= for skill <- assigns.skills do %>
-            <.skill_card_genre genre_data={skill} />
+            <.skill_genre skills={skill} />
           <% end %>
         </div>
       </.tab>
@@ -58,13 +58,13 @@ defmodule BrightWeb.SkillCardComponents do
     """
   end
 
-  attr :genre_data, :map
+  attr :skills, :map
 
-  defp skill_card_genre(assigns) do
+  defp skill_genre(assigns) do
     ~H"""
     <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
       <p class="font-bold w-36 text-left text-sm">
-        <%= assigns.genre_data.genre_name %>
+        <%= assigns.skills.genre_name %>
       </p>
       <table class="table-fixed skill-table">
         <thead>
@@ -76,8 +76,8 @@ defmodule BrightWeb.SkillCardComponents do
           </tr>
         </thead>
         <tbody>
-          <%= for skill_panel <- assigns.genre_data.skill_panels do %>
-            <.skill_card_genre_panel skill_panel={skill_panel} />
+          <%= for skill_panel <- assigns.skills.skill_panels do %>
+            <.skill_panel skill_panel={skill_panel} />
           <% end %>
         </tbody>
       </table>
@@ -87,7 +87,7 @@ defmodule BrightWeb.SkillCardComponents do
 
   attr :skill_panel, :map
 
-  defp skill_card_genre_panel(assigns) do
+  defp skill_panel(assigns) do
     ~H"""
     <tr>
       <td><%= assigns.skill_panel.name %></td>
