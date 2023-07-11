@@ -62,18 +62,28 @@ defmodule BrightWeb.SkillCardComponents do
     """
   end
 
-  # TODO
-  # <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-  # <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-  # <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+  attr :level, :atom, default: :skilled
 
   def skill_card_genre_cell(assigns) do
+    assigns =
+      assigns
+      |> assign(:icon_path, icon_path(assigns.level))
+
     ~H"""
     <td>
     <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-      <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
+      <img src={@icon_path} class="mr-1" /><%= level_text(assigns.level) %>
     </p>
     </td>
     """
   end
+
+  defp icon_base_path(file), do: "/images/common/icons/#{file}"
+  defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
+  defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
+  defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
+
+  defp level_text(:beginner), do: "見習い"
+  defp level_text(:normal), do: "平均"
+  defp level_text(:skilled), do: "ベテラン"
 end
