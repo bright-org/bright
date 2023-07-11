@@ -10,6 +10,8 @@ defmodule BrightWeb.TabComponents do
   ## Examples
       <tab />
   """
+  # TODO id, :string, default: "tab01"のdefaultはいずれ削除
+  attr :id, :string, default: "tab01"
   attr :tabs, :list
   slot :inner_block
   attr :selected_index, :integer, default: 0
@@ -21,7 +23,7 @@ defmodule BrightWeb.TabComponents do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
-        <.tab_header tabs={@tabs} selected_index={@selected_index} menu_enable={@menu_enable}/>
+        <.tab_header id={@id} tabs={@tabs} selected_index={@selected_index} menu_enable={@menu_enable}/>
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
@@ -31,6 +33,7 @@ defmodule BrightWeb.TabComponents do
     """
   end
 
+  attr :id, :string
   attr :tabs, :list
   attr :selected_index, :integer, default: 0
   attr :menu_enable, :boolean, default: false
@@ -42,7 +45,7 @@ defmodule BrightWeb.TabComponents do
         <.tab_header_item selected={index == assigns.selected_index}> <%= item %></.tab_header_item>
       <% end %>
       <%= if assigns.menu_enable do %>
-        <.tab_menu_button />
+        <.tab_menu_button id={@id}/>
       <% end %>
     </ul>
     """
@@ -69,19 +72,26 @@ defmodule BrightWeb.TabComponents do
     """
   end
 
+  attr :id, :string
+
   def tab_menu_button(assigns) do
+    assigns =
+      assigns
+      |> assign(:data_dropdown_toggl, assigns.id <> "_menu")
+      |> assign(:button_id, assigns.id <> "_dropmenu")
+
     ~H"""
     <li class="flex items-center">
       <button
         type="button"
-        id="dropmenu01"
-        data-dropdown-toggle="menu01"
+        id={@button_id}
+        data-dropdown-toggle={@data_dropdown_toggl}
         class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
       >
         <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
       </button>
       <!-- Dropdown menu -->
-      <.tab_menu />
+      <.tab_menu id={@id}/>
     </li>
     """
   end
@@ -131,13 +141,20 @@ defmodule BrightWeb.TabComponents do
 
   attr :menu_items, :list
 
+  attr :id, :string
+
   def tab_menu(assigns) do
+    assigns =
+      assigns
+      |> assign(:menu_id, assigns.id <> "_menu")
+      |> assign(:aria_labelledby, assigns.id <> "_dropmenu")
+
     ~H"""
     <div
-      id="menu01"
+      id={@menu_id}
       class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
     >
-      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu01">
+      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={@aria_labelledby}>
       <.tab_menu_item />
 
       </ul>
