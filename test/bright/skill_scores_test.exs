@@ -101,7 +101,6 @@ defmodule Bright.SkillScoresTest do
       skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
       skill_score = insert(:skill_score, user: user, skill_class: skill_class)
 
-      # skill_unit = insert(:skill_unit, skill_classes: [skill_class])
       skill_category = insert(:skill_category, skill_unit: build(:skill_unit), position: 1)
       skill = insert(:skill, skill_category: skill_category, position: 1)
 
