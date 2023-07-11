@@ -34,12 +34,12 @@ defmodule BrightWeb.UserRegistrationLive do
         <section class="flex flex-col pt-0 pr-0 pl-16 w-2/4">
           <label for="handle_name" class="mt-4">
             <span class="block font-bold mb-2 text-xs">ハンドルネーム</span>
-            <UserAuthComponents.input field={@form[:name]} id="handle_name" type="text" label="Name" required />
+            <UserAuthComponents.input field={@form[:name]} id="handle_name" type="text" required />
           </label>
 
           <label for="email" class="mt-4">
             <span class="block font-bold mb-2 text-xs">メールアドレス</span>
-            <UserAuthComponents.input field={@form[:email]} id="email" type="email" label="Email" required />
+            <UserAuthComponents.input field={@form[:email]} id="email" type="email" required />
           </label>
 
           <label for="password" class="mt-4">
