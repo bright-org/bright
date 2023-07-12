@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+   <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+    <section class="bg-white -mt-10 max-w-[800px] p-10 rounded-lg w-full">
+      <h1 class="font-bold text-center text-3xl">
+        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">ユーザー新規作成</span>
+      </h1>
+
+      <form class="flex mt-8 mx-auto relative">
+        <section class="flex flex-col pt-0 pr-0 w-full">
+          <label for="hn" class="block mt-4 mx-auto max-w-xs w-full">
+            <span class="block font-bold mb-2 text-xs">ハンドルネーム</span>
+            <input id="hn" type="text" placeholder="" class="border border-solid border-black max-w-xs px-4 py-2 rounded w-full">
+            <p class="text-error text-xs">ハンドルネームが正しくありません</p>
+          </label>
+
+          <label for="email" class="block mt-4 mx-auto max-w-xs w-full">
+            <span class="block font-bold mb-2 text-xs">メールアドレス</span>
+            <input id="email" type="email" placeholder="" class="border border-solid border-black max-w-xs px-4 py-2 rounded w-full">
+            <p class="text-error text-xs">メールアドレスが正しくありません</p>
+          </label>
+
+        <section class="flex flex-col mt-8 full">
+          <span class="block font-bold mb-2 text-xs max-w-xs mx-auto w-full">認証</span>
+          <span class="hidden bg-bgGoogle bg-5 bg-left-2.5 bg-no-repeat border border-solid border-black font-bold max-w-xs mx-auto px-4 py-2 rounded select-none text-black text-center w-full">Google</span>
+
+          <span class="block bg-bgGithub bg-5 bg-left-2.5 bg-sns-github bg-no-repeat border border-github border-solid font-bold max-w-xs mx-auto px-4 py-2 rounded select-none text-white text-center  w-full">GitHub</span>
+
+          <span class="hidden bg-bgFacebook bg-5 bg-left-2.5 bg-sns-facebook bg-no-repeat border border-facebook border-solid font-bold max-w-xs mx-auto px-4 py-2 rounded select-none text-white text-center  w-full">Facebook</span>
+
+          <span class="hidden bg-bgTwitter bg-5 bg-left-2.5 bg-sns-twitter bg-no-repeat border border-twitter border-solid font-bold max-w-xs mx-auto px-4 py-2 rounded select-none text-white text-center w-full">Twitter</span>
+        </section>
+
+          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs mt-12 mx-auto px-4 py-2 rounded select-none text-white w-full hover:opacity-50">ユーザーを新規作成する</button>
+        </section>
+      </form>
+
+      <p class="mt-8 text-link text-center text-xs"><a href="#" class="text-xs underline">ログインはこちら</a></p>
+    </section>
+</main>
+
+
+
+</body>
+</html>
