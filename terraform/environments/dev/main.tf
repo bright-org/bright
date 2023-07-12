@@ -44,5 +44,9 @@ module "secret_host" {
   source = "../../modules/google/secret"
 
   name = "bright-host"
-  data = var.host
+  data = module.cloud_run_service.host
+}
+
+module "cloud_run_service" {
+  source = "../../modules/google/cloud_run_service"
 }
