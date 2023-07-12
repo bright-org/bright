@@ -26,12 +26,11 @@ defmodule BrightWeb.IntriguingCardComponents do
       |> assign(:menu_items, menu_items)
 
     ~H"""
-
     <div>
-    <h5>関わっているユーザー</h5>
-    <.tab id="tab-single-default" tabs={["気になる人", "チーム", "採用候補者"]} inner_tab={true} previous_enable menu_items={@menu_items}>
-    <.intriguing_card_body />
-    </.tab>
+      <h5>関わっているユーザー</h5>
+      <.tab id="tab-single-default" tabs={["気になる人", "チーム", "採用候補者"]} inner_tab={true} previous_enable menu_items={@menu_items}>
+        <.intriguing_card_body />
+      </.tab>
     </div>
     """
   end
@@ -41,92 +40,12 @@ defmodule BrightWeb.IntriguingCardComponents do
     ~H"""
     <div class="pt-3 pb-1 px-6">
      <ul class="flex flex-wrap gap-y-1">
-       <li
-         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-       >
-         <a class="inline-flex items-center gap-x-6">
-           <img
-             class="inline-block h-10 w-10 rounded-full"
-             src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-           />
-           <div>
-             <p>nokichi</p>
-             <p class="text-brightGray-300">アプリエンジニア</p>
-           </div>
-         </a>
-       </li>
-       <li
-         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-       >
-         <a class="inline-flex items-center gap-x-6">
-           <img
-             class="inline-block h-10 w-10 rounded-full"
-             src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-           />
-           <div>
-             <p>nokichi</p>
-             <p class="text-brightGray-300">アプリエンジニア</p>
-           </div>
-         </a>
-       </li>
-       <li
-         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-       >
-         <a class="inline-flex items-center gap-x-6">
-           <img
-             class="inline-block h-10 w-10 rounded-full"
-             src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-           />
-           <div>
-             <p>nokichi</p>
-             <p class="text-brightGray-300">アプリエンジニア</p>
-           </div>
-         </a>
-       </li>
-       <li
-         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-       >
-         <a class="inline-flex items-center gap-x-6">
-           <img
-             class="inline-block h-10 w-10 rounded-full"
-             src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-           />
-           <div>
-             <p>nokichi</p>
-             <p class="text-brightGray-300">アプリエンジニア</p>
-           </div>
-         </a>
-       </li>
-       <li
-         class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-       >
-         <a class="inline-flex items-center gap-x-6">
-           <img
-             class="inline-block h-10 w-10 rounded-full"
-             src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-           />
-           <div>
-             <p>nokichi</p>
-             <p class="text-brightGray-300">アプリエンジニア</p>
-           </div>
-         </a>
-       </li>
-     </ul>
+     <%= for _ <- 1..5 do %>
+     <.profile_small />
+      <% end %>
+    </ul>
     </div>
     """
   end
 
-
-
-  def intriguing_card_row(assigns) do
-    """
-    <div class="pt-3 pb-1 px-6">
-      <ul class="flex flex-wrap gap-y-1">
-        <%= for _ <- 1..5 do %>
-          <.profile_small />
-        <% end %>
-      </ul>
-    </div>
-    """
-  end
 end
