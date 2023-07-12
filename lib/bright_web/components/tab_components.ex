@@ -18,7 +18,7 @@ defmodule BrightWeb.TabComponents do
   attr :previous_enable, :boolean, default: false
   attr :next_enable, :boolean, default: false
   attr :menu_items, :list, default: []
-  attr :inner_tab,:boolean, default: false
+  attr :inner_tab, :boolean, default: false
 
   def tab(assigns) do
     ~H"""
@@ -181,7 +181,6 @@ defmodule BrightWeb.TabComponents do
 
   defp page_button_enable_style(true), do: "text-brightGray-900"
   defp page_button_enable_style(false), do: "text-brightGray-200"
-
 
   defp inner_tab(assigns) do
     ~H"""

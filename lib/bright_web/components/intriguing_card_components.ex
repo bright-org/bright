@@ -14,6 +14,15 @@ defmodule BrightWeb.IntriguingCardComponents do
   ## Examples
       <.intriguing_card />
   """
+
+  attr :user_profile, :map,
+    default: %{
+      user_name: "nokichi",
+      title: "アプリエンジニア",
+      icon_file_path:
+        "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+    }
+
   def intriguing_card(assigns) do
     menu_items = [
       %{text: "カスタムグループを作る", href: "/"},
@@ -29,23 +38,15 @@ defmodule BrightWeb.IntriguingCardComponents do
     <div>
       <h5>関わっているユーザー</h5>
       <.tab id="tab-single-default" tabs={["気になる人", "チーム", "採用候補者"]} inner_tab={true} previous_enable menu_items={@menu_items}>
-        <.intriguing_card_body />
+        <div class="pt-3 pb-1 px-6">
+          <ul class="flex flex-wrap gap-y-1">
+            <%= for _ <- 1..5 do %>
+              <.profile_small user_name={@user_profile.user_name} title={@user_profile.title} icon_file_path={@user_profile.icon_file_path} />
+            <% end %>
+          </ul>
+        </div>
       </.tab>
     </div>
     """
   end
-
-  attr :user_profile, :map, default: %{user_name: "nokichi",  title: "アプリエンジニア",  icon_file_path: "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" }
-  def intriguing_card_body(assigns) do
-    ~H"""
-    <div class="pt-3 pb-1 px-6">
-    <ul class="flex flex-wrap gap-y-1">
-      <%= for _ <- 1..5 do %>
-        <.profile_small user_name={@user_profile.user_name} title={@user_profile.title} icon_file_path={@user_profile.icon_file_path} />
-      <% end %>
-    </ul>
-    </div>
-    """
-  end
-
 end
