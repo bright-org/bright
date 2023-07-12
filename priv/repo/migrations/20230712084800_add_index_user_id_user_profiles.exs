@@ -1,4 +1,4 @@
-defmodule Bright.Repo.Migrations.CreateUserProfiles do
+defmodule Bright.Repo.Migrations.AddIndexUserIdUserProfiles do
   use Ecto.Migration
 
   def change do
