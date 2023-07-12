@@ -14,4 +14,6 @@
 
 ## Phoenixアプリケーションのデプロイ
 
-TODO: Cloud Buildか何かで自動デプロイ
+Cloud Buildでデプロイ（`cloudbuild.yaml`）する。
+
+GitHub Actionsで自動デプロイ（`.github/workflows/deploy_to_***.yml`）されるため、手動でデプロイする機会は基本的にない。

@@ -81,6 +81,7 @@ defmodule Bright.MixProject do
       ],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": [
+        "assets.setup",
         "tailwind default --minify",
         "esbuild default --minify",
         "tailwind storybook --minify",

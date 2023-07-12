@@ -1,0 +1,19 @@
+name: Deploy to dev
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  call:
+    uses: ./.github/workflows/reusable_deploy.yml
+    with:
+      workload_identity_provider: projects/458822223771/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+      service_account: github-actions@bright-dev-392003.iam.gserviceaccount.com
+      image_name: asia-northeast1-docker.pkg.dev/bright-dev-392003/bright-org/bright
+      cloud_sql_instance: bright-dev-392003:asia-northeast1:instance
+      cloud_run_service_account: cloud-run@bright-dev-392003.iam.gserviceaccount.com
+    permissions:
+      id-token: write
+      contents: read
