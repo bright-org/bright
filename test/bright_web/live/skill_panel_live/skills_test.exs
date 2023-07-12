@@ -184,7 +184,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       # skill_1
       # lowからlowのキャンセル操作相当
       show_live
-      |> element(~s{#skill-score-item-1 div[phx-click="open"]})
+      |> element(~s{#skill-score-item-1 div[phx-click="edit"]})
       |> render_click()
 
       show_live
@@ -193,7 +193,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       # skill_2
       show_live
-      |> element(~s{#skill-score-item-2 div[phx-click="open"]})
+      |> element(~s{#skill-score-item-2 div[phx-click="edit"]})
       |> render_click()
 
       show_live
@@ -202,7 +202,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       # skill_3
       show_live
-      |> element(~s{#skill-score-item-3 div[phx-click="open"]})
+      |> element(~s{#skill-score-item-3 div[phx-click="edit"]})
       |> render_click()
 
       show_live
@@ -238,6 +238,88 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert show_live
              |> element("#skill-score-item-1 .score-mark-high")
+             |> has_element?()
+    end
+
+    @tag score: nil
+    test "edits by key input", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      # 最初のスキルを入力モードとする
+      show_live
+      |> element("#skill-score-item-1 .score-mark-none")
+      |> render_click()
+
+      # 1を押してスコアを設定する。以下、2, 3と続く
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "1"})
+
+      assert show_live
+             |> element("#skill-score-item-1 .score-mark-high")
+             |> has_element?()
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "2"})
+
+      assert show_live
+             |> element("#skill-score-item-2 .score-mark-middle")
+             |> has_element?()
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "3"})
+
+      assert show_live
+             |> element("#skill-score-item-3 .score-mark-low")
+             |> has_element?()
+    end
+
+    @tag score: nil
+    test "move by key input", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      # 最初のスキルを入力モードとする
+      show_live
+      |> element("#skill-score-item-1 .score-mark-none")
+      |> render_click()
+
+      # ↓、Enter、↑による移動
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "ArrowDown"})
+
+      assert show_live
+             |> element("#skill-score-item-2 input")
+             |> has_element?()
+
+      refute show_live
+             |> element("#skill-score-item-1 input")
+             |> has_element?()
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "Enter"})
+
+      assert show_live
+             |> element("#skill-score-item-3 input")
+             |> has_element?()
+
+      refute show_live
+             |> element("#skill-score-item-2 input")
+             |> has_element?()
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "ArrowUp"})
+
+      assert show_live
+             |> element("#skill-score-item-2 input")
+             |> has_element?()
+
+      refute show_live
+             |> element("#skill-score-item-3 input")
              |> has_element?()
     end
   end
