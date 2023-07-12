@@ -29,8 +29,7 @@ defmodule BrightWeb.IntriguingCardComponents do
 
     <div>
     <h5>関わっているユーザー</h5>
-    <.tab id="tab-single-default" tabs={["気になる人", "チーム", "採用候補者"]} previous_enable menu_items={@menu_items}>
-    <.inner_tab />
+    <.tab id="tab-single-default" tabs={["気になる人", "チーム", "採用候補者"]} inner_tab={true} previous_enable menu_items={@menu_items}>
     <.intriguing_card_body />
     </.tab>
     </div>
@@ -117,31 +116,7 @@ defmodule BrightWeb.IntriguingCardComponents do
     """
   end
 
-  def inner_tab(assigns) do
-    ~H"""
-    <!-- tab2 -->
-    <div class="overflow-hidden">
-      <ul
-        class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
-      >
-        <li class="py-2 w-[200px] border-r border-brightGray-50">
-          キャリアの参考になる方々
-        </li>
-        <li
-          class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
-        >
-          優秀なエンジニアの方々
-        </li>
-        <li class="py-2 w-[200px] border-r border-brightGray-50">
-          カスタムグループ３
-        </li>
-        <li class="py-2 w-[200px] border-r border-brightGray-50">
-          カスタムグループ４
-        </li>
-      </ul>
-    </div>
-    """
-  end
+
 
   def intriguing_card_row(assigns) do
     """
