@@ -6,6 +6,7 @@ module.exports = {
   content: ["./*.{html,js}"],
   theme: {
     colors: {
+      current: "currentColor",
       base: "#333333",
       transparent: "transparent",
       brightGreen: {
@@ -87,6 +88,12 @@ module.exports = {
         dark: "#D3000E",
         light: "#FD5B87",
         dazzle: "#FFE9EF",
+      },
+      skillPanek: {
+        brightGreen600: "#0EA895",
+        brightGreen300: "#14D6BE",
+        amethyst600: "#C04CD0",
+        amethyst300: "#DD6DED",
       },
     },
     extend: {
