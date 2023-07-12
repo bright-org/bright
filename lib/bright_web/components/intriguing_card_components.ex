@@ -35,13 +35,13 @@ defmodule BrightWeb.IntriguingCardComponents do
     """
   end
 
-  @spec intriguing_card_body(any) :: Phoenix.LiveView.Rendered.t()
+  attr :user_profile, :map, default: %{user_name: "nokichi",  title: "アプリエンジニア",  icon_file_path: "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" }
   def intriguing_card_body(assigns) do
     ~H"""
     <div class="pt-3 pb-1 px-6">
-     <ul class="flex flex-wrap gap-y-1">
-     <%= for _ <- 1..5 do %>
-     <.profile_small />
+    <ul class="flex flex-wrap gap-y-1">
+      <%= for _ <- 1..5 do %>
+        <.profile_small user_name={@user_profile.user_name} title={@user_profile.title} icon_file_path={@user_profile.icon_file_path} />
       <% end %>
     </ul>
     </div>
