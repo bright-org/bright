@@ -16,19 +16,20 @@ defmodule BrightWeb.IntriguingCardComponents do
   """
 
   attr :user_profiles, :map,
-    default: [%{
-      user_name: "nokichi",
-      title: "アプリエンジニア",
-      icon_file_path:
-        "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-    },
-    %{
-      user_name: "user2",
-      title: "ほげほげ",
-      icon_file_path:
-        "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-    }
-  ]
+    default: [
+      %{
+        user_name: "nokichi",
+        title: "アプリエンジニア",
+        icon_file_path:
+          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+      },
+      %{
+        user_name: "user2",
+        title: "ほげほげ",
+        icon_file_path:
+          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+      }
+    ]
 
   def intriguing_card(assigns) do
     menu_items = [
