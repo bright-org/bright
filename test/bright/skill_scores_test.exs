@@ -73,6 +73,36 @@ defmodule Bright.SkillScoresTest do
       assert skill_score.level == SkillScores.get_skill_score!(skill_score.id).level
     end
 
+    test "update_skill_score_percentage with level up to normal", %{
+      user: user,
+      skill_class: skill_class
+    } do
+      skill_score = insert(:skill_score, user: user, skill_class: skill_class)
+
+      assert {:ok, %SkillScore{level: :normal, percentage: 40.0}} =
+               SkillScores.update_skill_score_percentage(skill_score, 40.0)
+    end
+
+    test "update_skill_score_percentage with level up to skilled", %{
+      user: user,
+      skill_class: skill_class
+    } do
+      skill_score = insert(:skill_score, user: user, skill_class: skill_class)
+
+      assert {:ok, %SkillScore{level: :skilled, percentage: 60.0}} =
+               SkillScores.update_skill_score_percentage(skill_score, 60.0)
+    end
+
+    test "update_skill_score_percentage without level up", %{
+      user: user,
+      skill_class: skill_class
+    } do
+      skill_score = insert(:skill_score, user: user, skill_class: skill_class)
+
+      assert {:ok, %SkillScore{level: :beginner, percentage: 39.9}} =
+               SkillScores.update_skill_score_percentage(skill_score, 39.9)
+    end
+
     test "delete_skill_score/1 deletes the skill_score", %{
       user: user,
       skill_class: skill_class
