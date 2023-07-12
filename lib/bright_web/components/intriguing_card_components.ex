@@ -21,6 +21,7 @@ defmodule BrightWeb.IntriguingCardComponents do
       <div
         class="text-sm font-medium text-center text-brightGray-500"
       >
+        <!-- tab1 -->
         <ul
           class="flex content-between border-b border-brightGray-200"
         >
@@ -89,6 +90,8 @@ defmodule BrightWeb.IntriguingCardComponents do
             </div>
           </li>
         </ul>
+
+        <!-- tab2 -->
         <div class="overflow-hidden">
           <ul
             class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
@@ -110,6 +113,7 @@ defmodule BrightWeb.IntriguingCardComponents do
           </ul>
         </div>
 
+        <!-- 内容 -->
         <div class="pt-3 pb-1 px-6">
           <ul class="flex flex-wrap gap-y-1">
             <li
@@ -184,6 +188,8 @@ defmodule BrightWeb.IntriguingCardComponents do
             </li>
           </ul>
         </div>
+
+        <!--フッタ -->
         <div class="flex justify-center gap-x-14 pb-3">
           <button
             type="button"
