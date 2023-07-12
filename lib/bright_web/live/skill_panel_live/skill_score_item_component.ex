@@ -111,7 +111,9 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
     score = Map.get(@shortcut_key_score, key)
     skill_score_item = update_skill_score_item_score(socket.assigns.skill_score_item, score)
 
-    send_update(__MODULE__, id: "skill-score-item-#{socket.assigns.row_number + 1}", edit: true)
+    if not socket.assigns.last_row? do
+      send_update(__MODULE__, id: "skill-score-item-#{socket.assigns.row_number + 1}", edit: true)
+    end
 
     {:noreply,
      socket
