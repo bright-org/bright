@@ -89,7 +89,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp assign_counter(socket) do
-    # （いまは関数名がらしくないですが）続くタスクで他の処理もいれる想定
+    counter =
+      socket.assigns.skill_score_item_dict
+      |> Map.values()
+      |> Enum.reduce(%{low: 0, middle: 0, high: 0}, fn skill_score_item, acc ->
+        Map.update!(acc, skill_score_item.score, & &1 + 1)
+      end)
+
     num_skills =
       socket.assigns.skill_units
       |> Enum.flat_map(& &1.skill_categories)
@@ -97,7 +103,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Enum.sum()
 
     socket
-    |> assign(:num_skills, num_skills)
+    |> assign(counter: counter, num_skills: num_skills)
+  end
+
+  defp calc_percentage(count, num_skills) do
+    (count  / num_skills)
+    |> Kernel.*(100)
+    |> floor()
   end
 
   defp build_table_structure(skill_units) do

@@ -20,7 +20,7 @@
         </td>
         <td class="!border-l !border-brightGray-200">
           <div class="flex justify-center items-center">
-            <p class="inline-flex flex-1 justify-center">piacere</p>
+            <p class="inline-flex flex-1 justify-center"><%= @current_user.name %></p>
             <button
               type="button"
               class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
@@ -46,11 +46,11 @@
           <div class="flex justify-center gap-x-2">
             <div class="min-w-[4em] flex items-center">
               <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1" />
-              68％
+                <%= calc_percentage(@counter.high, @num_skills) %>％
             </div>
             <div class="min-w-[4em] flex items-center">
               <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1" />
-              12％
+                <%= calc_percentage(@counter.middle, @num_skills) %>％
             </div>
           </div>
         </td>
