@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+   <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+    <section class="bg-white -mt-10 max-w-[800px] p-10 rounded-lg w-full">
+      <h1 class="font-bold text-center text-3xl">
+        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">2段階認証</span>
+      </h1>
+
+      <p class="mt-8 mx-auto text-sm w-fit">メールに届いた認証コードを入力し「次へ進む」を押してください。<br><a href="#" class="block mt-2 text-link text-xs underline">再送信する</a></p>
+
+      <form class="flex mt-8 mx-auto relative">
+        <section class="flex flex-col mx-auto">
+          <label for="authcode" class="mt-4">
+            <span class="block font-bold mb-2 text-xs">認証用コード</span>
+            <input id="authcode" type="number" class="border border-solid border-black max-w-xs px-4 py-2 rounded w-full">
+            <p class="text-error text-xs">認証用コードが正しくありません</p>
+          </label>
+
+          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs mt-8 px-4 py-2 rounded select-none text-white w-full hover:opacity-50">次に進む</button>
+
+          <button class="bg-white border border-solid border-black font-bold mt-16 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">戻る</button>
+        </section>
+      </form>
+    </section>
+</main>
+
+
+
+</body>
+</html>
