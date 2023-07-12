@@ -3,15 +3,29 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
 
   alias Bright.SkillScores
 
+  @shortcut_key_score %{
+    "1" => :high,
+    "2" => :middle,
+    "3" => :low
+  }
+
   @impl true
   def render(%{edit: true} = assigns) do
     ~H"""
-    <div id={@id} class="flex justify-center gap-x-4 px-4">
+    <div
+      id={@id}
+      class="flex justify-center gap-x-4 px-4"
+      phx-window-keydown="shortcut_key"
+      phx-throttle="1000"
+      phx-click-away="cancel_edit"
+      phx-target={@myself}
+    >
       <label
         class="block flex items-center"
         phx-click="submit"
         phx-target={@myself}
-        phx-value-score="high">
+        phx-value-score="high"
+      >
         <input
           type="radio"
           name={"#{@id}-score"}
@@ -24,7 +38,8 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
         class="block flex items-center"
         phx-click="submit"
         phx-target={@myself}
-        phx-value-score="middle">
+        phx-value-score="middle"
+      >
         <input
           type="radio"
           name={"#{@id}-score"}
@@ -37,7 +52,8 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
         class="block flex items-center"
         phx-click="submit"
         phx-target={@myself}
-        phx-value-score="low">
+        phx-value-score="low"
+      >
         <input
           type="radio"
           name={"#{@id}-score"}
@@ -64,24 +80,67 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
   end
 
   @impl true
+  def update(assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> create_skill_score_item_if_not_existing()}
+  end
+
+  @impl true
   def handle_event("edit", _params, socket) do
     {:noreply,
      socket
-     |> create_skill_score_item_if_not_existing()
-     |> assign(edit: true)}
+     |> assign(edit: true)
+     |> create_skill_score_item_if_not_existing()}
+  end
+
+  def handle_event("cancel_edit", _params, socket) do
+    {:noreply, socket |> assign(edit: false)}
   end
 
   def handle_event("submit", %{"score" => score}, socket) do
-    {:ok, skill_score_item} =
-      socket.assigns.skill_score_item
-      |> SkillScores.update_skill_score_item(%{score: score})
+    skill_score_item = update_skill_score_item_score(socket.assigns.skill_score_item, score)
 
     {:noreply,
      socket
      |> assign(skill_score_item: skill_score_item, edit: false)}
   end
 
-  defp create_skill_score_item_if_not_existing(%{assigns: %{skill_score_item: nil}} = socket) do
+  def handle_event("shortcut_key", %{"key" => key}, socket) when key in ~w(1 2 3) do
+    score = Map.get(@shortcut_key_score, key)
+    skill_score_item = update_skill_score_item_score(socket.assigns.skill_score_item, score)
+
+    send_update(__MODULE__, id: "skill-score-item-#{socket.assigns.row_number + 1}", edit: true)
+
+    {:noreply,
+     socket
+     |> assign(skill_score_item: skill_score_item, edit: false)}
+  end
+
+  def handle_event("shortcut_key", %{"key" => key}, socket) when key in ~w(ArrowDown Enter) do
+    if not socket.assigns.last_row? do
+      send_update(__MODULE__, id: "skill-score-item-#{socket.assigns.row_number + 1}", edit: true)
+    end
+
+    {:noreply, socket |> assign(edit: false)}
+  end
+
+  def handle_event("shortcut_key", %{"key" => key}, socket) when key in ~w(ArrowUp) do
+    if not socket.assigns.first_row? do
+      send_update(__MODULE__, id: "skill-score-item-#{socket.assigns.row_number - 1}", edit: true)
+    end
+
+    {:noreply, socket |> assign(edit: false)}
+  end
+
+  def handle_event("shortcut_key", _params, socket) do
+    {:noreply, socket}
+  end
+
+  defp create_skill_score_item_if_not_existing(
+         %{assigns: %{skill_score_item: nil, edit: true}} = socket
+       ) do
     {:ok, skill_score_item} =
       SkillScores.create_skill_score_item(%{
         skill_id: socket.assigns.skill.id,
@@ -93,6 +152,13 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
   end
 
   defp create_skill_score_item_if_not_existing(socket), do: socket
+
+  defp update_skill_score_item_score(skill_score_item, score) do
+    {:ok, skill_score_item} =
+      SkillScores.update_skill_score_item(skill_score_item, %{score: score})
+
+    skill_score_item
+  end
 
   defp score_mark_class(nil) do
     "score-mark-none h-1 w-4 bg-brightGray-200"
