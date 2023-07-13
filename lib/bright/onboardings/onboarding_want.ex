@@ -1,4 +1,7 @@
 defmodule Bright.Onboardings.OnboardingWant do
+  @moduledoc """
+  オンボーディングの「やりたいこと・興味関心があること」を扱うスキーマ。
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

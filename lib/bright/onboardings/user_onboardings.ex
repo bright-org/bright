@@ -1,4 +1,7 @@
 defmodule Bright.Onboardings.UserOnboardings do
+  @moduledoc """
+  ユーザーのオンボーディング結果を扱うスキーマ。
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
