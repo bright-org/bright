@@ -18,12 +18,16 @@ defmodule BrightWeb.TabComponents do
   attr :previous_enable, :boolean, default: false
   attr :next_enable, :boolean, default: false
   attr :menu_items, :list, default: []
+  attr :inner_tab, :boolean, default: false
 
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
         <.tab_header id={@id} tabs={@tabs} selected_index={@selected_index} menu_items={@menu_items} />
+        <%= if @inner_tab do %>
+          <.inner_tab />
+        <% end %>
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
@@ -177,4 +181,30 @@ defmodule BrightWeb.TabComponents do
 
   defp page_button_enable_style(true), do: "text-brightGray-900"
   defp page_button_enable_style(false), do: "text-brightGray-200"
+
+  defp inner_tab(assigns) do
+    ~H"""
+    <!-- tab2 -->
+    <div class="overflow-hidden">
+      <ul
+        class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
+      >
+        <li class="py-2 w-[200px] border-r border-brightGray-50">
+          キャリアの参考になる方々
+        </li>
+        <li
+          class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+        >
+          優秀なエンジニアの方々
+        </li>
+        <li class="py-2 w-[200px] border-r border-brightGray-50">
+          カスタムグループ３
+        </li>
+        <li class="py-2 w-[200px] border-r border-brightGray-50">
+          カスタムグループ４
+        </li>
+      </ul>
+    </div>
+    """
+  end
 end
