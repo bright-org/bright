@@ -17,16 +17,24 @@ defmodule BrightWeb.LayoutComponents do
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
       <h4>マイページ</h4>
       <div class="flex gap-x-5">
-        <.user_button1 />
-        <.user_button2 />
-        <.user_button3 />
-        <.user_button4 />
+        <.contact_customer_success_button />
+        <.search_for_skill_holders_button />
+        <.bell_button />
+        <.user_button />
       </div>
     </div>
     """
   end
 
-  def user_button1(assigns) do
+  #TODO ↓ BrightButtonComponentsに移動予定
+
+  @doc """
+  Renders a Contact Customer Success Button
+
+  ## Examples
+      <.contact_customer_success_button />
+  """
+  def contact_customer_success_button(assigns) do
     ~H"""
     <button type="button"
       class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
@@ -37,7 +45,13 @@ defmodule BrightWeb.LayoutComponents do
     """
   end
 
-  def user_button2(assigns) do
+  @doc """
+  Renders a Search for Skill Holders Button
+
+  ## Examples
+      <.search_for_skill_holders_button />
+  """
+  def search_for_skill_holders_button(assigns) do
     ~H"""
     <button type="button"
       class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
@@ -48,7 +62,13 @@ defmodule BrightWeb.LayoutComponents do
     """
   end
 
-  def user_button3(assigns) do
+  @doc """
+  Renders a Bell Button
+
+  ## Examples
+      <.bell_button />
+  """
+  def bell_button(assigns) do
     ~H"""
     <button type="button"
       class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center relative">
@@ -61,7 +81,13 @@ defmodule BrightWeb.LayoutComponents do
     """
   end
 
-  def user_button4(assigns) do
+  @doc """
+  Renders a User Button
+
+  ## Examples
+      <.button />
+  """
+  def user_button(assigns) do
     ~H"""
     <button class="hover:opacity-70">
       <img class="inline-block h-10 w-10 rounded-full"
@@ -69,6 +95,8 @@ defmodule BrightWeb.LayoutComponents do
     </button>
     """
   end
+
+  #TODO ↑ BrightButtonComponentsに移動予定
 
   @doc """
   Renders a Side Menu
