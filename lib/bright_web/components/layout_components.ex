@@ -7,7 +7,7 @@ defmodule BrightWeb.LayoutComponents do
   @doc """
   Renders a User Header
 
-  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
+  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までユーザーヘッダーのみ部品デザイン更新
 
   ## Examples
       <.user_header />
