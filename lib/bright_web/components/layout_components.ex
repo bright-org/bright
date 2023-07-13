@@ -156,32 +156,30 @@ defmodule BrightWeb.LayoutComponents do
     >
       <img src="./images/common/logo.svg" width="163px" class="ml-4" />
       <ul class="grid pt-2">
-        <li>
-          <a
-            class="!text-white bg-white bg-opacity-30 text-base py-4 inline-block pl-4 w-full mb-1"
-            href="/mypage"
-            >マイページ</a>
-        </li>
-        <li>
-          <a
-            class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
-            href="/mypage"
-            >キャリアパス</a>
-        </li>
-        <li>
-          <a
-            class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
-            href="/mypage"
-            >スキルアップ</a>
-        </li>
-        <li>
-          <a
-            class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
-            href="/mypage"
-            >チームスキル分析</a>
-        </li>
+        <.menu_item text="マイページ" href="/mypage" active />
+        <.menu_item text="キャリアパス" href="/mypage" />
+        <.menu_item text="スキルアップ" href="/mypage" />
+        <.menu_item text="チームスキル分析" href="/mypage" />
+        <.menu_item text="キャリアパス" href="/mypage" />
       </ul>
     </aside>
     """
   end
+
+  attr :active, :boolean, default: false
+  attr :text, :string, default: ""
+  attr :href, :string, default: ""
+
+  defp menu_item(assigns) do
+    ~H"""
+    <li>
+      <a class={menu_active_style(@active)} href="/mypage"><%= @text %></a>
+    </li>
+    """
+  end
+
+  defp menu_active_style(true),
+    do: "!text-white bg-white bg-opacity-30 text-base py-4 inline-block pl-4 w-full mb-1"
+
+  defp menu_active_style(false), do: "!text-white text-base py-4 inline-block pl-4 w-full mb"
 end
