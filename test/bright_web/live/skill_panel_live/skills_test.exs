@@ -331,6 +331,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "shows updated value", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
+      # 初期表示
       assert show_live
              |> element(".score-high-percentage", "0％")
              |> has_element?()
@@ -339,6 +340,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
              |> element(".score-middle-percentage", "0％")
              |> has_element?()
 
+      # 各スキルスコア入力と、習得率表示更新
       show_live
       |> element("#skill-score-item-1 .score-mark-none")
       |> render_click()
@@ -361,6 +363,31 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert show_live
              |> element(".score-middle-percentage", "33％")
+             |> has_element?()
+
+      # 各スキルスコアの削除（lowにする操作）と、習得率表示更新
+      show_live
+      |> element("#skill-score-item-1 .score-mark-high")
+      |> render_click()
+
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "3"})
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "3"})
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "3"})
+
+      assert show_live
+             |> element(".score-high-percentage", "0％")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-middle-percentage", "0％")
              |> has_element?()
     end
   end
