@@ -42,6 +42,16 @@ defmodule BrightWeb.MypageLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl true
+  def handle_event(event_name, params, socket) do
+    # TODO tabイベント検証
+    IO.inspect("------------------")
+    IO.inspect(event_name)
+    IO.inspect(params)
+    IO.inspect("------------------")
+    {:noreply, socket}
+  end
+
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Mypages")

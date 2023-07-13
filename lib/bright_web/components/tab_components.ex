@@ -166,12 +166,14 @@ defmodule BrightWeb.TabComponents do
       <button
         type="button"
         class={@previous_button_style}
+        phx-click="previous_button_click"
       >
         <span class={@previous_span_style} >chevron_left</span> 前
       </button>
       <button
         type="button"
         class={@next_button_style}
+        phx-click="next_button_click"
       >
         次 <span class={@next_span_style} >chevron_right</span>
       </button>
