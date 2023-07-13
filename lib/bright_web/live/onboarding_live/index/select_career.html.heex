@@ -5,13 +5,6 @@
     </span>
   </h1>
 
-<.table
-  id="onboarding_wants"
-  rows={@datas}
->
-  <:col :let={data} label="Name"><%= data.name %></:col>
-</.table>
-
   <div class="flex flex-col mt-2 relative">
     <!-- やりたいことセクション ここから -->
     <section class="accordion mt-5 w-[1236px]">
@@ -23,9 +16,10 @@
         <div class="hidden">
           <ul class="flex flex-wrap gap-4 justify-start p-4">
             <!-- やりたいこと ここから -->
+            <%= for data <- @datas do %>
             <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
               <a href="/onboardings/select_skill_panel" class="block">
-                <b class="block text-center">Webアプリを作りたい</b>
+                <b class="block text-center"><%= data.name %></b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
                   <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
                     エンジニア
@@ -39,7 +33,9 @@
                 </div>
               </a>
             </li>
+            <% end %>
             <!-- やりたいこと ここまで（以降繰り返し） -->
+            <!--
             <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
               <a href="/onboardings/select_skill_panel" class="block">
                 <b class="block text-center">スマホアプリを作りたい</b>
@@ -103,7 +99,7 @@
                   </span>
                 </div>
               </a>
-            </li>
+            </li>-->
           </ul>
 
           <form class="flex flex-wrap gap-4 justify-start p-4">
