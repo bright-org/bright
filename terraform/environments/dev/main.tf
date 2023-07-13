@@ -47,6 +47,13 @@ module "secret_host" {
   data = module.cloud_run_service.host
 }
 
+module "secret_sendgrid_api_key" {
+  source = "../../modules/google/secret"
+
+  name = "bright-sendgrid-api-key"
+  data = var.sendgrid_api_key
+}
+
 module "cloud_run_service" {
   source = "../../modules/google/cloud_run_service"
 }
