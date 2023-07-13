@@ -17,7 +17,7 @@ defmodule BrightWeb.ContactCardComponents do
     ~H"""
     <div>
       <h5>重量な連絡</h5>
-      <.tab tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]}>
+      <.tab id="contact_card" tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]}>
         <.contact_card_body datas={@datas} />
       </.tab>
     </div>
