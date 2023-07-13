@@ -144,25 +144,41 @@ defmodule BrightWeb.LayoutComponents do
   @doc """
   Renders a Side Menu
 
+  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までメニューのみデザイン更新
+
   ## Examples
       <.side_menu />
   """
   def side_menu(assigns) do
     ~H"""
-    <aside class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-6 pl-3">
-      <img src="/images/common/logo.svg" } width="163px" />
-      <ul class="grid gap-y-10 pl-5 pt-6">
+    <aside
+    class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
+    >
+      <img src="./images/common/logo.svg" width="163px" class="ml-4" />
+      <ul class="grid pt-2">
         <li>
-          <a class="!text-white text-base" href="/mypage">マイページ</a>
+          <a
+            class="!text-white bg-white bg-opacity-30 text-base py-4 inline-block pl-4 w-full mb-1"
+            href="/mypage"
+            >マイページ</a>
         </li>
         <li>
-          <a class="!text-white text-base" href="/mypage">キャリアパス</a>
+          <a
+            class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+            href="/mypage"
+            >キャリアパス</a>
         </li>
         <li>
-          <a class="!text-white text-base" href="/mypage">スキルアップ</a>
+          <a
+            class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+            href="/mypage"
+            >スキルアップ</a>
         </li>
         <li>
-          <a class="!text-white text-base" href="/mypage">チームスキル分析</a>
+          <a
+            class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+            href="/mypage"
+            >チームスキル分析</a>
         </li>
       </ul>
     </aside>
