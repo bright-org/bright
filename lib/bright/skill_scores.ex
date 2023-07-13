@@ -8,6 +8,10 @@ defmodule Bright.SkillScores do
 
   alias Bright.SkillScores.SkillScore
 
+  # レベルの判定値
+  @normal_level 40
+  @skilled_level 60
+
   @doc """
   Returns the list of skill_scores.
 
@@ -74,6 +78,19 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
+  Updates a skill_score percentage,
+  and does updated-effection like level up/down, and ...
+  """
+  def update_skill_score_percentage(skill_score, percentage) do
+    level = get_level(percentage)
+
+    update_skill_score(skill_score, %{
+      percentage: percentage,
+      level: level
+    })
+  end
+
+  @doc """
   Deletes a skill_score.
 
   ## Examples
@@ -100,6 +117,15 @@ defmodule Bright.SkillScores do
   """
   def change_skill_score(%SkillScore{} = skill_score, attrs \\ %{}) do
     SkillScore.changeset(skill_score, attrs)
+  end
+
+  defp get_level(percentage) do
+    percentage
+    |> case do
+      v when v >= @skilled_level -> :skilled
+      v when v >= @normal_level -> :normal
+      _ -> :beginner
+    end
   end
 
   alias Bright.SkillScores.SkillScoreItem
