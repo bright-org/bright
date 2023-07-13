@@ -58,7 +58,8 @@ defmodule Bright.MixProject do
       {:ecto_ulid_next, "~> 1.0"},
       {:phoenix_storybook, "~> 0.5.0"},
       {:google_api_storage, "~> 0.34"},
-      {:goth, "~> 1.3"}
+      {:goth, "~> 1.3"},
+      {:hackney, "~> 1.18"}
     ]
   end
 
@@ -81,6 +82,7 @@ defmodule Bright.MixProject do
       ],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": [
+        "assets.setup",
         "tailwind default --minify",
         "esbuild default --minify",
         "tailwind storybook --minify",

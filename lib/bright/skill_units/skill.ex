@@ -17,6 +17,12 @@ defmodule Bright.SkillUnits.Skill do
 
     belongs_to :skill_category, SkillCategory
 
+    has_many :skill_score_items, Bright.SkillScores.SkillScoreItem
+    has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
+    has_many :skill_exams, Bright.SkillExams.SkillExam
+    has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
+    has_many :skill_references, Bright.SkillReferences.SkillReference
+
     timestamps()
   end
 

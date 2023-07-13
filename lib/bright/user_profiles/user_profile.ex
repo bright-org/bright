@@ -33,13 +33,7 @@ defmodule Bright.UserProfiles.UserProfile do
       :github_url
     ])
     |> validate_required([
-      :user_id,
-      :title,
-      :detail,
-      :icon_file_path,
-      :twitter_url,
-      :facebook_url,
-      :github_url
+      :user_id
     ])
   end
 end

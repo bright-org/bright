@@ -112,7 +112,7 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/register")
 
-      assert conn.resp_body =~ "Register"
+      assert conn.resp_body =~ "ユーザー新規作成"
     end
   end
 end
