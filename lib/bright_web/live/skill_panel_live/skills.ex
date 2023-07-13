@@ -27,7 +27,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_class(params["class"])
      |> assign_skill_units()
      |> assign_skill_score()
-     |> assign_skill_score_item_dict()}
+     |> assign_skill_score_item_dict()
+     |> assign_counter()}
   end
 
   defp assign_skill_class(socket, nil), do: assign_skill_class(socket, "1")
@@ -85,6 +86,18 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     socket
     |> assign(skill_score_item_dict: skill_score_item_dict)
+  end
+
+  defp assign_counter(socket) do
+    # （いまは関数名がらしくないですが）続くタスクで他の処理もいれる想定
+    num_skills =
+      socket.assigns.skill_units
+      |> Enum.flat_map(& &1.skill_categories)
+      |> Enum.map(&Enum.count(&1.skills))
+      |> Enum.sum()
+
+    socket
+    |> assign(:num_skills, num_skills)
   end
 
   defp build_table_structure(skill_units) do
