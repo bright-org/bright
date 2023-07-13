@@ -149,6 +149,10 @@ defmodule BrightWeb.LayoutComponents do
   ## Examples
       <.side_menu />
   """
+
+  # TODO　暫定的にマイページをtitleに設定　タイトルの整理が完了時にdefaultから外すこと
+  attr :title, :string, default: "マイページ"
+
   def side_menu(assigns) do
     ~H"""
     <aside
@@ -156,26 +160,23 @@ defmodule BrightWeb.LayoutComponents do
     >
       <img src="./images/common/logo.svg" width="163px" class="ml-4" />
       <ul class="grid pt-2">
-        <.menu_item text="マイページ" href="/mypage" active />
-        <.menu_item text="キャリアパス" href="/mypage" />
-        <.menu_item text="スキルアップ" href="/mypage" />
-        <.menu_item text="チームスキル分析" href="/mypage" />
-        <.menu_item text="キャリアパス" href="/mypage" />
+        <%= for {title, path} <- links() do %>
+          <li>
+            <a class={menu_active_style(title == assigns.title)} href={path} ><%= title %></a>
+          </li>
+        <% end %>
       </ul>
     </aside>
     """
   end
 
-  attr :active, :boolean, default: false
-  attr :text, :string, default: ""
-  attr :href, :string, default: ""
-
-  defp menu_item(assigns) do
-    ~H"""
-    <li>
-      <a class={menu_active_style(@active)} href="/mypage"><%= @text %></a>
-    </li>
-    """
+  def links() do
+    [
+      {"マイページ", "/mypage"},
+      {"キャリアパス", "/mypage"},
+      {"スキルアップ", "/mypage"},
+      {"チームスキル分析", "/mypage"}
+    ]
   end
 
   defp menu_active_style(true),
