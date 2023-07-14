@@ -22,15 +22,6 @@ defmodule BrightWeb.MypageLive.Index do
     |> then(&{:ok, &1})
   end
 
-  def convert_to_card_item(notification) do
-    notification
-    # TODO 「何時間前」の計算を入れること
-    |> Map.delete(:inserted_at)
-    # TODO 「何時間前」の計算後の処理を書くこと
-    |> Map.merge(%{time: 1, highlight: true})
-    |> Map.take([:icon_type, :message, :time, :highlight, :inserted_at])
-  end
-
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
@@ -82,6 +73,16 @@ defmodule BrightWeb.MypageLive.Index do
 
     socket
     |> assign(:contact_datas, contact_datas)
+  end
+
+  def convert_to_card_item(notification) do
+    {:ok, inserted_at} = DateTime.from_naive( notification.inserted_at, "Etc/UTC")
+    time = (DateTime.diff(DateTime.utc_now(), inserted_at)) / 3600
+    |> trunc()
+
+    notification
+    |> Map.merge(%{time: time, highlight: time <= 8 })
+    |> Map.take([:icon_type, :message, :time, :highlight, :inserted_at])
   end
 
   def contact_type("チーム招待"), do: "team invite"
