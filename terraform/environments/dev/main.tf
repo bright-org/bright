@@ -80,3 +80,14 @@ module "service_account_github_actions" {
     "roles/cloudbuild.builds.builder"
   ]
 }
+
+module "managed_service_account_cloudbuild" {
+  source = "../../modules/google/managed_service_account"
+
+  id = "cloudbuild"
+
+  roles = [
+    "roles/run.admin",
+    "roles/iam.serviceAccountUser"
+  ]
+}
