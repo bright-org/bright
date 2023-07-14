@@ -84,10 +84,10 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:contact_datas, contact_datas)
   end
 
-  def contact_type("チーム招待"), do: "recruitment_coordination"
-  def contact_type("デイリー"), do: "recruitment_coordination1"
-  def contact_type("ウイークリー"), do: "recruitment_coordination1"
-  def contact_type("採用の調整"), do: "recruitment_coordination1"
-  def contact_type("スキルパネル更新"), do: "recruitment_coordination1"
-  def contact_type("運営"), do: "recruitment_coordination1"
+  def contact_type("チーム招待"), do: "team invite"
+  def contact_type("デイリー"), do: "daily"
+  def contact_type("ウイークリー"), do: "weekly"
+  def contact_type("採用の調整"), do: "recruitment_coordination"
+  def contact_type("スキルパネル更新"), do: "skill_panel_update"
+  def contact_type("運営"), do: "operation"
 end
