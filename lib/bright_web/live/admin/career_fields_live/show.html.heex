@@ -1,0 +1,29 @@
+<.header>
+  Career fields <%= @career_fields.id %>
+  <:subtitle>This is a career_fields record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/admin/career_fields/#{@career_fields}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit career_fields</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @career_fields.name %></:item>
+  <:item title="Background color"><%= @career_fields.background_color %></:item>
+  <:item title="Button color"><%= @career_fields.button_color %></:item>
+  <:item title="Position"><%= @career_fields.position %></:item>
+</.list>
+
+<.back navigate={~p"/admin/career_fields"}>Back to career_fields</.back>
+
+<.modal :if={@live_action == :edit} id="career_fields-modal" show on_cancel={JS.patch(~p"/admin/career_fields/#{@career_fields}")}>
+  <.live_component
+    module={BrightWeb.Admin.CareerFieldsLive.FormComponent}
+    id={@career_fields.id}
+    title={@page_title}
+    action={@live_action}
+    career_fields={@career_fields}
+    patch={~p"/admin/career_fields/#{@career_fields}"}
+  />
+</.modal>
