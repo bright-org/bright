@@ -12,7 +12,7 @@ defmodule BrightWeb.ContactCardComponents do
       <.contact_card />
   """
   attr :datas, :list, default: []
-  attr :card, :map, default: %{selected_tab: ""}
+  attr :card, :map
 
   def contact_card(assigns) do
     ~H"""
