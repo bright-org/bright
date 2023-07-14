@@ -91,3 +91,9 @@ module "managed_service_account_cloudbuild" {
     "roles/iam.serviceAccountUser"
   ]
 }
+
+module "oidc_github_actions" {
+  source = "../../modules/google/oidc_github_actions"
+
+  service_account_id = module.service_account_github_actions.id
+}
