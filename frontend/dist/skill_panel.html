@@ -825,7 +825,7 @@
                   <div class="flex">
                     <div
                       class="bg-test bg-contain h-20 w-20 mr-5"
-                      style=" 76
+                      style="
                         background-image: url('/dist/images/sample/sample-image.png');
                       "
                     ></div>
@@ -1161,13 +1161,6 @@
                           <p class="inline-flex flex-1 justify-center">
                             piacere
                           </p>
-                        </div>
-                      </td>
-                      <td class="!border-l !border-brightGray-200">
-                        <div class="flex justify-center items-center">
-                          <p class="inline-flex flex-1 justify-center">
-                            piacere
-                          </p>
                           <button
                             type="button"
                             class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
@@ -1185,7 +1178,7 @@
                           </p>
                           <button
                             type="button"
-                            class="text-white bg-brightGray-900 hover:bg-brightGray-600 rounded-full w-3 h-3 inline-flex items-center justify-center"
+                            class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
                           >
                             <span class="material-icons-outlined !text-xs"
                               >close</span
@@ -1207,15 +1200,15 @@
                       <th class="bg-base text-white text-center">合計</th>
                       <td>
                         <div class="flex justify-center gap-x-2">
-                          <div class="min-w-[4em] flex items-center">
+                          <div class="min-w-[3em] flex items-center">
                             <span
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"
+                              class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
                             ></span
                             >68％
                           </div>
-                          <div class="min-w-[4em] flex items-center">
+                          <div class="min-w-[3em] flex items-center">
                             <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block mr-1"
                             ></span
                             >12％
                           </div>
@@ -1225,62 +1218,32 @@
                         <div class="flex justify-center gap-x-1">
                           <div class="min-w-[3em] flex items-center">
                             <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
+                              class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"
                             ></span
-                            >68
+                            >68％
                           </div>
                           <div class="min-w-[3em] flex items-center">
                             <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"
                             ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
+                            >12％
                           </div>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td rowspan="7" class="align-top">
+                      <td rowspan="4" class="align-top">
                         Elixir本体
                         <button class="relative top-1 ml-1">
                           <img src="images/common/icons/upBrightGreen.svg" />
                         </button>
                       </td>
-                      <td rowspan="4" class="align-top">基本</td>
+                      <td rowspan="2" class="align-top">基本</td>
                       <td>
                         <div class="flex justify-between items-center">
-                          <p>基本型／演算子／制御構文／パイプ</p>
+                          <p class="truncate">
+                            基本型／演算子／制御構文／パイプ
+                          </p>
                           <div
                             class="flex justify-between items-center gap-x-2"
                           >
@@ -1315,7 +1278,9 @@
                         </div>
                       </td>
                       <td>
-                        <div class="flex gap-x-4 px-4">
+                        <div
+                          class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
+                        >
                           <div class="flex items-center">
                             <input
                               id="radio-1"
@@ -1326,7 +1291,7 @@
                             />
                             <label
                               for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
+                              class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
                             ></label>
                           </div>
                           <div class="flex items-center">
@@ -1340,7 +1305,7 @@
                             />
                             <label
                               for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
                             ></label>
                           </div>
                           <div class="flex items-center">
@@ -1361,49 +1326,10 @@
                       </td>
                       <td>
                         <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
+                          <div class="flex items-center">
                             <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
+                              class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"
+                            ></span>
                           </div>
                         </div>
                       </td>
@@ -1411,18 +1337,24 @@
                     <tr>
                       <td>
                         <div class="flex justify-between items-center">
-                          <p>config追加／変更</p>
+                          <p class="truncate">config追加／変更</p>
                           <div
                             class="flex justify-between items-center gap-x-2"
                           >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
+                            <button class="text-brightGreen-600">
+                              <img
+                                src="images/common/icons/skillEvidenceActive.svg"
+                              />
                             </button>
                             <button>
-                              <img src="images/common/icons/addFile.svg" />
+                              <img
+                                src="images/common/icons/skillStudyActive.svg"
+                              />
                             </button>
                             <button>
-                              <img src="images/common/icons/addFile.svg" />
+                              <img
+                                src="images/common/icons/skillTestActive.svg"
+                              />
                             </button>
                           </div>
                         </div>
@@ -1444,590 +1376,77 @@
                         </div>
                       </td>
                       <td>
-                        <div class="flex gap-x-4 px-4">
-                          <div class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></label>
-                          </div>
+                        <div
+                          class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
+                        >
+                          <span
+                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
+                          ></span>
                         </div>
                       </td>
                       <td>
                         <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"
+                          ></span>
                         </div>
                       </td>
                     </tr>
                     <tr>
+                      <td rowspan="2" class="align-top">基本</td>
                       <td>
                         <div class="flex justify-between items-center">
-                          <p>リスト／マップ／タプル</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex gap-x-4 px-4">
-                          <div class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></label>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div class="flex justify-between items-center">
-                          <p>関数パターンマッチ／ガード節</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex gap-x-4 px-4">
-                          <div class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></label>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td rowspan="3">データ処理</td>
-                      <td>
-                        <div class="flex justify-between items-center">
-                          <p>Enum.map</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex gap-x-4 px-4">
-                          <div class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></label>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div class="flex justify-between items-center">
-                          <p>Enum.reduce</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex gap-x-4 px-4">
-                          <div class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></label>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div class="flex justify-between items-center gap-x-4">
-                          <p class="truncate inline-block">
-                            Enum.filter／reject／sort／uniq／split／slice／daaa
+                          <p class="truncate">
+                            Enum.filter／reject／sort／uniq／split／slice／／／／／
                           </p>
                           <div
-                            class="flex justify-between items-center gap-x-2 w-16"
+                            class="flex justify-between items-center gap-x-2"
                           >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
+                            <button class="text-brightGreen-600">
+                              <img
+                                src="images/common/icons/skillEvidence.svg"
+                              />
                             </button>
                             <button>
-                              <img src="images/common/icons/addFile.svg" />
+                              <img src="images/common/icons/skillStudy.svg" />
                             </button>
                             <button>
-                              <img src="images/common/icons/addFile.svg" />
+                              <img src="images/common/icons/skillTest.svg" />
                             </button>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <div class="flex gap-x-4 px-4">
+                        <div class="flex justify-center gap-x-1">
+                          <div class="min-w-[3em] flex items-center">
+                            <span
+                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                            ></span
+                            >68％
+                          </div>
+                          <div class="min-w-[3em] flex items-center">
+                            <span
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                            ></span
+                            >12％
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
+                        >
                           <div class="flex items-center">
                             <input
                               id="radio-1"
                               type="radio"
                               value=""
-                              name="elixir-radio-2"
+                              name="elixir-radio-1"
                               class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             />
                             <label
                               for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
+                              class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
                             ></label>
                           </div>
                           <div class="flex items-center">
@@ -2036,12 +1455,12 @@
                               id="radio-2"
                               type="radio"
                               value=""
-                              name="elixir-radio-2"
+                              name="elixir-radio-1"
                               class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             />
                             <label
                               for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
                             ></label>
                           </div>
                           <div class="flex items-center">
@@ -2050,7 +1469,7 @@
                               id="radio-3"
                               type="radio"
                               value=""
-                              name="elixir-radio-2"
+                              name="elixir-radio-1"
                               class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             />
                             <label
@@ -2062,86 +1481,122 @@
                       </td>
                       <td>
                         <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
+                          <div class="flex items-center">
                             <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
+                              class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"
+                            ></span>
                           </div>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td rowspan="7" class="align-top bg-lapislazuli-50">
-                        Elixir本体
-                        <button>
-                          <span
-                            class="material-icons !text-sm text-brightGreen-600"
-                            >open_in_new</span
+                      <td>
+                        <div class="flex justify-between items-center">
+                          <p class="truncate">Enum.map</p>
+                          <div
+                            class="flex justify-between items-center gap-x-2"
                           >
+                            <button class="text-brightGreen-600">
+                              <img
+                                src="images/common/icons/skillEvidenceActive.svg"
+                              />
+                            </button>
+                            <button>
+                              <img
+                                src="images/common/icons/skillStudyActive.svg"
+                              />
+                            </button>
+                            <button>
+                              <img
+                                src="images/common/icons/skillTestActive.svg"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex justify-center gap-x-1">
+                          <div class="min-w-[3em] flex items-center">
+                            <span
+                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                            ></span
+                            >68％
+                          </div>
+                          <div class="min-w-[3em] flex items-center">
+                            <span
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                            ></span
+                            >12％
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
+                        >
+                          <span
+                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
+                          ></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex justify-center gap-x-1">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"
+                          ></span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td rowspan="4" class="align-top">
+                        Elixir本体
+                        <button class="relative top-1 ml-1">
+                          <img src="images/common/icons/upBrightGreen.svg" />
                         </button>
                       </td>
-                      <td rowspan="4" class="align-top bg-lapislazuli-50">
-                        基本
-                      </td>
-                      <td class="bg-lapislazuli-50">
+                      <td rowspan="2" class="align-top">基本</td>
+                      <td>
                         <div class="flex justify-between items-center">
-                          <p>基本型／演算子／制御構文／パイプ</p>
+                          <p class="truncate">
+                            基本型／演算子／制御構文／パイプ
+                          </p>
                           <div
                             class="flex justify-between items-center gap-x-2"
                           >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
+                            <button class="text-brightGreen-600">
+                              <img
+                                src="images/common/icons/skillEvidence.svg"
+                              />
                             </button>
                             <button>
-                              <img src="images/common/icons/addFile.svg" />
+                              <img src="images/common/icons/skillStudy.svg" />
                             </button>
                             <button>
-                              <img src="images/common/icons/addFile.svg" />
+                              <img src="images/common/icons/skillTest.svg" />
                             </button>
                           </div>
                         </div>
                       </td>
-                      <td class="bg-lapislazuli-50">
-                        <div class="flex gap-x-4 px-4">
+                      <td>
+                        <div class="flex justify-center gap-x-1">
+                          <div class="min-w-[3em] flex items-center">
+                            <span
+                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                            ></span
+                            >68％
+                          </div>
+                          <div class="min-w-[3em] flex items-center">
+                            <span
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                            ></span
+                            >12％
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
+                        >
                           <div class="flex items-center">
                             <input
                               id="radio-1"
@@ -2152,7 +1607,7 @@
                             />
                             <label
                               for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
+                              class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
                             ></label>
                           </div>
                           <div class="flex items-center">
@@ -2166,7 +1621,7 @@
                             />
                             <label
                               for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
                             ></label>
                           </div>
                           <div class="flex items-center">
@@ -2187,114 +1642,36 @@
                       </td>
                       <td>
                         <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
+                          <div class="flex items-center">
                             <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
+                              class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"
+                            ></span>
                           </div>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td class="bg-lapislazuli-50">
+                      <td>
                         <div class="flex justify-between items-center">
-                          <p>config追加／変更</p>
+                          <p class="truncate">config追加／変更</p>
                           <div
                             class="flex justify-between items-center gap-x-2"
                           >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
+                            <button class="text-brightGreen-600">
+                              <img
+                                src="images/common/icons/skillEvidenceActive.svg"
+                              />
                             </button>
                             <button>
-                              <img src="images/common/icons/addFile.svg" />
+                              <img
+                                src="images/common/icons/skillStudyActive.svg"
+                              />
                             </button>
                             <button>
-                              <img src="images/common/icons/addFile.svg" />
+                              <img
+                                src="images/common/icons/skillTestActive.svg"
+                              />
                             </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="bg-lapislazuli-50">
-                        <div class="flex gap-x-4 px-4">
-                          <div class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></label>
                           </div>
                         </div>
                       </td>
@@ -2302,275 +1679,32 @@
                         <div class="flex justify-center gap-x-1">
                           <div class="min-w-[3em] flex items-center">
                             <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
+                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
                             ></span
-                            >68
+                            >68％
                           </div>
                           <div class="min-w-[3em] flex items-center">
                             <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
+                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
                             ></span
-                            >12
+                            >12％
                           </div>
                         </div>
                       </td>
                       <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
+                        <div
+                          class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
+                        >
+                          <span
+                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
+                          ></span>
                         </div>
                       </td>
                       <td>
                         <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="bg-lapislazuli-50">
-                        <div class="flex justify-between items-center">
-                          <p>リスト／マップ／タプル</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="bg-lapislazuli-50">
-                        <div class="flex gap-x-4 px-4">
-                          <div class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></label>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td class="bg-lapislazuli-50">
-                        <div class="flex justify-between items-center">
-                          <p>関数パターンマッチ／ガード節</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/addFile.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="bg-lapislazuli-50">
-                        <div class="flex gap-x-4 px-4">
-                          <div class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-1"
-                              class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                            ></label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-2"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              for="radio-2"
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></label>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-lapislazuli-600 inline-block mr-1"
-                            ></span
-                            >68
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-lapislazuli-300 inline-block mr-1"
-                            ></span
-                            >12
-                          </div>
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"
+                          ></span>
                         </div>
                       </td>
                     </tr>
