@@ -245,7 +245,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "edits by key input", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
-      # 最初のスキルを入力モードとする
+      # スキルを入力モードとする
       show_live
       |> element("#skill-score-item-1 .score-mark-none")
       |> render_click()
@@ -280,7 +280,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "move by key input", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
-      # 最初のスキルを入力モードとする
+      # スキルを入力モードとする
       show_live
       |> element("#skill-score-item-1 .score-mark-none")
       |> render_click()
