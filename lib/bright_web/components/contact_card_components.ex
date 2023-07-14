@@ -11,7 +11,7 @@ defmodule BrightWeb.ContactCardComponents do
   ## Examples
       <.contact_card />
   """
-  attr :datas, :list, default: []
+
   attr :card, :map
 
   def contact_card(assigns) do
@@ -19,28 +19,20 @@ defmodule BrightWeb.ContactCardComponents do
     <div>
       <h5>重量な連絡</h5>
       <.tab id="contact_card" tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]} selected_tab={@card.selected_tab}>
-        <.contact_card_body datas={@card.notifications} />
+        <ul class="flex gap-y-2.5 flex-col">
+          <%= for notification <- @card.notifications do %>
+            <.contact_card_row notification={notification} />
+          <% end %>
+        </ul>
       </.tab>
     </div>
     """
   end
 
-  attr :datas, :list, default: []
-
-  def contact_card_body(assigns) do
-    ~H"""
-    <ul class="flex gap-y-2.5 flex-col">
-      <%= for data <- assigns.datas do %>
-        <.contact_card_row data={data} />
-      <% end %>
-    </ul>
-    """
-  end
-
-  attr :data, :map, required: true
+  attr :notification, :map, required: true
 
   def contact_card_row(assigns) do
-    {:ok, inserted_at} = DateTime.from_naive(assigns.data.inserted_at, "Etc/UTC")
+    {:ok, inserted_at} = DateTime.from_naive(assigns.notification.inserted_at, "Etc/UTC")
     highlight_minutes = 60 * 60 * 8
 
     minutes =
@@ -59,9 +51,9 @@ defmodule BrightWeb.ContactCardComponents do
     ~H"""
     <li class="text-left flex items-center text-base">
       <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-        <%= assigns.data.icon_type %>
+        <%= @notification.icon_type %>
       </span>
-      <%= assigns.data.message %>
+      <%= @notification.message %>
       <span class={@style}><%= @time_text %></span>
     </li>
     """
