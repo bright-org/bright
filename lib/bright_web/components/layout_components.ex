@@ -12,6 +12,7 @@ defmodule BrightWeb.LayoutComponents do
   ## Examples
       <.user_header />
   """
+  attr :profile, :map
   def user_header(assigns) do
     ~H"""
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
@@ -20,7 +21,7 @@ defmodule BrightWeb.LayoutComponents do
         <.contact_customer_success_button />
         <.search_for_skill_holders_button />
         <.bell_button />
-        <.user_button />
+        <.user_button icon_file_path={@profile.icon_file_path}/>
       </div>
     </div>
     """
@@ -87,11 +88,12 @@ defmodule BrightWeb.LayoutComponents do
   ## Examples
       <.button />
   """
+  attr :icon_file_path, :string
   def user_button(assigns) do
     ~H"""
     <button id="user_menu_dropmenu" class="hover:opacity-70" data-dropdown-toggle="user_menu">
       <img class="inline-block h-10 w-10 rounded-full"
-          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
+          src={@icon_file_path} />
     </button>
     <.user_menu />
     """
