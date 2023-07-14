@@ -26,8 +26,7 @@ defmodule BrightWeb.MypageLive.Index do
      |> assign(:page_title, "Listing Mypages")
      |> assign(:profile, profile)
      |> assign(:contact_datas, contact_datas)
-     |> assign(:contact_card, create_card_param("チーム招待"))
-    }
+     |> assign(:contact_card, create_card_param("チーム招待"))}
   end
 
   def convert_to_card_item(notification) do
@@ -46,23 +45,24 @@ defmodule BrightWeb.MypageLive.Index do
 
   @impl true
 
-
-
-  def handle_event("tab_click", %{"id" => "contact_card", "tab_name" => tab_name} = _params, socket) do
+  def handle_event(
+        "tab_click",
+        %{"id" => "contact_card", "tab_name" => tab_name} = _params,
+        socket
+      ) do
     contact_card = create_card_param(tab_name)
 
-
-    {:noreply, socket
-    |> assign(:contact_card, contact_card)
-    }
+    {:noreply,
+     socket
+     |> assign(:contact_card, contact_card)}
   end
 
-  def handle_event(event_name, params, socket) do
-    # TODO tabイベント検証
-    IO.inspect("------------------")
-    IO.inspect(event_name)
-    IO.inspect(params)
-    IO.inspect("------------------")
+  def handle_event(_event_name, _params, socket) do
+    # TODO tabイベント検証 tabのイベント周りが完成後に削除予定
+    # IO.inspect("------------------")
+    # IO.inspect(_event_name)
+    # IO.inspect(_params)
+    # IO.inspect("------------------")
     {:noreply, socket}
   end
 
