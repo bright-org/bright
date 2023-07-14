@@ -173,9 +173,12 @@ defmodule BrightWeb.LayoutComponents do
   def links() do
     [
       {"マイページ", "/mypage"},
-      {"キャリアパス", "/mypage"},
-      {"スキルアップ", "/mypage"},
-      {"チームスキル分析", "/mypage"}
+      {"スキルを選ぶ", "/onboardings"},
+      {"成長を見る・比較する", "/mypage"},
+      {"スキルパネルを入力", "/mypage"},
+      {"スキルアップを目指す", "/mypage"},
+      {"チームスキル分析", "/mypage"},
+      {"キャリアパスを選ぶ", "/mypage"}
     ]
   end
 
