@@ -27,25 +27,3 @@ jobs:
       - name: Run tflint
         run: |
           tflint
-  plan:
-    needs: lint
-    strategy:
-      matrix:
-        env: [dev]
-    name: Plan for ${{ matrix.env }}
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: terraform/environments/${{ matrix.env }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.2
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      - name: Run terraform init
-        run: |
-          terraform init
-      - name: Run terraform plan
-        run: |
-          terraform plan
