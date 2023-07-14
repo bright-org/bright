@@ -1,4 +1,7 @@
 defmodule Bright.Jobs.CareerField do
+  @moduledoc """
+  キャリアフィールドを扱うスキーマ
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

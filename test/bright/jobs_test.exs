@@ -21,7 +21,12 @@ defmodule Bright.JobsTest do
     end
 
     test "create_career_field/1 with valid data creates a career_field" do
-      valid_attrs = %{background_color: "some background_color", button_color: "some button_color", name: "some name", position: 42}
+      valid_attrs = %{
+        background_color: "some background_color",
+        button_color: "some button_color",
+        name: "some name",
+        position: 42
+      }
 
       assert {:ok, %CareerField{} = career_field} = Jobs.create_career_field(valid_attrs)
       assert career_field.background_color == "some background_color"
@@ -36,9 +41,17 @@ defmodule Bright.JobsTest do
 
     test "update_career_field/2 with valid data updates the career_field" do
       career_field = career_field_fixture()
-      update_attrs = %{background_color: "some updated background_color", button_color: "some updated button_color", name: "some updated name", position: 43}
 
-      assert {:ok, %CareerField{} = career_field} = Jobs.update_career_field(career_field, update_attrs)
+      update_attrs = %{
+        background_color: "some updated background_color",
+        button_color: "some updated button_color",
+        name: "some updated name",
+        position: 43
+      }
+
+      assert {:ok, %CareerField{} = career_field} =
+               Jobs.update_career_field(career_field, update_attrs)
+
       assert career_field.background_color == "some updated background_color"
       assert career_field.button_color == "some updated button_color"
       assert career_field.name == "some updated name"
