@@ -31,7 +31,7 @@ defmodule BrightWeb.TabComponents do
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
-        <.tab_footer previous_enable={@previous_enable} next_enable={@next_enable}/>
+        <.tab_footer id={@id} previous_enable={@previous_enable} next_enable={@next_enable}/>
       </div>
     </div>
     """
@@ -141,6 +141,7 @@ defmodule BrightWeb.TabComponents do
     """
   end
 
+  attr :id, :string
   attr :previous_enable, :boolean
   attr :next_enable, :boolean
 
@@ -169,6 +170,7 @@ defmodule BrightWeb.TabComponents do
         type="button"
         class={@previous_button_style}
         phx-click="previous_button_click"
+        phx-value-id={@id}
       >
         <span class={@previous_span_style} >chevron_left</span> 前
       </button>
@@ -176,6 +178,7 @@ defmodule BrightWeb.TabComponents do
         type="button"
         class={@next_button_style}
         phx-click="next_button_click"
+         phx-value-id={@id}
       >
         次 <span class={@next_span_style} >chevron_right</span>
       </button>
