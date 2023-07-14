@@ -40,11 +40,21 @@ defmodule BrightWeb.ContactCardComponents do
   attr :data, :map, required: true
 
   def contact_card_row(assigns) do
-    style = highlight(assigns.data.highlight) <> " font-bold pl-4 inline-block"
+    {:ok, inserted_at} = DateTime.from_naive(assigns.data.inserted_at, "Etc/UTC")
+    highlight_minutes = 60 * 60 * 8
+
+    minutes =
+      (DateTime.diff(DateTime.utc_now(), inserted_at) / 60)
+      |> trunc()
+
+    time_text = if minutes < 60, do: "#{minutes}分前", else: "#{trunc(minutes / 60)}時間前"
+
+    style = highlight(minutes < highlight_minutes) <> " font-bold pl-4 inline-block"
 
     assigns =
       assigns
       |> assign(:style, style)
+      |> assign(:time_text, time_text)
 
     ~H"""
     <li class="text-left flex items-center text-base">
@@ -52,7 +62,7 @@ defmodule BrightWeb.ContactCardComponents do
         <%= assigns.data.icon_type %>
       </span>
       <%= assigns.data.message %>
-      <span class={@style}><%= "#{assigns.data.time}時間前" %></span>
+      <span class={@style}><%= @time_text %></span>
     </li>
     """
   end

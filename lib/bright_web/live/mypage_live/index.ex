@@ -69,20 +69,9 @@ defmodule BrightWeb.MypageLive.Index do
         socket.assigns.current_user.id,
         type
       )
-      |> Enum.map(&convert_to_card_item/1)
 
     socket
     |> assign(:contact_datas, contact_datas)
-  end
-
-  def convert_to_card_item(notification) do
-    {:ok, inserted_at} = DateTime.from_naive( notification.inserted_at, "Etc/UTC")
-    time = (DateTime.diff(DateTime.utc_now(), inserted_at)) / 3600
-    |> trunc()
-
-    notification
-    |> Map.merge(%{time: time, highlight: time <= 8 })
-    |> Map.take([:icon_type, :message, :time, :highlight, :inserted_at])
   end
 
   def contact_type("チーム招待"), do: "team invite"
