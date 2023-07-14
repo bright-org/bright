@@ -14,19 +14,12 @@ defmodule BrightWeb.MypageLive.Index do
   def mount(_params, _session, socket) do
     profile = UserProfiles.get_user_profile_by_name(socket.assigns.current_user.name)
 
-    contact_datas =
-      Notifications.list_notification_by_type(
-        socket.assigns.current_user.id,
-        "recruitment_coordination"
-      )
-      |> Enum.map(&convert_to_card_item/1)
-
-    {:ok,
-     socket
-     |> assign(:page_title, "Listing Mypages")
-     |> assign(:profile, profile)
-     |> assign(:contact_datas, contact_datas)
-     |> assign(:contact_card, create_card_param("チーム招待"))}
+    socket
+    |> assign(:page_title, "Listing Mypages")
+    |> assign(:profile, profile)
+    |> assign(:contact_card, create_card_param("チーム招待"))
+    |> assign_contact_card()
+    |> then(&{:ok, &1})
   end
 
   def convert_to_card_item(notification) do
@@ -74,5 +67,17 @@ defmodule BrightWeb.MypageLive.Index do
 
   def create_card_param(selected_tab) do
     %{selected_tab: selected_tab}
+  end
+
+  def assign_contact_card(socket) do
+    contact_datas =
+      Notifications.list_notification_by_type(
+        socket.assigns.current_user.id,
+        "recruitment_coordination"
+      )
+      |> Enum.map(&convert_to_card_item/1)
+
+    socket
+    |> assign(:contact_datas, contact_datas)
   end
 end
