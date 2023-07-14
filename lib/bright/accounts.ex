@@ -4,6 +4,7 @@ defmodule Bright.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Bright.UserProfiles
   alias Bright.Repo
 
   alias Bright.Accounts.{User, UserToken, UserNotifier}
@@ -70,9 +71,20 @@ defmodule Bright.Accounts do
 
   """
   def register_user(attrs) do
-    %User{}
-    |> User.registration_changeset(attrs)
-    |> Repo.insert()
+    user_changeset =
+      %User{}
+      |> User.registration_changeset(attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, user_changeset)
+    |> Ecto.Multi.run(:user_profile, fn _repo, %{user: user} ->
+      UserProfiles.create_initial_user_profile(user.id)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, _, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """
