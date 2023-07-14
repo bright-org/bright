@@ -1,6 +1,11 @@
 defmodule Bright.Jobs.CareerFields do
+  @moduledoc """
+  キャリアフィールドを扱うスキーマ
+  """
   use Ecto.Schema
   import Ecto.Changeset
+
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
 
   schema "career_fields" do
     field :background_color, :string
