@@ -21,7 +21,12 @@ defmodule Bright.JobsTest do
     end
 
     test "create_career_fields/1 with valid data creates a career_fields" do
-      valid_attrs = %{background_color: "some background_color", button_color: "some button_color", name: "some name", position: 42}
+      valid_attrs = %{
+        background_color: "some background_color",
+        button_color: "some button_color",
+        name: "some name",
+        position: 42
+      }
 
       assert {:ok, %CareerFields{} = career_fields} = Jobs.create_career_fields(valid_attrs)
       assert career_fields.background_color == "some background_color"
@@ -36,9 +41,17 @@ defmodule Bright.JobsTest do
 
     test "update_career_fields/2 with valid data updates the career_fields" do
       career_fields = career_fields_fixture()
-      update_attrs = %{background_color: "some updated background_color", button_color: "some updated button_color", name: "some updated name", position: 43}
 
-      assert {:ok, %CareerFields{} = career_fields} = Jobs.update_career_fields(career_fields, update_attrs)
+      update_attrs = %{
+        background_color: "some updated background_color",
+        button_color: "some updated button_color",
+        name: "some updated name",
+        position: 43
+      }
+
+      assert {:ok, %CareerFields{} = career_fields} =
+               Jobs.update_career_fields(career_fields, update_attrs)
+
       assert career_fields.background_color == "some updated background_color"
       assert career_fields.button_color == "some updated button_color"
       assert career_fields.name == "some updated name"
@@ -47,7 +60,10 @@ defmodule Bright.JobsTest do
 
     test "update_career_fields/2 with invalid data returns error changeset" do
       career_fields = career_fields_fixture()
-      assert {:error, %Ecto.Changeset{}} = Jobs.update_career_fields(career_fields, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.update_career_fields(career_fields, @invalid_attrs)
+
       assert career_fields == Jobs.get_career_fields!(career_fields.id)
     end
 

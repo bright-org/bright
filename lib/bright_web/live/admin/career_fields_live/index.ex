@@ -33,7 +33,10 @@ defmodule BrightWeb.Admin.CareerFieldsLive.Index do
   end
 
   @impl true
-  def handle_info({BrightWeb.Admin.CareerFieldsLive.FormComponent, {:saved, career_fields}}, socket) do
+  def handle_info(
+        {BrightWeb.Admin.CareerFieldsLive.FormComponent, {:saved, career_fields}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :career_fields_collection, career_fields)}
   end
 
