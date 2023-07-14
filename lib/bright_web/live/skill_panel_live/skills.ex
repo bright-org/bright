@@ -4,6 +4,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores
+  alias Bright.SkillEvidences
   alias BrightWeb.SkillPanelLive.SkillScoreItemComponent
 
   @impl true
@@ -29,7 +30,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_units()
      |> assign_skill_score()
      |> assign_skill_score_item_dict()
-     |> assign_counter()}
+     |> assign_counter()
+     |> apply_action(socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :show, _params), do: socket
+
+  defp apply_action(socket, :show_evidences, params) do
+    socket
+    |> assign_skill(params["skill_id"])
+    |> assign_skill_evidence()
+    |> create_skill_evidence_if_not_existing()
   end
 
   @impl true
@@ -146,6 +157,42 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket
     |> assign(counter: counter, num_skills: num_skills)
   end
+
+  defp assign_skill(socket, skill_id) do
+    skill =
+      socket.assigns.skill_units
+      |> Enum.flat_map(& &1.skill_categories)
+      |> Enum.flat_map(& &1.skills)
+      |> Enum.find(&(&1.id == skill_id))
+
+    socket |> assign(skill: skill)
+  end
+
+  defp assign_skill_evidence(socket) do
+    skill_evidence =
+      SkillEvidences.get_skill_evidence_by(
+        user_id: socket.assigns.current_user.id,
+        skill_id: socket.assigns.skill.id
+      )
+
+    socket
+    |> assign(skill_evidence: skill_evidence)
+  end
+
+  defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do
+    {:ok, skill_evidence} =
+      SkillEvidences.create_skill_evidence(%{
+        user_id: socket.assigns.current_user.id,
+        skill_id: socket.assigns.skill.id,
+        progress: :wip,
+        skill_evidence_posts: []
+      })
+
+    socket
+    |> assign(skill_evidence: skill_evidence)
+  end
+
+  defp create_skill_evidence_if_not_existing(socket), do: socket
 
   defp calc_percentage(_count, 0), do: 0
 

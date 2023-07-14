@@ -38,6 +38,13 @@ defmodule Bright.SkillEvidences do
   def get_skill_evidence!(id), do: Repo.get!(SkillEvidence, id)
 
   @doc """
+  Gets a single skill_evidence by condition
+  """
+  def get_skill_evidence_by(condition) do
+    Repo.get_by(SkillEvidence, condition)
+  end
+
+  @doc """
   Creates a skill_evidence.
 
   ## Examples
