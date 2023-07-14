@@ -45,9 +45,10 @@ defmodule BrightWeb.MypageLive.Index do
       ) do
     contact_card = create_card_param(tab_name)
 
-    {:noreply,
-     socket
-     |> assign(:contact_card, contact_card)}
+    socket
+    |> assign(:contact_card, contact_card)
+    |> assign_contact_card()
+    |> then(&{:noreply, &1})
   end
 
   def handle_event(_event_name, _params, socket) do
@@ -70,14 +71,23 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def assign_contact_card(socket) do
+    type = contact_type(socket.assigns.contact_card.selected_tab)
+
     contact_datas =
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
-        "recruitment_coordination"
+        type
       )
       |> Enum.map(&convert_to_card_item/1)
 
     socket
     |> assign(:contact_datas, contact_datas)
   end
+
+  def contact_type("チーム招待"), do: "recruitment_coordination"
+  def contact_type("デイリー"), do: "recruitment_coordination1"
+  def contact_type("ウイークリー"), do: "recruitment_coordination1"
+  def contact_type("採用の調整"), do: "recruitment_coordination1"
+  def contact_type("スキルパネル更新"), do: "recruitment_coordination1"
+  def contact_type("運営"), do: "recruitment_coordination1"
 end
