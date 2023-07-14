@@ -58,20 +58,22 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def create_card_param(selected_tab) do
-    %{selected_tab: selected_tab}
+    %{selected_tab: selected_tab, notifications: []}
   end
 
   def assign_contact_card(socket) do
     type = contact_type(socket.assigns.contact_card.selected_tab)
 
-    contact_datas =
+    notifications =
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
         type
       )
 
+    contact_card = %{socket.assigns.contact_card | notifications: notifications}
+
     socket
-    |> assign(:contact_datas, contact_datas)
+    |> assign(:contact_card, contact_card)
   end
 
   def contact_type("チーム招待"), do: "team invite"
