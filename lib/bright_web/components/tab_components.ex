@@ -14,7 +14,7 @@ defmodule BrightWeb.TabComponents do
   attr :id, :string, default: "tab01"
   attr :tabs, :list
   slot :inner_block
-  attr :selected_index, :integer, default: 0
+  attr :selected_tab, :string, default: ""
   attr :previous_enable, :boolean, default: false
   attr :next_enable, :boolean, default: false
   attr :menu_items, :list, default: []
@@ -24,7 +24,7 @@ defmodule BrightWeb.TabComponents do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
-        <.tab_header id={@id} tabs={@tabs} selected_index={@selected_index} menu_items={@menu_items} />
+        <.tab_header id={@id} tabs={@tabs} selected_tab={@selected_tab} menu_items={@menu_items} />
         <%= if @inner_tab do %>
           <.inner_tab />
         <% end %>
@@ -39,14 +39,14 @@ defmodule BrightWeb.TabComponents do
 
   attr :id, :string
   attr :tabs, :list
-  attr :selected_index, :integer
+  attr :selected_tab, :string, default: ""
   attr :menu_items, :list
 
   defp tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-50">
-      <%= for {item, index} <- Enum.with_index(@tabs) do %>
-        <.tab_header_item id={@id}  tab_name={item} selected={index == @selected_index}> <%= item %></.tab_header_item>
+      <%= for item <- @tabs do %>
+        <.tab_header_item id={@id}  tab_name={item} selected={item == @selected_tab}> <%= item %></.tab_header_item>
       <% end %>
       <%= if length(@menu_items) > 0 do %>
         <.tab_menu_button id={@id} menu_items={@menu_items}/>
