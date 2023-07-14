@@ -4,6 +4,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores
+  alias BrightWeb.SkillPanelLive.SkillScoreItemComponent
 
   @impl true
   def mount(params, _session, socket) do
@@ -29,6 +30,46 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_score()
      |> assign_skill_score_item_dict()
      |> assign_counter()}
+  end
+
+  @impl true
+  def handle_info({SkillScoreItemComponent, {:score_change, skill_score_item, score}}, socket) do
+    # 習得率の変動反映
+    current_score = skill_score_item.score
+
+    counter =
+      socket.assigns.counter
+      |> Map.update!(current_score, &(&1 - 1))
+      |> Map.update!(score, &(&1 + 1))
+
+    # スキルスコア更新
+    {:ok, {skill_score, skill_score_item}} =
+      Bright.Repo.transaction(fn ->
+        percentage = calc_percentage(counter.high, socket.assigns.num_skills)
+
+        {:ok, skill_score_item} =
+          SkillScores.update_skill_score_item(skill_score_item, %{score: score})
+
+        {:ok, skill_score} =
+          SkillScores.update_skill_score_percentage(socket.assigns.skill_score, percentage)
+
+        {skill_score, skill_score_item}
+      end)
+
+    # TODO: streamを一覧に使用するようにリファクタリング検討
+    # 親LiveView側に更新が入る関係で skill_score_item_dict の書き換えが必要になったため、現在はそのようにしているが描画効率が良くない
+    # ほかの画面更新要素（教材・試験・エビデンス）も実装感をみて対応を決める方針
+    skill_score_item_dict =
+      socket.assigns.skill_score_item_dict
+      |> Map.put(skill_score_item.skill_id, skill_score_item)
+
+    {:noreply,
+     socket
+     |> assign(
+       skill_score: skill_score,
+       counter: counter,
+       skill_score_item_dict: skill_score_item_dict
+     )}
   end
 
   defp assign_skill_class(socket, nil), do: assign_skill_class(socket, "1")
@@ -89,7 +130,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp assign_counter(socket) do
-    # （いまは関数名がらしくないですが）続くタスクで他の処理もいれる想定
+    counter =
+      socket.assigns.skill_score_item_dict
+      |> Map.values()
+      |> Enum.reduce(%{low: 0, middle: 0, high: 0}, fn skill_score_item, acc ->
+        Map.update!(acc, skill_score_item.score, &(&1 + 1))
+      end)
+
     num_skills =
       socket.assigns.skill_units
       |> Enum.flat_map(& &1.skill_categories)
@@ -97,7 +144,14 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Enum.sum()
 
     socket
-    |> assign(:num_skills, num_skills)
+    |> assign(counter: counter, num_skills: num_skills)
+  end
+
+  defp calc_percentage(_count, 0), do: 0
+
+  defp calc_percentage(count, num_skills) do
+    (count / num_skills)
+    |> Kernel.*(100)
   end
 
   defp build_table_structure(skill_units) do

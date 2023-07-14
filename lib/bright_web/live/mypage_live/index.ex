@@ -24,7 +24,7 @@ defmodule BrightWeb.MypageLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Listing Mypages")
-     |> assign(:profile, profile || dummy_profile())
+     |> assign(:profile, profile)
      |> assign(:contact_datas, contact_datas)
      |> assign(:contact_card, create_card_param("チーム招待"))
     }
@@ -74,18 +74,5 @@ defmodule BrightWeb.MypageLive.Index do
 
   def create_card_param(selected_tab) do
     %{selected_tab: selected_tab}
-  end
-
-  # 正式な処理が入るまでダミーデータを表示
-  def dummy_profile do
-    %{
-      user: %{name: "ダミー名前"},
-      title: "ダミー称号",
-      detail: "ダミー詳細",
-      icon_file_path: "",
-      twitter_url: "",
-      github_url: "",
-      facebook_url: ""
-    }
   end
 end

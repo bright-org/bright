@@ -323,4 +323,104 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
              |> has_element?()
     end
   end
+
+  describe "Shows skill score percentages" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    @tag score: nil
+    test "shows updated value", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      # 初期表示
+      assert show_live
+             |> element(".score-high-percentage", "0％")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-middle-percentage", "0％")
+             |> has_element?()
+
+      # 各スキルスコア入力と、習得率表示更新
+      show_live
+      |> element("#skill-score-item-1 .score-mark-none")
+      |> render_click()
+
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "1"})
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "1"})
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "2"})
+
+      assert show_live
+             |> element(".score-high-percentage", "66％")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-middle-percentage", "33％")
+             |> has_element?()
+
+      # 各スキルスコアの削除（lowにする操作）と、習得率表示更新
+      show_live
+      |> element("#skill-score-item-1 .score-mark-high")
+      |> render_click()
+
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "3"})
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "3"})
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "3"})
+
+      assert show_live
+             |> element(".score-high-percentage", "0％")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-middle-percentage", "0％")
+             |> has_element?()
+    end
+  end
+
+  describe "Security" do
+    setup [:register_and_log_in_user]
+
+    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn} do
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      skill_unit =
+        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+
+      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
+
+      dummy_user = insert(:user)
+
+      insert(:skill_score_item,
+        skill_score: build(:skill_score, user: dummy_user, skill_class: skill_class),
+        skill: skill,
+        score: :high
+      )
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      refute show_live
+             |> element(".score-mark-high")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-mark-none")
+             |> has_element?()
+    end
+  end
 end

@@ -3,6 +3,7 @@ defmodule Bright.AccountsTest do
 
   alias Bright.Repo
   alias Bright.Accounts
+  alias Bright.UserProfiles.UserProfile
 
   import Bright.Factory
   alias Bright.Accounts.{User, UserToken}
@@ -100,13 +101,31 @@ defmodule Bright.AccountsTest do
       assert "has already been taken" in errors_on(changeset).email
     end
 
-    test "registers users with a hashed password" do
+    test "user initial data is not created when error" do
+      {:error, _changeset} = Accounts.register_user(%{})
+
+      refute Repo.exists?(UserProfile)
+    end
+
+    test "registers users with a hashed password and user initial data" do
       email = unique_user_email()
       {:ok, user} = Accounts.register_user(params_for(:user_before_registration, email: email))
+      user_id = user.id
+
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
       assert is_nil(user.password)
+
+      assert %UserProfile{
+               user_id: ^user_id,
+               title: nil,
+               detail: nil,
+               icon_file_path: nil,
+               twitter_url: nil,
+               facebook_url: nil,
+               github_url: nil
+             } = Repo.get_by(UserProfile, user_id: user_id)
     end
   end
 
