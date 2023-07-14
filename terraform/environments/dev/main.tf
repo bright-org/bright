@@ -12,6 +12,10 @@ module "db" {
   password          = var.db_password
 }
 
+module "cloud_run_service" {
+  source = "../../modules/google/cloud_run_service"
+}
+
 module "secret_db_username" {
   source = "../../modules/google/secret"
 
@@ -54,6 +58,25 @@ module "secret_sendgrid_api_key" {
   data = var.sendgrid_api_key
 }
 
-module "cloud_run_service" {
-  source = "../../modules/google/cloud_run_service"
+module "service_account_cloud_run" {
+  source = "../../modules/google/service_account"
+
+  id          = "cloud-run"
+  description = "For Cloud Run"
+
+  roles = [
+    "roles/cloudsql.client",
+    "roles/secretmanager.secretAccessor"
+  ]
+}
+
+module "service_account_github_actions" {
+  source = "../../modules/google/service_account"
+
+  id          = "github-actions"
+  description = "For GitHub Actions"
+
+  roles = [
+    "roles/cloudbuild.builds.builder"
+  ]
 }
