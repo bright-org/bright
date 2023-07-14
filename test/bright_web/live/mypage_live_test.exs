@@ -9,6 +9,7 @@ defmodule BrightWeb.MypageLiveTest do
       password = valid_user_password()
 
       user = create_user_with_password(password)
+      insert(:user_profile, user: user)
 
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
