@@ -44,6 +44,7 @@ defmodule BrightWeb.Admin.UserOnboardingsLiveTest do
       assert html =~ "User onboardings created successfully"
     end
 
+    # TODO: 自動生成されたHTMLと実際のHTMLが異なる。後日修正する
     # test "updates user_onboardings in listing", %{conn: conn, user_onboardings: user_onboardings} do
     #   {:ok, index_live, _html} = live(conn, ~p"/admin/user_onboardings")
 

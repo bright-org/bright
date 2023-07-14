@@ -1,4 +1,5 @@
 defmodule Bright.OnboardingsFixtures do
+  # TODO: fakerに書き直す
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Bright.Onboardings` context.
