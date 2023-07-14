@@ -100,24 +100,20 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
   end
 
   def handle_event("submit", %{"score" => score}, socket) do
-    skill_score_item = update_skill_score_item_score(socket.assigns.skill_score_item, score)
+    notify_score_change(socket.assigns.skill_score_item, String.to_atom(score))
 
-    {:noreply,
-     socket
-     |> assign(skill_score_item: skill_score_item, edit: false)}
+    {:noreply, socket |> assign(edit: false)}
   end
 
   def handle_event("shortcut_key", %{"key" => key}, socket) when key in ~w(1 2 3) do
     score = Map.get(@shortcut_key_score, key)
-    skill_score_item = update_skill_score_item_score(socket.assigns.skill_score_item, score)
+    notify_score_change(socket.assigns.skill_score_item, score)
 
     if not socket.assigns.last_row? do
       send_update(__MODULE__, id: "skill-score-item-#{socket.assigns.row_number + 1}", edit: true)
     end
 
-    {:noreply,
-     socket
-     |> assign(skill_score_item: skill_score_item, edit: false)}
+    {:noreply, socket |> assign(edit: false)}
   end
 
   def handle_event("shortcut_key", %{"key" => key}, socket) when key in ~w(ArrowDown Enter) do
@@ -155,11 +151,10 @@ defmodule BrightWeb.SkillPanelLive.SkillScoreItemComponent do
 
   defp create_skill_score_item_if_not_existing(socket), do: socket
 
-  defp update_skill_score_item_score(skill_score_item, score) do
-    {:ok, skill_score_item} =
-      SkillScores.update_skill_score_item(skill_score_item, %{score: score})
+  defp notify_score_change(%{score: current_score}, score) when current_score == score, do: nil
 
-    skill_score_item
+  defp notify_score_change(skill_score_item, score) do
+    send(self(), {__MODULE__, {:score_change, skill_score_item, score}})
   end
 
   defp score_mark_class(nil) do

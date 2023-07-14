@@ -12,12 +12,13 @@ defmodule BrightWeb.ContactCardComponents do
       <.contact_card />
   """
   attr :datas, :list, default: []
+  attr :card, :map, default: %{selected_tab: ""}
 
   def contact_card(assigns) do
     ~H"""
     <div>
       <h5>重量な連絡</h5>
-      <.tab tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]}>
+      <.tab id="contact_card" tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]} selected_tab={@card.selected_tab}>
         <.contact_card_body datas={@datas} />
       </.tab>
     </div>

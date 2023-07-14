@@ -24,8 +24,9 @@ defmodule BrightWeb.MypageLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Listing Mypages")
-     |> assign(:profile, profile || dummy_profile())
-     |> assign(:contact_datas, contact_datas)}
+     |> assign(:profile, profile)
+     |> assign(:contact_datas, contact_datas)
+     |> assign(:contact_card, create_card_param("チーム招待"))}
   end
 
   def convert_to_card_item(notification) do
@@ -42,22 +43,36 @@ defmodule BrightWeb.MypageLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl true
+
+  def handle_event(
+        "tab_click",
+        %{"id" => "contact_card", "tab_name" => tab_name} = _params,
+        socket
+      ) do
+    contact_card = create_card_param(tab_name)
+
+    {:noreply,
+     socket
+     |> assign(:contact_card, contact_card)}
+  end
+
+  def handle_event(_event_name, _params, socket) do
+    # TODO tabイベント検証 tabのイベント周りが完成後に削除予定
+    # IO.inspect("------------------")
+    # IO.inspect(_event_name)
+    # IO.inspect(_params)
+    # IO.inspect("------------------")
+    {:noreply, socket}
+  end
+
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Mypages")
     |> assign(:mypage, nil)
   end
 
-  # 正式な処理が入るまでダミーデータを表示
-  def dummy_profile do
-    %{
-      user: %{name: "ダミー名前"},
-      title: "ダミー称号",
-      detail: "ダミー詳細",
-      icon_file_path: "",
-      twitter_url: "",
-      github_url: "",
-      facebook_url: ""
-    }
+  def create_card_param(selected_tab) do
+    %{selected_tab: selected_tab}
   end
 end
