@@ -31,7 +31,7 @@ defmodule BrightWeb.CommunicationCardComponents do
     """
   end
 
-  attr :communication, :map, required: true
+  attr :notification, :map, required: true
 
   def communication_card_row(assigns) do
     # TODO ↓contact_card_rowのソースと同じ　他のカードと考えて最終的には共通をすること
