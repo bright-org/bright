@@ -14,12 +14,34 @@ attr = %{
   from_user_id: user.id,
   to_user_id: user.id,
   icon_type: "person",
-  message: "nako2さんからの紹介 / mikaさん / Web開発（Elixir）",
+  message: "nakoさんからの紹介 / mikaさん / Web開発（Elixir）",
   type: "recruitment_coordination",
   url: "sss"
 }
 
 Notifications.create_notification(attr)
+```
+
+```elixir
+user = Accounts.get_user_by_name("ymn")
+
+defmodule TestData do
+  def create_data(type, id) do
+    attr = %{
+      from_user_id: id,
+      to_user_id: id,
+      icon_type: "person",
+      message: "テストデータ" <> type,
+      type: type,
+      url: "sss"
+    }
+
+    Notifications.create_notification(attr)
+  end
+end
+
+["team invite", "daily", "weekly", "recruitment_coordination", "skill_panel_update", "operation"]
+|> Enum.each(fn x -> TestData.create_data(x, user.id) end)
 ```
 
 ```elixir
