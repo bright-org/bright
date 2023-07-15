@@ -14,30 +14,14 @@ defmodule BrightWeb.MypageLive.Index do
   def mount(_params, _session, socket) do
     profile = UserProfiles.get_user_profile_by_name(socket.assigns.current_user.name)
 
-    contact_datas =
-      Notifications.list_notification_by_type(
-        socket.assigns.current_user.id,
-        "recruitment_coordination"
-      )
-      |> Enum.map(&convert_to_card_item/1)
-
-    {:ok,
-     socket
-     |> assign(:page_title, "マイページ")
+    socket
+    |> assign(:page_title, "マイページ")
      # TODO 通知数はダミーデータ
-     |> assign(:notification_count, "99")
-     |> assign(:profile, profile)
-     |> assign(:contact_datas, contact_datas)
-     |> assign(:contact_card, create_card_param("チーム招待"))}
-  end
-
-  def convert_to_card_item(notification) do
-    notification
-    # TODO 「何時間前」の計算を入れること
-    |> Map.delete(:inserted_at)
-    # TODO 「何時間前」の計算後の処理を書くこと
-    |> Map.merge(%{time: 1, highlight: true})
-    |> Map.take([:icon_type, :message, :time, :highlight, :inserted_at])
+    |> assign(:notification_count, "99")
+    |> assign(:profile, profile)
+    |> assign(:contact_card, create_card_param("チーム招待"))
+    |> assign_contact_card()
+    |> then(&{:ok, &1})
   end
 
   @impl true
@@ -54,9 +38,10 @@ defmodule BrightWeb.MypageLive.Index do
       ) do
     contact_card = create_card_param(tab_name)
 
-    {:noreply,
-     socket
-     |> assign(:contact_card, contact_card)}
+    socket
+    |> assign(:contact_card, contact_card)
+    |> assign_contact_card()
+    |> then(&{:noreply, &1})
   end
 
   def handle_event(_event_name, _params, socket) do
@@ -75,6 +60,28 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def create_card_param(selected_tab) do
-    %{selected_tab: selected_tab}
+    %{selected_tab: selected_tab, notifications: []}
   end
+
+  def assign_contact_card(socket) do
+    type = contact_type(socket.assigns.contact_card.selected_tab)
+
+    notifications =
+      Notifications.list_notification_by_type(
+        socket.assigns.current_user.id,
+        type
+      )
+
+    contact_card = %{socket.assigns.contact_card | notifications: notifications}
+
+    socket
+    |> assign(:contact_card, contact_card)
+  end
+
+  def contact_type("チーム招待"), do: "team invite"
+  def contact_type("デイリー"), do: "daily"
+  def contact_type("ウイークリー"), do: "weekly"
+  def contact_type("採用の調整"), do: "recruitment_coordination"
+  def contact_type("スキルパネル更新"), do: "skill_panel_update"
+  def contact_type("運営"), do: "operation"
 end
