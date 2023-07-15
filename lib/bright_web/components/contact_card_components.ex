@@ -37,7 +37,7 @@ defmodule BrightWeb.ContactCardComponents do
     {:ok, inserted_at} = DateTime.from_naive(assigns.notification.inserted_at, "Etc/UTC")
 
     minutes =
-      (DateTime.diff(DateTime.utc_now(), inserted_at) / 60)
+      DateTime.diff(DateTime.utc_now(), inserted_at, :minute)
       |> trunc()
 
     time_text = if minutes < 60, do: "#{minutes}分前", else: "#{trunc(minutes / 60)}時間前"
