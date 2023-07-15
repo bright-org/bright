@@ -14,7 +14,7 @@ defmodule BrightWeb.TabComponents do
   attr :id, :string, default: "tab01"
   attr :tabs, :list
   slot :inner_block
-  attr :selected_index, :integer, default: 0
+  attr :selected_tab, :string, default: ""
   attr :previous_enable, :boolean, default: false
   attr :next_enable, :boolean, default: false
   attr :menu_items, :list, default: []
@@ -24,14 +24,14 @@ defmodule BrightWeb.TabComponents do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-200">
-        <.tab_header id={@id} tabs={@tabs} selected_index={@selected_index} menu_items={@menu_items} />
+        <.tab_header id={@id} tabs={@tabs} selected_tab={@selected_tab} menu_items={@menu_items} />
         <%= if @inner_tab do %>
           <.inner_tab />
         <% end %>
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
-        <.tab_footer previous_enable={@previous_enable} next_enable={@next_enable}/>
+        <.tab_footer id={@id} previous_enable={@previous_enable} next_enable={@next_enable}/>
       </div>
     </div>
     """
@@ -39,14 +39,14 @@ defmodule BrightWeb.TabComponents do
 
   attr :id, :string
   attr :tabs, :list
-  attr :selected_index, :integer
+  attr :selected_tab, :string, default: ""
   attr :menu_items, :list
 
   defp tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-50">
-      <%= for {item, index} <- Enum.with_index(@tabs) do %>
-        <.tab_header_item selected={index == @selected_index}> <%= item %></.tab_header_item>
+      <%= for item <- @tabs do %>
+        <.tab_header_item id={@id}  tab_name={item} selected={item == @selected_tab}> <%= item %></.tab_header_item>
       <% end %>
       <%= if length(@menu_items) > 0 do %>
         <.tab_menu_button id={@id} menu_items={@menu_items}/>
@@ -55,8 +55,10 @@ defmodule BrightWeb.TabComponents do
     """
   end
 
-  slot :inner_block
+  attr :id, :string
+  attr :tab_name, :string
   attr :selected, :boolean
+  slot :inner_block
 
   defp tab_header_item(assigns) do
     style = "py-3.5 w-full items-center justify-center inline-block"
@@ -69,7 +71,7 @@ defmodule BrightWeb.TabComponents do
 
     ~H"""
     <li class="w-full">
-      <a href="#" phx-click="tab_click" class={@style}>
+      <a href="#" phx-click="tab_click" phx-value-id={@id} phx-value-tab_name={@tab_name} class={@style}>
         <%= render_slot(@inner_block) %>
       </a>
     </li>
@@ -139,6 +141,7 @@ defmodule BrightWeb.TabComponents do
     """
   end
 
+  attr :id, :string
   attr :previous_enable, :boolean
   attr :next_enable, :boolean
 
@@ -166,12 +169,16 @@ defmodule BrightWeb.TabComponents do
       <button
         type="button"
         class={@previous_button_style}
+        phx-click="previous_button_click"
+        phx-value-id={@id}
       >
         <span class={@previous_span_style} >chevron_left</span> 前
       </button>
       <button
         type="button"
         class={@next_button_style}
+        phx-click="next_button_click"
+         phx-value-id={@id}
       >
         次 <span class={@next_span_style} >chevron_right</span>
       </button>

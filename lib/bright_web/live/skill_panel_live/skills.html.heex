@@ -55,7 +55,7 @@
       </tr>
 
       <%= for {[col1, col2, col3], row_number} <- build_table_structure(@skill_units) |> Enum.with_index(1) do %>
-        <tr>
+        <tr id={"skill-#{row_number}"}>
           <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
           <td :if={col2} rowspan={col2.size} class="align-top">
             <%= col2.skill_category.name %>
@@ -65,9 +65,9 @@
               <p><%= col3.skill.name %></p>
               <!-- 未実装：デザインまま START -->
               <div class="flex justify-between items-center gap-x-2">
-                <button>
+                <.link class="link-evidence" patch={~p"/panels/#{@skill_panel.id}/skills/#{col3.skill.id}/evidences"}>
                   <img src="/images/common/icons/addFile.svg" />
-                </button>
+                </.link>
                 <button>
                   <img src="/images/common/icons/addFile.svg" />
                 </button>
@@ -96,3 +96,19 @@
     </table>
   </div>
 </div>
+
+<.modal
+  :if={:show_evidences == @live_action}
+  id="skill-evidence-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
+
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillEvidenceComponent}
+    id={"#{@skill.id}-evidence"}
+    skill={@skill}
+    skill_evidence={@skill_evidence}
+    user={@current_user}
+    patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
+  />
+</.modal>

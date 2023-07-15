@@ -245,7 +245,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "edits by key input", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
-      # 最初のスキルを入力モードとする
+      # スキルを入力モードとする
       show_live
       |> element("#skill-score-item-1 .score-mark-none")
       |> render_click()
@@ -280,7 +280,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "move by key input", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
-      # 最初のスキルを入力モードとする
+      # スキルを入力モードとする
       show_live
       |> element("#skill-score-item-1 .score-mark-none")
       |> render_click()
@@ -392,6 +392,26 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  # エビデンス登録
+  describe "Skill evidence area" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    @tag score: nil
+    test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      show_live
+      |> element("#skill-1 .link-evidence")
+      |> render_click()
+
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences")
+
+      assert show_live
+             |> render() =~ skill_1.name
+    end
+  end
+
+  # アクセス制御など
   describe "Security" do
     setup [:register_and_log_in_user]
 
