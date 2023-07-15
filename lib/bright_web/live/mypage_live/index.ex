@@ -15,7 +15,9 @@ defmodule BrightWeb.MypageLive.Index do
     profile = UserProfiles.get_user_profile_by_name(socket.assigns.current_user.name)
 
     socket
-    |> assign(:page_title, "Listing Mypages")
+    |> assign(:page_title, "マイページ")
+    # TODO 通知数はダミーデータ
+    |> assign(:notification_count, "99")
     |> assign(:profile, profile)
     |> assign(:contact_card, create_card_param("チーム招待"))
     |> assign_contact_card()
@@ -53,7 +55,7 @@ defmodule BrightWeb.MypageLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Mypages")
+    |> assign(:page_title, "マイページ")
     |> assign(:mypage, nil)
   end
 

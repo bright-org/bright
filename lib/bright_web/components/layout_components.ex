@@ -3,6 +3,7 @@ defmodule BrightWeb.LayoutComponents do
   LayoutComponents
   """
   use Phoenix.Component
+  alias Bright.UserProfiles
 
   @doc """
   Renders a User Header
@@ -12,15 +13,24 @@ defmodule BrightWeb.LayoutComponents do
   ## Examples
       <.user_header />
   """
+  attr :profile, :map
+  attr :page_title, :string
+  attr :notification_count, :integer
+
   def user_header(assigns) do
+    assigns =
+      assigns
+      |> assign(:profile, assigns.profile || %UserProfiles.UserProfile{})
+      |> assign(:notification_count, assigns.notification_count || 0)
+
     ~H"""
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
-      <h4>マイページ</h4>
+      <h4><%= @page_title %></h4>
       <div class="flex gap-x-5">
         <.contact_customer_success_button />
         <.search_for_skill_holders_button />
-        <.bell_button />
-        <.user_button />
+        <.bell_button notification_count={@notification_count}/>
+        <.user_button icon_file_path={@profile.icon_file_path}/>
       </div>
     </div>
     """
@@ -68,15 +78,19 @@ defmodule BrightWeb.LayoutComponents do
   ## Examples
       <.bell_button />
   """
+  attr :notification_count, :integer
+
   def bell_button(assigns) do
     ~H"""
     <button type="button"
       class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center relative">
       <span class="material-icons">notifications_none</span>
-      <div
-          class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2">
-          1
-      </div>
+      <%= if @notification_count > 0 do %>
+        <div
+            class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2">
+            <%= @notification_count %>
+        </div>
+      <% end %>
     </button>
     """
   end
@@ -87,11 +101,13 @@ defmodule BrightWeb.LayoutComponents do
   ## Examples
       <.button />
   """
+  attr :icon_file_path, :string
+
   def user_button(assigns) do
     ~H"""
     <button id="user_menu_dropmenu" class="hover:opacity-70" data-dropdown-toggle="user_menu">
       <img class="inline-block h-10 w-10 rounded-full"
-          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
+          src={@icon_file_path} />
     </button>
     <.user_menu />
     """
