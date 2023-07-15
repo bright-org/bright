@@ -19,7 +19,7 @@ defmodule BrightWeb.LayoutComponents do
   def user_header(assigns) do
     ~H"""
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
-      <h4><%= assigns.page_title %></h4>
+      <h4><%= @page_title %></h4>
       <div class="flex gap-x-5">
         <.contact_customer_success_button />
         <.search_for_skill_holders_button />
