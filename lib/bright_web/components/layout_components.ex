@@ -3,6 +3,7 @@ defmodule BrightWeb.LayoutComponents do
   LayoutComponents
   """
   use Phoenix.Component
+  alias Bright.UserProfiles
 
   @doc """
   Renders a User Header
@@ -17,6 +18,11 @@ defmodule BrightWeb.LayoutComponents do
   attr :notification_count, :integer
 
   def user_header(assigns) do
+    assigns =
+      assigns
+      |> assign(:profile, assigns.profile || %UserProfiles.UserProfile{})
+      |> assign(:notification_count, assigns.notification_count || 0)
+
     ~H"""
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
       <h4><%= @page_title %></h4>
