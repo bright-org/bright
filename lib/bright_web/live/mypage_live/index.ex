@@ -16,7 +16,7 @@ defmodule BrightWeb.MypageLive.Index do
 
     socket
     |> assign(:page_title, "マイページ")
-     # TODO 通知数はダミーデータ
+    # TODO 通知数はダミーデータ
     |> assign(:notification_count, "99")
     |> assign(:profile, profile)
     |> assign(:contact_card, create_card_param("チーム招待"))
