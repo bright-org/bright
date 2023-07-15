@@ -6,7 +6,7 @@ defmodule Bright.Onboardings do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.Onboardings.UserOnboardings
+  alias Bright.Onboardings.UserOnboarding
 
   @doc """
   Returns the list of user_onboardings.
@@ -14,92 +14,92 @@ defmodule Bright.Onboardings do
   ## Examples
 
       iex> list_user_onboardings()
-      [%UserOnboardings{}, ...]
+      [%UserOnboarding{}, ...]
 
   """
   def list_user_onboardings do
-    Repo.all(UserOnboardings)
+    Repo.all(UserOnboarding)
   end
 
   @doc """
-  Gets a single user_onboardings.
+  Gets a single user_onboarding.
 
-  Raises `Ecto.NoResultsError` if the User onboardings does not exist.
+  Raises `Ecto.NoResultsError` if the User onboarding does not exist.
 
   ## Examples
 
-      iex> get_user_onboardings!(123)
-      %UserOnboardings{}
+      iex> get_user_onboarding!(123)
+      %UserOnboarding{}
 
-      iex> get_user_onboardings!(456)
+      iex> get_user_onboarding!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_user_onboardings!(id), do: Repo.get!(UserOnboardings, id)
+  def get_user_onboarding!(id), do: Repo.get!(UserOnboarding, id)
 
   @doc """
-  Creates a user_onboardings.
+  Creates a user_onboarding.
 
   ## Examples
 
-      iex> create_user_onboardings(%{field: value})
-      {:ok, %UserOnboardings{}}
+      iex> create_user_onboarding(%{field: value})
+      {:ok, %UserOnboarding{}}
 
-      iex> create_user_onboardings(%{field: bad_value})
+      iex> create_user_onboarding(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user_onboardings(attrs \\ %{}) do
-    %UserOnboardings{}
-    |> UserOnboardings.changeset(attrs)
+  def create_user_onboarding(attrs \\ %{}) do
+    %UserOnboarding{}
+    |> UserOnboarding.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a user_onboardings.
+  Updates a user_onboarding.
 
   ## Examples
 
-      iex> update_user_onboardings(user_onboardings, %{field: new_value})
-      {:ok, %UserOnboardings{}}
+      iex> update_user_onboarding(user_onboarding, %{field: new_value})
+      {:ok, %UserOnboarding{}}
 
-      iex> update_user_onboardings(user_onboardings, %{field: bad_value})
+      iex> update_user_onboarding(user_onboarding, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user_onboardings(%UserOnboardings{} = user_onboardings, attrs) do
-    user_onboardings
-    |> UserOnboardings.changeset(attrs)
+  def update_user_onboarding(%UserOnboarding{} = user_onboarding, attrs) do
+    user_onboarding
+    |> UserOnboarding.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a user_onboardings.
+  Deletes a user_onboarding.
 
   ## Examples
 
-      iex> delete_user_onboardings(user_onboardings)
-      {:ok, %UserOnboardings{}}
+      iex> delete_user_onboarding(user_onboarding)
+      {:ok, %UserOnboarding{}}
 
-      iex> delete_user_onboardings(user_onboardings)
+      iex> delete_user_onboarding(user_onboarding)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_user_onboardings(%UserOnboardings{} = user_onboardings) do
-    Repo.delete(user_onboardings)
+  def delete_user_onboarding(%UserOnboarding{} = user_onboarding) do
+    Repo.delete(user_onboarding)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user_onboardings changes.
+  Returns an `%Ecto.Changeset{}` for tracking user_onboarding changes.
 
   ## Examples
 
-      iex> change_user_onboardings(user_onboardings)
-      %Ecto.Changeset{data: %UserOnboardings{}}
+      iex> change_user_onboarding(user_onboarding)
+      %Ecto.Changeset{data: %UserOnboarding{}}
 
   """
-  def change_user_onboardings(%UserOnboardings{} = user_onboardings, attrs \\ %{}) do
-    UserOnboardings.changeset(user_onboardings, attrs)
+  def change_user_onboarding(%UserOnboarding{} = user_onboarding, attrs \\ %{}) do
+    UserOnboarding.changeset(user_onboarding, attrs)
   end
 
   alias Bright.Onboardings.OnboardingWant

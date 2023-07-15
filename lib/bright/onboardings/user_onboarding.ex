@@ -1,4 +1,4 @@
-defmodule Bright.Onboardings.UserOnboardings do
+defmodule Bright.Onboardings.UserOnboarding do
   @moduledoc """
   ユーザーのオンボーディング結果を扱うスキーマ。
   """
