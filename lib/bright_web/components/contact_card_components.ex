@@ -5,6 +5,8 @@ defmodule BrightWeb.ContactCardComponents do
   use Phoenix.Component
   import BrightWeb.TabComponents
 
+  @highlight_minutes 60 * 60 * 8
+
   @doc """
   Renders a Contact
 
@@ -33,7 +35,6 @@ defmodule BrightWeb.ContactCardComponents do
 
   def contact_card_row(assigns) do
     {:ok, inserted_at} = DateTime.from_naive(assigns.notification.inserted_at, "Etc/UTC")
-    highlight_minutes = 60 * 60 * 8
 
     minutes =
       (DateTime.diff(DateTime.utc_now(), inserted_at) / 60)
@@ -41,7 +42,7 @@ defmodule BrightWeb.ContactCardComponents do
 
     time_text = if minutes < 60, do: "#{minutes}分前", else: "#{trunc(minutes / 60)}時間前"
 
-    style = highlight(minutes < highlight_minutes) <> " font-bold pl-4 inline-block"
+    style = highlight(minutes < @highlight_minutes) <> " font-bold pl-4 inline-block"
 
     assigns =
       assigns
