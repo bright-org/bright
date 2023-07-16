@@ -19,12 +19,16 @@ defmodule BrightWeb.OnboardingLive.Index do
       user_id: current_user.id
     }
 
-    {:ok, _} = Onboardings.create_user_onboarding(onboarding)
+    case Onboardings.create_user_onboarding(onboarding) do
+      {:ok, _} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "オンボーディングをスキップしました")
+         |> redirect(to: ~p"/mypage")}
 
-    {:noreply,
-     socket
-     |> put_flash(:info, "オンボーディングをスキップしました")
-     |> redirect(to: ~p"/mypage")}
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, changeset)}
+    end
   end
 
   @impl true
