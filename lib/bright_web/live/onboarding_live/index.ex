@@ -11,6 +11,27 @@ defmodule BrightWeb.OnboardingLive.Index do
   end
 
   @impl true
+  def handle_event("skip_onboarding", _value, socket) do
+    current_user = socket.assigns.current_user
+
+    onboarding = %{
+      completed_at: NaiveDateTime.utc_now(),
+      user_id: current_user.id
+    }
+
+    case Onboardings.create_user_onboarding(onboarding) do
+      {:ok, _team} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "オンボーディングをスキップしました")
+         |> redirect(to: ~p"/mypage")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, changeset)}
+    end
+  end
+
+  @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
