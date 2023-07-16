@@ -78,7 +78,7 @@ defmodule BrightWeb.UserLoginLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/reset_password")
 
-      assert conn.resp_body =~ "Forgot your password?"
+      assert conn.resp_body =~ "パスワードを忘れた方へ"
     end
   end
 end
