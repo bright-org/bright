@@ -2,28 +2,36 @@ defmodule BrightWeb.UserForgotPasswordLive do
   use BrightWeb, :live_view
 
   alias Bright.Accounts
+  alias BrightWeb.UserAuthComponents
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Forgot your password?
-        <:subtitle>We'll send a password reset link to your inbox</:subtitle>
-      </.header>
+      <h1 class="font-bold text-center text-3xl">
+        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">パスワードを忘れた方へ</span>
+      </h1>
 
-      <.simple_form for={@form} id="reset_password_form" phx-submit="send_email">
-        <.input field={@form[:email]} type="email" placeholder="Email" required />
-        <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
-            Send password reset instructions
-          </.button>
-        </:actions>
-      </.simple_form>
-      <p class="text-center text-sm mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
-    </div>
+      <p class="mt-8 mx-auto text-sm w-fit">パスワードをリセットするリンクをメールに送ります。<br>登録しているユーザーのメールアドレスを入力してください。</p>
+
+      <.form
+        :let={_f}
+        for={@form}
+        id="reset_password_form"
+        class="flex mt-8 mx-auto relative"
+        phx-submit="send_email"
+      >
+        <section class="flex flex-col mx-auto">
+          <label for="email" class="mt-4">
+            <span class="block font-bold mb-2 text-xs">メールアドレス</span>
+            <UserAuthComponents.input field={@form[:email]} id="email" type="email" required />
+          </label>
+
+          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold mt-8 max-w-xs px-4 py-2 rounded select-none text-white w-full hover:opacity-50">パスワードリセット用リンクを送信</button>
+
+          <.link href={~p"/users/log_in"} class="text-center bg-white border border-solid border-black font-bold mt-16 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">
+            戻る
+          </.link>
+        </section>
+      </.form>
     """
   end
 

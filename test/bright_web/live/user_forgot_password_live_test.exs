@@ -11,9 +11,17 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
     test "renders email page", %{conn: conn} do
       {:ok, lv, html} = live(conn, ~p"/users/reset_password")
 
-      assert html =~ "Forgot your password?"
-      assert has_element?(lv, ~s|a[href="#{~p"/users/register"}"]|, "Register")
-      assert has_element?(lv, ~s|a[href="#{~p"/users/log_in"}"]|, "Log in")
+      assert html =~ "パスワードを忘れた方へ"
+      assert has_element?(lv, ~s|a[href="/users/log_in"]|, "戻る")
+    end
+
+    test "redirects log_in page when click 戻る button", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/reset_password")
+
+      lv
+      |> element("a", "戻る")
+      |> render_click()
+      |> follow_redirect(conn, ~p"/users/log_in")
     end
 
     test "redirects if already logged in", %{conn: conn} do
