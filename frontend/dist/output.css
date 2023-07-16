@@ -1075,6 +1075,14 @@ input.coustom-checkbox:checked:after{
   height: 75px;
 }
 
+.h-\[48px\]{
+  height: 48px;
+}
+
+.h-\[60px\]{
+  height: 60px;
+}
+
 .max-h-full{
   max-height: 100%;
 }
@@ -1366,6 +1374,18 @@ input.coustom-checkbox:checked:after{
 
 .w-\[938px\]{
   width: 938px;
+}
+
+.w-\[480px\]{
+  width: 480px;
+}
+
+.w-\[48px\]{
+  width: 48px;
+}
+
+.w-\[60px\]{
+  width: 60px;
 }
 
 .min-w-\[150px\]{
@@ -2010,6 +2030,11 @@ input.coustom-checkbox:checked:after{
   background-color: rgb(239 240 240 / var(--tw-bg-opacity)) !important;
 }
 
+.bg-attention-100{
+  --tw-bg-opacity: 1;
+  background-color: rgb(253 205 212 / var(--tw-bg-opacity));
+}
+
 .bg-opacity-30{
   --tw-bg-opacity: 0.3;
 }
@@ -2516,6 +2541,16 @@ input.coustom-checkbox:checked:after{
 .text-white{
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-attention-300{
+  --tw-text-opacity: 1;
+  color: rgb(227 113 121 / var(--tw-text-opacity));
+}
+
+.text-attention-600{
+  --tw-text-opacity: 1;
+  color: rgb(229 50 63 / var(--tw-text-opacity));
 }
 
 .underline{
