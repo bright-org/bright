@@ -46,6 +46,7 @@ defmodule BrightWeb.MypageLive.Index do
         socket
       ) do
     page = socket.assigns.contact_card.page_param.page - 1
+    page = if page < 1, do: 1, else: page
     contact_card_view(socket, socket.assigns.contact_card.selected_tab, page)
   end
 
@@ -55,6 +56,12 @@ defmodule BrightWeb.MypageLive.Index do
         socket
       ) do
     page = socket.assigns.contact_card.page_param.page + 1
+
+    page =
+      if page > socket.assigns.contact_card.total_pages,
+        do: socket.assigns.contact_card.total_pages,
+        else: page
+
     contact_card_view(socket, socket.assigns.contact_card.selected_tab, page)
   end
 
@@ -88,7 +95,12 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def create_card_param(selected_tab, page \\ 1) do
-    %{selected_tab: selected_tab, notifications: [], page_param: %{page: page, page_size: 5}}
+    %{
+      selected_tab: selected_tab,
+      notifications: [],
+      page_param: %{page: page, page_size: 5},
+      total_pages: 0
+    }
   end
 
   def contact_card_view(socket, tab_name, page \\ 1) do
@@ -110,7 +122,11 @@ defmodule BrightWeb.MypageLive.Index do
         socket.assigns.contact_card.page_param
       )
 
-    contact_card = %{socket.assigns.contact_card | notifications: notifications}
+    contact_card = %{
+      socket.assigns.contact_card
+      | notifications: notifications.entries,
+        total_pages: notifications.total_pages
+    }
 
     socket
     |> assign(:contact_card, contact_card)
