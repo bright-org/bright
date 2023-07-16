@@ -6,6 +6,7 @@ module.exports = {
   content: ["./*.{html,js}"],
   theme: {
     colors: {
+      current: "currentColor",
       base: "#333333",
       transparent: "transparent",
       brightGreen: {
@@ -66,7 +67,7 @@ module.exports = {
       infra: {
         dark: "#51971A",
         light: "#8CEB14",
-        dazzle: "#8CEB14",
+        dazzle: "#F2FFE1",
       },
       enginner: {
         dark: "#165BC8",
@@ -87,6 +88,12 @@ module.exports = {
         dark: "#D3000E",
         light: "#FD5B87",
         dazzle: "#FFE9EF",
+      },
+      skillPanek: {
+        brightGreen600: "#0EA895",
+        brightGreen300: "#14D6BE",
+        amethyst600: "#C04CD0",
+        amethyst300: "#DD6DED",
       },
     },
     extend: {
@@ -142,7 +149,7 @@ module.exports = {
           alignSelf: "center",
         },
         h3: {
-          fontSize: theme("fontSize.2xl"),
+          fontSize: "28px",
           fontWeight: theme("fontWeight.bold"),
           letterSpacing: theme("letterSpacing.tight"),
           alignSelf: "center",

@@ -28,11 +28,10 @@ defmodule BrightWeb.UserLoginLive do
 
         <p class="absolute bg-white border border-solid border-brightGray-300 flex h-20 left-2/4 top-2/4 items-center justify-center -ml-10 -mt-10 rounded-full text-brightGray-500 text-xs w-20 z-2">または</p>
 
-
         <section class="flex flex-col pt-0 pr-0 pl-16 w-2/4">
           <label for="email" class="mt-4">
             <span class="block font-bold mb-2 text-xs">メールアドレス</span>
-            <UserAuthComponents.input field={@form[:email]} id="email" type="email" label="Email" required />
+            <UserAuthComponents.input field={@form[:email]} id="email" type="email" required />
           </label>
 
           <label for="password" class="mt-4">
@@ -45,7 +44,7 @@ defmodule BrightWeb.UserLoginLive do
         </section>
       </.form>
 
-      <p class="mt-8 text-link text-center"><.link navigate={~p"/users/register"} class="text-xs underline">ユーザー新規作成はこちら</.link></p>
+      <p class="mt-8 text-link text-center text-xs"><.link navigate={~p"/users/register"} class="underline">ユーザー新規作成はこちら</.link></p>
     """
   end
 

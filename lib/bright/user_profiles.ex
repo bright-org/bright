@@ -58,6 +58,19 @@ defmodule Bright.UserProfiles do
   end
 
   @doc """
+  Creates a initial user_profile.
+
+  ## Examples
+
+      iex> create_initial_user_profile(user_id)
+      {:ok, %UserProfile{}}
+
+  """
+  def create_initial_user_profile(user_id) do
+    create_user_profile(%{user_id: user_id})
+  end
+
+  @doc """
   Gets a single user_profile.
 
   ## Examples

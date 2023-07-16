@@ -4,6 +4,9 @@ defmodule BrightWeb.IntriguingCardComponents do
   """
   use Phoenix.Component
   import BrightWeb.ProfileComponents
+  import BrightWeb.TabComponents
+
+  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
 
   @doc """
   Renders a Intriguing Card
@@ -11,101 +14,46 @@ defmodule BrightWeb.IntriguingCardComponents do
   ## Examples
       <.intriguing_card />
   """
+
+  attr :user_profiles, :map,
+    default: [
+      %{
+        user_name: "nokichi",
+        title: "アプリエンジニア",
+        icon_file_path:
+          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+      },
+      %{
+        user_name: "user2",
+        title: "ほげほげ",
+        icon_file_path:
+          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+      }
+    ]
+
   def intriguing_card(assigns) do
+    menu_items = [
+      %{text: "カスタムグループを作る", href: "/"},
+      %{text: "カスタムグループの編集", href: "/"},
+      %{text: "カスタムグループの削除", href: "/"}
+    ]
+
+    assigns =
+      assigns
+      |> assign(:menu_items, menu_items)
+
     ~H"""
     <div>
-      <h5>気になる</h5>
-      <div class="bg-white rounded-md mt-1">
-        <div class="text-sm font-medium text-center text-brightGray-200">
-          <ul class="flex content-between border-b border-brightGray-50">
-            <li class="w-full">
-              <a
-                href="#"
-                class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-              >
-                参考になる人
-              </a>
-            </li>
-            <li class="w-full">
-              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">採用</a>
-            </li>
-            <li class="w-full">
-              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">離任者</a>
-            </li>
-            <li class="w-full">
-              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
-                スキルパネル
-              </a>
-            </li>
-            <li class="w-full">
-              <a href="#" class="py-3.5 w-full items-center justify-center inline-block">ジョブ</a>
-            </li>
-            <li class="flex items-center">
-              <button
-                type="button"
-                id="dropmenu04"
-                data-dropdown-toggle="menu04"
-                class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
-              >
-                <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
-              </button>
-              <!-- Dropdown menu -->
-              <div
-                id="menu04"
-                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-              >
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropmenu04">
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      menu4-1
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      menu4-2
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      menu4-3
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
+      <h5>関わっているユーザー</h5>
+      <.tab id="tab-single-default" tabs={["気になる人", "チーム", "採用候補者"]} inner_tab={true} previous_enable menu_items={@menu_items}>
+        <div class="pt-3 pb-1 px-6">
+          <ul class="flex flex-wrap gap-y-1">
+            <%= for user_profile <- @user_profiles do %>
+              <.profile_small user_name={user_profile.user_name} title={user_profile.title} icon_file_path={user_profile.icon_file_path} />
+            <% end %>
           </ul>
-          <div class="pt-3 pb-1 px-6">
-            <ul class="flex flex-wrap gap-y-1">
-              <%= for _ <- 1..5 do %>
-                <.profile_small />
-              <% end %>
-            </ul>
-          </div>
-          <div class="flex justify-center gap-x-14 pb-3">
-            <button
-              type="button"
-              class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-            >
-              <span class="material-icons md-18 mr-2 text-brightGray-200">chevron_left</span> 前
-            </button>
-            <button
-              type="button"
-              class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-            >
-              次 <span class="material-icons md-18 ml-2 text-brightGray-900">chevron_right</span>
-            </button>
-          </div>
         </div>
-      </div>
+      </.tab>
     </div>
     """
   end

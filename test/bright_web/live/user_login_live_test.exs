@@ -64,7 +64,7 @@ defmodule BrightWeb.UserLoginLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/register")
 
-      assert login_html =~ "Register"
+      assert login_html =~ "ユーザー新規作成"
     end
 
     test "redirects to forgot password page when the Forgot Password button is clicked", %{
@@ -78,7 +78,7 @@ defmodule BrightWeb.UserLoginLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/reset_password")
 
-      assert conn.resp_body =~ "Forgot your password?"
+      assert conn.resp_body =~ "パスワードを忘れた方へ"
     end
   end
 end

@@ -8,35 +8,69 @@ defmodule BrightWeb.SkillCardComponents do
   @doc """
   Renders a Skill Card
 
+  ## Skills sample
+    [
+      %{
+        genre_name: "Webアプリ開発",
+        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
+      },
+      %{
+        genre_name: "AI開発",
+        skill_panels: [
+          %{name: "Elixir", levels: [:skilled, :normal, :none]},
+          %{name: "Python", levels: [:skilled, :none, :none]}
+        ]
+      }
+    ]
+
   ## Examples
-      <.skill_card />
+      <.skill_card skills={skills}/>
   """
+
+  # TODO datasのデフォルトはマイページにロジックを書く時に消す
+  attr :skills, :list,
+    default: [
+      %{
+        genre_name: "Webアプリ開発",
+        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
+      },
+      %{
+        genre_name: "AI開発",
+        skill_panels: [
+          %{name: "Elixir", levels: [:skilled, :normal, :none]},
+          %{name: "Python", levels: [:skilled, :none, :none]}
+        ]
+      },
+      %{
+        genre_name: "PM",
+        skill_panels: [
+          %{name: "", levels: [:skilled, :normal, :none]}
+        ]
+      }
+    ]
+
   def skill_card(assigns) do
     ~H"""
     <div>
       <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
       <.tab tabs={["エンジニア", "インフラ", "デザイナー", "マーケッター"]}>
-        <.skill_card_body />
+        <div class="py-4 px-7 flex gap-y-3 flex-col">
+          <%= for skill <- assigns.skills do %>
+            <.skill_genre skills={skill} />
+          <% end %>
+        </div>
       </.tab>
     </div>
     """
   end
 
-  def skill_card_body(assigns) do
-    ~H"""
-    <div class="py-4 px-7 flex gap-y-3 flex-col">
-      <%= for _i <- 1..3 do %>
-        <.skill_card_genre />
-      <% end %>
-    </div>
-    """
-  end
+  attr :skills, :map
 
-  def skill_card_genre(assigns) do
+  defp skill_genre(assigns) do
     ~H"""
     <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
       <p class="font-bold w-36 text-left text-sm">
-        Webアプリ開発
+        <%= assigns.skills.genre_name %>
       </p>
       <table class="table-fixed skill-table">
         <thead>
@@ -48,29 +82,57 @@ defmodule BrightWeb.SkillCardComponents do
           </tr>
         </thead>
         <tbody>
-          <%= for _j <- 1..3 do %>
-            <tr>
-              <td>Elixir</td>
-              <td>
-                <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                  <img src="./images/common/icons/jemHigh.svg" class="mr-1" />ベテラン
-                </p>
-              </td>
-              <td>
-                <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                  <img src="./images/common/icons/jemMiddle.svg" class="mr-1" />平均
-                </p>
-              </td>
-              <td>
-                <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-                  <img src="./images/common/icons/jemLow.svg" class="mr-1" />見習い
-                </p>
-              </td>
-            </tr>
+          <%= for skill_panel <- assigns.skills.skill_panels do %>
+            <.skill_panel skill_panel={skill_panel} />
           <% end %>
         </tbody>
       </table>
     </div>
     """
   end
+
+  attr :skill_panel, :map
+
+  defp skill_panel(assigns) do
+    ~H"""
+    <tr>
+      <td><%= assigns.skill_panel.name %></td>
+      <%= for level <- assigns.skill_panel.levels do %>
+        <.skill_gem level={level}/>
+      <% end %>
+    </tr>
+    """
+  end
+
+  attr :level, :atom
+
+  defp skill_gem(%{level: :none} = assigns) do
+    ~H"""
+    <td>
+    </td>
+    """
+  end
+
+  defp skill_gem(assigns) do
+    assigns =
+      assigns
+      |> assign(:icon_path, icon_path(assigns.level))
+
+    ~H"""
+    <td>
+      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+        <img src={@icon_path} class="mr-1" /><%= level_text(assigns.level) %>
+      </p>
+    </td>
+    """
+  end
+
+  defp icon_base_path(file), do: "/images/common/icons/#{file}"
+  defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
+  defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
+  defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
+
+  defp level_text(:beginner), do: "見習い"
+  defp level_text(:normal), do: "平均"
+  defp level_text(:skilled), do: "ベテラン"
 end

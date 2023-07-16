@@ -28,6 +28,32 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end)
   end
 
+  defp setup_skills(%{user: user, score: score}) do
+    skill_panel = insert(:skill_panel)
+    skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+    skill_unit =
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+
+    [%{skills: [skill_1, skill_2, skill_3]}] = insert_skill_categories_and_skills(skill_unit, [3])
+
+    if score do
+      insert(:skill_score_item,
+        skill_score: build(:skill_score, user: user, skill_class: skill_class),
+        skill: skill_1,
+        score: score
+      )
+    end
+
+    %{
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_1: skill_1,
+      skill_2: skill_2,
+      skill_3: skill_3
+    }
+  end
+
   describe "Show" do
     setup [:register_and_log_in_user]
 
@@ -109,27 +135,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   end
 
   describe "Show skill score item" do
-    setup [:register_and_log_in_user]
-
-    setup %{score: score, user: user} do
-      skill_panel = insert(:skill_panel)
-      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
-
-      skill_unit =
-        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
-
-      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
-
-      if score do
-        insert(:skill_score_item,
-          skill_score: build(:skill_score, user: user, skill_class: skill_class),
-          skill: skill,
-          score: score
-        )
-      end
-
-      %{skill_panel: skill_panel, skill_class: skill_class, skill: skill}
-    end
+    setup [:register_and_log_in_user, :setup_skills]
 
     @tag score: nil
     test "shows mark when not registered", %{conn: conn, skill_panel: skill_panel} do
@@ -168,6 +174,244 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  describe "Input skill score item score" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    @tag score: :low
+    test "update scores", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      # skill_1
+      # lowからlowのキャンセル操作相当
+      show_live
+      |> element(~s{#skill-score-item-1 div[phx-click="edit"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{label[phx-value-score="low"]})
+      |> render_click()
+
+      # skill_2
+      show_live
+      |> element(~s{#skill-score-item-2 div[phx-click="edit"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{label[phx-value-score="middle"]})
+      |> render_click()
+
+      # skill_3
+      show_live
+      |> element(~s{#skill-score-item-3 div[phx-click="edit"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{label[phx-value-score="high"]})
+      |> render_click()
+
+      assert show_live
+             |> element("#skill-score-item-1 .score-mark-low")
+             |> has_element?()
+
+      assert show_live
+             |> element("#skill-score-item-2 .score-mark-middle")
+             |> has_element?()
+
+      assert show_live
+             |> element("#skill-score-item-3 .score-mark-high")
+             |> has_element?()
+    end
+
+    @tag score: nil
+    test "create skill_score_item if not existing", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      show_live
+      |> element("#skill-score-item-1 .score-mark-none")
+      |> render_click()
+
+      show_live
+      |> element(~s{label[phx-value-score="high"]})
+      |> render_click()
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      assert show_live
+             |> element("#skill-score-item-1 .score-mark-high")
+             |> has_element?()
+    end
+
+    @tag score: nil
+    test "edits by key input", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      # スキルを入力モードとする
+      show_live
+      |> element("#skill-score-item-1 .score-mark-none")
+      |> render_click()
+
+      # 1を押してスコアを設定する。以下、2, 3と続く
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "1"})
+
+      assert show_live
+             |> element("#skill-score-item-1 .score-mark-high")
+             |> has_element?()
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "2"})
+
+      assert show_live
+             |> element("#skill-score-item-2 .score-mark-middle")
+             |> has_element?()
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "3"})
+
+      assert show_live
+             |> element("#skill-score-item-3 .score-mark-low")
+             |> has_element?()
+    end
+
+    @tag score: nil
+    test "move by key input", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      # スキルを入力モードとする
+      show_live
+      |> element("#skill-score-item-1 .score-mark-none")
+      |> render_click()
+
+      # ↓、Enter、↑による移動
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "ArrowDown"})
+
+      assert show_live
+             |> element("#skill-score-item-2 input")
+             |> has_element?()
+
+      refute show_live
+             |> element("#skill-score-item-1 input")
+             |> has_element?()
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "Enter"})
+
+      assert show_live
+             |> element("#skill-score-item-3 input")
+             |> has_element?()
+
+      refute show_live
+             |> element("#skill-score-item-2 input")
+             |> has_element?()
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "ArrowUp"})
+
+      assert show_live
+             |> element("#skill-score-item-2 input")
+             |> has_element?()
+
+      refute show_live
+             |> element("#skill-score-item-3 input")
+             |> has_element?()
+    end
+  end
+
+  describe "Shows skill score percentages" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    @tag score: nil
+    test "shows updated value", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      # 初期表示
+      assert show_live
+             |> element(".score-high-percentage", "0％")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-middle-percentage", "0％")
+             |> has_element?()
+
+      # 各スキルスコア入力と、習得率表示更新
+      show_live
+      |> element("#skill-score-item-1 .score-mark-none")
+      |> render_click()
+
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "1"})
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "1"})
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "2"})
+
+      assert show_live
+             |> element(".score-high-percentage", "66％")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-middle-percentage", "33％")
+             |> has_element?()
+
+      # 各スキルスコアの削除（lowにする操作）と、習得率表示更新
+      show_live
+      |> element("#skill-score-item-1 .score-mark-high")
+      |> render_click()
+
+      show_live
+      |> element("#skill-score-item-1")
+      |> render_keydown(%{"key" => "3"})
+
+      show_live
+      |> element("#skill-score-item-2")
+      |> render_keydown(%{"key" => "3"})
+
+      show_live
+      |> element("#skill-score-item-3")
+      |> render_keydown(%{"key" => "3"})
+
+      assert show_live
+             |> element(".score-high-percentage", "0％")
+             |> has_element?()
+
+      assert show_live
+             |> element(".score-middle-percentage", "0％")
+             |> has_element?()
+    end
+  end
+
+  # エビデンス登録
+  describe "Skill evidence area" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    @tag score: nil
+    test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      show_live
+      |> element("#skill-1 .link-evidence")
+      |> render_click()
+
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences")
+
+      assert show_live
+             |> render() =~ skill_1.name
+    end
+  end
+
+  # アクセス制御など
   describe "Security" do
     setup [:register_and_log_in_user]
 

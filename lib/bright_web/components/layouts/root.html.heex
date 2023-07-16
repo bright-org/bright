@@ -7,10 +7,6 @@
     <.live_title suffix=" · Phoenix Framework">
       <%= assigns[:page_title] || "Bright" %>
     </.live_title>
-    <link
-      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone"
-      rel="stylesheet"
-    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js">
     </script>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
@@ -22,7 +18,7 @@
       <.side_menu />
       <main class="bg-background flex flex-col flex-1">
         <!-- ヘッダー -->
-        <.user_header />
+        <.user_header profile={assigns[:profile]}  page_title={assigns[:page_title]} notification_count={assigns[:notification_count]} />
         <%= @inner_content %>
       </main>
     </div>

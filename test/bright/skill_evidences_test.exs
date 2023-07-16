@@ -35,6 +35,17 @@ defmodule Bright.SkillEvidencesTest do
       assert SkillEvidences.get_skill_evidence!(skill_evidence.id) == skill_evidence
     end
 
+    test "get_skill_evidence_by/1 returns the skill_evidence with given condition", %{
+      valid_attrs: valid_attrs
+    } do
+      skill_evidence = insert(:skill_evidence, valid_attrs)
+
+      assert SkillEvidences.get_skill_evidence_by(id: skill_evidence.id, progress: :done) ==
+               skill_evidence
+
+      assert SkillEvidences.get_skill_evidence_by(id: skill_evidence.id, progress: :wip) == nil
+    end
+
     test "create_skill_evidence/1 with valid data creates a skill_evidence", %{
       valid_attrs: valid_attrs
     } do

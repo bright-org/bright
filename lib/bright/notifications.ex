@@ -56,7 +56,8 @@ defmodule Bright.Notifications do
     from n in Notification,
       where:
         n.to_user_id == ^to_user_id and
-          n.type == ^type
+          n.type == ^type,
+      order_by: [desc: n.inserted_at]
   end
 
   @doc """

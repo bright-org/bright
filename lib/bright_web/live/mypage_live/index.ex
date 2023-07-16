@@ -14,27 +14,16 @@ defmodule BrightWeb.MypageLive.Index do
   def mount(_params, _session, socket) do
     profile = UserProfiles.get_user_profile_by_name(socket.assigns.current_user.name)
 
-    contact_datas =
-      Notifications.list_notification_by_type(
-        socket.assigns.current_user.id,
-        "recruitment_coordination"
-      )
-      |> Enum.map(&convert_to_card_item/1)
-
-    {:ok,
-     socket
-     |> assign(:page_title, "Listing Mypages")
-     |> assign(:profile, profile || dummy_profile())
-     |> assign(:contact_datas, contact_datas)}
-  end
-
-  def convert_to_card_item(notification) do
-    notification
-    # TODO 「何時間前」の計算を入れること
-    |> Map.delete(:inserted_at)
-    # TODO 「何時間前」の計算後の処理を書くこと
-    |> Map.merge(%{time: 1, highlight: true})
-    |> Map.take([:icon_type, :message, :time, :highlight, :inserted_at])
+    socket
+    |> assign(:page_title, "マイページ")
+    # TODO 通知数はダミーデータ
+    |> assign(:notification_count, "99")
+    |> assign(:profile, profile)
+    |> assign(:contact_card, create_card_param("チーム招待"))
+    |> assign(:communication_card, create_card_param("スキルアップ"))
+    |> assign_contact_card()
+    |> assign_communication_card()
+    |> then(&{:ok, &1})
   end
 
   @impl true
@@ -42,22 +31,93 @@ defmodule BrightWeb.MypageLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => "contact_card", "tab_name" => tab_name} = _params,
+        socket
+      ) do
+    contact_card = create_card_param(tab_name)
+
+    socket
+    |> assign(:contact_card, contact_card)
+    |> assign_contact_card()
+    |> then(&{:noreply, &1})
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => "communication_card", "tab_name" => tab_name} = _params,
+        socket
+      ) do
+    communication_card = create_card_param(tab_name)
+
+    socket
+    |> assign(:communication_card, communication_card)
+    |> assign_communication_card()
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(_event_name, _params, socket) do
+    # TODO tabイベント検証 tabのイベント周りが完成後に削除予定
+    # IO.inspect("------------------")
+    # IO.inspect(_event_name)
+    # IO.inspect(_params)
+    # IO.inspect("------------------")
+    {:noreply, socket}
+  end
+
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Mypages")
+    |> assign(:page_title, "マイページ")
     |> assign(:mypage, nil)
   end
 
-  # 正式な処理が入るまでダミーデータを表示
-  def dummy_profile do
-    %{
-      user: %{name: "ダミー名前"},
-      title: "ダミー称号",
-      detail: "ダミー詳細",
-      icon_file_path: "",
-      twitter_url: "",
-      github_url: "",
-      facebook_url: ""
-    }
+  def create_card_param(selected_tab) do
+    %{selected_tab: selected_tab, notifications: []}
   end
+
+  def assign_contact_card(socket) do
+    type = contact_type(socket.assigns.contact_card.selected_tab)
+
+    notifications =
+      Notifications.list_notification_by_type(
+        socket.assigns.current_user.id,
+        type
+      )
+
+    contact_card = %{socket.assigns.contact_card | notifications: notifications}
+
+    socket
+    |> assign(:contact_card, contact_card)
+  end
+
+  def assign_communication_card(socket) do
+    type = communication_type(socket.assigns.communication_card.selected_tab)
+
+    notifications =
+      Notifications.list_notification_by_type(
+        socket.assigns.current_user.id,
+        type
+      )
+
+    communication_card = %{socket.assigns.communication_card | notifications: notifications}
+
+    socket
+    |> assign(:communication_card, communication_card)
+  end
+
+  def contact_type("チーム招待"), do: "team invite"
+  def contact_type("デイリー"), do: "daily"
+  def contact_type("ウイークリー"), do: "weekly"
+  def contact_type("採用の調整"), do: "recruitment_coordination"
+  def contact_type("スキルパネル更新"), do: "skill_panel_update"
+  def contact_type("運営"), do: "operation"
+
+  def communication_type("スキルアップ"), do: "skill_up"
+  def communication_type("1on1のお誘い"), do: "1on1_invitation"
+  def communication_type("所属チームから"), do: "from_your_team"
+  def communication_type("「気になる」された"), do: "intriguing"
+  def communication_type("運勢公式チーム発足"), do: "fortune_official_team_launched"
 end

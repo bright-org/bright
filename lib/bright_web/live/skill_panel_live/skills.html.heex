@@ -2,8 +2,7 @@
   <h2 class="text-3xl">スキルパネル ／ <%= @skill_panel.name %></h2>
   <h3 class="text-xl">クラス：<%= @skill_class.name %></h3>
 
-  <div class="flex justify-between my-10">
-    <div></div>
+  <div class="my-10">
     <div>
       <nav>仮リンク</nav>
       <.link navigate={~p"/panels/#{@skill_panel}/graph?class=1"}>
@@ -20,7 +19,7 @@
         </td>
         <td class="!border-l !border-brightGray-200">
           <div class="flex justify-center items-center">
-            <p class="inline-flex flex-1 justify-center">piacere</p>
+            <p class="inline-flex flex-1 justify-center"><%= @current_user.name %></p>
             <button
               type="button"
               class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
@@ -41,24 +40,22 @@
         <th class="bg-base text-white text-center w-[420px]">
           スキル
         </th>
-        <!-- 未実装：デザインまま START -->
         <td>
           <div class="flex justify-center gap-x-2">
             <div class="min-w-[4em] flex items-center">
               <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1" />
-              68％
+              <span class="score-high-percentage"><%= floor calc_percentage(@counter.high, @num_skills) %>％</span>
             </div>
             <div class="min-w-[4em] flex items-center">
               <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1" />
-              12％
+              <span class="score-middle-percentage"><%= floor calc_percentage(@counter.middle, @num_skills) %>％</span>
             </div>
           </div>
         </td>
-        <!-- 未実装：デザインまま END -->
       </tr>
 
-      <%= for [col1, col2, col3] <- build_table_structure(@skill_units) do %>
-        <tr>
+      <%= for {[col1, col2, col3], row_number} <- build_table_structure(@skill_units) |> Enum.with_index(1) do %>
+        <tr id={"skill-#{row_number}"}>
           <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
           <td :if={col2} rowspan={col2.size} class="align-top">
             <%= col2.skill_category.name %>
@@ -68,9 +65,9 @@
               <p><%= col3.skill.name %></p>
               <!-- 未実装：デザインまま START -->
               <div class="flex justify-between items-center gap-x-2">
-                <button>
+                <.link class="link-evidence" patch={~p"/panels/#{@skill_panel.id}/skills/#{col3.skill.id}/evidences"}>
                   <img src="/images/common/icons/addFile.svg" />
-                </button>
+                </.link>
                 <button>
                   <img src="/images/common/icons/addFile.svg" />
                 </button>
@@ -82,15 +79,36 @@
             </div>
           </td>
           <td>
-            <div class="flex justify-center gap-x-4 px-4">
-              <div class="flex items-center">
-                <label class={["inline_block", score_mark_class(@skill_score_items_dict[col3.skill.id])]}>
-                </label>
-              </div>
-            </div>
+            <.live_component
+              module={BrightWeb.SkillPanelLive.SkillScoreItemComponent}
+              id={"skill-score-item-#{row_number}"}
+              row_number={row_number}
+              first_row?={row_number == 1}
+              last_row?={row_number == @num_skills}
+              skill={col3.skill}
+              skill_score={@skill_score}
+              skill_score_item={@skill_score_item_dict[col3.skill.id]}
+              edit={false}
+            />
           </td>
         </tr>
       <% end %>
     </table>
   </div>
 </div>
+
+<.modal
+  :if={:show_evidences == @live_action}
+  id="skill-evidence-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
+
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillEvidenceComponent}
+    id={"#{@skill.id}-evidence"}
+    skill={@skill}
+    skill_evidence={@skill_evidence}
+    user={@current_user}
+    patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
+  />
+</.modal>

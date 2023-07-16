@@ -1,5 +1,6 @@
+<!-- TODO 「2d7935494782ecf710e81339abd5d27750493843」　「feat:新規ファイルfix: package.json」　までマイページのみ画面を更新　各部品ごと更新すること-->
 <!-- プロフィール -->
-<div class="flex justify-between py-8 px-10 bg-white">
+<div class="flex justify-between py-6 px-10 bg-white">
   <.profile
     user_name={@profile.user.name}
     title={@profile.title}
@@ -11,8 +12,8 @@
     facebook_url={@profile.facebook_url}
   />
   <div>
-    <p class="text-sm !font-bold">
-      スキルセットジェム<span class="font-normal text-xs ml-4">※クリックすると詳細</span>
+    <p class="text-base !font-bold">
+      スキルセットジェム<span class="font-normal text-xs ml-2">※クリックすると詳細</span>
     </p>
     <div class="chart-container flex justify-center">
       <.skill_gem
@@ -25,16 +26,16 @@
   </div>
 </div>
 <!-- コンテンツ -->
-<div class="px-10 py-7 flex justify-between">
+<div class="px-10 py-3 flex justify-between">
   <div class="w-[850px] flex flex-col gap-y-6">
-    <!-- 他ユーザーやチームからの連絡 -->
-    <.contact_card datas={@contact_datas}/>
+    <!-- 重要な連絡 -->
+    <.contact_card card={@contact_card}/>
     <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
     <.skill_card />
   </div>
   <div class="w-[750px] flex flex-col gap-y-6">
-    <!-- 所属チームや気になるユーザーとの交流 -->
-    <.communication_card />
+    <!-- さまざまな人たちとの交流 -->
+    <.communication_card card={@communication_card} />
     <!-- 関わっているチーム -->
     <div>
       <h5>関わっているチーム</h5>
