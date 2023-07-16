@@ -195,12 +195,14 @@ defmodule BrightWeb.UserAuthComponents do
   attr :variant, :string, values: ~w(google github facebook twitter)
 
   def social_auth_button(assigns) do
-    social_auth_text = %{
+    social_auth_text_map = %{
       "google" => "Google",
       "github" => "GitHub",
       "facebook" => "Facebook",
       "twitter" => "Twitter"
     }
+
+    assigns = assign(assigns, :social_auth_text, social_auth_text_map[assigns.variant])
 
     ~H"""
     <button
@@ -212,7 +214,7 @@ defmodule BrightWeb.UserAuthComponents do
         @variant == "twitter" && "bg-bgTwitter bg-sns-twitter border-twitter mt-6 text-white"
       ]}
     >
-      <%= social_auth_text[@variant] %>
+      <%= @social_auth_text %>
     </button>
     """
   end
