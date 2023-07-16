@@ -1,7 +1,7 @@
 defmodule Bright.OnboardingsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `Basic.Onboardings` context.
+  entities via the `Bright.Onboardings` context.
   """
 
   @doc """
