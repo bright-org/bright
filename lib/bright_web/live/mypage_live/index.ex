@@ -37,7 +37,41 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card", "tab_name" => tab_name} = _params,
         socket
       ) do
-    contact_card = create_card_param(tab_name)
+    contact_card = create_card_param(tab_name, 1)
+
+    socket
+    |> assign(:contact_card, contact_card)
+    |> assign_contact_card()
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "previous_button_click",
+        %{"id" => "contact_card"} = _params,
+        socket
+      ) do
+    contact_card =
+      create_card_param(
+        socket.assigns.contact_card.selected_tab,
+        socket.assigns.contact_card.page_param.page - 1
+      )
+
+    socket
+    |> assign(:contact_card, contact_card)
+    |> assign_contact_card()
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "next_button_click",
+        %{"id" => "contact_card"} = _params,
+        socket
+      ) do
+    contact_card =
+      create_card_param(
+        socket.assigns.contact_card.selected_tab,
+        socket.assigns.contact_card.page_param.page + 1
+      )
 
     socket
     |> assign(:contact_card, contact_card)
@@ -74,8 +108,8 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:mypage, nil)
   end
 
-  def create_card_param(selected_tab) do
-    %{selected_tab: selected_tab, notifications: [], page_param: %{page: 1, page_size: 5}}
+  def create_card_param(selected_tab, page \\ 1) do
+    %{selected_tab: selected_tab, notifications: [], page_param: %{page: page, page_size: 5}}
   end
 
   def assign_contact_card(socket) do
