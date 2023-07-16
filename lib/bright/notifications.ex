@@ -49,7 +49,7 @@ defmodule Bright.Notifications do
   """
   def list_notification_by_type(to_user_id, type) do
     type_query(to_user_id, type)
-    |> Repo.all()
+    |> Repo.paginate(page_size: 2)
   end
 
   defp type_query(to_user_id, type) do
