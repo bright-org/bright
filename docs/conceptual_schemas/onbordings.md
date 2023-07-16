@@ -8,12 +8,12 @@
 
 - `id`, `inserted_at`, `updated_at` は省略
 - 新しく定義したいテーブル
-  - `wants`、`want_jobs`、`career_fields`、`jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
+  - `career_wants`、`career_want_jobs`、`career_fields`、`jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
 - 既に定義案があるテーブル
   - `skill_panels`、`user_skill_panels`、`skill_panels`、`skill_classes`、`skill_class_units`
   - [概念データモデル スキル体系](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/skills.md) にて定義済み
 
-- `want_jobs` は、jobsからcareer_fieldsを逆引きするために使う。複数同じcareer_fieldが引けた場合はユニーク化する。
+- `career_want_jobs` は、jobsからcareer_fieldsを逆引きするために使う。複数同じcareer_fieldが引けた場合はユニーク化する。
 - `job_skill_panels` はjobsかskill_panelを逆引きするために使う。複数同じskill_panelが引けた場合はユニーク化する。
 - オンボーディングではskill_panelsを参照する際、skill_classes.class=1で引く前提。
 - `user_onboardings` はオンボーディング初回のみ登録される。userとは1:1になる。
@@ -21,8 +21,8 @@
 
 ```mermaid
 erDiagram
-  wants ||--|{ want_jobs : ""
-  want_jobs ||--|{ jobs : ""
+  career_wants ||--|{ career_want_jobs : ""
+  career_want_jobs ||--|{ jobs : ""
   jobs }|--|| career_fields : ""
   jobs ||--|{ job_skill_panels : ""
   job_skill_panels ||--|{ skill_panels : ""
@@ -39,12 +39,12 @@ erDiagram
     int skill_panel_id FK
   }
 
-  wants {
+  career_wants {
     string name "やりたいことや興味、関心があること"
     int position "表示順"
   }
 
-  want_jobs {
+  career_want_jobs {
     id want_id FK
     id job_id FK
   }
