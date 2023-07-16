@@ -40,7 +40,19 @@ defmodule TestData do
   end
 end
 
-["team invite", "daily", "weekly", "recruitment_coordination", "skill_panel_update", "operation"]
+[
+  "team invite",
+  "daily",
+  "weekly",
+  "recruitment_coordination",
+  "skill_panel_update",
+  "operation",
+  "skill_up",
+  "1on1_invitation",
+  "from_your_team",
+  "intriguing",
+  "fortune_official_team_launched"
+]
 |> Enum.each(fn x -> TestData.create_data(x, user.id) end)
 ```
 
