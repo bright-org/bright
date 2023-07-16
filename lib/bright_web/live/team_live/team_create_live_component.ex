@@ -6,7 +6,6 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   alias Bright.Accounts
   alias Bright.Teams
-  import BrigntWeb.BrightModalComponents
 
   def mount(_params, _session, socket) do
     socket =
