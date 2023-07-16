@@ -10,10 +10,9 @@ defmodule BrightWeb.UserResetPasswordLive do
 
     <UserAuthComponents.description>新しいパスワードを入力してください。</UserAuthComponents.description>
 
-    <.form
+    <UserAuthComponents.auth_form
       for={@form}
       id="reset_password_form"
-      class="flex mt-8 mx-auto relative"
       phx-submit="reset_password"
       phx-change="validate"
     >
@@ -24,7 +23,7 @@ defmodule BrightWeb.UserResetPasswordLive do
 
         <UserAuthComponents.button>パスワードをリセットする</UserAuthComponents.button>
       </UserAuthComponents.form_section>
-    </.form>
+    </UserAuthComponents.auth_form>
     """
   end
 

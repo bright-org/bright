@@ -12,10 +12,9 @@ defmodule BrightWeb.UserForgotPasswordLive do
       パスワードをリセットするリンクをメールに送ります。<br>登録しているユーザーのメールアドレスを入力してください。
     </UserAuthComponents.description>
 
-    <.form
+    <UserAuthComponents.auth_form
       for={@form}
       id="reset_password_form"
-      class="flex mt-8 mx-auto relative"
       phx-submit="send_email"
     >
       <UserAuthComponents.form_section variant="center">
@@ -25,7 +24,7 @@ defmodule BrightWeb.UserForgotPasswordLive do
 
         <UserAuthComponents.link_button href={~p"/users/log_in"}>戻る</UserAuthComponents.link_button>
       </UserAuthComponents.form_section>
-    </.form>
+    </UserAuthComponents.auth_form>
     """
   end
 

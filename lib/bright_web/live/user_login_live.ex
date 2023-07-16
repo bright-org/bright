@@ -6,11 +6,10 @@ defmodule BrightWeb.UserLoginLive do
   def render(assigns) do
     ~H"""
     <UserAuthComponents.header>ログイン</UserAuthComponents.header>
-    <.form
-      :let={_f}
+
+    <UserAuthComponents.auth_form
       for={@form}
       id="login_form"
-      class="flex mt-8 mx-auto relative"
       action={~p"/users/log_in"}
       phx-update="ignore"
     >
@@ -36,7 +35,7 @@ defmodule BrightWeb.UserLoginLive do
 
         <UserAuthComponents.button>ログイン</UserAuthComponents.button>
       </UserAuthComponents.form_section>
-    </.form>
+    </UserAuthComponents.auth_form>
 
     <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
     """

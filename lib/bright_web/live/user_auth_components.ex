@@ -8,9 +8,34 @@ defmodule BrightWeb.UserAuthComponents do
   # TODO: core_component にマージできないか検討
 
   @doc """
+  Auth form.
+  """
+  attr :for, :any, required: true, doc: "the datastructure for the form"
+  attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
+
+  attr :rest, :global,
+    include: ~w(autocomplete name rel action enctype method novalidate target multipart),
+    doc: "the arbitrary HTML attributes to apply to the form tag"
+
+  slot :inner_block, required: true
+
+  def auth_form(assigns) do
+    ~H"""
+    <.form
+      :let={f}
+      for={@for}
+      as={@as}
+      class="flex mt-8 mx-auto relative"
+      {@rest}
+    >
+      <%= render_slot(@inner_block, f) %>
+    </.form>
+    """
+  end
+
+  @doc """
   Section for form
   """
-
   attr :variant, :string, default: "center", values: ~w(center left right)
 
   slot :inner_block

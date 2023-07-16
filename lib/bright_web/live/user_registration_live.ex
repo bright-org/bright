@@ -9,11 +9,10 @@ defmodule BrightWeb.UserRegistrationLive do
     ~H"""
     <UserAuthComponents.header>ユーザー新規作成</UserAuthComponents.header>
 
-    <.form
+    <UserAuthComponents.auth_form
       :let={_f}
       for={@form}
       id="registration_form"
-      class="flex mt-8 mx-auto relative"
       phx-submit="save"
       phx-change="validate"
     >
@@ -35,7 +34,7 @@ defmodule BrightWeb.UserRegistrationLive do
 
         <UserAuthComponents.button>ユーザーを新規作成する</UserAuthComponents.button>
       </UserAuthComponents.form_section>
-    </.form>
+    </UserAuthComponents.auth_form>
 
     <UserAuthComponents.link_text href={~p"/users/log_in"}>ログインはこちら</UserAuthComponents.link_text>
     """
