@@ -75,7 +75,7 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def create_card_param(selected_tab) do
-    %{selected_tab: selected_tab, notifications: []}
+    %{selected_tab: selected_tab, notifications: [], page_param: %{page: 1, page_size: 5}}
   end
 
   def assign_contact_card(socket) do
@@ -84,7 +84,8 @@ defmodule BrightWeb.MypageLive.Index do
     notifications =
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
-        type
+        type,
+        socket.assigns.contact_card.page_param
       )
 
     contact_card = %{socket.assigns.contact_card | notifications: notifications}
@@ -99,7 +100,8 @@ defmodule BrightWeb.MypageLive.Index do
     notifications =
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
-        type
+        type,
+        socket.assigns.contact_card.page_param
       )
 
     communication_card = %{socket.assigns.communication_card | notifications: notifications}

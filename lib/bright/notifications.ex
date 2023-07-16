@@ -47,9 +47,9 @@ defmodule Bright.Notifications do
       iex> list_notification_by_type(user.id, "recruitment_coordination")
       %Notification{}
   """
-  def list_notification_by_type(to_user_id, type) do
+  def list_notification_by_type(to_user_id, type, page_param) do
     type_query(to_user_id, type)
-    |> Repo.paginate(page_size: 2)
+    |> Repo.paginate(page_param)
   end
 
   defp type_query(to_user_id, type) do
