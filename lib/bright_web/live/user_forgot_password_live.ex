@@ -6,32 +6,26 @@ defmodule BrightWeb.UserForgotPasswordLive do
 
   def render(assigns) do
     ~H"""
-      <h1 class="font-bold text-center text-3xl">
-        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">パスワードを忘れた方へ</span>
-      </h1>
+    <UserAuthComponents.header>パスワードを忘れた方へ</UserAuthComponents.header>
 
-      <p class="mt-8 mx-auto text-sm w-fit">パスワードをリセットするリンクをメールに送ります。<br>登録しているユーザーのメールアドレスを入力してください。</p>
+    <UserAuthComponents.description>
+      パスワードをリセットするリンクをメールに送ります。<br>登録しているユーザーのメールアドレスを入力してください。
+    </UserAuthComponents.description>
 
-      <.form
-        :let={_f}
-        for={@form}
-        id="reset_password_form"
-        class="flex mt-8 mx-auto relative"
-        phx-submit="send_email"
-      >
-        <section class="flex flex-col mx-auto">
-          <label for="email" class="mt-4">
-            <span class="block font-bold mb-2 text-xs">メールアドレス</span>
-            <UserAuthComponents.input field={@form[:email]} id="email" type="email" required />
-          </label>
+    <.form
+      for={@form}
+      id="reset_password_form"
+      class="flex mt-8 mx-auto relative"
+      phx-submit="send_email"
+    >
+      <UserAuthComponents.form_section variant="center">
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
 
-          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold mt-8 max-w-xs px-4 py-2 rounded select-none text-white w-full hover:opacity-50">パスワードリセット用リンクを送信</button>
+        <UserAuthComponents.button variant="mt-sm">パスワードリセット用リンクを送信</UserAuthComponents.button>
 
-          <.link href={~p"/users/log_in"} class="text-center bg-white border border-solid border-black font-bold mt-16 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">
-            戻る
-          </.link>
-        </section>
-      </.form>
+        <UserAuthComponents.link_button href={~p"/users/log_in"}>戻る</UserAuthComponents.link_button>
+      </UserAuthComponents.form_section>
+    </.form>
     """
   end
 

@@ -6,34 +6,25 @@ defmodule BrightWeb.UserResetPasswordLive do
 
   def render(assigns) do
     ~H"""
-      <h1 class="font-bold text-center text-3xl">
-        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">パスワードリセット</span>
-      </h1>
+    <UserAuthComponents.header>パスワードリセット</UserAuthComponents.header>
 
-      <p class="mt-8 mx-auto text-sm w-fit">新しいパスワードを入力してください。</p>
+    <UserAuthComponents.description>新しいパスワードを入力してください。</UserAuthComponents.description>
 
-      <.form
-        :let={_f}
-        for={@form}
-        id="reset_password_form"
-        class="flex mt-8 mx-auto relative"
-        phx-submit="reset_password"
-        phx-change="validate"
-      >
-        <section class="flex flex-col mx-auto">
-          <label for="email" class="mt-4">
-            <span class="block font-bold mb-2 text-xs">新しいパスワード</span>
-            <UserAuthComponents.input field={@form[:password]} id="password" type="password" required />
-          </label>
+    <.form
+      for={@form}
+      id="reset_password_form"
+      class="flex mt-8 mx-auto relative"
+      phx-submit="reset_password"
+      phx-change="validate"
+    >
+      <UserAuthComponents.form_section variant="center">
+        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="新しいパスワード" required/>
 
-          <label for="re_password" class="mt-4">
-            <span class="block font-bold mb-2 text-xs">（確認）新しいパスワード</span>
-            <UserAuthComponents.input field={@form[:password_confirmation]} id="re_password" type="password" required />
-          </label>
+        <UserAuthComponents.input_with_label field={@form[:password_confirmation]} id="re_password" type="password" label_text="（確認）新しいパスワード" required/>
 
-          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs mt-12 px-4 py-2 rounded select-none text-white w-full hover:opacity-50">パスワードをリセットする</button>
-        </section>
-      </.form>
+        <UserAuthComponents.button>パスワードをリセットする</UserAuthComponents.button>
+      </UserAuthComponents.form_section>
+    </.form>
     """
   end
 
