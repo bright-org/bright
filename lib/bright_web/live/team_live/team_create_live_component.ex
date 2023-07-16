@@ -1,10 +1,13 @@
-defmodule BrightWeb.TeamCreateLive do
-  use BrightWeb, :live_view
+defmodule BrightWeb.TeamCreateLiveComponent do
+  @moduledoc """
+  チーム作成モーダルのLiveComponent
+  """
+  use BrightWeb, :live_component
 
   alias Bright.Accounts
   alias Bright.Teams
+  import BrigntWeb.BrightModalComponents
 
-  @impl true
   def mount(_params, _session, socket) do
     socket =
       socket
@@ -14,9 +17,16 @@ defmodule BrightWeb.TeamCreateLive do
   end
 
   @impl true
+  def update(assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)}
+  end
+
+  @impl true
   def handle_event("add_user", %{"search_word" => search_word}, socket) do
     current_users = socket.assigns.users
-    user = Accounts.get_user_by_name(search_word)
+    user = Accounts.get_user_by_name_or_email(search_word)
 
     # メンバーユーザー一時リストに追加
     added_users =
@@ -47,7 +57,7 @@ defmodule BrightWeb.TeamCreateLive do
         {:noreply,
          socket
          |> put_flash(:info, "チームを登録しました")
-         |> redirect(to: ~p"/mypage")}
+         |> redirect(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
