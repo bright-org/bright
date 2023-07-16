@@ -551,12 +551,12 @@ defmodule Bright.AccountsTest do
 
     test "returns the user if the name exists" do
       %{id: id} = user = insert(:user)
-      assert %User{id: ^id} = Accounts.get_user_by_name(user.name)
+      assert %User{id: ^id} = Accounts.get_user_by_name_or_email(user.name)
     end
 
     test "returns the user if the email exists" do
       %{id: id} = user = insert(:user)
-      assert %User{id: ^id} = Accounts.get_user_by_name(user.email)
+      assert %User{id: ^id} = Accounts.get_user_by_name_or_email(user.email)
     end
   end
 end

@@ -4,7 +4,7 @@ defmodule BrigntWeb.BrightModalComponents do
   スタイルの設定を変更および上書き設定可能なattrを追加
   """
   use Phoenix.Component
-  import BrightWeb.CoreComponents, only: [hide_modal: 1, hide: 2, icon: 1, show: 2]
+  import BrightWeb.CoreComponents, only: [hide_modal: 1, icon: 1, show: 2]
 
   alias Phoenix.LiveView.JS
   import BrightWeb.Gettext
@@ -112,6 +112,8 @@ defmodule BrigntWeb.BrightModalComponents do
   end
 
   @doc """
+  CoreComponents.show_modal/1のコピー実装
+
   transitionのスタイルにモーダル全体の枠にスタイルがハードコードされておりモーダル幅が画面1/3固定されるので実装
   関数名がshow_modalのままだとCorecomponentsもimportしている実装で関数名の競合がおこるので名称を変更
   """

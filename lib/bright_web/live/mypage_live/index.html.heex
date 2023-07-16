@@ -73,7 +73,7 @@
                 >
                   <li>
                     <a
-                      href="/teams/new"
+                      phx-click={show_modal("create-team-modal")}
                       class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       チームを作る
@@ -127,3 +127,17 @@
     <!-- 検証 -->
   </div>
 </div>
+
+<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrigntWeb.BrightModalComponentsのbright_modalを使用 -->
+<.bright_modal
+  id="create-team-modal"
+>
+  <.live_component
+    module={BrightWeb.TeamCreateLiveComponent}
+    id={@current_user.id || :new}
+    action={@live_action}
+    current_user={@current_user}
+    users={[]}
+    patch={~p"/mypage"}
+  />
+</.bright_modal>
