@@ -1,22 +1,21 @@
 defmodule Bright.OnboardingsFixtures do
-  # TODO: fakerに書き直す
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Bright.Onboardings` context.
   """
 
   @doc """
-  Generate a user_onboardings.
+  Generate a user_onboarding.
   """
-  def user_onboardings_fixture(attrs \\ %{}) do
-    {:ok, user_onboardings} =
+  def user_onboarding_fixture(attrs \\ %{}) do
+    {:ok, user_onboarding} =
       attrs
       |> Enum.into(%{
-        completed_at: ~N[2023-07-08 11:20:00]
+        completed_at: ~N[2023-07-14 11:51:00]
       })
-      |> Bright.Onboardings.create_user_onboardings()
+      |> Bright.Onboardings.create_user_onboarding()
 
-    user_onboardings
+    user_onboarding
   end
 
   @doc """
