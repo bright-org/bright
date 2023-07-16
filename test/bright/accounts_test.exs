@@ -544,9 +544,24 @@ defmodule Bright.AccountsTest do
   end
 
   describe "get_user_by_name_or_email/1" do
-    test "only return the user if the name or email completely match" do
+    test "only return the user if the name completely match" do
       user = insert(:user)
       refute Accounts.get_user_by_name_or_email(user.name <> "1")
+    end
+
+    test "only return the user if the email completely match" do
+      user = insert(:user)
+      refute Accounts.get_user_by_name_or_email("1" <> user.email )
+    end
+
+    test "only return the user if confirmed_at is not null. use email" do
+      user = insert(:user_not_confirmed)
+      refute Accounts.get_user_by_name_or_email(user.email)
+    end
+
+    test "only return the user if confirmed_at is not null. use name" do
+      user = insert(:user_not_confirmed)
+      refute Accounts.get_user_by_name_or_email(user.name)
     end
 
     test "returns the user if the name exists" do

@@ -373,8 +373,8 @@ defmodule Bright.Accounts do
   """
   def get_user_by_name_or_email(name_or_email) do
     User
-    |> where([user], user.name == ^name_or_email)
-    |> or_where([user], user.email == ^name_or_email)
+    |> where([user], not is_nil(user.confirmed_at))
+    |> where([user], user.name == ^name_or_email or user.email == ^name_or_email)
     |> Repo.one()
   end
 end
