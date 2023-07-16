@@ -47,12 +47,6 @@ defmodule BrightWeb.UserForgotPasswordLive do
       )
     end
 
-    info =
-      "If your email is in our system, you will receive instructions to reset your password shortly."
-
-    {:noreply,
-     socket
-     |> put_flash(:info, info)
-     |> redirect(to: ~p"/")}
+    {:noreply, socket |> redirect(to: ~p"/users/send_reset_password_url")}
   end
 end

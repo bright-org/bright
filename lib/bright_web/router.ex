@@ -107,6 +107,7 @@ defmodule BrightWeb.Router do
       live "/users/finish_registration", UserFinishRegistrationLive, :show
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
+      live "/users/send_reset_password_url", UserSendResetPasswordUrlLive, :show
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
     end
 
