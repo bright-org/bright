@@ -37,12 +37,7 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card", "tab_name" => tab_name} = _params,
         socket
       ) do
-    contact_card = create_card_param(tab_name, 1)
-
-    socket
-    |> assign(:contact_card, contact_card)
-    |> assign_contact_card()
-    |> then(&{:noreply, &1})
+    contact_card_view(socket, tab_name, 1)
   end
 
   def handle_event(
@@ -50,16 +45,8 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card"} = _params,
         socket
       ) do
-    contact_card =
-      create_card_param(
-        socket.assigns.contact_card.selected_tab,
-        socket.assigns.contact_card.page_param.page - 1
-      )
-
-    socket
-    |> assign(:contact_card, contact_card)
-    |> assign_contact_card()
-    |> then(&{:noreply, &1})
+    page = socket.assigns.contact_card.page_param.page - 1
+    contact_card_view(socket, socket.assigns.contact_card.selected_tab, page)
   end
 
   def handle_event(
@@ -67,16 +54,8 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card"} = _params,
         socket
       ) do
-    contact_card =
-      create_card_param(
-        socket.assigns.contact_card.selected_tab,
-        socket.assigns.contact_card.page_param.page + 1
-      )
-
-    socket
-    |> assign(:contact_card, contact_card)
-    |> assign_contact_card()
-    |> then(&{:noreply, &1})
+    page = socket.assigns.contact_card.page_param.page + 1
+    contact_card_view(socket, socket.assigns.contact_card.selected_tab, page)
   end
 
   @impl true
@@ -110,6 +89,15 @@ defmodule BrightWeb.MypageLive.Index do
 
   def create_card_param(selected_tab, page \\ 1) do
     %{selected_tab: selected_tab, notifications: [], page_param: %{page: page, page_size: 5}}
+  end
+
+  def contact_card_view(socket, tab_name, page \\ 1) do
+    contact_card = create_card_param(tab_name, page)
+
+    socket
+    |> assign(:contact_card, contact_card)
+    |> assign_contact_card()
+    |> then(&{:noreply, &1})
   end
 
   def assign_contact_card(socket) do
