@@ -59,7 +59,8 @@ defmodule Bright.MixProject do
       {:phoenix_storybook, "~> 0.5.0"},
       {:google_api_storage, "~> 0.34"},
       {:goth, "~> 1.3"},
-      {:hackney, "~> 1.18"}
+      {:hackney, "~> 1.18"},
+      {:scrivener_ecto, "~> 2.0"}
     ]
   end
 
