@@ -551,7 +551,7 @@ defmodule Bright.AccountsTest do
 
     test "only return the user if the email completely match" do
       user = insert(:user)
-      refute Accounts.get_user_by_name_or_email("1" <> user.email )
+      refute Accounts.get_user_by_name_or_email("1" <> user.email)
     end
 
     test "only return the user if confirmed_at is not null. use email" do
