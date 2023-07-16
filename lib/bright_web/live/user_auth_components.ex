@@ -7,6 +7,10 @@ defmodule BrightWeb.UserAuthComponents do
 
   # TODO: core_component にマージできないか検討
 
+  @doc """
+  Section for form
+  """
+
   attr :variant, :string, default: "center", values: ~w(center left right)
 
   slot :inner_block
