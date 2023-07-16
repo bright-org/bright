@@ -390,7 +390,7 @@ defmodule BrightWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="flex gap-3 text-sm leading-6 text-rose-600 phx-no-feedback:hidden">
+    <p class="text-error text-xs phx-no-feedback:hidden">
       <%= render_slot(@inner_block) %>
     </p>
     """
