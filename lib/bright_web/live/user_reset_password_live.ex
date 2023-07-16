@@ -2,39 +2,38 @@ defmodule BrightWeb.UserResetPasswordLive do
   use BrightWeb, :live_view
 
   alias Bright.Accounts
+  alias BrightWeb.UserAuthComponents
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">Reset Password</.header>
+      <h1 class="font-bold text-center text-3xl">
+        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">パスワードリセット</span>
+      </h1>
 
-      <.simple_form
+      <p class="mt-8 mx-auto text-sm w-fit">新しいパスワードを入力してください。</p>
+
+      <.form
+        :let={_f}
         for={@form}
         id="reset_password_form"
+        class="flex mt-8 mx-auto relative"
         phx-submit="reset_password"
         phx-change="validate"
       >
-        <.error :if={@form.errors != []}>
-          Oops, something went wrong! Please check the errors below.
-        </.error>
+        <section class="flex flex-col mx-auto">
+          <label for="email" class="mt-4">
+            <span class="block font-bold mb-2 text-xs">新しいパスワード</span>
+            <UserAuthComponents.input field={@form[:password]} id="password" type="password" required />
+          </label>
 
-        <.input field={@form[:password]} type="password" label="New password" required />
-        <.input
-          field={@form[:password_confirmation]}
-          type="password"
-          label="Confirm new password"
-          required
-        />
-        <:actions>
-          <.button phx-disable-with="Resetting..." class="w-full">Reset Password</.button>
-        </:actions>
-      </.simple_form>
+          <label for="re_password" class="mt-4">
+            <span class="block font-bold mb-2 text-xs">（確認）新しいパスワード</span>
+            <UserAuthComponents.input field={@form[:password_confirmation]} id="re_password" type="password" required />
+          </label>
 
-      <p class="text-center text-sm mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
-    </div>
+          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs mt-12 px-4 py-2 rounded select-none text-white w-full hover:opacity-50">パスワードをリセットする</button>
+        </section>
+      </.form>
     """
   end
 
