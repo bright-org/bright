@@ -363,9 +363,18 @@ defmodule Bright.Accounts do
   end
 
   @doc """
-  get user by name
+  get user by name or email full match
+
+  ## Examples
+      iex> get_user_by_name_or_email("name or email full match")
+      {:ok, %User{}}
+      iex> get_user_by_name_or_email("not full match")
+      nil
   """
-  def get_user_by_name(name) do
-    Repo.get_by(User, name: name)
+  def get_user_by_name_or_email(name_or_email) do
+    User
+    |> where([user], not is_nil(user.confirmed_at))
+    |> where([user], user.name == ^name_or_email or user.email == ^name_or_email)
+    |> Repo.one()
   end
 end

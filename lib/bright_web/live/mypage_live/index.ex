@@ -7,6 +7,7 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.SkillCardComponents
   import BrightWeb.CommunicationCardComponents
   import BrightWeb.IntriguingCardComponents
+  import BrigntWeb.BrightModalComponents, only: [bright_modal: 1]
   alias Bright.UserProfiles
   alias Bright.Notifications
 
