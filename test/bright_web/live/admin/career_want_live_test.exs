@@ -72,7 +72,10 @@ defmodule BrightWeb.Admin.CareerWantLiveTest do
     test "deletes career_want in listing", %{conn: conn, career_want: career_want} do
       {:ok, index_live, _html} = live(conn, ~p"/admin/career_wants")
 
-      assert index_live |> element("#career_wants-#{career_want.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#career_wants-#{career_want.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#career_wants-#{career_want.id}")
     end
   end

@@ -36,7 +36,9 @@ defmodule Bright.JobsTest do
       career_want = career_want_fixture()
       update_attrs = %{name: "some updated name", position: 43}
 
-      assert {:ok, %CareerWant{} = career_want} = Jobs.update_career_want(career_want, update_attrs)
+      assert {:ok, %CareerWant{} = career_want} =
+               Jobs.update_career_want(career_want, update_attrs)
+
       assert career_want.name == "some updated name"
       assert career_want.position == 43
     end
