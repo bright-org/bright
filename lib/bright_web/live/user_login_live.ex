@@ -30,10 +30,13 @@ defmodule BrightWeb.UserLoginLive do
             <UserAuthComponents.link_text_under_input href={~p"/users/reset_password"}>
               パスワードを忘れた方はこちら
             </UserAuthComponents.link_text_under_input>
+            <UserAuthComponents.link_text_under_input href={~p"/users/confirm"}>
+              確認メールの再送はこちら
+            </UserAuthComponents.link_text_under_input>
           </:under_block>
         </UserAuthComponents.input_with_label>
 
-        <UserAuthComponents.button>ログイン</UserAuthComponents.button>
+        <UserAuthComponents.button variant="mt-xs">ログイン</UserAuthComponents.button>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
 
