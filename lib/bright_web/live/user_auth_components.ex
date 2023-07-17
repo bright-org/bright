@@ -148,11 +148,12 @@ defmodule BrightWeb.UserAuthComponents do
   @doc """
   Description for auth form.
   """
+  attr :text_size, :string, default: "text-sm", values: ~w(text-sm text-xs)
   slot :inner_block
 
   def description(assigns) do
     ~H"""
-    <p class="mt-8 mx-auto text-sm w-fit"><%= render_slot(@inner_block) %></p>
+    <p class={["mt-8 mx-auto w-fit", @text_size]}><%= render_slot(@inner_block) %></p>
     """
   end
 
@@ -200,7 +201,7 @@ defmodule BrightWeb.UserAuthComponents do
   @doc """
   Button for auth form.
   """
-  attr :variant, :string, default: "normal", values: ~w(normal mt-sm)
+  attr :variant, :string, default: "normal", values: ~w(normal mt-sm mt-xs)
 
   slot :inner_block
 
@@ -210,7 +211,8 @@ defmodule BrightWeb.UserAuthComponents do
       class={[
         "bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs px-4 py-2 rounded select-none text-white w-full hover:opacity-50",
         @variant == "normal" && "mt-12",
-        @variant == "mt-sm" && "mt-8"
+        @variant == "mt-sm" && "mt-8",
+        @variant == "mt-xs" && "mt-7"
       ]}
     >
       <%= render_slot(@inner_block) %>
