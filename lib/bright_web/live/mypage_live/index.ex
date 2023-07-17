@@ -45,7 +45,7 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card"} = _params,
         socket
       ) do
-    page = socket.assigns.contact_card.page_param.page - 1
+    page = socket.assigns.contact_card.page_params.page - 1
     page = if page < 1, do: 1, else: page
     contact_card_view(socket, socket.assigns.contact_card.selected_tab, page)
   end
@@ -55,7 +55,7 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card"} = _params,
         socket
       ) do
-    page = socket.assigns.contact_card.page_param.page + 1
+    page = socket.assigns.contact_card.page_params.page + 1
 
     page =
       if page > socket.assigns.contact_card.total_pages,
@@ -98,7 +98,7 @@ defmodule BrightWeb.MypageLive.Index do
     %{
       selected_tab: selected_tab,
       notifications: [],
-      page_param: %{page: page, page_size: 5},
+      page_params: %{page: page, page_size: 5},
       total_pages: 0
     }
   end
@@ -119,7 +119,7 @@ defmodule BrightWeb.MypageLive.Index do
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
         type,
-        socket.assigns.contact_card.page_param
+        socket.assigns.contact_card.page_params
       )
 
     contact_card = %{
@@ -139,7 +139,7 @@ defmodule BrightWeb.MypageLive.Index do
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
         type,
-        socket.assigns.contact_card.page_param
+        socket.assigns.contact_card.page_params
       )
 
     communication_card = %{socket.assigns.communication_card | notifications: notifications}
