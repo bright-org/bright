@@ -23,7 +23,7 @@ Notifications.create_notification(attr)
 ```
 
 ```elixir
-user = Accounts.get_user_by_name("ymn")
+user = Accounts.get_user_by_name_or_email("ymn")
 
 defmodule TestData do
   def create_data(type, id) do

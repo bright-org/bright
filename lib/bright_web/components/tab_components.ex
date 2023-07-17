@@ -1,3 +1,5 @@
+# TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
+
 defmodule BrightWeb.TabComponents do
   @moduledoc """
   Tab Components
@@ -23,7 +25,7 @@ defmodule BrightWeb.TabComponents do
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
-      <div class="text-sm font-medium text-center text-brightGray-200">
+      <div class="text-sm font-medium text-center text-brightGray-500">
         <.tab_header id={@id} tabs={@tabs} selected_tab={@selected_tab} menu_items={@menu_items} />
         <%= if @inner_tab do %>
           <.inner_tab />
@@ -44,7 +46,7 @@ defmodule BrightWeb.TabComponents do
 
   defp tab_header(assigns) do
     ~H"""
-    <ul class="flex content-between border-b border-brightGray-50">
+    <ul class="flex content-between border-b border-brightGray-200">
       <%= for item <- @tabs do %>
         <.tab_header_item id={@id}  tab_name={item} selected={item == @selected_tab}> <%= item %></.tab_header_item>
       <% end %>
@@ -95,7 +97,7 @@ defmodule BrightWeb.TabComponents do
         data-dropdown-toggle={@data_dropdown_toggle}
         class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
       >
-        <span class="material-icons text-xs text-brightGreen-900">more_vert</span>
+        <span class="material-icons text-brightGreen-900">more_vert</span>
       </button>
       <!-- Dropdown menu -->
       <.tab_menu id={@id} menu_items={@menu_items}/>
@@ -115,9 +117,9 @@ defmodule BrightWeb.TabComponents do
     ~H"""
     <div
       id={@menu_id}
-      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+      class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px]"
     >
-      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby={@aria_labelledby}>
+      <ul class="p-2 text-left text-base" aria-labelledby={@aria_labelledby}>
         <%= for menu_item <- @menu_items do %>
           <.tab_menu_item menu_item={menu_item}/>
         <% end %>
@@ -133,7 +135,7 @@ defmodule BrightWeb.TabComponents do
         <li>
           <a
             href={@menu_item.href}
-            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+            class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
           >
             <%= @menu_item.text %>
           </a>
