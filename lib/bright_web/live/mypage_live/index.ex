@@ -45,9 +45,10 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card"} = _params,
         socket
       ) do
-    page = socket.assigns.contact_card.page_params.page - 1
+    contact_card = socket.assigns.contact_card
+    page = contact_card.page_params.page - 1
     page = if page < 1, do: 1, else: page
-    contact_card_view(socket, socket.assigns.contact_card.selected_tab, page)
+    contact_card_view(socket, contact_card.selected_tab, page)
   end
 
   def handle_event(
@@ -55,14 +56,15 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card"} = _params,
         socket
       ) do
-    page = socket.assigns.contact_card.page_params.page + 1
+    contact_card = socket.assigns.contact_card
+    page = contact_card.page_params.page + 1
 
     page =
-      if page > socket.assigns.contact_card.total_pages,
-        do: socket.assigns.contact_card.total_pages,
+      if page > contact_card.total_pages,
+        do: contact_card.total_pages,
         else: page
 
-    contact_card_view(socket, socket.assigns.contact_card.selected_tab, page)
+    contact_card_view(socket, contact_card.selected_tab, page)
   end
 
   @impl true
