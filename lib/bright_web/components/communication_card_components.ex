@@ -1,3 +1,4 @@
+# TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
 defmodule BrightWeb.CommunicationCardComponents do
   @moduledoc """
   Communication Card Components
@@ -21,11 +22,13 @@ defmodule BrightWeb.CommunicationCardComponents do
     <div>
       <h5>さまざまな人たちとの交流</h5>
       <.tab id="communication_card" tabs={["スキルアップ", "1on1のお誘い", "所属チームから", "「気になる」された", "運勢公式チーム発足"]} selected_tab={@card.selected_tab}>
-        <ul class="flex gap-y-2.5 flex-col">
-          <%= for notification <- @card.notifications do %>
-            <.communication_card_row notification={notification} />
-          <% end %>
-        </ul>
+        <div class="pt-4 px-6">
+          <ul class="flex gap-y-2.5 flex-col">
+              <%= for notification <- @card.notifications do %>
+                <.communication_card_row notification={notification} />
+              <% end %>
+          </ul>
+        </div>
       </.tab>
     </div>
     """

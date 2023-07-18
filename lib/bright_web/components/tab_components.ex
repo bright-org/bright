@@ -30,9 +30,7 @@ defmodule BrightWeb.TabComponents do
         <%= if @inner_tab do %>
           <.inner_tab />
         <% end %>
-        <div class="pt-4 pb-1 px-8">
-          <%= render_slot(@inner_block) %>
-        </div>
+        <%= render_slot(@inner_block) %>
         <.tab_footer id={@id} previous_enable={@previous_enable} next_enable={@next_enable}/>
       </div>
     </div>

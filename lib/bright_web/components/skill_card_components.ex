@@ -1,3 +1,4 @@
+# TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
 defmodule BrightWeb.SkillCardComponents do
   @moduledoc """
   Skill Card Components
@@ -54,7 +55,7 @@ defmodule BrightWeb.SkillCardComponents do
     <div>
       <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
       <.tab tabs={["エンジニア", "インフラ", "デザイナー", "マーケッター"]}>
-        <div class="py-4 px-7 flex gap-y-3 flex-col">
+        <div class="py-4 px-7 flex gap-y-2 flex-col">
           <%= for skill <- assigns.skills do %>
             <.skill_genre skills={skill} />
           <% end %>
@@ -68,14 +69,14 @@ defmodule BrightWeb.SkillCardComponents do
 
   defp skill_genre(assigns) do
     ~H"""
-    <div class="bg-brightGray-10 rounded-md text-base flex p-5 content-between">
-      <p class="font-bold w-36 text-left text-sm">
+    <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
+      <p class="font-bold w-[150px] text-left text-sm">
         <%= assigns.skills.genre_name %>
       </p>
-      <table class="table-fixed skill-table">
+      <table class="table-fixed skill-table -mt-2">
         <thead>
           <tr>
-            <th class="w-[110px]"></th>
+            <th></th>
             <th class="pl-8">クラス1</th>
             <th class="pl-8">クラス2</th>
             <th class="pl-8">クラス3</th>
