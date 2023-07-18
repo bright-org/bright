@@ -1,6 +1,5 @@
 defmodule BrightWeb.MypageLive.Index do
-  alias Bright.UserProfiles
-  use BrightWeb, :live_view
+    use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
   import BrightWeb.ContactCardComponents
@@ -8,18 +7,15 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.CommunicationCardComponents
   import BrightWeb.IntriguingCardComponents
   import BrigntWeb.BrightModalComponents, only: [bright_modal: 1]
-  alias Bright.UserProfiles
   alias Bright.Notifications
 
   @impl true
   def mount(_params, _session, socket) do
-    profile = UserProfiles.get_user_profile_by_name(socket.assigns.current_user.name)
 
-    socket
+   socket
     |> assign(:page_title, "マイページ")
     # TODO 通知数はダミーデータ
     |> assign(:notification_count, "99")
-    |> assign(:profile, profile)
     |> assign(:contact_card, create_card_param("チーム招待"))
     |> assign(:communication_card, create_card_param("スキルアップ"))
     |> assign_contact_card()
