@@ -12,6 +12,7 @@ defmodule BrightWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug :preload_user_profile
   end
 
   pipeline :admin do
@@ -123,7 +124,7 @@ defmodule BrightWeb.Router do
   end
 
   scope "/", BrightWeb do
-    pipe_through [:browser, :require_authenticated_user, :preload_user_profile]
+    pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
       on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
