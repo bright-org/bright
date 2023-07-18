@@ -4,28 +4,18 @@
 
 ```elixir
 alias Bright.UserProfiles
-alias Bright.Accounts
 
-user = Accounts.get_user_by_name_or_email("ymn")
+user_profile = UserProfiles.get_user_profile_by_name("ymn")
 
 valid_attrs = %{
   title: "ほげほげプログラマー",
-  user_id: user.id,
-  detail: "ほげほげほげ、ふがふがふが",
+  detail: "ほげほげほげ、ふがふがふがex",
   icon_file_path:
     "https://avatars.githubusercontent.com/u/13599847?s=400&u=bb92af43b8c3e0df81725d0660ad5d8680d26a97&v=4",
   twitter_url: "https://twitter.com/",
-  facebook_url: "https://www.github.com/",
-  github_url: "https://www.facebook.com/"
+  facebook_url: "https://www.facebook.com/",
+  github_url: "https://www.github.com/"
 }
 
-UserProfiles.create_user_profile(valid_attrs)
-```
-
-```elixir
-UserProfiles.get_user_profile_by_name("ymn")
-```
-
-```elixir
-
+UserProfiles.update_user_profile(user_profile, valid_attrs)
 ```

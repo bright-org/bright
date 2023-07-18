@@ -1,5 +1,5 @@
 defmodule BrightWeb.MypageLive.Index do
-    use BrightWeb, :live_view
+  use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
   import BrightWeb.ContactCardComponents
@@ -11,8 +11,7 @@ defmodule BrightWeb.MypageLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-
-   socket
+    socket
     |> assign(:page_title, "マイページ")
     # TODO 通知数はダミーデータ
     |> assign(:notification_count, "99")
