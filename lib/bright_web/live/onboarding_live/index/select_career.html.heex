@@ -16,10 +16,10 @@
         <div class="hidden">
           <ul class="flex flex-wrap gap-4 justify-start p-4">
             <!-- やりたいこと ここから -->
-            <%= for data <- @datas do %>
+            <%= for wants <- @wants do %>
             <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
               <a href="/onboardings/select_skill_panel" class="block">
-                <b class="block text-center"><%= data.name %></b>
+                <b class="block text-center"><%= wants.name %></b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
                   <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
                     エンジニア
