@@ -273,9 +273,17 @@ defmodule Bright.Accounts do
       {:error, :already_confirmed}
     else
       {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
-      Repo.insert!(user_token)
+      {:ok, _} = create_confirm_token(user, user_token)
       UserNotifier.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
     end
+  end
+
+  # NOTE: すでにある場合は削除する
+  defp create_confirm_token(user, user_token) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
+    |> Ecto.Multi.insert(:insert_user_token, user_token)
+    |> Repo.transaction()
   end
 
   @doc """
@@ -363,9 +371,18 @@ defmodule Bright.Accounts do
   end
 
   @doc """
-  get user by name
+  get user by name or email full match
+
+  ## Examples
+      iex> get_user_by_name_or_email("name or email full match")
+      {:ok, %User{}}
+      iex> get_user_by_name_or_email("not full match")
+      nil
   """
-  def get_user_by_name(name) do
-    Repo.get_by(User, name: name)
+  def get_user_by_name_or_email(name_or_email) do
+    User
+    |> where([user], not is_nil(user.confirmed_at))
+    |> where([user], user.name == ^name_or_email or user.email == ^name_or_email)
+    |> Repo.one()
   end
 end

@@ -3,7 +3,7 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   embed_templates "index/*"
 
-  alias Bright.Onboardings
+  alias Bright.Jobs
 
   @impl true
   def mount(_params, _session, socket) do
@@ -57,7 +57,7 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   def render(%{view_content: _} = assigns) do
     ~H"""
-    <.select_career datas={Onboardings.list_onboarding_wants()} />
+    <.select_career wants={Jobs.list_career_wants()} />
     """
   end
 end

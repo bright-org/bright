@@ -174,7 +174,7 @@ defmodule BrightWeb.LayoutComponents do
     <aside
     class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
     >
-      <img src="./images/common/logo.svg" width="163px" class="ml-4" />
+      <img src="/images/common/logo.svg" width="163px" class="ml-4" />
       <ul class="grid pt-2">
         <%= for {title, path} <- links() do %>
           <li>
@@ -191,7 +191,7 @@ defmodule BrightWeb.LayoutComponents do
       {"マイページ", "/mypage"},
       {"スキルを選ぶ", "/onboardings"},
       {"成長を見る・比較する", "/mypage"},
-      {"スキルパネルを入力", "/mypage"},
+      {"スキルパネルを入力", "/panels/dummy_id/graph"},
       {"スキルアップを目指す", "/mypage"},
       {"チームスキル分析", "/mypage"},
       {"キャリアパスを選ぶ", "/mypage"}

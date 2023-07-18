@@ -400,11 +400,9 @@ defmodule Bright.AccountsTest do
   end
 
   describe "deliver_user_confirmation_instructions/2" do
-    setup do
-      %{user: insert(:user_not_confirmed)}
-    end
+    test "sends token through notification" do
+      user = insert(:user_not_confirmed)
 
-    test "sends token through notification", %{user: user} do
       token =
         extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
@@ -415,6 +413,42 @@ defmodule Bright.AccountsTest do
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "confirm"
+    end
+
+    test "sends token through notification twice and only later token is valid" do
+      user = insert(:user_not_confirmed)
+
+      before_token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_confirmation_instructions(user, url)
+        end)
+
+      {:ok, before_token} = Base.url_decode64(before_token, padding: false)
+
+      after_token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_confirmation_instructions(user, url)
+        end)
+
+      {:ok, after_token} = Base.url_decode64(after_token, padding: false)
+
+      refute Repo.get_by(UserToken, token: :crypto.hash(:sha256, before_token))
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, after_token))
+      assert user_token.user_id == user.id
+      assert user_token.sent_to == user.email
+      assert user_token.context == "confirm"
+    end
+
+    test "confirmed user returns :already_confirmed error" do
+      user = insert(:user)
+
+      assert {:error, :already_confirmed} =
+               Accounts.deliver_user_confirmation_instructions(
+                 user,
+                 &"/users/confirm/#{&1}"
+               )
+
+      refute Repo.exists?(UserToken)
     end
   end
 
@@ -543,15 +577,35 @@ defmodule Bright.AccountsTest do
     end
   end
 
-  describe "get_user_by_name/1" do
+  describe "get_user_by_name_or_email/1" do
     test "only return the user if the name completely match" do
       user = insert(:user)
-      refute Accounts.get_user_by_name(user.name <> "1")
+      refute Accounts.get_user_by_name_or_email(user.name <> "1")
+    end
+
+    test "only return the user if the email completely match" do
+      user = insert(:user)
+      refute Accounts.get_user_by_name_or_email("1" <> user.email)
+    end
+
+    test "only return the user if confirmed_at is not null. use email" do
+      user = insert(:user_not_confirmed)
+      refute Accounts.get_user_by_name_or_email(user.email)
+    end
+
+    test "only return the user if confirmed_at is not null. use name" do
+      user = insert(:user_not_confirmed)
+      refute Accounts.get_user_by_name_or_email(user.name)
     end
 
     test "returns the user if the name exists" do
       %{id: id} = user = insert(:user)
-      assert %User{id: ^id} = Accounts.get_user_by_name(user.name)
+      assert %User{id: ^id} = Accounts.get_user_by_name_or_email(user.name)
+    end
+
+    test "returns the user if the email exists" do
+      %{id: id} = user = insert(:user)
+      assert %User{id: ^id} = Accounts.get_user_by_name_or_email(user.email)
     end
   end
 end

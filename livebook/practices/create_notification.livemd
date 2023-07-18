@@ -8,7 +8,7 @@ alias Bright.Accounts
 ```
 
 ```elixir
-user = Accounts.get_user_by_name("ymn")
+user = Accounts.get_user_by_name_or_email("ymn")
 
 attr = %{
   from_user_id: user.id,
@@ -61,6 +61,6 @@ Notifications.list_notifications()
 ```
 
 ```elixir
-user = Accounts.get_user_by_name("ymn")
+user = Accounts.get_user_by_name_or_email("ymn")
 Notifications.list_notification_by_type(user.id, "recruitment_coordination")
 ```
