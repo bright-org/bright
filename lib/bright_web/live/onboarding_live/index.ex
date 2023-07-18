@@ -4,6 +4,7 @@ defmodule BrightWeb.OnboardingLive.Index do
   embed_templates "index/*"
 
   alias Bright.Jobs
+  alias Bright.Onboardings
 
   @impl true
   def mount(_params, _session, socket) do
@@ -19,6 +20,7 @@ defmodule BrightWeb.OnboardingLive.Index do
       user_id: current_user.id
     }
 
+    # TODO: user_onboardingは初回のみレコード登録する。スキルアップ画面対応のときはリンクを消す等検討する
     case Onboardings.create_user_onboarding(onboarding) do
       {:ok, _} ->
         {:noreply,
