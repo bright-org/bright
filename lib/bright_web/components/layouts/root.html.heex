@@ -18,7 +18,7 @@
       <.side_menu />
       <main class="bg-background flex flex-col flex-1">
         <!-- ヘッダー -->
-        <.user_header profile={assigns[:profile]}  page_title={assigns[:page_title]} notification_count={assigns[:notification_count]} />
+        <.user_header profile={assigns.current_user.user_profile}  page_title={assigns[:page_title]} notification_count={assigns[:notification_count]} />
         <%= @inner_content %>
       </main>
     </div>
