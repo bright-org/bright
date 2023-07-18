@@ -8,7 +8,7 @@ alias Bright.Accounts
 ```
 
 ```elixir
-user = Accounts.get_user_by_name("ymn")
+user = Accounts.get_user_by_name_or_email("ymn")
 
 attr = %{
   from_user_id: user.id,
@@ -40,7 +40,19 @@ defmodule TestData do
   end
 end
 
-["team invite", "daily", "weekly", "recruitment_coordination", "skill_panel_update", "operation"]
+[
+  "team invite",
+  "daily",
+  "weekly",
+  "recruitment_coordination",
+  "skill_panel_update",
+  "operation",
+  "skill_up",
+  "1on1_invitation",
+  "from_your_team",
+  "intriguing",
+  "fortune_official_team_launched"
+]
 |> Enum.each(fn x -> TestData.create_data(x, user.id) end)
 ```
 
@@ -49,6 +61,6 @@ Notifications.list_notifications()
 ```
 
 ```elixir
-user = Accounts.get_user_by_name("ymn")
+user = Accounts.get_user_by_name_or_email("ymn")
 Notifications.list_notification_by_type(user.id, "recruitment_coordination")
 ```

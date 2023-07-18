@@ -1,20 +1,7 @@
-<div class="flex w-[1920px]">
-  <main class="bg-background flex flex-col flex-1">
-    <!-- ヘッダー -->
-    <div class="w-full flex justify-between py-2.5 px-12 border-brightGray-100 border-b bg-brightGray-50">
-      <!-- チーム作成モーダル-->
-      <div class="flex w-[1920px]">
-        <div
-          id="defaultModal"
-          tabindex="-1"
-          aria-hidden="true"
-          class="bg-brightGray-900 bg-opacity-70 fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full"
-        >
-          <div class="relative w-[1500px] max-h-full">
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-sm shadow p-16">
+
+          <div id="create-team-modal" class="relative max-h-full">
               <!-- Modal header -->
-              <h3>チーム作成</h3>
+              <h3>チームを作る</h3>
               <!-- Modal body -->
               <div class="flex pt-8">
                 <!-- modal left -->
@@ -338,17 +325,16 @@
                     </div>
                   </div>
                   <div class="flex items-center">
+                  <form id="add_user_form" phx-target={@myself} phx-submit="add_user">
                     <p>
-                      <span class="font-bold">ハンドル名</span>からメンバーとして追加
+                      <span class="font-bold">ハンドル名</span>または<span class="font-bold">メールアドレス</span>からメンバーとして追加
                     </p>
-                    <form id="add_user_form" phx-submit="add_user">
                       <input
                         name="search_word"
                         type="autocomplete"
-                        placeholder="ハンドル名を入力してください"
-                        class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 ml-5"
+                        placeholder="ハンドル名またはメールアドレスを入力してください"
+                        class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1"
                       />
-
                       <button class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5">
                         追加
                       </button>
@@ -356,7 +342,7 @@
                   </div>
                 </div>
                 <!-- modal-right -->
-                <form id="create_team_form" phx-submit="create_team" class="flex">
+                <form id="create_team_form" phx-target={@myself} phx-submit="create_team" class="flex">
                   <div class="w-[580px] pl-10 flex flex-col justify-between">
                     <div>
                       <h5>新しいチーム</h5>
@@ -448,25 +434,12 @@
                       </div>
                     </div>
 
-                    <div class="flex justify-center gap-x-4">
+                    <div class="flex justify-end gap-x-4">
                       <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
                         チームを作成し、上記メンバーに招待を送る
-                      </button>
-                      <button
-                        type="button"
-                        phx-click="cancel"
-                        class="text-sm font-bold px-5 py-3 rounded border border-base"
-                      >
-                        キャンセル
                       </button>
                     </div>
                   </div>
                 </form>
               </div>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>

@@ -21,7 +21,7 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
     test "renders reset password with valid token", %{conn: conn, token: token} do
       {:ok, _lv, html} = live(conn, ~p"/users/reset_password/#{token}")
 
-      assert html =~ "Reset Password"
+      assert html =~ "パスワードをリセットする"
     end
 
     test "does not render reset password with invalid token", %{conn: conn} do
@@ -29,7 +29,7 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
 
       assert to == %{
                flash: %{"error" => "Reset password link is invalid or it has expired."},
-               to: ~p"/"
+               to: ~p"/users/log_in"
              }
     end
 
@@ -61,10 +61,9 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
           }
         )
         |> render_submit()
-        |> follow_redirect(conn, ~p"/users/log_in")
+        |> follow_redirect(conn, ~p"/users/finish_reset_password")
 
       refute get_session(conn, :user_token)
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Password reset successfully"
       assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
     end
 
@@ -81,38 +80,9 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         )
         |> render_submit()
 
-      assert result =~ "Reset Password"
+      assert result =~ "パスワードをリセットする"
       assert result =~ "should be at least 12 character(s)"
       assert result =~ "does not match password"
-    end
-  end
-
-  describe "Reset password navigation" do
-    test "redirects to login page when the Log in button is clicked", %{conn: conn, token: token} do
-      {:ok, lv, _html} = live(conn, ~p"/users/reset_password/#{token}")
-
-      {:ok, conn} =
-        lv
-        |> element("a", "Log in")
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/log_in")
-
-      assert conn.resp_body =~ "ログイン"
-    end
-
-    test "redirects to password reset page when the Register button is clicked", %{
-      conn: conn,
-      token: token
-    } do
-      {:ok, lv, _html} = live(conn, ~p"/users/reset_password/#{token}")
-
-      {:ok, conn} =
-        lv
-        |> element("a", "Register")
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/register")
-
-      assert conn.resp_body =~ "ユーザー新規作成"
     end
   end
 end

@@ -50,17 +50,23 @@ defmodule BrightWeb.Router do
     live "/skill_units/:id/show/edit", SkillUnitLive.Show, :edit
     live "/skill_categories/:id/show/edit", SkillCategoryLive.Show, :edit
 
-    live "/user_onboardings", UserOnboardingsLive.Index, :index
-    live "/user_onboardings/new", UserOnboardingsLive.Index, :new
-    live "/user_onboardings/:id/edit", UserOnboardingsLive.Index, :edit
-    live "/user_onboardings/:id", UserOnboardingsLive.Show, :show
-    live "/user_onboardings/:id/show/edit", UserOnboardingsLive.Show, :edit
+    live "/user_onboardings", UserOnboardingLive.Index, :index
+    live "/user_onboardings/new", UserOnboardingLive.Index, :new
+    live "/user_onboardings/:id/edit", UserOnboardingLive.Index, :edit
+    live "/user_onboardings/:id", UserOnboardingLive.Show, :show
+    live "/user_onboardings/:id/show/edit", UserOnboardingLive.Show, :edit
 
     live "/onboarding_wants", OnboardingWantLive.Index, :index
     live "/onboarding_wants/new", OnboardingWantLive.Index, :new
     live "/onboarding_wants/:id/edit", OnboardingWantLive.Index, :edit
     live "/onboarding_wants/:id", OnboardingWantLive.Show, :show
     live "/onboarding_wants/:id/show/edit", OnboardingWantLive.Show, :edit
+
+    live "/career_wants", CareerWantLive.Index, :index
+    live "/career_wants/new", CareerWantLive.Index, :new
+    live "/career_wants/:id/edit", CareerWantLive.Index, :edit
+    live "/career_wants/:id", CareerWantLive.Show, :show
+    live "/career_wants/:id/show/edit", CareerWantLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
@@ -107,7 +113,9 @@ defmodule BrightWeb.Router do
       live "/users/finish_registration", UserFinishRegistrationLive, :show
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
+      live "/users/send_reset_password_url", UserSendResetPasswordUrlLive, :show
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
+      live "/users/finish_reset_password", UserFinishResetPasswordLive, :show
     end
 
     post "/users/log_in", UserSessionController, :create

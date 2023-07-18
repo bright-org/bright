@@ -7,6 +7,7 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.SkillCardComponents
   import BrightWeb.CommunicationCardComponents
   import BrightWeb.IntriguingCardComponents
+  import BrigntWeb.BrightModalComponents, only: [bright_modal: 1]
   alias Bright.UserProfiles
   alias Bright.Notifications
 
@@ -20,7 +21,9 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:notification_count, "99")
     |> assign(:profile, profile)
     |> assign(:contact_card, create_card_param("チーム招待"))
+    |> assign(:communication_card, create_card_param("スキルアップ"))
     |> assign_contact_card()
+    |> assign_communication_card()
     |> then(&{:ok, &1})
   end
 
@@ -30,7 +33,6 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   @impl true
-
   def handle_event(
         "tab_click",
         %{"id" => "contact_card", "tab_name" => tab_name} = _params,
@@ -41,6 +43,20 @@ defmodule BrightWeb.MypageLive.Index do
     socket
     |> assign(:contact_card, contact_card)
     |> assign_contact_card()
+    |> then(&{:noreply, &1})
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => "communication_card", "tab_name" => tab_name} = _params,
+        socket
+      ) do
+    communication_card = create_card_param(tab_name)
+
+    socket
+    |> assign(:communication_card, communication_card)
+    |> assign_communication_card()
     |> then(&{:noreply, &1})
   end
 
@@ -78,10 +94,31 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:contact_card, contact_card)
   end
 
+  def assign_communication_card(socket) do
+    type = communication_type(socket.assigns.communication_card.selected_tab)
+
+    notifications =
+      Notifications.list_notification_by_type(
+        socket.assigns.current_user.id,
+        type
+      )
+
+    communication_card = %{socket.assigns.communication_card | notifications: notifications}
+
+    socket
+    |> assign(:communication_card, communication_card)
+  end
+
   def contact_type("チーム招待"), do: "team invite"
   def contact_type("デイリー"), do: "daily"
   def contact_type("ウイークリー"), do: "weekly"
   def contact_type("採用の調整"), do: "recruitment_coordination"
   def contact_type("スキルパネル更新"), do: "skill_panel_update"
   def contact_type("運営"), do: "operation"
+
+  def communication_type("スキルアップ"), do: "skill_up"
+  def communication_type("1on1のお誘い"), do: "1on1_invitation"
+  def communication_type("所属チームから"), do: "from_your_team"
+  def communication_type("「気になる」された"), do: "intriguing"
+  def communication_type("運勢公式チーム発足"), do: "fortune_official_team_launched"
 end

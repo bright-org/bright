@@ -11,6 +11,7 @@ defmodule BrightWeb.UserLoginLiveTest do
       assert html =~ "ログイン"
       assert html =~ "ユーザー新規作成はこちら"
       assert html =~ "パスワードを忘れた方はこちら"
+      assert html =~ "確認メールの再送はこちら"
     end
 
     test "redirects if already logged in", %{conn: conn} do
@@ -67,7 +68,7 @@ defmodule BrightWeb.UserLoginLiveTest do
       assert login_html =~ "ユーザー新規作成"
     end
 
-    test "redirects to forgot password page when the Forgot Password button is clicked", %{
+    test "redirects to forgot password page when the Forgot Password link is clicked", %{
       conn: conn
     } do
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
@@ -78,7 +79,22 @@ defmodule BrightWeb.UserLoginLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/reset_password")
 
-      assert conn.resp_body =~ "Forgot your password?"
+      assert conn.resp_body =~ "パスワードを忘れた方へ"
+    end
+
+    test "redirects to confirm instructions page when the confirm instructions link is clicked",
+         %{
+           conn: conn
+         } do
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      {:ok, conn} =
+        lv
+        |> element("a", "確認メールの再送はこちら")
+        |> render_click()
+        |> follow_redirect(conn, ~p"/users/confirm")
+
+      assert conn.resp_body =~ "確認メールが届かなかった方へ"
     end
   end
 end
