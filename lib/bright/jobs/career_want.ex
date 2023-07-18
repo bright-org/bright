@@ -1,6 +1,6 @@
 defmodule Bright.Jobs.CareerWant do
   @moduledoc """
-  オンボーディングの「やりたいこと・興味関心があること」を扱うスキーマ。
+  やりたいこと・興味関心があることを扱うスキーマ。
   """
   use Ecto.Schema
   import Ecto.Changeset
