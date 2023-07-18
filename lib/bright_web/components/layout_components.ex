@@ -174,7 +174,7 @@ defmodule BrightWeb.LayoutComponents do
     <aside
     class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
     >
-      <img src="./images/common/logo.svg" width="163px" class="ml-4" />
+      <img src="/images/common/logo.svg" width="163px" class="ml-4" />
       <ul class="grid pt-2">
         <%= for {title, path} <- links() do %>
           <li>
