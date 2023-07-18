@@ -22,6 +22,7 @@ defmodule Bright.Accounts.User do
     has_many :skill_scores, Bright.SkillScores.SkillScore
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
     has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
+    has_one :user_profile, Bright.UserProfiles.UserProfile
 
     timestamps()
   end
