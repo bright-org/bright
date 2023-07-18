@@ -2,6 +2,7 @@ defmodule BrightWeb.Router do
   use BrightWeb, :router
 
   import BrightWeb.UserAuth
+  import BrightWeb.UserProfile
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -122,7 +123,7 @@ defmodule BrightWeb.Router do
   end
 
   scope "/", BrightWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :preload_user_profile]
 
     live_session :require_authenticated_user,
       on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
