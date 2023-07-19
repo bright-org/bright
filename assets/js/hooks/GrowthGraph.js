@@ -17,7 +17,7 @@ const createData = () => {
     {
         label: 'othersFuture',
         data: [null, null, null, 45, 70],
-        borderColor: '#2E3A3A',
+        borderColor: '#A5B8B8',
         borderDash: [5, 5],
         pointRadius: 8,
         pointBackgroundColor: '#C063CD',
@@ -33,13 +33,13 @@ const createData = () => {
         pointBackgroundColor: '#40DEC6',
         pointBorderColor: '#40DEC6',
         fill: true,
-        backgroundColor: '#40DEC6AA',
+        backgroundColor: '#40DEC622',
         tension: 0.1
     },
     {
         label: 'myFuture',
         data: [null, null, null, 55, 60],
-        borderColor: '#2E3A3A',
+        borderColor: '#A5B8B8',
         borderDash: [5, 5],
         pointRadius: 8,
         pointBackgroundColor: '#40DEC6',
@@ -62,7 +62,7 @@ const beforeDatasetsDraw = (chart, ease) => {
   context.beginPath()
   context.lineWidth = 2
   context.setLineDash([5, 5])
-  context.strokeStyle = '#C063CD'
+  context.strokeStyle = '#A5B8B8'
 
   // ベテランの線
   context.moveTo(x1, y)
