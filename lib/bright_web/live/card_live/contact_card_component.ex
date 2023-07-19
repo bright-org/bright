@@ -14,7 +14,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     ~H"""
     <div>
       <h5>重量な連絡</h5>
-      <.tab id="contact_card" tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]} selected_tab={@card.selected_tab} page={@card.page_params.page} total_pages={@card.total_pages}>
+      <.tab id="contact_card" tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]} selected_tab={@card.selected_tab} page={@card.page_params.page} total_pages={@card.total_pages}  target={@myself}>
         <div class="pt-4 pb-1 px-8">
           <ul class="flex gap-y-2.5 flex-col">
             <%= for notification <- @card.notifications do %>
@@ -63,4 +63,15 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   defp highlight(true), do: "text-brightGreen-300"
   defp highlight(false), do: "text-brightGray-300"
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => "contact_card", "tab_name" => tab_name} = _params,
+        socket
+      ) do
+    IO.inspect(tab_name)
+    {:noreply, socket}
+    # contact_card_view(socket, tab_name, 1)
+  end
 end
