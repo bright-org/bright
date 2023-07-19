@@ -5,7 +5,7 @@ const createData = () => {
     labels: ["2020.12", "2021.3", "2021.6", "2021.9","2011.12"],
     datasets: [
       {
-        label: 'test1',
+        label: 'others',
         data: [10, 10, 10, 45, null],
         borderColor: '#C063CD',
         pointRadius: 8,
@@ -13,9 +13,9 @@ const createData = () => {
         pointBorderColor: '#C063CD',
         fill: false,
         tension: 0.1
-     },
-     {
-        label: 'test1',
+    },
+    {
+        label: 'othersFuture',
         data: [null, null, null, 45, 70],
         borderColor: '#2E3A3A',
         borderDash: [5, 5],
@@ -24,9 +24,9 @@ const createData = () => {
         pointBorderColor: '#C063CD',
         fill: false,
         tension: 0.1
-     },
-     {
-        label: 'test',
+    },
+    {
+        label: 'my',
         data: [0, 35, 45, 55, null],
         borderColor: '#40DEC6',
         pointRadius: 8,
@@ -35,9 +35,9 @@ const createData = () => {
         fill: true,
         backgroundColor: '#40DEC6AA',
         tension: 0.1
-     },
-     {
-        label: 'test',
+    },
+    {
+        label: 'myFuture',
         data: [null, null, null, 55, 60],
         borderColor: '#2E3A3A',
         borderDash: [5, 5],
@@ -46,13 +46,16 @@ const createData = () => {
         pointBorderColor: '#40DEC6',
         fill: false,
         tension: 0.1
-    }
-    ]
+    }]
   }
 }
 
 const beforeDatasetsDraw = (chart, ease) => {
-  var context = chart.ctx
+
+
+  const context = chart.ctx
+
+  // 見習い、平均、ベテランの線
   x1 = chart.scales.x.getPixelForValue(0)
   x4 = chart.scales.x.getPixelForValue(4)
   y = chart.scales.y.getPixelForValue(40)
@@ -60,9 +63,12 @@ const beforeDatasetsDraw = (chart, ease) => {
   context.lineWidth = 2
   context.setLineDash([5, 5])
   context.strokeStyle = '#C063CD'
+
+  // ベテランの線
   context.moveTo(x1, y)
   context.lineTo(x4, y)
   y = chart.scales.y.getPixelForValue(60)
+  // 平均の線
   context.moveTo(x1, y)
   context.lineTo(x4, y)
   context.stroke()
@@ -72,6 +78,7 @@ const beforeDatasetsDraw = (chart, ease) => {
   diff_x = x4 - x3
   now_x = x3 + (diff_x / 2)
 
+  //　現在の縦線
   context.beginPath()
   context.lineWidth = 2
   context.setLineDash([2, 0])
@@ -82,9 +89,13 @@ const beforeDatasetsDraw = (chart, ease) => {
   y4 = chart.scales.y.getPixelForValue(100)
   context.moveTo(now_x, y)
   context.lineTo(now_x, y4)
+
+  // 直近の過去から現在までの線
   context.moveTo(x3, y3)
   context.lineTo(now_x, y2)
   context.stroke()
+
+  // 現在の点
   context.arc(now_x, y2, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false )
   context.fillStyle = "rgba(255,0,0,0.8)"
   context.fill()
@@ -134,8 +145,8 @@ export const GrowthGraph = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
     const myChart = new Chart(ctx, createChartFromJSON(labels, datasets))
-    myChart.canvas.parentNode.style.height =  '426px'
-    myChart.canvas.parentNode.style.width =   '426px'
+    myChart.canvas.parentNode.style.height =  '600px'
+    myChart.canvas.parentNode.style.width =   '800px'
 
   }
 }
