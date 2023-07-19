@@ -171,7 +171,6 @@ defmodule BrightWeb.LayoutComponents do
       <.side_menu />
   """
 
-  attr :page_title, :string
   attr :href, :string
 
   def side_menu(assigns) do
