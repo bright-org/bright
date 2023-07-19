@@ -7,7 +7,7 @@
 
   <div class="flex flex-col mt-2 relative">
     <!-- やりたいことセクション ここから -->
-    <section class="accordion mt-5 w-[1236px]">
+    <section class="accordion mt-5 max-w-[1236px]">
       <div class="bg-brightGray-50 rounded w-full">
         <p class="bg-brightGray-900 cursor-pointer font-bold px-4 py-2 relative rounded select-none text-white transition-all hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[''] before:h-3 before:-mt-2 before:rotate-225 before:right-4 before:top-1/2 before:w-3">
           やりたいことや興味・関心があることからスキルを選ぶ
@@ -16,10 +16,10 @@
         <div class="hidden">
           <ul class="flex flex-wrap gap-4 justify-start p-4">
             <!-- やりたいこと ここから -->
-            <%= for data <- @datas do %>
+            <%= for wants <- @wants do %>
             <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
               <a href="/onboardings/select_skill_panel" class="block">
-                <b class="block text-center"><%= data.name %></b>
+                <b class="block text-center"><%= wants.name %></b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
                   <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
                     エンジニア
@@ -119,7 +119,7 @@
     <!-- やりたいことセクション ここまで -->
 
     <!-- なりたいジョブセクション ここから -->
-    <section class="accordion flex mt-8 w-[1236px]">
+    <section class="accordion flex mt-8 max-w-[1236px]">
       <div class="bg-brightGray-50 rounded w-full">
         <p class="bg-brightGray-900 cursor-pointer font-bold px-4 py-2 relative rounded select-none text-white hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[''] before:h-3 before:-mt-2 before:rotate-225 before:right-4 before:top-1/2 before:w-3">
           現在のジョブ、または、なりたいジョブからスキルを選ぶ
@@ -2558,7 +2558,7 @@
   </div>
 
   <p class="mt-8">
-    <a href="#" class="text-link text-xs underline">採用担当、人事、営業の方はこちら（自分のスキルを登録しません）</a>
+    <.link class="text-link text-xs underline" phx-click="skip_onboarding">採用担当、人事、営業の方はこちら（自分のスキルを登録しません）</.link>
   </p>
 </section>
 

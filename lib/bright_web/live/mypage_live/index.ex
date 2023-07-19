@@ -1,5 +1,4 @@
 defmodule BrightWeb.MypageLive.Index do
-  alias Bright.UserProfiles
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
@@ -8,18 +7,14 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.CommunicationCardComponents
   import BrightWeb.IntriguingCardComponents
   import BrigntWeb.BrightModalComponents, only: [bright_modal: 1]
-  alias Bright.UserProfiles
   alias Bright.Notifications
 
   @impl true
   def mount(_params, _session, socket) do
-    profile = UserProfiles.get_user_profile_by_name(socket.assigns.current_user.name)
-
     socket
     |> assign(:page_title, "マイページ")
     # TODO 通知数はダミーデータ
     |> assign(:notification_count, "99")
-    |> assign(:profile, profile)
     |> assign(:contact_card, create_card_param("チーム招待"))
     |> assign(:communication_card, create_card_param("スキルアップ"))
     |> assign_contact_card()
@@ -38,12 +33,34 @@ defmodule BrightWeb.MypageLive.Index do
         %{"id" => "contact_card", "tab_name" => tab_name} = _params,
         socket
       ) do
-    contact_card = create_card_param(tab_name)
+    contact_card_view(socket, tab_name, 1)
+  end
 
-    socket
-    |> assign(:contact_card, contact_card)
-    |> assign_contact_card()
-    |> then(&{:noreply, &1})
+  def handle_event(
+        "previous_button_click",
+        %{"id" => "contact_card"} = _params,
+        socket
+      ) do
+    contact_card = socket.assigns.contact_card
+    page = contact_card.page_params.page - 1
+    page = if page < 1, do: 1, else: page
+    contact_card_view(socket, contact_card.selected_tab, page)
+  end
+
+  def handle_event(
+        "next_button_click",
+        %{"id" => "contact_card"} = _params,
+        socket
+      ) do
+    contact_card = socket.assigns.contact_card
+    page = contact_card.page_params.page + 1
+
+    page =
+      if page > contact_card.total_pages,
+        do: contact_card.total_pages,
+        else: page
+
+    contact_card_view(socket, contact_card.selected_tab, page)
   end
 
   @impl true
@@ -75,8 +92,22 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:mypage, nil)
   end
 
-  def create_card_param(selected_tab) do
-    %{selected_tab: selected_tab, notifications: []}
+  def create_card_param(selected_tab, page \\ 1) do
+    %{
+      selected_tab: selected_tab,
+      notifications: [],
+      page_params: %{page: page, page_size: 5},
+      total_pages: 0
+    }
+  end
+
+  def contact_card_view(socket, tab_name, page \\ 1) do
+    contact_card = create_card_param(tab_name, page)
+
+    socket
+    |> assign(:contact_card, contact_card)
+    |> assign_contact_card()
+    |> then(&{:noreply, &1})
   end
 
   def assign_contact_card(socket) do
@@ -85,10 +116,15 @@ defmodule BrightWeb.MypageLive.Index do
     notifications =
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
-        type
+        type,
+        socket.assigns.contact_card.page_params
       )
 
-    contact_card = %{socket.assigns.contact_card | notifications: notifications}
+    contact_card = %{
+      socket.assigns.contact_card
+      | notifications: notifications.entries,
+        total_pages: notifications.total_pages
+    }
 
     socket
     |> assign(:contact_card, contact_card)
@@ -100,7 +136,8 @@ defmodule BrightWeb.MypageLive.Index do
     notifications =
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
-        type
+        type,
+        socket.assigns.contact_card.page_params
       )
 
     communication_card = %{socket.assigns.communication_card | notifications: notifications}

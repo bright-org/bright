@@ -400,11 +400,9 @@ defmodule Bright.AccountsTest do
   end
 
   describe "deliver_user_confirmation_instructions/2" do
-    setup do
-      %{user: insert(:user_not_confirmed)}
-    end
+    test "sends token through notification" do
+      user = insert(:user_not_confirmed)
 
-    test "sends token through notification", %{user: user} do
       token =
         extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
@@ -415,6 +413,42 @@ defmodule Bright.AccountsTest do
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "confirm"
+    end
+
+    test "sends token through notification twice and only later token is valid" do
+      user = insert(:user_not_confirmed)
+
+      before_token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_confirmation_instructions(user, url)
+        end)
+
+      {:ok, before_token} = Base.url_decode64(before_token, padding: false)
+
+      after_token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_confirmation_instructions(user, url)
+        end)
+
+      {:ok, after_token} = Base.url_decode64(after_token, padding: false)
+
+      refute Repo.get_by(UserToken, token: :crypto.hash(:sha256, before_token))
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, after_token))
+      assert user_token.user_id == user.id
+      assert user_token.sent_to == user.email
+      assert user_token.context == "confirm"
+    end
+
+    test "confirmed user returns :already_confirmed error" do
+      user = insert(:user)
+
+      assert {:error, :already_confirmed} =
+               Accounts.deliver_user_confirmation_instructions(
+                 user,
+                 &"/users/confirm/#{&1}"
+               )
+
+      refute Repo.exists?(UserToken)
     end
   end
 

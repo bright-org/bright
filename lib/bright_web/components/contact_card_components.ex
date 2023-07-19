@@ -6,7 +6,7 @@ defmodule BrightWeb.ContactCardComponents do
   use Phoenix.Component
   import BrightWeb.TabComponents
 
-  @highlight_minutes 60 * 60 * 8
+  @highlight_minutes 60 * 8
 
   @doc """
   Renders a Contact
@@ -21,7 +21,7 @@ defmodule BrightWeb.ContactCardComponents do
     ~H"""
     <div>
       <h5>重量な連絡</h5>
-      <.tab id="contact_card" tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]} selected_tab={@card.selected_tab}>
+      <.tab id="contact_card" tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]} selected_tab={@card.selected_tab} page={@card.page_params.page} total_pages={@card.total_pages}>
         <div class="pt-4 pb-1 px-8">
           <ul class="flex gap-y-2.5 flex-col">
             <%= for notification <- @card.notifications do %>

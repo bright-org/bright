@@ -31,12 +31,17 @@ Google Cloudのプロジェクトに自分のGoogleアカウントを招待し�
 .
 ├── environments
 │   ├── dev
-│   ├── stg  # stg環境を構築する際に作成
-│   └── prod # prod環境を構築する際に作成
+│   ├── stg  # TODO: stg環境を構築する際に作成
+│   └── prod # TODO: prod環境を構築する際に作成
 └── modules
     └── google
-        ├── bucket
-        └── db
+        ├── bucket                  # ユーザーがアップロードしたファイルを保存するGCSバケット
+        ├── cloud_run_service       # 空のCloud Runサービス（デプロイはCloud Buildで実行）
+        ├── db                      # データベース（PostgreSQL）
+        ├── managed_service_account # Googleマネージドサービスアカウントへの権限付与
+        ├── oidc_github_actions     # GitHub ActionsでGoogle CloudリソースにアクセスできるようにするためのOIDC設定
+        ├── secret                  # アプリケーションから参照する秘匿情報
+        └── service_account         # ユーザー管理サービスアカウントへの権限付与
 ```
 
 ## 既存環境の変更とプロビジョニング

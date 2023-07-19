@@ -2,14 +2,14 @@
 <!-- プロフィール -->
 <div class="flex justify-between py-6 px-10 bg-white">
   <.profile
-    user_name={@profile.user.name}
-    title={@profile.title}
-    detail={@profile.detail}
-    icon_file_path={@profile.icon_file_path}
+    user_name={@current_user.name}
+    title={@current_user.user_profile.title}
+    detail={@current_user.user_profile.detail}
+    icon_file_path={@current_user.user_profile.icon_file_path}
     display_sns
-    twitter_url={@profile.twitter_url}
-    github_url={@profile.github_url}
-    facebook_url={@profile.facebook_url}
+    twitter_url={@current_user.user_profile.twitter_url}
+    github_url={@current_user.user_profile.github_url}
+    facebook_url={@current_user.user_profile.facebook_url}
   />
   <div>
     <p class="text-base !font-bold">

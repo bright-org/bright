@@ -12,7 +12,6 @@ defmodule Bright.Onboardings.UserOnboarding do
 
   schema "user_onboardings" do
     field :completed_at, :naive_datetime
-    # field :user_id, :id
 
     belongs_to :user, User
 
@@ -22,7 +21,7 @@ defmodule Bright.Onboardings.UserOnboarding do
   @doc false
   def changeset(user_onboardings, attrs) do
     user_onboardings
-    |> cast(attrs, [:completed_at])
+    |> cast(attrs, [:user_id, :completed_at])
     |> validate_required([:completed_at])
   end
 end

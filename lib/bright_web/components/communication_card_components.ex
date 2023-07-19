@@ -6,7 +6,7 @@ defmodule BrightWeb.CommunicationCardComponents do
   use Phoenix.Component
   import BrightWeb.TabComponents
 
-  @highlight_minutes 60 * 60 * 8
+  @highlight_minutes 60 * 8
 
   @doc """
   Renders a Communication Card

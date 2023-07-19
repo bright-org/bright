@@ -7,6 +7,7 @@
 | Cloud Run | Phoenixアプリケーションを稼働させる |
 | Cloud SQL | RDB（PostgreSQL）にデータを保存する |
 | Cloud Storage | アップロードされたファイルを保存する |
+| SendGrid | メールを送信する |
 
 ## 構成管理
 
