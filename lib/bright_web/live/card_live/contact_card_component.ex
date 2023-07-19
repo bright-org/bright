@@ -6,6 +6,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
+  alias Bright.Notifications
 
   @highlight_minutes 60 * 8
 
@@ -31,7 +32,9 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   def update(assigns, socket) do
     {:ok,
      socket
-     |> assign(assigns)}
+     |> assign(assigns)
+     |> assign(:card, create_card_param("チーム招待"))
+     |> assign_contact_card()}
   end
 
   def contact_card_row(assigns) do
@@ -70,8 +73,51 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
         %{"id" => "contact_card", "tab_name" => tab_name} = _params,
         socket
       ) do
-    IO.inspect(tab_name)
-    {:noreply, socket}
-    # contact_card_view(socket, tab_name, 1)
+    contact_card_view(socket, tab_name, 1)
   end
+
+  def create_card_param(selected_tab, page \\ 1) do
+    %{
+      selected_tab: selected_tab,
+      notifications: [],
+      page_params: %{page: page, page_size: 5},
+      total_pages: 0
+    }
+  end
+
+  def contact_card_view(socket, tab_name, page \\ 1) do
+    contact_card = create_card_param(tab_name, page)
+
+    socket
+    |> assign(:card, contact_card)
+    |> assign_contact_card()
+    |> then(&{:noreply, &1})
+  end
+
+  def assign_contact_card(socket) do
+    type = contact_type(socket.assigns.card.selected_tab)
+
+    notifications =
+      Notifications.list_notification_by_type(
+        socket.assigns.current_user.id,
+        type,
+        socket.assigns.card.page_params
+      )
+
+    card = %{
+      socket.assigns.card
+      | notifications: notifications.entries,
+        total_pages: notifications.total_pages
+    }
+
+    socket
+    |> assign(:card, card)
+  end
+
+  def contact_type("チーム招待"), do: "team invite"
+  def contact_type("デイリー"), do: "daily"
+  def contact_type("ウイークリー"), do: "weekly"
+  def contact_type("採用の調整"), do: "recruitment_coordination"
+  def contact_type("スキルパネル更新"), do: "skill_panel_update"
+  def contact_type("運営"), do: "operation"
 end
