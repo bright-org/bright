@@ -2,7 +2,6 @@ defmodule BrightWeb.UserSettingsLive.Index do
   alias BrightWeb.UserSettingsLive
   use BrightWeb, :live_view
   import BrightWeb.TabComponents
-  alias UserSettingsLive.Util
 
   @tab_info %{
     "一般" => {"", UserSettingsLive.GeneralSettingComponent},
@@ -25,7 +24,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
         <.live_component
           module={@module}
           id={"user_settings"}
-          patch={~p"/users/settings/#{@path}"}
+          patch={"/settings/#{@path}"}
         />
       </.tab>
     </div>
