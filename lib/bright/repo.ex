@@ -3,5 +3,5 @@ defmodule Bright.Repo do
     otp_app: :bright,
     adapter: Ecto.Adapters.Postgres
 
-  use Scrivener, page_size: 5
+  use Scrivener
 end
