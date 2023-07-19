@@ -168,6 +168,7 @@ defmodule BrightWeb.LayoutComponents do
   """
 
   attr :page_title, :string
+  attr :href, :string
 
   def side_menu(assigns) do
     ~H"""
@@ -178,7 +179,7 @@ defmodule BrightWeb.LayoutComponents do
       <ul class="grid pt-2">
         <%= for {title, path} <- links() do %>
           <li>
-            <a class={menu_active_style(title == assigns.page_title)} href={path} ><%= title %></a>
+            <a class={menu_active_style(path == @href)} href={path} ><%= title %></a>
           </li>
         <% end %>
       </ul>
@@ -190,11 +191,11 @@ defmodule BrightWeb.LayoutComponents do
     [
       {"マイページ", "/mypage"},
       {"スキルを選ぶ", "/onboardings"},
-      {"成長を見る・比較する", "/mypage"},
+      {"成長を見る・比較する", "/"},
       {"スキルパネルを入力", "/panels/dummy_id/graph"},
-      {"スキルアップを目指す", "/mypage"},
-      {"チームスキル分析", "/mypage"},
-      {"キャリアパスを選ぶ", "/mypage"}
+      {"スキルアップを目指す", "/"},
+      {"チームスキル分析", "/"},
+      {"キャリアパスを選ぶ", "/"}
     ]
   end
 
