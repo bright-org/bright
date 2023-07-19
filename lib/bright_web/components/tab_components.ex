@@ -19,6 +19,8 @@ defmodule BrightWeb.TabComponents do
   attr :next_enable, :boolean, default: false
   attr :menu_items, :list, default: []
   attr :inner_tab, :boolean, default: false
+  attr :page, :integer, default: 1
+  attr :total_pages, :integer, default: 1
 
   def tab(assigns) do
     ~H"""
@@ -31,7 +33,7 @@ defmodule BrightWeb.TabComponents do
         <div class="pt-4 pb-1 px-8">
           <%= render_slot(@inner_block) %>
         </div>
-        <.tab_footer id={@id} previous_enable={@previous_enable} next_enable={@next_enable}/>
+        <.tab_footer id={@id} page={@page} total_pages={@total_pages}/>
       </div>
     </div>
     """
@@ -142,20 +144,22 @@ defmodule BrightWeb.TabComponents do
   end
 
   attr :id, :string
-  attr :previous_enable, :boolean
-  attr :next_enable, :boolean
+  attr :page, :integer
+  attr :total_pages, :integer
 
   defp tab_footer(assigns) do
+    previous_enable = assigns.page > 1
+    next_enable = assigns.page < assigns.total_pages
+
     previous_button_style =
-      "#{page_button_enable_style(assigns.previous_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+      "#{page_button_enable_style(previous_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
 
     next_button_style =
-      "#{page_button_enable_style(assigns.next_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+      "#{page_button_enable_style(next_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
 
-    previous_span_style =
-      "material-icons md-18 mr-2 #{page_button_enable_style(assigns.previous_enable)}"
+    previous_span_style = "material-icons md-18 mr-2 #{page_button_enable_style(previous_enable)}"
 
-    next_span_style = "material-icons md-18 ml-2 #{page_button_enable_style(assigns.next_enable)}"
+    next_span_style = "material-icons md-18 ml-2 #{page_button_enable_style(next_enable)}"
 
     assigns =
       assigns
