@@ -33,9 +33,6 @@ defmodule BrightWeb.TabComponents do
         <%= if @inner_tab do %>
           <.inner_tab />
         <% end %>
-        <div class="pt-4 pb-1 px-8">
-          <%= render_slot(@inner_block) %>
-        </div>
         <%= render_slot(@inner_block) %>
         <%= if !@hidden_footer do %>
           <.tab_footer id={@id} page={@page} total_pages={@total_pages}/>
