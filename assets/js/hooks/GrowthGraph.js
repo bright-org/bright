@@ -1,13 +1,53 @@
 import { Chart } from 'chart.js/auto'
 
-const createData = (data) => {
-  return {
-    label: '',
-    data: data,
-    borderColor: '#FFFFFF00',
-    backgroundColor: '#FFFFFF00',
-    borderWidth: 0,
-    pointRadius: 0,
+const createData = () => {
+  return{
+    labels: ["2020.12", "2021.3", "2021.6", "2021.9","2011.12"],
+    datasets: [
+      {
+        label: 'test1',
+        data: [10, 10, 10, 45, null],
+        borderColor: '#C063CD',
+        pointRadius: 8,
+        pointBackgroundColor: '#C063CD',
+        pointBorderColor: '#C063CD',
+        fill: false,
+        tension: 0.1
+     },
+     {
+        label: 'test1',
+        data: [null, null, null, 45, 70],
+        borderColor: '#2E3A3A',
+        borderDash: [5, 5],
+        pointRadius: 8,
+        pointBackgroundColor: '#C063CD',
+        pointBorderColor: '#C063CD',
+        fill: false,
+        tension: 0.1
+     },
+     {
+        label: 'test',
+        data: [0, 35, 45, 55, null],
+        borderColor: '#40DEC6',
+        pointRadius: 8,
+        pointBackgroundColor: '#40DEC6',
+        pointBorderColor: '#40DEC6',
+        fill: true,
+        backgroundColor: '#40DEC6AA',
+        tension: 0.1
+     },
+     {
+        label: 'test',
+        data: [null, null, null, 55, 60],
+        borderColor: '#2E3A3A',
+        borderDash: [5, 5],
+        pointRadius: 8,
+        pointBackgroundColor: '#40DEC6',
+        pointBorderColor: '#40DEC6',
+        fill: false,
+        tension: 0.1
+    }
+    ]
   }
 }
 
@@ -54,54 +94,7 @@ const createChartFromJSON = (labels, datasets) => {
   const color = "#0000FF"
   return ({
     type: 'line',
-    data:{
-      labels: ["2020.12", "2021.3", "2021.6", "2021.9","2011.12"],
-      datasets: [
-        {
-          label: 'test1',
-          data: [10, 10, 10, 45, null],
-          borderColor: '#C063CD',
-          pointRadius: 8,
-          pointBackgroundColor: '#C063CD',
-          pointBorderColor: '#C063CD',
-          fill: false,
-          tension: 0.1
-       },
-       {
-          label: 'test1',
-          data: [null, null, null, 45, 70],
-          borderColor: '#2E3A3A',
-          borderDash: [5, 5],
-          pointRadius: 8,
-          pointBackgroundColor: '#C063CD',
-          pointBorderColor: '#C063CD',
-          fill: false,
-          tension: 0.1
-       },
-       {
-          label: 'test',
-          data: [0, 35, 45, 55, null],
-          borderColor: '#40DEC6',
-          pointRadius: 8,
-          pointBackgroundColor: '#40DEC6',
-          pointBorderColor: '#40DEC6',
-          fill: true,
-          backgroundColor: '#40DEC6AA',
-          tension: 0.1
-       },
-       {
-          label: 'test',
-          data: [null, null, null, 55, 60],
-          borderColor: '#2E3A3A',
-          borderDash: [5, 5],
-          pointRadius: 8,
-          pointBackgroundColor: '#40DEC6',
-          pointBorderColor: '#40DEC6',
-          fill: false,
-          tension: 0.1
-      }
-      ]
-    },
+    data:createData(),
     options: {
       animation: false,
       plugins: {
