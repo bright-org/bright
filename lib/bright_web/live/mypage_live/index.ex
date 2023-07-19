@@ -2,7 +2,6 @@ defmodule BrightWeb.MypageLive.Index do
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
-  import BrightWeb.ContactCardComponents
   import BrightWeb.SkillCardComponents
   import BrightWeb.CommunicationCardComponents
   import BrightWeb.IntriguingCardComponents

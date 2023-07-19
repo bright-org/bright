@@ -1,23 +1,16 @@
 # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
-defmodule BrightWeb.ContactCardComponents do
+defmodule BrightWeb.CardLive.ContactCardComponent do
   @moduledoc """
-  Contact Card Components
+  Contact Card Component
   """
-  use Phoenix.Component
+
+  use BrightWeb, :live_component
   import BrightWeb.TabComponents
 
   @highlight_minutes 60 * 8
 
-  @doc """
-  Renders a Contact
-
-  ## Examples
-      <.contact_card />
-  """
-
-  attr :card, :map
-
-  def contact_card(assigns) do
+  @impl true
+  def render(assigns) do
     ~H"""
     <div>
       <h5>重量な連絡</h5>
@@ -34,7 +27,12 @@ defmodule BrightWeb.ContactCardComponents do
     """
   end
 
-  attr :notification, :map, required: true
+  @impl true
+  def update(assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)}
+  end
 
   def contact_card_row(assigns) do
     {:ok, inserted_at} = DateTime.from_naive(assigns.notification.inserted_at, "Etc/UTC")
