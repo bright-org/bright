@@ -24,8 +24,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
       >
       <.live_component
         module={@module}
-        id={"user"}
-        title={"page"}
+        id={"user_settings"}
         patch={~p"/users/settings/#{@path}"}
       />
       </.tab>
