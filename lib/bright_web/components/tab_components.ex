@@ -36,7 +36,7 @@ defmodule BrightWeb.TabComponents do
         <% end %>
         <%= render_slot(@inner_block) %>
         <%= if !@hidden_footer do %>
-          <.tab_footer id={@id} page={@page} total_pages={@total_pages}/>
+          <.tab_footer id={@id} page={@page} total_pages={@total_pages} target={@target} />
         <% end %>
       </div>
     </div>
@@ -152,6 +152,7 @@ defmodule BrightWeb.TabComponents do
   attr :id, :string
   attr :page, :integer
   attr :total_pages, :integer
+  attr :target, :any
 
   defp tab_footer(assigns) do
     previous_enable = assigns.page > 1
@@ -180,6 +181,7 @@ defmodule BrightWeb.TabComponents do
         type="button"
         class={@previous_button_style}
         phx-click="previous_button_click"
+        phx-target={@target}
         phx-value-id={@id}
       >
         <span class={@previous_span_style} >chevron_left</span> 前
@@ -188,7 +190,8 @@ defmodule BrightWeb.TabComponents do
         type="button"
         class={@next_button_style}
         phx-click="next_button_click"
-         phx-value-id={@id}
+        phx-target={@target}
+        phx-value-id={@id}
       >
         次 <span class={@next_span_style} >chevron_right</span>
       </button>

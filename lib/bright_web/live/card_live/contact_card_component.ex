@@ -76,6 +76,33 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     contact_card_view(socket, tab_name, 1)
   end
 
+  def handle_event(
+        "previous_button_click",
+        %{"id" => "contact_card"} = _params,
+        socket
+      ) do
+    contact_card = socket.assigns.card
+    page = contact_card.page_params.page - 1
+    page = if page < 1, do: 1, else: page
+    contact_card_view(socket, contact_card.selected_tab, page)
+  end
+
+  def handle_event(
+        "next_button_click",
+        %{"id" => "contact_card"} = _params,
+        socket
+      ) do
+    contact_card = socket.assigns.card
+    page = contact_card.page_params.page + 1
+
+    page =
+      if page > contact_card.total_pages,
+        do: contact_card.total_pages,
+        else: page
+
+    contact_card_view(socket, contact_card.selected_tab, page)
+  end
+
   def create_card_param(selected_tab, page \\ 1) do
     %{
       selected_tab: selected_tab,

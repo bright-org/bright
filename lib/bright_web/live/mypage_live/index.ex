@@ -24,33 +24,6 @@ defmodule BrightWeb.MypageLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  # def handle_event(
-  #       "previous_button_click",
-  #       %{"id" => "contact_card"} = _params,
-  #       socket
-  #     ) do
-  #   contact_card = socket.assigns.contact_card
-  #   page = contact_card.page_params.page - 1
-  #   page = if page < 1, do: 1, else: page
-  #   contact_card_view(socket, contact_card.selected_tab, page)
-  # end
-
-  # def handle_event(
-  #       "next_button_click",
-  #       %{"id" => "contact_card"} = _params,
-  #       socket
-  #     ) do
-  #   contact_card = socket.assigns.contact_card
-  #   page = contact_card.page_params.page + 1
-
-  #   page =
-  #     if page > contact_card.total_pages,
-  #       do: contact_card.total_pages,
-  #       else: page
-
-  #   contact_card_view(socket, contact_card.selected_tab, page)
-  # end
-
   @impl true
   def handle_event(
         "tab_click",
