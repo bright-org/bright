@@ -17,16 +17,16 @@ defmodule BrightWeb.UserSettingsLive.Index do
     <div class="m-8">
       <h5>ユーザー設定</h5>
       <.tab
-      id="user_settings"
-      tabs={["一般", "メール・パスワード", "SNS連携", "求職"]}
-      hidden_footer={true}
-      selected_tab={@selected_tab}
+        id="user_settings"
+        tabs={["一般", "メール・パスワード", "SNS連携", "求職"]}
+        hidden_footer={true}
+        selected_tab={@selected_tab}
       >
-      <.live_component
-        module={@module}
-        id={"user_settings"}
-        patch={~p"/users/settings/#{@path}"}
-      />
+        <.live_component
+          module={@module}
+          id={"user_settings"}
+          patch={~p"/users/settings/#{@path}"}
+        />
       </.tab>
     </div>
     """
@@ -44,11 +44,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
   end
 
   @impl true
-  def handle_event(
-        "tab_click",
-        %{"tab_name" => tab_name},
-        socket
-      ) do
+  def handle_event("tab_click", %{"tab_name" => tab_name}, socket) do
     {path, module} = Map.get(@tab_info, tab_name)
 
     socket
