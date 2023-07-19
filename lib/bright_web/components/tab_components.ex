@@ -23,6 +23,7 @@ defmodule BrightWeb.TabComponents do
   attr :inner_tab, :boolean, default: false
   attr :page, :integer, default: 1
   attr :total_pages, :integer, default: 1
+  attr :hidden_footer, :boolean, default: false
 
   def tab(assigns) do
     ~H"""
@@ -33,7 +34,9 @@ defmodule BrightWeb.TabComponents do
           <.inner_tab />
         <% end %>
         <%= render_slot(@inner_block) %>
-        <.tab_footer id={@id} page={@page} total_pages={@total_pages}/>
+        <%= if !@hidden_footer do %>
+          <.tab_footer id={@id} page={@page} total_pages={@total_pages}/>
+        <% end %>
       </div>
     </div>
     """
