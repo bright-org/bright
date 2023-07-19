@@ -19,10 +19,14 @@ defmodule BrightWeb.LayoutComponents do
   attr :notification_count, :integer
 
   def user_header(assigns) do
+    page_sub_title =
+      if assigns.page_sub_title != nil, do: " / #{assigns.page_sub_title}", else: ""
+
     assigns =
       assigns
       |> assign(:profile, assigns.profile || %UserProfiles.UserProfile{})
       |> assign(:notification_count, assigns.notification_count || 0)
+      |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
