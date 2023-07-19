@@ -38,6 +38,13 @@ defmodule Bright.SkillExams do
   def get_skill_exam!(id), do: Repo.get!(SkillExam, id)
 
   @doc """
+  Gets a single skill_exam by condition
+  """
+  def get_skill_exam_by!(condition) do
+    Repo.get_by!(SkillExam, condition)
+  end
+
+  @doc """
   Creates a skill_exam.
 
   ## Examples

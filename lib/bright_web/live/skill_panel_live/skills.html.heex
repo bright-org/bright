@@ -65,15 +65,15 @@
               <p><%= col3.skill.name %></p>
               <!-- 未実装：デザインまま START -->
               <div class="flex justify-between items-center gap-x-2">
-                <.link class="link-evidence" patch={~p"/panels/#{@skill_panel.id}/skills/#{col3.skill.id}/evidences"}>
+                <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/evidences"}>
                   <img src="/images/common/icons/addFile.svg" />
                 </.link>
-                <.link :if={col3.skill.skill_reference} class="link-reference" patch={~p"/panels/#{@skill_panel.id}/skills/#{col3.skill.id}/reference"}>
+                <.link :if={col3.skill.skill_reference} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/reference"}>
                   <img src="/images/common/icons/addFile.svg" />
                 </.link>
-                <button>
+                <.link :if={col3.skill.skill_exam} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/exam"}>
                   <img src="/images/common/icons/addFile.svg" />
-                </button>
+                </.link>
               </div>
               <!-- 未実装：デザインまま END -->
             </div>
@@ -124,6 +124,22 @@
     id={"#{@skill.id}-reference"}
     skill={@skill}
     skill_reference={@skill_reference}
+    user={@current_user}
+    patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
+  />
+</.modal>
+
+<.modal
+  :if={:show_exam == @live_action}
+  id="skill-exam-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
+
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillExamComponent}
+    id={"#{@skill.id}-exam"}
+    skill={@skill}
+    skill_exam={@skill_exam}
     user={@current_user}
     patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
   />
