@@ -15,17 +15,22 @@ defmodule BrightWeb.LayoutComponents do
   """
   attr :profile, :map
   attr :page_title, :string
+  attr :page_sub_title, :string
   attr :notification_count, :integer
 
   def user_header(assigns) do
+    page_sub_title =
+      if assigns.page_sub_title != nil, do: " / #{assigns.page_sub_title}", else: ""
+
     assigns =
       assigns
       |> assign(:profile, assigns.profile || %UserProfiles.UserProfile{})
       |> assign(:notification_count, assigns.notification_count || 0)
+      |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
-      <h4><%= @page_title %></h4>
+      <h4><%= @page_title %><%= @page_sub_title %></h4>
       <div class="flex gap-x-5">
         <.contact_customer_success_button />
         <.search_for_skill_holders_button />
@@ -166,8 +171,7 @@ defmodule BrightWeb.LayoutComponents do
       <.side_menu />
   """
 
-  # TODO　暫定的にマイページをtitleに設定　タイトルの整理が完了時にdefaultから外すこと
-  attr :title, :string, default: "マイページ"
+  attr :href, :string
 
   def side_menu(assigns) do
     ~H"""
@@ -178,7 +182,7 @@ defmodule BrightWeb.LayoutComponents do
       <ul class="grid pt-2">
         <%= for {title, path} <- links() do %>
           <li>
-            <a class={menu_active_style(title == assigns.title)} href={path} ><%= title %></a>
+            <a class={menu_active_style(path == @href)} href={path} ><%= title %></a>
           </li>
         <% end %>
       </ul>
@@ -190,11 +194,11 @@ defmodule BrightWeb.LayoutComponents do
     [
       {"マイページ", "/mypage"},
       {"スキルを選ぶ", "/onboardings"},
-      {"成長を見る・比較する", "/mypage"},
+      {"成長を見る・比較する", "/"},
       {"スキルパネルを入力", "/panels/dummy_id/graph"},
-      {"スキルアップを目指す", "/mypage"},
-      {"チームスキル分析", "/mypage"},
-      {"キャリアパスを選ぶ", "/mypage"}
+      {"スキルアップを目指す", "/"},
+      {"チームスキル分析", "/"},
+      {"キャリアパスを選ぶ", "/"}
     ]
   end
 
