@@ -38,6 +38,13 @@ defmodule Bright.SkillReferences do
   def get_skill_reference!(id), do: Repo.get!(SkillReference, id)
 
   @doc """
+  Gets a single skill_reference by condition
+  """
+  def get_skill_reference_by!(condition) do
+    Repo.get_by!(SkillReference, condition)
+  end
+
+  @doc """
   Creates a skill_reference.
 
   ## Examples

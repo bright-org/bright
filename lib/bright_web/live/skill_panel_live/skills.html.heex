@@ -68,9 +68,9 @@
                 <.link class="link-evidence" patch={~p"/panels/#{@skill_panel.id}/skills/#{col3.skill.id}/evidences"}>
                   <img src="/images/common/icons/addFile.svg" />
                 </.link>
-                <button>
+                <.link :if={col3.skill.skill_reference} class="link-reference" patch={~p"/panels/#{@skill_panel.id}/skills/#{col3.skill.id}/reference"}>
                   <img src="/images/common/icons/addFile.svg" />
-                </button>
+                </.link>
                 <button>
                   <img src="/images/common/icons/addFile.svg" />
                 </button>
@@ -108,6 +108,22 @@
     id={"#{@skill.id}-evidence"}
     skill={@skill}
     skill_evidence={@skill_evidence}
+    user={@current_user}
+    patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
+  />
+</.modal>
+
+<.modal
+  :if={:show_reference == @live_action}
+  id="skill-reference-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
+
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillReferenceComponent}
+    id={"#{@skill.id}-reference"}
+    skill={@skill}
+    skill_reference={@skill_reference}
     user={@current_user}
     patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
   />

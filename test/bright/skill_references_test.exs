@@ -28,6 +28,19 @@ defmodule Bright.SkillReferencesTest do
       assert SkillReferences.get_skill_reference!(skill_reference.id).id == skill_reference.id
     end
 
+    test "get_skill_reference_by!/1 returns the skill_reference with given condition", %{
+      skill: skill
+    } do
+      skill_reference = insert(:skill_reference, skill: skill)
+
+      assert SkillReferences.get_skill_reference_by!(id: skill_reference.id).id ==
+               skill_reference.id
+
+      assert_raise Ecto.NoResultsError, fn ->
+        SkillReferences.get_skill_reference_by!(id: Ecto.ULID.generate())
+      end
+    end
+
     test "create_skill_reference/1 with valid data creates a skill_reference", %{skill: skill} do
       valid_attrs = %{skill_id: skill.id}
 
