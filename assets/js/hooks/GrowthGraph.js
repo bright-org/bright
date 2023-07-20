@@ -87,13 +87,13 @@ const beforeDatasetsDraw = (chart, ease) => {
   context.beginPath()
   context.lineWidth = 2
   context.setLineDash([2, 0])
-  context.strokeStyle = '#FF0000'
+  context.strokeStyle = '#B71225'
   y = chart.scales.y.getPixelForValue(0)
   y2 = chart.scales.y.getPixelForValue(60)
   y3 = chart.scales.y.getPixelForValue(55)
   y4 = chart.scales.y.getPixelForValue(100)
   context.moveTo(now_x, y)
-  context.lineTo(now_x, y4)
+  context.lineTo(now_x, y2)
 
   // 直近の過去から現在までの線
   context.moveTo(x3, y3)
@@ -102,7 +102,7 @@ const beforeDatasetsDraw = (chart, ease) => {
 
   // 現在の点
   context.arc(now_x, y2, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false )
-  context.fillStyle = "rgba(255,0,0,0.8)"
+  context.fillStyle = '#B71225'
   context.fill()
 }
 
