@@ -34,7 +34,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
      socket
      |> assign(assigns)
      |> assign(:card, create_card_param("チーム招待"))
-     |> assign_contact_card()}
+     |> assign_card()}
   end
 
   def contact_card_row(assigns) do
@@ -73,7 +73,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
         %{"id" => "contact_card", "tab_name" => tab_name} = _params,
         socket
       ) do
-    contact_card_view(socket, tab_name, 1)
+    card_view(socket, tab_name, 1)
   end
 
   def handle_event(
@@ -81,10 +81,10 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
         %{"id" => "contact_card"} = _params,
         socket
       ) do
-    contact_card = socket.assigns.card
-    page = contact_card.page_params.page - 1
+    card = socket.assigns.card
+    page = card.page_params.page - 1
     page = if page < 1, do: 1, else: page
-    contact_card_view(socket, contact_card.selected_tab, page)
+    card_view(socket, card.selected_tab, page)
   end
 
   def handle_event(
@@ -92,18 +92,27 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
         %{"id" => "contact_card"} = _params,
         socket
       ) do
-    contact_card = socket.assigns.card
-    page = contact_card.page_params.page + 1
+    card = socket.assigns.card
+    page = card.page_params.page + 1
 
     page =
-      if page > contact_card.total_pages,
-        do: contact_card.total_pages,
+      if page > card.total_pages,
+        do: card.total_pages,
         else: page
 
-    contact_card_view(socket, contact_card.selected_tab, page)
+    card_view(socket, card.selected_tab, page)
   end
 
-  def create_card_param(selected_tab, page \\ 1) do
+  defp card_view(socket, tab_name, page) do
+    card = create_card_param(tab_name, page)
+
+    socket
+    |> assign(:card, card)
+    |> assign_card()
+    |> then(&{:noreply, &1})
+  end
+
+  defp create_card_param(selected_tab, page \\ 1) do
     %{
       selected_tab: selected_tab,
       notifications: [],
@@ -112,16 +121,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     }
   end
 
-  def contact_card_view(socket, tab_name, page \\ 1) do
-    contact_card = create_card_param(tab_name, page)
-
-    socket
-    |> assign(:card, contact_card)
-    |> assign_contact_card()
-    |> then(&{:noreply, &1})
-  end
-
-  def assign_contact_card(socket) do
+  defp assign_card(socket) do
     type = contact_type(socket.assigns.card.selected_tab)
 
     notifications =
@@ -141,10 +141,10 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     |> assign(:card, card)
   end
 
-  def contact_type("チーム招待"), do: "team invite"
-  def contact_type("デイリー"), do: "daily"
-  def contact_type("ウイークリー"), do: "weekly"
-  def contact_type("採用の調整"), do: "recruitment_coordination"
-  def contact_type("スキルパネル更新"), do: "skill_panel_update"
-  def contact_type("運営"), do: "operation"
+  defp contact_type("チーム招待"), do: "team invite"
+  defp contact_type("デイリー"), do: "daily"
+  defp contact_type("ウイークリー"), do: "weekly"
+  defp contact_type("採用の調整"), do: "recruitment_coordination"
+  defp contact_type("スキルパネル更新"), do: "skill_panel_update"
+  defp contact_type("運営"), do: "operation"
 end
