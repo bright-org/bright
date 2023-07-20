@@ -20,6 +20,7 @@ defmodule BrightWeb.MypageLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl true
   def handle_event(_event_name, _params, socket) do
     # TODO tabイベント検証 tabのイベント周りが完成後に削除予定
     # IO.inspect("------------------")
