@@ -24,18 +24,19 @@ defmodule BrightWeb.TabComponents do
   attr :page, :integer, default: 1
   attr :total_pages, :integer, default: 1
   attr :hidden_footer, :boolean, default: false
+  attr :target, :any, default: nil
 
   def tab(assigns) do
     ~H"""
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-500">
-        <.tab_header id={@id} tabs={@tabs} selected_tab={@selected_tab} menu_items={@menu_items} />
+        <.tab_header id={@id} tabs={@tabs} selected_tab={@selected_tab} menu_items={@menu_items} target={@target}/>
         <%= if @inner_tab do %>
           <.inner_tab />
         <% end %>
         <%= render_slot(@inner_block) %>
         <%= if !@hidden_footer do %>
-          <.tab_footer id={@id} page={@page} total_pages={@total_pages}/>
+          <.tab_footer id={@id} page={@page} total_pages={@total_pages} target={@target} />
         <% end %>
       </div>
     </div>
@@ -46,12 +47,13 @@ defmodule BrightWeb.TabComponents do
   attr :tabs, :list
   attr :selected_tab, :string, default: ""
   attr :menu_items, :list
+  attr :target, :any
 
   defp tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-200">
       <%= for item <- @tabs do %>
-        <.tab_header_item id={@id}  tab_name={item} selected={item == @selected_tab}> <%= item %></.tab_header_item>
+        <.tab_header_item id={@id}  tab_name={item} selected={item == @selected_tab } target={@target}> <%= item %></.tab_header_item>
       <% end %>
       <%= if length(@menu_items) > 0 do %>
         <.tab_menu_button id={@id} menu_items={@menu_items}/>
@@ -64,6 +66,7 @@ defmodule BrightWeb.TabComponents do
   attr :tab_name, :string
   attr :selected, :boolean
   slot :inner_block
+  attr :target, :any
 
   defp tab_header_item(assigns) do
     style = "py-3.5 w-full items-center justify-center inline-block"
@@ -76,7 +79,7 @@ defmodule BrightWeb.TabComponents do
 
     ~H"""
     <li class="w-full">
-      <a href="#" phx-click="tab_click" phx-value-id={@id} phx-value-tab_name={@tab_name} class={@style}>
+      <a href="#" phx-click="tab_click" phx-target={@target} phx-value-id={@id} phx-value-tab_name={@tab_name} class={@style}>
         <%= render_slot(@inner_block) %>
       </a>
     </li>
@@ -149,6 +152,7 @@ defmodule BrightWeb.TabComponents do
   attr :id, :string
   attr :page, :integer
   attr :total_pages, :integer
+  attr :target, :any
 
   defp tab_footer(assigns) do
     previous_enable = assigns.page > 1
@@ -177,6 +181,7 @@ defmodule BrightWeb.TabComponents do
         type="button"
         class={@previous_button_style}
         phx-click="previous_button_click"
+        phx-target={@target}
         phx-value-id={@id}
       >
         <span class={@previous_span_style} >chevron_left</span> 前
@@ -185,7 +190,8 @@ defmodule BrightWeb.TabComponents do
         type="button"
         class={@next_button_style}
         phx-click="next_button_click"
-         phx-value-id={@id}
+        phx-target={@target}
+        phx-value-id={@id}
       >
         次 <span class={@next_span_style} >chevron_right</span>
       </button>

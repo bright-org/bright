@@ -2,7 +2,6 @@ defmodule BrightWeb.MypageLive.Index do
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
-  import BrightWeb.ContactCardComponents
   import BrightWeb.SkillCardComponents
   import BrightWeb.CommunicationCardComponents
   import BrightWeb.IntriguingCardComponents
@@ -15,9 +14,7 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:page_title, "マイページ")
     # TODO 通知数はダミーデータ
     |> assign(:notification_count, "99")
-    |> assign(:contact_card, create_card_param("チーム招待"))
     |> assign(:communication_card, create_card_param("スキルアップ"))
-    |> assign_contact_card()
     |> assign_communication_card()
     |> then(&{:ok, &1})
   end
@@ -25,42 +22,6 @@ defmodule BrightWeb.MypageLive.Index do
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
-
-  @impl true
-  def handle_event(
-        "tab_click",
-        %{"id" => "contact_card", "tab_name" => tab_name} = _params,
-        socket
-      ) do
-    contact_card_view(socket, tab_name, 1)
-  end
-
-  def handle_event(
-        "previous_button_click",
-        %{"id" => "contact_card"} = _params,
-        socket
-      ) do
-    contact_card = socket.assigns.contact_card
-    page = contact_card.page_params.page - 1
-    page = if page < 1, do: 1, else: page
-    contact_card_view(socket, contact_card.selected_tab, page)
-  end
-
-  def handle_event(
-        "next_button_click",
-        %{"id" => "contact_card"} = _params,
-        socket
-      ) do
-    contact_card = socket.assigns.contact_card
-    page = contact_card.page_params.page + 1
-
-    page =
-      if page > contact_card.total_pages,
-        do: contact_card.total_pages,
-        else: page
-
-    contact_card_view(socket, contact_card.selected_tab, page)
   end
 
   @impl true
@@ -101,35 +62,6 @@ defmodule BrightWeb.MypageLive.Index do
     }
   end
 
-  def contact_card_view(socket, tab_name, page \\ 1) do
-    contact_card = create_card_param(tab_name, page)
-
-    socket
-    |> assign(:contact_card, contact_card)
-    |> assign_contact_card()
-    |> then(&{:noreply, &1})
-  end
-
-  def assign_contact_card(socket) do
-    type = contact_type(socket.assigns.contact_card.selected_tab)
-
-    notifications =
-      Notifications.list_notification_by_type(
-        socket.assigns.current_user.id,
-        type,
-        socket.assigns.contact_card.page_params
-      )
-
-    contact_card = %{
-      socket.assigns.contact_card
-      | notifications: notifications.entries,
-        total_pages: notifications.total_pages
-    }
-
-    socket
-    |> assign(:contact_card, contact_card)
-  end
-
   def assign_communication_card(socket) do
     type = communication_type(socket.assigns.communication_card.selected_tab)
 
@@ -137,7 +69,7 @@ defmodule BrightWeb.MypageLive.Index do
       Notifications.list_notification_by_type(
         socket.assigns.current_user.id,
         type,
-        socket.assigns.contact_card.page_params
+        socket.assigns.communication_card.page_params
       )
 
     communication_card = %{socket.assigns.communication_card | notifications: notifications}
@@ -145,13 +77,6 @@ defmodule BrightWeb.MypageLive.Index do
     socket
     |> assign(:communication_card, communication_card)
   end
-
-  def contact_type("チーム招待"), do: "team invite"
-  def contact_type("デイリー"), do: "daily"
-  def contact_type("ウイークリー"), do: "weekly"
-  def contact_type("採用の調整"), do: "recruitment_coordination"
-  def contact_type("スキルパネル更新"), do: "skill_panel_update"
-  def contact_type("運営"), do: "operation"
 
   def communication_type("スキルアップ"), do: "skill_up"
   def communication_type("1on1のお誘い"), do: "1on1_invitation"
