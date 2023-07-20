@@ -68,13 +68,12 @@ const createData = (labels, data) => {
   }
 }
 
-const beforeDatasetsDraw = (chart, ease) => {
-  const context = chart.ctx
 
+const drawHorizonLine = (context, scales) => {
   // 見習い、平均、ベテランの線
-  x1 = chart.scales.x.getPixelForValue(0)
-  x4 = chart.scales.x.getPixelForValue(4)
-  y = chart.scales.y.getPixelForValue(40)
+  x1 = scales.x.getPixelForValue(0)
+  x4 = scales.x.getPixelForValue(4)
+  y = scales.y.getPixelForValue(40)
   context.beginPath()
   context.lineWidth = 1
   context.setLineDash(dash)
@@ -83,26 +82,31 @@ const beforeDatasetsDraw = (chart, ease) => {
   // ベテランの線
   context.moveTo(x1, y)
   context.lineTo(x4, y)
-  y = chart.scales.y.getPixelForValue(60)
+  y = scales.y.getPixelForValue(60)
   // 平均の線
   context.moveTo(x1, y)
   context.lineTo(x4, y)
   context.stroke()
 
-  x3 = chart.scales.x.getPixelForValue(3)
+  x3 = scales.x.getPixelForValue(3)
 
   diff_x = x4 - x3
   now_x = x3 + (diff_x / 2)
+}
 
+const beforeDatasetsDraw = (chart, ease) => {
+  const context = chart.ctx
+  const scales = chart.scales
+  drawHorizonLine(context, scales)
   //　現在の縦線
   context.beginPath()
   context.lineWidth = 2
   context.setLineDash([2, 0])
   context.strokeStyle = currentColor
-  y = chart.scales.y.getPixelForValue(0)
-  y2 = chart.scales.y.getPixelForValue(60)
-  y3 = chart.scales.y.getPixelForValue(55)
-  y4 = chart.scales.y.getPixelForValue(100)
+  y = scales.y.getPixelForValue(0)
+  y2 = scales.y.getPixelForValue(60)
+  y3 = scales.y.getPixelForValue(55)
+  y4 = scales.y.getPixelForValue(100)
   context.moveTo(now_x, y)
   context.lineTo(now_x, y2)
 
