@@ -18,12 +18,13 @@ const createData = () => {
         label: 'othersFuture',
         data: [null, null, null, 45, 70],
         borderColor: '#A5B8B8',
-        borderDash: [5, 5],
+        borderDash: [3, 2],
         pointRadius: 8,
         pointBackgroundColor: '#C063CD',
         pointBorderColor: '#C063CD',
         fill: false,
-        tension: 0.1
+        tension: 0.1,
+        borderWidth: 2
     },
     {
         label: 'my',
@@ -40,12 +41,13 @@ const createData = () => {
         label: 'myFuture',
         data: [null, null, null, 55, 60],
         borderColor: '#A5B8B8',
-        borderDash: [5, 5],
+        borderDash: [3, 2],
         pointRadius: 8,
         pointBackgroundColor: '#40DEC6',
         pointBorderColor: '#40DEC6',
         fill: false,
-        tension: 0.1
+        tension: 0.1,
+        borderWidth: 2
     }]
   }
 }
@@ -61,7 +63,7 @@ const beforeDatasetsDraw = (chart, ease) => {
   y = chart.scales.y.getPixelForValue(40)
   context.beginPath()
   context.lineWidth = 2
-  context.setLineDash([5, 5])
+  context.setLineDash([3, 2])
   context.strokeStyle = '#A5B8B8'
 
   // ベテランの線
