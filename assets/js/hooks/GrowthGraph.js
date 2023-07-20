@@ -12,8 +12,8 @@ const createData = (data) => {
         data: othersData,
         borderColor: '#C063CD',
         pointRadius: 8,
-        pointBackgroundColor: '#C063CD',
-        pointBorderColor: '#C063CD',
+        pointBackgroundColor: '#E4BDE9',
+        pointBorderColor: '#E4BDE9',
         fill: false,
         tension: 0.1
     },
@@ -23,8 +23,8 @@ const createData = (data) => {
         borderColor: '#A5B8B8',
         borderDash: [3, 2],
         pointRadius: 8,
-        pointBackgroundColor: '#C063CD',
-        pointBorderColor: '#C063CD',
+        pointBackgroundColor: '#FFFFFF',
+        pointBorderColor: '#E4BDE9',
         fill: false,
         tension: 0.1,
         borderWidth: 2
@@ -32,10 +32,10 @@ const createData = (data) => {
     {
         label: 'my',
         data: [0, 35, 45, 55, null],
-        borderColor: '#40DEC6',
+        borderColor: '#52CCB5',
         pointRadius: 8,
-        pointBackgroundColor: '#40DEC6',
-        pointBorderColor: '#40DEC6',
+        pointBackgroundColor: '#B6F1E7',
+        pointBorderColor: '#B6F1E7',
         fill: true,
         backgroundColor: '#40DEC622',
         tension: 0.1
@@ -46,9 +46,10 @@ const createData = (data) => {
         borderColor: '#A5B8B8',
         borderDash: [3, 2],
         pointRadius: 8,
-        pointBackgroundColor: '#40DEC6',
-        pointBorderColor: '#40DEC6',
-        fill: false,
+        pointBackgroundColor: '#FFFFFF',
+        pointBorderColor: '#B6F1E7',
+        fill: true,
+        backgroundColor: '#40DEC622',
         tension: 0.1,
         borderWidth: 2
     }]
