@@ -440,6 +440,35 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  # 試験
+  describe "Skill exam area" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    @tag score: nil
+    test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
+      insert(:skill_exam, skill: skill_1)
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      show_live
+      |> element("#skill-1 .link-exam")
+      |> render_click()
+
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/exam")
+
+      assert show_live
+             |> render() =~ skill_1.name
+    end
+
+    @tag score: nil
+    test "試験がないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      refute show_live
+             |> element("#skill-1 .link-exam")
+             |> has_element?()
+    end
+  end
+
   # アクセス制御など
   describe "Security" do
     setup [:register_and_log_in_user]

@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillScores
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
+  alias Bright.SkillExams
   alias BrightWeb.SkillPanelLive.SkillScoreItemComponent
 
   @impl true
@@ -48,6 +49,12 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket
     |> assign_skill(params["skill_id"])
     |> assign_skill_reference()
+  end
+
+  defp apply_action(socket, :show_exam, params) do
+    socket
+    |> assign_skill(params["skill_id"])
+    |> assign_skill_exam()
   end
 
   @impl true
@@ -106,7 +113,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     skill_units =
       Ecto.assoc(socket.assigns.skill_class, :skill_units)
-      |> preload(skill_categories: [skills: [:skill_reference]])
+      |> preload(skill_categories: [skills: [:skill_reference, :skill_exam]])
       |> SkillUnits.list_skill_units()
 
     socket
@@ -191,6 +198,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     socket
     |> assign(skill_reference: skill_reference)
+  end
+
+  defp assign_skill_exam(socket) do
+    skill_exam = SkillExams.get_skill_exam_by!(skill_id: socket.assigns.skill.id)
+
+    socket
+    |> assign(skill_exam: skill_exam)
   end
 
   defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do

@@ -143,6 +143,10 @@ defmodule BrightWeb.Router do
            SkillPanelLive.Skills,
            :show_reference
 
+      live "/panels/:skill_panel_id/skills/:skill_id/exam",
+           SkillPanelLive.Skills,
+           :show_exam
+
       live "/teams", MyTeamLive, :index
       live "/teams/new", TeamCreateLive, :new
     end
