@@ -43,7 +43,6 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
   end
 
   @impl true
-
   def update(assigns, socket) do
     {
       :ok,
@@ -57,7 +56,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
 
   attr :notification, :map, required: true
 
-  def communication_card_row(assigns) do
+  defp communication_card_row(assigns) do
     # TODO ↓contact_card_rowのソースと同じ　他のカードと考えて最終的には共通をすること
     {:ok, inserted_at} = DateTime.from_naive(assigns.notification.inserted_at, "Etc/UTC")
 
@@ -141,7 +140,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     |> then(&{:noreply, &1})
   end
 
-  def create_card_param(selected_tab, page \\ 1) do
+  defp create_card_param(selected_tab, page \\ 1) do
     %{
       selected_tab: selected_tab,
       notifications: [],
@@ -166,10 +165,10 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     |> assign(:card, card)
   end
 
-  def communication_type("スキルアップ"), do: "skill_up"
-  def communication_type("1on1のお誘い"), do: "1on1_invitation"
-  def communication_type("推し活"), do: "promotion"
-  def communication_type("所属チーム"), do: "your_team"
-  def communication_type("気になる"), do: "intriguing"
-  def communication_type("運勢公式"), do: "official_team"
+  defp communication_type("スキルアップ"), do: "skill_up"
+  defp communication_type("1on1のお誘い"), do: "1on1_invitation"
+  defp communication_type("推し活"), do: "promotion"
+  defp communication_type("所属チーム"), do: "your_team"
+  defp communication_type("気になる"), do: "intriguing"
+  defp communication_type("運勢公式"), do: "official_team"
 end
