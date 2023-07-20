@@ -13,6 +13,8 @@ defmodule Bright.Jobs.CareerField do
     field :name, :string
     field :position, :integer
 
+    has_many :jobs, Bright.Jobs.Job
+
     timestamps()
   end
 
