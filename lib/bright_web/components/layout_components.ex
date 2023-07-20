@@ -120,7 +120,7 @@ defmodule BrightWeb.LayoutComponents do
 
   defp user_menu(assigns) do
     menu_items = [
-      %{text: "個人設定", href: "/users/settings", method: "get"},
+      %{text: "個人設定", href: "/settings", method: "get"},
       %{text: "ログアウトする", href: "/users/log_out", method: "delete"}
     ]
 
