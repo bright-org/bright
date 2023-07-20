@@ -1,9 +1,9 @@
 # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
-defmodule BrightWeb.CommunicationCardComponents do
+defmodule BrightWeb.CardLive.CommunicationCardComponent do
   @moduledoc """
-  Communication Card Components
+  Communication Card Component
   """
-  use Phoenix.Component
+ use BrightWeb, :live_component
   import BrightWeb.TabComponents
 
   @highlight_minutes 60 * 8
@@ -15,9 +15,8 @@ defmodule BrightWeb.CommunicationCardComponents do
       <.communication_card card={@card} />
   """
 
-  attr :card, :map
 
-  def communication_card(assigns) do
+def render(assigns) do
     ~H"""
     <div>
       <h5>さまざまな人たちとの交流</h5>
