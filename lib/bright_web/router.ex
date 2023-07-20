@@ -56,12 +56,6 @@ defmodule BrightWeb.Router do
     live "/user_onboardings/:id", UserOnboardingLive.Show, :show
     live "/user_onboardings/:id/show/edit", UserOnboardingLive.Show, :edit
 
-    live "/onboarding_wants", OnboardingWantLive.Index, :index
-    live "/onboarding_wants/new", OnboardingWantLive.Index, :new
-    live "/onboarding_wants/:id/edit", OnboardingWantLive.Index, :edit
-    live "/onboarding_wants/:id", OnboardingWantLive.Show, :show
-    live "/onboarding_wants/:id/show/edit", OnboardingWantLive.Show, :edit
-
     live "/career_wants", CareerWantLive.Index, :index
     live "/career_wants/new", CareerWantLive.Index, :new
     live "/career_wants/:id/edit", CareerWantLive.Index, :edit
