@@ -5,11 +5,11 @@ defmodule Bright.Repo.Migrations.CreateJobs do
     create table(:jobs) do
       add :name, :string
       add :position, :integer
-      add :career_fied_id, references(:career_fields, on_delete: :nothing)
+      add :career_field_id, references(:career_fields, on_delete: :nothing)
 
       timestamps()
     end
 
-    create index(:jobs, [:career_fied_id])
+    create index(:jobs, [:career_field_id])
   end
 end
