@@ -61,7 +61,7 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
           }
         )
         |> render_submit()
-        |> follow_redirect(conn, ~p"/users/finish_reset_password")
+        |> follow_redirect(conn, ~p"/users/log_in")
 
       refute get_session(conn, :user_token)
       assert Accounts.get_user_by_email_and_password(user.email, "new valid password")

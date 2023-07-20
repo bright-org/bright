@@ -49,7 +49,8 @@ defmodule BrightWeb.UserResetPasswordLive do
       {:ok, _} ->
         {:noreply,
          socket
-         |> redirect(to: ~p"/users/finish_reset_password")}
+         |> put_flash(:info, "パスワードをリセットしました")
+         |> redirect(to: ~p"/users/log_in")}
 
       {:error, changeset} ->
         {:noreply, assign_form(socket, Map.put(changeset, :action, :insert))}
