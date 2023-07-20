@@ -1,12 +1,15 @@
 import { Chart } from 'chart.js/auto'
 
-const createData = () => {
+const createData = (data) => {
+  const othersData = data.map((x, index) => index > 3 ? null : x)
+  const othersFuture = data.map((x, index) => index < 3 ? null : x)
+
   return{
     labels: ["2020.12", "2021.3", "2021.6", "2021.9","2011.12"],
     datasets: [
       {
         label: 'others',
-        data: [10, 10, 10, 45, null],
+        data: othersData,
         borderColor: '#C063CD',
         pointRadius: 8,
         pointBackgroundColor: '#C063CD',
@@ -16,7 +19,7 @@ const createData = () => {
     },
     {
         label: 'othersFuture',
-        data: [null, null, null, 45, 70],
+        data: othersFuture,
         borderColor: '#A5B8B8',
         borderDash: [3, 2],
         pointRadius: 8,
@@ -107,7 +110,7 @@ const createChartFromJSON = (labels, datasets) => {
   const color = "#0000FF"
   return ({
     type: 'line',
-    data:createData(),
+    data:createData([10, 10, 10, 45, 70]),
     options: {
       animation: false,
       plugins: {
