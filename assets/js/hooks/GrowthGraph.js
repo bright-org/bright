@@ -1,11 +1,10 @@
 import { Chart } from 'chart.js/auto'
 
-const createData = (data) => {
+const createData = (labels, data) => {
   const othersData = data.map((x, index) => index > 3 ? null : x)
   const othersFuture = data.map((x, index) => index < 3 ? null : x)
-
   return{
-    labels: ["2020.12", "2021.3", "2021.6", "2021.9","2011.12"],
+    labels: labels,
     datasets: [
       {
         label: 'others',
@@ -107,11 +106,10 @@ const beforeDatasetsDraw = (chart, ease) => {
   context.fill()
 }
 
-const createChartFromJSON = (labels, datasets) => {
-  const color = "#0000FF"
+const createChartFromJSON = (labels, data) => {
   return ({
     type: 'line',
-    data:createData([10, 10, 10, 45, 70]),
+    data: createData(labels, data),
     options: {
       animation: false,
       plugins: {
@@ -155,14 +153,14 @@ export const GrowthGraph = {
     const labels = JSON.parse(dataset.labels)
     const data = JSON.parse(dataset.data)
     const datasets = []
-    datasets.push(createData(data[0]))
+    // datasets.push(createData(data[0]))
 
-    if (data[1] !== undefined) {
-      datasets.push(createData(data[1]))
-    }
+    // if (data[1] !== undefined) {
+    //   datasets.push(createData(data[1]))
+    // }
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
-    const myChart = new Chart(ctx, createChartFromJSON(labels, datasets))
+    const myChart = new Chart(ctx, createChartFromJSON(labels, data[0]))
     myChart.canvas.parentNode.style.height =  '600px'
     myChart.canvas.parentNode.style.width =   '800px'
 
