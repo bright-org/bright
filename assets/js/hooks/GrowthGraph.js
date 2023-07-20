@@ -1,5 +1,13 @@
 import { Chart } from 'chart.js/auto'
-
+const dash = [3, 2]
+const dashColor = '#A5B8B8'
+const myBorderColor = '#52CCB5'
+const myPointColor = '#B6F1E7'
+const myFillColor = '#40DEC622'
+const othersBorderColor = '#C063CD'
+const othersPointColor = '#E4BDE9'
+const futurePointColor = '#FFFFFF'
+const currentColor = '#B71225'
 
 const dataDivision = (data) => {
   const past = data.map((x, index) => index > 3 ? null : x)
@@ -17,55 +25,50 @@ const createData = (labels, data) => {
       {
         label: 'others',
         data: othersData,
-        borderColor: '#C063CD',
+        borderColor: othersBorderColor,
         pointRadius: 8,
-        pointBackgroundColor: '#E4BDE9',
-        pointBorderColor: '#E4BDE9',
+        pointBackgroundColor: othersPointColor,
+        pointBorderColor: othersPointColor,
         fill: false,
         tension: 0.1
     },
     {
         label: 'othersFuture',
         data: othersFuture,
-        borderColor: '#A5B8B8',
-        borderDash: [3, 2],
+        borderColor: dashColor,
+        borderDash: dash,
         pointRadius: 8,
-        pointBackgroundColor: '#FFFFFF',
-        pointBorderColor: '#E4BDE9',
+        pointBackgroundColor: futurePointColor,
+        pointBorderColor: othersPointColor,
         fill: false,
-        tension: 0.1,
         borderWidth: 2
     },
     {
         label: 'my',
         data: myData,
-        borderColor: '#52CCB5',
+        borderColor: myBorderColor,
         pointRadius: 8,
-        pointBackgroundColor: '#B6F1E7',
-        pointBorderColor: '#B6F1E7',
+        pointBackgroundColor: myPointColor,
+        pointBorderColor: myPointColor,
         fill: true,
-        backgroundColor: '#40DEC622',
-        tension: 0.1
+        backgroundColor: myFillColor,
     },
     {
         label: 'myFuture',
         data: myFuture,
-        borderColor: '#A5B8B8',
-        borderDash: [3, 2],
+        borderColor: dashColor,
+        borderDash: dash,
         pointRadius: 8,
-        pointBackgroundColor: '#FFFFFF',
-        pointBorderColor: '#B6F1E7',
+        pointBackgroundColor: futurePointColor,
+        pointBorderColor: myPointColor,
         fill: true,
-        backgroundColor: '#40DEC622',
-        tension: 0.1,
+        backgroundColor: myFillColor,
         borderWidth: 2
     }]
   }
 }
 
 const beforeDatasetsDraw = (chart, ease) => {
-
-
   const context = chart.ctx
 
   // 見習い、平均、ベテランの線
@@ -74,8 +77,8 @@ const beforeDatasetsDraw = (chart, ease) => {
   y = chart.scales.y.getPixelForValue(40)
   context.beginPath()
   context.lineWidth = 1
-  context.setLineDash([3, 2])
-  context.strokeStyle = '#A5B8B8'
+  context.setLineDash(dash)
+  context.strokeStyle = dashColor
 
   // ベテランの線
   context.moveTo(x1, y)
@@ -95,7 +98,7 @@ const beforeDatasetsDraw = (chart, ease) => {
   context.beginPath()
   context.lineWidth = 2
   context.setLineDash([2, 0])
-  context.strokeStyle = '#B71225'
+  context.strokeStyle = currentColor
   y = chart.scales.y.getPixelForValue(0)
   y2 = chart.scales.y.getPixelForValue(60)
   y3 = chart.scales.y.getPixelForValue(55)
@@ -110,7 +113,7 @@ const beforeDatasetsDraw = (chart, ease) => {
 
   // 現在の点
   context.arc(now_x, y2, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false )
-  context.fillStyle = '#B71225'
+  context.fillStyle = currentColor
   context.fill()
 }
 
@@ -141,11 +144,11 @@ const createChartFromJSON = (labels, data) => {
         },
         x: {
           grid: {
-            color: '#A5B8B8',
+            color: dashColor,
             lineWidth: 1,
           },
           border : {
-            dash: [3, 2]
+            dash: dash
           }
         }
       }
