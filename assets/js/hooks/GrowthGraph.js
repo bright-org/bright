@@ -1,8 +1,10 @@
 import { Chart } from 'chart.js/auto'
 
 const createData = (labels, data) => {
-  const othersData = data.map((x, index) => index > 3 ? null : x)
-  const othersFuture = data.map((x, index) => index < 3 ? null : x)
+  const myData = data[0].map((x, index) => index > 3 ? null : x)
+  const myFuture = data[0].map((x, index) => index < 3 ? null : x)
+  const othersData = data[1].map((x, index) => index > 3 ? null : x)
+  const othersFuture = data[1].map((x, index) => index < 3 ? null : x)
   return{
     labels: labels,
     datasets: [
@@ -30,7 +32,7 @@ const createData = (labels, data) => {
     },
     {
         label: 'my',
-        data: [0, 35, 45, 55, null],
+        data: myData,
         borderColor: '#52CCB5',
         pointRadius: 8,
         pointBackgroundColor: '#B6F1E7',
@@ -41,7 +43,7 @@ const createData = (labels, data) => {
     },
     {
         label: 'myFuture',
-        data: [null, null, null, 55, 60],
+        data: myFuture,
         borderColor: '#A5B8B8',
         borderDash: [3, 2],
         pointRadius: 8,
@@ -152,15 +154,9 @@ export const GrowthGraph = {
     const dataset = element.dataset
     const labels = JSON.parse(dataset.labels)
     const data = JSON.parse(dataset.data)
-    const datasets = []
-    // datasets.push(createData(data[0]))
-
-    // if (data[1] !== undefined) {
-    //   datasets.push(createData(data[1]))
-    // }
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
-    const myChart = new Chart(ctx, createChartFromJSON(labels, data[0]))
+    const myChart = new Chart(ctx, createChartFromJSON(labels, data))
     myChart.canvas.parentNode.style.height =  '600px'
     myChart.canvas.parentNode.style.width =   '800px'
 
