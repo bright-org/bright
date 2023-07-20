@@ -8,7 +8,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
   alias Bright.Notifications
 
   @highlight_minutes 60 * 8
-  @tabs ["スキルアップ", "1on1のお誘い", "所属チームから", "「気になる」された", "運勢公式チーム発足"]
+  @tabs ["スキルアップ", "1on1のお誘い", "推し活", "所属チーム", "気になる", "運勢公式"]
 
   @doc """
   Renders a Communication Card
@@ -168,7 +168,8 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
 
   def communication_type("スキルアップ"), do: "skill_up"
   def communication_type("1on1のお誘い"), do: "1on1_invitation"
-  def communication_type("所属チームから"), do: "from_your_team"
-  def communication_type("「気になる」された"), do: "intriguing"
-  def communication_type("運勢公式チーム発足"), do: "fortune_official_team_launched"
+  def communication_type("推し活"), do: "promotion"
+  def communication_type("所属チーム"), do: "your_team"
+  def communication_type("気になる"), do: "intriguing"
+  def communication_type("運勢公式"), do: "official_team"
 end
