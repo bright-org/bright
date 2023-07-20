@@ -3,10 +3,11 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
   @moduledoc """
   Communication Card Component
   """
- use BrightWeb, :live_component
+  use BrightWeb, :live_component
   import BrightWeb.TabComponents
 
   @highlight_minutes 60 * 8
+  @tabs ["スキルアップ", "1on1のお誘い", "所属チームから", "「気になる」された", "運勢公式チーム発足"]
 
   @doc """
   Renders a Communication Card
@@ -15,12 +16,12 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
       <.communication_card card={@card} />
   """
 
-
-def render(assigns) do
+  @impl true
+  def render(assigns) do
     ~H"""
     <div>
       <h5>さまざまな人たちとの交流</h5>
-      <.tab id="communication_card" tabs={["スキルアップ", "1on1のお誘い", "所属チームから", "「気になる」された", "運勢公式チーム発足"]} selected_tab={@card.selected_tab}>
+      <.tab id="communication_card" tabs={@tabs} selected_tab={@card.selected_tab}>
         <div class="pt-4 px-6">
           <ul class="flex gap-y-2.5 flex-col">
               <%= for notification <- @card.notifications do %>
@@ -31,6 +32,17 @@ def render(assigns) do
       </.tab>
     </div>
     """
+  end
+
+  @impl true
+
+  def update(assigns, socket) do
+    {
+      :ok,
+      socket
+      |> assign(assigns)
+      |> assign(:tabs, @tabs)
+    }
   end
 
   attr :notification, :map, required: true
