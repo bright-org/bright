@@ -6,11 +6,13 @@ defmodule BrightWeb.GrowthGraphComponents do
   use Phoenix.Component
 
   @doc """
-  Renders a Skill Gem
+  Renders a Growth Graph
 
   ## Examples
+
       <.growth_graph data="[90, 80, 75, 60]" id="gem-single-skill4" labels={["Elixir本体", "ライブラリ", "環境構築", "関連スキル"]} size="sm" />
       <.growth_graph data={[[50, 50, 50, 80, 80, 80], [80, 80, 80, 50, 50, 50]]} id="gem-single-skill6-2-3" labels={["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]} />
+
   """
   attr :id, :string, required: true
   attr :data, :list, required: true

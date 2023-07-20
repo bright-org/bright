@@ -111,6 +111,9 @@ const createChartFromJSON = (labels, datasets) => {
       plugins: {
         legend: {
           display: false
+        },
+         tooltip: {
+          enabled: false
         }
       },
       scales: {
