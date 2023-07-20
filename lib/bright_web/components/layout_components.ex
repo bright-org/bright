@@ -178,11 +178,11 @@ defmodule BrightWeb.LayoutComponents do
     <aside
     class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
     >
-      <img src="/images/common/logo.svg" width="163px" class="ml-4" />
+      <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
       <ul class="grid pt-2">
         <%= for {title, path} <- links() do %>
           <li>
-            <a class={menu_active_style(path == @href)} href={path} ><%= title %></a>
+            <.link class={menu_active_style(path == @href)} href={path} ><%= title %></.link>
           </li>
         <% end %>
       </ul>
@@ -192,7 +192,6 @@ defmodule BrightWeb.LayoutComponents do
 
   def links() do
     [
-      {"マイページ", "/mypage"},
       {"スキルを選ぶ", "/onboardings"},
       {"成長を見る・比較する", "/"},
       {"スキルパネルを入力", "/panels/dummy_id/graph"},
