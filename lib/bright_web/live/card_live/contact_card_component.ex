@@ -9,13 +9,21 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   alias Bright.Notifications
 
   @highlight_minutes 60 * 8
+  @tabs ["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]
 
   @impl true
   def render(assigns) do
     ~H"""
     <div>
       <h5>重量な連絡</h5>
-      <.tab id="contact_card" tabs={["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]} selected_tab={@card.selected_tab} page={@card.page_params.page} total_pages={@card.total_pages}  target={@myself}>
+      <.tab
+        id="contact_card"
+        tabs={@tabs}
+        selected_tab={@card.selected_tab}
+        page={@card.page_params.page}
+        total_pages={@card.total_pages}
+        target={@myself}
+      >
         <div class="pt-4 pb-1 px-8">
           <ul class="flex gap-y-2.5 flex-col">
             <%= for notification <- @card.notifications do %>
@@ -33,6 +41,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:tabs, @tabs)
      |> assign(:card, create_card_param("チーム招待"))
      |> assign_card()}
   end
@@ -70,7 +79,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   @impl true
   def handle_event(
         "tab_click",
-        %{"id" => "contact_card", "tab_name" => tab_name} = _params,
+        %{"id" => "contact_card", "tab_name" => tab_name},
         socket
       ) do
     card_view(socket, tab_name, 1)
@@ -78,10 +87,9 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   def handle_event(
         "previous_button_click",
-        %{"id" => "contact_card"} = _params,
-        socket
+        %{"id" => "contact_card"},
+        %{assigns: %{card: card}} = socket
       ) do
-    card = socket.assigns.card
     page = card.page_params.page - 1
     page = if page < 1, do: 1, else: page
     card_view(socket, card.selected_tab, page)
@@ -89,10 +97,9 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   def handle_event(
         "next_button_click",
-        %{"id" => "contact_card"} = _params,
-        socket
+        %{"id" => "contact_card"},
+        %{assigns: %{card: card}} = socket
       ) do
-    card = socket.assigns.card
     page = card.page_params.page + 1
 
     page =
@@ -121,18 +128,18 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     }
   end
 
-  defp assign_card(socket) do
-    type = contact_type(socket.assigns.card.selected_tab)
+  defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
+    type = contact_type(card.selected_tab)
 
     notifications =
       Notifications.list_notification_by_type(
-        socket.assigns.current_user.id,
+        user.id,
         type,
-        socket.assigns.card.page_params
+        card.page_params
       )
 
     card = %{
-      socket.assigns.card
+      card
       | notifications: notifications.entries,
         total_pages: notifications.total_pages
     }
