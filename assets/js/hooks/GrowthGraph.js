@@ -68,7 +68,6 @@ const createData = (labels, data) => {
   }
 }
 
-
 const drawHorizonLine = (context, scales) => {
   // 見習い、平均、ベテランの線
   x1 = scales.x.getPixelForValue(0)
@@ -94,10 +93,7 @@ const drawHorizonLine = (context, scales) => {
   now_x = x3 + (diff_x / 2)
 }
 
-const beforeDatasetsDraw = (chart, ease) => {
-  const context = chart.ctx
-  const scales = chart.scales
-  drawHorizonLine(context, scales)
+const drawCurrent = (context, scales) => {
   //　現在の縦線
   context.beginPath()
   context.lineWidth = 2
@@ -119,6 +115,14 @@ const beforeDatasetsDraw = (chart, ease) => {
   context.arc(now_x, y2, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false )
   context.fillStyle = currentColor
   context.fill()
+}
+
+const beforeDatasetsDraw = (chart, ease) => {
+  const context = chart.ctx
+  const scales = chart.scales
+  drawHorizonLine(context, scales)
+  drawCurrent(context, scales)
+
 }
 
 const createChartFromJSON = (labels, data) => {
