@@ -61,6 +61,12 @@ defmodule BrightWeb.Router do
     live "/career_wants/:id/edit", CareerWantLive.Index, :edit
     live "/career_wants/:id", CareerWantLive.Show, :show
     live "/career_wants/:id/show/edit", CareerWantLive.Show, :edit
+
+    live "/career_fields", CareerFieldLive.Index, :index
+    live "/career_fields/new", CareerFieldLive.Index, :new
+    live "/career_fields/:id/edit", CareerFieldLive.Index, :edit
+    live "/career_fields/:id", CareerFieldLive.Show, :show
+    live "/career_fields/:id/show/edit", CareerFieldLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

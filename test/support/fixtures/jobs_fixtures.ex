@@ -18,4 +18,21 @@ defmodule Bright.JobsFixtures do
 
     career_want
   end
+
+  @doc """
+  Generate a career_field.
+  """
+  def career_field_fixture(attrs \\ %{}) do
+    {:ok, career_field} =
+      attrs
+      |> Enum.into(%{
+        background_color: "some background_color",
+        button_color: "some button_color",
+        name: "some name",
+        position: 42
+      })
+      |> Bright.Jobs.create_career_field()
+
+    career_field
+  end
 end
