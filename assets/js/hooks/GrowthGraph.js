@@ -1,10 +1,16 @@
 import { Chart } from 'chart.js/auto'
 
+
+const dataDivision = (data) => {
+  const past = data.map((x, index) => index > 3 ? null : x)
+  const future = data.map((x, index) => index < 3 ? null : x)
+  return([past, future])
+}
+
 const createData = (labels, data) => {
-  const myData = data[0].map((x, index) => index > 3 ? null : x)
-  const myFuture = data[0].map((x, index) => index < 3 ? null : x)
-  const othersData = data[1].map((x, index) => index > 3 ? null : x)
-  const othersFuture = data[1].map((x, index) => index < 3 ? null : x)
+  const [myData, myFuture] = dataDivision(data[0])
+  const [othersData, othersFuture] = dataDivision(data[1])
+
   return{
     labels: labels,
     datasets: [
