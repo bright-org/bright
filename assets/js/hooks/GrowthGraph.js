@@ -65,7 +65,7 @@ const beforeDatasetsDraw = (chart, ease) => {
   x4 = chart.scales.x.getPixelForValue(4)
   y = chart.scales.y.getPixelForValue(40)
   context.beginPath()
-  context.lineWidth = 2
+  context.lineWidth = 1
   context.setLineDash([3, 2])
   context.strokeStyle = '#A5B8B8'
 
@@ -130,6 +130,15 @@ const createChartFromJSON = (labels, datasets) => {
           },
           ticks: {
             display: false
+          }
+        },
+        x: {
+          grid: {
+            color: '#A5B8B8',
+            lineWidth: 1,
+          },
+          border : {
+            dash: [3, 2]
           }
         }
       }
