@@ -26,6 +26,8 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
         id="communication_card"
         tabs={@tabs}
         selected_tab={@card.selected_tab}
+        page={@card.page_params.page}
+        total_pages={@card.total_pages}
         target={@myself}
       >
         <div class="pt-4 px-6">
@@ -105,6 +107,40 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     |> then(&{:noreply, &1})
   end
 
+  def handle_event(
+        "previous_button_click",
+        %{"id" => "communication_card"},
+        %{assigns: %{card: card}} = socket
+      ) do
+    page = card.page_params.page - 1
+    page = if page < 1, do: 1, else: page
+    card_view(socket, card.selected_tab, page)
+  end
+
+  def handle_event(
+        "next_button_click",
+        %{"id" => "communication_card"},
+        %{assigns: %{card: card}} = socket
+      ) do
+    page = card.page_params.page + 1
+
+    page =
+      if page > card.total_pages,
+        do: card.total_pages,
+        else: page
+
+    card_view(socket, card.selected_tab, page)
+  end
+
+  defp card_view(socket, tab_name, page) do
+    card = create_card_param(tab_name, page)
+
+    socket
+    |> assign(:card, card)
+    |> assign_card()
+    |> then(&{:noreply, &1})
+  end
+
   def create_card_param(selected_tab, page \\ 1) do
     %{
       selected_tab: selected_tab,
@@ -124,7 +160,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
         card.page_params
       )
 
-    card = %{card | notifications: notifications}
+    card = %{card | notifications: notifications, total_pages: notifications.total_pages}
 
     socket
     |> assign(:card, card)
