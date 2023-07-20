@@ -4,8 +4,18 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
   import Phoenix.LiveViewTest
   import Bright.JobsFixtures
 
-  @create_attrs %{background_color: "some background_color", button_color: "some button_color", name: "some name", position: 42}
-  @update_attrs %{background_color: "some updated background_color", button_color: "some updated button_color", name: "some updated name", position: 43}
+  @create_attrs %{
+    background_color: "some background_color",
+    button_color: "some button_color",
+    name: "some name",
+    position: 42
+  }
+  @update_attrs %{
+    background_color: "some updated background_color",
+    button_color: "some updated button_color",
+    name: "some updated name",
+    position: 43
+  }
   @invalid_attrs %{background_color: nil, button_color: nil, name: nil, position: nil}
 
   defp create_career_field(_) do
@@ -49,7 +59,9 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
     test "updates career_field in listing", %{conn: conn, career_field: career_field} do
       {:ok, index_live, _html} = live(conn, ~p"/admin/career_fields")
 
-      assert index_live |> element("#career_fields-#{career_field.id} a", "Edit") |> render_click() =~
+      assert index_live
+             |> element("#career_fields-#{career_field.id} a", "Edit")
+             |> render_click() =~
                "Edit Career field"
 
       assert_patch(index_live, ~p"/admin/career_fields/#{career_field}/edit")
@@ -72,7 +84,10 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
     test "deletes career_field in listing", %{conn: conn, career_field: career_field} do
       {:ok, index_live, _html} = live(conn, ~p"/admin/career_fields")
 
-      assert index_live |> element("#career_fields-#{career_field.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#career_fields-#{career_field.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#career_fields-#{career_field.id}")
     end
   end
