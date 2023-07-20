@@ -178,11 +178,11 @@ defmodule BrightWeb.LayoutComponents do
     <aside
     class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
     >
-    <.link navigate="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
+      <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
       <ul class="grid pt-2">
         <%= for {title, path} <- links() do %>
           <li>
-            <.link class={menu_active_style(path == @href)} navigate={path} ><%= title %></.link>
+            <.link class={menu_active_style(path == @href)} href={path} ><%= title %></.link>
           </li>
         <% end %>
       </ul>
