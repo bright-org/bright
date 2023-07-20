@@ -12,7 +12,7 @@ defmodule Bright.Jobs.Job do
   schema "jobs" do
     field :name, :string
     field :position, :integer
-    belongs_to :career_field_id, CareerField
+    belongs_to :career_field, CareerField
 
     timestamps()
   end

@@ -211,6 +211,7 @@ defmodule Bright.Jobs do
   """
   def list_jobs do
     Repo.all(Job)
+    |> Repo.preload(:career_field)
   end
 
   @doc """

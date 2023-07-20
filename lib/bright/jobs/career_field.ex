@@ -6,6 +6,7 @@ defmodule Bright.Jobs.CareerField do
   import Ecto.Changeset
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "career_fields" do
     field :background_color, :string
