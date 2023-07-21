@@ -37,6 +37,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      socket
      |> assign(assigns)
      |> assign(:tabs, @tabs)
+     # TODO　サンプルデータはDBの処理を作成後消すこと
      |> assign(:skills, sample())}
   end
 
