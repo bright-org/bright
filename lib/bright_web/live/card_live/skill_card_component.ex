@@ -69,7 +69,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     {:noreply, socket}
   end
 
-  @impl true
   defp skill_genre(assigns) do
     ~H"""
     <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
@@ -95,7 +94,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
-  @impl true
   defp skill_panel(assigns) do
     ~H"""
     <tr>
@@ -107,7 +105,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
-  @impl true
   defp skill_gem(%{level: :none} = assigns) do
     ~H"""
     <td>
@@ -115,7 +112,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
-  @impl true
   defp skill_gem(assigns) do
     assigns =
       assigns
