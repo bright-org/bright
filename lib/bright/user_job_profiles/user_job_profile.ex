@@ -1,4 +1,8 @@
 defmodule Bright.UserJobProfiles.UserJobProfile do
+  @moduledoc """
+  ユーザーの求職情報を扱うスキーマ
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
