@@ -6,7 +6,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
-  import BrightWeb.BrightListComponents
+  import BrightWeb.BrightCardComponents
   alias Bright.Notifications
 
   @tabs ["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]

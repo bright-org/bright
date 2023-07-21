@@ -1,4 +1,4 @@
-defmodule BrightWeb.BrightListComponents do
+defmodule BrightWeb.BrightCardComponents do
   @moduledoc """
   Bright List Components
   """
