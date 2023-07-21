@@ -1,10 +1,25 @@
-defmodule BrightWeb.IntriguingCardComponents do
+defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @moduledoc """
   Intriguing Card Components
   """
-  use Phoenix.Component
+  use BrightWeb, :live_component
   import BrightWeb.ProfileComponents
   import BrightWeb.TabComponents
+
+  @sample [
+    %{
+      user_name: "nokichi",
+      title: "アプリエンジニア",
+      icon_file_path:
+        "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+    },
+    %{
+      user_name: "user2",
+      title: "ほげほげ",
+      icon_file_path:
+        "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+    }
+  ]
 
   # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
 
@@ -15,23 +30,7 @@ defmodule BrightWeb.IntriguingCardComponents do
       <.intriguing_card />
   """
 
-  attr :user_profiles, :map,
-    default: [
-      %{
-        user_name: "nokichi",
-        title: "アプリエンジニア",
-        icon_file_path:
-          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-      },
-      %{
-        user_name: "user2",
-        title: "ほげほげ",
-        icon_file_path:
-          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-      }
-    ]
-
-  def intriguing_card(assigns) do
+  def render(assigns) do
     menu_items = [
       %{text: "カスタムグループを作る", href: "/"},
       %{text: "カスタムグループの編集", href: "/"},
@@ -41,6 +40,7 @@ defmodule BrightWeb.IntriguingCardComponents do
     assigns =
       assigns
       |> assign(:menu_items, menu_items)
+      |> assign(:user_profiles, @sample)
 
     ~H"""
     <div>

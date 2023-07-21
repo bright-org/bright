@@ -3,7 +3,6 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillScoreComponents
   import BrightWeb.SkillCardComponents
-  import BrightWeb.IntriguingCardComponents
   import BrigntWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @impl true

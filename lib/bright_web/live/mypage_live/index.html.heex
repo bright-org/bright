@@ -142,7 +142,11 @@
     <!-- 関わっているユーザー -->
     <div>
       <h5>関わっているユーザー</h5>
-      <.intriguing_card />
+      <.live_component
+        id="intriguing_card"
+        module={BrightWeb.CardLive.IntriguingCardComponent}
+        current_user={@current_user}
+      />
     </div>
     <!-- 検証 -->
   </div>
