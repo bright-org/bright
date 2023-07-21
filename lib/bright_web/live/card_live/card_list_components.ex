@@ -4,7 +4,9 @@ defmodule BrightWeb.CardLive.CardListComponents do
   """
   use Phoenix.Component
 
-  @highlight_minutes 60 * 8
+  @hour 60
+  @day @hour * 24
+  @highlight_minutes @hour * 8
 
   @doc """
   Renders a Contact Card Row
@@ -67,9 +69,9 @@ defmodule BrightWeb.CardLive.CardListComponents do
     """
   end
 
-  defp time_text(minutes) when  minutes < 60, do: "#{minutes}分前"
-  defp time_text(minutes) when  minutes < 60 * 24, do: "#{trunc(minutes / 60)}時間前"
-  defp time_text(minutes), do: "#{trunc(minutes / (60 * 24))}日前"
+  defp time_text(minutes) when minutes < @hour, do: "#{minutes}分前"
+  defp time_text(minutes) when minutes < @day, do: "#{trunc(minutes / @hour)}時間前"
+  defp time_text(minutes), do: "#{trunc(minutes / @day)}日前"
 
   defp highlight(true), do: "text-brightGreen-300"
   defp highlight(false), do: "text-brightGray-300"
