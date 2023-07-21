@@ -39,7 +39,11 @@
   </div>
   <div class="w-[750px] flex flex-col gap-y-6">
     <!-- さまざまな人たちとの交流 -->
-    <.communication_card card={@communication_card} />
+    <.live_component
+      id="contact_card"
+      module={BrightWeb.CardLive.CommunicationCardComponent}
+      current_user={@current_user}
+    />
     <!-- 関わっているチーム -->
     <div>
       <h5>関わっているチーム</h5>
