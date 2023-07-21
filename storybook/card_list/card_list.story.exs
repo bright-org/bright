@@ -4,7 +4,6 @@ defmodule Storybook.Card_list.CardListComponents do
 
   @hour 60
   @day @hour * 24
-  @highlight_minutes @hour * 8
 
   def doc do
     "CardListComponents Example"
