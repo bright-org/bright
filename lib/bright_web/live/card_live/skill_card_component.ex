@@ -44,7 +44,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   @impl true
   def handle_event(
         "tab_click",
-        %{"id" => "skill_card", "tab_name" => tab_name},
+        %{"id" => "skill_card"},
         socket
       ) do
     # TODO 処理は未実装
