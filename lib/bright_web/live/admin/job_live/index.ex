@@ -21,9 +21,16 @@ defmodule BrightWeb.Admin.JobLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
+    career_field_options =
+      Jobs.list_career_fields()
+      |> Enum.map(fn %{id: id_value, name: name_value} ->
+        {String.to_atom(name_value), id_value}
+      end)
+
     socket
     |> assign(:page_title, "New Job")
     |> assign(:job, %Job{})
+    |> assign(:career_fields, career_field_options)
   end
 
   defp apply_action(socket, :index, _params) do

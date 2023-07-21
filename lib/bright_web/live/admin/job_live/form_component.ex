@@ -11,7 +11,6 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
         <%= @title %>
         <:subtitle>Use this form to manage job records in your database.</:subtitle>
       </.header>
-
       <.simple_form
         for={@form}
         id="job-form"
@@ -20,6 +19,13 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
+        <.input
+          type="select"
+          label="career_fields"
+          field={@form[:career_field_id]}
+          options={@career_fields}
+          value={nil}
+        />
         <.input field={@form[:position]} type="number" label="Position" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Job</.button>
