@@ -9,6 +9,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
     "SNS連携" => {"sns", UserSettingsLive.SnsSettingComponent},
     "求職" => {"job", UserSettingsLive.JobSettingComponent}
   }
+  @tabs ["一般", "メール・パスワード", "SNS連携", "求職"]
 
   @impl true
   def render(assigns) do
@@ -17,7 +18,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
       <h5>ユーザー設定</h5>
       <.tab
         id="user_settings"
-        tabs={["一般", "メール・パスワード", "SNS連携", "求職"]}
+        tabs={@tabs}
         hidden_footer={true}
         selected_tab={@selected_tab}
       >
@@ -36,6 +37,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
     {path, module} = Map.get(@tab_info, "一般")
 
     socket
+    |> assign(:tabs, @tabs)
     |> assign(:selected_tab, "一般")
     |> assign(:module, module)
     |> assign(:path, path)
