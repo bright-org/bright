@@ -55,19 +55,21 @@ defmodule BrightWeb.CardLive.CardListComponents do
       DateTime.diff(DateTime.utc_now(), inserted_at, :minute)
       |> trunc()
 
-    time_text = if minutes < 60, do: "#{minutes}分前", else: "#{trunc(minutes / 60)}時間前"
-
     style = highlight(minutes < @highlight_minutes) <> " font-bold pl-4 inline-block"
 
     assigns =
       assigns
       |> assign(:style, style)
-      |> assign(:time_text, time_text)
+      |> assign(:time_text, time_text(minutes))
 
     ~H"""
     <span class={@style}><%= @time_text %></span>
     """
   end
+
+  defp time_text(minutes) when  minutes < 60, do: "#{minutes}分前"
+  defp time_text(minutes) when  minutes < 60 * 24, do: "#{trunc(minutes / 60)}時間前"
+  defp time_text(minutes), do: "#{trunc(minutes / (60 * 24))}日前"
 
   defp highlight(true), do: "text-brightGreen-300"
   defp highlight(false), do: "text-brightGray-300"
