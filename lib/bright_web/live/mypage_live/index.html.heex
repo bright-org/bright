@@ -29,11 +29,14 @@
 <div class="px-10 py-3 flex justify-between">
   <div class="w-[850px] flex flex-col gap-y-6">
     <!-- 重要な連絡 -->
-    <.live_component
-      id="contact_card"
-      module={BrightWeb.CardLive.ContactCardComponent}
-      current_user={@current_user}
-    />
+    <div>
+      <h5>重量な連絡</h5>
+      <.live_component
+        id="contact_card"
+        module={BrightWeb.CardLive.ContactCardComponent}
+        current_user={@current_user}
+      />
+    </div>
     <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
     <.skill_card />
   </div>
