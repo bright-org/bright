@@ -1,0 +1,29 @@
+defmodule Bright.UserJobProfileFactory do
+  @moduledoc """
+  Factory for Bright.UserJobProfiles.UserJobProfile
+  """
+
+  defmacro __using__(_opts) do
+    quote do
+      def user_job_profile_factory do
+        %Bright.UserJobProfiles.UserJobProfile{
+          availability_date: ~N[2023-07-20 00:00:00],
+          desired_income: 80,
+          job_searching: true,
+          office_operating_time: 3,
+          office_pred: 42,
+          office_work: true,
+          office_work_holidays: true,
+          remote_operating_time: 3,
+          remote_work_holidays: true,
+          remove_work: true,
+          wish_change_job: true,
+          wish_employed: false,
+          wish_freelance: true,
+          wish_side_job: true,
+          user: build(:user)
+        }
+      end
+    end
+  end
+end
