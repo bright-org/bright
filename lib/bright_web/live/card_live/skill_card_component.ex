@@ -1,18 +1,26 @@
 # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
 defmodule BrightWeb.CardLive.SkillCardComponent do
   @moduledoc """
-  Skill Card Components
+  Skill Card Component
   """
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
 
   @tabs ["エンジニア", "インフラ", "デザイナー", "マーケッター"]
 
+  # TODO selected_tab,selected_tab,page,total_pagesは未実装でダミーです
   @impl true
   def render(assigns) do
     ~H"""
     <div>
-      <.tab tabs={@tabs}>
+      <.tab
+        id="skill_card"
+        selected_tab="エンジニア"
+        page={1}
+        total_pages={1}
+        target={@myself}
+        tabs={@tabs}
+      >
         <div class="py-4 px-7 flex gap-y-2 flex-col">
           <%= for skill <- assigns.skills do %>
             <.skill_genre skills={skill} />
@@ -30,6 +38,34 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      |> assign(assigns)
      |> assign(:tabs, @tabs)
      |> assign(:skills, sample())}
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => "skill_card", "tab_name" => tab_name},
+        socket
+      ) do
+    # TODO 処理は未実装
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "previous_button_click",
+        %{"id" => "skill_card"},
+        socket
+      ) do
+    # TODO 処理は未実装
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "next_button_click",
+        %{"id" => "skill_card"},
+        socket
+      ) do
+    # TODO 処理は未実装
+    {:noreply, socket}
   end
 
   @impl true
@@ -102,7 +138,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp level_text(:normal), do: "平均"
   defp level_text(:skilled), do: "ベテラン"
 
-  # TODO　サンプルデータDBの処理を作成後消すこと
+  # TODO　サンプルデータはDBの処理を作成後消すこと
   defp sample() do
     [
       %{
