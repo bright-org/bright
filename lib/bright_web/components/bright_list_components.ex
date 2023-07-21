@@ -7,11 +7,13 @@ defmodule BrightWeb.BrightListComponents do
   @highlight_minutes 60 * 8
 
   @doc """
-  Renders a contact Row
+  Renders a Contact Card Row
 
   ## Examples
-      <.contact_card_row />
+      <.contact_card_row notification={notification} />
   """
+  attr :notification, :map, required: true
+
   def contact_card_row(assigns) do
     ~H"""
     <li class="text-left flex items-center text-base">
@@ -24,6 +26,12 @@ defmodule BrightWeb.BrightListComponents do
     """
   end
 
+  @doc """
+  Renders a Communication Card Row
+
+  ## Examples
+      <.contact_card_row notification={notification} />
+  """
   attr :notification, :map, required: true
 
   def communication_card_row(assigns) do
