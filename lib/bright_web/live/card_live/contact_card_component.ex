@@ -15,7 +15,6 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <h5>重量な連絡</h5>
       <.tab
         id="contact_card"
         tabs={@tabs}

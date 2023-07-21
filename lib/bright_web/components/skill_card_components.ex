@@ -53,7 +53,6 @@ defmodule BrightWeb.SkillCardComponents do
   def skill_card(assigns) do
     ~H"""
     <div>
-      <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
       <.tab tabs={["エンジニア", "インフラ", "デザイナー", "マーケッター"]}>
         <div class="py-4 px-7 flex gap-y-2 flex-col">
           <%= for skill <- assigns.skills do %>

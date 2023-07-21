@@ -21,7 +21,6 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <h5>さまざまな人たちとの交流</h5>
       <.tab
         id="communication_card"
         tabs={@tabs}
