@@ -10,14 +10,14 @@ defmodule Bright.UserJobProfiles.UserJobProfile do
   @foreign_key_type Ecto.ULID
 
   schema "user_job_profiles" do
-    field :availability_date, :naive_datetime
+    field :availability_date, :date
     field :desired_income, :integer
     field :job_searching, :boolean, default: false
-    field :office_operating_time, :integer
-    field :office_pred, :integer
+    field :office_working_hours, :integer
+    field :office_pref, :integer
     field :office_work, :boolean, default: false
     field :office_work_holidays, :boolean, default: false
-    field :remote_operating_time, :integer
+    field :remote_working_hours, :integer
     field :remote_work_holidays, :boolean, default: false
     field :remove_work, :boolean, default: false
     field :wish_change_job, :boolean, default: false
@@ -42,11 +42,11 @@ defmodule Bright.UserJobProfiles.UserJobProfile do
       :availability_date,
       :office_work,
       :office_work_holidays,
-      :office_pred,
-      :office_operating_time,
+      :office_pref,
+      :office_working_hours,
       :remove_work,
       :remote_work_holidays,
-      :remote_operating_time,
+      :remote_working_hours,
       :desired_income,
       :user_id
     ])

@@ -12,11 +12,11 @@ defmodule Bright.UserJobProfilesTest do
       availability_date: nil,
       desired_income: nil,
       job_searching: nil,
-      office_operating_time: nil,
-      office_pred: nil,
+      office_working_hours: nil,
+      office_pref: nil,
       office_work: nil,
       office_work_holidays: nil,
-      remote_operating_time: nil,
+      remote_working_hours: nil,
       remote_work_holidays: nil,
       remove_work: nil,
       user_id: nil,
@@ -46,14 +46,14 @@ defmodule Bright.UserJobProfilesTest do
       user = insert(:user)
 
       valid_attrs = %{
-        availability_date: ~N[2023-07-20 00:00:00],
+        availability_date: ~D[2023-07-20],
         desired_income: 80,
         job_searching: true,
-        office_operating_time: 3,
-        office_pred: 42,
+        office_working_hours: 3,
+        office_pref: 42,
         office_work: true,
         office_work_holidays: true,
-        remote_operating_time: 3,
+        remote_working_hours: 3,
         remote_work_holidays: true,
         remove_work: true,
         wish_change_job: true,
@@ -66,14 +66,14 @@ defmodule Bright.UserJobProfilesTest do
       assert {:ok, %UserJobProfile{} = user_job_profile} =
                UserJobProfiles.create_user_job_profile(valid_attrs)
 
-      assert user_job_profile.availability_date == ~N[2023-07-20 00:00:00]
+      assert user_job_profile.availability_date == ~D[2023-07-20]
       assert user_job_profile.desired_income == 80
       assert user_job_profile.job_searching == true
-      assert user_job_profile.office_operating_time == 3
-      assert user_job_profile.office_pred == 42
+      assert user_job_profile.office_working_hours == 3
+      assert user_job_profile.office_pref == 42
       assert user_job_profile.office_work == true
       assert user_job_profile.office_work_holidays == true
-      assert user_job_profile.remote_operating_time == 3
+      assert user_job_profile.remote_working_hours == 3
       assert user_job_profile.remote_work_holidays == true
       assert user_job_profile.remove_work == true
       assert user_job_profile.wish_change_job == true
@@ -90,14 +90,14 @@ defmodule Bright.UserJobProfilesTest do
       user_job_profile = insert(:user_job_profile)
 
       update_attrs = %{
-        availability_date: ~N[2023-07-25 00:00:00],
+        availability_date: ~D[2023-07-25],
         desired_income: 43,
         job_searching: false,
-        office_operating_time: 2,
-        office_pred: 18,
+        office_working_hours: 2,
+        office_pref: 18,
         office_work: false,
         office_work_holidays: false,
-        remote_operating_time: 2,
+        remote_working_hours: 2,
         remote_work_holidays: false,
         remove_work: false,
         wish_change_job: false,
@@ -109,14 +109,14 @@ defmodule Bright.UserJobProfilesTest do
       assert {:ok, %UserJobProfile{} = user_job_profile} =
                UserJobProfiles.update_user_job_profile(user_job_profile, update_attrs)
 
-      assert user_job_profile.availability_date == ~N[2023-07-25 00:00:00]
+      assert user_job_profile.availability_date == ~D[2023-07-25]
       assert user_job_profile.desired_income == 43
       assert user_job_profile.job_searching == false
-      assert user_job_profile.office_operating_time == 2
-      assert user_job_profile.office_pred == 18
+      assert user_job_profile.office_working_hours == 2
+      assert user_job_profile.office_pref == 18
       assert user_job_profile.office_work == false
       assert user_job_profile.office_work_holidays == false
-      assert user_job_profile.remote_operating_time == 2
+      assert user_job_profile.remote_working_hours == 2
       assert user_job_profile.remote_work_holidays == false
       assert user_job_profile.remove_work == false
       assert user_job_profile.wish_change_job == false

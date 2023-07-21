@@ -8,14 +8,14 @@ defmodule Bright.Repo.Migrations.CreateUserJobProfiles do
       add :wish_change_job, :boolean, default: false, null: false
       add :wish_side_job, :boolean, default: false, null: false
       add :wish_freelance, :boolean, default: false, null: false
-      add :availability_date, :naive_datetime
+      add :availability_date, :date
       add :office_work, :boolean, default: false, null: false
       add :office_work_holidays, :boolean, default: false, null: false
-      add :office_pred, :integer
-      add :office_operating_time, :integer
+      add :office_pref, :integer
+      add :office_working_hours, :integer
       add :remove_work, :boolean, default: false, null: false
       add :remote_work_holidays, :boolean, default: false, null: false
-      add :remote_operating_time, :integer
+      add :remote_working_hours, :integer
       add :desired_income, :integer
       add :user_id, references(:users, on_delete: :nothing)
 
