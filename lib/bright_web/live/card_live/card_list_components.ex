@@ -1,6 +1,6 @@
-defmodule BrightWeb.BrightCardComponents do
+defmodule BrightWeb.CardLive.CardListComponents do
   @moduledoc """
-  Bright List Components
+  Card List Components
   """
   use Phoenix.Component
 

@@ -5,7 +5,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
   """
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
-  import BrightWeb.BrightCardComponents
+  import BrightWeb.CardLive.CardListComponents
   alias Bright.Notifications
 
   @tabs ["スキルアップ", "1on1のお誘い", "推し活", "所属チーム", "気になる", "運勢公式"]
