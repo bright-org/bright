@@ -1,3 +1,4 @@
+# TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
 defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @moduledoc """
   Intriguing Card Components
@@ -6,6 +7,8 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   import BrightWeb.ProfileComponents
   import BrightWeb.TabComponents
 
+  @tabs ["気になる人", "チーム", "採用候補者"]
+  @menu_items [%{text: "カスタムグループを作る", href: "/"}, %{text: "カスタムグループの編集", href: "/"}]
   @sample [
     %{
       user_name: "nokichi",
@@ -21,30 +24,17 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     }
   ]
 
-  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
-
-  @doc """
-  Renders a Intriguing Card
-
-  ## Examples
-      <.intriguing_card />
-  """
-
+  @impl true
   def render(assigns) do
-    menu_items = [
-      %{text: "カスタムグループを作る", href: "/"},
-      %{text: "カスタムグループの編集", href: "/"},
-      %{text: "カスタムグループの削除", href: "/"}
-    ]
-
     assigns =
       assigns
-      |> assign(:menu_items, menu_items)
+      |> assign(:menu_items, @menu_items)
+      |> assign(:tabs, @tabs)
       |> assign(:user_profiles, @sample)
 
     ~H"""
     <div>
-      <.tab id="tab-single-default" tabs={["気になる人", "チーム", "採用候補者"]} inner_tab={true} previous_enable menu_items={@menu_items}>
+      <.tab id="tab-single-default" tabs={@tabs} inner_tab={true} previous_enable menu_items={@menu_items}>
         <div class="pt-3 pb-1 px-6">
           <ul class="flex flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
