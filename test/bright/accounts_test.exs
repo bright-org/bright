@@ -613,4 +613,19 @@ defmodule Bright.AccountsTest do
       assert %User{id: ^id} = Accounts.get_user_by_name_or_email(user.email)
     end
   end
+
+  describe "onboarding_finished?/1" do
+    test "returns true if user_onboarding exists" do
+      user = insert(:user)
+      insert(:user_onboarding, user: user)
+
+      assert Accounts.onboarding_finished?(user)
+    end
+
+    test "returns false if user_onboarding does not exist" do
+      user = insert(:user)
+
+      refute Accounts.onboarding_finished?(user)
+    end
+  end
 end
