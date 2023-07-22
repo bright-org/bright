@@ -8,6 +8,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a "Excellent Person" Button
 
   ## Examples
+
       <.excellent_person_button />
   """
   def excellent_person_button(assigns) do
@@ -25,6 +26,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a "Anxious Person" Button
 
   ## Examples
+
       <.anxious_person_button />
   """
   def anxious_person_button(assigns) do
@@ -85,6 +87,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a "Return to Yourself" Button
 
   ## Examples
+
       <.return_to_yourself_button />
   """
   def return_to_yourself_button(assigns) do
@@ -102,6 +105,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a "Stock Candidates For Employment" Button
 
   ## Examples
+
       <.stock_candidates_for_employment_button />
   """
   def stock_candidates_for_employment_button(assigns) do
@@ -119,6 +123,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a Adopt Button
 
   ## Examples
+
       <.adopt_button />
   """
   def adopt_button(assigns) do
@@ -136,6 +141,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a "Recruitment Coordination" Button
 
   ## Examples
+
       <.recruitment_coordination_button />
   """
   def recruitment_coordination_button(assigns) do
@@ -153,6 +159,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a Contact Customer Success Button
 
   ## Examples
+
       <.contact_customer_success_button />
   """
   def contact_customer_success_button(assigns) do
@@ -170,6 +177,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a Search for Skill Holders Button
 
   ## Examples
+
       <.search_for_skill_holders_button />
   """
   def search_for_skill_holders_button(assigns) do
@@ -187,7 +195,8 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a Bell Button
 
   ## Examples
-      <.bell_button />
+
+      <.bell_button notification_count=99 />
   """
   attr :notification_count, :integer
 
@@ -210,7 +219,8 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a User Button
 
   ## Examples
-      <.button />
+
+      <.user_button icon_file_path="/images/sample/sample-image.png" />
   """
   attr :icon_file_path, :string
 
