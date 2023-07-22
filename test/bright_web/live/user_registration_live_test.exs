@@ -11,12 +11,27 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       assert html =~ "ユーザー新規作成"
     end
 
-    test "redirects if already logged in", %{conn: conn} do
+    test "redirects onboardings if already logged in and does not finish onboarding", %{
+      conn: conn
+    } do
       result =
         conn
         |> log_in_user(insert(:user))
         |> live(~p"/users/register")
-        |> follow_redirect(conn, "/mypage")
+        |> follow_redirect(conn, ~p"/onboardings")
+
+      assert {:ok, _conn} = result
+    end
+
+    test "redirects mypage if already logged in and finished onboarding", %{conn: conn} do
+      user = insert(:user)
+      insert(:user_onboarding, user: user)
+
+      result =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/users/register")
+        |> follow_redirect(conn, ~p"/mypage")
 
       assert {:ok, _conn} = result
     end

@@ -14,12 +14,27 @@ defmodule BrightWeb.UserLoginLiveTest do
       assert html =~ "確認メールの再送はこちら"
     end
 
-    test "redirects if already logged in", %{conn: conn} do
+    test "redirects onboardings if already logged in and does not finish onboarding", %{
+      conn: conn
+    } do
       result =
         conn
         |> log_in_user(insert(:user))
         |> live(~p"/users/log_in")
-        |> follow_redirect(conn, "/mypage")
+        |> follow_redirect(conn, ~p"/onboardings")
+
+      assert {:ok, _conn} = result
+    end
+
+    test "redirects mypage if already logged in and finished onboarding", %{conn: conn} do
+      user = insert(:user)
+      insert(:user_onboarding, user: user)
+
+      result =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/users/log_in")
+        |> follow_redirect(conn, ~p"/mypage")
 
       assert {:ok, _conn} = result
     end
@@ -30,6 +45,21 @@ defmodule BrightWeb.UserLoginLiveTest do
       password = "123456789abcd"
 
       user = create_user_with_password(password)
+
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      form = form(lv, "#login_form", user: %{email: user.email, password: password})
+
+      conn = submit_form(form, conn)
+
+      assert redirected_to(conn) == ~p"/onboardings"
+    end
+
+    test "redirects mypage if user already finished onboardings", %{conn: conn} do
+      password = "123456789abcd"
+
+      user = create_user_with_password(password)
+      insert(:user_onboarding, user: user)
 
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 
