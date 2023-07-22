@@ -13,7 +13,6 @@ defmodule Storybook.Components.Tab do
           page: 1,
           total_pages: 2
         },
-
         slots: [
           sample_slots()
         ]
