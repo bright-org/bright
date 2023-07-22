@@ -1007,857 +1007,1126 @@
                   </button>
                 </div>
               </div>
-              <div class="flex flex-col"></div>
-              <div class="mt-4 flex items-end">
-                <!-- スキルパネル対象者table -->
-                <div>
-                  <div>
-                    <div class="flex w-[938px] items-center justify-end">
-                      <div class="w-[546px] mr-auto">
-                        <div class="flex">
-                          <div class="w-14 flex justify-center items-center">
-                            <button
-                              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
-                            >
-                              <span class="material-icons text-white !text-3xl"
-                                >arrow_left</span
-                              >
-                            </button>
-                          </div>
-                          <div
-                            class="bg-brightGray-50 h-[35px] rounded-full w-[480px] my-5 flex justify-around items-center relative"
-                          >
-                            <div
-                              class="h-[60px] w-[60px] flex justify-center items-center"
-                            >
-                              <button
-                                class="h-[48px] w-[48px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-                              >
-                                2022<br />12月
-                              </button>
-                            </div>
-                            <div
-                              class="h-[60px] w-[60px] flex justify-center items-center"
-                            >
-                              <button
-                                class="h-[48px] w-[48px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-                              >
-                                2023<br />3月
-                              </button>
-                            </div>
-                            <div class="h-[60px] w-[60px]">
-                              <button
-                                class="h-[60px] w-[60px] rounded-full bg-brightGreen-50 border-white border-4 text-brightGreen-600 font-bold text-xs flex justify-center items-center flex-col shadow-md"
-                              >
-                                2022<br />6月
-                              </button>
-                            </div>
-
-                            <div
-                              class="h-[60px] w-[60px] flex justify-center items-center"
-                            >
-                              <button
-                                class="h-[48px] w-[48px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-                              >
-                                2023<br />9月
-                              </button>
-                            </div>
-                            <div
-                              class="h-[60px] w-[60px] flex justify-center items-center"
-                            >
-                              <button
-                                class="h-[48px] w-[48px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-                              >
-                                2023<br />12月
-                              </button>
-                            </div>
-                            <div
-                              class="h-[60px] w-[60px] flex justify-center items-center"
-                            >
-                              <button
-                                class="h-[48px] w-[48px] bg-attention-100 border-white border-4 text-attention-600 font-bold rounded-full text-xs flex justify-center items-center shadow-md"
-                              >
-                                現在
-                              </button>
-                            </div>
-                          </div>
-                          <div class="flex justify-center items-center ml-2">
-                            <button
-                              class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded"
-                            >
-                              <span class="material-icons text-white !text-3xl"
-                                >arrow_right</span
-                              >
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="flex gap-x-4">
-                        <button
-                          id="addCompareDropdownButton"
-                          data-dropdown-toggle="addCompareDropdown"
-                          class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-                          type="button"
-                        >
-                          <span class="min-w-[6em]">個人と比較</span>
-                          <span
-                            class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-                            >add</span
-                          >
-                        </button>
-
-                        <!-- カスタムグループを作成dialog -->
-                        <div
-                          id="addCustomGroupDropwon"
-                          class="z-10 hidden bg-white rounded-sm shadow w-[475px] p-8"
-                        >
-                          <p class="font-bold mb-4">カスタムグループ名</p>
-                          <input
-                            type="text"
-                            placeholder="カスタムグループ名を入力"
-                            class="px-5 py-2 border border-brightGray-100 rounded-sm w-full mb-4"
-                          />
-                          <div class="flex gap-x-4 justify-end">
-                            <button
-                              class="text-sm font-bold px-5 py-2 rounded border border-base"
-                            >
-                              キャンセル
-                            </button>
-                            <button
-                              class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
-                            >
-                              追加
-                            </button>
-                          </div>
-                        </div>
-
-                        <button
-                          id="addCompareDropdownButton"
-                          data-dropdown-toggle="addCompareDropdown"
-                          class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-                          type="button"
-                        >
-                          <span class="min-w-[6em]">チーム全員と比較</span>
-                          <span
-                            class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-                            >add</span
-                          >
-                        </button>
-                      </div>
-                    </div>
-                    <!-- 比較対象を追加dialog -->
-                    <div
-                      id="addCompareDropdown"
-                      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-sm shadow w-44 dark:bg-gray-700"
-                    >
-                      比較対象
-                    </div>
-                  </div>
-                  <table
-                    class="table-fixed skill-panel-table border-t border-l border-brightGray-200"
-                  >
-                    <tr>
-                      <td
-                        colspan="4"
-                        width="420px"
-                        class="!border-t !border-l-white !border-t-white !border-l"
-                      ></td>
-                      <td>
-                        <div class="flex justify-center items-center">
-                          <p class="inline-flex flex-1 justify-center">
-                            piacere
-                          </p>
-                          <button
-                            type="button"
-                            class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-                          >
-                            <span class="material-icons-outlined !text-sm"
-                              >edit</span
-                            >
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th class="bg-base text-white text-center w-[200px]">
-                        知識エリア
-                      </th>
-                      <th class="bg-base text-white text-center w-[200px]">
-                        中分類
-                      </th>
-                      <th class="bg-base text-white text-center w-[420px]">
-                        スキル
-                      </th>
-                      <th class="bg-base text-white text-center">合計</th>
-                      <td>
-                        <div class="flex justify-center gap-x-2">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td rowspan="4" class="align-top">
-                        Elixir本体
-                        <button class="relative top-1 ml-1">
-                          <img src="images/common/icons/upBrightGreen.svg" />
-                        </button>
-                      </td>
-                      <td rowspan="2" class="align-top">基本</td>
-                      <td>
-                        <div class="flex justify-between items-center">
-                          <p class="truncate">
-                            基本型／演算子／制御構文／パイプ
-                          </p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button
-                              class="text-brightGreen-600"
-                              data-modal-target="evidenceModal"
-                              data-modal-toggle="evidenceModal"
-                            >
-                              <img
-                                src="images/common/icons/skillEvidence.svg"
-                              />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/skillStudy.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/skillTest.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
-                        >
-                          <label
-                            for="radio-1"
-                            class="flex items-center hover:cursor-pointer"
-                          >
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            /><span
-                              class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
-                            ></span>
-                          </label>
-
-                          <label
-                            for="radio-2"
-                            class="flex items-center hover:cursor-pointer"
-                          >
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
-                            ></span>
-                          </label>
-
-                          <label
-                            for="radio-2"
-                            class="flex items-center hover:cursor-pointer"
-                          >
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            /><span
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></span>
-                          </label>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="flex justify-between items-center">
-                          <p class="truncate">config追加／変更</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button class="text-brightGreen-600">
-                              <img
-                                src="images/common/icons/skillEvidenceActive.svg"
-                              />
-                            </button>
-                            <button>
-                              <img
-                                src="images/common/icons/skillStudyActive.svg"
-                              />
-                            </button>
-                            <button>
-                              <img
-                                src="images/common/icons/skillTestActive.svg"
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td rowspan="2" class="align-top">基本</td>
-                      <td>
-                        <div class="flex justify-between items-center">
-                          <p class="truncate">
-                            Enum.filter／reject／sort／uniq／split／slice／／／／／
-                          </p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button class="text-brightGreen-600">
-                              <img
-                                src="images/common/icons/skillEvidence.svg"
-                              />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/skillStudy.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/skillTest.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
-                        >
-                          <label for="radio-1" class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            /><span
-                              class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
-                            ></span>
-                          </label>
-
-                          <label for="radio-2" class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
-                            ></span>
-                          </label>
-
-                          <label for="radio-2" class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            /><span
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></span>
-                          </label>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="flex justify-between items-center">
-                          <p class="truncate">Enum.map</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button class="text-brightGreen-600">
-                              <img
-                                src="images/common/icons/skillEvidenceActive.svg"
-                              />
-                            </button>
-                            <button>
-                              <img
-                                src="images/common/icons/skillStudyActive.svg"
-                              />
-                            </button>
-                            <button>
-                              <img
-                                src="images/common/icons/skillTestActive.svg"
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td rowspan="4" class="align-top bg-lapislazuli-50">
-                        Elixir本体
-                        <button class="relative top-1 ml-1">
-                          <img src="images/common/icons/upBrightGreen.svg" />
-                        </button>
-                      </td>
-                      <td rowspan="2" class="align-top bg-lapislazuli-50">
-                        基本
-                      </td>
-                      <td class="bg-lapislazuli-50">
-                        <div class="flex justify-between items-center">
-                          <p class="truncate">
-                            基本型／演算子／制御構文／パイプ
-                          </p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button class="text-brightGreen-600">
-                              <img
-                                src="images/common/icons/skillEvidence.svg"
-                              />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/skillStudy.svg" />
-                            </button>
-                            <button>
-                              <img src="images/common/icons/skillTest.svg" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
-                        >
-                          <label for="radio-1" class="flex items-center">
-                            <input
-                              id="radio-1"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            /><span
-                              class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
-                            ></span>
-                          </label>
-
-                          <label for="radio-2" class="flex items-center">
-                            <input
-                              checked
-                              id="radio-2"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
-                            ></span>
-                          </label>
-
-                          <label for="radio-2" class="flex items-center">
-                            <input
-                              checked
-                              id="radio-3"
-                              type="radio"
-                              value=""
-                              name="elixir-radio-1"
-                              class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            /><span
-                              class="h-1 w-4 bg-brightGray-200 ml-1"
-                            ></span>
-                          </label>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="bg-brightGray-50">
-                        <div class="flex justify-between items-center">
-                          <p class="truncate">config追加／変更</p>
-                          <div
-                            class="flex justify-between items-center gap-x-2"
-                          >
-                            <button class="text-brightGreen-600">
-                              <img
-                                src="images/common/icons/skillEvidenceActive.svg"
-                              />
-                            </button>
-                            <button>
-                              <img
-                                src="images/common/icons/skillStudyActive.svg"
-                              />
-                            </button>
-                            <button>
-                              <img
-                                src="images/common/icons/skillTestActive.svg"
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="bg-brightGray-50">
-                        <div class="flex justify-center gap-x-1">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                      <td class="bg-brightGray-50">
-                        <div
-                          class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <!-- 比較対象table -->
-                <div>
-                  <div class="flex h-[75px] items-center gap-x-4">
-                    <button
-                      id="addCustomGroupDropwonButton"
-                      data-dropdown-toggle="addCustomGroupDropwon"
-                      type="button"
-                      class="text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-                    >
-                      カスタムグループ
-                    </button>
-                    <div class="text-left flex items-center text-base">
-                      <span
-                        class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-1 !items-center !justify-center"
-                        >group</span
+              <div class="flex mt-4 items-center">
+                <!-- 時系列比較 -->
+                <div class="w-[566px] mr-10">
+                  <div class="flex">
+                    <div class="flex justify-center items-center ml-1 mr-3">
+                      <button
+                        class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
                       >
-                      カスタムグループ福岡Elixir
+                        <span class="material-icons text-white !text-3xl"
+                          >arrow_left</span
+                        >
+                      </button>
+                    </div>
+                    <div
+                      class="bg-brightGray-50 h-[44px] rounded-full w-[500px] my-5 flex justify-around items-center relative"
+                    >
+                      <div
+                        class="h-[80px] w-[80px] flex justify-center items-center"
+                      >
+                        <button
+                          class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          2022.12
+                        </button>
+                      </div>
+                      <div
+                        class="h-[80px] w-[80px] flex justify-center items-center"
+                      >
+                        <button
+                          class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          2023.3
+                        </button>
+                      </div>
+                      <div class="h-[80px] w-[80px]">
+                        <button
+                          class="h-[80px] w-[80px] rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-xs flex justify-center items-center flex-col"
+                        >
+                          <span class="material-icons !text-[22px] !font-bold"
+                            >check</span
+                          >
+                          2022.6
+                        </button>
+                      </div>
+
+                      <div
+                        class="h-[80px] w-[80px] flex justify-center items-center"
+                      >
+                        <button
+                          class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          2023.9
+                        </button>
+                      </div>
+                      <div
+                        class="h-[80px] w-[80px] flex justify-center items-center"
+                      >
+                        <button
+                          class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          2023.12
+                        </button>
+                      </div>
+                      <div
+                        class="h-[80px] w-[80px] flex justify-center items-center absolute right-[58px]"
+                      >
+                        <button
+                          class="h-[38px] w-[38px] border border-brightGray-50 text-attention-900 font-bold rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          現在
+                        </button>
+                      </div>
+                    </div>
+                    <div class="flex justify-center items-center ml-2">
+                      <button
+                        class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded"
+                      >
+                        <span class="material-icons text-white !text-3xl"
+                          >arrow_right</span
+                        >
+                      </button>
                     </div>
                   </div>
-                  <table
-                    class="table-fixed skill-panel-table border-t border-brightGray-200"
-                  >
-                    <tr>
-                      <td>
-                        <div class="flex justify-center items-center">
-                          <p class="inline-flex flex-1 justify-center">
-                            mokichi
-                          </p>
-                          <button
-                            type="button"
-                            class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
-                          >
-                            <span class="material-icons-outlined !text-xs"
-                              >close</span
-                            >
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center items-center">
-                          <p class="inline-flex flex-1 justify-center">koyo</p>
-                          <button
-                            type="button"
-                            class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
-                          >
-                            <span class="material-icons-outlined !text-xs"
-                              >close</span
-                            >
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="flex justify-center gap-x-2">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex justify-center gap-x-2">
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"
-                            ></span
-                            >68％
-                          </div>
-                          <div class="min-w-[3em] flex items-center">
-                            <span
-                              class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"
-                            ></span
-                            >12％
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                      <td>
-                        <div
-                          class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
-                        >
-                          <span
-                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
-                          ></span>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
                 </div>
+                <div class="flex gap-x-4">
+                  <!-- 個人と比較 -->
+                  <button
+                    id="addCompareDropdownButton"
+                    data-dropdown-toggle="addCompareDropdown"
+                    data-dropdown-offset-skidding="300"
+                    data-dropdown-placement="bottom"
+                    class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
+                    type="button"
+                  >
+                    <span class="min-w-[6em]">個人と比較</span>
+                    <span
+                      class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
+                      >add</span
+                    >
+                  </button>
+                  <!-- 個人と比較Donwdrop -->
+                  <div
+                    class="bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden"
+                    id="addCompareDropdown"
+                  >
+                    <div
+                      class="text-sm font-medium text-center text-brightGray-500"
+                    >
+                      <ul
+                        class="flex content-between border-b border-brightGray-200"
+                      >
+                        <li class="w-full">
+                          <a
+                            href="#"
+                            class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                            >気になる人</a
+                          >
+                        </li>
+                        <li class="w-full">
+                          <a
+                            href="#"
+                            class="py-3.5 w-full items-center justify-center inline-block"
+                            >チーム</a
+                          >
+                        </li>
+                        <li class="w-full">
+                          <a
+                            href="#"
+                            class="py-3.5 w-full items-center justify-center inline-block"
+                            >採用候補者</a
+                          >
+                        </li>
+                      </ul>
+                      <div class="flex border-b border-brightGray-50">
+                        <div class="overflow-hidden">
+                          <ul
+                            class="overflow-hidden flex text-base !text-sm w-[800px]"
+                          >
+                            <li
+                              class="py-2 w-[200px] border-r border-brightGray-50"
+                            >
+                              キャリアの参考になる方々
+                            </li>
+                            <li
+                              class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+                            >
+                              優秀なエンジニアの方々
+                            </li>
+                            <li
+                              class="py-2 w-[200px] border-r border-brightGray-50"
+                            >
+                              カスタムグループ３
+                            </li>
+                            <li
+                              class="py-2 w-[200px] border-r border-brightGray-50"
+                            >
+                              カスタムグループ４
+                            </li>
+                          </ul>
+                        </div>
+                        <button class="px-1 border-l border-brightGray-50">
+                          <span
+                            class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+                          ></span>
+                        </button>
+                        <button class="px-1 border-l border-brightGray-50">
+                          <span
+                            class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+                          ></span>
+                        </button>
+                      </div>
+
+                      <div class="pt-3 pb-1 px-6">
+                        <ul class="flex flex-wrap gap-y-1">
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                          >
+                            <a class="inline-flex items-center gap-x-6">
+                              <img
+                                class="inline-block h-10 w-10 rounded-full"
+                                src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                              />
+                              <div>
+                                <p>nokichi</p>
+                                <p class="text-brightGray-300">
+                                  アプリエンジニア
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                          >
+                            <a class="inline-flex items-center gap-x-6">
+                              <img
+                                class="inline-block h-10 w-10 rounded-full"
+                                src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                              />
+                              <div>
+                                <p>nokichi</p>
+                                <p class="text-brightGray-300">
+                                  アプリエンジニア
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                          >
+                            <a class="inline-flex items-center gap-x-6">
+                              <img
+                                class="inline-block h-10 w-10 rounded-full"
+                                src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                              />
+                              <div>
+                                <p>nokichi</p>
+                                <p class="text-brightGray-300">
+                                  アプリエンジニア
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                          >
+                            <a class="inline-flex items-center gap-x-6">
+                              <img
+                                class="inline-block h-10 w-10 rounded-full"
+                                src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                              />
+                              <div>
+                                <p>nokichi</p>
+                                <p class="text-brightGray-300">
+                                  アプリエンジニア
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
+                          >
+                            <a class="inline-flex items-center gap-x-6">
+                              <img
+                                class="inline-block h-10 w-10 rounded-full"
+                                src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                              />
+                              <div>
+                                <p>nokichi</p>
+                                <p class="text-brightGray-300">
+                                  アプリエンジニア
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="flex justify-center gap-x-14 pb-3">
+                        <button
+                          type="button"
+                          class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                        >
+                          <span
+                            class="material-icons md-18 mr-2 text-brightGray-200"
+                            >chevron_left</span
+                          >
+                          前
+                        </button>
+                        <button
+                          type="button"
+                          class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                        >
+                          次
+                          <span
+                            class="material-icons md-18 ml-2 text-brightGray-900"
+                            >chevron_right</span
+                          >
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- チーム全員と比較 -->
+                  <button
+                    id="compareAllDropdownButton"
+                    data-dropdown-toggle="compareAllDropdown"
+                    data-dropdown-offset-skidding="300"
+                    data-dropdown-placement="bottom"
+                    class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
+                    type="button"
+                  >
+                    <span class="min-w-[6em]">チーム全員と比較</span>
+                    <span
+                      class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
+                      >add</span
+                    >
+                  </button>
+                  <!-- チーム全員と比較Downdrop -->
+                  <div
+                    class="bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden"
+                    id="compareAllDropdown"
+                  >
+                    <div
+                      class="text-sm font-medium text-center text-brightGray-500"
+                    >
+                      <ul
+                        class="flex content-between border-b border-brightGray-200"
+                      >
+                        <li class="w-full">
+                          <a
+                            href="#"
+                            class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
+                            >所属チーム</a
+                          >
+                        </li>
+                        <li class="w-full">
+                          <a
+                            href="#"
+                            class="py-3.5 w-full items-center justify-center inline-block"
+                            >管轄チーム</a
+                          >
+                        </li>
+                        <li class="w-full">
+                          <a
+                            href="#"
+                            class="py-3.5 w-full items-center justify-center inline-block"
+                            >カスタムグループ</a
+                          >
+                        </li>
+                      </ul>
+                      <div class="pt-4 pb-1 px-6">
+                        <ul class="flex gap-y-1.5 flex-col">
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                          >
+                            <img
+                              src="./images/common/icons/team.svg"
+                              class="mr-2"
+                            />Elixir Fukuoka
+                          </li>
+
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                          >
+                            <img
+                              src="./images/common/icons/other_team.svg"
+                              class="mr-2"
+                            />
+                            圧倒的開発スピード
+                          </li>
+
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                          >
+                            <img
+                              src="./images/common/icons/management_team.svg"
+                              class="mr-2"
+                            />
+                            S社案件開発
+                          </li>
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                          >
+                            <img
+                              src="./images/common/icons/coustom_group.svg"
+                              class="mr-2"
+                            />
+                            D社スマホアプリプロジェクト
+                          </li>
+                          <li
+                            class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+                          >
+                            <img
+                              src="./images/common/icons/other_team.svg"
+                              class="mr-2"
+                            />
+                            D社スマホアプリプロジェクト
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="flex justify-center gap-x-14 pb-3">
+                        <button
+                          type="button"
+                          class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                        >
+                          <span
+                            class="material-icons md-18 mr-2 text-brightGray-200"
+                            >chevron_left</span
+                          >
+                          前
+                        </button>
+                        <button
+                          type="button"
+                          class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
+                        >
+                          次
+                          <span
+                            class="material-icons md-18 ml-2 text-brightGray-900"
+                            >chevron_right</span
+                          >
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- カスタムグループ -->
+                  <button
+                    id="addCustomGroupDropwonButton"
+                    data-dropdown-toggle="addCustomGroupDropwon"
+                    data-dropdown-offset-skidding="230"
+                    data-dropdown-placement="bottom"
+                    type="button"
+                    class="text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+                  >
+                    カスタムグループ
+                  </button>
+                  <!-- カスタムグループDropdown -->
+                  <div
+                    id="addCustomGroupDropwon"
+                    class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
+                  >
+                    <ul
+                      class="p-2 text-left text-base"
+                      aria-labelledby="dropmenu04"
+                    >
+                      <li>
+                        <a
+                          data-modal-target="defaultModal"
+                          data-modal-toggle="defaultModal"
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
+                        >
+                          下記をカスタムグループとして追加する
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
+                          >下記で現在のカスタムグループを更新する</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- カスタムグループ福岡Elixir -->
+                  <div class="text-left flex items-center text-base">
+                    <span
+                      class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-1 !items-center !justify-center"
+                      >group</span
+                    >
+                    カスタムグループ福岡Elixir
+                  </div>
+                </div>
+              </div>
+              <div>
+                <!-- スキルパネル対象者table -->
+
+                <table
+                  class="table-fixed skill-panel-table border-t border-l border-brightGray-200"
+                >
+                  <tr>
+                    <td
+                      colspan="4"
+                      width="420px"
+                      class="!border-t !border-l-white !border-t-white !border-l"
+                    ></td>
+                    <td>
+                      <div class="flex justify-center items-center">
+                        <p class="inline-flex flex-1 justify-center">piacere</p>
+                        <button
+                          type="button"
+                          class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                        >
+                          <span class="material-icons-outlined !text-sm"
+                            >edit</span
+                          >
+                        </button>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center items-center">
+                        <p class="inline-flex flex-1 justify-center">mokichi</p>
+                        <button
+                          type="button"
+                          class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
+                        >
+                          <span class="material-icons-outlined !text-xs"
+                            >close</span
+                          >
+                        </button>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center items-center">
+                        <p class="inline-flex flex-1 justify-center">koyo</p>
+                        <button
+                          type="button"
+                          class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
+                        >
+                          <span class="material-icons-outlined !text-xs"
+                            >close</span
+                          >
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="bg-base text-white text-center w-[200px]">
+                      知識エリア
+                    </th>
+                    <th class="bg-base text-white text-center w-[200px]">
+                      中分類
+                    </th>
+                    <th class="bg-base text-white text-center w-[420px]">
+                      スキル
+                    </th>
+                    <th class="bg-base text-white text-center">合計</th>
+                    <td>
+                      <div class="flex justify-center gap-x-2">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center gap-x-2">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center gap-x-2">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="4" class="align-top">
+                      Elixir本体
+                      <button class="relative top-1 ml-1">
+                        <img src="images/common/icons/upBrightGreen.svg" />
+                      </button>
+                    </td>
+                    <td rowspan="2" class="align-top">基本</td>
+                    <td>
+                      <div class="flex justify-between items-center">
+                        <p class="truncate">基本型／演算子／制御構文／パイプ</p>
+                        <div class="flex justify-between items-center gap-x-2">
+                          <button
+                            class="text-brightGreen-600"
+                            data-modal-target="evidenceModal"
+                            data-modal-toggle="evidenceModal"
+                          >
+                            <img src="images/common/icons/skillEvidence.svg" />
+                          </button>
+                          <button>
+                            <img src="images/common/icons/skillStudy.svg" />
+                          </button>
+                          <button>
+                            <img src="images/common/icons/skillTest.svg" />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center gap-x-1">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
+                      >
+                        <label
+                          for="radio-1"
+                          class="flex items-center hover:cursor-pointer"
+                        >
+                          <input
+                            id="radio-1"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          /><span
+                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
+                          ></span>
+                        </label>
+
+                        <label
+                          for="radio-2"
+                          class="flex items-center hover:cursor-pointer"
+                        >
+                          <input
+                            checked
+                            id="radio-2"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
+                          ></span>
+                        </label>
+
+                        <label
+                          for="radio-2"
+                          class="flex items-center hover:cursor-pointer"
+                        >
+                          <input
+                            checked
+                            id="radio-3"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          /><span class="h-1 w-4 bg-brightGray-200 ml-1"></span>
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="flex justify-between items-center">
+                        <p class="truncate">config追加／変更</p>
+                        <div class="flex justify-between items-center gap-x-2">
+                          <button class="text-brightGreen-600">
+                            <img
+                              src="images/common/icons/skillEvidenceActive.svg"
+                            />
+                          </button>
+                          <button>
+                            <img
+                              src="images/common/icons/skillStudyActive.svg"
+                            />
+                          </button>
+                          <button>
+                            <img
+                              src="images/common/icons/skillTestActive.svg"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center gap-x-1">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2" class="align-top">基本</td>
+                    <td>
+                      <div class="flex justify-between items-center">
+                        <p class="truncate">
+                          Enum.filter／reject／sort／uniq／split／slice／／／／／
+                        </p>
+                        <div class="flex justify-between items-center gap-x-2">
+                          <button class="text-brightGreen-600">
+                            <img src="images/common/icons/skillEvidence.svg" />
+                          </button>
+                          <button>
+                            <img src="images/common/icons/skillStudy.svg" />
+                          </button>
+                          <button>
+                            <img src="images/common/icons/skillTest.svg" />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center gap-x-1">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
+                      >
+                        <label for="radio-1" class="flex items-center">
+                          <input
+                            id="radio-1"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          /><span
+                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
+                          ></span>
+                        </label>
+
+                        <label for="radio-2" class="flex items-center">
+                          <input
+                            checked
+                            id="radio-2"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
+                          ></span>
+                        </label>
+
+                        <label for="radio-2" class="flex items-center">
+                          <input
+                            checked
+                            id="radio-3"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          /><span class="h-1 w-4 bg-brightGray-200 ml-1"></span>
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="flex justify-between items-center">
+                        <p class="truncate">Enum.map</p>
+                        <div class="flex justify-between items-center gap-x-2">
+                          <button class="text-brightGreen-600">
+                            <img
+                              src="images/common/icons/skillEvidenceActive.svg"
+                            />
+                          </button>
+                          <button>
+                            <img
+                              src="images/common/icons/skillStudyActive.svg"
+                            />
+                          </button>
+                          <button>
+                            <img
+                              src="images/common/icons/skillTestActive.svg"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center gap-x-1">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="4" class="align-top bg-lapislazuli-50">
+                      Elixir本体
+                      <button class="relative top-1 ml-1">
+                        <img src="images/common/icons/upBrightGreen.svg" />
+                      </button>
+                    </td>
+                    <td rowspan="2" class="align-top bg-lapislazuli-50">
+                      基本
+                    </td>
+                    <td class="bg-lapislazuli-50">
+                      <div class="flex justify-between items-center">
+                        <p class="truncate">基本型／演算子／制御構文／パイプ</p>
+                        <div class="flex justify-between items-center gap-x-2">
+                          <button class="text-brightGreen-600">
+                            <img src="images/common/icons/skillEvidence.svg" />
+                          </button>
+                          <button>
+                            <img src="images/common/icons/skillStudy.svg" />
+                          </button>
+                          <button>
+                            <img src="images/common/icons/skillTest.svg" />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center gap-x-1">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex gap-x-4 px-4 min-w-[150px] hover:cursor-pointer justify-center"
+                      >
+                        <label for="radio-1" class="flex items-center">
+                          <input
+                            id="radio-1"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          /><span
+                            class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block ml-1"
+                          ></span>
+                        </label>
+
+                        <label for="radio-2" class="flex items-center">
+                          <input
+                            checked
+                            id="radio-2"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block ml-1"
+                          ></span>
+                        </label>
+
+                        <label for="radio-2" class="flex items-center">
+                          <input
+                            checked
+                            id="radio-3"
+                            type="radio"
+                            value=""
+                            name="elixir-radio-1"
+                            class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          /><span class="h-1 w-4 bg-brightGray-200 ml-1"></span>
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="bg-brightGray-50">
+                      <div class="flex justify-between items-center">
+                        <p class="truncate">config追加／変更</p>
+                        <div class="flex justify-between items-center gap-x-2">
+                          <button class="text-brightGreen-600">
+                            <img
+                              src="images/common/icons/skillEvidenceActive.svg"
+                            />
+                          </button>
+                          <button>
+                            <img
+                              src="images/common/icons/skillStudyActive.svg"
+                            />
+                          </button>
+                          <button>
+                            <img
+                              src="images/common/icons/skillTestActive.svg"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bg-brightGray-50">
+                      <div class="flex justify-center gap-x-1">
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-4 w-4 rounded-full bg-brightGray-300 inline-block mr-1"
+                          ></span
+                          >68％
+                        </div>
+                        <div class="min-w-[3em] flex items-center">
+                          <span
+                            class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-100 inline-block mr-1"
+                          ></span
+                          >12％
+                        </div>
+                      </div>
+                    </td>
+                    <td class="bg-brightGray-50">
+                      <div
+                        class="flex justify-center gap-x-4 px-4 min-w-[150px] hover:cursor-pointer"
+                      >
+                        <span
+                          class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="flex justify-center gap-x-4 px-4 h-[21px] items-center"
+                      >
+                        <span
+                          class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block"
+                        ></span>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>
         </main>
       </div>
     </div>
+
+    <!-- カスタムグループ追加Modal-->
+    <div
+      id="defaultModal"
+      tabindex="-1"
+      aria-hidden="true"
+      class="bg-brightGray-900 bg-opacity-70 fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full"
+    >
+      <div class="relative">
+        <!-- close button -->
+        <button class="absolute right-3 top-3 z-10">
+          <span class="material-icons !text-xl text-brightGray-900">close</span>
+        </button>
+
+        <div class="relative bg-white rounded-sm shadow-md p-8">
+          <div>
+            <p class="pb-2 text-base font-bold">カスタムグループ名</p>
+
+            <input
+              type="autocomplete"
+              placeholder="カスタムグループ名を入力"
+              class="px-2 py-2 mb-4 border border-brightGray-100 rounded-sm flex-1 w-[420px]"
+            />
+            <div class="flex justify-end">
+              <button
+                class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
+              >
+                保存
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 人材チームへのチーム登録依頼Modal-->
     <div
       id="evidenceModal"
