@@ -89,7 +89,7 @@ module.exports = {
         light: "#FD5B87",
         dazzle: "#FFE9EF",
       },
-      skillPanek: {
+      skillPanel: {
         brightGreen600: "#0EA895",
         brightGreen300: "#14D6BE",
         amethyst600: "#C04CD0",
