@@ -50,5 +50,21 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       assert html_response(conn, 302)
       assert redirected_to(conn) == ~p"/onboardings"
     end
+
+    test "user already is confirmed and onbording is finished", %{conn: conn, user: user} do
+      insert(:user_onboarding, user: user)
+
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_confirmation_instructions(user, url)
+        end)
+
+      conn = get(conn, ~p"/users/confirm/#{token}")
+
+      # confirm again
+      conn = get(conn, ~p"/users/confirm/#{token}")
+      assert html_response(conn, 302)
+      assert redirected_to(conn) == ~p"/mypage"
+    end
   end
 end
