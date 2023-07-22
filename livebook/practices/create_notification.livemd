@@ -49,9 +49,10 @@ defmodule TestData do
       "operation",
       "skill_up",
       "1on1_invitation",
-      "from_your_team",
+      "promotion",
+      "your_team",
       "intriguing",
-      "fortune_official_team_launched"
+      "official_team"
     ]
     |> Enum.each(fn x -> create_data(x, index, user_id) end)
   end

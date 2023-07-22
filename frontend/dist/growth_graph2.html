@@ -1036,7 +1036,7 @@
                       <p class="py-20">平均</p>
                       <p class="py-6">見習い</p>
                       <button
-                        class="w-11 h-9 bg-brightGray-00 flex justify-center items-center rounded bottom-1 absolute"
+                        class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
                       >
                         <span class="material-icons text-white !text-4xl"
                           >arrow_right</span
@@ -1066,9 +1066,12 @@
                       </div>
                       <div class="h-28 w-28 flex justify-center items-center">
                         <button
-                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                          class="h-28 w-28 rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-sm flex justify-center items-center flex-col"
                         >
-                          2023.12
+                          <span class="material-icons !text-4xl !font-bold"
+                            >check</span
+                          >
+                          2023.6
                         </button>
                       </div>
 
@@ -1087,14 +1090,11 @@
                         </button>
                       </div>
                       <div
-                        class="h-28 w-28 flex justify-center items-center absolute right-[86px]"
+                        class="h-28 w-28 flex justify-center items-center absolute right-[58px]"
                       >
                         <button
-                          class="h-28 w-28 rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold text-sm flex justify-center items-center flex-col"
+                          class="h-10 w-10 rounded-full bg-white text-xs text-attention-900 flex justify-center items-center"
                         >
-                          <span class="material-icons !text-4xl !font-bold"
-                            >check</span
-                          >
                           現在
                         </button>
                       </div>
@@ -1102,199 +1102,103 @@
                     <div class="flex justify-center items-center ml-2"></div>
                   </div>
 
-                  <div class="flex pt-5">
+                  <div class="flex py-4">
                     <div class="w-14"></div>
-                    <div class="flex gap-x-4">
-                      <!-- 自分と比較 -->
+                    <div class="w-[725px] flex justify-between items-center">
+                      <div
+                        class="text-left flex items-center text-base hover:bg-brightGray-50"
+                      >
+                        <a
+                          class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded"
+                        >
+                          <img
+                            class="inline-block h-10 w-10 rounded-full"
+                            src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                          />
+                          <div>
+                            <p>nokichi</p>
+                            <p class="text-brightGray-300">アプリエンジニア</p>
+                          </div>
+                        </a>
+                      </div>
                       <button
                         type="button"
-                        class="text-brightGray-600 bg-white px-8 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+                        class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
                       >
-                        自分と比較
+                        ロールモデルに固定
                       </button>
-                      <!-- 他社と比較ボタン -->
+                    </div>
+                    <div></div>
+                  </div>
+
+                  <div class="flex">
+                    <div class="w-14 flex justify-center items-center">
                       <button
-                        id="addCompareDropdownButton"
-                        data-dropdown-toggle="addCompareDropdown"
-                        class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-                        type="button"
+                        class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded"
                       >
-                        <span class="min-w-[6em]">他社と比較</span>
-                        <span
-                          class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-                          >expand_more</span
+                        <span class="material-icons text-white !text-4xl"
+                          >arrow_left</span
                         >
                       </button>
-                      <!-- 個人 menu -->
-                      <div
-                        id="addCompareDropdown"
-                        class="z-10 hidden bg-whiterounded-lg shadow w-[750px]"
+                    </div>
+                    <div
+                      class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative"
+                    >
+                      <button
+                        class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200"
                       >
-                        <div class="bg-white rounded-md mt-1">
-                          <div
-                            class="text-sm font-medium text-center text-brightGray-500"
+                        <span
+                          class="material-icons !text-base !text-brightGray-200"
+                          >close</span
+                        >
+                      </button>
+                      <div class="h-28 w-28">
+                        <button
+                          class="h-28 w-28 rounded-full bg-amethyst-50 border-white border-8 shadow text-amethyst-600 font-bold text-sm flex justify-center items-center flex-col"
+                        >
+                          <span class="material-icons !text-4xl !font-bold"
+                            >check</span
                           >
-                            <ul
-                              class="flex content-between border-b border-brightGray-200"
-                            >
-                              <li class="w-full">
-                                <a
-                                  href="#"
-                                  class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
-                                  >気になる人</a
-                                >
-                              </li>
-                              <li class="w-full">
-                                <a
-                                  href="#"
-                                  class="py-3.5 w-full items-center justify-center inline-block"
-                                  >チーム</a
-                                >
-                              </li>
-                              <li class="w-full">
-                                <a
-                                  href="#"
-                                  class="py-3.5 w-full items-center justify-center inline-block"
-                                  >採用候補者</a
-                                >
-                              </li>
-                            </ul>
-                            <div class="overflow-hidden">
-                              <ul
-                                class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
-                              >
-                                <li
-                                  class="py-2 w-[200px] border-r border-brightGray-50"
-                                >
-                                  キャリアの参考になる方々
-                                </li>
-                                <li
-                                  class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
-                                >
-                                  優秀なエンジニアの方々
-                                </li>
-                                <li
-                                  class="py-2 w-[200px] border-r border-brightGray-50"
-                                >
-                                  カスタムグループ３
-                                </li>
-                                <li
-                                  class="py-2 w-[200px] border-r border-brightGray-50"
-                                >
-                                  カスタムグループ４
-                                </li>
-                              </ul>
-                            </div>
-
-                            <div class="pt-3 pb-1 px-6">
-                              <ul class="flex flex-wrap gap-y-1">
-                                <li
-                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                                >
-                                  <a class="inline-flex items-center gap-x-6">
-                                    <img
-                                      class="inline-block h-10 w-10 rounded-full"
-                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                    />
-                                    <div>
-                                      <p>nokichi</p>
-                                      <p class="text-brightGray-300">
-                                        アプリエンジニア
-                                      </p>
-                                    </div>
-                                  </a>
-                                </li>
-                                <li
-                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                                >
-                                  <a class="inline-flex items-center gap-x-6">
-                                    <img
-                                      class="inline-block h-10 w-10 rounded-full"
-                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                    />
-                                    <div>
-                                      <p>nokichi</p>
-                                      <p class="text-brightGray-300">
-                                        アプリエンジニア
-                                      </p>
-                                    </div>
-                                  </a>
-                                </li>
-                                <li
-                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                                >
-                                  <a class="inline-flex items-center gap-x-6">
-                                    <img
-                                      class="inline-block h-10 w-10 rounded-full"
-                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                    />
-                                    <div>
-                                      <p>nokichi</p>
-                                      <p class="text-brightGray-300">
-                                        アプリエンジニア
-                                      </p>
-                                    </div>
-                                  </a>
-                                </li>
-                                <li
-                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                                >
-                                  <a class="inline-flex items-center gap-x-6">
-                                    <img
-                                      class="inline-block h-10 w-10 rounded-full"
-                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                    />
-                                    <div>
-                                      <p>nokichi</p>
-                                      <p class="text-brightGray-300">
-                                        アプリエンジニア
-                                      </p>
-                                    </div>
-                                  </a>
-                                </li>
-                                <li
-                                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                                >
-                                  <a class="inline-flex items-center gap-x-6">
-                                    <img
-                                      class="inline-block h-10 w-10 rounded-full"
-                                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                    />
-                                    <div>
-                                      <p>nokichi</p>
-                                      <p class="text-brightGray-300">
-                                        アプリエンジニア
-                                      </p>
-                                    </div>
-                                  </a>
-                                </li>
-                              </ul>
-                            </div>
-                            <div class="flex justify-center gap-x-14 pb-3">
-                              <button
-                                type="button"
-                                class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-                              >
-                                <span
-                                  class="material-icons md-18 mr-2 text-brightGray-200"
-                                  >chevron_left</span
-                                >
-                                前
-                              </button>
-                              <button
-                                type="button"
-                                class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-                              >
-                                次
-                                <span
-                                  class="material-icons md-18 ml-2 text-brightGray-900"
-                                  >chevron_right</span
-                                >
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                          2022.12
+                        </button>
                       </div>
+                      <div class="h-28 w-28 flex justify-center items-center">
+                        <button
+                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          2023.3
+                        </button>
+                      </div>
+                      <div class="h-28 w-28 flex justify-center items-center">
+                        <button
+                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          2023.6
+                        </button>
+                      </div>
+                      <div class="h-28 w-28 flex justify-center items-center">
+                        <button
+                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          2023.9
+                        </button>
+                      </div>
+                      <div class="h-28 w-28 flex justify-center items-center">
+                        <button
+                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+                        >
+                          2023.12
+                        </button>
+                      </div>
+                    </div>
+                    <div class="flex justify-center items-center ml-5">
+                      <button
+                        class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded"
+                      >
+                        <span class="material-icons text-white !text-4xl"
+                          >arrow_right</span
+                        >
+                      </button>
                     </div>
                   </div>
                 </div>

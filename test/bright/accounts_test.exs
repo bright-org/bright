@@ -4,6 +4,7 @@ defmodule Bright.AccountsTest do
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.UserProfiles.UserProfile
+  alias Bright.UserJobProfiles.UserJobProfile
 
   import Bright.Factory
   alias Bright.Accounts.{User, UserToken}
@@ -126,6 +127,10 @@ defmodule Bright.AccountsTest do
                facebook_url: nil,
                github_url: nil
              } = Repo.get_by(UserProfile, user_id: user_id)
+
+      assert %UserJobProfile{
+               user_id: ^user_id
+             } = Repo.get_by(UserJobProfile, user_id: user_id)
     end
   end
 

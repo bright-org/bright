@@ -1,33 +1,39 @@
 # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
-defmodule BrightWeb.CardLive.ContactCardComponent do
+defmodule BrightWeb.CardLive.CommunicationCardComponent do
   @moduledoc """
-  Contact Card Component
+  Communication Card Component
   """
-
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
   import BrightWeb.CardLive.CardListComponents
   alias Bright.Notifications
 
-  @tabs ["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]
+  @tabs ["スキルアップ", "1on1のお誘い", "推し活", "所属チーム", "気になる", "運勢公式"]
+
+  @doc """
+  Renders a Communication Card
+
+  ## Examples
+      <.communication_card card={@card} />
+  """
 
   @impl true
   def render(assigns) do
     ~H"""
     <div>
       <.tab
-        id="contact_card"
+        id="communication_card"
         tabs={@tabs}
         selected_tab={@card.selected_tab}
         page={@card.page_params.page}
         total_pages={@card.total_pages}
         target={@myself}
       >
-        <div class="pt-4 pb-1 px-8">
+        <div class="pt-4 px-6">
           <ul class="flex gap-y-2.5 flex-col">
-            <%= for notification <- @card.notifications do %>
-              <.contact_card_row notification={notification} />
-            <% end %>
+              <%= for notification <- @card.notifications do %>
+                <.communication_card_row notification={notification} />
+              <% end %>
           </ul>
         </div>
       </.tab>
@@ -37,26 +43,33 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   @impl true
   def update(assigns, socket) do
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign(:tabs, @tabs)
-     |> assign(:card, create_card_param("チーム招待"))
-     |> assign_card()}
+    {
+      :ok,
+      socket
+      |> assign(assigns)
+      |> assign(:tabs, @tabs)
+      |> assign(:card, create_card_param("スキルアップ"))
+      |> assign_card()
+    }
   end
 
   @impl true
   def handle_event(
         "tab_click",
-        %{"id" => "contact_card", "tab_name" => tab_name},
+        %{"id" => "communication_card", "tab_name" => tab_name},
         socket
       ) do
-    card_view(socket, tab_name, 1)
+    card = create_card_param(tab_name)
+
+    socket
+    |> assign(:card, card)
+    |> assign_card()
+    |> then(&{:noreply, &1})
   end
 
   def handle_event(
         "previous_button_click",
-        %{"id" => "contact_card"},
+        %{"id" => "communication_card"},
         %{assigns: %{card: card}} = socket
       ) do
     page = card.page_params.page - 1
@@ -66,7 +79,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   def handle_event(
         "next_button_click",
-        %{"id" => "contact_card"},
+        %{"id" => "communication_card"},
         %{assigns: %{card: card}} = socket
       ) do
     page = card.page_params.page + 1
@@ -98,7 +111,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   end
 
   defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
-    type = contact_type(card.selected_tab)
+    type = communication_type(card.selected_tab)
 
     notifications =
       Notifications.list_notification_by_type(
@@ -107,20 +120,16 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
         card.page_params
       )
 
-    card = %{
-      card
-      | notifications: notifications.entries,
-        total_pages: notifications.total_pages
-    }
+    card = %{card | notifications: notifications, total_pages: notifications.total_pages}
 
     socket
     |> assign(:card, card)
   end
 
-  defp contact_type("チーム招待"), do: "team invite"
-  defp contact_type("デイリー"), do: "daily"
-  defp contact_type("ウイークリー"), do: "weekly"
-  defp contact_type("採用の調整"), do: "recruitment_coordination"
-  defp contact_type("スキルパネル更新"), do: "skill_panel_update"
-  defp contact_type("運営"), do: "operation"
+  defp communication_type("スキルアップ"), do: "skill_up"
+  defp communication_type("1on1のお誘い"), do: "1on1_invitation"
+  defp communication_type("推し活"), do: "promotion"
+  defp communication_type("所属チーム"), do: "your_team"
+  defp communication_type("気になる"), do: "intriguing"
+  defp communication_type("運勢公式"), do: "official_team"
 end

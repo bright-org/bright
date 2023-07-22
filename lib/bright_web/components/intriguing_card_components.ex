@@ -44,7 +44,6 @@ defmodule BrightWeb.IntriguingCardComponents do
 
     ~H"""
     <div>
-      <h5>関わっているユーザー</h5>
       <.tab id="tab-single-default" tabs={["気になる人", "チーム", "採用候補者"]} inner_tab={true} previous_enable menu_items={@menu_items}>
         <div class="pt-3 pb-1 px-6">
           <ul class="flex flex-wrap gap-y-1">
