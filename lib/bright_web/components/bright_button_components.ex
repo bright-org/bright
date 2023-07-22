@@ -148,4 +148,121 @@ defmodule BrightWeb.BrightButtonComponents do
     </button>
     """
   end
+
+  @doc """
+  Renders a Contact Customer Success Button
+
+  ## Examples
+      <.contact_customer_success_button />
+  """
+  def contact_customer_success_button(assigns) do
+    ~H"""
+    <button type="button"
+      class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
+      <span
+          class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold material-icons-outlined">sms</span>
+      カスタマーサクセスに連絡
+    </button>
+    """
+  end
+
+  @doc """
+  Renders a Search for Skill Holders Button
+
+  ## Examples
+      <.search_for_skill_holders_button />
+  """
+  def search_for_skill_holders_button(assigns) do
+    ~H"""
+    <button type="button"
+      class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
+      <span
+          class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold">search</span>
+      スキル保有者を検索
+    </button>
+    """
+  end
+
+  @doc """
+  Renders a Bell Button
+
+  ## Examples
+      <.bell_button />
+  """
+  attr :notification_count, :integer
+
+  def bell_button(assigns) do
+    ~H"""
+    <button type="button"
+      class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center relative">
+      <span class="material-icons">notifications_none</span>
+      <%= if @notification_count > 0 do %>
+        <div
+            class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2">
+            <%= @notification_count %>
+        </div>
+      <% end %>
+    </button>
+    """
+  end
+
+  @doc """
+  Renders a User Button
+
+  ## Examples
+      <.button />
+  """
+  attr :icon_file_path, :string
+
+  def user_button(assigns) do
+    ~H"""
+    <button id="user_menu_dropmenu" class="hover:opacity-70" data-dropdown-toggle="user_menu">
+      <img class="inline-block h-10 w-10 rounded-full"
+          src={@icon_file_path} />
+    </button>
+    <.user_menu />
+    """
+  end
+
+  defp user_menu(assigns) do
+    menu_items = [
+      %{text: "個人設定", href: "/settings", method: "get"},
+      %{text: "ログアウトする", href: "/users/log_out", method: "delete"}
+    ]
+
+    assigns =
+      assigns
+      |> assign(:menu_items, menu_items)
+
+    ~H"""
+    <div
+      id="user_menu"
+      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+    >
+      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="user_menu_dropmenu">
+        <%= for menu_item <- @menu_items do %>
+          <.user_menu_item menu_item={menu_item}/>
+        <% end %>
+      </ul>
+    </div>
+    """
+  end
+
+  attr :menu_item, :map
+
+  defp user_menu_item(assigns) do
+    ~H"""
+        <li>
+
+        <.link
+        href={@menu_item.href}
+        method={@menu_item.method}
+        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+        >
+        <%= @menu_item.text %>
+      </.link>
+
+        </li>
+    """
+  end
 end
