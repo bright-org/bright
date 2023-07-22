@@ -52,8 +52,8 @@ defmodule BrightWeb.TabComponents do
   defp tab_header(assigns) do
     ~H"""
     <ul class="flex content-between border-b border-brightGray-200">
-      <%= for item <- @tabs do %>
-        <.tab_header_item id={@id}  tab_name={item} selected={item == @selected_tab } target={@target}> <%= item %></.tab_header_item>
+      <%= for {key, value} <- @tabs do %>
+        <.tab_header_item id={@id}  tab_name={key} selected={key == String.to_atom(@selected_tab)} target={@target}> <%= value %></.tab_header_item>
       <% end %>
       <%= if length(@menu_items) > 0 do %>
         <.tab_menu_button id={@id} menu_items={@menu_items}/>
