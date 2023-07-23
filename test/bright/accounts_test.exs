@@ -628,4 +628,60 @@ defmodule Bright.AccountsTest do
       refute Accounts.onboarding_finished?(user)
     end
   end
+
+  describe "user_2fa_codes" do
+    alias Bright.Accounts.User2faCodes
+
+    import Bright.AccountsFixtures
+
+    @invalid_attrs %{code: nil, sent_to: nil}
+
+    test "list_user_2fa_codes/0 returns all user_2fa_codes" do
+      user2fa_codes = user2fa_codes_fixture()
+      assert Accounts.list_user_2fa_codes() == [user2fa_codes]
+    end
+
+    test "get_user2fa_codes!/1 returns the user2fa_codes with given id" do
+      user2fa_codes = user2fa_codes_fixture()
+      assert Accounts.get_user2fa_codes!(user2fa_codes.id) == user2fa_codes
+    end
+
+    test "create_user2fa_codes/1 with valid data creates a user2fa_codes" do
+      valid_attrs = %{code: "some code", sent_to: "some sent_to"}
+
+      assert {:ok, %User2faCodes{} = user2fa_codes} = Accounts.create_user2fa_codes(valid_attrs)
+      assert user2fa_codes.code == "some code"
+      assert user2fa_codes.sent_to == "some sent_to"
+    end
+
+    test "create_user2fa_codes/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user2fa_codes(@invalid_attrs)
+    end
+
+    test "update_user2fa_codes/2 with valid data updates the user2fa_codes" do
+      user2fa_codes = user2fa_codes_fixture()
+      update_attrs = %{code: "some updated code", sent_to: "some updated sent_to"}
+
+      assert {:ok, %User2faCodes{} = user2fa_codes} = Accounts.update_user2fa_codes(user2fa_codes, update_attrs)
+      assert user2fa_codes.code == "some updated code"
+      assert user2fa_codes.sent_to == "some updated sent_to"
+    end
+
+    test "update_user2fa_codes/2 with invalid data returns error changeset" do
+      user2fa_codes = user2fa_codes_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_user2fa_codes(user2fa_codes, @invalid_attrs)
+      assert user2fa_codes == Accounts.get_user2fa_codes!(user2fa_codes.id)
+    end
+
+    test "delete_user2fa_codes/1 deletes the user2fa_codes" do
+      user2fa_codes = user2fa_codes_fixture()
+      assert {:ok, %User2faCodes{}} = Accounts.delete_user2fa_codes(user2fa_codes)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user2fa_codes!(user2fa_codes.id) end
+    end
+
+    test "change_user2fa_codes/1 returns a user2fa_codes changeset" do
+      user2fa_codes = user2fa_codes_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_user2fa_codes(user2fa_codes)
+    end
+  end
 end

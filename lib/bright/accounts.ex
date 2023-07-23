@@ -405,4 +405,100 @@ defmodule Bright.Accounts do
     from(user_onboarding in UserOnboarding, where: user_onboarding.user_id == ^user.id)
     |> Repo.exists?()
   end
+
+  alias Bright.Accounts.User2faCodes
+
+  @doc """
+  Returns the list of user_2fa_codes.
+
+  ## Examples
+
+      iex> list_user_2fa_codes()
+      [%User2faCodes{}, ...]
+
+  """
+  def list_user_2fa_codes do
+    Repo.all(User2faCodes)
+  end
+
+  @doc """
+  Gets a single user2fa_codes.
+
+  Raises `Ecto.NoResultsError` if the User2fa codes does not exist.
+
+  ## Examples
+
+      iex> get_user2fa_codes!(123)
+      %User2faCodes{}
+
+      iex> get_user2fa_codes!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user2fa_codes!(id), do: Repo.get!(User2faCodes, id)
+
+  @doc """
+  Creates a user2fa_codes.
+
+  ## Examples
+
+      iex> create_user2fa_codes(%{field: value})
+      {:ok, %User2faCodes{}}
+
+      iex> create_user2fa_codes(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_user2fa_codes(attrs \\ %{}) do
+    %User2faCodes{}
+    |> User2faCodes.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a user2fa_codes.
+
+  ## Examples
+
+      iex> update_user2fa_codes(user2fa_codes, %{field: new_value})
+      {:ok, %User2faCodes{}}
+
+      iex> update_user2fa_codes(user2fa_codes, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user2fa_codes(%User2faCodes{} = user2fa_codes, attrs) do
+    user2fa_codes
+    |> User2faCodes.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a user2fa_codes.
+
+  ## Examples
+
+      iex> delete_user2fa_codes(user2fa_codes)
+      {:ok, %User2faCodes{}}
+
+      iex> delete_user2fa_codes(user2fa_codes)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_user2fa_codes(%User2faCodes{} = user2fa_codes) do
+    Repo.delete(user2fa_codes)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user2fa_codes changes.
+
+  ## Examples
+
+      iex> change_user2fa_codes(user2fa_codes)
+      %Ecto.Changeset{data: %User2faCodes{}}
+
+  """
+  def change_user2fa_codes(%User2faCodes{} = user2fa_codes, attrs \\ %{}) do
+    User2faCodes.changeset(user2fa_codes, attrs)
+  end
 end
