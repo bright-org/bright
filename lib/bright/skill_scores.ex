@@ -89,20 +89,17 @@ defmodule Bright.SkillScores do
     |> Repo.update()
   end
 
-  # @doc """
-  # Updates a skill_score percentage,
-
   @doc """
   Updates a skill_score aggregation columns.
   """
-  def aggregate_skill_score_items(skill_score) do
+  def update_skill_score_stats(skill_score) do
     skill_score_items =
       Ecto.assoc(skill_score, :skill_score_items)
       |> list_skill_score_items()
 
     size = Enum.count(skill_score_items)
     num_skilled_items = Enum.count(skill_score_items, &(&1.score == :high))
-    percentage = 100 * (num_skilled_items / size)
+    percentage = if size > 0, do: 100 * (num_skilled_items / size), else: 0.0
     level = get_level(percentage)
 
     change_skill_score(skill_score, %{percentage: percentage, level: level})
@@ -214,7 +211,7 @@ defmodule Bright.SkillScores do
       |> Ecto.Multi.update(:"skill_score_item_#{skill_score_item.id}", changeset)
     end)
     |> Ecto.Multi.run(:skill_score, fn _repo, _ ->
-      aggregate_skill_score_items(skill_score)
+      update_skill_score_stats(skill_score)
     end)
     |> Repo.transaction()
   end

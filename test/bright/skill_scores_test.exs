@@ -77,7 +77,7 @@ defmodule Bright.SkillScoresTest do
       assert skill_score.level == SkillScores.get_skill_score!(skill_score.id).level
     end
 
-    test "aggregate_skill_score_items", %{
+    test "update_skill_score_stats", %{
       user: user,
       skill_class: skill_class
     } do
@@ -86,10 +86,21 @@ defmodule Bright.SkillScoresTest do
       [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
       insert(:skill_score_item, skill_score: skill_score, skill: skill_1, score: :low)
       insert(:skill_score_item, skill_score: skill_score, skill: skill_2, score: :high)
-      {:ok, skill_score} = SkillScores.aggregate_skill_score_items(skill_score)
+      {:ok, skill_score} = SkillScores.update_skill_score_stats(skill_score)
 
       assert skill_score.level == :normal
       assert skill_score.percentage == 50.0
+    end
+
+    test "update_skill_score_stats without items ", %{
+      user: user,
+      skill_class: skill_class
+    } do
+      skill_score = insert(:skill_score, user: user, skill_class: skill_class)
+      {:ok, skill_score} = SkillScores.update_skill_score_stats(skill_score)
+
+      assert skill_score.level == :beginner
+      assert skill_score.percentage == 0.0
     end
 
     test "get_level" do
