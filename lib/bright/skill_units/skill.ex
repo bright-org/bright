@@ -5,6 +5,7 @@ defmodule Bright.SkillUnits.Skill do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Bright.SkillUnits.SkillCategory
 
@@ -31,5 +32,13 @@ defmodule Bright.SkillUnits.Skill do
     skill
     |> cast(attrs, [:name, :position])
     |> validate_required([:name, :position])
+  end
+
+  def skill_class_query(query \\ __MODULE__, skill_id) do
+    from q in query,
+      join: sc in assoc(q, :skill_category),
+      join: su in assoc(sc, :skill_unit),
+      join: scl in assoc(su, :skill_classes),
+      where: scl.id == ^skill_id
   end
 end

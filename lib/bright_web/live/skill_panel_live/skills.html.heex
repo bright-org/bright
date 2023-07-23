@@ -13,19 +13,32 @@
 
   <div class="mt-4">
     <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">
-      <!-- 未実装：デザインまま START -->
       <tr>
         <td colspan="3" width="420px" class="!border-t !border-l-white !border-t-white !border-l">
         </td>
         <td class="!border-l !border-brightGray-200">
           <div class="flex justify-center items-center">
             <p class="inline-flex flex-1 justify-center"><%= @current_user.name %></p>
-            <button
-              type="button"
-              class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-            >
-              <span class="material-icons-outlined !text-sm">edit</span>
-            </button>
+
+            <%= if skill_score_author?(@skill_score, @current_user) do %>
+              <button
+                :if={not @edit}
+                type="button"
+                class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                phx-click="edit"
+              >
+                <span class="material-icons-outlined !text-sm">edit</span>
+              </button>
+              <!-- TODO: デザイン適用 -->
+              <button
+                :if={@edit}
+                type="button"
+                class="text-black bg-brightGreen-600 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                phx-click="update"
+              >
+                <span class="material-icons-outlined !text-sm">edit</span>
+              </button>
+            <% end %>
           </div>
         </td>
       </tr>
@@ -63,7 +76,6 @@
           <td>
             <div class="flex justify-between items-center">
               <p><%= col3.skill.name %></p>
-              <!-- 未実装：デザインまま START -->
               <div class="flex justify-between items-center gap-x-2">
                 <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/evidences"}>
                   <img src="/images/common/icons/addFile.svg" />
@@ -75,7 +87,6 @@
                   <img src="/images/common/icons/addFile.svg" />
                 </.link>
               </div>
-              <!-- 未実装：デザインまま END -->
             </div>
           </td>
           <td>
@@ -88,7 +99,8 @@
               skill={col3.skill}
               skill_score={@skill_score}
               skill_score_item={@skill_score_item_dict[col3.skill.id]}
-              edit={false}
+              input={false}
+              edit={@edit}
             />
           </td>
         </tr>

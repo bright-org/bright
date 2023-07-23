@@ -21,7 +21,35 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     {:ok,
      socket
+     |> assign(:edit, false)
      |> assign(:skill_panel, skill_panel)}
+  end
+
+  @impl true
+  def handle_event("edit", _params, socket) do
+    skill_score_author?(socket.assigns.skill_score, socket.assigns.current_user)
+    |> if do
+      {:noreply, socket |> assign(edit: true)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_event("update", _params, socket) do
+    target_skill_score_items =
+      socket.assigns.skill_score_item_dict
+      |> Map.values()
+      |> Enum.filter(& &1.changed)
+
+    {:ok, %{skill_score: skill_score}} =
+      SkillScores.update_skill_score_items(socket.assigns.skill_score, target_skill_score_items)
+
+    {:noreply,
+     socket
+     |> assign(skill_score: skill_score)
+     |> assign_skill_score_item_dict()
+     |> assign_counter()
+     |> assign(edit: false)}
   end
 
   @impl true
@@ -67,31 +95,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Map.update!(current_score, &(&1 - 1))
       |> Map.update!(score, &(&1 + 1))
 
-    # スキルスコア更新
-    {:ok, {skill_score, skill_score_item}} =
-      Bright.Repo.transaction(fn ->
-        percentage = calc_percentage(counter.high, socket.assigns.num_skills)
-
-        {:ok, skill_score_item} =
-          SkillScores.update_skill_score_item(skill_score_item, %{score: score})
-
-        {:ok, skill_score} =
-          SkillScores.update_skill_score_percentage(socket.assigns.skill_score, percentage)
-
-        {skill_score, skill_score_item}
-      end)
-
-    # TODO: streamを一覧に使用するようにリファクタリング検討
-    # 親LiveView側に更新が入る関係で skill_score_item_dict の書き換えが必要になったため、現在はそのようにしているが描画効率が良くない
-    # ほかの画面更新要素（教材・試験・エビデンス）も実装感をみて対応を決める方針
+    # 表示スコア更新
+    # 永続化は全体一括のため、ここでは実施してない
     skill_score_item_dict =
       socket.assigns.skill_score_item_dict
-      |> Map.put(skill_score_item.skill_id, skill_score_item)
+      |> Map.put(skill_score_item.skill_id, %{skill_score_item | score: score, changed: true})
 
     {:noreply,
      socket
      |> assign(
-       skill_score: skill_score,
        counter: counter,
        skill_score_item_dict: skill_score_item_dict
      )}
@@ -130,11 +142,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> List.first()
       |> case do
         nil ->
-          SkillScores.create_skill_score(%{
-            user_id: socket.assigns.current_user.id,
-            skill_class_id: socket.assigns.skill_class.id
-          })
-          |> elem(1)
+          {:ok, %{skill_score: skill_score}} =
+            SkillScores.create_skill_score(
+              socket.assigns.current_user,
+              socket.assigns.skill_class
+            )
+
+          skill_score
 
         skill_score ->
           skill_score
@@ -148,7 +162,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     skill_score_item_dict =
       Ecto.assoc(socket.assigns.skill_score, :skill_score_items)
       |> SkillScores.list_skill_score_items()
-      |> Map.new(&{&1.skill_id, &1})
+      |> Map.new(&{&1.skill_id, Map.put(&1, :changed, false)})
 
     socket
     |> assign(skill_score_item_dict: skill_score_item_dict)
@@ -279,5 +293,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       {skill_category_item, 0} -> [skill_unit_item] ++ skill_category_item
       {skill_category_item, _i} -> [nil] ++ skill_category_item
     end)
+  end
+
+  defp skill_score_author?(skill_score, user) do
+    skill_score.user_id == user.id
   end
 end

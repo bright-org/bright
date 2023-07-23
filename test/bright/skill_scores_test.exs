@@ -34,18 +34,22 @@ defmodule Bright.SkillScoresTest do
       assert skill_score.id == SkillScores.get_skill_score!(skill_score.id).id
     end
 
-    test "create_skill_score/1 with valid data creates a skill_score", %{
+    test "create_skill_score/2 creates a skill_score and skill_score_items", %{
       user: user,
       skill_class: skill_class
     } do
-      valid_attrs = %{level: :normal, user_id: user.id, skill_class_id: skill_class.id}
+      skill_unit =
+        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
 
-      assert {:ok, %SkillScore{} = skill_score} = SkillScores.create_skill_score(valid_attrs)
-      assert skill_score.level == :normal
-    end
+      [%{skills: [skill_1]}] = insert_skill_categories_and_skills(skill_unit, [1])
 
-    test "create_skill_score/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = SkillScores.create_skill_score(@invalid_attrs)
+      {:ok, %{skill_score: skill_score, skill_score_items: {1, _}}} =
+        SkillScores.create_skill_score(user, skill_class)
+
+      [skill_score_item] = Bright.Repo.preload(skill_score, :skill_score_items).skill_score_items
+      assert skill_score.level == :beginner
+      assert skill_score_item.skill_score_id == skill_score.id
+      assert skill_score_item.skill_id == skill_1.id
     end
 
     test "update_skill_score/2 with valid data updates the skill_score", %{
@@ -73,50 +77,44 @@ defmodule Bright.SkillScoresTest do
       assert skill_score.level == SkillScores.get_skill_score!(skill_score.id).level
     end
 
-    test "update_skill_score_percentage with level-up to normal", %{
+    test "update_skill_score_stats", %{
       user: user,
       skill_class: skill_class
     } do
       skill_score = insert(:skill_score, user: user, skill_class: skill_class)
+      skill_unit = insert(:skill_unit, skill_classes: [skill_class])
+      [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
+      insert(:skill_score_item, skill_score: skill_score, skill: skill_1, score: :low)
+      insert(:skill_score_item, skill_score: skill_score, skill: skill_2, score: :high)
+      {:ok, skill_score} = SkillScores.update_skill_score_stats(skill_score)
 
-      assert {:ok, %SkillScore{level: :normal, percentage: 40.0}} =
-               SkillScores.update_skill_score_percentage(skill_score, 40.0)
+      assert skill_score.level == :normal
+      assert skill_score.percentage == 50.0
     end
 
-    test "update_skill_score_percentage with level-up to skilled", %{
+    test "update_skill_score_stats without items ", %{
       user: user,
       skill_class: skill_class
     } do
       skill_score = insert(:skill_score, user: user, skill_class: skill_class)
+      {:ok, skill_score} = SkillScores.update_skill_score_stats(skill_score)
 
-      assert {:ok, %SkillScore{level: :skilled, percentage: 60.0}} =
-               SkillScores.update_skill_score_percentage(skill_score, 60.0)
+      assert skill_score.level == :beginner
+      assert skill_score.percentage == 0.0
     end
 
-    test "update_skill_score_percentage with level-down to beginner", %{
-      user: user,
-      skill_class: skill_class
-    } do
-      skill_score =
-        insert(:skill_score,
-          user: user,
-          skill_class: skill_class,
-          percentage: 40.0,
-          level: :normal
-        )
-
-      assert {:ok, %SkillScore{level: :beginner, percentage: 39.9}} =
-               SkillScores.update_skill_score_percentage(skill_score, 39.9)
-    end
-
-    test "update_skill_score_percentage without level-up", %{
-      user: user,
-      skill_class: skill_class
-    } do
-      skill_score = insert(:skill_score, user: user, skill_class: skill_class)
-
-      assert {:ok, %SkillScore{level: :beginner, percentage: 39.9}} =
-               SkillScores.update_skill_score_percentage(skill_score, 39.9)
+    test "get_level" do
+      [
+        {0.0, :beginner},
+        {39.9, :beginner},
+        {40.0, :normal},
+        {59.9, :normal},
+        {60.0, :skilled},
+        {100.0, :skilled}
+      ]
+      |> Enum.each(fn {percentage, expected_level} ->
+        assert expected_level == SkillScores.get_level(percentage)
+      end)
     end
 
     test "delete_skill_score/1 deletes the skill_score", %{
@@ -169,22 +167,6 @@ defmodule Bright.SkillScoresTest do
     } do
       skill_score_item = insert(:skill_score_item, skill_score: skill_score, skill: skill)
       assert SkillScores.get_skill_score_item!(skill_score_item.id).id == skill_score_item.id
-    end
-
-    test "create_skill_score_item/1 with valid data creates a skill_score_item", %{
-      skill_score: skill_score,
-      skill: skill
-    } do
-      valid_attrs = %{skill_score_id: skill_score.id, skill_id: skill.id, score: :high}
-
-      assert {:ok, %SkillScoreItem{} = skill_score_item} =
-               SkillScores.create_skill_score_item(valid_attrs)
-
-      assert skill_score_item.score == :high
-    end
-
-    test "create_skill_score_item/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = SkillScores.create_skill_score_item(@invalid_attrs)
     end
 
     test "update_skill_score_item/2 with valid data updates the skill_score_item", %{

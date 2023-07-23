@@ -21,7 +21,7 @@ defmodule Bright.SkillScores.SkillScoreItem do
   @doc false
   def changeset(skill_score_item, attrs) do
     skill_score_item
-    |> cast(attrs, [:skill_score_id, :skill_id, :score])
-    |> validate_required([:skill_score_id, :skill_id, :score])
+    |> cast(attrs, [:score])
+    |> validate_required([:score])
   end
 end
