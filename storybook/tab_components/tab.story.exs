@@ -8,7 +8,11 @@ defmodule Storybook.Components.Tab do
       %Variation{
         id: :default,
         attributes: %{
-          tabs: ["tab1", "tab2", "tab3"],
+          tabs: [
+            {"tab1", "タブ1"},
+            {"tab2", "タブ2"},
+            {"tab3", "タブ3"}
+          ],
           selected_tab: "tab1",
           page: 1,
           total_pages: 2
@@ -20,7 +24,11 @@ defmodule Storybook.Components.Tab do
       %Variation{
         id: :selected_index_1,
         attributes: %{
-          tabs: ["tab1", "tab2", "tab3"],
+          tabs: [
+            {"tab1", "タブ1"},
+            {"tab2", "タブ2"},
+            {"tab3", "タブ3"}
+          ],
           selected_tab: "tab2",
           page: 2,
           total_pages: 2,
