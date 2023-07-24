@@ -10,6 +10,8 @@ defmodule Bright.SkillReferences.SkillReference do
   @foreign_key_type Ecto.ULID
 
   schema "skill_references" do
+    field :url, :string
+
     belongs_to(:skill, Bright.SkillUnits.Skill)
 
     timestamps()
@@ -18,7 +20,7 @@ defmodule Bright.SkillReferences.SkillReference do
   @doc false
   def changeset(skill_reference, attrs) do
     skill_reference
-    |> cast(attrs, [:skill_id])
-    |> validate_required([:skill_id])
+    |> cast(attrs, [:url, :skill_id])
+    |> validate_required([:url, :skill_id])
   end
 end

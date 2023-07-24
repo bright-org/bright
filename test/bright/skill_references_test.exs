@@ -42,7 +42,7 @@ defmodule Bright.SkillReferencesTest do
     end
 
     test "create_skill_reference/1 with valid data creates a skill_reference", %{skill: skill} do
-      valid_attrs = %{skill_id: skill.id}
+      valid_attrs = params_for(:skill_reference, skill_id: skill.id)
 
       assert {:ok, %SkillReference{}} = SkillReferences.create_skill_reference(valid_attrs)
     end
