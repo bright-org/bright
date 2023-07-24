@@ -38,6 +38,23 @@ defmodule Bright.UserJobProfiles do
   def get_user_job_profile!(id), do: Repo.get!(UserJobProfile, id)
 
   @doc """
+  Gets a single user_job_profile by user_id.
+
+  Raises `Ecto.NoResultsError` if the User job profile does not exist.
+
+  ## Examples
+
+      iex> get_user_job_profile_by_user_id!(123)
+      %UserJobProfile{}
+
+      iex> get_user_job_profile_by_user_id!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_job_profile_by_user_id!(user_id),
+    do: Repo.get_by!(UserJobProfile, user_id: user_id)
+
+  @doc """
   Creates a user_job_profile.
 
   ## Examples
