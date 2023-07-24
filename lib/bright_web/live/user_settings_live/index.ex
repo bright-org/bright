@@ -3,13 +3,18 @@ defmodule BrightWeb.UserSettingsLive.Index do
   use BrightWeb, :live_view
   import BrightWeb.TabComponents
 
-  @tab_info %{
-    "一般" => {"general", UserSettingsLive.GeneralSettingComponent},
-    "メール・パスワード" => {"auth", UserSettingsLive.AuthSettingComponent},
-    "SNS連携" => {"sns", UserSettingsLive.SnsSettingComponent},
-    "求職" => {"job", UserSettingsLive.JobSettingComponent}
+  @tab_module %{
+    "general" => UserSettingsLive.GeneralSettingComponent,
+    "auth" => UserSettingsLive.AuthSettingComponent,
+    "sns" => UserSettingsLive.SnsSettingComponent,
+    "job" => UserSettingsLive.JobSettingComponent
   }
-  @tabs ["一般", "メール・パスワード", "SNS連携", "求職"]
+  @tabs [
+    {"general", "一般"},
+    {"auth", "メール・パスワード"},
+    {"sns", "SNS連携"},
+    {"job", "求職"}
+  ]
 
   @impl true
   def render(assigns) do
@@ -27,7 +32,6 @@ defmodule BrightWeb.UserSettingsLive.Index do
           id={"user_settings"}
           action={:edit}
           user={@current_user}
-          patch={"/settings/#{@path}"}
         />
       </.tab>
     </div>
@@ -36,13 +40,10 @@ defmodule BrightWeb.UserSettingsLive.Index do
 
   @impl true
   def mount(params, _session, socket) do
-    {path, module} = Map.get(@tab_info, "一般")
-
     socket
     |> assign(:tabs, @tabs)
-    |> assign(:selected_tab, "一般")
-    |> assign(:module, module)
-    |> assign(:path, path)
+    |> assign(:selected_tab, "general")
+    |> assign(:module, Map.get(@tab_module, "general"))
     |> then(&{:ok, &1})
   end
 
@@ -53,12 +54,10 @@ defmodule BrightWeb.UserSettingsLive.Index do
 
   @impl true
   def handle_event("tab_click", %{"tab_name" => tab_name}, socket) do
-    {path, module} = Map.get(@tab_info, tab_name)
-
     socket
     |> assign(:selected_tab, tab_name)
-    |> assign(:module, module)
-    |> push_patch(to: "/settings/#{path}")
+    |> assign(:module, Map.get(@tab_module, tab_name))
+    |> push_patch(to: "/settings/#{tab_name}")
     |> then(&{:noreply, &1})
   end
 end
