@@ -5,7 +5,7 @@ defmodule BrightWeb.BrightButtonComponents do
   use Phoenix.Component
 
   @doc """
-  Renders a Bright Button
+  Renders a Profile Button
 
   ## Examples
 
