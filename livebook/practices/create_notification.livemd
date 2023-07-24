@@ -41,7 +41,7 @@ defmodule TestData do
 
   def create_group_data(index, user_id) do
     [
-      "team invite",
+      "team_invite",
       "daily",
       "weekly",
       "recruitment_coordination",

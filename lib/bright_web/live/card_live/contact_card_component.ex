@@ -11,7 +11,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   @tabs [
     {"team_invite", "チーム招待"},
-    {"{daily", "デイリー"},
+    {"daily", "デイリー"},
     {"weekly", "ウイークリー"},
     {"recruitment_coordination", "採用の調整"},
     {"skill_panel_update", "スキルパネル更新"},
