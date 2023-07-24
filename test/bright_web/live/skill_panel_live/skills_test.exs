@@ -449,7 +449,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: nil
     test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
-      insert(:skill_reference, skill: skill_1)
+      skill_reference = insert(:skill_reference, skill: skill_1)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
       show_live
@@ -458,12 +458,25 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/reference")
 
+      assert render(show_live) =~ skill_1.name
+
       assert show_live
-             |> render() =~ skill_1.name
+             |> element(~s(a[href="#{skill_reference.url}"][target="_blank"]))
+             |> has_element?()
     end
 
     @tag score: nil
     test "教材がないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      refute show_live
+             |> element("#skill-1 .link-reference")
+             |> has_element?()
+    end
+
+    @tag score: nil
+    test "教材のURLがないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
+      insert(:skill_reference, skill: skill_1, url: nil)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
       refute show_live
@@ -478,7 +491,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: nil
     test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
-      insert(:skill_exam, skill: skill_1)
+      skill_exam = insert(:skill_exam, skill: skill_1)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
       show_live
@@ -487,12 +500,25 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/exam")
 
+      assert render(show_live) =~ skill_1.name
+
       assert show_live
-             |> render() =~ skill_1.name
+             |> element(~s(a[href="#{skill_exam.url}"][target="_blank"]))
+             |> has_element?()
     end
 
     @tag score: nil
     test "試験がないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      refute show_live
+             |> element("#skill-1 .link-exam")
+             |> has_element?()
+    end
+
+    @tag score: nil
+    test "試験のURLがないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
+      insert(:skill_exam, skill: skill_1, url: nil)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 
       refute show_live

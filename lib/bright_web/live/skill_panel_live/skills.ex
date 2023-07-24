@@ -1,6 +1,8 @@
 defmodule BrightWeb.SkillPanelLive.Skills do
   use BrightWeb, :live_view
 
+  import BrightWeb.BrightModalComponents
+
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores
@@ -297,5 +299,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp skill_score_author?(skill_score, user) do
     skill_score.user_id == user.id
+  end
+
+  defp skill_reference_existing?(skill_reference) do
+    skill_reference && skill_reference.url
+  end
+
+  defp skill_exam_existing?(skill_exam) do
+    skill_exam && skill_exam.url
   end
 end
