@@ -6,7 +6,12 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
 
-  @tabs ["エンジニア", "インフラ", "デザイナー", "マーケッター"]
+  @tabs [
+    {"engineer", "エンジニア"},
+    {"infrastructure", "インフラ"},
+    {"designer", "デザイナー"},
+    {"marketer", "マーケッター"}
+  ]
 
   # TODO selected_tab,selected_tab,page,total_pagesは未実装でダミーです
   @impl true
@@ -15,7 +20,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     <div>
       <.tab
         id="skill_card"
-        selected_tab="エンジニア"
+        selected_tab={@selected_tab}
         page={1}
         total_pages={1}
         target={@myself}
@@ -37,6 +42,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      socket
      |> assign(assigns)
      |> assign(:tabs, @tabs)
+     |> assign(:selected_tab, "engineer")
      # TODO　サンプルデータはDBの処理を作成後消すこと
      |> assign(:skills, sample())}
   end
