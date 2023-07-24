@@ -1,59 +1,26 @@
 # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
-defmodule BrightWeb.SkillCardComponents do
+defmodule BrightWeb.CardLive.SkillCardComponent do
   @moduledoc """
-  Skill Card Components
+  Skill Card Component
   """
-  use Phoenix.Component
+  use BrightWeb, :live_component
   import BrightWeb.TabComponents
 
-  @doc """
-  Renders a Skill Card
+  @tabs ["エンジニア", "インフラ", "デザイナー", "マーケッター"]
 
-  ## Skills sample
-    [
-      %{
-        genre_name: "Webアプリ開発",
-        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
-      },
-      %{
-        genre_name: "AI開発",
-        skill_panels: [
-          %{name: "Elixir", levels: [:skilled, :normal, :none]},
-          %{name: "Python", levels: [:skilled, :none, :none]}
-        ]
-      }
-    ]
-
-  ## Examples
-      <.skill_card skills={skills}/>
-  """
-
-  # TODO datasのデフォルトはマイページにロジックを書く時に消す
-  attr :skills, :list,
-    default: [
-      %{
-        genre_name: "Webアプリ開発",
-        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
-      },
-      %{
-        genre_name: "AI開発",
-        skill_panels: [
-          %{name: "Elixir", levels: [:skilled, :normal, :none]},
-          %{name: "Python", levels: [:skilled, :none, :none]}
-        ]
-      },
-      %{
-        genre_name: "PM",
-        skill_panels: [
-          %{name: "", levels: [:skilled, :normal, :none]}
-        ]
-      }
-    ]
-
-  def skill_card(assigns) do
+  # TODO selected_tab,selected_tab,page,total_pagesは未実装でダミーです
+  @impl true
+  def render(assigns) do
     ~H"""
     <div>
-      <.tab tabs={["エンジニア", "インフラ", "デザイナー", "マーケッター"]}>
+      <.tab
+        id="skill_card"
+        selected_tab="エンジニア"
+        page={1}
+        total_pages={1}
+        target={@myself}
+        tabs={@tabs}
+      >
         <div class="py-4 px-7 flex gap-y-2 flex-col">
           <%= for skill <- assigns.skills do %>
             <.skill_genre skills={skill} />
@@ -64,7 +31,43 @@ defmodule BrightWeb.SkillCardComponents do
     """
   end
 
-  attr :skills, :map
+  @impl true
+  def update(assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(:tabs, @tabs)
+     # TODO　サンプルデータはDBの処理を作成後消すこと
+     |> assign(:skills, sample())}
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => "skill_card"},
+        socket
+      ) do
+    # TODO 処理は未実装
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "previous_button_click",
+        %{"id" => "skill_card"},
+        socket
+      ) do
+    # TODO 処理は未実装
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "next_button_click",
+        %{"id" => "skill_card"},
+        socket
+      ) do
+    # TODO 処理は未実装
+    {:noreply, socket}
+  end
 
   defp skill_genre(assigns) do
     ~H"""
@@ -91,8 +94,6 @@ defmodule BrightWeb.SkillCardComponents do
     """
   end
 
-  attr :skill_panel, :map
-
   defp skill_panel(assigns) do
     ~H"""
     <tr>
@@ -103,8 +104,6 @@ defmodule BrightWeb.SkillCardComponents do
     </tr>
     """
   end
-
-  attr :level, :atom
 
   defp skill_gem(%{level: :none} = assigns) do
     ~H"""
@@ -135,4 +134,27 @@ defmodule BrightWeb.SkillCardComponents do
   defp level_text(:beginner), do: "見習い"
   defp level_text(:normal), do: "平均"
   defp level_text(:skilled), do: "ベテラン"
+
+  # TODO　サンプルデータはDBの処理を作成後消すこと
+  defp sample() do
+    [
+      %{
+        genre_name: "Webアプリ開発",
+        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
+      },
+      %{
+        genre_name: "AI開発これはDBから読み込んでません",
+        skill_panels: [
+          %{name: "Elixir", levels: [:skilled, :normal, :none]},
+          %{name: "Python", levels: [:skilled, :none, :none]}
+        ]
+      },
+      %{
+        genre_name: "PM サンプルです",
+        skill_panels: [
+          %{name: "", levels: [:skilled, :normal, :none]}
+        ]
+      }
+    ]
+  end
 end
