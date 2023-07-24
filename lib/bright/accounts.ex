@@ -5,9 +5,11 @@ defmodule Bright.Accounts do
 
   import Ecto.Query, warn: false
   alias Bright.UserProfiles
+  alias Bright.UserJobProfiles
   alias Bright.Repo
 
   alias Bright.Accounts.{User, UserToken, UserNotifier}
+  alias Bright.Onboardings.UserOnboarding
 
   ## Database getters
 
@@ -79,6 +81,9 @@ defmodule Bright.Accounts do
     |> Ecto.Multi.insert(:user, user_changeset)
     |> Ecto.Multi.run(:user_profile, fn _repo, %{user: user} ->
       UserProfiles.create_initial_user_profile(user.id)
+    end)
+    |> Ecto.Multi.run(:user_job_profile, fn _repo, %{user: user} ->
+      UserJobProfiles.create_user_job_profile(%{user_id: user.id})
     end)
     |> Repo.transaction()
     |> case do
@@ -384,5 +389,20 @@ defmodule Bright.Accounts do
     |> where([user], not is_nil(user.confirmed_at))
     |> where([user], user.name == ^name_or_email or user.email == ^name_or_email)
     |> Repo.one()
+  end
+
+  @doc """
+  Check if onboarding is already finished.
+
+  ## Examples
+      iex> onboarding_finished?(user)
+      true
+
+      iex> onboarding_finished?(user)
+      false
+  """
+  def onboarding_finished?(user) do
+    from(user_onboarding in UserOnboarding, where: user_onboarding.user_id == ^user.id)
+    |> Repo.exists?()
   end
 end

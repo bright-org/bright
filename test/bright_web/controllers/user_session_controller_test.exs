@@ -16,22 +16,18 @@ defmodule BrightWeb.UserSessionControllerTest do
 
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/onboardings"
     end
 
-    test "logs the user in with return to", %{conn: conn, user: user} do
+    test "redirects mypage if user already finished onboardings", %{conn: conn, user: user} do
+      insert(:user_onboarding, user: user)
+
       conn =
-        conn
-        |> init_test_session(user_return_to: "/foo/bar")
-        |> post(~p"/users/log_in", %{
-          "user" => %{
-            "email" => user.email,
-            "password" => valid_user_password()
-          }
+        post(conn, ~p"/users/log_in", %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
-      assert redirected_to(conn) == "/foo/bar"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Welcome back!"
+      assert redirected_to(conn) == ~p"/mypage"
     end
 
     test "login following password update", %{conn: conn, user: user} do

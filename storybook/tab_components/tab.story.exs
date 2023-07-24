@@ -9,7 +9,9 @@ defmodule Storybook.Components.Tab do
         id: :default,
         attributes: %{
           tabs: ["tab1", "tab2", "tab3"],
-          previous_enable: true
+          selected_tab: "tab1",
+          page: 1,
+          total_pages: 2
         },
         slots: [
           sample_slots()
@@ -19,8 +21,9 @@ defmodule Storybook.Components.Tab do
         id: :selected_index_1,
         attributes: %{
           tabs: ["tab1", "tab2", "tab3"],
-          selected_index: 1,
-          next_enable: true,
+          selected_tab: "tab2",
+          page: 2,
+          total_pages: 2,
           menu_items: [
             %{text: "test", href: "/storybook"},
             %{text: "test2", href: "/storybook/core_components/button"}

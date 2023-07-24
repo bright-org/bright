@@ -6,7 +6,10 @@ defmodule Storybook.Components.LayoutComponents do
   def variations do
     [
       %Variation{
-        id: :default
+        id: :default,
+        attributes: %{
+          href: "/onboardings"
+        }
       }
     ]
   end

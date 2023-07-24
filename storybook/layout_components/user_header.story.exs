@@ -6,7 +6,17 @@ defmodule Storybook.Components.UserHeader do
   def variations do
     [
       %Variation{
-        id: :default
+        id: :default,
+        attributes: %{
+          page_sub_title: "サブタイトル",
+          profile: %{
+            user_name: "piacere",
+            title: "リードプログラマー",
+            icon_file_path: "/images/sample/sample-image.png"
+          },
+          notification_count: 99,
+          page_title: "タイトル"
+        }
       }
     ]
   end
