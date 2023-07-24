@@ -64,7 +64,7 @@ defmodule BrightWeb.ProfileComponents do
               <% end %>
 
               <%= if assigns.display_return_to_yourself do %>
-                <.return_to_yourself_button />
+                <.bright_button>自分に戻す</.bright_button>
               <% end %>
 
               <%= if assigns.display_stock_candidates_for_employment do %>

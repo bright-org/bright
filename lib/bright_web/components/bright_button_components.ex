@@ -5,6 +5,26 @@ defmodule BrightWeb.BrightButtonComponents do
   use Phoenix.Component
 
   @doc """
+  Renders a Bright Button
+
+  ## Examples
+
+       <.bright_button>自分に戻す</.bright_button>
+  """
+  slot :inner_block
+
+  def bright_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
+  @doc """
   Renders a "Excellent Person" Button
 
   ## Examples
@@ -80,24 +100,6 @@ defmodule BrightWeb.BrightButtonComponents do
         </li>
       </ul>
     </div>
-    """
-  end
-
-  @doc """
-  Renders a "Return to Yourself" Button
-
-  ## Examples
-
-      <.return_to_yourself_button />
-  """
-  def return_to_yourself_button(assigns) do
-    ~H"""
-    <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-    >
-      自分に戻す
-    </button>
     """
   end
 
