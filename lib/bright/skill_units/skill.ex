@@ -31,6 +31,10 @@ defmodule Bright.SkillUnits.Skill do
   def changeset(skill, attrs) do
     skill
     |> cast(attrs, [:name, :position])
+    |> cast_assoc(:skill_reference,
+      with: &Bright.SkillReferences.SkillReference.changeset_assoc/2
+    )
+    |> cast_assoc(:skill_exam, with: &Bright.SkillExams.SkillExam.changeset_assoc/2)
     |> validate_required([:name, :position])
   end
 

@@ -22,7 +22,13 @@ defmodule Bright.SkillExams.SkillExam do
   @doc false
   def changeset(skill_exam, attrs) do
     skill_exam
-    |> cast(attrs, [:url, :skill_id])
-    |> validate_required([:url, :skill_id])
+    |> cast(attrs, [:skill_id, :url])
+    |> validate_required([:skill_id])
+  end
+
+  @doc false
+  def changeset_assoc(skill_exam, attrs) do
+    skill_exam
+    |> cast(attrs, [:url])
   end
 end
