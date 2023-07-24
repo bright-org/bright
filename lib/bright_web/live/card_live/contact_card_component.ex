@@ -9,7 +9,14 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   import BrightWeb.CardLive.CardListComponents
   alias Bright.Notifications
 
-  @tabs ["チーム招待", "デイリー", "ウイークリー", "採用の調整", "スキルパネル更新", "運営"]
+  @tabs [
+    {"team_invite", "チーム招待"},
+    {"{daily", "デイリー"},
+    {"weekly", "ウイークリー"},
+    {"recruitment_coordination", "採用の調整"},
+    {"skill_panel_update", "スキルパネル更新"},
+    {"operation", "運営"}
+  ]
 
   @impl true
   def render(assigns) do
@@ -41,7 +48,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
      socket
      |> assign(assigns)
      |> assign(:tabs, @tabs)
-     |> assign(:card, create_card_param("チーム招待"))
+     |> assign(:card, create_card_param("team_invite"))
      |> assign_card()}
   end
 
@@ -98,12 +105,10 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   end
 
   defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
-    type = contact_type(card.selected_tab)
-
     notifications =
       Notifications.list_notification_by_type(
         user.id,
-        type,
+        card.selected_tab,
         card.page_params
       )
 
@@ -116,11 +121,4 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     socket
     |> assign(:card, card)
   end
-
-  defp contact_type("チーム招待"), do: "team invite"
-  defp contact_type("デイリー"), do: "daily"
-  defp contact_type("ウイークリー"), do: "weekly"
-  defp contact_type("採用の調整"), do: "recruitment_coordination"
-  defp contact_type("スキルパネル更新"), do: "skill_panel_update"
-  defp contact_type("運営"), do: "operation"
 end
