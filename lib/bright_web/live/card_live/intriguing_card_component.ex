@@ -7,7 +7,12 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   import BrightWeb.ProfileComponents
   import BrightWeb.TabComponents
 
-  @tabs ["気になる人", "チーム", "採用候補者"]
+  @tabs [
+    {"intriguing", "気になる人"},
+    {"team", "チーム"},
+    {"candidate_for_employment", "採用候補者"}
+  ]
+
   @menu_items [%{text: "カスタムグループを作る", href: "/"}, %{text: "カスタムグループの編集", href: "/"}]
 
   @impl true
@@ -16,6 +21,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
       assigns
       |> assign(:menu_items, @menu_items)
       |> assign(:tabs, @tabs)
+      |> assign(:selected_tab, "intriguing")
       # TODO サンプルデータです　ここにDBから取得した結果をセットしてください
       |> assign(:user_profiles, sample())
 
@@ -24,8 +30,8 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
       <.tab
         id="intriguing_card"
         tabs={@tabs}
+        selected_tab={@selected_tab}
         inner_tab={true}
-        previous_enable
         menu_items={@menu_items}
         target={@myself}
       >
