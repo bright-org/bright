@@ -6,7 +6,9 @@ defmodule Bright.SkillExamFactory do
   defmacro __using__(_opts) do
     quote do
       def skill_exam_factory do
-        %Bright.SkillExams.SkillExam{}
+        %Bright.SkillExams.SkillExam{
+          url: "https://example.com/#{Faker.Internet.slug()}"
+        }
       end
     end
   end

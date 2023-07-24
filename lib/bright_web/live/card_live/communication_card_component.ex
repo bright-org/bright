@@ -8,14 +8,14 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
   import BrightWeb.CardLive.CardListComponents
   alias Bright.Notifications
 
-  @tabs ["スキルアップ", "1on1のお誘い", "推し活", "所属チーム", "気になる", "運勢公式"]
-
-  @doc """
-  Renders a Communication Card
-
-  ## Examples
-      <.communication_card card={@card} />
-  """
+  @tabs [
+    {"skill_up", "スキルアップ"},
+    {"1on1_invitation", "1on1のお誘い"},
+    {"promotion", "推し活"},
+    {"your_team", "所属チーム"},
+    {"intriguing", "気になる"},
+    {"official_team", "運勢公式"}
+  ]
 
   @impl true
   def render(assigns) do
@@ -48,7 +48,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
       socket
       |> assign(assigns)
       |> assign(:tabs, @tabs)
-      |> assign(:card, create_card_param("スキルアップ"))
+      |> assign(:card, create_card_param("skill_up"))
       |> assign_card()
     }
   end
@@ -111,12 +111,10 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
   end
 
   defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
-    type = communication_type(card.selected_tab)
-
     notifications =
       Notifications.list_notification_by_type(
         user.id,
-        type,
+        card.selected_tab,
         card.page_params
       )
 
@@ -125,11 +123,4 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     socket
     |> assign(:card, card)
   end
-
-  defp communication_type("スキルアップ"), do: "skill_up"
-  defp communication_type("1on1のお誘い"), do: "1on1_invitation"
-  defp communication_type("推し活"), do: "promotion"
-  defp communication_type("所属チーム"), do: "your_team"
-  defp communication_type("気になる"), do: "intriguing"
-  defp communication_type("運勢公式"), do: "official_team"
 end

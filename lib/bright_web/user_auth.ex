@@ -28,15 +28,22 @@ defmodule BrightWeb.UserAuth do
   disconnected on log out. The line can be safely removed
   if you are not using LiveView.
   """
-  def log_in_user(conn, user) do
+  def log_in_user(conn, user, user_return_to \\ nil) do
     token = Accounts.generate_user_session_token(user)
-    user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> renew_session()
     |> put_token_in_session(token)
     |> write_cookie(token)
-    |> redirect(to: user_return_to || signed_in_path(conn))
+    |> redirect(to: user_return_to || log_in_redirect_path(user))
+  end
+
+  def log_in_redirect_path(user) do
+    if Accounts.onboarding_finished?(user) do
+      ~p"/mypage"
+    else
+      ~p"/onboardings"
+    end
   end
 
   defp write_cookie(conn, token) do
@@ -167,9 +174,10 @@ defmodule BrightWeb.UserAuth do
 
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
+    current_user = socket.assigns.current_user
 
-    if socket.assigns.current_user do
-      {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
+    if current_user do
+      {:halt, Phoenix.LiveView.redirect(socket, to: log_in_redirect_path(current_user))}
     else
       {:cont, socket}
     end
@@ -188,9 +196,11 @@ defmodule BrightWeb.UserAuth do
   Used for routes that require the user to not be authenticated.
   """
   def redirect_if_user_is_authenticated(conn, _opts) do
-    if conn.assigns[:current_user] do
+    current_user = conn.assigns[:current_user]
+
+    if current_user do
       conn
-      |> redirect(to: signed_in_path(conn))
+      |> redirect(to: log_in_redirect_path(current_user))
       |> halt()
     else
       conn
@@ -219,6 +229,4 @@ defmodule BrightWeb.UserAuth do
     |> put_session(:user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
   end
-
-  defp signed_in_path(_conn), do: ~p"/mypage"
 end

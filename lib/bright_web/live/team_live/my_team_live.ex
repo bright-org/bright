@@ -3,7 +3,7 @@ defmodule BrightWeb.MyTeamLive do
   マイチーム画面
   """
   use BrightWeb, :live_view
-  import BrigntWeb.BrightModalComponents
+  import BrightWeb.BrightModalComponents
 
   def mount(_params, _session, socket) do
     {:ok, socket}

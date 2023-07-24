@@ -6,7 +6,9 @@ defmodule Bright.SkillReferenceFactory do
   defmacro __using__(_opts) do
     quote do
       def skill_reference_factory do
-        %Bright.SkillReferences.SkillReference{}
+        %Bright.SkillReferences.SkillReference{
+          url: "https://example.com/#{Faker.Internet.slug()}"
+        }
       end
     end
   end
