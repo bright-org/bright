@@ -8,8 +8,8 @@ defmodule Storybook.GrowthGraphComponents.GrowthGraph do
       %Variation{
         id: :default,
         attributes: %{
-          data: [[0, 35, 45, 55, 60],[10, 10, 10, 45, 80]],
-          labels: ["2020.12", "2021.3", "2021.6", "2021.9","2011.12"],
+          data: [[0, 35, 45, 55, 60], [10, 10, 10, 45, 80]],
+          labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
         }
       }
     ]
