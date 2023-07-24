@@ -7,7 +7,8 @@ defmodule Bright.SkillFactory do
     quote do
       def skill_factory do
         %Bright.SkillUnits.Skill{
-          name: Faker.Lorem.word()
+          name: Faker.Lorem.word(),
+          position: sequence(:position, & &1)
         }
       end
     end
