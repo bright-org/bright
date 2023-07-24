@@ -21,23 +21,38 @@
           <ul class="grid pt-2">
             <li>
               <a
-                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+                class="!text-white bg-white bg-opacity-30 text-base py-4 inline-block pl-4 w-full mb-1"
                 href="/mypage"
                 >マイページ</a
               >
             </li>
             <li>
               <a
-                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1 bg-white bg-opacity-30"
-                href="/mypage"
-                >キャリアパス</a
+                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+                href="/"
+                >スキルを選ぶ</a
               >
             </li>
             <li>
               <a
                 class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
                 href="/mypage"
-                >スキルアップ</a
+                >成長を見る・比較する</a
+              >
+            </li>
+            <li>
+              <a
+                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+                href="/mypage"
+                >スキルパネルを入力</a
+              >
+            </li>
+
+            <li>
+              <a
+                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+                href="/mypage"
+                >スキルアップを目指す</a
               >
             </li>
             <li>
@@ -45,6 +60,13 @@
                 class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
                 href="/mypage"
                 >チームスキル分析</a
+              >
+            </li>
+            <li>
+              <a
+                class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+                href="/mypage"
+                >キャリアパスを選ぶ</a
               >
             </li>
           </ul>
@@ -797,9 +819,9 @@
                 </li>
               </ul>
             </div>
-            <div class="bg-white shadow px-6 relative z-2 pb-10">
+            <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
               <div class="flex justify-between">
-                <div class="w-[850px] pt-4">
+                <div class="w-[850px] pt-6">
                   <div class="flex">
                     <div
                       class="bg-test bg-contain h-20 w-20 mr-5"
@@ -938,15 +960,15 @@
                     </div>
                   </div>
                 </div>
-                <div class="mr-auto flex ml-4">
-                  <div class="w-20 my-auto">
+                <div class="mr-auto flex ml-7">
+                  <div class="w-20 mt-auto">
                     <canvas
                       id="doughnutChart"
                       height="100px"
                       width="100px"
                     ></canvas>
                   </div>
-                  <div class="h-20 my-auto flex flex-wrap">
+                  <div class="h-20 mt-5 ml-2 flex flex-wrap">
                     <p
                       class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1"
                     >
@@ -976,7 +998,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="mt-6 mr-3">
+                <div class="mt-3 mr-3">
                   <button
                     class="flex items-center text-sm font-bold px-4 py-2 rounded !text-white bg-brightGray-900"
                   >
@@ -988,7 +1010,7 @@
               <div class="flex">
                 <div class="w-[880px] flex flex-col">
                   <!-- グラフ -->
-                  <div class="ml-auto mr-28 my-6">
+                  <div class="ml-auto mr-28 mt-6 mb-1">
                     <button
                       type="button"
                       class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
@@ -997,25 +1019,34 @@
                     </button>
                   </div>
                   <div class="flex">
-                    <div class="w-14"></div>
-                    <canvas id="lineChart" width="714"></canvas>
-                    <div class="flex flex-col">
-                      <p class="py-8">ベテラン</p>
-                      <p class="py-16">平均</p>
-                      <p class="py-12">見習い</p>
-                    </div>
-                  </div>
-
-                  <div class="flex">
-                    <div class="w-14 flex justify-center items-center">
+                    <div class="w-14 relative">
                       <button
-                        class="w-10 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+                        class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
                       >
                         <span class="material-icons text-white !text-4xl"
                           >arrow_left</span
                         >
                       </button>
                     </div>
+                    <canvas id="lineChart" width="714"></canvas>
+                    <div
+                      class="ml-5 flex flex-col relative text-xl text-brightGray-500 text-bold"
+                    >
+                      <p class="py-5">ベテラン</p>
+                      <p class="py-20">平均</p>
+                      <p class="py-6">見習い</p>
+                      <button
+                        class="w-11 h-9 bg-brightGray-00 flex justify-center items-center rounded bottom-1 absolute"
+                      >
+                        <span class="material-icons text-white !text-4xl"
+                          >arrow_right</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="flex">
+                    <div class="w-14"></div>
                     <div
                       class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative"
                     >
@@ -1033,14 +1064,11 @@
                           2023.3
                         </button>
                       </div>
-                      <div class="h-28 w-28">
+                      <div class="h-28 w-28 flex justify-center items-center">
                         <button
-                          class="h-28 w-28 rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-sm flex justify-center items-center flex-col"
+                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
                         >
-                          <span class="material-icons !text-4xl !font-bold"
-                            >check</span
-                          >
-                          2022.12
+                          2023.12
                         </button>
                       </div>
 
@@ -1058,28 +1086,40 @@
                           2023.12
                         </button>
                       </div>
-                    </div>
-                    <div class="flex justify-center items-center ml-2">
-                      <button
-                        class="w-10 h-8 bg-brightGray-300 flex justify-center items-center rounded"
+                      <div
+                        class="h-28 w-28 flex justify-center items-center absolute right-[86px]"
                       >
-                        <span class="material-icons text-white !text-4xl"
-                          >arrow_right</span
+                        <button
+                          class="h-28 w-28 rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold text-sm flex justify-center items-center flex-col"
                         >
-                      </button>
+                          <span class="material-icons !text-4xl !font-bold"
+                            >check</span
+                          >
+                          現在
+                        </button>
+                      </div>
                     </div>
+                    <div class="flex justify-center items-center ml-2"></div>
                   </div>
 
-                  <div class="flex">
+                  <div class="flex pt-5">
                     <div class="w-14"></div>
-                    <div>
+                    <div class="flex gap-x-4">
+                      <!-- 自分と比較 -->
+                      <button
+                        type="button"
+                        class="text-brightGray-600 bg-white px-8 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+                      >
+                        自分と比較
+                      </button>
+                      <!-- 他社と比較ボタン -->
                       <button
                         id="addCompareDropdownButton"
                         data-dropdown-toggle="addCompareDropdown"
                         class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
                         type="button"
                       >
-                        <span class="min-w-[6em]">比較対象</span>
+                        <span class="min-w-[6em]">他社と比較</span>
                         <span
                           class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
                           >expand_more</span
@@ -1257,108 +1297,8 @@
                       </div>
                     </div>
                   </div>
-
-                  <div class="flex py-4 mb-[500px]">
-                    <div class="w-14"></div>
-                    <div class="w-[725px] flex justify-between items-end">
-                      <div
-                        class="text-left flex items-center text-base hover:bg-brightGray-50"
-                      >
-                        <a
-                          class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded"
-                        >
-                          <img
-                            class="inline-block h-10 w-10 rounded-full"
-                            src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                          />
-                          <div>
-                            <p>nokichi</p>
-                            <p class="text-brightGray-300">アプリエンジニア</p>
-                          </div>
-                        </a>
-                      </div>
-                      <button
-                        type="button"
-                        class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-                      >
-                        ロールモデルに固定
-                      </button>
-                    </div>
-                    <div></div>
-                  </div>
-
-                  <div class="flex">
-                    <div class="w-14 flex justify-center items-center">
-                      <button
-                        class="w-10 h-8 bg-brightGray-900 flex justify-center items-center rounded"
-                      >
-                        <span class="material-icons text-white !text-4xl"
-                          >arrow_left</span
-                        >
-                      </button>
-                    </div>
-                    <div
-                      class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative"
-                    >
-                      <button
-                        class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200"
-                      >
-                        <span
-                          class="material-icons !text-base !text-brightGray-200"
-                          >close</span
-                        >
-                      </button>
-                      <div class="h-28 w-28">
-                        <button
-                          class="h-28 w-28 rounded-full bg-amethyst-50 border-white border-8 shadow text-amethyst-600 font-bold text-sm flex justify-center items-center flex-col"
-                        >
-                          <span class="material-icons !text-4xl !font-bold"
-                            >check</span
-                          >
-                          2022.12
-                        </button>
-                      </div>
-                      <div class="h-28 w-28 flex justify-center items-center">
-                        <button
-                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                        >
-                          2023.3
-                        </button>
-                      </div>
-                      <div class="h-28 w-28 flex justify-center items-center">
-                        <button
-                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                        >
-                          2023.6
-                        </button>
-                      </div>
-                      <div class="h-28 w-28 flex justify-center items-center">
-                        <button
-                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                        >
-                          2023.9
-                        </button>
-                      </div>
-                      <div class="h-28 w-28 flex justify-center items-center">
-                        <button
-                          class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                        >
-                          2023.12
-                        </button>
-                      </div>
-                    </div>
-                    <div class="flex justify-center items-center ml-2">
-                      <button
-                        class="w-10 h-8 bg-brightGray-900 flex justify-center items-center rounded"
-                      >
-                        <span class="material-icons text-white !text-4xl"
-                          >arrow_right</span
-                        >
-                      </button>
-                    </div>
-                  </div>
                 </div>
-                <div class="w-[700px]">
+                <div class="w-[700px] pl-28">
                   <div class="w-[450px] mx-auto my-12">
                     <canvas id="radarChart" width="450" height="450"></canvas>
                   </div>

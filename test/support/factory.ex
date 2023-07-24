@@ -12,6 +12,12 @@ defmodule Bright.Factory do
   # UserProfiles context
   use Bright.UserProfileFactory
 
+  # Onboardings context
+  use Bright.UserOnboardingFactory
+
+  # UserJobProfiles context
+  use Bright.UserJobProfileFactory
+
   # SkillPanels context
   use Bright.SkillPanelFactory
   use Bright.SkillClassFactory

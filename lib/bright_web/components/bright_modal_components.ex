@@ -1,4 +1,4 @@
-defmodule BrigntWeb.BrightModalComponents do
+defmodule BrightWeb.BrightModalComponents do
   @moduledoc """
   CoreComponentsからmodal関連のコピー実装
   スタイルの設定を変更および上書き設定可能なattrを追加

@@ -4,6 +4,7 @@ defmodule Bright.AccountsTest do
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.UserProfiles.UserProfile
+  alias Bright.UserJobProfiles.UserJobProfile
 
   import Bright.Factory
   alias Bright.Accounts.{User, UserToken}
@@ -126,6 +127,10 @@ defmodule Bright.AccountsTest do
                facebook_url: nil,
                github_url: nil
              } = Repo.get_by(UserProfile, user_id: user_id)
+
+      assert %UserJobProfile{
+               user_id: ^user_id
+             } = Repo.get_by(UserJobProfile, user_id: user_id)
     end
   end
 
@@ -606,6 +611,21 @@ defmodule Bright.AccountsTest do
     test "returns the user if the email exists" do
       %{id: id} = user = insert(:user)
       assert %User{id: ^id} = Accounts.get_user_by_name_or_email(user.email)
+    end
+  end
+
+  describe "onboarding_finished?/1" do
+    test "returns true if user_onboarding exists" do
+      user = insert(:user)
+      insert(:user_onboarding, user: user)
+
+      assert Accounts.onboarding_finished?(user)
+    end
+
+    test "returns false if user_onboarding does not exist" do
+      user = insert(:user)
+
+      refute Accounts.onboarding_finished?(user)
     end
   end
 end

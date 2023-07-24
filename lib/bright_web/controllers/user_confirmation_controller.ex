@@ -9,14 +9,13 @@ defmodule BrightWeb.UserConfirmationController do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User confirmed successfully.")
-        |> put_session(:user_return_to, ~p"/onboardings")
         |> UserAuth.log_in_user(user)
 
       :error ->
         case conn.assigns do
-          %{current_user: %{confirmed_at: confirmed_at}} when not is_nil(confirmed_at) ->
+          %{current_user: current_user} when not is_nil(current_user.confirmed_at) ->
             conn
-            |> redirect(to: ~p"/onboardings")
+            |> redirect(to: UserAuth.log_in_redirect_path(current_user))
 
           %{} ->
             conn

@@ -146,13 +146,17 @@
     <!-- 関わっているユーザー -->
     <div>
       <h5>関わっているユーザー</h5>
-      <.intriguing_card />
+      <.live_component
+        id="intriguing_card"
+        module={BrightWeb.CardLive.IntriguingCardComponent}
+        current_user={@current_user}
+      />
     </div>
     <!-- 検証 -->
   </div>
 </div>
 
-<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrigntWeb.BrightModalComponentsのbright_modalを使用 -->
+<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
 <.bright_modal
   id="create-team-modal"
 >
