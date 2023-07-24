@@ -10,7 +10,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   alias Bright.Notifications
 
   @tabs [
-    {"team_invite", "チーム招待"},
+    {"team_invitation", "チーム招待"},
     {"daily", "デイリー"},
     {"weekly", "ウイークリー"},
     {"recruitment_coordination", "採用の調整"},
