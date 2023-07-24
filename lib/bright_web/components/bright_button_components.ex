@@ -5,6 +5,26 @@ defmodule BrightWeb.BrightButtonComponents do
   use Phoenix.Component
 
   @doc """
+  Renders a Profile Button
+
+  ## Examples
+
+       <.profile_button>自分に戻す</.profile_button>
+  """
+  slot :inner_block
+
+  def profile_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
+  @doc """
   Renders a "Excellent Person" Button
 
   ## Examples
@@ -80,78 +100,6 @@ defmodule BrightWeb.BrightButtonComponents do
         </li>
       </ul>
     </div>
-    """
-  end
-
-  @doc """
-  Renders a "Return to Yourself" Button
-
-  ## Examples
-
-      <.return_to_yourself_button />
-  """
-  def return_to_yourself_button(assigns) do
-    ~H"""
-    <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-    >
-      自分に戻す
-    </button>
-    """
-  end
-
-  @doc """
-  Renders a "Stock Candidates For Employment" Button
-
-  ## Examples
-
-      <.stock_candidates_for_employment_button />
-  """
-  def stock_candidates_for_employment_button(assigns) do
-    ~H"""
-    <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-    >
-      採用候補者としてストック
-    </button>
-    """
-  end
-
-  @doc """
-  Renders a Adopt Button
-
-  ## Examples
-
-      <.adopt_button />
-  """
-  def adopt_button(assigns) do
-    ~H"""
-    <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-    >
-      採用する
-    </button>
-    """
-  end
-
-  @doc """
-  Renders a "Recruitment Coordination" Button
-
-  ## Examples
-
-      <.recruitment_coordination_button />
-  """
-  def recruitment_coordination_button(assigns) do
-    ~H"""
-    <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-    >
-      採用の調整
-    </button>
     """
   end
 
