@@ -4,7 +4,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
   import BrightWeb.TabComponents
 
   @tab_info %{
-    "一般" => {"", UserSettingsLive.GeneralSettingComponent},
+    "一般" => {"general", UserSettingsLive.GeneralSettingComponent},
     "メール・パスワード" => {"auth", UserSettingsLive.AuthSettingComponent},
     "SNS連携" => {"sns", UserSettingsLive.SnsSettingComponent},
     "求職" => {"job", UserSettingsLive.JobSettingComponent}
@@ -25,6 +25,8 @@ defmodule BrightWeb.UserSettingsLive.Index do
         <.live_component
           module={@module}
           id={"user_settings"}
+          action={:edit}
+          user={@current_user}
           patch={"/settings/#{@path}"}
         />
       </.tab>
@@ -33,7 +35,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
   end
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
     {path, module} = Map.get(@tab_info, "一般")
 
     socket
@@ -45,13 +47,18 @@ defmodule BrightWeb.UserSettingsLive.Index do
   end
 
   @impl true
+  def handle_params(_params, _uri, socket) do
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("tab_click", %{"tab_name" => tab_name}, socket) do
     {path, module} = Map.get(@tab_info, tab_name)
 
     socket
     |> assign(:selected_tab, tab_name)
     |> assign(:module, module)
-    |> assign(:path, path)
+    |> push_patch(to: "/settings/#{path}")
     |> then(&{:noreply, &1})
   end
 end
