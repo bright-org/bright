@@ -32,6 +32,7 @@ defmodule Bright.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.7.3"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
@@ -52,10 +53,15 @@ defmodule Bright.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:mix_test_observer, "~> 0.1", only: [:dev, :test], runtime: false},
       {:ex_machina, "~> 2.7", only: :test},
       {:faker, "~> 0.17", only: :test},
       {:ecto_ulid_next, "~> 1.0"},
-      {:phoenix_storybook, "~> 0.5.0"}
+      {:phoenix_storybook, "~> 0.5.0"},
+      {:google_api_storage, "~> 0.34"},
+      {:goth, "~> 1.3"},
+      {:hackney, "~> 1.18"},
+      {:scrivener_ecto, "~> 2.0"}
     ]
   end
 
@@ -71,9 +77,14 @@ defmodule Bright.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.setup": [
+        "tailwind.install --if-missing",
+        "esbuild.install --if-missing",
+        "cmd --cd assets npm install"
+      ],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": [
+        "assets.setup",
         "tailwind default --minify",
         "esbuild default --minify",
         "tailwind storybook --minify",

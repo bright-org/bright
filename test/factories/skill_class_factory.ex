@@ -7,7 +7,8 @@ defmodule Bright.SkillClassFactory do
     quote do
       def skill_class_factory do
         %Bright.SkillPanels.SkillClass{
-          name: Faker.Lorem.word()
+          name: Faker.Lorem.word(),
+          class: sequence(:class, & &1, start_at: 1)
         }
       end
     end

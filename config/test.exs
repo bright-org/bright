@@ -1,5 +1,8 @@
 import Config
 
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
@@ -31,3 +34,11 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Google Cloud Storage (fake server)
+config :goth, disabled: true
+config :google_api_storage, base_url: System.get_env("GCS_BASE_URL", "http://localhost:4443")
+
+config :bright, :google_api_storage,
+  bucket_id: "bright_storage_local_test",
+  public_base_url: System.get_env("GCS_PUBLIC_BASE_URL", "http://localhost:4443")

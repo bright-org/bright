@@ -1,0 +1,29 @@
+<div class="pt-4 pb-1 px-6">
+  <ul class="flex gap-y-1.5 flex-col">
+    <li
+      :if={Enum.count(@joined_teams) == 0}
+      class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+    >
+      <p>所属しているチームはありません。</p>
+    </li>
+    <.table id="joined" rows={@joined_teams}>
+      <:col :let={team}>
+        <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded">
+          <%= # プライマリチームはアイコン色を変える
+          icon_class =
+            if team.is_primary == true do
+              "text-base !text-white bg-lapislazuli-900 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
+            else
+              "text-base !text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center"
+            end
+
+          "" %>
+          <span class={icon_class}>
+            <%= String.first(team.team.name) %>
+          </span>
+          <p><%= team.team.name %></p>
+        </li>
+      </:col>
+    </.table>
+  </ul>
+</div>
