@@ -7,7 +7,6 @@ defmodule Bright.Accounts.User2faCodes do
   import Ecto.Query, warn: false
 
   @two_factor_auth_code_validity %{"ago" => 10, "intervals" => "minute"}
-  @two_factor_auth_code_validity %{"ago" => 10, "intervals" => "minute"}
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
