@@ -184,16 +184,16 @@ defmodule BrightWeb.UserAuthComponents do
   end
 
   @doc """
-  Block link text
+  Inline link text
   """
   attr :href, :string
   attr :rest, :global
 
   slot :inner_block
 
-  def link_block_text(assigns) do
+  def link_inline_text(assigns) do
     ~H"""
-    <.link href={@href} class="block mt-2 text-link text-xs underline" {@rest}><%= render_slot(@inner_block) %></.link>
+    <.link href={@href} class="text-link text-xs underline" {@rest}><%= render_slot(@inner_block) %></.link>
     """
   end
 

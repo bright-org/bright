@@ -8,7 +8,7 @@ defmodule BrightWeb.UserTwoFactorAuthLive do
     <UserAuthComponents.header>2段階認証</UserAuthComponents.header>
 
     <UserAuthComponents.description>
-    メールに届いた認証コードを入力し「次へ進む」を押してください。<br><UserAuthComponents.link_block_text href="#" phx-click="resend_two_factor_auth_code">再送信する</UserAuthComponents.link_block_text>
+    メールに届いた認証コードを入力し「次へ進む」を押してください。<br><UserAuthComponents.link_inline_text href="#" phx-click="resend_two_factor_auth_code">再送信する</UserAuthComponents.link_inline_text>
     </UserAuthComponents.description>
 
     <UserAuthComponents.auth_form
