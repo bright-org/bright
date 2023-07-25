@@ -10,8 +10,11 @@ defmodule Bright.Accounts.UserToken do
   @hash_algorithm :sha256
   @rand_size 32
 
+  # TODO: 仕様に合わせて調整
   # It is very important to keep the reset password token expiry short,
   # since someone with access to the email may take over the account.
+  @two_factor_auth_session_validity %{"ago" => 1, "intervals" => "hour"}
+  @two_factor_auth_done_validity %{"ago" => 60, "intervals" => "day"}
   @reset_password_validity_in_days 1
   @confirm_validity_in_days 7
   @change_email_validity_in_days 7
@@ -87,6 +90,13 @@ defmodule Bright.Accounts.UserToken do
   """
   def build_email_token(user, context) do
     build_hashed_token(user, context, user.email)
+  end
+
+  @doc """
+  Builds a token which is not related to specific email.
+  """
+  def build_user_token(user, context) do
+    build_hashed_token(user, context, nil)
   end
 
   defp build_hashed_token(user, context, sent_to) do
@@ -168,6 +178,45 @@ defmodule Bright.Accounts.UserToken do
         :error
     end
   end
+
+  @doc """
+  Checks if the two factor auth token is valid and returns its underlying lookup query.
+  """
+  def verify_two_factor_auth_token_query(token, context) do
+    case Base.url_decode64(token, padding: false) do
+      {:ok, decoded_token} ->
+        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+
+        query =
+          from(token in token_and_context_query(hashed_token, context),
+            join: user in assoc(token, :user),
+            where:
+              token.inserted_at >
+                ago(
+                  ^validity_ago(context),
+                  ^validity_intervals(context)
+                ),
+            select: user
+          )
+
+        {:ok, query}
+
+      :error ->
+        :error
+    end
+  end
+
+  defp validity_ago("two_factor_auth_session"),
+    do: @two_factor_auth_session_validity["ago"]
+
+  defp validity_ago("two_factor_auth_done"),
+    do: @two_factor_auth_done_validity["ago"]
+
+  defp validity_intervals("two_factor_auth_session"),
+    do: @two_factor_auth_session_validity["intervals"]
+
+  defp validity_intervals("two_factor_auth_done"),
+    do: @two_factor_auth_done_validity["intervals"]
 
   @doc """
   Returns the token struct for the given token value and context.

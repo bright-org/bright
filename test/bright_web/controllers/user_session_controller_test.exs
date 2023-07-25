@@ -2,9 +2,14 @@ defmodule BrightWeb.UserSessionControllerTest do
   use BrightWeb.ConnCase, async: true
 
   import Bright.Factory
+  alias Bright.Accounts.UserToken
+  alias Bright.Accounts.User2faCodes
+  alias Bright.Repo
 
-  setup do
-    %{user: insert(:user)}
+  import Ecto.Query, warn: false
+
+  setup %{conn: conn} do
+    %{user: insert(:user), conn: conn}
   end
 
   describe "POST /users/log_in" do
@@ -14,8 +19,23 @@ defmodule BrightWeb.UserSessionControllerTest do
           "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
+      # 具体的なリダイレクト先はハッシュ化された token によって決まるので部分一致で判定する
+      assert redirected_to(conn) =~ "/users/two_factor_auth/"
+
+      assert Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
+      assert Repo.get_by(User2faCodes, user_id: user.id)
+    end
+
+    test "logs the user in when two factor auth done cookie exists", %{conn: conn, user: user} do
+      conn =
+        set_two_factor_auth_done(conn, user)
+        |> post(~p"/users/log_in", %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "ログインしました"
       assert redirected_to(conn) == ~p"/onboardings"
     end
 
@@ -23,10 +43,12 @@ defmodule BrightWeb.UserSessionControllerTest do
       insert(:user_onboarding, user: user)
 
       conn =
-        post(conn, ~p"/users/log_in", %{
+        set_two_factor_auth_done(conn, user)
+        |> post(~p"/users/log_in", %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "ログインしました"
       assert redirected_to(conn) == ~p"/mypage"
     end
 

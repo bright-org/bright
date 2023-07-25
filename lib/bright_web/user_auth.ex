@@ -16,6 +16,31 @@ defmodule BrightWeb.UserAuth do
   @cookie_key "_bright_web_user"
   @cookie_options [sign: true, max_age: @max_age, same_site: "Lax"]
 
+  # Two factor auth cookie
+  @user_2fa_max_age 60 * 60 * 24 * 60
+  @user_2fa_cookie_key "_bright_web_user_2fa_done"
+  @user_2fa_cookie_options [sign: true, max_age: @user_2fa_max_age, same_site: "Lax"]
+
+  @doc """
+  Write two factor auth done cookie.
+  """
+  def write_2fa_auth_done_cookie(conn, token) do
+    put_resp_cookie(conn, @user_2fa_cookie_key, token, @user_2fa_cookie_options)
+  end
+
+  def valid_2fa_auth_done_cookie_exists?(conn, user) do
+    conn = fetch_cookies(conn, signed: [@user_2fa_cookie_key])
+
+    token = conn.cookies[@user_2fa_cookie_key]
+
+    if is_nil(token) do
+      false
+    else
+      user_by_token = Accounts.get_user_by_2fa_done_token(token)
+      !is_nil(user_by_token) && user_by_token.id == user.id
+    end
+  end
+
   @doc """
   Logs the user in.
 
