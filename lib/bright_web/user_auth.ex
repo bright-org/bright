@@ -33,11 +33,11 @@ defmodule BrightWeb.UserAuth do
 
     token = conn.cookies[@user_2fa_cookie_key]
 
-    if !is_nil(token) do
+    if is_nil(token) do
+      false
+    else
       user_by_token = Accounts.get_user_by_2fa_done_token(token)
       !is_nil(user_by_token) && user_by_token.id == user.id
-    else
-      false
     end
   end
 
