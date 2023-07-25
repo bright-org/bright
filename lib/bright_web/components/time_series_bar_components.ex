@@ -67,7 +67,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
   defp now_button(assigns) do
     ~H"""
     <div
-      class="h-28 w-28 flex justify-center items-center absolute right-[58px]">
+      class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
       <button
         class="h-10 w-10 rounded-full bg-white text-xs text-attention-900 flex justify-center items-center"
       >
