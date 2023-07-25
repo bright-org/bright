@@ -12,43 +12,19 @@ defmodule BrightWeb.TimeSeriesBarComponents do
 
       />
   """
+
+  attr :dates, :list, default: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]
   def time_series_bar(assigns) do
     ~H"""
     <div class="flex">
       <div class="w-14"></div>
       <div
         class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative" >
-        <div class="h-28 w-28 flex justify-center items-center">
-          <button
-            class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center">
-            2022.12
-          </button>
-        </div>
-        <div class="h-28 w-28 flex justify-center items-center">
-          <button
-            class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center">
-            2023.3
-          </button>
-        </div>
-        <div class="h-28 w-28 flex justify-center items-center">
-          <button
-            class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center">
-            2023.12
-          </button>
-        </div>
 
-        <div class="h-28 w-28 flex justify-center items-center">
-          <button
-            class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center" >
-            2023.9
-          </button>
-        </div>
-        <div class="h-28 w-28 flex justify-center items-center">
-          <button
-            class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center" >
-            2023.12
-          </button>
-        </div>
+        <%= for date <- @dates do %>
+          <.date_button date={date}/>
+        <% end %>
+
         <div
           class="h-28 w-28 flex justify-center items-center absolute right-[86px]"
         >
@@ -62,6 +38,18 @@ defmodule BrightWeb.TimeSeriesBarComponents do
         </div>
       </div>
       <div class="flex justify-center items-center ml-2"></div>
+    </div>
+    """
+  end
+
+  attr :date, :string, default: ""
+  def date_button(assigns)  do
+    ~H"""
+    <div class="h-28 w-28 flex justify-center items-center">
+      <button
+        class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center">
+        <%= @date %>
+      </button>
     </div>
     """
   end
