@@ -24,6 +24,10 @@ defmodule BrightWeb.TimeSeriesBarComponents do
       <div
         class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative" >
 
+        <%= if @user_type == "other" do %>
+         <.close_button />
+        <% end %>
+
         <%= for date <- @dates do %>
           <%= if date == @check_date do %>
             <.check_date_button date={date} user_type={@user_type} />
@@ -106,6 +110,14 @@ defmodule BrightWeb.TimeSeriesBarComponents do
         <%= @date %>
       </button>
     </div>
+    """
+  end
+
+  def close_button(assigns) do
+    ~H"""
+    <button class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200">
+      <span class="material-icons !text-base !text-brightGray-200">close</span>
+    </button>
     """
   end
 
