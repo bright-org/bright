@@ -11,6 +11,8 @@ defmodule Bright.TestHelper do
   alias BrightWeb.Endpoint
   alias BrightWeb.UserAuth
 
+  @user_2fa_cookie_key "_bright_web_user_2fa_done"
+
   @doc """
   Setup helper that registers and logs in users.
 
@@ -54,9 +56,9 @@ defmodule Bright.TestHelper do
       |> UserAuth.write_2fa_auth_done_cookie(token)
       |> fetch_cookies()
       |> Map.fetch!(:resp_cookies)
-      |> Map.fetch!("_bright_web_user_2fa_done")
+      |> Map.fetch!(@user_2fa_cookie_key)
 
     conn
-    |> put_req_cookie("_bright_web_user_2fa_done", signed_token)
+    |> put_req_cookie(@user_2fa_cookie_key, signed_token)
   end
 end
