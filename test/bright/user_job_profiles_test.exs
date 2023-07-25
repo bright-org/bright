@@ -18,7 +18,7 @@ defmodule Bright.UserJobProfilesTest do
       office_work_holidays: nil,
       remote_working_hours: nil,
       remote_work_holidays: nil,
-      remove_work: nil,
+      remote_work: nil,
       user_id: nil,
       wish_change_job: nil,
       wish_employed: nil,
@@ -55,7 +55,7 @@ defmodule Bright.UserJobProfilesTest do
         office_work_holidays: true,
         remote_working_hours: "160h",
         remote_work_holidays: true,
-        remove_work: true,
+        remote_work: true,
         wish_change_job: true,
         wish_employed: false,
         wish_freelance: true,
@@ -75,7 +75,7 @@ defmodule Bright.UserJobProfilesTest do
       assert user_job_profile.office_work_holidays == true
       assert user_job_profile.remote_working_hours == :"160h"
       assert user_job_profile.remote_work_holidays == true
-      assert user_job_profile.remove_work == true
+      assert user_job_profile.remote_work == true
       assert user_job_profile.wish_change_job == true
       assert user_job_profile.wish_employed == false
       assert user_job_profile.wish_freelance == true
@@ -99,7 +99,7 @@ defmodule Bright.UserJobProfilesTest do
         office_work_holidays: false,
         remote_working_hours: "80h",
         remote_work_holidays: false,
-        remove_work: false,
+        remote_work: false,
         wish_change_job: false,
         wish_employed: false,
         wish_freelance: false,
@@ -118,7 +118,7 @@ defmodule Bright.UserJobProfilesTest do
       assert user_job_profile.office_work_holidays == false
       assert user_job_profile.remote_working_hours == :"80h"
       assert user_job_profile.remote_work_holidays == false
-      assert user_job_profile.remove_work == false
+      assert user_job_profile.remote_work == false
       assert user_job_profile.wish_change_job == false
       assert user_job_profile.wish_employed == false
       assert user_job_profile.wish_freelance == false

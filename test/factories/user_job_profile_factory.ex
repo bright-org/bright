@@ -16,7 +16,7 @@ defmodule Bright.UserJobProfileFactory do
           office_work_holidays: true,
           remote_working_hours: "160h",
           remote_work_holidays: true,
-          remove_work: true,
+          remote_work: true,
           wish_change_job: true,
           wish_employed: false,
           wish_freelance: true,
