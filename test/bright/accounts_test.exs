@@ -628,4 +628,25 @@ defmodule Bright.AccountsTest do
       refute Accounts.onboarding_finished?(user)
     end
   end
+
+  # TODO: テスト
+  # describe "setup_user_2fa_auth/1" do
+
+  # end
+
+  # describe "get_user_by_2fa_auth_session_token/1" do
+
+  # end
+
+  # describe "generate_user_2fa_done_token/1" do
+
+  # end
+
+  # describe "get_user_by_2fa_done_token/1" do
+
+  # end
+
+  # describe "user_2fa_code_valid?/2" do
+
+  # end
 end

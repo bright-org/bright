@@ -8,6 +8,7 @@ defmodule Bright.Factory do
   # Accounts context
   use Bright.UserFactory
   use Bright.UserTokenFactory
+  use Bright.User2faCodeFactory
 
   # UserProfiles context
   use Bright.UserProfileFactory
