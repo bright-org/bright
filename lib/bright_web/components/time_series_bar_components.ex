@@ -1,6 +1,6 @@
 defmodule BrightWeb.TimeSeriesBarComponents do
   @moduledoc """
-  Profile Components
+  TimeSeriesBar Components
   """
   use Phoenix.Component
 
@@ -13,9 +13,10 @@ defmodule BrightWeb.TimeSeriesBarComponents do
       />
   """
 
-  attr :dates, :list, default: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]
-  attr :check_date, :string, default: "2022.12"
+  attr :dates, :list, default: []
+  attr :check_date, :string, default: ""
   attr :user_type, :string, default: "my", values: ["my", "other"]
+  attr :display_now, :boolean, default: false
 
   def time_series_bar(assigns) do
     ~H"""
@@ -36,10 +37,12 @@ defmodule BrightWeb.TimeSeriesBarComponents do
           <% end %>
         <% end %>
 
-        <%= if "now" == @check_date do %>
-          <.check_now_button />
-        <% else %>
-          <.now_button />
+        <%= if @display_now do %>
+          <%= if "now" == @check_date do %>
+            <.check_now_button />
+          <% else %>
+            <.now_button />
+          <% end %>
         <% end %>
 
       </div>
@@ -50,7 +53,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
 
   attr :date, :string, default: ""
 
-  def date_button(assigns) do
+  defp date_button(assigns) do
     ~H"""
     <div class="h-28 w-28 flex justify-center items-center">
       <button
@@ -61,7 +64,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
     """
   end
 
-  def now_button(assigns) do
+  defp now_button(assigns) do
     ~H"""
     <div
       class="h-28 w-28 flex justify-center items-center absolute right-[58px]">
@@ -74,7 +77,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
     """
   end
 
-  def check_now_button(assigns) do
+  defp check_now_button(assigns) do
     ~H"""
     <div
       class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
@@ -92,7 +95,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
   attr :date, :string, default: ""
   attr :user_type, :string
 
-  def check_date_button(assigns) do
+  defp check_date_button(assigns) do
     color = check_color(assigns.user_type)
 
     style =
@@ -113,7 +116,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
     """
   end
 
-  def close_button(assigns) do
+  defp close_button(assigns) do
     ~H"""
     <button class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200">
       <span class="material-icons !text-base !text-brightGray-200">close</span>
@@ -121,6 +124,6 @@ defmodule BrightWeb.TimeSeriesBarComponents do
     """
   end
 
-  def check_color("my"), do: %{bg: "bg-brightGreen-50", text: "text-brightGreen-600"}
-  def check_color("other"), do: %{bg: "bg-amethyst-50", text: "text-amethyst-600"}
+  defp check_color("my"), do: %{bg: "bg-brightGreen-50", text: "text-brightGreen-600"}
+  defp check_color("other"), do: %{bg: "bg-amethyst-50", text: "text-amethyst-600"}
 end
