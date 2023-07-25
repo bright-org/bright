@@ -4,10 +4,10 @@ defmodule BrightWeb.UserSettingsLive.Index do
   import BrightWeb.TabComponents
 
   @tab_module %{
-    "general" => UserSettingsLive.GeneralSettingComponent,
-    "auth" => UserSettingsLive.AuthSettingComponent,
-    "sns" => UserSettingsLive.SnsSettingComponent,
-    "job" => UserSettingsLive.JobSettingComponent
+    general: UserSettingsLive.GeneralSettingComponent,
+    auth: UserSettingsLive.AuthSettingComponent,
+    sns: UserSettingsLive.SnsSettingComponent,
+    job: UserSettingsLive.JobSettingComponent
   }
   @tabs [
     {"general", "一般"},
@@ -39,11 +39,11 @@ defmodule BrightWeb.UserSettingsLive.Index do
   end
 
   @impl true
-  def mount(params, _session, socket) do
+  def mount(params, _session, %{assigns: %{live_action: action}} = socket) do
     socket
     |> assign(:tabs, @tabs)
-    |> assign(:selected_tab, "general")
-    |> assign(:module, Map.get(@tab_module, "general"))
+    |> assign(:selected_tab, to_string(action))
+    |> assign(:module, Map.get(@tab_module, action))
     |> then(&{:ok, &1})
   end
 
@@ -56,7 +56,7 @@ defmodule BrightWeb.UserSettingsLive.Index do
   def handle_event("tab_click", %{"tab_name" => tab_name}, socket) do
     socket
     |> assign(:selected_tab, tab_name)
-    |> assign(:module, Map.get(@tab_module, tab_name))
+    |> assign(:module, Map.get(@tab_module, String.to_atom(tab_name)))
     |> push_patch(to: "/settings/#{tab_name}")
     |> then(&{:noreply, &1})
   end
