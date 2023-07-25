@@ -12,19 +12,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.SkillPanelLive.SkillScoreItemComponent
 
   @impl true
-  def mount(params, _session, socket) do
-    current_user = socket.assigns.current_user
-
-    skill_panel =
-      SkillPanels.get_skill_panel!(params["skill_panel_id"])
-      |> Bright.Repo.preload(
-        skill_classes: [skill_scores: Ecto.assoc(current_user, :skill_scores)]
-      )
-
-    {:ok,
-     socket
-     |> assign(:edit, false)
-     |> assign(:skill_panel, skill_panel)}
+  def mount(_params, _session, socket) do
+    {:ok, socket |> assign(:edit, false)}
   end
 
   @impl true
@@ -58,9 +47,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   def handle_params(params, _url, socket) do
     {:noreply,
      socket
-     |> assign_skill_class(params["class"])
+     |> assign_skill_panel(params["skill_panel_id"])
+     |> assign_skill_class_and_score(params["class"])
+     |> create_skill_score_if_not_existing()
      |> assign_skill_units()
-     |> assign_skill_score()
      |> assign_skill_score_item_dict()
      |> assign_counter()
      |> apply_action(socket.assigns.live_action, params)}
@@ -111,14 +101,30 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      )}
   end
 
-  defp assign_skill_class(socket, nil), do: assign_skill_class(socket, "1")
+  defp assign_skill_panel(socket, skill_panel_id) do
+    current_user = socket.assigns.current_user
 
-  defp assign_skill_class(socket, class) do
+    skill_panel =
+      SkillPanels.get_skill_panel!(skill_panel_id)
+      |> Bright.Repo.preload(
+        skill_classes: [skill_scores: Ecto.assoc(current_user, :skill_scores)]
+      )
+
+    socket
+    |> assign(:skill_panel, skill_panel)
+  end
+
+  defp assign_skill_class_and_score(socket, nil), do: assign_skill_class_and_score(socket, "1")
+
+  defp assign_skill_class_and_score(socket, class) do
     class = String.to_integer(class)
     skill_class = socket.assigns.skill_panel.skill_classes |> Enum.find(&(&1.class == class))
+    # List.first(): preload時に絞り込んでいるためfirstで取得可能
+    skill_score = skill_class.skill_scores |> List.first()
 
     socket
     |> assign(:skill_class, skill_class)
+    |> assign(:skill_score, skill_score)
   end
 
   defp assign_skill_units(socket) do
@@ -134,31 +140,21 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(skill_units: skill_units)
   end
 
-  defp assign_skill_score(socket) do
+  defp create_skill_score_if_not_existing(%{assigns: %{skill_score: nil}} = socket) do
     # NOTE: skill_scoreが存在しないときの生成処理について
     # 管理側でスキルクラスを増やすなどの操作も想定し、
-    # アクセスしたタイミングでもって生成するようにしています。
-    skill_score =
-      socket.assigns.skill_class.skill_scores
-      # List.first(): preload時に絞り込んでいるためfirstで取得可能
-      |> List.first()
-      |> case do
-        nil ->
-          {:ok, %{skill_score: skill_score}} =
-            SkillScores.create_skill_score(
-              socket.assigns.current_user,
-              socket.assigns.skill_class
-            )
-
-          skill_score
-
-        skill_score ->
-          skill_score
-      end
+    # アクセスしたタイミングで生成するようにしています。
+    {:ok, %{skill_score: skill_score}} =
+      SkillScores.create_skill_score(
+        socket.assigns.current_user,
+        socket.assigns.skill_class
+      )
 
     socket
     |> assign(skill_score: skill_score)
   end
+
+  defp create_skill_score_if_not_existing(socket), do: socket
 
   defp assign_skill_score_item_dict(socket) do
     skill_score_item_dict =
