@@ -15,6 +15,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
 
   attr :dates, :list, default: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]
   attr :check_date, :string, default: "2022.12"
+  attr :user_type, :string, default: "my", values: ["my", "other"]
 
   def time_series_bar(assigns) do
     ~H"""
@@ -25,7 +26,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
 
         <%= for date <- @dates do %>
           <%= if date == @check_date do %>
-            <.check_date_button date={date} />
+            <.check_date_button date={date} user_type={@user_type} />
           <% else %>
             <.date_button date={date} />
           <% end %>
@@ -85,13 +86,21 @@ defmodule BrightWeb.TimeSeriesBarComponents do
   end
 
   attr :date, :string, default: ""
+  attr :user_type, :string
 
   def check_date_button(assigns) do
+    color = check_color(assigns.user_type)
+
+    style =
+      "h-28 w-28 rounded-full #{color.bg} border-white border-8 shadow #{color.text} font-bold text-sm flex justify-center items-center flex-col"
+
+    assigns =
+      assigns
+      |> assign(:style, style)
+
     ~H"""
     <div class="h-28 w-28 flex justify-center items-center">
-      <button
-        class="h-28 w-28 rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-sm flex justify-center items-center flex-col"
-      >
+      <button class={@style}>
         <span class="material-icons !text-4xl !font-bold"
           >check</span>
         <%= @date %>
@@ -99,4 +108,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
     </div>
     """
   end
+
+  def check_color("my"), do: %{bg: "bg-brightGreen-50", text: "text-brightGreen-600"}
+  def check_color("other"), do: %{bg: "bg-amethyst-50", text: "text-amethyst-600"}
 end
