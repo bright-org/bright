@@ -107,6 +107,7 @@ module.exports = {
         bgGithub: "url('./images/bg_github.png')",
         bgFacebook: "url('./images/bg_facebook.png')",
         bgTwitter: "url('./images/bg_twitter.png')",
+        bgAddAvatar: "url('./images/bg_add_avatar.png')",
       }),
       backgroundPosition: (theme) => ({
         "left-2.5": "10px center",
@@ -117,6 +118,7 @@ module.exports = {
         7: "auto 28px",
         8: "auto 32px",
         9: "auto 34px",
+        20: "auto 80px",
       }),
       fontFamily: (theme) => ({
         notosans: ["Noto Sans JP"],
