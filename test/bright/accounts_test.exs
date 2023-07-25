@@ -582,6 +582,53 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  # describe "setup_user_2fa_auth/1" do
+
+  # end
+
+  # describe "get_user_by_2fa_auth_session_token/1" do
+
+  # end
+
+  # describe "generate_user_2fa_done_token/1" do
+
+  # end
+
+  # describe "get_user_by_2fa_done_token/1" do
+
+  # end
+
+  describe "user_2fa_code_valid?/2" do
+    test "code is valid" do
+      user_2fa_code = insert(:user_2fa_code)
+
+      assert Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
+    end
+
+    test "code is not exists" do
+      user = insert(:user)
+
+      refute Accounts.user_2fa_code_valid?(user, "012345")
+    end
+
+    test "other user code" do
+      user = insert(:user)
+      user_2fa_code = insert(:user_2fa_code)
+
+      refute Accounts.user_2fa_code_valid?(user, user_2fa_code.code)
+    end
+
+    test "code is exists but expired" do
+      # NOTE: 10 minutes
+      user_2fa_code =
+        insert(:user_2fa_code,
+          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-10 * 60 * 60)
+        )
+
+      refute Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
+    end
+  end
+
   describe "get_user_by_name_or_email/1" do
     test "only return the user if the name completely match" do
       user = insert(:user)
@@ -628,25 +675,4 @@ defmodule Bright.AccountsTest do
       refute Accounts.onboarding_finished?(user)
     end
   end
-
-  # TODO: テスト
-  # describe "setup_user_2fa_auth/1" do
-
-  # end
-
-  # describe "get_user_by_2fa_auth_session_token/1" do
-
-  # end
-
-  # describe "generate_user_2fa_done_token/1" do
-
-  # end
-
-  # describe "get_user_by_2fa_done_token/1" do
-
-  # end
-
-  # describe "user_2fa_code_valid?/2" do
-
-  # end
 end
