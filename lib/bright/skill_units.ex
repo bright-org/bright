@@ -8,6 +8,7 @@ defmodule Bright.SkillUnits do
 
   alias Bright.SkillUnits.SkillUnit
   alias Bright.SkillUnits.SkillCategory
+  alias Bright.SkillUnits.Skill
 
   @doc """
   Returns the list of skill_units.
@@ -148,5 +149,56 @@ defmodule Bright.SkillUnits do
   """
   def change_skill_category(%SkillCategory{} = skill_category, attrs \\ %{}) do
     SkillCategory.changeset(skill_category, attrs)
+  end
+
+  @doc """
+  Gets skills
+  """
+  def list_skills(query \\ Skill) do
+    Repo.all(query)
+  end
+
+  @doc """
+  Gets skills on skill_class
+  """
+  def list_skills_on_skill_class(skill_class) do
+    Skill.skill_class_query(skill_class.id)
+    |> list_skills()
+  end
+
+  @doc """
+  Gets a single skill
+  """
+  def get_skill!(id), do: Repo.get!(Skill, id)
+
+  @doc """
+  Updates a skill.
+
+  ## Examples
+
+      iex> update_skill(skill, %{field: new_value})
+      {:ok, %Skill{}}
+
+      iex> update_skill(skill, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_skill(%Skill{} = skill, attrs) do
+    skill
+    |> Skill.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking skill changes.
+
+  ## Examples
+
+      iex> change_skill(skill)
+      %Ecto.Changeset{data: %Skill{}}
+
+  """
+  def change_skill(%Skill{} = skill, attrs \\ %{}) do
+    Skill.changeset(skill, attrs)
   end
 end

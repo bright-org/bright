@@ -1,4 +1,4 @@
-defmodule BrigntWeb.BrightModalComponents do
+defmodule BrightWeb.BrightModalComponents do
   @moduledoc """
   CoreComponentsからmodal関連のコピー実装
   スタイルの設定を変更および上書き設定可能なattrを追加
@@ -83,9 +83,6 @@ defmodule BrigntWeb.BrightModalComponents do
           <div class={@style_of_modal_flame_out}>
             <.focus_wrap
               id={"#{@id}-container"}
-              phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
-              phx-key="escape"
-              phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
               class={@style_of_modal_flame}
             >
             <%= if @enable_cancel_button do %>

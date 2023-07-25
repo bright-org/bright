@@ -64,19 +64,19 @@ defmodule BrightWeb.ProfileComponents do
               <% end %>
 
               <%= if assigns.display_return_to_yourself do %>
-                <.return_to_yourself_button />
+                <.profile_button>自分に戻す</.profile_button>
               <% end %>
 
               <%= if assigns.display_stock_candidates_for_employment do %>
-                <.stock_candidates_for_employment_button />
+                <.profile_button>採用候補者としてストック</.profile_button>
               <% end %>
 
               <%= if assigns.display_adopt do %>
-                <.adopt_button />
+               <.profile_button>採用する</.profile_button>
               <% end %>
 
               <%= if assigns.display_recruitment_coordination do %>
-                <.recruitment_coordination_button />
+                <.profile_button>採用の調整</.profile_button>
               <% end %>
             </div>
           </div>

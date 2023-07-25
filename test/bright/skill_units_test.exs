@@ -95,4 +95,45 @@ defmodule Bright.SkillUnitsTest do
       assert %Ecto.Changeset{} = SkillUnits.change_skill_category(skill_category)
     end
   end
+
+  describe "skill" do
+    alias Bright.SkillUnits.Skill
+
+    @invalid_attrs params_for(:skill) |> Map.put(:name, nil)
+
+    setup do
+      skill_category = insert(:skill_category, skill_unit_id: insert(:skill_unit).id)
+
+      %{skill_category: skill_category}
+    end
+
+    test "get_skill!/1 returns the skill with given id", %{skill_category: skill_category} do
+      skill = insert(:skill, skill_category_id: skill_category.id)
+      assert SkillUnits.get_skill!(skill.id) == skill
+    end
+
+    test "update_skill/2 with valid data updates the skill", %{skill_category: skill_category} do
+      skill = insert(:skill, skill_category_id: skill_category.id)
+      update_attrs = params_for(:skill)
+
+      assert {:ok, %Skill{} = skill} = SkillUnits.update_skill(skill, update_attrs)
+
+      assert skill.name == update_attrs.name
+    end
+
+    test "update_skill/2 with invalid data returns error changeset", %{
+      skill_category: skill_category
+    } do
+      skill = insert(:skill, skill_category_id: skill_category.id)
+
+      assert {:error, %Ecto.Changeset{}} = SkillUnits.update_skill(skill, @invalid_attrs)
+
+      assert skill == SkillUnits.get_skill!(skill.id)
+    end
+
+    test "change_skill/1 returns a skill changeset", %{skill_category: skill_category} do
+      skill = insert(:skill, skill_category_id: skill_category.id)
+      assert %Ecto.Changeset{} = SkillUnits.change_skill(skill)
+    end
+  end
 end

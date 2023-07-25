@@ -1,6 +1,8 @@
 defmodule BrightWeb.SkillPanelLive.Skills do
   use BrightWeb, :live_view
 
+  import BrightWeb.BrightModalComponents
+
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores
@@ -10,27 +12,45 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.SkillPanelLive.SkillScoreItemComponent
 
   @impl true
-  def mount(params, _session, socket) do
-    current_user = socket.assigns.current_user
+  def mount(_params, _session, socket) do
+    {:ok, socket |> assign(:edit, false)}
+  end
 
-    skill_panel =
-      SkillPanels.get_skill_panel!(params["skill_panel_id"])
-      |> Bright.Repo.preload(
-        skill_classes: [skill_scores: Ecto.assoc(current_user, :skill_scores)]
-      )
+  @impl true
+  def handle_event("edit", _params, socket) do
+    skill_score_author?(socket.assigns.skill_score, socket.assigns.current_user)
+    |> if do
+      {:noreply, socket |> assign(edit: true)}
+    else
+      {:noreply, socket}
+    end
+  end
 
-    {:ok,
+  def handle_event("update", _params, socket) do
+    target_skill_score_items =
+      socket.assigns.skill_score_item_dict
+      |> Map.values()
+      |> Enum.filter(& &1.changed)
+
+    {:ok, %{skill_score: skill_score}} =
+      SkillScores.update_skill_score_items(socket.assigns.skill_score, target_skill_score_items)
+
+    {:noreply,
      socket
-     |> assign(:skill_panel, skill_panel)}
+     |> assign(skill_score: skill_score)
+     |> assign_skill_score_item_dict()
+     |> assign_counter()
+     |> assign(edit: false)}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply,
      socket
-     |> assign_skill_class(params["class"])
+     |> assign_skill_panel(params["skill_panel_id"])
+     |> assign_skill_class_and_score(params["class"])
+     |> create_skill_score_if_not_existing()
      |> assign_skill_units()
-     |> assign_skill_score()
      |> assign_skill_score_item_dict()
      |> assign_counter()
      |> apply_action(socket.assigns.live_action, params)}
@@ -67,44 +87,44 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Map.update!(current_score, &(&1 - 1))
       |> Map.update!(score, &(&1 + 1))
 
-    # スキルスコア更新
-    {:ok, {skill_score, skill_score_item}} =
-      Bright.Repo.transaction(fn ->
-        percentage = calc_percentage(counter.high, socket.assigns.num_skills)
-
-        {:ok, skill_score_item} =
-          SkillScores.update_skill_score_item(skill_score_item, %{score: score})
-
-        {:ok, skill_score} =
-          SkillScores.update_skill_score_percentage(socket.assigns.skill_score, percentage)
-
-        {skill_score, skill_score_item}
-      end)
-
-    # TODO: streamを一覧に使用するようにリファクタリング検討
-    # 親LiveView側に更新が入る関係で skill_score_item_dict の書き換えが必要になったため、現在はそのようにしているが描画効率が良くない
-    # ほかの画面更新要素（教材・試験・エビデンス）も実装感をみて対応を決める方針
+    # 表示スコア更新
+    # 永続化は全体一括のため、ここでは実施してない
     skill_score_item_dict =
       socket.assigns.skill_score_item_dict
-      |> Map.put(skill_score_item.skill_id, skill_score_item)
+      |> Map.put(skill_score_item.skill_id, %{skill_score_item | score: score, changed: true})
 
     {:noreply,
      socket
      |> assign(
-       skill_score: skill_score,
        counter: counter,
        skill_score_item_dict: skill_score_item_dict
      )}
   end
 
-  defp assign_skill_class(socket, nil), do: assign_skill_class(socket, "1")
+  defp assign_skill_panel(socket, skill_panel_id) do
+    current_user = socket.assigns.current_user
 
-  defp assign_skill_class(socket, class) do
+    skill_panel =
+      SkillPanels.get_skill_panel!(skill_panel_id)
+      |> Bright.Repo.preload(
+        skill_classes: [skill_scores: Ecto.assoc(current_user, :skill_scores)]
+      )
+
+    socket
+    |> assign(:skill_panel, skill_panel)
+  end
+
+  defp assign_skill_class_and_score(socket, nil), do: assign_skill_class_and_score(socket, "1")
+
+  defp assign_skill_class_and_score(socket, class) do
     class = String.to_integer(class)
     skill_class = socket.assigns.skill_panel.skill_classes |> Enum.find(&(&1.class == class))
+    # List.first(): preload時に絞り込んでいるためfirstで取得可能
+    skill_score = skill_class.skill_scores |> List.first()
 
     socket
     |> assign(:skill_class, skill_class)
+    |> assign(:skill_score, skill_score)
   end
 
   defp assign_skill_units(socket) do
@@ -120,35 +140,27 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(skill_units: skill_units)
   end
 
-  defp assign_skill_score(socket) do
+  defp create_skill_score_if_not_existing(%{assigns: %{skill_score: nil}} = socket) do
     # NOTE: skill_scoreが存在しないときの生成処理について
     # 管理側でスキルクラスを増やすなどの操作も想定し、
-    # アクセスしたタイミングでもって生成するようにしています。
-    skill_score =
-      socket.assigns.skill_class.skill_scores
-      # List.first(): preload時に絞り込んでいるためfirstで取得可能
-      |> List.first()
-      |> case do
-        nil ->
-          SkillScores.create_skill_score(%{
-            user_id: socket.assigns.current_user.id,
-            skill_class_id: socket.assigns.skill_class.id
-          })
-          |> elem(1)
-
-        skill_score ->
-          skill_score
-      end
+    # アクセスしたタイミングで生成するようにしています。
+    {:ok, %{skill_score: skill_score}} =
+      SkillScores.create_skill_score(
+        socket.assigns.current_user,
+        socket.assigns.skill_class
+      )
 
     socket
     |> assign(skill_score: skill_score)
   end
 
+  defp create_skill_score_if_not_existing(socket), do: socket
+
   defp assign_skill_score_item_dict(socket) do
     skill_score_item_dict =
       Ecto.assoc(socket.assigns.skill_score, :skill_score_items)
       |> SkillScores.list_skill_score_items()
-      |> Map.new(&{&1.skill_id, &1})
+      |> Map.new(&{&1.skill_id, Map.put(&1, :changed, false)})
 
     socket
     |> assign(skill_score_item_dict: skill_score_item_dict)
@@ -279,5 +291,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       {skill_category_item, 0} -> [skill_unit_item] ++ skill_category_item
       {skill_category_item, _i} -> [nil] ++ skill_category_item
     end)
+  end
+
+  defp skill_score_author?(skill_score, user) do
+    skill_score.user_id == user.id
+  end
+
+  defp skill_reference_existing?(skill_reference) do
+    skill_reference && skill_reference.url
+  end
+
+  defp skill_exam_existing?(skill_exam) do
+    skill_exam && skill_exam.url
   end
 end

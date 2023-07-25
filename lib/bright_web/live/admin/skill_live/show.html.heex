@@ -1,0 +1,15 @@
+<.modal
+  :if={@live_action == :edit}
+  id="skill-modal"
+  show
+  on_cancel={JS.navigate(~p"/admin/skill_units/#{@skill.skill_category.skill_unit}")}
+>
+  <.live_component
+    module={BrightWeb.Admin.SkillLive.FormComponent}
+    id={@skill.id}
+    title={@page_title}
+    action={@live_action}
+    skill={@skill}
+    navigate={~p"/admin/skill_units/#{@skill.skill_category.skill_unit}"}
+  />
+</.modal>

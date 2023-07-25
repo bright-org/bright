@@ -27,7 +27,7 @@ defmodule Bright.SkillScores.SkillScore do
   @doc false
   def changeset(skill_score, attrs) do
     skill_score
-    |> cast(attrs, [:user_id, :skill_class_id, :level, :percentage])
-    |> validate_required([:user_id, :skill_class_id, :level, :percentage])
+    |> cast(attrs, [:level, :percentage])
+    |> validate_required([:level, :percentage])
   end
 end

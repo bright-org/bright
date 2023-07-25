@@ -40,7 +40,11 @@
     <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
     <div>
       <h5>保有スキル（ジェムをクリックすると成長グラフが見れます）</h5>
-      <.skill_card />
+      <.live_component
+        id="skill_card"
+        module={BrightWeb.CardLive.SkillCardComponent}
+        current_user={@current_user}
+      />
     </div>
   </div>
   <div class="w-[750px] flex flex-col gap-y-6">
@@ -142,13 +146,17 @@
     <!-- 関わっているユーザー -->
     <div>
       <h5>関わっているユーザー</h5>
-      <.intriguing_card />
+      <.live_component
+        id="intriguing_card"
+        module={BrightWeb.CardLive.IntriguingCardComponent}
+        current_user={@current_user}
+      />
     </div>
     <!-- 検証 -->
   </div>
 </div>
 
-<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrigntWeb.BrightModalComponentsのbright_modalを使用 -->
+<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
 <.bright_modal
   id="create-team-modal"
 >

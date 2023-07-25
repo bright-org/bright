@@ -1,12 +1,15 @@
 defmodule Storybook.Components.BrightButtonComponents do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &Elixir.BrightWeb.BrightButtonComponents.recruitment_coordination_button/1
+  def function, do: &Elixir.BrightWeb.BrightButtonComponents.profile_button/1
 
   def variations do
     [
       %Variation{
-        id: :default
+        id: :default,
+        slots: [
+          "ボタン"
+        ]
       }
     ]
   end
