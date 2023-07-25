@@ -14,6 +14,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
   """
 
   attr :dates, :list, default: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]
+  attr :check_date, :string, default: ""
 
   def time_series_bar(assigns) do
     ~H"""
@@ -23,7 +24,11 @@ defmodule BrightWeb.TimeSeriesBarComponents do
         class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative" >
 
         <%= for date <- @dates do %>
-          <.date_button date={date} />
+          <%= if date == @check_date do %>
+            <.check_button date={date} />
+          <% else %>
+            <.date_button date={date} />
+          <% end %>
         <% end %>
 
         <.now_button />
@@ -57,6 +62,21 @@ defmodule BrightWeb.TimeSeriesBarComponents do
         <span class="material-icons !text-4xl !font-bold"
           >check</span>
         現在
+      </button>
+    </div>
+    """
+  end
+
+  attr :date, :string, default: ""
+  def check_button(assigns) do
+    ~H"""
+    <div class="h-28 w-28 flex justify-center items-center">
+      <button
+        class="h-28 w-28 rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-sm flex justify-center items-center flex-col"
+      >
+        <span class="material-icons !text-4xl !font-bold"
+          >check</span>
+        <%= @date %>
       </button>
     </div>
     """
