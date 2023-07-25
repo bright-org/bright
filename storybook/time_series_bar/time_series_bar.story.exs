@@ -18,7 +18,6 @@ defmodule Storybook.Components.TimeSeriesBar do
           check_date: "2022.12",
           user_type: "my",
           display_now: true
-
         }
       },
       %Variation{
@@ -28,7 +27,6 @@ defmodule Storybook.Components.TimeSeriesBar do
           check_date: "2023.12",
           user_type: "my",
           display_now: true
-
         }
       },
       %Variation{
@@ -38,7 +36,6 @@ defmodule Storybook.Components.TimeSeriesBar do
           check_date: "now",
           user_type: "my",
           display_now: true
-
         }
       },
       %Variation{
