@@ -4,6 +4,7 @@ defmodule Bright.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Bright.Accounts.User2faCodes
   alias Bright.UserProfiles
   alias Bright.UserJobProfiles
   alias Bright.Repo
@@ -373,6 +374,92 @@ defmodule Bright.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  ## Two factor auth
+  @doc """
+  Setup user two factor auth.
+
+  1. Delete existing token and Generate user two factor auth session token
+  2. Delete existing code and Generate user two factor auth code
+  3. Deliver two factor auth code to user
+  """
+  def setup_user_2fa_auth(user) do
+    {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(
+      :delete_token,
+      UserToken.user_and_contexts_query(user, ["two_factor_auth_session"])
+    )
+    |> Ecto.Multi.insert(:user_token, user_token)
+    |> Ecto.Multi.delete_all(
+      :delete_2fa_code,
+      User2faCodes.user_query(user)
+    )
+    |> Ecto.Multi.insert(:user_2fa_code, User2faCodes.build_by_user(user))
+    |> Ecto.Multi.run(:deliver_2fa_auth_code, fn _repo, %{user_2fa_code: user_2fa_code} ->
+      UserNotifier.deliver_2fa_instructions(user, user_2fa_code.code)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, _} -> token
+    end
+  end
+
+  @doc """
+  Gets the user by two factor auth session token.
+
+  ## Examples
+
+      iex> get_user_by_2fa_auth_session_token("validtoken")
+      %User{}
+
+      iex> get_user_by_2fa_auth_session_token("invalidtoken")
+      nil
+
+  """
+  def get_user_by_2fa_auth_session_token(token) do
+    with {:ok, query} <-
+           UserToken.verify_two_factor_auth_token_query(token, "two_factor_auth_session"),
+         %User{} = user <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  def generate_user_2fa_done_token(user) do
+    {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(
+      :delete_token,
+      UserToken.user_and_contexts_query(user, ["two_factor_auth_done"])
+    )
+    |> Ecto.Multi.insert(:user_token, user_token)
+    |> Repo.transaction()
+    |> case do
+      {:ok, _} -> token
+    end
+  end
+
+  def get_user_by_2fa_done_token(token) do
+    with {:ok, query} <-
+           UserToken.verify_two_factor_auth_token_query(token, "two_factor_auth_done"),
+         %User{} = user <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  @doc """
+  Verify user two factor auth code and return true or false.
+  """
+  def user_2fa_code_valid?(user, code) do
+    User2faCodes.verify_user_2fa_code_query(user, code)
+    |> Repo.exists?()
   end
 
   @doc """

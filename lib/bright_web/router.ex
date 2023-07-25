@@ -121,9 +121,11 @@ defmodule BrightWeb.Router do
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/send_reset_password_url", UserSendResetPasswordUrlLive, :show
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
+      live "/users/two_factor_auth/:token", UserTwoFactorAuthLive, :show
     end
 
     post "/users/log_in", UserSessionController, :create
+    post "/users/two_factor_auth", UserTwoFactorAuthController, :create
   end
 
   scope "/", BrightWeb do

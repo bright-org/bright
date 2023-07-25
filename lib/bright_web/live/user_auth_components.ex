@@ -62,7 +62,7 @@ defmodule BrightWeb.UserAuthComponents do
 
   attr :type, :string,
     default: "text",
-    values: ~w(email password text)
+    values: ~w(email password text number)
 
   attr :field, Phoenix.HTML.FormField,
     doc: "a form field struct retrieved from the form, for example: @form[:email]"
@@ -180,6 +180,20 @@ defmodule BrightWeb.UserAuthComponents do
   def link_text_under_input(assigns) do
     ~H"""
     <.link href={@href} class="block mr-2 mt-1 text-link text-right text-xs underline"><%= render_slot(@inner_block) %></.link>
+    """
+  end
+
+  @doc """
+  Block link text
+  """
+  attr :href, :string
+  attr :rest, :global
+
+  slot :inner_block
+
+  def link_block_text(assigns) do
+    ~H"""
+    <.link href={@href} class="block mt-2 text-link text-xs underline" {@rest}><%= render_slot(@inner_block) %></.link>
     """
   end
 
