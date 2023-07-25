@@ -43,6 +43,9 @@ defmodule BrightWeb.UserTwoFactorAuthLive do
   def handle_event("resend_two_factor_auth_code", _params, %{assigns: %{user: user}} = socket) do
     token = Accounts.setup_user_2fa_auth(user)
 
-    {:noreply, socket |> redirect(to: ~p"/users/two_factor_auth/#{token}")}
+    {:noreply,
+     socket
+     |> put_flash(:info, "確認メールを再送しました。")
+     |> redirect(to: ~p"/users/two_factor_auth/#{token}")}
   end
 end
