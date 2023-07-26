@@ -95,23 +95,27 @@ const createData = (labels, data) => {
 
 const drawHorizonLine = (context, scales) => {
   // 見習い、平均、ベテランの線
-  const x1 = scales.x.getPixelForValue(0)
-  const x4 = scales.x.getPixelForValue(4)
-  let y = scales.y.getPixelForValue(40)
+  const y = scales.y
+  const x = scales.x
+
+  const startX = x.getPixelForValue(0)
+  const endX = x.getPixelForValue(4)
+  const normalY = y.getPixelForValue(40)
+  const skilledY = y.getPixelForValue(60)
+
   context.beginPath()
   context.lineWidth = 1
   context.setLineDash(dash)
   context.strokeStyle = dashColor
 
-  // ベテランの線
-  context.moveTo(x1, y)
-  context.lineTo(x4, y)
-  y = scales.y.getPixelForValue(60)
   // 平均の線
-  context.moveTo(x1, y)
-  context.lineTo(x4, y)
-  context.stroke()
+  context.moveTo(startX, normalY)
+  context.lineTo(endX, normalY)
 
+  // ベテランの線
+  context.moveTo(startX, skilledY)
+  context.lineTo(endX, skilledY)
+  context.stroke()
 }
 
 const drawCurrent = (chart, scales) => {
@@ -122,37 +126,40 @@ const drawCurrent = (chart, scales) => {
   let now = data['now']
 
   if (now === undefined) return
-  const past = data['myself']
+  const y = scales.y
+  const x = scales.x
+  const pastData = data['myself']
 
   //　現在の縦線
   context.beginPath()
   context.lineWidth = 2
   context.setLineDash([2, 0])
   context.strokeStyle = currentColor
-  const y = scales.y.getPixelForValue(0)
-  const y2 = scales.y.getPixelForValue(now)
-  const y3 = scales.y.getPixelForValue(past[3])
-  const y4 = scales.y.getPixelForValue(100)
+  const nowDown = y.getPixelForValue(0)
+  const nowY = y.getPixelForValue(now)
+  const pastY = y.getPixelForValue(pastData[3])
 
-  const x4 = scales.x.getPixelForValue(4)
-  const x3 = scales.x.getPixelForValue(3)
-  const diff_x = x4 - x3
-  const now_x = x3 + (diff_x / 2)
+  // 直近の過去から未来の真ん中を求める
+  const futureX = x.getPixelForValue(4)
+  const pastX = x.getPixelForValue(3)
+  const diffX = futureX - pastX
+  const nowX = pastX + (diffX / 2)
 
+  // 「現在」縦線
   context.beginPath()
-  context.moveTo(now_x, y)
-  context.lineTo(now_x, y2)
+  context.moveTo(nowX, nowDown)
+  context.lineTo(nowX, nowY)
   context.stroke()
 
   // 直近の過去から現在までの線
   context.beginPath()
-  context.moveTo(x3, y3)
-  context.lineTo(now_x, y2)
+  context.moveTo(pastX, pastY)
+  context.lineTo(nowX, nowY)
   context.stroke()
 
   // 現在の点
   context.beginPath()
-  context.arc(now_x, y2, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
+  context.arc(nowX, nowY, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
   context.fillStyle = currentColor
   context.fill()
 }
@@ -162,7 +169,6 @@ const beforeDatasetsDraw = (chart, ease) => {
   const scales = chart.scales
   drawHorizonLine(context, scales)
   drawCurrent(chart, scales)
-
 }
 
 const createChartFromJSON = (labels, data) => {
