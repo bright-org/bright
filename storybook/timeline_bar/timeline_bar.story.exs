@@ -16,7 +16,7 @@ defmodule Storybook.Components.TimelineBar do
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
           selected_date: "2022.12",
-          user_type: "my",
+          type: "myself",
           display_now: true
         }
       },
@@ -25,7 +25,7 @@ defmodule Storybook.Components.TimelineBar do
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
           selected_date: "2023.12",
-          user_type: "my",
+          type: "myself",
           display_now: true
         }
       },
@@ -34,7 +34,7 @@ defmodule Storybook.Components.TimelineBar do
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
           selected_date: "now",
-          user_type: "my",
+          type: "myself",
           display_now: true
         }
       },
@@ -43,7 +43,7 @@ defmodule Storybook.Components.TimelineBar do
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
           selected_date: "2022.12",
-          user_type: "other"
+          type: "other"
         }
       },
       %Variation{
@@ -51,7 +51,7 @@ defmodule Storybook.Components.TimelineBar do
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
           selected_date: "2023.6",
-          user_type: "other"
+          type: "other"
         }
       }
     ]

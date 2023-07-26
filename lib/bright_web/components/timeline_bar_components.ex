@@ -8,12 +8,12 @@ defmodule BrightWeb.TimelineBarComponents do
   Renders a Timeline Bar
 
   ## Examples
-      <.timeline_bar user_type="my" dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]} selected_date="2023.12" display_now/>
+      <.timeline_bar type="myself" dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]} selected_date="2023.12" display_now/>
   """
 
   attr :dates, :list, default: []
   attr :selected_date, :string, default: ""
-  attr :user_type, :string, default: "my", values: ["my", "other"]
+  attr :type, :string, default: "myself", values: ["myself", "other"]
   attr :display_now, :boolean, default: false
 
   def timeline_bar(assigns) do
@@ -23,12 +23,12 @@ defmodule BrightWeb.TimelineBarComponents do
       <div
         class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative" >
 
-        <%= if @user_type == "other" do %>
+        <%= if @type == "other" do %>
          <.close_button />
         <% end %>
 
         <%= for date <- @dates do %>
-          <.date_button date={date} user_type={@user_type} selected={date == @selected_date} />
+          <.date_button date={date} type={@type} selected={date == @selected_date} />
         <% end %>
 
         <%= if @display_now do %>
@@ -43,10 +43,10 @@ defmodule BrightWeb.TimelineBarComponents do
 
   attr :date, :string
   attr :selected, :boolean
-  attr :user_type, :string
+  attr :type, :string
 
   defp date_button(%{selected: true} = assigns) do
-    color = check_color(assigns.user_type)
+    color = check_color(assigns.type)
 
     style =
       "h-28 w-28 rounded-full #{color.bg} border-white border-8 shadow #{color.text} font-bold text-sm flex justify-center items-center flex-col"
@@ -115,6 +115,6 @@ defmodule BrightWeb.TimelineBarComponents do
     """
   end
 
-  defp check_color("my"), do: %{bg: "bg-brightGreen-50", text: "text-brightGreen-600"}
+  defp check_color("myself"), do: %{bg: "bg-brightGreen-50", text: "text-brightGreen-600"}
   defp check_color("other"), do: %{bg: "bg-amethyst-50", text: "text-amethyst-600"}
 end
