@@ -18,9 +18,9 @@ const dataDivision = (data) => {
 }
 
 const createData = (labels, data) => {
-  const [myselfData, myselfFuture] = dataDivision(data[0])
-  const [otherData, otherFuture] = dataDivision(data[1])
-  const [roleData, roleFuture] = dataDivision(data[2])
+  const [myselfData, myselfFuture] = dataDivision(data['myself'])
+  const [otherData, otherFuture] = dataDivision(data['other'])
+  const [roleData, roleFuture] = dataDivision(data['role'])
 
 
   return {
