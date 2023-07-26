@@ -3,10 +3,12 @@ defmodule Bright.AccountsTest do
 
   alias Bright.Repo
   alias Bright.Accounts
+  alias Bright.Accounts.User2faCodes
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
   import Bright.Factory
+  import Swoosh.TestAssertions
   alias Bright.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -582,9 +584,47 @@ defmodule Bright.AccountsTest do
     end
   end
 
-  # describe "setup_user_2fa_auth/1" do
+  describe "setup_user_2fa_auth/1" do
+    test "setup user two factor auth" do
+      user = insert(:user)
 
-  # end
+      Accounts.setup_user_2fa_auth(user)
+
+      assert Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_session")
+      assert Repo.aggregate(UserToken, :count) == 1
+
+      user_2fa_code = Repo.get_by!(User2faCodes, user_id: user.id)
+      assert user_2fa_code
+      assert Repo.aggregate(User2faCodes, :count) == 1
+
+      assert_email_sent(fn email ->
+        assert email.to == [{"", user.email}]
+        assert email.text_body =~ user_2fa_code.code
+      end)
+    end
+
+    test "deletes existing token and code before setup" do
+      user = insert(:user)
+      before_user_token = insert(:user_token, user: user, context: "two_factor_auth_session")
+      before_user_2fa_code = insert(:user_2fa_code, user: user)
+
+      Accounts.setup_user_2fa_auth(user)
+
+      assert before_user_token !=
+               Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_session")
+
+      assert Repo.aggregate(UserToken, :count) == 1
+
+      user_2fa_code = Repo.get_by!(User2faCodes, user_id: user.id)
+      assert user_2fa_code != before_user_2fa_code
+      assert Repo.aggregate(User2faCodes, :count) == 1
+
+      assert_email_sent(fn email ->
+        assert email.to == [{"", user.email}]
+        assert email.text_body =~ user_2fa_code.code
+      end)
+    end
+  end
 
   describe "get_user_by_2fa_auth_session_token/1" do
     test "token is valid" do
@@ -647,15 +687,14 @@ defmodule Bright.AccountsTest do
 
     test "deletes existing token before generate" do
       user = insert(:user)
-      user_token = insert(:user_token, user: user, context: "two_factor_auth_done")
+      before_user_token = insert(:user_token, user: user, context: "two_factor_auth_done")
 
       Accounts.generate_user_2fa_done_token(user)
 
-      assert Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
-      assert Repo.aggregate(UserToken, :count) == 1
-
-      assert user_token !=
+      assert before_user_token !=
                Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
+
+      assert Repo.aggregate(UserToken, :count) == 1
     end
   end
 
