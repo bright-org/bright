@@ -33,7 +33,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
         <div class="pt-4 pb-1 px-8">
           <ul class="flex gap-y-2.5 flex-col">
             <%= for notification <- @card.notifications do %>
-              <.contact_card_row notification={notification} />
+              <.card_row type="contact" notification={notification} />
             <% end %>
           </ul>
         </div>

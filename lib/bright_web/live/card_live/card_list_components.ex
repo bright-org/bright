@@ -9,14 +9,15 @@ defmodule BrightWeb.CardLive.CardListComponents do
   @highlight_minutes @hour * 8
 
   @doc """
-  Renders a Contact Card Row
+  Renders a Card Row
 
   ## Examples
-      <.contact_card_row notification={notification} />
+      <.card_row notification={notification} type="contact" />
   """
   attr :notification, :map, required: true
+  attr :type, :string, values: ["contact", "communication"]
 
-  def contact_card_row(assigns) do
+  def card_row(%{type: "contact"} = assigns) do
     ~H"""
     <li class="text-left flex items-center text-base">
       <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
@@ -28,15 +29,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
     """
   end
 
-  @doc """
-  Renders a Communication Card Row
-
-  ## Examples
-      <.contact_card_row notification={notification} />
-  """
-  attr :notification, :map, required: true
-
-  def communication_card_row(assigns) do
+  def card_row(%{type: "communication"} = assigns) do
     ~H"""
     <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
       <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
