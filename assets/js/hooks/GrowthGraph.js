@@ -129,25 +129,29 @@ const drawCurrent = (chart, scales) => {
   context.lineWidth = 2
   context.setLineDash([2, 0])
   context.strokeStyle = currentColor
-  y = scales.y.getPixelForValue(0)
-  y2 = scales.y.getPixelForValue(now)
-  y3 = scales.y.getPixelForValue(past[3])
-  y4 = scales.y.getPixelForValue(100)
+  const y = scales.y.getPixelForValue(0)
+  const y2 = scales.y.getPixelForValue(now)
+  const y3 = scales.y.getPixelForValue(past[3])
+  const y4 = scales.y.getPixelForValue(100)
 
-  x4 = scales.x.getPixelForValue(4)
-  x3 = scales.x.getPixelForValue(3)
-  diff_x = x4 - x3
-  now_x = x3 + (diff_x / 2)
+  const x4 = scales.x.getPixelForValue(4)
+  const x3 = scales.x.getPixelForValue(3)
+  const diff_x = x4 - x3
+  const now_x = x3 + (diff_x / 2)
 
+  context.beginPath()
   context.moveTo(now_x, y)
   context.lineTo(now_x, y2)
+  context.stroke()
 
   // 直近の過去から現在までの線
+  context.beginPath()
   context.moveTo(x3, y3)
   context.lineTo(now_x, y2)
   context.stroke()
 
   // 現在の点
+  context.beginPath()
   context.arc(now_x, y2, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
   context.fillStyle = currentColor
   context.fill()
