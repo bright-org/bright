@@ -586,9 +586,36 @@ defmodule Bright.AccountsTest do
 
   # end
 
-  # describe "get_user_by_2fa_auth_session_token/1" do
+  describe "get_user_by_2fa_auth_session_token/1" do
+    test "token is valid" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
+      insert(:user_token, user_token |> Map.from_struct())
 
-  # end
+      assert user == Accounts.get_user_by_2fa_auth_session_token(token)
+    end
+
+    test "token is not exists" do
+      refute Accounts.get_user_by_2fa_auth_session_token("not exist token")
+    end
+
+    test "token exists but was expired after 1 hours" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
+
+      insert(
+        :user_token,
+        user_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60)
+        )
+      )
+
+      refute Accounts.get_user_by_2fa_auth_session_token(token)
+    end
+  end
 
   describe "generate_user_2fa_done_token/1" do
     test "generates user two_factor_auth_done token" do
