@@ -6,20 +6,24 @@ const myPointColor = '#B6F1E7'
 const myFillColor = '#40DEC622'
 const othersBorderColor = '#C063CD'
 const othersPointColor = '#E4BDE9'
+const roleBorderColor = '#A9BABA'
+const rolePointColor = '#D5DCDC'
 const futurePointColor = '#FFFFFF'
 const currentColor = '#B71225'
 
 const dataDivision = (data) => {
   const past = data.map((x, index) => index > 3 ? null : x)
   const future = data.map((x, index) => index < 3 ? null : x)
-  return([past, future])
+  return ([past, future])
 }
 
 const createData = (labels, data) => {
   const [myData, myFuture] = dataDivision(data[0])
   const [othersData, othersFuture] = dataDivision(data[1])
+  const [roleData, roleFuture] = dataDivision(data[2])
 
-  return{
+
+  return {
     labels: labels,
     datasets: [
       {
@@ -31,8 +35,8 @@ const createData = (labels, data) => {
         pointBorderColor: othersPointColor,
         fill: false,
         tension: 0.1
-    },
-    {
+      },
+      {
         label: 'othersFuture',
         data: othersFuture,
         borderColor: dashColor,
@@ -42,8 +46,29 @@ const createData = (labels, data) => {
         pointBorderColor: othersPointColor,
         fill: false,
         borderWidth: 2
-    },
-    {
+      },
+      {
+        label: 'role',
+        data: roleData,
+        borderColor: roleBorderColor,
+        pointRadius: 8,
+        pointBackgroundColor: rolePointColor,
+        pointBorderColor: rolePointColor,
+        fill: false,
+        tension: 0.1
+      },
+      {
+        label: 'roleFuture',
+        data: roleFuture,
+        borderColor: dashColor,
+        borderDash: dash,
+        pointRadius: 8,
+        pointBackgroundColor: futurePointColor,
+        pointBorderColor: rolePointColor,
+        fill: false,
+        borderWidth: 2
+      },
+      {
         label: 'my',
         data: myData,
         borderColor: myBorderColor,
@@ -52,8 +77,8 @@ const createData = (labels, data) => {
         pointBorderColor: myPointColor,
         fill: true,
         backgroundColor: myFillColor,
-    },
-    {
+      },
+      {
         label: 'myFuture',
         data: myFuture,
         borderColor: dashColor,
@@ -64,7 +89,7 @@ const createData = (labels, data) => {
         fill: true,
         backgroundColor: myFillColor,
         borderWidth: 2
-    }]
+      }]
   }
 }
 
@@ -112,7 +137,7 @@ const drawCurrent = (context, scales) => {
   context.stroke()
 
   // 現在の点
-  context.arc(now_x, y2, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false )
+  context.arc(now_x, y2, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
   context.fillStyle = currentColor
   context.fill()
 }
@@ -138,7 +163,7 @@ const createChartFromJSON = (labels, data) => {
         legend: {
           display: false
         },
-         tooltip: {
+        tooltip: {
           enabled: false
         }
       },
@@ -158,7 +183,7 @@ const createChartFromJSON = (labels, data) => {
             color: dashColor,
             lineWidth: 1,
           },
-          border : {
+          border: {
             dash: dash
           }
         }
@@ -177,8 +202,8 @@ export const GrowthGraph = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
     const myChart = new Chart(ctx, createChartFromJSON(labels, data))
-    myChart.canvas.parentNode.style.height =  '600px'
-    myChart.canvas.parentNode.style.width =   '800px'
+    myChart.canvas.parentNode.style.height = '600px'
+    myChart.canvas.parentNode.style.width = '800px'
 
   }
 }
