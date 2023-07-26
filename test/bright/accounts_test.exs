@@ -594,9 +594,36 @@ defmodule Bright.AccountsTest do
 
   # end
 
-  # describe "get_user_by_2fa_done_token/1" do
+  describe "get_user_by_2fa_done_token/1" do
+    test "token is valid" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
+      insert(:user_token, user_token |> Map.from_struct())
 
-  # end
+      assert user == Accounts.get_user_by_2fa_done_token(token)
+    end
+
+    test "token is not exists" do
+      refute Accounts.get_user_by_2fa_done_token("not exist token")
+    end
+
+    test "token exists but was expired after 60 days" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
+
+      insert(
+        :user_token,
+        user_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24 * 60)
+        )
+      )
+
+      refute Accounts.get_user_by_2fa_done_token(token)
+    end
+  end
 
   describe "user_2fa_code_valid?/2" do
     test "code is valid" do
@@ -605,7 +632,7 @@ defmodule Bright.AccountsTest do
       assert Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
     end
 
-    test "code is not exists" do
+    test "code does not exists" do
       user = insert(:user)
 
       refute Accounts.user_2fa_code_valid?(user, "012345")
@@ -618,11 +645,10 @@ defmodule Bright.AccountsTest do
       refute Accounts.user_2fa_code_valid?(user, user_2fa_code.code)
     end
 
-    test "code is exists but expired" do
-      # NOTE: 10 minutes
+    test "code exists but was expired after 10 minutes" do
       user_2fa_code =
         insert(:user_2fa_code,
-          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-10 * 60 * 60)
+          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-10 * 60)
         )
 
       refute Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
