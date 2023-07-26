@@ -1,7 +1,7 @@
-defmodule Storybook.Components.TimeSeriesBar do
+defmodule Storybook.Components.TimeLineBar do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &Elixir.BrightWeb.TimeSeriesBarComponents.time_series_bar/1
+  def function, do: &Elixir.BrightWeb.TimeLineBarComponents.time_line_bar/1
 
   def variations do
     [

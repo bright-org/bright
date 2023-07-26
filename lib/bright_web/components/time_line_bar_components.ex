@@ -1,14 +1,14 @@
-defmodule BrightWeb.TimeSeriesBarComponents do
+defmodule BrightWeb.TimeLineBarComponents do
   @moduledoc """
-  TimeSeriesBar Components
+  TimeLineBar Components
   """
   use Phoenix.Component
 
   @doc """
-  Renders a Time Series Bar
+  Renders a Time Line Bar
 
   ## Examples
-      <.time_series_bar
+      <.time_line_bar
 
       />
   """
@@ -18,7 +18,7 @@ defmodule BrightWeb.TimeSeriesBarComponents do
   attr :user_type, :string, default: "my", values: ["my", "other"]
   attr :display_now, :boolean, default: false
 
-  def time_series_bar(assigns) do
+  def time_line_bar(assigns) do
     ~H"""
     <div class="flex">
       <div class="w-14"></div>
