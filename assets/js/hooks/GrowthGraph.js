@@ -23,7 +23,6 @@ const createData = (labels, data) => {
   const [otherData, otherFuture] = dataDivision(data['other'])
   const [roleData, roleFuture] = dataDivision(data['role'])
 
-
   return {
     labels: labels,
     datasets: [
@@ -96,9 +95,9 @@ const createData = (labels, data) => {
 
 const drawHorizonLine = (context, scales) => {
   // 見習い、平均、ベテランの線
-  x1 = scales.x.getPixelForValue(0)
-  x4 = scales.x.getPixelForValue(4)
-  y = scales.y.getPixelForValue(40)
+  const x1 = scales.x.getPixelForValue(0)
+  const x4 = scales.x.getPixelForValue(4)
+  let y = scales.y.getPixelForValue(40)
   context.beginPath()
   context.lineWidth = 1
   context.setLineDash(dash)
@@ -113,22 +112,33 @@ const drawHorizonLine = (context, scales) => {
   context.lineTo(x4, y)
   context.stroke()
 
-  x3 = scales.x.getPixelForValue(3)
-
-  diff_x = x4 - x3
-  now_x = x3 + (diff_x / 2)
 }
 
-const drawCurrent = (context, scales) => {
+const drawCurrent = (chart, scales) => {
+  const context = chart.ctx
+  const dataset = chart.canvas.parentNode.dataset
+  // 現在のスコア
+  const data = JSON.parse(dataset.data)
+  let now = data['now']
+
+  if (now === undefined) return
+  const past = data['myself']
+
   //　現在の縦線
   context.beginPath()
   context.lineWidth = 2
   context.setLineDash([2, 0])
   context.strokeStyle = currentColor
   y = scales.y.getPixelForValue(0)
-  y2 = scales.y.getPixelForValue(60)
-  y3 = scales.y.getPixelForValue(55)
+  y2 = scales.y.getPixelForValue(now)
+  y3 = scales.y.getPixelForValue(past[3])
   y4 = scales.y.getPixelForValue(100)
+
+  x4 = scales.x.getPixelForValue(4)
+  x3 = scales.x.getPixelForValue(3)
+  diff_x = x4 - x3
+  now_x = x3 + (diff_x / 2)
+
   context.moveTo(now_x, y)
   context.lineTo(now_x, y2)
 
@@ -147,7 +157,7 @@ const beforeDatasetsDraw = (chart, ease) => {
   const context = chart.ctx
   const scales = chart.scales
   drawHorizonLine(context, scales)
-  drawCurrent(context, scales)
+  drawCurrent(chart, scales)
 
 }
 

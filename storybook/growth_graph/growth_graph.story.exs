@@ -9,9 +9,10 @@ defmodule Storybook.GrowthGraphComponents.GrowthGraph do
         id: :default,
         attributes: %{
           data: %{
-            myself: [0, 35, 45, 55, 60],
+            myself: [0, 35, 45, 50, 70],
             other: [10, 10, 10, 45, 80],
-            role: [20, 50, 60, 75, 90]
+            role: [20, 50, 60, 75, 90],
+            now: 55
           },
           labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
         }
