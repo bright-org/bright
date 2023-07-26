@@ -11,6 +11,5 @@ defmodule Bright.Repo.Migrations.CreateSkillEvidencePosts do
     end
 
     create index(:skill_evidence_posts, [:skill_evidence_id, :inserted_at])
-    create index(:skill_evidence_posts, [:user_id, :inserted_at])
   end
 end
