@@ -30,11 +30,7 @@ defmodule BrightWeb.TimelineBarComponents do
         <% end %>
 
         <%= for date <- @dates do %>
-          <%= if date == @selected_date do %>
-            <.check_date_button date={date} user_type={@user_type} />
-          <% else %>
-            <.date_button date={date} />
-          <% end %>
+          <.date_button date={date} user_type={@user_type} selected={date == @selected_date} />
         <% end %>
 
         <%= if @display_now do %>
@@ -51,7 +47,30 @@ defmodule BrightWeb.TimelineBarComponents do
     """
   end
 
-  attr :date, :string, default: ""
+  attr :date, :string
+  attr :selected, :boolean
+  attr :user_type, :string
+
+  defp date_button(%{selected: true} = assigns) do
+    color = check_color(assigns.user_type)
+
+    style =
+      "h-28 w-28 rounded-full #{color.bg} border-white border-8 shadow #{color.text} font-bold text-sm flex justify-center items-center flex-col"
+
+    assigns =
+      assigns
+      |> assign(:style, style)
+
+    ~H"""
+    <div class="h-28 w-28 flex justify-center items-center">
+      <button class={@style}>
+        <span class="material-icons !text-4xl !font-bold"
+          >check</span>
+        <%= @date %>
+      </button>
+    </div>
+    """
+  end
 
   defp date_button(assigns) do
     ~H"""
@@ -87,30 +106,6 @@ defmodule BrightWeb.TimelineBarComponents do
         <span class="material-icons !text-4xl !font-bold"
           >check</span>
         現在
-      </button>
-    </div>
-    """
-  end
-
-  attr :date, :string, default: ""
-  attr :user_type, :string
-
-  defp check_date_button(assigns) do
-    color = check_color(assigns.user_type)
-
-    style =
-      "h-28 w-28 rounded-full #{color.bg} border-white border-8 shadow #{color.text} font-bold text-sm flex justify-center items-center flex-col"
-
-    assigns =
-      assigns
-      |> assign(:style, style)
-
-    ~H"""
-    <div class="h-28 w-28 flex justify-center items-center">
-      <button class={@style}>
-        <span class="material-icons !text-4xl !font-bold"
-          >check</span>
-        <%= @date %>
       </button>
     </div>
     """
