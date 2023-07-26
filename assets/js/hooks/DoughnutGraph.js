@@ -1,16 +1,14 @@
 import { Chart } from 'chart.js/auto'
 
-
-
 const createDoughnutData = (data) => {
   return {
     datasets: [
       {
         data: data,
         backgroundColor: [
-          "rgb(255, 99, 132)",
-          "rgb(54, 162, 235)",
-          "rgb(255, 205, 86)",
+          "#0EA895",
+          "#14D6BE",
+          "#EFF0F0",
         ]
       },
     ]
