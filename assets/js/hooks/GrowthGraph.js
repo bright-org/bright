@@ -1,5 +1,6 @@
 import { Chart } from 'chart.js/auto'
-const dash = [3, 2]
+const dash = [5, 3]
+
 const dashColor = '#A5B8B8'
 const myselfBorderColor = '#52CCB5'
 const myselfPointColor = '#B6F1E7'
@@ -93,6 +94,23 @@ const createData = (labels, data) => {
   }
 }
 
+const drawvVrticalLine = (context, scales) => {
+  const y = scales.y
+  const x = scales.x
+
+  context.lineWidth = 1
+  const upY = y.getPixelForValue(100)
+  const downY = y.getPixelForValue(0)
+  context.setLineDash(dash)
+
+  context.beginPath()
+  for (let i = 0; i < 5; i++ ) {
+    const vrticalX = x.getPixelForValue(i)
+    context.moveTo(vrticalX, upY)
+    context.lineTo(vrticalX, downY)
+  }
+  context.stroke()
+}
 const drawHorizonLine = (context, scales) => {
   // 見習い、平均、ベテランの線
   const y = scales.y
@@ -100,15 +118,21 @@ const drawHorizonLine = (context, scales) => {
 
   const startX = x.getPixelForValue(0)
   const endX = x.getPixelForValue(4)
+  const downY = y.getPixelForValue(0)
   const normalY = y.getPixelForValue(40)
   const skilledY = y.getPixelForValue(60)
-
-  context.beginPath()
   context.lineWidth = 1
+  context.setLineDash([])
+  context.beginPath()
+  // 下の線
+  context.moveTo(startX, downY)
+  context.lineTo(endX, downY)
+  context.stroke()
+
   context.setLineDash(dash)
-  context.strokeStyle = dashColor
 
   // 平均の線
+  context.beginPath()
   context.moveTo(startX, normalY)
   context.lineTo(endX, normalY)
 
@@ -167,6 +191,7 @@ const drawCurrent = (chart, scales) => {
 const beforeDatasetsDraw = (chart, ease) => {
   const context = chart.ctx
   const scales = chart.scales
+  drawvVrticalLine(context, scales)
   drawHorizonLine(context, scales)
   drawCurrent(chart, scales)
 }
@@ -190,8 +215,8 @@ const createChartFromJSON = (labels, data) => {
       },
       scales: {
         y: {
-          min: -3,
-          max: 103,
+          min: -3, //丸いポイントが削れるため-3ずらしてる
+          max: 103, //丸いポイントが削れるため+3ずらしてる
           display: false,
           grid: {
             display: false
