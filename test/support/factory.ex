@@ -40,6 +40,7 @@ defmodule Bright.Factory do
 
   # SkillEvidences context
   use Bright.SkillEvidenceFactory
+  use Bright.SkillEvidencePostFactory
 
   # NotificationsFactory context
   use Bright.NotificationFactory

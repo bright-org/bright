@@ -441,6 +441,53 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert show_live
              |> render() =~ skill_1.name
     end
+
+    @tag score: nil
+    test "creates and deletes post", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_1: skill,
+      user: user
+    } do
+      # ここからのエビデンス登録系テストは別ファイルにする検討
+      # 別LiveViewからコンポーネントを使う可能性もある
+
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill, progress: :wip)
+
+      skill_evidence_post =
+        insert(:skill_evidence_post,
+          user: user,
+          skill_evidence: skill_evidence,
+          content: "some content"
+        )
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+
+      show_live
+      |> element("#skill-1 .link-evidence")
+      |> render_click()
+
+      assert show_live
+             |> render() =~ skill_evidence_post.content
+
+      assert show_live
+             |> form("#skill_evidence_post-form", skill_evidence_post: %{content: ""})
+             |> render_submit() =~ "can&#39;t be blank"
+
+      show_live
+      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
+      |> render_submit()
+
+      assert show_live
+             |> has_element?("#skill_evidence_posts", "input 1")
+
+      show_live
+      |> element(~s([phx-click="delete"][phx-value-id="#{skill_evidence_post.id}"]))
+      |> render_click()
+
+      refute show_live
+             |> has_element?("#skill_evidence_posts", "some content")
+    end
   end
 
   # 教材
