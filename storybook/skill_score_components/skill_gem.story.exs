@@ -11,7 +11,6 @@ defmodule Storybook.SkillScoreComponents.SkillGem do
           data: [[60, 70, 80, 60, 60, 60], [50, 50, 50, 50, 50, 50]],
           labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"],
           color_theme: "myself"
-
         }
       },
       %Variation{
