@@ -1,7 +1,7 @@
 import { Chart } from 'chart.js/auto'
 const dash = [5, 3]
 
-const dashColor = '#A5B8B8'
+const dashColor = '#97ACAC'
 const myselfBorderColor = '#52CCB5'
 const myselfPointColor = '#B6F1E7'
 const myselfFillColor = '#40DEC622'
@@ -98,7 +98,7 @@ const drawvVrticalLine = (context, scales) => {
   const y = scales.y
   const x = scales.x
 
-  context.lineWidth = 1
+  context.lineWidth = 0.5
   const upY = y.getPixelForValue(100)
   const downY = y.getPixelForValue(0)
   context.setLineDash(dash)
@@ -121,7 +121,7 @@ const drawHorizonLine = (context, scales) => {
   const downY = y.getPixelForValue(0)
   const normalY = y.getPixelForValue(40)
   const skilledY = y.getPixelForValue(60)
-  context.lineWidth = 1
+  context.lineWidth = 0.5
   context.setLineDash([])
   context.beginPath()
   // 下の線
