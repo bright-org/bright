@@ -1,11 +1,11 @@
 import { Chart } from 'chart.js/auto'
 const dash = [3, 2]
 const dashColor = '#A5B8B8'
-const myBorderColor = '#52CCB5'
-const myPointColor = '#B6F1E7'
-const myFillColor = '#40DEC622'
-const othersBorderColor = '#C063CD'
-const othersPointColor = '#E4BDE9'
+const myselfBorderColor = '#52CCB5'
+const myselfPointColor = '#B6F1E7'
+const myselfFillColor = '#40DEC622'
+const otherBorderColor = '#C063CD'
+const otherPointColor = '#E4BDE9'
 const roleBorderColor = '#A9BABA'
 const rolePointColor = '#D5DCDC'
 const futurePointColor = '#FFFFFF'
@@ -18,8 +18,8 @@ const dataDivision = (data) => {
 }
 
 const createData = (labels, data) => {
-  const [myData, myFuture] = dataDivision(data[0])
-  const [othersData, othersFuture] = dataDivision(data[1])
+  const [myselfData, myselfFuture] = dataDivision(data[0])
+  const [otherData, otherFuture] = dataDivision(data[1])
   const [roleData, roleFuture] = dataDivision(data[2])
 
 
@@ -27,23 +27,23 @@ const createData = (labels, data) => {
     labels: labels,
     datasets: [
       {
-        label: 'others',
-        data: othersData,
-        borderColor: othersBorderColor,
+        label: 'other',
+        data: otherData,
+        borderColor: otherBorderColor,
         pointRadius: 8,
-        pointBackgroundColor: othersPointColor,
-        pointBorderColor: othersPointColor,
+        pointBackgroundColor: otherPointColor,
+        pointBorderColor: otherPointColor,
         fill: false,
         tension: 0.1
       },
       {
-        label: 'othersFuture',
-        data: othersFuture,
+        label: 'otherFuture',
+        data: otherFuture,
         borderColor: dashColor,
         borderDash: dash,
         pointRadius: 8,
         pointBackgroundColor: futurePointColor,
-        pointBorderColor: othersPointColor,
+        pointBorderColor: otherPointColor,
         fill: false,
         borderWidth: 2
       },
@@ -69,25 +69,25 @@ const createData = (labels, data) => {
         borderWidth: 2
       },
       {
-        label: 'my',
-        data: myData,
-        borderColor: myBorderColor,
+        label: 'myself',
+        data: myselfData,
+        borderColor: myselfBorderColor,
         pointRadius: 8,
-        pointBackgroundColor: myPointColor,
-        pointBorderColor: myPointColor,
+        pointBackgroundColor: myselfPointColor,
+        pointBorderColor: myselfPointColor,
         fill: true,
-        backgroundColor: myFillColor,
+        backgroundColor: myselfFillColor,
       },
       {
-        label: 'myFuture',
-        data: myFuture,
+        label: 'myselfFuture',
+        data: myselfFuture,
         borderColor: dashColor,
         borderDash: dash,
         pointRadius: 8,
         pointBackgroundColor: futurePointColor,
-        pointBorderColor: myPointColor,
+        pointBorderColor: myselfPointColor,
         fill: true,
-        backgroundColor: myFillColor,
+        backgroundColor: myselfFillColor,
         borderWidth: 2
       }]
   }
