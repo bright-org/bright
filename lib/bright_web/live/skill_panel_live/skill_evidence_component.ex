@@ -35,9 +35,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         <.input
           field={@form[:content]}
           type="textarea"
-          label="エビデンスを入力"
-          phx-hook="InputReseter"
-          data-default-value="" />
+          label="エビデンスを入力" />
         <:actions>
           <.button phx-disable-with="送信中...">メモを書き込む</.button>
         </:actions>
@@ -72,8 +70,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         {:noreply,
          socket
          |> stream_insert(:skill_evidence_posts, skill_evidence_post, at: -1)
-         |> assign_form()
-         |> push_event("reset_form", %{})}
+         |> assign_form()}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
