@@ -7,20 +7,21 @@ defmodule BrightWeb.UserSettingsLive.Index do
     general: UserSettingsLive.GeneralSettingComponent,
     auth: UserSettingsLive.AuthSettingComponent,
     sns: UserSettingsLive.SnsSettingComponent,
-    job: UserSettingsLive.JobSettingComponent
+    job: UserSettingsLive.JobSettingComponent,
+    notification: UserSettingsLive.NotificationSettingComponent
   }
   @tabs [
     {"general", "一般"},
     {"auth", "メール・パスワード"},
     {"sns", "SNS連携"},
-    {"job", "求職"}
+    {"job", "求職"},
+    {"notification", "通知"}
   ]
 
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="m-8">
-      <h5>ユーザー設定</h5>
+    <section class="bg-white min-h-[600px] p-4 shadow text-sm top-[60px] w-[800px] z-20" id="personal_settings">
       <.tab
         id="user_settings"
         tabs={@tabs}
@@ -30,17 +31,17 @@ defmodule BrightWeb.UserSettingsLive.Index do
         <.live_component
           module={@module}
           id={"user_settings"}
-          action={:edit}
           user={@current_user}
         />
       </.tab>
-    </div>
+    </section>
     """
   end
 
   @impl true
-  def mount(params, _session, %{assigns: %{live_action: action}} = socket) do
+  def mount(_params, _session, %{assigns: %{live_action: action}} = socket) do
     socket
+    |> assign(:page_title, "個人設定")
     |> assign(:tabs, @tabs)
     |> assign(:selected_tab, to_string(action))
     |> assign(:module, Map.get(@tab_module, action))
