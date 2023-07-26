@@ -33,11 +33,4 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:page_title, "マイページ")
     |> assign(:mypage, nil)
   end
-
-  defp apply_action(socket, action, _params)
-       when action in [:general, :auth, :sns, :job, :notification] do
-    socket
-    |> assign(:page_title, "マイページ")
-    |> assign(:mypage, nil)
-  end
 end

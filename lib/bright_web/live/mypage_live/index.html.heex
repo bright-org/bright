@@ -169,12 +169,3 @@
     patch={~p"/mypage"}
   />
 </.bright_modal>
-
-<%= if @live_action in [:general, :auth, :sns, :job, :notification]  do %>
-  <.live_component
-    id="user_setting"
-    action={@live_action}
-    module={BrightWeb.UserSettingComponent}
-    current_user={@current_user}
-  />
-<% end %>
