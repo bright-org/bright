@@ -16,7 +16,7 @@ defmodule BrightWeb.SkillScoreComponents do
   attr :labels, :list, required: true
   attr :size, :string, default: "base", values: ["sm", "base"]
   attr :display_link, :string, default: "true", values: ["true", "false"]
-  attr :color_thema, :string, default: "others", values: ["my", "others"]
+  attr :color_thema, :string, default: "other", values: ["myself", "other"]
 
   def skill_gem(assigns) do
     assigns =
