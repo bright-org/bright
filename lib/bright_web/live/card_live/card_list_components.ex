@@ -12,7 +12,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
   Renders a Card Row
 
   ## Examples
-      <.card_row notification={notification} type="contact" />
+      <.card_row type="contact" notification={notification} />
   """
   attr :notification, :map, required: true
   attr :type, :string, values: ["contact", "communication"]
