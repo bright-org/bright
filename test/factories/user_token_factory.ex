@@ -7,7 +7,8 @@ defmodule Bright.UserTokenFactory do
     quote do
       def user_token_factory do
         %Bright.Accounts.UserToken{
-          user: build(:user)
+          user: build(:user),
+          token: "token"
         }
       end
 
