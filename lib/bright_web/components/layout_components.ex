@@ -4,6 +4,7 @@ defmodule BrightWeb.LayoutComponents do
   """
   use Phoenix.Component
   import BrightWeb.BrightButtonComponents
+  import BrightWeb.UserMenuComponents
   alias Bright.UserProfiles
 
   @doc """
