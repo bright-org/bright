@@ -8,9 +8,7 @@ defmodule BrightWeb.TimelineBarComponents do
   Renders a Timeline Bar
 
   ## Examples
-      <.timeline_bar
-
-      />
+      <.timeline_bar user_type="my" dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]} selected_date="2023.12" display_now/>
   """
 
   attr :dates, :list, default: []
@@ -34,11 +32,7 @@ defmodule BrightWeb.TimelineBarComponents do
         <% end %>
 
         <%= if @display_now do %>
-          <%= if "now" == @selected_date do %>
-            <.check_now_button />
-          <% else %>
-            <.now_button />
-          <% end %>
+          <.now_button selected={"now" == @selected_date}/>
         <% end %>
 
       </div>
@@ -83,20 +77,9 @@ defmodule BrightWeb.TimelineBarComponents do
     """
   end
 
-  defp now_button(assigns) do
-    ~H"""
-    <div
-      class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
-      <button
-        class="h-10 w-10 rounded-full bg-white text-xs text-attention-900 flex justify-center items-center"
-      >
-        現在
-      </button>
-    </div>
-    """
-  end
+  attr :selected, :boolean
 
-  defp check_now_button(assigns) do
+  defp now_button(%{selected: true} = assigns) do
     ~H"""
     <div
       class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
@@ -105,6 +88,19 @@ defmodule BrightWeb.TimelineBarComponents do
       >
         <span class="material-icons !text-4xl !font-bold"
           >check</span>
+        現在
+      </button>
+    </div>
+    """
+  end
+
+  defp now_button(assigns) do
+    ~H"""
+    <div
+      class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
+      <button
+        class="h-10 w-10 rounded-full bg-white text-xs text-attention-900 flex justify-center items-center"
+      >
         現在
       </button>
     </div>
