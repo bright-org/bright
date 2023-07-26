@@ -22,6 +22,14 @@ defmodule BrightWeb.UserSettingComponent do
   def render(assigns) do
     ~H"""
     <section class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20" id="personal_settings">
+      <.link
+        href="/users/log_out"
+        method="delete"
+        class="block px-4 py-0 dark:hover:bg-gray-600 dark:hover:text-white"
+        >
+        ログアウトする
+      </.link>
+
       <.tab
         id="user_settings"
         tabs={@tabs}
