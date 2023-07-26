@@ -88,14 +88,19 @@ const drawUnderline = (chart, i) => {
 
 const beforeDatasetsDraw = (chart) => {
   const context = chart.ctx
+  const color_thema = chart.canvas.parentNode.dataset.colorThema
+  console.log(color_thema)
   const data = chart.data.datasets[0].data
   const my_color = getColorPattern(data.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"])
   const others_color = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
+  const past_color = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
+  //const past_color = getColorPattern(data.length,   ["#FFFFFF55", "#FFFFFF55", "#FFFFFF55"])
+  const diff_color = color_thema === 'my' ? past_color : others_color
   const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink)
 
   if (chart.data.datasets[1] !== undefined) {
     for (let i = 0; i < chart.data.datasets[1].data.length; i++) {
-      fillSurface(chart, chart.data.datasets[1].data, i, others_color[i])
+      fillSurface(chart, chart.data.datasets[1].data, i, diff_color[i])
     }
   }
 

@@ -6,6 +6,15 @@ defmodule Storybook.SkillScoreComponents.SkillGem do
   def variations do
     [
       %Variation{
+        id: :skill_my_6_2_3,
+        attributes: %{
+          data: [[60, 70, 80, 60, 60, 60], [50, 50, 50, 50, 50, 50]],
+          labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"],
+          color_thema: "my"
+
+        }
+      },
+      %Variation{
         id: :skill4_sm,
         attributes: %{
           data: [[90, 80, 75, 60]],
