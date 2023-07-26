@@ -15,7 +15,7 @@ defmodule Storybook.Components.TimelineBar do
         id: :my,
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
-          check_date: "2022.12",
+          selected_date: "2022.12",
           user_type: "my",
           display_now: true
         }
@@ -24,7 +24,7 @@ defmodule Storybook.Components.TimelineBar do
         id: :my_select_2023_12,
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
-          check_date: "2023.12",
+          selected_date: "2023.12",
           user_type: "my",
           display_now: true
         }
@@ -33,7 +33,7 @@ defmodule Storybook.Components.TimelineBar do
         id: :my_now,
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
-          check_date: "now",
+          selected_date: "now",
           user_type: "my",
           display_now: true
         }
@@ -42,7 +42,7 @@ defmodule Storybook.Components.TimelineBar do
         id: :other,
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
-          check_date: "2022.12",
+          selected_date: "2022.12",
           user_type: "other"
         }
       },
@@ -50,7 +50,7 @@ defmodule Storybook.Components.TimelineBar do
         id: :other_select_2023_6,
         attributes: %{
           dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
-          check_date: "2023.6",
+          selected_date: "2023.6",
           user_type: "other"
         }
       }

@@ -14,7 +14,7 @@ defmodule BrightWeb.TimelineBarComponents do
   """
 
   attr :dates, :list, default: []
-  attr :check_date, :string, default: ""
+  attr :selected_date, :string, default: ""
   attr :user_type, :string, default: "my", values: ["my", "other"]
   attr :display_now, :boolean, default: false
 
@@ -30,7 +30,7 @@ defmodule BrightWeb.TimelineBarComponents do
         <% end %>
 
         <%= for date <- @dates do %>
-          <%= if date == @check_date do %>
+          <%= if date == @selected_date do %>
             <.check_date_button date={date} user_type={@user_type} />
           <% else %>
             <.date_button date={date} />
@@ -38,7 +38,7 @@ defmodule BrightWeb.TimelineBarComponents do
         <% end %>
 
         <%= if @display_now do %>
-          <%= if "now" == @check_date do %>
+          <%= if "now" == @selected_date do %>
             <.check_now_button />
           <% else %>
             <.now_button />
