@@ -1,6 +1,6 @@
 import { Chart } from 'chart.js/auto'
 const dash = [5, 3]
-
+const padding = 70
 const dashColor = '#97ACAC'
 const myselfBorderColor = '#52CCB5'
 const myselfPointColor = '#B6F1E7'
@@ -116,8 +116,8 @@ const drawHorizonLine = (context, scales) => {
   const y = scales.y
   const x = scales.x
 
-  const startX = x.getPixelForValue(0)
-  const endX = x.getPixelForValue(4)
+  const startX = x.getPixelForValue(0) - padding
+  const endX = x.getPixelForValue(4) + padding
   const downY = y.getPixelForValue(0)
   const normalY = y.getPixelForValue(40)
   const skilledY = y.getPixelForValue(60)
@@ -156,7 +156,7 @@ const drawCurrent = (chart, scales) => {
 
   //　現在の縦線
   context.beginPath()
-  context.lineWidth = 2
+  context.lineWidth = 3
   context.setLineDash([2, 0])
   context.strokeStyle = currentColor
   const nowDown = y.getPixelForValue(0)
@@ -204,6 +204,12 @@ const createChartFromJSON = (labels, data) => {
       animation: false,
       hover: {
         mode: null
+      },
+      layout: {
+        padding: {
+          right: padding,
+          left: padding,
+        }
       },
       plugins: {
         legend: {
