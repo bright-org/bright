@@ -8,9 +8,9 @@ const createDoughnutData = (data) => {
         backgroundColor: [
           "#0EA895",
           "#14D6BE",
-          "#EFF0F0",
+          "#EFF0F0"
         ],
-        borderWidth: 0,
+        borderWidth: 0
       },
     ]
   }
