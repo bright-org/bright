@@ -90,6 +90,7 @@ const beforeDatasetsDraw = (chart) => {
   const context = chart.ctx
   const color_thema = chart.canvas.parentNode.dataset.colorThema
   const myselfData = chart.data.datasets[0].data
+  const diffData = chart.data.datasets[1] !== undefined ? chart.data.datasets[1].data : []
   const my_color = getColorPattern(myselfData.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"])
   const other_color = getColorPattern(myselfData.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
   const past_color = getColorPattern(myselfData.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
@@ -97,10 +98,8 @@ const beforeDatasetsDraw = (chart) => {
   const diff_color = color_thema === 'myself' ? past_color : other_color
   const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink)
 
-  if (chart.data.datasets[1] !== undefined) {
-    for (let i = 0; i < chart.data.datasets[1].data.length; i++) {
-      fillSurface(chart, chart.data.datasets[1].data, i, diff_color[i])
-    }
+  for (let i = 0; i < diffData.length; i++) {
+    fillSurface(chart, diffData, i, diff_color[i])
   }
 
   for (let i = 0; i < myselfData.length; i++) {
@@ -206,8 +205,8 @@ export const SkillGem = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
     const myChart = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
-    myChart.canvas.parentNode.style.height = isSmall ?  '165px' : '426px'
-    myChart.canvas.parentNode.style.width =  isSmall ? '250px' : '426px'
+    myChart.canvas.parentNode.style.height = isSmall ? '165px' : '426px'
+    myChart.canvas.parentNode.style.width = isSmall ? '250px' : '426px'
 
     ctx.addEventListener('click', function (event) {
       if (!isLink) return;
