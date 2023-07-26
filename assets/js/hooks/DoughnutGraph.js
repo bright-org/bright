@@ -2,7 +2,7 @@ import { Chart } from 'chart.js/auto'
 
 
 
-const doughnutData = (data) => {
+const createDoughnutData = (data) => {
   return {
     datasets: [
       {
@@ -21,14 +21,21 @@ const createChartFromJSON = (data) => {
   return (
     {
       type: "doughnut",
-      data: doughnutData(data),
+      data: createDoughnutData(data),
       options: {
+        animation: false,
+        hover: {
+          mode: null
+        },
         plugins: {
           legend: {
-            display: false,
+            display: false
           },
-        },
-      },
+          tooltip: {
+            enabled: false
+          }
+        }
+      }
     }
   )
 }
