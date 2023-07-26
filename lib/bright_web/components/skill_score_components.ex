@@ -16,6 +16,7 @@ defmodule BrightWeb.SkillScoreComponents do
   attr :labels, :list, required: true
   attr :size, :string, default: "base", values: ["sm", "base"]
   attr :display_link, :string, default: "true", values: ["true", "false"]
+  attr :color_theme, :string, default: "other", values: ["myself", "other"]
 
   def skill_gem(assigns) do
     assigns =
@@ -32,6 +33,7 @@ defmodule BrightWeb.SkillScoreComponents do
       data-labels={@labels}
       data-size={@size}
       data-display-link={@display_link}
+      data-color-theme={@color_theme}
     >
       <canvas></canvas>
     </div>

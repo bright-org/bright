@@ -16,20 +16,20 @@ defmodule Storybook.Card_list.CardListComponents do
       |> assign(:notifications, create_notifications())
 
     ~H"""
-    <h5>contact_card_row</h5>
+    <h5>contact card_row</h5>
     <br>
     <ul class="flex gap-y-2.5 flex-col">
       <%= for notification <- @notifications do %>
-        <.contact_card_row notification={notification} />
+        <.card_row type="contact" notification={notification} />
       <% end %>
     </ul>
     <br>
     <hr>
-    <h5>communication_card_row</h5>
+    <h5>communication card_row</h5>
     <br>
     <ul class="flex gap-y-2.5 flex-col">
       <%= for notification <- @notifications do %>
-        <.communication_card_row notification={notification} />
+        <.card_row type="communication" notification={notification} />
       <% end %>
     </ul>
     """
