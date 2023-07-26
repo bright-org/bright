@@ -12,6 +12,7 @@ const futurePointColor = '#FFFFFF'
 const currentColor = '#B71225'
 
 const dataDivision = (data) => {
+  if (data === undefined) return [[], []]
   const past = data.map((x, index) => index > 3 ? null : x)
   const future = data.map((x, index) => index < 3 ? null : x)
   return ([past, future])
