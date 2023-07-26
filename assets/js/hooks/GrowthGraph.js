@@ -131,6 +131,9 @@ const createChartFromJSON = (labels, data) => {
     data: createData(labels, data),
     options: {
       animation: false,
+      hover: {
+        mode: null
+      },
       plugins: {
         legend: {
           display: false
