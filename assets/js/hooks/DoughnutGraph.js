@@ -9,7 +9,8 @@ const createDoughnutData = (data) => {
           "#0EA895",
           "#14D6BE",
           "#EFF0F0",
-        ]
+        ],
+        borderWidth: 0,
       },
     ]
   }
