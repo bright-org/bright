@@ -480,6 +480,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert show_live
              |> has_element?("#skill_evidence_posts", "input 1")
+
       refute show_live
              |> has_element?("#skill_evidence_post-form", "input 1")
 
