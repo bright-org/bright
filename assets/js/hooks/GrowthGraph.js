@@ -190,8 +190,9 @@ const createChartFromJSON = (labels, data) => {
       },
       scales: {
         y: {
-          min: 0,
-          max: 100,
+          min: -3,
+          max: 103,
+          display: false,
           grid: {
             display: false
           },
@@ -200,12 +201,9 @@ const createChartFromJSON = (labels, data) => {
           }
         },
         x: {
+          display: false,
           grid: {
-            color: dashColor,
-            lineWidth: 1,
-          },
-          border: {
-            dash: dash
+            display: false
           }
         }
       }
