@@ -5,7 +5,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.TabComponents
-  import BrightWeb.CardLive.CardListComponents
   import BrightWeb.TeamComponents
   alias Bright.Teams
 
@@ -42,7 +41,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
             class="flex items-center text-base p-1 rounded">
               <p class="w-full align-middle">所属しているチームはありません。</p>
             </li>
-            <%= for blank <- 0.. @card.page_params.page_size - 1 do %>
+            <%= for _blank <- 0.. @card.page_params.page_size - 1 do %>
               <li
               class="flex items-center text-base p-1 rounded">
                 <br/>
@@ -55,7 +54,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
             <%= for team <- @card.entries do %>
               <.team_small team={team.team} team_type={:general_team} />
             <% end %>
-            <%= for blank <- 0.. @card.page_params.page_size - length(@card.entries) do %>
+            <%= for _blank <- 0.. @card.page_params.page_size - length(@card.entries) do %>
               <li
               class="flex items-center text-base p-1 rounded">
                 <br/>
@@ -177,9 +176,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     }
   end
 
-  @doc """
-    TabComponentのタブメニュー表示制御
-  """
   defp show_menue(assings) do
     if Map.has_key?(assings, :show_menue) && assings.show_menue == true do
       assings.card.menu_items
