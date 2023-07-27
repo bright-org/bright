@@ -51,25 +51,73 @@ defmodule Bright.TeamsTest do
   end
 
   describe "list_joined_teams_by_user_id/1" do
-    test "create team and member users." do
+    test "create team and member users. with no page params" do
       admin_team_name = Faker.Lorem.word()
       joined_team_name = Faker.Lorem.word()
       user = insert(:user)
       other_user = insert(:user)
 
       assert {:ok, admin_team} = Teams.create_team_multi(admin_team_name, user, [other_user])
+      assert {:ok, _joined_team} = Teams.create_team_multi(joined_team_name, other_user, [user])
+
+      page = Teams.list_joined_teams_by_user_id(user.id)
+      related_teams = page.entries
+
+      # ページ情報の確認
+      assert page.page_number == 1
+      assert page.total_entries == 2
+      assert page.total_pages == 2
+
+      # ページ条件を指定しない１件しか取得しない
+      assert Enum.count(page.entries) == 1
+      # 作成したチームの属性チェック
+      admin_team_result = Enum.find(related_teams, fn x -> x.is_admin == true end)
+      assert admin_team_result.team.name == admin_team.name
+    end
+
+    test "create team and member users. with page params" do
+      admin_team_name = Faker.Lorem.word()
+      joined_team_name = Faker.Lorem.word()
+      joined_team2_name = Faker.Lorem.word()
+      user = insert(:user)
+      other_user = insert(:user)
+
+      assert {:ok, admin_team} = Teams.create_team_multi(admin_team_name, user, [other_user])
       assert {:ok, joined_team} = Teams.create_team_multi(joined_team_name, other_user, [user])
+      assert {:ok, joined_team2} = Teams.create_team_multi(joined_team2_name, other_user, [user])
 
-      related_teams = Teams.list_joined_teams_by_user_id(user.id)
+      page = Teams.list_joined_teams_by_user_id(user.id, %{page: 1, page_size: 2})
+      related_teams = page.entries
 
-      # 作成したチームも含めジョインしたすべてのチームが取得できる
-      assert Enum.count(related_teams) == 2
+      # ページ情報の確認
+      assert page.page_number == 1
+      assert page.total_entries == 3
+      assert page.total_pages == 2
+
+      # ページパラメータで指定した数だけ結果が取得できる
+      assert Enum.count(page.entries) == 2
       # 作成したチームの属性チェック
       admin_team_result = Enum.find(related_teams, fn x -> x.is_admin == true end)
       assert admin_team_result.team.name == admin_team.name
       # ジョインしたチームの属性チェック
       joined_team_result = Enum.find(related_teams, fn x -> x.is_admin == false end)
       assert joined_team_result.team.name == joined_team.name
+
+      page2 = Teams.list_joined_teams_by_user_id(user.id, %{page: 2, page_size: 2})
+      related_teams2 = page2.entries
+
+      # ページ情報の確認
+      assert page2.page_number == 2
+      assert page2.total_entries == 3
+      assert page2.total_pages == 2
+
+      # ２ページ目の残りは１件
+      assert Enum.count(page2.entries) == 1
+
+      # 2ページ目の属性チェック
+      joined_team_result2 = Enum.find(related_teams2, fn x -> x.is_admin == false end)
+      assert joined_team_result2.team.name == joined_team2.name
+
     end
   end
 end
