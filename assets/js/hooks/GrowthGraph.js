@@ -13,9 +13,10 @@ const rolePointColor = '#D5DCDC'
 const futurePointColor = '#FFFFFF'
 const currentColor = '#B71225'
 
-const dataDivision = (data) => {
+const dataDivision = (data, futureEnabled) => {
   if (data === undefined) return [[], []]
   data = data.slice(1)
+  if (!futureEnabled) return [data, []]
   const past = data.map((x, index) => index > 3 ? null : x)
   const future = data.map((x, index) => index < 3 ? null : x)
   return ([past, future])
@@ -33,19 +34,29 @@ const createDataset = (data, borderColor, pointBackgroundColor, pointBorderColor
 }
 
 const createData = (labels, data) => {
-  const [myselfData, myselfFuture] = dataDivision(data['myself'])
-  const [otherData, otherFuture] = dataDivision(data['other'])
-  const [roleData, roleFuture] = dataDivision(data['role'])
+  const futureEnabled = data['futureEnabled'] === undefined ? true : data['futureEnabled']
+  const [myselfData, myselfFuture] = dataDivision(data['myself'], futureEnabled)
+  const [otherData, otherFuture] = dataDivision(data['other'], futureEnabled)
+  const [roleData, roleFuture] = dataDivision(data['role'], futureEnabled)
+  const datasets = [];
+  datasets.push(createDataset(myselfData, myselfBorderColor, myselfPointColor, myselfPointColor, false))
+  if (futureEnabled) {
+    datasets.push(createDataset(myselfFuture, dashColor, futurePointColor, myselfPointColor, true))
+  }
+  datasets.push(createDataset(otherData, otherBorderColor, otherPointColor, otherPointColor, false))
+
+  if (futureEnabled) {
+    datasets.push(createDataset(otherFuture, dashColor, futurePointColor, otherPointColor, true))
+  }
+
+  datasets.push(createDataset(roleData, roleBorderColor, rolePointColor, rolePointColor, false))
+
+  if (futureEnabled) {
+    datasets.push(createDataset(roleFuture, dashColor, futurePointColor, rolePointColor, true))
+  }
   return {
     labels: labels,
-    datasets: [
-      createDataset(myselfData, myselfBorderColor, myselfPointColor, myselfPointColor, false),
-      createDataset(myselfFuture, dashColor, futurePointColor, myselfPointColor, true),
-      createDataset(otherData, otherBorderColor, otherPointColor, otherPointColor, false),
-      createDataset(otherFuture, dashColor, futurePointColor, otherPointColor, true),
-      createDataset(roleData, roleBorderColor, rolePointColor, rolePointColor, false),
-      createDataset(roleFuture, dashColor, futurePointColor, rolePointColor, true),
-    ]
+    datasets: datasets
   }
 }
 
