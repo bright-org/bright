@@ -2,6 +2,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
   use BrightWeb, :live_component
   alias Bright.UserJobProfiles
   alias Bright.UserJobProfiles.UserJobProfile
+  alias BrightWeb.UserSettingsLive.UserSettingComponent
 
   @impl true
   def render(assigns) do
@@ -156,12 +157,13 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
            user_job_profile_params
          ) do
       {:ok, user_job_profile} ->
-        notify_parent({:saved, user_job_profile})
+        send_update(UserSettingComponent,
+          id: "user_setting_modal",
+          modal_flash: %{info: "User Job profile updated successfully"},
+          action: "job"
+        )
 
-        socket
-        |> put_flash(:info, "User Job profile updated successfully")
-        |> push_patch(to: "/settings/job")
-        |> then(&{:noreply, &1})
+        {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
@@ -171,6 +173,4 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
-
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end
