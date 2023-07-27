@@ -117,7 +117,6 @@ defmodule Bright.TeamsTest do
       # 2ページ目の属性チェック
       joined_team_result2 = Enum.find(related_teams2, fn x -> x.is_admin == false end)
       assert joined_team_result2.team.name == joined_team2.name
-
     end
   end
 end
