@@ -13,7 +13,7 @@ const otherSelectedColor = '#9510B1'
 const roleBorderColor = '#A9BABA'
 const rolePointColor = '#D5DCDC'
 const futurePointColor = '#FFFFFF'
-const currentColor = '#B71225'
+const nowColor = '#B71225'
 
 const dataDivision = (data, futureEnabled) => {
   if (data === undefined) return [[], []]
@@ -124,7 +124,7 @@ const drawNow = (chart, scales) => {
 
   context.lineWidth = 3
   context.setLineDash([2, 0])
-  context.strokeStyle = currentColor
+  context.strokeStyle = nowColor
   const nowDown = y.getPixelForValue(0)
   const nowY = y.getPixelForValue(now)
   const pastY = y.getPixelForValue(pastData[4])
@@ -150,7 +150,7 @@ const drawNow = (chart, scales) => {
   // 現在の点
   context.beginPath()
   context.arc(nowX, nowY, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
-  context.fillStyle = currentColor
+  context.fillStyle = nowColor
   context.fill()
 }
 
