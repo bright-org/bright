@@ -14,6 +14,7 @@ const currentColor = '#B71225'
 
 const dataDivision = (data) => {
   if (data === undefined) return [[], []]
+  data = data.slice(1)
   const past = data.map((x, index) => index > 3 ? null : x)
   const future = data.map((x, index) => index < 3 ? null : x)
   return ([past, future])
@@ -104,7 +105,7 @@ const drawvVrticalLine = (context, scales) => {
   context.setLineDash(dash)
 
   context.beginPath()
-  for (let i = 0; i < 5; i++ ) {
+  for (let i = 0; i < 5; i++) {
     const vrticalX = x.getPixelForValue(i)
     context.moveTo(vrticalX, upY)
     context.lineTo(vrticalX, downY)
@@ -188,12 +189,39 @@ const drawCurrent = (chart, scales) => {
   context.fill()
 }
 
+const drawvfastDataLine = (chart, scales, name, color) => {
+  const context = chart.ctx
+  const dataset = chart.canvas.parentNode.dataset
+  const data = JSON.parse(dataset.data)
+  const drawData = data[name]
+  if (drawData === undefined) return
+  if (drawData[0] === null) return
+  context.lineWidth = 3
+  context.setLineDash([])
+  const y = scales.y
+  const x = scales.x
+
+  const startX = x.getPixelForValue(0) - padding
+  const endX = x.getPixelForValue(0)
+  const stratY = y.getPixelForValue(drawData[0])
+  const endY = y.getPixelForValue(drawData[1])
+
+  context.strokeStyle = color
+  context.beginPath()
+  context.moveTo(startX, stratY)
+  context.lineTo(endX, endY)
+  context.stroke()
+
+}
 const beforeDatasetsDraw = (chart, ease) => {
   const context = chart.ctx
   const scales = chart.scales
   drawvVrticalLine(context, scales)
   drawHorizonLine(context, scales)
   drawCurrent(chart, scales)
+  drawvfastDataLine(chart, scales, "myself", myselfBorderColor)
+  drawvfastDataLine(chart, scales, "other", otherBorderColor)
+  drawvfastDataLine(chart, scales, "role", roleBorderColor)
 }
 
 const createChartFromJSON = (labels, data) => {

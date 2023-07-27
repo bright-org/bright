@@ -9,9 +9,9 @@ defmodule Storybook.GrowthGraphComponents.GrowthGraph do
         id: :default,
         attributes: %{
           data: %{
-            myself: [0, 35, 45, 50, 70],
-            other: [10, 10, 10, 45, 80],
-            role: [20, 50, 60, 75, 100],
+            myself: [nil, 0, 35, 45, 50, 70],
+            other: [10, 10, 10, 10, 45, 80],
+            role: [20, 20, 50, 60, 75, 100],
             now: 55
           },
           labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
@@ -21,7 +21,7 @@ defmodule Storybook.GrowthGraphComponents.GrowthGraph do
         id: :sample1,
         attributes: %{
           data: %{
-            myself: [0, 35, 45, 55, 60]
+            myself: [nil, 0, 35, 45, 55, 60]
           },
           labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
         }
@@ -30,8 +30,8 @@ defmodule Storybook.GrowthGraphComponents.GrowthGraph do
         id: :sample2,
         attributes: %{
           data: %{
-            myself: [0, 35, 45, 55, 60],
-            role: [20, 50, 60, 75, 90]
+            myself: [nil, 0, 35, 45, 55, 60],
+            role: [10, 20, 50, 60, 75, 90]
           },
           labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
         }
@@ -40,8 +40,8 @@ defmodule Storybook.GrowthGraphComponents.GrowthGraph do
         id: :sample3,
         attributes: %{
           data: %{
-            myself: [0, 35, 45, 55, 60],
-            other: [10, 10, 10, 45, 80]
+            myself: [10, 10, 35, 45, 55, 60],
+            other: [10, 10, 10, 10, 45, 80]
           },
           labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
         }
