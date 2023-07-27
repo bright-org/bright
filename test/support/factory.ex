@@ -19,6 +19,10 @@ defmodule Bright.Factory do
   # UserJobProfiles context
   use Bright.UserJobProfileFactory
 
+  # DraftSkillPanels context
+  use Bright.DraftSkillPanelFactory
+  use Bright.DraftSkillClassFactory
+
   # SkillPanels context
   use Bright.SkillPanelFactory
   use Bright.SkillClassFactory
