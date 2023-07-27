@@ -1,4 +1,7 @@
 defmodule BrightWeb.BrightCoreComponents do
+  @moduledoc """
+  Bright Core Components
+  """
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
