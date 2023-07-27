@@ -191,9 +191,9 @@ defmodule BrightWeb.BrightButtonComponents do
     """
   end
 
-  defp user_menu(assigns) do
+  def user_menu(assigns) do
     menu_items = [
-      %{text: "個人設定", href: "/settings/general", method: "get"},
+      %{text: "個人設定", href: "/", method: "get"},
       %{text: "ログアウトする", href: "/users/log_out", method: "delete"}
     ]
 
