@@ -137,11 +137,6 @@ defmodule BrightWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
-      live "/settings/general", UserSettingsLive.Index, :general
-      live "/settings/auth", UserSettingsLive.Index, :auth
-      live "/settings/sns", UserSettingsLive.Index, :sns
-      live "/settings/job", UserSettingsLive.Index, :job
-      live "/settings/notification", UserSettingsLive.Index, :notification
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index

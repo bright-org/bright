@@ -54,16 +54,6 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
   end
 
   @impl true
-  def handle_params(_params, _uri, socket) do
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info({_module, {:saved, flash}}, socket) do
-    {:noreply, assign(:modal_flash, flash)}
-  end
-
-  @impl true
   def handle_event("tab_click", %{"tab_name" => tab_name}, socket) do
     socket
     |> assign(:selected_tab, tab_name)
