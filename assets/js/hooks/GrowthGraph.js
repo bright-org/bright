@@ -4,7 +4,8 @@ const padding = 70
 const dashColor = '#97ACAC'
 const myselfBorderColor = '#52CCB5'
 const myselfPointColor = '#B6F1E7'
-const myselfFillColor = '#40DEC622'
+const myselfFillStartColor = '#B6F1E7FF'
+const myselfFillEndColor = '#B6F1E700'
 const otherBorderColor = '#C063CD'
 const otherPointColor = '#E4BDE9'
 const roleBorderColor = '#A9BABA'
@@ -35,8 +36,6 @@ const createData = (labels, data) => {
         pointRadius: 8,
         pointBackgroundColor: myselfPointColor,
         pointBorderColor: myselfPointColor,
-        fill: true,
-        backgroundColor: myselfFillColor,
       },
       {
         label: 'myselfFuture',
@@ -46,8 +45,6 @@ const createData = (labels, data) => {
         pointRadius: 8,
         pointBackgroundColor: futurePointColor,
         pointBorderColor: myselfPointColor,
-        fill: true,
-        backgroundColor: myselfFillColor,
         borderWidth: 2
       },
       {
@@ -189,7 +186,7 @@ const drawCurrent = (chart, scales) => {
   context.fill()
 }
 
-const drawvfastDataLine = (chart, scales, name, color) => {
+const drawfastDataLine = (chart, scales, name, color) => {
   const context = chart.ctx
   const dataset = chart.canvas.parentNode.dataset
   const data = JSON.parse(dataset.data)
@@ -213,15 +210,64 @@ const drawvfastDataLine = (chart, scales, name, color) => {
   context.stroke()
 
 }
+
+const fillMyselfData = (chart, scales) => {
+  const context = chart.ctx
+  const dataset = chart.canvas.parentNode.dataset
+  const data = JSON.parse(dataset.data)
+  let drawData = data['myself']
+  if (drawData === undefined) return
+  const isDrawBefore = drawData[0] !== null
+  drawData = isDrawBefore ? drawData : drawData.slice(1)
+  context.lineWidth = 1
+  context.setLineDash([])
+  const y = scales.y
+  const x = scales.x
+
+  const startX = x.getPixelForValue(0) - padding
+  const startY = y.getPixelForValue(0)
+
+  const endX = x.getPixelForValue(4)
+  const endY = y.getPixelForValue(0)
+
+  const gradient = context.createLinearGradient(0, 0, 0, 1400)
+  gradient.addColorStop(0, myselfFillStartColor)
+  gradient.addColorStop(1, myselfFillEndColor)
+
+  context.fillStyle = gradient
+  context.beginPath()
+  context.moveTo(startX, startY)
+  if (isDrawBefore) {
+    let pointY = y.getPixelForValue(drawData[0])
+    context.lineTo(startX, pointY)
+    for (let i = 1; i < drawData.length; i++) {
+      let pointX = x.getPixelForValue(i - 1)
+      let pointY = y.getPixelForValue(drawData[i])
+      context.lineTo(pointX, pointY)
+    }
+  } else {
+    for (let i = 0; i < drawData.length; i++) {
+      let pointX = x.getPixelForValue(i)
+      let pointY = y.getPixelForValue(drawData[i])
+      context.lineTo(pointX, pointY)
+    }
+  }
+  context.lineTo(endX, endY)
+  context.lineTo(startX, startY)
+  context.closePath()
+  context.fill()
+}
+
 const beforeDatasetsDraw = (chart, ease) => {
   const context = chart.ctx
   const scales = chart.scales
   drawvVrticalLine(context, scales)
   drawHorizonLine(context, scales)
+  fillMyselfData(chart, scales)
   drawCurrent(chart, scales)
-  drawvfastDataLine(chart, scales, "role", roleBorderColor)
-  drawvfastDataLine(chart, scales, "other", otherBorderColor)
-  drawvfastDataLine(chart, scales, "myself", myselfBorderColor)
+  drawfastDataLine(chart, scales, "role", roleBorderColor)
+  drawfastDataLine(chart, scales, "other", otherBorderColor)
+  drawfastDataLine(chart, scales, "myself", myselfBorderColor)
 }
 
 const createChartFromJSON = (labels, data) => {
