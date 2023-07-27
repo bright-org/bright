@@ -164,8 +164,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
 
   @impl true
   def update(%{user: user} = assigns, socket) do
-    user_job_profile =
-      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
+    user_job_profile = UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
 
     changeset = UserJobProfiles.change_user_job_profile(user_job_profile)
 
