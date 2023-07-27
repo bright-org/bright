@@ -219,7 +219,10 @@ const fillMyselfData = (chart, scales) => {
   const data = JSON.parse(dataset.data)
   let drawData = data['myself']
   if (drawData === undefined) return
+  // 期間外のデータを描画するかを判定　配列の先頭は期間外のデータ
   const isDrawBefore = drawData[0] !== null
+
+  // 期間外のデータがnullの場合は予め除外しておく、理由は通常のグリッド処理が可能の為
   drawData = isDrawBefore ? drawData : drawData.slice(1)
   context.lineWidth = 1
   context.setLineDash([])
@@ -240,19 +243,17 @@ const fillMyselfData = (chart, scales) => {
   context.beginPath()
   context.moveTo(startX, startY)
   if (isDrawBefore) {
+    // 期間外のデータの時はグリッドでx座標を管理していない為x座標計算結果(startX)を代入
     let pointY = y.getPixelForValue(drawData[0])
     context.lineTo(startX, pointY)
-    for (let i = 1; i < drawData.length; i++) {
-      let pointX = x.getPixelForValue(i - 1)
-      let pointY = y.getPixelForValue(drawData[i])
-      context.lineTo(pointX, pointY)
-    }
-  } else {
-    for (let i = 0; i < drawData.length; i++) {
-      let pointX = x.getPixelForValue(i)
-      let pointY = y.getPixelForValue(drawData[i])
-      context.lineTo(pointX, pointY)
-    }
+  }
+
+  startIndex = isDrawBefore ? 1 : 0
+
+  for (let i = startIndex; i < drawData.length; i++) {
+    let pointX = x.getPixelForValue(i - startIndex)
+    let pointY = y.getPixelForValue(drawData[i])
+    context.lineTo(pointX, pointY)
   }
   context.lineTo(endX, endY)
   context.lineTo(startX, startY)
