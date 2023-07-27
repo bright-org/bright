@@ -21,69 +21,31 @@ const dataDivision = (data) => {
   return ([past, future])
 }
 
+const createDataset = (data, borderColor, pointBackgroundColor, pointBorderColor, isFuture) => {
+  return {
+    data: data,
+    borderColor: borderColor,
+    pointRadius: 8,
+    pointBackgroundColor: pointBackgroundColor,
+    pointBorderColor: pointBorderColor,
+    borderDash: isFuture ? dash : []
+  }
+}
+
 const createData = (labels, data) => {
   const [myselfData, myselfFuture] = dataDivision(data['myself'])
   const [otherData, otherFuture] = dataDivision(data['other'])
   const [roleData, roleFuture] = dataDivision(data['role'])
-
   return {
     labels: labels,
     datasets: [
-      {
-        label: 'myself',
-        data: myselfData,
-        borderColor: myselfBorderColor,
-        pointRadius: 8,
-        pointBackgroundColor: myselfPointColor,
-        pointBorderColor: myselfPointColor,
-      },
-      {
-        label: 'myselfFuture',
-        data: myselfFuture,
-        borderColor: dashColor,
-        borderDash: dash,
-        pointRadius: 8,
-        pointBackgroundColor: futurePointColor,
-        pointBorderColor: myselfPointColor,
-      },
-      {
-        label: 'other',
-        data: otherData,
-        borderColor: otherBorderColor,
-        pointRadius: 8,
-        pointBackgroundColor: otherPointColor,
-        pointBorderColor: otherPointColor,
-
-      },
-      {
-        label: 'otherFuture',
-        data: otherFuture,
-        borderColor: dashColor,
-        borderDash: dash,
-        pointRadius: 8,
-        pointBackgroundColor: futurePointColor,
-        pointBorderColor: otherPointColor,
-
-
-      },
-      {
-        label: 'role',
-        data: roleData,
-        borderColor: roleBorderColor,
-        pointRadius: 8,
-        pointBackgroundColor: rolePointColor,
-        pointBorderColor: rolePointColor,
-      },
-      {
-        label: 'roleFuture',
-        data: roleFuture,
-        borderColor: dashColor,
-        borderDash: dash,
-        pointRadius: 8,
-        pointBackgroundColor: futurePointColor,
-        pointBorderColor: rolePointColor,
-
-      }]
+      createDataset(myselfData, myselfBorderColor, myselfPointColor, myselfPointColor, false),
+      createDataset(myselfFuture, dashColor, futurePointColor, myselfPointColor, true),
+      createDataset(otherData, otherBorderColor, otherPointColor, otherPointColor, false),
+      createDataset(otherFuture, dashColor, futurePointColor, otherPointColor, true),
+      createDataset(roleData, roleBorderColor, rolePointColor, rolePointColor, false),
+      createDataset(roleFuture, dashColor, futurePointColor, rolePointColor, true),
+    ]
   }
 }
 
