@@ -35,7 +35,7 @@ const createDataset = (data, borderColor, pointBackgroundColor, pointBorderColor
   }
 }
 
-const createData = (labels, data) => {
+const createData = (data) => {
   const futureEnabled = data['futureEnabled'] === undefined ? true : data['futureEnabled']
   const [myselfData, myselfFuture] = dataDivision(data['myself'], futureEnabled)
   const [otherData, otherFuture] = dataDivision(data['other'], futureEnabled)
@@ -55,7 +55,7 @@ const createData = (labels, data) => {
   }
 
   return {
-    labels: labels,
+    labels: data.labels,
     datasets: datasets
   }
 }
@@ -155,6 +155,7 @@ const drawNow = (chart, scales) => {
 }
 
 const drawSelectedLine = (chart, scales, dataname, selectedColor, index) => {
+  if (index < 0) return
   const context = chart.ctx
   const dataset = chart.canvas.parentNode.dataset
   // 現在のスコア
@@ -183,6 +184,8 @@ const drawSelectedLine = (chart, scales, dataname, selectedColor, index) => {
 }
 
 const drawSelectedPoint = (chart, scales, dataname, selectedColor, index) => {
+  if (index < 0) return
+
   const context = chart.ctx
   const dataset = chart.canvas.parentNode.dataset
   // 現在のスコア
@@ -285,12 +288,21 @@ const fillMyselfData = (chart, scales) => {
 const beforeDatasetsDraw = (chart, ease) => {
   const context = chart.ctx
   const scales = chart.scales
+  const dataset = chart.canvas.parentNode.dataset
+  const data = JSON.parse(dataset.data)
+
+  const myselfSelected = (element) => element == data['myselfSelected'];
+  const myselfSelectedIndex = data.labels.findIndex(myselfSelected)
+
+  const otherSelected = (element) => element == data['otherSelected'];
+  const otherSelectedIndex = data.labels.findIndex(otherSelected)
+
   drawvVrticalLine(context, scales)
   drawHorizonLine(context, scales)
   fillMyselfData(chart, scales)
   drawNow(chart, scales)
-  drawSelectedLine(chart, scales, 'myself', myselfSelectedColor, 2)
-  drawSelectedLine(chart, scales, 'other', otherSelectedColor, 0)
+  drawSelectedLine(chart, scales, 'myself', myselfSelectedColor, myselfSelectedIndex)
+  drawSelectedLine(chart, scales, 'other', otherSelectedColor, otherSelectedIndex)
   drawfastDataLine(chart, scales, "role", roleBorderColor)
   drawfastDataLine(chart, scales, "other", otherBorderColor)
   drawfastDataLine(chart, scales, "myself", myselfBorderColor)
@@ -299,14 +311,23 @@ const beforeDatasetsDraw = (chart, ease) => {
 const afterDatasetsDraw = (chart, ease) => {
   const context = chart.ctx
   const scales = chart.scales
-  drawSelectedPoint(chart, scales, 'myself', myselfSelectedColor, 2)
-  drawSelectedPoint(chart, scales, 'other', otherSelectedColor, 0)
+  const dataset = chart.canvas.parentNode.dataset
+  const data = JSON.parse(dataset.data)
+
+  const myselfSelected = (element) => element == data['myselfSelected'];
+  const myselfSelectedIndex = data.labels.findIndex(myselfSelected)
+
+  const otherSelected = (element) => element == data['otherSelected'];
+  const otherSelectedIndex = data.labels.findIndex(otherSelected)
+
+  drawSelectedPoint(chart, scales, 'myself', myselfSelectedColor, myselfSelectedIndex)
+  drawSelectedPoint(chart, scales, 'other', otherSelectedColor, otherSelectedIndex)
 }
 
-const createChartFromJSON = (labels, data) => {
+const createChartFromJSON = (data) => {
   return ({
     type: 'line',
-    data: createData(labels, data),
+    data: createData(data),
     options: {
       animation: false,
       hover: {
@@ -358,11 +379,10 @@ export const GrowthGraph = {
   mounted() {
     const element = this.el
     const dataset = element.dataset
-    const labels = JSON.parse(dataset.labels)
     const data = JSON.parse(dataset.data)
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
-    const myChart = new Chart(ctx, createChartFromJSON(labels, data))
+    const myChart = new Chart(ctx, createChartFromJSON(data))
     myChart.canvas.parentNode.style.height = '600px'
     myChart.canvas.parentNode.style.width = '800px'
   }
