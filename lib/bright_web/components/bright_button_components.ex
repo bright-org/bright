@@ -174,17 +174,26 @@ defmodule BrightWeb.BrightButtonComponents do
 
   def user_button(assigns) do
     ~H"""
-    <button id="user_menu_dropmenu" class="hover:opacity-70" data-dropdown-toggle="user_menu">
+    <button
+      id="user_menu_dropmenu"
+      class="hover:opacity-70"
+      phx-click={Phoenix.LiveView.JS.toggle(
+        to: "#personal_settings",
+        in: {"ease-in-out duration-500 both", "scale-y-0 origin-top", "scale-y-100"},
+        out: {"ease-in-out duration-500 both", "scale-y-100", "scale-y-0 origin-top"},
+        time: 500
+      )}
+      phx-target={"#personal_settings"}
+    >
       <img class="inline-block h-10 w-10 rounded-full"
           src={@icon_file_path} />
     </button>
-    <.user_menu />
     """
   end
 
-  defp user_menu(assigns) do
+  def user_menu(assigns) do
     menu_items = [
-      %{text: "個人設定", href: "/settings/general", method: "get"},
+      %{text: "個人設定", href: "/", method: "get"},
       %{text: "ログアウトする", href: "/users/log_out", method: "delete"}
     ]
 
