@@ -4,10 +4,12 @@ const padding = 70
 const dashColor = '#97ACAC'
 const myselfBorderColor = '#52CCB5'
 const myselfPointColor = '#B6F1E7'
+const myselfSelectedColor = '#008971'
 const myselfFillStartColor = '#B6F1E7FF'
 const myselfFillEndColor = '#B6F1E700'
 const otherBorderColor = '#C063CD'
 const otherPointColor = '#E4BDE9'
+const otherSelectedColor = '#9510B1'
 const roleBorderColor = '#A9BABA'
 const rolePointColor = '#D5DCDC'
 const futurePointColor = '#FFFFFF'
@@ -110,7 +112,7 @@ const drawHorizonLine = (context, scales) => {
   context.stroke()
 }
 
-const drawCurrent = (chart, scales) => {
+const drawNow = (chart, scales) => {
   const context = chart.ctx
   const dataset = chart.canvas.parentNode.dataset
   // 現在のスコア
@@ -122,8 +124,6 @@ const drawCurrent = (chart, scales) => {
   const x = scales.x
   const pastData = data['myself']
 
-  //　現在の縦線
-  context.beginPath()
   context.lineWidth = 3
   context.setLineDash([2, 0])
   context.strokeStyle = currentColor
@@ -154,6 +154,34 @@ const drawCurrent = (chart, scales) => {
   context.arc(nowX, nowY, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
   context.fillStyle = currentColor
   context.fill()
+}
+
+const drawSelectedLine = (chart, scales, dataname, selectedColor, index) => {
+  const context = chart.ctx
+  const dataset = chart.canvas.parentNode.dataset
+  // 現在のスコア
+  const data = JSON.parse(dataset.data)
+  let drawData = data[dataname]
+
+  if (drawData === undefined) return
+  drawData = drawData.slice(1)
+
+  const y = scales.y
+  const x = scales.x
+  const curentData = drawData[index]
+
+  context.lineWidth = 4
+  context.setLineDash([])
+  context.strokeStyle = selectedColor
+  const selectedX = x.getPixelForValue(index)
+  const selectedYDown = y.getPixelForValue(0)
+  const selectedYUp = y.getPixelForValue(curentData)
+
+  // 「選択している」縦線
+  context.beginPath()
+  context.moveTo(selectedX, selectedYDown)
+  context.lineTo(selectedX, selectedYUp)
+  context.stroke()
 }
 
 const drawfastDataLine = (chart, scales, name, color) => {
@@ -235,7 +263,9 @@ const beforeDatasetsDraw = (chart, ease) => {
   drawvVrticalLine(context, scales)
   drawHorizonLine(context, scales)
   fillMyselfData(chart, scales)
-  drawCurrent(chart, scales)
+  drawNow(chart, scales)
+  drawSelectedLine(chart, scales, 'myself', myselfSelectedColor, 2)
+  drawSelectedLine(chart, scales, 'other', otherSelectedColor, 0)
   drawfastDataLine(chart, scales, "role", roleBorderColor)
   drawfastDataLine(chart, scales, "other", otherBorderColor)
   drawfastDataLine(chart, scales, "myself", myselfBorderColor)
