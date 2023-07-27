@@ -8,7 +8,6 @@ defmodule Bright.DraftSkillUnits do
 
   alias Bright.DraftSkillUnits.DraftSkillUnit
   alias Bright.DraftSkillUnits.DraftSkillCategory
-  alias Bright.DraftSkillUnits.DraftSkill
 
   @doc """
   Returns the list of draft_skill_units.
