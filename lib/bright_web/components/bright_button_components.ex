@@ -179,9 +179,9 @@ defmodule BrightWeb.BrightButtonComponents do
       class="hover:opacity-70"
       phx-click={Phoenix.LiveView.JS.toggle(
         to: "#personal_settings",
-        in: {"ease-in-out duration-1000 both", "scale-y-0 origin-top", "scale-y-100"},
-        out: {"ease-in-out duration-1000 both", "scale-y-100", "scale-y-0 origin-top"},
-        time: 1000
+        in: {"ease-in-out duration-500 both", "scale-y-0 origin-top", "scale-y-100"},
+        out: {"ease-in-out duration-500 both", "scale-y-100", "scale-y-0 origin-top"},
+        time: 500
       )}
       phx-target={"#personal_settings"}
     >
