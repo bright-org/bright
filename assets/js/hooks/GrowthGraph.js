@@ -29,6 +29,28 @@ const createData = (labels, data) => {
     labels: labels,
     datasets: [
       {
+        label: 'myself',
+        data: myselfData,
+        borderColor: myselfBorderColor,
+        pointRadius: 8,
+        pointBackgroundColor: myselfPointColor,
+        pointBorderColor: myselfPointColor,
+        fill: true,
+        backgroundColor: myselfFillColor,
+      },
+      {
+        label: 'myselfFuture',
+        data: myselfFuture,
+        borderColor: dashColor,
+        borderDash: dash,
+        pointRadius: 8,
+        pointBackgroundColor: futurePointColor,
+        pointBorderColor: myselfPointColor,
+        fill: true,
+        backgroundColor: myselfFillColor,
+        borderWidth: 2
+      },
+      {
         label: 'other',
         data: otherData,
         borderColor: otherBorderColor,
@@ -68,28 +90,6 @@ const createData = (labels, data) => {
         pointBackgroundColor: futurePointColor,
         pointBorderColor: rolePointColor,
         fill: false,
-        borderWidth: 2
-      },
-      {
-        label: 'myself',
-        data: myselfData,
-        borderColor: myselfBorderColor,
-        pointRadius: 8,
-        pointBackgroundColor: myselfPointColor,
-        pointBorderColor: myselfPointColor,
-        fill: true,
-        backgroundColor: myselfFillColor,
-      },
-      {
-        label: 'myselfFuture',
-        data: myselfFuture,
-        borderColor: dashColor,
-        borderDash: dash,
-        pointRadius: 8,
-        pointBackgroundColor: futurePointColor,
-        pointBorderColor: myselfPointColor,
-        fill: true,
-        backgroundColor: myselfFillColor,
         borderWidth: 2
       }]
   }
@@ -162,7 +162,7 @@ const drawCurrent = (chart, scales) => {
   context.strokeStyle = currentColor
   const nowDown = y.getPixelForValue(0)
   const nowY = y.getPixelForValue(now)
-  const pastY = y.getPixelForValue(pastData[3])
+  const pastY = y.getPixelForValue(pastData[4])
 
   // 直近の過去から未来の真ん中を求める
   const futureX = x.getPixelForValue(4)
@@ -219,9 +219,9 @@ const beforeDatasetsDraw = (chart, ease) => {
   drawvVrticalLine(context, scales)
   drawHorizonLine(context, scales)
   drawCurrent(chart, scales)
-  drawvfastDataLine(chart, scales, "myself", myselfBorderColor)
-  drawvfastDataLine(chart, scales, "other", otherBorderColor)
   drawvfastDataLine(chart, scales, "role", roleBorderColor)
+  drawvfastDataLine(chart, scales, "other", otherBorderColor)
+  drawvfastDataLine(chart, scales, "myself", myselfBorderColor)
 }
 
 const createChartFromJSON = (labels, data) => {
