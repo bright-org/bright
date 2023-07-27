@@ -22,6 +22,7 @@ defmodule Bright.Accounts.User do
     has_many :skill_scores, Bright.SkillScores.SkillScore
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
     has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
+    has_many :skill_evidence_posts, Bright.SkillEvidences.SkillEvidencePost
     has_one :user_onboardings, Bright.Onboardings.UserOnboarding
     has_one :user_profile, Bright.UserProfiles.UserProfile
     has_one :user_job_profile, Bright.UserJobProfiles.UserJobProfile
