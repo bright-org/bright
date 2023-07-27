@@ -183,6 +183,13 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
       |> UserJobProfiles.change_user_job_profile(user_job_profile_params)
       |> Map.put(:action, :validate)
 
+    send_update(
+      UserSettingComponent,
+      id: "user_setting_modal",
+      modal_flash: %{},
+      action: "job"
+    )
+
     {:noreply, assign_form(socket, changeset)}
   end
 
@@ -202,7 +209,10 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
           action: "job"
         )
 
-        {:noreply, socket}
+        socket
+        |> assign(:user_job_profile, user_job_profile)
+        |> assign_form(UserJobProfiles.change_user_job_profile(user_job_profile))
+        |> then(&{:noreply, &1})
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
