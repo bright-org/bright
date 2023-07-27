@@ -3,11 +3,12 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
   alias Bright.UserJobProfiles
   alias Bright.UserJobProfiles.UserJobProfile
   alias BrightWeb.UserSettingsLive.UserSettingComponent
+  alias BrightWeb.BrightCoreComponents, as: BrightCore
 
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
+    <li class="block">
       <.simple_form
         for={@form}
         id="job_profile-form"
@@ -15,10 +16,10 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <div class="flex flex-col">
-          <div class="flex flex-row gap-4 m-4">
-            <.label>求職　　</.label>
-            <.input
+        <div class="border-b border-brightGray-200 flex flex-wrap">
+          <div class="flex py-4">
+            <span class="py-1 w-32">求職</span>
+            <BrightCore.input
               id="user_job_profile_job_searching_on"
               type="radio"
               name={@form[:job_searching].name}
@@ -26,8 +27,9 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               checked={to_string(@form[:job_searching].value)}
               label="する"
             />
-            <.input
+            <BrightCore.input
               id="user_job_profile_job_searching_off"
+              container_class="ml-4"
               type="radio"
               name={@form[:job_searching].name}
               value="false"
@@ -35,91 +37,128 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               label="しない"
             />
           </div>
-          <hr>
-          <%= if to_string(@form[:job_searching].value) == "true" do %>
-          <div class="flex flex-row gap-4 m-4">
-            <.label>求職種類</.label>
-            <.input field={@form[:wish_employed]} type="checkbox" label="就職" />
-            <.input field={@form[:wish_change_job]} type="checkbox" label="転職" />
-            <.input field={@form[:wish_side_job]} type="checkbox" label="副業" />
-            <.input field={@form[:wish_freelance]} type="checkbox" label="フリーランス" />
-          </div>
-          <hr>
-          <div class="flex flex-row gap-4 m-4">
-            <.label>就業可能日</.label>
-            <div class="-mt-2">
-              <.input field={@form[:availability_date]} type="date" />
+        </div>
+
+        <%= if to_string(@form[:job_searching].value) == "true" do %>
+          <div class="border-b border-brightGray-200 flex flex-wrap">
+            <div class="flex py-4">
+              <span class="py-1 w-32">転職／副業</span>
+              <BrightCore.input
+                field={@form[:wish_employed]}
+                type="checkbox"
+                label="就職"
+              />
+              <BrightCore.input
+                field={@form[:wish_change_job]}
+                container_class="ml-4"
+                type="checkbox"
+                label="転職"
+              />
+              <BrightCore.input
+                field={@form[:wish_side_job]}
+                container_class="ml-4"
+                type="checkbox"
+                label="副業"
+              />
+              <BrightCore.input
+                field={@form[:wish_freelance]}
+                container_class="ml-4"
+                type="checkbox"
+                label="フリーランス"
+              />
             </div>
           </div>
-          <hr>
-          <div class="flex flex-row gap-4 m-4">
-            <.label>勤務体系</.label>
-            <div class="flex flex-col">
-              <div class="flex flex-row gap-4">
-                <.input field={@form[:office_work] } type="checkbox" label="出勤" />
-                <div class="-mt-2">
-                  <.input
-                    field={@form[:office_pref]}
-                    type="select"
-                    options={Ecto.Enum.mappings(UserJobProfile, :office_pref)}
-                    prompt={""}
-                    disabled={to_string(@form[:office_work].value) == "false"}
-                  />
-                </div>
-                <div class="-mt-2">
-                  <.input
-                    field={@form[:office_working_hours]}
-                    type="select"
-                    options={Ecto.Enum.mappings(UserJobProfile, :office_working_hours)}
-                    prompt={""}
-                    disabled={to_string(@form[:office_work].value) == "false"}
-                  />
-                </div>
-                <.input
-                  field={@form[:office_work_holidays]}
+
+          <div class="border-b border-brightGray-200 flex flex-wrap">
+            <BrightCore.input
+              field={@form[:availability_date]}
+              container_class="py-4 w-full"
+              label_class="w-32"
+              type="date"
+              size="20"
+              label="就職可能日"
+            />
+          </div>
+
+          <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
+            <span class="py-1 w-32">勤務体系</span>
+            <div>
+              <div class="flex items-center">
+                <BrightCore.input
+                  field={@form[:office_work]}
+                  label_class="w-16"
                   type="checkbox"
-                  label="土日祝日も含む"
+                  label="出勤"
+                />
+                <BrightCore.input
+                  field={@form[:office_pref]}
+                  type="select"
+                  options={Ecto.Enum.mappings(UserJobProfile, :office_pref)}
+                  prompt="希望勤務地"
+                  disabled={to_string(@form[:office_work].value) == "false"}
+                />
+                <BrightCore.input
+                  field={@form[:office_working_hours]}
+                  type="select"
+                  options={Ecto.Enum.mappings(UserJobProfile, :office_working_hours)}
+                  prompt="希望勤務時間"
+                  disabled={to_string(@form[:office_work].value) == "false"}
+                />
+                <BrightCore.input
+                  field={@form[:office_work_holidays]}
+                  container_class="ml-4"
+                  type="checkbox"
+                  label="土日祝の稼働も含む"
                   disabled={to_string(@form[:office_work].value) == "false"}
                 />
               </div>
-              <div class="flex frex-row gap-4 mt-4">
-                <.input field={@form[:remote_work]} type="checkbox" label="リモート" />
-                <div class="-mt-2">
-                <.input
+
+              <div class="flex items-center mt-2">
+                <BrightCore.input
+                  field={@form[:remote_work]}
+                  label_class="w-16"
+                  type="checkbox"
+                  label="リモート"
+                />
+                <BrightCore.input
                   field={@form[:remote_working_hours]}
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :remote_working_hours)}
-                  prompt={""}
+                  prompt="希望勤務時間"
                   disabled={to_string(@form[:remote_work].value) == "false"}
                 />
-                </div>
-                <.input
+                <BrightCore.input
                   field={@form[:remote_work_holidays]}
+                  container_class="ml-4"
                   type="checkbox"
-                  label="土日祝日も含む"
+                  label="土日祝の稼働も含む"
                   disabled={to_string(@form[:remote_work].value) == "false"}
                 />
               </div>
             </div>
           </div>
-          <hr>
-          <div class="flex flex-row gap-4 m-4">
-            <.label>月希望額</.label>
-            <div class="-mt-2">
-              <.input field={@form[:desired_income]} type="number" />
-            </div>
+
+          <div>
+            <BrightCore.input
+              field={@form[:desired_income]}
+              container_class="py-4 w-full"
+              label_class="py-1 w-32"
+              after_label_class="ml-1"
+              type="number"
+              label="希望年収"
+              after_label="万円以上"
+            />
           </div>
-          <% end %>
-        </div>
+        <% end %>
 
         <:actions>
-          <div class="w-full mr-auto mb-4">
-          <.button phx-disable-with="Saving...">保存する</.button>
+          <div class="flex mt-8 mx-auto w-fit">
+            <BrightCore.button phx-disable-with="Saving...">保存する</BrightCore.button>
           </div>
         </:actions>
 
       </.simple_form>
-    </div>
+    </li>
     """
   end
 
