@@ -46,16 +46,14 @@ const createData = (labels, data) => {
     datasets.push(createDataset(myselfFuture, dashColor, futurePointColor, myselfPointColor, true))
   }
   datasets.push(createDataset(otherData, otherBorderColor, otherPointColor, otherPointColor, false))
-
   if (futureEnabled) {
     datasets.push(createDataset(otherFuture, dashColor, futurePointColor, otherPointColor, true))
   }
-
   datasets.push(createDataset(roleData, roleBorderColor, rolePointColor, rolePointColor, false))
-
   if (futureEnabled) {
     datasets.push(createDataset(roleFuture, dashColor, futurePointColor, rolePointColor, true))
   }
+
   return {
     labels: labels,
     datasets: datasets
@@ -184,6 +182,33 @@ const drawSelectedLine = (chart, scales, dataname, selectedColor, index) => {
   context.stroke()
 }
 
+const drawSelectedPoint = (chart, scales, dataname, selectedColor, index) => {
+  const context = chart.ctx
+  const dataset = chart.canvas.parentNode.dataset
+  // 現在のスコア
+  const data = JSON.parse(dataset.data)
+  let drawData = data[dataname]
+
+  if (drawData === undefined) return
+  drawData = drawData.slice(1)
+
+  const y = scales.y
+  const x = scales.x
+  const curentData = drawData[index]
+
+  context.lineWidth = 4
+  context.setLineDash([])
+  context.strokeStyle = selectedColor
+  const selectedX = x.getPixelForValue(index)
+  const selectedYUp = y.getPixelForValue(curentData)
+
+  // 「選択している」ポイント
+  context.beginPath()
+  context.arc(selectedX, selectedYUp, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
+  context.fillStyle = selectedColor
+  context.fill()
+}
+
 const drawfastDataLine = (chart, scales, name, color) => {
   const context = chart.ctx
   const dataset = chart.canvas.parentNode.dataset
@@ -271,6 +296,13 @@ const beforeDatasetsDraw = (chart, ease) => {
   drawfastDataLine(chart, scales, "myself", myselfBorderColor)
 }
 
+const afterDatasetsDraw = (chart, ease) => {
+  const context = chart.ctx
+  const scales = chart.scales
+  drawSelectedPoint(chart, scales, 'myself', myselfSelectedColor, 2)
+  drawSelectedPoint(chart, scales, 'other', otherSelectedColor, 0)
+}
+
 const createChartFromJSON = (labels, data) => {
   return ({
     type: 'line',
@@ -314,7 +346,11 @@ const createChartFromJSON = (labels, data) => {
         }
       }
     },
-    plugins: [{ beforeDatasetsDraw: beforeDatasetsDraw }]
+    plugins: [
+      {
+        beforeDatasetsDraw: beforeDatasetsDraw,
+        afterDatasetsDraw: afterDatasetsDraw
+      }]
   })
 }
 
@@ -329,6 +365,5 @@ export const GrowthGraph = {
     const myChart = new Chart(ctx, createChartFromJSON(labels, data))
     myChart.canvas.parentNode.style.height = '600px'
     myChart.canvas.parentNode.style.width = '800px'
-
   }
 }
