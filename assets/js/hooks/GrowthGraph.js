@@ -45,7 +45,6 @@ const createData = (labels, data) => {
         pointRadius: 8,
         pointBackgroundColor: futurePointColor,
         pointBorderColor: myselfPointColor,
-        borderWidth: 2
       },
       {
         label: 'other',
@@ -54,8 +53,7 @@ const createData = (labels, data) => {
         pointRadius: 8,
         pointBackgroundColor: otherPointColor,
         pointBorderColor: otherPointColor,
-        fill: false,
-        tension: 0.1
+
       },
       {
         label: 'otherFuture',
@@ -65,8 +63,8 @@ const createData = (labels, data) => {
         pointRadius: 8,
         pointBackgroundColor: futurePointColor,
         pointBorderColor: otherPointColor,
-        fill: false,
-        borderWidth: 2
+
+
       },
       {
         label: 'role',
@@ -75,8 +73,6 @@ const createData = (labels, data) => {
         pointRadius: 8,
         pointBackgroundColor: rolePointColor,
         pointBorderColor: rolePointColor,
-        fill: false,
-        tension: 0.1
       },
       {
         label: 'roleFuture',
@@ -86,8 +82,7 @@ const createData = (labels, data) => {
         pointRadius: 8,
         pointBackgroundColor: futurePointColor,
         pointBorderColor: rolePointColor,
-        fill: false,
-        borderWidth: 2
+
       }]
   }
 }
