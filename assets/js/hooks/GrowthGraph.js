@@ -100,6 +100,7 @@ const drawvVrticalLine = (context, scales) => {
   const upY = y.getPixelForValue(100)
   const downY = y.getPixelForValue(0)
   context.setLineDash(dash)
+  context.strokeStyle = dashColor
 
   context.beginPath()
   for (let i = 0; i < 5; i++) {
@@ -121,6 +122,7 @@ const drawHorizonLine = (context, scales) => {
   const skilledY = y.getPixelForValue(60)
   context.lineWidth = 0.5
   context.setLineDash([])
+  context.strokeStyle = dashColor
   context.beginPath()
   // 下の線
   context.moveTo(startX, downY)
@@ -230,7 +232,7 @@ const fillMyselfData = (chart, scales) => {
   const endX = x.getPixelForValue(4)
   const endY = y.getPixelForValue(0)
 
-  const gradient = context.createLinearGradient(0, 0, 0, 1400)
+  const gradient = context.createLinearGradient(0, 0, 0, 300)
   gradient.addColorStop(0, myselfFillStartColor)
   gradient.addColorStop(1, myselfFillEndColor)
 
