@@ -10,6 +10,6 @@ defmodule Bright.Repo.Migrations.CreateSkillEvidencePosts do
       timestamps()
     end
 
-    create index(:skill_evidence_posts, [:skill_evidence_id, :inserted_at])
+    create index(:skill_evidence_posts, [:skill_evidence_id])
   end
 end
