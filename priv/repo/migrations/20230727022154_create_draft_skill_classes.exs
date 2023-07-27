@@ -11,6 +11,7 @@ defmodule Bright.Repo.Migrations.CreateDraftSkillClasses do
       timestamps()
     end
 
-    create index(:draft_skill_classes, [:skill_panel_id])
+    create unique_index(:draft_skill_classes, [:skill_panel_id, :class])
+    create unique_index(:draft_skill_classes, [:trace_id])
   end
 end
