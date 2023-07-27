@@ -1,2 +1,8 @@
 <.flash_group flash={@flash} />
 <%= @inner_content %>
+<.live_component
+  id="user_setting_modal"
+  module={BrightWeb.UserSettingsLive.UserSettingComponent}
+  action={"general"}
+  current_user={@current_user}
+/>

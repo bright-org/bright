@@ -52,10 +52,11 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       conn = submit_form(form, conn)
 
-      assert redirected_to(conn) == ~p"/onboardings"
+      assert redirected_to(conn) =~ ~p"/users/two_factor_auth/"
     end
 
-    test "redirects mypage if user already finished onboardings", %{conn: conn} do
+    test "redirects mypage if user already done two factor auth in operating browser",
+         %{conn: conn} do
       password = "123456789abcd"
 
       user = create_user_with_password(password)
@@ -65,7 +66,23 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       form = form(lv, "#login_form", user: %{email: user.email, password: password})
 
-      conn = submit_form(form, conn)
+      conn = conn |> set_two_factor_auth_done(user) |> then(&submit_form(form, &1))
+
+      assert redirected_to(conn) == ~p"/mypage"
+    end
+
+    test "redirects mypage if user already finished onboardings and already done two factor auth in operating browser",
+         %{conn: conn} do
+      password = "123456789abcd"
+
+      user = create_user_with_password(password)
+      insert(:user_onboarding, user: user)
+
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      form = form(lv, "#login_form", user: %{email: user.email, password: password})
+
+      conn = conn |> set_two_factor_auth_done(user) |> then(&submit_form(form, &1))
 
       assert redirected_to(conn) == ~p"/mypage"
     end

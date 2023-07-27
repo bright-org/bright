@@ -83,9 +83,6 @@ defmodule BrightWeb.BrightModalComponents do
           <div class={@style_of_modal_flame_out}>
             <.focus_wrap
               id={"#{@id}-container"}
-              phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
-              phx-key="escape"
-              phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
               class={@style_of_modal_flame}
             >
             <%= if @enable_cancel_button do %>

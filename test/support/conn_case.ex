@@ -62,4 +62,27 @@ defmodule BrightWeb.ConnCase do
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
   end
+
+  @doc """
+  Setup two_factor_auth_done.
+
+  Set cookie and insert user two_factor_auth_done token.
+  """
+  def set_two_factor_auth_done(conn, user) do
+    {token, user_token} = Bright.Accounts.UserToken.build_user_token(user, "two_factor_auth_done")
+
+    insert(:user_token, user_token |> Map.from_struct())
+
+    # 署名付き Cookie にしないといけないので以下で生成
+    %{value: signed_token} =
+      conn
+      |> Map.replace!(:secret_key_base, BrightWeb.Endpoint.config(:secret_key_base))
+      |> BrightWeb.UserAuth.write_2fa_auth_done_cookie(token)
+      |> Plug.Conn.fetch_cookies()
+      |> Map.fetch!(:resp_cookies)
+      |> Map.fetch!("_bright_web_user_2fa_done")
+
+    conn
+    |> Phoenix.ConnTest.put_req_cookie("_bright_web_user_2fa_done", signed_token)
+  end
 end
