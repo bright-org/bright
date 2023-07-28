@@ -18,16 +18,6 @@ defmodule BrightWeb.MypageLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  @impl true
-  def handle_event(_event_name, _params, socket) do
-    # TODO tabイベント検証 tabのイベント周りが完成後に削除予定
-    # IO.inspect("------------------")
-    # IO.inspect(_event_name)
-    # IO.inspect(_params)
-    # IO.inspect("------------------")
-    {:noreply, socket}
-  end
-
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "マイページ")
