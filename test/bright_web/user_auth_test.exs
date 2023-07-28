@@ -7,6 +7,7 @@ defmodule BrightWeb.UserAuthTest do
   import Bright.Factory
 
   @cookie_key "_bright_web_user"
+  @user_2fa_cookie_key "_bright_web_user_2fa_done"
 
   setup %{conn: conn} do
     conn =
@@ -15,6 +16,35 @@ defmodule BrightWeb.UserAuthTest do
       |> init_test_session(%{})
 
     %{user: insert(:user), conn: conn}
+  end
+
+  describe "write_2fa_auth_done_cookie/1" do
+    test "writes cookie", %{conn: conn} do
+      conn = UserAuth.write_2fa_auth_done_cookie(conn, "token")
+
+      assert %{value: _value, max_age: max_age, same_site: "Lax"} =
+               conn.resp_cookies[@user_2fa_cookie_key]
+
+      assert max_age == 60 * 60 * 24 * 60
+    end
+  end
+
+  describe "valid_2fa_auth_done_cookie_exists?/2" do
+    test "returns true when cookie exist", %{conn: conn, user: user} do
+      assert set_two_factor_auth_done(conn, user)
+             |> UserAuth.valid_2fa_auth_done_cookie_exists?(user)
+    end
+
+    test "returns false when cookie exist but not own user", %{conn: conn, user: user} do
+      other_user = insert(:user)
+
+      refute set_two_factor_auth_done(conn, other_user)
+             |> UserAuth.valid_2fa_auth_done_cookie_exists?(user)
+    end
+
+    test "returns false when cookie does not exist", %{conn: conn, user: user} do
+      refute UserAuth.valid_2fa_auth_done_cookie_exists?(conn, user)
+    end
   end
 
   describe "log_in_user/2" do
