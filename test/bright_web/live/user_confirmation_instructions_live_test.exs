@@ -40,7 +40,7 @@ defmodule BrightWeb.UserConfirmationInstructionsLiveTest do
                "確認メールを再度送信しました"
 
       assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
+        assert email.subject == "Confirmation instructions"
         assert email.to == [{"", user.email}]
       end)
 
@@ -64,7 +64,7 @@ defmodule BrightWeb.UserConfirmationInstructionsLiveTest do
       |> render_submit()
 
       assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
+        assert email.subject == "Confirmation instructions"
         assert email.to == [{"", user.email}]
       end)
 
