@@ -7,6 +7,7 @@ defmodule Bright.UserJobProfilesTest do
 
   describe "user_job_profiles" do
     alias Bright.UserJobProfiles.UserJobProfile
+    alias Bright.Accounts.User
 
     @invalid_attrs %{
       availability_date: nil,
@@ -40,6 +41,15 @@ defmodule Bright.UserJobProfilesTest do
       assert %UserJobProfile{
                id: ^id
              } = UserJobProfiles.get_user_job_profile!(id)
+    end
+
+    test "get_user_job_profile_by_user_id!/1 returns the user_job_profile with given user_id" do
+      user = %User{id: user_id} = insert(:user)
+      insert(:user_job_profile, user: user)
+
+      assert %UserJobProfile{
+               user_id: ^user_id
+             } = UserJobProfiles.get_user_job_profile_by_user_id!(user_id)
     end
 
     test "create_user_job_profile/1 with valid data creates a user_job_profile" do
