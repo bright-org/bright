@@ -18,11 +18,11 @@ defmodule BrightWeb.BrightCoreComponents do
     ]
 
   @doc """
-  Renders flash notices.
+  Renders flash notices without put_flash
 
   ## Examples
 
-      <.flash kind={:info} flash={@flash} />
+      <.flash kind={:info} flash={@other_flash} />
       <.flash kind={:info} phx-mounted={show("#flash")}>Welcome Back!</.flash>
   """
   attr :id, :string, default: "modal_flash", doc: "the optional id of flash container"
