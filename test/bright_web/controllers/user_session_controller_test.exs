@@ -35,6 +35,37 @@ defmodule BrightWeb.UserSessionControllerTest do
       end)
     end
 
+    test "redirects two_factor_auth page when two factor auth done cookie exists but was expired",
+         %{
+           conn: conn,
+           user: user
+         } do
+      conn =
+        set_two_factor_auth_done(conn, user)
+        |> tap(fn _conn ->
+          UserToken.user_and_contexts_query(user, ["two_factor_auth_done"])
+          |> Repo.update_all(
+            set: [
+              inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24 * 60)
+            ]
+          )
+        end)
+        |> post(~p"/users/log_in", %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+
+      # 具体的なリダイレクト先はハッシュ化された token によって決まるので部分一致で判定する
+      assert redirected_to(conn) =~ "/users/two_factor_auth/"
+
+      assert Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
+      assert Repo.get_by(User2faCodes, user_id: user.id)
+
+      assert_email_sent(fn email ->
+        assert email.subject == "【Bright】二段階認証コード"
+        assert email.to == [{"", user.email}]
+      end)
+    end
+
     test "logs the user in when two factor auth done cookie exists", %{conn: conn, user: user} do
       conn =
         set_two_factor_auth_done(conn, user)
