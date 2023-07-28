@@ -54,8 +54,9 @@ erDiagram
 
   draft_skill_class_units {
     uuid trace_id "同種の過去データを辿るためのID"
-    id skill_class_draft_id FK
-    id skill_unit_draft_id FK
+    id draft_skill_class_id FK
+    id draft_skill_unit_id FK
+    int position
   }
 
   draft_skill_units {
@@ -64,15 +65,17 @@ erDiagram
   }
 
   draft_skill_categories {
-    id skill_unit_draft_id FK
+    id draft_skill_unit_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "カテゴリ名"
+    int position
   }
 
   draft_skills {
-    id skill_category_draft_id FK
+    id draft_skill_category_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "スキル名"
+    int position
   }
 ```
 
@@ -114,6 +117,7 @@ erDiagram
     uuid trace_id "同種の過去データを辿るためのID"
     id skill_class_id FK
     id skill_unit_id FK
+    int position
   }
 
   skill_units {
@@ -126,12 +130,14 @@ erDiagram
     id skill_unit_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "カテゴリ名"
+    int position
   }
 
   skills {
     id skill_category_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "スキル名"
+    int position
   }
 
   job_skill_panels {
@@ -195,8 +201,9 @@ erDiagram
 
   historical_skill_class_units {
     uuid trace_id "同種の過去データを辿るためのID"
-    id skill_class_history_id FK
-    id skill_unit_history_id FK
+    id historical_skill_class_id FK
+    id historical_skill_unit_id FK
+    int position
   }
 
   historical_skill_units {
@@ -206,15 +213,17 @@ erDiagram
   }
 
   historical_skill_categories {
-    id skill_unit_history_id FK
+    id historical_skill_unit_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "カテゴリ名"
+    int position
   }
 
   historical_skills {
-    id skill_category_history_id FK
+    id historical_skill_category_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "スキル名"
+    int position
   }
 
   job_skill_panels {
@@ -229,13 +238,13 @@ erDiagram
 
   historical_skill_scores {
     id user_id FK
-    id skill_class_history_id FK
+    id historical_skill_class_id FK
     date locked_date "固定された日"
   }
 
   historical_skill_score_items {
-    id skill_score_history_id FK
-    id skill_history_id FK
+    id historical_skill_score_id FK
+    id historical_skill_id FK
     string score "enum (low, middle, high)"
   }
 ```
