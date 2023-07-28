@@ -209,8 +209,8 @@ export const SkillGem = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
     const myChart = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
-    myChart.canvas.parentNode.style.height = isSmall ? '165px' : '426px'
-    myChart.canvas.parentNode.style.width = isSmall ? '250px' : '426px'
+    myChart.canvas.parentNode.style.height = isSmall ? '165px' : '450px'
+    myChart.canvas.parentNode.style.width = isSmall ? '250px' : '450px'
 
     ctx.addEventListener('click', function (event) {
       if (!isLink) return;

@@ -383,7 +383,7 @@ export const GrowthGraph = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
     const myChart = new Chart(ctx, createChartFromJSON(data))
-    myChart.canvas.parentNode.style.height = '600px'
-    myChart.canvas.parentNode.style.width = '800px'
+    myChart.canvas.parentNode.style.height = '357px'
+    myChart.canvas.parentNode.style.width = '714px'
   }
 }

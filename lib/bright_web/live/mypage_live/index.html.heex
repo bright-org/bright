@@ -1,16 +1,18 @@
 <!-- TODO 「2d7935494782ecf710e81339abd5d27750493843」　「feat:新規ファイルfix: package.json」　までマイページのみ画面を更新　各部品ごと更新すること-->
 <!-- プロフィール -->
 <div class="flex justify-between py-6 px-10 bg-white">
-  <.profile
-    user_name={@current_user.name}
-    title={@current_user.user_profile.title}
-    detail={@current_user.user_profile.detail}
-    icon_file_path={@current_user.user_profile.icon_file_path}
-    display_sns
-    twitter_url={@current_user.user_profile.twitter_url}
-    github_url={@current_user.user_profile.github_url}
-    facebook_url={@current_user.user_profile.facebook_url}
-  />
+  <div class="w-[850px] pt-4">
+    <.profile
+      user_name={@current_user.name}
+      title={@current_user.user_profile.title}
+      detail={@current_user.user_profile.detail}
+      icon_file_path={@current_user.user_profile.icon_file_path}
+      display_sns
+      twitter_url={@current_user.user_profile.twitter_url}
+      github_url={@current_user.user_profile.github_url}
+      facebook_url={@current_user.user_profile.facebook_url}
+    />
+  </div>
   <div>
     <p class="text-base !font-bold">
       スキルセットジェム<span class="font-normal text-xs ml-2">※クリックすると詳細</span>

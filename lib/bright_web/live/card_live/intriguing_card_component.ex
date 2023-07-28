@@ -19,7 +19,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   def render(assigns) do
     assigns =
       assigns
-      |> assign(:menu_items, @menu_items)
+      |> assign(:menu_items, set_menu_items(assigns[:display_menu]))
       |> assign(:tabs, @tabs)
       |> assign(:selected_tab, "intriguing")
       # TODO サンプルデータです　ここにDBから取得した結果をセットしてください
@@ -76,6 +76,9 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     # TODO これは雛形です処理を記述すること
     {:noreply, socket}
   end
+
+  def set_menu_items(false), do: []
+  def set_menu_items(_), do: @menu_items
 
   # TODO サンプルデータです　DBの取得処理を追加後削除してください
   defp sample() do
