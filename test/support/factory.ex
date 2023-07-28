@@ -52,6 +52,10 @@ defmodule Bright.Factory do
   use Bright.SkillEvidenceFactory
   use Bright.SkillEvidencePostFactory
 
+  # HistoricalSkillPanels context
+  use Bright.HistoricalSkillPanelFactory
+  use Bright.HistoricalSkillClassFactory
+
   # NotificationsFactory context
   use Bright.NotificationFactory
 end
