@@ -7,6 +7,7 @@ defmodule Bright.UserJobProfilesTest do
 
   describe "user_job_profiles" do
     alias Bright.UserJobProfiles.UserJobProfile
+    alias Bright.Accounts.User
 
     @invalid_attrs %{
       availability_date: nil,
@@ -18,7 +19,7 @@ defmodule Bright.UserJobProfilesTest do
       office_work_holidays: nil,
       remote_working_hours: nil,
       remote_work_holidays: nil,
-      remove_work: nil,
+      remote_work: nil,
       user_id: nil,
       wish_change_job: nil,
       wish_employed: nil,
@@ -42,6 +43,15 @@ defmodule Bright.UserJobProfilesTest do
              } = UserJobProfiles.get_user_job_profile!(id)
     end
 
+    test "get_user_job_profile_by_user_id!/1 returns the user_job_profile with given user_id" do
+      user = %User{id: user_id} = insert(:user)
+      insert(:user_job_profile, user: user)
+
+      assert %UserJobProfile{
+               user_id: ^user_id
+             } = UserJobProfiles.get_user_job_profile_by_user_id!(user_id)
+    end
+
     test "create_user_job_profile/1 with valid data creates a user_job_profile" do
       user = insert(:user)
 
@@ -49,13 +59,13 @@ defmodule Bright.UserJobProfilesTest do
         availability_date: ~D[2023-07-20],
         desired_income: 80,
         job_searching: true,
-        office_working_hours: "160h",
+        office_working_hours: "月140h~159h",
         office_pref: "福岡県",
         office_work: true,
         office_work_holidays: true,
-        remote_working_hours: "160h",
+        remote_working_hours: "月140h~159h",
         remote_work_holidays: true,
-        remove_work: true,
+        remote_work: true,
         wish_change_job: true,
         wish_employed: false,
         wish_freelance: true,
@@ -69,13 +79,13 @@ defmodule Bright.UserJobProfilesTest do
       assert user_job_profile.availability_date == ~D[2023-07-20]
       assert user_job_profile.desired_income == 80
       assert user_job_profile.job_searching == true
-      assert user_job_profile.office_working_hours == :"160h"
+      assert user_job_profile.office_working_hours == :"月140h~159h"
       assert user_job_profile.office_pref == :福岡県
       assert user_job_profile.office_work == true
       assert user_job_profile.office_work_holidays == true
-      assert user_job_profile.remote_working_hours == :"160h"
+      assert user_job_profile.remote_working_hours == :"月140h~159h"
       assert user_job_profile.remote_work_holidays == true
-      assert user_job_profile.remove_work == true
+      assert user_job_profile.remote_work == true
       assert user_job_profile.wish_change_job == true
       assert user_job_profile.wish_employed == false
       assert user_job_profile.wish_freelance == true
@@ -93,13 +103,13 @@ defmodule Bright.UserJobProfilesTest do
         availability_date: ~D[2023-07-25],
         desired_income: 43,
         job_searching: false,
-        office_working_hours: "80h",
+        office_working_hours: "月80h~99h",
         office_pref: "東京都",
         office_work: false,
         office_work_holidays: false,
-        remote_working_hours: "80h",
+        remote_working_hours: "月80h~99h",
         remote_work_holidays: false,
-        remove_work: false,
+        remote_work: false,
         wish_change_job: false,
         wish_employed: false,
         wish_freelance: false,
@@ -112,13 +122,13 @@ defmodule Bright.UserJobProfilesTest do
       assert user_job_profile.availability_date == ~D[2023-07-25]
       assert user_job_profile.desired_income == 43
       assert user_job_profile.job_searching == false
-      assert user_job_profile.office_working_hours == :"80h"
+      assert user_job_profile.office_working_hours == :"月80h~99h"
       assert user_job_profile.office_pref == :東京都
       assert user_job_profile.office_work == false
       assert user_job_profile.office_work_holidays == false
-      assert user_job_profile.remote_working_hours == :"80h"
+      assert user_job_profile.remote_working_hours == :"月80h~99h"
       assert user_job_profile.remote_work_holidays == false
-      assert user_job_profile.remove_work == false
+      assert user_job_profile.remote_work == false
       assert user_job_profile.wish_change_job == false
       assert user_job_profile.wish_employed == false
       assert user_job_profile.wish_freelance == false

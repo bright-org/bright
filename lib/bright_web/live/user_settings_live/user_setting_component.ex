@@ -1,6 +1,7 @@
 defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
   use BrightWeb, :live_component
   alias BrightWeb.UserSettingsLive
+  alias BrightWeb.BrightCoreComponents, as: BrightCore
   import BrightWeb.TabComponents
 
   @tab_module %{
@@ -22,6 +23,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
   def render(assigns) do
     ~H"""
     <section class="hidden absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20" id="personal_settings">
+      <BrightCore.flash_group flash={@modal_flash} />
       <.tab
         id="user_settings"
         tabs={@tabs}
@@ -33,6 +35,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
           module={@module}
           id={"user_settings"}
           user={@current_user}
+          action={:edit}
         />
       </.tab>
     </section>
@@ -46,6 +49,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     |> assign(:tabs, @tabs)
     |> assign(:selected_tab, action)
     |> assign(:module, Map.get(@tab_module, action))
+    |> assign(:modal_flash, Map.get(assigns, :modal_flash, %{}))
     |> then(&{:ok, &1})
   end
 
