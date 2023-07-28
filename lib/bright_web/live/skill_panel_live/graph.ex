@@ -4,6 +4,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   import BrightWeb.GrowthGraphComponents
   import BrightWeb.SkillScoreComponents
   import BrightWeb.TimelineBarComponents
+  import BrightWeb.ProfileComponents
   alias Bright.SkillPanels
 
   # 全体が仮実装です。
