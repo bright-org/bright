@@ -9,7 +9,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
   def render(assigns) do
     ~H"""
     <li class="block">
-      <.simple_form
+      <.form
         for={@form}
         id="job_profile-form"
         phx-target={@myself}
@@ -18,7 +18,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
       >
         <div class="border-b border-brightGray-200 flex flex-wrap">
           <div class="flex py-4">
-            <span class="py-1 w-32">求職</span>
+            <span class="w-32">求職</span>
             <BrightCore.input
               id="user_job_profile_job_searching_on"
               type="radio"
@@ -42,7 +42,11 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
         <%= if to_string(@form[:job_searching].value) == "true" do %>
           <div class="border-b border-brightGray-200 flex flex-wrap">
             <div class="flex py-4">
-              <span class="py-1 w-32">転職／副業</span>
+              <div class="flex flex-col">
+                <span class="pt-1 w-32">求職種類</span>
+                <span class="pb-1 w-32">(複数可)</span>
+              </div>
+              <div class="py-4 flex">
               <BrightCore.input
                 field={@form[:wish_employed]}
                 type="checkbox"
@@ -66,6 +70,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 type="checkbox"
                 label="フリーランス"
               />
+              </div>
             </div>
           </div>
 
@@ -86,12 +91,13 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               <div class="flex items-center">
                 <BrightCore.input
                   field={@form[:office_work]}
-                  label_class="w-16"
+                  label_class="w-16 text-left"
                   type="checkbox"
                   label="出勤"
                 />
                 <BrightCore.input
                   field={@form[:office_pref]}
+                  input_class="w-32"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :office_pref)}
                   prompt="希望勤務地"
@@ -99,6 +105,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 />
                 <BrightCore.input
                   field={@form[:office_working_hours]}
+                  input_class="w-32"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :office_working_hours)}
                   prompt="希望勤務時間"
@@ -116,12 +123,13 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               <div class="flex items-center mt-2">
                 <BrightCore.input
                   field={@form[:remote_work]}
-                  label_class="w-16"
+                  label_class="w-16 text-left"
                   type="checkbox"
                   label="リモート"
                 />
                 <BrightCore.input
                   field={@form[:remote_working_hours]}
+                  input_class="w-32"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :remote_working_hours)}
                   prompt="希望勤務時間"
@@ -151,13 +159,10 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
           </div>
         <% end %>
 
-        <:actions>
-          <div class="flex mt-8 mx-auto w-fit">
-            <BrightCore.button phx-disable-with="Saving...">保存する</BrightCore.button>
-          </div>
-        </:actions>
-
-      </.simple_form>
+        <div class="flex mt-8 mx-auto w-fit">
+          <BrightCore.button phx-disable-with="Saving...">保存する</BrightCore.button>
+        </div>
+      </.form>
     </li>
     """
   end
