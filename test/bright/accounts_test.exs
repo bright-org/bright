@@ -598,6 +598,7 @@ defmodule Bright.AccountsTest do
       assert Repo.aggregate(User2faCodes, :count) == 1
 
       assert_email_sent(fn email ->
+        assert email.subject == "【Bright】二段階認証コード"
         assert email.to == [{"", user.email}]
         assert email.text_body =~ user_2fa_code.code
       end)
@@ -620,6 +621,7 @@ defmodule Bright.AccountsTest do
       assert Repo.aggregate(User2faCodes, :count) == 1
 
       assert_email_sent(fn email ->
+        assert email.subject == "【Bright】二段階認証コード"
         assert email.to == [{"", user.email}]
         assert email.text_body =~ user_2fa_code.code
       end)
