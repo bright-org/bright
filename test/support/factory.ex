@@ -19,6 +19,15 @@ defmodule Bright.Factory do
   # UserJobProfiles context
   use Bright.UserJobProfileFactory
 
+  # DraftSkillPanels context
+  use Bright.DraftSkillPanelFactory
+  use Bright.DraftSkillClassFactory
+
+  # DraftSkillUnits context
+  use Bright.DraftSkillUnitFactory
+  use Bright.DraftSkillCategoryFactory
+  use Bright.DraftSkillFactory
+
   # SkillPanels context
   use Bright.SkillPanelFactory
   use Bright.SkillClassFactory
@@ -41,6 +50,7 @@ defmodule Bright.Factory do
 
   # SkillEvidences context
   use Bright.SkillEvidenceFactory
+  use Bright.SkillEvidencePostFactory
 
   # NotificationsFactory context
   use Bright.NotificationFactory

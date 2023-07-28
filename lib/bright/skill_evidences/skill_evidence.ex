@@ -12,8 +12,11 @@ defmodule Bright.SkillEvidences.SkillEvidence do
   schema "skill_evidences" do
     field :progress, Ecto.Enum, values: [:wip, :help, :done]
 
-    belongs_to(:user, Bright.Accounts.User)
-    belongs_to(:skill, Bright.SkillUnits.Skill)
+    belongs_to :user, Bright.Accounts.User
+    belongs_to :skill, Bright.SkillUnits.Skill
+
+    has_many :skill_evidence_posts, Bright.SkillEvidences.SkillEvidencePost,
+      preload_order: [asc: :inserted_at]
 
     timestamps()
   end
