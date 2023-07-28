@@ -7,7 +7,6 @@ defmodule Bright.HistoricalSkillUnits do
   alias Bright.Repo
 
   alias Bright.HistoricalSkillUnits.HistoricalSkillUnit
-  alias Bright.HistoricalSkillUnits.HistoricalSkillCategory
 
   @doc """
   Returns the list of historical_skill_units.
