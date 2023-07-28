@@ -65,7 +65,7 @@ defmodule BrightWeb.BrightCoreComponents do
 
   ## Examples
 
-      <.flash_group_b flash={@flash} />
+      <.flash_group flash={@flash} />
   """
   attr :flash, :map, required: true, doc: "the map of flash messages"
 
