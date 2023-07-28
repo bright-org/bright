@@ -56,6 +56,7 @@ erDiagram
     uuid trace_id "同種の過去データを辿るためのID"
     id draft_skill_class_id FK
     id draft_skill_unit_id FK
+    int position
   }
 
   draft_skill_units {
@@ -67,12 +68,14 @@ erDiagram
     id draft_skill_unit_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "カテゴリ名"
+    int position
   }
 
   draft_skills {
     id draft_skill_category_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "スキル名"
+    int position
   }
 ```
 
@@ -114,6 +117,7 @@ erDiagram
     uuid trace_id "同種の過去データを辿るためのID"
     id skill_class_id FK
     id skill_unit_id FK
+    int position
   }
 
   skill_units {
@@ -126,12 +130,14 @@ erDiagram
     id skill_unit_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "カテゴリ名"
+    int position
   }
 
   skills {
     id skill_category_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "スキル名"
+    int position
   }
 
   job_skill_panels {
@@ -197,6 +203,7 @@ erDiagram
     uuid trace_id "同種の過去データを辿るためのID"
     id historical_skill_class_id FK
     id historical_skill_unit_id FK
+    int position
   }
 
   historical_skill_units {
@@ -209,12 +216,14 @@ erDiagram
     id historical_skill_unit_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "カテゴリ名"
+    int position
   }
 
   historical_skills {
     id historical_skill_category_id FK
     uuid trace_id "同種の過去データを辿るためのID"
     string name "スキル名"
+    int position
   }
 
   job_skill_panels {
