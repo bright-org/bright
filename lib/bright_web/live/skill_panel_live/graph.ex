@@ -24,6 +24,8 @@ defmodule BrightWeb.SkillPanelLive.Graph do
 
     {:ok,
      socket
+     |> assign(:page_title, "スキルパネル")
+     |> assign(:page_sub_title, skill_panel.name)
      |> assign(:skill_panel, skill_panel)
      |> assign(:skill_class, skill_class)}
   end
