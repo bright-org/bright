@@ -473,63 +473,7 @@
               </button>
             </div>
           </div>
-
-          <div class="flex">
-            <div class="w-14"></div>
-            <div
-              class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative"
-            >
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                >
-                  2022.12
-                </button>
-              </div>
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                >
-                  2023.3
-                </button>
-              </div>
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-28 w-28 rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-sm flex justify-center items-center flex-col"
-                >
-                  <span class="material-icons !text-4xl !font-bold"
-                    >check</span>
-                  2023.6
-                </button>
-              </div>
-
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                >
-                  2023.9
-                </button>
-              </div>
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                >
-                  2023.12
-                </button>
-              </div>
-              <div
-                class="h-28 w-28 flex justify-center items-center absolute right-[58px]"
-              >
-                <button
-                  class="h-10 w-10 rounded-full bg-white text-xs text-attention-900 flex justify-center items-center"
-                >
-                  現在
-                </button>
-              </div>
-            </div>
-            <div class="flex justify-center items-center ml-2"></div>
-          </div>
-
+          <.timeline_bar type="myself" dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]} selected_date="2023.6" display_now/>
           <div class="flex py-4">
             <div class="w-14"></div>
             <div class="w-[725px] flex justify-between items-center">
@@ -559,72 +503,7 @@
             <div></div>
           </div>
 
-          <div class="flex">
-            <div class="w-14 flex justify-center items-center">
-              <button
-                class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded"
-              >
-                <span class="material-icons text-white !text-4xl"
-                  >arrow_left</span>
-              </button>
-            </div>
-            <div
-              class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative"
-            >
-              <button
-                class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200"
-              >
-                <span
-                  class="material-icons !text-base !text-brightGray-200"
-                  >close</span>
-              </button>
-              <div class="h-28 w-28">
-                <button
-                  class="h-28 w-28 rounded-full bg-amethyst-50 border-white border-8 shadow text-amethyst-600 font-bold text-sm flex justify-center items-center flex-col"
-                >
-                  <span class="material-icons !text-4xl !font-bold"
-                    >check</span>
-                  2022.12
-                </button>
-              </div>
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                >
-                  2023.3
-                </button>
-              </div>
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                >
-                  2023.6
-                </button>
-              </div>
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                >
-                  2023.9
-                </button>
-              </div>
-              <div class="h-28 w-28 flex justify-center items-center">
-                <button
-                  class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
-                >
-                  2023.12
-                </button>
-              </div>
-            </div>
-            <div class="flex justify-center items-center ml-5">
-              <button
-                class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded"
-              >
-                <span class="material-icons text-white !text-4xl"
-                  >arrow_right</span>
-              </button>
-            </div>
-          </div>
+          <.timeline_bar type="other" dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]} selected_date="2022.12"/>
         </div>
         <div class="w-[700px] pl-28">
           <div class="w-[450px] mx-auto my-12">
