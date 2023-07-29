@@ -13,7 +13,7 @@ defmodule Bright.Jobs.Job do
   schema "jobs" do
     field :name, :string
     field :position, :integer
-    has_many :career_want_job, CareerWantJob
+    has_one :career_want_job, CareerWantJob
     belongs_to :career_field, CareerField
 
     timestamps()
