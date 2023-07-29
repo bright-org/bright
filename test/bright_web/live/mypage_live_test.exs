@@ -5,14 +5,7 @@ defmodule BrightWeb.MypageLiveTest do
   import Bright.Factory
 
   describe "Index" do
-    setup %{conn: conn} do
-      password = valid_user_password()
-
-      user = create_user_with_password(password)
-      insert(:user_profile, user: user)
-
-      %{conn: log_in_user(conn, user), user: user, password: password}
-    end
+    setup [:register_and_log_in_user]
 
     test "lists all mypages", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, ~p"/mypage")
