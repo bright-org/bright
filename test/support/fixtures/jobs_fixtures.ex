@@ -57,9 +57,7 @@ defmodule Bright.JobsFixtures do
   def career_want_job_fixture(attrs \\ %{}) do
     {:ok, career_want_job} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> Bright.Jobs.create_career_want_job()
 
     career_want_job

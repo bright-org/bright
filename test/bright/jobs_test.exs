@@ -224,12 +224,16 @@ defmodule Bright.JobsTest do
       career_want_job = career_want_job_fixture()
       update_attrs = %{}
 
-      assert {:ok, %CareerWantJob{} = career_want_job} = Jobs.update_career_want_job(career_want_job, update_attrs)
+      assert {:ok, %CareerWantJob{} = career_want_job} =
+               Jobs.update_career_want_job(career_want_job, update_attrs)
     end
 
     test "update_career_want_job/2 with invalid data returns error changeset" do
       career_want_job = career_want_job_fixture()
-      assert {:error, %Ecto.Changeset{}} = Jobs.update_career_want_job(career_want_job, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Jobs.update_career_want_job(career_want_job, @invalid_attrs)
+
       assert career_want_job == Jobs.get_career_want_job!(career_want_job.id)
     end
 

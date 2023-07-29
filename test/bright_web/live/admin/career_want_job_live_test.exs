@@ -47,7 +47,9 @@ defmodule BrightWeb.Admin.CareerWantJobLiveTest do
     test "updates career_want_job in listing", %{conn: conn, career_want_job: career_want_job} do
       {:ok, index_live, _html} = live(conn, ~p"/admin/career_want_jobs")
 
-      assert index_live |> element("#career_want_jobs-#{career_want_job.id} a", "Edit") |> render_click() =~
+      assert index_live
+             |> element("#career_want_jobs-#{career_want_job.id} a", "Edit")
+             |> render_click() =~
                "Edit Career want job"
 
       assert_patch(index_live, ~p"/admin/career_want_jobs/#{career_want_job}/edit")
@@ -69,7 +71,10 @@ defmodule BrightWeb.Admin.CareerWantJobLiveTest do
     test "deletes career_want_job in listing", %{conn: conn, career_want_job: career_want_job} do
       {:ok, index_live, _html} = live(conn, ~p"/admin/career_want_jobs")
 
-      assert index_live |> element("#career_want_jobs-#{career_want_job.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#career_want_jobs-#{career_want_job.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#career_want_jobs-#{career_want_job.id}")
     end
   end

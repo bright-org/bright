@@ -33,7 +33,10 @@ defmodule BrightWeb.Admin.CareerWantJobLive.Index do
   end
 
   @impl true
-  def handle_info({BrightWeb.Admin.CareerWantJobLive.FormComponent, {:saved, career_want_job}}, socket) do
+  def handle_info(
+        {BrightWeb.Admin.CareerWantJobLive.FormComponent, {:saved, career_want_job}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :career_want_jobs, career_want_job)}
   end
 
