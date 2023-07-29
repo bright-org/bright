@@ -14,6 +14,8 @@ defmodule BrightWeb.LayoutComponents do
   attr :csrf_token, :string, required: true
   attr :page_title, :string
 
+  slot :inner_block, required: true
+
   def root_layout(assigns) do
     ~H"""
     <!DOCTYPE html>
