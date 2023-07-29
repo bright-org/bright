@@ -228,7 +228,10 @@ defmodule Bright.Jobs do
       ** (Ecto.NoResultsError)
 
   """
-  def get_job!(id), do: Repo.get!(Job, id)
+  def get_job!(id) do
+    Repo.get!(Job, id)
+    |> Repo.preload(:career_field)
+  end
 
   @doc """
   Creates a job.
