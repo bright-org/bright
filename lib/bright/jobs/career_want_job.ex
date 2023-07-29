@@ -1,4 +1,7 @@
 defmodule Bright.Jobs.CareerWantJob do
+  @moduledoc """
+  やりたいこととジョブを関連づけるスキーマ。
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias Bright.Jobs.CareerWant
