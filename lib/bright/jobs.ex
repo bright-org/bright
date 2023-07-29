@@ -297,4 +297,100 @@ defmodule Bright.Jobs do
   def change_job(%Job{} = job, attrs \\ %{}) do
     Job.changeset(job, attrs)
   end
+
+  alias Bright.Jobs.CareerWantJob
+
+  @doc """
+  Returns the list of career_want_jobs.
+
+  ## Examples
+
+      iex> list_career_want_jobs()
+      [%CareerWantJob{}, ...]
+
+  """
+  def list_career_want_jobs do
+    Repo.all(CareerWantJob)
+  end
+
+  @doc """
+  Gets a single career_want_job.
+
+  Raises `Ecto.NoResultsError` if the Career want job does not exist.
+
+  ## Examples
+
+      iex> get_career_want_job!(123)
+      %CareerWantJob{}
+
+      iex> get_career_want_job!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_career_want_job!(id), do: Repo.get!(CareerWantJob, id)
+
+  @doc """
+  Creates a career_want_job.
+
+  ## Examples
+
+      iex> create_career_want_job(%{field: value})
+      {:ok, %CareerWantJob{}}
+
+      iex> create_career_want_job(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_career_want_job(attrs \\ %{}) do
+    %CareerWantJob{}
+    |> CareerWantJob.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a career_want_job.
+
+  ## Examples
+
+      iex> update_career_want_job(career_want_job, %{field: new_value})
+      {:ok, %CareerWantJob{}}
+
+      iex> update_career_want_job(career_want_job, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_career_want_job(%CareerWantJob{} = career_want_job, attrs) do
+    career_want_job
+    |> CareerWantJob.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a career_want_job.
+
+  ## Examples
+
+      iex> delete_career_want_job(career_want_job)
+      {:ok, %CareerWantJob{}}
+
+      iex> delete_career_want_job(career_want_job)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_career_want_job(%CareerWantJob{} = career_want_job) do
+    Repo.delete(career_want_job)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking career_want_job changes.
+
+  ## Examples
+
+      iex> change_career_want_job(career_want_job)
+      %Ecto.Changeset{data: %CareerWantJob{}}
+
+  """
+  def change_career_want_job(%CareerWantJob{} = career_want_job, attrs \\ %{}) do
+    CareerWantJob.changeset(career_want_job, attrs)
+  end
 end

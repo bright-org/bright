@@ -1,0 +1,25 @@
+<.header>
+  Career want job <%= @career_want_job.id %>
+  <:subtitle>This is a career_want_job record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/admin/career_want_jobs/#{@career_want_job}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit career_want_job</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+</.list>
+
+<.back navigate={~p"/admin/career_want_jobs"}>Back to career_want_jobs</.back>
+
+<.modal :if={@live_action == :edit} id="career_want_job-modal" show on_cancel={JS.patch(~p"/admin/career_want_jobs/#{@career_want_job}")}>
+  <.live_component
+    module={BrightWeb.Admin.CareerWantJobLive.FormComponent}
+    id={@career_want_job.id}
+    title={@page_title}
+    action={@live_action}
+    career_want_job={@career_want_job}
+    patch={~p"/admin/career_want_jobs/#{@career_want_job}"}
+  />
+</.modal>
