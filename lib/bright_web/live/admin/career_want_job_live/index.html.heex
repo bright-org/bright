@@ -7,11 +7,15 @@
   </:actions>
 </.header>
 
+
 <.table
   id="career_want_jobs"
   rows={@streams.career_want_jobs}
   row_click={fn {_id, career_want_job} -> JS.navigate(~p"/admin/career_want_jobs/#{career_want_job}") end}
 >
+  <:col :let={{_id, career_want_job}} label="Id"><%= career_want_job.id %></:col>
+  <:col :let={{_id, career_want_job}} label="CareerWant Name"><%= career_want_job.career_want.name %></:col>
+  <:col :let={{_id, career_want_job}} label="Job Name"><%= career_want_job.job.name %></:col>
   <:action :let={{_id, career_want_job}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/career_want_jobs/#{career_want_job}"}>Show</.link>
@@ -35,6 +39,8 @@
     title={@page_title}
     action={@live_action}
     career_want_job={@career_want_job}
+    career_wants={@career_wants}
+    jobs={@jobs}
     patch={~p"/admin/career_want_jobs"}
   />
 </.modal>

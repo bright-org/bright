@@ -21,9 +21,14 @@ defmodule BrightWeb.Admin.CareerWantJobLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
+    career_wants_options = Jobs.list_career_wants() |> map_to_select_option
+    jobs_options = Jobs.list_jobs() |> map_to_select_option
+
     socket
     |> assign(:page_title, "New Career want job")
     |> assign(:career_want_job, %CareerWantJob{})
+    |> assign(:career_wants, career_wants_options)
+    |> assign(:jobs, jobs_options)
   end
 
   defp apply_action(socket, :index, _params) do
@@ -46,5 +51,12 @@ defmodule BrightWeb.Admin.CareerWantJobLive.Index do
     {:ok, _} = Jobs.delete_career_want_job(career_want_job)
 
     {:noreply, stream_delete(socket, :career_want_jobs, career_want_job)}
+  end
+
+  defp map_to_select_option(param_map) do
+    param_map
+    |> Enum.map(fn %{id: id_value, name: name_value} ->
+      {String.to_atom(name_value), id_value}
+    end)
   end
 end

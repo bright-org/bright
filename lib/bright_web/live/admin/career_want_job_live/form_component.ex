@@ -19,7 +19,18 @@ defmodule BrightWeb.Admin.CareerWantJobLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-
+        <.input
+          type="select"
+          label="career_wants"
+          field={@form[:career_want_id]}
+          options={@career_wants}
+        />
+        <.input
+          type="select"
+          label="jobs"
+          field={@form[:job_id]}
+          options={@jobs}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Career want job</.button>
         </:actions>

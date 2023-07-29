@@ -311,6 +311,8 @@ defmodule Bright.Jobs do
   """
   def list_career_want_jobs do
     Repo.all(CareerWantJob)
+    |> Repo.preload(:career_want)
+    |> Repo.preload(:job)
   end
 
   @doc """
@@ -327,7 +329,11 @@ defmodule Bright.Jobs do
       ** (Ecto.NoResultsError)
 
   """
-  def get_career_want_job!(id), do: Repo.get!(CareerWantJob, id)
+  def get_career_want_job!(id) do
+    Repo.get!(CareerWantJob, id)
+    |> Repo.preload(:career_want)
+    |> Repo.preload(:job)
+  end
 
   @doc """
   Creates a career_want_job.
