@@ -59,6 +59,11 @@ const fillSurface = (chart, data, index, color) => {
   context.fill()
 }
 
+const fillSurfaces = (chart, data, color) => {
+  for (let i = 0; i < data.length; i++) {
+    fillSurface(chart, data, i, color[i])
+  }
+}
 const drawGridline = (chart, value, length) => {
   const context = chart.ctx
   const v0 = chart.scales.r.getPointPositionForValue(0, value)
@@ -88,23 +93,25 @@ const drawUnderline = (chart, i) => {
 
 const beforeDatasetsDraw = (chart) => {
   const context = chart.ctx
-  const data = chart.data.datasets[0].data
-  const color = getColorPattern(data.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"])
-  const color2 = getColorPattern(data.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
+  const colorTheme = chart.canvas.parentNode.dataset.colorTheme
+  const myselfData = chart.data.datasets[0].data
+  const diffData = chart.data.datasets[1] !== undefined ? chart.data.datasets[1].data : []
+  const myselfColor = getColorPattern(myselfData.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"])
+  const otherColor = getColorPattern(myselfData.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
+  const pastColor = getColorPattern(myselfData.length,   ["#FFFFFF99", "#FFFFFF55", "#FFFFFF55"])
+  const diffColor = colorTheme === 'myself' ? pastColor : otherColor
   const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink)
 
-  if (chart.data.datasets[1] !== undefined) {
-    for (let i = 0; i < chart.data.datasets[1].data.length; i++) {
-      fillSurface(chart, chart.data.datasets[1].data, i, color2[i])
-    }
-  }
-
-  for (let i = 0; i < data.length; i++) {
-    fillSurface(chart, data, i, color[i])
+  if (colorTheme === 'myself') {
+    fillSurfaces(chart, myselfData, myselfColor)
+    fillSurfaces(chart, diffData, diffColor)
+  } else {
+    fillSurfaces(chart, diffData, diffColor)
+    fillSurfaces(chart, myselfData, myselfColor)
   }
 
   for (let i = 1; i < 5; i++) {
-    drawGridline(chart, 20 * i, data.length)
+    drawGridline(chart, 20 * i, myselfData.length)
   }
 
   // リンク非表示はこれ以降は処理をしない
@@ -119,13 +126,13 @@ const beforeDatasetsDraw = (chart) => {
   // padding rightで拡張しないと、一番右にに表示するアイコンが削れる
   img.onload = function () {
 
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < myselfData.length; i++) {
       const label = chart.scales.r.getPointLabelPosition(i);
       context.drawImage(img, label.right + 2, label.top - 4, iconWidth, iconHeight)
     }
   }
 
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < myselfData.length; i++) {
     drawUnderline(chart, i)
   }
 }
@@ -202,8 +209,8 @@ export const SkillGem = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
     const myChart = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
-    myChart.canvas.parentNode.style.height = isSmall ?  '165px' : '426px'
-    myChart.canvas.parentNode.style.width =  isSmall ? '250px' : '426px'
+    myChart.canvas.parentNode.style.height = isSmall ? '165px' : '450px'
+    myChart.canvas.parentNode.style.width = isSmall ? '250px' : '450px'
 
     ctx.addEventListener('click', function (event) {
       if (!isLink) return;

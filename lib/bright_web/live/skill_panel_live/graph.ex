@@ -1,6 +1,10 @@
 defmodule BrightWeb.SkillPanelLive.Graph do
   use BrightWeb, :live_view
-
+  import BrightWeb.DoughnutGraphComponents
+  import BrightWeb.GrowthGraphComponents
+  import BrightWeb.SkillScoreComponents
+  import BrightWeb.TimelineBarComponents
+  import BrightWeb.ProfileComponents
   alias Bright.SkillPanels
 
   # 全体が仮実装です。
@@ -24,6 +28,8 @@ defmodule BrightWeb.SkillPanelLive.Graph do
 
     {:ok,
      socket
+     |> assign(:page_title, "スキルパネル")
+     |> assign(:page_sub_title, skill_panel.name)
      |> assign(:skill_panel, skill_panel)
      |> assign(:skill_class, skill_class)}
   end
