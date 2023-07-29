@@ -1,11 +1,15 @@
 defmodule Bright.Jobs.CareerWantJob do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Bright.Jobs.CareerWant
+  alias Bright.Jobs.Job
+
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "career_want_jobs" do
-
-    field :career_want_id, :id
-    field :job_id, :id
+    belongs_to :career_want, CareerWant
+    has_many :job, Job
 
     timestamps()
   end
@@ -13,7 +17,7 @@ defmodule Bright.Jobs.CareerWantJob do
   @doc false
   def changeset(career_want_job, attrs) do
     career_want_job
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:career_want_id, :job_id])
+    |> validate_required([:career_want_id, :job_id])
   end
 end
