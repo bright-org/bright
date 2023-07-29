@@ -17,7 +17,7 @@ defmodule BrightWeb.Admin.JobLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Job")
-    |> assign(:job, Jobs.get_job_wih_career_fileds!(id))
+    |> assign(:job, Jobs.get_job_with_career_fileds!(id))
     |> assign(:career_fields, career_field_options())
   end
 
