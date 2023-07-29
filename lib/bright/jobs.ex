@@ -228,7 +228,23 @@ defmodule Bright.Jobs do
       ** (Ecto.NoResultsError)
 
   """
-  def get_job!(id) do
+  def get_job!(id), do: Repo.get!(Job, id)
+
+  @doc """
+  Gets a single job.
+
+  Raises `Ecto.NoResultsError` if the Job does not exist.
+
+  ## Examples
+
+      iex> get_job_wih_career_fileds!(123)
+      %Job{}
+
+      iex> get_job_wih_career_fileds!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_job_wih_career_fileds!(id) do
     Repo.get!(Job, id)
     |> Repo.preload(:career_field)
   end
