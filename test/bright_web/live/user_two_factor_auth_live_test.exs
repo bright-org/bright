@@ -6,6 +6,7 @@ defmodule BrightWeb.UserTwoFactorAuthLiveTest do
   alias Bright.Repo
   import Phoenix.LiveViewTest
   import Bright.Factory
+  import Swoosh.TestAssertions
 
   setup %{conn: conn} do
     user = insert(:user)
@@ -71,6 +72,11 @@ defmodule BrightWeb.UserTwoFactorAuthLiveTest do
 
       assert user_2fa_code != Repo.get_by!(User2faCodes, user_id: user.id)
       refute Accounts.get_user_by_2fa_auth_session_token(session_token)
+
+      assert_email_sent(fn email ->
+        assert email.subject == "【Bright】二段階認証コード"
+        assert email.to == [{"", user.email}]
+      end)
     end
 
     test "redirects onboarding page and does user log_in when submits valid code", %{
