@@ -76,6 +76,12 @@ defmodule BrightWeb.Router do
       live "/jobs/:id/edit", JobLive.Index, :edit
       live "/jobs/:id", JobLive.Show, :show
       live "/jobs/:id/show/edit", JobLive.Show, :edit
+
+      live "/career_want_jobs", CareerWantJobLive.Index, :index
+      live "/career_want_jobs/new", CareerWantJobLive.Index, :new
+      live "/career_want_jobs/:id/edit", CareerWantJobLive.Index, :edit
+      live "/career_want_jobs/:id", CareerWantJobLive.Show, :show
+      live "/career_want_jobs/:id/show/edit", CareerWantJobLive.Show, :edit
     end
   end
 
