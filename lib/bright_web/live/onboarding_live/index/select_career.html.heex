@@ -16,20 +16,16 @@
         <div class="hidden">
           <ul class="flex flex-wrap gap-4 justify-start p-4">
             <!-- やりたいこと ここから -->
-            <%= for wants <- @wants do %>
+            <%= for {wants, index} <- Enum.with_index(@career_wants) do %>
             <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
               <a href="/onboardings/select_skill_panel" class="block">
-                <b class="block text-center"><%= wants.name %></b>
+                <b class="block text-center"><%= wants.career_want_name %></b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
-                  <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
-                    エンジニア
-                  </span>
-                  <span class="bg-infra-dark px-2 py-0.5 rounded-full text-white text-xs">
-                    インフラ
-                  </span>
-                  <span class="bg-designer-dark px-2 py-0.5 rounded-full text-white text-xs">
-                    デザイナー
-                  </span>
+                  <%= for career_field <- Enum.at(@career_fields, index) do %>
+                    <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
+                      <%= career_field.career_field_name %>
+                    </span>
+                  <% end %>
                 </div>
               </a>
             </li>
