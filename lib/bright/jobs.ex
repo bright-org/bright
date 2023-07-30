@@ -333,8 +333,8 @@ defmodule Bright.Jobs do
 
   def list_career_want_jobs_with_career_wants do
     query =
-      from cwj in "career_want_jobs",
-        join: cw in "career_wants",
+      from cw in CareerWant,
+        join: cwj in CareerWantJob,
         on: cwj.career_want_id == cw.id,
         group_by: [cw.id],
         select: %{
@@ -378,12 +378,12 @@ defmodule Bright.Jobs do
   """
   def list_career_wants_jobs_with_career_fields do
     query =
-      from cwj in "career_want_jobs",
-        join: cw in "career_wants",
+      from cw in CareerWant,
+        join: cwj in CareerWantJob,
         on: cwj.career_want_id == cw.id,
-        join: j in "jobs",
+        join: j in Job,
         on: cwj.job_id == j.id,
-        join: cf in "career_fields",
+        join: cf in CareerField,
         on: j.career_field_id == cf.id,
         group_by: [cw.id, cf.id],
         order_by: [asc: cw.position, asc: cf.position],
