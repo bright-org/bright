@@ -4,7 +4,6 @@ defmodule Bright.Accounts.SocialIdentifierToken do
   """
 
   use Ecto.Schema
-  import Ecto.Changeset
 
   schema "social_identifier_tokens" do
     field :identifier, :string
