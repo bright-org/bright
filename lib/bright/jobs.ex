@@ -21,6 +21,28 @@ defmodule Bright.Jobs do
     Repo.all(CareerWant)
   end
 
+  def list_career_wants_with_career_fields do
+    query =
+      from cwj in "career_want_jobs",
+        join: cw in "career_wants",
+        on: cwj.career_want_id == cw.id,
+        join: j in "jobs",
+        on: cwj.job_id == j.id,
+        join: cf in "career_fields",
+        on: j.career_field_id == cf.id,
+        group_by: [cw.id, cf.id],
+        order_by: [asc: cw.position, asc: cf.position],
+        select: %{
+          career_want_id: cw.id,
+          career_want_name: cw.name,
+          career_field_name: cf.name,
+          background_color: cf.background_color,
+          button_color: cf.button_color
+        }
+
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single career_want.
 
