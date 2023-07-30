@@ -61,7 +61,8 @@ defmodule Bright.MixProject do
       {:google_api_storage, "~> 0.34"},
       {:goth, "~> 1.3"},
       {:hackney, "~> 1.18"},
-      {:scrivener_ecto, "~> 2.0"}
+      {:scrivener_ecto, "~> 2.0"},
+      {:ueberauth_google, "~> 0.10"}
     ]
   end
 
