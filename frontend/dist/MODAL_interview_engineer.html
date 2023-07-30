@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output0.css">
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Symbols+Outlined|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+  <section class="absolute bg-white min-h-[600px] left-1/2 -ml-[300px] -mt-[300px] px-10 py-8 shadow text-sm top-1/2 w-[600px]">
+    <h2 class="font-bold text-xl">
+      <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">採用候補者とのチャット</span>
+    </h2>
+
+    <p class="text-xs mt-1">※面談日時の重複は管理対象外ですので、別途管理を行ってください</p>
+
+    <div>
+      <!-- コメント表示 -->
+      <div class="h-[360px] mt-4 overflow-y-auto">
+        <div class="flex pb-2">
+          <div class="w-14">
+            <img
+              class="inline-block h-10 w-10 rounded-full"
+              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+            />
+          </div>
+
+          <div class="bg-brightGreen-50 ml-1 px-3 py-2 w-[480px]">
+            <b>yosuke</b>
+            <p>合同会社ザワッグルのyosukeと申します。<br>
+              今回弊社で新規スキルシートSaaSをElixirで開発するに
+              あたって、<br>ベテランクラスのエンジニアとしてチームに
+              ジョインしていただけないかと思いまして連絡させてい
+              ただきました。<br>
+              つきましては、一度お話を伺えたらと思いますので、ご
+              都合の良いお日にちをいただけたらと思います。<br>
+              よろしくお願いいたします。</p>
+            <p class="pt-2 text-right text-sm text-brightGray-500">2023/06/12 17:17</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- コメント入力 -->
+      <div class="flex pb-2">
+        <div class="w-[50px] flex justify-center flex-col items-center">
+          <img
+            class="inline-block h-10 w-10 rounded-full"
+            src="./images/common/icons/avatar.png"
+          />
+        </div>
+        <div class="w-full">
+          <textarea
+            placeholder="｜メッセージを入力"
+            class="w-full min-h-1 outline-none p-2"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- モーダル内フッター -->
+      <hr class="pb-1 border-brightGray-100">
+      <div class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full">
+        <button class="mr-auto">
+          <span class="material-icons-outlined !text-4xl">
+            add_photo_alternate
+          </span>
+          <span class="material-symbols-outlined !text-4xl">
+            add_box
+          </span>
+        </button>
+
+        <button
+          class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-36"
+        >
+          メッセージを送る
+        </button>
+
+        <!-- 面談を辞退する -->
+        <button
+          id="interviewDropdownButton"
+          data-dropdown-toggle="interviewDropdown"
+          data-dropdown-offset-skidding="300"
+          data-dropdown-placement="bottom"
+          class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
+          type="button"
+        >
+          <span class="min-w-[6em]">面談を辞退する</span>
+          <span
+            class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
+            >add</span
+          >
+        </button>
+        <!-- 面談を辞退する Donwdrop -->
+        <div
+          id="menu01"
+          class="hidden absolute z-10 bg-white rounded-lg shadow-md min-w-[286px] top-[52px] left-[370px]"
+        >
+          <ul
+            class="p-2 text-left text-base"
+            aria-labelledby="dropmenu04"
+          >
+            <li>
+              <a
+                href="#"
+                class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                >条件が合わない</a
+              >
+            </li>
+            <li>
+              <a
+                data-modal-target="addTeamModal"
+                data-modal-toggle="addTeamModal"
+                class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                >状況が変わった</a
+             >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                >スカウト時と状況が異なる</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                >相性が悪い</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+      <!-- close button -->
+      <button class="absolute right-5 top-5 z-10">
+        <span class="material-icons !text-3xl text-brightGray-900"
+          >close</span
+        >
+      </button>
+    </div>
+  </section>
+</main>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script>
+// button
+$("#interviewDropdownButton").on("click",function(){
+  $(this).next().slideToggle();
+});
+</script>
+</body>
+</html>
