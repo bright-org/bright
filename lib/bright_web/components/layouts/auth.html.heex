@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title>
+      <%= assigns[:page_title] || "Bright" %>
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+    <link rel="icon" href={~p"/favicon.ico"} />
+  </head>
+  <body class="bg-background font-notosans">
+    <main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+      <section class="bg-white -mt-10 max-w-[800px] p-10 rounded-lg w-full">
+        <%= @inner_content %>
+      </section>
+    </main>
+  </body>
+</html>

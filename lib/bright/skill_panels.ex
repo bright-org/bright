@@ -8,6 +8,7 @@ defmodule Bright.SkillPanels do
   alias Bright.Repo
 
   alias Bright.SkillPanels.SkillPanel
+  alias Bright.SkillPanels.SkillClass
 
   @doc """
   Returns the list of skill_panels.
@@ -104,5 +105,18 @@ defmodule Bright.SkillPanels do
   """
   def change_skill_panel(%SkillPanel{} = skill_panel, attrs \\ %{}) do
     SkillPanel.changeset(skill_panel, attrs)
+  end
+
+  @doc """
+  Returns the list of skill_classes.
+
+  ## Examples
+
+      iex> list_skill_classes()
+      [%SkillClass{}, ...]
+
+  """
+  def list_skill_classes do
+    Repo.all(SkillClass)
   end
 end
