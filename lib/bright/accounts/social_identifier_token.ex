@@ -5,6 +5,9 @@ defmodule Bright.Accounts.SocialIdentifierToken do
 
   use Ecto.Schema
 
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
+
   schema "social_identifier_tokens" do
     field :identifier, :string
     field :token, :binary
