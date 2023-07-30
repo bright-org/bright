@@ -62,6 +62,7 @@ module.exports = {
       sns: {
         facebook: "#1877F2",
         twitter: "#1DA1F2",
+        newTwitter: "#000000",
         github: "#0D1117",
       },
       infra: {
@@ -107,6 +108,7 @@ module.exports = {
         bgGithub: "url('./images/bg_github.png')",
         bgFacebook: "url('./images/bg_facebook.png')",
         bgTwitter: "url('./images/bg_twitter.png')",
+        bgNewTwitter: "url('./images/bg_new_twitter.png')",
         bgAddAvatar: "url('./images/bg_add_avatar.png')",
       }),
       backgroundPosition: (theme) => ({
