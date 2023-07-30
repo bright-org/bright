@@ -17,6 +17,7 @@ defmodule Bright.Accounts.User do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
+    field :password_registered, :boolean
     field :confirmed_at, :naive_datetime
 
     has_many :skill_scores, Bright.SkillScores.SkillScore
@@ -178,7 +179,10 @@ defmodule Bright.Accounts.User do
   If there is no user or the user doesn't have a password, we call
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
-  def valid_password?(%Bright.Accounts.User{hashed_password: hashed_password}, password)
+  def valid_password?(
+        %Bright.Accounts.User{hashed_password: hashed_password, password_registered: true},
+        password
+      )
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end

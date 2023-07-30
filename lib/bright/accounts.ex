@@ -15,7 +15,8 @@ defmodule Bright.Accounts do
   ## Database getters
 
   @doc """
-  Gets a user by email.
+  Gets a confirmed user by email.
+
   When `:confirmed` option is given, gets a user including not confirmed.
 
   ## Examples
@@ -41,7 +42,7 @@ defmodule Bright.Accounts do
   end
 
   @doc """
-  Gets a user by email and password.
+  Gets a confirmed and password registered user by email and password.
 
   ## Examples
 
