@@ -58,33 +58,15 @@ defmodule BrightWeb.OnboardingLive.Index do
   end
 
   def render(%{view_content: _} = assigns) do
-    list_career_wants_with_career_fields = Jobs.list_career_wants_with_career_fields()
+    career_wants = Jobs.list_career_want_jobs_with_career_wants()
+    career_fields = Jobs.list_career_wants_jobs_with_career_fields()
 
-    career_wants =
-      list_career_wants_with_career_fields
-      |> Enum.group_by(fn x -> x.career_want_id end)
-      |> Enum.map(fn {_key, value} -> List.first(value) end)
-      |> Enum.map(fn x -> %{id: x.career_want_id, name: x.career_want_name} end)
-
-    list_career_fields =
-      list_career_wants_with_career_fields
-      |> Enum.group_by(fn x -> x.career_want_id end)
-      |> Enum.map(fn {_key, value} ->
-        Enum.map(value, fn x ->
-          %{
-            career_field_name: x.career_field_name,
-            background_color: x.background_color,
-            button_color: x.button_color
-          }
-        end)
-      end)
-
-    assigns = assign(assigns, career_wants: career_wants, list_career_fields: list_career_fields)
+    assigns = assign(assigns, career_wants: career_wants, career_fields: career_fields)
 
     ~H"""
     <.select_career
       career_wants={@career_wants}
-      list_career_fields={@list_career_fields}
+      career_fields={@career_fields}
     />
     """
   end

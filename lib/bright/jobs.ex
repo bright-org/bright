@@ -21,28 +21,6 @@ defmodule Bright.Jobs do
     Repo.all(CareerWant)
   end
 
-  def list_career_wants_with_career_fields do
-    query =
-      from cwj in "career_want_jobs",
-        join: cw in "career_wants",
-        on: cwj.career_want_id == cw.id,
-        join: j in "jobs",
-        on: cwj.job_id == j.id,
-        join: cf in "career_fields",
-        on: j.career_field_id == cf.id,
-        group_by: [cw.id, cf.id],
-        order_by: [asc: cw.position, asc: cf.position],
-        select: %{
-          career_want_id: cw.id,
-          career_want_name: cw.name,
-          career_field_name: cf.name,
-          background_color: cf.background_color,
-          button_color: cf.button_color
-        }
-
-    Repo.all(query)
-  end
-
   @doc """
   Gets a single career_want.
 
@@ -351,6 +329,82 @@ defmodule Bright.Jobs do
     Repo.all(CareerWantJob)
     |> Repo.preload(:career_want)
     |> Repo.preload(:job)
+  end
+
+  def list_career_want_jobs_with_career_wants do
+    query =
+      from cwj in "career_want_jobs",
+        join: cw in "career_wants",
+        on: cwj.career_want_id == cw.id,
+        group_by: [cw.id],
+        select: %{
+          career_want_id: cw.id,
+          career_want_name: cw.name
+        }
+
+    Repo.all(query)
+  end
+
+  @doc """
+  やりたいことに関連づいているキャリアフィールドを取得し、やりたいこと単位でリストに
+  [
+    [
+      %{
+        background_color: "#165BC8",
+        button_color: "#165BC8",
+        career_field_name: "エンジニア"
+      },
+      %{
+        background_color: "#FFFFDC",
+        button_color: "#F1E3FF",
+        career_field_name: "デザイナー"
+      }
+    ],
+    [
+      %{
+        background_color: "#FFFFDC",
+        button_color: "#F1E3FF",
+        career_field_name: "デザイナー"
+      }
+    ],
+    [
+      %{
+        background_color: "#F2FFE1",
+        button_color: "#FFFFDC",
+        career_field_name: "インフラ"
+      }
+    ]
+  ]
+  """
+  def list_career_wants_jobs_with_career_fields do
+    query =
+      from cwj in "career_want_jobs",
+        join: cw in "career_wants",
+        on: cwj.career_want_id == cw.id,
+        join: j in "jobs",
+        on: cwj.job_id == j.id,
+        join: cf in "career_fields",
+        on: j.career_field_id == cf.id,
+        group_by: [cw.id, cf.id],
+        order_by: [asc: cw.position, asc: cf.position],
+        select: %{
+          career_want_id: cw.id,
+          career_field_name: cf.name,
+          background_color: cf.background_color,
+          button_color: cf.button_color
+        }
+
+    Repo.all(query)
+    |> Enum.group_by(fn x -> x.career_want_id end)
+    |> Enum.map(fn {_key, value} ->
+      Enum.map(value, fn x ->
+        %{
+          career_field_name: x.career_field_name,
+          background_color: x.background_color,
+          button_color: x.button_color
+        }
+      end)
+    end)
   end
 
   @doc """
