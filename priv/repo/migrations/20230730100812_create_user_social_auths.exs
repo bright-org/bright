@@ -3,9 +3,9 @@ defmodule Bright.Repo.Migrations.CreateUserSocialAuths do
 
   def change do
     create table(:user_social_auths) do
-      add :provider, :string
-      add :identifier, :string
-      add :user_id, references(:users, on_delete: :nothing)
+      add :provider, :string, null: false
+      add :identifier, :string, null: false
+      add :user_id, references(:users, on_delete: :nothing), null: false
 
       timestamps()
     end

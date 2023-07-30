@@ -3,7 +3,7 @@ defmodule Bright.Repo.Migrations.UsersAddPasswordRegistered do
 
   def change do
     alter table(:users) do
-      add :password_registered, :boolean, default: false, null: false
+      add :password_registered, :boolean, default: true, null: false
     end
   end
 end

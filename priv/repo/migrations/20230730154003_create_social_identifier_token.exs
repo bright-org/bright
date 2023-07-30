@@ -3,9 +3,9 @@ defmodule Bright.Repo.Migrations.CreateSocialIdentifierToken do
 
   def change do
     create table(:social_identifier_tokens) do
-      add :provider, :string
-      add :identifier, :string
-      add :token, :binary
+      add :provider, :string, null: false
+      add :identifier, :string, null: false
+      add :token, :binary, null: false
 
       timestamps(updated_at: false)
     end
