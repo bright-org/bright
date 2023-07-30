@@ -24,7 +24,6 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
           label="career_fields"
           field={@form[:career_field_id]}
           options={@career_fields}
-          value={nil}
         />
         <.input field={@form[:position]} type="number" label="Position" />
         <:actions>

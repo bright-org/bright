@@ -32,8 +32,16 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
         </label>
       </div>
 
-      <div class="flex mt-8 mx-auto w-fit">
+      <div class="flex mt-8 mx-auto w-fit gap-4">
         <a class="bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">保存する</a>
+        <.link
+          href="/users/log_out"
+          method="delete"
+          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+        ログアウトする
+        </.link>
+
       </div>
     </li>
     """

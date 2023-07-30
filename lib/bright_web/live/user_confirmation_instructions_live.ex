@@ -8,7 +8,6 @@ defmodule BrightWeb.UserConfirmationInstructionsLive do
     ~H"""
     <UserAuthComponents.header>確認メールが届かなかった方へ</UserAuthComponents.header>
 
-    <%!-- TODO: ドメイン決まったら反映 --%>
     <UserAuthComponents.description>
       確認メールを再度送信します。
       <br>
@@ -18,7 +17,7 @@ defmodule BrightWeb.UserConfirmationInstructionsLive do
       <span class="text-xs">
         メールが届かない場合は、Brightからのメールが受信できるように
         <br>
-        ドメイン指定受信で「xxxxxxxx.com」を許可するように設定してください。
+        ドメイン指定受信で「bright-fun.org」を許可するように設定してください。
       </span>
     </UserAuthComponents.description>
 

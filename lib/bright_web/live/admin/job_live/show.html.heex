@@ -1,5 +1,5 @@
 <.header>
-  Job <%= @job.id %>
+  ジョブ <%= @job.name %>
   <:subtitle>This is a job record from your database.</:subtitle>
   <:actions>
     <.link patch={~p"/admin/jobs/#{@job}/show/edit"} phx-click={JS.push_focus()}>
@@ -10,6 +10,7 @@
 
 <.list>
   <:item title="Name"><%= @job.name %></:item>
+  <:item title="CareerField"><%= @job.career_field.name %></:item>
   <:item title="Position"><%= @job.position %></:item>
 </.list>
 

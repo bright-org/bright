@@ -192,4 +192,61 @@ defmodule Bright.JobsTest do
   #     assert %Ecto.Changeset{} = Jobs.change_job(job)
   #   end
   # end
+
+  # TODO: Factoryで対応する
+  # describe "career_want_jobs" do
+  #   alias Bright.Jobs.CareerWantJob
+
+  #   import Bright.JobsFixtures
+
+  #   @invalid_attrs %{}
+
+  #   test "list_career_want_jobs/0 returns all career_want_jobs" do
+  #     career_want_job = career_want_job_fixture()
+  #     assert Jobs.list_career_want_jobs() == [career_want_job]
+  #   end
+
+  #   test "get_career_want_job!/1 returns the career_want_job with given id" do
+  #     career_want_job = career_want_job_fixture()
+  #     assert Jobs.get_career_want_job!(career_want_job.id) == career_want_job
+  #   end
+
+  #   test "create_career_want_job/1 with valid data creates a career_want_job" do
+  #     valid_attrs = %{}
+
+  #     assert {:ok, %CareerWantJob{} = career_want_job} = Jobs.create_career_want_job(valid_attrs)
+  #   end
+
+  #   test "create_career_want_job/1 with invalid data returns error changeset" do
+  #     assert {:error, %Ecto.Changeset{}} = Jobs.create_career_want_job(@invalid_attrs)
+  #   end
+
+  #   test "update_career_want_job/2 with valid data updates the career_want_job" do
+  #     career_want_job = career_want_job_fixture()
+  #     update_attrs = %{}
+
+  #     assert {:ok, %CareerWantJob{} = career_want_job} =
+  #              Jobs.update_career_want_job(career_want_job, update_attrs)
+  #   end
+
+  #   test "update_career_want_job/2 with invalid data returns error changeset" do
+  #     career_want_job = career_want_job_fixture()
+
+  #     assert {:error, %Ecto.Changeset{}} =
+  #              Jobs.update_career_want_job(career_want_job, @invalid_attrs)
+
+  #     assert career_want_job == Jobs.get_career_want_job!(career_want_job.id)
+  #   end
+
+  #   test "delete_career_want_job/1 deletes the career_want_job" do
+  #     career_want_job = career_want_job_fixture()
+  #     assert {:ok, %CareerWantJob{}} = Jobs.delete_career_want_job(career_want_job)
+  #     assert_raise Ecto.NoResultsError, fn -> Jobs.get_career_want_job!(career_want_job.id) end
+  #   end
+
+  #   test "change_career_want_job/1 returns a career_want_job changeset" do
+  #     career_want_job = career_want_job_fixture()
+  #     assert %Ecto.Changeset{} = Jobs.change_career_want_job(career_want_job)
+  #   end
+  # end
 end
