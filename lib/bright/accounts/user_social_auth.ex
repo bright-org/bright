@@ -1,19 +1,17 @@
 defmodule Bright.Accounts.UserSocialAuth do
+  @moduledoc """
+  Bright ユーザーの SNS 認証・認可を扱うスキーマ
+  """
   use Ecto.Schema
-  import Ecto.Changeset
+
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "user_social_auths" do
     field :identifier, :string
     field :provider, :string
-    field :user_id, :id
+    belongs_to(:user, Bright.Accounts.User)
 
     timestamps()
-  end
-
-  @doc false
-  def changeset(user_social_auth, attrs) do
-    user_social_auth
-    |> cast(attrs, [:provider, :identifier])
-    |> validate_required([:provider, :identifier])
   end
 end

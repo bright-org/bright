@@ -10,6 +10,7 @@ defmodule Bright.Repo.Migrations.CreateUserSocialAuths do
       timestamps()
     end
 
-    create index(:user_social_auths, [:user_id])
+    create unique_index(:user_social_auths, [:user_id, :provider])
+    create unique_index(:user_social_auths, [:provider, :identifier])
   end
 end
