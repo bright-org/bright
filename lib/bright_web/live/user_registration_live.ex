@@ -17,10 +17,10 @@ defmodule BrightWeb.UserRegistrationLive do
       phx-change="validate"
     >
       <UserAuthComponents.form_section variant="left">
-        <UserAuthComponents.social_auth_button variant="google" />
-        <UserAuthComponents.social_auth_button variant="github" />
-        <UserAuthComponents.social_auth_button variant="facebook" />
-        <UserAuthComponents.social_auth_button variant="twitter" />
+        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google" />
+        <UserAuthComponents.social_auth_button href="#" variant="github" />
+        <UserAuthComponents.social_auth_button href="#" variant="facebook" />
+        <UserAuthComponents.social_auth_button href="#" variant="twitter" />
       </UserAuthComponents.form_section>
 
       <UserAuthComponents.or_text>または</UserAuthComponents.or_text>

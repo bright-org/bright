@@ -238,6 +238,7 @@ defmodule BrightWeb.UserAuthComponents do
   Social auth button for auth form.
   """
   attr :variant, :string, values: ~w(google github facebook twitter)
+  attr :href, :string
 
   def social_auth_button(assigns) do
     social_auth_text_map = %{
@@ -249,18 +250,25 @@ defmodule BrightWeb.UserAuthComponents do
 
     assigns = assign(assigns, :social_auth_text, social_auth_text_map[assigns.variant])
 
+    # NOTE: Google, Facebook, Twitter は実装できるまで bg-gray-400 にする。完了したら以下のスタイルに差し替える
+    # bg-sns-github
+    # bg-sns-facebook
+    # bg-sns-twitter
     ~H"""
-    <button
-      class={[
-        "bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs mx-auto px-4 py-2 rounded select-none w-full hover:opacity-50",
-        @variant == "google" && "bg-bgGoogle border-black mt-4 text-black",
-        @variant == "github" && "bg-bgGithub bg-sns-github border-github mt-6 text-white",
-        @variant == "facebook" && "bg-bgFacebook bg-sns-facebook border-facebook mt-6 text-white",
-        @variant == "twitter" && "bg-bgTwitter bg-sns-twitter border-twitter mt-6 text-white"
-      ]}
-    >
-      <%= @social_auth_text %>
-    </button>
+    <.link href={@href}>
+      <button
+        type="button"
+        class={[
+          "bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs mx-auto px-4 py-2 rounded select-none w-full hover:opacity-50",
+          @variant == "google" && "bg-bgGoogle border-black mt-4 text-black",
+          @variant == "github" && "bg-bgGithub bg-gray-400 border-github mt-6 text-white",
+          @variant == "facebook" && "bg-bgFacebook bg-gray-400 border-facebook mt-6 text-white",
+          @variant == "twitter" && "bg-bgTwitter bg-gray-400 border-twitter mt-6 text-white"
+        ]}
+      >
+        <%= @social_auth_text %>
+      </button>
+    </.link>
     """
   end
 
