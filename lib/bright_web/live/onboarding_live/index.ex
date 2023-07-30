@@ -79,10 +79,12 @@ defmodule BrightWeb.OnboardingLive.Index do
         end)
       end)
 
+    assigns = assign(assigns, career_wants: career_wants, list_career_fields: list_career_fields)
+
     ~H"""
     <.select_career
-      career_wants={career_wants}
-      list_career_fields={list_career_fields}
+      career_wants={@career_wants}
+      list_career_fields={@list_career_fields}
     />
     """
   end
