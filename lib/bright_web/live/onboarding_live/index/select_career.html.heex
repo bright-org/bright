@@ -22,7 +22,7 @@
                 <b class="block text-center"><%= wants.career_want_name %></b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
                   <%= for career_field <- Enum.at(@career_fields, index) do %>
-                    <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
+                    <span style={"background-color:#{career_field.button_color}"} class="px-2 py-0.5 rounded-full text-white text-xs">
                       <%= career_field.career_field_name %>
                     </span>
                   <% end %>
