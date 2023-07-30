@@ -120,6 +120,13 @@ defmodule BrightWeb.Router do
 
   ## Authentication routes
 
+  scope "/auth", BrightWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/:provider", OAuthController, :request
+    get "/:provider/callback", OAuthController, :callback
+  end
+
   scope "/", BrightWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
 
