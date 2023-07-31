@@ -7,6 +7,38 @@ defmodule BrightWeb.LayoutComponents do
   alias Bright.UserProfiles
 
   @doc """
+  Renders root layout.
+  """
+
+  attr :with_flowbite, :boolean, default: false
+  attr :csrf_token, :string, required: true
+  attr :page_title, :string
+
+  slot :inner_block, required: true
+
+  def root_layout(assigns) do
+    ~H"""
+    <!DOCTYPE html>
+    <html lang="ja">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="csrf-token" content={@csrf_token} />
+        <.live_title>
+          <%= @page_title || "Bright" %>
+        </.live_title>
+        <script :if={@with_flowbite} src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+        <link phx-track-static rel="stylesheet" href={"/assets/app.css"} />
+        <script defer phx-track-static type="text/javascript" src={"/assets/app.js"}>
+        </script>
+        <link rel="icon" href={"/favicon.ico"} />
+      </head>
+      <%= render_slot(@inner_block) %>
+    </html>
+    """
+  end
+
+  @doc """
   Renders a User Header
 
   # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までユーザーヘッダーのみデザイン更新
