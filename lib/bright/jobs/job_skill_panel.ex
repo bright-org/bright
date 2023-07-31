@@ -1,4 +1,7 @@
 defmodule Bright.Jobs.JobSkillPanel do
+  @moduledoc """
+  ジョブとスキルパネルの関連付けを扱うスキーマ。
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias Bright.Jobs.Job
