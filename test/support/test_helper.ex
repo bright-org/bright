@@ -10,6 +10,7 @@ defmodule Bright.TestHelper do
   alias Bright.Accounts
   alias BrightWeb.Endpoint
   alias BrightWeb.UserAuth
+  alias Bright.Repo
 
   @user_2fa_cookie_key "_bright_web_user_2fa_done"
 
@@ -24,6 +25,7 @@ defmodule Bright.TestHelper do
   def register_and_log_in_user(%{conn: conn}) do
     user = insert(:user)
     insert(:user_profile, user: user)
+    user = user |> Repo.preload(:user_profile)
     %{conn: log_in_user(conn, user), user: user}
   end
 
