@@ -7,7 +7,6 @@ defmodule Bright.TestHelper do
   import Plug.Conn
   import Phoenix.ConnTest
 
-  alias Hex.Repo
   alias Bright.Accounts
   alias BrightWeb.Endpoint
   alias BrightWeb.UserAuth
