@@ -31,10 +31,10 @@ defmodule BrightWeb.MypageLiveTest do
                "div.flex.gap-x-6.mr-2 button:nth-child(3) img[src='/images/common/facebook.svg']"
              )
 
-      # スキルジェムのタグがあることを確認
+      # スキルセットジェムのタグがあることを確認
       assert index_live |> has_element?("div #skill-gem")
 
-      # 各カードがあることを確認（ただコントールが貼られていることを確認）
+      # 各カードがあることを確認（コンポーネントが貼られていることのみを確認）
       assert index_live |> has_element?("h5", "重量な連絡")
       assert index_live |> has_element?("li a", "チーム招待")
 
