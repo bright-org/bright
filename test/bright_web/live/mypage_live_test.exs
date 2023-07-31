@@ -6,11 +6,35 @@ defmodule BrightWeb.MypageLiveTest do
   describe "Index" do
     setup [:register_and_log_in_user]
 
-    test "view mypages", %{conn: conn} do
+    test "view mypages", %{conn: conn, user: user} do
       {:ok, index_live, html} = live(conn, ~p"/mypage")
 
-     assert html =~ "マイページ"
+      assert html =~ "マイページ"
 
+      # プロフィールの検証
+      assert index_live |> has_element?("div .text-2xl.font-bold", user.name)
+      assert index_live |> has_element?("div .text-2xl", user.user_profile.title)
+      assert index_live |> has_element?("div .pt-5", user.user_profile.detail)
+      # SNSアイコン表示
+      assert index_live
+             |> has_element?(
+               "div.flex.gap-x-6.mr-2 button:nth-child(1) img[src='/images/common/twitter.svg']"
+             )
+
+      assert index_live
+             |> has_element?(
+               "div.flex.gap-x-6.mr-2 button:nth-child(2) img[src='/images/common/github.svg']"
+             )
+
+      assert index_live
+             |> has_element?(
+               "div.flex.gap-x-6.mr-2 button:nth-child(3) img[src='/images/common/facebook.svg']"
+             )
+
+      # スキルジェムのタグがあることを確認
+      assert index_live |> has_element?("div #skill-gem")
+
+      # 各カードがあることを確認（ただコントールが貼られていることを確認）
       assert index_live |> has_element?("h5", "重量な連絡")
       assert index_live |> has_element?("li a", "チーム招待")
 
@@ -25,7 +49,6 @@ defmodule BrightWeb.MypageLiveTest do
 
       assert index_live |> has_element?("h5", "関わっているユーザー")
       assert index_live |> has_element?("li a", "気になる人")
-
     end
   end
 end
