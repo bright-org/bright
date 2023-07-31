@@ -1,7 +1,7 @@
-defmodule Storybook.GrowthGraphComponents.GrowthGraph do
+defmodule Storybook.ChartComponents.GrowthGraph do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &Elixir.BrightWeb.GrowthGraphComponents.growth_graph/1
+  def function, do: &Elixir.BrightWeb.ChartComponents.growth_graph/1
 
   def variations do
     [

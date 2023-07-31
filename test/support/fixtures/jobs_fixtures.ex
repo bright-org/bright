@@ -50,4 +50,16 @@ defmodule Bright.JobsFixtures do
 
     job
   end
+
+  @doc """
+  Generate a career_want_job.
+  """
+  def career_want_job_fixture(attrs \\ %{}) do
+    {:ok, career_want_job} =
+      attrs
+      |> Enum.into(%{})
+      |> Bright.Jobs.create_career_want_job()
+
+    career_want_job
+  end
 end

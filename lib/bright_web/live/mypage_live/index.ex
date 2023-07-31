@@ -1,7 +1,7 @@
 defmodule BrightWeb.MypageLive.Index do
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
-  import BrightWeb.SkillScoreComponents
+  import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @impl true
@@ -16,16 +16,6 @@ defmodule BrightWeb.MypageLive.Index do
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
-
-  @impl true
-  def handle_event(_event_name, _params, socket) do
-    # TODO tabイベント検証 tabのイベント周りが完成後に削除予定
-    # IO.inspect("------------------")
-    # IO.inspect(_event_name)
-    # IO.inspect(_params)
-    # IO.inspect("------------------")
-    {:noreply, socket}
   end
 
   defp apply_action(socket, :index, _params) do

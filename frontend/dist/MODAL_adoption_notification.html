@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output0.css">
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Symbols+Outlined|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+  <section class="absolute bg-white h-[450px] left-1/2 -ml-[300px] -mt-[225px] px-10 py-8 shadow text-sm top-1/2 w-[600px]">
+    <h2 class="font-bold text-xl">
+      <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">採用通知</span>
+    </h2>
+
+    <div class="mt-8">
+      <h3 class="font-bold">メッセージ</h3>
+      <!-- コメント表示 -->
+      <div class="mt-4 overflow-y-auto">
+        <textarea rows="5" cols="30" class="border border-brightGray-300 px-2 py-1 rounded w-full">
+今回は面談いただきありがとうございました。
+弊社で協議の結果、採用の運びとなりました。
+つきましては、目安でございますが、下記の条件で問題なければ
+採用を受諾していただきたいと思います。
+        </textarea>
+
+        <label class="items-center flex mt-8 w-full">
+          <span class="font-bold py-1 w-16">年収</span>
+          <input type="number" size="20" name="income" value="900" class="border border-brightGray-200 px-2 py-1 rounded w-40">
+          <span class="ml-1">万円</span>
+        </label>
+      </div>
+
+     <div class="flex justify-center gap-x-4 mt-16 pb-2 relative w-full">
+       <button
+          class="text-sm font-bold px-2 py-2 rounded border bg-base text-white w-60"
+       >
+        採用を通知する
+       </button>
+
+       <!-- 採用を却下する -->
+       <button
+        id="noAdoptionDropdownButton"
+        data-dropdown-toggle="noAdoptionDropdown"
+        data-dropdown-offset-skidding="300"
+        data-dropdown-placement="bottom"
+        class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
+        type="button"
+       >
+         <span class="min-w-[6em]">採用を却下する</span>
+         <span
+           class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
+           >add</span
+         >
+       </button>
+       <!-- 採用を却下する Donwdrop -->
+       <div
+         id="menu01"
+         class="hidden absolute z-10 bg-white rounded-lg shadow-md min-w-[286px] top-10 left-[310px]"
+       >
+         <ul
+           class="p-2 text-left text-base"
+           aria-labelledby="dropmenu04"
+         >
+           <li>
+             <a
+               href="#"
+               class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+              >条件が合わない</a
+             >
+           </li>
+           <li>
+             <a
+               data-modal-target="addTeamModal"
+               data-modal-toggle="addTeamModal"
+               class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+               >状況が変わった</a
+            >
+           </li>
+           <li>
+             <a
+               href="#"
+               class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+               >スカウト時と状況が異なる</a
+             >
+           </li>
+           <li>
+             <a
+               href="#"
+               class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+               >相性が悪い</a
+             >
+           </li>
+         </ul>
+       </div>
+     </div>
+   </div>
+
+
+      <!-- close button -->
+      <button class="absolute right-5 top-5 z-10">
+        <span class="material-icons !text-3xl text-brightGray-900"
+          >close</span
+        >
+      </button>
+    </div>
+  </section>
+</main>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script>
+// button
+$("#noAdoptionDropdownButton").on("click",function(){
+  $(this).next().slideToggle();
+});
+</script>
+</body>
+</html>

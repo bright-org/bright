@@ -1764,7 +1764,7 @@
 
 
 <!-- Start 設定 -->
-        <section class="hidden absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20" id="personal_settings">
+        <section class=" absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20" id="personal_settings">
           <!-- Start タブメニュー -->
               <ul id="account_settings_tab" class="border-b border-brightGray-200 flex">
                 <li class="border-b-2 border-brightGreen-300 cursor-pointer py-3.5 text-center w-40 hover:bg-brightGray-50">一般</li>
@@ -1805,19 +1805,25 @@
                       </label>
                     </div>
           
-                    <div class="flex mt-8 mx-auto w-fit">
-                      <a class="bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">保存する</a>
+                    <div class="flex mt-8 relative">
+                      <a class="bg-brightGray-900 border block border-solid border-brightGray-900 cursor-pointer font-bold mx-auto px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">保存する</a>
+
+                      <a class="absolute bg-white border block border-solid border-brightGray-900 cursor-pointer font-bold mx-auto px-4 py-2 right-0 rounded select-none text-center text-brightGray-900 top-0 w-32 hover:opacity-50">ログアウト</a>
                     </div>
                   </li><!-- End 一般 -->
           
           <!-- Start メール・パスワード -->
                   <li class="hidden">
                     <div class="border-b border-brightGray-200 flex flex-wrap" id="mail_section">
-                      <div class="border-b border-brightGray-200 mb-4 w-full">
+                      <div class="border-b border-brightGray-200 flex justify-between mb-4 w-full">
                         <label class="flex items-center py-4">
                           <span class="w-44">メールアドレス</span>
                           <input type="text" size="20" name="mail" class="border border-brightGray-200 px-2 py-1  rounded w-48">
                         </label>
+
+                        <div class="ml-4 mt-1 py-4 w-fit">
+                          <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">変更する</a>
+                        </div>
                       </div>
           
                       <div class="w-1/2" id="sub_mail_0">
@@ -1826,31 +1832,37 @@
                           <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1  rounded w-48">
                         </label>
                       </div>
+
+                      <div class="mt-1 ml-auto pb-4 w-fit">
+                        <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">変更する</a>
+                      </div>
                     </div>
           
                     <div class="mb-4 w-full">
-                      <label class="flex items-center pb-2 pt-4">
+                      <label class="flex items-center pb-4 pt-4">
                         <span class="w-44">現在のパスワード</span>
                         <input type="password" size="20" name="pass" class="border border-brightGray-200 px-2 py-1  rounded w-48">
                       </label>
                     </div>
-          
-                    <div class="mb-2 w-full">
-                      <label class="flex items-center">
-                        <span class="w-44">新しいのパスワード</span>
-                        <input type="password" size="20" name="pass" class="border border-brightGray-200 px-2 py-1  rounded w-48">
-                      </label>
-                    </div>
-          
-                    <div class="w-full">
-                      <label class="flex items-center pb-4">
-                        <span class="w-44">新しいパスワード（確認）</span>
-                        <input type="password" size="20" name="pass" class="border border-brightGray-200 px-2 py-1  rounded w-48">
-                      </label>
-                    </div>
-          
-                    <div class="flex mt-8 mx-auto w-fit">
-                      <a class="bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">保存する</a>
+
+                    <div class="relative">
+                      <div class="mb-2 w-full">
+                        <label class="flex items-center">
+                          <span class="w-44">新しいのパスワード</span>
+                          <input type="password" size="20" name="pass" class="border border-brightGray-200 px-2 py-1  rounded w-48">
+                        </label>
+                      </div>
+
+                      <div class="w-full">
+                        <label class="flex items-center pb-4">
+                          <span class="w-44">新しいパスワード（確認）</span>
+                          <input type="password" size="20" name="pass" class="border border-brightGray-200 px-2 py-1  rounded w-48">
+                        </label>
+                      </div>
+
+                      <div class="absolute right-0 top-0 w-fit">
+                        <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">変更する</a>
+                      </div>
                     </div>
                   </li><!-- End メール・パスワード -->
           
@@ -1988,7 +2000,7 @@
                           <label class="flex items-center ml-4"><input type="checkbox" name="day_off"><span class="ml-1">土日の稼働も含む</span></label>
                         </p>
           
-                        <p class="flex items-center mt-2">
+                        <p class="border-t border-dotted flex items-center mt-4 pt-4">
                           <label class="flex items-center"><input type="checkbox" name="remote"><span class="ml-1 w-16">リモート</span></label>
           
                           <select name="remote_working_hours" class="border border-brightGray-200 ml-4 px-2 py-1 rounded">
@@ -2046,7 +2058,7 @@
                     <div class="border-b border-brightGray-200 flex flex-wrap">
                       <div class="flex items-center justify-between py-4 w-full">
                         <div class="mr-4 py-1 w-96">
-                          <span>ウィークリー通知</span>
+                          <span>ウイークリー通知</span>
                           <p class="text-xs">説明文</p>
                         </div>
           

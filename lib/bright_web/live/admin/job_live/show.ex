@@ -13,7 +13,7 @@ defmodule BrightWeb.Admin.JobLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:job, Jobs.get_job!(id))}
+     |> assign(:job, Jobs.get_job_with_career_fileds!(id))}
   end
 
   defp page_title(:show), do: "Show Job"
