@@ -21,7 +21,7 @@ defmodule BrightWeb.OAuthController do
 
     conn
     |> put_flash(:error, "認証に失敗しました")
-    |> redirect(to: ~p"/users/log_in")
+    |> redirect(to: ~p"/users/register")
   end
 
   def callback(
