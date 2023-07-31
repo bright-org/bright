@@ -58,6 +58,20 @@ module "secret_sendgrid_api_key" {
   data = var.sendgrid_api_key
 }
 
+module "secret_google_client_id" {
+  source = "../../modules/google/secret"
+
+  name = "bright-google-client-id"
+  data = var.google_client_id
+}
+
+module "secret_google_client_secret" {
+  source = "../../modules/google/secret"
+
+  name = "bright-google-client-secret"
+  data = var.google_client_secret
+}
+
 module "service_account_cloud_run" {
   source = "../../modules/google/service_account"
 
