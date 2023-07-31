@@ -337,6 +337,7 @@ defmodule Bright.Jobs do
         join: cwj in CareerWantJob,
         on: cwj.career_want_id == cw.id,
         group_by: [cw.id],
+        order_by: [cw.position],
         select: %{
           career_want_id: cw.id,
           career_want_name: cw.name
