@@ -1,11 +1,15 @@
 defmodule Bright.Jobs.JobSkillPanel do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Bright.Jobs.Job
+  alias Bright.SkillPanels.SkillPanel
+
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "job_skill_panels" do
-
-    field :job_id, :id
-    field :skill_panel_id, :id
+    belongs_to :job, Job
+    belongs_to :skill_panel, SkillPanel
 
     timestamps()
   end
@@ -13,7 +17,7 @@ defmodule Bright.Jobs.JobSkillPanel do
   @doc false
   def changeset(job_skill_panel, attrs) do
     job_skill_panel
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:job_id, :skill_panel_id])
+    |> validate_required([:job_id, :skill_panel_id])
   end
 end
