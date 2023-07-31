@@ -530,6 +530,12 @@ defmodule Bright.Jobs do
   """
   def get_job_skill_panel!(id), do: Repo.get!(JobSkillPanel, id)
 
+  def get_job_skill_panel_with_jobs_and_skill_panels!(id) do
+    Repo.get!(JobSkillPanel, id)
+    |> Repo.preload(:job)
+    |> Repo.preload(:skill_panel)
+  end
+
   @doc """
   Creates a job_skill_panel.
 
