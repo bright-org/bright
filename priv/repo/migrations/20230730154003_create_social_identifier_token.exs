@@ -6,6 +6,8 @@ defmodule Bright.Repo.Migrations.CreateSocialIdentifierToken do
       add :provider, :string, null: false
       add :identifier, :string, null: false
       add :token, :binary, null: false
+      add :name, :string
+      add :email, :citext
 
       timestamps(updated_at: false)
     end
