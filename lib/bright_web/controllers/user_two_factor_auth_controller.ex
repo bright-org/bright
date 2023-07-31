@@ -2,11 +2,23 @@ defmodule BrightWeb.UserTwoFactorAuthController do
   use BrightWeb, :controller
 
   alias Bright.Accounts
+  alias Bright.Accounts.User
   alias BrightWeb.UserAuth
 
   def create(conn, %{"user_2fa_code" => %{"code" => code, "token" => token}}) do
-    user = Accounts.get_user_by_2fa_auth_session_token(token)
+    Accounts.get_user_by_2fa_auth_session_token(token)
+    |> case do
+      %User{} = user ->
+        validate_code(conn, user, code, token)
 
+      _ ->
+        conn
+        |> put_flash(:error, "セッションの期限が切れました。再度ログインしてください。")
+        |> redirect(to: ~p"/users/log_in")
+    end
+  end
+
+  defp validate_code(conn, user, code, token) do
     user
     |> Accounts.user_2fa_code_valid?(code)
     |> case do
@@ -20,7 +32,7 @@ defmodule BrightWeb.UserTwoFactorAuthController do
 
       false ->
         conn
-        |> put_flash(:error, "2段階認証コードが正しくありません")
+        |> put_flash(:error, "2段階認証コードが正しくないか期限切れです")
         |> redirect(to: ~p"/users/two_factor_auth/#{token}")
     end
   end

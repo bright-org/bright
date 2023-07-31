@@ -39,7 +39,10 @@ defmodule BrightWeb.UserConfirmationInstructionsLiveTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
                "確認メールを再度送信しました"
 
-      assert_email_sent(to: [{"", user.email}])
+      assert_email_sent(fn email ->
+        assert email.subject == "Confirmation instructions"
+        assert email.to == [{"", user.email}]
+      end)
 
       assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context == "confirm"
     end
@@ -60,7 +63,10 @@ defmodule BrightWeb.UserConfirmationInstructionsLiveTest do
       |> form("#resend_confirmation_form", user: %{email: user.email})
       |> render_submit()
 
-      assert_email_sent(to: [{"", user.email}])
+      assert_email_sent(fn email ->
+        assert email.subject == "Confirmation instructions"
+        assert email.to == [{"", user.email}]
+      end)
 
       assert Repo.aggregate(Accounts.UserToken, :count) == 1
     end

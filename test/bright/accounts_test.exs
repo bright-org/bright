@@ -3,10 +3,12 @@ defmodule Bright.AccountsTest do
 
   alias Bright.Repo
   alias Bright.Accounts
+  alias Bright.Accounts.User2faCodes
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
   import Bright.Factory
+  import Swoosh.TestAssertions
   alias Bright.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -582,6 +584,211 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "setup_user_2fa_auth/1" do
+    test "setup user two factor auth" do
+      user = insert(:user)
+
+      Accounts.setup_user_2fa_auth(user)
+
+      assert Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_session")
+      assert Repo.aggregate(UserToken, :count) == 1
+
+      user_2fa_code = Repo.get_by!(User2faCodes, user_id: user.id)
+      assert user_2fa_code
+      assert Repo.aggregate(User2faCodes, :count) == 1
+
+      assert_email_sent(fn email ->
+        assert email.subject == "【Bright】二段階認証コード"
+        assert email.to == [{"", user.email}]
+        assert email.text_body =~ user_2fa_code.code
+      end)
+    end
+
+    test "deletes existing token and code before setup" do
+      user = insert(:user)
+      before_user_token = insert(:user_token, user: user, context: "two_factor_auth_session")
+      before_user_2fa_code = insert(:user_2fa_code, user: user)
+
+      Accounts.setup_user_2fa_auth(user)
+
+      assert before_user_token !=
+               Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_session")
+
+      assert Repo.aggregate(UserToken, :count) == 1
+
+      user_2fa_code = Repo.get_by!(User2faCodes, user_id: user.id)
+      assert user_2fa_code != before_user_2fa_code
+      assert Repo.aggregate(User2faCodes, :count) == 1
+
+      assert_email_sent(fn email ->
+        assert email.subject == "【Bright】二段階認証コード"
+        assert email.to == [{"", user.email}]
+        assert email.text_body =~ user_2fa_code.code
+      end)
+    end
+  end
+
+  describe "get_user_by_2fa_auth_session_token/1" do
+    test "token is valid" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
+      insert(:user_token, user_token |> Map.from_struct())
+
+      assert user == Accounts.get_user_by_2fa_auth_session_token(token)
+    end
+
+    test "token is not exists" do
+      refute Accounts.get_user_by_2fa_auth_session_token("not exist token")
+    end
+
+    test "token exists but was expired after 1 hours" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
+
+      insert(
+        :user_token,
+        user_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60)
+        )
+      )
+
+      refute Accounts.get_user_by_2fa_auth_session_token(token)
+    end
+
+    test "token exists but is not expired" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
+
+      insert(
+        :user_token,
+        user_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now()
+          |> NaiveDateTime.add(-1 * 60 * 60)
+          |> NaiveDateTime.add(1 * 60)
+        )
+      )
+
+      assert Accounts.get_user_by_2fa_auth_session_token(token)
+    end
+  end
+
+  describe "generate_user_2fa_done_token/1" do
+    test "generates user two_factor_auth_done token" do
+      user = insert(:user)
+
+      Accounts.generate_user_2fa_done_token(user)
+
+      assert Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
+    end
+
+    test "deletes existing token before generate" do
+      user = insert(:user)
+      before_user_token = insert(:user_token, user: user, context: "two_factor_auth_done")
+
+      Accounts.generate_user_2fa_done_token(user)
+
+      assert before_user_token !=
+               Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
+
+      assert Repo.aggregate(UserToken, :count) == 1
+    end
+  end
+
+  describe "get_user_by_2fa_done_token/1" do
+    test "token is valid" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
+      insert(:user_token, user_token |> Map.from_struct())
+
+      assert user == Accounts.get_user_by_2fa_done_token(token)
+    end
+
+    test "token is not exists" do
+      refute Accounts.get_user_by_2fa_done_token("not exist token")
+    end
+
+    test "token exists but was expired after 60 days" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
+
+      insert(
+        :user_token,
+        user_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24 * 60)
+        )
+      )
+
+      refute Accounts.get_user_by_2fa_done_token(token)
+    end
+
+    test "token exists and is not expired" do
+      user = insert(:user)
+      {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
+
+      insert(
+        :user_token,
+        user_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now()
+          |> NaiveDateTime.add(-1 * 60 * 60 * 24 * 60)
+          |> NaiveDateTime.add(1 * 60)
+        )
+      )
+
+      assert user == Accounts.get_user_by_2fa_done_token(token)
+    end
+  end
+
+  describe "user_2fa_code_valid?/2" do
+    test "code is valid" do
+      user_2fa_code = insert(:user_2fa_code)
+
+      assert Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
+    end
+
+    test "code does not exists" do
+      user = insert(:user)
+
+      refute Accounts.user_2fa_code_valid?(user, "012345")
+    end
+
+    test "other user code" do
+      user = insert(:user)
+      user_2fa_code = insert(:user_2fa_code)
+
+      refute Accounts.user_2fa_code_valid?(user, user_2fa_code.code)
+    end
+
+    test "code exists but was expired after 10 minutes" do
+      user_2fa_code =
+        insert(:user_2fa_code,
+          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-10 * 60)
+        )
+
+      refute Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
+    end
+
+    test "code exists and is not expired" do
+      user_2fa_code =
+        insert(:user_2fa_code,
+          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-9 * 60)
+        )
+
+      assert Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
+    end
+  end
+
   describe "get_user_by_name_or_email/1" do
     test "only return the user if the name completely match" do
       user = insert(:user)
@@ -628,25 +835,4 @@ defmodule Bright.AccountsTest do
       refute Accounts.onboarding_finished?(user)
     end
   end
-
-  # TODO: テスト
-  # describe "setup_user_2fa_auth/1" do
-
-  # end
-
-  # describe "get_user_by_2fa_auth_session_token/1" do
-
-  # end
-
-  # describe "generate_user_2fa_done_token/1" do
-
-  # end
-
-  # describe "get_user_by_2fa_done_token/1" do
-
-  # end
-
-  # describe "user_2fa_code_valid?/2" do
-
-  # end
 end
