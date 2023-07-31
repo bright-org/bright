@@ -69,9 +69,7 @@ defmodule Bright.JobsFixtures do
   def job_skill_panel_fixture(attrs \\ %{}) do
     {:ok, job_skill_panel} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> Bright.Jobs.create_job_skill_panel()
 
     job_skill_panel

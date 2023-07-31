@@ -7,7 +7,8 @@ defmodule BrightWeb.Admin.JobSkillPanelLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :job_skill_panels, Jobs.list_job_skill_panels_with_jobs_and_skill_panels())}
+    {:ok,
+     stream(socket, :job_skill_panels, Jobs.list_job_skill_panels_with_jobs_and_skill_panels())}
   end
 
   @impl true
@@ -44,7 +45,10 @@ defmodule BrightWeb.Admin.JobSkillPanelLive.Index do
   end
 
   @impl true
-  def handle_info({BrightWeb.Admin.JobSkillPanelLive.FormComponent, {:saved, job_skill_panel}}, socket) do
+  def handle_info(
+        {BrightWeb.Admin.JobSkillPanelLive.FormComponent, {:saved, job_skill_panel}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :job_skill_panels, job_skill_panel)}
   end
 
