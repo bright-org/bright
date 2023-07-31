@@ -28,7 +28,7 @@ defmodule BrightWeb.TabComponents do
 
   def tab(assigns) do
     ~H"""
-    <div class="bg-white rounded-md mt-1">
+    <div id={@id} class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-500">
         <.tab_header id={@id} tabs={@tabs} selected_tab={@selected_tab} menu_items={@menu_items} target={@target}/>
         <%= if @inner_tab do %>
