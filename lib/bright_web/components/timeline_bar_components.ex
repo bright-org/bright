@@ -24,17 +24,28 @@ defmodule BrightWeb.TimelineBarComponents do
       <div
         class="bg-brightGray-50 h-[70px] rounded-full w-[714px] my-5 flex justify-around items-center relative" >
 
-        <%= if @type == "other" do %>
-         <.close_button id={@id} target={@target} />
-        <% end %>
+        <.close_button
+         :if={@type == "other"}
+         id={@id}
+         target={@target}
+        />
 
         <%= for date <- @dates do %>
-          <.date_button id={@id} target={@target} date={date} type={@type} selected={date == @selected_date} />
+          <.date_button
+            id={@id}
+            target={@target}
+            date={date}
+            type={@type}
+            selected={date == @selected_date}
+           />
         <% end %>
 
-        <%= if @display_now do %>
-          <.now_button id={@id} target={@target} selected={"now" == @selected_date}/>
-        <% end %>
+        <.now_button
+          :if={@display_now}
+          id={@id}
+          target={@target}
+          selected={"now" == @selected_date}
+        />
 
       </div>
       <div class="flex justify-center items-center ml-2"></div>
@@ -60,9 +71,14 @@ defmodule BrightWeb.TimelineBarComponents do
 
     ~H"""
     <div class="h-28 w-28 flex justify-center items-center">
-      <button phx-click="timeline_bar_button_click" phx-target={@target} phx-value-id={@id} phx-value-data={@date} class={@style}>
-        <span class="material-icons !text-4xl !font-bold"
-          >check</span>
+      <button
+        phx-click="timeline_bar_button_click"
+        phx-target={@target}
+        phx-value-id={@id}
+        phx-value-data={@date}
+        class={@style}
+      >
+        <span class="material-icons !text-4xl !font-bold" >check</span>
         <%= @date %>
       </button>
     </div>
@@ -72,8 +88,13 @@ defmodule BrightWeb.TimelineBarComponents do
   defp date_button(assigns) do
     ~H"""
     <div class="h-28 w-28 flex justify-center items-center">
-      <button phx-click="timeline_bar_button_click" phx-target={@target} phx-value-id={@id} phx-value-data={@date}
-        class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center">
+      <button
+        phx-click="timeline_bar_button_click"
+        phx-target={@target}
+        phx-value-id={@id}
+        phx-value-data={@date}
+        class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
+      >
         <%= @date %>
       </button>
     </div>
@@ -88,11 +109,14 @@ defmodule BrightWeb.TimelineBarComponents do
     ~H"""
     <div
       class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
-      <button phx-click="timeline_bar_button_click" phx-target={@target} phx-value-id={@id} phx-value-data="now"
+      <button
+        phx-click="timeline_bar_button_click"
+        phx-target={@target}
+        phx-value-id={@id}
+        phx-value-data="now"
         class="h-28 w-28 rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold text-sm flex justify-center items-center flex-col"
       >
-        <span class="material-icons !text-4xl !font-bold"
-          >check</span>
+        <span class="material-icons !text-4xl !font-bold">check</span>
         現在
       </button>
     </div>
@@ -103,7 +127,11 @@ defmodule BrightWeb.TimelineBarComponents do
     ~H"""
     <div
       class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
-      <button phx-click="timeline_bar_button_click" phx-target={@target} phx-value-id={@id} phx-value-data="now"
+      <button
+        phx-click="timeline_bar_button_click"
+        phx-target={@target}
+        phx-value-id={@id}
+        phx-value-data="now"
         class="h-10 w-10 rounded-full bg-white text-xs text-attention-900 flex justify-center items-center"
       >
         現在
@@ -114,8 +142,12 @@ defmodule BrightWeb.TimelineBarComponents do
 
   defp close_button(assigns) do
     ~H"""
-    <button phx-click="timeline_bar_close_button_click" phx-target={@target} phx-value-id={@id}
-      class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200">
+    <button
+      phx-click="timeline_bar_close_button_click"
+      phx-target={@target}
+      phx-value-id={@id}
+      class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200"
+    >
       <span class="material-icons !text-base !text-brightGray-200">close</span>
     </button>
     """
