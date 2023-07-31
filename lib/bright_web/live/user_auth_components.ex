@@ -36,7 +36,7 @@ defmodule BrightWeb.UserAuthComponents do
   @doc """
   Section for form
   """
-  attr :variant, :string, default: "center", values: ~w(center left right)
+  attr :variant, :string, default: "center", values: ~w(center center-w-full left right)
 
   slot :inner_block
 
@@ -45,6 +45,7 @@ defmodule BrightWeb.UserAuthComponents do
     <section
       class={[
         @variant == "center" && "flex flex-col mx-auto",
+        @variant == "center-w-full" && "flex flex-col w-full",
         @variant == "left" && "border-r border-solid border-brightGray-300 flex flex-col mt-5 pr-16 w-2/4",
         @variant == "right" && "flex flex-col pt-0 pr-0 pl-16 w-2/4",
       ]}
@@ -69,6 +70,8 @@ defmodule BrightWeb.UserAuthComponents do
 
   attr :errors, :list, default: []
 
+  attr :variant, :string, default: "normal", values: ~w(normal w-full)
+
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
@@ -77,7 +80,7 @@ defmodule BrightWeb.UserAuthComponents do
 
   def input_with_label(assigns) do
     ~H"""
-    <label for={@id} class="mt-4">
+    <label for={@id} class={["mt-4", @variant == "w-full" && "block mx-auto max-w-xs w-full"]}>
       <span class="block font-bold mb-2 text-xs"><%= @label_text %></span>
       <.input field={@field} id={@id} type={@type} {@rest} />
       <%= render_slot(@under_block) %>
@@ -215,7 +218,7 @@ defmodule BrightWeb.UserAuthComponents do
   @doc """
   Button for auth form.
   """
-  attr :variant, :string, default: "normal", values: ~w(normal mt-sm mt-xs)
+  attr :variant, :string, default: "normal", values: ~w(normal mt-sm mt-xs mx-auto)
 
   slot :inner_block
 
@@ -225,6 +228,7 @@ defmodule BrightWeb.UserAuthComponents do
       class={[
         "bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs px-4 py-2 rounded select-none text-white w-full hover:opacity-50",
         @variant == "normal" && "mt-12",
+        @variant == "mx-auto" && "mt-12 mx-auto",
         @variant == "mt-sm" && "mt-8",
         @variant == "mt-xs" && "mt-7"
       ]}
@@ -241,14 +245,7 @@ defmodule BrightWeb.UserAuthComponents do
   attr :href, :string
 
   def social_auth_button(assigns) do
-    social_auth_text_map = %{
-      "google" => "Google",
-      "github" => "GitHub",
-      "facebook" => "Facebook",
-      "twitter" => "Twitter"
-    }
-
-    assigns = assign(assigns, :social_auth_text, social_auth_text_map[assigns.variant])
+    assigns = assign(assigns, :social_auth_text, social_auth_text(assigns.variant))
 
     # NOTE: Google, Facebook, Twitter は実装できるまで bg-gray-400 にする。完了したら以下のスタイルに差し替える
     # bg-sns-github
@@ -272,10 +269,44 @@ defmodule BrightWeb.UserAuthComponents do
     """
   end
 
+  defp social_auth_text(variant) do
+    %{
+      "google" => "Google",
+      "github" => "GitHub",
+      "facebook" => "Facebook",
+      "twitter" => "Twitter"
+    }
+    |> Map.get(variant, "")
+  end
+
+  @doc """
+  Social auth banner
+  """
+
+  attr :variant, :string, values: ~w(google github facebook twitter)
+
+  def social_auth_banner(assigns) do
+    ~H"""
+    <section class="flex flex-col mt-8 full">
+      <span class="block font-bold mb-2 text-xs max-w-xs mx-auto w-full">認証</span>
+      <span
+        class={[
+          "block bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs mx-auto px-4 py-2 rounded select-none text-center w-full",
+          @variant == "google" && "bg-bgGoogle border-black text-black",
+          @variant == "github" && "bg-bgGithub bg-sns-github border-github text-white",
+          @variant == "facebook" && "bg-bgFacebook bg-sns-facebook border-facebook text-white",
+          @variant == "twitter" && "bg-bgTwitter bg-sns-twitter border-twitter text-white",
+        ]}
+      >
+        <%= social_auth_text(@variant) %>
+      </span>
+    </section>
+    """
+  end
+
   @doc """
   Or text.
   """
-
   slot :inner_block
 
   def or_text(assigns) do
