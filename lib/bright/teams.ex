@@ -210,12 +210,24 @@ defmodule Bright.Teams do
 
   @doc """
   ユーザーが所属するチームの一覧取得
+  Scrivenerのページングに対応
+
+    iex> list_joined_teams_by_user_id(user_id, %{page: 1, page_size: 5})
+      %Scrivener.Page{
+        page_number: 1,
+        page_size: 5,
+        total_entries: 2,
+        total_pages: 1,
+        entries: [
+          %Bright.Teams.TeamMemberUsers{},
+        ]
+      }
   """
-  def list_joined_teams_by_user_id(user_id) do
+  def list_joined_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
     TeamMemberUsers
     |> where([member_user], member_user.user_id == ^user_id)
     |> preload(:team)
-    |> Repo.all()
+    |> Repo.paginate(page_param)
   end
 
   @spec create_team_multi(any, atom | %{:id => any, optional(any) => any}, any) :: any
@@ -275,11 +287,9 @@ defmodule Bright.Teams do
   最初に所属したチームは自動的にプライマリチームになる
   """
   def is_primary(user_id) do
-    joined_team_count =
-      list_joined_teams_by_user_id(user_id)
-      |> Enum.count()
+    page = list_joined_teams_by_user_id(user_id)
 
-    if joined_team_count == 0 do
+    if page.total_entries == 0 do
       true
     else
       false
