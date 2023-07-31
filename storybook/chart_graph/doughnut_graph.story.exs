@@ -1,7 +1,7 @@
-defmodule Storybook.DoughnutGraphComponents.DoughnutGraph do
+defmodule Storybook.ChartComponents.DoughnutGraph do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &Elixir.BrightWeb.DoughnutGraphComponents.doughnut_graph/1
+  def function, do: &Elixir.BrightWeb.ChartComponents.doughnut_graph/1
 
   def variations do
     [
