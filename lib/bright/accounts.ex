@@ -5,6 +5,8 @@ defmodule Bright.Accounts do
 
   import Ecto.Query, warn: false
   alias Bright.Accounts.User2faCodes
+  alias Bright.Accounts.SocialIdentifierToken
+  alias Bright.Accounts.UserSocialAuth
   alias Bright.UserProfiles
   alias Bright.UserJobProfiles
   alias Bright.Repo
@@ -109,6 +111,68 @@ defmodule Bright.Accounts do
       hash_password: false,
       validate_email: false
     )
+  end
+
+  ## User registration by social auth
+
+  @doc """
+  Register user by social auth.
+  """
+  def register_user_by_social_auth(user_params, user_social_auth_params) do
+    user_changeset =
+      %User{}
+      |> User.registration_by_social_auth_changeset(user_params)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, user_changeset)
+    |> Ecto.Multi.run(:user_social_auth, fn repo, %{user: user} ->
+      user_social_auth_params =
+        user_social_auth_params
+        |> Map.merge(%{user_id: user.id})
+
+      {:ok,
+       %UserSocialAuth{}
+       |> UserSocialAuth.change_user_social_auth(user_social_auth_params)
+       |> repo.insert!()}
+    end)
+    |> Ecto.Multi.run(:user_profile, fn _repo, %{user: user} ->
+      UserProfiles.create_initial_user_profile(user.id)
+    end)
+    |> Ecto.Multi.run(:user_job_profile, fn _repo, %{user: user} ->
+      UserJobProfiles.create_user_job_profile(%{user_id: user.id})
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, _, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for user registration by social auth (OAuth).
+
+  ## Examples
+
+      iex> change_user_registration_by_social_auth(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_registration_by_social_auth(%User{} = user, attrs \\ %{}) do
+    User.registration_by_social_auth_changeset(user, attrs,
+      validate_name: false,
+      hash_password: false,
+      validate_email: false,
+      validate_password_registered: false,
+      generate_dummy_password: false
+    )
+  end
+
+  @doc """
+  Gets user by provider and identifier
+  """
+  def get_user_by_provider_and_identifier(provider, identifier) do
+    UserSocialAuth.user_by_provider_and_identifier_query(provider, identifier)
+    |> Repo.one()
   end
 
   ## Settings
@@ -461,6 +525,44 @@ defmodule Bright.Accounts do
   def user_2fa_code_valid?(user, code) do
     User2faCodes.verify_user_2fa_code_query(user, code)
     |> Repo.exists?()
+  end
+
+  @doc """
+  Generate social indentifier token.
+  """
+  def generate_social_identifier_token(
+        %{
+          name: _name,
+          email: _email,
+          provider: provider,
+          identifier: identifier
+        } = social_identifier_attrs
+      ) do
+    {token, social_identifier_token} = SocialIdentifierToken.build_token(social_identifier_attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(
+      :delete_token,
+      SocialIdentifierToken.provider_and_identifier_query(provider, identifier)
+    )
+    |> Ecto.Multi.insert(:insert_token, social_identifier_token)
+    |> Repo.transaction()
+    |> case do
+      {:ok, _} -> token
+    end
+  end
+
+  @doc """
+  Gets social identifier token.
+  """
+  def get_social_identifier_token(token) do
+    with {:ok, query} <-
+           SocialIdentifierToken.verify_token_query(token),
+         %SocialIdentifierToken{} = social_identifier_token <- Repo.one(query) do
+      social_identifier_token
+    else
+      _ -> nil
+    end
   end
 
   @doc """
