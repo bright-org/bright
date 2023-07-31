@@ -9,8 +9,5 @@ defmodule Bright.Repo.Migrations.CreateHistoricalSkillUnits do
 
       timestamps()
     end
-
-    create index(:historical_skill_units, [:locked_date])
-    create index(:historical_skill_units, [:trace_id])
   end
 end

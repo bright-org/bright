@@ -11,10 +11,5 @@ defmodule Bright.Repo.Migrations.CreateHistoricalSkillClasses do
 
       timestamps()
     end
-
-    create index(:historical_skill_classes, [:skill_panel_id])
-    create index(:historical_skill_classes, [:locked_date])
-    create index(:historical_skill_classes, [:trace_id])
-    create index(:historical_skill_classes, [:class])
   end
 end
