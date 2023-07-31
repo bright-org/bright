@@ -59,7 +59,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
       {:ok,
        socket
        |> put_flash(:error, "セッションの期限が切れました。再度やり直してください。")
-       |> redirect(to: ~p"/users/log_in")}
+       |> redirect(to: ~p"/users/register")}
     end
   end
 
