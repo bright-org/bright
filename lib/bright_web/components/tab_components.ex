@@ -137,14 +137,30 @@ defmodule BrightWeb.TabComponents do
   attr :menu_item, :map
 
   defp tab_menu_item(assigns) do
+    style = "block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
+
+    assigns =
+      assigns
+      |> assign(:style, style)
+
     ~H"""
         <li>
+        <%= if Map.has_key?(@menu_item, :href) do %>
           <a
             href={@menu_item.href}
-            class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
+            class={@style}
           >
             <%= @menu_item.text %>
           </a>
+        <% end %>
+        <%= if Map.has_key?(@menu_item, :on_click) do %>
+        <a
+            phx-click={@menu_item.on_click}
+            class={@style}
+          >
+            <%= @menu_item.text %>
+          </a>
+        <% end %>
         </li>
     """
   end
