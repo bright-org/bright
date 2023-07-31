@@ -7,6 +7,7 @@ defmodule Bright.SkillPanels.SkillPanel do
   import Ecto.Changeset
 
   alias Bright.SkillPanels.SkillClass
+  alias Bright.Jobs.JobSkillPanel
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -16,6 +17,7 @@ defmodule Bright.SkillPanels.SkillPanel do
     field :name, :string
 
     has_many :skill_classes, SkillClass, preload_order: [asc: :class], on_replace: :delete
+    has_one :job_skill_panel, JobSkillPanel
 
     timestamps()
   end

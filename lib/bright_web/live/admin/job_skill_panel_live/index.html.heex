@@ -12,6 +12,11 @@
   rows={@streams.job_skill_panels}
   row_click={fn {_id, job_skill_panel} -> JS.navigate(~p"/admin/job_skill_panels/#{job_skill_panel}") end}
 >
+
+  <:col :let={{_id, job_skill_panel}} label="Id"><%= job_skill_panel.id %></:col>
+  <:col :let={{_id, job_skill_panel}} label="Job Name"><%= job_skill_panel.job.name %></:col>
+  <:col :let={{_id, job_skill_panel}} label="Skill Panel Name"><%= job_skill_panel.skill_panel.name %></:col>
+
   <:action :let={{_id, job_skill_panel}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/job_skill_panels/#{job_skill_panel}"}>Show</.link>
@@ -36,5 +41,7 @@
     action={@live_action}
     job_skill_panel={@job_skill_panel}
     patch={~p"/admin/job_skill_panels"}
+    job_options={@job_options}
+    skill_panel_options={@skill_panel_options}
   />
 </.modal>

@@ -508,6 +508,12 @@ defmodule Bright.Jobs do
     Repo.all(JobSkillPanel)
   end
 
+  def list_job_skill_panels_with_jobs_and_skill_panels do
+    Repo.all(JobSkillPanel)
+    |> Repo.preload(:job)
+    |> Repo.preload(:skill_panel)
+  end
+
   @doc """
   Gets a single job_skill_panel.
 

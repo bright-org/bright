@@ -19,7 +19,18 @@ defmodule BrightWeb.Admin.JobSkillPanelLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-
+        <.input
+          type="select"
+          label="job"
+          field={@form[:job_id]}
+          options={@job_options}
+        />
+        <.input
+          type="select"
+          label="skill_panel"
+          field={@form[:skill_panel_id]}
+          options={@skill_panel_options}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Job skill panel</.button>
         </:actions>
