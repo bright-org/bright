@@ -36,8 +36,6 @@ defmodule BrightWeb.OAuthController do
         } = conn,
         _params
       ) do
-    user = Accounts.get_user_by_provider_and_identifier(provider, identifier)
-
     case Accounts.get_user_by_provider_and_identifier(provider, identifier) do
       %User{confirmed_at: nil} ->
         conn
