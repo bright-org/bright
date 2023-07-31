@@ -13,7 +13,7 @@ defmodule Bright.DraftSkillUnits.DraftSkillCategory do
   @foreign_key_type Ecto.ULID
 
   schema "draft_skill_categories" do
-    field :trace_id, Ecto.UUID, autogenerate: {Ecto.UUID, :generate, []}
+    field :trace_id, Ecto.ULID, autogenerate: {Ecto.ULID, :generate, []}
     field :name, :string
     field :position, :integer
 

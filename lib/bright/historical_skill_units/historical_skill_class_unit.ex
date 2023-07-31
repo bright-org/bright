@@ -12,7 +12,7 @@ defmodule Bright.HistoricalSkillUnits.HistoricalSkillClassUnit do
   @foreign_key_type Ecto.ULID
 
   schema "historical_skill_class_units" do
-    field :trace_id, Ecto.UUID
+    field :trace_id, Ecto.ULID
     field :position, :integer
 
     belongs_to :historical_skill_class, HistoricalSkillClass

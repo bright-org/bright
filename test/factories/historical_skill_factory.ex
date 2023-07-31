@@ -7,7 +7,7 @@ defmodule Bright.HistoricalSkillFactory do
     quote do
       def historical_skill_factory do
         %Bright.HistoricalSkillUnits.HistoricalSkill{
-          trace_id: Faker.UUID.v4(),
+          trace_id: Ecto.ULID.generate(),
           name: Faker.Lorem.word(),
           position: sequence(:position, & &1)
         }

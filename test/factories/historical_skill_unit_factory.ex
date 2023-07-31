@@ -8,7 +8,7 @@ defmodule Bright.HistoricalSkillUnitFactory do
       def historical_skill_unit_factory do
         %Bright.HistoricalSkillUnits.HistoricalSkillUnit{
           locked_date: Faker.Date.backward(10),
-          trace_id: Faker.UUID.v4(),
+          trace_id: Ecto.ULID.generate(),
           name: Faker.Lorem.word()
         }
       end

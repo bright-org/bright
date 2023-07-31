@@ -13,7 +13,7 @@ defmodule Bright.HistoricalSkillUnits.HistoricalSkillUnit do
 
   schema "historical_skill_units" do
     field :locked_date, :date
-    field :trace_id, Ecto.UUID
+    field :trace_id, Ecto.ULID
     field :name, :string
 
     has_many :historical_skill_categories, HistoricalSkillCategory,
