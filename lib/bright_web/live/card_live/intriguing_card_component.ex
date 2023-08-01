@@ -70,7 +70,6 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     assigns =
       socket
       |> assign(:selected_tab, tab_name)
-      |> IO.inspect()
 
     {:noreply, assigns}
   end
@@ -85,7 +84,6 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     assigns =
       socket
       |> assign(:inner_selected_tab, tab_name)
-      |> IO.inspect()
 
     {:noreply, assigns}
   end
