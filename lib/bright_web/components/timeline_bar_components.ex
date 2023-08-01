@@ -57,7 +57,7 @@ defmodule BrightWeb.TimelineBarComponents do
   attr :date, :string
   attr :selected, :boolean
   attr :type, :string
-  attr :target, :any, default: nil
+  attr :target, :any
 
   defp date_button(%{selected: true} = assigns) do
     color = check_color(assigns.type)
@@ -75,7 +75,7 @@ defmodule BrightWeb.TimelineBarComponents do
         phx-click="timeline_bar_button_click"
         phx-target={@target}
         phx-value-id={@id}
-        phx-value-data={@date}
+        phx-value-date={@date}
         class={@style}
       >
         <span class="material-icons !text-4xl !font-bold" >check</span>
@@ -92,7 +92,7 @@ defmodule BrightWeb.TimelineBarComponents do
         phx-click="timeline_bar_button_click"
         phx-target={@target}
         phx-value-id={@id}
-        phx-value-data={@date}
+        phx-value-date={@date}
         class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
       >
         <%= @date %>
@@ -103,7 +103,7 @@ defmodule BrightWeb.TimelineBarComponents do
 
   attr :id, :string
   attr :selected, :boolean
-  attr :target, :any, default: nil
+  attr :target, :any
 
   defp now_button(%{selected: true} = assigns) do
     ~H"""
@@ -113,7 +113,7 @@ defmodule BrightWeb.TimelineBarComponents do
         phx-click="timeline_bar_button_click"
         phx-target={@target}
         phx-value-id={@id}
-        phx-value-data="now"
+        phx-value-date="now"
         class="h-28 w-28 rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold text-sm flex justify-center items-center flex-col"
       >
         <span class="material-icons !text-4xl !font-bold">check</span>
@@ -131,7 +131,7 @@ defmodule BrightWeb.TimelineBarComponents do
         phx-click="timeline_bar_button_click"
         phx-target={@target}
         phx-value-id={@id}
-        phx-value-data="now"
+        phx-value-date="now"
         class="h-10 w-10 rounded-full bg-white text-xs text-attention-900 flex justify-center items-center"
       >
         現在
@@ -139,6 +139,9 @@ defmodule BrightWeb.TimelineBarComponents do
     </div>
     """
   end
+
+  attr :id, :string
+  attr :target, :any
 
   defp close_button(assigns) do
     ~H"""
