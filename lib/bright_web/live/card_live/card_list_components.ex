@@ -15,7 +15,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
       <.card_row type="contact" notification={notification} />
   """
   attr :notification, :map, required: true
-  attr :type, :string, values: ["contact", "communication"]
+  attr :type, :string, values: ["contact", "communication", "skill_up"]
 
   def card_row(%{type: "contact"} = assigns) do
     ~H"""
@@ -37,6 +37,26 @@ defmodule BrightWeb.CardLive.CardListComponents do
       </span>
       <%= @notification.message %>
       <.elapsed_time inserted_at={@notification.inserted_at}/>
+    </li>
+    """
+  end
+
+
+  def card_row(%{type: "skill_up"} = assigns) do
+    ~H"""
+    <li class="flex">
+      <div class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2">
+        <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+          <%= @notification.icon_type %>
+        </span>
+        <%= @notification.message %>
+        <.elapsed_time inserted_at={@notification.inserted_at}/>
+      </div>
+      <div class="flex gap-x-2">
+        <button class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm" >
+          祝福する
+        </button>
+      </div>
     </li>
     """
   end
