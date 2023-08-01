@@ -10,10 +10,14 @@ defmodule BrightWeb.TabComponents do
   Renders a Tab
 
   ## Examples
-      <tab />
+      <.tab id="tab-single-default" tabs={[{"tab1", "タブ1"}, {"tab2", "タブ2"}, {"tab3", "タブ3"}]} selected_tab="tab1" page={1} total_pages={2}>
+        <p class="text-base">タブの中身１２３４５６７８９１２３４５６７８９０</p><br>
+        <p class="text-base">タブの中身１２３４５６７８９１２３４５６７８９０</p><br>
+        <p class="text-base">タブの中身１２３４５６７８９１２３４５６７８９０</p><br>
+      </.tab>
   """
-  # TODO id, :string, default: "tab01"のdefaultはいずれ削除
-  attr :id, :string, default: "tab01"
+
+  attr :id, :string
   attr :tabs, :list
   slot :inner_block
   attr :selected_tab, :string, default: ""
@@ -31,13 +35,9 @@ defmodule BrightWeb.TabComponents do
     <div class="bg-white rounded-md mt-1">
       <div class="text-sm font-medium text-center text-brightGray-500">
         <.tab_header id={@id} tabs={@tabs} selected_tab={@selected_tab} menu_items={@menu_items} target={@target}/>
-        <%= if @inner_tab do %>
-          <.inner_tab />
-        <% end %>
+        <.inner_tab :if={@inner_tab}/>
         <%= render_slot(@inner_block) %>
-        <%= if !@hidden_footer do %>
-          <.tab_footer id={@id} page={@page} total_pages={@total_pages} target={@target} />
-        <% end %>
+        <.tab_footer  :if={!@hidden_footer} id={@id} page={@page} total_pages={@total_pages} target={@target} />
       </div>
     </div>
     """
@@ -55,9 +55,7 @@ defmodule BrightWeb.TabComponents do
       <%= for {key, value} <- @tabs do %>
         <.tab_header_item id={@id}  tab_name={key} selected={key == @selected_tab} target={@target}> <%= value %></.tab_header_item>
       <% end %>
-      <%= if length(@menu_items) > 0 do %>
-        <.tab_menu_button id={@id} menu_items={@menu_items}/>
-      <% end %>
+      <.tab_menu_button :if={length(@menu_items) > 0} id={@id} menu_items={@menu_items}/>
     </ul>
     """
   end
@@ -145,22 +143,18 @@ defmodule BrightWeb.TabComponents do
 
     ~H"""
         <li>
-        <%= if Map.has_key?(@menu_item, :href) do %>
-          <a
+          <a :if={Map.has_key?(@menu_item, :href)}
             href={@menu_item.href}
             class={@style}
           >
             <%= @menu_item.text %>
           </a>
-        <% end %>
-        <%= if Map.has_key?(@menu_item, :on_click) do %>
-        <a
+          <a :if={Map.has_key?(@menu_item, :on_click)}
             phx-click={@menu_item.on_click}
             class={@style}
           >
             <%= @menu_item.text %>
           </a>
-        <% end %>
         </li>
     """
   end
