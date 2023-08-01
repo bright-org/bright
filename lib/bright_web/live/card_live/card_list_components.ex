@@ -35,7 +35,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
         <%= @notification.icon_type %>
       </span>
       <%= @notification.message %>
-      <.elapsed_time inserted_at={@notification.inserted_at}/>
+      <.elapsed_time inserted_at={@notification.inserted_at} />
     </li>
     """
   end
@@ -47,7 +47,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
         <%= @notification.icon_type %>
       </span>
       <%= @notification.message %>
-      <.elapsed_time inserted_at={@notification.inserted_at}/>
+      <.elapsed_time inserted_at={@notification.inserted_at} />
     </li>
     """
   end
@@ -65,7 +65,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
           <%= @notification.icon_type %>
         </span>
         <%= @notification.message %>
-        <.elapsed_time inserted_at={@notification.inserted_at}/>
+        <.elapsed_time inserted_at={@notification.inserted_at} />
       </div>
       <div class="flex gap-x-2">
         <button disabled={@disabled} class={["text-bold inline-block", if(@disabled, do: "bg-brightGray-300 text-sm cursor-not-allowed", else: "bg-brightGray-900" ), "!text-white min-w-[76px] rounded py-1 px-1 text-sm"]} >
@@ -91,7 +91,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
           <%= @notification.icon_type %>
         </span>
         <%= @notification.message %>
-        <.elapsed_time inserted_at={@notification.inserted_at}/>
+        <.elapsed_time inserted_at={@notification.inserted_at} />
       </div>
       <div :if={@visible} class="flex gap-x-2">
         <button disabled={@disabled} class={["text-bold inline-block", if(@disabled, do: "bg-brightGray-300 cursor-not-allowed",  else: "bg-brightGray-900"), "!text-white min-w-[76px] rounded py-1 px-1 text-sm"]}>
@@ -107,7 +107,20 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
   def card_row(%{type: "promotion"} = assigns) do
     ~H"""
-    <.card_row type="communication" notification={@notification} />
+    <li class="flex">
+      <div class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2">
+        <span class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+          <%= @notification.icon_type %>
+        </span>
+        <%= @notification.message %>
+        <.elapsed_time inserted_at={@notification.inserted_at} />
+      </div>
+      <div class="flex gap-x-2">
+        <button class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm">
+          見に行く
+        </button>
+      </div>
+    </li>
     """
   end
 
