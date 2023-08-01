@@ -150,6 +150,13 @@ defmodule BrightWeb.CardLive.CardListComponents do
   end
 
   def card_row(%{type: "official_team"} = assigns) do
+
+    # TODO　仮実装 「参加する」「脱退する」切り替え
+    assigns =
+      assigns
+      |> assign(:participated, true)
+
+
     ~H"""
     <li class="flex">
       <div class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2">
@@ -160,8 +167,11 @@ defmodule BrightWeb.CardLive.CardListComponents do
         <.elapsed_time inserted_at={@notification.inserted_at} />
       </div>
       <div class="flex gap-x-2">
-        <button class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm">
+        <button :if={!@participated} class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm">
           参加する
+        </button>
+        <button :if={@participated} class="!text-bold inline-block border border-brightGray-900 min-w-[76px] rounded py-1 px-1 text-base !text-sm">
+          脱退する
         </button>
       </div>
     </li>
