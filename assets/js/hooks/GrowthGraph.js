@@ -3,7 +3,7 @@ const dash = [5, 3]
 const padding = 70
 const dashColor = '#97ACAC'
 const myselfBorderColor = '#52CCB5'
-const myselfPointColor = '#B6F1E7'
+const myselfPointColor = '#A6E1C7'
 const myselfSelectedColor = '#008971'
 const myselfFillStartColor = '#B6F1E7FF'
 const myselfFillEndColor = '#B6F1E700'
@@ -13,7 +13,8 @@ const otherSelectedColor = '#9510B1'
 const roleBorderColor = '#A9BABA'
 const rolePointColor = '#D5DCDC'
 const futurePointColor = '#FFFFFF'
-const nowColor = '#B71225'
+const nowPointColor = '#B77285'
+const nowBorderColor = '#B71225'
 
 const dataDivision = (data, futureEnabled) => {
   if (data === undefined) return [[], []]
@@ -124,7 +125,7 @@ const drawNow = (chart, scales) => {
 
   context.lineWidth = 3
   context.setLineDash([2, 0])
-  context.strokeStyle = nowColor
+  context.strokeStyle = nowBorderColor
   const nowDown = y.getPixelForValue(0)
   const nowY = y.getPixelForValue(now)
   const pastY = y.getPixelForValue(pastData[4])
@@ -142,6 +143,7 @@ const drawNow = (chart, scales) => {
   context.stroke()
 
   // 直近の過去から現在までの線
+  context.strokeStyle = myselfBorderColor
   context.beginPath()
   context.moveTo(pastX, pastY)
   context.lineTo(nowX, nowY)
@@ -149,8 +151,8 @@ const drawNow = (chart, scales) => {
 
   // 現在の点
   context.beginPath()
-  context.arc(nowX, nowY, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
-  context.fillStyle = nowColor
+  context.arc(nowX, nowY, 8.5, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
+  context.fillStyle = nowPointColor
   context.fill()
 }
 
@@ -207,7 +209,7 @@ const drawSelectedPoint = (chart, scales, dataname, selectedColor, index) => {
 
   // 「選択している」ポイント
   context.beginPath()
-  context.arc(selectedX, selectedYUp, 8, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
+  context.arc(selectedX, selectedYUp, 8.5, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
   context.fillStyle = selectedColor
   context.fill()
 }
