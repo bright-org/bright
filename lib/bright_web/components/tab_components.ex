@@ -21,8 +21,6 @@ defmodule BrightWeb.TabComponents do
   attr :tabs, :list
   slot :inner_block
   attr :selected_tab, :string, default: ""
-  attr :previous_enable, :boolean, default: false
-  attr :next_enable, :boolean, default: false
   attr :menu_items, :list, default: []
   attr :inner_tab, :boolean, default: false
   attr :page, :integer, default: 1
