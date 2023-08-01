@@ -3,6 +3,7 @@ defmodule BrightWeb.TimelineBarComponents do
   TimelineBar Components
   """
   use Phoenix.Component
+  alias Phoenix.LiveView.JS
 
   @doc """
   Renders a Timeline Bar
@@ -72,10 +73,8 @@ defmodule BrightWeb.TimelineBarComponents do
     ~H"""
     <div class="h-28 w-28 flex justify-center items-center">
       <button
-        phx-click="timeline_bar_button_click"
+        phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: @date})}
         phx-target={@target}
-        phx-value-id={@id}
-        phx-value-date={@date}
         class={@style}
       >
         <span class="material-icons !text-4xl !font-bold" >check</span>
@@ -89,10 +88,8 @@ defmodule BrightWeb.TimelineBarComponents do
     ~H"""
     <div class="h-28 w-28 flex justify-center items-center">
       <button
-        phx-click="timeline_bar_button_click"
+        phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: @date})}
         phx-target={@target}
-        phx-value-id={@id}
-        phx-value-date={@date}
         class="h-16 w-16 rounded-full bg-white text-xs flex justify-center items-center"
       >
         <%= @date %>
@@ -110,10 +107,8 @@ defmodule BrightWeb.TimelineBarComponents do
     <div
       class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
       <button
-        phx-click="timeline_bar_button_click"
+        phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}
-        phx-value-id={@id}
-        phx-value-date="now"
         class="h-28 w-28 rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold text-sm flex justify-center items-center flex-col"
       >
         <span class="material-icons !text-4xl !font-bold">check</span>
@@ -128,10 +123,8 @@ defmodule BrightWeb.TimelineBarComponents do
     <div
       class="h-28 w-28 flex justify-center items-center absolute right-[86px]">
       <button
-        phx-click="timeline_bar_button_click"
+        phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}
-        phx-value-id={@id}
-        phx-value-date="now"
         class="h-10 w-10 rounded-full bg-white text-xs text-attention-900 flex justify-center items-center"
       >
         現在
@@ -146,9 +139,8 @@ defmodule BrightWeb.TimelineBarComponents do
   defp close_button(assigns) do
     ~H"""
     <button
-      phx-click="timeline_bar_close_button_click"
+      phx-click={JS.push("timeline_bar_close_button_click", value: %{id: @id})}
       phx-target={@target}
-      phx-value-id={@id}
       class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200"
     >
       <span class="material-icons !text-base !text-brightGray-200">close</span>
