@@ -4,6 +4,15 @@ defmodule Storybook.Card_list.CardListComponents do
 
   @hour 60
   @day @hour * 24
+  @row_types [
+    "contact",
+    "skill_up",
+    "1on1_invitation",
+    "promotion",
+    "your_team",
+    "intriguing",
+    "official_team"
+  ]
 
   def doc do
     "CardListComponents Example"
@@ -14,24 +23,20 @@ defmodule Storybook.Card_list.CardListComponents do
     assigns =
       assigns
       |> assign(:notifications, create_notifications())
+      |> assign(:row_types, @row_types)
 
     ~H"""
-    <h5>contact card_row</h5>
+    <%= for row_type <- @row_types do %>
+    <h5><%= row_type %> card_row</h5>
     <br>
     <ul class="flex gap-y-2.5 flex-col">
       <%= for notification <- @notifications do %>
-        <.card_row type="contact" notification={notification} />
+        <.card_row type={row_type} notification={notification} />
       <% end %>
     </ul>
     <br>
     <hr>
-    <h5>communication card_row</h5>
-    <br>
-    <ul class="flex gap-y-2.5 flex-col">
-      <%= for notification <- @notifications do %>
-        <.card_row type="communication" notification={notification} />
-      <% end %>
-    </ul>
+    <% end %>
     """
   end
 

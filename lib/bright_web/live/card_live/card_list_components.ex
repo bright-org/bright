@@ -64,7 +64,6 @@ defmodule BrightWeb.CardLive.CardListComponents do
   end
 
   def card_row(%{type: "1on1_invitation"} = assigns) do
-
     # TODO　仮実装 「受ける」「断る」ボタンの活性、非活性
     assigns =
       assigns
@@ -143,12 +142,10 @@ defmodule BrightWeb.CardLive.CardListComponents do
   end
 
   def card_row(%{type: "official_team"} = assigns) do
-
     # TODO　仮実装 「参加する」「脱退する」切り替え
     assigns =
       assigns
       |> assign(:participated, true)
-
 
     ~H"""
     <li class="flex">
