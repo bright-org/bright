@@ -31,10 +31,10 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
         id="intriguing_card"
         tabs={@tabs}
         selected_tab={@selected_tab}
-        inner_tab={true}
         menu_items={@menu_items}
         target={@myself}
       >
+        <.inner_tab />
         <div class="pt-3 pb-1 px-6">
           <ul class="flex flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
@@ -79,6 +79,32 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
 
   def set_menu_items(false), do: []
   def set_menu_items(_), do: @menu_items
+
+  defp inner_tab(assigns) do
+    ~H"""
+    <!-- tab2 -->
+    <div class="overflow-hidden">
+      <ul
+        class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
+      >
+        <li class="py-2 w-[200px] border-r border-brightGray-50">
+          キャリアの参考になる方々
+        </li>
+        <li
+          class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+        >
+          優秀なエンジニアの方々
+        </li>
+        <li class="py-2 w-[200px] border-r border-brightGray-50">
+          カスタムグループ３
+        </li>
+        <li class="py-2 w-[200px] border-r border-brightGray-50">
+          カスタムグループ４
+        </li>
+      </ul>
+    </div>
+    """
+  end
 
   # TODO サンプルデータです　DBの取得処理を追加後削除してください
   defp sample() do
