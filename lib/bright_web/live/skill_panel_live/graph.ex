@@ -2,7 +2,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   use BrightWeb, :live_view
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
-  import BrightWeb.ProfileComponents
+  import BrightWeb.SkillPanelLive.SkillPanelComponents
   alias Bright.SkillPanels
 
   # 全体が仮実装です。

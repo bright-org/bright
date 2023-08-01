@@ -49,7 +49,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert html =~ "スキルパネル"
 
       assert show_live
-             |> element("h3", skill_class.name)
+             |> element("#class_tab_1", skill_class.name)
              |> has_element?()
     end
 
@@ -104,7 +104,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=2")
 
       assert show_live
-             |> element("h3", skill_class_2.name)
+             |> element("#class_tab_1", skill_class_2.name)
              |> has_element?()
     end
   end

@@ -2,6 +2,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   use BrightWeb, :live_view
 
   import BrightWeb.BrightModalComponents
+  import BrightWeb.SkillPanelLive.SkillsComponents
+  import BrightWeb.SkillPanelLive.SkillPanelComponents
 
   alias Bright.SkillPanels
   alias Bright.SkillUnits
