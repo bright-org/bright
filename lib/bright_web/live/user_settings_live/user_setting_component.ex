@@ -22,23 +22,29 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <section class="hidden absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20" id="personal_settings">
+    <div id="personal_setting_modal" class="hidden">
       <BrightCore.flash_group flash={@modal_flash} />
-      <.tab
-        id="user_settings"
-        tabs={@tabs}
-        hidden_footer={true}
-        selected_tab={@selected_tab}
-        target={@myself}
-      >
-        <.live_component
-          module={@module}
-          id={"user_settings"}
-          user={@current_user}
-          action={:edit}
-        />
-      </.tab>
-    </section>
+      <div class="bg-zinc-50/90 fixed inset-0 transition-opacity" />
+      <div class="fixed inset-0 overflow-y-auto">
+        <section id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20">
+
+          <.tab
+            id="user_settings"
+            tabs={@tabs}
+            hidden_footer={true}
+            selected_tab={@selected_tab}
+            target={@myself}
+          >
+            <.live_component
+              module={@module}
+              id={"user_settings"}
+              user={@current_user}
+              action={:edit}
+            />
+          </.tab>
+        </section>
+      </div>
+    </div>
     """
   end
 

@@ -3,6 +3,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Bright Button Components
   """
   use Phoenix.Component
+  alias Phoenix.LiveView.JS
 
   @doc """
   Renders a Profile Button
@@ -176,17 +177,14 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       id="user_menu_dropmenu"
-      class="hover:opacity-70"
-      phx-click={Phoenix.LiveView.JS.toggle(
-        to: "#personal_settings",
-        in: {"ease-in-out duration-500 both", "scale-y-0 origin-top", "scale-y-100"},
-        out: {"ease-in-out duration-500 both", "scale-y-100", "scale-y-0 origin-top"},
-        time: 500
-      )}
+      class="hover:opacity-70 z-20"
+      phx-click={JS.toggle(to: "#personal_setting_modal")}
       phx-target={"#personal_settings"}
     >
-      <img class="inline-block h-10 w-10 rounded-full"
-          src={@icon_file_path} />
+      <img
+        class="inline-block h-10 w-10 rounded-full"
+        src={@icon_file_path}
+      />
     </button>
     """
   end
