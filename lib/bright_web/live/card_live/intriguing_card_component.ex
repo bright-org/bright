@@ -81,32 +81,20 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   def set_menu_items(_), do: @menu_items
 
   defp inner_tab(assigns) do
+    assigns =
+      assigns
+      |> assign(:inner_tab, inner_tabs_sample())
+      |> assign(:inner_selected_tab, "tab3")
+
     ~H"""
     <div class="flex border-b border-brightGray-50">
       <div class="overflow-hidden">
-        <ul
-          class="overflow-hidden flex text-base !text-sm w-[800px]"
-        >
-          <li
-            class="py-2 w-[200px] border-r border-brightGray-50"
-          >
-            キャリアの参考になる方々
-          </li>
-          <li
-            class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
-          >
-            優秀なエンジニアの方々
-          </li>
-          <li
-            class="py-2 w-[200px] border-r border-brightGray-50"
-          >
-            カスタムグループ３
-          </li>
-          <li
-            class="py-2 w-[200px] border-r border-brightGray-50"
-          >
-            カスタムグループ４
-          </li>
+        <ul class="overflow-hidden flex text-base !text-sm w-[800px]" >
+          <%= for {key, value} <- @inner_tab do %>
+            <li class={["py-2 w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}>
+              <%= value %>
+            </li>
+          <% end %>
         </ul>
       </div>
       <button class="px-1 border-l border-brightGray-50">
@@ -138,6 +126,16 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
         icon_file_path:
           "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
       }
+    ]
+  end
+
+  # TODO サンプルデータです　DBの取得処理を追加後削除してください
+  defp inner_tabs_sample() do
+    [
+      {"tab1", "キャリアの参考になる方々"},
+      {"tab2", "優秀なエンジニアの方々"},
+      {"tab3", "カスタムグループ３"},
+      {"tab4", "カスタムグループ４"}
     ]
   end
 end
