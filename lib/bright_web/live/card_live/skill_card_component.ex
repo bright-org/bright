@@ -27,8 +27,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         tabs={@tabs}
       >
         <div class="py-4 px-7 flex gap-y-2 flex-col">
-          <%= for skill <- assigns.skills do %>
-            <.skill_genre skills={skill} />
+          <%= for skill_panel <- @skill_panels do %>
+            <.skill_genre skill_panel={skill_panel} />
           <% end %>
         </div>
       </.tab>
@@ -44,7 +44,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      |> assign(:tabs, @tabs)
      |> assign(:selected_tab, "engineer")
      # TODO　サンプルデータはDBの処理を作成後消すこと
-     |> assign(:skills, sample())}
+     |> assign(:skill_panels, sample())}
   end
 
   @impl true
@@ -82,9 +82,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp skill_genre(assigns) do
     ~H"""
     <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
-      <p class="font-bold w-[150px] text-left text-sm">
-        <%= assigns.skills.genre_name %>
-      </p>
       <table class="table-fixed skill-table -mt-2">
         <thead>
           <tr>
@@ -95,9 +92,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
           </tr>
         </thead>
         <tbody>
-          <%= for skill_panel <- assigns.skills.skill_panels do %>
-            <.skill_panel skill_panel={skill_panel} />
-          <% end %>
+          <.skill_panel skill_panel={@skill_panel} />
         </tbody>
       </table>
     </div>
@@ -107,8 +102,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp skill_panel(assigns) do
     ~H"""
     <tr>
-      <td><%= assigns.skill_panel.name %></td>
-      <%= for level <- assigns.skill_panel.levels do %>
+      <td><%= @skill_panel.name %></td>
+      <%= for level <- @skill_panel.levels do %>
         <.skill_gem level={level}/>
       <% end %>
     </tr>
@@ -148,23 +143,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   # TODO　サンプルデータはDBの処理を作成後消すこと
   defp sample() do
     [
-      %{
-        genre_name: "Webアプリ開発",
-        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
-      },
-      %{
-        genre_name: "AI開発これはDBから読み込んでません",
-        skill_panels: [
-          %{name: "Elixir", levels: [:skilled, :normal, :none]},
-          %{name: "Python", levels: [:skilled, :none, :none]}
-        ]
-      },
-      %{
-        genre_name: "PM サンプルです",
-        skill_panels: [
-          %{name: "", levels: [:skilled, :normal, :none]}
-        ]
-      }
+      %{name: "Elixir", levels: [:skilled, :normal, :none]},
+      %{name: "Python", levels: [:skilled, :none, :none]}
     ]
   end
 end
