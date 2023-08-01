@@ -25,6 +25,7 @@ defmodule Bright.TestHelper do
   def register_and_log_in_user(%{conn: conn}) do
     user = insert(:user)
     insert(:user_profile, user: user)
+    insert(:user_job_profile, user: user)
     user = user |> Repo.preload(:user_profile)
     %{conn: log_in_user(conn, user), user: user}
   end

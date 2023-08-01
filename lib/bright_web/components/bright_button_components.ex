@@ -190,46 +190,4 @@ defmodule BrightWeb.BrightButtonComponents do
     </button>
     """
   end
-
-  def user_menu(assigns) do
-    menu_items = [
-      %{text: "個人設定", href: "/", method: "get"},
-      %{text: "ログアウトする", href: "/users/log_out", method: "delete"}
-    ]
-
-    assigns =
-      assigns
-      |> assign(:menu_items, menu_items)
-
-    ~H"""
-    <div
-      id="user_menu"
-      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-    >
-      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="user_menu_dropmenu">
-        <%= for menu_item <- @menu_items do %>
-          <.user_menu_item menu_item={menu_item}/>
-        <% end %>
-      </ul>
-    </div>
-    """
-  end
-
-  attr :menu_item, :map
-
-  defp user_menu_item(assigns) do
-    ~H"""
-        <li>
-
-        <.link
-        href={@menu_item.href}
-        method={@menu_item.method}
-        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-        >
-        <%= @menu_item.text %>
-      </.link>
-
-        </li>
-    """
-  end
 end
