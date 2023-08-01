@@ -44,7 +44,13 @@
               </button>
             </div>
           </div>
-          <.timeline_bar type="myself" dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]} selected_date="2023.6" display_now/>
+          <.timeline_bar
+            id="myself"
+            type="myself"
+            dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
+            selected_date="2023.6"
+            display_now
+          />
           <div class="flex py-4">
             <div class="w-14"></div>
             <div class="w-[725px] flex justify-between items-center">
@@ -74,7 +80,12 @@
             <div></div>
           </div>
 
-          <.timeline_bar type="other" dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]} selected_date="2022.12"/>
+          <.timeline_bar
+            id="other"
+            type="other"
+            dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
+            selected_date="2022.12"
+          />
         </div>
         <div class="w-[700px] pl-28">
           <div class="w-[450px] mx-auto my-12">

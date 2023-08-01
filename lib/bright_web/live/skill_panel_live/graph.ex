@@ -31,4 +31,14 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> assign(:skill_panel, skill_panel)
      |> assign(:skill_class, skill_class)}
   end
+
+  @impl true
+  def handle_event(_event_name, _params, socket) do
+    # # TODO タイムラインバーイベント検証 タイムラインイベント周りの実装後削除予定
+    # IO.inspect("------------------")
+    # IO.inspect(event_name)
+    # IO.inspect(params)
+    # IO.inspect("------------------")
+    {:noreply, socket}
+  end
 end
