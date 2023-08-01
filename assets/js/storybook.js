@@ -12,17 +12,6 @@ import  * as hooks from "./hooks"
   window.storybook = hooks
 })()
 
-document.addEventListener("DOMContentLoaded", () => {
-  // storybookでMaterialIconsを読み込む
-  // linkを記述する場所がないためjsで追加する
-  const head = document.head
-  const link = document.createElement("link")
-  link.href = "https://fonts.googleapis.com/css?family=Material+Icons%7CMaterial+Icons+Outlined%7CMaterial+Icons+Round%7CMaterial+Icons+Sharp%7CMaterial+Icons+Two+Tone"
-  link.rel="stylesheet"
-  head.appendChild(link)
-})
-
-
 // If your components require alpinejs, you'll need to start
 // alpine after the DOM is loaded and pass in an onBeforeElUpdated
 //
