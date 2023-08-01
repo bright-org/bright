@@ -148,10 +148,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       id="compareAllDropdown"
     >
       <.live_component
-        id="team_card_compare"
-        module={BrightWeb.CardLive.RelatedTeamCardMockComponent}
+        id="related_team_card_compare"
+        module={BrightWeb.CardLive.RelatedTeamCardComponent}
         current_user={@current_user}
-        display_menu={false}
+        show_menue={false}
       />
     </div>
     """
