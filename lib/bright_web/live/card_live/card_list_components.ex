@@ -43,6 +43,12 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
 
   def card_row(%{type: "skill_up"} = assigns) do
+
+    # TODO　仮実装 「祝福する」ボタンの活性、非活性
+    assigns =
+      assigns
+      |> assign(:disabled, true)
+
     ~H"""
     <li class="flex">
       <div class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2">
@@ -53,7 +59,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
         <.elapsed_time inserted_at={@notification.inserted_at}/>
       </div>
       <div class="flex gap-x-2">
-        <button class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm" >
+        <button disabled={@disabled} class={["text-bold inline-block", if(@disabled, do: "bg-brightGray-300 text-sm cursor-not-allowed", else: "bg-brightGray-900" ), "!text-white min-w-[76px] rounded py-1 px-1 text-sm"]} >
           祝福する
         </button>
       </div>
