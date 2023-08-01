@@ -1,4 +1,4 @@
-# TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
+# TODO 「bfa3829b2692f756ab89e228d923ca1516edf31b」　「feat: さまざまな人たちとの交流 にボタン追加」　までデザイン更新
 defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @moduledoc """
   Intriguing Card Components
@@ -82,26 +82,43 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
 
   defp inner_tab(assigns) do
     ~H"""
-    <!-- tab2 -->
-    <div class="overflow-hidden">
-      <ul
-        class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
-      >
-        <li class="py-2 w-[200px] border-r border-brightGray-50">
-          キャリアの参考になる方々
-        </li>
-        <li
-          class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+    <div class="flex border-b border-brightGray-50">
+      <div class="overflow-hidden">
+        <ul
+          class="overflow-hidden flex text-base !text-sm w-[800px]"
         >
-          優秀なエンジニアの方々
-        </li>
-        <li class="py-2 w-[200px] border-r border-brightGray-50">
-          カスタムグループ３
-        </li>
-        <li class="py-2 w-[200px] border-r border-brightGray-50">
-          カスタムグループ４
-        </li>
-      </ul>
+          <li
+            class="py-2 w-[200px] border-r border-brightGray-50"
+          >
+            キャリアの参考になる方々
+          </li>
+          <li
+            class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+          >
+            優秀なエンジニアの方々
+          </li>
+          <li
+            class="py-2 w-[200px] border-r border-brightGray-50"
+          >
+            カスタムグループ３
+          </li>
+          <li
+            class="py-2 w-[200px] border-r border-brightGray-50"
+          >
+            カスタムグループ４
+          </li>
+        </ul>
+      </div>
+      <button class="px-1 border-l border-brightGray-50">
+        <span
+          class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+        ></span>
+      </button>
+      <button class="px-1 border-l border-brightGray-50">
+        <span
+          class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+        ></span>
+      </button>
     </div>
     """
   end
