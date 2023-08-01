@@ -69,6 +69,7 @@ defmodule BrightWeb.LayoutComponents do
         <.search_for_skill_holders_button />
         <.bell_button notification_count={@notification_count}/>
         <.user_button icon_file_path={@profile.icon_file_path}/>
+        <.logout_button />
       </div>
     </div>
     """
