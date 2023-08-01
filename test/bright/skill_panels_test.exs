@@ -20,16 +20,15 @@ defmodule Bright.SkillPanelsTest do
     end
 
     test "create_skill_panel/1 with valid data creates a skill_panel" do
-      valid_attrs = params_for(:locked_skill_panel)
+      valid_attrs = params_for(:skill_panel)
 
       assert {:ok, %SkillPanel{} = skill_panel} = SkillPanels.create_skill_panel(valid_attrs)
-      assert skill_panel.locked_date == valid_attrs.locked_date
       assert skill_panel.name == valid_attrs.name
     end
 
     test "create_skill_panel/1 with skill_classes" do
       valid_attrs =
-        params_for(:locked_skill_panel)
+        params_for(:skill_panel)
         |> Map.put(:skill_classes, [
           params_for(:skill_class, class: nil),
           params_for(:skill_class, class: nil)
@@ -52,12 +51,11 @@ defmodule Bright.SkillPanelsTest do
 
     test "update_skill_panel/2 with valid data updates the skill_panel" do
       skill_panel = insert(:skill_panel)
-      update_attrs = params_for(:locked_skill_panel)
+      update_attrs = params_for(:skill_panel)
 
       assert {:ok, %SkillPanel{} = skill_panel} =
                SkillPanels.update_skill_panel(skill_panel, update_attrs)
 
-      assert skill_panel.locked_date == update_attrs.locked_date
       assert skill_panel.name == update_attrs.name
     end
 
