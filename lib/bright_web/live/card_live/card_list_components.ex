@@ -19,7 +19,6 @@ defmodule BrightWeb.CardLive.CardListComponents do
   attr :type, :string,
     values: [
       "contact",
-      "communication",
       "skill_up",
       "1on1_invitation",
       "promotion",
@@ -32,18 +31,6 @@ defmodule BrightWeb.CardLive.CardListComponents do
     ~H"""
     <li class="text-left flex items-center text-base">
       <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-        <%= @notification.icon_type %>
-      </span>
-      <%= @notification.message %>
-      <.elapsed_time inserted_at={@notification.inserted_at} />
-    </li>
-    """
-  end
-
-  def card_row(%{type: "communication"} = assigns) do
-    ~H"""
-    <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
-      <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
         <%= @notification.icon_type %>
       </span>
       <%= @notification.message %>
@@ -126,7 +113,13 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
   def card_row(%{type: "your_team"} = assigns) do
     ~H"""
-    <.card_row type="communication" notification={@notification} />
+    <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+      <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+        <%= @notification.icon_type %>
+      </span>
+      <%= @notification.message %>
+      <.elapsed_time inserted_at={@notification.inserted_at} />
+    </li>
     """
   end
 
