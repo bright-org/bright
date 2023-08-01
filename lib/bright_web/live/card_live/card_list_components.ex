@@ -15,7 +15,18 @@ defmodule BrightWeb.CardLive.CardListComponents do
       <.card_row type="contact" notification={notification} />
   """
   attr :notification, :map, required: true
-  attr :type, :string, values: ["contact", "communication", "skill_up"]
+
+  attr :type, :string,
+    values: [
+      "contact",
+      "communication",
+      "skill_up",
+      "1on1_invitation",
+      "promotion",
+      "your_team",
+      "intriguing",
+      "official_team"
+    ]
 
   def card_row(%{type: "contact"} = assigns) do
     ~H"""
@@ -41,9 +52,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
     """
   end
 
-
   def card_row(%{type: "skill_up"} = assigns) do
-
     # TODO　仮実装 「祝福する」ボタンの活性、非活性
     assigns =
       assigns
@@ -64,6 +73,36 @@ defmodule BrightWeb.CardLive.CardListComponents do
         </button>
       </div>
     </li>
+    """
+  end
+
+  def card_row(%{type: "1on1_invitation"} = assigns) do
+    ~H"""
+    <.card_row type="communication" notification={@notification} />
+    """
+  end
+
+  def card_row(%{type: "promotion"} = assigns) do
+    ~H"""
+    <.card_row type="communication" notification={@notification} />
+    """
+  end
+
+  def card_row(%{type: "your_team"} = assigns) do
+    ~H"""
+    <.card_row type="communication" notification={@notification} />
+    """
+  end
+
+  def card_row(%{type: "intriguing"} = assigns) do
+    ~H"""
+    <.card_row type="communication" notification={@notification} />
+    """
+  end
+
+  def card_row(%{type: "official_team"} = assigns) do
+    ~H"""
+    <.card_row type="communication" notification={@notification} />
     """
   end
 
