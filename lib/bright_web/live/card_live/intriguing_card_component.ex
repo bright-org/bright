@@ -1,4 +1,4 @@
-# TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
+# TODO 「bfa3829b2692f756ab89e228d923ca1516edf31b」　「feat: さまざまな人たちとの交流 にボタン追加」　までデザイン更新
 defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @moduledoc """
   Intriguing Card Components
@@ -17,24 +17,20 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
 
   @impl true
   def render(assigns) do
-    assigns =
-      assigns
-      |> assign(:menu_items, set_menu_items(assigns[:display_menu]))
-      |> assign(:tabs, @tabs)
-      |> assign(:selected_tab, "intriguing")
-      # TODO サンプルデータです　ここにDBから取得した結果をセットしてください
-      |> assign(:user_profiles, sample())
-
     ~H"""
     <div>
       <.tab
         id="intriguing_card"
         tabs={@tabs}
         selected_tab={@selected_tab}
-        inner_tab={true}
         menu_items={@menu_items}
         target={@myself}
       >
+        <.inner_tab
+          target={@myself}
+          inner_tab={@inner_tab}
+          inner_selected_tab={@inner_selected_tab}
+        />
         <div class="pt-3 pb-1 px-6">
           <ul class="flex flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
@@ -48,13 +44,48 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   end
 
   @impl true
+  def update(assigns, socket) do
+    {
+      :ok,
+      socket
+      |> assign(assigns)
+      |> assign(:menu_items, set_menu_items(assigns[:display_menu]))
+      |> assign(:tabs, @tabs)
+      |> assign(:selected_tab, "intriguing")
+      # TODO サンプルデータです　ここにDBから取得した結果をセットしてください
+      |> assign(:user_profiles, sample())
+      |> assign(:inner_tab, inner_tabs_sample())
+      |> assign(:inner_selected_tab, "tab1")
+    }
+  end
+
+  @impl true
   def handle_event(
         "tab_click",
-        %{"id" => "intriguing_card"},
+        %{"id" => "intriguing_card", "tab_name" => tab_name},
         socket
       ) do
     # TODO これは雛形です処理を記述すること
-    {:noreply, socket}
+
+    assigns =
+      socket
+      |> assign(:selected_tab, tab_name)
+
+    {:noreply, assigns}
+  end
+
+  def handle_event(
+        "inner_tab_click",
+        %{"tab_name" => tab_name},
+        socket
+      ) do
+    # TODO これは雛形です処理を記述すること
+
+    assigns =
+      socket
+      |> assign(:inner_selected_tab, tab_name)
+
+    {:noreply, assigns}
   end
 
   @impl true
@@ -80,6 +111,37 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   def set_menu_items(false), do: []
   def set_menu_items(_), do: @menu_items
 
+  defp inner_tab(assigns) do
+    ~H"""
+    <div class="flex border-b border-brightGray-50">
+      <div class="overflow-hidden">
+        <ul class="overflow-hidden flex text-base !text-sm w-[800px]" >
+          <%= for {key, value} <- @inner_tab do %>
+            <li
+              class={["py-2 w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
+              phx-click="inner_tab_click"
+              phx-target={@target}
+              phx-value-tab_name={key}
+            >
+              <%= value %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <button class="px-1 border-l border-brightGray-50">
+        <span
+          class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+        ></span>
+      </button>
+      <button class="px-1 border-l border-brightGray-50">
+        <span
+          class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+        ></span>
+      </button>
+    </div>
+    """
+  end
+
   # TODO サンプルデータです　DBの取得処理を追加後削除してください
   defp sample() do
     [
@@ -95,6 +157,16 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
         icon_file_path:
           "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
       }
+    ]
+  end
+
+  # TODO サンプルデータです　DBの取得処理を追加後削除してください
+  defp inner_tabs_sample() do
+    [
+      {"tab1", "キャリアの参考になる方々"},
+      {"tab2", "優秀なエンジニアの方々"},
+      {"tab3", "カスタムグループ３"},
+      {"tab4", "カスタムグループ４"}
     ]
   end
 end
