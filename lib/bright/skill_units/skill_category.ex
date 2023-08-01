@@ -13,6 +13,8 @@ defmodule Bright.SkillUnits.SkillCategory do
   @foreign_key_type Ecto.ULID
 
   schema "skill_categories" do
+    # TODO: 自動生成を消す
+    field :trace_id, Ecto.ULID, autogenerate: {Ecto.ULID, :generate, []}
     field :name, :string
     field :position, :integer
 

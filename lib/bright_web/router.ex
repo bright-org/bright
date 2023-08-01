@@ -120,6 +120,13 @@ defmodule BrightWeb.Router do
 
   ## Authentication routes
 
+  scope "/auth", BrightWeb do
+    pipe_through [:browser]
+
+    get "/:provider", OAuthController, :request
+    get "/:provider/callback", OAuthController, :callback
+  end
+
   scope "/", BrightWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
 
@@ -132,6 +139,7 @@ defmodule BrightWeb.Router do
       live "/users/send_reset_password_url", UserSendResetPasswordUrlLive, :show
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
       live "/users/two_factor_auth/:token", UserTwoFactorAuthLive, :show
+      live "/users/register_social_account/:token", UserRegisterSocialAccountLive, :show
     end
 
     post "/users/log_in", UserSessionController, :create

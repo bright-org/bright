@@ -44,6 +44,12 @@ defmodule Bright.AccountsTest do
       refute Accounts.get_user_by_email_and_password(user.email, valid_user_password())
     end
 
+    test "does not return the user if the email and password are valid but password_registered is false" do
+      user = insert(:user_registered_by_social_auth)
+
+      refute Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+    end
+
     test "returns the user if the email and password are valid" do
       %{id: id} = user = insert(:user)
 
