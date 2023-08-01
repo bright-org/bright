@@ -10,7 +10,6 @@ defmodule BrightWeb.LayoutComponents do
   Renders root layout.
   """
 
-  attr :with_flowbite, :boolean, default: false
   attr :csrf_token, :string, required: true
   attr :page_title, :string
 
