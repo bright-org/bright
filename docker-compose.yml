@@ -9,6 +9,9 @@ services:
       DB_HOST: db
       BUCKET_NAME: bright_storage_local
       GCS_BASE_URL: http://gcs:4443
+      # NOTE: SNS ログインをローカルでデバッグしたいときは以下を記載
+      GOOGLE_CLIENT_ID:
+      GOOGLE_CLIENT_SECRET:
     links:
       - db
       - gcs
