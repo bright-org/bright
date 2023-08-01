@@ -27,9 +27,23 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         tabs={@tabs}
       >
         <div class="py-4 px-7 flex gap-y-2 flex-col">
-          <%= for skill_panel <- @skill_panels do %>
-            <.skill_genre skill_panel={skill_panel} />
-          <% end %>
+          <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
+            <table class="table-fixed skill-table -mt-2">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="pl-8">クラス1</th>
+                  <th class="pl-8">クラス2</th>
+                  <th class="pl-8">クラス3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%= for skill_panel <- @skill_panels do %>
+                  <.skill_panel skill_panel={skill_panel} />
+                <% end %>
+              </tbody>
+            </table>
+          </div>
         </div>
       </.tab>
     </div>
@@ -79,26 +93,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     {:noreply, socket}
   end
 
-  defp skill_genre(assigns) do
-    ~H"""
-    <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
-      <table class="table-fixed skill-table -mt-2">
-        <thead>
-          <tr>
-            <th></th>
-            <th class="pl-8">クラス1</th>
-            <th class="pl-8">クラス2</th>
-            <th class="pl-8">クラス3</th>
-          </tr>
-        </thead>
-        <tbody>
-          <.skill_panel skill_panel={@skill_panel} />
-        </tbody>
-      </table>
-    </div>
-    """
-  end
-
   defp skill_panel(assigns) do
     ~H"""
     <tr>
@@ -143,8 +137,10 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   # TODO　サンプルデータはDBの処理を作成後消すこと
   defp sample() do
     [
-      %{name: "Elixir", levels: [:skilled, :normal, :none]},
-      %{name: "Python", levels: [:skilled, :none, :none]}
+      %{name: "Elixir", levels: [:skilled, :normal, :beginner]},
+      %{name: "Python", levels: [:skilled, :none, :none]},
+      %{name: "DBから読み込んでません", levels: [:skilled, :normal, :none]},
+      %{name: "DB処理未実装", levels: [:skilled, :normal, :none]}
     ]
   end
 end
