@@ -193,6 +193,9 @@ defmodule BrightWeb.TabComponents do
     previous_enable = assigns.page > 1
     next_enable = assigns.page < assigns.total_pages
 
+    previous_button_click = if previous_enable, do: "previous_button_click"
+    next_button_click = if next_enable, do: "next_button_click"
+
     previous_button_style =
       "#{page_button_enable_style(previous_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
 
@@ -206,6 +209,8 @@ defmodule BrightWeb.TabComponents do
     assigns =
       assigns
       |> assign(:previous_button_style, previous_button_style)
+      |> assign(:previous_button_click, previous_button_click)
+      |> assign(:next_button_click, next_button_click)
       |> assign(:next_button_style, next_button_style)
       |> assign(:previous_span_style, previous_span_style)
       |> assign(:next_span_style, next_span_style)
@@ -215,7 +220,7 @@ defmodule BrightWeb.TabComponents do
       <button
         type="button"
         class={@previous_button_style}
-        phx-click="previous_button_click"
+        phx-click={@previous_button_click}
         phx-target={@target}
         phx-value-id={@id}
       >
@@ -224,7 +229,7 @@ defmodule BrightWeb.TabComponents do
       <button
         type="button"
         class={@next_button_style}
-        phx-click="next_button_click"
+        phx-click={@next_button_click}
         phx-target={@target}
         phx-value-id={@id}
       >
