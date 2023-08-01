@@ -17,14 +17,6 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
 
   @impl true
   def render(assigns) do
-    assigns =
-      assigns
-      |> assign(:menu_items, set_menu_items(assigns[:display_menu]))
-      |> assign(:tabs, @tabs)
-      |> assign(:selected_tab, "intriguing")
-      # TODO サンプルデータです　ここにDBから取得した結果をセットしてください
-      |> assign(:user_profiles, sample())
-
     ~H"""
     <div>
       <.tab
@@ -34,7 +26,11 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
         menu_items={@menu_items}
         target={@myself}
       >
-        <.inner_tab />
+        <.inner_tab
+          target={@myself}
+          inner_tab={@inner_tab}
+          inner_selected_tab={@inner_selected_tab}
+        />
         <div class="pt-3 pb-1 px-6">
           <ul class="flex flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
@@ -48,13 +44,50 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   end
 
   @impl true
+  def update(assigns, socket) do
+    {
+      :ok,
+      socket
+      |> assign(assigns)
+      |> assign(:menu_items, set_menu_items(assigns[:display_menu]))
+      |> assign(:tabs, @tabs)
+      |> assign(:selected_tab, "intriguing")
+      # TODO サンプルデータです　ここにDBから取得した結果をセットしてください
+      |> assign(:user_profiles, sample())
+      |> assign(:inner_tab, inner_tabs_sample())
+      |> assign(:inner_selected_tab, "tab1")
+    }
+  end
+
+  @impl true
   def handle_event(
         "tab_click",
-        %{"id" => "intriguing_card"},
+        %{"id" => "intriguing_card", "tab_name" => tab_name},
         socket
       ) do
     # TODO これは雛形です処理を記述すること
-    {:noreply, socket}
+
+    assigns =
+      socket
+      |> assign(:selected_tab, tab_name)
+      |> IO.inspect()
+
+    {:noreply, assigns}
+  end
+
+  def handle_event(
+        "inner_tab_click",
+        %{"tab_name" => tab_name},
+        socket
+      ) do
+    # TODO これは雛形です処理を記述すること
+
+    assigns =
+      socket
+      |> assign(:inner_selected_tab, tab_name)
+      |> IO.inspect()
+
+    {:noreply, assigns}
   end
 
   @impl true
@@ -81,17 +114,17 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   def set_menu_items(_), do: @menu_items
 
   defp inner_tab(assigns) do
-    assigns =
-      assigns
-      |> assign(:inner_tab, inner_tabs_sample())
-      |> assign(:inner_selected_tab, "tab3")
-
     ~H"""
     <div class="flex border-b border-brightGray-50">
       <div class="overflow-hidden">
         <ul class="overflow-hidden flex text-base !text-sm w-[800px]" >
           <%= for {key, value} <- @inner_tab do %>
-            <li class={["py-2 w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}>
+            <li
+              class={["py-2 w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
+              phx-click="inner_tab_click"
+              phx-target={@target}
+              phx-value-tab_name={key}
+            >
               <%= value %>
             </li>
           <% end %>
