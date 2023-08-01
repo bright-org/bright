@@ -492,4 +492,112 @@ defmodule Bright.Jobs do
   def change_career_want_job(%CareerWantJob{} = career_want_job, attrs \\ %{}) do
     CareerWantJob.changeset(career_want_job, attrs)
   end
+
+  alias Bright.Jobs.JobSkillPanel
+
+  @doc """
+  Returns the list of job_skill_panels.
+
+  ## Examples
+
+      iex> list_job_skill_panels()
+      [%JobSkillPanel{}, ...]
+
+  """
+  def list_job_skill_panels do
+    Repo.all(JobSkillPanel)
+  end
+
+  def list_job_skill_panels_with_jobs_and_skill_panels do
+    Repo.all(JobSkillPanel)
+    |> Repo.preload(:job)
+    |> Repo.preload(:skill_panel)
+  end
+
+  @doc """
+  Gets a single job_skill_panel.
+
+  Raises `Ecto.NoResultsError` if the Job skill panel does not exist.
+
+  ## Examples
+
+      iex> get_job_skill_panel!(123)
+      %JobSkillPanel{}
+
+      iex> get_job_skill_panel!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_job_skill_panel!(id), do: Repo.get!(JobSkillPanel, id)
+
+  def get_job_skill_panel_with_jobs_and_skill_panels!(id) do
+    Repo.get!(JobSkillPanel, id)
+    |> Repo.preload(:job)
+    |> Repo.preload(:skill_panel)
+  end
+
+  @doc """
+  Creates a job_skill_panel.
+
+  ## Examples
+
+      iex> create_job_skill_panel(%{field: value})
+      {:ok, %JobSkillPanel{}}
+
+      iex> create_job_skill_panel(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_job_skill_panel(attrs \\ %{}) do
+    %JobSkillPanel{}
+    |> JobSkillPanel.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a job_skill_panel.
+
+  ## Examples
+
+      iex> update_job_skill_panel(job_skill_panel, %{field: new_value})
+      {:ok, %JobSkillPanel{}}
+
+      iex> update_job_skill_panel(job_skill_panel, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_job_skill_panel(%JobSkillPanel{} = job_skill_panel, attrs) do
+    job_skill_panel
+    |> JobSkillPanel.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a job_skill_panel.
+
+  ## Examples
+
+      iex> delete_job_skill_panel(job_skill_panel)
+      {:ok, %JobSkillPanel{}}
+
+      iex> delete_job_skill_panel(job_skill_panel)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_job_skill_panel(%JobSkillPanel{} = job_skill_panel) do
+    Repo.delete(job_skill_panel)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking job_skill_panel changes.
+
+  ## Examples
+
+      iex> change_job_skill_panel(job_skill_panel)
+      %Ecto.Changeset{data: %JobSkillPanel{}}
+
+  """
+  def change_job_skill_panel(%JobSkillPanel{} = job_skill_panel, attrs \\ %{}) do
+    JobSkillPanel.changeset(job_skill_panel, attrs)
+  end
 end
