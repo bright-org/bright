@@ -15,6 +15,7 @@ defmodule Bright.Jobs.CareerField do
     field :position, :integer
 
     has_many :jobs, Bright.Jobs.Job
+    has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
 
     timestamps()
   end
