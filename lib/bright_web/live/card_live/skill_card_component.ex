@@ -119,7 +119,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <td>
       <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-        <img src={@icon_path} class="mr-1" /><%= level_text(assigns.level) %>
+        <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
       </p>
     </td>
     """
