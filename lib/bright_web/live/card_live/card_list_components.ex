@@ -77,6 +77,13 @@ defmodule BrightWeb.CardLive.CardListComponents do
   end
 
   def card_row(%{type: "1on1_invitation"} = assigns) do
+
+    # TODO　仮実装 「受ける」「断る」ボタンの活性、非活性
+    assigns =
+      assigns
+      |> assign(:disabled, true)
+      |> assign(:visible, true)
+
     ~H"""
     <li class="flex">
       <div class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2">
@@ -86,11 +93,11 @@ defmodule BrightWeb.CardLive.CardListComponents do
         <%= @notification.message %>
         <.elapsed_time inserted_at={@notification.inserted_at}/>
       </div>
-      <div class="flex gap-x-2">
-        <button class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm">
+      <div :if={@visible} class="flex gap-x-2">
+        <button disabled={@disabled} class={["text-bold inline-block", if(@disabled, do: "bg-brightGray-300 cursor-not-allowed",  else: "bg-brightGray-900"), "!text-white min-w-[76px] rounded py-1 px-1 text-sm"]}>
           受ける
         </button>
-        <button class="!text-bold inline-block border border-brightGray-900 min-w-[76px] rounded py-1 px-1 text-sm text-base">
+        <button disabled={@disabled} class={["!text-bold inline-block border", if(@disabled, do: "border-brightGray-300 text-brightGray-300 cursor-not-allowed", else: "border-brightGray-900"),  "min-w-[76px] rounded py-1 px-1 text-sm text-base"]}>
           断る
         </button>
       </div>
