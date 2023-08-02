@@ -64,13 +64,13 @@ erDiagram
   skill_improvements ||--|| skill_classes : ""
   skill_improvements ||--|| skill_units : ""
   users ||--o{ skill_scores : ""
+  users ||--o{ skill_unit_scores : ""
+  users ||--|{ career_field_scores : ""
   skill_scores ||--|| skill_classes : ""
   skill_scores ||--|{ skill_score_items : ""
-  skill_scores ||--|{ skill_unit_scores : ""
-  skill_unit_scores ||--|{ skill_units : ""
   skill_score_items ||--|| skills : ""
-  users ||--|{ career_field_scores : ""
-  career_fields ||--|{ career_field_scores : ""
+  skill_unit_scores ||--|| skill_units : ""
+  career_fields ||--|| career_field_scores : ""
 
   career_fields {
   }
@@ -136,7 +136,7 @@ erDiagram
   }
 
   skill_unit_scores {
-    id skill_score_id FK
+    id user_id FK
     id skill_unit_id FK
     float percentage
   }

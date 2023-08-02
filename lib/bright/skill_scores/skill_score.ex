@@ -20,7 +20,6 @@ defmodule Bright.SkillScores.SkillScore do
     belongs_to(:skill_class, Bright.SkillPanels.SkillClass)
 
     has_many(:skill_score_items, Bright.SkillScores.SkillScoreItem)
-    has_many(:skill_unit_scores, Bright.SkillScores.SkillUnitScore)
 
     timestamps()
   end

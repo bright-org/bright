@@ -12,7 +12,7 @@ defmodule Bright.SkillScores.SkillUnitScore do
   schema "skill_unit_scores" do
     field :percentage, :float, default: 0.0
 
-    belongs_to(:skill_score, Bright.SkillScores.SkillScore)
+    belongs_to(:user, Bright.Accounts.User)
     belongs_to(:skill_unit, Bright.SkillUnits.SkillUnit)
 
     timestamps()
