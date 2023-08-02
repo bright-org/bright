@@ -13,8 +13,8 @@ const otherSelectedColor = '#9510B1'
 const roleBorderColor = '#A9BABA'
 const rolePointColor = '#D5DCDC'
 const futurePointColor = '#FFFFFF'
-const nowPointColor = '#B77285'
-const nowBorderColor = '#B71225'
+const nowColor = '#B77285'
+const nowSelectColor = '#B71225'
 
 const dataDivision = (data, futureEnabled) => {
   if (data === undefined) return [[], []]
@@ -122,10 +122,10 @@ const drawNow = (chart, scales) => {
   const y = scales.y
   const x = scales.x
   const pastData = data['myself']
-
+  const drawNowColor = data['myselfSelected'] === 'now' ? nowSelectColor : nowColor
 
   context.setLineDash([2, 0])
-  context.strokeStyle = nowBorderColor
+  context.strokeStyle = drawNowColor
   const nowDown = y.getPixelForValue(0)
   const nowY = y.getPixelForValue(now)
   const pastY = y.getPixelForValue(pastData[4])
@@ -137,13 +137,11 @@ const drawNow = (chart, scales) => {
   const nowX = pastX + (diffX / 2)
 
   // 「現在」縦線
-  if (data['myselfSelected'] === 'now') {
-    context.lineWidth = 4
-    context.beginPath()
-    context.moveTo(nowX, nowDown)
-    context.lineTo(nowX, nowY)
-    context.stroke()
-  }
+  context.lineWidth =  data['myselfSelected'] === 'now' ? 4 : 2
+  context.beginPath()
+  context.moveTo(nowX, nowDown)
+  context.lineTo(nowX, nowY)
+  context.stroke()
 
   // 直近の過去から現在までの線
   context.lineWidth = 3
@@ -156,7 +154,7 @@ const drawNow = (chart, scales) => {
   // 現在の点
   context.beginPath()
   context.arc(nowX, nowY, 8.5, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
-  context.fillStyle = data['myselfSelected'] === 'now' ? nowBorderColor : nowPointColor
+  context.fillStyle = drawNowColor
   context.fill()
 }
 
