@@ -29,7 +29,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
   def card_row(%{type: "contact"} = assigns) do
     ~H"""
-    <li class="text-left flex items-center text-base">
+    <li class="py-1 text-left flex items-center text-base">
       <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
         <%= @notification.icon_type %>
       </span>
@@ -112,7 +112,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
   def card_row(%{type: "your_team"} = assigns) do
     ~H"""
-    <li class="text-left flex items-center text-base hover:bg-brightGray-50 px-1">
+    <li class="py-1 text-left flex items-center text-base hover:bg-brightGray-50 px-1">
       <span class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
         <%= @notification.icon_type %>
       </span>
