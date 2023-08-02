@@ -27,9 +27,23 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         tabs={@tabs}
       >
         <div class="py-4 px-7 flex gap-y-2 flex-col">
-          <%= for skill <- assigns.skills do %>
-            <.skill_genre skills={skill} />
-          <% end %>
+          <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
+            <table class="table-fixed skill-table -mt-2">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="pl-8">クラス1</th>
+                  <th class="pl-8">クラス2</th>
+                  <th class="pl-8">クラス3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%= for skill_panel <- @skill_panels do %>
+                  <.skill_panel skill_panel={skill_panel} />
+                <% end %>
+              </tbody>
+            </table>
+          </div>
         </div>
       </.tab>
     </div>
@@ -44,15 +58,19 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      |> assign(:tabs, @tabs)
      |> assign(:selected_tab, "engineer")
      # TODO　サンプルデータはDBの処理を作成後消すこと
-     |> assign(:skills, sample())}
+     |> assign(:skill_panels, sample())}
   end
 
   @impl true
   def handle_event(
         "tab_click",
-        %{"id" => "skill_card"},
+        %{"id" => "skill_card", "tab_name" => tab_name},
         socket
       ) do
+    socket =
+      socket
+      |> assign(:selected_tab, tab_name)
+
     # TODO 処理は未実装
     {:noreply, socket}
   end
@@ -75,36 +93,11 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     {:noreply, socket}
   end
 
-  defp skill_genre(assigns) do
-    ~H"""
-    <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
-      <p class="font-bold w-[150px] text-left text-sm">
-        <%= assigns.skills.genre_name %>
-      </p>
-      <table class="table-fixed skill-table -mt-2">
-        <thead>
-          <tr>
-            <th></th>
-            <th class="pl-8">クラス1</th>
-            <th class="pl-8">クラス2</th>
-            <th class="pl-8">クラス3</th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= for skill_panel <- assigns.skills.skill_panels do %>
-            <.skill_panel skill_panel={skill_panel} />
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-    """
-  end
-
   defp skill_panel(assigns) do
     ~H"""
     <tr>
-      <td><%= assigns.skill_panel.name %></td>
-      <%= for level <- assigns.skill_panel.levels do %>
+      <td><%= @skill_panel.name %></td>
+      <%= for level <- @skill_panel.levels do %>
         <.skill_gem level={level}/>
       <% end %>
     </tr>
@@ -126,7 +119,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <td>
       <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-        <img src={@icon_path} class="mr-1" /><%= level_text(assigns.level) %>
+        <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
       </p>
     </td>
     """
@@ -144,23 +137,10 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   # TODO　サンプルデータはDBの処理を作成後消すこと
   defp sample() do
     [
-      %{
-        genre_name: "Webアプリ開発",
-        skill_panels: [%{name: "Elixir", levels: [:skilled, :normal, :beginner]}]
-      },
-      %{
-        genre_name: "AI開発これはDBから読み込んでません",
-        skill_panels: [
-          %{name: "Elixir", levels: [:skilled, :normal, :none]},
-          %{name: "Python", levels: [:skilled, :none, :none]}
-        ]
-      },
-      %{
-        genre_name: "PM サンプルです",
-        skill_panels: [
-          %{name: "", levels: [:skilled, :normal, :none]}
-        ]
-      }
+      %{name: "Elixir", levels: [:skilled, :normal, :beginner]},
+      %{name: "Python", levels: [:skilled, :none, :none]},
+      %{name: "DBから読み込んでません", levels: [:skilled, :normal, :none]},
+      %{name: "DB処理未実装", levels: [:skilled, :normal, :none]}
     ]
   end
 end
