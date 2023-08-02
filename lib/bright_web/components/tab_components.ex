@@ -6,6 +6,9 @@ defmodule BrightWeb.TabComponents do
   """
   use Phoenix.Component
 
+  @previous_button_click "previous_button_click"
+  @next_button_click "next_button_click"
+
   @doc """
   Renders a Tab
 
@@ -41,7 +44,8 @@ defmodule BrightWeb.TabComponents do
         <%= render_slot(@inner_block) %>
         <.tab_footer
           :if={!@hidden_footer}
-          id={@id} page={@page}
+          id={@id}
+          page={@page}
           total_pages={@total_pages}
           target={@target}
         />
@@ -191,8 +195,8 @@ defmodule BrightWeb.TabComponents do
     previous_enable = assigns.page > 1
     next_enable = assigns.page < assigns.total_pages
 
-    previous_button_click = if previous_enable, do: "previous_button_click"
-    next_button_click = if next_enable, do: "next_button_click"
+    previous_button_click = if previous_enable, do: @previous_button_click
+    next_button_click = if next_enable, do: @next_button_click
 
     previous_button_style =
       "#{page_button_enable_style(previous_enable)} bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
