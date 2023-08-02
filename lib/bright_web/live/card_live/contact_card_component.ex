@@ -48,7 +48,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
      socket
      |> assign(assigns)
      |> assign(:tabs, @tabs)
-     |> assign(:card, create_card_param("team_invite"))
+     |> assign(:card, create_card_param("team_invitation"))
      |> assign_card()}
   end
 
