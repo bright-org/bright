@@ -24,6 +24,12 @@ defmodule Storybook.Components.Profile do
           facebook_url: "https://www.facebook.com/",
           github_url: "https://www.github.com/"
         }
+      },
+      %Variation{
+        id: :anonymous_enable,
+        attributes: %{
+          anonymous_enable: true
+        }
       }
     ]
   end

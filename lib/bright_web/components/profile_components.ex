@@ -27,6 +27,7 @@ defmodule BrightWeb.ProfileComponents do
         facebook_url="https://www.facebook.com/"
       />
   """
+  attr :anonymous_enable, :boolean, default: false
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
   attr :detail, :string, default: ""
@@ -44,9 +45,17 @@ defmodule BrightWeb.ProfileComponents do
   attr :github_url, :string, default: ""
 
   def profile(assigns) do
+    icon_file_path =
+      if assigns.anonymous_enable, do: "/images/avatar.png", else: assigns.icon_file_path
+
+    user_name = if assigns.anonymous_enable, do: "非表示", else: assigns.user_name
+    title = if assigns.anonymous_enable, do: "非表示", else: assigns.title
+
     assigns =
       assigns
-      |> assign(:icon_style, "background-image: url('#{assigns.icon_file_path}');")
+      |> assign(:icon_style, "background-image: url('#{icon_file_path}');")
+      |> assign(:user_name, user_name)
+      |> assign(:title, title)
 
     ~H"""
     <div class="flex">
