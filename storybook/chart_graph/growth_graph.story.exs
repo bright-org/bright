@@ -36,6 +36,21 @@ defmodule Storybook.ChartComponents.GrowthGraph do
         }
       },
       %Variation{
+        id: :select_now,
+        attributes: %{
+          data: %{
+            myself: [nil, 0, 35, 45, 50, 70],
+            other: [10, 10, 10, 10, 45, 80],
+            role: [20, 20, 50, 60, 75, 100],
+            now: 55,
+            futureEnabled: true,
+            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+            myselfSelected: "now",
+            otherSelected: "2020.12"
+          }
+        }
+      },
+      %Variation{
         id: :futureEnabled_false,
         attributes: %{
           data: %{

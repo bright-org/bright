@@ -3,7 +3,7 @@ const dash = [5, 3]
 const padding = 70
 const dashColor = '#97ACAC'
 const myselfBorderColor = '#52CCB5'
-const myselfPointColor = '#A6E1C7'
+const myselfPointColor = '#96D1B7'
 const myselfSelectedColor = '#008971'
 const myselfFillStartColor = '#B6F1E7FF'
 const myselfFillEndColor = '#B6F1E700'
@@ -44,15 +44,15 @@ const createData = (data) => {
   const datasets = [];
   datasets.push(createDataset(myselfData, myselfBorderColor, myselfPointColor, myselfPointColor, false))
   if (futureEnabled) {
-    datasets.push(createDataset(myselfFuture, dashColor, futurePointColor, myselfPointColor, true))
+    datasets.push(createDataset(myselfFuture, myselfBorderColor, futurePointColor, myselfPointColor, true))
   }
   datasets.push(createDataset(otherData, otherBorderColor, otherPointColor, otherPointColor, false))
   if (futureEnabled) {
-    datasets.push(createDataset(otherFuture, dashColor, futurePointColor, otherPointColor, true))
+    datasets.push(createDataset(otherFuture, otherBorderColor, futurePointColor, otherPointColor, true))
   }
   datasets.push(createDataset(roleData, roleBorderColor, rolePointColor, rolePointColor, false))
   if (futureEnabled) {
-    datasets.push(createDataset(roleFuture, dashColor, futurePointColor, rolePointColor, true))
+    datasets.push(createDataset(roleFuture, roleBorderColor, futurePointColor, rolePointColor, true))
   }
 
   return {
@@ -116,14 +116,14 @@ const drawNow = (chart, scales) => {
   const dataset = chart.canvas.parentNode.dataset
   // 現在のスコア
   const data = JSON.parse(dataset.data)
-  let now = data['now']
+  const now = data['now']
 
   if (now === undefined) return
   const y = scales.y
   const x = scales.x
   const pastData = data['myself']
 
-  context.lineWidth = 3
+
   context.setLineDash([2, 0])
   context.strokeStyle = nowBorderColor
   const nowDown = y.getPixelForValue(0)
@@ -137,12 +137,16 @@ const drawNow = (chart, scales) => {
   const nowX = pastX + (diffX / 2)
 
   // 「現在」縦線
-  context.beginPath()
-  context.moveTo(nowX, nowDown)
-  context.lineTo(nowX, nowY)
-  context.stroke()
+  if (data['myselfSelected'] === 'now') {
+    context.lineWidth = 4
+    context.beginPath()
+    context.moveTo(nowX, nowDown)
+    context.lineTo(nowX, nowY)
+    context.stroke()
+  }
 
   // 直近の過去から現在までの線
+  context.lineWidth = 3
   context.strokeStyle = myselfBorderColor
   context.beginPath()
   context.moveTo(pastX, pastY)
@@ -152,7 +156,7 @@ const drawNow = (chart, scales) => {
   // 現在の点
   context.beginPath()
   context.arc(nowX, nowY, 8.5, 0 * Math.PI / 180, 360 * Math.PI / 180, false)
-  context.fillStyle = nowPointColor
+  context.fillStyle = data['myselfSelected'] === 'now' ? nowBorderColor : nowPointColor
   context.fill()
 }
 
