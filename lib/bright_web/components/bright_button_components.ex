@@ -141,30 +141,6 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
-  Renders a Bell Button
-
-  ## Examples
-
-      <.bell_button notification_count=99 />
-  """
-  attr :notification_count, :integer
-
-  def bell_button(assigns) do
-    ~H"""
-    <button type="button"
-      class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center relative">
-      <span class="material-icons">notifications_none</span>
-      <%= if @notification_count > 0 do %>
-        <div
-            class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2">
-            <%= @notification_count %>
-        </div>
-      <% end %>
-    </button>
-    """
-  end
-
-  @doc """
   Renders a User Button
 
   ## Examples
