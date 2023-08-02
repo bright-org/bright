@@ -10,7 +10,6 @@ defmodule BrightWeb.LayoutComponents do
   Renders root layout.
   """
 
-  attr :with_flowbite, :boolean, default: false
   attr :csrf_token, :string, required: true
   attr :page_title, :string
 
@@ -27,7 +26,6 @@ defmodule BrightWeb.LayoutComponents do
         <.live_title>
           <%= @page_title || "Bright" %>
         </.live_title>
-        <script :if={@with_flowbite} src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
         <link phx-track-static rel="stylesheet" href={"/assets/app.css"} />
         <script defer phx-track-static type="text/javascript" src={"/assets/app.js"}>
         </script>
