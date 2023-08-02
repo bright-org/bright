@@ -3,8 +3,12 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* TODO: load from woff2 file instead of  */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Material+Icons%7CMaterial+Icons+Outlined%7CMaterial+Icons+Round%7CMaterial+Icons+Sharp%7CMaterial+Icons+Two+Tone");
+
 /*
- * Put your component styling within the Tailwind utilities layer. 
+ * Put your component styling within the Tailwind utilities layer.
  * See the https://hexdocs.pm/phoenix_storybook/sandboxing.html guide for more info.
  */
 @layer utilities {

@@ -10,12 +10,17 @@ defmodule Bright.UserFactory do
           name: sequence(:name, &"user_name_#{&1}"),
           email: sequence(:email, &"user#{&1}@example.com"),
           hashed_password: Bcrypt.hash_pwd_salt(valid_user_password()),
+          password_registered: true,
           confirmed_at: NaiveDateTime.utc_now()
         }
       end
 
       def user_not_confirmed_factory do
         build(:user, confirmed_at: nil)
+      end
+
+      def user_registered_by_social_auth_factory do
+        build(:user, password_registered: false)
       end
 
       def user_before_registration_factory do

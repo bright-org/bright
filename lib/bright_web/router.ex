@@ -82,6 +82,12 @@ defmodule BrightWeb.Router do
       live "/career_want_jobs/:id/edit", CareerWantJobLive.Index, :edit
       live "/career_want_jobs/:id", CareerWantJobLive.Show, :show
       live "/career_want_jobs/:id/show/edit", CareerWantJobLive.Show, :edit
+
+      live "/job_skill_panels", JobSkillPanelLive.Index, :index
+      live "/job_skill_panels/new", JobSkillPanelLive.Index, :new
+      live "/job_skill_panels/:id/edit", JobSkillPanelLive.Index, :edit
+      live "/job_skill_panels/:id", JobSkillPanelLive.Show, :show
+      live "/job_skill_panels/:id/show/edit", JobSkillPanelLive.Show, :edit
     end
   end
 
@@ -120,6 +126,13 @@ defmodule BrightWeb.Router do
 
   ## Authentication routes
 
+  scope "/auth", BrightWeb do
+    pipe_through [:browser]
+
+    get "/:provider", OAuthController, :request
+    get "/:provider/callback", OAuthController, :callback
+  end
+
   scope "/", BrightWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
 
@@ -132,6 +145,7 @@ defmodule BrightWeb.Router do
       live "/users/send_reset_password_url", UserSendResetPasswordUrlLive, :show
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
       live "/users/two_factor_auth/:token", UserTwoFactorAuthLive, :show
+      live "/users/register_social_account/:token", UserRegisterSocialAccountLive, :show
     end
 
     post "/users/log_in", UserSessionController, :create

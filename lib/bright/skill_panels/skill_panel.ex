@@ -7,15 +7,16 @@ defmodule Bright.SkillPanels.SkillPanel do
   import Ecto.Changeset
 
   alias Bright.SkillPanels.SkillClass
+  alias Bright.Jobs.JobSkillPanel
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
 
   schema "skill_panels" do
-    field :locked_date, :date
     field :name, :string
 
     has_many :skill_classes, SkillClass, preload_order: [asc: :class], on_replace: :delete
+    has_one :job_skill_panel, JobSkillPanel
 
     timestamps()
   end
@@ -23,7 +24,7 @@ defmodule Bright.SkillPanels.SkillPanel do
   @doc false
   def changeset(skill_panel, attrs) do
     skill_panel
-    |> cast(attrs, [:locked_date, :name])
+    |> cast(attrs, [:name])
     |> cast_assoc(:skill_classes,
       with: &SkillClass.changeset/2,
       sort_param: :skill_classes_sort,

@@ -12,3 +12,13 @@ variable "sendgrid_api_key" {
   description = "Bright SendGrid API key"
   type        = string
 }
+
+variable "google_client_id" {
+  description = "Bright Google OAuth2 CLIENT ID"
+  type        = string
+}
+
+variable "google_client_secret" {
+  description = "Bright Google OAuth2 CLIENT SECRET"
+  type        = string
+}
