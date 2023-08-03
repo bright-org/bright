@@ -26,9 +26,9 @@ defmodule Storybook.Components.Profile do
         }
       },
       %Variation{
-        id: :anonymous_enable,
+        id: :is_anonymous,
         attributes: %{
-          anonymous_enable: true
+          is_anonymous: true
         }
       }
     ]
