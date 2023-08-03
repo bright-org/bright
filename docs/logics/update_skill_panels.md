@@ -4,12 +4,12 @@
 
 [仕様概要](https://docs.google.com/spreadsheets/d/1LMjOVjd5VOrb-sKiUFUB9cSHy3QQN6evp1Gj1cpeEUs/edit#gid=173617957) より、スキルパネルの更新に関わる部分を抜粋。
 
-> Ｕ－ｅ）成長グラフ：スキルパネル毎に、スキル成長（時系列）とスキルジェムを、過去履歴（3ヶ月毎、マスタも込み）／未来（≒スキルアップ対象）で切り替えて参照できる ※3ヶ月自動〆	
+> Ｕ－ｅ）成長グラフ：スキルパネル毎に、スキル成長（時系列）とスキルジェムを、過去履歴（3ヶ月毎、マスタも込み）／未来（≒スキルアップ対象）で切り替えて参照できる ※3ヶ月自動〆
 >　→スキルセットに対しても上記同様の参照ができる
 >　→システムの性能面が許せば、成長グラフだけで無く、スキルパネルの過去履歴（3ヶ月毎、マスタも込み）も参照可能とする
 >　→学習／試験結果／エビデンス登録状況の統計値を表示する
 
->Ｕ－ｆ）スキルパネル毎に、保有スキルの記入／更新ができ、スキルスコアが算出される ※上位クラスは下位クラスの平均（≒40%）をクリアすると開放される	
+>Ｕ－ｆ）スキルパネル毎に、保有スキルの記入／更新ができ、スキルスコアが算出される ※上位クラスは下位クラスの平均（≒40%）をクリアすると開放される
 >　→各スキルパネルへのスキルアップが設定できる
 >　→設定されたスキルアップに応じた教材学習や試験の実施が定期的に推奨される
 >　→スキルアップが2週間行われない場合やスキルアップ対象が6個以上設定された場合は、スキル入力を求めるか、別スキルアップへの入れ替え、スルーを打診する
@@ -100,6 +100,10 @@ erDiagram
   skill_scores ||--|| skill_classes : ""
   skill_scores ||--|{ skill_score_items : ""
   skill_score_items ||--|| skills : ""
+  users ||--|{ career_field_scores : ""
+  career_field_scores ||--|| career_fields : ""
+  users ||--o{ skill_unit_scores : ""
+  skill_unit_scores ||--|| skill_units : ""
 
   skill_panels {
     string name "スキルパネル名"
@@ -161,10 +165,23 @@ erDiagram
     id skill_class_id FK
   }
 
+  skill_unit_scores {
+    id user_id FK
+    id skill_unit_id FK
+    float percentage
+  }
+
   skill_score_items {
     id skill_score_id FK
     id skill_id FK
     string score "enum (low, middle, high)"
+  }
+
+  career_field_scores {
+    id user_id FK
+    id career_field_id FK
+    float percentage
+    integer high_skills_count
   }
 ```
 
@@ -186,6 +203,10 @@ erDiagram
   historical_skill_scores ||--|| historical_skill_classes : ""
   historical_skill_scores ||--|{ historical_skill_score_items : ""
   historical_skill_score_items ||--|| historical_skills : ""
+  users ||--|{ historical_career_field_scores : ""
+  historical_career_field_scores ||--|| career_fields : ""
+  users ||--o{ historical_skill_unit_scores : ""
+  historical_skill_unit_scores ||--|| historical_skill_units : ""
 
   skill_panels {
     string name "スキルパネル名"
@@ -242,10 +263,25 @@ erDiagram
     date locked_date "固定された日"
   }
 
+  historical_skill_unit_scores {
+    id user_id FK
+    id historical_skill_unit_id FK
+    date locked_date "固定された日"
+    float percentage
+  }
+
   historical_skill_score_items {
     id historical_skill_score_id FK
     id historical_skill_id FK
     string score "enum (low, middle, high)"
+  }
+
+  historical_career_field_scores {
+    id user_id FK
+    id career_field_id FK
+    date locked_date "固定された日"
+    float percentage
+    integer high_skills_count
   }
 ```
 
@@ -287,7 +323,7 @@ erDiagram
         - `draft_skill_categories` → `skill_categories`
         - `draft_skills` → `skills`
         - 公開テーブルの `locked_date` には処理を実行した日付を入れる
-    2. `skill_scores` と `skill_score_items` のデータを同テーブルにコピーし、1のコピー先データに紐付ける
+    2. `skill_scores`, `skill_score_items`, `skill_unit_scores`, `career_field_scores` のデータを同テーブルにコピーし、1のコピー先データに紐付ける
         - 1のコピー先データがなければコピーしない
     3. `skill_improvements` の外部キーを1のコピー先データに付け替える
         - 1のコピー先データがなければ削除する
@@ -300,6 +336,8 @@ erDiagram
         - `skills` → `historical_skills`
         - `skill_scores` → `historical_skill_scores`
         - `skill_score_items` → `historical_skill_score_items`
-        - `skill_scores` の `locked_date` には処理を実行した日付を入れる
+        - `skill_unit_scores` → `historical_skill_unit_scores`
+        - `career_field_scores` → `historical_career_field_scores`
+        - `historical_skill_scores`, `historical_skill_unit_scores`, `historical_career_field_scores`の `locked_date` には処理を実行した日付を入れる
     2. 1のコピー元データを公開テーブルから削除する
 - 履歴はどこにもコピーしない
