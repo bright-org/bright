@@ -1,4 +1,7 @@
 defmodule Bright.Seeds.CareerField do
+  @moduledoc """
+  開発用のキャリアフィールドSeedデータ
+  """
   alias Bright.Repo
   alias Bright.Jobs
   alias Bright.Jobs.CareerField
