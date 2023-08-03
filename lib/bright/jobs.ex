@@ -390,9 +390,7 @@ defmodule Bright.Jobs do
         order_by: [asc: cw.position, asc: cf.position],
         select: %{
           career_want_id: cw.id,
-          career_field_name: cf.name,
-          background_color: cf.background_color,
-          button_color: cf.button_color
+          career_field_name: cf.name_ja
         }
 
     Repo.all(query)
