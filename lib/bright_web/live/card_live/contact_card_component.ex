@@ -30,7 +30,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
         total_pages={@card.total_pages}
         target={@myself}
       >
-        <div class="pt-4 px-8">
+        <div class="pt-4 px-8 h-[216px]">
           <ul class="flex gap-y-2.5 flex-col">
             <%= for notification <- @card.notifications do %>
               <.card_row type="contact" notification={notification} />
