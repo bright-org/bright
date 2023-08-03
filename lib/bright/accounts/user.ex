@@ -21,6 +21,8 @@ defmodule Bright.Accounts.User do
     field :confirmed_at, :naive_datetime
 
     has_many :skill_scores, Bright.SkillScores.SkillScore
+    has_many :skill_unit_scores, Bright.SkillScores.SkillUnitScore
+    has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
     has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
     has_many :skill_evidence_posts, Bright.SkillEvidences.SkillEvidencePost
