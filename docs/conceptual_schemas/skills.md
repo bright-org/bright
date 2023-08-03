@@ -151,5 +151,6 @@ erDiagram
     id user_id FK
     id career_field_id FK
     float percentage
+    integer high_skills_count
   }
 ```
