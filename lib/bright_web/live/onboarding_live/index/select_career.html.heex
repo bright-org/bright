@@ -21,9 +21,14 @@
               <a href="/onboardings/select_skill_panel" class="block">
                 <b class="block text-center"><%= wants.career_want_name %></b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
-                  <%= for career_field <- Enum.at(@career_fields, index) do %>
-                    <span style={"background-color: #{career_field.button_color}"} class="px-2 py-0.5 rounded-full text-white text-xs">
-                      <%= career_field.career_field_name %>
+                  <%= for career_field <- Enum.at(@career_fields_wants, index) do %>
+                    <span
+                      class={[
+                          "px-2 py-0.5 rounded-full text-white text-xs",
+                          "bg-#{career_field.career_field_name_en}-dark"
+                        ]}
+                      >
+                      <%= career_field.career_field_name_ja %>
                     </span>
                   <% end %>
                 </div>
@@ -125,18 +130,19 @@
           <!-- タブここから -->
           <aside id="select_job">
             <ul class="flex relative">
-              <li class="bg-enginner-dark select-none py-2 rounded-tl text-center text-white w-40">
-                エンジニア
-              </li>
-              <li class="bg-infra-dazzle cursor-pointer select-none py-2 text-center text-brightGray-200 w-40 hover:bg-infra-dark hover:text-white">
-                インフラ
-              </li>
-              <li class="bg-designer-dazzle cursor-pointer select-none py-2 text-center text-brightGray-200 w-40 hover:bg-designer-dark hover:text-white">
-                デザイナー
-              </li>
-              <li class="bg-marketer-dazzle cursor-pointer select-none py-2 rounded-tr text-center text-brightGray-200 w-40 hover:bg-marketer-dark hover:text-white">
-                マーケッター
-              </li>
+              <%= for career_field <- @career_fields do %>
+                <li
+                  class={[
+                      "cursor-pointer select-none py-2 rounded-tl text-center w-40",
+                      "#{if "enginner" == career_field.name_en,
+                        do: "bg-#{career_field.name_en}-dark text-white",
+                        else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark text-brightGray-200 hover:text-white"
+                      }"
+                    ]}
+                  >
+                  <%= career_field.name_ja %>
+                </li>
+              <% end %>
               <li>
                 <a
                   href="#"

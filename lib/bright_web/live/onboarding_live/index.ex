@@ -59,13 +59,20 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   def render(%{view_content: _} = assigns) do
     career_wants = Jobs.list_career_want_jobs_with_career_wants()
-    career_fields = Jobs.list_career_wants_jobs_with_career_fields()
+    career_fields_wants = Jobs.list_career_wants_jobs_with_career_fields()
+    career_fields = Jobs.list_career_fields()
 
-    assigns = assign(assigns, career_wants: career_wants, career_fields: career_fields)
+    assigns =
+      assign(assigns,
+        career_wants: career_wants,
+        career_fields_wants: career_fields_wants,
+        career_fields: career_fields
+      )
 
     ~H"""
     <.select_career
       career_wants={@career_wants}
+      career_fields_wants={@career_fields_wants}
       career_fields={@career_fields}
     />
     """
