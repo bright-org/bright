@@ -16,6 +16,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @menu_items [%{text: "カスタムグループを作る", href: "/"}, %{text: "カスタムグループの編集", href: "/"}]
 
   @impl true
+  @spec render(any) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~H"""
     <div>
@@ -39,6 +40,52 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
           </ul>
         </div>
       </.tab>
+      <!-- TODO サンプルスクリプト -->
+      <script>
+        function animateElement(element, property, startValue, endValue, duration) {
+          let startTime = null;
+          function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = timestamp - startTime;
+            const percentage = Math.min(progress / duration, 1);
+            const currentValue = startValue + percentage * (endValue - startValue);
+            element.style[property] = currentValue + "px";
+            if (progress < duration) {
+              requestAnimationFrame(step);
+            }
+          }
+          requestAnimationFrame(step);
+        }
+
+        let relational_user_tab = document.querySelector("#relational_user_tab");
+        let relational_user_tab_item = relational_user_tab.querySelectorAll("li");
+        let relational_user_buttons = document.querySelector("#relational_user_tab_buttons");
+        let count = relational_user_tab_item.length;
+        let tab_width = count * 200;
+        let margin = 0;
+
+        if (count > 3) {
+          relational_user_buttons.style.display = "block";
+        } else {
+          relational_user_buttons.style.display = "none";
+        }
+
+        let buttons = relational_user_buttons.children;
+        buttons[0].addEventListener("click", function () {
+          if (tab_width + margin > 600) {
+            margin = margin - 200;
+            animateElement(relational_user_tab_item[0], "marginLeft", margin + 200, margin, 250);
+          }
+        });
+
+        buttons[1].addEventListener("click", function () {
+          if (margin < 0) {
+            margin = margin + 200;
+            animateElement(relational_user_tab_item[0], "marginLeft", margin - 200, margin, 250);
+          }
+        });
+      </script>
+      <!-- TODO サンプルスクリプト -->
     </div>
     """
   end
@@ -115,7 +162,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     ~H"""
     <div class="flex border-b border-brightGray-50">
       <div class="overflow-hidden">
-        <ul class="overflow-hidden flex text-base !text-sm w-[800px]" >
+        <ul id="relational_user_tab" class="overflow-hidden flex text-base !text-sm w-[800px]" >
           <%= for {key, value} <- @inner_tab do %>
             <li
               class={["py-2 w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
@@ -128,16 +175,18 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
           <% end %>
         </ul>
       </div>
-      <button class="px-1 border-l border-brightGray-50">
-        <span
-          class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-        ></span>
-      </button>
-      <button class="px-1 border-l border-brightGray-50">
-        <span
-          class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-        ></span>
-      </button>
+      <div id="relational_user_tab_buttons" class="flex">
+        <button class="px-1 border-l border-brightGray-50">
+          <span
+            class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+          ></span>
+        </button>
+        <button class="px-1 border-l border-brightGray-50">
+          <span
+            class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+          ></span>
+        </button>
+      </div>
     </div>
     """
   end
@@ -166,7 +215,9 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
       {"tab1", "キャリアの参考になる方々"},
       {"tab2", "優秀なエンジニアの方々"},
       {"tab3", "カスタムグループ３"},
-      {"tab4", "カスタムグループ４"}
+      {"tab4", "カスタムグループ４"},
+      {"tab5", "カスタムグループ５"},
+      {"tab6", "カスタムグループ６"},
     ]
   end
 end
