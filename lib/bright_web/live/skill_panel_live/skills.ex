@@ -11,24 +11,29 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
-  alias BrightWeb.SkillPanelLive.SkillScoreComponent
+
+  @shortcut_key_score %{
+    "1" => :high,
+    "2" => :middle,
+    "3" => :low
+  }
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign(:edit, false)}
+    {:ok, socket |> assign_edit_off()}
   end
 
   @impl true
   def handle_event("edit", _params, socket) do
     skill_class_score_author?(socket.assigns.skill_class_score, socket.assigns.current_user)
     |> if do
-      {:noreply, socket |> assign(edit: true)}
+      {:noreply, socket |> assign_edit_on()}
     else
       {:noreply, socket}
     end
   end
 
-  def handle_event("update", _params, socket) do
+  def handle_event("submit", _params, socket) do
     target_skill_scores =
       socket.assigns.skill_score_dict
       |> Map.values()
@@ -42,7 +47,45 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign(skill_class_score: skill_class_score)
      |> assign_skill_score_dict()
      |> assign_counter()
-     |> assign(edit: false)}
+     |> assign_edit_off()}
+  end
+
+  def handle_event("change", %{"score" => score, "row" => row}, socket) do
+    score = String.to_atom(score)
+    row = String.to_integer(row)
+    skill_score = get_skill_score_from_table_structure(socket, row)
+
+    {:noreply,
+     socket
+     |> update_by_score_change(skill_score, score)
+     |> assign(focus_row: row)}
+  end
+
+  def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(1 2 3) do
+    score = Map.get(@shortcut_key_score, key)
+    row = socket.assigns.focus_row
+    skill_score = get_skill_score_from_table_structure(socket, row)
+
+    {:noreply,
+     socket
+     |> update_by_score_change(skill_score, score)
+     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.max_row]))}
+  end
+
+  def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(ArrowDown Enter) do
+    {:noreply,
+     socket
+     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.max_row]))}
+  end
+
+  def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(ArrowUp) do
+    {:noreply,
+     socket
+     |> update(:focus_row, &Enum.max([1, &1 - 1]))}
+  end
+
+  def handle_event("shortcut", _params, socket) do
+    {:noreply, socket}
   end
 
   @impl true
@@ -55,6 +98,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_units()
      |> assign_skill_score_dict()
      |> assign_counter()
+     |> assign_table_structure()
      |> apply_action(socket.assigns.live_action, params)}
   end
 
@@ -77,30 +121,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket
     |> assign_skill(params["skill_id"])
     |> assign_skill_exam()
-  end
-
-  @impl true
-  def handle_info({SkillScoreComponent, {:score_change, skill_score, score}}, socket) do
-    # 習得率の変動反映
-    current_score = skill_score.score
-
-    counter =
-      socket.assigns.counter
-      |> Map.update!(current_score, &(&1 - 1))
-      |> Map.update!(score, &(&1 + 1))
-
-    # 表示スコア更新
-    # 永続化は全体一括のため、ここでは実施してない
-    skill_score_dict =
-      socket.assigns.skill_score_dict
-      |> Map.put(skill_score.skill_id, %{skill_score | score: score, changed: true})
-
-    {:noreply,
-     socket
-     |> assign(
-       counter: counter,
-       skill_score_dict: skill_score_dict
-     )}
   end
 
   defp assign_skill_panel(socket, skill_panel_id) do
@@ -196,6 +216,25 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket |> assign(skill: skill)
   end
 
+  defp assign_edit_off(socket) do
+    socket
+    |> assign(edit: false, focus_row: nil)
+  end
+
+  defp assign_edit_on(socket) do
+    socket
+    |> assign(edit: true, focus_row: 1)
+  end
+
+  defp assign_table_structure(socket) do
+    table_structure = build_table_structure(socket.assigns.skill_units)
+    max_row = Enum.count(table_structure)
+
+    socket
+    |> assign(:table_structure, table_structure)
+    |> assign(:max_row, max_row)
+  end
+
   defp assign_skill_evidence(socket) do
     skill_evidence =
       SkillEvidences.get_skill_evidence_by(
@@ -221,6 +260,28 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(skill_exam: skill_exam)
   end
 
+  defp update_by_score_change(socket, skill_score, score) do
+    # 習得率の変動反映
+    current_score = skill_score.score
+
+    counter =
+      socket.assigns.counter
+      |> Map.update!(current_score, &(&1 - 1))
+      |> Map.update!(score, &(&1 + 1))
+
+    # 表示スコア更新
+    # 永続化は全体一括のため、ここでは実施してない
+    skill_score_dict =
+      socket.assigns.skill_score_dict
+      |> Map.put(skill_score.skill_id, %{skill_score | score: score, changed: true})
+
+    socket
+    |> assign(
+      counter: counter,
+      skill_score_dict: skill_score_dict
+    )
+  end
+
   defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do
     {:ok, skill_evidence} =
       SkillEvidences.create_skill_evidence(%{
@@ -241,6 +302,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp calc_percentage(count, num_skills) do
     (count / num_skills)
     |> Kernel.*(100)
+  end
+
+  defp get_skill_score_from_table_structure(socket, row) do
+    skill =
+      socket.assigns.table_structure
+      |> Enum.at(row - 1)
+      # col3
+      |> Enum.at(2)
+      |> Map.get(:skill)
+
+    socket.assigns.skill_score_dict[skill.id]
   end
 
   defp build_table_structure(skill_units) do
@@ -305,5 +377,19 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp skill_exam_existing?(skill_exam) do
     skill_exam && skill_exam.url
+  end
+
+  defp score_mark_class(skill_score) do
+    skill_score.score
+    |> case do
+      :high ->
+        "score-mark-high h-4 w-4 rounded-full bg-brightGreen-600"
+
+      :middle ->
+        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
+
+      :low ->
+        "score-mark-low h-1 w-4 bg-brightGray-200"
+    end
   end
 end
