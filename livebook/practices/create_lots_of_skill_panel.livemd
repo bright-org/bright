@@ -1,0 +1,72 @@
+# 大量のスキルパネル作成
+
+```elixir
+alias Bright.{Repo, SkillPanels, SkillUnits}
+```
+
+## Create SkillPanel with SkillClass
+
+```elixir
+defmodule TestData do
+  def skill_panel(no) do
+    %{
+      name: "スキルパネル名#{no}",
+      skill_classes: [
+        %{name: "#{no}-クラス1", class: 1},
+        %{name: "#{no}-クラス2", class: 2},
+        %{name: "#{no}-クラス3", class: 3}
+      ]
+    }
+  end
+end
+```
+
+```elixir
+{:ok, skill_panel} = SkillPanels.create_skill_panel(TestData.skill_panel(1))
+```
+
+## Create SkillUnit with SkillCategory and Skill
+
+```elixir
+[skill_class1, skill_class2, skill_class3] = skill_panel.skill_classes
+{skill_class1.name, skill_class2.name, skill_class3.name}
+```
+
+```elixir
+{:ok, skill_unit} =
+  SkillUnits.create_skill_unit(%{
+    name: "Elixir本体",
+    skill_categories: [
+      %{
+        name: "基本",
+        position: 1,
+        skills: [
+          %{name: "基本型／演算子／制御構文／パイプ", position: 1},
+          %{name: "config追加／変更", position: 2}
+        ]
+      },
+      %{
+        name: "データ処理（ループ制御相当）",
+        position: 2,
+        skills: [
+          %{name: "Enum.map", position: 1},
+          %{name: "Enum.reduce", position: 2}
+        ]
+      }
+    ],
+    skill_class_units: [
+      %{skill_class_id: skill_class1.id, position: 1},
+      %{skill_class_id: skill_class2.id, position: 2}
+    ]
+  })
+```
+
+## Get SkillUnit and preload associations with correct order
+
+```elixir
+[skill_unit | _] =
+  SkillUnits.list_skill_units()
+  |> Repo.preload(:skill_classes, skill_categories: :skills)
+
+skill_unit.skill_classes
+```
