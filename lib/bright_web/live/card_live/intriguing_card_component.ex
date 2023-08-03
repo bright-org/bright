@@ -165,7 +165,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
         <ul id="relational_user_tab" class="overflow-hidden flex text-base !text-sm w-[800px]" >
           <%= for {key, value} <- @inner_tab do %>
             <li
-              class={["py-2 w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
+              class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
               phx-click="inner_tab_click"
               phx-target={@target}
               phx-value-tab_name={key}
