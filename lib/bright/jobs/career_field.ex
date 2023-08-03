@@ -9,9 +9,8 @@ defmodule Bright.Jobs.CareerField do
   @foreign_key_type Ecto.ULID
 
   schema "career_fields" do
-    field :background_color, :string
-    field :button_color, :string
-    field :name, :string
+    field :name_en, :string
+    field :name_ja, :string
     field :position, :integer
 
     has_many :jobs, Bright.Jobs.Job
@@ -22,7 +21,7 @@ defmodule Bright.Jobs.CareerField do
   @doc false
   def changeset(career_field, attrs) do
     career_field
-    |> cast(attrs, [:name, :background_color, :button_color, :position])
-    |> validate_required([:name, :background_color, :button_color, :position])
+    |> cast(attrs, [:name_en, :name_ja, :position])
+    |> validate_required([:name_en, :name_ja, :position])
   end
 end
