@@ -7,7 +7,7 @@ defmodule Bright.Seeds.CareerField do
   alias Bright.Jobs.CareerField
 
   @data [
-    %{name_en: "enginner", name_ja: "エンジニア", position: 1},
+    %{name_en: "engineer", name_ja: "エンジニア", position: 1},
     %{name_en: "infra", name_ja: "インフラ", position: 2},
     %{name_en: "designer", name_ja: "デザイナー", position: 3},
     %{name_en: "marketer", name_ja: "マーケッター", position: 4}

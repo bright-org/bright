@@ -57,7 +57,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:selected_tab, "enginner")
+     |> assign(:selected_tab, "engineer")
      # TODO　サンプルデータはDBの処理を作成後消すこと
      |> assign(:skill_panels, sample())}
   end
