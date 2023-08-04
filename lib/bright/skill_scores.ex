@@ -245,6 +245,15 @@ defmodule Bright.SkillScores do
     SkillScoreItem.changeset(skill_score_item, attrs)
   end
 
+  @doc """
+  Returns the list of level by class in skills panel.
+
+  ## Examples
+
+      iex> get_level_by_class_in_skills_panel()
+      [%{name: "Webアプリ開発 Elixir", class1: "skilled", class2: "normal", class3: nil}]
+
+  """
   def get_level_by_class_in_skills_panel() do
     from(skill_score in SkillScore,
       join: skill_class in assoc(skill_score, :skill_class),
