@@ -244,4 +244,13 @@ defmodule Bright.SkillScores do
   def change_skill_score_item(%SkillScoreItem{} = skill_score_item, attrs \\ %{}) do
     SkillScoreItem.changeset(skill_score_item, attrs)
   end
+
+  def get_level_by_class_in_skills_panel() do
+    from(skill_score in SkillScore,
+      join: skill_class in assoc(skill_score, :skill_class),
+      join: skill_panel in assoc(skill_class, :skill_panel),
+      select: %{name: skill_panel.name, level: skill_score.level, class: skill_class.class}
+    )
+    |> Repo.all()
+  end
 end
