@@ -116,7 +116,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     ~H"""
     <div class="flex border-b border-brightGray-50">
       <div class="overflow-hidden">
-        <ul id="relational_user_tab" class="overflow-hidden flex text-base !text-sm w-[800px]" >
+        <ul id="relational_user_tab" class="overflow-hidden flex text-base !text-sm w-[99999px]" >
           <%= for {key, value} <- @inner_tab do %>
             <li
               class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
