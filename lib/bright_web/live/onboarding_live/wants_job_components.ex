@@ -7,7 +7,6 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   def render(assigns) do
     ~H"""
-    <div>
     <section class="accordion flex mt-8 max-w-[1236px]">
       <div class="bg-brightGray-50 rounded w-full">
         <p
@@ -109,17 +108,6 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         </div>
       </div>
     </section>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js">
-    </script>
-    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js">
-    </script>
-    <script>
-      // Window Drug
-      $(function(){
-      $("input[type='checkbox']").next("article").draggable({ containment: "#section" });
-      });
-    </script>
-    </div>
     """
   end
 
