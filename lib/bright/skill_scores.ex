@@ -249,7 +249,28 @@ defmodule Bright.SkillScores do
     from(skill_score in SkillScore,
       join: skill_class in assoc(skill_score, :skill_class),
       join: skill_panel in assoc(skill_class, :skill_panel),
-      select: %{name: skill_panel.name, level: skill_score.level, class: skill_class.class}
+      group_by: skill_panel.name,
+      select: %{
+        name: skill_panel.name,
+        class1:
+          fragment(
+            "MAX(CASE ? WHEN 1 THEN ? ELSE null END)",
+            skill_class.class,
+            skill_score.level
+          ),
+        class2:
+          fragment(
+            "MAX(CASE ? WHEN 2 THEN ? ELSE null END)",
+            skill_class.class,
+            skill_score.level
+          ),
+        class3:
+          fragment(
+            "MAX(CASE ? WHEN 3 THEN ? ELSE null END)",
+            skill_class.class,
+            skill_score.level
+          )
+      }
     )
     |> Repo.all()
   end
