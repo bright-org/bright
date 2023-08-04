@@ -21,25 +21,28 @@ erDiagram
   "キャリアフィールド" ||--|{ "ジョブ" : ""
   "ジョブ" ||--|{ "スキルパネル" : ""
   "スキルパネル" ||--|{ "クラス" : ""
-  "クラス" }|--|{ "大分類／中分類（スキルユニット）" : ""
-  "大分類／中分類（スキルユニット）" ||--|{ "小分類（スキル）" : ""
+  "クラス" }|--|{ "大分類（ユニット）" : ""
+  "大分類（ユニット）" ||--|{ "中分類（カテゴリ）" : ""
+  "中分類（カテゴリ）" ||--|{ "小分類（スキル）" : ""
   "Brightユーザー" }o--o{ "スキルパネル" : "気になる"
   "Brightユーザー" ||--o{ "スキルアップ" : "最大5件まで"
-  "スキルアップ" ||--|| "クラス" : ""
-  "スキルアップ" ||--|| "大分類／中分類（スキルユニット）" : ""
-  "Brightユーザー" ||--o{ "スキルスコア" : ""
-  "スキルスコア" ||--|| "クラス" : ""
-  "スキルスコア" ||--|{ "スキルスコア詳細" : ""
-  "スキルスコア詳細" ||--||  "小分類（スキル）" : "◯△－を付ける"
-  "キャリアフィールド" ||--|{ "キャリアフィールドスコア" : ""
+  "Brightユーザー" ||--o{ "スキルクラススコア" : ""
   "Brightユーザー" ||--|{ "キャリアフィールドスコア" : ""
+  "Brightユーザー" ||--|{ "スキルユニットスコア" : ""
+  "キャリアフィールドスコア" }|--|| "キャリアフィールド" : ""
+  "スキルアップ" ||--|| "クラス" : ""
+  "スキルアップ" ||--|| "大分類（ユニット）" : ""
+  "スキルクラススコア" ||--|| "クラス" : ""
+  "スキルクラススコア" ||--|{ "スキルスコア" : ""
+  "スキルスコア" ||--||  "小分類（スキル）" : "◯△－を付ける"
+  "スキルユニットスコア" ||--|| "大分類（ユニット）" : ""
+  "スキルユニットスコア" ||--|{ "スキルスコア" : ""
 ```
 
 ### 補足
 
 - スキルパネルは3ヶ月に1回見直される → 履歴を持つことになる
 - スキルユニットは複数のスキルパネルで共有される場合がある
-- スキルスコアはクラスごとに登録する ※スキルパネルごとではない
 - スキルアップはお気に入りのような概念で、「気になる」よりも強い関心を持っているイメージ
 
 ### テーブル定義案
@@ -63,12 +66,12 @@ erDiagram
   users ||--o{ skill_improvements : "スキルアップを登録する"
   skill_improvements ||--|| skill_classes : ""
   skill_improvements ||--|| skill_units : ""
-  users ||--o{ skill_scores : ""
+  users ||--o{ skill_class_scores : ""
   users ||--o{ skill_unit_scores : ""
   users ||--|{ career_field_scores : ""
-  skill_scores ||--|| skill_classes : ""
-  skill_scores ||--|{ skill_score_items : ""
-  skill_score_items ||--|| skills : ""
+  skill_class_scores ||--|| skill_classes : ""
+  skill_class_scores ||--|{ skill_scores : ""
+  skill_scores ||--|| skills : ""
   skill_unit_scores ||--|| skill_units : ""
   career_fields ||--|| career_field_scores : ""
 
@@ -128,9 +131,9 @@ erDiagram
     id skill_unit_id FK
   }
 
-  skill_scores {
+  skill_class_scores {
     id user_id FK
-    id skill_panel_id FK
+    id skill_class_id FK
     float percentage
     string level
   }
@@ -141,8 +144,9 @@ erDiagram
     float percentage
   }
 
-  skill_score_items {
-    id skill_score_id FK
+  skill_scores {
+    id skill_class_score_id FK
+    id skill_unit_score_id FK
     id skill_id FK
     int score "enum（0: －、1: △、2: ◯）"
   }
