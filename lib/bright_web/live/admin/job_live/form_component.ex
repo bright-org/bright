@@ -2,6 +2,7 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
   use BrightWeb, :live_component
 
   alias Bright.Jobs
+  alias Bright.Jobs.Job
 
   @impl true
   def render(assigns) do
@@ -19,6 +20,13 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
+        <.input field={@form[:description]} type="text" label="Description" />
+        <.input
+          type="select"
+          label="rank"
+          field={@form[:rank]}
+          options={Ecto.Enum.mappings(Job, :rank)}
+        />
         <.input
           type="select"
           label="career_fields"
