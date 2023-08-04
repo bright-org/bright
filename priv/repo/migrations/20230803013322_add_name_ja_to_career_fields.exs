@@ -3,7 +3,7 @@ defmodule Bright.Repo.Migrations.AddNameJaToCareerFields do
 
   def change do
     alter table(:career_fields) do
-      add :name_ja, :string, null: false
+      add :name_ja, :string
       remove :background_color, :string
       remove :button_color, :string
     end
