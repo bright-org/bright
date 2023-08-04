@@ -98,7 +98,7 @@ const beforeDatasetsDraw = (chart) => {
   const diffData = chart.data.datasets[1] !== undefined ? chart.data.datasets[1].data : []
   const myselfColor = getColorPattern(myselfData.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"])
   const otherColor = getColorPattern(myselfData.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
-  const pastColor = getColorPattern(myselfData.length,   ["#FFFFFF99", "#FFFFFF55", "#FFFFFF55"])
+  const pastColor = getColorPattern(myselfData.length,   ["#FFFFFF55", "#FFFFFF55", "#FFFFFF55"])
   const diffColor = colorTheme === 'myself' ? pastColor : otherColor
   const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink)
 
