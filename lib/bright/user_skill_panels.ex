@@ -19,7 +19,7 @@ defmodule Bright.UserSkillPanels do
   """
   def list_user_skill_panels do
     Repo.all(UserSkillPanel)
-  |> Repo.preload([:user, :skill_panel])
+    |> Repo.preload([:user, :skill_panel])
   end
 
   @doc """
@@ -36,7 +36,8 @@ defmodule Bright.UserSkillPanels do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user_skill_panel!(id), do: Repo.get!(UserSkillPanel, id)
+  def get_user_skill_panel!(id),
+    do: Repo.get!(UserSkillPanel, id) |> Repo.preload([:user, :skill_panel])
 
   @doc """
   Creates a user_skill_panel.

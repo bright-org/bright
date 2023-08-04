@@ -8,7 +8,7 @@ defmodule Bright.UserSkillPanelFactory do
       def user_skill_panel_factory do
         %Bright.UserSkillPanels.UserSkillPanel{
           user: build(:user),
-          skill_panel: build(:skill_panel),
+          skill_panel: build(:skill_panel)
         }
       end
     end
