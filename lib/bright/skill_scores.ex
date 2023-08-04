@@ -261,24 +261,23 @@ defmodule Bright.SkillScores do
       group_by: skill_panel.name,
       select: %{
         name: skill_panel.name,
-        class1:
+        levels: [
           fragment(
             "MAX(CASE ? WHEN 1 THEN ? ELSE null END)",
             skill_class.class,
             skill_score.level
           ),
-        class2:
           fragment(
             "MAX(CASE ? WHEN 2 THEN ? ELSE null END)",
             skill_class.class,
             skill_score.level
           ),
-        class3:
           fragment(
             "MAX(CASE ? WHEN 3 THEN ? ELSE null END)",
             skill_class.class,
             skill_score.level
           )
+        ]
       }
     )
     |> Repo.all()

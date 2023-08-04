@@ -5,6 +5,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   """
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
+  alias Bright.SkillScores
 
   # TODO selected_tab,selected_tab,page,total_pagesは未実装でダミーです
   @impl true
@@ -59,7 +60,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      |> assign(assigns)
      |> assign(:selected_tab, "engineer")
      # TODO　サンプルデータはDBの処理を作成後消すこと
-     |> assign(:skill_panels, sample())}
+     |> assign(:skill_panels, SkillScores.get_level_by_class_in_skills_panel())}
   end
 
   @impl true
@@ -105,7 +106,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
-  defp skill_gem(%{level: :none} = assigns) do
+  defp skill_gem(%{level: nil} = assigns) do
     ~H"""
     <td>
     </td>
@@ -127,21 +128,11 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   defp icon_base_path(file), do: "/images/common/icons/#{file}"
-  defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
-  defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
-  defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
+  defp icon_path("beginner"), do: icon_base_path("jemLow.svg")
+  defp icon_path("normal"), do: icon_base_path("jemMiddle.svg")
+  defp icon_path("skilled"), do: icon_base_path("jemHigh.svg")
 
-  defp level_text(:beginner), do: "見習い"
-  defp level_text(:normal), do: "平均"
-  defp level_text(:skilled), do: "ベテラン"
-
-  # TODO　サンプルデータはDBの処理を作成後消すこと
-  defp sample() do
-    [
-      %{name: "Elixir", levels: [:skilled, :normal, :beginner]},
-      %{name: "Python", levels: [:skilled, :none, :none]},
-      %{name: "DBから読み込んでません", levels: [:skilled, :normal, :none]},
-      %{name: "DB処理未実装", levels: [:skilled, :normal, :none]}
-    ]
-  end
+  defp level_text("beginner"), do: "見習い"
+  defp level_text("normal"), do: "平均"
+  defp level_text("skilled"), do: "ベテラン"
 end
