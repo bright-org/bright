@@ -1,4 +1,10 @@
 import { Chart } from 'chart.js/auto'
+const scalesBackgroundColor = '#D4F9F7'
+const gridColor = '#FFFFFF44'
+const myselfColorPattern = ['#72EAD9C0', '#3CC0A8C0', '#1DA091C0']
+const otherColorPattern = ['#E4BDE9AA', '#C063CDAA', '#9510B1AA']
+const pastColorPattern = ['#FFFFFF55', '#FFFFFF55', '#FFFFFF55']
+const linkColor = '#0000FF'
 
 const getColorPattern = (length, colors) => {
   const pattern = [];
@@ -69,7 +75,7 @@ const drawGridline = (chart, value, length) => {
   const v0 = chart.scales.r.getPointPositionForValue(0, value)
   context.beginPath()
   context.moveTo(v0.x, v0.y)
-  context.strokeStyle = "#FFFFFF44"
+  context.strokeStyle = gridColor
 
   for (let i = 1; i < length; i++) {
     chart.scales.r.getPointPositionForValue(i, value)
@@ -85,7 +91,7 @@ const drawUnderline = (chart, i) => {
   const label = chart.scales.r.getPointLabelPosition(i)
   context.beginPath()
   context.lineWidth = 1
-  context.strokeStyle = '#0000ff'
+  context.strokeStyle = linkColor
   context.moveTo(label.left, label.bottom)
   context.lineTo(label.right, label.bottom)
   context.stroke()
@@ -96,9 +102,9 @@ const beforeDatasetsDraw = (chart) => {
   const colorTheme = chart.canvas.parentNode.dataset.colorTheme
   const myselfData = chart.data.datasets[0].data
   const diffData = chart.data.datasets[1] !== undefined ? chart.data.datasets[1].data : []
-  const myselfColor = getColorPattern(myselfData.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"])
-  const otherColor = getColorPattern(myselfData.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
-  const pastColor = getColorPattern(myselfData.length,   ["#FFFFFF55", "#FFFFFF55", "#FFFFFF55"])
+  const myselfColor = getColorPattern(myselfData.length, myselfColorPattern)
+  const otherColor = getColorPattern(myselfData.length, otherColorPattern)
+  const pastColor = getColorPattern(myselfData.length, pastColorPattern)
   const diffColor = colorTheme === 'myself' ? pastColor : otherColor
   const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink)
 
@@ -138,7 +144,7 @@ const beforeDatasetsDraw = (chart) => {
 }
 
 const createChartFromJSON = (labels, datasets, isLink) => {
-  const color = isLink ? "#0000FF" : "#000000"
+  const color = isLink ? linkColor : "#000000"
   return ({
     type: 'radar',
     data: {
@@ -169,7 +175,7 @@ const createChartFromJSON = (labels, datasets, isLink) => {
         r: {
           min: 0,
           max: 100,
-          backgroundColor: '#D4F9F7',
+          backgroundColor: scalesBackgroundColor,
           grid: {
             display: false
           },
