@@ -1,4 +1,7 @@
 defmodule Bright.UserSkillPanels.UserSkillPanel do
+  @moduledoc """
+  ユーザースキルパネルを扱うスキーマ。
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias Bright.Accounts.User
