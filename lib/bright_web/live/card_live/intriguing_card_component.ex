@@ -171,7 +171,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
       {"tab3", "カスタムグループ３"},
       {"tab4", "カスタムグループ４"},
       {"tab5", "カスタムグループ５"},
-      {"tab6", "カスタムグループ６"},
+      {"tab6", "カスタムグループ６"}
     ]
   end
 end
