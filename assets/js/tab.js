@@ -27,14 +27,14 @@ if (count > 3) {
 }
 
 let buttons = relational_user_buttons.children;
-buttons[0].addEventListener("click", function () {
+buttons[1].addEventListener("click", function () {
   if (tab_width + margin > 600) {
     margin = margin - 200;
     animateElement(relational_user_tab_item[0], "marginLeft", margin + 200, margin, 250);
   }
 });
 
-buttons[1].addEventListener("click", function () {
+buttons[0].addEventListener("click", function () {
   if (margin < 0) {
     margin = margin + 200;
     animateElement(relational_user_tab_item[0], "marginLeft", margin - 200, margin, 250);
