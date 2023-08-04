@@ -96,10 +96,10 @@ erDiagram
   users ||--o{ skill_improvements : "スキルアップを登録する"
   skill_improvements ||--|| skill_classes : ""
   skill_improvements ||--|| skill_units : ""
-  users ||--o{ skill_scores : "スキルスコアを登録する"
-  skill_scores ||--|| skill_classes : ""
-  skill_scores ||--|{ skill_score_items : ""
-  skill_score_items ||--|| skills : ""
+  users ||--o{ skill_class_scores : "スキルスコアを登録する"
+  skill_class_scores ||--|| skill_classes : ""
+  skill_class_scores ||--|{ skill_scores : ""
+  skill_scores ||--|| skills : ""
   users ||--|{ career_field_scores : ""
   career_field_scores ||--|| career_fields : ""
   users ||--o{ skill_unit_scores : ""
@@ -160,7 +160,7 @@ erDiagram
     id skill_unit_id FK
   }
 
-  skill_scores {
+  skill_class_scores {
     id user_id FK
     id skill_class_id FK
   }
@@ -171,8 +171,8 @@ erDiagram
     float percentage
   }
 
-  skill_score_items {
-    id skill_score_id FK
+  skill_scores {
+    id skill_class_score_id FK
     id skill_id FK
     string score "enum (low, middle, high)"
   }
@@ -199,10 +199,10 @@ erDiagram
   job_skill_panels }o--|| skill_panels : ""
   users ||--o{ user_skill_panels : "気になる"
   user_skill_panels }o--|| skill_panels : "気になる"
-  users ||--o{ historical_skill_scores : "過去に登録されたスキルスコア"
-  historical_skill_scores ||--|| historical_skill_classes : ""
-  historical_skill_scores ||--|{ historical_skill_score_items : ""
-  historical_skill_score_items ||--|| historical_skills : ""
+  users ||--o{ historical_skill_class_scores : "過去に登録されたスキルスコア"
+  historical_skill_class_scores ||--|| historical_skill_classes : ""
+  historical_skill_class_scores ||--|{ historical_skill_scores : ""
+  historical_skill_scores ||--|| historical_skills : ""
   users ||--|{ historical_career_field_scores : ""
   historical_career_field_scores ||--|| career_fields : ""
   users ||--o{ historical_skill_unit_scores : ""
@@ -257,7 +257,7 @@ erDiagram
     id skill_panel_id FK
   }
 
-  historical_skill_scores {
+  historical_skill_class_scores {
     id user_id FK
     id historical_skill_class_id FK
     date locked_date "固定された日"
@@ -270,8 +270,8 @@ erDiagram
     float percentage
   }
 
-  historical_skill_score_items {
-    id historical_skill_score_id FK
+  historical_skill_scores {
+    id historical_skill_class_score_id FK
     id historical_skill_id FK
     string score "enum (low, middle, high)"
   }
@@ -323,7 +323,7 @@ erDiagram
         - `draft_skill_categories` → `skill_categories`
         - `draft_skills` → `skills`
         - 公開テーブルの `locked_date` には処理を実行した日付を入れる
-    2. `skill_scores`, `skill_score_items`, `skill_unit_scores`, `career_field_scores` のデータを同テーブルにコピーし、1のコピー先データに紐付ける
+    2. `skill_class_scores`, `skill_scores`, `skill_unit_scores`, `career_field_scores` のデータを同テーブルにコピーし、1のコピー先データに紐付ける
         - 1のコピー先データがなければコピーしない
     3. `skill_improvements` の外部キーを1のコピー先データに付け替える
         - 1のコピー先データがなければ削除する
@@ -334,10 +334,10 @@ erDiagram
         - `skill_units` → `historical_skill_units`
         - `skill_categories` → `historical_skill_categories`
         - `skills` → `historical_skills`
+        - `skill_class_scores` → `historical_skill_class_scores`
         - `skill_scores` → `historical_skill_scores`
-        - `skill_score_items` → `historical_skill_score_items`
         - `skill_unit_scores` → `historical_skill_unit_scores`
         - `career_field_scores` → `historical_career_field_scores`
-        - `historical_skill_scores`, `historical_skill_unit_scores`, `historical_career_field_scores`の `locked_date` には処理を実行した日付を入れる
+        - `historical_skill_class_scores`, `historical_skill_unit_scores`, `historical_career_field_scores`の `locked_date` には処理を実行した日付を入れる
     2. 1のコピー元データを公開テーブルから削除する
 - 履歴はどこにもコピーしない

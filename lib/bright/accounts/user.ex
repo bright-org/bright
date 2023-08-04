@@ -20,7 +20,7 @@ defmodule Bright.Accounts.User do
     field :password_registered, :boolean
     field :confirmed_at, :naive_datetime
 
-    has_many :skill_scores, Bright.SkillScores.SkillScore
+    has_many :skill_class_scores, Bright.SkillScores.SkillClassScore
     has_many :skill_unit_scores, Bright.SkillScores.SkillUnitScore
     has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
