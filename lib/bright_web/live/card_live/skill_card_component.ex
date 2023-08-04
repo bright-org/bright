@@ -6,13 +6,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
 
-  @tabs [
-    {"engineer", "エンジニア"},
-    {"infrastructure", "インフラ"},
-    {"designer", "デザイナー"},
-    {"marketer", "マーケッター"}
-  ]
-
   # TODO selected_tab,selected_tab,page,total_pagesは未実装でダミーです
   @impl true
   def render(assigns) do
@@ -51,11 +44,19 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   @impl true
+  def mount(socket) do
+    tabs =
+      Bright.Jobs.list_career_fields()
+      |> Enum.map(&{&1.name_en, &1.name_ja})
+
+    {:ok, assign(socket, :tabs, tabs)}
+  end
+
+  @impl true
   def update(assigns, socket) do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:tabs, @tabs)
      |> assign(:selected_tab, "engineer")
      # TODO　サンプルデータはDBの処理を作成後消すこと
      |> assign(:skill_panels, sample())}

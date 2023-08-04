@@ -5,18 +5,16 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
   import Bright.JobsFixtures
 
   @create_attrs %{
-    background_color: "some background_color",
-    button_color: "some button_color",
-    name: "some name",
+    name_en: "some name",
+    name_ja: "日本語名",
     position: 42
   }
   @update_attrs %{
-    background_color: "some updated background_color",
-    button_color: "some updated button_color",
-    name: "some updated name",
+    name_en: "some updated name",
+    name_ja: "更新された日本語名",
     position: 43
   }
-  @invalid_attrs %{background_color: nil, button_color: nil, name: nil, position: nil}
+  @invalid_attrs %{name_en: nil, name_ja: nil, position: nil}
 
   defp create_career_field(_) do
     career_field = career_field_fixture()
@@ -30,7 +28,7 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
       {:ok, _index_live, html} = live(conn, ~p"/admin/career_fields")
 
       assert html =~ "Listing Career fields"
-      assert html =~ career_field.background_color
+      assert html =~ career_field.name_en
     end
 
     test "saves new career_field", %{conn: conn} do
@@ -53,7 +51,7 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
 
       html = render(index_live)
       assert html =~ "Career field created successfully"
-      assert html =~ "some background_color"
+      assert html =~ "some name"
     end
 
     test "updates career_field in listing", %{conn: conn, career_field: career_field} do
@@ -78,7 +76,7 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
 
       html = render(index_live)
       assert html =~ "Career field updated successfully"
-      assert html =~ "some updated background_color"
+      assert html =~ "some updated name"
     end
 
     test "deletes career_field in listing", %{conn: conn, career_field: career_field} do
@@ -99,7 +97,7 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
       {:ok, _show_live, html} = live(conn, ~p"/admin/career_fields/#{career_field}")
 
       assert html =~ "Show Career field"
-      assert html =~ career_field.background_color
+      assert html =~ career_field.name_en
     end
 
     test "updates career_field within modal", %{conn: conn, career_field: career_field} do
@@ -122,7 +120,7 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
 
       html = render(show_live)
       assert html =~ "Career field updated successfully"
-      assert html =~ "some updated background_color"
+      assert html =~ "some updated name"
     end
   end
 end
