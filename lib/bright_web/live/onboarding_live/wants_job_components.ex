@@ -26,13 +26,12 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
             <ul class="flex relative">
               <%= for career_field <- @career_fields do %>
                 <li
-                  class={[
-                      "cursor-pointer select-none py-2 rounded-tl text-center w-40",
-                      "#{if @selected_career.name_en == career_field.name_en,
+                  class={
+                      "cursor-pointer select-none py-2 rounded-tl text-center w-40 " <>
+                      if @selected_career.name_en == career_field.name_en,
                         do: "bg-#{career_field.name_en}-dark text-white",
                         else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark text-brightGray-200 hover:text-white"
-                      }"
-                    ]}
+                    }
                   phx-click={JS.push("tab_click", target: @myself, value: %{id: career_field.id})}
                 >
                   <%= career_field.name_ja %>
