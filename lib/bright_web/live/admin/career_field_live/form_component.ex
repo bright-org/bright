@@ -19,9 +19,8 @@ defmodule BrightWeb.Admin.CareerFieldLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:background_color]} type="text" label="Background color" />
-        <.input field={@form[:button_color]} type="text" label="Button color" />
+        <.input field={@form[:name_en]} type="text" label="Name English" />
+        <.input field={@form[:name_ja]} type="text" label="Name Japanese" />
         <.input field={@form[:position]} type="number" label="Position" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Career field</.button>

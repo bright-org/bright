@@ -78,7 +78,7 @@ module.exports = {
           light: "#8CEB14",
           dazzle: "#8CEB14",
         },
-        enginner: {
+        engineer: {
           dark: "#165BC8",
           light: "#6BDDFE",
           dazzle: "#EEFBFF",
@@ -101,7 +101,7 @@ module.exports = {
       },
       backgroundImage: (theme) => ({
         bgGem: "url('/images/bg_gem_title.png')",
-        bgGemEnginner: "url('/images/bg_gem_enginner.png')",
+        bgGemEngineer: "url('/images/bg_gem_engineer.png')",
         bgGemInfra: "url('/images/bg_gem_infra.png')",
         bgGemDesigner: "url('/images/bg_gem_designer.png')",
         bgGemMarketer: "url('/images/bg_gem_marketer.png')",
@@ -144,7 +144,7 @@ module.exports = {
     // Embeds Heroicons (https://heroicons.com) into your app.css bundle
     // See your `CoreComponents.icon/1` for more information.
     //
-    plugin(function ({ matchComponents, theme }) {
+    plugin(function({ matchComponents, theme }) {
       let iconsDir = path.join(__dirname, "./vendor/heroicons/optimized")
       let values = {}
       let icons = [
@@ -175,7 +175,7 @@ module.exports = {
         }
       }, { values })
     }),
-    plugin(function ({ addBase, addComponents, addUtilities, theme }) {
+    plugin(function({ addBase, addComponents, addUtilities, theme }) {
       addBase({
         body: {
           fontSize: theme("fontSize.sm"),

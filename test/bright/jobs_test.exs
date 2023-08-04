@@ -68,7 +68,7 @@ defmodule Bright.JobsTest do
 
     import Bright.JobsFixtures
 
-    @invalid_attrs %{background_color: nil, button_color: nil, name: nil, position: nil}
+    @invalid_attrs %{name_en: nil, name_ja: nil, position: nil}
 
     test "list_career_fields/0 returns all career_fields" do
       career_field = career_field_fixture()
@@ -82,16 +82,14 @@ defmodule Bright.JobsTest do
 
     test "create_career_field/1 with valid data creates a career_field" do
       valid_attrs = %{
-        background_color: "some background_color",
-        button_color: "some button_color",
-        name: "some name",
+        name_en: "some name",
+        name_ja: "日本語名",
         position: 42
       }
 
       assert {:ok, %CareerField{} = career_field} = Jobs.create_career_field(valid_attrs)
-      assert career_field.background_color == "some background_color"
-      assert career_field.button_color == "some button_color"
-      assert career_field.name == "some name"
+      assert career_field.name_en == "some name"
+      assert career_field.name_ja == "日本語名"
       assert career_field.position == 42
     end
 
@@ -103,18 +101,16 @@ defmodule Bright.JobsTest do
       career_field = career_field_fixture()
 
       update_attrs = %{
-        background_color: "some updated background_color",
-        button_color: "some updated button_color",
-        name: "some updated name",
+        name_en: "some updated name",
+        name_ja: "更新された日本語名",
         position: 43
       }
 
       assert {:ok, %CareerField{} = career_field} =
                Jobs.update_career_field(career_field, update_attrs)
 
-      assert career_field.background_color == "some updated background_color"
-      assert career_field.button_color == "some updated button_color"
-      assert career_field.name == "some updated name"
+      assert career_field.name_en == "some updated name"
+      assert career_field.name_ja == "更新された日本語名"
       assert career_field.position == 43
     end
 
