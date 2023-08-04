@@ -19,31 +19,26 @@ defmodule TestData do
     }
   end
 
-  def skill_unit(skill_class1, skill_class2, _skill_class3) do
+  def skill_unit(skill_class1, panel_no) do
     %{
-      name: "Elixir本体",
+      name: "#{panel_no}-スキルユニット",
       skill_categories: [
-        %{
-          name: "基本",
-          position: 1,
-          skills: [
-            %{name: "基本型／演算子／制御構文／パイプ", position: 1},
-            %{name: "config追加／変更", position: 2}
-          ]
-        },
-        %{
-          name: "データ処理（ループ制御相当）",
-          position: 2,
-          skills: [
-            %{name: "Enum.map", position: 1},
-            %{name: "Enum.reduce", position: 2}
-          ]
-        }
+        skill_categories(panel_no, 1)
       ],
       skill_class_units: [
-        %{skill_class_id: skill_class1.id, position: 1},
-        %{skill_class_id: skill_class2.id, position: 2}
+        %{skill_class_id: skill_class1.id, position: 1}
       ]
+    }
+  end
+
+  def skill_categories(panel_no, no) do
+    %{
+      name: "#{panel_no}-#{no}カテゴリ",
+      position: no,
+      skills:
+        for x <- 1..5 do
+          %{name: "#{panel_no}-#{no}-#{x}-スキル", position: x}
+        end
     }
   end
 end
@@ -62,7 +57,7 @@ end
 
 ```elixir
 {:ok, skill_unit} =
-  SkillUnits.create_skill_unit(TestData.skill_unit(skill_class1, skill_class2, skill_class3))
+  SkillUnits.create_skill_unit(TestData.skill_unit(skill_class1, 1))
 ```
 
 ## Get SkillUnit and preload associations with correct order
