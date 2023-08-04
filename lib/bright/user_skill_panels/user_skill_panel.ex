@@ -1,10 +1,15 @@
 defmodule Bright.UserSkillPanels.UserSkillPanel do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Bright.Accounts.User
+  alias Bright.SkillPanels.SkillPanel
+
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "user_skill_panels" do
-    field :user_id, Ecto.UUID
-    field :skill_panel_id, Ecto.UUID
+    belongs_to :user, User
+    belongs_to :skill_panel, SkillPanel
 
     timestamps()
   end

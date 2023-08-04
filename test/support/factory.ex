@@ -13,6 +13,9 @@ defmodule Bright.Factory do
   # UserProfiles context
   use Bright.UserProfileFactory
 
+  # UserSkillPanels context
+  use Bright.UserSkillPanelFactory
+
   # Onboardings context
   use Bright.UserOnboardingFactory
 

@@ -19,6 +19,7 @@ defmodule Bright.UserSkillPanels do
   """
   def list_user_skill_panels do
     Repo.all(UserSkillPanel)
+  |> Repo.preload([:user, :skill_panel])
   end
 
   @doc """
