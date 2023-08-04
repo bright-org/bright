@@ -18,7 +18,7 @@
               <div class="flex justify-center items-center">
                 <p class="inline-flex flex-1 justify-center"><%= @current_user.name %></p>
 
-                <%= if skill_score_author?(@skill_score, @current_user) do %>
+                <%= if skill_class_score_author?(@skill_class_score, @current_user) do %>
                   <button
                     :if={not @edit}
                     type="button"
@@ -89,14 +89,14 @@
               </td>
               <td>
                 <.live_component
-                  module={BrightWeb.SkillPanelLive.SkillScoreItemComponent}
+                  module={BrightWeb.SkillPanelLive.SkillScoreComponent}
                   id={"skill-score-item-#{row_number}"}
                   row_number={row_number}
                   first_row?={row_number == 1}
                   last_row?={row_number == @num_skills}
                   skill={col3.skill}
-                  skill_score={@skill_score}
-                  skill_score_item={@skill_score_item_dict[col3.skill.id]}
+                  skill_class_score={@skill_class_score}
+                  skill_score={@skill_score_dict[col3.skill.id]}
                   input={false}
                   edit={@edit}
                 />

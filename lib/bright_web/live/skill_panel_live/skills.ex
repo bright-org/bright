@@ -11,7 +11,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
-  alias BrightWeb.SkillPanelLive.SkillScoreItemComponent
+  alias BrightWeb.SkillPanelLive.SkillScoreComponent
 
   @impl true
   def mount(_params, _session, socket) do
@@ -20,7 +20,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   @impl true
   def handle_event("edit", _params, socket) do
-    skill_score_author?(socket.assigns.skill_score, socket.assigns.current_user)
+    skill_class_score_author?(socket.assigns.skill_class_score, socket.assigns.current_user)
     |> if do
       {:noreply, socket |> assign(edit: true)}
     else
@@ -29,18 +29,18 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("update", _params, socket) do
-    target_skill_score_items =
-      socket.assigns.skill_score_item_dict
+    target_skill_scores =
+      socket.assigns.skill_score_dict
       |> Map.values()
       |> Enum.filter(& &1.changed)
 
-    {:ok, %{skill_score: skill_score}} =
-      SkillScores.update_skill_score_items(socket.assigns.skill_score, target_skill_score_items)
+    {:ok, %{skill_class_score: skill_class_score}} =
+      SkillScores.update_skill_scores(socket.assigns.skill_class_score, target_skill_scores)
 
     {:noreply,
      socket
-     |> assign(skill_score: skill_score)
-     |> assign_skill_score_item_dict()
+     |> assign(skill_class_score: skill_class_score)
+     |> assign_skill_score_dict()
      |> assign_counter()
      |> assign(edit: false)}
   end
@@ -51,9 +51,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      socket
      |> assign_skill_panel(params["skill_panel_id"])
      |> assign_skill_class_and_score(params["class"])
-     |> create_skill_score_if_not_existing()
+     |> create_skill_class_score_if_not_existing()
      |> assign_skill_units()
-     |> assign_skill_score_item_dict()
+     |> assign_skill_score_dict()
      |> assign_counter()
      |> apply_action(socket.assigns.live_action, params)}
   end
@@ -80,9 +80,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   @impl true
-  def handle_info({SkillScoreItemComponent, {:score_change, skill_score_item, score}}, socket) do
+  def handle_info({SkillScoreComponent, {:score_change, skill_score, score}}, socket) do
     # 習得率の変動反映
-    current_score = skill_score_item.score
+    current_score = skill_score.score
 
     counter =
       socket.assigns.counter
@@ -91,15 +91,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     # 表示スコア更新
     # 永続化は全体一括のため、ここでは実施してない
-    skill_score_item_dict =
-      socket.assigns.skill_score_item_dict
-      |> Map.put(skill_score_item.skill_id, %{skill_score_item | score: score, changed: true})
+    skill_score_dict =
+      socket.assigns.skill_score_dict
+      |> Map.put(skill_score.skill_id, %{skill_score | score: score, changed: true})
 
     {:noreply,
      socket
      |> assign(
        counter: counter,
-       skill_score_item_dict: skill_score_item_dict
+       skill_score_dict: skill_score_dict
      )}
   end
 
@@ -109,7 +109,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     skill_panel =
       SkillPanels.get_skill_panel!(skill_panel_id)
       |> Bright.Repo.preload(
-        skill_classes: [skill_scores: Ecto.assoc(current_user, :skill_scores)]
+        skill_classes: [skill_class_scores: Ecto.assoc(current_user, :skill_class_scores)]
       )
 
     socket
@@ -122,11 +122,11 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     class = String.to_integer(class)
     skill_class = socket.assigns.skill_panel.skill_classes |> Enum.find(&(&1.class == class))
     # List.first(): preload時に絞り込んでいるためfirstで取得可能
-    skill_score = skill_class.skill_scores |> List.first()
+    skill_class_score = skill_class.skill_class_scores |> List.first()
 
     socket
     |> assign(:skill_class, skill_class)
-    |> assign(:skill_score, skill_score)
+    |> assign(:skill_class_score, skill_class_score)
   end
 
   defp assign_skill_units(socket) do
@@ -142,38 +142,38 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(skill_units: skill_units)
   end
 
-  defp create_skill_score_if_not_existing(%{assigns: %{skill_score: nil}} = socket) do
-    # NOTE: skill_scoreが存在しないときの生成処理について
+  defp create_skill_class_score_if_not_existing(%{assigns: %{skill_class_score: nil}} = socket) do
+    # NOTE: skill_class_scoreが存在しないときの生成処理について
     # 管理側でスキルクラスを増やすなどの操作も想定し、
     # アクセスしたタイミングで生成するようにしています。
-    {:ok, %{skill_score: skill_score}} =
-      SkillScores.create_skill_score(
+    {:ok, %{skill_class_score: skill_class_score}} =
+      SkillScores.create_skill_class_score(
         socket.assigns.current_user,
         socket.assigns.skill_class
       )
 
     socket
-    |> assign(skill_score: skill_score)
+    |> assign(skill_class_score: skill_class_score)
   end
 
-  defp create_skill_score_if_not_existing(socket), do: socket
+  defp create_skill_class_score_if_not_existing(socket), do: socket
 
-  defp assign_skill_score_item_dict(socket) do
-    skill_score_item_dict =
-      Ecto.assoc(socket.assigns.skill_score, :skill_score_items)
-      |> SkillScores.list_skill_score_items()
+  defp assign_skill_score_dict(socket) do
+    skill_score_dict =
+      Ecto.assoc(socket.assigns.skill_class_score, :skill_scores)
+      |> SkillScores.list_skill_scores()
       |> Map.new(&{&1.skill_id, Map.put(&1, :changed, false)})
 
     socket
-    |> assign(skill_score_item_dict: skill_score_item_dict)
+    |> assign(skill_score_dict: skill_score_dict)
   end
 
   defp assign_counter(socket) do
     counter =
-      socket.assigns.skill_score_item_dict
+      socket.assigns.skill_score_dict
       |> Map.values()
-      |> Enum.reduce(%{low: 0, middle: 0, high: 0}, fn skill_score_item, acc ->
-        Map.update!(acc, skill_score_item.score, &(&1 + 1))
+      |> Enum.reduce(%{low: 0, middle: 0, high: 0}, fn skill_score, acc ->
+        Map.update!(acc, skill_score.score, &(&1 + 1))
       end)
 
     num_skills =
@@ -295,8 +295,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     end)
   end
 
-  defp skill_score_author?(skill_score, user) do
-    skill_score.user_id == user.id
+  defp skill_class_score_author?(skill_class_score, user) do
+    skill_class_score.user_id == user.id
   end
 
   defp skill_reference_existing?(skill_reference) do

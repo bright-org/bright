@@ -38,8 +38,8 @@ defmodule Bright.Factory do
   use Bright.SkillFactory
 
   # SkillScores context
+  use Bright.SkillClassScoreFactory
   use Bright.SkillScoreFactory
-  use Bright.SkillScoreItemFactory
 
   # SkillReferences context
   use Bright.SkillReferenceFactory
