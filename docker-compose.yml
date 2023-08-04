@@ -30,7 +30,7 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data
   livebook:
-    image: ghcr.io/livebook-dev/livebook
+    image: ghcr.io/livebook-dev/livebook:0.9.3
     environment:
       - LIVEBOOK_COOKIE=bright
       - LIVEBOOK_DEFAULT_RUNTIME=attached:bright@web:bright
