@@ -9,7 +9,5 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
-Bright.Seeds.Job.delete()
-Bright.Seeds.CareerField.delete()
+
 Bright.Seeds.CareerField.insert()
-Bright.Seeds.Job.insert()
