@@ -1,4 +1,8 @@
 defmodule Bright.Seeds.SkillPanel do
+  @moduledoc """
+  開発用のスキルパネルSeedデータ
+  """
+
   alias Bright.{Repo, SkillPanels, SkillUnits}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
   alias Bright.SkillUnits.{SkillClassUnit, SkillUnit, SkillCategory, Skill}
