@@ -19,42 +19,39 @@ defmodule TestData do
     }
   end
 
-  def skill_unit(skill_class1, panel_no) do
+  def skill_unit(skill_class, panel_no) do
     %{
-      name: "#{panel_no}-スキルユニット",
+      name: "#{panel_no}-スキルユニット(class:#{skill_class.class})",
       skill_categories:
         for x <- 1..3 do
-          skill_categories(panel_no, x)
+          skill_categories(panel_no, x, skill_class)
         end,
       skill_class_units: [
-        %{skill_class_id: skill_class1.id, position: 1}
+        %{skill_class_id: skill_class.id, position: 1}
       ]
     }
   end
 
-  def skill_categories(panel_no, no) do
+  def skill_categories(panel_no, no, skill_class) do
     %{
-      name: "#{panel_no}-#{no}カテゴリ",
+      name: "#{panel_no}-#{no}カテゴリ(class:#{skill_class.class})",
       position: no,
       skills:
         for x <- 1..3 do
-          %{name: "#{panel_no}-#{no}-#{x}-スキル", position: x}
+          %{name: "#{panel_no}-#{no}-#{x}-スキル(class:#{skill_class.class})", position: x}
         end
     }
   end
 
   def create_skill_unit(skill_class) do
     for x <- 1..5 do
-      {:ok, skill_unit} = SkillUnits.create_skill_unit(TestData.skill_unit(skill_class, x))
+      {:ok, _skill_unit} = SkillUnits.create_skill_unit(skill_unit(skill_class, x))
     end
   end
 
   def main() do
-    {:ok, skill_panel} = SkillPanels.create_skill_panel(TestData.skill_panel(1))
-    [skill_class1, skill_class2, skill_class3] = skill_panel.skill_classes
-    create_skill_unit(skill_class1)
-    create_skill_unit(skill_class2)
-    create_skill_unit(skill_class3)
+    {:ok, skill_panel} = SkillPanels.create_skill_panel(skill_panel(1))
+    skill_panel.skill_classes |> Enum.each(&create_skill_unit/1)
   end
 end
 
