@@ -49,7 +49,7 @@ defmodule BrightWeb.Admin.JobLive.Index do
 
   defp career_field_options() do
     Jobs.list_career_fields()
-    |> Enum.map(fn %{id: id_value, name: name_value} ->
+    |> Enum.map(fn %{id: id_value, name_ja: name_value} ->
       {String.to_atom(name_value), id_value}
     end)
   end

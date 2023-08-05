@@ -13,7 +13,9 @@ defmodule Bright.Jobs.Job do
 
   schema "jobs" do
     field :name, :string
+    field :description, :string
     field :position, :integer
+    field :rank, Ecto.Enum, values: [:basic, :advanced, :expert]
     belongs_to :career_field, CareerField
 
     has_one :career_want_job, CareerWantJob
@@ -25,7 +27,7 @@ defmodule Bright.Jobs.Job do
   @doc false
   def changeset(job, attrs) do
     job
-    |> cast(attrs, [:name, :position, :career_field_id])
-    |> validate_required([:name, :position, :career_field_id])
+    |> cast(attrs, [:name, :position, :description, :rank, :career_field_id])
+    |> validate_required([:name, :position, :description, :rank, :career_field_id])
   end
 end

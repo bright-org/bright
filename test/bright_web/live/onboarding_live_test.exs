@@ -7,6 +7,10 @@ defmodule BrightWeb.OnboardingLiveTest do
 
   describe "Index" do
     setup %{conn: conn} do
+      career_field = insert(:career_field)
+      insert(:job, %{career_field_id: career_field.id, rank: :basic})
+      insert(:job, %{career_field_id: career_field.id, rank: :advanced})
+      insert(:job, %{career_field_id: career_field.id, rank: :expert})
       password = valid_user_password()
 
       {:ok, user} =

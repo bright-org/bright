@@ -43,6 +43,8 @@ defmodule Bright.JobsFixtures do
       attrs
       |> Enum.into(%{
         name: "some name",
+        rank: "basic",
+        description: "some description",
         position: 42
       })
       |> Bright.Jobs.create_job()
