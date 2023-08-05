@@ -44,7 +44,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     ~H"""
     <div>
       <.tab
-        id="related_team_card"
+        id="related_team_card_tab#{@id}"
         tabs={@tabs}
         selected_tab={@card.selected_tab}
         page={@card.page_params.page}
@@ -71,6 +71,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
           <ul class="flex gap-y-2.5 flex-col">
             <%= for team <- @card.entries do %>
               <.team_small
+                id="team_small_#{team.id}"
                 team={team.team}
                 team_type={:general_team}
                 low_on_click_target={assigns.low_on_click_target}
