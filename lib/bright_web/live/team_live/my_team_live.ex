@@ -7,18 +7,15 @@ defmodule BrightWeb.MyTeamLive do
   # import BrightWeb.ChartComponents
   import BrightWeb.MegaMenueComponents
   import BrightWeb.BrightModalComponents
-  import BrightWeb.SkillPanelLive.SkillPanelComponents
+  # import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.TeamComponents
   alias Bright.Teams
 
   def mount(params, _session, socket) do
-    # IO.puts("### mount #####################")
-    # IO.inspect(socket)
-
-    # IO.inspect(params)
     socket =
       socket
-      |> assign(:page_title, "チームスキル分析")
+      # TODO current_skill_panelから取得する
+      |> assign(:page_title, "チームスキル分析 / ElixirWeb開発")
 
     if Map.has_key?(params, "team_id") do
       current_team =
@@ -64,7 +61,9 @@ defmodule BrightWeb.MyTeamLive do
   current_teamを選択したチームのチームIDで更新し、リダイレクトする。
   その際、選択済のスキルパネル、またはスキルセットがある場合IDを引き継ぐ
   """
-  def handle_event("on_team_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
+  def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
+    # TODO IO.puts("#### my_team_live handle_event !!!!!!!!! ###########")
+
     current_team =
       team_id
       |> Teams.get_team!()

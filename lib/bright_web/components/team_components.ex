@@ -10,7 +10,7 @@ defmodule BrightWeb.TeamComponents do
 
   - team 表示対象のチーム
   - team_type チームの種類（アイコン表示出しわけに使用する)
-  - low_on_click_target チームの表示をクリックした際に発火するon_team_card_row_clickイベントハンドラのターゲット。指定されない場合@myselfがデフォルト指定される為、大本のliveviewがターゲットとなる。
+  - low_on_click_target チームの表示をクリックした際に発火するon_card_row_clickイベントハンドラのターゲット。指定されない場合nilがデフォルト指定される為、大本のliveviewがターゲットとなる。
 
   ## Examples
       <.team_small
@@ -21,31 +21,18 @@ defmodule BrightWeb.TeamComponents do
   """
   attr :team, Bright.Teams.Team, required: true
   attr :team_type, :atom, default: :general_team
-
-  # attr :on_row_click_module, :any, required: false, default: BrightWeb.CardLive.RelatedTeamCardComponent
-  attr :low_on_click_target, :any, required: false, default: @myself
+  attr :low_on_click_target, :any, required: false, default: nil
 
   def team_small(assigns) do
-    # assigns = assigns
-    # |> assign(:target_team, assigns.team)
-    # assigns =
-    #  assigns
-    #  |> assign(:target_team, assigns.team)
-
-    # IO.inspect(assigns)
-    # phx-click={@on_row_click_module.on_click(@team)}
-    # phx-click="edit"
-    #  phx-click={JS.push("row_click", target: @on_row_click_module, value: "hogehoge")}
-
     ~H"""
     <li
-      phx-click="on_team_card_row_click"
+      phx-click="on_card_row_click"
       phx-target={@low_on_click_target}
-      phx-value-team_id={assigns.team.id}
+      phx-value-team_id={@team.id}
       class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
     >
       <img src={get_team_icon_path(@team_type)} class="mr-2"/>
-      <%= assigns.team.name %>
+      <%= @team.name %>
     </li>
     """
   end
@@ -75,7 +62,6 @@ defmodule BrightWeb.TeamComponents do
   attr :user, Bright.Accounts.User, required: true
 
   def user_skill_card(assigns) do
-
     ~H"""
       <div class="flex w-[474px] shadow flex-col bg-white">
         <ul
@@ -87,16 +73,16 @@ defmodule BrightWeb.TeamComponents do
               class="w-full py-3 text-center inline-block"
               aria-current="page"
             >
-              レベル1
+              クラス1
               <span class="text-xl ml-4">52</span>％</a>
           </li>
           <li class="w-full">
             <a href="#" class="w-full py-3 text-center inline-block"
-              >レベル2 <span class="text-xl ml-4">52</span>％</a>
+              >クラス2 <span class="text-xl ml-4">52</span>％</a>
           </li>
           <li class="w-full">
             <a href="#" class="w-full py-3 text-center inline-block"
-              >レベル3 <span class="text-xl ml-4">52</span>％</a>
+              >クラス3 <span class="text-xl ml-4">52</span>％</a>
           </li>
         </ul>
         <div class="flex justify-between px-6 pt-1 items-center">
@@ -117,6 +103,7 @@ defmodule BrightWeb.TeamComponents do
         labels={["エンジニア", "マーケター", "デザイナー", "インフラ", "営業", "昼寝"]}
       />
         </div>
+        <!--
         <div class="p-6 pt-0 flex justify-between">
           <button
             class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
@@ -134,6 +121,7 @@ defmodule BrightWeb.TeamComponents do
             スキルアップ確認
           </button>
         </div>
+        -->
       </div>
     """
   end

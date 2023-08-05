@@ -14,7 +14,7 @@ defmodule BrightWeb.MegaMenueComponents do
   - current_user  カードの取得に使用するユーザー
   - dropdown_offset_skidding ドロップダウンの描画オフセット(labelの文字数に応じて調整する必要がある)
   - card_component liveComponentによるカード実装
-  - low_on_click_target チームの表示をクリックした際に発火するon_team_card_row_clickイベントハンドラのターゲット。指定されない場合@myselfがデフォルト指定される為、大本のliveviewがターゲットとなる。
+  - over_ride_on_card_row_click_target カードコンポーネント内の行クリック時のハンドラを呼び出し元のハンドラで実装するか否か falseの場合、本実装デフォルトの挙動(チームIDのみ指定してのチームスキル分析への遷移)を実行する
 
   ## Examples
     <.mega_menue_botton
@@ -23,7 +23,7 @@ defmodule BrightWeb.MegaMenueComponents do
       current_user={@current_user}
       dropdown_offset_skidding="307"
       card_component={BrightWeb.CardLive.RelatedTeamCardComponent}
-      low_on_click_target={@myself}
+      over_ride_on_card_row_click_target={:true}
     />
   """
 
@@ -34,12 +34,9 @@ defmodule BrightWeb.MegaMenueComponents do
   attr :dropdown_offset_skidding, :string, required: true
   attr :current_user, Bright.Accounts.User, required: true
   attr :card_component, :any, required: true
-  attr :low_on_click_target, :any, required: false, default: @myself
-
-  # style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(728px, 124px);"
+  attr :over_ride_on_card_row_click_target, :boolean, required: false, default: false
 
   def mega_menue_botton(assigns) do
-    IO.puts(assigns.dropdown_offset_skidding)
 
     ~H"""
     <button
@@ -67,7 +64,7 @@ defmodule BrightWeb.MegaMenueComponents do
           id={@id}
           module={@card_component}
           current_user={@current_user}
-          low_on_click_target={@low_on_click_target}
+          over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
         />
       </div>
     """
