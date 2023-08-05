@@ -22,6 +22,14 @@ defmodule Bright.UserSkillPanels do
     |> Repo.preload([:user, :skill_panel])
   end
 
+  # TODO  ダミー用あとで消す
+  def list_user_skill_panels_dev(user_id) do
+    UserSkillPanel
+    |> where([p], p.user_id == ^user_id)
+    |> select([p], p.skill_panel_id)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single user_skill_panel.
 

@@ -105,7 +105,7 @@ defmodule BrightWeb.LayoutComponents do
       {"スキルを選ぶ", "/onboardings"},
       {"成長を見る・比較する", "/panels/dummy_id/graph"},
       {"スキルパネルを入力", "/"},
-      {"スキルアップを目指す", "/"},
+      {"スキルアップを目指す", "/skill_up"},
       {"チームスキル分析", "/teams"},
       {"キャリアパスを選ぶ", "/"}
     ]
