@@ -37,7 +37,6 @@ defmodule BrightWeb.MegaMenueComponents do
   attr :over_ride_on_card_row_click_target, :boolean, required: false, default: false
 
   def mega_menue_botton(assigns) do
-
     ~H"""
     <button
       id="dropdownOffsetButton"
