@@ -3,7 +3,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   alias Bright.Jobs
   alias Bright.Jobs.Job
-  @rank %{master: "高度", advanced: "応用", basic: "基本"}
+  @rank %{expert: "高度", advanced: "応用", basic: "基本"}
 
   def render(assigns) do
     ~H"""
@@ -51,6 +51,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
           <!-- ジョブセクションここから -->
           <section>
+            <%= if @selected_career do %>
             <section class={"bg-#{@selected_career.name_en}-dazzle px-4 py-4"}>
               <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
               <div class="mb-8">
@@ -103,6 +104,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               </div>
               <% end %>
             </section>
+            <% end %>
           </section>
           <!-- ジョブセクション ここまで -->
         </div>
