@@ -7,11 +7,145 @@ defmodule Bright.SkillScores do
   alias Bright.Repo
 
   alias Bright.SkillUnits
-  alias Bright.SkillScores.{SkillScore, SkillScoreItem}
+  alias Bright.SkillScores.{SkillClassScore, SkillScore}
 
   # レベルの判定値
   @normal_level 40
   @skilled_level 60
+
+  @doc """
+  Returns the list of skill_class_scores.
+
+  ## Examples
+
+      iex> list_skill_class_scores()
+      [%SkillClassScore{}, ...]
+
+  """
+  def list_skill_class_scores do
+    Repo.all(SkillClassScore)
+  end
+
+  @doc """
+  Gets a single skill_class_score.
+
+  Raises `Ecto.NoResultsError` if the Skill score does not exist.
+
+  ## Examples
+
+      iex> get_skill_class_score!(123)
+      %SkillClassScore{}
+
+      iex> get_skill_class_score!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_skill_class_score!(id), do: Repo.get!(SkillClassScore, id)
+
+  @doc """
+  Creates a skill_class_score with skill_scores
+  """
+  def create_skill_class_score(user, skill_class) do
+    skills = SkillUnits.list_skills_on_skill_class(skill_class)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:skill_class_score, %SkillClassScore{
+      user_id: user.id,
+      skill_class_id: skill_class.id
+    })
+    |> Ecto.Multi.insert_all(:skill_scores, SkillScore, fn %{skill_class_score: skill_class_score} ->
+      skills
+      |> Enum.map(fn skill ->
+        current_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+        %{
+          id: Ecto.ULID.generate(),
+          skill_class_score_id: skill_class_score.id,
+          skill_id: skill.id,
+          score: :low,
+          inserted_at: current_time,
+          updated_at: current_time
+        }
+      end)
+    end)
+    |> Repo.transaction()
+  end
+
+  @doc """
+  Updates a skill_class_score.
+
+  ## Examples
+
+      iex> update_skill_class_score(skill_class_score, %{field: new_value})
+      {:ok, %SkillClassScore{}}
+
+      iex> update_skill_class_score(skill_class_score, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_skill_class_score(%SkillClassScore{} = skill_class_score, attrs) do
+    skill_class_score
+    |> SkillClassScore.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates a skill_class_score aggregation columns.
+  """
+  def update_skill_class_score_stats(skill_class_score) do
+    skill_scores =
+      Ecto.assoc(skill_class_score, :skill_scores)
+      |> list_skill_scores()
+
+    size = Enum.count(skill_scores)
+    num_skilled_items = Enum.count(skill_scores, &(&1.score == :high))
+    percentage = if size > 0, do: 100 * (num_skilled_items / size), else: 0.0
+    level = get_level(percentage)
+
+    change_skill_class_score(skill_class_score, %{percentage: percentage, level: level})
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a skill_class_score.
+
+  ## Examples
+
+      iex> delete_skill_class_score(skill_class_score)
+      {:ok, %SkillClassScore{}}
+
+      iex> delete_skill_class_score(skill_class_score)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_skill_class_score(%SkillClassScore{} = skill_class_score) do
+    Repo.delete(skill_class_score)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking skill_class_score changes.
+
+  ## Examples
+
+      iex> change_skill_class_score(skill_class_score)
+      %Ecto.Changeset{data: %SkillClassScore{}}
+
+  """
+  def change_skill_class_score(%SkillClassScore{} = skill_class_score, attrs \\ %{}) do
+    SkillClassScore.changeset(skill_class_score, attrs)
+  end
+
+  @doc """
+  Returns the level determined by percentage.
+  """
+  def get_level(percentage) do
+    percentage
+    |> case do
+      v when v >= @skilled_level -> :skilled
+      v when v >= @normal_level -> :normal
+      _ -> :beginner
+    end
+  end
 
   @doc """
   Returns the list of skill_scores.
@@ -22,14 +156,15 @@ defmodule Bright.SkillScores do
       [%SkillScore{}, ...]
 
   """
-  def list_skill_scores do
-    Repo.all(SkillScore)
+  def list_skill_scores(query \\ SkillScore) do
+    query
+    |> Repo.all()
   end
 
   @doc """
   Gets a single skill_score.
 
-  Raises `Ecto.NoResultsError` if the Skill score does not exist.
+  Raises `Ecto.NoResultsError` if the Skill score item does not exist.
 
   ## Examples
 
@@ -41,35 +176,6 @@ defmodule Bright.SkillScores do
 
   """
   def get_skill_score!(id), do: Repo.get!(SkillScore, id)
-
-  @doc """
-  Creates a skill_score with skill_score_items
-  """
-  def create_skill_score(user, skill_class) do
-    skills = SkillUnits.list_skills_on_skill_class(skill_class)
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.insert(:skill_score, %SkillScore{
-      user_id: user.id,
-      skill_class_id: skill_class.id
-    })
-    |> Ecto.Multi.insert_all(:skill_score_items, SkillScoreItem, fn %{skill_score: skill_score} ->
-      skills
-      |> Enum.map(fn skill ->
-        current_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-
-        %{
-          id: Ecto.ULID.generate(),
-          skill_score_id: skill_score.id,
-          skill_id: skill.id,
-          score: :low,
-          inserted_at: current_time,
-          updated_at: current_time
-        }
-      end)
-    end)
-    |> Repo.transaction()
-  end
 
   @doc """
   Updates a skill_score.
@@ -90,20 +196,24 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
-  Updates a skill_score aggregation columns.
+  Updates skill_scores.
   """
-  def update_skill_score_stats(skill_score) do
-    skill_score_items =
-      Ecto.assoc(skill_score, :skill_score_items)
-      |> list_skill_score_items()
+  def update_skill_scores(skill_class_score, skill_scores) do
+    skill_scores
+    |> Enum.reduce(Ecto.Multi.new(), fn skill_score, multi ->
+      # 値はすでに保存済みなのでforce_changeでchangesetを構成
+      changeset =
+        skill_score
+        |> Ecto.Changeset.change()
+        |> Ecto.Changeset.force_change(:score, skill_score.score)
 
-    size = Enum.count(skill_score_items)
-    num_skilled_items = Enum.count(skill_score_items, &(&1.score == :high))
-    percentage = if size > 0, do: 100 * (num_skilled_items / size), else: 0.0
-    level = get_level(percentage)
-
-    change_skill_score(skill_score, %{percentage: percentage, level: level})
-    |> Repo.update()
+      multi
+      |> Ecto.Multi.update(:"skill_score_#{skill_score.id}", changeset)
+    end)
+    |> Ecto.Multi.run(:skill_class_score, fn _repo, _ ->
+      update_skill_class_score_stats(skill_class_score)
+    end)
+    |> Repo.transaction()
   end
 
   @doc """
@@ -133,115 +243,5 @@ defmodule Bright.SkillScores do
   """
   def change_skill_score(%SkillScore{} = skill_score, attrs \\ %{}) do
     SkillScore.changeset(skill_score, attrs)
-  end
-
-  @doc """
-  Returns the level determined by percentage.
-  """
-  def get_level(percentage) do
-    percentage
-    |> case do
-      v when v >= @skilled_level -> :skilled
-      v when v >= @normal_level -> :normal
-      _ -> :beginner
-    end
-  end
-
-  @doc """
-  Returns the list of skill_score_items.
-
-  ## Examples
-
-      iex> list_skill_score_items()
-      [%SkillScoreItem{}, ...]
-
-  """
-  def list_skill_score_items(query \\ SkillScoreItem) do
-    query
-    |> Repo.all()
-  end
-
-  @doc """
-  Gets a single skill_score_item.
-
-  Raises `Ecto.NoResultsError` if the Skill score item does not exist.
-
-  ## Examples
-
-      iex> get_skill_score_item!(123)
-      %SkillScoreItem{}
-
-      iex> get_skill_score_item!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_skill_score_item!(id), do: Repo.get!(SkillScoreItem, id)
-
-  @doc """
-  Updates a skill_score_item.
-
-  ## Examples
-
-      iex> update_skill_score_item(skill_score_item, %{field: new_value})
-      {:ok, %SkillScoreItem{}}
-
-      iex> update_skill_score_item(skill_score_item, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_skill_score_item(%SkillScoreItem{} = skill_score_item, attrs) do
-    skill_score_item
-    |> SkillScoreItem.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Updates skill_score_items.
-  """
-  def update_skill_score_items(skill_score, skill_score_items) do
-    skill_score_items
-    |> Enum.reduce(Ecto.Multi.new(), fn skill_score_item, multi ->
-      # 値はすでに保存済みなのでforce_changeでchangesetを構成
-      changeset =
-        skill_score_item
-        |> Ecto.Changeset.change()
-        |> Ecto.Changeset.force_change(:score, skill_score_item.score)
-
-      multi
-      |> Ecto.Multi.update(:"skill_score_item_#{skill_score_item.id}", changeset)
-    end)
-    |> Ecto.Multi.run(:skill_score, fn _repo, _ ->
-      update_skill_score_stats(skill_score)
-    end)
-    |> Repo.transaction()
-  end
-
-  @doc """
-  Deletes a skill_score_item.
-
-  ## Examples
-
-      iex> delete_skill_score_item(skill_score_item)
-      {:ok, %SkillScoreItem{}}
-
-      iex> delete_skill_score_item(skill_score_item)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_skill_score_item(%SkillScoreItem{} = skill_score_item) do
-    Repo.delete(skill_score_item)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking skill_score_item changes.
-
-  ## Examples
-
-      iex> change_skill_score_item(skill_score_item)
-      %Ecto.Changeset{data: %SkillScoreItem{}}
-
-  """
-  def change_skill_score_item(%SkillScoreItem{} = skill_score_item, attrs \\ %{}) do
-    SkillScoreItem.changeset(skill_score_item, attrs)
   end
 end
