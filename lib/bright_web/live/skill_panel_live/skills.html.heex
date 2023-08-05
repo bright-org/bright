@@ -12,7 +12,7 @@
       <div class="mt-4">
         <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">
           <tr>
-            <td colspan="3" width="420px" class="!border-t !border-l-white !border-t-white !border-l">
+            <td colspan="4" class="!border-t !border-l-white !border-t-white !border-l">
             </td>
             <td class="!border-l !border-brightGray-200">
               <div class="flex justify-center items-center">
@@ -51,6 +51,9 @@
             <th class="bg-base text-white text-center w-[420px]">
               スキル
             </th>
+            <th class="bg-base text-white text-center">
+              合計
+            </th>
             <td>
               <div class="flex justify-center gap-x-2">
                 <div class="min-w-[4em] flex items-center">
@@ -88,6 +91,16 @@
                       <img src="/images/common/icons/addFile.svg" />
                     </.link>
                   </div>
+                </div>
+              </td>
+              <td>
+                <% # 「個人と比較」対応時に本実装箇所。現在は一人なので0/1 %>
+                <div class="num-high-users flex justify-center px-4">
+                  <%= if skill_score.score == :high do %>
+                  1
+                  <% else %>
+                  0
+                  <% end %>
                 </div>
               </td>
               <td class={[focus && "bg-brightGray-50"]}>
