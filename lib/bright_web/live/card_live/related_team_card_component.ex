@@ -1,6 +1,13 @@
 defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   @moduledoc """
   　関わっているチームカードコンポーネント
+
+  - current_user チーム一覧の取得対象となるユーザー
+  - low_on_click_target チームの表示をクリックした際に発火するon_team_card_row_clickイベントハンドラのターゲット。指定されない場合@myselfがデフォルト指定される為、大本のliveviewがターゲットとなる。
+
+  ## Examples
+
+
   """
   use BrightWeb, :live_component
 
@@ -23,6 +30,13 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
   @impl true
   def render(assigns) do
+    low_on_click_target =
+      if Map.has_key?(assigns, :low_on_click_target) do
+        assigns.low_on_click_target
+      else
+        assigns.myself
+      end
+
     ~H"""
     <div>
       <.tab
@@ -52,7 +66,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         <%= if @card.total_entries > 0 do %>
           <ul class="flex gap-y-2.5 flex-col">
             <%= for team <- @card.entries do %>
-              <.team_small team={team.team} team_type={:general_team} />
+              <.team_small team={team.team} team_type={:general_team} low_on_click_target={low_on_click_target}/>
             <% end %>
             <%= for _blank <- 0.. @card.page_params.page_size - length(@card.entries) do %>
               <li
@@ -156,6 +170,24 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     card_view(socket, card.selected_tab, page)
   end
 
+  @doc """
+  パラメータにlow_on_click_targetを指定されなかった場合のチーム行クリック時のデフォルトイベント
+  クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
+  """
+  def handle_event("on_team_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
+    current_team =
+      team_id
+      |> Teams.get_team!()
+
+    socket =
+      socket
+      |> assign(:current_team, current_team)
+      |> assign(:current_user, socket.assigns.current_user)
+      |> push_navigate(to: "/teams/#{current_team.id}")
+
+    {:noreply, socket}
+  end
+
   defp card_view(socket, tab_name, page) do
     card = create_card_param(tab_name, page)
 
@@ -183,4 +215,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
       []
     end
   end
+
+
 end
