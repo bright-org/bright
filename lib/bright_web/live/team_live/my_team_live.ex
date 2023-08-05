@@ -5,7 +5,7 @@ defmodule BrightWeb.MyTeamLive do
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
   # import BrightWeb.ChartComponents
-  import BrightWeb.MegaMenueComponents
+  import BrightWeb.MegaMenuComponents
   import BrightWeb.BrightModalComponents
   # import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.TeamComponents

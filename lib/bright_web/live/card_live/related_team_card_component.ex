@@ -49,7 +49,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         selected_tab={@card.selected_tab}
         page={@card.page_params.page}
         total_pages={@card.total_pages}
-        menu_items={show_menue(assigns)}
+        menu_items={show_menu(assigns)}
         target={@myself}
       >
         <div class="pt-3 pb-1 px-6">
@@ -218,8 +218,8 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     }
   end
 
-  defp show_menue(assings) do
-    if Map.has_key?(assings, :show_menue) && assings.show_menue == true do
+  defp show_menu(assings) do
+    if Map.has_key?(assings, :show_menu) && assings.show_menu == true do
       assings.card.menu_items
     else
       []

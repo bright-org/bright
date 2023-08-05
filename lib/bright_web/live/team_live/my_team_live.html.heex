@@ -4,22 +4,22 @@
   <div class="flex gap-x-4">
     <p class="leading-tight">対象スキルの<br />切り替え</p>
     <!-- スキルパネル menu --> 
-    <.mega_menue_botton
-      id="mega_menue_skill_panel"
+    <.mega_menu_button
+      id="mega_menu_skill_panel"
       label="スキルパネル"
       dropdown_offset_skidding="307"
       current_user={@current_user}
       card_component={BrightWeb.CardLive.RelatedTeamCardComponent}
       over_ride_on_card_row_click_target={:true}
     />
-    
+
     <!-- TODO αリリースではスキルセットは対応しない -->
     <!-- スキルセット menu -->
 
     <p class="leading-tight ml-4">対象者の<br />切り替え</p>
     <!-- チーム menu -->
-    <.mega_menue_botton
-      id="mega_menue_team" 
+    <.mega_menu_button
+      id="mega_menu_team" 
       label="チーム"
       current_user={@current_user}
       dropdown_offset_skidding="307"

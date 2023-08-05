@@ -1,10 +1,10 @@
-defmodule BrightWeb.MegaMenueComponents do
+defmodule BrightWeb.MegaMenuComponents do
   @moduledoc """
   メガメニューの表示コンポーネント
   """
 
   @doc """
-  Renders a MegaMenue botton
+  Renders a MegaMenu Button
 
   以下のattrを指定可能
 
@@ -17,8 +17,8 @@ defmodule BrightWeb.MegaMenueComponents do
   - over_ride_on_card_row_click_target カードコンポーネント内の行クリック時のハンドラを呼び出し元のハンドラで実装するか否か falseの場合、本実装デフォルトの挙動(チームIDのみ指定してのチームスキル分析への遷移)を実行する
 
   ## Examples
-    <.mega_menue_botton
-      id="mega_menue_team"
+    <.mega_menu_button
+      id="mega_menu_team"
       label="ボタンに表示する文言"
       current_user={@current_user}
       dropdown_offset_skidding="307"
@@ -36,11 +36,11 @@ defmodule BrightWeb.MegaMenueComponents do
   attr :card_component, :any, required: true
   attr :over_ride_on_card_row_click_target, :boolean, required: false, default: false
 
-  def mega_menue_botton(assigns) do
+  def mega_menu_button(assigns) do
     ~H"""
     <button
-      id="dropdownOffsetButton"
-      data-dropdown-toggle="dropdownOffset"
+      id="dropdownOffsetButton#{@id}"
+      data-dropdown-toggle="dropdownOffset#{@id}"
       data-dropdown-offset-skidding={@dropdown_offset_skidding}
       data-dropdown-placement="bottom"
       class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
@@ -56,7 +56,7 @@ defmodule BrightWeb.MegaMenueComponents do
     </button>
     <!-- メガメニューの内容 -->
       <div
-        id="dropdownOffset"
+        id="dropdownOffset#{@id}"
         class="z-10 hidden bg-white rounded-sm shadow w-[750px]"
       >
         <.live_component
