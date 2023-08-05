@@ -15,7 +15,7 @@ defmodule Bright.Jobs.Job do
     field :name, :string
     field :description, :string
     field :position, :integer
-    field :rank, Ecto.Enum, values: [:basic, :advanced, :master]
+    field :rank, Ecto.Enum, values: [:basic, :advanced, :expert]
     belongs_to :career_field, CareerField
 
     has_one :career_want_job, CareerWantJob

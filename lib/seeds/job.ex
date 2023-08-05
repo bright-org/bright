@@ -9,25 +9,25 @@ defmodule Bright.Seeds.Job do
 
   @engineer [
     %{
-      rank: "master",
+      rank: "expert",
       position: 1,
       name: "プロダクトオーナー",
       description: "高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。"
     },
     %{
-      rank: "master",
+      rank: "expert",
       position: 2,
       name: "プロダクトマネージャー",
       description: "Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。"
     },
     %{
-      rank: "master",
+      rank: "expert",
       position: 3,
       name: "プロジェクトマネージャー",
       description: "高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。"
     },
     %{
-      rank: "master",
+      rank: "expert",
       position: 4,
       name: "プロダクトマーケティングマネージャー",
       description: "高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。"
