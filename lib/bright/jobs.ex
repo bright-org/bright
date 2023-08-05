@@ -351,28 +351,24 @@ defmodule Bright.Jobs do
   [
     [
       %{
-        background_color: "#165BC8",
-        button_color: "#165BC8",
-        career_field_name: "エンジニア"
+        career_field_name_en: "engineer",
+        career_field_name_ja: "エンジニア"
       },
       %{
-        background_color: "#FFFFDC",
-        button_color: "#F1E3FF",
-        career_field_name: "デザイナー"
+        career_field_name_en: "designer",
+        career_field_name_ja: "デザイナー"
       }
     ],
     [
       %{
-        background_color: "#FFFFDC",
-        button_color: "#F1E3FF",
-        career_field_name: "デザイナー"
+        career_field_name_en: "designer",
+        career_field_name_ja: "デザイナー"
       }
     ],
     [
       %{
-        background_color: "#F2FFE1",
-        button_color: "#FFFFDC",
-        career_field_name: "インフラ"
+        career_field_name_en: "infra",
+        career_field_name_ja: "インフラ"
       }
     ]
   ]
@@ -399,9 +395,8 @@ defmodule Bright.Jobs do
     |> Enum.map(fn {_key, value} ->
       Enum.map(value, fn x ->
         %{
-          career_field_name: x.career_field_name,
-          background_color: x.background_color,
-          button_color: x.button_color
+          career_field_name_ja: x.career_field_name_ja,
+          career_field_name_en: x.career_field_name_en
         }
       end)
     end)
