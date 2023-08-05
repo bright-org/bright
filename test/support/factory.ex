@@ -19,6 +19,10 @@ defmodule Bright.Factory do
   # Onboardings context
   use Bright.UserOnboardingFactory
 
+  # Jobs context
+  use Bright.CareerFieldFactory
+  use Bright.JobFactory
+
   # UserJobProfiles context
   use Bright.UserJobProfileFactory
 

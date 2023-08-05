@@ -4,14 +4,13 @@ defmodule BrightWeb.OnboardingLiveTest do
   alias Bright.Accounts
   import Phoenix.LiveViewTest
   import Bright.Factory
-  import Bright.JobsFixtures
 
   describe "Index" do
     setup %{conn: conn} do
-      career_field = career_field_fixture()
-      job_fixture(%{career_field_id: career_field.id, rank: :basic})
-      job_fixture(%{career_field_id: career_field.id, rank: :advanced})
-      job_fixture(%{career_field_id: career_field.id, rank: :master})
+      career_field = insert(:career_field)
+      insert(:job, %{career_field_id: career_field.id, rank: :basic})
+      insert(:job, %{career_field_id: career_field.id, rank: :advanced})
+      insert(:job, %{career_field_id: career_field.id, rank: :expert})
       password = valid_user_password()
 
       {:ok, user} =
