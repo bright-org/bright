@@ -43,12 +43,18 @@ defmodule TestData do
     }
   end
 
+  def create_skill_unit(skill_class) do
+    for x <- 1..5 do
+      {:ok, skill_unit} = SkillUnits.create_skill_unit(TestData.skill_unit(skill_class, x))
+    end
+  end
+
   def main() do
     {:ok, skill_panel} = SkillPanels.create_skill_panel(TestData.skill_panel(1))
     [skill_class1, skill_class2, skill_class3] = skill_panel.skill_classes
-    {skill_class1.name, skill_class2.name, skill_class3.name}
-    {:ok, skill_unit} = SkillUnits.create_skill_unit(TestData.skill_unit(skill_class1, 1))
-    {:ok, skill_unit} = SkillUnits.create_skill_unit(TestData.skill_unit(skill_class1, 2))
+    create_skill_unit(skill_class1)
+    create_skill_unit(skill_class2)
+    create_skill_unit(skill_class3)
   end
 end
 
