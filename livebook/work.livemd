@@ -1,0 +1,40 @@
+# Untitled notebook
+
+## Section
+
+```elixir
+defmodule Test do
+  alias Bright.UserSkillPanels.UserSkillPanel
+  alias Bright.SkillPanels.SkillPanel
+  import Ecto.Query, warn: false
+  use Ecto.Schema
+  alias Bright.Repo
+
+  def get_level_by_class_in_skills_panel(user_id) do
+    from(user_skill_panel in UserSkillPanel,
+      join: skill_panel in assoc(user_skill_panel, :skill_panel),
+      where: user_skill_panel.id == ^user_id,
+      select: user_skill_panel
+    )
+    |> Repo.all()
+    |> Repo.preload(:skill_panel)
+  end
+end
+
+Test.get_level_by_class_in_skills_panel("01H76EZWSVNBE08HM4R7BYR164")
+```
+
+```elixir
+defmodule Test2 do
+  alias Bright.Accounts.User
+  import Ecto.Query, warn: false
+  alias Bright.Repo
+
+  def user() do
+    User
+    |> Repo.all()
+  end
+end
+
+Test2.user()
+```
