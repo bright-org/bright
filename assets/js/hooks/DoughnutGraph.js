@@ -1,4 +1,7 @@
 import { Chart } from 'chart.js/auto'
+const circleMarkCokir = '#0EA895'
+const triangleMarkCokir = '#14D6BE'
+const noneMarkCokir = '#EFF0F0'
 
 const createDoughnutData = (data) => {
   return {
@@ -6,9 +9,9 @@ const createDoughnutData = (data) => {
       {
         data: data,
         backgroundColor: [
-          "#0EA895",
-          "#14D6BE",
-          "#EFF0F0"
+          circleMarkCokir,
+          triangleMarkCokir,
+          noneMarkCokir
         ],
         borderWidth: 0
       },
