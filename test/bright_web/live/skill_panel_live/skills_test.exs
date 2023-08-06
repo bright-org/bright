@@ -511,8 +511,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert render(show_live) =~ skill_1.name
 
       assert show_live
-             |> element(~s(a[href="#{skill_reference.url}"][target="_blank"]))
-             |> has_element?()
+             |> has_element?(~s(iframe#iframe-skill-reference[src="#{skill_reference.url}"]))
     end
 
     @tag score: nil
@@ -553,8 +552,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert render(show_live) =~ skill_1.name
 
       assert show_live
-             |> element(~s(a[href="#{skill_exam.url}"][target="_blank"]))
-             |> has_element?()
+             |> has_element?(~s(iframe#iframe-skill-exam[src="#{skill_exam.url}"]))
     end
 
     @tag score: nil

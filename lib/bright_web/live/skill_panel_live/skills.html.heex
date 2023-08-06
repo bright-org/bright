@@ -134,11 +134,7 @@
   <.header><%= @skill.name %></.header>
 
   <div class="mt-4">
-    <.link href={@skill_reference.url} target="_blank">
-      こちらの教材をご覧ください（外部サイトを開きます）。
-      <br />
-      <%= @skill_reference.url %>
-    </.link>
+    <iframe id="iframe-skill-reference" src={@skill_reference.url} phx-hook="IframeSizeFitting" />
   </div>
 </.bright_modal>
 
@@ -151,10 +147,6 @@
   <.header><%= @skill.name %></.header>
 
   <div class="mt-4">
-    <.link href={@skill_exam.url} target="_blank">
-      こちらから試験が行えます。
-      <br />
-      <%= @skill_exam.url %>
-    </.link>
+    <iframe id="iframe-skill-exam" src={@skill_exam.url} phx-hook="IframeSizeFitting" />
   </div>
 </.bright_modal>
