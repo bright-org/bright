@@ -5,6 +5,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   import BrightWeb.SkillPanelLive.SkillsComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
 
+  alias BrightWeb.BrightCoreComponents
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores
@@ -20,7 +21,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign_edit_off()}
+    {:ok,
+      socket
+      |> assign_edit_off()
+      |> assign(:page_flash, %{})}
   end
 
   @impl true
@@ -47,7 +51,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign(skill_class_score: skill_class_score)
      |> assign_skill_score_dict()
      |> assign_counter()
-     |> assign_edit_off()}
+     |> assign_edit_off()
+     |> assign(:page_flash, %{info: "Skill scores updated successfully"})}
   end
 
   def handle_event("change", %{"score" => score, "row" => row}, socket) do
