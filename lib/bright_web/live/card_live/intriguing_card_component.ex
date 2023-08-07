@@ -32,8 +32,15 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
           inner_tab={@inner_tab}
           inner_selected_tab={@inner_selected_tab}
         />
-        <div class="pt-3 pb-1 px-6">
-          <ul class="flex flex-wrap gap-y-1">
+        <div class="pt-3 pb-1 px-6 min-h-[192px]">
+          <ul :if={Enum.count(@user_profiles) == 0} class="flex gap-y-2.5 flex-col">
+            <li class="flex">
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はいません
+              </div>
+            </li>
+          </ul>
+          <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
               <.profile_small user_name={user_profile.user_name} title={user_profile.title} icon_file_path={user_profile.icon_file_path} />
             <% end %>
