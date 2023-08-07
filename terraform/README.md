@@ -31,7 +31,7 @@ Google Cloudのプロジェクトに自分のGoogleアカウントを招待し�
 .
 ├── environments
 │   ├── dev
-│   ├── stg  # TODO: stg環境を構築する際に作成
+│   ├── stg
 │   └── prod # TODO: prod環境を構築する際に作成
 └── modules
     └── google
