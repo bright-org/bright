@@ -102,6 +102,25 @@ defmodule Bright.Jobs do
     CareerWant.changeset(career_want, attrs)
   end
 
+  def list_skill_panels_by_career_want_id do
+    %{
+      "01H75APD4QK5WDQMQCVY1XM9XT" => [
+        %{name: "Webアプリ開発 Elixir", skill_panel_id: "01H77AMPH7X5ZZPN3FRVNACTYH"},
+        %{name: "コミュニケーションスキル", skill_panel_id: "01H77ANY2SXDRD0PX8VP66SNPZ"}
+      ],
+      "01H75APD6YQPVR7Z6M3NA66WCB" => [
+        %{name: "Webデザイン", skill_panel_id: "01H77ANY2SXDRD0PX8VP66SNPZ"}
+      ]
+    }
+  end
+
+  def list_career_fields_by_career_wants do
+    %{
+      "01H75APD4QK5WDQMQCVY1XM9XT" => %{name_en: "engineer", name_ja: "エンジニア"},
+      "01H75APD6YQPVR7Z6M3NA66WCB" => %{name_en: "designer", name_ja: "デザイナー"}
+    }
+  end
+
   alias Bright.Jobs.CareerField
 
   @doc """

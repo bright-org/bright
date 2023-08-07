@@ -12,54 +12,13 @@
       <!-- スキルWebアプリ開発セクション　ここから -->
       <section class="mt-1 px-4 py-4 w-[1040px]">
         <ul>
-          <!-- スキル　ここから -->
+          <%= for skill_unit_name <- @skill_units do %>
           <li>
-            <span class="bg-engineer-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-              Elixir本体
+            <span class={"bg-#{@career_field_name_en}-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"}>
+              <%= skill_unit_name %>
             </span>
           </li>
-          <!-- スキル　ここまで (以降繰り返し) -->
-          <li>
-            <span class="bg-engineer-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-              Elixirフレームワーク／ライブラリ
-            </span>
-          </li>
-
-          <li>
-            <span class="bg-engineer-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-              Elixirテスト
-            </span>
-          </li>
-
-          <li>
-            <span class="bg-engineer-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-              設計・管理
-            </span>
-          </li>
-
-          <li>
-            <span class="bg-engineer-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-              Elixir本体
-            </span>
-          </li>
-
-          <li>
-            <span class="bg-engineer-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-              環境構築・リリース
-            </span>
-          </li>
-
-          <li>
-            <span class="bg-engineer-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-              実装基礎
-            </span>
-          </li>
-
-          <li>
-            <span class="bg-engineer-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-              Web一般
-            </span>
-          </li>
+          <% end %>
         </ul>
       </section>
       <!-- スキルデスクトップアプリ開発セクションセクション　ここまで -->
