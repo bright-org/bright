@@ -97,3 +97,6 @@ msgstr "スペースなしで「@」を含めて入力してください"
 
 msgid "does not match password"
 msgstr "パスワードが一致しません"
+
+msgid "did not change"
+msgstr "変更されていません"
