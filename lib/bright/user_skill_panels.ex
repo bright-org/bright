@@ -111,4 +111,56 @@ defmodule Bright.UserSkillPanels do
   def change_user_skill_panel(%UserSkillPanel{} = user_skill_panel, attrs \\ %{}) do
     UserSkillPanel.changeset(user_skill_panel, attrs)
   end
+
+  @doc """
+  Returns the list of level by class in skills panel.
+
+  ## Examples
+
+      iex> get_level_by_class_in_skills_panel(user_id)
+      [%{name: "Webアプリ開発 Elixir", levels: [:skilled, :normal, :none]}]
+
+  """
+  def get_level_by_class_in_skills_panel(user_id) do
+    from(user_skill_panel in UserSkillPanel,
+      join: skill_panel in assoc(user_skill_panel, :skill_panel),
+      join: skill_classes in assoc(skill_panel, :skill_classes),
+      left_join: skill_class_scores in assoc(skill_classes, :skill_class_scores),
+      on: skill_class_scores.user_id == ^user_id,
+      where: user_skill_panel.user_id == ^user_id,
+      order_by: [skill_panel.updated_at, skill_classes.class],
+      preload: [
+        skill_panel:
+          {skill_panel, skill_classes: {skill_classes, skill_class_scores: skill_class_scores}}
+      ]
+    )
+    |> Repo.all()
+    |> get_level_by_class_in_skills_panel_data_convert()
+  end
+
+  defp get_level_by_class_in_skills_panel_data_convert(user_skill_panels) do
+    user_skill_panels
+    |> Enum.map(&get_level_by_class_in_skills_panel_convert_row/1)
+  end
+
+  defp get_level_by_class_in_skills_panel_convert_row(user_skill_panel) do
+    %{name: name, skill_classes: skill_classes} = user_skill_panel.skill_panel
+
+    skill_classes =
+      skill_classes
+      |> Enum.map(&get_level_by_class_in_skills_panel_convert_class_score_row/1)
+
+    %{name: name, levels: skill_classes}
+  end
+
+  defp get_level_by_class_in_skills_panel_convert_class_score_row(%{skill_class_scores: []}),
+    do: :none
+
+  defp get_level_by_class_in_skills_panel_convert_class_score_row(%{
+         skill_class_scores: skill_class_scores
+       }) do
+    skill_class_scores
+    |> List.first()
+    |> Map.get(:level)
+  end
 end
