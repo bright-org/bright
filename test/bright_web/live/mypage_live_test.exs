@@ -35,7 +35,7 @@ defmodule BrightWeb.MypageLiveTest do
       assert index_live |> has_element?("div #skill-gem")
 
       # 各カードがあることを確認（コンポーネントが貼られていることのみを確認）
-      assert index_live |> has_element?("h5", "重量な連絡")
+      assert index_live |> has_element?("h5", "重要な連絡")
       assert index_live |> has_element?("li a", "チーム招待")
 
       assert index_live |> has_element?("h5", "保有スキル（ジェムをクリックすると成長グラフが見れます）")
