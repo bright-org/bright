@@ -15,7 +15,7 @@ defmodule BrightWeb.SkillPanelLive.GraphTest do
     end
 
     test "shows content", %{conn: conn} do
-      {:ok, _show_live, html} = live(conn, ~p"/panels/hoge/graph")
+      {:ok, _show_live, html} = live(conn, ~p"/panels/dummy_id/graph")
 
       assert html =~ "成長パネル"
     end
