@@ -4,6 +4,7 @@ defmodule Bright.AccountsTest do
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.User2faCodes
+  alias Bright.Accounts.SocialIdentifierToken
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
@@ -792,6 +793,52 @@ defmodule Bright.AccountsTest do
         )
 
       assert Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
+    end
+  end
+
+  describe "generate_social_identifier_token/1" do
+    setup do
+      social_identifier_attrs = %{
+        name: "koyo",
+        email: "dummy@example.com",
+        provider: :google,
+        identifier: "1"
+      }
+
+      %{social_identifier_attrs: social_identifier_attrs}
+    end
+
+    test "generates social identifier token", %{social_identifier_attrs: social_identifier_attrs} do
+      token = Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert Repo.get_by!(SocialIdentifierToken, name: social_identifier_attrs[:name])
+      assert Accounts.get_social_identifier_token(token)
+    end
+
+    test "deletes existing token before generate", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      before_token =
+        insert(:social_identifier_token_for_google,
+          identifier: social_identifier_attrs[:identifier]
+        )
+
+      Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert before_token !=
+               Repo.get_by!(SocialIdentifierToken, name: social_identifier_attrs[:name])
+
+      assert Repo.aggregate(SocialIdentifierToken, :count) == 1
+    end
+
+    test "does not delete other identifier's token", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      insert(:social_identifier_token_for_google, identifier: "10000")
+
+      Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert Repo.aggregate(SocialIdentifierToken, :count) == 2
     end
   end
 
