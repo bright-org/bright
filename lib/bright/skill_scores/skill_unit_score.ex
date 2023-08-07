@@ -20,8 +20,8 @@ defmodule Bright.SkillScores.SkillUnitScore do
   end
 
   @doc false
-  def changeset(skill_unit, attrs) do
-    skill_unit
+  def changeset(skill_unit_score, attrs) do
+    skill_unit_score
     |> cast(attrs, [:percentage])
     |> validate_required([:percentage])
   end

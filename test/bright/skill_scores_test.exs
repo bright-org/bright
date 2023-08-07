@@ -69,6 +69,46 @@ defmodule Bright.SkillScoresTest do
              |> Enum.sort() == [skill_unit_1.id, skill_unit_2.id]
     end
 
+    test "create_skill_class_score/2 case duplicated skill_scores", %{
+      user: user,
+      skill_class: skill_class
+    } do
+      # 他skill_classで作成済み（共有している）ケースの確認
+      # 既に作成済みの場合はskill_unit_scores/skill_scoresは作成対象外になる。
+
+      # 以下のケースでは、
+      # - skill_unitを入力済み（skill_class/skill_class2で共有）
+      # - skill_unit_2を未入力
+      # としている
+      skill_class_2 = insert(:skill_class, skill_panel: build(:skill_panel))
+      skill_unit_1 =
+        insert(:skill_unit, skill_class_units: [
+          %{skill_class_id: skill_class.id, position: 1},
+          %{skill_class_id: skill_class_2.id, position: 1}
+        ])
+
+      skill_unit_2 =
+        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 2}])
+
+      [%{skills: [skill_1]}] = insert_skill_categories_and_skills(skill_unit_1, [1])
+      [%{skills: [_skill_2]}] = insert_skill_categories_and_skills(skill_unit_2, [1])
+
+      # 入力済み扱いのデータ準備
+      # - skill_class_2で入力済みの状況作成
+      insert(:skill_class_score, user: user, skill_class: skill_class_2)
+      insert(:skill_score, user: user, skill: skill_1, score: :high)
+      insert(:skill_unit_score, user: user, skill_unit: skill_unit_1, percentage: 100.0)
+
+      {:ok, multi_result} = SkillScores.create_skill_class_score(user, skill_class)
+      assert %{skill_class_score: skill_class_score} = multi_result
+      assert %{skill_scores: {1, _}} = multi_result
+      assert %{skill_unit_scores: {1, _}} = multi_result
+
+      # 既に入力済みのスコアが反映される
+      assert skill_class_score.level == :normal
+      assert skill_class_score.percentage == 50.0
+    end
+
     test "update_skill_class_score/2 with valid data updates the skill_class_score", %{
       user: user,
       skill_class: skill_class

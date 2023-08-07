@@ -44,38 +44,39 @@ defmodule Bright.SkillScores do
 
   @doc """
   Creates a skill_class_score with skill_scores
+
+  スキルクラスに紐づくスキルユニットは別スキルクラスで入力済みの可能性があるため注意が必要
   """
   def create_skill_class_score(user, skill_class) do
-    skill_units = SkillUnits.list_skill_units(Ecto.assoc(skill_class, :skill_units))
-    skills = SkillUnits.list_skills_on_skill_class(skill_class)
+    skill_units =
+      Ecto.assoc(skill_class, :skill_units)
+      |> SkillUnits.list_skill_units()
+      |> Repo.preload(skill_unit_scores: SkillUnitScore.user_query(user))
+    skills =
+      SkillUnits.list_skills_on_skill_class(skill_class)
+      |> Repo.preload(skill_scores: SkillScore.user_query(user))
 
     Ecto.Multi.new()
-    |> Ecto.Multi.insert(:skill_class_score, %SkillClassScore{
+    |> Ecto.Multi.insert(:skill_class_score_init, %SkillClassScore{
       user_id: user.id,
       skill_class_id: skill_class.id
     })
-    |> Ecto.Multi.insert_all(:skill_scores, SkillScore, fn _ ->
-      # TODO: 重複している可能性があるのですべては作成できない
-      # あくまでskill_clasのunit単位がいいかもしれない
-      skills
-      |> Enum.map(&build_skill_score_attrs(user, &1))
-    end)
     |> Ecto.Multi.insert_all(:skill_unit_scores, SkillUnitScore, fn _ ->
-      # TODO: 重複している可能性があるのですべては作成できない
       skill_units
-      |> Enum.map(&build_skill_unit_score_attrs(user, &1))
+      |> Enum.filter(& &1.skill_unit_scores == [])
+      |> Enum.map(& build_skill_unit_score_attrs(user, &1))
+      |> Enum.filter(& &1)
+    end)
+    |> Ecto.Multi.insert_all(:skill_scores, SkillScore, fn _ ->
+      skills
+      |> Enum.filter(& &1.skill_scores == [])
+      |> Enum.map(& build_skill_score_attrs(user, &1))
+      |> Enum.filter(& &1)
+    end)
+    |> Ecto.Multi.run(:skill_class_score, fn _repo, %{skill_class_score_init: skill_class_score} ->
+      update_skill_class_score_stats(skill_class_score)
     end)
     |> Repo.transaction()
-  end
-
-  defp build_skill_score_attrs(user, skill) do
-    %{
-      id: Ecto.ULID.generate(),
-      user_id: user.id,
-      skill_id: skill.id,
-      score: :low
-    }
-    |> Map.merge(current_time_stamp())
   end
 
   defp build_skill_unit_score_attrs(user, skill_unit) do
@@ -84,6 +85,16 @@ defmodule Bright.SkillScores do
       user_id: user.id,
       skill_unit_id: skill_unit.id,
       percentage: 0.0
+    }
+    |> Map.merge(current_time_stamp())
+  end
+
+  defp build_skill_score_attrs(user, skill) do
+    %{
+      id: Ecto.ULID.generate(),
+      user_id: user.id,
+      skill_id: skill.id,
+      score: :low
     }
     |> Map.merge(current_time_stamp())
   end
