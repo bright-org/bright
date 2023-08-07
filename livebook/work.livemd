@@ -5,23 +5,28 @@
 ```elixir
 defmodule Test do
   alias Bright.UserSkillPanels.UserSkillPanel
+  alias Bright.SkillScores.SkillClassScore
   import Ecto.Query, warn: false
   use Ecto.Schema
   alias Bright.Repo
 
   def get_level_by_class_in_skills_panel(user_id) do
     from(user_skill_panel in UserSkillPanel,
-      # join: skill_panel in assoc(user_skill_panel, :skill_panel),
-      # join: skill_classes in assoc(skill_panel, :skill_classes),
-      where: user_skill_panel.id == ^user_id,
-      select: user_skill_panel
+      join: skill_panel in assoc(user_skill_panel, :skill_panel),
+      join: skill_classes in assoc(skill_panel, :skill_classes),
+      left_join: skill_class_scores in assoc(skill_classes, :skill_class_scores),
+      on: skill_class_scores.user_id == ^user_id,
+      where: user_skill_panel.user_id == ^user_id,
+      preload: [
+        skill_panel:
+          {skill_panel, skill_classes: {skill_classes, skill_class_scores: skill_class_scores}}
+      ]
     )
     |> Repo.all()
-    |> Repo.preload(skill_panel: [skill_classes: [:skill_class_scores]])
   end
 end
 
-Test.get_level_by_class_in_skills_panel("01H76EZWSVNBE08HM4R7BYR164")
+Test.get_level_by_class_in_skills_panel("01H76EC57N8JZHT5M3WZ0P7VAB")
 ```
 
 ```elixir
@@ -37,4 +42,8 @@ defmodule Test2 do
 end
 
 Test2.user()
+```
+
+```elixir
+
 ```
