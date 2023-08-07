@@ -29,7 +29,7 @@ defmodule BrightWeb.SnsComponents do
   end
 
   attr :url, :string
-  attr :sns_type, :string
+  attr :sns_type, :string, values: ~w(twitter github facebook)
 
   defp icon_button(%{url: url} = assigns) when url in ["", nil] do
     ~H"""
@@ -50,7 +50,7 @@ defmodule BrightWeb.SnsComponents do
   end
 
   attr :disable, :boolean
-  attr :sns_type, :string
+  attr :sns_type, :string, values: ~w(twitter github facebook)
 
   defp icon(assigns) do
     assigns =
