@@ -112,6 +112,15 @@ defmodule Bright.UserSkillPanels do
     UserSkillPanel.changeset(user_skill_panel, attrs)
   end
 
+  @doc """
+  Returns the list of level by class in skills panel.
+
+  ## Examples
+
+      iex> get_level_by_class_in_skills_panel(user_id)
+      [%{name: "Webアプリ開発 Elixir", levels: [:skilled, :normal, :none]}]
+
+  """
   def get_level_by_class_in_skills_panel(user_id) do
     from(user_skill_panel in UserSkillPanel,
       join: skill_panel in assoc(user_skill_panel, :skill_panel),
