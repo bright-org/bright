@@ -5,6 +5,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   """
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
+  alias Bright.UserSkillPanels
 
   # TODO selected_tab,selected_tab,page,total_pagesは未実装でダミーです
   @impl true
@@ -59,7 +60,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      |> assign(assigns)
      |> assign(:selected_tab, "engineer")
      # TODO　サンプルデータはDBの処理を作成後消すこと
-     |> assign(:skill_panels, sample())}
+     |> assign(:skill_panels, UserSkillPanels.get_level_by_class_in_skills_panel("01H76EC57N8JZHT5M3WZ0P7VAB"))}
   end
 
   @impl true
@@ -135,13 +136,4 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp level_text(:normal), do: "平均"
   defp level_text(:skilled), do: "ベテラン"
 
-  # TODO　サンプルデータはDBの処理を作成後消すこと
-  defp sample() do
-    [
-      %{name: "Elixir", levels: [:skilled, :normal, :beginner]},
-      %{name: "Python", levels: [:skilled, :none, :none]},
-      %{name: "DBから読み込んでません", levels: [:skilled, :normal, :none]},
-      %{name: "DB処理未実装", levels: [:skilled, :normal, :none]}
-    ]
-  end
 end
