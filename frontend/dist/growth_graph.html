@@ -129,7 +129,7 @@
               data-dropdown-toggle="dropdownOffset"
               data-dropdown-offset-skidding="320"
               data-dropdown-placement="bottom"
-              class="text-white bg-brightGreen-300 rounded-sm pl-3 flex items-center font-bold h-[35px]"
+              class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
               type="button"
             >
               <span class="min-w-[6em]">スキルパネル</span>
@@ -433,7 +433,7 @@
               data-dropdown-toggle="dropdown"
               data-dropdown-offset-skidding="20"
               data-dropdown-placement="bottom"
-              class="text-white bg-brightGreen-300 rounded-sm h-[35px] pl-3 flex items-center font-bold"
+              class="text-white bg-brightGreen-300 rounded h-[35px] pl-3 flex items-center font-bold"
               type="button"
             >
               スキルセット
@@ -485,7 +485,7 @@
               data-dropdown-toggle="dropdown2"
               data-dropdown-offset-skidding="302"
               data-dropdown-placement="bottom"
-              class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+              class="text-white bg-brightGreen-300 rounded py-1.5 pl-3 flex items-center font-bold"
               type="button"
             >
               <span class="min-w-[6em]">個人</span>
@@ -654,7 +654,7 @@
               data-dropdown-toggle="dropdown3"
               data-dropdown-offset-skidding="307"
               data-dropdown-placement="bottom"
-              class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+              class="text-white bg-brightGreen-300 rounded py-1.5 pl-3 flex items-center font-bold"
               type="button"
             >
               <span class="min-w-[6em]">チーム</span>
@@ -1116,13 +1116,15 @@
                       <button
                         id="addCompareDropdownButton"
                         data-dropdown-toggle="addCompareDropdown"
+                        data-dropdown-offset-skidding="300"
+                        data-dropdown-placement="top"
                         class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
                         type="button"
                       >
-                        <span class="min-w-[6em]">他社と比較</span>
+                        <span class="min-w-[6em]">他者と比較</span>
                         <span
                           class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-                          >expand_more</span
+                          >expand_less</span
                         >
                       </button>
                       <!-- 個人 menu -->
@@ -1158,35 +1160,88 @@
                                   >採用候補者</a
                                 >
                               </li>
+                              <li class="flex items-center">
+                                <button
+                                  type="button"
+                                  id="dropmenu04"
+                                  data-dropdown-offset-skidding="-130"
+                                  data-dropdown-placement="bottom"
+                                  data-dropdown-toggle="menu04"
+                                  class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
+                                >
+                                  <span
+                                    class="material-icons text-xs text-brightGreen-900"
+                                    >more_vert</span
+                                  >
+                                </button>
+                                <!-- 関わっているユーザー Dropdown menu -->
+                                <div
+                                  id="menu04"
+                                  class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
+                                >
+                                  <ul
+                                    class="p-2 text-left text-base"
+                                    aria-labelledby="dropmenu04"
+                                  >
+                                    <li>
+                                      <a
+                                        data-modal-target="defaultModal"
+                                        data-modal-toggle="defaultModal"
+                                        href="#"
+                                        class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
+                                        >カスタムグループの編集</a
+                                      >
+                                    </li>
+                                  </ul>
+                                </div>
+                              </li>
                             </ul>
-                            <div class="overflow-hidden">
-                              <ul
-                                class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
+                            <div
+                              class="flex border-b border-brightGray-50 min-h-[36px]"
+                            >
+                              <div class="overflow-hidden">
+                                <ul
+                                  class="overflow-hidden flex text-base !text-sm w-[800px]"
+                                >
+                                  <li
+                                    class="py-2 w-[200px] border-r border-brightGray-50"
+                                  >
+                                    キャリアの参考になる方々
+                                  </li>
+                                  <li
+                                    class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+                                  >
+                                    優秀なエンジニアの方々
+                                  </li>
+                                  <li
+                                    class="py-2 w-[200px] border-r border-brightGray-50"
+                                  >
+                                    カスタムグループ３
+                                  </li>
+                                  <li
+                                    class="py-2 w-[200px] border-r border-brightGray-50"
+                                  >
+                                    カスタムグループ４
+                                  </li>
+                                </ul>
+                              </div>
+                              <button
+                                class="px-1 border-l border-brightGray-50"
                               >
-                                <li
-                                  class="py-2 w-[200px] border-r border-brightGray-50"
-                                >
-                                  キャリアの参考になる方々
-                                </li>
-                                <li
-                                  class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
-                                >
-                                  優秀なエンジニアの方々
-                                </li>
-                                <li
-                                  class="py-2 w-[200px] border-r border-brightGray-50"
-                                >
-                                  カスタムグループ３
-                                </li>
-                                <li
-                                  class="py-2 w-[200px] border-r border-brightGray-50"
-                                >
-                                  カスタムグループ４
-                                </li>
-                              </ul>
+                                <span
+                                  class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+                                ></span>
+                              </button>
+                              <button
+                                class="px-1 border-l border-brightGray-50"
+                              >
+                                <span
+                                  class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+                                ></span>
+                              </button>
                             </div>
 
-                            <div class="pt-3 pb-1 px-6">
+                            <div class="pt-3 pb-1 px-6 min-h-[192px]">
                               <ul class="flex flex-wrap gap-y-1">
                                 <li
                                   class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
