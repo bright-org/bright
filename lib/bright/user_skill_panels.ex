@@ -144,13 +144,13 @@ defmodule Bright.UserSkillPanels do
   end
 
   defp get_level_by_class_in_skills_panel_convert_row(user_skill_panel) do
-    %{name: name, skill_classes: skill_classes} = user_skill_panel.skill_panel
+    %{name: name, id: id, skill_classes: skill_classes} = user_skill_panel.skill_panel
 
     skill_classes =
       skill_classes
       |> Enum.map(&get_level_by_class_in_skills_panel_convert_class_score_row/1)
 
-    %{name: name, levels: skill_classes}
+    %{name: name, id: id, levels: skill_classes}
   end
 
   defp get_level_by_class_in_skills_panel_convert_class_score_row(%{skill_class_scores: []}),

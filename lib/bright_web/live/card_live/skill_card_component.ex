@@ -100,9 +100,16 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp skill_panel(assigns) do
     ~H"""
     <tr>
-      <td><%= @skill_panel.name %></td>
-      <%= for level <- @skill_panel.levels do %>
-        <.skill_gem level={level}/>
+      <td>
+        <.link
+          href={~p"/panels/#{@skill_panel.id}/graph"}
+          method="get"
+        >
+          <%= @skill_panel.name %>
+        </.link>
+      </td>
+      <%= for {level, class} <- Enum.with_index(@skill_panel.levels, 1) do %>
+        <.skill_gem level={level} class={class} id={@skill_panel.id}/>
       <% end %>
     </tr>
     """
@@ -122,9 +129,14 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
     ~H"""
     <td>
-      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-        <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
-      </p>
+      <.link
+        href={~p"/panels/#{@id}/graph?class=#{@class}"}
+        method="get"
+      >
+        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+          <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
+        </p>
+      </.link>
     </td>
     """
   end
