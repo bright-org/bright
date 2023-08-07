@@ -180,8 +180,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp assign_skill_score_dict(socket) do
     skill_score_dict =
-      Ecto.assoc(socket.assigns.skill_class_score, :skill_scores)
-      |> SkillScores.list_skill_scores()
+      socket.assigns.skill_class_score
+      |> SkillScores.list_skill_scores_from_skill_class_score()
       |> Map.new(&{&1.skill_id, Map.put(&1, :changed, false)})
 
     socket

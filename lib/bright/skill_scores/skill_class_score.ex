@@ -19,8 +19,6 @@ defmodule Bright.SkillScores.SkillClassScore do
     belongs_to(:user, Bright.Accounts.User)
     belongs_to(:skill_class, Bright.SkillPanels.SkillClass)
 
-    has_many(:skill_scores, Bright.SkillScores.SkillScore)
-
     timestamps()
   end
 

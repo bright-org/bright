@@ -40,11 +40,11 @@ defmodule Bright.SkillUnits.Skill do
     |> validate_required([:name, :position])
   end
 
-  def skill_class_query(query \\ __MODULE__, skill_id) do
+  def skill_class_query(query \\ __MODULE__, skill_class_id) do
     from q in query,
       join: sc in assoc(q, :skill_category),
       join: su in assoc(sc, :skill_unit),
-      join: scl in assoc(su, :skill_classes),
-      where: scl.id == ^skill_id
+      join: scu in assoc(su, :skill_class_units),
+      where: scu.skill_class_id == ^skill_class_id
   end
 end

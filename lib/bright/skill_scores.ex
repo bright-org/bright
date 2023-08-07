@@ -53,14 +53,15 @@ defmodule Bright.SkillScores do
       user_id: user.id,
       skill_class_id: skill_class.id
     })
-    |> Ecto.Multi.insert_all(:skill_scores, SkillScore, fn %{skill_class_score: skill_class_score} ->
+    |> Ecto.Multi.insert_all(:skill_scores, SkillScore, fn _ ->
+      # TODO 重複可能性がある。
       skills
       |> Enum.map(fn skill ->
         current_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
         %{
           id: Ecto.ULID.generate(),
-          skill_class_score_id: skill_class_score.id,
+          user_id: user.id,
           skill_id: skill.id,
           score: :low,
           inserted_at: current_time,
@@ -93,9 +94,7 @@ defmodule Bright.SkillScores do
   Updates a skill_class_score aggregation columns.
   """
   def update_skill_class_score_stats(skill_class_score) do
-    skill_scores =
-      Ecto.assoc(skill_class_score, :skill_scores)
-      |> list_skill_scores()
+    skill_scores = list_skill_scores_from_skill_class_score(skill_class_score)
 
     size = Enum.count(skill_scores)
     num_skilled_items = Enum.count(skill_scores, &(&1.score == :high))
@@ -159,6 +158,15 @@ defmodule Bright.SkillScores do
   def list_skill_scores(query \\ SkillScore) do
     query
     |> Repo.all()
+  end
+
+  @doc """
+  Returns the list of skill_scores from skill_class_score
+  """
+  def list_skill_scores_from_skill_class_score(%{skill_class_id: skill_class_id, user_id: user_id}) do
+    SkillUnits.list_skills_on_skill_class(%{id: skill_class_id})
+    |> Repo.preload(skill_scores: SkillScore.user_id_query(user_id))
+    |> Enum.flat_map(& &1.skill_scores)
   end
 
   @doc """
