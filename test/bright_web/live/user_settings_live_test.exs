@@ -79,8 +79,8 @@ defmodule BrightWeb.UserSettingsLiveTest do
         |> render_submit()
 
       assert result =~ "Change Email"
-      assert result =~ "did not change"
-      assert result =~ "is not valid"
+      assert result =~ "変更されていません"
+      assert result =~ "パスワードが一致しません"
     end
   end
 
@@ -158,7 +158,6 @@ defmodule BrightWeb.UserSettingsLiveTest do
       assert result =~ "Change Password"
       assert result =~ "12文字以上で入力してください"
       assert result =~ "パスワードが一致しません"
-      assert result =~ "is not valid"
     end
   end
 
