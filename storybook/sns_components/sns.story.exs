@@ -44,7 +44,7 @@ defmodule Storybook.Components.SnsComponents do
           github_url: "",
           facebook_url: ""
         }
-      },
+      }
     ]
   end
 end
