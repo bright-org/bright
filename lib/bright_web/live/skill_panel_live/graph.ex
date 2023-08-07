@@ -26,7 +26,6 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> assign(:skill_class, skill_class)}
   end
 
-
   defp get_skill_panel("dummy_id") do
     # TODO dummy_idはダミー用で実装完了後に消すこと
     # リンクを出すための実装
