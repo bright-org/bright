@@ -842,6 +842,74 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "get_social_identifier_token/1" do
+    setup do
+      social_identifier_attrs = %{
+        name: "koyo",
+        email: "dummy@example.com",
+        provider: :google,
+        identifier: "1"
+      }
+
+      %{social_identifier_attrs: social_identifier_attrs}
+    end
+
+    test "token is valid", %{social_identifier_attrs: social_identifier_attrs} do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      social_identifier_token =
+        insert(:social_identifier_token, social_identifier_token |> Map.from_struct())
+
+      assert Accounts.get_social_identifier_token(token) == social_identifier_token
+    end
+
+    test "token is not exists" do
+      refute Accounts.get_social_identifier_token("not exist token")
+    end
+
+    test "token exists but was expired after 1 hours", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      insert(
+        :social_identifier_token,
+        social_identifier_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60)
+        )
+      )
+
+      refute Accounts.get_social_identifier_token(token)
+    end
+
+    test "token exists and is not expired", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      social_identifier_token =
+        insert(
+          :social_identifier_token,
+          social_identifier_token
+          |> Map.from_struct()
+          |> Map.put(
+            :inserted_at,
+            NaiveDateTime.utc_now()
+            |> NaiveDateTime.add(-1 * 60 * 60)
+            |> NaiveDateTime.add(1 * 60)
+          )
+        )
+
+      assert Accounts.get_social_identifier_token(token) == social_identifier_token
+    end
+  end
+
   describe "get_user_by_name_or_email/1" do
     test "only return the user if the name completely match" do
       user = insert(:user)
