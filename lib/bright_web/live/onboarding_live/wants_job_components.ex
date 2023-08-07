@@ -62,11 +62,11 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
                   <li>
                     <label
                       class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
-                      for={"popup_#{@selected_career.name_en}_#{job.position}"}
+                      for={"popup_#{@selected_career.name_en}_#{rank}_#{job.position}"}
                     >
                       <%= job.name %>
                     </label>
-                    <input type="checkbox" id={"popup_#{@selected_career.name_en}_#{job.position}"} class="peer hidden" />
+                    <input type="checkbox" id={"popup_#{@selected_career.name_en}_#{rank}_#{job.position}"} class="peer hidden" />
 
                     <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
                       <div>
