@@ -5,7 +5,7 @@ module "googleapis" {
 module "bucket" {
   source = "../../modules/google/bucket"
 
-  name = "bright-dev"
+  name = "bright-stg"
 }
 
 module "db" {
