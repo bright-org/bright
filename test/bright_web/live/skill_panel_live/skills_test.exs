@@ -15,6 +15,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     if score do
       insert(:skill_class_score, user: user, skill_class: skill_class)
+      _skill_unit_score = insert(:skill_unit_score, user: user, skill_unit: skill_unit)
       insert(:skill_score, user: user, skill: skill_1, score: score)
       insert(:skill_score, user: user, skill: skill_2)
       insert(:skill_score, user: user, skill: skill_3)

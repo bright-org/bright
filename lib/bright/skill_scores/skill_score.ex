@@ -26,6 +26,8 @@ defmodule Bright.SkillScores.SkillScore do
     |> validate_required([:score])
   end
 
+  def user_query(user), do: user_id_query(user.id)
+
   def user_id_query(user_id) do
     from q in __MODULE__,
       where: q.user_id == ^user_id

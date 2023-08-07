@@ -40,7 +40,11 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Enum.filter(& &1.changed)
 
     {:ok, %{skill_class_score: skill_class_score}} =
-      SkillScores.update_skill_scores(socket.assigns.skill_class_score, target_skill_scores)
+      SkillScores.update_skill_scores(
+        socket.assigns.current_user,
+        socket.assigns.skill_class_score,
+        target_skill_scores
+      )
 
     {:noreply,
      socket
@@ -166,6 +170,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     # NOTE: skill_class_scoreが存在しないときの生成処理について
     # 管理側でスキルクラスを増やすなどの操作も想定し、
     # アクセスしたタイミングで生成するようにしています。
+
+    # TODO: クラス開放処理実装時に対応
+    # - クラス開放が必要のないclass=1のみを対象とする
+    # - クラス開放が必要なものはここではなく解放時に作成する
     {:ok, %{skill_class_score: skill_class_score}} =
       SkillScores.create_skill_class_score(
         socket.assigns.current_user,

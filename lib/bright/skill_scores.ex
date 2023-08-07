@@ -7,7 +7,7 @@ defmodule Bright.SkillScores do
   alias Bright.Repo
 
   alias Bright.SkillUnits
-  alias Bright.SkillScores.{SkillClassScore, SkillScore}
+  alias Bright.SkillScores.{SkillClassScore, SkillUnitScore, SkillScore}
 
   # レベルの判定値
   @normal_level 40
@@ -46,6 +46,7 @@ defmodule Bright.SkillScores do
   Creates a skill_class_score with skill_scores
   """
   def create_skill_class_score(user, skill_class) do
+    skill_units = SkillUnits.list_skill_units(Ecto.assoc(skill_class, :skill_units))
     skills = SkillUnits.list_skills_on_skill_class(skill_class)
 
     Ecto.Multi.new()
@@ -54,22 +55,46 @@ defmodule Bright.SkillScores do
       skill_class_id: skill_class.id
     })
     |> Ecto.Multi.insert_all(:skill_scores, SkillScore, fn _ ->
-      # TODO 重複可能性がある。
+      # TODO: 重複している可能性があるのですべては作成できない
+      # あくまでskill_clasのunit単位がいいかもしれない
       skills
-      |> Enum.map(fn skill ->
-        current_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-
-        %{
-          id: Ecto.ULID.generate(),
-          user_id: user.id,
-          skill_id: skill.id,
-          score: :low,
-          inserted_at: current_time,
-          updated_at: current_time
-        }
-      end)
+      |> Enum.map(&build_skill_score_attrs(user, &1))
+    end)
+    |> Ecto.Multi.insert_all(:skill_unit_scores, SkillUnitScore, fn _ ->
+      # TODO: 重複している可能性があるのですべては作成できない
+      skill_units
+      |> Enum.map(&build_skill_unit_score_attrs(user, &1))
     end)
     |> Repo.transaction()
+  end
+
+  defp build_skill_score_attrs(user, skill) do
+    %{
+      id: Ecto.ULID.generate(),
+      user_id: user.id,
+      skill_id: skill.id,
+      score: :low
+    }
+    |> Map.merge(current_time_stamp())
+  end
+
+  defp build_skill_unit_score_attrs(user, skill_unit) do
+    %{
+      id: Ecto.ULID.generate(),
+      user_id: user.id,
+      skill_unit_id: skill_unit.id,
+      percentage: 0.0
+    }
+    |> Map.merge(current_time_stamp())
+  end
+
+  defp current_time_stamp do
+    current_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+    %{
+      inserted_at: current_time,
+      updated_at: current_time
+    }
   end
 
   @doc """
@@ -97,8 +122,8 @@ defmodule Bright.SkillScores do
     skill_scores = list_skill_scores_from_skill_class_score(skill_class_score)
 
     size = Enum.count(skill_scores)
-    num_skilled_items = Enum.count(skill_scores, &(&1.score == :high))
-    percentage = if size > 0, do: 100 * (num_skilled_items / size), else: 0.0
+    num_high_scores = Enum.count(skill_scores, &(&1.score == :high))
+    percentage = calc_percentage(num_high_scores, size)
     level = get_level(percentage)
 
     change_skill_class_score(skill_class_score, %{percentage: percentage, level: level})
@@ -206,7 +231,7 @@ defmodule Bright.SkillScores do
   @doc """
   Updates skill_scores.
   """
-  def update_skill_scores(skill_class_score, skill_scores) do
+  def update_skill_scores(user, skill_class_score, skill_scores) do
     skill_scores
     |> Enum.reduce(Ecto.Multi.new(), fn skill_score, multi ->
       # 値はすでに保存済みなのでforce_changeでchangesetを構成
@@ -220,6 +245,14 @@ defmodule Bright.SkillScores do
     end)
     |> Ecto.Multi.run(:skill_class_score, fn _repo, _ ->
       update_skill_class_score_stats(skill_class_score)
+    end)
+    |> Ecto.Multi.run(:skill_unit_scores, fn _repo, _ ->
+      # 更新対象のスキルが属するスキルユニットのみを対象としている
+      skill_scores
+      |> Repo.preload(skill: [skill_category: [:skill_unit]])
+      |> Enum.map(& &1.skill.skill_category.skill_unit)
+      |> Enum.uniq()
+      |> then(&update_skill_unit_scores_stats(user, &1))
     end)
     |> Repo.transaction()
   end
@@ -251,5 +284,40 @@ defmodule Bright.SkillScores do
   """
   def change_skill_score(%SkillScore{} = skill_score, attrs \\ %{}) do
     SkillScore.changeset(skill_score, attrs)
+  end
+
+  @doc """
+  Updates a skill_unit_score aggregation columns.
+  """
+  def update_skill_unit_scores_stats(user, skill_units) do
+    skill_units
+    |> Repo.preload(
+      skill_unit_scores: SkillUnitScore.user_query(user),
+      skill_categories: [skills: [skill_scores: SkillScore.user_query(user)]]
+    )
+    |> Enum.reduce(Ecto.Multi.new(), fn skill_unit, multi ->
+      skill_unit_score = List.first(skill_unit.skill_unit_scores)
+
+      skill_scores =
+        skill_unit.skill_categories
+        |> Enum.flat_map(& &1.skills)
+        |> Enum.map(&List.first(&1.skill_scores))
+        |> Enum.filter(& &1)
+
+      size = Enum.count(skill_scores)
+      num_high_scores = Enum.count(skill_scores, &(&1.score == :high))
+      percentage = calc_percentage(num_high_scores, size)
+      changeset = SkillUnitScore.changeset(skill_unit_score, %{percentage: percentage})
+
+      multi
+      |> Ecto.Multi.update(:"skill_unit_score_#{skill_unit_score.id}", changeset)
+    end)
+    |> Repo.transaction()
+  end
+
+  defp calc_percentage(_value, 0), do: 0.0
+
+  defp calc_percentage(value, size) do
+    100 * (value / size)
   end
 end
