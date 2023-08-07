@@ -148,8 +148,8 @@ defmodule Bright.UserSkillPanels do
     do: :none
 
   defp get_level_by_class_in_skills_panel_convert_class_score_row(%{
-        skill_class_scores: skill_class_scores
-      }) do
+         skill_class_scores: skill_class_scores
+       }) do
     skill_class_scores
     |> List.first()
     |> Map.get(:level)
