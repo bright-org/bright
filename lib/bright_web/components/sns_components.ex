@@ -19,24 +19,49 @@ defmodule BrightWeb.SnsComponents do
   attr :github_url, :string, default: ""
 
   def sns(assigns) do
-    assigns =
-      assigns
-      |> assign(:twitter_url, "window.open('#{assigns.twitter_url}')")
-      |> assign(:facebook_url, "window.open('#{assigns.facebook_url}')")
-      |> assign(:github_url, "window.open('#{assigns.github_url}')")
-
     ~H"""
     <div class="flex gap-x-6 mr-2">
-      <button type="button" onclick={@twitter_url}>
-        <img src="/images/common/twitter.svg" width="26px" />
-      </button>
-      <button type="button" onclick={@github_url}>
-        <img src="/images/common/github.svg" width="26px" />
-      </button>
-      <button type="button" onclick={@facebook_url}>
-        <img src="/images/common/facebook.svg" width="26px" />
-      </button>
+      <.icon_button sns_type="twitter" url={@twitter_url} />
+      <.icon_button sns_type="github" url={@github_url} />
+      <.icon_button sns_type="facebook" url={@facebook_url} />
     </div>
     """
   end
+
+  attr :url, :string
+  attr :sns_type, :string, values: ~w(twitter github facebook)
+
+  defp icon_button(%{url: url} = assigns) when url in ["", nil] do
+    ~H"""
+    <.icon sns_type={@sns_type} disable={true} />
+    """
+  end
+
+  defp icon_button(assigns) do
+    assigns =
+      assigns
+      |> assign(:url, "window.open('#{assigns.url}')")
+
+    ~H"""
+    <button type="button" onclick={@url}>
+      <.icon sns_type={@sns_type} disable={false} />
+    </button>
+    """
+  end
+
+  attr :disable, :boolean
+  attr :sns_type, :string, values: ~w(twitter github facebook)
+
+  defp icon(assigns) do
+    assigns =
+      assigns
+      |> assign(src: "/images/common/#{assigns.sns_type}#{disable_icon_suffix(assigns.disable)}")
+
+    ~H"""
+    <img src={@src} width="26px" />
+    """
+  end
+
+  defp disable_icon_suffix(true), do: "_disable.png"
+  defp disable_icon_suffix(false), do: ".svg"
 end
