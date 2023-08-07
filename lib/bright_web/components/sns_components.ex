@@ -31,7 +31,7 @@ defmodule BrightWeb.SnsComponents do
   attr :url, :string
   attr :sns_type, :string
 
-  defp icon_button(%{url: ""} = assigns) do
+  defp icon_button(%{url: url} = assigns) when url in ["", nil] do
     ~H"""
     <.icon sns_type={@sns_type} disable={true} />
     """
