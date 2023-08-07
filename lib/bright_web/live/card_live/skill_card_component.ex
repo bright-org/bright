@@ -59,8 +59,10 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      socket
      |> assign(assigns)
      |> assign(:selected_tab, "engineer")
-     # TODO　サンプルデータはDBの処理を作成後消すこと
-     |> assign(:skill_panels, UserSkillPanels.get_level_by_class_in_skills_panel("01H76EC57N8JZHT5M3WZ0P7VAB"))}
+     |> assign(
+       :skill_panels,
+       UserSkillPanels.get_level_by_class_in_skills_panel(assigns.current_user.id)
+     )}
   end
 
   @impl true
@@ -135,5 +137,4 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp level_text(:beginner), do: "見習い"
   defp level_text(:normal), do: "平均"
   defp level_text(:skilled), do: "ベテラン"
-
 end

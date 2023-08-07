@@ -126,32 +126,32 @@ defmodule Bright.UserSkillPanels do
       ]
     )
     |> Repo.all()
-    |> convert()
+    |> get_level_by_class_in_skills_panel_data_convert()
   end
 
-  def convert(user_skill_panels) do
+  defp get_level_by_class_in_skills_panel_data_convert(user_skill_panels) do
     user_skill_panels
-    |> Enum.map(&convert_row/1)
+    |> Enum.map(&get_level_by_class_in_skills_panel_convert_row/1)
   end
 
-  def convert_row(user_skill_panel) do
+  defp get_level_by_class_in_skills_panel_convert_row(user_skill_panel) do
     %{name: name, skill_classes: skill_classes} = user_skill_panel.skill_panel
 
     skill_classes =
       skill_classes
-      |> Enum.map(&convert_class_score_row/1)
+      |> Enum.map(&get_level_by_class_in_skills_panel_convert_class_score_row/1)
 
     %{name: name, levels: skill_classes}
   end
 
-  def convert_class_score_row(%{skill_class_scores: []}) do
-    :none
-  end
+  defp get_level_by_class_in_skills_panel_convert_class_score_row(%{skill_class_scores: []}),
+    do: :none
 
-  def convert_class_score_row(%{skill_class_scores: skill_class_scores}) do
+  defp get_level_by_class_in_skills_panel_convert_class_score_row(%{
+        skill_class_scores: skill_class_scores
+      }) do
     skill_class_scores
     |> List.first()
     |> Map.get(:level)
   end
-
 end
