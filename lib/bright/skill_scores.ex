@@ -52,6 +52,7 @@ defmodule Bright.SkillScores do
       Ecto.assoc(skill_class, :skill_units)
       |> SkillUnits.list_skill_units()
       |> Repo.preload(skill_unit_scores: SkillUnitScore.user_query(user))
+
     skills =
       SkillUnits.list_skills_on_skill_class(skill_class)
       |> Repo.preload(skill_scores: SkillScore.user_query(user))
@@ -63,17 +64,16 @@ defmodule Bright.SkillScores do
     })
     |> Ecto.Multi.insert_all(:skill_unit_scores, SkillUnitScore, fn _ ->
       skill_units
-      |> Enum.filter(& &1.skill_unit_scores == [])
-      |> Enum.map(& build_skill_unit_score_attrs(user, &1))
-      |> Enum.filter(& &1)
+      |> Enum.filter(&(&1.skill_unit_scores == []))
+      |> Enum.map(&build_skill_unit_score_attrs(user, &1))
     end)
     |> Ecto.Multi.insert_all(:skill_scores, SkillScore, fn _ ->
       skills
-      |> Enum.filter(& &1.skill_scores == [])
-      |> Enum.map(& build_skill_score_attrs(user, &1))
-      |> Enum.filter(& &1)
+      |> Enum.filter(&(&1.skill_scores == []))
+      |> Enum.map(&build_skill_score_attrs(user, &1))
     end)
-    |> Ecto.Multi.run(:skill_class_score, fn _repo, %{skill_class_score_init: skill_class_score} ->
+    |> Ecto.Multi.run(:skill_class_score, fn _repo,
+                                             %{skill_class_score_init: skill_class_score} ->
       update_skill_class_score_stats(skill_class_score)
     end)
     |> Repo.transaction()
@@ -110,6 +110,7 @@ defmodule Bright.SkillScores do
 
   @doc """
   Updates a skill_class_score.
+  TODO: 削除
 
   ## Examples
 
@@ -142,7 +143,25 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
+  Updates a skill_class_scores aggregation columns.
+  """
+  def update_skill_class_scores_stats(user, skill_classes) do
+    skill_classes
+    |> Repo.preload(skill_class_scores: SkillClassScore.user_query(user))
+    |> Enum.reduce(Ecto.Multi.new(), fn skill_class, multi ->
+      skill_class_score = List.first(skill_class.skill_class_scores)
+
+      multi
+      |> Ecto.Multi.run(:"skill_class_score_#{skill_class_score.id}", fn _repo, _ ->
+        update_skill_class_score_stats(skill_class_score)
+      end)
+    end)
+    |> Repo.transaction()
+  end
+
+  @doc """
   Deletes a skill_class_score.
+  TODO: 削除
 
   ## Examples
 
@@ -223,6 +242,7 @@ defmodule Bright.SkillScores do
 
   @doc """
   Updates a skill_score.
+  TODO: 削除
 
   ## Examples
 
@@ -242,7 +262,20 @@ defmodule Bright.SkillScores do
   @doc """
   Updates skill_scores.
   """
-  def update_skill_scores(user, skill_class_score, skill_scores) do
+  def update_skill_scores(user, skill_scores) do
+    # 更新対象のスキルが属するスキルユニット/スキルクラスは集計更新対象
+    skill_units =
+      skill_scores
+      |> Repo.preload(skill: [skill_category: [:skill_unit]])
+      |> Enum.map(& &1.skill.skill_category.skill_unit)
+      |> Enum.uniq()
+
+    skill_classes =
+      skill_units
+      |> Repo.preload(:skill_classes)
+      |> Enum.flat_map(& &1.skill_classes)
+      |> Enum.uniq()
+
     skill_scores
     |> Enum.reduce(Ecto.Multi.new(), fn skill_score, multi ->
       # 値はすでに保存済みなのでforce_changeでchangesetを構成
@@ -254,22 +287,18 @@ defmodule Bright.SkillScores do
       multi
       |> Ecto.Multi.update(:"skill_score_#{skill_score.id}", changeset)
     end)
-    |> Ecto.Multi.run(:skill_class_score, fn _repo, _ ->
-      update_skill_class_score_stats(skill_class_score)
-    end)
     |> Ecto.Multi.run(:skill_unit_scores, fn _repo, _ ->
-      # 更新対象のスキルが属するスキルユニットのみを対象としている
-      skill_scores
-      |> Repo.preload(skill: [skill_category: [:skill_unit]])
-      |> Enum.map(& &1.skill.skill_category.skill_unit)
-      |> Enum.uniq()
-      |> then(&update_skill_unit_scores_stats(user, &1))
+      update_skill_unit_scores_stats(user, skill_units)
+    end)
+    |> Ecto.Multi.run(:skill_class_scores, fn _repo, _ ->
+      update_skill_class_scores_stats(user, skill_classes)
     end)
     |> Repo.transaction()
   end
 
   @doc """
   Deletes a skill_score.
+  TODO: 削除
 
   ## Examples
 
@@ -296,6 +325,22 @@ defmodule Bright.SkillScores do
   def change_skill_score(%SkillScore{} = skill_score, attrs \\ %{}) do
     SkillScore.changeset(skill_score, attrs)
   end
+
+  @doc """
+  Gets a single skill_unit_score.
+
+  Raises `Ecto.NoResultsError` if the Skill score does not exist.
+
+  ## Examples
+
+      iex> get_skill_unit_score!(123)
+      %SkillClassScore{}
+
+      iex> get_skill_unit_score!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_skill_unit_score!(id), do: Repo.get!(SkillUnitScore, id)
 
   @doc """
   Updates a skill_unit_score aggregation columns.

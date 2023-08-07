@@ -39,12 +39,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Map.values()
       |> Enum.filter(& &1.changed)
 
-    {:ok, %{skill_class_score: skill_class_score}} =
-      SkillScores.update_skill_scores(
-        socket.assigns.current_user,
-        socket.assigns.skill_class_score,
-        target_skill_scores
-      )
+    {:ok, _} = SkillScores.update_skill_scores(socket.assigns.current_user, target_skill_scores)
+    skill_class_score = SkillScores.get_skill_class_score!(socket.assigns.skill_class_score.id)
 
     {:noreply,
      socket

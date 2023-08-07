@@ -5,6 +5,7 @@ defmodule Bright.SkillScores.SkillClassScore do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -27,5 +28,9 @@ defmodule Bright.SkillScores.SkillClassScore do
     skill_class_score
     |> cast(attrs, [:level, :percentage])
     |> validate_required([:level, :percentage])
+  end
+
+  def user_query(user) do
+    from(q in __MODULE__, where: q.user_id == ^user.id)
   end
 end

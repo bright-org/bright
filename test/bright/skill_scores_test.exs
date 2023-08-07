@@ -59,14 +59,14 @@ defmodule Bright.SkillScoresTest do
       assert Enum.all?(skill_scores, &(&1.score == :low))
 
       assert Enum.map(skill_scores, & &1.skill_id)
-             |> Enum.sort() == [skill_1.id, skill_2.id]
+             |> Enum.sort() == Enum.sort([skill_1.id, skill_2.id])
 
       skill_unit_scores = Bright.Repo.preload(user, :skill_unit_scores).skill_unit_scores
       assert Enum.all?(skill_unit_scores, &(&1.percentage == 0.0))
       assert Enum.all?(skill_unit_scores, &(&1.user_id == user.id))
 
       assert Enum.map(skill_unit_scores, & &1.skill_unit_id)
-             |> Enum.sort() == [skill_unit_1.id, skill_unit_2.id]
+             |> Enum.sort() == Enum.sort([skill_unit_1.id, skill_unit_2.id])
     end
 
     test "create_skill_class_score/2 case duplicated skill_scores", %{
@@ -81,11 +81,14 @@ defmodule Bright.SkillScoresTest do
       # - skill_unit_2を未入力
       # としている
       skill_class_2 = insert(:skill_class, skill_panel: build(:skill_panel))
+
       skill_unit_1 =
-        insert(:skill_unit, skill_class_units: [
-          %{skill_class_id: skill_class.id, position: 1},
-          %{skill_class_id: skill_class_2.id, position: 1}
-        ])
+        insert(:skill_unit,
+          skill_class_units: [
+            %{skill_class_id: skill_class.id, position: 1},
+            %{skill_class_id: skill_class_2.id, position: 1}
+          ]
+        )
 
       skill_unit_2 =
         insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 2}])
@@ -206,12 +209,14 @@ defmodule Bright.SkillScoresTest do
     setup do
       user = insert(:user)
       skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
-      insert(:skill_class_score, user: user, skill_class: skill_class)
 
-      skill_category = insert(:skill_category, skill_unit: build(:skill_unit), position: 1)
+      skill_unit =
+        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+
+      skill_category = insert(:skill_category, skill_unit: skill_unit, position: 1)
       skill = insert(:skill, skill_category: skill_category, position: 1)
 
-      %{user: user, skill: skill}
+      %{user: user, skill_class: skill_class, skill_unit: skill_unit, skill: skill}
     end
 
     test "list_skill_scores/0 returns all skill_scores", %{
@@ -276,6 +281,23 @@ defmodule Bright.SkillScoresTest do
     } do
       skill_score = insert(:skill_score, user: user, skill: skill)
       assert %Ecto.Changeset{} = SkillScores.change_skill_score(skill_score)
+    end
+
+    test "update_skill_scores", %{
+      user: user,
+      skill_class: skill_class,
+      skill_unit: skill_unit,
+      skill: skill
+    } do
+      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_unit_score = insert(:skill_unit_score, user: user, skill_unit: skill_unit)
+      skill_score = insert(:skill_score, user: user, skill: skill) |> Map.put(:score, :high)
+
+      {:ok, _} = SkillScores.update_skill_scores(user, [skill_score])
+
+      assert %{percentage: 100.0} = SkillScores.get_skill_unit_score!(skill_unit_score.id)
+      assert %{percentage: 100.0} = SkillScores.get_skill_class_score!(skill_class_score.id)
+      assert %{score: :high} = SkillScores.get_skill_score!(skill_score.id)
     end
   end
 
