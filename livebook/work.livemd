@@ -17,6 +17,7 @@ defmodule Test do
       left_join: skill_class_scores in assoc(skill_classes, :skill_class_scores),
       on: skill_class_scores.user_id == ^user_id,
       where: user_skill_panel.user_id == ^user_id,
+      order_by: [skill_panel.updated_at, skill_classes.class],
       preload: [
         skill_panel:
           {skill_panel, skill_classes: {skill_classes, skill_class_scores: skill_class_scores}}
@@ -71,5 +72,9 @@ Test2.user()
 ```
 
 ```elixir
+alias Bright.UserSkillPanels.UserSkillPanel
+import Ecto.Query, warn: false
+alias Bright.Repo
 
+Repo.all(UserSkillPanel)
 ```
