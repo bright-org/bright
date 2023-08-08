@@ -59,7 +59,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
       |> SkillPanels.change_skill_panel()
 
     career_fields =
-      Bright.Jobs.list_career_fields()
+      Bright.CareerFields.list_career_fields()
       |> Enum.map(fn %{id: id_value, name_ja: name_value} ->
         {String.to_atom(name_value), id_value}
       end)

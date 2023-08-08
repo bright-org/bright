@@ -30,7 +30,7 @@ defmodule Bright.JobsFixtures do
         name_ja: "日本語名",
         position: 42
       })
-      |> Bright.Jobs.create_career_field()
+      |> Bright.CareerFields.create_career_field()
 
     career_field
   end

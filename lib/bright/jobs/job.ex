@@ -4,7 +4,7 @@ defmodule Bright.Jobs.Job do
   """
   use Ecto.Schema
   import Ecto.Changeset
-  alias Bright.Jobs.CareerField
+  alias Bright.CareerFields.CareerField
   alias Bright.Jobs.CareerWantJob
   alias Bright.Jobs.JobSkillPanel
 

@@ -3,8 +3,7 @@ defmodule Bright.Seeds.SkillPanel do
   開発用のスキルパネルSeedデータ
   """
 
-  alias Bright.Jobs
-  alias Bright.{Repo, SkillPanels, SkillUnits}
+  alias Bright.{Repo, SkillPanels, SkillUnits, CareerFields}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
   alias Bright.SkillUnits.{SkillClassUnit, SkillUnit, SkillCategory, Skill}
   alias Bright.SkillScores.{CareerFieldScore, SkillClassScore, SkillUnitScore, SkillScore}
@@ -58,7 +57,7 @@ defmodule Bright.Seeds.SkillPanel do
   end
 
   def insert do
-    Jobs.list_career_fields()
+    CareerFields.list_career_fields()
     |> Enum.each(fn c ->
       1..4
       |> Enum.each(fn i -> create_panel(i, c) end)
