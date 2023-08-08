@@ -6,6 +6,8 @@ defmodule Bright.Seeds.SkillPanel do
   alias Bright.{Repo, SkillPanels, SkillUnits}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
   alias Bright.SkillUnits.{SkillClassUnit, SkillUnit, SkillCategory, Skill}
+  alias Bright.SkillScores.{CareerFieldScore, SkillClassScore, SkillUnitScore, SkillScore}
+  alias Bright.UserSkillPanels.{UserSkillPanel}
 
   def skill_panel(panel_name) do
     %{
@@ -59,7 +61,19 @@ defmodule Bright.Seeds.SkillPanel do
   end
 
   def delete do
-    [Skill, SkillCategory, SkillClassUnit, SkillUnit, SkillClass, SkillPanel]
+    [
+      SkillScore,
+      SkillUnitScore,
+      SkillClassScore,
+      CareerFieldScore,
+      Skill,
+      SkillCategory,
+      SkillClassUnit,
+      SkillUnit,
+      SkillClass,
+      UserSkillPanel,
+      SkillPanel
+    ]
     |> Enum.each(fn s ->
       s
       |> Repo.all()
