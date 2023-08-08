@@ -41,19 +41,43 @@ defmodule BrightWeb.OnboardingLive.Index do
   defp apply_action(socket, :index, params) do
     socket
     |> assign(:page_title, "Listing Onboardings")
-    |> assign(:view_content, params["onboarding"])
+    |> assign(:view_content, params["step"])
+    |> assign(:id, params["id"])
   end
 
   @impl true
   def render(%{view_content: "select_skill_panel"} = assigns) do
+    # skill_panels = Job.list_skill_panels_by_career_want_id(assigns[:id])
+    skill_panels = Jobs.list_skill_panels_by_career_want_id()
+    career_fields = Jobs.list_career_fields_by_career_wants()
+
+    assigns =
+      assign(assigns,
+        skill_panels_by_career_fields: skill_panels,
+        career_fields: career_fields
+      )
+
     ~H"""
-    <.select_skill_panel />
+    <.select_skill_panel
+      skill_panels_by_career_fields={@skill_panels_by_career_fields}
+      career_fields={@career_fields}
+    />
     """
   end
 
   def render(%{view_content: "select_skill_result"} = assigns) do
+    skill_units = ["Elixir本体", "Elixirフレームワーク／ライブラリ", "Elixirテスト", "設計・管理"]
+
+    assigns =
+      assign(assigns,
+        skill_units: skill_units
+      )
+
     ~H"""
-    <.select_skill_result />
+    <.select_skill_result
+      career_field_name_en="engineer"
+      skill_units={@skill_units}
+    />
     """
   end
 
