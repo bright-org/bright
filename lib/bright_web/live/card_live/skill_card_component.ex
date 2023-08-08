@@ -166,8 +166,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
-    skill_panels =
-      UserSkillPanels.get_level_by_class_in_skills_panel(user.id, card.page_params)
+    skill_panels = UserSkillPanels.get_level_by_class_in_skills_panel(user.id, card.page_params)
 
     card = %{
       card
