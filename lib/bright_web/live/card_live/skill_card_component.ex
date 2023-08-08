@@ -21,7 +21,14 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         tabs={@tabs}
       >
         <div class="py-6 px-7 flex gap-y-4 flex-col min-h-[464px]">
-          <div class="flex">
+          <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
+            <li class="flex">
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はありません
+              </div>
+            </li>
+          </ul>
+          <div :if={Enum.count(@skill_panels) > 0} class="flex">
             <div class="flex-1 text-left font-bold"></div>
             <div class="w-36 font-bold">クラス1</div>
             <div class="w-36 font-bold">クラス2</div>

@@ -29,11 +29,16 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
         total_pages={@card.total_pages}
         target={@myself}
       >
-        <div class="pt-4 px-6 h-[216px]">
+        <div class="pt-4 px-6 min-h-[216px]">
           <ul class="flex gap-y-2.5 flex-col">
-              <%= for notification <- @card.notifications do %>
-                <.card_row type={@card.selected_tab} notification={notification} />
-              <% end %>
+            <li :if={Enum.count(@card.notifications) == 0} class="flex">
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2" >
+              <%= Enum.into(@tabs, %{}) |> Map.get(@card.selected_tab) %>はまだありません
+              </div>
+            </li>
+            <%= for notification <- @card.notifications do %>
+              <.card_row type={@card.selected_tab} notification={notification} />
+            <% end %>
           </ul>
         </div>
       </.tab>
