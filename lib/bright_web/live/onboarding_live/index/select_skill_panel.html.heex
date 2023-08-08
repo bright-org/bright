@@ -13,7 +13,7 @@
           <p class="font-bold"><%= career_field.name_ja %>向けのスキル</p>
           <ul class="flex flex-wrap mt-2 gap-4">
             <!-- スキル ここから -->
-            <%= for skill_panel <- @skill_panels_by_career_fields[career_field_id] do %>
+            <%= for skill_panel <- Map.get(@skill_panels_by_career_fields, career_field_id, []) do %>
               <li>
                 <button
                   onclick={"location.href='/onboardings/select_skill_result/#{skill_panel.skill_panel_id}'"}

@@ -103,6 +103,7 @@ defmodule Bright.Jobs do
   end
 
   def list_skill_panels_by_career_want_id do
+    # TODO: DBからデータ取得
     %{
       "01H75APD4QK5WDQMQCVY1XM9XT" => [
         %{name: "Webアプリ開発 Elixir", skill_panel_id: "01H77AMPH7X5ZZPN3FRVNACTYH"},
@@ -115,6 +116,7 @@ defmodule Bright.Jobs do
   end
 
   def list_career_fields_by_career_wants do
+    # TODO: DBからデータ取得
     %{
       "01H75APD4QK5WDQMQCVY1XM9XT" => %{name_en: "engineer", name_ja: "エンジニア"},
       "01H75APD6YQPVR7Z6M3NA66WCB" => %{name_en: "designer", name_ja: "デザイナー"}
