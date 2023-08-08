@@ -1,23 +1,20 @@
 defmodule Bright.CareerFieldsTest do
   use Bright.DataCase
-
   alias Bright.CareerFields
+  import Bright.Factory
 
-  # TODO: Bright.Factoryで対応する
   describe "career_fields" do
     alias Bright.CareerFields.CareerField
-
-    import Bright.JobsFixtures
 
     @invalid_attrs %{name_en: nil, name_ja: nil, position: nil}
 
     test "list_career_fields/0 returns all career_fields" do
-      career_field = career_field_fixture()
+      career_field = insert(:career_field)
       assert CareerFields.list_career_fields() == [career_field]
     end
 
     test "get_career_field!/1 returns the career_field with given id" do
-      career_field = career_field_fixture()
+      career_field = insert(:career_field)
       assert CareerFields.get_career_field!(career_field.id) == career_field
     end
 
@@ -39,7 +36,7 @@ defmodule Bright.CareerFieldsTest do
     end
 
     test "update_career_field/2 with valid data updates the career_field" do
-      career_field = career_field_fixture()
+      career_field = insert(:career_field)
 
       update_attrs = %{
         name_en: "some updated name",
@@ -56,7 +53,7 @@ defmodule Bright.CareerFieldsTest do
     end
 
     test "update_career_field/2 with invalid data returns error changeset" do
-      career_field = career_field_fixture()
+      career_field = insert(:career_field)
 
       assert {:error, %Ecto.Changeset{}} =
                CareerFields.update_career_field(career_field, @invalid_attrs)
@@ -65,13 +62,13 @@ defmodule Bright.CareerFieldsTest do
     end
 
     test "delete_career_field/1 deletes the career_field" do
-      career_field = career_field_fixture()
+      career_field = insert(:career_field)
       assert {:ok, %CareerField{}} = CareerFields.delete_career_field(career_field)
       assert_raise Ecto.NoResultsError, fn -> CareerFields.get_career_field!(career_field.id) end
     end
 
     test "change_career_field/1 returns a career_field changeset" do
-      career_field = career_field_fixture()
+      career_field = insert(:career_field)
       assert %Ecto.Changeset{} = CareerFields.change_career_field(career_field)
     end
   end

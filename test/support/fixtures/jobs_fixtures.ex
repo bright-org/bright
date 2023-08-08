@@ -20,22 +20,6 @@ defmodule Bright.JobsFixtures do
   end
 
   @doc """
-  Generate a career_field.
-  """
-  def career_field_fixture(attrs \\ %{}) do
-    {:ok, career_field} =
-      attrs
-      |> Enum.into(%{
-        name_en: "some name",
-        name_ja: "日本語名",
-        position: 42
-      })
-      |> Bright.CareerFields.create_career_field()
-
-    career_field
-  end
-
-  @doc """
   Generate a job.
   """
   def job_fixture(attrs \\ %{}) do
