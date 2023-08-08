@@ -50,9 +50,8 @@ erDiagram
   }
 
   career_fields {
-    string name "キャリアフィールド名"
-    string background_color "背景色"
-    string button_color "ボタン色"
+    string name_en "キャリアフィールド名(英語)"
+    string name_ja "キャリアフィールド名(日本語)"
     int position "表示順"
   }
 
