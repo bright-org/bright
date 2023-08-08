@@ -1,8 +1,7 @@
 defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   use BrightWeb, :live_component
 
-  alias Bright.Jobs
-  alias Bright.Jobs.Job
+  alias Bright.{Jobs, CareerFields}
   @rank %{expert: "高度", advanced: "応用", basic: "基本"}
 
   def render(assigns) do
@@ -83,7 +82,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   end
 
   def mount(socket) do
-    career_fields = Jobs.list_career_fields()
+    career_fields = CareerFields.list_career_fields()
 
     jobs =
       Jobs.list_jobs()
