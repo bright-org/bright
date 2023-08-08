@@ -7,6 +7,7 @@ defmodule Bright.Jobs do
   alias Bright.Repo
 
   alias Bright.Jobs.{Job, CareerWant}
+  alias Bright.CareerFields.CareerField
 
   @doc """
   Returns the list of career_wants.
