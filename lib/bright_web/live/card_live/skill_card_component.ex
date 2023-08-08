@@ -161,7 +161,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     %{
       selected_tab: selected_tab,
       skill_panels: [],
-      page_params: %{page: page, page_size: 1},
+      page_params: %{page: page, page_size: 15},
       total_pages: 0
     }
   end
@@ -174,7 +174,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     card = %{
       card
       | skill_panels: skill_panels.entries,
-        total_pages: skill_panels.total_pages
+        total_pages: skill_panels.total_pages / 3
     }
 
     socket
