@@ -54,14 +54,14 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   @impl true
   def update(assigns, socket) do
+    page_params = %{page: 1, page_size: 15}
+    skill_panels = UserSkillPanels.get_level_by_class_in_skills_panel(assigns.current_user.id, page_params)
+
     {:ok,
      socket
      |> assign(assigns)
      |> assign(:selected_tab, "engineer")
-     |> assign(
-       :skill_panels,
-       UserSkillPanels.get_level_by_class_in_skills_panel(assigns.current_user.id)
-     )}
+     |> assign(:skill_panels, skill_panels.entries)}
   end
 
   @impl true

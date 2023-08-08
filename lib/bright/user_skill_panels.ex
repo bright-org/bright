@@ -121,8 +121,9 @@ defmodule Bright.UserSkillPanels do
       [%{name: "Webアプリ開発 Elixir", levels: [:skilled, :normal, :none]}]
 
   """
-  def get_level_by_class_in_skills_panel(user_id) do
-    from(user_skill_panel in UserSkillPanel,
+  def get_level_by_class_in_skills_panel(user_id, page_param) do
+
+    scrivener_page = from(user_skill_panel in UserSkillPanel,
       join: skill_panel in assoc(user_skill_panel, :skill_panel),
       join: skill_classes in assoc(skill_panel, :skill_classes),
       left_join: skill_class_scores in assoc(skill_classes, :skill_class_scores),
@@ -134,8 +135,10 @@ defmodule Bright.UserSkillPanels do
           {skill_panel, skill_classes: {skill_classes, skill_class_scores: skill_class_scores}}
       ]
     )
-    |> Repo.all()
-    |> get_level_by_class_in_skills_panel_data_convert()
+    |> Repo.paginate(page_param)
+
+    entries = scrivener_page.entries |> get_level_by_class_in_skills_panel_data_convert()
+    Map.put(scrivener_page, :entries, entries)
   end
 
   defp get_level_by_class_in_skills_panel_data_convert(user_skill_panels) do
