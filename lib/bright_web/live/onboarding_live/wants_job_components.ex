@@ -58,7 +58,8 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
                 <p class="font-bold"><%= @rank[rank] %></p>
                 <ul class="flex flex-wrap gap-4 mt-2">
                   <!-- label for（2か所） と input id が連動しています-->
-                  <%= for job <- Map.get(@jobs[@selected_career.name_en], rank, []) do %>
+                  <% jobs = Map.get(@jobs, @selected_career.name_en, %{}) %>
+                  <%= for job <- Map.get(jobs, rank, []) do %>
                   <li>
                     <label
                       class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
