@@ -33,7 +33,7 @@ defmodule BrightWeb.Admin.CareerWantJobLiveTest do
 
   #     assert index_live
   #            |> form("#career_want_job-form", career_want_job: @invalid_attrs)
-  #            |> render_change() =~ "can&#39;t be blank"
+  #            |> render_change() =~ "入力してください"
 
   #     assert index_live
   #            |> form("#career_want_job-form", career_want_job: @create_attrs)
@@ -58,7 +58,7 @@ defmodule BrightWeb.Admin.CareerWantJobLiveTest do
 
   #     assert index_live
   #            |> form("#career_want_job-form", career_want_job: @invalid_attrs)
-  #            |> render_change() =~ "can&#39;t be blank"
+  #            |> render_change() =~ "入力してください"
 
   #     assert index_live
   #            |> form("#career_want_job-form", career_want_job: @update_attrs)
@@ -101,7 +101,7 @@ defmodule BrightWeb.Admin.CareerWantJobLiveTest do
 
   #     assert show_live
   #            |> form("#career_want_job-form", career_want_job: @invalid_attrs)
-  #            |> render_change() =~ "can&#39;t be blank"
+  #            |> render_change() =~ "入力してください"
 
   #     assert show_live
   #            |> form("#career_want_job-form", career_want_job: @update_attrs)

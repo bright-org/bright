@@ -410,7 +410,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert show_live
              |> form("#skill_evidence_post-form", skill_evidence_post: %{content: ""})
-             |> render_submit() =~ "can&#39;t be blank"
+             |> render_submit() =~ "入力してください"
 
       show_live
       |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})

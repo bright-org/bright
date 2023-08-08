@@ -110,3 +110,12 @@ msgstr ""
 
 msgid "must be equal to %{number}"
 msgstr ""
+
+msgid "must have the @ sign and no spaces"
+msgstr ""
+
+msgid "does not match password"
+msgstr ""
+
+msgid "did not change"
+msgstr ""

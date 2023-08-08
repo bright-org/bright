@@ -33,7 +33,7 @@ defmodule BrightWeb.Admin.JobSkillPanelLiveTest do
 
   #     assert index_live
   #            |> form("#job_skill_panel-form", job_skill_panel: @invalid_attrs)
-  #            |> render_change() =~ "can&#39;t be blank"
+  #            |> render_change() =~ "入力してください"
 
   #     assert index_live
   #            |> form("#job_skill_panel-form", job_skill_panel: @create_attrs)
@@ -55,7 +55,7 @@ defmodule BrightWeb.Admin.JobSkillPanelLiveTest do
 
   #     assert index_live
   #            |> form("#job_skill_panel-form", job_skill_panel: @invalid_attrs)
-  #            |> render_change() =~ "can&#39;t be blank"
+  #            |> render_change() =~ "入力してください"
 
   #     assert index_live
   #            |> form("#job_skill_panel-form", job_skill_panel: @update_attrs)
@@ -94,7 +94,7 @@ defmodule BrightWeb.Admin.JobSkillPanelLiveTest do
 
   #     assert show_live
   #            |> form("#job_skill_panel-form", job_skill_panel: @invalid_attrs)
-  #            |> render_change() =~ "can&#39;t be blank"
+  #            |> render_change() =~ "入力してください"
 
   #     assert show_live
   #            |> form("#job_skill_panel-form", job_skill_panel: @update_attrs)
