@@ -14,27 +14,27 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     <div>
       <.tab
         id="skill_card"
-        selected_tab={@selected_tab}
-        page={1}
-        total_pages={1}
+        selected_tab={@card.selected_tab}
+        page={@card.page_params.page}
+        total_pages={@card.total_pages}
         target={@myself}
         tabs={@tabs}
       >
         <div class="py-6 px-7 flex gap-y-4 flex-col min-h-[464px]">
-          <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
+          <ul :if={Enum.count(@card.skill_panels) == 0} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はありません
+              <%= Enum.into(@tabs, %{}) |> Map.get(@card.selected_tab) %>はありません
               </div>
             </li>
           </ul>
-          <div :if={Enum.count(@skill_panels) > 0} class="flex">
+          <div :if={Enum.count(@card.skill_panels) > 0} class="flex">
             <div class="flex-1 text-left font-bold"></div>
             <div class="w-36 font-bold">クラス1</div>
             <div class="w-36 font-bold">クラス2</div>
             <div class="w-36 font-bold">クラス3</div>
           </div>
-          <%= for skill_panel <- @skill_panels do %>
+          <%= for skill_panel <- @card.skill_panels do %>
             <.skill_panel skill_panel={skill_panel} />
           <% end %>
         </div>
@@ -54,14 +54,11 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   @impl true
   def update(assigns, socket) do
-    page_params = %{page: 1, page_size: 15}
-    skill_panels = UserSkillPanels.get_level_by_class_in_skills_panel(assigns.current_user.id, page_params)
-
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:selected_tab, "engineer")
-     |> assign(:skill_panels, skill_panels.entries)}
+     |> assign(:card, create_card_param("engineer"))
+     |> assign_card()}
   end
 
   @impl true
@@ -70,31 +67,34 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         %{"id" => "skill_card", "tab_name" => tab_name},
         socket
       ) do
-    socket =
-      socket
-      |> assign(:selected_tab, tab_name)
-
-    # TODO 処理は未実装
-    {:noreply, socket}
+    card_view(socket, tab_name, 1)
   end
 
   def handle_event(
         "previous_button_click",
         %{"id" => "skill_card"},
-        socket
+        %{assigns: %{card: card}} = socket
       ) do
-    # TODO 処理は未実装
-    {:noreply, socket}
+    page = card.page_params.page - 1
+    page = if page < 1, do: 1, else: page
+    card_view(socket, card.selected_tab, page)
   end
 
   def handle_event(
         "next_button_click",
         %{"id" => "skill_card"},
-        socket
+        %{assigns: %{card: card}} = socket
       ) do
-    # TODO 処理は未実装
-    {:noreply, socket}
+    page = card.page_params.page + 1
+
+    page =
+      if page > card.total_pages,
+        do: card.total_pages,
+        else: page
+
+    card_view(socket, card.selected_tab, page)
   end
+
 
   defp skill_panel(assigns) do
     ~H"""
@@ -147,4 +147,38 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp level_text(:beginner), do: "見習い"
   defp level_text(:normal), do: "平均"
   defp level_text(:skilled), do: "ベテラン"
+
+  defp card_view(socket, tab_name, page) do
+    card = create_card_param(tab_name, page)
+
+    socket
+    |> assign(:card, card)
+    |> assign_card()
+    |> then(&{:noreply, &1})
+  end
+
+  defp create_card_param(selected_tab, page \\ 1) do
+    %{
+      selected_tab: selected_tab,
+      skill_panels: [],
+      page_params: %{page: page, page_size: 1},
+      total_pages: 0
+    }
+  end
+
+  defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
+
+      skill_panels = UserSkillPanels.get_level_by_class_in_skills_panel(user.id, card.page_params)
+      |> IO.inspect()
+
+    card = %{
+      card
+      | skill_panels: skill_panels.entries,
+        total_pages: skill_panels.total_pages
+    }
+
+    socket
+    |> assign(:card, card)
+  end
+
 end
