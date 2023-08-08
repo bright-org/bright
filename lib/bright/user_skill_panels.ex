@@ -122,20 +122,20 @@ defmodule Bright.UserSkillPanels do
 
   """
   def get_level_by_class_in_skills_panel(user_id, page_param) do
-
-    scrivener_page = from(user_skill_panel in UserSkillPanel,
-      join: skill_panel in assoc(user_skill_panel, :skill_panel),
-      join: skill_classes in assoc(skill_panel, :skill_classes),
-      left_join: skill_class_scores in assoc(skill_classes, :skill_class_scores),
-      on: skill_class_scores.user_id == ^user_id,
-      where: user_skill_panel.user_id == ^user_id,
-      order_by: [skill_panel.updated_at, skill_classes.class],
-      preload: [
-        skill_panel:
-          {skill_panel, skill_classes: {skill_classes, skill_class_scores: skill_class_scores}}
-      ]
-    )
-    |> Repo.paginate(page_param)
+    scrivener_page =
+      from(user_skill_panel in UserSkillPanel,
+        join: skill_panel in assoc(user_skill_panel, :skill_panel),
+        join: skill_classes in assoc(skill_panel, :skill_classes),
+        left_join: skill_class_scores in assoc(skill_classes, :skill_class_scores),
+        on: skill_class_scores.user_id == ^user_id,
+        where: user_skill_panel.user_id == ^user_id,
+        order_by: [skill_panel.updated_at, skill_classes.class],
+        preload: [
+          skill_panel:
+            {skill_panel, skill_classes: {skill_classes, skill_class_scores: skill_class_scores}}
+        ]
+      )
+      |> Repo.paginate(page_param)
 
     entries = scrivener_page.entries |> get_level_by_class_in_skills_panel_data_convert()
     Map.put(scrivener_page, :entries, entries)

@@ -95,7 +95,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     card_view(socket, card.selected_tab, page)
   end
 
-
   defp skill_panel(assigns) do
     ~H"""
     <div class="flex">
@@ -167,9 +166,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
-
-      skill_panels = UserSkillPanels.get_level_by_class_in_skills_panel(user.id, card.page_params)
-      |> IO.inspect()
+    skill_panels =
+      UserSkillPanels.get_level_by_class_in_skills_panel(user.id, card.page_params)
 
     card = %{
       card
@@ -180,5 +178,4 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     socket
     |> assign(:card, card)
   end
-
 end
