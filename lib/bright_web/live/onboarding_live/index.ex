@@ -3,8 +3,7 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   embed_templates "index/*"
 
-  alias Bright.Jobs
-  alias Bright.Onboardings
+  alias Bright.{Jobs, Onboardings, CareerFields}
 
   @impl true
   def mount(_params, _session, socket) do
@@ -84,7 +83,7 @@ defmodule BrightWeb.OnboardingLive.Index do
   def render(%{view_content: _} = assigns) do
     career_wants = Jobs.list_career_want_jobs_with_career_wants()
     career_fields_wants = Jobs.list_career_wants_jobs_with_career_fields()
-    career_fields = Jobs.list_career_fields()
+    career_fields = CareerFields.list_career_fields()
 
     assigns =
       assign(assigns,
