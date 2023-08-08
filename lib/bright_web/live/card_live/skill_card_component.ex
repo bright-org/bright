@@ -20,24 +20,16 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         target={@myself}
         tabs={@tabs}
       >
-        <div class="py-4 px-7 flex gap-y-2 flex-col">
-          <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
-            <table class="table-fixed skill-table -mt-2">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th class="pl-8">クラス1</th>
-                  <th class="pl-8">クラス2</th>
-                  <th class="pl-8">クラス3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <%= for skill_panel <- @skill_panels do %>
-                  <.skill_panel skill_panel={skill_panel} />
-                <% end %>
-              </tbody>
-            </table>
+        <div class="py-6 px-7 flex gap-y-4 flex-col min-h-[464px]">
+          <div class="flex">
+            <div class="flex-1 text-left font-bold"></div>
+            <div class="w-36 font-bold">クラス1</div>
+            <div class="w-36 font-bold">クラス2</div>
+            <div class="w-36 font-bold">クラス3</div>
           </div>
+          <%= for skill_panel <- @skill_panels do %>
+            <.skill_panel skill_panel={skill_panel} />
+          <% end %>
         </div>
       </.tab>
     </div>
@@ -99,19 +91,25 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   defp skill_panel(assigns) do
     ~H"""
-    <tr>
-      <td><%= @skill_panel.name %></td>
-      <%= for level <- @skill_panel.levels do %>
-        <.skill_gem level={level}/>
+    <div class="flex">
+      <div class="flex-1 text-left font-bold">
+        <.link
+          href={~p"/panels/#{@skill_panel.id}/graph"}
+          method="get"
+        >
+          <%= @skill_panel.name %>
+        </.link>
+      </div>
+      <%= for {level, class} <- Enum.with_index(@skill_panel.levels, 1) do %>
+        <.skill_gem level={level} class={class} id={@skill_panel.id}/>
       <% end %>
-    </tr>
+    </div>
     """
   end
 
   defp skill_gem(%{level: :none} = assigns) do
     ~H"""
-    <td>
-    </td>
+    <div class="w-36"></div>
     """
   end
 
@@ -121,11 +119,16 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       |> assign(:icon_path, icon_path(assigns.level))
 
     ~H"""
-    <td>
-      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-        <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
-      </p>
-    </td>
+    <div class="w-36">
+      <.link
+        href={~p"/panels/#{@id}/graph?class=#{@class}"}
+        method="get"
+      >
+        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+          <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
+        </p>
+      </.link>
+    </div>
     """
   end
 

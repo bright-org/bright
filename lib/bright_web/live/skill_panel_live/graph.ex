@@ -9,14 +9,8 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   # - リソースロード回りは、Skillsと処理が被る可能性が高いです。参照（必要に応じて共通化）してください。
 
   @impl true
-  def mount(_params, _session, socket) do
-    # リンクを出すための実装
-    # - 実際にはparamsからもろもろを引く
-    skill_panel =
-      SkillPanels.list_skill_panels()
-      |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
-      |> List.first()
-      |> Bright.Repo.preload(:skill_classes)
+  def mount(%{"skill_panel_id" => skill_panel_id}, _session, socket) do
+    skill_panel = get_skill_panel(skill_panel_id)
 
     skill_class =
       skill_panel.skill_classes
@@ -30,6 +24,22 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> assign(:page_sub_title, skill_panel.name)
      |> assign(:skill_panel, skill_panel)
      |> assign(:skill_class, skill_class)}
+  end
+
+  defp get_skill_panel("dummy_id") do
+    # TODO dummy_idはダミー用で実装完了後に消すこと
+    # リンクを出すための実装
+    # - 実際にはparamsからもろもろを引く
+
+    SkillPanels.list_skill_panels()
+    |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+    |> List.first()
+    |> Bright.Repo.preload(:skill_classes)
+  end
+
+  defp get_skill_panel(skill_panel_id) do
+    SkillPanels.get_skill_panel!(skill_panel_id)
+    |> Bright.Repo.preload(:skill_classes)
   end
 
   @impl true
