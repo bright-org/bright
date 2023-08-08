@@ -7,7 +7,7 @@ defmodule Bright.SkillPanels.SkillPanel do
   import Ecto.Changeset
 
   alias Bright.SkillPanels.SkillClass
-  alias Bright.Jobs.JobSkillPanel
+  alias Bright.Jobs.{JobSkillPanel, CareerField}
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -15,6 +15,7 @@ defmodule Bright.SkillPanels.SkillPanel do
   schema "skill_panels" do
     field :name, :string
 
+    belongs_to :career_field, CareerField
     has_many :skill_classes, SkillClass, preload_order: [asc: :class], on_replace: :delete
     has_one :job_skill_panel, JobSkillPanel
 
@@ -24,14 +25,14 @@ defmodule Bright.SkillPanels.SkillPanel do
   @doc false
   def changeset(skill_panel, attrs) do
     skill_panel
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :career_field_id])
     |> cast_assoc(:skill_classes,
       with: &SkillClass.changeset/2,
       sort_param: :skill_classes_sort,
       drop_param: :skill_classes_drop
     )
     |> change_skill_classes_class()
-    |> validate_required([:name])
+    |> validate_required([:name, :career_field_id])
   end
 
   # 紐づくスキルクラスのclassを順に設定したchangesetを返す。

@@ -13,6 +13,7 @@ defmodule Bright.Jobs.CareerField do
     field :name_ja, :string
     field :position, :integer
 
+    has_many :skill_panels, Bright.SkillPanels.SkillPanel
     has_many :jobs, Bright.Jobs.Job
     has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
 
