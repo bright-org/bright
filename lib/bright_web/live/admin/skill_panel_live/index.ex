@@ -6,7 +6,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :skill_panels, SkillPanels.list_skill_panels())}
+    {:ok, stream(socket, :skill_panels, SkillPanels.list_skill_panels_with_career_field())}
   end
 
   @impl true
