@@ -20,6 +20,12 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
+        <.input
+          type="select"
+          label="career_fields"
+          field={@form[:career_field_id]}
+          options={@career_fields}
+        />
         <.label>Skill classes</.label>
         <.inputs_for :let={scf} field={@form[:skill_classes]}>
           <input type="hidden" name="skill_panel[skill_classes_sort][]" value={scf.index} />
@@ -52,9 +58,16 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
       |> preload_assoc()
       |> SkillPanels.change_skill_panel()
 
+    career_fields =
+      Bright.Jobs.list_career_fields()
+      |> Enum.map(fn %{id: id_value, name_ja: name_value} ->
+        {String.to_atom(name_value), id_value}
+      end)
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:career_fields, career_fields)
      |> assign_form(changeset)}
   end
 
@@ -111,5 +124,6 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 
-  defp preload_assoc(skill_panel), do: skill_panel |> Bright.Repo.preload(:skill_classes)
+  defp preload_assoc(skill_panel),
+    do: skill_panel |> Bright.Repo.preload([:skill_classes, :career_field])
 end
