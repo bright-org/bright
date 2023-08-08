@@ -7,7 +7,8 @@ defmodule Bright.SkillPanelFactory do
     quote do
       def skill_panel_factory do
         %Bright.SkillPanels.SkillPanel{
-          name: Faker.Lorem.word()
+          name: Faker.Lorem.word(),
+          career_field: build(:career_field)
         }
       end
     end

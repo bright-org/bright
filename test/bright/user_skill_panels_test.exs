@@ -1,6 +1,7 @@
 defmodule Bright.UserSkillPanelsTest do
   use Bright.DataCase
 
+  alias Bright.Repo
   alias Bright.UserSkillPanels
   import Bright.Factory
 
@@ -10,14 +11,17 @@ defmodule Bright.UserSkillPanelsTest do
     @invalid_attrs %{user_id: nil, skill_panel_id: nil}
 
     test "list_user_skill_panels/0 returns all user_skill_panels" do
-      user_skill_panel = insert(:user_skill_panel)
+      %{id: id} = insert(:user_skill_panel)
 
-      assert UserSkillPanels.list_user_skill_panels() == [user_skill_panel]
+      assert [%{id: ^id}] = UserSkillPanels.list_user_skill_panels()
     end
 
     test "get_user_skill_panel!/1 returns the user_skill_panel with given id" do
       user_skill_panel = insert(:user_skill_panel)
-      assert UserSkillPanels.get_user_skill_panel!(user_skill_panel.id) == user_skill_panel
+
+      assert user_skill_panel.id
+             |> UserSkillPanels.get_user_skill_panel!()
+             |> Repo.preload(skill_panel: :career_field) == user_skill_panel
     end
 
     test "create_user_skill_panel/1 with valid data creates a user_skill_panel" do
@@ -55,7 +59,10 @@ defmodule Bright.UserSkillPanelsTest do
       assert {:error, %Ecto.Changeset{}} =
                UserSkillPanels.update_user_skill_panel(user_skill_panel, @invalid_attrs)
 
-      assert user_skill_panel == UserSkillPanels.get_user_skill_panel!(user_skill_panel.id)
+      assert user_skill_panel ==
+               user_skill_panel.id
+               |> UserSkillPanels.get_user_skill_panel!()
+               |> Repo.preload(skill_panel: :career_field)
     end
 
     test "delete_user_skill_panel/1 deletes the user_skill_panel" do
