@@ -71,12 +71,13 @@ module.exports = {
         sns: {
           facebook: "#1877F2",
           twitter: "#1DA1F2",
+          newTwitter: "#000000",
           github: "#0D1117",
         },
         infra: {
           dark: "#51971A",
           light: "#8CEB14",
-          dazzle: "#8CEB14",
+          dazzle: "#F2FFE1",
         },
         engineer: {
           dark: "#165BC8",
