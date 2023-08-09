@@ -1,7 +1,7 @@
 defmodule BrightWeb.Admin.JobLive.Index do
   use BrightWeb, :live_view
 
-  alias Bright.Jobs
+  alias Bright.{Jobs, CareerFields}
   alias Bright.Jobs.Job
 
   @impl true
@@ -48,7 +48,7 @@ defmodule BrightWeb.Admin.JobLive.Index do
   end
 
   defp career_field_options() do
-    Jobs.list_career_fields()
+    CareerFields.list_career_fields()
     |> Enum.map(fn %{id: id_value, name_ja: name_value} ->
       {String.to_atom(name_value), id_value}
     end)

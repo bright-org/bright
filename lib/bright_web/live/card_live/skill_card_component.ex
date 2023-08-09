@@ -46,7 +46,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   @impl true
   def mount(socket) do
     tabs =
-      Bright.Jobs.list_career_fields()
+      Bright.CareerFields.list_career_fields()
       |> Enum.map(&{&1.name_en, &1.name_ja})
 
     {:ok, assign(socket, :tabs, tabs)}
