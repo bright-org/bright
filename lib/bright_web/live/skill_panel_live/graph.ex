@@ -4,6 +4,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   import BrightWeb.TimelineBarComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   alias Bright.SkillPanels
+  alias Bright.SkillScores
 
   # 全体が仮実装です。
   # - リソースロード回りは、Skillsと処理が被る可能性が高いです。参照（必要に応じて共通化）してください。
@@ -18,12 +19,22 @@ defmodule BrightWeb.SkillPanelLive.Graph do
       |> Enum.sort_by(& &1.inserted_at, {:asc, NaiveDateTime})
       |> List.first()
 
+    # TODO スキルジェム表示のデータ取得　（コンポーネント化対象）
+    # TODO クラスを変更できるようにすること
+    class = 1
+    skill_gem = SkillScores.get_skill_gem(socket.assigns.current_user.id, skill_panel.id, class)
+    skill_gem_data = [skill_gem |> Enum.map(fn x -> x.percentage end)]
+    skill_gem_lavel = skill_gem |> Enum.map(fn x -> x.name end)
+
     {:ok,
      socket
      |> assign(:page_title, "スキルパネル")
      |> assign(:page_sub_title, skill_panel.name)
      |> assign(:skill_panel, skill_panel)
-     |> assign(:skill_class, skill_class)}
+     |> assign(:skill_class, skill_class)
+     # TODO スキルジェム表示のデータ取得　（コンポーネント化対象）
+     |> assign(:skill_gem_data, skill_gem_data)
+     |> assign(:skill_gem_lavel, skill_gem_lavel)}
   end
 
   defp get_skill_panel("dummy_id") do
