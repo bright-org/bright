@@ -69,7 +69,9 @@ defmodule BrightWeb.LayoutComponents do
       <h4><%= @page_title %><%= @page_sub_title %></h4>
       <div class="flex gap-x-5">
         <.contact_customer_success_button />
+        <!-- TODO α版では実装しない
         <.search_for_skill_holders_button />
+        -->
         <.user_button icon_file_path={@profile.icon_file_path}/>
         <.logout_button />
       </div>

@@ -32,7 +32,8 @@ defmodule BrightWeb.MypageLiveTest do
              )
 
       # スキルセットジェムのタグがあることを確認
-      assert index_live |> has_element?("div #skill-gem")
+      # TODO α版では実装しない
+      # assert index_live |> has_element?("div #skill-gem")
 
       # 各カードがあることを確認（コンポーネントが貼られていることのみを確認）
       assert index_live |> has_element?("h5", "重要な連絡")
