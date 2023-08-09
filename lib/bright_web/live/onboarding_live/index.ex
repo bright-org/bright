@@ -48,13 +48,13 @@ defmodule BrightWeb.OnboardingLive.Index do
   @impl true
   def render(%{view_content: "select_skill_panel"} = assigns) do
     # skill_panels = Job.list_skill_panels_by_career_want_id(assigns[:id])
-    skill_panels = Jobs.list_skill_panels_by_career_want_id()
-    career_fields = Jobs.list_career_fields_by_career_wants()
+    # skill_panels = Jobs.list_skill_panels_by_career_want_id()
+    # career_fields = Jobs.list_career_fields_by_career_wants()
 
     assigns =
       assign(assigns,
-        skill_panels_by_career_fields: skill_panels,
-        career_fields: career_fields
+        skill_panels_by_career_fields: [],
+        career_fields: []
       )
 
     ~H"""
