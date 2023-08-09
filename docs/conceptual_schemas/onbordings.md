@@ -1,4 +1,4 @@
-# オンボーディングに関わるテーブル定義案
+# オンボーディングに関わるテーブル定義
 [行動シナリオ「4. オンボーディングで最初のスキルパネルを選択する」](https://docs.google.com/spreadsheets/d/161ai6d8-26adTub9nlOtpVAfTmPt9NQp4--q68G0WZo/edit#gid=458681671)で必要なテーブルの定義案です。
 
 [figma](https://www.figma.com/file/q9SVY4YWjijOrgsQtJjlD6/Bright?type=design&node-id=627-3632&mode=design&t=aO8asUN6kiZ0xGCq-0) の対象画面は
@@ -27,7 +27,7 @@ erDiagram
   jobs ||--|{ job_skill_panels : ""
   job_skill_panels ||--|{ skill_panels : ""
   user_skill_panels ||--|{ skill_panels : ""
-  user_skill_panels }|--|| users : ""
+  user_skill_panels }o--|| users : ""
   user_onboardings ||--|| users : ""
   skill_panels ||--|{ skill_classes : ""
   skill_classes ||--|{ skill_class_units : ""
@@ -70,26 +70,4 @@ erDiagram
     date locked_date "固定した日"
     string name "スキルパネル名"
   }
-
-  user_skill_panels {
-    id user_id FK
-    id skill_panel_id FK
-  }
-
-  skill_classes {
-    id skill_panel_id FK
-    string name "クラス名"
-    int rank
-  }
-
-  skill_class_units {
-    id skill_class_id FK
-    id skill_unit_id FK
-    int position
-  }
-
-  skill_units {
-    string name "スキルユニット（大分類）名"
-  }
-
 ```
