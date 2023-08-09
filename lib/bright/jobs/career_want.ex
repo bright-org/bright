@@ -4,7 +4,7 @@ defmodule Bright.Jobs.CareerWant do
   """
   use Ecto.Schema
   import Ecto.Changeset
-  alias Bright.Jobs.CareerWantJob
+  alias Bright.Jobs.CareerWantSkillPanel
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -12,7 +12,9 @@ defmodule Bright.Jobs.CareerWant do
   schema "career_wants" do
     field :name, :string
     field :position, :integer
-    has_many :career_want_jobs, CareerWantJob
+
+    has_many :career_want_skill_panels, CareerWantSkillPanel, on_replace: :delete
+    has_many :skill_panels, through: [:career_want_skill_panels, :skill_panel]
 
     timestamps()
   end

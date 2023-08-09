@@ -6,7 +6,7 @@ defmodule Bright.Jobs do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.Jobs.{Job, CareerWant}
+  alias Bright.Jobs.{Job, CareerWant, CareerWantSkillPanel}
 
   @doc """
   Returns the list of career_wants.
@@ -100,6 +100,40 @@ defmodule Bright.Jobs do
   """
   def change_career_want(%CareerWant{} = career_want, attrs \\ %{}) do
     CareerWant.changeset(career_want, attrs)
+  end
+
+  @doc """
+  Creates a career_want_skill_panel.
+
+  ## Examples
+
+      iex> create_career_want_skill_panel(%{field: value})
+      {:ok, %CareerWant{}}
+
+      iex> create_career_want_skill_panel(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_career_want_skill_panel(attrs \\ %{}) do
+    %CareerWantSkillPanel{}
+    |> CareerWantSkillPanel.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking career_want_skill_panel changes.
+
+  ## Examples
+
+      iex> change_career_want_skil_panel(career_want_skill_panel)
+      %Ecto.Changeset{data: %CareerWantSkillPanel{}}
+
+  """
+  def change_career_want_skill_panel(
+        %CareerWantSkillPanel{} = career_want_skill_panel,
+        attrs \\ %{}
+      ) do
+    CareerWantSkillPanel.changeset(career_want_skill_panel, attrs)
   end
 
   def list_skill_panels_by_career_want_id do
