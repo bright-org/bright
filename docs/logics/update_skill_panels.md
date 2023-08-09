@@ -96,14 +96,15 @@ erDiagram
   users ||--o{ skill_improvements : "スキルアップを登録する"
   skill_improvements ||--|| skill_classes : ""
   skill_improvements ||--|| skill_units : ""
-  users ||--o{ skill_class_scores : "スキルスコアを登録する"
-  skill_class_scores ||--|| skill_classes : ""
-  skill_class_scores ||--|{ skill_scores : ""
-  skill_scores ||--|| skills : ""
-  users ||--|{ career_field_scores : ""
-  career_field_scores ||--|| career_fields : ""
+  users ||--o{ skill_class_scores : ""
   users ||--o{ skill_unit_scores : ""
+  users ||--o{ skill_scores : ""
+  users ||--|{ career_field_scores : ""
+  users ||--o{ skill_class_scores : ""
+  skill_class_scores ||--|| skill_classes : ""
+  skill_scores ||--|| skills : ""
   skill_unit_scores ||--|| skill_units : ""
+  career_fields ||--|| career_field_scores : ""
 
   skill_panels {
     string name "スキルパネル名"
@@ -163,6 +164,8 @@ erDiagram
   skill_class_scores {
     id user_id FK
     id skill_class_id FK
+    float percentage
+    string level
   }
 
   skill_unit_scores {
@@ -172,7 +175,7 @@ erDiagram
   }
 
   skill_scores {
-    id skill_class_score_id FK
+    id user_id FK
     id skill_id FK
     string score "enum (low, middle, high)"
   }
@@ -199,9 +202,9 @@ erDiagram
   job_skill_panels }o--|| skill_panels : ""
   users ||--o{ user_skill_panels : "気になる"
   user_skill_panels }o--|| skill_panels : "気になる"
-  users ||--o{ historical_skill_class_scores : "過去に登録されたスキルスコア"
+  users ||--o{ historical_skill_class_scores : ""
   historical_skill_class_scores ||--|| historical_skill_classes : ""
-  historical_skill_class_scores ||--|{ historical_skill_scores : ""
+  users ||--o{ historical_skill_scores : "過去に登録されたスキルスコア"
   historical_skill_scores ||--|| historical_skills : ""
   users ||--|{ historical_career_field_scores : ""
   historical_career_field_scores ||--|| career_fields : ""
@@ -261,6 +264,8 @@ erDiagram
     id user_id FK
     id historical_skill_class_id FK
     date locked_date "固定された日"
+    float percentage
+    string level
   }
 
   historical_skill_unit_scores {
@@ -271,7 +276,7 @@ erDiagram
   }
 
   historical_skill_scores {
-    id historical_skill_class_score_id FK
+    id user_id FK
     id historical_skill_id FK
     string score "enum (low, middle, high)"
   }

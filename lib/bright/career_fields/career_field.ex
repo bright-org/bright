@@ -22,6 +22,9 @@ defmodule Bright.CareerFields.CareerField do
     has_many :career_field_skill_panels, CareerFieldSkillPanel, on_replace: :delete
     has_many :skill_panels, through: [:career_field_skill_panels, :skill_panel]
 
+    has_many :historical_career_field_scores,
+             Bright.HistoricalSkillScores.HistoricalCareerFieldScore
+
     timestamps()
   end
 
