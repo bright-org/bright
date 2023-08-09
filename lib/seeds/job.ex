@@ -4,7 +4,7 @@ defmodule Bright.Seeds.Job do
   """
   alias Bright.Repo
 
-  alias Bright.Jobs
+  alias Bright.{Jobs, CareerFields}
   alias Bright.Jobs.Job
 
   @engineer [
@@ -457,7 +457,7 @@ defmodule Bright.Seeds.Job do
   end
 
   def insert() do
-    Jobs.list_career_fields()
+    CareerFields.list_career_fields()
     |> Enum.each(fn c ->
       case c.name_en do
         "engineer" -> create_job(@engineer, c.id)

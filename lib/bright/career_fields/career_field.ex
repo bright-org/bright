@@ -1,4 +1,4 @@
-defmodule Bright.Jobs.CareerField do
+defmodule Bright.CareerFields.CareerField do
   @moduledoc """
   キャリアフィールドを扱うスキーマ。
   """
