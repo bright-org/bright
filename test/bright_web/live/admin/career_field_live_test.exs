@@ -2,7 +2,7 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.JobsFixtures
+  import Bright.Factory
 
   @create_attrs %{
     name_en: "some name",
@@ -17,7 +17,7 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
   @invalid_attrs %{name_en: nil, name_ja: nil, position: nil}
 
   defp create_career_field(_) do
-    career_field = career_field_fixture()
+    career_field = insert(:career_field)
     %{career_field: career_field}
   end
 
