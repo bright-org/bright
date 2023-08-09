@@ -376,4 +376,24 @@ defmodule Bright.SkillScores do
   defp calc_percentage(value, size) do
     100 * (value / size)
   end
+
+  def get_skill_gem(user_id, skill_panel_id, class) do
+    from(skill_unit_score in SkillUnitScore,
+      join: skill_unit in assoc(skill_unit_score, :skill_unit),
+      join: skill_classes in assoc(skill_unit, :skill_classes),
+      on: skill_classes.class == ^class,
+      on: skill_classes.skill_panel_id == ^skill_panel_id,
+      where: skill_unit_score.user_id == ^user_id,
+      preload: [:skill_unit]
+    )
+    |> Repo.all()
+    |> Enum.map(&get_skill_gem_row/1)
+  end
+
+  defp get_skill_gem_row(row) do
+    %{
+      name: row.skill_unit.name,
+      percentage: row.percentage
+    }
+  end
 end
