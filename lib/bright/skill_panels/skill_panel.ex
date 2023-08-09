@@ -6,8 +6,9 @@ defmodule Bright.SkillPanels.SkillPanel do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Bright.SkillPanels.SkillClass
   alias Bright.Jobs.JobSkillPanel
+  alias Bright.SkillPanels.SkillClass
+  alias Bright.CareerFields.CareerFieldSkillPanel
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -15,8 +16,10 @@ defmodule Bright.SkillPanels.SkillPanel do
   schema "skill_panels" do
     field :name, :string
 
-    has_many :skill_classes, SkillClass, preload_order: [asc: :class], on_replace: :delete
     has_one :job_skill_panel, JobSkillPanel
+    has_many :skill_classes, SkillClass, preload_order: [asc: :class], on_replace: :delete
+    has_many :career_field_skill_panels, CareerFieldSkillPanel, on_replace: :delete
+    has_many :career_fields, through: [:career_field_skill_panels, :career_field]
 
     timestamps()
   end
@@ -29,6 +32,11 @@ defmodule Bright.SkillPanels.SkillPanel do
       with: &SkillClass.changeset/2,
       sort_param: :skill_classes_sort,
       drop_param: :skill_classes_drop
+    )
+    |> cast_assoc(:career_field_skill_panels,
+      with: &CareerFieldSkillPanel.changeset/2,
+      sort_param: :career_field_skill_panel_sort,
+      drop_param: :career_field_skill_panel_drop
     )
     |> change_skill_classes_class()
     |> validate_required([:name])

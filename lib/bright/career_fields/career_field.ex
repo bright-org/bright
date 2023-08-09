@@ -4,6 +4,9 @@ defmodule Bright.CareerFields.CareerField do
   """
   use Ecto.Schema
   import Ecto.Changeset
+  alias Bright.Jobs.Job
+  alias Bright.SkillScores.CareerFieldScore
+  alias Bright.CareerFields.CareerFieldSkillPanel
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -13,8 +16,11 @@ defmodule Bright.CareerFields.CareerField do
     field :name_ja, :string
     field :position, :integer
 
-    has_many :jobs, Bright.Jobs.Job
-    has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
+    has_many :jobs, Job
+    has_many :career_field_scores, CareerFieldScore
+
+    has_many :career_field_skill_panels, CareerFieldSkillPanel, on_replace: :delete
+    has_many :skill_panels, through: [:career_field_skill_panels, :skill_panel]
 
     timestamps()
   end
