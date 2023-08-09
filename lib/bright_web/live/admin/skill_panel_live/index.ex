@@ -1,14 +1,12 @@
 defmodule BrightWeb.Admin.SkillPanelLive.Index do
   use BrightWeb, :live_view
 
-  alias Bright.Repo
   alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel
 
   @impl true
   def mount(_params, _session, socket) do
-    skill_panels = SkillPanels.list_skill_panels() |> Repo.preload(:career_field)
-    {:ok, stream(socket, :skill_panels, skill_panels)}
+    {:ok, stream(socket, :skill_panels, SkillPanels.list_skill_panels_with_career_field())}
   end
 
   @impl true

@@ -24,6 +24,20 @@ defmodule Bright.SkillPanels do
   end
 
   @doc """
+  Returns the list of skill_panels with career_field.
+
+  ## Examples
+
+      iex> list_skill_panels_with_career_field()
+      [%SkillPanel{}, ...]
+
+  """
+  def list_skill_panels_with_career_field do
+    Repo.all(SkillPanel)
+    |> Repo.preload(:career_field)
+  end
+
+  @doc """
   Gets a single skill_panel.
 
   Raises `Ecto.NoResultsError` if the Skill panel does not exist.
