@@ -180,9 +180,31 @@ erDiagram
 
 ```mermaid
 erDiagram
-"ユーザー"||--||"カスタームグループ（優秀なユーザー）" : ""
-"カスタームグループ（優秀なユーザー）"}o--o{"他のユーザー" : ""
+"ユーザー"||--|{"特別なカスタームグループユーザー（優秀なユーザー）" : ""
+"特別なカスタームグループユーザー（優秀なユーザー）"||--||"他のユーザー" : ""
+"特別なカスタームグループ（優秀なユーザー）"||--o{"特別なカスタームグループユーザー（優秀なユーザー）" : ""
 "ユーザー"||--o{"カスタームグループ" : ""
-"カスタームグループ"}o--o{"他のユーザー" : ""
+"カスタームグループ"||--o{"カスタムグループユーザー" : ""
+"カスタムグループユーザー"||--||"他のユーザー" : ""
 ```
 
+```mermaid
+erDiagram
+  "users"||--o{"special_custom_group_users" : ""
+  "special_custom_group_users"||--||"users" : ""
+  "special_custom_groups"||--o{"special_custom_group_users" : ""
+
+  users {
+    string username UK "ハンドルネーム"
+  }
+
+  special_custom_groups {
+    string name "カスタムユーザー名"
+  }
+
+  special_custom_group_users {
+    id custom_group_id FK
+    id user_id FK
+  }
+
+```
