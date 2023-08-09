@@ -147,9 +147,23 @@ erDiagram
 ```mermaid
 erDiagram
 "ユーザー"||--o{"カスタームグループ" : ""
-"カスタームグループ"}o--o{"他のユーザー" : ""
+"カスタームグループ"||--o{"カスタムグループユーザー" : ""
+"カスタムグループユーザー"||--o{"他のユーザー" : ""
 ```
 
+```mermaid
+erDiagram
+  custom_group {
+    id user_id FK
+    string name "カスタムユーザー名"
+  }
+
+  custom_group_users {
+    id custom_group_id FK
+    id user_id FK
+  }
+
+```
 ### 特別なカスタムグループ
 
 カスタムグループの名称はユーザーが任意に決定して作成できるが、以下のカスタムグループや固定の名称と特別な画面導線、機能をもつ。
