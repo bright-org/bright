@@ -1,0 +1,26 @@
+<section class="bg-white p-8 min-h-[720px] relative rounded-lg">
+  <h1 class="font-bold text-3xl">
+    <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:align-[-5px] before:w-9">
+      スキルを選ぶ
+    </span>
+  </h1>
+
+  <div class="flex flex-col mt-2 relative">
+    <!-- やりたいことセクション ここから -->
+    <.live_component
+      id="want_to_do"
+      module={BrightWeb.OnboardingLive.WantToDoComponents}
+    />
+    <!-- やりたいことセクション ここまで -->
+
+    <!-- なりたいジョブセクション ここから -->
+    <.live_component
+      id="wants_job"
+      module={BrightWeb.OnboardingLive.WantsJobComponents}
+    />
+  </div>
+
+  <p class="mt-8">
+    <.link class="text-link text-xs underline" phx-click="skip_onboarding">採用担当、人事、営業の方はこちら（自分のスキルを登録しません）</.link>
+  </p>
+</section>
