@@ -1,7 +1,7 @@
 defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
   use BrightWeb, :live_component
 
-  alias Bright.SkillPanels
+  alias Bright.{SkillPanels, CareerFields}
 
   @impl true
   def render(assigns) do
@@ -37,6 +37,29 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
           <input type="checkbox" name="skill_panel[skill_classes_sort][]" class="hidden" />
           add skill class
         </label>
+        <.label>CareerFields</.label>
+        <.inputs_for :let={cf} field={@form[:career_field_skill_panels]}>
+          <input type="hidden" name="skill_panel[career_field_skill_panel_sort][]" value={cf.index} />
+          <.input
+            field={cf[:career_field_id]}
+            prompt="キャリアフィールドを選択"
+            type="select"
+            label="CareerField"
+            options={@career_field_options}
+          />
+          <label class="cursor-pointer">
+            <input
+              type="checkbox"
+              name="skill_panel[career_field_skill_panel_drop][]"
+              value={cf.index}
+              class="hidden"
+            /> delete
+          </label>
+        </.inputs_for>
+        <label class="block cursor-pointer">
+          <input type="checkbox" name="skill_panel[career_field_skill_panel_sort][]" class="hidden" />
+          add CareerField
+        </label>
         <:actions>
           <.button phx-disable-with="Saving...">Save Skill panel</.button>
         </:actions>
@@ -52,9 +75,14 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
       |> preload_assoc()
       |> SkillPanels.change_skill_panel()
 
+    career_field_options =
+      CareerFields.list_career_fields()
+      |> Enum.map(&{String.to_atom(&1.name_ja), &1.id})
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:career_field_options, career_field_options)
      |> assign_form(changeset)}
   end
 
@@ -111,5 +139,8 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 
-  defp preload_assoc(skill_panel), do: skill_panel |> Bright.Repo.preload(:skill_classes)
+  defp preload_assoc(skill_panel),
+    do:
+      skill_panel
+      |> Bright.Repo.preload([:skill_classes, :career_field_skill_panels, :career_fields])
 end
