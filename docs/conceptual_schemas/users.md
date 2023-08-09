@@ -153,7 +153,15 @@ erDiagram
 
 ```mermaid
 erDiagram
-  custom_group {
+  "users"||--o{"custom_groups" : ""
+  "custom_groups"||--o{"custom_group_users" : ""
+  "custom_group_users"||--o{"users" : ""
+
+  users {
+    string username UK "ハンドルネーム"
+  }
+
+  custom_groups {
     id user_id FK
     string name "カスタムユーザー名"
   }
