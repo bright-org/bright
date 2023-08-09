@@ -2,6 +2,7 @@ defmodule BrightWeb.Admin.CareerWantJobLive.Index do
   use BrightWeb, :live_view
 
   alias Bright.Jobs
+  alias Bright.CareerWants
   alias Bright.Jobs.CareerWantJob
 
   @impl true
@@ -21,7 +22,7 @@ defmodule BrightWeb.Admin.CareerWantJobLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
-    career_wants_options = Jobs.list_career_wants() |> map_to_select_option()
+    career_wants_options = CareerWants.list_career_wants() |> map_to_select_option()
     jobs_options = Jobs.list_jobs() |> map_to_select_option()
 
     socket

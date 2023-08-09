@@ -13,6 +13,16 @@
   <:item title="Position"><%= @career_want.position %></:item>
 </.list>
 
+<div class="mt-4 text-sm">スキルパネル</div>
+
+<%= for {career_field, skill_panels} <- @career_want.skill_panels do %>
+<div class="mt-4 -mb-4 text-sm"><%= career_field %></div>
+<.list>
+  <:item title="" :for={skill_panel <- skill_panels}><%= skill_panel.name %></:item>
+</.list>
+<% end %>
+
+
 <.back navigate={~p"/admin/career_wants"}>Back to career_wants</.back>
 
 <.modal :if={@live_action == :edit} id="career_want-modal" show on_cancel={JS.patch(~p"/admin/career_wants/#{@career_want}")}>

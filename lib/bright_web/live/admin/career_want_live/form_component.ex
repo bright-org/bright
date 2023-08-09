@@ -1,7 +1,7 @@
 defmodule BrightWeb.Admin.CareerWantLive.FormComponent do
   use BrightWeb, :live_component
 
-  alias Bright.Jobs
+  alias Bright.{CareerWants, SkillPanels}
 
   @impl true
   def render(assigns) do
@@ -21,6 +21,29 @@ defmodule BrightWeb.Admin.CareerWantLive.FormComponent do
       >
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:position]} type="number" label="Position" />
+        <.label>SkillPanels</.label>
+        <.inputs_for :let={sp} field={@form[:career_want_skill_panels]}>
+          <input type="hidden" name="career_want[career_want_skill_panel_sort][]" value={sp.index} />
+          <.input
+            field={sp[:skill_panel_id]}
+            prompt="スキルパネルを選択"
+            type="select"
+            label="SkillPanel"
+            options={@skill_panel_options}
+          />
+          <label class="cursor-pointer">
+            <input
+              type="checkbox"
+              name="career_want[career_want_skill_panel_drop][]"
+              value={sp.index}
+              class="hidden"
+            /> delete
+          </label>
+        </.inputs_for>
+        <label class="block cursor-pointer">
+          <input type="checkbox" name="career_want[career_want_skill_panel_sort][]" class="hidden" />
+          add SkillPanel
+        </label>
         <:actions>
           <.button phx-disable-with="Saving...">Save Career want</.button>
         </:actions>
@@ -31,19 +54,28 @@ defmodule BrightWeb.Admin.CareerWantLive.FormComponent do
 
   @impl true
   def update(%{career_want: career_want} = assigns, socket) do
-    changeset = Jobs.change_career_want(career_want)
+    changeset =
+      career_want
+      |> preload_assoc()
+      |> CareerWants.change_career_want()
 
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign_form(changeset)}
+    skill_panel_options =
+      SkillPanels.list_skill_panels()
+      |> Enum.map(&{&1.name, &1.id})
+
+    socket
+    |> assign(assigns)
+    |> assign(:skill_panel_options, skill_panel_options)
+    |> assign_form(changeset)
+    |> then(&{:ok, &1})
   end
 
   @impl true
   def handle_event("validate", %{"career_want" => career_want_params}, socket) do
     changeset =
       socket.assigns.career_want
-      |> Jobs.change_career_want(career_want_params)
+      |> preload_assoc()
+      |> CareerWants.change_career_want(career_want_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
@@ -54,9 +86,11 @@ defmodule BrightWeb.Admin.CareerWantLive.FormComponent do
   end
 
   defp save_career_want(socket, :edit, career_want_params) do
-    case Jobs.update_career_want(socket.assigns.career_want, career_want_params) do
+    career_want = preload_assoc(socket.assigns.career_want)
+
+    case CareerWants.update_career_want(career_want, career_want_params) do
       {:ok, career_want} ->
-        notify_parent({:saved, career_want})
+        notify_parent({:saved, preload_assoc(career_want)})
 
         {:noreply,
          socket
@@ -69,9 +103,9 @@ defmodule BrightWeb.Admin.CareerWantLive.FormComponent do
   end
 
   defp save_career_want(socket, :new, career_want_params) do
-    case Jobs.create_career_want(career_want_params) do
+    case CareerWants.create_career_want(career_want_params) do
       {:ok, career_want} ->
-        notify_parent({:saved, career_want})
+        notify_parent({:saved, preload_assoc(career_want)})
 
         {:noreply,
          socket
@@ -88,4 +122,9 @@ defmodule BrightWeb.Admin.CareerWantLive.FormComponent do
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
+  defp preload_assoc(career_want),
+    do:
+      career_want
+      |> Bright.Repo.preload([:skill_panels, :career_want_skill_panels])
 end
