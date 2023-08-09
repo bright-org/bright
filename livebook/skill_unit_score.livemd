@@ -1,0 +1,45 @@
+# Untitled notebook
+
+## Section
+
+```elixir
+alias Bright.Accounts
+alias Bright.SkillUnits
+alias Bright.SkillScores
+alias Bright.UserSkillPanels
+alias Bright.SkillPanels
+alias Bright.Repo
+
+user = Accounts.get_user_by_name_or_email("ymn")
+user_panel = UserSkillPanels.get_level_by_class_in_skills_panel(user.id) |> List.first()
+
+%{skill_classes: skill_classes} =
+  SkillPanels.get_skill_panel!(user_panel.id) |> Repo.preload(:skill_classes)
+
+class = skill_classes |> List.first()
+
+SkillScores.list_skill_scores_from_skill_class_score(%{skill_class_id: class.id, user_id: user.id})
+```
+
+```elixir
+defmodule Test do
+  alias Bright.SkillScores.SkillUnitScore
+  alias Bright.SkillPanels.SkillClass
+  alias Bright.Repo
+  import Ecto.Query, warn: false
+  use Ecto.Schema
+
+  def hoge(user_id) do
+    from(sus in SkillUnitScore,
+      join: su in assoc(sus, :skill_unit),
+      join: sc in assoc(su, :skill_classes),
+      on: sc.class == 1,
+      where: sus.user_id == ^user_id,
+      preload: [skill_unit: [:skill_classes]]
+    )
+    |> Repo.all()
+  end
+end
+
+Test.hoge(user.id)
+```
