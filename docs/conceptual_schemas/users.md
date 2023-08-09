@@ -148,14 +148,14 @@ erDiagram
 erDiagram
 "ユーザー"||--o{"カスタームグループ" : ""
 "カスタームグループ"||--o{"カスタムグループユーザー" : ""
-"カスタムグループユーザー"||--o{"他のユーザー" : ""
+"カスタムグループユーザー"||--||"他のユーザー" : ""
 ```
 
 ```mermaid
 erDiagram
   "users"||--o{"custom_groups" : ""
   "custom_groups"||--o{"custom_group_users" : ""
-  "custom_group_users"||--o{"users" : ""
+  "custom_group_users"||--||"users" : ""
 
   users {
     string username UK "ハンドルネーム"
