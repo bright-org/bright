@@ -51,9 +51,9 @@ defmodule BrightWeb.UserRegistrationLiveTest do
         )
 
       assert result =~ "ユーザー新規作成"
-      assert result =~ "should be at most 100 character(s)"
-      assert result =~ "must have the @ sign and no spaces"
-      assert result =~ "should be at least 12 character"
+      assert result =~ "100文字以内で入力してください"
+      assert result =~ "スペースなしで「@」を含めて入力してください"
+      assert result =~ "12文字以上で入力してください"
     end
   end
 
@@ -85,7 +85,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
         )
         |> render_submit()
 
-      assert result =~ "has already been taken"
+      assert result =~ "すでに使用されています"
     end
   end
 

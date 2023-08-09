@@ -4,6 +4,7 @@ defmodule Bright.AccountsTest do
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.User2faCodes
+  alias Bright.Accounts.SocialIdentifierToken
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
@@ -213,7 +214,7 @@ defmodule Bright.AccountsTest do
       {:error, changeset} =
         Accounts.apply_user_email(user, "invalid", %{email: unique_user_email()})
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["does not match password"]} = errors_on(changeset)
     end
 
     test "applies the email without persisting it", %{user: user} do
@@ -335,7 +336,7 @@ defmodule Bright.AccountsTest do
       {:error, changeset} =
         Accounts.update_user_password(user, "invalid", %{password: valid_user_password()})
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["does not match password"]} = errors_on(changeset)
     end
 
     test "updates the password", %{user: user} do
@@ -792,6 +793,120 @@ defmodule Bright.AccountsTest do
         )
 
       assert Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
+    end
+  end
+
+  describe "generate_social_identifier_token/1" do
+    setup do
+      social_identifier_attrs = %{
+        name: "koyo",
+        email: "dummy@example.com",
+        provider: :google,
+        identifier: "1"
+      }
+
+      %{social_identifier_attrs: social_identifier_attrs}
+    end
+
+    test "generates social identifier token", %{social_identifier_attrs: social_identifier_attrs} do
+      token = Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert Repo.get_by!(SocialIdentifierToken, name: social_identifier_attrs[:name])
+      assert Accounts.get_social_identifier_token(token)
+    end
+
+    test "deletes existing token before generate", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      before_token =
+        insert(:social_identifier_token_for_google,
+          identifier: social_identifier_attrs[:identifier]
+        )
+
+      Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert before_token !=
+               Repo.get_by!(SocialIdentifierToken, name: social_identifier_attrs[:name])
+
+      assert Repo.aggregate(SocialIdentifierToken, :count) == 1
+    end
+
+    test "does not delete other identifier's token", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      insert(:social_identifier_token_for_google, identifier: "10000")
+
+      Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert Repo.aggregate(SocialIdentifierToken, :count) == 2
+    end
+  end
+
+  describe "get_social_identifier_token/1" do
+    setup do
+      social_identifier_attrs = %{
+        name: "koyo",
+        email: "dummy@example.com",
+        provider: :google,
+        identifier: "1"
+      }
+
+      %{social_identifier_attrs: social_identifier_attrs}
+    end
+
+    test "token is valid", %{social_identifier_attrs: social_identifier_attrs} do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      social_identifier_token =
+        insert(:social_identifier_token, social_identifier_token |> Map.from_struct())
+
+      assert Accounts.get_social_identifier_token(token) == social_identifier_token
+    end
+
+    test "token is not exists" do
+      refute Accounts.get_social_identifier_token("not exist token")
+    end
+
+    test "token exists but was expired after 1 hours", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      insert(
+        :social_identifier_token,
+        social_identifier_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60)
+        )
+      )
+
+      refute Accounts.get_social_identifier_token(token)
+    end
+
+    test "token exists and is not expired", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      social_identifier_token =
+        insert(
+          :social_identifier_token,
+          social_identifier_token
+          |> Map.from_struct()
+          |> Map.put(
+            :inserted_at,
+            NaiveDateTime.utc_now()
+            |> NaiveDateTime.add(-1 * 60 * 60)
+            |> NaiveDateTime.add(1 * 60)
+          )
+        )
+
+      assert Accounts.get_social_identifier_token(token) == social_identifier_token
     end
   end
 

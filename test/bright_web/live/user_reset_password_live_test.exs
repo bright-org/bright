@@ -43,8 +43,8 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
           user: %{"password" => "secret12", "confirmation_password" => "secret123456"}
         )
 
-      assert result =~ "should be at least 12 character"
-      assert result =~ "does not match password"
+      assert result =~ "12文字以上で入力してください"
+      assert result =~ "パスワードが一致しません"
     end
   end
 
@@ -81,8 +81,8 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         |> render_submit()
 
       assert result =~ "パスワードをリセットする"
-      assert result =~ "should be at least 12 character(s)"
-      assert result =~ "does not match password"
+      assert result =~ "12文字以上で入力してください"
+      assert result =~ "パスワードが一致しません"
     end
   end
 end

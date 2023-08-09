@@ -250,7 +250,7 @@ defmodule Bright.Accounts.User do
     if valid_password?(changeset.data, password) do
       changeset
     else
-      add_error(changeset, :current_password, "is not valid")
+      add_error(changeset, :current_password, "does not match password")
     end
   end
 

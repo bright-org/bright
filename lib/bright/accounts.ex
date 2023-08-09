@@ -448,6 +448,12 @@ defmodule Bright.Accounts do
   1. Delete existing token and Generate user two factor auth session token
   2. Delete existing code and Generate user two factor auth code
   3. Deliver two factor auth code to user
+
+  ## Examples
+
+      iex> setup_user_2fa_auth(user)
+      "token"
+
   """
   def setup_user_2fa_auth(user) do
     {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
@@ -529,6 +535,12 @@ defmodule Bright.Accounts do
 
   @doc """
   Generate social indentifier token.
+
+  ## Examples
+
+      iex> generate_social_identifier_token(%{name: "koyo", email: "dummy@example.com", provider: :google, identifier: "1})
+      "token"
+
   """
   def generate_social_identifier_token(
         %{
@@ -554,6 +566,15 @@ defmodule Bright.Accounts do
 
   @doc """
   Gets social identifier token.
+
+  ## Examples
+
+      iex> get_social_identifier_token("valid token")
+      %SocialIdentifierToken{}
+
+      iex> get_social_identifier_token("invalid token")
+      nil
+
   """
   def get_social_identifier_token(token) do
     with {:ok, query} <-
@@ -569,10 +590,13 @@ defmodule Bright.Accounts do
   get user by name or email full match
 
   ## Examples
+
       iex> get_user_by_name_or_email("name or email full match")
       {:ok, %User{}}
+
       iex> get_user_by_name_or_email("not full match")
       nil
+
   """
   def get_user_by_name_or_email(name_or_email) do
     User
@@ -585,11 +609,13 @@ defmodule Bright.Accounts do
   Check if onboarding is already finished.
 
   ## Examples
+
       iex> onboarding_finished?(user)
       true
 
       iex> onboarding_finished?(user)
       false
+
   """
   def onboarding_finished?(user) do
     from(user_onboarding in UserOnboarding, where: user_onboarding.user_id == ^user.id)

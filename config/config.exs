@@ -32,6 +32,8 @@ config :bright, BrightWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :bright, Bright.Mailer, adapter: Swoosh.Adapters.Local
 
+config :bright, BrightWeb.Gettext, default_locale: "ja"
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
