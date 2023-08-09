@@ -3,15 +3,16 @@ defmodule Bright.Seeds.SkillPanel do
   開発用のスキルパネルSeedデータ
   """
 
-  alias Bright.{Repo, SkillPanels, SkillUnits}
+  alias Bright.{Repo, SkillPanels, SkillUnits, CareerFields}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
   alias Bright.SkillUnits.{SkillClassUnit, SkillUnit, SkillCategory, Skill}
   alias Bright.SkillScores.{CareerFieldScore, SkillClassScore, SkillUnitScore, SkillScore}
   alias Bright.UserSkillPanels.{UserSkillPanel}
+  alias Bright.CareerFields.CareerFieldSkillPanel
 
-  def skill_panel(panel_name) do
+  def skill_panel(panel_name, career_field) do
     %{
-      name: "スキルパネル名#{panel_name}",
+      name: "#{career_field.name_ja} スキルパネル#{panel_name}",
       skill_classes: [
         %{name: "#{panel_name}-クラス1", class: 1},
         %{name: "#{panel_name}-クラス2", class: 2},
@@ -50,14 +51,24 @@ defmodule Bright.Seeds.SkillPanel do
     end
   end
 
-  def create_panel(panel_name) do
-    {:ok, skill_panel} = SkillPanels.create_skill_panel(skill_panel(panel_name))
+  def create_panel(panel_name, career_field) do
+    {:ok, skill_panel} = SkillPanels.create_skill_panel(skill_panel(panel_name, career_field))
+
+    {:ok, _career_field_skill_panel} =
+      CareerFields.create_career_field_skill_panel(%{
+        skill_panel_id: skill_panel.id,
+        career_field_id: career_field.id
+      })
+
     skill_panel.skill_classes |> Enum.each(&create_skill_unit/1)
   end
 
   def insert do
-    1..13
-    |> Enum.each(&create_panel/1)
+    CareerFields.list_career_fields()
+    |> Enum.each(fn c ->
+      1..4
+      |> Enum.each(fn i -> create_panel(i, c) end)
+    end)
   end
 
   def delete do
@@ -72,6 +83,7 @@ defmodule Bright.Seeds.SkillPanel do
       SkillUnit,
       SkillClass,
       UserSkillPanel,
+      CareerFieldSkillPanel,
       SkillPanel
     ]
     |> Enum.each(fn s ->
