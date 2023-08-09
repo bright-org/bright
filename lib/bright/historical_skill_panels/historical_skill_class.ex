@@ -18,6 +18,9 @@ defmodule Bright.HistoricalSkillPanels.HistoricalSkillClass do
 
     belongs_to :skill_panel, SkillPanel
 
+    has_many :historical_skill_class_scores,
+             Bright.HistoricalSkillScores.HistoricalSkillClassScore
+
     timestamps()
   end
 end

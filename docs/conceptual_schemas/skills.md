@@ -29,14 +29,13 @@ erDiagram
   "Brightユーザー" ||--o{ "スキルクラススコア" : ""
   "Brightユーザー" ||--|{ "キャリアフィールドスコア" : ""
   "Brightユーザー" ||--|{ "スキルユニットスコア" : ""
+  "Brightユーザー" ||--|{ "スキルスコア" : ""
   "キャリアフィールドスコア" }|--|| "キャリアフィールド" : ""
   "スキルアップ" ||--|| "クラス" : ""
   "スキルアップ" ||--|| "大分類（ユニット）" : ""
   "スキルクラススコア" ||--|| "クラス" : ""
-  "スキルクラススコア" ||--|{ "スキルスコア" : ""
   "スキルスコア" ||--||  "小分類（スキル）" : "◯△－を付ける"
   "スキルユニットスコア" ||--|| "大分類（ユニット）" : ""
-  "スキルユニットスコア" ||--|{ "スキルスコア" : ""
 ```
 
 ### 補足
@@ -68,9 +67,9 @@ erDiagram
   skill_improvements ||--|| skill_units : ""
   users ||--o{ skill_class_scores : ""
   users ||--o{ skill_unit_scores : ""
+  users ||--o{ skill_scores : ""
   users ||--|{ career_field_scores : ""
   skill_class_scores ||--|| skill_classes : ""
-  skill_class_scores ||--|{ skill_scores : ""
   skill_scores ||--|| skills : ""
   skill_unit_scores ||--|| skill_units : ""
   career_fields ||--|| career_field_scores : ""
@@ -145,8 +144,7 @@ erDiagram
   }
 
   skill_scores {
-    id skill_class_score_id FK
-    id skill_unit_score_id FK
+    id user_id FK
     id skill_id FK
     int score "enum（0: －、1: △、2: ◯）"
   }
