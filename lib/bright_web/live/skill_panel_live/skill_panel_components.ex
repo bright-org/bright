@@ -1,5 +1,5 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
-  use Phoenix.Component
+  use BrightWeb, :component
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
 
@@ -217,23 +217,22 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def class_tab(assigns) do
     ~H"""
-      <ul class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGray-500 bg-brightGreen-50">
-        <li class="bg-white text-base">
-          <a id="class_tab_1" href="#" class="inline-block p-4 pt-3" aria-current="page">
-            <%= @skill_class.name %> <span class="text-xl ml-4">52</span>％
-          </a>
+    <ul class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGray-500 bg-brightGreen-50">
+      <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
+        <% current = @skill_class.class == skill_class.class %>
+        <li class={current && "bg-white text-base"}>
+          <%= if skill_class_score do %>
+            <.link id={"class_tab_#{skill_class.class}"} patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"} class="inline-block p-4 pt-3" aria-current={current && "page"}>
+              <%= skill_class.name %> <span class="text-xl ml-4"><%= floor skill_class_score.percentage %></span>％
+            </.link>
+          <% else %>
+            <p id={"class_tab_#{skill_class.class}"} class="inline-block p-4 pt-3">
+              <%= skill_class.name %> <span class="text-xl ml-4">0</span>％
+            </p>
+          <% end %>
         </li>
-        <li class="">
-          <a id="class_tab_2" href="#" class="inline-block p-4 pt-3">
-            クラス2 <span class="text-xl ml-4">52</span>％
-          </a>
-        </li>
-        <li class="">
-          <a id="class_tab_3" href="#" class="inline-block p-4 pt-3">
-          クラス3 <span class="text-xl ml-4">52</span>％
-        </a>
-        </li>
-      </ul>
+      <% end %>
+    </ul>
     """
   end
 
@@ -291,5 +290,24 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         </div>
       </div>
     """
+  end
+
+  defp pair_skill_class_score(nil), do: []
+
+  defp pair_skill_class_score(skill_classes) do
+    skill_classes
+    |> Enum.map(fn skill_class ->
+      skill_class.skill_class_scores
+      |> case do
+        [] -> {skill_class, nil}
+        [skill_class_score] -> {skill_class, skill_class_score}
+      end
+    end)
+  end
+
+  defp build_query(base, query) do
+    base
+    |> Map.merge(query)
+    |> URI.encode_query()
   end
 end

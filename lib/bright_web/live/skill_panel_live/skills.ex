@@ -1,9 +1,9 @@
 defmodule BrightWeb.SkillPanelLive.Skills do
   use BrightWeb, :live_view
+  use BrightWeb.SkillPanelLive.SkillPanel
 
   import BrightWeb.BrightModalComponents
   import BrightWeb.SkillPanelLive.SkillsComponents
-  import BrightWeb.SkillPanelLive.SkillPanelComponents
 
   alias Bright.SkillPanels
   alias Bright.SkillUnits
@@ -21,6 +21,21 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket |> assign_edit_off()}
+  end
+
+  @impl true
+  def handle_params(params, url, socket) do
+    {:noreply,
+     socket
+     |> assign_path(url)
+     |> assign_skill_panel(params["skill_panel_id"])
+     |> assign_skill_class_and_score(params["class"])
+     |> create_skill_class_score_if_not_existing()
+     |> assign_skill_units()
+     |> assign_skill_score_dict()
+     |> assign_counter()
+     |> assign_table_structure()
+     |> apply_action(socket.assigns.live_action, params)}
   end
 
   @impl true
@@ -88,20 +103,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, socket}
   end
 
-  @impl true
-  def handle_params(params, _url, socket) do
-    {:noreply,
-     socket
-     |> assign_skill_panel(params["skill_panel_id"])
-     |> assign_skill_class_and_score(params["class"])
-     |> create_skill_class_score_if_not_existing()
-     |> assign_skill_units()
-     |> assign_skill_score_dict()
-     |> assign_counter()
-     |> assign_table_structure()
-     |> apply_action(socket.assigns.live_action, params)}
-  end
-
   defp apply_action(socket, :show, _params), do: socket
 
   defp apply_action(socket, :show_evidences, params) do
@@ -121,32 +122,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket
     |> assign_skill(params["skill_id"])
     |> assign_skill_exam()
-  end
-
-  defp assign_skill_panel(socket, skill_panel_id) do
-    current_user = socket.assigns.current_user
-
-    skill_panel =
-      SkillPanels.get_skill_panel!(skill_panel_id)
-      |> Bright.Repo.preload(
-        skill_classes: [skill_class_scores: Ecto.assoc(current_user, :skill_class_scores)]
-      )
-
-    socket
-    |> assign(:skill_panel, skill_panel)
-  end
-
-  defp assign_skill_class_and_score(socket, nil), do: assign_skill_class_and_score(socket, "1")
-
-  defp assign_skill_class_and_score(socket, class) do
-    class = String.to_integer(class)
-    skill_class = socket.assigns.skill_panel.skill_classes |> Enum.find(&(&1.class == class))
-    # List.first(): preload時に絞り込んでいるためfirstで取得可能
-    skill_class_score = skill_class.skill_class_scores |> List.first()
-
-    socket
-    |> assign(:skill_class, skill_class)
-    |> assign(:skill_class_score, skill_class_score)
   end
 
   defp assign_skill_units(socket) do
