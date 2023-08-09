@@ -1,5 +1,6 @@
 defmodule BrightWeb.ErrorHTML do
   use BrightWeb, :html
+  import BrightWeb.LayoutComponents
 
   # If you want to customize your error pages,
   # uncomment the embed_templates/1 call below
@@ -8,7 +9,7 @@ defmodule BrightWeb.ErrorHTML do
   #   * lib/bright_web/controllers/error_html/404.html.heex
   #   * lib/bright_web/controllers/error_html/500.html.heex
   #
-  # embed_templates "error_html/*"
+  embed_templates "error_html/*"
 
   # The default is to render a plain text page based on
   # the template name. For example, "404.html" becomes
