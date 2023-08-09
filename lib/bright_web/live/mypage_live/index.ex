@@ -1,7 +1,7 @@
 defmodule BrightWeb.MypageLive.Index do
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
-  import BrightWeb.ChartComponents
+  # import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @impl true
