@@ -44,6 +44,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
             now
           )
 
+        # credo:disable-for-next-line
         Enum.each(skill_category_pairs, fn {skill_category, historical_skill_category} ->
           skill_pairs =
             create_historical_skills(skill_category.skills, historical_skill_category, now)
