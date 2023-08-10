@@ -51,6 +51,7 @@ defmodule Bright.Factory do
   use Bright.SkillClassScoreFactory
   use Bright.SkillScoreFactory
   use Bright.SkillUnitScoreFactory
+  use Bright.CareerFieldScoreFactory
 
   # SkillReferences context
   use Bright.SkillReferenceFactory

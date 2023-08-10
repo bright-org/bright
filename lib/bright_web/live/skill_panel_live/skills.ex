@@ -123,6 +123,16 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign_skill_exam()
   end
 
+  defp assign_skill_panel(socket, "dummy_id") do
+    # TODO dummy_idはダミー用で実装完了後に消すこと
+    skill_panel =
+      SkillPanels.list_skill_panels()
+      |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+      |> List.first()
+
+    assign_skill_panel(socket, skill_panel.id)
+  end
+
   defp assign_skill_panel(socket, skill_panel_id) do
     current_user = socket.assigns.current_user
 
