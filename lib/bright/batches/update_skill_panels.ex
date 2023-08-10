@@ -19,7 +19,12 @@ defmodule Bright.Batches.UpdateSkillPanels do
   }
 
   alias Bright.HistoricalSkillPanels.HistoricalSkillClass
-  alias Bright.HistoricalSkillScores.{HistoricalSkillScore, HistoricalSkillClassScore}
+
+  alias Bright.HistoricalSkillScores.{
+    HistoricalSkillUnitScore,
+    HistoricalSkillScore,
+    HistoricalSkillClassScore
+  }
 
   def call(locked_date \\ nil) do
     skill_panels = Repo.all(SkillPanel)
@@ -28,6 +33,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
     Repo.transaction(fn ->
       skill_unit_pairs = create_historical_skill_units(now)
+      create_historical_skill_unit_scores(skill_unit_pairs, now, locked_date)
 
       Enum.each(skill_unit_pairs, fn {skill_unit, historical_skill_unit} ->
         skill_category_pairs =
@@ -55,7 +61,10 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
   defp create_historical_skill_units(now) do
     skill_units =
-      Repo.all(from su in SkillUnit, preload: [skill_categories: [skills: :skill_scores]])
+      Repo.all(
+        from su in SkillUnit,
+          preload: [:skill_unit_scores, skill_categories: [skills: :skill_scores]]
+      )
 
     entries =
       Enum.map(skill_units, fn skill_unit ->
@@ -177,6 +186,25 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
     Repo.insert_all(HistoricalSkillClassUnit, entries)
+  end
+
+  defp create_historical_skill_unit_scores(skill_unit_pairs, now, locked_date) do
+    entries =
+      Enum.flat_map(skill_unit_pairs, fn {skill_unit, historical_skill_unit} ->
+        Enum.map(skill_unit.skill_unit_scores, fn skill_unit_score ->
+          %{
+            id: Ecto.ULID.generate(),
+            user_id: skill_unit_score.user_id,
+            historical_skill_unit_id: historical_skill_unit.id,
+            locked_date: locked_date,
+            percentage: skill_unit_score.percentage,
+            inserted_at: now,
+            updated_at: now
+          }
+        end)
+      end)
+
+    Repo.insert_all(HistoricalSkillUnitScore, entries)
   end
 
   defp create_historical_skill_scores(skill_pairs, now) do

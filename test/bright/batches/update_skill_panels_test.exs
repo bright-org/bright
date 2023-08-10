@@ -14,7 +14,12 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     }
 
     alias Bright.HistoricalSkillPanels.HistoricalSkillClass
-    alias Bright.HistoricalSkillScores.{HistoricalSkillScore, HistoricalSkillClassScore}
+
+    alias Bright.HistoricalSkillScores.{
+      HistoricalSkillUnitScore,
+      HistoricalSkillScore,
+      HistoricalSkillClassScore
+    }
 
     @locked_date Date.utc_today()
     @before_locked_date Date.add(@locked_date, -30)
@@ -60,6 +65,11 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     end
 
     setup %{skill_units: skill_units, skill_classes: skill_classes} do
+      skill_unit_scores =
+        Enum.flat_map(skill_units, fn skill_unit ->
+          insert_pair(:skill_unit_score, skill_unit: skill_unit)
+        end)
+
       skill_scores =
         Enum.flat_map(skill_units, fn skill_unit ->
           Enum.flat_map(skill_unit.skill_categories, fn skill_category ->
@@ -74,13 +84,18 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
           insert_pair(:skill_class_score, skill_class: skill_class)
         end)
 
-      %{skill_scores: skill_scores, skill_class_scores: skill_class_scores}
+      %{
+        skill_unit_scores: skill_unit_scores,
+        skill_scores: skill_scores,
+        skill_class_scores: skill_class_scores
+      }
     end
 
     test "create historical skill panels", %{
       skill_units: skill_units,
       skill_classes: skill_classes,
       skill_class_units: skill_class_units,
+      skill_unit_scores: skill_unit_scores,
       skill_scores: skill_scores,
       skill_class_scores: skill_class_scores
     } do
@@ -174,6 +189,27 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert historical_skill_class_unit.historical_skill_unit_id == historical_skill_unit.id
         assert historical_skill_class_unit.historical_skill_class_id == historical_skill_class.id
         assert historical_skill_class_unit.position == skill_class_unit.position
+      end)
+
+      # スキルユニット単位の集計の履歴データ生成を確認
+      historical_skill_unit_scores = Repo.all(HistoricalSkillUnitScore)
+      assert length(historical_skill_unit_scores) == length(skill_unit_scores)
+
+      Enum.each(skill_unit_scores, fn skill_unit_score ->
+        historical_skill_unit_score =
+          Enum.find(historical_skill_unit_scores, fn %{user_id: user_id} ->
+            user_id == skill_unit_score.user_id
+          end)
+
+        historical_skill_unit =
+          Enum.find(historical_skill_units, fn %{trace_id: trace_id} ->
+            trace_id == skill_unit_score.skill_unit.trace_id
+          end)
+
+        assert historical_skill_unit_score.user_id == skill_unit_score.user_id
+        assert historical_skill_unit_score.historical_skill_unit_id == historical_skill_unit.id
+        assert historical_skill_unit_score.locked_date == @locked_date
+        assert historical_skill_unit_score.percentage == skill_unit_score.percentage
       end)
 
       # スキル単位のスコアの履歴データ生成を確認
