@@ -20,6 +20,9 @@ erDiagram
   "Brightユーザー" ||--o{ "スキル試験結果" : ""
   "スキル試験結果" ||--|| "スキル" : "試験する"
   "スキル試験結果" ||--|| "スキル試験" : ""
+  "Brightユーザー" ||--o{ "スキル教材閲覧有無" : "閲覧する"
+  "スキル教材閲覧有無" ||--|| "スキル" : ""
+  "スキル教材閲覧有無" ||--|| "スキル教材" : ""
   "Brightユーザー" ||--o{ "エビデンス" : ""
   "エビデンス" ||--|| "スキル" : "WIP・ヘルプ・完了する"
   "エビデンス" ||--|{ "エビデンス投稿" : "投稿する"
@@ -35,11 +38,135 @@ erDiagram
 - [スキル、スキルスコア系は別ファイルにあります](./skills.md)
 
 
-## テーブル
+### テーブル定義案１：スキルスコアにフラグ系を集約
 
-- スキル教材： skill_references
-- スキル試験： skill_exams
-- エビデンス： skill_evidences
-- エビデンス投稿： skill_evidence_posts
-- エビデンス投稿リアクション： skill_evidence_reactions
+- シンプル
+- １カラムレベルでのテーブルがなくなる
+
+```mermaid
+erDiagram
+  skill_scores ||--|| skills : ""
+  skills ||--|| skill_evidences : ""
+  skills ||--|| skill_exams : ""
+  skills ||--|| skill_references : ""
+
+  users ||--o{ skill_scores : ""
+  users ||--o{ skill_evidences : ""
+  users ||--o{ skill_evidence_posts : "投稿"
+  skill_evidences ||--o{ skill_evidence_posts : ""
+
+  users {
+  }
+
+  skills {
+    id skill_categories_id FK
+    string name "スキル（小分類）名"
+    int position
+  }
+
+  skill_exams {
+    id skill_id FK
+    string url
+  }
+
+  skill_references {
+    id skill_id FK
+    string url
+  }
+
+  skill_scores {
+    id user_id FK
+    id skill_id FK
+    string score "enum（low=－、middle=△、high=◯）"
+    string exam_progress "enum（wip、done）"
+    boolean reference_read
+    boolean evidence_filled
+  }
+
+  skill_evidences {
+    id skill_id FK
+    id user_id FK
+    string progress "enum（wip、help、done）"
+  }
+
+  skill_evidence_posts {
+    id skill_id FK
+    id user_id FK
+    string content
+  }
+```
+
+
+### テーブル定義案２：それぞれテーブルに保持
+
+- 複数の意味を持たないので、その意味でシンプル
+- テーブルはやや冗長にもみえる
+- 変更にはこちらが強いかもしれない
+  - 例えば、別のexamができたときに初期化するとか
+
+```mermaid
+erDiagram
+  skill_scores ||--|| skills : ""
+  skills ||--|| skill_evidences : ""
+  skills ||--|| skill_exams : ""
+  skills ||--|| skill_references : ""
+
+  users ||--o{ skill_scores : ""
+  users ||--o{ skill_evidences : ""
+  users ||--o{ skill_evidence_posts : "投稿"
+  skill_evidences ||--o{ skill_evidence_posts : ""
+  users ||--o{ skill_exam_results : ""
+  skill_exams ||--o{ skill_exam_results : ""
+  users ||--o{ skill_reference_reads : ""
+  skill_references ||--o{ skill_reference_reads : ""
+
+  users {
+  }
+
+  skills {
+    id skill_categories_id FK
+    string name "スキル（小分類）名"
+    int position
+  }
+
+  skill_exams {
+    id skill_id FK
+    string url
+  }
+
+  skill_references {
+    id skill_id FK
+    string url
+  }
+
+  skill_scores {
+    id user_id FK
+    id skill_id FK
+    string score "enum（low=－、middle=△、high=◯）"
+  }
+
+  skill_evidences {
+    id skill_id FK
+    id user_id FK
+    string progress "enum（wip、help、done）"
+  }
+
+  skill_evidence_posts {
+    id skill_id FK
+    id user_id FK
+    string content
+  }
+
+  skill_exam_results {
+    id skill_exam_id FK
+    id user_id FK
+    string progress "enum（wip、done）"
+  }
+
+  skill_reference_reads {
+    id skill_reference_id FK
+    id user_id FK
+    boolean read
+  }
+```
 

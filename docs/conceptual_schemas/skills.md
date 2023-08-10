@@ -133,20 +133,27 @@ erDiagram
   skill_class_scores {
     id user_id FK
     id skill_class_id FK
-    float percentage
+    float high_skills_percentage
+    float middle_skills_percentage
+    float exam_try_percentage
+    float reference_read_percentage
+    float evidence_filled_percentage
     string level
   }
 
   skill_unit_scores {
     id user_id FK
     id skill_unit_id FK
-    float percentage
+    float high_skills_percentage
   }
 
   skill_scores {
     id user_id FK
     id skill_id FK
-    int score "enum（0: －、1: △、2: ◯）"
+    string score "enum（low=－、middle=△、high=◯）"
+    string exam_progress "enum（wip、done）"
+    boolean reference_read
+    boolean evidence_filled
   }
 
   career_field_scores {
