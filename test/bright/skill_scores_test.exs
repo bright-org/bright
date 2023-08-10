@@ -364,4 +364,10 @@ defmodule Bright.SkillScoresTest do
       assert %{percentage: 0.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_2.id)
     end
   end
+
+  # TODO get_skill_gemテスト未実装
+  describe "get_skill_gem" do
+    test "get_skill_gem" do
+    end
+  end
 end

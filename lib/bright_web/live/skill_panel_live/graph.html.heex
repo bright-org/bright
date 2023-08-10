@@ -88,9 +88,13 @@
           />
         </div>
         <div class="w-[700px] pl-28">
-          <div class="w-[450px] mx-auto my-12">
-            <.skill_gem data={[[80,90,70,80,70,90]]} id="skill-gem-single-skill6" labels={["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]}/>
-          </div>
+          <.live_component
+            id="skill-gem"
+            module={BrightWeb.ChartLive.SkillGemComponent}
+            user_id={@current_user.id}
+            skill_panel_id={@skill_panel_id}
+            class={@class}
+          />
           <div class="flex justify-center">
             <p>
               あと<span class="text-error !text-2xl font-bold">8</span>%でベテランになれます。

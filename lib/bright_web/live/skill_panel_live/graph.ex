@@ -18,12 +18,17 @@ defmodule BrightWeb.SkillPanelLive.Graph do
       |> Enum.sort_by(& &1.inserted_at, {:asc, NaiveDateTime})
       |> List.first()
 
+    # TODO クラスを変更できるようにすること
+    class = 1
+
     {:ok,
      socket
      |> assign(:page_title, "スキルパネル")
      |> assign(:page_sub_title, skill_panel.name)
      |> assign(:skill_panel, skill_panel)
-     |> assign(:skill_class, skill_class)}
+     |> assign(:skill_class, skill_class)
+     |> assign(:skill_panel_id, skill_panel.id)
+     |> assign(:class, class)}
   end
 
   defp get_skill_panel("dummy_id") do
