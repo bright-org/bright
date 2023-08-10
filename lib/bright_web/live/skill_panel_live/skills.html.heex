@@ -3,8 +3,10 @@
   <.navigations current_user={@current_user} />
   <div class="mx-10">
     <div class="flex justify-between">
-      <.toggle_link skill_panel={@skill_panel} active="panel" />
-      <.class_tab skill_class={@skill_class} />
+      <% # TODO: α版後にifを除去して表示 %>
+      <.toggle_link :if={false} skill_panel={@skill_panel} active="panel" />
+      <% # TODO: α版後にifを除去して表示 %>
+      <.class_tab :if={false} skill_class={@skill_class} />
     </div>
     <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
       <.profile_area current_user={@current_user} />
