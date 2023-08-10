@@ -26,7 +26,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   end
 
   defp create_data(user_id, skill_panel_id, class) do
-    %{percentage: now} = SkillScores.get_class_score(user_id, skill_panel_id, class)
+    now = SkillScores.get_class_score(user_id, skill_panel_id, class) |> get_now()
 
     %{
       labels: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
@@ -39,4 +39,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       # otherSelected: "2022.12"
     }
   end
+
+  defp get_now(%{percentage: now}), do: now
+  defp get_now(nil), do: 0
 end
