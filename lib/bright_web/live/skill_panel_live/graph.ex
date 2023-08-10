@@ -19,12 +19,8 @@ defmodule BrightWeb.SkillPanelLive.Graph do
       |> Enum.sort_by(& &1.inserted_at, {:asc, NaiveDateTime})
       |> List.first()
 
-    # TODO スキルジェム表示のデータ取得　（コンポーネント化対象）
     # TODO クラスを変更できるようにすること
     class = 1
-    skill_gem = SkillScores.get_skill_gem(socket.assigns.current_user.id, skill_panel.id, class)
-    skill_gem_data = [skill_gem |> Enum.map(fn x -> x.percentage end)]
-    skill_gem_lavel = skill_gem |> Enum.map(fn x -> x.name end)
 
     {:ok,
      socket
@@ -32,9 +28,8 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> assign(:page_sub_title, skill_panel.name)
      |> assign(:skill_panel, skill_panel)
      |> assign(:skill_class, skill_class)
-     # TODO スキルジェム表示のデータ取得　（コンポーネント化対象）
-     |> assign(:skill_gem_data, skill_gem_data)
-     |> assign(:skill_gem_lavel, skill_gem_lavel)}
+     |> assign(:skill_panel_id, skill_panel.id)
+     |> assign(:class, class)}
   end
 
   defp get_skill_panel("dummy_id") do
