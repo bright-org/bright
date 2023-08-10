@@ -2,230 +2,64 @@ defmodule Bright.JobsTest do
   use Bright.DataCase
 
   alias Bright.Jobs
+  alias Bright.Jobs.Job
 
-  # TODO: Factoryで対応する
-  describe "career_wants" do
-    alias Bright.Jobs.CareerWant
+  import Bright.Factory
 
-    import Bright.JobsFixtures
-
+  describe "jobs" do
     @invalid_attrs %{name: nil, position: nil}
 
-    test "list_career_wants/0 returns all career_wants" do
-      career_want = career_want_fixture()
-      assert Jobs.list_career_wants() == [career_want]
+    test "list_jobs/0 returns all jobs" do
+      job = insert(:job)
+      assert Jobs.list_jobs() == [job]
     end
 
-    test "get_career_want!/1 returns the career_want with given id" do
-      career_want = career_want_fixture()
-      assert Jobs.get_career_want!(career_want.id) == career_want
+    test "get_job!/1 returns the job with given id" do
+      job = insert(:job)
+      assert Jobs.get_job!(job.id) == job
     end
 
-    test "create_career_want/1 with valid data creates a career_want" do
-      valid_attrs = %{name: "some name", position: 42}
+    test "create_job/1 with valid data creates a job" do
+      valid_attrs = %{
+        name: "some name",
+        position: 42,
+        description: "some description",
+        rank: :basic
+      }
 
-      assert {:ok, %CareerWant{} = career_want} = Jobs.create_career_want(valid_attrs)
-      assert career_want.name == "some name"
-      assert career_want.position == 42
+      assert {:ok, %Job{} = job} = Jobs.create_job(valid_attrs)
+      assert job.name == "some name"
+      assert job.position == 42
     end
 
-    test "create_career_want/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Jobs.create_career_want(@invalid_attrs)
+    test "create_job/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Jobs.create_job(@invalid_attrs)
     end
 
-    test "update_career_want/2 with valid data updates the career_want" do
-      career_want = career_want_fixture()
+    test "update_job/2 with valid data updates the job" do
+      job = insert(:job)
       update_attrs = %{name: "some updated name", position: 43}
 
-      assert {:ok, %CareerWant{} = career_want} =
-               Jobs.update_career_want(career_want, update_attrs)
-
-      assert career_want.name == "some updated name"
-      assert career_want.position == 43
+      assert {:ok, %Job{} = job} = Jobs.update_job(job, update_attrs)
+      assert job.name == "some updated name"
+      assert job.position == 43
     end
 
-    test "update_career_want/2 with invalid data returns error changeset" do
-      career_want = career_want_fixture()
-      assert {:error, %Ecto.Changeset{}} = Jobs.update_career_want(career_want, @invalid_attrs)
-      assert career_want == Jobs.get_career_want!(career_want.id)
+    test "update_job/2 with invalid data returns error changeset" do
+      job = insert(:job)
+      assert {:error, %Ecto.Changeset{}} = Jobs.update_job(job, @invalid_attrs)
+      assert job == Jobs.get_job!(job.id)
     end
 
-    test "delete_career_want/1 deletes the career_want" do
-      career_want = career_want_fixture()
-      assert {:ok, %CareerWant{}} = Jobs.delete_career_want(career_want)
-      assert_raise Ecto.NoResultsError, fn -> Jobs.get_career_want!(career_want.id) end
+    test "delete_job/1 deletes the job" do
+      job = insert(:job)
+      assert {:ok, %Job{}} = Jobs.delete_job(job)
+      assert_raise Ecto.NoResultsError, fn -> Jobs.get_job!(job.id) end
     end
 
-    test "change_career_want/1 returns a career_want changeset" do
-      career_want = career_want_fixture()
-      assert %Ecto.Changeset{} = Jobs.change_career_want(career_want)
+    test "change_job/1 returns a job changeset" do
+      job = insert(:job)
+      assert %Ecto.Changeset{} = Jobs.change_job(job)
     end
   end
-
-  # TODO: Factoryで対応する
-  # describe "jobs" do
-  #   alias Bright.Jobs.Job
-
-  #   import Bright.JobsFixtures
-
-  #   @invalid_attrs %{name: nil, position: nil}
-
-  #   test "list_jobs/0 returns all jobs" do
-  #     job = job_fixture()
-  #     assert Jobs.list_jobs() == [job]
-  #   end
-
-  #   test "get_job!/1 returns the job with given id" do
-  #     job = job_fixture()
-  #     assert Jobs.get_job!(job.id) == job
-  #   end
-
-  #   test "create_job/1 with valid data creates a job" do
-  #     valid_attrs = %{name: "some name", position: 42}
-
-  #     assert {:ok, %Job{} = job} = Jobs.create_job(valid_attrs)
-  #     assert job.name == "some name"
-  #     assert job.position == 42
-  #   end
-
-  #   test "create_job/1 with invalid data returns error changeset" do
-  #     assert {:error, %Ecto.Changeset{}} = Jobs.create_job(@invalid_attrs)
-  #   end
-
-  #   test "update_job/2 with valid data updates the job" do
-  #     job = job_fixture()
-  #     update_attrs = %{name: "some updated name", position: 43}
-
-  #     assert {:ok, %Job{} = job} = Jobs.update_job(job, update_attrs)
-  #     assert job.name == "some updated name"
-  #     assert job.position == 43
-  #   end
-
-  #   test "update_job/2 with invalid data returns error changeset" do
-  #     job = job_fixture()
-  #     assert {:error, %Ecto.Changeset{}} = Jobs.update_job(job, @invalid_attrs)
-  #     assert job == Jobs.get_job!(job.id)
-  #   end
-
-  #   test "delete_job/1 deletes the job" do
-  #     job = job_fixture()
-  #     assert {:ok, %Job{}} = Jobs.delete_job(job)
-  #     assert_raise Ecto.NoResultsError, fn -> Jobs.get_job!(job.id) end
-  #   end
-
-  #   test "change_job/1 returns a job changeset" do
-  #     job = job_fixture()
-  #     assert %Ecto.Changeset{} = Jobs.change_job(job)
-  #   end
-  # end
-
-  # TODO: Factoryで対応する
-  # describe "career_want_jobs" do
-  #   alias Bright.Jobs.CareerWantJob
-
-  #   import Bright.JobsFixtures
-
-  #   @invalid_attrs %{}
-
-  #   test "list_career_want_jobs/0 returns all career_want_jobs" do
-  #     career_want_job = career_want_job_fixture()
-  #     assert Jobs.list_career_want_jobs() == [career_want_job]
-  #   end
-
-  #   test "get_career_want_job!/1 returns the career_want_job with given id" do
-  #     career_want_job = career_want_job_fixture()
-  #     assert Jobs.get_career_want_job!(career_want_job.id) == career_want_job
-  #   end
-
-  #   test "create_career_want_job/1 with valid data creates a career_want_job" do
-  #     valid_attrs = %{}
-
-  #     assert {:ok, %CareerWantJob{} = career_want_job} = Jobs.create_career_want_job(valid_attrs)
-  #   end
-
-  #   test "create_career_want_job/1 with invalid data returns error changeset" do
-  #     assert {:error, %Ecto.Changeset{}} = Jobs.create_career_want_job(@invalid_attrs)
-  #   end
-
-  #   test "update_career_want_job/2 with valid data updates the career_want_job" do
-  #     career_want_job = career_want_job_fixture()
-  #     update_attrs = %{}
-
-  #     assert {:ok, %CareerWantJob{} = career_want_job} =
-  #              Jobs.update_career_want_job(career_want_job, update_attrs)
-  #   end
-
-  #   test "update_career_want_job/2 with invalid data returns error changeset" do
-  #     career_want_job = career_want_job_fixture()
-
-  #     assert {:error, %Ecto.Changeset{}} =
-  #              Jobs.update_career_want_job(career_want_job, @invalid_attrs)
-
-  #     assert career_want_job == Jobs.get_career_want_job!(career_want_job.id)
-  #   end
-
-  #   test "delete_career_want_job/1 deletes the career_want_job" do
-  #     career_want_job = career_want_job_fixture()
-  #     assert {:ok, %CareerWantJob{}} = Jobs.delete_career_want_job(career_want_job)
-  #     assert_raise Ecto.NoResultsError, fn -> Jobs.get_career_want_job!(career_want_job.id) end
-  #   end
-
-  #   test "change_career_want_job/1 returns a career_want_job changeset" do
-  #     career_want_job = career_want_job_fixture()
-  #     assert %Ecto.Changeset{} = Jobs.change_career_want_job(career_want_job)
-  #   end
-  # end
-
-  # TODO: Bright.Factoryで対応する
-  # describe "job_skill_panels" do
-  #   alias Bright.Jobs.JobSkillPanel
-
-  #   import Bright.JobsFixtures
-
-  #   @invalid_attrs %{}
-
-  #   test "list_job_skill_panels/0 returns all job_skill_panels" do
-  #     job_skill_panel = job_skill_panel_fixture()
-  #     assert Jobs.list_job_skill_panels() == [job_skill_panel]
-  #   end
-
-  #   test "get_job_skill_panel!/1 returns the job_skill_panel with given id" do
-  #     job_skill_panel = job_skill_panel_fixture()
-  #     assert Jobs.get_job_skill_panel!(job_skill_panel.id) == job_skill_panel
-  #   end
-
-  #   test "create_job_skill_panel/1 with valid data creates a job_skill_panel" do
-  #     valid_attrs = %{}
-
-  #     assert {:ok, %JobSkillPanel{} = job_skill_panel} = Jobs.create_job_skill_panel(valid_attrs)
-  #   end
-
-  #   test "create_job_skill_panel/1 with invalid data returns error changeset" do
-  #     assert {:error, %Ecto.Changeset{}} = Jobs.create_job_skill_panel(@invalid_attrs)
-  #   end
-
-  #   test "update_job_skill_panel/2 with valid data updates the job_skill_panel" do
-  #     job_skill_panel = job_skill_panel_fixture()
-  #     update_attrs = %{}
-
-  #     assert {:ok, %JobSkillPanel{} = job_skill_panel} = Jobs.update_job_skill_panel(job_skill_panel, update_attrs)
-  #   end
-
-  #   test "update_job_skill_panel/2 with invalid data returns error changeset" do
-  #     job_skill_panel = job_skill_panel_fixture()
-  #     assert {:error, %Ecto.Changeset{}} = Jobs.update_job_skill_panel(job_skill_panel, @invalid_attrs)
-  #     assert job_skill_panel == Jobs.get_job_skill_panel!(job_skill_panel.id)
-  #   end
-
-  #   test "delete_job_skill_panel/1 deletes the job_skill_panel" do
-  #     job_skill_panel = job_skill_panel_fixture()
-  #     assert {:ok, %JobSkillPanel{}} = Jobs.delete_job_skill_panel(job_skill_panel)
-  #     assert_raise Ecto.NoResultsError, fn -> Jobs.get_job_skill_panel!(job_skill_panel.id) end
-  #   end
-
-  #   test "change_job_skill_panel/1 returns a job_skill_panel changeset" do
-  #     job_skill_panel = job_skill_panel_fixture()
-  #     assert %Ecto.Changeset{} = Jobs.change_job_skill_panel(job_skill_panel)
-  #   end
-  # end
 end
