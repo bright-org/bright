@@ -377,6 +377,19 @@ defmodule Bright.SkillScores do
     100 * (value / size)
   end
 
+  @doc """
+  Get Skill Gem
+
+  ## Examples
+
+      iex> get_skill_gem(user_id, skill_panel_id, class)
+      [
+        %{
+          name: "name",
+          percentage: 50
+        }
+     ]
+  """
   def get_skill_gem(user_id, skill_panel_id, class) do
     from(skill_unit_score in SkillUnitScore,
       join: skill_unit in assoc(skill_unit_score, :skill_unit),
