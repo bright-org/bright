@@ -397,16 +397,8 @@ defmodule Bright.SkillScores do
       on: skill_classes.class == ^class,
       on: skill_classes.skill_panel_id == ^skill_panel_id,
       where: skill_unit_score.user_id == ^user_id,
-      preload: [:skill_unit]
+      select: %{name: skill_unit.name, percentage: skill_unit_score.percentage}
     )
     |> Repo.all()
-    |> Enum.map(&get_skill_gem_row/1)
-  end
-
-  defp get_skill_gem_row(row) do
-    %{
-      name: row.skill_unit.name,
-      percentage: row.percentage
-    }
   end
 end

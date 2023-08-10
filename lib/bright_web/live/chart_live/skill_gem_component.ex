@@ -19,11 +19,6 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   end
 
   @impl true
-  def mount(socket) do
-    {:ok, socket}
-  end
-
-  @impl true
   def update(assigns, socket) do
     socket =
       socket
