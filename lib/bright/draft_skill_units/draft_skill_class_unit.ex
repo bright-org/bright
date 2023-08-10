@@ -1,6 +1,6 @@
 defmodule Bright.DraftSkillUnits.DraftSkillClassUnit do
   @moduledoc """
-  下書きのスキルクラスと下書きのスキルユニットの中間テーブルを扱うスキーマ。
+  運営下書きのスキルクラスと運営下書きのスキルユニットの中間テーブルを扱うスキーマ。
   """
 
   use Ecto.Schema

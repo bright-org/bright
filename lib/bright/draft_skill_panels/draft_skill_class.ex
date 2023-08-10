@@ -1,6 +1,6 @@
 defmodule Bright.DraftSkillPanels.DraftSkillClass do
   @moduledoc """
-  下書きのスキルクラスを扱うスキーマ。
+  運営下書きのスキルクラスを扱うスキーマ。
   """
 
   use Ecto.Schema
