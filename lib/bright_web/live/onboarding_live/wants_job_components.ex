@@ -4,6 +4,25 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   alias Bright.{Jobs, CareerFields}
   alias Bright.Jobs.Job
   @rank %{expert: "高度", advanced: "応用", basic: "基本"}
+  # tailwindのカラーが壊れているので応急処置
+  @colors %{
+    "infra" => %{
+      dark: "#51971a",
+      dazzle: "#f2ffe1"
+    },
+    "engineer" => %{
+      dark: "#165bc8",
+      dazzle: "#eefbff"
+    },
+    "designer" => %{
+      dark: "#e96500",
+      dazzle: "#ffffdc"
+    },
+    "marketer" => %{
+      dark: "#6b50a4",
+      dazzle: "#f1e3ff"
+    }
+  }
 
   def render(assigns) do
     ~H"""
@@ -30,8 +49,14 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
                       "cursor-pointer select-none py-2 rounded-tl text-center w-40 " <>
                       if @selected_career.name_en == career_field.name_en,
                         do: "bg-#{career_field.name_en}-dark text-white",
-                        else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark text-brightGray-200 hover:text-white"
+                        else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark hover:opacity-50 text-brightGray-200 hover:text-white"
                     }
+                  style={
+                    if @selected_career.name_en == career_field.name_en,
+                        do: "background-color:#{@colors[career_field.name_en][:dark]};",
+                        else: "background-color:#{@colors[career_field.name_en][:dazzle]};"
+
+                  }
                   phx-click={JS.push("tab_click", target: @myself, value: %{id: career_field.id})}
                 >
                   <%= career_field.name_ja %>
@@ -52,7 +77,10 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
           <!-- ジョブセクションここから -->
           <section>
             <%= if @selected_career do %>
-            <section class={"bg-#{@selected_career.name_en}-dazzle px-4 py-4"}>
+            <section
+              class={"bg-#{@selected_career.name_en}-dazzle px-4 py-4"}
+              style={"background-color:#{@colors[@selected_career.name_en][:dazzle]};"}
+            >
               <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
               <div class="mb-8">
                 <p class="font-bold"><%= @rank[rank] %></p>
@@ -63,6 +91,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
                   <li>
                     <label
                       class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
+                      style={"background-color:#{@colors[@selected_career.name_en][:dark]};"}
                     >
                       <%= job.name %>
                     </label>
@@ -93,6 +122,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
       end)
 
     socket
+    |> assign(:colors, @colors)
     |> assign(:open_panel, false)
     |> assign(:rank, @rank)
     |> assign(:career_fields, career_fields)
