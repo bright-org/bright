@@ -1,6 +1,5 @@
 defmodule BrightWeb.SkillPanelLive.Graph do
   use BrightWeb, :live_view
-  import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   alias Bright.SkillPanels
