@@ -401,4 +401,21 @@ defmodule Bright.SkillScores do
     )
     |> Repo.all()
   end
+
+  @doc """
+  Get Skill Gem
+
+  ## Examples
+
+      iex> get_class_score(user_id, skill_panel_id, class)
+      %SkillClassScore{}
+  """
+  def get_class_score(user_id, skill_panel_id, class) do
+    from(skill_class_score in SkillClassScore,
+      join: skill_class in assoc(skill_class_score, :skill_class),
+      on: skill_class.class == ^class and skill_class.skill_panel_id == ^skill_panel_id,
+      where: skill_class_score.user_id == ^user_id
+    )
+    |> Repo.one()
+  end
 end
