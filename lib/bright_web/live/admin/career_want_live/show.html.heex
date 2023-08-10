@@ -11,6 +11,10 @@
 <.list>
   <:item title="Name"><%= @career_want.name %></:item>
   <:item title="Position"><%= @career_want.position %></:item>
+  <:item title="Jobs">
+    <%= Enum.map(@career_want.jobs, & &1.name) |> Enum.join(",") %>
+  </:item>
+
 </.list>
 
 <.back navigate={~p"/admin/career_wants"}>Back to career_wants</.back>
