@@ -15,8 +15,14 @@
   <:col :let={{_id, job}} label="Name"><%= job.name %></:col>
   <:col :let={{_id, job}} label="Description"><%= job.description %></:col>
   <:col :let={{_id, job}} label="Rank"><%= job.rank %></:col>
-  <:col :let={{_id, job}} label="CareerField"><%= job.career_field.name_ja %></:col>
   <:col :let={{_id, job}} label="Position"><%= job.position %></:col>
+  <:col :let={{_id, job}} label="CareerFields">
+    <%= Enum.map(job.career_fields, & &1.name_ja) |> Enum.join(",") %>
+  </:col>
+  <:col :let={{_id, job}} label="SkillPanels">
+    <%= Enum.map(job.skill_panels, & &1.name) |> Enum.join(",") %>
+  </:col>
+
   <:action :let={{_id, job}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/jobs/#{job}"}>Show</.link>
@@ -41,6 +47,5 @@
     action={@live_action}
     job={@job}
     patch={~p"/admin/jobs"}
-    career_fields={@career_fields}
   />
 </.modal>
