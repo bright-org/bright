@@ -10,7 +10,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.growth_graph data={@data} id="growth-graph-single-sample2"/>
+      <.growth_graph data={@data} id="growth-graph"/>
     </div>
     """
   end
