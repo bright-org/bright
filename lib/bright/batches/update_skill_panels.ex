@@ -19,6 +19,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
   }
 
   alias Bright.HistoricalSkillPanels.HistoricalSkillClass
+  alias Bright.HistoricalSkillScores.HistoricalSkillClassScore
 
   def call(locked_date \\ nil) do
     skill_panels = Repo.all(SkillPanel)
@@ -26,30 +27,27 @@ defmodule Bright.Batches.UpdateSkillPanels do
     locked_date = if locked_date, do: locked_date, else: Date.utc_today()
 
     Repo.transaction(fn ->
-      create_historical_skill_panels(now, skill_panels)
-    end)
-  end
+      skill_unit_pairs = create_historical_skill_units(now)
 
-  defp create_historical_skill_panels(now, skill_panels) do
-    skill_unit_pairs = create_historical_skill_units(now)
+      Enum.each(skill_unit_pairs, fn {skill_unit, historical_skill_unit} ->
+        skill_category_pairs =
+          create_historical_skill_categories(
+            skill_unit.skill_categories,
+            historical_skill_unit,
+            now
+          )
 
-    Enum.each(skill_unit_pairs, fn {skill_unit, historical_skill_unit} ->
-      skill_category_pairs =
-        create_historical_skill_categories(
-          skill_unit.skill_categories,
-          historical_skill_unit,
-          now
-        )
-
-      Enum.each(skill_category_pairs, fn {skill_category, historical_skill_category} ->
-        skill_pairs =
-          create_historical_skills(skill_category.skills, historical_skill_category, now)
+        Enum.each(skill_category_pairs, fn {skill_category, historical_skill_category} ->
+          skill_pairs =
+            create_historical_skills(skill_category.skills, historical_skill_category, now)
+        end)
       end)
-    end)
 
-    Enum.each(skill_panels, fn %{id: skill_panel_id} ->
-      skill_class_pairs = create_historical_skill_classes(skill_panel_id, now)
-      create_historical_skill_class_units(skill_class_pairs, skill_unit_pairs, now)
+      Enum.each(skill_panels, fn %{id: skill_panel_id} ->
+        skill_class_pairs = create_historical_skill_classes(skill_panel_id, now)
+        create_historical_skill_class_units(skill_class_pairs, skill_unit_pairs, now)
+        create_historical_skill_class_scores(skill_class_pairs, now, locked_date)
+      end)
     end)
   end
 
@@ -128,7 +126,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       Repo.all(
         from sc in SkillClass,
           where: sc.skill_panel_id == ^skill_panel_id,
-          preload: [:skill_class_units]
+          preload: [:skill_class_units, :skill_class_scores]
       )
 
     entries =
@@ -176,5 +174,25 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
     Repo.insert_all(HistoricalSkillClassUnit, entries)
+  end
+
+  defp create_historical_skill_class_scores(skill_class_pairs, now, locked_date) do
+    entries =
+      Enum.flat_map(skill_class_pairs, fn {skill_class, historical_skill_class} ->
+        Enum.map(skill_class.skill_class_scores, fn skill_class_score ->
+          %{
+            id: Ecto.ULID.generate(),
+            user_id: skill_class_score.user_id,
+            historical_skill_class_id: historical_skill_class.id,
+            locked_date: locked_date,
+            level: skill_class_score.level,
+            percentage: skill_class_score.percentage,
+            inserted_at: now,
+            updated_at: now
+          }
+        end)
+      end)
+
+    Repo.insert_all(HistoricalSkillClassScore, entries)
   end
 end
