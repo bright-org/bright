@@ -18,12 +18,14 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     alias Bright.HistoricalSkillScores.{
       HistoricalSkillUnitScore,
       HistoricalSkillScore,
-      HistoricalSkillClassScore
+      HistoricalSkillClassScore,
+      HistoricalCareerFieldScore
     }
 
     @locked_date Date.utc_today()
     @before_locked_date Date.add(@locked_date, -30)
 
+    # 公開スキルユニットのデータを準備
     setup do
       skill_units =
         insert_pair(:skill_unit, locked_date: @before_locked_date)
@@ -40,6 +42,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       %{skill_units: skill_units}
     end
 
+    # 公開スキルクラスのデータを準備
     setup %{skill_units: skill_units} do
       skill_panel = insert(:skill_panel)
 
@@ -64,6 +67,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       %{skill_classes: skill_classes, skill_class_units: skill_class_units}
     end
 
+    # 公開スキルスコアのデータを準備
     setup %{skill_units: skill_units, skill_classes: skill_classes} do
       skill_unit_scores =
         Enum.flat_map(skill_units, fn skill_unit ->
@@ -84,20 +88,24 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
           insert_pair(:skill_class_score, skill_class: skill_class)
         end)
 
+      career_field_scores = insert_pair(:career_field_score)
+
       %{
         skill_unit_scores: skill_unit_scores,
         skill_scores: skill_scores,
-        skill_class_scores: skill_class_scores
+        skill_class_scores: skill_class_scores,
+        career_field_scores: career_field_scores
       }
     end
 
-    test "create historical skill panels", %{
+    test "update skill panels", %{
       skill_units: skill_units,
       skill_classes: skill_classes,
       skill_class_units: skill_class_units,
       skill_unit_scores: skill_unit_scores,
       skill_scores: skill_scores,
-      skill_class_scores: skill_class_scores
+      skill_class_scores: skill_class_scores,
+      career_field_scores: career_field_scores
     } do
       UpdateSkillPanels.call(@locked_date)
 
@@ -253,6 +261,27 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert historical_skill_class_score.locked_date == @locked_date
         assert historical_skill_class_score.level == skill_class_score.level
         assert historical_skill_class_score.percentage == skill_class_score.percentage
+      end)
+
+      # キャリアフィールド単位の集計の履歴データ生成を確認
+      historical_career_field_scores = Repo.all(HistoricalCareerFieldScore)
+      assert length(historical_career_field_scores) == length(career_field_scores)
+
+      Enum.each(career_field_scores, fn career_field_score ->
+        historical_career_field_score =
+          Enum.find(historical_career_field_scores, fn %{
+                                                         user_id: user_id,
+                                                         career_field_id: career_field_id
+                                                       } ->
+            user_id == career_field_score.user_id &&
+              career_field_id == career_field_score.career_field_id
+          end)
+
+        assert historical_career_field_score.locked_date == @locked_date
+        assert historical_career_field_score.percentage == career_field_score.percentage
+
+        assert historical_career_field_score.high_skills_count ==
+                 career_field_score.high_skills_count
       end)
     end
   end

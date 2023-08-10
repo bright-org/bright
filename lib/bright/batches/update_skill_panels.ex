@@ -23,7 +23,8 @@ defmodule Bright.Batches.UpdateSkillPanels do
   alias Bright.HistoricalSkillScores.{
     HistoricalSkillUnitScore,
     HistoricalSkillScore,
-    HistoricalSkillClassScore
+    HistoricalSkillClassScore,
+    HistoricalCareerFieldScore
   }
 
   def call(locked_date \\ nil) do
@@ -56,6 +57,8 @@ defmodule Bright.Batches.UpdateSkillPanels do
         create_historical_skill_class_units(skill_class_pairs, skill_unit_pairs, now)
         create_historical_skill_class_scores(skill_class_pairs, now, locked_date)
       end)
+
+      create_historical_career_field_scores(now, locked_date)
     end)
   end
 
@@ -243,5 +246,25 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
     Repo.insert_all(HistoricalSkillClassScore, entries)
+  end
+
+  defp create_historical_career_field_scores(now, locked_date) do
+    entries =
+      Bright.SkillScores.CareerFieldScore
+      |> Repo.all()
+      |> Enum.map(fn career_field_score ->
+        %{
+          id: Ecto.ULID.generate(),
+          user_id: career_field_score.user_id,
+          career_field_id: career_field_score.career_field_id,
+          locked_date: locked_date,
+          percentage: career_field_score.percentage,
+          high_skills_count: career_field_score.high_skills_count,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+
+    Repo.insert_all(HistoricalCareerFieldScore, entries)
   end
 end
