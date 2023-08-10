@@ -7,8 +7,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <.compare_timeline />
       <div class="flex gap-x-4">
         <.compare_individual current_user={@current_user} />
-        <.compare_team current_user={@current_user} />
-        <.compare_custom_group />
+        <.compare_team :if={false} current_user={@current_user} />
+        <.compare_custom_group :if={false} />
       </div>
     </div>
     """
