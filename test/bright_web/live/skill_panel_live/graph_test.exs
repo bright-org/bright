@@ -9,7 +9,7 @@ defmodule BrightWeb.SkillPanelLive.GraphTest do
 
     setup do
       skill_panel = insert(:skill_panel)
-      skill_class = insert(:skill_class, skill_panel: skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
       %{skill_panel: skill_panel, skill_class: skill_class}
     end
