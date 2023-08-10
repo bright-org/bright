@@ -4,7 +4,6 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   import BrightWeb.TimelineBarComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   alias Bright.SkillPanels
-  alias Bright.SkillScores
 
   # 全体が仮実装です。
   # - リソースロード回りは、Skillsと処理が被る可能性が高いです。参照（必要に応じて共通化）してください。
