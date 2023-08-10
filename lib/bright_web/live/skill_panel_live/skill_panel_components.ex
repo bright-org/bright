@@ -17,6 +17,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
     <.skill_panel_menu current_user={@current_user} />
+    <% # TODO: α版後にifを除去して表示 %>
     <.skill_set_menu :if={false} />
     """
   end
@@ -114,6 +115,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
       <p class="leading-tight ml-4">対象者の<br />切り替え</p>
       <.individual_menu current_user={@current_user} />
+      <% # TODO: α版後にifを除去して表示 %>
       <.team_menu :if={false} current_user={@current_user} />
     """
   end
@@ -241,6 +243,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
       <div class="flex justify-between">
         <div class="w-[850px] pt-6">
+          <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
           <.profile
             user_name={@current_user.name}
             title={@current_user.user_profile.title}
@@ -283,6 +286,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             </div>
           </div>
         </div>
+        <% # TODO: α版後にifを除去して表示 %>
         <div :if={false} class="mt-3 mr-3">
           <button class="flex items-center text-sm font-bold px-4 py-2 rounded !text-white bg-brightGray-900">
             <img src="/images/common/icons/up.svg" class="mr-2" />
