@@ -8,7 +8,7 @@ defmodule Bright.HistoricalSkillScores.HistoricalSkillScore do
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
 
-  schema "historical_skill_score" do
+  schema "historical_skill_scores" do
     field :score, Ecto.Enum, values: [:low, :middle, :high]
 
     belongs_to(:user, Bright.Accounts.User)

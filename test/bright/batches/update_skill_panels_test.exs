@@ -7,9 +7,14 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
   describe "call/1" do
     alias Bright.Repo
 
-    alias Bright.HistoricalSkillUnits.{HistoricalSkillUnit, HistoricalSkillClassUnit}
+    alias Bright.HistoricalSkillUnits.{
+      HistoricalSkillUnit,
+      HistoricalSkillClassUnit,
+      HistoricalSkill
+    }
+
     alias Bright.HistoricalSkillPanels.HistoricalSkillClass
-    alias Bright.HistoricalSkillScores.HistoricalSkillClassScore
+    alias Bright.HistoricalSkillScores.{HistoricalSkillScore, HistoricalSkillClassScore}
 
     @locked_date Date.utc_today()
     @before_locked_date Date.add(@locked_date, -30)
@@ -54,19 +59,29 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       %{skill_classes: skill_classes, skill_class_units: skill_class_units}
     end
 
-    setup %{skill_classes: skill_classes} do
+    setup %{skill_units: skill_units, skill_classes: skill_classes} do
+      skill_scores =
+        Enum.flat_map(skill_units, fn skill_unit ->
+          Enum.flat_map(skill_unit.skill_categories, fn skill_category ->
+            Enum.flat_map(skill_category.skills, fn skill ->
+              insert_pair(:skill_score, skill: skill)
+            end)
+          end)
+        end)
+
       skill_class_scores =
         Enum.flat_map(skill_classes, fn skill_class ->
           insert_pair(:skill_class_score, skill_class: skill_class)
         end)
 
-      %{skill_class_scores: skill_class_scores}
+      %{skill_scores: skill_scores, skill_class_scores: skill_class_scores}
     end
 
     test "create historical skill panels", %{
       skill_units: skill_units,
       skill_classes: skill_classes,
       skill_class_units: skill_class_units,
+      skill_scores: skill_scores,
       skill_class_scores: skill_class_scores
     } do
       UpdateSkillPanels.call(@locked_date)
@@ -159,6 +174,27 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert historical_skill_class_unit.historical_skill_unit_id == historical_skill_unit.id
         assert historical_skill_class_unit.historical_skill_class_id == historical_skill_class.id
         assert historical_skill_class_unit.position == skill_class_unit.position
+      end)
+
+      # スキル単位のスコアの履歴データ生成を確認
+      historical_skills = Repo.all(HistoricalSkill)
+      historical_skill_scores = Repo.all(HistoricalSkillScore)
+      assert length(historical_skill_scores) == length(skill_scores)
+
+      Enum.each(skill_scores, fn skill_score ->
+        historical_skill_score =
+          Enum.find(historical_skill_scores, fn %{user_id: user_id} ->
+            user_id == skill_score.user_id
+          end)
+
+        historical_skill =
+          Enum.find(historical_skills, fn %{trace_id: trace_id} ->
+            trace_id == skill_score.skill.trace_id
+          end)
+
+        assert historical_skill_score.user_id == skill_score.user_id
+        assert historical_skill_score.historical_skill_id == historical_skill.id
+        assert historical_skill_score.score == skill_score.score
       end)
 
       # スキルクラス単位の集計の履歴データ生成を確認
