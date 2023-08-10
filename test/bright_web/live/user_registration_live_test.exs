@@ -46,14 +46,14 @@ defmodule BrightWeb.UserRegistrationLiveTest do
           user: %{
             "name" => String.duplicate("a", 101),
             "email" => "with spaces",
-            "password" => "too short"
+            "password" => "short"
           }
         )
 
       assert result =~ "ユーザー新規作成"
       assert result =~ "100文字以内で入力してください"
       assert result =~ "スペースなしで「@」を含めて入力してください"
-      assert result =~ "12文字以上で入力してください"
+      assert result =~ "8文字以上で入力してください"
     end
   end
 

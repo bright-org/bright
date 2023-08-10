@@ -40,10 +40,10 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         lv
         |> element("#reset_password_form")
         |> render_change(
-          user: %{"password" => "secret12", "confirmation_password" => "secret123456"}
+          user: %{"password" => "short", "confirmation_password" => "secret123456"}
         )
 
-      assert result =~ "12文字以上で入力してください"
+      assert result =~ "8文字以上で入力してください"
       assert result =~ "パスワードが一致しません"
     end
   end
@@ -74,14 +74,14 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         lv
         |> form("#reset_password_form",
           user: %{
-            "password" => "too short",
+            "password" => "short",
             "password_confirmation" => "does not match"
           }
         )
         |> render_submit()
 
       assert result =~ "パスワードをリセットする"
-      assert result =~ "12文字以上で入力してください"
+      assert result =~ "8文字以上で入力してください"
       assert result =~ "パスワードが一致しません"
     end
   end
