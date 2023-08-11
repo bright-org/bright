@@ -329,6 +329,9 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert published_skill_score.user_id == skill_score.user_id
         assert published_skill_score.skill_id == published_skill.id
         assert published_skill_score.score == skill_score.score
+        assert published_skill_score.exam_progress == skill_score.exam_progress
+        assert published_skill_score.reference_read == skill_score.reference_read
+        assert published_skill_score.evidence_filled == skill_score.evidence_filled
       end)
 
       # スキルクラス単位の集計の公開データ生成を確認
