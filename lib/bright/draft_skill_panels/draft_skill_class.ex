@@ -7,6 +7,7 @@ defmodule Bright.DraftSkillPanels.DraftSkillClass do
   import Ecto.Changeset
 
   alias Bright.DraftSkillPanels.SkillPanel
+  alias Bright.DraftSkillUnits.DraftSkillClassUnit
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -17,6 +18,12 @@ defmodule Bright.DraftSkillPanels.DraftSkillClass do
     field :class, :integer
 
     belongs_to :skill_panel, SkillPanel
+
+    has_many :draft_skill_class_units, DraftSkillClassUnit,
+      preload_order: [asc: :position],
+      on_replace: :delete
+
+    has_many :draft_skill_units, through: [:draft_skill_class_units, :draft_skill_unit]
 
     timestamps()
   end

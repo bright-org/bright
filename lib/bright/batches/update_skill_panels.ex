@@ -8,7 +8,10 @@ defmodule Bright.Batches.UpdateSkillPanels do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.SkillUnits.SkillUnit
+  alias Bright.DraftSkillUnits.DraftSkillUnit
+  alias Bright.DraftSkillPanels.DraftSkillClass
+
+  alias Bright.SkillUnits.{SkillUnit, SkillCategory, Skill, SkillClassUnit}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
 
   alias Bright.HistoricalSkillUnits.{
@@ -33,6 +36,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
     locked_date = if locked_date, do: locked_date, else: Date.utc_today()
 
     Repo.transaction(fn ->
+      # 公開→履歴
       skill_unit_pairs = create_historical_skill_units(now)
       create_historical_skill_unit_scores(skill_unit_pairs, now, locked_date)
 
@@ -60,6 +64,35 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
       create_historical_career_field_scores(now, locked_date)
+
+      # 運営下書き→公開
+      draft_skill_unit_pairs = create_skill_units(now, locked_date)
+      # create_skill_unit_scores(skill_unit_pairs, now, locked_date)
+
+      Enum.each(draft_skill_unit_pairs, fn {draft_skill_unit, skill_unit} ->
+        draft_skill_category_pairs =
+          create_skill_categories(
+            draft_skill_unit.draft_skill_categories,
+            skill_unit,
+            now
+          )
+
+        # credo:disable-for-next-line
+        Enum.each(draft_skill_category_pairs, fn {draft_skill_category, skill_category} ->
+          draft_skill_pairs =
+            create_skills(draft_skill_category.draft_skills, skill_category, now)
+
+          # create_skill_scores(draft_skill_pairs, now)
+        end)
+      end)
+
+      Enum.each(skill_panels, fn %{id: skill_panel_id} ->
+        draft_skill_class_pairs = create_skill_classes(skill_panel_id, now, locked_date)
+        create_skill_class_units(draft_skill_class_pairs, draft_skill_unit_pairs, now)
+        # create_skill_class_scores(skill_class_pairs, now, locked_date)
+      end)
+
+      # create_career_field_scores(now, locked_date)
     end)
   end
 
@@ -267,5 +300,129 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
     Repo.insert_all(HistoricalCareerFieldScore, entries)
+  end
+
+  defp create_skill_units(now, locked_date) do
+    draft_skill_units = Repo.all(from dsu in DraftSkillUnit, preload: [draft_skill_categories: :draft_skills])
+    entries =
+      Enum.map(draft_skill_units, fn draft_skill_unit ->
+        %{
+          id: Ecto.ULID.generate(),
+          locked_date: locked_date,
+          trace_id: draft_skill_unit.trace_id,
+          name: draft_skill_unit.name,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+
+    Repo.insert_all(SkillUnit, entries)
+
+    draft_skill_units
+    |> Enum.with_index()
+    |> Enum.map(fn {draft_skill_unit, i} ->
+      {draft_skill_unit, struct(SkillUnit, Enum.at(entries, i))}
+    end)
+  end
+
+  defp create_skill_categories(draft_skill_categories, skill_unit, now) do
+    entries =
+      Enum.map(draft_skill_categories, fn draft_skill_category ->
+        %{
+          id: Ecto.ULID.generate(),
+          skill_unit_id: skill_unit.id,
+          trace_id: draft_skill_category.trace_id,
+          name: draft_skill_category.name,
+          position: draft_skill_category.position,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+
+    Repo.insert_all(SkillCategory, entries)
+
+    draft_skill_categories
+    |> Enum.with_index()
+    |> Enum.map(fn {draft_skill_category, i} ->
+      {draft_skill_category, struct(SkillCategory, Enum.at(entries, i))}
+    end)
+  end
+
+  defp create_skills(draft_skills, skill_category, now) do
+    entries =
+      Enum.map(draft_skills, fn draft_skill ->
+        %{
+          id: Ecto.ULID.generate(),
+          skill_category_id: skill_category.id,
+          trace_id: draft_skill.trace_id,
+          name: draft_skill.name,
+          position: draft_skill.position,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+
+    Repo.insert_all(Skill, entries)
+
+    draft_skills
+    |> Enum.with_index()
+    |> Enum.map(fn {draft_skill, i} ->
+      {draft_skill, struct(Skill, Enum.at(entries, i))}
+    end)
+  end
+
+  defp create_skill_classes(skill_panel_id, now, locked_date) do
+    draft_skill_classes =
+      Repo.all(
+        from sc in DraftSkillClass,
+          where: sc.skill_panel_id == ^skill_panel_id,
+          preload: [:draft_skill_class_units]
+      )
+
+    entries =
+      Enum.map(draft_skill_classes, fn draft_skill_class ->
+        %{
+          id: Ecto.ULID.generate(),
+          skill_panel_id: draft_skill_class.skill_panel_id,
+          locked_date: locked_date,
+          trace_id: draft_skill_class.trace_id,
+          name: draft_skill_class.name,
+          class: draft_skill_class.class,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+
+    Repo.insert_all(SkillClass, entries)
+
+    draft_skill_classes
+    |> Enum.with_index()
+    |> Enum.map(fn {draft_skill_class, i} ->
+      {draft_skill_class, struct(SkillClass, Enum.at(entries, i))}
+    end)
+  end
+
+  defp create_skill_class_units(draft_skill_class_pairs, draft_skill_unit_pairs, now) do
+    entries =
+      Enum.flat_map(draft_skill_class_pairs, fn {draft_skill_class, skill_class} ->
+        Enum.map(draft_skill_class.draft_skill_class_units, fn draft_skill_class_unit ->
+          {_draft_skill_unit, skill_unit} =
+            Enum.find(draft_skill_unit_pairs, fn {draft_skill_unit, _} ->
+              draft_skill_unit.id == draft_skill_class_unit.draft_skill_unit_id
+            end)
+
+          %{
+            id: Ecto.ULID.generate(),
+            skill_class_id: skill_class.id,
+            skill_unit_id: skill_unit.id,
+            trace_id: draft_skill_class_unit.trace_id,
+            position: draft_skill_class_unit.position,
+            inserted_at: now,
+            updated_at: now
+          }
+        end)
+      end)
+
+    Repo.insert_all(SkillClassUnit, entries)
   end
 end

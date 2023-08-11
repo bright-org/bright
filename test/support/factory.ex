@@ -37,6 +37,7 @@ defmodule Bright.Factory do
   use Bright.DraftSkillUnitFactory
   use Bright.DraftSkillCategoryFactory
   use Bright.DraftSkillFactory
+  use Bright.DraftSkillClassUnitFactory
 
   # SkillPanels context
   use Bright.SkillPanelFactory

@@ -7,6 +7,14 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
   describe "call/1" do
     alias Bright.Repo
 
+    alias Bright.SkillUnits.{
+      SkillUnit,
+      SkillClassUnit,
+      Skill
+    }
+
+    alias Bright.SkillPanels.SkillClass
+
     alias Bright.HistoricalSkillUnits.{
       HistoricalSkillUnit,
       HistoricalSkillClassUnit,
@@ -24,6 +32,52 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
     @locked_date Date.utc_today()
     @before_locked_date Date.add(@locked_date, -30)
+
+    # 運営下書きスキルユニットのデータを準備
+    setup do
+      draft_skill_units =
+        insert_list(3, :draft_skill_unit)
+        |> Enum.map(fn draft_skill_unit ->
+          insert_list(3, :draft_skill_category, draft_skill_unit: draft_skill_unit)
+          |> Enum.map(fn draft_skill_category ->
+            insert_list(3, :draft_skill, draft_skill_category: draft_skill_category)
+          end)
+
+          draft_skill_unit
+        end)
+        |> Repo.preload(draft_skill_categories: :draft_skills)
+
+      %{draft_skill_units: draft_skill_units}
+    end
+
+    # 運営下書きスキルクラスのデータを準備
+    setup %{draft_skill_units: draft_skill_units} do
+      draft_skill_panel = insert(:draft_skill_panel)
+
+      draft_skill_classes =
+        insert_list(3, :draft_skill_class, skill_panel: draft_skill_panel)
+
+      draft_skill_class_units = [
+        insert(:draft_skill_class_unit,
+          draft_skill_class: Enum.at(draft_skill_classes, 0),
+          draft_skill_unit: Enum.at(draft_skill_units, 0)
+        ),
+        insert(:draft_skill_class_unit,
+          draft_skill_class: Enum.at(draft_skill_classes, 0),
+          draft_skill_unit: Enum.at(draft_skill_units, 1)
+        ),
+        insert(:draft_skill_class_unit,
+          draft_skill_class: Enum.at(draft_skill_classes, 1),
+          draft_skill_unit: Enum.at(draft_skill_units, 1)
+        ),
+        insert(:draft_skill_class_unit,
+          draft_skill_class: Enum.at(draft_skill_classes, 2),
+          draft_skill_unit: Enum.at(draft_skill_units, 2)
+        )
+      ]
+
+      %{draft_skill_classes: draft_skill_classes, draft_skill_class_units: draft_skill_class_units}
+    end
 
     # 公開スキルユニットのデータを準備
     setup do
@@ -99,6 +153,9 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     end
 
     test "update skill panels", %{
+      draft_skill_units: draft_skill_units,
+      draft_skill_classes: draft_skill_classes,
+      draft_skill_class_units: draft_skill_class_units,
       skill_units: skill_units,
       skill_classes: skill_classes,
       skill_class_units: skill_class_units,
@@ -282,6 +339,96 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
         assert historical_career_field_score.high_skills_count ==
                  career_field_score.high_skills_count
+      end)
+
+      # スキルユニットの公開データ生成を確認
+      skill_units = Repo.all(from su in SkillUnit, where: su.locked_date == ^@locked_date)
+      assert length(skill_units) == length(draft_skill_units)
+
+      Enum.each(draft_skill_units, fn draft_skill_unit ->
+        skill_unit =
+          Enum.find(skill_units, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_unit.trace_id
+          end)
+
+        assert skill_unit.locked_date == @locked_date
+        assert skill_unit.name == draft_skill_unit.name
+
+        # カテゴリの公開データ生成を確認
+        draft_skill_categories = draft_skill_unit.draft_skill_categories
+
+        skill_categories =
+          Repo.all(Ecto.assoc(skill_unit, :skill_categories))
+
+        assert length(skill_categories) == length(draft_skill_categories)
+
+        Enum.each(draft_skill_categories, fn draft_skill_category ->
+          skill_category =
+            Enum.find(skill_categories, fn %{trace_id: trace_id} ->
+              trace_id == draft_skill_category.trace_id
+            end)
+
+          assert skill_category.skill_unit_id == skill_unit.id
+          assert skill_category.name == draft_skill_category.name
+          assert skill_category.position == draft_skill_category.position
+
+          # スキルの公開データ生成を確認
+          draft_skills = draft_skill_category.draft_skills
+          skills = Repo.all(Ecto.assoc(skill_category, :skills))
+          assert length(skills) == length(draft_skills)
+
+          Enum.each(draft_skills, fn draft_skill ->
+            skill =
+              Enum.find(skills, fn %{trace_id: trace_id} ->
+                trace_id == draft_skill.trace_id
+              end)
+
+            assert skill.skill_category_id == skill_category.id
+            assert skill.name == draft_skill.name
+            assert skill.position == draft_skill.position
+          end)
+        end)
+      end)
+
+      # スキルクラスの公開データ生成を確認
+      skill_classes = Repo.all(from sc in SkillClass, where: sc.locked_date == ^@locked_date)
+      assert length(skill_classes) == length(draft_skill_classes)
+
+      Enum.each(draft_skill_classes, fn draft_skill_class ->
+        skill_class =
+          Enum.find(skill_classes, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class.trace_id
+          end)
+
+        assert skill_class.skill_panel_id == draft_skill_class.skill_panel_id
+        assert skill_class.locked_date == @locked_date
+        assert skill_class.name == draft_skill_class.name
+        assert skill_class.class == draft_skill_class.class
+      end)
+
+      # スキルユニットとスキルクラスの中間テーブルの公開データ生成を確認
+      skill_class_units = Repo.all(SkillClassUnit)
+      assert length(skill_class_units) == length(draft_skill_class_units)
+
+      Enum.each(draft_skill_class_units, fn draft_skill_class_unit ->
+        skill_class_unit =
+          Enum.find(skill_class_units, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.trace_id
+          end)
+
+        skill_unit =
+          Enum.find(skill_units, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.draft_skill_unit.trace_id
+          end)
+
+        skill_class =
+          Enum.find(skill_classes, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.draft_skill_class.trace_id
+          end)
+
+        assert skill_class_unit.skill_unit_id == skill_unit.id
+        assert skill_class_unit.skill_class_id == skill_class.id
+        assert skill_class_unit.position == draft_skill_class_unit.position
       end)
     end
   end
