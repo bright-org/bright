@@ -141,7 +141,7 @@ defmodule Storybook.ChartComponents.SkillGem do
           labels: [],
           color_theme: "myself"
         }
-      },
+      }
     ]
   end
 end
