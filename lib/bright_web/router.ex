@@ -24,6 +24,10 @@ defmodule BrightWeb.Router do
     plug :put_root_layout, html: {BrightWeb.Layouts, :auth}
   end
 
+  pipeline :onboarding do
+    plug :put_root_layout, html: {BrightWeb.Layouts, :onboarding}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -160,8 +164,6 @@ defmodule BrightWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
-      live "/onboardings", OnboardingLive.Index, :index
-      live "/onboardings/:step/:id", OnboardingLive.Index, :index
       live "/skill_up", SkillUpDummyLive, :index
       live "/panels/:skill_panel_id/graph", SkillPanelLive.Graph, :show
       live "/panels/:skill_panel_id/skills", SkillPanelLive.Skills, :show
@@ -180,6 +182,17 @@ defmodule BrightWeb.Router do
 
       live "/teams", MyTeamLive, :index
       live "/teams/new", TeamCreateLive, :new
+    end
+  end
+
+  scope "/", BrightWeb do
+    pipe_through [:browser, :require_authenticated_user, :onboarding]
+
+    live_session :require_authenticated_user_onboarding,
+      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
+      live "/onboardings", OnboardingLive.Index, :index
+      live "/onboardings/wants/:id", OnboardingLive.SkillPanels
+      live "/onboardings/wants/:career_want_id/skill_panels/:id", OnboardingLive.SkillPanel
     end
   end
 

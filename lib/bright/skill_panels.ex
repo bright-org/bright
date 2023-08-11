@@ -119,4 +119,15 @@ defmodule Bright.SkillPanels do
   def list_skill_classes do
     Repo.all(SkillClass)
   end
+
+  def get_skill_class_by_skill_panel_id(skill_panel_id) do
+    query =
+      from sc in SkillClass,
+        where:
+          sc.skill_panel_id == ^skill_panel_id and
+            sc.class == 1,
+        preload: :skill_units
+
+    Repo.one(query)
+  end
 end
