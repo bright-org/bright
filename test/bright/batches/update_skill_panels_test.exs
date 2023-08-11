@@ -503,6 +503,9 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert historical_skill_score.user_id == skill_score.user_id
         assert historical_skill_score.historical_skill_id == historical_skill.id
         assert historical_skill_score.score == skill_score.score
+        assert historical_skill_score.exam_progress == skill_score.exam_progress
+        assert historical_skill_score.reference_read == skill_score.reference_read
+        assert historical_skill_score.evidence_filled == skill_score.evidence_filled
       end)
 
       # スキルクラス単位の集計の履歴データ生成を確認
