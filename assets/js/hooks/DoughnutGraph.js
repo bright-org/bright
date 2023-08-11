@@ -42,17 +42,20 @@ const createChartFromJSON = (data) => {
   )
 }
 
+const resizeDoughnutGraph =(myDoughnut) => {
+  myDoughnut.canvas.parentNode.style.height = '80px'
+  myDoughnut.canvas.parentNode.style.width = '80px'
+}
+
 export const DoughnutGraph = {
   mounted() {
-    console.log("mounted")
     const element = this.el
     const dataset = element.dataset
     const data = JSON.parse(dataset.data)
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
     myDoughnut = new Chart(ctx, createChartFromJSON(data))
-    myDoughnut.canvas.parentNode.style.height = '80px'
-    myDoughnut.canvas.parentNode.style.width = '80px'
+    resizeDoughnutGraph(myDoughnut)
   },
   updated() {
     if(myDoughnut != null) myDoughnut.destroy()
@@ -62,8 +65,7 @@ export const DoughnutGraph = {
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
     myDoughnut = new Chart(ctx, createChartFromJSON(data))
-    myDoughnut.canvas.parentNode.style.height = '80px'
-    myDoughnut.canvas.parentNode.style.width = '80px'
+    resizeDoughnutGraph(myDoughnut)
 
   }
 }
