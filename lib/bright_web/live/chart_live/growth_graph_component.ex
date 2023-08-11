@@ -42,7 +42,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           target={@myself}
           type="myself"
           dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
-          selected_date="2023.6"
+          selected_date={@data.myselfSelected}
           display_now
         />
         <div class="flex py-4">
@@ -113,7 +113,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       myself: [nil, 0, 0, 0, 0, 0],
       # other: [10, 10, 25, 35, 45, 70],
       now: now,
-      myselfSelected: "2023.6"
+      myselfSelected: "now"
       # otherSelected: "2022.12"
     }
   end
