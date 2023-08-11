@@ -1,12 +1,12 @@
 defmodule BrightWeb.Admin.CareerWantLive.Index do
   use BrightWeb, :live_view
 
-  alias Bright.Jobs
-  alias Bright.Jobs.CareerWant
+  alias Bright.{CareerWants, Repo}
+  alias Bright.CareerWants.CareerWant
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :career_wants, Jobs.list_career_wants())}
+    {:ok, stream(socket, :career_wants, Repo.preload(CareerWants.list_career_wants(), :jobs))}
   end
 
   @impl true
@@ -17,7 +17,7 @@ defmodule BrightWeb.Admin.CareerWantLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Career want")
-    |> assign(:career_want, Jobs.get_career_want!(id))
+    |> assign(:career_want, CareerWants.get_career_want!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -39,8 +39,8 @@ defmodule BrightWeb.Admin.CareerWantLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    career_want = Jobs.get_career_want!(id)
-    {:ok, _} = Jobs.delete_career_want(career_want)
+    career_want = CareerWants.get_career_want!(id)
+    {:ok, _} = CareerWants.delete_career_want(career_want)
 
     {:noreply, stream_delete(socket, :career_wants, career_want)}
   end

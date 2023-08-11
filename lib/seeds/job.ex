@@ -2,10 +2,13 @@ defmodule Bright.Seeds.Job do
   @moduledoc """
   開発用のジョブSeedデータ
   """
+
   alias Bright.Repo
 
-  alias Bright.{Jobs, CareerFields}
-  alias Bright.Jobs.Job
+  alias Bright.{Jobs, CareerFields, SkillPanels}
+  alias Bright.CareerWants.CareerWantJob
+  alias Bright.Jobs.{Job, JobSkillPanel}
+  alias Bright.CareerFields.CareerFieldJob
 
   @engineer [
     %{
@@ -451,28 +454,56 @@ defmodule Bright.Seeds.Job do
   ]
 
   def delete() do
-    Job
-    |> Repo.all()
-    |> Enum.each(&Repo.delete(&1))
+    [CareerWantJob, CareerFieldJob, JobSkillPanel, Job]
+    |> Enum.each(fn s ->
+      s
+      |> Repo.all()
+      |> Enum.each(&Repo.delete(&1))
+    end)
   end
 
   def insert() do
     CareerFields.list_career_fields()
     |> Enum.each(fn c ->
       case c.name_en do
-        "engineer" -> create_job(@engineer, c.id)
-        "infra" -> create_job(@infra, c.id)
-        "designer" -> create_job(@designer, c.id)
-        "marketer" -> create_job(@marketer, c.id)
+        "engineer" -> create_job(@engineer, c)
+        "infra" -> create_job(@infra, c)
+        "designer" -> create_job(@designer, c)
+        "marketer" -> create_job(@marketer, c)
       end
     end)
   end
 
-  def create_job(job_list, career_field_id) do
-    Enum.each(job_list, fn job ->
-      job
-      |> Map.put(:career_field_id, career_field_id)
-      |> Jobs.create_job()
+  def create_job(job_list, career_field) do
+    skill_panels =
+      SkillPanels.list_skill_panels()
+      |> Enum.filter(&String.match?(&1.name, ~r/#{career_field.name_ja}/))
+
+    Enum.each(job_list, fn params ->
+      {:ok, job} = Jobs.create_job(params)
+      CareerFields.create_career_field_job(%{job_id: job.id, career_field_id: career_field.id})
+
+      case params.rank do
+        "basic" ->
+          rand_insert(job, skill_panels, 1)
+
+        "advanced" ->
+          rand_insert(job, skill_panels, 2)
+
+        "expert" ->
+          rand_insert(job, skill_panels, 3)
+      end
+    end)
+  end
+
+  def rand_insert(job, list, num) do
+    list
+    |> Enum.take_random(num)
+    |> Enum.each(fn panel ->
+      Jobs.create_job_skill_panel(%{
+        job_id: job.id,
+        skill_panel_id: panel.id
+      })
     end)
   end
 end

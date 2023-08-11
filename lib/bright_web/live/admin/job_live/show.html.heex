@@ -12,8 +12,14 @@
   <:item title="Name"><%= @job.name %></:item>
   <:item title="Description"><%= @job.description %></:item>
   <:item title="Rank"><%= @job.rank %></:item>
-  <:item title="CareerField"><%= @job.career_field.name_ja %></:item>
   <:item title="Position"><%= @job.position %></:item>
+  <:item title="CareerFields">
+    <%= Enum.map(@job.career_fields, & &1.name_ja) |> Enum.join(",") %>
+  </:item>
+  <:item title="SkillPanels">
+    <%= Enum.map(@job.skill_panels, & &1.name) |> Enum.join(",") %>
+  </:item>
+
 </.list>
 
 <.back navigate={~p"/admin/jobs"}>Back to jobs</.back>

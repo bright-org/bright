@@ -1,7 +1,7 @@
 defmodule BrightWeb.Admin.JobLive.FormComponent do
   use BrightWeb, :live_component
 
-  alias Bright.Jobs
+  alias Bright.{Jobs, CareerFields, SkillPanels}
   alias Bright.Jobs.Job
 
   @impl true
@@ -27,13 +27,53 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
           field={@form[:rank]}
           options={Ecto.Enum.mappings(Job, :rank)}
         />
-        <.input
-          type="select"
-          label="career_fields"
-          field={@form[:career_field_id]}
-          options={@career_fields}
-        />
         <.input field={@form[:position]} type="number" label="Position" />
+        <.label>CareerFields</.label>
+        <.inputs_for :let={cf} field={@form[:career_field_jobs]}>
+          <input type="hidden" name="job[career_field_jobs_sort][]" value={cf.index} />
+          <.input
+            field={cf[:career_field_id]}
+            type="select"
+            label="CareerField"
+            prompt="キャリアフィールドを選択してください"
+            options={@career_field_options}
+          />
+          <label class="cursor-pointer">
+            <input
+              type="checkbox"
+              name="job[career_field_jobs_drop][]"
+              value={cf.index}
+              class="hidden"
+            /> delete
+          </label>
+        </.inputs_for>
+        <label class="block cursor-pointer">
+          <input type="checkbox" name="job[career_field_jobs_sort][]" class="hidden" />
+          add career field
+        </label>
+        <.label>SkillPanels</.label>
+        <.inputs_for :let={sp} field={@form[:job_skill_panels]}>
+          <input type="hidden" name="job[job_skill_panels_sort][]" value={sp.index} />
+          <.input
+            field={sp[:skill_panel_id]}
+            type="select"
+            label="SkillPanel"
+            prompt="スキルパネルを選択してください"
+            options={@skill_panel_options}
+          />
+          <label class="cursor-pointer">
+            <input
+              type="checkbox"
+              name="job[job_skill_panels_drop][]"
+              value={sp.index}
+              class="hidden"
+            /> delete
+          </label>
+        </.inputs_for>
+        <label class="block cursor-pointer">
+          <input type="checkbox" name="job[job_skill_panels_sort][]" class="hidden" />
+          add skill panel
+        </label>
         <:actions>
           <.button phx-disable-with="Saving...">Save Job</.button>
         </:actions>
@@ -44,11 +84,16 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
 
   @impl true
   def update(%{job: job} = assigns, socket) do
-    changeset = Jobs.change_job(job)
+    changeset =
+      job
+      |> preload_assoc()
+      |> Jobs.change_job()
 
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:career_field_options, career_field_options())
+     |> assign(:skill_panel_options, skill_panel_options())
      |> assign_form(changeset)}
   end
 
@@ -56,6 +101,7 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
   def handle_event("validate", %{"job" => job_params}, socket) do
     changeset =
       socket.assigns.job
+      |> preload_assoc()
       |> Jobs.change_job(job_params)
       |> Map.put(:action, :validate)
 
@@ -67,9 +113,11 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
   end
 
   defp save_job(socket, :edit, job_params) do
-    case Jobs.update_job(socket.assigns.job, job_params) do
+    job = preload_assoc(socket.assigns.job)
+
+    case Jobs.update_job(job, job_params) do
       {:ok, job} ->
-        notify_parent({:saved, job})
+        notify_parent({:saved, preload_assoc(job)})
 
         {:noreply,
          socket
@@ -84,7 +132,7 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
   defp save_job(socket, :new, job_params) do
     case Jobs.create_job(job_params) do
       {:ok, job} ->
-        notify_parent({:saved, job})
+        notify_parent({:saved, preload_assoc(job)})
 
         {:noreply,
          socket
@@ -101,4 +149,23 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
+  defp career_field_options() do
+    CareerFields.list_career_fields()
+    |> Enum.map(&{&1.name_ja, &1.id})
+  end
+
+  defp skill_panel_options() do
+    SkillPanels.list_skill_panels()
+    |> Enum.map(&{&1.name, &1.id})
+  end
+
+  defp preload_assoc(job) do
+    Bright.Repo.preload(job, [
+      :career_fields,
+      :career_field_jobs,
+      :skill_panels,
+      :job_skill_panels
+    ])
+  end
 end
