@@ -39,6 +39,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </div>
         <.timeline_bar
           id="myself"
+          target={@myself}
           type="myself"
           dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
           selected_date="2023.6"
@@ -48,7 +49,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           <div class="w-14"></div>
           <div class="w-[725px] flex justify-between items-center">
             <div class="text-left flex items-center text-base hover:bg-brightGray-50">
-              <a class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded">
+            <%# TODO 他者選択できるまで非表示 %>
+              <a :if={false} class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded">
                 <img class="inline-block h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
                 <div>
                   <p>nokichi</p>
@@ -56,6 +58,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
                 </div>
               </a>
             </div>
+            <%# TODO 他者選択できるまで非表示 %>
             <button
               type="button"
               class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
@@ -66,8 +69,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           <div></div>
         </div>
 
+        <%# TODO 他者選択できるまで非表示 %>
         <.timeline_bar
+          :if={false}
           id="other"
+          target={@myself}
           type="other"
           dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
           selected_date="2022.12"
@@ -84,6 +90,16 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       |> assign(:data, create_data(assigns.user_id, assigns.skill_panel_id, assigns.class))
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("timeline_bar_button_click" = event_name, params, socket) do
+    IO.inspect("----グラフコンポーネント--------------")
+    IO.inspect(event_name)
+    IO.inspect(params)
+    IO.inspect("------------------")
+    Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
+    {:noreply, socket}
   end
 
   defp create_data(user_id, skill_panel_id, class) do
