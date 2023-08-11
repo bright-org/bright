@@ -2,7 +2,7 @@ import { Chart } from 'chart.js/auto'
 const circleMarkCokir = '#0EA895'
 const triangleMarkCokir = '#14D6BE'
 const noneMarkCokir = '#EFF0F0'
-let myDoughnut = null
+
 const createDoughnutData = (data) => {
   return {
     datasets: [
@@ -58,14 +58,14 @@ const initDoughnutGraph = (element) => {
 
 export const DoughnutGraph = {
   mounted() {
-    init = initDoughnutGraph(this.el)
-    myDoughnut = new Chart(init.ctx, init.json)
-    resizeDoughnutGraph(myDoughnut)
+    const init = initDoughnutGraph(this.el)
+    this.myDoughnut = new Chart(init.ctx, init.json)
+    resizeDoughnutGraph(this.myDoughnut)
   },
   updated() {
-    myDoughnut.destroy()
-    init = initDoughnutGraph(this.el)
-    myDoughnut = new Chart(init.ctx, init.json)
-    resizeDoughnutGraph(myDoughnut)
+    const init = initDoughnutGraph(this.el)
+    this.myDoughnut.destroy()
+    this.myDoughnut = new Chart(init.ctx, init.json)
+    resizeDoughnutGraph(this.myDoughnut)
   }
 }
