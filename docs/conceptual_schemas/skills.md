@@ -133,18 +133,14 @@ erDiagram
   skill_class_scores {
     id user_id FK
     id skill_class_id FK
-    float high_skills_percentage
-    float middle_skills_percentage
-    float exam_try_percentage
-    float reference_read_percentage
-    float evidence_filled_percentage
+    float percentage
     string level
   }
 
   skill_unit_scores {
     id user_id FK
     id skill_unit_id FK
-    float high_skills_percentage
+    float percentage
   }
 
   skill_scores {
