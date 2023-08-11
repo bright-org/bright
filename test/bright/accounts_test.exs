@@ -384,6 +384,26 @@ defmodule Bright.AccountsTest do
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
+    test "updates the email with not expired token", %{user: user, token: token, email: email} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert Accounts.update_user_email(user, token) == :ok
+      changed_user = Repo.get!(User, user.id)
+      assert changed_user.email != user.email
+      assert changed_user.email == email
+      assert changed_user.confirmed_at
+      assert changed_user.confirmed_at != user.confirmed_at
+      refute Repo.get_by(UserToken, user_id: user.id)
+    end
+
     test "does not update email with invalid token", %{user: user} do
       assert Accounts.update_user_email(user, "oops") == :error
       assert Repo.get!(User, user.id).email == user.email
@@ -397,7 +417,15 @@ defmodule Bright.AccountsTest do
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+          ]
+        )
+
       assert Accounts.update_user_email(user, token) == :error
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
@@ -511,12 +539,31 @@ defmodule Bright.AccountsTest do
       assert session_user.id == user.id
     end
 
+    test "returns user for not expired token", %{user: user, token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24 * 60)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert session_user = Accounts.get_user_by_session_token(token)
+      assert session_user.id == user.id
+    end
+
     test "does not return user for invalid token" do
       refute Accounts.get_user_by_session_token("oops")
     end
 
-    test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+    test "does not return user for expired token after 60 days", %{token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24 * 60)]
+        )
+
       refute Accounts.get_user_by_session_token(token)
     end
   end
@@ -678,13 +725,32 @@ defmodule Bright.AccountsTest do
       assert Repo.get_by(UserToken, user_id: id)
     end
 
+    test "returns the user if token is not expired", %{user: %{id: id}, token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert %User{id: ^id} = Accounts.get_user_by_reset_password_token(token)
+      assert Repo.get_by(UserToken, user_id: id)
+    end
+
     test "does not return the user with invalid token", %{user: user} do
       refute Accounts.get_user_by_reset_password_token("oops")
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
-    test "does not return the user if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+    test "does not return the user if token is expired after 1 days", %{user: user, token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24)]
+        )
+
       refute Accounts.get_user_by_reset_password_token(token)
       assert Repo.get_by(UserToken, user_id: user.id)
     end
