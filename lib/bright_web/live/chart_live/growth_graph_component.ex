@@ -32,7 +32,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-5">ベテラン</p>
             <p class="py-20">平均</p>
             <p class="py-6">見習い</p>
-            <button class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute">
+            <button phx-target={@myself} phx-click={JS.push("month_add_click", value: %{id: "myself" })} class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute">
               <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
           </div>
@@ -99,33 +99,33 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   end
 
   @impl true
-  def handle_event("timeline_bar_button_click" = event_name, params, socket) do
-    IO.inspect("----グラフコンポーネント--------------")
-    IO.inspect(event_name)
-    IO.inspect(params)
-    IO.inspect("------------------")
+  def handle_event("timeline_bar_button_click", params, socket) do
     Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
     socket = socket |> select_data(params["date"])
     {:noreply, socket}
   end
 
   def handle_event("month_subtraction_click", _params, socket) do
+    {:noreply, create_labels(socket, -3)}
+  end
+
+  def handle_event("month_add_click", _params, socket) do
+    {:noreply, create_labels(socket, 3)}
+  end
+
+  defp create_labels(socket, diff) do
     [year, month] =
       socket.assigns.data.labels
       |> List.first()
       |> String.split(".")
 
-    labels = create_months(String.to_integer(year), String.to_integer(month), -3)
+    labels = create_months(String.to_integer(year), String.to_integer(month), diff)
 
     data =
       socket.assigns.data
       |> Map.put(:labels, labels)
 
-    socket =
-      socket
-      |> assign(:data, data)
-
-    {:noreply, socket}
+    assign(socket, :data, data)
   end
 
   defp create_data(user_id, skill_panel_id, class, start_month) do
@@ -159,10 +159,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     data =
       socket.assigns.data
       |> Map.put(:myselfSelected, date)
-      |> IO.inspect()
 
-    socket
-    |> assign(:data, data)
+    assign(socket, :data, data)
   end
 
   defp get_now(%{percentage: now}), do: now

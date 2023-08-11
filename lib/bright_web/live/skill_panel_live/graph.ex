@@ -26,20 +26,8 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   end
 
   @impl true
-  def handle_event(event_name, params, socket) do
-    # TODO タイムラインバーイベント検証 タイムラインイベント周りの実装後削除予定
-    IO.inspect("------グラフページ------------")
-    IO.inspect(event_name)
-    IO.inspect(params)
-    IO.inspect("------------------")
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info(%{event_name: "timeline_bar_button_click", params: params}, socket) do
-    IO.inspect("------グラフページ info------------")
-    IO.inspect(params)
-    IO.inspect("------------------")
+  def handle_info(%{event_name: "timeline_bar_button_click", params: _params}, socket) do
+    # TODO　スキルジェムを更新するイベントを追加すること
     {:noreply, socket}
   end
 end
