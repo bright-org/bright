@@ -2,6 +2,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   @moduledoc """
   Growth Graph Component
   """
+
   use BrightWeb, :live_component
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
@@ -22,7 +23,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </div>
         <div class="flex">
           <div class="w-14 relative">
-            <button class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute">
+            <button phx-target={@myself} phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })} class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute">
               <span class="material-icons text-white !text-4xl">arrow_left</span>
             </button>
           </div>
@@ -32,8 +33,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-20">平均</p>
             <p class="py-6">見習い</p>
             <button class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute">
-              <span class="material-icons text-white !text-4xl"
-                >arrow_right</span>
+              <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
           </div>
         </div>
@@ -87,7 +87,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     socket =
       socket
       |> assign(assigns)
-      |> assign(:data, create_data(assigns.user_id, assigns.skill_panel_id, assigns.class))
+      |> assign(
+        :data,
+        create_data(assigns.user_id, assigns.skill_panel_id, assigns.class, %{
+          year: 2022,
+          month: 12
+        })
+      )
 
     {:ok, socket}
   end
@@ -103,11 +109,30 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:noreply, socket}
   end
 
-  defp create_data(user_id, skill_panel_id, class) do
+  def handle_event("month_subtraction_click", _params, socket) do
+    [year, month] =
+      socket.assigns.data.labels
+      |> List.first()
+      |> String.split(".")
+
+    labels = create_months(String.to_integer(year), String.to_integer(month), -3)
+
+    data =
+      socket.assigns.data
+      |> Map.put(:labels, labels)
+
+    socket =
+      socket
+      |> assign(:data, data)
+
+    {:noreply, socket}
+  end
+
+  defp create_data(user_id, skill_panel_id, class, start_month) do
     now = SkillScores.get_class_score(user_id, skill_panel_id, class) |> get_now()
 
     %{
-      labels: create_months(2022, 12),
+      labels: create_months(start_month.year, start_month.month, 0),
       # role: [10, 20, 50, 60, 75, 100],
       # myself: [nil, 0, 35, 45, 55, 65],
       myself: [nil, 0, 0, 0, 0, 0],
@@ -118,10 +143,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     }
   end
 
-  defp create_months(year, month) do
+  defp create_months(year, month, shift_month) do
     st =
       {year, month, 1}
       |> Date.from_erl!()
+      |> Timex.shift(months: shift_month)
 
     0..4
     |> Enum.map(fn x ->
