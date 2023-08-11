@@ -28,7 +28,7 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
       {:error, {:redirect, to}} = live(conn, ~p"/users/reset_password/invalid")
 
       assert to == %{
-               flash: %{"error" => "Reset password link is invalid or it has expired."},
+               flash: %{"error" => "リンクが無効であるか期限が切れています"},
                to: ~p"/users/log_in"
              }
     end
