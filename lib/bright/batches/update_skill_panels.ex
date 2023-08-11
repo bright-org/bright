@@ -220,6 +220,9 @@ defmodule Bright.Batches.UpdateSkillPanels do
             user_id: skill_score.user_id,
             historical_skill_id: historical_skill.id,
             score: skill_score.score,
+            exam_progress: skill_score.exam_progress,
+            reference_read: skill_score.reference_read,
+            evidence_filled: skill_score.evidence_filled,
             inserted_at: now,
             updated_at: now
           }
