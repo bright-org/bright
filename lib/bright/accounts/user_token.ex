@@ -10,14 +10,11 @@ defmodule Bright.Accounts.UserToken do
   @hash_algorithm :sha256
   @rand_size 32
 
-  # TODO: 仕様に合わせて調整
-  # It is very important to keep the reset password token expiry short,
-  # since someone with access to the email may take over the account.
   @two_factor_auth_session_validity %{"ago" => 1, "intervals" => "hour"}
   @two_factor_auth_done_validity %{"ago" => 60, "intervals" => "day"}
-  @reset_password_validity_in_days 1
-  @confirm_validity_in_days 7
-  @change_email_validity_in_days 7
+  @reset_password_validity %{"ago" => 1, "intervals" => "day"}
+  @confirm_validity %{"ago" => 30, "intervals" => "minute"}
+  @change_email_validity %{"ago" => 1, "intervals" => "day"}
   @session_validity_in_days 60
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
@@ -129,12 +126,16 @@ defmodule Bright.Accounts.UserToken do
     case Base.url_decode64(token, padding: false) do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
-        days = days_for_context(context)
 
         query =
           from(token in token_and_context_query(hashed_token, context),
             join: user in assoc(token, :user),
-            where: token.inserted_at > ago(^days, "day") and token.sent_to == user.email,
+            where:
+              token.inserted_at >
+                ago(
+                  ^validity_ago(context),
+                  ^validity_intervals(context)
+                ) and token.sent_to == user.email,
             select: user
           )
 
@@ -144,9 +145,6 @@ defmodule Bright.Accounts.UserToken do
         :error
     end
   end
-
-  defp days_for_context("confirm"), do: @confirm_validity_in_days
-  defp days_for_context("reset_password"), do: @reset_password_validity_in_days
 
   @doc """
   Checks if the token is valid and returns its underlying lookup query.
@@ -159,7 +157,7 @@ defmodule Bright.Accounts.UserToken do
   the starting point by this function.
 
   The given token is valid if it matches its hashed counterpart in the
-  database and if it has not expired (after @change_email_validity_in_days).
+  database and if it has not expired (after @change_email_validity).
   The context must always start with "change:".
   """
   def verify_change_email_token_query(token, "change:" <> _ = context) do
@@ -169,7 +167,9 @@ defmodule Bright.Accounts.UserToken do
 
         query =
           from(token in token_and_context_query(hashed_token, context),
-            where: token.inserted_at > ago(@change_email_validity_in_days, "day")
+            where:
+              token.inserted_at >
+                ago(^@change_email_validity["ago"], ^@change_email_validity["intervals"])
           )
 
         {:ok, query}
@@ -212,11 +212,23 @@ defmodule Bright.Accounts.UserToken do
   defp validity_ago("two_factor_auth_done"),
     do: @two_factor_auth_done_validity["ago"]
 
+  defp validity_ago("reset_password"),
+    do: @reset_password_validity["ago"]
+
+  defp validity_ago("confirm"),
+    do: @confirm_validity["ago"]
+
   defp validity_intervals("two_factor_auth_session"),
     do: @two_factor_auth_session_validity["intervals"]
 
   defp validity_intervals("two_factor_auth_done"),
     do: @two_factor_auth_done_validity["intervals"]
+
+  defp validity_intervals("reset_password"),
+    do: @reset_password_validity["intervals"]
+
+  defp validity_intervals("confirm"),
+    do: @confirm_validity["intervals"]
 
   @doc """
   Returns the token struct for the given token value and context.

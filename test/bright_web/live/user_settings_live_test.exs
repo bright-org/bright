@@ -21,7 +21,7 @@ defmodule BrightWeb.UserSettingsLiveTest do
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
-      assert %{"error" => "You must log in to access this page."} = flash
+      assert %{"error" => "ログインが必要です"} = flash
     end
   end
 
@@ -207,7 +207,7 @@ defmodule BrightWeb.UserSettingsLiveTest do
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
       assert %{"error" => message} = flash
-      assert message == "You must log in to access this page."
+      assert message == "ログインが必要です"
     end
   end
 end
