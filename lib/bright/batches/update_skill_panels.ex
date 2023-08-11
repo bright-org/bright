@@ -41,28 +41,30 @@ defmodule Bright.Batches.UpdateSkillPanels do
       skill_unit_pairs = create_historical_skill_units(now)
       create_historical_skill_unit_scores(skill_unit_pairs, now, locked_date)
 
-      skill_pairs = Enum.flat_map(skill_unit_pairs, fn {skill_unit, historical_skill_unit} ->
-        skill_category_pairs =
-          create_historical_skill_categories(
-            skill_unit.skill_categories,
-            historical_skill_unit,
-            now
-          )
+      skill_pairs =
+        Enum.flat_map(skill_unit_pairs, fn {skill_unit, historical_skill_unit} ->
+          skill_category_pairs =
+            create_historical_skill_categories(
+              skill_unit.skill_categories,
+              historical_skill_unit,
+              now
+            )
 
-        # credo:disable-for-next-line
-        Enum.flat_map(skill_category_pairs, fn {skill_category, historical_skill_category} ->
-          create_historical_skills(skill_category.skills, historical_skill_category, now)
+          # credo:disable-for-next-line
+          Enum.flat_map(skill_category_pairs, fn {skill_category, historical_skill_category} ->
+            create_historical_skills(skill_category.skills, historical_skill_category, now)
+          end)
         end)
-      end)
 
       create_historical_skill_scores(skill_pairs, now)
 
-      skill_class_pairs = Enum.flat_map(skill_panels, fn %{id: skill_panel_id} ->
-        skill_class_pairs = create_historical_skill_classes(skill_panel_id, now)
-        create_historical_skill_class_units(skill_class_pairs, skill_unit_pairs, now)
+      skill_class_pairs =
+        Enum.flat_map(skill_panels, fn %{id: skill_panel_id} ->
+          skill_class_pairs = create_historical_skill_classes(skill_panel_id, now)
+          create_historical_skill_class_units(skill_class_pairs, skill_unit_pairs, now)
 
-        skill_class_pairs
-      end)
+          skill_class_pairs
+        end)
 
       create_historical_skill_class_scores(skill_class_pairs, now, locked_date)
       create_historical_career_field_scores(now, locked_date)
@@ -71,28 +73,30 @@ defmodule Bright.Batches.UpdateSkillPanels do
       draft_skill_unit_pairs = create_skill_units(now, locked_date)
       create_skill_unit_scores(draft_skill_unit_pairs, now)
 
-      draft_skill_pairs = Enum.flat_map(draft_skill_unit_pairs, fn {draft_skill_unit, skill_unit} ->
-        draft_skill_category_pairs =
-          create_skill_categories(
-            draft_skill_unit.draft_skill_categories,
-            skill_unit,
-            now
-          )
+      draft_skill_pairs =
+        Enum.flat_map(draft_skill_unit_pairs, fn {draft_skill_unit, skill_unit} ->
+          draft_skill_category_pairs =
+            create_skill_categories(
+              draft_skill_unit.draft_skill_categories,
+              skill_unit,
+              now
+            )
 
-        # credo:disable-for-next-line
-        Enum.flat_map(draft_skill_category_pairs, fn {draft_skill_category, skill_category} ->
-          create_skills(draft_skill_category.draft_skills, skill_category, now)
+          # credo:disable-for-next-line
+          Enum.flat_map(draft_skill_category_pairs, fn {draft_skill_category, skill_category} ->
+            create_skills(draft_skill_category.draft_skills, skill_category, now)
+          end)
         end)
-      end)
 
       create_skill_scores(draft_skill_pairs, now)
 
-      draft_skill_class_pairs = Enum.flat_map(skill_panels, fn %{id: skill_panel_id} ->
-        draft_skill_class_pairs = create_skill_classes(skill_panel_id, now, locked_date)
-        create_skill_class_units(draft_skill_class_pairs, draft_skill_unit_pairs, now)
+      draft_skill_class_pairs =
+        Enum.flat_map(skill_panels, fn %{id: skill_panel_id} ->
+          draft_skill_class_pairs = create_skill_classes(skill_panel_id, now, locked_date)
+          create_skill_class_units(draft_skill_class_pairs, draft_skill_unit_pairs, now)
 
-        draft_skill_class_pairs
-      end)
+          draft_skill_class_pairs
+        end)
 
       create_skill_class_scores(draft_skill_class_pairs, now)
       create_career_field_scores(now)
@@ -310,7 +314,9 @@ defmodule Bright.Batches.UpdateSkillPanels do
   end
 
   defp create_skill_units(now, locked_date) do
-    draft_skill_units = Repo.all(from dsu in DraftSkillUnit, preload: [draft_skill_categories: :draft_skills])
+    draft_skill_units =
+      Repo.all(from dsu in DraftSkillUnit, preload: [draft_skill_categories: :draft_skills])
+
     entries =
       Enum.map(draft_skill_units, fn draft_skill_unit ->
         %{
@@ -439,9 +445,10 @@ defmodule Bright.Batches.UpdateSkillPanels do
     entries =
       old_skill_unit_scores
       |> Enum.map(fn old_skill_unit_score ->
-        {_draft_skill_unit, skill_unit} = Enum.find(draft_skill_unit_pairs, fn {_draft_skill_unit, skill_unit} ->
-          skill_unit.trace_id == old_skill_unit_score.skill_unit.trace_id
-        end)
+        {_draft_skill_unit, skill_unit} =
+          Enum.find(draft_skill_unit_pairs, fn {_draft_skill_unit, skill_unit} ->
+            skill_unit.trace_id == old_skill_unit_score.skill_unit.trace_id
+          end)
 
         if skill_unit do
           %{
@@ -466,9 +473,10 @@ defmodule Bright.Batches.UpdateSkillPanels do
     entries =
       old_skill_scores
       |> Enum.map(fn old_skill_score ->
-        {_draft_skill, skill} = Enum.find(draft_skill_pairs, fn {_draft_skill, skill} ->
-          skill.trace_id == old_skill_score.skill.trace_id
-        end)
+        {_draft_skill, skill} =
+          Enum.find(draft_skill_pairs, fn {_draft_skill, skill} ->
+            skill.trace_id == old_skill_score.skill.trace_id
+          end)
 
         if skill do
           %{
@@ -493,9 +501,10 @@ defmodule Bright.Batches.UpdateSkillPanels do
     entries =
       old_skill_class_scores
       |> Enum.map(fn old_skill_class_score ->
-        {_draft_skill_class, skill_class} = Enum.find(draft_skill_class_pairs, fn {_draft_skill_class, skill_class} ->
-          skill_class.trace_id == old_skill_class_score.skill_class.trace_id
-        end)
+        {_draft_skill_class, skill_class} =
+          Enum.find(draft_skill_class_pairs, fn {_draft_skill_class, skill_class} ->
+            skill_class.trace_id == old_skill_class_score.skill_class.trace_id
+          end)
 
         if skill_class do
           %{

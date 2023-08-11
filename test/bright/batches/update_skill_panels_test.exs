@@ -55,8 +55,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     setup %{draft_skill_units: draft_skill_units} do
       draft_skill_panel = insert(:draft_skill_panel)
 
-      draft_skill_classes =
-        insert_list(3, :draft_skill_class, skill_panel: draft_skill_panel)
+      draft_skill_classes = insert_list(3, :draft_skill_class, skill_panel: draft_skill_panel)
 
       draft_skill_class_units = [
         insert(:draft_skill_class_unit,
@@ -77,7 +76,10 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         )
       ]
 
-      %{draft_skill_classes: draft_skill_classes, draft_skill_class_units: draft_skill_class_units}
+      %{
+        draft_skill_classes: draft_skill_classes,
+        draft_skill_class_units: draft_skill_class_units
+      }
     end
 
     # 公開スキルユニットのデータを準備
@@ -86,12 +88,20 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         draft_skill_units
         |> Enum.take(2)
         |> Enum.map(fn draft_skill_unit ->
-          skill_unit = insert(:skill_unit, locked_date: @before_locked_date, trace_id: draft_skill_unit.trace_id)
+          skill_unit =
+            insert(:skill_unit,
+              locked_date: @before_locked_date,
+              trace_id: draft_skill_unit.trace_id
+            )
 
           draft_skill_unit.draft_skill_categories
           |> Enum.take(2)
           |> Enum.map(fn draft_skill_category ->
-            skill_category = insert(:skill_category, skill_unit: skill_unit, trace_id: draft_skill_category.trace_id)
+            skill_category =
+              insert(:skill_category,
+                skill_unit: skill_unit,
+                trace_id: draft_skill_category.trace_id
+              )
 
             draft_skill_category.draft_skills
             |> Enum.take(2)
@@ -108,12 +118,20 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     end
 
     # 公開スキルクラスのデータを準備
-    setup %{draft_skill_classes: draft_skill_classes, draft_skill_class_units: draft_skill_class_units, skill_units: skill_units} do
+    setup %{
+      draft_skill_classes: draft_skill_classes,
+      draft_skill_class_units: draft_skill_class_units,
+      skill_units: skill_units
+    } do
       skill_classes =
         draft_skill_classes
         |> Enum.take(2)
         |> Enum.map(fn draft_skill_class ->
-          insert(:skill_class, skill_panel_id: draft_skill_class.skill_panel_id, locked_date: @before_locked_date, trace_id: draft_skill_class.trace_id)
+          insert(:skill_class,
+            skill_panel_id: draft_skill_class.skill_panel_id,
+            locked_date: @before_locked_date,
+            trace_id: draft_skill_class.trace_id
+          )
         end)
 
       skill_class_units = [
@@ -181,6 +199,179 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       career_field_scores: career_field_scores
     } do
       UpdateSkillPanels.call(@locked_date)
+
+      # スキルユニットの公開データ生成を確認
+      published_skill_units = Repo.all(SkillUnit)
+      assert length(published_skill_units) == length(draft_skill_units)
+
+      Enum.each(draft_skill_units, fn draft_skill_unit ->
+        published_skill_unit =
+          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_unit.trace_id
+          end)
+
+        assert published_skill_unit.locked_date == @locked_date
+        assert published_skill_unit.name == draft_skill_unit.name
+
+        # カテゴリの公開データ生成を確認
+        draft_skill_categories = draft_skill_unit.draft_skill_categories
+
+        published_skill_categories = Repo.all(Ecto.assoc(published_skill_unit, :skill_categories))
+
+        assert length(published_skill_categories) == length(draft_skill_categories)
+
+        Enum.each(draft_skill_categories, fn draft_skill_category ->
+          published_skill_category =
+            Enum.find(published_skill_categories, fn %{trace_id: trace_id} ->
+              trace_id == draft_skill_category.trace_id
+            end)
+
+          assert published_skill_category.skill_unit_id == published_skill_unit.id
+          assert published_skill_category.name == draft_skill_category.name
+          assert published_skill_category.position == draft_skill_category.position
+
+          # スキルの公開データ生成を確認
+          draft_skills = draft_skill_category.draft_skills
+          published_skills = Repo.all(Ecto.assoc(published_skill_category, :skills))
+          assert length(published_skills) == length(draft_skills)
+
+          Enum.each(draft_skills, fn draft_skill ->
+            published_skill =
+              Enum.find(published_skills, fn %{trace_id: trace_id} ->
+                trace_id == draft_skill.trace_id
+              end)
+
+            assert published_skill.skill_category_id == published_skill_category.id
+            assert published_skill.name == draft_skill.name
+            assert published_skill.position == draft_skill.position
+          end)
+        end)
+      end)
+
+      # スキルクラスの公開データ生成を確認
+      published_skill_classes = Repo.all(SkillClass)
+      assert length(published_skill_classes) == length(draft_skill_classes)
+
+      Enum.each(draft_skill_classes, fn draft_skill_class ->
+        published_skill_class =
+          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class.trace_id
+          end)
+
+        assert published_skill_class.skill_panel_id == draft_skill_class.skill_panel_id
+        assert published_skill_class.locked_date == @locked_date
+        assert published_skill_class.name == draft_skill_class.name
+        assert published_skill_class.class == draft_skill_class.class
+      end)
+
+      # スキルユニットとスキルクラスの中間テーブルの公開データ生成を確認
+      published_skill_class_units = Repo.all(SkillClassUnit)
+      assert length(published_skill_class_units) == length(draft_skill_class_units)
+
+      Enum.each(draft_skill_class_units, fn draft_skill_class_unit ->
+        published_skill_class_unit =
+          Enum.find(published_skill_class_units, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.trace_id
+          end)
+
+        published_skill_unit =
+          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.draft_skill_unit.trace_id
+          end)
+
+        published_skill_class =
+          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.draft_skill_class.trace_id
+          end)
+
+        assert published_skill_class_unit.skill_unit_id == published_skill_unit.id
+        assert published_skill_class_unit.skill_class_id == published_skill_class.id
+        assert published_skill_class_unit.position == draft_skill_class_unit.position
+      end)
+
+      # スキルユニット単位の集計の公開データ生成を確認
+      published_skill_units = Repo.all(SkillUnit)
+      published_skill_unit_scores = Repo.all(SkillUnitScore)
+      assert length(published_skill_unit_scores) == length(skill_unit_scores)
+
+      Enum.each(skill_unit_scores, fn skill_unit_score ->
+        published_skill_unit_score =
+          Enum.find(published_skill_unit_scores, fn %{user_id: user_id} ->
+            user_id == skill_unit_score.user_id
+          end)
+
+        published_skill_unit =
+          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
+            trace_id == skill_unit_score.skill_unit.trace_id
+          end)
+
+        assert published_skill_unit_score.user_id == skill_unit_score.user_id
+        assert published_skill_unit_score.skill_unit_id == published_skill_unit.id
+        assert published_skill_unit_score.percentage == skill_unit_score.percentage
+      end)
+
+      # スキル単位のスコアの公開データ生成を確認
+      published_skills = Repo.all(Skill)
+      published_skill_scores = Repo.all(SkillScore)
+      assert length(published_skill_scores) == length(skill_scores)
+
+      Enum.each(skill_scores, fn skill_score ->
+        published_skill_score =
+          Enum.find(published_skill_scores, fn %{user_id: user_id} ->
+            user_id == skill_score.user_id
+          end)
+
+        published_skill =
+          Enum.find(published_skills, fn %{trace_id: trace_id} ->
+            trace_id == skill_score.skill.trace_id
+          end)
+
+        assert published_skill_score.user_id == skill_score.user_id
+        assert published_skill_score.skill_id == published_skill.id
+        assert published_skill_score.score == skill_score.score
+      end)
+
+      # スキルクラス単位の集計の公開データ生成を確認
+      published_skill_classes = Repo.all(SkillClass)
+      published_skill_class_scores = Repo.all(SkillClassScore)
+      assert length(published_skill_class_scores) == length(skill_class_scores)
+
+      Enum.each(skill_class_scores, fn skill_class_score ->
+        published_skill_class_score =
+          Enum.find(published_skill_class_scores, fn %{user_id: user_id} ->
+            user_id == skill_class_score.user_id
+          end)
+
+        published_skill_class =
+          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
+            trace_id == skill_class_score.skill_class.trace_id
+          end)
+
+        assert published_skill_class_score.user_id == skill_class_score.user_id
+        assert published_skill_class_score.skill_class_id == published_skill_class.id
+        assert published_skill_class_score.level == skill_class_score.level
+        assert published_skill_class_score.percentage == skill_class_score.percentage
+      end)
+
+      # キャリアフィールド単位の集計の公開データ生成を確認
+      published_career_field_scores = Repo.all(CareerFieldScore)
+      assert length(published_career_field_scores) == length(career_field_scores)
+
+      Enum.each(career_field_scores, fn career_field_score ->
+        published_career_field_score =
+          Enum.find(published_career_field_scores, fn %{
+                                                        user_id: user_id,
+                                                        career_field_id: career_field_id
+                                                      } ->
+            user_id == career_field_score.user_id &&
+              career_field_id == career_field_score.career_field_id
+          end)
+
+        assert published_career_field_score.percentage == career_field_score.percentage
+
+        assert published_career_field_score.high_skills_count ==
+                 career_field_score.high_skills_count
+      end)
 
       # スキルユニットの履歴データ生成を確認
       historical_skill_units = Repo.all(HistoricalSkillUnit)
@@ -354,180 +545,6 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert historical_career_field_score.percentage == career_field_score.percentage
 
         assert historical_career_field_score.high_skills_count ==
-                 career_field_score.high_skills_count
-      end)
-
-      # スキルユニットの公開データ生成を確認
-      published_skill_units = Repo.all(SkillUnit)
-      assert length(published_skill_units) == length(draft_skill_units)
-
-      Enum.each(draft_skill_units, fn draft_skill_unit ->
-        published_skill_unit =
-          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == draft_skill_unit.trace_id
-          end)
-
-        assert published_skill_unit.locked_date == @locked_date
-        assert published_skill_unit.name == draft_skill_unit.name
-
-        # カテゴリの公開データ生成を確認
-        draft_skill_categories = draft_skill_unit.draft_skill_categories
-
-        published_skill_categories =
-          Repo.all(Ecto.assoc(published_skill_unit, :skill_categories))
-
-        assert length(published_skill_categories) == length(draft_skill_categories)
-
-        Enum.each(draft_skill_categories, fn draft_skill_category ->
-          published_skill_category =
-            Enum.find(published_skill_categories, fn %{trace_id: trace_id} ->
-              trace_id == draft_skill_category.trace_id
-            end)
-
-          assert published_skill_category.skill_unit_id == published_skill_unit.id
-          assert published_skill_category.name == draft_skill_category.name
-          assert published_skill_category.position == draft_skill_category.position
-
-          # スキルの公開データ生成を確認
-          draft_skills = draft_skill_category.draft_skills
-          published_skills = Repo.all(Ecto.assoc(published_skill_category, :skills))
-          assert length(published_skills) == length(draft_skills)
-
-          Enum.each(draft_skills, fn draft_skill ->
-            published_skill =
-              Enum.find(published_skills, fn %{trace_id: trace_id} ->
-                trace_id == draft_skill.trace_id
-              end)
-
-            assert published_skill.skill_category_id == published_skill_category.id
-            assert published_skill.name == draft_skill.name
-            assert published_skill.position == draft_skill.position
-          end)
-        end)
-      end)
-
-      # スキルクラスの公開データ生成を確認
-      published_skill_classes = Repo.all(SkillClass)
-      assert length(published_skill_classes) == length(draft_skill_classes)
-
-      Enum.each(draft_skill_classes, fn draft_skill_class ->
-        published_skill_class =
-          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
-            trace_id == draft_skill_class.trace_id
-          end)
-
-        assert published_skill_class.skill_panel_id == draft_skill_class.skill_panel_id
-        assert published_skill_class.locked_date == @locked_date
-        assert published_skill_class.name == draft_skill_class.name
-        assert published_skill_class.class == draft_skill_class.class
-      end)
-
-      # スキルユニットとスキルクラスの中間テーブルの公開データ生成を確認
-      published_skill_class_units = Repo.all(SkillClassUnit)
-      assert length(published_skill_class_units) == length(draft_skill_class_units)
-
-      Enum.each(draft_skill_class_units, fn draft_skill_class_unit ->
-        published_skill_class_unit =
-          Enum.find(published_skill_class_units, fn %{trace_id: trace_id} ->
-            trace_id == draft_skill_class_unit.trace_id
-          end)
-
-        published_skill_unit =
-          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == draft_skill_class_unit.draft_skill_unit.trace_id
-          end)
-
-        published_skill_class =
-          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
-            trace_id == draft_skill_class_unit.draft_skill_class.trace_id
-          end)
-
-        assert published_skill_class_unit.skill_unit_id == published_skill_unit.id
-        assert published_skill_class_unit.skill_class_id == published_skill_class.id
-        assert published_skill_class_unit.position == draft_skill_class_unit.position
-      end)
-
-      # スキルユニット単位の集計の公開データ生成を確認
-      published_skill_units = Repo.all(SkillUnit)
-      published_skill_unit_scores = Repo.all(SkillUnitScore)
-      assert length(published_skill_unit_scores) == length(skill_unit_scores)
-
-      Enum.each(skill_unit_scores, fn skill_unit_score ->
-        published_skill_unit_score =
-          Enum.find(published_skill_unit_scores, fn %{user_id: user_id} ->
-            user_id == skill_unit_score.user_id
-          end)
-
-        published_skill_unit =
-          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == skill_unit_score.skill_unit.trace_id
-          end)
-
-        assert published_skill_unit_score.user_id == skill_unit_score.user_id
-        assert published_skill_unit_score.skill_unit_id == published_skill_unit.id
-        assert published_skill_unit_score.percentage == skill_unit_score.percentage
-      end)
-
-      # スキル単位のスコアの公開データ生成を確認
-      published_skills = Repo.all(Skill)
-      published_skill_scores = Repo.all(SkillScore)
-      assert length(published_skill_scores) == length(skill_scores)
-
-      Enum.each(skill_scores, fn skill_score ->
-        published_skill_score =
-          Enum.find(published_skill_scores, fn %{user_id: user_id} ->
-            user_id == skill_score.user_id
-          end)
-
-        published_skill =
-          Enum.find(published_skills, fn %{trace_id: trace_id} ->
-            trace_id == skill_score.skill.trace_id
-          end)
-
-        assert published_skill_score.user_id == skill_score.user_id
-        assert published_skill_score.skill_id == published_skill.id
-        assert published_skill_score.score == skill_score.score
-      end)
-
-      # スキルクラス単位の集計の公開データ生成を確認
-      published_skill_classes = Repo.all(SkillClass)
-      published_skill_class_scores = Repo.all(SkillClassScore)
-      assert length(published_skill_class_scores) == length(skill_class_scores)
-
-      Enum.each(skill_class_scores, fn skill_class_score ->
-        published_skill_class_score =
-          Enum.find(published_skill_class_scores, fn %{user_id: user_id} ->
-            user_id == skill_class_score.user_id
-          end)
-
-        published_skill_class =
-          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
-            trace_id == skill_class_score.skill_class.trace_id
-          end)
-
-        assert published_skill_class_score.user_id == skill_class_score.user_id
-        assert published_skill_class_score.skill_class_id == published_skill_class.id
-        assert published_skill_class_score.level == skill_class_score.level
-        assert published_skill_class_score.percentage == skill_class_score.percentage
-      end)
-
-      # キャリアフィールド単位の集計の公開データ生成を確認
-      published_career_field_scores = Repo.all(CareerFieldScore)
-      assert length(published_career_field_scores) == length(career_field_scores)
-
-      Enum.each(career_field_scores, fn career_field_score ->
-        published_career_field_score =
-          Enum.find(published_career_field_scores, fn %{
-                                                         user_id: user_id,
-                                                         career_field_id: career_field_id
-                                                       } ->
-            user_id == career_field_score.user_id &&
-              career_field_id == career_field_score.career_field_id
-          end)
-
-        assert published_career_field_score.percentage == career_field_score.percentage
-
-        assert published_career_field_score.high_skills_count ==
                  career_field_score.high_skills_count
       end)
     end
