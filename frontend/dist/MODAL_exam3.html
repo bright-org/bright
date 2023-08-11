@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+  <section class="absolute bg-white left-1/2 min-h-[560px] -ml-[170px] -translate-y-1/2 px-10 py-8 shadow text-sm top-1/2 w-[330px]">
+    <div class="bg-bgLevelup bg-center bg-contain mt-2">
+      <div class="bg-brightGreen-50 h-40 mx-auto overflow-hidden rounded-full w-40">
+        <span class="bg-bgGemEnginner bg-center bg-contain bg-no-repeat block h-20 indent-60 mx-auto mt-4 overflow-hidden w-20 whitespace-nowrap">Engineer</span>
+        <span class="block font-bold mt-4 text-center">Elixir</span>
+      </div>
+
+      <div class="font-bold mt-4 text-center">
+        <b class="block mt-4">クラス1 Elixir本体</b>
+        <p class="mt-1">リスト／タプル／マップ</p>
+        <p class="mt-4 text-brightGreen-300"><span>5</span>／<span>5</span>問正解</p>
+        <p class="mb-1"><span class="text-3xl">100</span>%</p>
+      </div>
+
+      <!-- Start プログレスバー style="width:100%" の数値を変えることで制御します -->
+      <div id="correct_answer" class="w-full mt-2 bg-brightGray-100 rounded-full h-2.5 dark:bg-brightGray-200">
+        <div class="bg-brightGreen-300 h-2.5 rounded-full" style="width:100%"></div>
+      </div><!-- End プログレスバー -->
+
+      <div class="font-bold mt-2 text-center">
+        <p class="mt-1 text-brightGreen-300 text-2xl">合格</p>
+        <p class="mt-2 text-brightGreen-300 text-xl">おめでとうございます！</p>
+        <p class="font-normal mt-2 text-left text-xs">リスト／タプル／マップをマスターしました！</p>
+      </div>
+
+      <div class="flex gap-x-4 justify-between mt-8">
+        <button class="block text-sm font-bold p-2 rounded border border-brightGray-900 bg-white text-brightGray-900 w-32">回答を確認する</button>
+        <button class="block text-sm font-bold p-2 rounded border border-brightGray-900 bg-brightGray-900 text-white w-32">完了する</button>
+      </div>
+    </div>
+
+    <!-- close button -->
+    <button class="absolute right-5 top-5 z-10">
+      <span class="material-icons !text-3xl text-brightGray-900"
+        >close</span
+      >
+      </button>
+  </section>
+</main>
+
+
+
+</body>
+</html>
