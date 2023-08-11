@@ -35,8 +35,8 @@
               id="rowth-graph"
               module={BrightWeb.ChartLive.GrowthGraphComponent}
               user_id={@current_user.id}
-              skill_panel_id={@skill_panel_id}
-              class={@class}
+              skill_panel_id={@skill_panel.id}
+              class={@skill_class.class}
             />
             <div
               class="ml-5 flex flex-col relative text-xl text-brightGray-500 text-bold"
@@ -100,8 +100,8 @@
             id="skill-gem"
             module={BrightWeb.ChartLive.SkillGemComponent}
             user_id={@current_user.id}
-            skill_panel_id={@skill_panel_id}
-            class={@class}
+            skill_panel_id={@skill_panel.id}
+            class={@skill_class.class}
           />
           <div class="flex justify-center">
             <p>
