@@ -92,11 +92,17 @@ msgstr "%{number}以上の値を入力してください"
 msgid "must be equal to %{number}"
 msgstr "%{number}と同じ値にしてください"
 
-msgid "must have the @ sign and no spaces"
-msgstr "スペースなしで「@」を含めて入力してください"
-
 msgid "does not match password"
 msgstr "パスワードが一致しません"
 
 msgid "did not change"
 msgstr "変更されていません"
+
+msgid "at least one upper or lower case character"
+msgstr "英字を1文字以上含めてください"
+
+msgid "at least one digit"
+msgstr "数字を1文字以上含めてください"
+
+msgid "only lower-case alphanumeric character and -_. is available"
+msgstr "小文字の半角英数字と「-_.」 のみ利用可能です"

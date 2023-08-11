@@ -25,7 +25,6 @@ defmodule Bright.Accounts.User do
     has_many :skill_unit_scores, Bright.SkillScores.SkillUnitScore
     has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
-    has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
     has_many :skill_evidence_posts, Bright.SkillEvidences.SkillEvidencePost
 
     has_many :historical_skill_scores, Bright.HistoricalSkillScores.HistoricalSkillScore
@@ -85,14 +84,22 @@ defmodule Bright.Accounts.User do
   defp validate_name(changeset, opts) do
     changeset
     |> validate_required([:name])
-    |> validate_length(:name, max: 100)
+    |> validate_length(:name, max: 255)
+    |> validate_format(
+      :name,
+      ~r/^([0-9a-z-_.])*$/,
+      message: "only lower-case alphanumeric character and -_. is available"
+    )
     |> maybe_validate_unique_name(opts)
   end
 
   defp validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_format(
+      :email,
+      ~r/^(?>[-[:alpha:][:alnum:]+_!"'#$%^&*{}\/=?`|~](?:\.?[-[:alpha:][:alnum:]+_!"'#$%^&*{}\/=?`|~]){0,63})@(?=.{1,255}$)(?:(?=[^.]{1,63}(?:\.|$))(?!.*?--.*$)[[:alnum:]](?:(?:[[:alnum:]]|-){0,61}[[:alnum:]])?\.)*(?=[^.]{1,63}(?:\.|$))(?!.*?--.*$)[[:alnum:]](?:(?:[[:alnum:]]|-){0,61}[[:alnum:]])?\.[[:alpha:]]{1,64}$/i
+    )
     |> validate_length(:email, max: 160)
     |> maybe_validate_unique_email(opts)
   end
@@ -101,10 +108,10 @@ defmodule Bright.Accounts.User do
     changeset
     |> validate_required([:password])
     |> validate_length(:password, min: 8, max: 72)
-    # Examples of additional password validation:
-    # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
-    # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
-    # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
+    |> validate_format(:password, ~r/[a-zA-Z]/,
+      message: "at least one upper or lower case character"
+    )
+    |> validate_format(:password, ~r/[0-9]/, message: "at least one digit")
     |> maybe_hash_password(opts)
   end
 
@@ -179,9 +186,18 @@ defmodule Bright.Accounts.User do
     })
   end
 
-  # ランダムな英字16文字
+  # ランダムな数字8文字 + 英字8文字
   defp generate_dummy_password() do
-    for _ <- 1..16, into: "", do: <<Enum.random(?a..?z)>>
+    for(
+      _ <- 1..8,
+      into: "",
+      do: Enum.random(0..9) |> to_string()
+    ) <>
+      for(
+        _ <- 1..8,
+        into: "",
+        do: <<Enum.random(?a..?z)>>
+      )
   end
 
   defp validate_password_registered(changeset, opts) do

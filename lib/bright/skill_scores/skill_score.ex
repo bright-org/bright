@@ -12,6 +12,9 @@ defmodule Bright.SkillScores.SkillScore do
 
   schema "skill_scores" do
     field :score, Ecto.Enum, values: [:low, :middle, :high]
+    field :exam_progress, Ecto.Enum, values: [:wip, :done]
+    field :reference_read, :boolean
+    field :evidence_filled, :boolean
 
     belongs_to(:user, Bright.Accounts.User)
     belongs_to(:skill, Bright.SkillUnits.Skill)
@@ -22,7 +25,7 @@ defmodule Bright.SkillScores.SkillScore do
   @doc false
   def changeset(skill_score, attrs) do
     skill_score
-    |> cast(attrs, [:score])
+    |> cast(attrs, [:score, :exam_progress, :reference_read, :evidence_filled])
     |> validate_required([:score])
   end
 

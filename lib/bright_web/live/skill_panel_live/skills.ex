@@ -6,7 +6,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
 
-  alias Bright.SkillUnits
   alias Bright.SkillScores
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
@@ -124,67 +123,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign_skill_exam()
   end
 
-  defp assign_skill_units(socket) do
-    # query chainを作るか専用の関数を作るか悩んだため、後で見直し
-    import Ecto.Query, only: [preload: 2]
-
-    skill_units =
-      Ecto.assoc(socket.assigns.skill_class, :skill_units)
-      |> preload(skill_categories: [skills: [:skill_reference, :skill_exam]])
-      |> SkillUnits.list_skill_units()
-
-    socket
-    |> assign(skill_units: skill_units)
-  end
-
-  defp create_skill_class_score_if_not_existing(%{assigns: %{skill_class_score: nil}} = socket) do
-    # NOTE: skill_class_scoreが存在しないときの生成処理について
-    # 管理側でスキルクラスを増やすなどの操作も想定し、
-    # アクセスしたタイミングで生成するようにしています。
-
-    # TODO: クラス開放処理実装時に対応
-    # - クラス開放が必要のないclass=1のみを対象とする
-    # - クラス開放が必要なものはここではなく解放時に作成する
-    {:ok, %{skill_class_score: skill_class_score}} =
-      SkillScores.create_skill_class_score(
-        socket.assigns.current_user,
-        socket.assigns.skill_class
-      )
-
-    socket
-    |> assign(skill_class_score: skill_class_score)
-  end
-
-  defp create_skill_class_score_if_not_existing(socket), do: socket
-
-  defp assign_skill_score_dict(socket) do
-    skill_score_dict =
-      socket.assigns.skill_class_score
-      |> SkillScores.list_skill_scores_from_skill_class_score()
-      |> Map.new(&{&1.skill_id, Map.put(&1, :changed, false)})
-
-    socket
-    |> assign(skill_score_dict: skill_score_dict)
-  end
-
-  defp assign_counter(socket) do
-    counter =
-      socket.assigns.skill_score_dict
-      |> Map.values()
-      |> Enum.reduce(%{low: 0, middle: 0, high: 0}, fn skill_score, acc ->
-        Map.update!(acc, skill_score.score, &(&1 + 1))
-      end)
-
-    num_skills =
-      socket.assigns.skill_units
-      |> Enum.flat_map(& &1.skill_categories)
-      |> Enum.map(&Enum.count(&1.skills))
-      |> Enum.sum()
-
-    socket
-    |> assign(counter: counter, num_skills: num_skills)
-  end
-
   defp assign_skill(socket, skill_id) do
     skill =
       socket.assigns.skill_units
@@ -275,13 +213,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp create_skill_evidence_if_not_existing(socket), do: socket
-
-  defp calc_percentage(_count, 0), do: 0
-
-  defp calc_percentage(count, num_skills) do
-    (count / num_skills)
-    |> Kernel.*(100)
-  end
 
   defp get_skill_score_from_table_structure(socket, row) do
     skill =
