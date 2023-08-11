@@ -11,7 +11,10 @@ defmodule Bright.SkillScoreFactory do
         %SkillScore{
           user: build(:user),
           skill: build(:skill),
-          score: Enum.random(Ecto.Enum.values(SkillScore, :score))
+          score: Enum.random(Ecto.Enum.values(SkillScore, :score)),
+          exam_progress: Enum.random(Ecto.Enum.values(SkillScore, :exam_progress)),
+          reference_read: Enum.random([false, true]),
+          evidence_filled: Enum.random([false, true])
         }
       end
     end
