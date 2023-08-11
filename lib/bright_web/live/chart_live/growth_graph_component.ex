@@ -41,7 +41,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           id="myself"
           target={@myself}
           type="myself"
-          dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
+          dates={@data.labels}
           selected_date={@data.myselfSelected}
           display_now
         />
@@ -107,7 +107,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     now = SkillScores.get_class_score(user_id, skill_panel_id, class) |> get_now()
 
     %{
-      labels: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
+      labels: create_months(2022, 12),
       # role: [10, 20, 50, 60, 75, 100],
       # myself: [nil, 0, 35, 45, 55, 65],
       myself: [nil, 0, 0, 0, 0, 0],
@@ -116,6 +116,17 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       myselfSelected: "now"
       # otherSelected: "2022.12"
     }
+  end
+
+  defp create_months(year, month) do
+    st =
+      {year, month, 1}
+      |> Date.from_erl!()
+
+    0..4
+    |> Enum.map(fn x ->
+      Timex.shift(st, months: 3 * x) |> then(fn x -> "#{x.year}.#{x.month}" end)
+    end)
   end
 
   defp select_data(socket, date) do
