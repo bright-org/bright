@@ -603,14 +603,39 @@ defmodule Bright.AccountsTest do
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
+    test "confirms email if token is not expired", %{user: user, token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 30 * 60)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert {:ok, confirmed_user} = Accounts.confirm_user(token)
+      assert confirmed_user.confirmed_at
+      assert confirmed_user.confirmed_at != user.confirmed_at
+      assert Repo.get!(User, user.id).confirmed_at
+      refute Repo.get_by(UserToken, user_id: user.id)
+    end
+
     test "does not confirm with invalid token", %{user: user} do
       assert Accounts.confirm_user("oops") == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
-    test "does not confirm email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+    test "does not confirm email if token is expired after 30 minutes", %{
+      user: user,
+      token: token
+    } do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 30 * 60)]
+        )
+
       assert Accounts.confirm_user(token) == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
