@@ -144,27 +144,85 @@ defmodule Bright.AccountsTest do
   end
 
   describe "change_user_registration/2" do
+    def setup_user_changeset(%{} = attrs) do
+      %{
+        name: unique_user_name(),
+        email: unique_user_email(),
+        password: valid_user_password()
+      }
+      |> Map.merge(attrs)
+      |> then(
+        &Accounts.change_user_registration(
+          %User{},
+          params_for(:user_before_registration, &1)
+        )
+      )
+    end
+
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
       assert changeset.required == [:password, :email, :name]
     end
 
     test "allows fields to be set" do
-      name = unique_user_name()
-      email = unique_user_email()
-      password = valid_user_password()
+      attrs = %{
+        name: unique_user_name(),
+        email: unique_user_email(),
+        password: valid_user_password()
+      }
 
-      changeset =
-        Accounts.change_user_registration(
-          %User{},
-          params_for(:user_before_registration, name: name, email: email, password: password)
-        )
+      changeset = setup_user_changeset(attrs)
 
       assert changeset.valid?
-      assert get_change(changeset, :name) == name
-      assert get_change(changeset, :email) == email
-      assert get_change(changeset, :password) == password
+      assert get_change(changeset, :name) == attrs[:name]
+      assert get_change(changeset, :email) == attrs[:email]
+      assert get_change(changeset, :password) == attrs[:password]
       assert is_nil(get_change(changeset, :hashed_password))
+    end
+
+    test "validates valid email format" do
+      [
+        "hoge@exmaple.com",
+        "hoge@exmaple2.com",
+        ~s(-_!"'#$%^&*{}/=?`|~@exmaple.com)
+      ]
+      |> Enum.each(fn valid_email ->
+        changeset = setup_user_changeset(%{email: valid_email})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid email format" do
+      [
+        {" @example.com", ["has invalid format"]},
+        {"hoge@ example.com", ["has invalid format"]},
+        {"", ["can't be blank"]},
+        {String.duplicate("a", 63) <>
+           "@" <> String.duplicate("a", 63) <> "." <> String.duplicate("a", 33),
+         ["should be at most 160 character(s)"]},
+        {String.duplicate("a", 65) <> "@example.com", ["has invalid format"]},
+        {"Ｈoge@example.com", ["has invalid format"]},
+        {"[@example.com", ["has invalid format"]},
+        {"hoge@.example.com", ["has invalid format"]},
+        {"hoge@example.com.", ["has invalid format"]},
+        {"hoge@examplecom.", ["has invalid format"]},
+        {"a@" <> String.duplicate("a", 64) <> ".com", ["has invalid format"]},
+        {"hoge@exam--ple.com", ["has invalid format"]}
+      ]
+      |> Enum.each(fn {invalid_email, reasons} ->
+        changeset = setup_user_changeset(%{email: invalid_email})
+
+        assert %{email: reasons} == errors_on(changeset)
+      end)
+    end
+
+    test "does not validate name, email uniqueness" do
+      %{name: name, email: email} = insert(:user)
+
+      changeset = setup_user_changeset(%{name: name, email: email})
+
+      assert changeset.valid?
     end
   end
 
