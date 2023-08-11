@@ -14,7 +14,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     }
 
     alias Bright.SkillPanels.SkillClass
-    alias Bright.SkillScores.SkillUnitScore
+    alias Bright.SkillScores.{SkillUnitScore, SkillScore}
 
     alias Bright.HistoricalSkillUnits.{
       HistoricalSkillUnit,
@@ -358,8 +358,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルユニットの公開データ生成を確認
-      # TODO: where消す
-      skill_units = Repo.all(from su in SkillUnit, where: su.locked_date == ^@locked_date)
+      skill_units = Repo.all(SkillUnit)
       assert length(skill_units) == length(draft_skill_units)
 
       Enum.each(draft_skill_units, fn draft_skill_unit ->
@@ -425,30 +424,29 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルユニットとスキルクラスの中間テーブルの公開データ生成を確認
-      # TODO: コメントアウト外す
-      # skill_class_units = Repo.all(SkillClassUnit)
-      # length(skill_class_units) == length(draft_skill_class_units)
+      skill_class_units = Repo.all(SkillClassUnit)
+      length(skill_class_units) == length(draft_skill_class_units)
 
-      # Enum.each(draft_skill_class_units, fn draft_skill_class_unit ->
-      #   skill_class_unit =
-      #     Enum.find(skill_class_units, fn %{trace_id: trace_id} ->
-      #       trace_id == draft_skill_class_unit.trace_id
-      #     end)
+      Enum.each(draft_skill_class_units, fn draft_skill_class_unit ->
+        skill_class_unit =
+          Enum.find(skill_class_units, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.trace_id
+          end)
 
-      #   skill_unit =
-      #     Enum.find(skill_units, fn %{trace_id: trace_id} ->
-      #       trace_id == draft_skill_class_unit.draft_skill_unit.trace_id
-      #     end)
+        skill_unit =
+          Enum.find(skill_units, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.draft_skill_unit.trace_id
+          end)
 
-      #   skill_class =
-      #     Enum.find(skill_classes, fn %{trace_id: trace_id} ->
-      #       trace_id == draft_skill_class_unit.draft_skill_class.trace_id
-      #     end)
+        skill_class =
+          Enum.find(skill_classes, fn %{trace_id: trace_id} ->
+            trace_id == draft_skill_class_unit.draft_skill_class.trace_id
+          end)
 
-      #   assert skill_class_unit.skill_unit_id == skill_unit.id
-      #   assert skill_class_unit.skill_class_id == skill_class.id
-      #   assert skill_class_unit.position == draft_skill_class_unit.position
-      # end)
+        assert skill_class_unit.skill_unit_id == skill_unit.id
+        assert skill_class_unit.skill_class_id == skill_class.id
+        assert skill_class_unit.position == draft_skill_class_unit.position
+      end)
 
       # スキルユニット単位の集計の公開データ生成を確認
       inserted_skill_unit_scores = Repo.all(SkillUnitScore)
@@ -468,6 +466,27 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert inserted_skill_unit_score.user_id == skill_unit_score.user_id
         assert inserted_skill_unit_score.skill_unit_id == skill_unit.id
         assert inserted_skill_unit_score.percentage == skill_unit_score.percentage
+      end)
+
+      # スキル単位のスコアの公開データ生成を確認
+      inserted_skills = Repo.all(Skill)
+      inserted_skill_scores = Repo.all(SkillScore)
+      assert length(inserted_skill_scores) == length(skill_scores)
+
+      Enum.each(skill_scores, fn skill_score ->
+        inserted_skill_score =
+          Enum.find(inserted_skill_scores, fn %{user_id: user_id} ->
+            user_id == skill_score.user_id
+          end)
+
+        inserted_skill =
+          Enum.find(inserted_skills, fn %{trace_id: trace_id} ->
+            trace_id == skill_score.skill.trace_id
+          end)
+
+        assert inserted_skill_score.user_id == skill_score.user_id
+        assert inserted_skill_score.skill_id == inserted_skill.id
+        assert inserted_skill_score.score == skill_score.score
       end)
     end
   end
