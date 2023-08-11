@@ -22,23 +22,16 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </div>
         <div class="flex">
           <div class="w-14 relative">
-            <button
-              class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
-            >
-              <span class="material-icons text-white !text-4xl"
-                >arrow_left</span>
+            <button class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute">
+              <span class="material-icons text-white !text-4xl">arrow_left</span>
             </button>
           </div>
             <.growth_graph data={@data} id="growth-graph"/>
-          <div
-            class="ml-5 flex flex-col relative text-xl text-brightGray-500 text-bold"
-          >
+          <div class="ml-5 flex flex-col relative text-xl text-brightGray-500 text-bold">
             <p class="py-5">ベテラン</p>
             <p class="py-20">平均</p>
             <p class="py-6">見習い</p>
-            <button
-              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
-            >
+            <button class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute">
               <span class="material-icons text-white !text-4xl"
                 >arrow_right</span>
             </button>
@@ -54,16 +47,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         <div class="flex py-4">
           <div class="w-14"></div>
           <div class="w-[725px] flex justify-between items-center">
-            <div
-              class="text-left flex items-center text-base hover:bg-brightGray-50"
-            >
-              <a
-                class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded"
-              >
-                <img
-                  class="inline-block h-10 w-10 rounded-full"
-                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                />
+            <div class="text-left flex items-center text-base hover:bg-brightGray-50">
+              <a class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded">
+                <img class="inline-block h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
                 <div>
                   <p>nokichi</p>
                   <p class="text-brightGray-300">アプリエンジニア</p>
