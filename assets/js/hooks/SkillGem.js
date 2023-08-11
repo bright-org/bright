@@ -207,7 +207,10 @@ export const SkillGem = {
     const isSmall = dataset.size == "sm"
     const isLink = JSON.parse(dataset.displayLink)
     const datasets = [];
-    datasets.push(createData(data[0]));
+
+    if(labels.length < 3) return
+
+    datasets.push(createData(data[0]))
 
     if (data[1] !== undefined) {
       datasets.push(createData(data[1]))
