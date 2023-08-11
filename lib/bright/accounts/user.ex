@@ -37,6 +37,10 @@ defmodule Bright.Accounts.User do
     has_many :historical_career_field_scores,
              Bright.HistoricalSkillScores.HistoricalCareerFieldScore
 
+    has_many :user_skill_panels, Bright.UserSkillPanels.UserSkillPanel
+
+    has_many :skill_panels, through: [:user_skill_panels, :skill_panel]
+
     has_one :user_onboardings, Bright.Onboardings.UserOnboarding
     has_one :user_profile, Bright.UserProfiles.UserProfile
     has_one :user_job_profile, Bright.UserJobProfiles.UserJobProfile

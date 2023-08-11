@@ -10,6 +10,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
+  alias Bright.UserSkillPanels
 
   @shortcut_key_score %{
     "1" => :high,
@@ -55,6 +56,11 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     {:ok, _} = SkillScores.update_skill_scores(socket.assigns.current_user, target_skill_scores)
     skill_class_score = SkillScores.get_skill_class_score!(socket.assigns.skill_class_score.id)
+
+    UserSkillPanels.touch_user_skill_panel_updated(
+      socket.assigns.current_user,
+      socket.assigns.skill_panel
+    )
 
     {:noreply,
      socket
