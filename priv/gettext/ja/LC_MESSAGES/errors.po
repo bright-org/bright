@@ -92,9 +92,6 @@ msgstr "%{number}以上の値を入力してください"
 msgid "must be equal to %{number}"
 msgstr "%{number}と同じ値にしてください"
 
-msgid "must have the @ sign and no spaces"
-msgstr "スペースなしで「@」を含めて入力してください"
-
 msgid "does not match password"
 msgstr "パスワードが一致しません"
 

@@ -111,7 +111,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
         )
 
       assert result =~ "100文字以内で入力してください"
-      assert result =~ "スペースなしで「@」を含めて入力してください"
+      assert result =~ "無効なフォーマットです"
     end
   end
 

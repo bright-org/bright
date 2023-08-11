@@ -80,7 +80,7 @@ defmodule Bright.AccountsTest do
 
       assert %{
                name: ["should be at most 100 character(s)"],
-               email: ["must have the @ sign and no spaces"],
+               email: ["has invalid format"],
                password: ["should be at least 8 character(s)"]
              } = errors_on(changeset)
     end
@@ -189,7 +189,7 @@ defmodule Bright.AccountsTest do
       {:error, changeset} =
         Accounts.apply_user_email(user, valid_user_password(), %{email: "not valid"})
 
-      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
+      assert %{email: ["has invalid format"]} = errors_on(changeset)
     end
 
     test "validates maximum value for email for security", %{user: user} do
