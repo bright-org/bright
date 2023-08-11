@@ -13,7 +13,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
   alias Bright.SkillUnits.{SkillUnit, SkillCategory, Skill, SkillClassUnit}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
-  alias Bright.SkillScores.{SkillUnitScore, SkillScore}
+  alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore}
 
   alias Bright.HistoricalSkillUnits.{
     HistoricalSkillUnit,
@@ -94,7 +94,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         draft_skill_class_pairs
       end)
 
-      # create_skill_class_scores(draft_skill_class_pairs, now, locked_date)
+      create_skill_class_scores(draft_skill_class_pairs, now)
       # create_career_field_scores(now, locked_date)
 
       # コピー元の公開データを削除
@@ -434,7 +434,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
   end
 
   defp create_skill_unit_scores(draft_skill_unit_pairs, now) do
-    old_skill_unit_scores = Repo.all(from suc in SkillUnitScore, preload: [:skill_unit])
+    old_skill_unit_scores = Repo.all(from SkillUnitScore, preload: [:skill_unit])
 
     entries =
       old_skill_unit_scores
@@ -461,7 +461,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
   end
 
   defp create_skill_scores(draft_skill_pairs, now) do
-    old_skill_scores = Repo.all(from sc in SkillScore, preload: [:skill])
+    old_skill_scores = Repo.all(from SkillScore, preload: [:skill])
 
     entries =
       old_skill_scores
@@ -487,11 +487,41 @@ defmodule Bright.Batches.UpdateSkillPanels do
     Repo.insert_all(SkillScore, entries)
   end
 
+  defp create_skill_class_scores(draft_skill_class_pairs, now) do
+    old_skill_class_scores = Repo.all(from SkillClassScore, preload: [:skill_class])
+
+    entries =
+      old_skill_class_scores
+      |> Enum.map(fn old_skill_class_score ->
+        {_draft_skill_class, skill_class} = Enum.find(draft_skill_class_pairs, fn {_draft_skill_class, skill_class} ->
+          skill_class.trace_id == old_skill_class_score.skill_class.trace_id
+        end)
+
+        if skill_class do
+          %{
+            id: Ecto.ULID.generate(),
+            user_id: old_skill_class_score.user_id,
+            skill_class_id: skill_class.id,
+            level: old_skill_class_score.level,
+            percentage: old_skill_class_score.percentage,
+            inserted_at: now,
+            updated_at: now
+          }
+        end
+      end)
+
+    Repo.delete_all(SkillClassScore, entries)
+    Repo.insert_all(SkillClassScore, entries)
+  end
+
   defp delete_old_skill_classes(locked_date) do
     from(scu in SkillClassUnit,
       join: sc in assoc(scu, :skill_class),
       where: sc.locked_date < ^locked_date
     )
+    |> Repo.delete_all()
+
+    from(sc in SkillClass, where: sc.locked_date < ^locked_date)
     |> Repo.delete_all()
   end
 
