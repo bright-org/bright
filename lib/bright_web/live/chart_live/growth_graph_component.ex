@@ -99,6 +99,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     IO.inspect(params)
     IO.inspect("------------------")
     Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
+    socket = socket |> select_data(params["date"])
     {:noreply, socket}
   end
 
@@ -115,6 +116,16 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       myselfSelected: "2023.6"
       # otherSelected: "2022.12"
     }
+  end
+
+  defp select_data(socket, date) do
+    data =
+      socket.assigns.data
+      |> Map.put(:myselfSelected, date)
+      |> IO.inspect()
+
+    socket
+    |> assign(:data, data)
   end
 
   defp get_now(%{percentage: now}), do: now

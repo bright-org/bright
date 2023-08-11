@@ -380,14 +380,19 @@ const createChartFromJSON = (data) => {
 }
 
 export const GrowthGraph = {
-  mounted() {
-    const element = this.el
+  drawGrowthGraph(element) {
     const dataset = element.dataset
     const data = JSON.parse(dataset.data)
-
     const ctx = document.querySelector('#' + element.id + ' canvas')
-    const myChart = new Chart(ctx, createChartFromJSON(data))
-    myChart.canvas.parentNode.style.height = '357px'
-    myChart.canvas.parentNode.style.width = '714px'
+    this.myChart = new Chart(ctx, createChartFromJSON(data))
+    this.myChart.canvas.parentNode.style.height = '357px'
+    this.myChart.canvas.parentNode.style.width = '714px'
+  },
+  mounted() {
+    this.drawGrowthGraph(this.el)
+  },
+  updated() {
+    this.myChart.destroy()
+    this.drawGrowthGraph(this.el)
   }
 }
