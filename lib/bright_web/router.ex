@@ -198,7 +198,7 @@ defmodule BrightWeb.Router do
 
   # 認証前後問わない
   scope "/", BrightWeb do
-    pipe_through [:browser, :no_header]
+    pipe_through [:browser]
 
     get "/users/confirm/:token", UserConfirmationController, :confirm
     delete "/users/log_out", UserSessionController, :delete
