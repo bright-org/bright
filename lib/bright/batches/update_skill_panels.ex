@@ -13,7 +13,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
   alias Bright.SkillUnits.{SkillUnit, SkillCategory, Skill, SkillClassUnit}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
-  alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore}
+  alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore, CareerFieldScore}
 
   alias Bright.HistoricalSkillUnits.{
     HistoricalSkillUnit,
@@ -95,7 +95,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
       create_skill_class_scores(draft_skill_class_pairs, now)
-      # create_career_field_scores(now, locked_date)
+      create_career_field_scores(now)
 
       # コピー元の公開データを削除
       delete_old_skill_classes(locked_date)
@@ -512,6 +512,26 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
     Repo.delete_all(SkillClassScore, entries)
     Repo.insert_all(SkillClassScore, entries)
+  end
+
+  defp create_career_field_scores(now) do
+    entries =
+      Bright.SkillScores.CareerFieldScore
+      |> Repo.all()
+      |> Enum.map(fn career_field_score ->
+        %{
+          id: Ecto.ULID.generate(),
+          user_id: career_field_score.user_id,
+          career_field_id: career_field_score.career_field_id,
+          percentage: career_field_score.percentage,
+          high_skills_count: career_field_score.high_skills_count,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+
+    Repo.delete_all(CareerFieldScore, entries)
+    Repo.insert_all(CareerFieldScore, entries)
   end
 
   defp delete_old_skill_classes(locked_date) do

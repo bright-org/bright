@@ -14,7 +14,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     }
 
     alias Bright.SkillPanels.SkillClass
-    alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore}
+    alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore, CareerFieldScore}
 
     alias Bright.HistoricalSkillUnits.{
       HistoricalSkillUnit,
@@ -509,6 +509,26 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert published_skill_class_score.skill_class_id == published_skill_class.id
         assert published_skill_class_score.level == skill_class_score.level
         assert published_skill_class_score.percentage == skill_class_score.percentage
+      end)
+
+      # キャリアフィールド単位の集計の公開データ生成を確認
+      published_career_field_scores = Repo.all(CareerFieldScore)
+      assert length(published_career_field_scores) == length(career_field_scores)
+
+      Enum.each(career_field_scores, fn career_field_score ->
+        published_career_field_score =
+          Enum.find(published_career_field_scores, fn %{
+                                                         user_id: user_id,
+                                                         career_field_id: career_field_id
+                                                       } ->
+            user_id == career_field_score.user_id &&
+              career_field_id == career_field_score.career_field_id
+          end)
+
+        assert published_career_field_score.percentage == career_field_score.percentage
+
+        assert published_career_field_score.high_skills_count ==
+                 career_field_score.high_skills_count
       end)
     end
   end
