@@ -13,6 +13,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
   alias Bright.SkillUnits.{SkillUnit, SkillCategory, Skill, SkillClassUnit}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
+  alias Bright.SkillScores.SkillUnitScore
 
   alias Bright.HistoricalSkillUnits.{
     HistoricalSkillUnit,
@@ -36,7 +37,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
     locked_date = if locked_date, do: locked_date, else: Date.utc_today()
 
     Repo.transaction(fn ->
-      # 公開→履歴
+      # 公開データから履歴データを生成
       skill_unit_pairs = create_historical_skill_units(now)
       create_historical_skill_unit_scores(skill_unit_pairs, now, locked_date)
 
@@ -65,9 +66,9 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
       create_historical_career_field_scores(now, locked_date)
 
-      # 運営下書き→公開
+      # 運営下書きデータから公開データを生成
       draft_skill_unit_pairs = create_skill_units(now, locked_date)
-      # create_skill_unit_scores(skill_unit_pairs, now, locked_date)
+      create_skill_unit_scores(draft_skill_unit_pairs, now)
 
       Enum.each(draft_skill_unit_pairs, fn {draft_skill_unit, skill_unit} ->
         draft_skill_category_pairs =
@@ -424,5 +425,32 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
     Repo.insert_all(SkillClassUnit, entries)
+  end
+
+  defp create_skill_unit_scores(draft_skill_unit_pairs, now) do
+    old_skill_unit_scores = Repo.all(from suc in SkillUnitScore, preload: [:skill_unit])
+
+    entries =
+      old_skill_unit_scores
+      |> Enum.map(fn old_skill_unit_score ->
+        {_draft_skill_unit, skill_unit} = Enum.find(draft_skill_unit_pairs, fn {_draft_skill_unit, skill_unit} ->
+          skill_unit.trace_id == old_skill_unit_score.skill_unit.trace_id
+        end)
+
+        if skill_unit do
+          %{
+            id: Ecto.ULID.generate(),
+            user_id: old_skill_unit_score.user_id,
+            skill_unit_id: skill_unit.id,
+            percentage: old_skill_unit_score.percentage,
+            inserted_at: now,
+            updated_at: now
+          }
+        end
+      end)
+      |> Enum.reject(&is_nil/1)
+
+    Repo.delete_all(SkillUnitScore)
+    Repo.insert_all(SkillUnitScore, entries)
   end
 end
