@@ -25,7 +25,6 @@ defmodule Bright.Accounts.User do
     has_many :skill_unit_scores, Bright.SkillScores.SkillUnitScore
     has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
-    has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
     has_many :skill_evidence_posts, Bright.SkillEvidences.SkillEvidencePost
 
     has_many :historical_skill_scores, Bright.HistoricalSkillScores.HistoricalSkillScore

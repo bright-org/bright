@@ -59,7 +59,6 @@ defmodule Bright.Factory do
 
   # SkillExams context
   use Bright.SkillExamFactory
-  use Bright.SkillExamResultFactory
 
   # SkillEvidences context
   use Bright.SkillEvidenceFactory

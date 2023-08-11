@@ -18,8 +18,12 @@ defmodule BrightWeb.SkillPanelLive.Graph do
     {:noreply,
      socket
      |> assign_skill_panel(params["skill_panel_id"])
-     |> assign_page_sub_title()
-     |> assign_skill_class_and_score(params["class"])}
+     |> assign_skill_class_and_score(params["class"])
+     |> create_skill_class_score_if_not_existing()
+     |> assign_skill_units()
+     |> assign_skill_score_dict()
+     |> assign_counter()
+     |> assign_page_sub_title()}
   end
 
   @impl true

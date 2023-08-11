@@ -23,7 +23,6 @@ defmodule Bright.SkillUnits.Skill do
     has_many :skill_scores, Bright.SkillScores.SkillScore
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
     has_one :skill_exam, Bright.SkillExams.SkillExam
-    has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
     has_one :skill_reference, Bright.SkillReferences.SkillReference
 
     timestamps()

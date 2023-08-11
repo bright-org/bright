@@ -2,6 +2,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use Phoenix.Component
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
+  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
 
   def navigations(assigns) do
     ~H"""
@@ -260,29 +261,26 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         </div>
         <div class="mr-auto flex ml-7">
           <div class="w-20 mt-auto">
-            <.doughnut_graph data={[30, 20, 10]} id="doughnut-graph-single-sample1"/>
+            <.doughnut_graph data={skill_score_percentages(@counter, @num_skills)} id="doughnut-graph-single-sample1"/>
           </div>
           <div class="h-20 mt-5 ml-2 flex flex-wrap">
             <p class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1">
-              <img
-                src="/images/common/icons/crown.svg"
-                class="mr-2"
-              />ベテラン
+              <.profile_skill_class_level level={@skill_class_score.level} />
             </p>
             <div class="flex flex-col w-24 pl-6">
               <div class="min-w-[4em] flex items-center">
                 <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
-                68％
+                <%= calc_percentage(@counter.high, @num_skills) %>％
               </div>
               <div class="min-w-[4em] flex items-center">
                 <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
-                12％
+                <%= calc_percentage(@counter.middle, @num_skills) %>％
               </div>
             </div>
             <div class="text-right text-xs">
-              エビデンスの登録率 30%<br />
-              教材の学習率 30%<br />
-              試験の合格率 30%
+              エビデンスの登録率 <%= calc_percentage(@counter.evidence_filled, @num_skills) %>%<br />
+              教材の学習率 <%= calc_percentage(@counter.reference_read, @num_skills) %>%<br />
+              試験の受験率 <%= calc_percentage(@counter.exam_touch, @num_skills) %>%
             </div>
           </div>
         </div>
@@ -295,5 +293,34 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         </div>
       </div>
     """
+  end
+
+  defp profile_skill_class_level(%{level: :beginner} = assigns) do
+    ~H"""
+    見習い
+    """
+  end
+
+  defp profile_skill_class_level(%{level: :normal} = assigns) do
+    ~H"""
+    平均
+    """
+  end
+
+  defp profile_skill_class_level(%{level: :skilled} = assigns) do
+    ~H"""
+    <img
+      src="/images/common/icons/crown.svg"
+      class="mr-2"
+      />ベテラン
+    """
+  end
+
+  defp skill_score_percentages(counter, num_skills) do
+    high = calc_percentage(counter.high, num_skills)
+    middle = calc_percentage(counter.middle, num_skills)
+    low = 100 - high - middle
+
+    [high, middle, low]
   end
 end

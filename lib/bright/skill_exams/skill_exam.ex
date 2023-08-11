@@ -14,8 +14,6 @@ defmodule Bright.SkillExams.SkillExam do
 
     belongs_to(:skill, Bright.SkillUnits.Skill)
 
-    has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
-
     timestamps()
   end
 
