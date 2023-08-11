@@ -63,8 +63,8 @@ export const DoughnutGraph = {
     resizeDoughnutGraph(this.myDoughnut)
   },
   updated() {
-    if (this.myDoughnut != null) this.myDoughnut.destroy()
     const init = initDoughnutGraph(this.el)
+    this.myDoughnut.destroy()
     this.myDoughnut = new Chart(init.ctx, init.json)
     resizeDoughnutGraph(this.myDoughnut)
   }
