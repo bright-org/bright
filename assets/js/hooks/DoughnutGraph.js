@@ -42,7 +42,7 @@ const createChartFromJSON = (data) => {
   )
 }
 
-export const drawDoughnutGraph = {
+export const DoughnutGraph = {
   drawDoughnutGraph(element) {
     const dataset = element.dataset
     const data = JSON.parse(dataset.data)
@@ -52,10 +52,10 @@ export const drawDoughnutGraph = {
     this.myDoughnut.canvas.parentNode.style.width = '80px'
   },
   mounted() {
-    drawDoughnutGraph(this.el)
+    this.drawDoughnutGraph(this.el)
   },
   updated() {
     this.myDoughnut.destroy()
-    drawDoughnutGraph(this.el)
+    this.drawDoughnutGraph(this.el)
   }
 }
