@@ -105,10 +105,10 @@ defmodule Bright.Accounts.User do
     changeset
     |> validate_required([:password])
     |> validate_length(:password, min: 8, max: 72)
-    # Examples of additional password validation:
-    # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
-    # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
-    # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
+    |> validate_format(:password, ~r/[a-zA-Z]/,
+      message: "at least one upper or lower case character"
+    )
+    |> validate_format(:password, ~r/[0-9]/, message: "at least one digit")
     |> maybe_hash_password(opts)
   end
 
@@ -183,9 +183,18 @@ defmodule Bright.Accounts.User do
     })
   end
 
-  # ランダムな英字16文字
+  # ランダムな数字8文字 + 英字8文字
   defp generate_dummy_password() do
-    for _ <- 1..16, into: "", do: <<Enum.random(?a..?z)>>
+    for(
+      _ <- 1..8,
+      into: "",
+      do: Enum.random(0..9) |> to_string()
+    ) <>
+      for(
+        _ <- 1..8,
+        into: "",
+        do: <<Enum.random(?a..?z)>>
+      )
   end
 
   defp validate_password_registered(changeset, opts) do

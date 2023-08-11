@@ -116,3 +116,9 @@ msgstr ""
 
 msgid "did not change"
 msgstr ""
+
+msgid "at least one upper or lower case character"
+msgstr ""
+
+msgid "at least one digit"
+msgstr ""

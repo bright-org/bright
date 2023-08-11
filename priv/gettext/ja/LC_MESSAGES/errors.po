@@ -97,3 +97,9 @@ msgstr "パスワードが一致しません"
 
 msgid "did not change"
 msgstr "変更されていません"
+
+msgid "at least one upper or lower case character"
+msgstr "英字を1文字以上含めてください"
+
+msgid "at least one digit"
+msgstr "数字を1文字以上含めてください"

@@ -108,8 +108,16 @@ msgstr ""
 msgid "must be equal to %{number}"
 msgstr ""
 
+## Custom error messages
+
 msgid "does not match password"
 msgstr ""
 
 msgid "did not change"
+msgstr ""
+
+msgid "at least one upper or lower case character"
+msgstr ""
+
+msgid "at least one digit"
 msgstr ""
