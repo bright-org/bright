@@ -248,6 +248,34 @@ defmodule Bright.AccountsTest do
       end)
     end
 
+    test "validates valid password format" do
+      [
+        "hoge1hog",
+        "HOGE1HOG",
+        String.duplicate("a", 71) <> "1"
+      ]
+      |> Enum.each(fn valid_password ->
+        changeset = setup_user_changeset(%{password: valid_password})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid password format" do
+      [
+        {"", ["can't be blank"]},
+        {"hoge1ho", ["should be at least 8 character(s)"]},
+        {String.duplicate("a", 72) <> "1", ["should be at most 72 character(s)"]},
+        {"hogeHoge", ["at least one digit"]},
+        {"12345678", ["at least one upper or lower case character"]}
+      ]
+      |> Enum.each(fn {invalid_password, reasons} ->
+        changeset = setup_user_changeset(%{password: invalid_password})
+
+        assert %{password: reasons} == errors_on(changeset)
+      end)
+    end
+
     test "does not validate name, email uniqueness" do
       %{name: name, email: email} = insert(:user)
 
