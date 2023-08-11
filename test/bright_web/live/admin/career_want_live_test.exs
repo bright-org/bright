@@ -2,14 +2,14 @@ defmodule BrightWeb.Admin.CareerWantLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.JobsFixtures
+  import Bright.Factory
 
   @create_attrs %{name: "some name", position: 42}
   @update_attrs %{name: "some updated name", position: 43}
   @invalid_attrs %{name: nil, position: nil}
 
   defp create_career_want(_) do
-    career_want = career_want_fixture()
+    career_want = insert(:career_want)
     %{career_want: career_want}
   end
 

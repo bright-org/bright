@@ -6,7 +6,7 @@ defmodule Bright.CareerFields do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.CareerFields.CareerField
+  alias Bright.CareerFields.{CareerField, CareerFieldJob}
 
   @doc """
   Returns the list of career_fields.
@@ -100,5 +100,36 @@ defmodule Bright.CareerFields do
   """
   def change_career_field(%CareerField{} = career_field, attrs \\ %{}) do
     CareerField.changeset(career_field, attrs)
+  end
+
+  @doc """
+  Creates a career_want_job.
+
+  ## Examples
+
+      iex> create_career_field_job(%{field: value})
+      {:ok, %CareerFieldJob{}}
+
+      iex> create_career_field_job(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_career_field_job(attrs \\ %{}) do
+    %CareerFieldJob{}
+    |> CareerFieldJob.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking career_field_job changes.
+
+  ## Examples
+
+      iex> change_career_field_job(career_field_job)
+      %Ecto.Changeset{data: %CareerFieldJob{}}
+
+  """
+  def change_career_field_job(%CareerFieldJob{} = career_field_job, attrs \\ %{}) do
+    CareerFieldJob.changeset(career_field_job, attrs)
   end
 end
