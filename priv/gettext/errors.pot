@@ -121,3 +121,6 @@ msgstr ""
 
 msgid "at least one digit"
 msgstr ""
+
+msgid "only lower-case alphanumeric character and -_. is available"
+msgstr ""

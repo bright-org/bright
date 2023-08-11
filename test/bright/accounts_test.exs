@@ -234,12 +234,12 @@ defmodule Bright.AccountsTest do
       [
         {"", ["can't be blank"]},
         {String.duplicate("a", 256), ["should be at most 255 character(s)"]},
-        {"A", ["has invalid format"]},
-        {"@", ["has invalid format"]},
-        {"ａ", ["has invalid format"]},
-        {"Ａ", ["has invalid format"]},
-        {"ひらがな", ["has invalid format"]},
-        {"漢字", ["has invalid format"]}
+        {"A", ["only lower-case alphanumeric character and -_. is available"]},
+        {"@", ["only lower-case alphanumeric character and -_. is available"]},
+        {"ａ", ["only lower-case alphanumeric character and -_. is available"]},
+        {"Ａ", ["only lower-case alphanumeric character and -_. is available"]},
+        {"ひらがな", ["only lower-case alphanumeric character and -_. is available"]},
+        {"漢字", ["only lower-case alphanumeric character and -_. is available"]}
       ]
       |> Enum.each(fn {invalid_name, reasons} ->
         changeset = setup_user_changeset(%{name: invalid_name})
