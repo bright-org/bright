@@ -28,12 +28,14 @@ defmodule BrightWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # TODO 本番では出ないように
   scope "/", BrightWeb do
     pipe_through [:browser, :no_header]
 
     get "/", PageController, :home
   end
 
+  # 管理画面
   scope "/admin", BrightWeb.Admin, as: :admin do
     pipe_through [:browser, :admin]
 
@@ -91,12 +93,7 @@ defmodule BrightWeb.Router do
     end
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", BrightWeb do
-  #   pipe_through :api
-  # end
-
-  # Enable LiveDashboard and Swoosh mailbox preview in development
+  # ローカル開発用
   if Application.compile_env(:bright, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
     # it behind authentication and allow only admins to access it.
@@ -124,8 +121,8 @@ defmodule BrightWeb.Router do
     end
   end
 
-  ## Authentication routes
-
+  # 認証前
+  ## OAuth
   scope "/auth", BrightWeb do
     pipe_through [:browser]
 
@@ -133,6 +130,7 @@ defmodule BrightWeb.Router do
     get "/:provider/callback", OAuthController, :callback
   end
 
+  ## ユーザー登録・ログイン
   scope "/", BrightWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
 
@@ -142,6 +140,7 @@ defmodule BrightWeb.Router do
       live "/users/finish_registration", UserFinishRegistrationLive, :show
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
+      live "/users/confirm", UserConfirmationInstructionsLive, :new
       live "/users/send_reset_password_url", UserSendResetPasswordUrlLive, :show
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
       live "/users/two_factor_auth/:token", UserTwoFactorAuthLive, :show
@@ -152,6 +151,7 @@ defmodule BrightWeb.Router do
     post "/users/two_factor_auth", UserTwoFactorAuthController, :create
   end
 
+  # 認証後
   scope "/", BrightWeb do
     pipe_through [:browser, :require_authenticated_user]
 
@@ -183,15 +183,11 @@ defmodule BrightWeb.Router do
     end
   end
 
+  # 認証前後問わない
   scope "/", BrightWeb do
-    pipe_through [:browser, :no_header]
+    pipe_through [:browser]
 
     get "/users/confirm/:token", UserConfirmationController, :confirm
     delete "/users/log_out", UserSessionController, :delete
-
-    live_session :current_user,
-      on_mount: [{BrightWeb.UserAuth, :mount_current_user}] do
-      live "/users/confirm", UserConfirmationInstructionsLive, :new
-    end
   end
 end

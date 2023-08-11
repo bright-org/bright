@@ -73,15 +73,15 @@ defmodule Bright.AccountsTest do
     test "validates name and email and password when given" do
       {:error, changeset} =
         Accounts.register_user(%{
-          name: String.duplicate("a", 101),
+          name: String.duplicate("a", 256),
           email: "not valid",
           password: "invalid"
         })
 
       assert %{
-               name: ["should be at most 100 character(s)"],
-               email: ["must have the @ sign and no spaces"],
-               password: ["should be at least 8 character(s)"]
+               name: ["should be at most 255 character(s)"],
+               email: ["has invalid format"],
+               password: ["at least one digit", "should be at least 8 character(s)"]
              } = errors_on(changeset)
     end
 
@@ -144,27 +144,144 @@ defmodule Bright.AccountsTest do
   end
 
   describe "change_user_registration/2" do
+    def setup_user_changeset(%{} = attrs) do
+      %{
+        name: unique_user_name(),
+        email: unique_user_email(),
+        password: valid_user_password()
+      }
+      |> Map.merge(attrs)
+      |> then(
+        &Accounts.change_user_registration(
+          %User{},
+          params_for(:user_before_registration, &1)
+        )
+      )
+    end
+
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
       assert changeset.required == [:password, :email, :name]
     end
 
     test "allows fields to be set" do
-      name = unique_user_name()
-      email = unique_user_email()
-      password = valid_user_password()
+      attrs = %{
+        name: unique_user_name(),
+        email: unique_user_email(),
+        password: valid_user_password()
+      }
 
-      changeset =
-        Accounts.change_user_registration(
-          %User{},
-          params_for(:user_before_registration, name: name, email: email, password: password)
-        )
+      changeset = setup_user_changeset(attrs)
 
       assert changeset.valid?
-      assert get_change(changeset, :name) == name
-      assert get_change(changeset, :email) == email
-      assert get_change(changeset, :password) == password
+      assert get_change(changeset, :name) == attrs[:name]
+      assert get_change(changeset, :email) == attrs[:email]
+      assert get_change(changeset, :password) == attrs[:password]
       assert is_nil(get_change(changeset, :hashed_password))
+    end
+
+    test "validates valid email format" do
+      [
+        "hoge@exmaple.com",
+        "hoge@exmaple2.com",
+        ~s(-_!"'#$%^&*{}/=?`|~@exmaple.com)
+      ]
+      |> Enum.each(fn valid_email ->
+        changeset = setup_user_changeset(%{email: valid_email})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid email format" do
+      [
+        {" @example.com", ["has invalid format"]},
+        {"hoge@ example.com", ["has invalid format"]},
+        {"", ["can't be blank"]},
+        {String.duplicate("a", 63) <>
+           "@" <> String.duplicate("a", 63) <> "." <> String.duplicate("a", 33),
+         ["should be at most 160 character(s)"]},
+        {String.duplicate("a", 65) <> "@example.com", ["has invalid format"]},
+        {"Ｈoge@example.com", ["has invalid format"]},
+        {"[@example.com", ["has invalid format"]},
+        {"hoge@.example.com", ["has invalid format"]},
+        {"hoge@example.com.", ["has invalid format"]},
+        {"hoge@examplecom.", ["has invalid format"]},
+        {"a@" <> String.duplicate("a", 64) <> ".com", ["has invalid format"]},
+        {"hoge@exam--ple.com", ["has invalid format"]}
+      ]
+      |> Enum.each(fn {invalid_email, reasons} ->
+        changeset = setup_user_changeset(%{email: invalid_email})
+
+        assert %{email: reasons} == errors_on(changeset)
+      end)
+    end
+
+    test "validates valid name format" do
+      [
+        "hoge",
+        "h1-_.",
+        String.duplicate("a", 255)
+      ]
+      |> Enum.each(fn valid_name ->
+        changeset = setup_user_changeset(%{name: valid_name})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid name format" do
+      [
+        {"", ["can't be blank"]},
+        {String.duplicate("a", 256), ["should be at most 255 character(s)"]},
+        {"A", ["only lower-case alphanumeric character and -_. is available"]},
+        {"@", ["only lower-case alphanumeric character and -_. is available"]},
+        {"ａ", ["only lower-case alphanumeric character and -_. is available"]},
+        {"Ａ", ["only lower-case alphanumeric character and -_. is available"]},
+        {"ひらがな", ["only lower-case alphanumeric character and -_. is available"]},
+        {"漢字", ["only lower-case alphanumeric character and -_. is available"]}
+      ]
+      |> Enum.each(fn {invalid_name, reasons} ->
+        changeset = setup_user_changeset(%{name: invalid_name})
+
+        assert %{name: reasons} == errors_on(changeset)
+      end)
+    end
+
+    test "validates valid password format" do
+      [
+        "hoge1hog",
+        "HOGE1HOG",
+        String.duplicate("a", 71) <> "1"
+      ]
+      |> Enum.each(fn valid_password ->
+        changeset = setup_user_changeset(%{password: valid_password})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid password format" do
+      [
+        {"", ["can't be blank"]},
+        {"hoge1ho", ["should be at least 8 character(s)"]},
+        {String.duplicate("a", 72) <> "1", ["should be at most 72 character(s)"]},
+        {"hogeHoge", ["at least one digit"]},
+        {"12345678", ["at least one upper or lower case character"]}
+      ]
+      |> Enum.each(fn {invalid_password, reasons} ->
+        changeset = setup_user_changeset(%{password: invalid_password})
+
+        assert %{password: reasons} == errors_on(changeset)
+      end)
+    end
+
+    test "does not validate name, email uniqueness" do
+      %{name: name, email: email} = insert(:user)
+
+      changeset = setup_user_changeset(%{name: name, email: email})
+
+      assert changeset.valid?
     end
   end
 
@@ -189,7 +306,7 @@ defmodule Bright.AccountsTest do
       {:error, changeset} =
         Accounts.apply_user_email(user, valid_user_password(), %{email: "not valid"})
 
-      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
+      assert %{email: ["has invalid format"]} = errors_on(changeset)
     end
 
     test "validates maximum value for email for security", %{user: user} do
@@ -296,11 +413,11 @@ defmodule Bright.AccountsTest do
     test "allows fields to be set" do
       changeset =
         Accounts.change_user_password(%User{}, %{
-          "password" => "new valid password"
+          "password" => "new valid password2"
         })
 
       assert changeset.valid?
-      assert get_change(changeset, :password) == "new valid password"
+      assert get_change(changeset, :password) == "new valid password2"
       assert is_nil(get_change(changeset, :hashed_password))
     end
   end
@@ -318,7 +435,7 @@ defmodule Bright.AccountsTest do
         })
 
       assert %{
-               password: ["should be at least 8 character(s)"],
+               password: ["at least one digit", "should be at least 8 character(s)"],
                password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end
@@ -342,11 +459,11 @@ defmodule Bright.AccountsTest do
     test "updates the password", %{user: user} do
       {:ok, user} =
         Accounts.update_user_password(user, valid_user_password(), %{
-          password: "new valid password"
+          password: "new valid password2"
         })
 
       assert is_nil(user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password2")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
@@ -354,7 +471,7 @@ defmodule Bright.AccountsTest do
 
       {:ok, _} =
         Accounts.update_user_password(user, valid_user_password(), %{
-          password: "new valid password"
+          password: "new valid password2"
         })
 
       refute Repo.get_by(UserToken, user_id: user.id)
@@ -561,7 +678,7 @@ defmodule Bright.AccountsTest do
         })
 
       assert %{
-               password: ["should be at least 8 character(s)"],
+               password: ["at least one digit", "should be at least 8 character(s)"],
                password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end
@@ -573,14 +690,14 @@ defmodule Bright.AccountsTest do
     end
 
     test "updates the password", %{user: user} do
-      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password"})
+      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password2"})
       assert is_nil(updated_user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password2")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
       _ = Accounts.generate_user_session_token(user)
-      {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password"})
+      {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password2"})
       refute Repo.get_by(UserToken, user_id: user.id)
     end
   end

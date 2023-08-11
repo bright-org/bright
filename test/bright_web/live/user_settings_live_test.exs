@@ -64,7 +64,7 @@ defmodule BrightWeb.UserSettingsLiveTest do
         })
 
       assert result =~ "Change Email"
-      assert result =~ "スペースなしで「@」を含めて入力してください"
+      assert result =~ "無効なフォーマットです"
     end
 
     test "renders errors with invalid data (phx-submit)", %{conn: conn, user: user} do

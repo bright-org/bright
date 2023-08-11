@@ -56,15 +56,15 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         lv
         |> form("#reset_password_form",
           user: %{
-            "password" => "new valid password",
-            "password_confirmation" => "new valid password"
+            "password" => "new valid password2",
+            "password_confirmation" => "new valid password2"
           }
         )
         |> render_submit()
         |> follow_redirect(conn, ~p"/users/log_in")
 
       refute get_session(conn, :user_token)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password2")
     end
 
     test "does not reset password on invalid data", %{conn: conn, token: token} do
