@@ -73,13 +73,13 @@ defmodule Bright.AccountsTest do
     test "validates name and email and password when given" do
       {:error, changeset} =
         Accounts.register_user(%{
-          name: String.duplicate("a", 101),
+          name: String.duplicate("a", 256),
           email: "not valid",
           password: "invalid"
         })
 
       assert %{
-               name: ["should be at most 100 character(s)"],
+               name: ["should be at most 255 character(s)"],
                email: ["has invalid format"],
                password: ["should be at least 8 character(s)"]
              } = errors_on(changeset)
@@ -214,6 +214,37 @@ defmodule Bright.AccountsTest do
         changeset = setup_user_changeset(%{email: invalid_email})
 
         assert %{email: reasons} == errors_on(changeset)
+      end)
+    end
+
+    test "validates valid name format" do
+      [
+        "hoge",
+        "h1-_.",
+        String.duplicate("a", 255)
+      ]
+      |> Enum.each(fn valid_name ->
+        changeset = setup_user_changeset(%{name: valid_name})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid name format" do
+      [
+        {"", ["can't be blank"]},
+        {String.duplicate("a", 256), ["should be at most 255 character(s)"]},
+        {"A", ["has invalid format"]},
+        {"@", ["has invalid format"]},
+        {"ａ", ["has invalid format"]},
+        {"Ａ", ["has invalid format"]},
+        {"ひらがな", ["has invalid format"]},
+        {"漢字", ["has invalid format"]}
+      ]
+      |> Enum.each(fn {invalid_name, reasons} ->
+        changeset = setup_user_changeset(%{name: invalid_name})
+
+        assert %{name: reasons} == errors_on(changeset)
       end)
     end
 

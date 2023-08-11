@@ -44,14 +44,14 @@ defmodule BrightWeb.UserRegistrationLiveTest do
         |> element("#registration_form")
         |> render_change(
           user: %{
-            "name" => String.duplicate("a", 101),
+            "name" => String.duplicate("a", 256),
             "email" => "with spaces",
             "password" => "short"
           }
         )
 
       assert result =~ "ユーザー新規作成"
-      assert result =~ "100文字以内で入力してください"
+      assert result =~ "255文字以内で入力してください"
       assert result =~ "無効なフォーマットです"
       assert result =~ "8文字以上で入力してください"
     end

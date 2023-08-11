@@ -85,7 +85,8 @@ defmodule Bright.Accounts.User do
   defp validate_name(changeset, opts) do
     changeset
     |> validate_required([:name])
-    |> validate_length(:name, max: 100)
+    |> validate_length(:name, max: 255)
+    |> validate_format(:name, ~r/^([0-9a-z-_.])*$/)
     |> maybe_validate_unique_name(opts)
   end
 
