@@ -112,7 +112,7 @@ defmodule BrightWeb.UserAuth do
     conn
     |> renew_session()
     |> delete_resp_cookie(@cookie_key)
-    |> redirect(to: ~p"/")
+    |> redirect(to: ~p"/users/log_in")
   end
 
   @doc """
