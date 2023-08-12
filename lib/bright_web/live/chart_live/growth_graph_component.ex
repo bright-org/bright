@@ -35,9 +35,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-6">見習い</p>
             <button
               phx-target={@myself}
-              phx-click={if !@future_view, do: JS.push("month_add_click", value: %{id: "myself" })}
-              class={["w-11 h-9", (if @future_view, do: "bg-brightGray-300", else: "bg-brightGray-900") ,"flex justify-center items-center rounded bottom-1 absolute"]}
-              disabled={@future_view}
+              phx-click={if !@data.futureEnabled, do: JS.push("month_add_click", value: %{id: "myself" })}
+              class={["w-11 h-9", (if @data.futureEnabled, do: "bg-brightGray-300", else: "bg-brightGray-900") ,"flex justify-center items-center rounded bottom-1 absolute"]}
+              disabled={@data.futureEnabled}
             >
               <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
@@ -49,7 +49,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           type="myself"
           dates={@data.labels}
           selected_date={@data.myselfSelected}
-          display_now={@future_view}
+          display_now={@data.futureEnabled}
         />
         <div class="flex py-4">
           <div class="w-14"></div>
@@ -102,8 +102,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
     socket =
       socket
-      |> assign(:future_view, true)
-      |> assign(:data, %{myselfSelected: "now", labels: labels})
+      |> assign(:data, %{myselfSelected: "now", labels: labels, futureEnabled: true})
       |> create_data()
 
     {:ok, socket}
@@ -149,15 +148,16 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
     labels = create_months(String.to_integer(year), String.to_integer(month), diff)
 
+    future = get_future_month()
+    futureEnabled = labels |> List.last() == "#{future.year}.#{future.month}"
+
     data =
       socket.assigns.data
       |> Map.put(:labels, labels)
+      |> Map.put(:futureEnabled, futureEnabled)
 
-    future = get_future_month()
-    future_view = labels |> List.last() == "#{future.year}.#{future.month}"
 
     assign(socket, :data, data)
-    |> assign(:future_view, future_view)
   end
 
   defp create_data(
@@ -166,7 +166,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
              user_id: user_id,
              skill_panel_id: skill_panel_id,
              class: class,
-             future_view: future_view,
              data: data
            }
          } = socket
@@ -184,7 +183,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       )
 
     data =
-      if future_view,
+      if data.futureEnabled,
         do:
           Map.put(
             data,
