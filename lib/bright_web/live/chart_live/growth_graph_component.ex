@@ -7,6 +7,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
   alias Bright.SkillScores
+  @start_month 12
 
   @impl true
   def render(assigns) do
@@ -85,7 +86,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   @impl true
   def update(assigns, socket) do
     start =
-      get_future_month(12, 2023, 8)
+      get_future_month()
       |> Timex.shift(years: -1)
 
     socket =
@@ -102,14 +103,16 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:ok, socket}
   end
 
-  defp get_future_month(start_month, year, month) do
-    now_month = {year, month, 1} |> Date.from_erl!()
+  defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
+
+  defp get_future_month(start_month, now) do
+    {:ok, now} = Date.new(now.year, now.month, 1)
 
     1..24//3
     |> Enum.map(fn x -> x + start_month - 1 end)
-    |> Enum.map(fn x -> month_shiht_add(year - 1, x) end)
+    |> Enum.map(fn x -> month_shiht_add(now.year - 1, x) end)
     |> Enum.map(fn x -> Date.from_erl!(x) end)
-    |> Enum.filter(fn x -> Timex.compare(x, now_month) > 0 end)
+    |> Enum.filter(fn x -> Timex.compare(x, now.month) > 0 end)
     |> List.first()
   end
 
