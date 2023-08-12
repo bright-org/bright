@@ -126,14 +126,6 @@ defmodule BrightWeb.Router do
   end
 
   # 認証前
-  ## OAuth
-  scope "/auth", BrightWeb do
-    pipe_through [:browser]
-
-    get "/:provider", OAuthController, :request
-    get "/:provider/callback", OAuthController, :callback
-  end
-
   ## ユーザー登録・ログイン
   scope "/", BrightWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
@@ -202,5 +194,11 @@ defmodule BrightWeb.Router do
 
     get "/users/confirm/:token", UserConfirmationController, :confirm
     delete "/users/log_out", UserSessionController, :delete
+
+    ## OAuth
+    scope "/auth" do
+      get "/:provider", OAuthController, :request
+      get "/:provider/callback", OAuthController, :callback
+    end
   end
 end
