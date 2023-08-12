@@ -23,8 +23,8 @@ defmodule BrightWeb.UserTwoFactorAuthController do
     |> Accounts.user_2fa_code_valid?(code)
     |> case do
       true ->
-        Accounts.generate_user_2fa_done_token(user)
-        |> then(&UserAuth.write_2fa_auth_done_cookie(conn, &1))
+        Accounts.finish_user_2fa(user)
+        |> then(fn token -> UserAuth.write_2fa_auth_done_cookie(conn, token) end)
         |> put_flash(:info, "ログインしました")
         |> UserAuth.log_in_user(user)
 

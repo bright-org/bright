@@ -499,13 +499,24 @@ defmodule Bright.Accounts do
     end
   end
 
-  def generate_user_2fa_done_token(user) do
+  @doc """
+  Finish user two factor auth and return two_factor_auth_done token.
+
+  Delete existing two_factor_auth_session, two_factor_auth_done tokens and Generate two_factor_auth_done token
+
+  ## Examples
+
+    iex> finish_user_2fa(user)
+    "token"
+
+  """
+  def finish_user_2fa(user) do
     {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
 
     Ecto.Multi.new()
     |> Ecto.Multi.delete_all(
       :delete_token,
-      UserToken.user_and_contexts_query(user, ["two_factor_auth_done"])
+      UserToken.user_and_contexts_query(user, ["two_factor_auth_session", "two_factor_auth_done"])
     )
     |> Ecto.Multi.insert(:user_token, user_token)
     |> Repo.transaction()

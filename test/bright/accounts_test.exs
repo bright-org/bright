@@ -896,22 +896,28 @@ defmodule Bright.AccountsTest do
     end
   end
 
-  describe "generate_user_2fa_done_token/1" do
+  describe "finish_user_2fa/1" do
     test "generates user two_factor_auth_done token" do
       user = insert(:user)
 
-      Accounts.generate_user_2fa_done_token(user)
+      Accounts.finish_user_2fa(user)
 
       assert Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
     end
 
-    test "deletes existing token before generate" do
+    test "deletes existing tokens" do
       user = insert(:user)
-      before_user_token = insert(:user_token, user: user, context: "two_factor_auth_done")
 
-      Accounts.generate_user_2fa_done_token(user)
+      insert(:user_token, user: user, context: "two_factor_auth_session")
 
-      assert before_user_token !=
+      before_two_factor_auth_done_token =
+        insert(:user_token, user: user, context: "two_factor_auth_done")
+
+      Accounts.finish_user_2fa(user)
+
+      refute Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
+
+      assert before_two_factor_auth_done_token !=
                Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
 
       assert Repo.aggregate(UserToken, :count) == 1
