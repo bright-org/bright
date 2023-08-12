@@ -102,7 +102,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:ok, socket}
   end
 
-  def get_future_month(start_month, year, month) do
+  defp get_future_month(start_month, year, month) do
     now_month = {year, month, 1} |> Date.from_erl!()
 
     1..24//3
