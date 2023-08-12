@@ -2,6 +2,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores
+  alias Bright.Accounts
 
   import Phoenix.Component, only: [assign: 2, assign: 3]
 
@@ -14,33 +15,90 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     evidence_filled: 0
   }
 
-  def assign_skill_panel(socket, "dummy_id") do
-    # TODO dummy_idはダミー用で実装完了後に消すこと
-    skill_panel =
-      SkillPanels.list_skill_panels()
-      |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
-      |> List.first()
+  def assign_focus_user(socket, nil) do
+    socket
+    |> assign(focus_user: socket.assigns.current_user, me: true)
+  end
 
-    assign_skill_panel(socket, skill_panel.id)
+  def assign_focus_user(socket, user_name) do
+    user =
+      Accounts.get_user_by_name(user_name)
+      |> Bright.Repo.preload(:user_profile)
+
+    # TODO: userを参照してよいかどうかアクセス制限が必要
+    # （マイページと同様のはずなので共通処理を使う）
+    # 現状は見つかったとしての実装
+
+    socket
+    |> assign(focus_user: user, me: false)
+  end
+
+  def assign_skill_panel(socket, nil) do
+    focus_user = socket.assigns.focus_user
+
+    skill_panel =
+      SkillPanels.get_user_latest_skill_panel!(focus_user)
+      |> preload_skill_panel_assoc(focus_user)
+
+    socket
+    |> assign(:skill_panel, skill_panel)
+  end
+
+  def assign_skill_panel(%{assigns: %{me: false}} = socket, skill_panel_id) do
+    focus_user = socket.assigns.focus_user
+
+    skill_panel =
+      (SkillPanels.get_user_skill_panel(focus_user, skill_panel_id) ||
+         SkillPanels.get_user_latest_skill_panel!(focus_user))
+      |> preload_skill_panel_assoc(focus_user)
+
+    socket
+    |> assign(:skill_panel, skill_panel)
   end
 
   def assign_skill_panel(socket, skill_panel_id) do
     current_user = socket.assigns.current_user
 
     skill_panel =
-      SkillPanels.get_skill_panel!(skill_panel_id)
-      |> Bright.Repo.preload(
-        skill_classes: [skill_class_scores: Ecto.assoc(current_user, :skill_class_scores)]
-      )
+      SkillPanels.get_user_skill_panel!(current_user, skill_panel_id)
+      |> preload_skill_panel_assoc(current_user)
 
     socket
     |> assign(:skill_panel, skill_panel)
   end
 
-  def assign_skill_class_and_score(socket, nil), do: assign_skill_class_and_score(socket, "1")
+  defp preload_skill_panel_assoc(skill_panel, focus_user) do
+    skill_panel
+    |> Bright.Repo.preload(
+      skill_classes: [skill_class_scores: Ecto.assoc(focus_user, :skill_class_scores)]
+    )
+  end
+
+  def assign_skill_class_and_score(socket, nil) do
+    # 指定がない場合はもっとも最近編集されたクラスとする
+    socket.assigns.skill_panel.skill_classes
+    |> Enum.filter(&(&1.skill_class_scores != []))
+    |> Enum.sort_by(
+      fn skill_class ->
+        skill_class.skill_class_scores
+        |> List.first()
+        |> Map.get(:updated_at)
+      end,
+      {:desc, NaiveDateTime}
+    )
+    |> List.first()
+    |> case do
+      nil -> 1
+      skill_class_score -> skill_class_score.class
+    end
+    |> then(&assign_skill_class_and_score(socket, &1))
+  end
+
+  def assign_skill_class_and_score(socket, class) when is_bitstring(class) do
+    assign_skill_class_and_score(socket, String.to_integer(class))
+  end
 
   def assign_skill_class_and_score(socket, class) do
-    class = String.to_integer(class)
     skill_class = socket.assigns.skill_panel.skill_classes |> Enum.find(&(&1.class == class))
     # List.first(): preload時に絞り込んでいるためfirstで取得可能
     skill_class_score = skill_class.skill_class_scores |> List.first()
@@ -50,14 +108,18 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> assign(:skill_class_score, skill_class_score)
   end
 
-  def create_skill_class_score_if_not_existing(%{assigns: %{skill_class_score: nil}} = socket) do
+  def create_skill_class_score_if_not_existing(
+        %{
+          assigns: %{
+            me: true,
+            skill_class_score: nil,
+            skill_class: %{class: 1}
+          }
+        } = socket
+      ) do
     # NOTE: skill_class_scoreが存在しないときの生成処理について
     # 管理側でスキルクラスを増やすなどの操作も想定し、
     # アクセスしたタイミングで生成するようにしています。
-
-    # TODO: クラス開放処理実装時に対応
-    # - クラス開放が必要のないclass=1のみを対象とする
-    # - クラス開放が必要なものはここではなく解放時に作成する
     {:ok, %{skill_class_score: skill_class_score}} =
       SkillScores.create_skill_class_score(
         socket.assigns.current_user,

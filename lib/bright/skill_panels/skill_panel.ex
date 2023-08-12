@@ -18,6 +18,7 @@ defmodule Bright.SkillPanels.SkillPanel do
     has_many :skill_classes, SkillClass, preload_order: [asc: :class], on_replace: :delete
     has_many :job_skill_panels, JobSkillPanel, on_replace: :delete
     has_many :jobs, through: [:job_skill_panels, :job]
+    has_many :user_skill_panels, Bright.UserSkillPanels.UserSkillPanel
 
     timestamps()
   end

@@ -177,7 +177,10 @@ erDiagram
   skill_scores {
     id user_id FK
     id skill_id FK
-    string score "enum (low, middle, high)"
+    string score "enum（low=－、middle=△、high=◯）"
+    string exam_progress "enum（wip、done）"
+    boolean reference_read
+    boolean evidence_filled
   }
 
   career_field_scores {
@@ -278,7 +281,10 @@ erDiagram
   historical_skill_scores {
     id user_id FK
     id historical_skill_id FK
-    string score "enum (low, middle, high)"
+    string score "enum（low=－、middle=△、high=◯）"
+    string exam_progress "enum（wip、done）"
+    boolean reference_read
+    boolean evidence_filled
   }
 
   historical_career_field_scores {
