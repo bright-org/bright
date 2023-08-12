@@ -3,6 +3,26 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   alias Bright.{CareerWants, Repo}
 
+  # tailwindのカラーが壊れているので応急処置
+  @colors %{
+    "infra" => %{
+      dark: "#51971a",
+      dazzle: "#f2ffe1"
+    },
+    "engineer" => %{
+      dark: "#165bc8",
+      dazzle: "#eefbff"
+    },
+    "designer" => %{
+      dark: "#e96500",
+      dazzle: "#ffffdc"
+    },
+    "marketer" => %{
+      dark: "#6b50a4",
+      dazzle: "#f1e3ff"
+    }
+  }
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -29,6 +49,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                         "bg-#{career_field.name_en}-dark border-#{career_field.name_en}-dark",
                         "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50"
                         ]}
+                        style={"background-color: #{@colors[career_field.name_en][:dark]}; border-color: #{@colors[career_field.name_en][:dark]};"}
                       >
                       <%= skill_panel.name %>
                     </.link>
@@ -64,6 +85,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
       end)
 
     socket
+    |> assign(:colors, @colors)
     |> assign(:wants_id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:ok, &1})
