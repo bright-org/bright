@@ -283,7 +283,9 @@ defmodule Bright.Accounts.User do
   end
 
   @doc """
-  Select confirmed user by email
+  Select confirmed user by email.
+
+  When `:including_not_confirmed` option is given and true, search user including not confirmed (default false).
   """
   def email_query(email) do
     from u in User,
@@ -292,7 +294,7 @@ defmodule Bright.Accounts.User do
           not is_nil(u.confirmed_at)
   end
 
-  def email_query(email, confirmed: false) do
+  def email_query(email, including_not_confirmed: true) do
     from u in User,
       where: u.email == ^email
   end

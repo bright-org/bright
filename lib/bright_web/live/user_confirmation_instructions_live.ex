@@ -42,7 +42,7 @@ defmodule BrightWeb.UserConfirmationInstructionsLive do
   end
 
   def handle_event("send_instructions", %{"user" => %{"email" => email}}, socket) do
-    if user = Accounts.get_user_by_email(email, confirmed: false) do
+    if user = Accounts.get_user_by_email(email, including_not_confirmed: true) do
       Accounts.deliver_user_confirmation_instructions(
         user,
         &url(~p"/users/confirm/#{&1}")
