@@ -182,17 +182,14 @@ defmodule BrightWeb.Router do
 
       live "/teams", MyTeamLive, :index
       live "/teams/new", TeamCreateLive, :new
-    end
-  end
 
-  scope "/", BrightWeb do
-    pipe_through [:browser, :require_authenticated_user, :onboarding]
-
-    live_session :require_authenticated_user_onboarding,
-      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
-      live "/onboardings", OnboardingLive.Index, :index
-      live "/onboardings/wants/:id", OnboardingLive.SkillPanels
-      live "/onboardings/wants/:career_want_id/skill_panels/:id", OnboardingLive.SkillPanel
+      # オンボーディング
+      scope "/onboardings" do
+        pipe_through [:onboarding]
+        live "/", OnboardingLive.Index, :index
+        live "/wants/:id", OnboardingLive.SkillPanels
+        live "/wants/:career_want_id/skill_panels/:id", OnboardingLive.SkillPanel
+      end
     end
   end
 
