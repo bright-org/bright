@@ -11,16 +11,17 @@ defmodule Bright.SkillScoresTest do
 
     setup do
       user = insert(:user)
-      skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
-      %{user: user, skill_class: skill_class}
+      %{user: user, skill_panel: skill_panel, skill_class: skill_class}
     end
 
     test "list_skill_class_scores/0 returns all skill_class_scores", %{
       user: user,
       skill_class: skill_class
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
 
       assert SkillScores.list_skill_class_scores()
              |> Enum.map(& &1.id) == [skill_class_score.id]
@@ -30,7 +31,7 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
       assert skill_class_score.id == SkillScores.get_skill_class_score!(skill_class_score.id).id
     end
 
@@ -48,9 +49,9 @@ defmodule Bright.SkillScoresTest do
       [%{skills: [skill_2]}] = insert_skill_categories_and_skills(skill_unit_2, [1])
 
       {:ok, multi_result} = SkillScores.create_skill_class_score(user, skill_class)
-      assert %{skill_class_score: skill_class_score} = multi_result
+      assert %{skill_class_score_init_1: skill_class_score} = multi_result
       assert %{skill_scores: {2, _}} = multi_result
-      assert %{skill_unit_scores: {2, _}} = multi_result
+      assert %{skill_unit_scores_1: {2, _}} = multi_result
 
       assert skill_class_score.level == :beginner
       assert skill_class_score.percentage == 0.0
@@ -80,7 +81,7 @@ defmodule Bright.SkillScoresTest do
       # - skill_unitを入力済み（skill_class/skill_class2で共有）
       # - skill_unit_2を未入力
       # としている
-      skill_class_2 = insert(:skill_class, skill_panel: build(:skill_panel))
+      skill_class_2 = insert(:skill_class, skill_panel: build(:skill_panel), class: 1)
 
       skill_unit_1 =
         insert(:skill_unit,
@@ -98,16 +99,21 @@ defmodule Bright.SkillScoresTest do
 
       # 入力済み扱いのデータ準備
       # - skill_class_2で入力済みの状況作成
-      insert(:skill_class_score, user: user, skill_class: skill_class_2)
+      insert(:init_skill_class_score, user: user, skill_class: skill_class_2)
       insert(:skill_score, user: user, skill: skill_1, score: :high)
       insert(:skill_unit_score, user: user, skill_unit: skill_unit_1, percentage: 100.0)
 
       {:ok, multi_result} = SkillScores.create_skill_class_score(user, skill_class)
-      assert %{skill_class_score: skill_class_score} = multi_result
       assert %{skill_scores: {1, _}} = multi_result
-      assert %{skill_unit_scores: {1, _}} = multi_result
+      assert %{skill_unit_scores_1: {1, _}} = multi_result
 
       # 既に入力済みのスコアが反映される
+      skill_class_score =
+        Repo.get_by!(SkillScores.SkillClassScore, %{
+          user_id: user.id,
+          skill_class_id: skill_class.id
+        })
+
       assert skill_class_score.level == :normal
       assert skill_class_score.percentage == 50.0
     end
@@ -116,7 +122,7 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
       update_attrs = %{level: :normal}
 
       assert {:ok, %SkillClassScore{} = skill_class_score} =
@@ -129,7 +135,7 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
 
       assert {:error, %Ecto.Changeset{}} =
                SkillScores.update_skill_class_score(skill_class_score, @invalid_attrs)
@@ -142,26 +148,84 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
       skill_unit = insert(:skill_unit)
       insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
       [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
       insert(:skill_score, user: user, skill: skill_1, score: :low)
       insert(:skill_score, user: user, skill: skill_2, score: :high)
 
-      {:ok, skill_class_score} = SkillScores.update_skill_class_score_stats(skill_class_score)
+      {:ok, _} = SkillScores.update_skill_class_score_stats(user, skill_class, skill_class_score)
 
+      skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
       assert skill_class_score.level == :normal
       assert skill_class_score.percentage == 50.0
+    end
+
+    test "update_skill_class_score_stats case skill up to next skill score", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      # 次のスキルクラスが開放されることの確認
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
+      skill_unit = insert(:skill_unit)
+
+      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
+      [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
+      insert(:skill_score, user: user, skill: skill_1, score: :low)
+      insert(:skill_score, user: user, skill: skill_2, score: :high)
+
+      # # クラス2のスキルクラス用意
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      {:ok, _} = SkillScores.update_skill_class_score_stats(user, skill_class, skill_class_score)
+
+      skill_class_score_2 =
+        SkillScores.get_skill_class_score_by!(user_id: user.id, skill_class_id: skill_class_2.id)
+
+      assert skill_class_score_2.level == :beginner
+      assert skill_class_score_2.percentage == 0.0
+    end
+
+    test "update_skill_class_score_stats case skill up chain", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      # 次のスキルクラスが開放されることの確認
+      # ただし、次のスキルクラスがもつスキルユニットは習得済みと想定し、さらに次のスキルクラスが開放されること
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
+      skill_unit = insert(:skill_unit)
+
+      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
+      [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
+      insert(:skill_score, user: user, skill: skill_1, score: :low)
+      insert(:skill_score, user: user, skill: skill_2, score: :high)
+
+      # # クラス2のスキルクラス用意
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+      insert(:skill_class_unit, skill_class: skill_class_2, skill_unit: skill_unit)
+      # # クラス3のスキルクラス用意
+      skill_class_3 = insert(:skill_class, skill_panel: skill_panel, class: 3)
+
+      {:ok, _} = SkillScores.update_skill_class_score_stats(user, skill_class, skill_class_score)
+
+      skill_class_score_3 =
+        SkillScores.get_skill_class_score_by!(user_id: user.id, skill_class_id: skill_class_3.id)
+
+      assert skill_class_score_3.level == :beginner
+      assert skill_class_score_3.percentage == 0.0
     end
 
     test "update_skill_class_score_stats without items ", %{
       user: user,
       skill_class: skill_class
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
-      {:ok, skill_class_score} = SkillScores.update_skill_class_score_stats(skill_class_score)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
+      {:ok, _} = SkillScores.update_skill_class_score_stats(user, skill_class, skill_class_score)
 
+      skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
       assert skill_class_score.level == :beginner
       assert skill_class_score.percentage == 0.0
     end
@@ -184,7 +248,7 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
       assert {:ok, %SkillClassScore{}} = SkillScores.delete_skill_class_score(skill_class_score)
 
       assert_raise Ecto.NoResultsError, fn ->
@@ -196,7 +260,7 @@ defmodule Bright.SkillScoresTest do
       user: user,
       skill_class: skill_class
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
       assert %Ecto.Changeset{} = SkillScores.change_skill_class_score(skill_class_score)
     end
   end
@@ -208,7 +272,7 @@ defmodule Bright.SkillScoresTest do
 
     setup do
       user = insert(:user)
-      skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
+      skill_class = insert(:skill_class, skill_panel: build(:skill_panel), class: 1)
 
       skill_unit =
         insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
@@ -289,7 +353,7 @@ defmodule Bright.SkillScoresTest do
       skill_unit: skill_unit,
       skill: skill
     } do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
       skill_unit_score = insert(:skill_unit_score, user: user, skill_unit: skill_unit)
       skill_score = insert(:skill_score, user: user, skill: skill) |> Map.put(:score, :high)
 

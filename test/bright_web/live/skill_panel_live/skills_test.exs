@@ -15,7 +15,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     [%{skills: [skill_1, skill_2, skill_3]}] = insert_skill_categories_and_skills(skill_unit, [3])
 
     if score do
-      insert(:skill_class_score, user: user, skill_class: skill_class)
+      insert(:init_skill_class_score, user: user, skill_class: skill_class)
       _skill_unit_score = insert(:skill_unit_score, user: user, skill_unit: skill_unit)
       insert(:skill_score, user: user, skill: skill_1, score: score)
       insert(:skill_score, user: user, skill: skill_2)
@@ -104,7 +104,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_panel: skill_panel
     } do
       skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
-      insert(:skill_class_score, user: user, skill_class: skill_class_2)
+      insert(:init_skill_class_score, user: user, skill_class: skill_class_2)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=2")
 
@@ -532,7 +532,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
 
       dummy_user = insert(:user)
-      insert(:skill_class_score, user: dummy_user, skill_class: skill_class)
+      insert(:init_skill_class_score, user: dummy_user, skill_class: skill_class)
       insert(:skill_score, user: dummy_user, skill: skill, score: :high)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")

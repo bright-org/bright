@@ -7,6 +7,15 @@ defmodule Bright.SkillClassScoreFactory do
 
   defmacro __using__(_opts) do
     quote do
+      def init_skill_class_score_factory do
+        %SkillClassScore{
+          user: build(:user),
+          skill_class: build(:skill_class),
+          level: :beginner,
+          percentage: 0.0
+        }
+      end
+
       def skill_class_score_factory do
         %SkillClassScore{
           user: build(:user),

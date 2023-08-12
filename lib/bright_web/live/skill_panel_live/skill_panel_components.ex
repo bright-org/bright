@@ -239,7 +239,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <% current = @skill_class.class == skill_class.class %>
           <li class={current && "bg-white text-base"}>
             <.link id={"class_tab_#{skill_class.class}"} patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"} class="inline-block p-4 pt-3" aria-current={current && "page"}>
-              クラス<%= skill_class.class %> <%= current && skill_class.name %>
+              クラス<%= skill_class.class %> <%= if(current, do: skill_class.name, else: "") %>
               <span class="text-xl ml-4"><%= floor skill_class_score.percentage %></span>％
             </.link>
           </li>

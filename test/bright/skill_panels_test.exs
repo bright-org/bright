@@ -116,7 +116,7 @@ defmodule Bright.SkillPanelsTest do
 
   describe "skill_classes" do
     test "list_skill_classs/0 returns all skill_classs" do
-      skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
+      skill_class = insert(:skill_class, skill_panel: build(:skill_panel), class: 1)
 
       assert SkillPanels.list_skill_classes()
              |> Bright.Repo.preload(:skill_panel) == [skill_class]
