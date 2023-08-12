@@ -53,8 +53,6 @@ defmodule Bright.SkillScores do
   Creates a skill_class_score with skill_scores
   """
   def create_skill_class_score(user, skill_class) do
-    # class: Ecto.Multiのキーとして利用。場合によっては繰り返し呼ばれるため
-    class = skill_class.class
     skill_units =
       Ecto.assoc(skill_class, :skill_units)
       |> SkillUnits.list_skill_units()
@@ -66,13 +64,13 @@ defmodule Bright.SkillScores do
 
     Ecto.Multi.new()
     # スキルクラススコアの新規作成処理
-    |> Ecto.Multi.insert(:"skill_class_score_init_#{class}", %SkillClassScore{
+    |> Ecto.Multi.insert(:skill_class_score_init, %SkillClassScore{
       user_id: user.id,
       skill_class_id: skill_class.id
     })
     # スキルクラスに含まれるスキルユニットの新規作成処理
     # ただし、別のスキルクラスで作成済みの可能性がある
-    |> Ecto.Multi.insert_all(:"skill_unit_scores_#{class}", SkillUnitScore, fn _ ->
+    |> Ecto.Multi.insert_all(:skill_unit_scores, SkillUnitScore, fn _ ->
       skill_units
       |> Enum.filter(&(&1.skill_unit_scores == []))
       |> Enum.map(&build_skill_unit_score_attrs(user, &1))
@@ -86,8 +84,8 @@ defmodule Bright.SkillScores do
     end)
     # スキルクラススコアの更新処理
     # 既にスキルスコアが入っているケースのための更新
-    |> Ecto.Multi.run(:"skill_class_score_#{class}", fn _repo, data ->
-      skill_class_score = Map.get(data, :"skill_class_score_init_#{class}")
+    |> Ecto.Multi.run(:skill_class_score, fn _repo, data ->
+      skill_class_score = Map.get(data, :skill_class_score_init)
       update_skill_class_score_stats(user, skill_class, skill_class_score)
     end)
     |> Repo.transaction()
@@ -145,8 +143,6 @@ defmodule Bright.SkillScores do
   Updates a skill_class_score aggregation columns.
   """
   def update_skill_class_score_stats(user, skill_class, skill_class_score) do
-    # class: Ecto.Multiのキーとして利用。場合によっては繰り返し呼ばれるため
-    class = skill_class.class
     skill_scores = list_skill_scores_from_skill_class_score(skill_class_score)
 
     size = Enum.count(skill_scores)
@@ -158,8 +154,8 @@ defmodule Bright.SkillScores do
       change_skill_class_score(skill_class_score, %{percentage: percentage, level: level})
 
     Ecto.Multi.new()
-    |> Ecto.Multi.update(:"update_skill_class_score_#{class}", changeset)
-    |> Ecto.Multi.run(:"level_up_skill_class_score_#{class}", fn _repo, _ ->
+    |> Ecto.Multi.update(:update_skill_class_score, changeset)
+    |> Ecto.Multi.run(:level_up_skill_class_score, fn _repo, _ ->
       if skill_up_to_next_skill_class?(skill_class_score.percentage, percentage) do
         result = create_next_skill_class_score(user, skill_class)
         {:ok, result}

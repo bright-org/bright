@@ -49,9 +49,9 @@ defmodule Bright.SkillScoresTest do
       [%{skills: [skill_2]}] = insert_skill_categories_and_skills(skill_unit_2, [1])
 
       {:ok, multi_result} = SkillScores.create_skill_class_score(user, skill_class)
-      assert %{skill_class_score_init_1: skill_class_score} = multi_result
+      assert %{skill_class_score_init: skill_class_score} = multi_result
       assert %{skill_scores: {2, _}} = multi_result
-      assert %{skill_unit_scores_1: {2, _}} = multi_result
+      assert %{skill_unit_scores: {2, _}} = multi_result
 
       assert skill_class_score.level == :beginner
       assert skill_class_score.percentage == 0.0
@@ -105,7 +105,7 @@ defmodule Bright.SkillScoresTest do
 
       {:ok, multi_result} = SkillScores.create_skill_class_score(user, skill_class)
       assert %{skill_scores: {1, _}} = multi_result
-      assert %{skill_unit_scores_1: {1, _}} = multi_result
+      assert %{skill_unit_scores: {1, _}} = multi_result
 
       # 既に入力済みのスコアが反映される
       skill_class_score =
