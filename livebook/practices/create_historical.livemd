@@ -7,11 +7,35 @@ defmodule Test do
   alias Bright.Repo
   import Ecto.Query, warn: false
   alias Bright.HistoricalSkillPanels.HistoricalSkillClass
+  alias Bright.Batches.UpdateSkillPanels
 
   def all do
     Repo.all(HistoricalSkillClass)
+    |> Repo.preload([:skill_panel, :historical_skill_class_scores])
+  end
+
+  def get_historical_istorical_skill_class_scores(locked_date) do
+    IO.inspect(locked_date)
+    # ,
+    from(
+      historical_skill_class_scores in HistoricalSkillClass
+      # where: historical_skill_class_scores.locked_date == ^locked_date
+    )
+    |> Repo.all()
+    |> Repo.preload([:skill_panel, :historical_skill_class_scores])
+  end
+
+  def update(year, month) do
+    locked_date =
+      {year, month, 1}
+      |> Date.from_erl!()
+
+    UpdateSkillPanels.call(locked_date)
   end
 end
 
-Test.all()
+Test.update(2022, 9)
+# locked_date = {2023, 7, 1} |> Date.from_erl!()
+# Test.get_historical_istorical_skill_class_scores(locked_date)
+# Test.all()
 ```
