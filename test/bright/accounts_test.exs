@@ -27,6 +27,13 @@ defmodule Bright.AccountsTest do
       %{id: id} = user = insert(:user)
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
+
+    test "returns not confirmed user if including_not_confirmed: true" do
+      %{id: id} = user = insert(:user_not_confirmed)
+
+      assert %User{id: ^id} =
+               Accounts.get_user_by_email(user.email, including_not_confirmed: true)
+    end
   end
 
   describe "get_user_by_email_and_password/2" do
