@@ -49,7 +49,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           type="myself"
           dates={@data.labels}
           selected_date={@data.myselfSelected}
-          display_now
+          display_now={@future_view}
         />
         <div class="flex py-4">
           <div class="w-14"></div>
@@ -103,7 +103,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     socket =
       socket
       |> assign(:future_view, true)
-      |> assign(:data, %{labels: labels})
+      |> assign(:data, %{myselfSelected: "now", labels: labels})
       |> create_data()
 
     {:ok, socket}
@@ -177,9 +177,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         %{
           # role: [10, 20, 50, 60, 75, 100],
           # myself: [nil, 0, 35, 45, 55, 65],
-          myself: [nil, 0, 0, 0, 0, 0],
+          myself: [nil, 0, 0, 0, 0, 0]
           # other: [10, 10, 25, 35, 45, 70],
-          myselfSelected: "now"
           # otherSelected: "2022.12"
         }
       )
