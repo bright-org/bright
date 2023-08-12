@@ -1,0 +1,17 @@
+# 履歴データ
+
+## 履歴データの検証
+
+```elixir
+defmodule Test do
+  alias Bright.Repo
+  import Ecto.Query, warn: false
+  alias Bright.HistoricalSkillPanels.HistoricalSkillClass
+
+  def all do
+    Repo.all(HistoricalSkillClass)
+  end
+end
+
+Test.all()
+```
