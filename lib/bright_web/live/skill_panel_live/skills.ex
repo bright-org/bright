@@ -42,6 +42,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_counter()
      |> assign_table_structure()
      |> assign_page_sub_title()
+     |> assign(:compaired_users, ["mokichi", "koyo"])
+     |> assign_compaired_users_info()
      |> apply_action(socket.assigns.live_action, params)}
   end
 
@@ -259,6 +261,30 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp create_skill_evidence_if_not_existing(socket), do: socket
+
+  defp assign_compaired_users_info(socket) do
+    # 比較対象になっているユーザーのデータを表示用に整理・集計
+    stats = %{
+      # スキルから数を引く
+    }
+    dict = %{
+      "mokichi" => %{
+        #スキルからスコアを引く
+        skill_score_dict: %{},
+        high_percentage: 0,
+        low_percentage: 0,
+      },
+      "koyo" => %{
+        skill_score_dict: %{},
+        high_percentage: 0,
+        low_percentage: 0,
+      }
+    }
+
+    socket
+    |> assign(:compaired_users_dict, dict)
+    |> assign(:compaired_users_stats, stats)
+  end
 
   defp get_skill_score_from_table_structure(socket, row) do
     skill =
