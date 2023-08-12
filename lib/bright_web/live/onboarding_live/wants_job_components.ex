@@ -4,25 +4,6 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   alias Bright.{Jobs, CareerFields, Repo}
   alias Bright.Jobs.Job
   @rank %{expert: "高度", advanced: "応用", basic: "基本"}
-  # tailwindのカラーが壊れているので応急処置
-  @colors %{
-    "infra" => %{
-      dark: "#51971a",
-      dazzle: "#f2ffe1"
-    },
-    "engineer" => %{
-      dark: "#165bc8",
-      dazzle: "#eefbff"
-    },
-    "designer" => %{
-      dark: "#e96500",
-      dazzle: "#ffffdc"
-    },
-    "marketer" => %{
-      dark: "#6b50a4",
-      dazzle: "#f1e3ff"
-    }
-  }
 
   def render(assigns) do
     ~H"""
@@ -108,7 +89,8 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
       end)
 
     socket
-    |> assign(:colors, @colors)
+    # tailwindの色情報が壊れるので応急処置でconfigから読み込み
+    |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
     |> assign(:rank, @rank)
     |> assign(:career_fields, career_fields)
     |> assign(:selected_career, Enum.at(career_fields, 0))

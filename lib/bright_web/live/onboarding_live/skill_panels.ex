@@ -3,26 +3,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   alias Bright.{CareerWants, Repo}
 
-  # tailwindのカラーが壊れているので応急処置
-  @colors %{
-    "infra" => %{
-      dark: "#51971a",
-      dazzle: "#f2ffe1"
-    },
-    "engineer" => %{
-      dark: "#165bc8",
-      dazzle: "#eefbff"
-    },
-    "designer" => %{
-      dark: "#e96500",
-      dazzle: "#ffffdc"
-    },
-    "marketer" => %{
-      dark: "#6b50a4",
-      dazzle: "#f1e3ff"
-    }
-  }
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -85,7 +65,8 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
       end)
 
     socket
-    |> assign(:colors, @colors)
+    # tailwindの色情報が壊れるので応急処置でconfigから読み込み
+    |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
     |> assign(:wants_id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:ok, &1})
