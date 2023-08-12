@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
   defp setup_skills(%{user: user, score: score}) do
     skill_panel = insert(:skill_panel)
+    insert(:user_skill_panel, user: user, skill_panel: skill_panel)
     skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
     skill_unit =
@@ -33,8 +34,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   describe "Show" do
     setup [:register_and_log_in_user]
 
-    setup do
+    setup %{user: user} do
       skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
       %{skill_panel: skill_panel, skill_class: skill_class}
@@ -519,8 +521,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   describe "Security" do
     setup [:register_and_log_in_user]
 
-    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn} do
+    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn, user: user} do
       skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
       skill_unit =
