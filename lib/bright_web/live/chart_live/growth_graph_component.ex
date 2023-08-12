@@ -117,7 +117,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     |> Enum.map(fn x -> x + start_month - 1 end)
     |> Enum.map(fn x -> month_shiht_add(now.year - 1, x) end)
     |> Enum.map(fn x -> Date.from_erl!(x) end)
-    |> Enum.filter(fn x -> Timex.compare(x, now.month) > 0 end)
+    |> Enum.filter(fn x -> Timex.compare(x, now) > 0 end)
     |> List.first()
   end
 
