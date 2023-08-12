@@ -15,6 +15,20 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     evidence_filled: 0
   }
 
+  @queries ~w(class)
+
+  def assign_path(socket, url) do
+    %{path: path, query: query} = URI.parse(url)
+
+    query =
+      URI.decode_query(query || "")
+      |> Map.take(@queries)
+
+    socket
+    |> assign(path: path)
+    |> assign(query: query)
+  end
+
   def assign_focus_user(socket, nil) do
     socket
     |> assign(focus_user: socket.assigns.current_user, me: true)

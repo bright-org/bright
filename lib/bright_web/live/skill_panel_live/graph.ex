@@ -12,10 +12,11 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
+  def handle_params(params, url, socket) do
     # TODO: データ取得方法検討／LiveVIewコンポーネント化検討
     {:noreply,
      socket
+     |> assign_path(url)
      |> assign_focus_user(params["user_name"])
      |> assign_skill_panel(params["skill_panel_id"])
      |> assign_skill_class_and_score(params["class"])
