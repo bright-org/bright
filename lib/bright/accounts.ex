@@ -232,7 +232,6 @@ defmodule Bright.Accounts do
     changeset =
       user
       |> User.email_changeset(%{email: email})
-      |> User.confirm_changeset()
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)

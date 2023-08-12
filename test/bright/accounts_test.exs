@@ -370,7 +370,7 @@ defmodule Bright.AccountsTest do
 
   describe "update_user_email/2" do
     setup do
-      user = insert(:user_not_confirmed)
+      user = insert(:user)
       email = unique_user_email()
 
       token =
@@ -386,8 +386,6 @@ defmodule Bright.AccountsTest do
       changed_user = Repo.get!(User, user.id)
       assert changed_user.email != user.email
       assert changed_user.email == email
-      assert changed_user.confirmed_at
-      assert changed_user.confirmed_at != user.confirmed_at
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
@@ -406,8 +404,6 @@ defmodule Bright.AccountsTest do
       changed_user = Repo.get!(User, user.id)
       assert changed_user.email != user.email
       assert changed_user.email == email
-      assert changed_user.confirmed_at
-      assert changed_user.confirmed_at != user.confirmed_at
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
