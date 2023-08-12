@@ -45,6 +45,12 @@ defmodule Bright.SkillPanels do
     |> Bright.Repo.get_by!(id: skill_panel_id)
   end
 
+  def get_user_skill_panel(user, skill_panel_id) do
+    user
+    |> Ecto.assoc(:skill_panels)
+    |> Bright.Repo.get_by(id: skill_panel_id)
+  end
+
   def get_user_latest_skill_panel!(user) do
     from(q in SkillPanel,
       join: u in assoc(q, :user_skill_panels),
