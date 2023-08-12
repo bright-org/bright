@@ -233,23 +233,26 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def class_tab(assigns) do
     ~H"""
-      <ul class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGray-500 bg-brightGreen-50">
-        <li class="bg-white text-base">
-          <a id="class_tab_1" href="#" class="inline-block p-4 pt-3" aria-current="page">
-            <%= @skill_class.name %> <span class="text-xl ml-4">52</span>％
-          </a>
-        </li>
-        <li class="">
-          <a id="class_tab_2" href="#" class="inline-block p-4 pt-3">
-            クラス2 <span class="text-xl ml-4">52</span>％
-          </a>
-        </li>
-        <li class="">
-          <a id="class_tab_3" href="#" class="inline-block p-4 pt-3">
-          クラス3 <span class="text-xl ml-4">52</span>％
-        </a>
-        </li>
-      </ul>
+    <ul class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGray-500 bg-brightGreen-50">
+      <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
+        <%= if skill_class_score do %>
+          <% current = @skill_class.class == skill_class.class %>
+          <li class={current && "bg-white text-base"}>
+            <.link id={"class_tab_#{skill_class.class}"} patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"} class="inline-block p-4 pt-3" aria-current={current && "page"}>
+              クラス<%= skill_class.class %> <%= current && skill_class.name %>
+              <span class="text-xl ml-4"><%= floor skill_class_score.percentage %></span>％
+            </.link>
+          </li>
+        <% else %>
+          <li class="bg-brightGray-100 text-white">
+            <span href="#" class="select-none inline-block p-4 pt-3">
+              クラス<%= skill_class.class %>
+              <span class="text-xl ml-4">0</span>％
+            </span>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
     """
   end
 
@@ -310,17 +313,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
-  defp profile_skill_class_level(%{level: :beginner} = assigns) do
-    ~H"""
-    見習い
-    """
-  end
+  defp profile_skill_class_level(%{level: :beginner} = assigns), do: ~H"見習い"
 
-  defp profile_skill_class_level(%{level: :normal} = assigns) do
-    ~H"""
-    平均
-    """
-  end
+  defp profile_skill_class_level(%{level: :normal} = assigns), do: ~H"平均"
 
   defp profile_skill_class_level(%{level: :skilled} = assigns) do
     ~H"""
@@ -337,5 +332,24 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     low = 100 - high - middle
 
     [high, middle, low]
+  end
+
+  defp pair_skill_class_score(nil), do: []
+
+  defp pair_skill_class_score(skill_classes) do
+    skill_classes
+    |> Enum.map(fn skill_class ->
+      skill_class.skill_class_scores
+      |> case do
+        [] -> {skill_class, nil}
+        [skill_class_score] -> {skill_class, skill_class_score}
+      end
+    end)
+  end
+
+  defp build_query(base, query) do
+    base
+    |> Map.merge(query)
+    |> URI.encode_query()
   end
 end
