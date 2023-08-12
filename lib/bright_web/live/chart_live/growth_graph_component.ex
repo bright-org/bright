@@ -149,13 +149,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     labels = create_months(String.to_integer(year), String.to_integer(month), diff)
 
     future = get_future_month()
-    futureEnabled = labels |> List.last() == "#{future.year}.#{future.month}"
+    future_enabled = labels |> List.last() == "#{future.year}.#{future.month}"
 
     data =
       socket.assigns.data
       |> Map.put(:labels, labels)
-      |> Map.put(:futureEnabled, futureEnabled)
-
+      |> Map.put(:futureEnabled, future_enabled)
 
     assign(socket, :data, data)
   end
