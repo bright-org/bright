@@ -60,6 +60,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph")}
   end
 
+  @impl true
   def handle_info(%{event_name: "timeline_bar_button_click", params: _params}, socket) do
     # TODO　スキルジェムを更新するイベントを追加すること
     {:noreply, socket}
