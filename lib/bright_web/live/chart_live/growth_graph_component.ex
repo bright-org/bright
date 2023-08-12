@@ -97,14 +97,14 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     socket =
       socket
       |> assign(assigns)
+
+    labels = create_months(start.year, start.month, 0)
+
+    socket =
+      socket
       |> assign(:future_view, true)
-      |> assign(
-        :data,
-        create_data(assigns.user_id, assigns.skill_panel_id, assigns.class, %{
-          year: start.year,
-          month: start.month
-        })
-      )
+      |> assign(:data, %{labels: labels})
+      |> create_data()
 
     {:ok, socket}
   end
@@ -134,11 +134,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   end
 
   def handle_event("month_subtraction_click", _params, socket) do
-    {:noreply, create_labels(socket, -3)}
+    {:noreply, create_labels(socket, -3) |> create_data()}
   end
 
   def handle_event("month_add_click", _params, socket) do
-    {:noreply, create_labels(socket, 3)}
+    {:noreply, create_labels(socket, 3) |> create_data()}
   end
 
   defp create_labels(socket, diff) do
@@ -153,27 +153,48 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       socket.assigns.data
       |> Map.put(:labels, labels)
 
-    future =  get_future_month()
-    future_view = (labels |> List.last()) == "#{future.year}.#{future.month}"
-    future_view |> IO.inspect()
+    future = get_future_month()
+    future_view = labels |> List.last() == "#{future.year}.#{future.month}"
 
     assign(socket, :data, data)
     |> assign(:future_view, future_view)
   end
 
-  defp create_data(user_id, skill_panel_id, class, start_month) do
-    now = SkillScores.get_class_score(user_id, skill_panel_id, class) |> get_now()
+  defp create_data(
+         %{
+           assigns: %{
+             user_id: user_id,
+             skill_panel_id: skill_panel_id,
+             class: class,
+             future_view: future_view,
+             data: data
+           }
+         } = socket
+       ) do
+    data =
+      Map.merge(
+        data,
+        %{
+          # role: [10, 20, 50, 60, 75, 100],
+          # myself: [nil, 0, 35, 45, 55, 65],
+          myself: [nil, 0, 0, 0, 0, 0],
+          # other: [10, 10, 25, 35, 45, 70],
+          myselfSelected: "now"
+          # otherSelected: "2022.12"
+        }
+      )
 
-    %{
-      labels: create_months(start_month.year, start_month.month, 0),
-      # role: [10, 20, 50, 60, 75, 100],
-      # myself: [nil, 0, 35, 45, 55, 65],
-      myself: [nil, 0, 0, 0, 0, 0],
-      # other: [10, 10, 25, 35, 45, 70],
-      now: now,
-      myselfSelected: "now"
-      # otherSelected: "2022.12"
-    }
+    data =
+      if future_view,
+        do:
+          Map.put(
+            data,
+            :now,
+            SkillScores.get_class_score(user_id, skill_panel_id, class) |> get_now()
+          ),
+        else: data |> Map.delete(:now)
+
+    assign(socket, data: data)
   end
 
   defp create_months(year, month, shift_month) do
