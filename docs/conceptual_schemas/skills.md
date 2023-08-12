@@ -146,7 +146,10 @@ erDiagram
   skill_scores {
     id user_id FK
     id skill_id FK
-    int score "enum（0: －、1: △、2: ◯）"
+    string score "enum（low=－、middle=△、high=◯）"
+    string exam_progress "enum（wip、done）"
+    boolean reference_read
+    boolean evidence_filled
   }
 
   career_field_scores {
