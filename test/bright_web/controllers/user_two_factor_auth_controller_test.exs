@@ -2,6 +2,7 @@ defmodule BrightWeb.UserTwoFactorAuthControllerTest do
   use BrightWeb.ConnCase, async: true
 
   import Bright.Factory
+  alias Bright.Accounts.User2faCodes
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.UserToken
@@ -30,6 +31,7 @@ defmodule BrightWeb.UserTwoFactorAuthControllerTest do
       assert max_age == 60 * 60 * 24 * 60
       assert user == Accounts.get_user_by_2fa_done_token(user_2fa_done_token)
       refute Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
+      refute Repo.get_by(User2faCodes, user_id: user.id)
 
       # Assert user session cookie
       assert get_session(conn, :user_token)

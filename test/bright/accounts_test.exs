@@ -908,6 +908,7 @@ defmodule Bright.AccountsTest do
     test "deletes existing tokens" do
       user = insert(:user)
 
+      insert(:user_2fa_code, user: user)
       insert(:user_token, user: user, context: "two_factor_auth_session")
 
       before_two_factor_auth_done_token =
@@ -916,6 +917,7 @@ defmodule Bright.AccountsTest do
       Accounts.finish_user_2fa(user)
 
       refute Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
+      refute Repo.get_by(User2faCodes, user_id: user.id)
 
       assert before_two_factor_auth_done_token !=
                Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")

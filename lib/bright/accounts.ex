@@ -502,7 +502,8 @@ defmodule Bright.Accounts do
   @doc """
   Finish user two factor auth and return two_factor_auth_done token.
 
-  Delete existing two_factor_auth_session, two_factor_auth_done tokens and Generate two_factor_auth_done token
+  1. Delete existing two_factor_auth_session, two_factor_auth_done tokens, user_2fa_code.
+  2. Generate two_factor_auth_done token.
 
   ## Examples
 
@@ -517,6 +518,10 @@ defmodule Bright.Accounts do
     |> Ecto.Multi.delete_all(
       :delete_token,
       UserToken.user_and_contexts_query(user, ["two_factor_auth_session", "two_factor_auth_done"])
+    )
+    |> Ecto.Multi.delete_all(
+      :delete_2fa_code,
+      User2faCodes.user_query(user)
     )
     |> Ecto.Multi.insert(:user_token, user_token)
     |> Repo.transaction()
