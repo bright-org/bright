@@ -33,7 +33,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-5">ベテラン</p>
             <p class="py-20">平均</p>
             <p class="py-6">見習い</p>
-            <button phx-target={@myself} phx-click={JS.push("month_add_click", value: %{id: "myself" })} class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute">
+            <button
+              phx-target={@myself}
+              phx-click={if !@future_view, do: JS.push("month_add_click", value: %{id: "myself" })}
+              class={["w-11 h-9", (if @future_view, do: "bg-brightGray-300", else: "bg-brightGray-900") ,"flex justify-center items-center rounded bottom-1 absolute"]}
+              disabled={@future_view}
+            >
               <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
           </div>
@@ -92,6 +97,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     socket =
       socket
       |> assign(assigns)
+      |> assign(:future_view, true)
       |> assign(
         :data,
         create_data(assigns.user_id, assigns.skill_panel_id, assigns.class, %{
@@ -147,7 +153,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       socket.assigns.data
       |> Map.put(:labels, labels)
 
+    future =  get_future_month()
+    future_view = (labels |> List.last()) == "#{future.year}.#{future.month}"
+    future_view |> IO.inspect()
+
     assign(socket, :data, data)
+    |> assign(:future_view, future_view)
   end
 
   defp create_data(user_id, skill_panel_id, class, start_month) do
