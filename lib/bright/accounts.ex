@@ -507,8 +507,8 @@ defmodule Bright.Accounts do
 
   ## Examples
 
-    iex> finish_user_2fa(user)
-    "token"
+      iex> finish_user_2fa(user)
+      "token"
 
   """
   def finish_user_2fa(user) do
