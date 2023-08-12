@@ -138,8 +138,12 @@ defmodule Bright.SkillPanels do
       [%SkillClass{}, ...]
 
   """
-  def list_skill_classes do
-    Repo.all(SkillClass)
+  def list_skill_classes(query \\ SkillClass) do
+    Repo.all(query)
+  end
+
+  def get_skill_class_by(condition) do
+    Repo.get_by(SkillClass, condition)
   end
 
   def get_skill_class_by_skill_panel_id(skill_panel_id) do

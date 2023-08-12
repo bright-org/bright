@@ -50,9 +50,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   def assign_skill_panel(socket, nil) do
     focus_user = socket.assigns.focus_user
 
-    skill_panel =
-      SkillPanels.get_user_latest_skill_panel!(focus_user)
-      |> preload_skill_panel_assoc(focus_user)
+    skill_panel = SkillPanels.get_user_latest_skill_panel!(focus_user)
 
     socket
     |> assign(:skill_panel, skill_panel)
@@ -62,9 +60,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     focus_user = socket.assigns.focus_user
 
     skill_panel =
-      (SkillPanels.get_user_skill_panel(focus_user, skill_panel_id) ||
-         SkillPanels.get_user_latest_skill_panel!(focus_user))
-      |> preload_skill_panel_assoc(focus_user)
+      SkillPanels.get_user_skill_panel(focus_user, skill_panel_id) ||
+        SkillPanels.get_user_latest_skill_panel!(focus_user)
 
     socket
     |> assign(:skill_panel, skill_panel)
@@ -73,24 +70,27 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   def assign_skill_panel(socket, skill_panel_id) do
     current_user = socket.assigns.current_user
 
-    skill_panel =
-      SkillPanels.get_user_skill_panel!(current_user, skill_panel_id)
-      |> preload_skill_panel_assoc(current_user)
+    skill_panel = SkillPanels.get_user_skill_panel!(current_user, skill_panel_id)
 
     socket
     |> assign(:skill_panel, skill_panel)
   end
 
-  defp preload_skill_panel_assoc(skill_panel, focus_user) do
-    skill_panel
-    |> Bright.Repo.preload(
-      skill_classes: [skill_class_scores: Ecto.assoc(focus_user, :skill_class_scores)]
-    )
+  def assign_skill_classes(socket) do
+    focus_user = socket.assigns.focus_user
+
+    skill_classes =
+      Ecto.assoc(socket.assigns.skill_panel, :skill_classes)
+      |> SkillPanels.list_skill_classes()
+      |> Bright.Repo.preload(skill_class_scores: Ecto.assoc(focus_user, :skill_class_scores))
+
+    socket
+    |> assign(:skill_classes, skill_classes)
   end
 
   def assign_skill_class_and_score(socket, nil) do
     # 指定がない場合はもっとも最近編集されたクラスとする
-    socket.assigns.skill_panel.skill_classes
+    socket.assigns.skill_classes
     |> Enum.filter(&(&1.skill_class_scores != []))
     |> Enum.sort_by(
       fn skill_class ->
@@ -113,7 +113,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def assign_skill_class_and_score(socket, class) do
-    skill_class = socket.assigns.skill_panel.skill_classes |> Enum.find(&(&1.class == class))
+    skill_class = socket.assigns.skill_classes |> Enum.find(&(&1.class == class))
     # List.first(): preload時に絞り込んでいるためfirstで取得可能
     skill_class_score = skill_class.skill_class_scores |> List.first()
 
@@ -134,10 +134,15 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     # NOTE: skill_class_scoreが存在しないときの生成処理について
     # 管理側でスキルクラスを増やすなどの操作も想定し、
     # アクセスしたタイミングで生成するようにしています。
-    {:ok, %{skill_class_score: skill_class_score}} =
-      SkillScores.create_skill_class_score(
-        socket.assigns.current_user,
-        socket.assigns.skill_class
+    user = socket.assigns.current_user
+    skill_class = socket.assigns.skill_class
+
+    {:ok, _} = SkillScores.create_skill_class_score(user, skill_class)
+
+    skill_class_score =
+      SkillScores.get_skill_class_score_by!(
+        user_id: user.id,
+        skill_class_id: skill_class.id
       )
 
     socket

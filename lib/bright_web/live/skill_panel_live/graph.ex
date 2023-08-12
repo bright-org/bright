@@ -19,6 +19,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> assign_path(url)
      |> assign_focus_user(params["user_name"])
      |> assign_skill_panel(params["skill_panel_id"])
+     |> assign_skill_classes()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_units()

@@ -31,6 +31,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_path(url)
      |> assign_focus_user(params["user_name"])
      |> assign_skill_panel(params["skill_panel_id"])
+     |> assign_skill_classes()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_units()
@@ -66,6 +67,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     {:noreply,
      socket
+     |> assign_skill_classes()
      |> assign(skill_class_score: skill_class_score)
      |> assign_skill_score_dict()
      |> assign_counter()
