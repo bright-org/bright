@@ -1,7 +1,6 @@
 defmodule BrightWeb.SkillPanelLive.Graph do
   use BrightWeb, :live_view
 
-  import BrightWeb.TimelineBarComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
 
@@ -61,12 +60,9 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph")}
   end
 
-  def handle_event(_event_name, _params, socket) do
-    # # TODO タイムラインバーイベント検証 タイムラインイベント周りの実装後削除予定
-    # IO.inspect("------------------")
-    # IO.inspect(event_name)
-    # IO.inspect(params)
-    # IO.inspect("------------------")
+  @impl true
+  def handle_info(%{event_name: "timeline_bar_button_click", params: _params}, socket) do
+    # TODO　スキルジェムを更新するイベントを追加すること
     {:noreply, socket}
   end
 end
