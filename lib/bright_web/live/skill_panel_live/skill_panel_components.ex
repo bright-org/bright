@@ -114,10 +114,23 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def target_switch(assigns) do
     ~H"""
-      <p class="leading-tight ml-4">対象者の<br />切り替え</p>
-      <.individual_menu current_user={@current_user} />
-      <% # TODO: α版後にifを除去して表示 %>
-      <.team_menu :if={false} current_user={@current_user} />
+    <p class="leading-tight ml-4">対象者の<br />切り替え</p>
+    <% # TODO: 共通コンポーネント完成後に表示 %>
+    <.individual_menu :if={false} current_user={@current_user} />
+    <% # TODO: α版後にifを除去して表示 %>
+    <.team_menu :if={false} current_user={@current_user} />
+
+    <% # TODO: 仮実装のため実装後に削除 %>
+    <button
+      class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+      type="button"
+      phx-click="demo_change_user"
+    >
+      <span class="min-w-[6em]">個人</span>
+      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
+        expand_more
+      </span>
+    </button>
     """
   end
 
@@ -183,9 +196,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def return_myself_button(assigns) do
     ~H"""
-      <button class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
-        自分に戻す
-      </button>
+    <button phx-click="clear_focus_user" class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
+      自分に戻す
+    </button>
     """
   end
 
@@ -241,21 +254,23 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   end
 
   def profile_area(assigns) do
+    # TODO: 自分に戻す、に対応が必要
     ~H"""
       <div class="flex justify-between">
         <div class="w-[850px] pt-6">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
+          <% # TODO: 他者のときの.profileの仕様確認と対応が必要 %>
           <.profile
-            user_name={@current_user.name}
-            title={@current_user.user_profile.title}
-            icon_file_path={@current_user.user_profile.icon_file_path}
+            user_name={@focus_user.name}
+            title={@focus_user.user_profile.title}
+            icon_file_path={@focus_user.user_profile.icon_file_path}
             display_excellent_person={false}
             display_anxious_person={false}
             display_return_to_yourself={true}
             display_sns={true}
-            twitter_url={@current_user.user_profile.twitter_url}
-            github_url={@current_user.user_profile.github_url}
-            facebook_url={@current_user.user_profile.facebook_url}
+            twitter_url={@focus_user.user_profile.twitter_url}
+            github_url={@focus_user.user_profile.github_url}
+            facebook_url={@focus_user.user_profile.facebook_url}
             display_detail={false}
           />
         </div>

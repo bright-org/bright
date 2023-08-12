@@ -168,7 +168,9 @@ defmodule BrightWeb.Router do
       live "/panels/graph", SkillPanelLive.Graph, :show
       live "/panels/skills", SkillPanelLive.Skills, :show
       live "/panels/:skill_panel_id/graph", SkillPanelLive.Graph, :show
+      live "/panels/:skill_panel_id/graph/:user_name", SkillPanelLive.Graph, :show
       live "/panels/:skill_panel_id/skills", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id/skills/:user_name", SkillPanelLive.Skills, :show
 
       live "/panels/:skill_panel_id/skills/:skill_id/evidences",
            SkillPanelLive.Skills,

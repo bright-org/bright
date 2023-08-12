@@ -2,6 +2,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores
+  alias Bright.Accounts
 
   import Phoenix.Component, only: [assign: 2, assign: 3]
 
@@ -14,12 +15,42 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     evidence_filled: 0
   }
 
+  def assign_focus_user(socket, nil) do
+    socket
+    |> assign(focus_user: socket.assigns.current_user, me: true)
+  end
+
+  def assign_focus_user(socket, user_name) do
+    user =
+      Accounts.get_user_by_name(user_name)
+      |> Bright.Repo.preload(:user_profile)
+
+    # TODO: userを参照してよいかどうかアクセス制限が必要
+    # （マイページと同様のはずなので共通処理を使う）
+    # 現状は見つかったとしての実装
+
+    socket
+    |> assign(focus_user: user, me: false)
+  end
+
   def assign_skill_panel(socket, nil) do
-    current_user = socket.assigns.current_user
+    focus_user = socket.assigns.focus_user
 
     skill_panel =
-      SkillPanels.get_user_latest_skill_panel!(current_user)
-      |> preload_skill_panel_assoc(current_user)
+      SkillPanels.get_user_latest_skill_panel!(focus_user)
+      |> preload_skill_panel_assoc(focus_user)
+
+    socket
+    |> assign(:skill_panel, skill_panel)
+  end
+
+  def assign_skill_panel(%{assigns: %{me: false}} = socket, skill_panel_id) do
+    focus_user = socket.assigns.focus_user
+
+    skill_panel =
+      (SkillPanels.get_user_skill_panel(focus_user, skill_panel_id) ||
+         SkillPanels.get_user_latest_skill_panel!(focus_user))
+      |> preload_skill_panel_assoc(focus_user)
 
     socket
     |> assign(:skill_panel, skill_panel)
@@ -36,10 +67,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> assign(:skill_panel, skill_panel)
   end
 
-  defp preload_skill_panel_assoc(skill_panel, current_user) do
+  defp preload_skill_panel_assoc(skill_panel, focus_user) do
     skill_panel
     |> Bright.Repo.preload(
-      skill_classes: [skill_class_scores: Ecto.assoc(current_user, :skill_class_scores)]
+      skill_classes: [skill_class_scores: Ecto.assoc(focus_user, :skill_class_scores)]
     )
   end
 
@@ -80,6 +111,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   def create_skill_class_score_if_not_existing(
         %{
           assigns: %{
+            me: true,
             skill_class_score: nil,
             skill_class: %{class: 1}
           }
