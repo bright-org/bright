@@ -84,19 +84,38 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   @impl true
   def update(assigns, socket) do
+    start =
+      get_future_month(12, 2023, 8)
+      |> Timex.shift(years: -1)
+
     socket =
       socket
       |> assign(assigns)
       |> assign(
         :data,
         create_data(assigns.user_id, assigns.skill_panel_id, assigns.class, %{
-          year: 2022,
-          month: 12
+          year: start.year,
+          month: start.month
         })
       )
 
     {:ok, socket}
   end
+
+  def get_future_month(start_month, year, month) do
+    now_month = {year, month, 1} |> Date.from_erl!()
+
+    1..24//3
+    |> Enum.map(fn x -> x + start_month - 1 end)
+    |> Enum.map(fn x -> month_shiht_add(year - 1, x) end)
+    |> Enum.map(fn x -> Date.from_erl!(x) end)
+    |> Enum.filter(fn x -> Timex.compare(x, now_month) > 0 end)
+    |> List.first()
+  end
+
+  defp month_shiht_add(year, month) when month > 24, do: {year + 2, month - 24, 1}
+  defp month_shiht_add(year, month) when month > 12, do: {year + 1, month - 12, 1}
+  defp month_shiht_add(year, month) when month <= 12, do: {year, month, 1}
 
   @impl true
   def handle_event("timeline_bar_button_click", params, socket) do
