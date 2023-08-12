@@ -35,4 +35,9 @@ defmodule Bright.SkillScores.SkillScore do
     from q in __MODULE__,
       where: q.user_id == ^user_id
   end
+
+  def skill_ids_query(query, skill_ids) do
+    from q in query,
+      where: q.skill_id in ^skill_ids
+  end
 end

@@ -276,6 +276,15 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
+  Returns the list of skill_scores from user and skill_ids
+  """
+  def list_user_skill_scores_from_skill_ids(user, skill_ids) do
+    SkillScore.user_id_query(user.id)
+    |> SkillScore.skill_ids_query(skill_ids)
+    |> list_skill_scores()
+  end
+
+  @doc """
   Gets a single skill_score.
 
   Raises `Ecto.NoResultsError` if the Skill score item does not exist.
