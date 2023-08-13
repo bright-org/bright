@@ -7,7 +7,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
   alias Bright.SkillScores
-  @start_month 12
+  @start_year 2021
+  @start_month 10
 
   @impl true
   def render(assigns) do
@@ -25,9 +26,22 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </div>
         <div class="flex">
           <div class="w-14 relative">
-            <button phx-target={@myself} phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })} class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute">
+            <button
+              :if={@data.past_enabled}
+              phx-target={@myself}
+              phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })}
+              class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
+            >
               <span class="material-icons text-white !text-4xl">arrow_left</span>
             </button>
+            <button
+              :if={!@data.past_enabled}
+              phx-target={@myself}
+              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
+            >
+            <span class="material-icons text-white !text-4xl">arrow_left</span>
+          </button>
+
           </div>
             <.growth_graph data={@data} id="growth-graph"/>
           <div class="ml-5 flex flex-col relative text-xl text-brightGray-500 text-bold">
@@ -103,7 +117,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
     socket =
       socket
-      |> assign(:data, %{myselfSelected: "now", labels: labels, futureEnabled: true})
+      |> assign(:data, %{myselfSelected: "now", labels: labels, futureEnabled: true, past_enabled: true})
       |> create_data()
 
     {:ok, socket}
@@ -152,10 +166,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     future = get_future_month()
     future_enabled = labels |> List.last() == "#{future.year}.#{future.month}"
 
+    past_enabled = labels |> List.first() != "#{@start_year}.#{@start_month}"
+
     data =
       socket.assigns.data
       |> Map.put(:labels, labels)
       |> Map.put(:futureEnabled, future_enabled)
+      |> Map.put(:past_enabled, past_enabled)
 
     assign(socket, :data, data)
   end
