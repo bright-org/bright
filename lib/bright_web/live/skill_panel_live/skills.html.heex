@@ -84,13 +84,13 @@
                   <p><%= col3.skill.name %></p>
                   <div class="flex justify-between items-center gap-x-2">
                     <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/evidences"}>
-                      <img src="/images/common/icons/addFile.svg" />
+                      <img src="/images/common/icons/skillEvidence.svg" />
                     </.link>
                     <.link :if={skill_reference_existing?(col3.skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/reference"}>
-                      <img src="/images/common/icons/addFile.svg" />
+                      <img src="/images/common/icons/skillStudy.svg" />
                     </.link>
                     <.link :if={skill_exam_existing?(col3.skill.skill_exam)} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/exam"}>
-                      <img src="/images/common/icons/addFile.svg" />
+                      <img src="/images/common/icons/skillTest.svg" />
                     </.link>
                   </div>
                 </div>

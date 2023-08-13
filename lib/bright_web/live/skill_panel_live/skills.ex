@@ -20,7 +20,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign_edit_off()}
+    {:ok,
+     socket
+     |> assign(:page_title, "スキルパネル")
+     |> assign_edit_off()}
   end
 
   @impl true
@@ -38,6 +41,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_score_dict()
      |> assign_counter()
      |> assign_table_structure()
+     |> assign_page_sub_title()
      |> apply_action(socket.assigns.live_action, params)}
   end
 
