@@ -55,6 +55,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
              |> has_element?("#class_tab_1", skill_class.name)
     end
 
+    test "shows content without parameters", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      {:ok, show_live, html} = live(conn, ~p"/panels")
+
+      assert html =~ skill_panel.name
+
+      assert show_live
+             |> has_element?("#class_tab_1", skill_class.name)
+    end
+
     test "shows skills table", %{
       conn: conn,
       skill_panel: skill_panel,
