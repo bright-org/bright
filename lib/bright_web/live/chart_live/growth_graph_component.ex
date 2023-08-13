@@ -128,7 +128,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
     socket =
       socket
-      |> assign(:data, %{myselfSelected: "now", labels: labels, future_enabled: true, past_enabled: true})
+      |> assign(:data, %{
+        myselfSelected: "now",
+        labels: labels,
+        future_enabled: true,
+        past_enabled: true
+      })
       |> create_data()
 
     {:ok, socket}
