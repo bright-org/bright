@@ -43,15 +43,19 @@ const createChartFromJSON = (data) => {
 }
 
 export const DoughnutGraph = {
-  mounted() {
-    const element = this.el
+  drawDoughnutGraph(element) {
     const dataset = element.dataset
     const data = JSON.parse(dataset.data)
-
     const ctx = document.querySelector('#' + element.id + ' canvas')
-    const myChart = new Chart(ctx, createChartFromJSON(data))
-    myChart.canvas.parentNode.style.height = '80px'
-    myChart.canvas.parentNode.style.width = '80px'
-
+    this.myDoughnut = new Chart(ctx, createChartFromJSON(data))
+    this.myDoughnut.canvas.parentNode.style.height = '80px'
+    this.myDoughnut.canvas.parentNode.style.width = '80px'
+  },
+  mounted() {
+    this.drawDoughnutGraph(this.el)
+  },
+  updated() {
+    this.myDoughnut.destroy()
+    this.drawDoughnutGraph(this.el)
   }
 }

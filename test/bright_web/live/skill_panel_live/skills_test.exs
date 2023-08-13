@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
   defp setup_skills(%{user: user, score: score}) do
     skill_panel = insert(:skill_panel)
+    insert(:user_skill_panel, user: user, skill_panel: skill_panel)
     skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
     skill_unit =
@@ -33,26 +34,26 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   describe "Show" do
     setup [:register_and_log_in_user]
 
-    setup do
+    setup %{user: user} do
       skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
       %{skill_panel: skill_panel, skill_class: skill_class}
     end
 
-    # # TODO: メニューを隠したために一時的にコメントアウト
-    # test "shows content", %{
-    #   conn: conn,
-    #   skill_panel: skill_panel,
-    #   skill_class: skill_class
-    # } do
-    #   {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}/skills")
-    #
-    #   assert html =~ "スキルパネル"
-    #   assert show_live
-    #          |> element("#class_tab_1", skill_class.name)
-    #          |> has_element?()
-    # end
+    test "shows content", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}/skills")
+
+      assert html =~ "スキルパネル"
+
+      assert show_live
+             |> has_element?("#class_tab_1", skill_class.name)
+    end
 
     test "shows skills table", %{
       conn: conn,
@@ -97,18 +98,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       end)
     end
 
-    # # TODO: メニューを隠したために一時的にコメントアウト
-    # test "shows the skill class by query string parameter", %{
-    #   conn: conn,
-    #   skill_panel: skill_panel
-    # } do
-    #   skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
-    #   {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=2")
-    #
-    #   assert show_live
-    #          |> element("#class_tab_1", skill_class_2.name)
-    #          |> has_element?()
-    # end
+    test "shows the skill class by query string parameter", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+      insert(:skill_class_score, user: user, skill_class: skill_class_2)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=2")
+
+      assert show_live
+             |> has_element?("#class_tab_2", skill_class_2.name)
+    end
   end
 
   describe "Show skill scores" do
@@ -519,8 +521,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   describe "Security" do
     setup [:register_and_log_in_user]
 
-    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn} do
+    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn, user: user} do
       skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
       skill_unit =

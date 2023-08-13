@@ -3,13 +3,13 @@
   <.navigations current_user={@current_user} />
   <div class="mx-10">
     <div class="flex justify-between">
-      <% # TODO: α版後にifを除去して表示 %>
-      <.toggle_link :if={false} skill_panel={@skill_panel} active="panel" />
-      <% # TODO: α版後にifを除去して表示 %>
-      <.class_tab :if={false} skill_class={@skill_class} />
+      <% # TODO: α版後にifと仮divブロックを除去して表示 %>
+      <.toggle_link :if={false} skill_panel={@skill_panel} active="graph" />
+      <div> </div>
+      <.class_tab skill_classes={@skill_panel.skill_classes} skill_class={@skill_class} path={@path} query={@query} />
     </div>
     <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
-      <.profile_area current_user={@current_user} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
+      <.profile_area focus_user={@focus_user} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
       <.compares current_user={@current_user} />
       <div class="mt-4">
         <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">

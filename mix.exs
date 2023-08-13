@@ -62,7 +62,8 @@ defmodule Bright.MixProject do
       {:goth, "~> 1.3"},
       {:hackney, "~> 1.18"},
       {:scrivener_ecto, "~> 2.0"},
-      {:ueberauth_google, "~> 0.10"}
+      {:ueberauth_google, "~> 0.10"},
+      {:timex, "~> 3.7"}
     ]
   end
 
