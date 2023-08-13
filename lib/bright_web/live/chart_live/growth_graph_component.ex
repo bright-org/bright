@@ -15,7 +15,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     <div class="w-[880px] flex flex-col">
       <!-- グラフ -->
       <div class="ml-auto mr-28 mt-6 mb-1">
-          <button
+      <%# TODO 他者選択できるまで非表示 %>
+          <button :if={false}
             type="button"
             class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
           >
@@ -65,7 +66,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
               </a>
             </div>
             <%# TODO 他者選択できるまで非表示 %>
-            <button
+            <button :if={false}
               type="button"
               class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
             >
