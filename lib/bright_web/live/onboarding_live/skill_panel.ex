@@ -1,7 +1,8 @@
 defmodule BrightWeb.OnboardingLive.SkillPanel do
+  alias Bright.Onboardings.UserOnboarding
   use BrightWeb, :live_view
 
-  alias Bright.{Repo, SkillPanels, UserSkillPanels}
+  alias Bright.{Repo, SkillPanels, UserSkillPanels, Onboardings}
 
   @impl true
   def render(assigns) do
@@ -16,7 +17,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
       <div class="mt-8">
         <!-- スキルセクション　ここから -->
         <section>
-          <h2 class="font-bold text-xl">ベースになるスキルは以下となります</h2>
+          <h2 class="font-bold text-xl"><%= "#{@skill_panel.name} に含まれるスキル" %></h2>
           <!-- スキルWebアプリ開発セクション　ここから -->
           <section class="mt-1 px-4 py-4 w-[1040px]">
             <ul>
@@ -36,20 +37,23 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
 
       <p class="flex justify-center mt-8 px-4 w-[1040px]">
         <button
-          phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name})}
+          phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "input"})}
           class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold px-4 py-2 rounded select-none text-white w-65 hover:opacity-50"
         >
           このスキルでスキル入力に進む
         </button>
 
         <!-- αは落とす
-        <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold ml-4  px-4 py-2 rounded select-none text-white w-65 hover:opacity-50">
+        <button
+          phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "skillup"})}
+          class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold ml-4  px-4 py-2 rounded select-none text-white w-65 hover:opacity-50"
+        >
           このスキルでスキルアップに進む
         </button>
         -->
 
         <.link
-          navigate={"/onboardings/wants/#{@wants_id}"}
+          navigate={@return_to}
           class="bg-white block border border-solid border-black font-bold ml-16 px-4 py-2 rounded select-none text-black text-center w-40 hover:opacity-50"
         >
           戻る
@@ -60,7 +64,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   end
 
   @impl true
-  def mount(%{"career_want_id" => wants_id, "id" => id}, _session, socket) do
+  def mount(%{"id" => id}, _session, socket) do
     skill_panel =
       SkillPanels.get_skill_panel!(id)
       |> Repo.preload(jobs: :career_fields)
@@ -75,21 +79,48 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
     socket
     |> assign(:skill_panel, skill_panel)
     |> assign(:career_field, List.first(career_fields))
-    |> assign(:wants_id, wants_id)
     |> assign(:skill_units, skill_class.skill_units)
     |> then(&{:ok, &1})
   end
 
   @impl true
-  def handle_event("select_skill_panel", %{"id" => skill_panel_id, "name" => name}, socket) do
-    UserSkillPanels.create_user_skill_panel(%{
-      user_id: socket.assigns.current_user.id,
-      skill_panel_id: skill_panel_id
-    })
+  def handle_params(%{"job_id" => job_id}, _uri, socket) do
+    {:noreply, assign(socket, :return_to, "/onboardings/jobs/#{job_id}")}
+  end
+
+  @impl true
+  def handle_params(%{"want_id" => want_id}, _uri, socket) do
+    {:noreply, assign(socket, :return_to, "/onboardings/wants/#{want_id}")}
+  end
+
+  @impl true
+  def handle_event(
+        "select_skill_panel",
+        %{"id" => skill_panel_id, "name" => name},
+        %{assigns: %{current_user: user}} = socket
+      ) do
+    finish_onboarding(user.user_onboardings, user.id, skill_panel_id)
+
+    {:ok, _user_kill_panel} =
+      UserSkillPanels.create_user_skill_panel(%{
+        user_id: user.id,
+        skill_panel_id: skill_panel_id
+      })
 
     socket
     |> put_flash(:info, "スキルパネル:#{name}を取得しました")
-    |> push_navigate(to: "/panels/#{skill_panel_id}/graph")
+    |> redirect(to: "/panels/#{skill_panel_id}/graph")
     |> then(&{:noreply, &1})
   end
+
+  defp finish_onboarding(nil, user_id, skill_panel_id) do
+    {:ok, _onboarding} =
+      Onboardings.create_user_onboarding(%{
+        completed_at: NaiveDateTime.utc_now(),
+        user_id: user_id,
+        skill_panel_id: skill_panel_id
+      })
+  end
+
+  defp finish_onboarding(%UserOnboarding{}, _, _), do: false
 end

@@ -3,6 +3,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   alias Bright.{Jobs, CareerFields, Repo}
   alias Bright.Jobs.Job
+
   @rank %{expert: "高度", advanced: "応用", basic: "基本"}
 
   def render(assigns) do
@@ -57,12 +58,14 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               <% jobs = Map.get(@jobs, @selected_career.name_en, %{}) %>
               <%= for job <- Map.get(jobs, rank, []) do %>
               <li>
-                <label
-                  class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
-                  style={"background-color:#{@colors[@selected_career.name_en][:dark]};"}
-                >
-                  <%= job.name %>
-                </label>
+                <.link navigate={"/onboardings/jobs/#{job.id}"} class="block">
+                  <label
+                    class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
+                    style={"background-color:#{@colors[@selected_career.name_en][:dark]};"}
+                  >
+                    <%= job.name %>
+                  </label>
+                </.link>
               </li>
               <% end %>
               <!-- ジョブここまで -->
