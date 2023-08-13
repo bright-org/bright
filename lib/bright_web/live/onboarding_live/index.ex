@@ -18,12 +18,10 @@ defmodule BrightWeb.OnboardingLive.Index do
   end
 
   @impl true
-  def handle_event("skip_onboarding", _value, socket) do
-    current_user = socket.assigns.current_user
-
+  def handle_event("skip_onboarding", _value, %{assigns: %{current_user: user}} = socket) do
     onboarding = %{
       completed_at: NaiveDateTime.utc_now(),
-      user_id: current_user.id
+      user_id: user.id
     }
 
     # TODO: user_onboardingは初回のみレコード登録する。スキルアップ画面対応のときはリンクを消す等検討する
