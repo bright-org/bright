@@ -19,28 +19,19 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   @impl true
   def handle_event("skip_onboarding", _value, %{assigns: %{current_user: user}} = socket) do
-    onboarding = %{
-      completed_at: NaiveDateTime.utc_now(),
-      user_id: user.id
-    }
-
     # TODO: user_onboardingは初回のみレコード登録する。スキルアップ画面対応のときはリンクを消す等検討する
-    case Onboardings.create_user_onboarding(onboarding) do
-      {:ok, _} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "オンボーディングをスキップしました")
-         |> redirect(to: ~p"/mypage")}
+    {:ok, _onboarding} =
+      %{completed_at: NaiveDateTime.utc_now(), user_id: user.id}
+      |> Onboardings.create_user_onboarding()
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset)}
-    end
+    socket
+    |> put_flash(:info, "オンボーディングをスキップしました")
+    |> redirect(to: ~p"/mypage")
+    |> then(&{:noreply, &1})
   end
 
   @impl true
   def handle_event("toggle_panel", %{"panel" => panel}, socket) do
-    IO.inspect(hide_panel(panel))
-
     socket
     |> assign(@panels[panel], !Map.get(socket.assigns, @panels[panel]))
     |> assign(@panels[hide_panel(panel)], false)
@@ -55,8 +46,6 @@ defmodule BrightWeb.OnboardingLive.Index do
   end
 
   defp hide_panel(id) do
-    IO.inspect(id)
-
     Map.keys(@panels)
     |> Enum.reject(&(&1 == id))
     |> List.first()
