@@ -21,8 +21,10 @@ defmodule BrightWeb.OnboardingLive.Index do
   def handle_event("skip_onboarding", _value, %{assigns: %{current_user: user}} = socket) do
     # TODO: user_onboardingは初回のみレコード登録する。スキルアップ画面対応のときはリンクを消す等検討する
     {:ok, _onboarding} =
-      %{completed_at: NaiveDateTime.utc_now(), user_id: user.id}
-      |> Onboardings.create_user_onboarding()
+      Onboardings.create_user_onboarding(%{
+        completed_at: NaiveDateTime.utc_now(),
+        user_id: user.id
+      })
 
     socket
     |> put_flash(:info, "オンボーディングをスキップしました")
