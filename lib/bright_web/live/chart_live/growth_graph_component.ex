@@ -31,6 +31,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
               phx-target={@myself}
               phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })}
               class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={false}
             >
               <span class="material-icons text-white !text-4xl">arrow_left</span>
             </button>
@@ -38,6 +39,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
               :if={!@data.past_enabled}
               phx-target={@myself}
               class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={true}
             >
             <span class="material-icons text-white !text-4xl">arrow_left</span>
           </button>
