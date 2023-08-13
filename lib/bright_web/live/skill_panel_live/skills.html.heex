@@ -17,26 +17,25 @@
             <td colspan="4" class="!border-t !border-l-white !border-t-white !border-l">
             </td>
             <td class="!border-l !border-brightGray-200">
-              <div class="flex justify-center items-center">
+              <div class="flex justify-center items-center min-w-[150px]">
                 <p class="inline-flex flex-1 justify-center"><%= @current_user.name %></p>
 
                 <%= if skill_class_score_author?(@skill_class_score, @current_user) do %>
                   <button
                     :if={not @edit}
                     type="button"
-                    class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
                     phx-click="edit"
                   >
-                    <span class="material-icons-outlined !text-sm">edit</span>
+                    <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
                   </button>
-                  <!-- TODO: デザイン適用 -->
                   <button
                     :if={@edit}
                     type="button"
-                    class="text-black bg-brightGreen-600 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
                     phx-click="submit"
                   >
-                    <span class="material-icons-outlined !text-sm">edit</span>
+                    <span class="material-symbols-outlined text-white hover:text-brightGray-900 !text-sm">cloud_done</span>
                   </button>
                 <% end %>
               </div>
@@ -84,13 +83,13 @@
                   <p><%= col3.skill.name %></p>
                   <div class="flex justify-between items-center gap-x-2">
                     <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/evidences"}>
-                      <img src="/images/common/icons/addFile.svg" />
+                      <img src="/images/common/icons/skillEvidence.svg" />
                     </.link>
                     <.link :if={skill_reference_existing?(col3.skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/reference"}>
-                      <img src="/images/common/icons/addFile.svg" />
+                      <img src="/images/common/icons/skillStudy.svg" />
                     </.link>
                     <.link :if={skill_exam_existing?(col3.skill.skill_exam)} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/exam"}>
-                      <img src="/images/common/icons/addFile.svg" />
+                      <img src="/images/common/icons/skillTest.svg" />
                     </.link>
                   </div>
                 </div>

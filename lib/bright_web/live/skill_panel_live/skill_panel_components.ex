@@ -30,7 +30,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         data-dropdown-toggle="dropdownOffset"
         data-dropdown-offset-skidding="320"
         data-dropdown-placement="bottom"
-        class="text-white bg-brightGreen-300 rounded-sm pl-3 flex items-center font-bold h-[35px]"
+        class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
         type="button"
       >
         <span class="min-w-[6em]">スキルパネル</span>
@@ -60,7 +60,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         data-dropdown-toggle="dropdown"
         data-dropdown-offset-skidding="20"
         data-dropdown-placement="bottom"
-        class="text-white bg-brightGreen-300 rounded-sm h-[35px] pl-3 flex items-center font-bold"
+        class="text-white bg-brightGreen-300 rounded h-[35px] pl-3 flex items-center font-bold"
         type="button"
       >
         スキルセット
@@ -122,7 +122,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
     <% # TODO: 仮実装のため実装後に削除 %>
     <button
-      class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+      class="text-white bg-brightGreen-300 rounded py-1.5 pl-3 flex items-center font-bold"
       type="button"
       phx-click="demo_change_user"
     >
