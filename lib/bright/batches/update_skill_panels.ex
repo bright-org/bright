@@ -448,20 +448,21 @@ defmodule Bright.Batches.UpdateSkillPanels do
     entries =
       old_skill_unit_scores
       |> Enum.map(fn old_skill_unit_score ->
-        {_draft_skill_unit, skill_unit} =
-          Enum.find(draft_skill_unit_pairs, fn {_draft_skill_unit, skill_unit} ->
-            skill_unit.trace_id == old_skill_unit_score.skill_unit.trace_id
-          end)
+        case Enum.find(draft_skill_unit_pairs, fn {_draft_skill_unit, skill_unit} ->
+               skill_unit.trace_id == old_skill_unit_score.skill_unit.trace_id
+             end) do
+          {_draft_skill_unit, skill_unit} ->
+            %{
+              id: Ecto.ULID.generate(),
+              user_id: old_skill_unit_score.user_id,
+              skill_unit_id: skill_unit.id,
+              percentage: old_skill_unit_score.percentage,
+              inserted_at: now,
+              updated_at: now
+            }
 
-        if skill_unit do
-          %{
-            id: Ecto.ULID.generate(),
-            user_id: old_skill_unit_score.user_id,
-            skill_unit_id: skill_unit.id,
-            percentage: old_skill_unit_score.percentage,
-            inserted_at: now,
-            updated_at: now
-          }
+          nil ->
+            nil
         end
       end)
       |> Enum.reject(&is_nil/1)
@@ -476,23 +477,24 @@ defmodule Bright.Batches.UpdateSkillPanels do
     entries =
       old_skill_scores
       |> Enum.map(fn old_skill_score ->
-        {_draft_skill, skill} =
-          Enum.find(draft_skill_pairs, fn {_draft_skill, skill} ->
-            skill.trace_id == old_skill_score.skill.trace_id
-          end)
+        case Enum.find(draft_skill_pairs, fn {_draft_skill, skill} ->
+               skill.trace_id == old_skill_score.skill.trace_id
+             end) do
+          {_draft_skill, skill} ->
+            %{
+              id: Ecto.ULID.generate(),
+              user_id: old_skill_score.user_id,
+              skill_id: skill.id,
+              score: old_skill_score.score,
+              exam_progress: old_skill_score.exam_progress,
+              reference_read: old_skill_score.reference_read,
+              evidence_filled: old_skill_score.evidence_filled,
+              inserted_at: now,
+              updated_at: now
+            }
 
-        if skill do
-          %{
-            id: Ecto.ULID.generate(),
-            user_id: old_skill_score.user_id,
-            skill_id: skill.id,
-            score: old_skill_score.score,
-            exam_progress: old_skill_score.exam_progress,
-            reference_read: old_skill_score.reference_read,
-            evidence_filled: old_skill_score.evidence_filled,
-            inserted_at: now,
-            updated_at: now
-          }
+          nil ->
+            nil
         end
       end)
       |> Enum.reject(&is_nil/1)
@@ -507,23 +509,25 @@ defmodule Bright.Batches.UpdateSkillPanels do
     entries =
       old_skill_class_scores
       |> Enum.map(fn old_skill_class_score ->
-        {_draft_skill_class, skill_class} =
-          Enum.find(draft_skill_class_pairs, fn {_draft_skill_class, skill_class} ->
-            skill_class.trace_id == old_skill_class_score.skill_class.trace_id
-          end)
+        case Enum.find(draft_skill_class_pairs, fn {_draft_skill_class, skill_class} ->
+               skill_class.trace_id == old_skill_class_score.skill_class.trace_id
+             end) do
+          {_draft_skill_class, skill_class} ->
+            %{
+              id: Ecto.ULID.generate(),
+              user_id: old_skill_class_score.user_id,
+              skill_class_id: skill_class.id,
+              level: old_skill_class_score.level,
+              percentage: old_skill_class_score.percentage,
+              inserted_at: now,
+              updated_at: now
+            }
 
-        if skill_class do
-          %{
-            id: Ecto.ULID.generate(),
-            user_id: old_skill_class_score.user_id,
-            skill_class_id: skill_class.id,
-            level: old_skill_class_score.level,
-            percentage: old_skill_class_score.percentage,
-            inserted_at: now,
-            updated_at: now
-          }
+          nil ->
+            nil
         end
       end)
+      |> Enum.reject(&is_nil/1)
 
     Repo.delete_all(SkillClassScore, entries)
     Repo.insert_all(SkillClassScore, entries)
