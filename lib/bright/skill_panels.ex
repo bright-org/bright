@@ -124,7 +124,7 @@ defmodule Bright.SkillPanels do
   オンボーディング、スキルアップで選択したスキルパネルの詳細の表示に使用する
   クラス１のユニットを一覧するためデフォルト値は１を指定
 
-  ## Examples get_skill_class_by_skill_panel_id
+  ## Examples
 
       iex> get_skill_class_by_skill_panel_id()
       %SkillClass{}
