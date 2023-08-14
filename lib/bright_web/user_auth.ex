@@ -199,7 +199,7 @@ defmodule BrightWeb.UserAuth do
 
       is_onboarding?(socket) && user.user_onboardings != nil ->
         socket
-        |> Phoenix.LiveView.redirect(to: ~p"/mypage")
+        |> Phoenix.LiveView.redirect(to: ~p"/skill_up")
         |> then(&{:halt, &1})
 
       true ->
