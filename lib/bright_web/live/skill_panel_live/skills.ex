@@ -42,6 +42,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_counter()
      |> assign_table_structure()
      |> assign_page_sub_title()
+     |> assign(compared_users: [], compared_user_dict: %{}, compared_users_stats: %{})
+     |> assign_compared_users_info()
      |> apply_action(socket.assigns.live_action, params)}
   end
 
@@ -148,6 +150,39 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills")}
   end
 
+  # TODO: デモ用実装のため対象ユーザー実装後に削除
+  def handle_event("demo_compare_user", _params, socket) do
+    users =
+      Bright.Accounts.User
+      |> Bright.Repo.all()
+      |> Enum.reject(fn user ->
+        user.id == socket.assigns.focus_user.id ||
+          Ecto.assoc(user, :user_skill_panels)
+          |> Bright.Repo.all()
+          |> Enum.empty?()
+      end)
+
+    if users != [] do
+      user = Enum.random(users)
+
+      {:noreply,
+       socket
+       |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
+       |> assign_compared_user_dict(user)
+       |> assign_compared_users_info()}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_event("reject_compared_user", %{"name" => name}, socket) do
+    {:noreply,
+     socket
+     |> update(:compared_users, fn users -> Enum.reject(users, &(&1.name == name)) end)
+     |> update(:compared_user_dict, &Map.delete(&1, name))
+     |> assign_compared_users_info()}
+  end
+
   defp apply_action(socket, :show, _params), do: socket
 
   defp apply_action(socket, :show_evidences, params) do
@@ -170,11 +205,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp assign_skill(socket, skill_id) do
-    skill =
-      socket.assigns.skill_units
-      |> Enum.flat_map(& &1.skill_categories)
-      |> Enum.flat_map(& &1.skills)
-      |> Enum.find(&(&1.id == skill_id))
+    skill = socket.assigns.skills |> Enum.find(&(&1.id == skill_id))
 
     socket |> assign(skill: skill)
   end
@@ -260,6 +291,59 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp create_skill_evidence_if_not_existing(socket), do: socket
 
+  defp assign_compared_user_dict(socket, user) do
+    # 比較対象になっているユーザーのデータを表示用に整理・集計してアサイン
+    skill_ids = Enum.map(socket.assigns.skills, & &1.id)
+    skill_scores = SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
+
+    {skill_score_dict, high_skills_count, middle_skills_count} =
+      skill_scores
+      |> Enum.reduce({%{}, 0, 0}, fn skill_score, {dict, high_c, middle_c} ->
+        score = skill_score.score
+
+        {
+          dict |> Map.put(skill_score.skill_id, score),
+          high_c + if(score == :high, do: 1, else: 0),
+          middle_c + if(score == :middle, do: 1, else: 0)
+        }
+      end)
+
+    size = Enum.count(skill_scores)
+    high_skills_percentage = calc_percentage(high_skills_count, size)
+    middle_skills_percentage = calc_percentage(middle_skills_count, size)
+
+    socket
+    |> update(
+      :compared_user_dict,
+      &Map.put(&1, user.name, %{
+        high_skills_percentage: high_skills_percentage,
+        middle_skills_percentage: middle_skills_percentage,
+        skill_score_dict: skill_score_dict
+      })
+    )
+  end
+
+  defp assign_compared_users_info(socket) do
+    # 比較対象ユーザーのデータを集計してスキルの合計用データをアサイン
+    compared_users_stats =
+      socket.assigns.skills
+      |> Enum.reduce(%{}, fn skill, acc ->
+        scores =
+          socket.assigns.compared_user_dict
+          |> Map.values()
+          |> Enum.map(&get_in(&1, [:skill_score_dict, skill.id]))
+
+        acc
+        |> Map.put(skill.id, %{
+          high_skills_count: Enum.count(scores, &(&1 == :high)),
+          middle_skills_count: Enum.count(scores, &(&1 == :middle))
+        })
+      end)
+
+    socket
+    |> assign(compared_users_stats: compared_users_stats)
+  end
+
   defp get_skill_score_from_table_structure(socket, row) do
     skill =
       socket.assigns.table_structure
@@ -325,27 +409,5 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp skill_class_score_author?(skill_class_score, user) do
     skill_class_score.user_id == user.id
-  end
-
-  defp skill_reference_existing?(skill_reference) do
-    skill_reference && skill_reference.url
-  end
-
-  defp skill_exam_existing?(skill_exam) do
-    skill_exam && skill_exam.url
-  end
-
-  defp score_mark_class(skill_score) do
-    skill_score.score
-    |> case do
-      :high ->
-        "score-mark-high h-4 w-4 rounded-full bg-brightGreen-600"
-
-      :middle ->
-        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
-
-      :low ->
-        "score-mark-low h-1 w-4 bg-brightGray-200"
-    end
   end
 end

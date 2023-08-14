@@ -157,8 +157,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
       |> SkillUnits.list_skill_units()
       |> Bright.Repo.preload(skill_categories: [skills: [:skill_reference, :skill_exam]])
 
+    skills =
+      skill_units
+      |> Enum.flat_map(& &1.skill_categories)
+      |> Enum.flat_map(& &1.skills)
+
     socket
     |> assign(skill_units: skill_units)
+    |> assign(skills: skills)
   end
 
   def assign_skill_score_dict(socket) do

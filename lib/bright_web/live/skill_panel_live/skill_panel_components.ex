@@ -313,6 +313,42 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
+  def score_mark_class(score, :me) do
+    score
+    |> case do
+      :high ->
+        "score-mark-high h-4 w-4 rounded-full bg-skillPanel-brightGreen600"
+
+      :middle ->
+        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
+
+      :low ->
+        "score-mark-low h-1 w-4 bg-brightGray-200"
+    end
+  end
+
+  def score_mark_class(score, :compared_user) do
+    score
+    |> case do
+      :high ->
+        "score-mark-high h-4 w-4 rounded-full bg-skillPanel-amethyst600"
+
+      :middle ->
+        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block"
+
+      v when v in [nil, :low] ->
+        "score-mark-low h-1 w-4 bg-brightGray-200"
+    end
+  end
+
+  def skill_reference_existing?(skill_reference) do
+    skill_reference && skill_reference.url
+  end
+
+  def skill_exam_existing?(skill_exam) do
+    skill_exam && skill_exam.url
+  end
+
   defp profile_skill_class_level(%{level: :beginner} = assigns), do: ~H"見習い"
 
   defp profile_skill_class_level(%{level: :normal} = assigns), do: ~H"平均"

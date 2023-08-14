@@ -5,8 +5,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div class="flex mt-4 items-center">
       <.compare_timeline />
+      <% # TODO: 仮UI コンポーネント完成後に削除 %>
       <div class="flex gap-x-4">
-        <.compare_individual current_user={@current_user} />
+        <button
+          class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
+          type="button"
+          phx-click="demo_compare_user"
+        >
+          <span class="min-w-[6em]">個人と比較</span>
+          <span
+            class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]">add</span>
+        </button>
+        <% # TODO: コンポーネント完成後にifを除去して表示 %>
+        <.compare_individual :if={false} current_user={@current_user} />
         <% # TODO: α版後にifを除去して表示 %>
         <.compare_team :if={false} current_user={@current_user} />
         <% # TODO: α版後にifを除去して表示 %>
