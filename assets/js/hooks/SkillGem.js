@@ -200,7 +200,7 @@ const createChartFromJSON = (labels, datasets, isLink) => {
 }
 
 export const SkillGem = {
-  mounted() {
+  drawRaderGraph() {
     const element = this.el
     const dataset = element.dataset
     const labels = JSON.parse(dataset.labels)
@@ -218,9 +218,9 @@ export const SkillGem = {
     }
 
     const ctx = document.querySelector('#' + element.id + ' canvas')
-    const myChart = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
-    myChart.canvas.parentNode.style.height = isSmall ? '165px' : '450px'
-    myChart.canvas.parentNode.style.width = isSmall ? '250px' : '535px'
+    this.myRadar = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
+    this.myRadar.canvas.parentNode.style.height = isSmall ? '165px' : '450px'
+    this.myRadar.canvas.parentNode.style.width = isSmall ? '250px' : '535px'
 
     ctx.addEventListener('click', function (event) {
       if (!isLink) return;
@@ -229,21 +229,28 @@ export const SkillGem = {
       const rect = ctx.getBoundingClientRect()
       const x = event.clientX - rect.left
       const y = event.clientY - rect.top
-      const length = myChart.data.labels.length
+      const length = myRadar.data.labels.length
 
       // リンクの判定例
       for (let i = 0; i < length; i++) {
-        const label = myChart.scales.r.getPointLabelPosition(i)
+        const label = this.myRadar.scales.r.getPointLabelPosition(i)
         const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
-        if (judge) { alert('リンククリック：' + myChart.data.labels[i]) }
+        if (judge) { alert('リンククリック：' + this.myRadar.data.labels[i]) }
       }
 
       // アイコン判定例
       for (let i = 0; i < length; i++) {
-        const label = myChart.scales.r.getPointLabelPosition(i)
+        const label = myRadar.scales.r.getPointLabelPosition(i)
         const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
-        if (judge) { alert('アイコンクリック：' + myChart.data.labels[i]) }
+        if (judge) { alert('アイコンクリック：' + this.myRadar.data.labels[i]) }
       }
     })
+  },
+  mounted() {
+    this.drawRaderGraph(this.el)
+  },
+  updated() {
+    this.myRadar.destroy()
+    this.drawRaderGraph(this.el)
   }
 }
