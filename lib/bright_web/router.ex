@@ -178,6 +178,7 @@ defmodule BrightWeb.Router do
 
       live "/teams", MyTeamLive, :index
       live "/teams/new", TeamCreateLive, :new
+      live "/searchs", SearchLive.Index
     end
   end
 
