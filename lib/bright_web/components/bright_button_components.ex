@@ -13,12 +13,14 @@ defmodule BrightWeb.BrightButtonComponents do
        <.profile_button>自分に戻す</.profile_button>
   """
   slot :inner_block
+  attr :rest, :global
 
   def profile_button(assigns) do
     ~H"""
     <button
       type="button"
       class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+      {@rest}
     >
       <%= render_slot(@inner_block) %>
     </button>
@@ -36,9 +38,9 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       type="button"
-      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGreen-300"
+      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border hover:border-brightGreen-300 group"
     >
-      <span class="material-icons md-18 mr-1 text-brightGreen-300">share</span> 優秀な人として紹介
+      <span class="material-icons md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300">share</span> 優秀な人として紹介
     </button>
     """
   end
@@ -56,9 +58,9 @@ defmodule BrightWeb.BrightButtonComponents do
       type="button"
       id="dropcheckmenu"
       data-dropdown-toggle="checkmenu"
-      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 hover:border-brightGreen-300 group"
     >
-      <span class="material-icons md-18 mr-1 text-brightGray-200">star</span> 気になる
+      <span class="material-icons md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300">star</span> 気になる
     </button>
     <!-- 気になるDropdown menu -->
     <div id="checkmenu" class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]">

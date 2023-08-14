@@ -7,17 +7,15 @@ defmodule BrightWeb.OAuthController do
   plug Ueberauth
 
   require Logger
-  alias Ueberauth.Strategy.Helpers
   alias BrightWeb.UserAuth
   alias Bright.Accounts
   alias Bright.Accounts.User
 
-  def request(conn, _params) do
-    redirect(conn, to: Helpers.request_url(conn))
-  end
+  # NOTE: plug Ueberauth の処理中に指定された provider パラメータに対応する各 Strategy の実装に従ってリダイレクトが行われるのでコントローラー側は空でよい
+  def request(_conn, _params), do: nil
 
   def callback(%{assigns: %{ueberauth_failure: %Ueberauth.Failure{} = fail}} = conn, _params) do
-    Logger.info(fail)
+    Logger.warning(inspect(fail))
 
     conn
     |> put_flash(:error, "認証に失敗しました")

@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
   defp setup_skills(%{user: user, score: score}) do
     skill_panel = insert(:skill_panel)
+    insert(:user_skill_panel, user: user, skill_panel: skill_panel)
     skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
     skill_unit =
@@ -14,10 +15,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     [%{skills: [skill_1, skill_2, skill_3]}] = insert_skill_categories_and_skills(skill_unit, [3])
 
     if score do
-      skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
-      insert(:skill_score, skill_class_score: skill_class_score, skill: skill_1, score: score)
-      insert(:skill_score, skill_class_score: skill_class_score, skill: skill_2)
-      insert(:skill_score, skill_class_score: skill_class_score, skill: skill_3)
+      insert(:init_skill_class_score, user: user, skill_class: skill_class)
+      _skill_unit_score = insert(:skill_unit_score, user: user, skill_unit: skill_unit)
+      insert(:skill_score, user: user, skill: skill_1, score: score)
+      insert(:skill_score, user: user, skill: skill_2)
+      insert(:skill_score, user: user, skill: skill_3)
     end
 
     %{
@@ -32,8 +34,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   describe "Show" do
     setup [:register_and_log_in_user]
 
-    setup do
+    setup %{user: user} do
       skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
       %{skill_panel: skill_panel, skill_class: skill_class}
@@ -49,8 +52,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert html =~ "スキルパネル"
 
       assert show_live
-             |> element("#class_tab_1", skill_class.name)
-             |> has_element?()
+             |> has_element?("#class_tab_1", skill_class.name)
+    end
+
+    test "shows content without parameters", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      {:ok, show_live, html} = live(conn, ~p"/panels")
+
+      assert html =~ skill_panel.name
+
+      assert show_live
+             |> has_element?("#class_tab_1", skill_class.name)
     end
 
     test "shows skills table", %{
@@ -98,18 +113,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     test "shows the skill class by query string parameter", %{
       conn: conn,
+      user: user,
       skill_panel: skill_panel
     } do
       skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+      insert(:init_skill_class_score, user: user, skill_class: skill_class_2)
+
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=2")
 
       assert show_live
-             |> element("#class_tab_1", skill_class_2.name)
-             |> has_element?()
+             |> has_element?("#class_tab_2", skill_class_2.name)
     end
   end
 
-  describe "Show skill score item" do
+  describe "Show skill scores" do
     setup [:register_and_log_in_user, :setup_skills]
 
     @tag score: :low
@@ -374,7 +391,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#skill-1 .link-evidence")
       |> render_click()
 
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences")
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences?class=1")
 
       assert show_live
              |> render() =~ skill_1.name
@@ -410,7 +427,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert show_live
              |> form("#skill_evidence_post-form", skill_evidence_post: %{content: ""})
-             |> render_submit() =~ "can&#39;t be blank"
+             |> render_submit() =~ "入力してください"
 
       show_live
       |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
@@ -444,7 +461,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#skill-1 .link-reference")
       |> render_click()
 
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/reference")
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/reference?class=1")
 
       assert render(show_live) =~ skill_1.name
 
@@ -485,7 +502,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#skill-1 .link-exam")
       |> render_click()
 
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/exam")
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/exam?class=1")
 
       assert render(show_live) =~ skill_1.name
 
@@ -517,8 +534,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   describe "Security" do
     setup [:register_and_log_in_user]
 
-    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn} do
+    test "別のユーザーのスキルスコアが表示されないこと", %{conn: conn, user: user} do
       skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
       skill_unit =
@@ -527,12 +545,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
 
       dummy_user = insert(:user)
-
-      insert(:skill_score,
-        skill_class_score: build(:skill_class_score, user: dummy_user, skill_class: skill_class),
-        skill: skill,
-        score: :high
-      )
+      insert(:init_skill_class_score, user: dummy_user, skill_class: skill_class)
+      insert(:skill_score, user: dummy_user, skill: skill, score: :high)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
 

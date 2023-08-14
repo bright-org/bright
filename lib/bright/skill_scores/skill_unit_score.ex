@@ -5,6 +5,7 @@ defmodule Bright.SkillScores.SkillUnitScore do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -19,9 +20,13 @@ defmodule Bright.SkillScores.SkillUnitScore do
   end
 
   @doc false
-  def changeset(skill_unit, attrs) do
-    skill_unit
+  def changeset(skill_unit_score, attrs) do
+    skill_unit_score
     |> cast(attrs, [:percentage])
     |> validate_required([:percentage])
+  end
+
+  def user_query(user) do
+    from(q in __MODULE__, where: q.user_id == ^user.id)
   end
 end

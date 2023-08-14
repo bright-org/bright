@@ -3,11 +3,13 @@
   <.navigations current_user={@current_user} />
   <div class="mx-10">
     <div class="flex justify-between">
-      <.toggle_link skill_panel={@skill_panel} active="panel" />
-      <.class_tab skill_class={@skill_class} />
+      <% # TODO: α版後にifと仮divブロックを除去して表示 %>
+      <.toggle_link :if={false} skill_panel={@skill_panel} active="graph" />
+      <div> </div>
+      <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
     </div>
     <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
-      <.profile_area current_user={@current_user} />
+      <.profile_area focus_user={@focus_user} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
       <.compares current_user={@current_user} />
       <div class="mt-4">
         <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">
@@ -15,38 +17,49 @@
             <td colspan="4" class="!border-t !border-l-white !border-t-white !border-l">
             </td>
             <td class="!border-l !border-brightGray-200">
-              <div class="flex justify-center items-center">
-                <p class="inline-flex flex-1 justify-center"><%= @current_user.name %></p>
+              <div class="flex justify-center items-center min-w-[150px]">
+                <p class="inline-flex flex-1 justify-center"><%= @focus_user.name %></p>
 
                 <%= if skill_class_score_author?(@skill_class_score, @current_user) do %>
                   <button
                     :if={not @edit}
                     type="button"
-                    class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
                     phx-click="edit"
                   >
-                    <span class="material-icons-outlined !text-sm">edit</span>
+                    <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
                   </button>
-                  <!-- TODO: デザイン適用 -->
                   <button
                     :if={@edit}
                     type="button"
-                    class="text-black bg-brightGreen-600 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
                     phx-click="submit"
                   >
-                    <span class="material-icons-outlined !text-sm">edit</span>
+                    <span class="material-symbols-outlined text-white hover:text-brightGray-900 !text-sm">cloud_done</span>
                   </button>
                 <% end %>
               </div>
             </td>
+            <td :for={user <- @compared_users} class="!border-l !border-brightGray-200">
+              <div class="flex justify-center items-center">
+                <p class="inline-flex flex-1 justify-center"><%= user.name %></p>
+                <button
+                  type="button"
+                  class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
+                  phx-click="reject_compared_user"
+                  phx-value-name={user.name}
+                >
+                  <span class="material-icons-outlined !text-xs">close</span>
+                </button>
+              </div>
+            </td>
           </tr>
-          <!-- 未実装：デザインまま END -->
           <tr>
             <th class="bg-base text-white text-center w-[200px]">
               知識エリア
             </th>
             <th class="bg-base text-white text-center w-[200px]">
-              カテゴリ
+              カテゴリー
             </th>
             <th class="bg-base text-white text-center w-[420px]">
               スキル
@@ -56,13 +69,24 @@
             </th>
             <td>
               <div class="flex justify-center gap-x-2">
-                <div class="min-w-[4em] flex items-center">
-                  <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1" />
+                <div class="min-w-[3em] flex items-center">
+                  <span class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1" />
                   <span class="score-high-percentage"><%= floor calc_percentage(@counter.high, @num_skills) %>％</span>
                 </div>
-                <div class="min-w-[4em] flex items-center">
-                  <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1" />
+                <div class="min-w-[3em] flex items-center">
+                  <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block mr-1" />
                   <span class="score-middle-percentage"><%= floor calc_percentage(@counter.middle, @num_skills) %>％</span>
+                </div>
+              </div>
+            </td>
+            <td :for={user <- @compared_users}>
+              <% user_data = Map.get(@compared_user_dict, user.name) %>
+              <div class="flex justify-center gap-x-2">
+                <div class="min-w-[3em] flex items-center">
+                  <span class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"></span><%= user_data.high_skills_percentage %>％
+                </div>
+                <div class="min-w-[3em] flex items-center">
+                  <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"></span><%= user_data.middle_skills_percentage %>％
                 </div>
               </div>
             </td>
@@ -81,26 +105,30 @@
                 <div class="flex justify-between items-center">
                   <p><%= col3.skill.name %></p>
                   <div class="flex justify-between items-center gap-x-2">
-                    <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/evidences"}>
-                      <img src="/images/common/icons/addFile.svg" />
-                    </.link>
-                    <.link :if={skill_reference_existing?(col3.skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/reference"}>
-                      <img src="/images/common/icons/addFile.svg" />
-                    </.link>
-                    <.link :if={skill_exam_existing?(col3.skill.skill_exam)} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/exam"}>
-                      <img src="/images/common/icons/addFile.svg" />
-                    </.link>
+                    <.skill_evidence_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
+                    <.skill_reference_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
+                    <.skill_exam_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
                   </div>
                 </div>
               </td>
               <td>
-                <% # 「個人と比較」対応時に本実装箇所。現在は一人なので0/1 %>
-                <div class="num-high-users flex justify-center px-4">
-                  <%= if skill_score.score == :high do %>
-                  1
-                  <% else %>
-                  0
-                  <% end %>
+                <div class="num-high-users flex justify-center gap-x-1">
+                  <div class="min-w-[3em] flex items-center">
+                    <span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mr-1"></span>
+                    <%= if skill_score.score == :high do %>
+                      <%= get_in(@compared_users_stats, [col3.skill.id, :high_skills_count]) + 1 %>
+                    <% else %>
+                      <%= get_in(@compared_users_stats, [col3.skill.id, :high_skills_count]) %>
+                    <% end %>
+                  </div>
+                  <div class="min-w-[3em] flex items-center">
+                    <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-300 inline-block mr-1"></span>
+                    <%= if skill_score.score == :middle do %>
+                      <%= get_in(@compared_users_stats, [col3.skill.id, :middle_skills_count]) + 1 %>
+                    <% else %>
+                      <%= get_in(@compared_users_stats, [col3.skill.id, :middle_skills_count]) %>
+                    <% end %>
+                  </div>
                 </div>
               </td>
               <td class={[focus && "bg-brightGray-50"]}>
@@ -153,12 +181,16 @@
                     </label>
                   </div>
                 <% else %>
-                  <div class="flex justify-center gap-x-4 px-4">
-                    <div class="flex items-center">
-                      <div class={score_mark_class(skill_score)} />
-                    </div>
+                  <div class="flex justify-center gap-x-4 px-4 min-w-[150px]">
+                    <div class={score_mark_class(skill_score.score, :me)} />
                   </div>
                 <% end %>
+              </td>
+              <td :for={user <- @compared_users}>
+                <% score = get_in(@compared_user_dict, [user.name, :skill_score_dict, col3.skill.id]) %>
+                <div class="flex justify-center gap-x-4 px-4 h-[21px] items-center">
+                  <div class={score_mark_class(score, :compared_user)} />
+                </div>
               </td>
             </tr>
           <% end %>
@@ -168,10 +200,11 @@
   </div>
 </div>
 
-<.modal
+<.bright_modal
   :if={:show_evidences == @live_action}
   id="skill-evidence-modal"
   show
+  style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
   on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
 
   <.live_component
@@ -182,7 +215,7 @@
     user={@current_user}
     patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
   />
-</.modal>
+</.bright_modal>
 
 <.bright_modal
   :if={:show_reference == @live_action}

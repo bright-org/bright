@@ -1,6 +1,6 @@
 defmodule Bright.Accounts.UserNotifier do
   @moduledoc """
-  Bright ユーザーに対するメール通知を扱うスキーマ
+  Bright ユーザーに対するメール通知を扱う
   """
 
   # TODO: メール文言の見直し

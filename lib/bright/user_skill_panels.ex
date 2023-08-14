@@ -166,4 +166,10 @@ defmodule Bright.UserSkillPanels do
     |> List.first()
     |> Map.get(:level)
   end
+
+  def touch_user_skill_panel_updated(user, skill_panel) do
+    Repo.get_by!(UserSkillPanel, user_id: user.id, skill_panel_id: skill_panel.id)
+    |> change_user_skill_panel()
+    |> Repo.update(force: true)
+  end
 end

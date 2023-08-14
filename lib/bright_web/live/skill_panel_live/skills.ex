@@ -4,13 +4,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   import BrightWeb.BrightModalComponents
   import BrightWeb.SkillPanelLive.SkillsComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
+  import BrightWeb.SkillPanelLive.SkillPanelHelper
 
-  alias Bright.SkillPanels
-  alias Bright.SkillUnits
   alias Bright.SkillScores
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
+  alias Bright.UserSkillPanels
 
   @shortcut_key_score %{
     "1" => :high,
@@ -20,7 +20,31 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign_edit_off()}
+    {:ok,
+     socket
+     |> assign(:page_title, "スキルパネル")
+     |> assign_edit_off()}
+  end
+
+  @impl true
+  def handle_params(params, url, socket) do
+    # TODO: データ取得方法検討／LiveVIewコンポーネント化検討
+    {:noreply,
+     socket
+     |> assign_path(url)
+     |> assign_focus_user(params["user_name"])
+     |> assign_skill_panel(params["skill_panel_id"])
+     |> assign_skill_classes()
+     |> assign_skill_class_and_score(params["class"])
+     |> create_skill_class_score_if_not_existing()
+     |> assign_skill_units()
+     |> assign_skill_score_dict()
+     |> assign_counter()
+     |> assign_table_structure()
+     |> assign_page_sub_title()
+     |> assign(compared_users: [], compared_user_dict: %{}, compared_users_stats: %{})
+     |> assign_compared_users_info()
+     |> apply_action(socket.assigns.live_action, params)}
   end
 
   @impl true
@@ -39,11 +63,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Map.values()
       |> Enum.filter(& &1.changed)
 
-    {:ok, %{skill_class_score: skill_class_score}} =
-      SkillScores.update_skill_scores(socket.assigns.skill_class_score, target_skill_scores)
+    {:ok, _} = SkillScores.update_skill_scores(socket.assigns.current_user, target_skill_scores)
+    skill_class_score = SkillScores.get_skill_class_score!(socket.assigns.skill_class_score.id)
+
+    UserSkillPanels.touch_user_skill_panel_updated(
+      socket.assigns.current_user,
+      socket.assigns.skill_panel
+    )
 
     {:noreply,
      socket
+     |> assign_skill_classes()
      |> assign(skill_class_score: skill_class_score)
      |> assign_skill_score_dict()
      |> assign_counter()
@@ -88,18 +118,69 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, socket}
   end
 
-  @impl true
-  def handle_params(params, _url, socket) do
+  # TODO: デモ用実装のため対象ユーザー実装後に削除
+  def handle_event("demo_change_user", _params, socket) do
+    users =
+      Bright.Accounts.User
+      |> Bright.Repo.all()
+      |> Enum.reject(fn user ->
+        user.id == socket.assigns.current_user.id ||
+          Ecto.assoc(user, :user_skill_panels)
+          |> Bright.Repo.all()
+          |> Enum.empty?()
+      end)
+
+    if users != [] do
+      user = Enum.random(users)
+
+      {:noreply,
+       socket
+       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills/#{user.name}")}
+    else
+      {:noreply,
+       socket
+       |> put_flash(:info, "demo: ユーザーがいません")
+       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills")}
+    end
+  end
+
+  def handle_event("clear_target_user", _params, socket) do
     {:noreply,
      socket
-     |> assign_skill_panel(params["skill_panel_id"])
-     |> assign_skill_class_and_score(params["class"])
-     |> create_skill_class_score_if_not_existing()
-     |> assign_skill_units()
-     |> assign_skill_score_dict()
-     |> assign_counter()
-     |> assign_table_structure()
-     |> apply_action(socket.assigns.live_action, params)}
+     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills")}
+  end
+
+  # TODO: デモ用実装のため対象ユーザー実装後に削除
+  def handle_event("demo_compare_user", _params, socket) do
+    users =
+      Bright.Accounts.User
+      |> Bright.Repo.all()
+      |> Enum.reject(fn user ->
+        user.id == socket.assigns.focus_user.id ||
+          Ecto.assoc(user, :user_skill_panels)
+          |> Bright.Repo.all()
+          |> Enum.empty?()
+      end)
+
+    if users != [] do
+      user = Enum.random(users)
+
+      {:noreply,
+       socket
+       |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
+       |> assign_compared_user_dict(user)
+       |> assign_compared_users_info()}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_event("reject_compared_user", %{"name" => name}, socket) do
+    {:noreply,
+     socket
+     |> update(:compared_users, fn users -> Enum.reject(users, &(&1.name == name)) end)
+     |> update(:compared_user_dict, &Map.delete(&1, name))
+     |> assign_compared_users_info()}
   end
 
   defp apply_action(socket, :show, _params), do: socket
@@ -115,103 +196,18 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket
     |> assign_skill(params["skill_id"])
     |> assign_skill_reference()
+    |> update_reference_read()
   end
 
   defp apply_action(socket, :show_exam, params) do
     socket
     |> assign_skill(params["skill_id"])
     |> assign_skill_exam()
-  end
-
-  defp assign_skill_panel(socket, skill_panel_id) do
-    current_user = socket.assigns.current_user
-
-    skill_panel =
-      SkillPanels.get_skill_panel!(skill_panel_id)
-      |> Bright.Repo.preload(
-        skill_classes: [skill_class_scores: Ecto.assoc(current_user, :skill_class_scores)]
-      )
-
-    socket
-    |> assign(:skill_panel, skill_panel)
-  end
-
-  defp assign_skill_class_and_score(socket, nil), do: assign_skill_class_and_score(socket, "1")
-
-  defp assign_skill_class_and_score(socket, class) do
-    class = String.to_integer(class)
-    skill_class = socket.assigns.skill_panel.skill_classes |> Enum.find(&(&1.class == class))
-    # List.first(): preload時に絞り込んでいるためfirstで取得可能
-    skill_class_score = skill_class.skill_class_scores |> List.first()
-
-    socket
-    |> assign(:skill_class, skill_class)
-    |> assign(:skill_class_score, skill_class_score)
-  end
-
-  defp assign_skill_units(socket) do
-    # query chainを作るか専用の関数を作るか悩んだため、後で見直し
-    import Ecto.Query, only: [preload: 2]
-
-    skill_units =
-      Ecto.assoc(socket.assigns.skill_class, :skill_units)
-      |> preload(skill_categories: [skills: [:skill_reference, :skill_exam]])
-      |> SkillUnits.list_skill_units()
-
-    socket
-    |> assign(skill_units: skill_units)
-  end
-
-  defp create_skill_class_score_if_not_existing(%{assigns: %{skill_class_score: nil}} = socket) do
-    # NOTE: skill_class_scoreが存在しないときの生成処理について
-    # 管理側でスキルクラスを増やすなどの操作も想定し、
-    # アクセスしたタイミングで生成するようにしています。
-    {:ok, %{skill_class_score: skill_class_score}} =
-      SkillScores.create_skill_class_score(
-        socket.assigns.current_user,
-        socket.assigns.skill_class
-      )
-
-    socket
-    |> assign(skill_class_score: skill_class_score)
-  end
-
-  defp create_skill_class_score_if_not_existing(socket), do: socket
-
-  defp assign_skill_score_dict(socket) do
-    skill_score_dict =
-      Ecto.assoc(socket.assigns.skill_class_score, :skill_scores)
-      |> SkillScores.list_skill_scores()
-      |> Map.new(&{&1.skill_id, Map.put(&1, :changed, false)})
-
-    socket
-    |> assign(skill_score_dict: skill_score_dict)
-  end
-
-  defp assign_counter(socket) do
-    counter =
-      socket.assigns.skill_score_dict
-      |> Map.values()
-      |> Enum.reduce(%{low: 0, middle: 0, high: 0}, fn skill_score, acc ->
-        Map.update!(acc, skill_score.score, &(&1 + 1))
-      end)
-
-    num_skills =
-      socket.assigns.skill_units
-      |> Enum.flat_map(& &1.skill_categories)
-      |> Enum.map(&Enum.count(&1.skills))
-      |> Enum.sum()
-
-    socket
-    |> assign(counter: counter, num_skills: num_skills)
+    |> update_exam_progress_wip()
   end
 
   defp assign_skill(socket, skill_id) do
-    skill =
-      socket.assigns.skill_units
-      |> Enum.flat_map(& &1.skill_categories)
-      |> Enum.flat_map(& &1.skills)
-      |> Enum.find(&(&1.id == skill_id))
+    skill = socket.assigns.skills |> Enum.find(&(&1.id == skill_id))
 
     socket |> assign(skill: skill)
   end
@@ -253,11 +249,40 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(skill_reference: skill_reference)
   end
 
+  defp update_reference_read(socket) do
+    skill = socket.assigns.skill
+    skill_score = Map.get(socket.assigns.skill_score_dict, skill.id)
+
+    if skill_score.reference_read do
+      socket
+    else
+      {:ok, skill_score} =
+        SkillScores.update_skill_score(skill_score, %{"reference_read" => true})
+
+      socket
+      |> update(:skill_score_dict, &Map.put(&1, skill.id, skill_score))
+    end
+  end
+
   defp assign_skill_exam(socket) do
     skill_exam = SkillExams.get_skill_exam_by!(skill_id: socket.assigns.skill.id)
 
     socket
     |> assign(skill_exam: skill_exam)
+  end
+
+  defp update_exam_progress_wip(socket) do
+    skill = socket.assigns.skill
+    skill_score = Map.get(socket.assigns.skill_score_dict, skill.id)
+
+    if skill_score.exam_progress in [:wip, :done] do
+      socket
+    else
+      {:ok, skill_score} = SkillScores.update_skill_score(skill_score, %{"exam_progress" => :wip})
+
+      socket
+      |> update(:skill_score_dict, &Map.put(&1, skill.id, skill_score))
+    end
   end
 
   defp update_by_score_change(socket, skill_score, score) do
@@ -297,11 +322,57 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp create_skill_evidence_if_not_existing(socket), do: socket
 
-  defp calc_percentage(_count, 0), do: 0
+  defp assign_compared_user_dict(socket, user) do
+    # 比較対象になっているユーザーのデータを表示用に整理・集計してアサイン
+    skill_ids = Enum.map(socket.assigns.skills, & &1.id)
+    skill_scores = SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
 
-  defp calc_percentage(count, num_skills) do
-    (count / num_skills)
-    |> Kernel.*(100)
+    {skill_score_dict, high_skills_count, middle_skills_count} =
+      skill_scores
+      |> Enum.reduce({%{}, 0, 0}, fn skill_score, {dict, high_c, middle_c} ->
+        score = skill_score.score
+
+        {
+          dict |> Map.put(skill_score.skill_id, score),
+          high_c + if(score == :high, do: 1, else: 0),
+          middle_c + if(score == :middle, do: 1, else: 0)
+        }
+      end)
+
+    size = Enum.count(skill_scores)
+    high_skills_percentage = calc_percentage(high_skills_count, size)
+    middle_skills_percentage = calc_percentage(middle_skills_count, size)
+
+    socket
+    |> update(
+      :compared_user_dict,
+      &Map.put(&1, user.name, %{
+        high_skills_percentage: high_skills_percentage,
+        middle_skills_percentage: middle_skills_percentage,
+        skill_score_dict: skill_score_dict
+      })
+    )
+  end
+
+  defp assign_compared_users_info(socket) do
+    # 比較対象ユーザーのデータを集計してスキルの合計用データをアサイン
+    compared_users_stats =
+      socket.assigns.skills
+      |> Enum.reduce(%{}, fn skill, acc ->
+        scores =
+          socket.assigns.compared_user_dict
+          |> Map.values()
+          |> Enum.map(&get_in(&1, [:skill_score_dict, skill.id]))
+
+        acc
+        |> Map.put(skill.id, %{
+          high_skills_count: Enum.count(scores, &(&1 == :high)),
+          middle_skills_count: Enum.count(scores, &(&1 == :middle))
+        })
+      end)
+
+    socket
+    |> assign(compared_users_stats: compared_users_stats)
   end
 
   defp get_skill_score_from_table_structure(socket, row) do
@@ -369,27 +440,5 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp skill_class_score_author?(skill_class_score, user) do
     skill_class_score.user_id == user.id
-  end
-
-  defp skill_reference_existing?(skill_reference) do
-    skill_reference && skill_reference.url
-  end
-
-  defp skill_exam_existing?(skill_exam) do
-    skill_exam && skill_exam.url
-  end
-
-  defp score_mark_class(skill_score) do
-    skill_score.score
-    |> case do
-      :high ->
-        "score-mark-high h-4 w-4 rounded-full bg-brightGreen-600"
-
-      :middle ->
-        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
-
-      :low ->
-        "score-mark-low h-1 w-4 bg-brightGray-200"
-    end
   end
 end

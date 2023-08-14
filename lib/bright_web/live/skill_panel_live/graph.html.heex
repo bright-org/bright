@@ -4,93 +4,29 @@
   <.navigations current_user={@current_user} />
   <div class="mx-10">
     <div class="flex justify-between">
-      <.toggle_link skill_panel={@skill_panel} active="graph" />
-      <.class_tab skill_class={@skill_class} />
+      <% # TODO: α版後にifと仮divブロックを除去して表示 %>
+      <.toggle_link :if={false} skill_panel={@skill_panel} active="graph" />
+      <div> </div>
+      <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
     </div>
     <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
-      <.profile_area current_user={@current_user} />
+      <.profile_area focus_user={@focus_user} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
       <div class="flex">
-        <div class="w-[880px] flex flex-col">
-          <!-- グラフ -->
-          <div class="ml-auto mr-28 mt-6 mb-1">
-            <button
-              type="button"
-              class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-            >
-              ロールモデルを解除
-            </button>
-          </div>
-          <div class="flex">
-            <div class="w-14 relative">
-              <button
-                class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
-              >
-                <span class="material-icons text-white !text-4xl"
-                  >arrow_left</span>
-              </button>
-            </div>
-            <.growth_graph data={%{labels: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"], role: [10, 20, 50, 60, 75, 100], myself: [nil, 0, 35, 45, 55, 65],  other: [10, 10, 25, 35, 45, 70], now: 65, myselfSelected: "2023.6", otherSelected: "2022.12"}} id="growth-graph-single-sample2"/>
-            <div
-              class="ml-5 flex flex-col relative text-xl text-brightGray-500 text-bold"
-            >
-              <p class="py-5">ベテラン</p>
-              <p class="py-20">平均</p>
-              <p class="py-6">見習い</p>
-              <button
-                class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
-              >
-                <span class="material-icons text-white !text-4xl"
-                  >arrow_right</span>
-              </button>
-            </div>
-          </div>
-          <.timeline_bar
-            id="myself"
-            type="myself"
-            dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
-            selected_date="2023.6"
-            display_now
-          />
-          <div class="flex py-4">
-            <div class="w-14"></div>
-            <div class="w-[725px] flex justify-between items-center">
-              <div
-                class="text-left flex items-center text-base hover:bg-brightGray-50"
-              >
-                <a
-                  class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded"
-                >
-                  <img
-                    class="inline-block h-10 w-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                  />
-                  <div>
-                    <p>nokichi</p>
-                    <p class="text-brightGray-300">アプリエンジニア</p>
-                  </div>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-              >
-                ロールモデルに固定
-              </button>
-            </div>
-            <div></div>
-          </div>
-
-          <.timeline_bar
-            id="other"
-            type="other"
-            dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
-            selected_date="2022.12"
-          />
-        </div>
+        <.live_component
+          id="rowth-graph"
+          module={BrightWeb.ChartLive.GrowthGraphComponent}
+          user_id={@current_user.id}
+          skill_panel_id={@skill_panel.id}
+          class={@skill_class.class}
+        />
         <div class="w-[700px] pl-28">
-          <div class="w-[450px] mx-auto my-12">
-            <.skill_gem data={[[80,90,70,80,70,90]]} id="skill-gem-single-skill6" labels={["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]}/>
-          </div>
+          <.live_component
+            id="skill-gem"
+            module={BrightWeb.ChartLive.SkillGemComponent}
+            user_id={@current_user.id}
+            skill_panel_id={@skill_panel.id}
+            class={@skill_class.class}
+          />
           <div class="flex justify-center">
             <p>
               あと<span class="text-error !text-2xl font-bold">8</span>%でベテランになれます。

@@ -112,7 +112,7 @@ defmodule BrightWeb.UserAuth do
     conn
     |> renew_session()
     |> delete_resp_cookie(@cookie_key)
-    |> redirect(to: ~p"/")
+    |> redirect(to: ~p"/users/log_in")
   end
 
   @doc """
@@ -190,7 +190,7 @@ defmodule BrightWeb.UserAuth do
     else
       socket =
         socket
-        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
+        |> Phoenix.LiveView.put_flash(:error, "ログインが必要です")
         |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
 
       {:halt, socket}
@@ -243,7 +243,7 @@ defmodule BrightWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "You must log in to access this page.")
+      |> put_flash(:error, "ログインが必要です")
       |> redirect(to: ~p"/users/log_in")
       |> halt()
     end

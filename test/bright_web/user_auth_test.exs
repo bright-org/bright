@@ -96,7 +96,7 @@ defmodule BrightWeb.UserAuthTest do
       refute get_session(conn, :user_token)
       refute conn.cookies[@cookie_key]
       assert %{max_age: 0} = conn.resp_cookies[@cookie_key]
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/users/log_in"
       refute Accounts.get_user_by_session_token(user_token)
     end
 
@@ -115,7 +115,7 @@ defmodule BrightWeb.UserAuthTest do
       conn = conn |> fetch_cookies() |> UserAuth.log_out_user()
       refute get_session(conn, :user_token)
       assert %{max_age: 0} = conn.resp_cookies[@cookie_key]
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/users/log_in"
     end
   end
 
@@ -276,7 +276,7 @@ defmodule BrightWeb.UserAuthTest do
       assert redirected_to(conn) == ~p"/users/log_in"
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
-               "You must log in to access this page."
+               "ログインが必要です"
     end
 
     test "does not redirect if user is authenticated", %{conn: conn, user: user} do

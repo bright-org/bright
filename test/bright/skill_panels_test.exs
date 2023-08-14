@@ -3,6 +3,7 @@ defmodule Bright.SkillPanelsTest do
   import Bright.Factory
 
   alias Bright.SkillPanels
+  alias Bright.UserSkillPanels
 
   describe "skill_panels" do
     alias Bright.SkillPanels.SkillPanel
@@ -82,11 +83,40 @@ defmodule Bright.SkillPanelsTest do
       skill_panel = insert(:skill_panel)
       assert %Ecto.Changeset{} = SkillPanels.change_skill_panel(skill_panel)
     end
+
+    test "get_user_skill_panel!/1 returns the skill_panel with given user and id" do
+      user = insert(:user)
+      skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+      assert SkillPanels.get_user_skill_panel!(user, skill_panel.id) == skill_panel
+    end
+
+    test "get_user_skill_panel!/1 raises NoResultsError" do
+      [user, user_2] = insert_pair(:user)
+      skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        SkillPanels.get_user_skill_panel!(user_2, skill_panel.id)
+      end
+    end
+
+    test "get_user_latest_skill_panel!/1 returns the skill_panel with given user" do
+      user = insert(:user)
+      [skill_panel_1, skill_panel_2] = insert_pair(:skill_panel)
+
+      [skill_panel_1, skill_panel_2]
+      |> Enum.each(&insert(:user_skill_panel, user: user, skill_panel: &1))
+
+      :timer.sleep(1000)
+      UserSkillPanels.touch_user_skill_panel_updated(user, skill_panel_1)
+      assert SkillPanels.get_user_latest_skill_panel!(user) == skill_panel_1
+    end
   end
 
   describe "skill_classes" do
     test "list_skill_classs/0 returns all skill_classs" do
-      skill_class = insert(:skill_class, skill_panel: build(:skill_panel))
+      skill_class = insert(:skill_class, skill_panel: build(:skill_panel), class: 1)
 
       assert SkillPanels.list_skill_classes()
              |> Bright.Repo.preload(:skill_panel) == [skill_class]

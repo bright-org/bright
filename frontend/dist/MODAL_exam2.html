@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+  <section class="absolute bg-white left-1/2 min-h-[560px] -ml-[170px] -translate-y-1/2 px-10 py-8 shadow text-sm top-1/2 w-[330px]">
+    <div>
+      <div class="flex justify-between items-center mt-8">
+        <b class="bg-brightGreen-50 block font-bold px-4 py-1 rounded-full text-center text-xs text-brightGreen-300 w-fit">クラス1 Elixir 基本</b>
+        <p class="font-bold text-brightGray-300"><span class="text-xl text-brightGray-900">2</span>／<span>5</span>問</p>
+      </div> 
+
+      <div class="mt-2">
+      <!-- Start プログレスバー style="width:40%" の数値を変えることで制御します -->
+      <div id="question" class="w-full mt-2 bg-brightGray-100 rounded-full h-2.5 dark:bg-brightGray-100">
+        <div class="bg-brightGreen-300 h-2.5 rounded-full" style="width:40%"></div>
+      </div>
+
+      <div id="time" class="w-full mt-2 bg-brightGray-100 rounded-full h-2.5 dark:bg-brightGray-100">
+        <div class="bg-lapislazuli-300 h-2.5 rounded-full" style="width:10%"></div>
+      </div><!-- End プログレスバー -->
+      </div>
+
+      <div class="font-bold mt-8">
+        <p>List同士を連結する演算子は、次のどれでしょうか？</p>
+      </div>
+
+      <div class="bg-brightGreen-50 flex flex-wrap gap-y-4 justify-between mt-12 px-2 py-4">
+        <div class="w-full">
+          <input class="peer hidden" type="radio" id="answer1" name="answer" value="1">
+          <label for="answer1" class="cursor-pointer select-none bg-white border border-brightGreen-300 block mx-auto text-sm font-bold p-2 relative text-brightGreen-300 text-center rounded w-full peer-checked:bg-brightGreen-300 peer-checked:text-white">
+            <span class="absolute blcok text-brightGreen-300 bg-white left-2 px-2 py-0.5 rounded-full top-1/2 -translate-y-1/2">1</span>
+            <span>＋</span>
+          </label>
+        </div>
+
+        <div class="w-full">
+          <input class="peer hidden" type="radio" id="answer2" name="answer" value="2">
+          <label for="answer2" class="cursor-pointer select-none bg-white border border-brightGreen-300 block mx-auto text-sm font-bold p-2 relative text-brightGreen-300 text-center rounded w-full peer-checked:bg-brightGreen-300 peer-checked:text-white">
+            <span class="absolute blcok text-brightGreen-300 bg-white left-2 px-2 py-0.5 rounded-full top-1/2 -translate-y-1/2">2</span>
+            <span>＋＋</span>
+          </label>
+        </div>
+
+        <div class="w-full">
+          <input class="peer hidden" type="radio" id="answer3" name="answer" value="3">
+          <label for="answer3" class="cursor-pointer select-none bg-white border border-brightGreen-300 block mx-auto text-sm font-bold p-2 relative text-brightGreen-300 text-center rounded w-full peer-checked:bg-brightGreen-300 peer-checked:text-white">
+            <span class="absolute blcok text-brightGreen-300 bg-white left-2 px-2 py-0.5 rounded-full top-1/2 -translate-y-1/2">3</span>
+            <span>＜＜</span>
+          </label>
+        </div>
+
+        <div class="w-full">
+          <input class="peer hidden" type="radio" id="answer4" name="answer" value="4">
+          <label for="answer4" class="cursor-pointer select-none bg-white border border-brightGreen-300 block mx-auto text-sm font-bold p-2 relative text-brightGreen-300 text-center rounded w-full peer-checked:bg-brightGreen-300 peer-checked:text-white">
+            <span class="absolute blcok text-brightGreen-300 bg-white left-2 px-2 py-0.5 rounded-full top-1/2 -translate-y-1/2">4</span>
+            <span>＜－</span>
+          </label>
+        </div>
+
+        <button class="block text-sm font-bold p-2 rounded border border-brightGray-900 bg-white text-brightGray-900 w-28">わからない</button>
+        <button class="block text-sm font-bold p-2 rounded border border-brightGray-900 bg-brightGray-900 text-white w-28">回答する</button>
+      </div>
+    </div>
+
+    <!-- close button -->
+    <button class="absolute right-5 top-5 z-10">
+      <span class="material-icons !text-3xl text-brightGray-900"
+        >close</span
+      >
+      </button>
+  </section>
+</main>
+
+
+
+</body>
+</html>
