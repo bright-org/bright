@@ -15,6 +15,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        current: "currentColor",
         base: "#333333",
         brand: "#FD4F00", //TODO: Phoenix Frameworkでもともとある定義　不要になった時点で削除又はこのコメントを削除
         transparent: "transparent",
@@ -99,6 +100,12 @@ module.exports = {
           light: "#FD5B87",
           dazzle: "#FFE9EF",
         },
+        skillPanel: {
+          brightGreen600: "#0EA895",
+          brightGreen300: "#14D6BE",
+          amethyst600: "#C04CD0",
+          amethyst300: "#DD6DED",
+        },
       },
       backgroundImage: (theme) => ({
         bgGem: "url('/images/bg_gem_title.png')",
@@ -110,6 +117,8 @@ module.exports = {
         bgGithub: "url('/images/bg_github.png')",
         bgFacebook: "url('/images/bg_facebook.png')",
         bgTwitter: "url('/images/bg_twitter.png')",
+        bgNewTwitter: "url('/images/bg_new_twitter.png')",
+        bgAddAvatar: "url('/images/bg_add_avatar.png')",
       }),
       backgroundPosition: (theme) => ({
         "left-2.5": "10px center",
@@ -120,6 +129,7 @@ module.exports = {
         7: "auto 28px",
         8: "auto 32px",
         9: "auto 34px",
+        20: "auto 80px",
       }),
       fontFamily: (theme) => ({
         notosans: ["Noto Sans JP"],
