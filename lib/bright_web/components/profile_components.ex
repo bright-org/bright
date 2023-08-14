@@ -44,6 +44,8 @@ defmodule BrightWeb.ProfileComponents do
   attr :facebook_url, :string, default: ""
   attr :github_url, :string, default: ""
 
+  slot :return_to_yourself
+
   def profile(assigns) do
     icon_file_path =
       if assigns.is_anonymous, do: "/images/avatar.png", else: assigns.icon_file_path
@@ -66,7 +68,9 @@ defmodule BrightWeb.ProfileComponents do
           <div class="flex gap-x-3">
            <.excellent_person_button :if={@display_excellent_person}/>
            <.anxious_person_button :if={@display_anxious_person} />
-           <.profile_button :if={@display_return_to_yourself} >自分に戻す</.profile_button>
+           <%= if @display_return_to_yourself do %>
+             <%= render_slot(@return_to_yourself) %>
+           <% end %>
            <.profile_button :if={@display_stock_candidates_for_employment}>採用候補者としてストック</.profile_button>
            <.profile_button :if={@display_adopt}>採用する</.profile_button>
            <.profile_button :if={@display_recruitment_coordination}>採用の調整</.profile_button>

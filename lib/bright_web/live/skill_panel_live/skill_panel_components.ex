@@ -2,6 +2,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use Phoenix.Component
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
+  import BrightWeb.BrightButtonComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
 
   def navigations(assigns) do
@@ -9,7 +10,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
       <.skill_panel_switch current_user={@current_user} />
       <.target_switch current_user={@current_user} />
-      <.return_myself_button />
     </div>
     """
   end
@@ -275,7 +275,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             github_url={@focus_user.user_profile.github_url}
             facebook_url={@focus_user.user_profile.facebook_url}
             display_detail={false}
-          />
+          >
+            <:return_to_yourself>
+              <.profile_button phx-click="clear_focus_user">自分に戻す</.profile_button>
+            </:return_to_yourself>
+          </.profile>
         </div>
         <div class="mr-auto flex ml-7">
           <div class="w-20 mt-auto">

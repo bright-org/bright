@@ -13,12 +13,14 @@ defmodule BrightWeb.BrightButtonComponents do
        <.profile_button>自分に戻す</.profile_button>
   """
   slot :inner_block
+  attr :rest, :global
 
   def profile_button(assigns) do
     ~H"""
     <button
       type="button"
       class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+      {@rest}
     >
       <%= render_slot(@inner_block) %>
     </button>
