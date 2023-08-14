@@ -9,7 +9,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
       <.skill_panel_switch current_user={@current_user} />
       <.target_switch current_user={@current_user} />
-      <.return_myself_button />
     </div>
     """
   end

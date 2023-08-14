@@ -144,7 +144,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     end
   end
 
-  def handle_event("clear_focus_user", _params, socket) do
+  def handle_event("clear_target_user", _params, socket) do
     {:noreply,
      socket
      |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills")}
