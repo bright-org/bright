@@ -160,7 +160,7 @@ defmodule BrightWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated_and_onboarding}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
@@ -194,7 +194,7 @@ defmodule BrightWeb.Router do
     pipe_through [:browser, :require_authenticated_user, :onboarding]
 
     live_session :require_authenticated_user_onboarding,
-      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated_and_onboarding}] do
       live "/", OnboardingLive.Index, :index
       live "/wants/:want_id", OnboardingLive.SkillPanels
       live "/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel

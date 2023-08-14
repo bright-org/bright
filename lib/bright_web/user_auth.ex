@@ -124,7 +124,7 @@ defmodule BrightWeb.UserAuth do
 
     user =
       (user_token && Accounts.get_user_by_session_token(user_token))
-      |> Repo.preload(:user_profile)
+      |> Repo.preload([:user_profile, :user_onboardings])
 
     assign(conn, :current_user, user)
   end
@@ -182,18 +182,28 @@ defmodule BrightWeb.UserAuth do
     {:cont, mount_current_user(socket, session)}
   end
 
-  def on_mount(:ensure_authenticated, _params, session, socket) do
-    socket = mount_current_user(socket, session)
-
-    if socket.assigns.current_user do
-      {:cont, socket}
-    else
-      socket =
+  def on_mount(:ensure_authenticated_and_onboarding, _params, session, socket) do
+    socket = %{assigns: %{current_user: user}} = mount_current_user(socket, session)
+    cond do
+      user == nil ->
         socket
         |> Phoenix.LiveView.put_flash(:error, "ログインが必要です")
         |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+        |> then(&{:halt, &1})
 
-      {:halt, socket}
+      !is_onboarding?(socket) && user.user_onboardings == nil ->
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "オンボーディングが完了していません")
+        |> Phoenix.LiveView.redirect(to: ~p"/onboardings")
+        |> then(&{:halt, &1})
+
+      is_onboarding?(socket) && user.user_onboardings != nil ->
+        socket
+        |> Phoenix.LiveView.redirect(to: ~p"/mypage")
+        |> then(&{:halt, &1})
+
+      true ->
+        {:cont, socket}
     end
   end
 
@@ -208,11 +218,20 @@ defmodule BrightWeb.UserAuth do
     end
   end
 
+  # テスト用のパターンマッチ
+  defp is_onboarding?(%{view: nil}), do: true
+
+  defp is_onboarding?(%{view: module}) do
+    Module.split(module) |> Enum.member?("OnboardingLive")
+  end
+
+
+
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
         Accounts.get_user_by_session_token(user_token)
-        |> Repo.preload(:user_profile)
+        |> Repo.preload([:user_profile, :user_onboardings])
       end
     end)
   end
