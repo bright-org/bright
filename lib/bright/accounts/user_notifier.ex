@@ -36,7 +36,6 @@ defmodule Bright.Accounts.UserNotifier do
   @doc """
   Deliver instructions to confirm account.
   """
-  # TODO: ルーティング定義されたら /searchs を #{url(~p"/searchs")} とする
   def deliver_confirmation_instructions(user, url) do
     deliver(user.email, "【Bright】ユーザー本登録を完了させ、Bright をお愉しみください", """
     #{user.name}さん
@@ -61,7 +60,7 @@ defmodule Bright.Accounts.UserNotifier do
     　スキルの成長を3ヶ月ごとに宝石のような「スキルジェム」で見れます。
 
     ④スキル検索／スカウト … スキル保有者の検索、スカウト
-    　/searchs
+    　#{url(~p"/searchs")}
     　スキルや求職条件からエンジニア／デザイナー／マーケッターを検索できます。
     　※9～10月にはスキル保有者のスカウトもできるようになります（有償）
 
