@@ -1,4 +1,5 @@
 defmodule BrightWeb.OnboardingLive.Index do
+  alias Bright.Onboardings.UserOnboarding
   use BrightWeb, :live_view
 
   alias Bright.Onboardings
@@ -19,12 +20,7 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   @impl true
   def handle_event("skip_onboarding", _value, %{assigns: %{current_user: user}} = socket) do
-    # TODO: user_onboardingは初回のみレコード登録する。スキルアップ画面対応のときはリンクを消す等検討する
-    {:ok, _onboarding} =
-      Onboardings.create_user_onboarding(%{
-        completed_at: NaiveDateTime.utc_now(),
-        user_id: user.id
-      })
+    skip_onboarding(user.user_onboardings, user.id)
 
     socket
     |> put_flash(:info, "オンボーディングをスキップしました")
@@ -39,6 +35,16 @@ defmodule BrightWeb.OnboardingLive.Index do
     |> assign(@panels[hide_panel(panel)], false)
     |> then(&{:noreply, &1})
   end
+
+  defp skip_onboarding(nil, user_id) do
+    {:ok, _onboarding} =
+      Onboardings.create_user_onboarding(%{
+        completed_at: NaiveDateTime.utc_now(),
+        user_id: user_id
+      })
+  end
+
+  defp skip_onboarding(%UserOnboarding{}, _), do: false
 
   defp toggle(js \\ %JS{}, id) do
     js
