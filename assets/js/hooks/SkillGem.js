@@ -200,8 +200,8 @@ const createChartFromJSON = (labels, datasets, isLink) => {
 }
 
 export const SkillGem = {
-  drawRaderGraph() {
-    const element = this.el
+  drawRaderGraph(element) {
+    if (window.myRadar == undefined) window.myRadar = []
     const dataset = element.dataset
     const labels = JSON.parse(dataset.labels)
     const data = JSON.parse(dataset.data)
@@ -209,7 +209,7 @@ export const SkillGem = {
     const isLink = JSON.parse(dataset.displayLink)
     const datasets = [];
 
-    if(labels.length < 3) return
+    if (labels.length < 3) return
 
     datasets.push(createData(data[0]))
 
@@ -217,40 +217,46 @@ export const SkillGem = {
       datasets.push(createData(data[1]))
     }
 
-    const ctx = document.querySelector('#' + element.id + ' canvas')
-    this.myRadar = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
-    this.myRadar.canvas.parentNode.style.height = isSmall ? '165px' : '450px'
-    this.myRadar.canvas.parentNode.style.width = isSmall ? '250px' : '535px'
+    this.ctx = document.querySelector('#' + element.id + ' canvas')
+    window.myRadar[element.id] = new Chart(this.ctx, createChartFromJSON(labels, datasets, isLink))
+    window.myRadar[element.id].canvas.parentNode.style.height = isSmall ? '165px' : '450px'
+    window.myRadar[element.id].canvas.parentNode.style.width = isSmall ? '250px' : '535px'
 
-    ctx.addEventListener('click', function (event) {
-      if (!isLink) return;
+    this.ctx.addEventListener('click', this.clickEvent)
+  },
+  clickEvent(event) {
+    const element = event.target.parentElement
+    const ctx = event.target
+    const dataset = element.dataset
+    const isLink = JSON.parse(dataset.displayLink)
+    if (!isLink) return;
 
-      // padding rightで拡張した部分がクリック判定できるようにする
-      const rect = ctx.getBoundingClientRect()
-      const x = event.clientX - rect.left
-      const y = event.clientY - rect.top
-      const length = myRadar.data.labels.length
+    // padding rightで拡張した部分がクリック判定できるようにする
+    const rect = ctx.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    const length = window.myRadar[element.id].data.labels.length
 
-      // リンクの判定例
-      for (let i = 0; i < length; i++) {
-        const label = this.myRadar.scales.r.getPointLabelPosition(i)
-        const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
-        if (judge) { alert('リンククリック：' + this.myRadar.data.labels[i]) }
-      }
+    // リンクの判定例
+    for (let i = 0; i < length; i++) {
+      const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
+      const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
+      if (judge) { alert('リンククリック：' + window.myRadar[element.id].data.labels[i]) }
+    }
 
-      // アイコン判定例
-      for (let i = 0; i < length; i++) {
-        const label = myRadar.scales.r.getPointLabelPosition(i)
-        const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
-        if (judge) { alert('アイコンクリック：' + this.myRadar.data.labels[i]) }
-      }
-    })
+    // アイコン判定例
+    for (let i = 0; i < length; i++) {
+      const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
+      const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
+      if (judge) { alert('アイコンクリック：' + window.myRadar[element.id].data.labels[i]) }
+    }
   },
   mounted() {
     this.drawRaderGraph(this.el)
   },
   updated() {
-    this.myRadar.destroy()
+    window.myRadar[this.el.id].destroy()
+    this.ctx.removeEventListener('click', this.clickEvent)
     this.drawRaderGraph(this.el)
   }
 }
