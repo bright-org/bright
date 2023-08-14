@@ -3,7 +3,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   Growth Graph Component
   """
 
-  alias Faker.Vehicle.En
   use BrightWeb, :live_component
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
@@ -208,6 +207,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       data.labels
       |> List.first()
       |> label_to_date()
+      |> Timex.shift(months: -3)
 
     to_date =
       data.labels
@@ -215,7 +215,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       |> label_to_date()
 
     myself_init_data =
-      data.labels
+      [date_to_label(from_date) | data.labels]
       |> Enum.map(fn x -> {:"#{label_to_key_date(x)}", 0} end)
 
     myself =
@@ -231,10 +231,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       end)
       |> Keyword.take(Keyword.keys(myself_init_data))
       |> Enum.sort()
-      |> IO.inspect()
       |> Keyword.values()
-
-    myself = [nil | myself]
 
     data =
       Map.merge(
@@ -271,6 +268,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     month = String.pad_leading(month, 2, "0")
     "#{year}.#{month}"
   end
+
+  defp date_to_label(data), do: "#{data.year}.#{data.month}"
 
   defp create_months(year, month, shift_month) do
     st =
