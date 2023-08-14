@@ -108,12 +108,8 @@
                     <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/evidences"}>
                       <img src="/images/common/icons/skillEvidence.svg" />
                     </.link>
-                    <.link :if={skill_reference_existing?(col3.skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/reference"}>
-                      <img src="/images/common/icons/skillStudy.svg" />
-                    </.link>
-                    <.link :if={skill_exam_existing?(col3.skill.skill_exam)} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/exam"}>
-                      <img src="/images/common/icons/skillTest.svg" />
-                    </.link>
+                    <.skill_reference_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
+                    <.skill_exam_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
                   </div>
                 </div>
               </td>

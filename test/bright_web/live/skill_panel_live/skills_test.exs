@@ -461,7 +461,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#skill-1 .link-reference")
       |> render_click()
 
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/reference")
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/reference?class=1")
 
       assert render(show_live) =~ skill_1.name
 
@@ -502,7 +502,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#skill-1 .link-exam")
       |> render_click()
 
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/exam")
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/exam?class=1")
 
       assert render(show_live) =~ skill_1.name
 

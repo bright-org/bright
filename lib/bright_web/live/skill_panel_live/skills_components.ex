@@ -1,5 +1,5 @@
 defmodule BrightWeb.SkillPanelLive.SkillsComponents do
-  use Phoenix.Component
+  use BrightWeb, :component
 
   def compares(assigns) do
     ~H"""
@@ -217,5 +217,37 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       カスタムグループ福岡Elixir
     </div>
     """
+  end
+
+  def skill_reference_link(assigns) do
+    ~H"""
+    <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}>
+      <%= if @skill_score.reference_read do %>
+        <img src="/images/common/icons/skillStudyActive.svg" />
+      <% else %>
+        <img src="/images/common/icons/skillStudy.svg" />
+      <% end %>
+    </.link>
+    """
+  end
+
+  def skill_exam_link(assigns) do
+    ~H"""
+    <.link :if={skill_exam_existing?(@skill.skill_exam)} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/exam?#{@query}"}>
+      <%= if @skill_score.exam_progress in [:wip, :done] do %>
+        <img src="/images/common/icons/skillTestActive.svg" />
+      <% else %>
+        <img src="/images/common/icons/skillTest.svg" />
+      <% end %>
+    </.link>
+    """
+  end
+
+  defp skill_reference_existing?(skill_reference) do
+    skill_reference && skill_reference.url
+  end
+
+  defp skill_exam_existing?(skill_exam) do
+    skill_exam && skill_exam.url
   end
 end

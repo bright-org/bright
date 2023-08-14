@@ -341,14 +341,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     end
   end
 
-  def skill_reference_existing?(skill_reference) do
-    skill_reference && skill_reference.url
-  end
-
-  def skill_exam_existing?(skill_exam) do
-    skill_exam && skill_exam.url
-  end
-
   defp profile_skill_class_level(%{level: :beginner} = assigns), do: ~H"見習い"
 
   defp profile_skill_class_level(%{level: :normal} = assigns), do: ~H"平均"

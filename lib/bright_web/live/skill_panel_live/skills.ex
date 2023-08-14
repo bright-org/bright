@@ -196,12 +196,14 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket
     |> assign_skill(params["skill_id"])
     |> assign_skill_reference()
+    |> update_reference_read()
   end
 
   defp apply_action(socket, :show_exam, params) do
     socket
     |> assign_skill(params["skill_id"])
     |> assign_skill_exam()
+    |> update_exam_progress_wip()
   end
 
   defp assign_skill(socket, skill_id) do
@@ -247,11 +249,40 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(skill_reference: skill_reference)
   end
 
+  defp update_reference_read(socket) do
+    skill = socket.assigns.skill
+    skill_score = Map.get(socket.assigns.skill_score_dict, skill.id)
+
+    if skill_score.reference_read do
+      socket
+    else
+      {:ok, skill_score} =
+        SkillScores.update_skill_score(skill_score, %{"reference_read" => true})
+
+      socket
+      |> update(:skill_score_dict, &Map.put(&1, skill.id, skill_score))
+    end
+  end
+
   defp assign_skill_exam(socket) do
     skill_exam = SkillExams.get_skill_exam_by!(skill_id: socket.assigns.skill.id)
 
     socket
     |> assign(skill_exam: skill_exam)
+  end
+
+  defp update_exam_progress_wip(socket) do
+    skill = socket.assigns.skill
+    skill_score = Map.get(socket.assigns.skill_score_dict, skill.id)
+
+    if skill_score.exam_progress in [:wip, :done] do
+      socket
+    else
+      {:ok, skill_score} = SkillScores.update_skill_score(skill_score, %{"exam_progress" => :wip})
+
+      socket
+      |> update(:skill_score_dict, &Map.put(&1, skill.id, skill_score))
+    end
   end
 
   defp update_by_score_change(socket, skill_score, score) do
