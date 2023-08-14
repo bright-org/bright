@@ -105,9 +105,7 @@
                 <div class="flex justify-between items-center">
                   <p><%= col3.skill.name %></p>
                   <div class="flex justify-between items-center gap-x-2">
-                    <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/evidences"}>
-                      <img src="/images/common/icons/skillEvidence.svg" />
-                    </.link>
+                    <.skill_evidence_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
                     <.skill_reference_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
                     <.skill_exam_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
                   </div>

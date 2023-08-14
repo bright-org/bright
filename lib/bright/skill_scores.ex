@@ -302,7 +302,6 @@ defmodule Bright.SkillScores do
 
   @doc """
   Updates a skill_score.
-  TODO: 削除
 
   ## Examples
 
@@ -317,6 +316,19 @@ defmodule Bright.SkillScores do
     skill_score
     |> SkillScore.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Update a skill_score's evidence_filled
+  """
+  def update_skill_score_evidence_filled(user, skill) do
+    skill_score = Repo.get_by!(SkillScore, user_id: user.id, skill_id: skill.id)
+
+    if skill_score.evidence_filled do
+      {:ok, skill_score}
+    else
+      update_skill_score(skill_score, %{evidence_filled: true})
+    end
   end
 
   @doc """

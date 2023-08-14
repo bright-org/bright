@@ -219,6 +219,18 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
+  def skill_evidence_link(assigns) do
+    ~H"""
+    <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/evidences?#{@query}"}>
+      <%= if @skill_score.evidence_filled do %>
+        <img src="/images/common/icons/skillEvidenceActive.svg" />
+      <% else %>
+        <img src="/images/common/icons/skillEvidence.svg" />
+      <% end %>
+    </.link>
+    """
+  end
+
   def skill_reference_link(assigns) do
     ~H"""
     <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}>
