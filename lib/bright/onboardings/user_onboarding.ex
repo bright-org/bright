@@ -23,6 +23,6 @@ defmodule Bright.Onboardings.UserOnboarding do
   def changeset(user_onboardings, attrs) do
     user_onboardings
     |> cast(attrs, [:user_id, :completed_at, :skill_panel_id])
-    |> validate_required([:user_id, :completed_at])
+    |> validate_required([:completed_at])
   end
 end
