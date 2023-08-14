@@ -39,8 +39,7 @@ defmodule Bright.TestHelper do
     %{conn: log_in_user(conn, user), user: user}
   end
 
-
-@doc """
+  @doc """
   Logs the given `user` into the `conn`.
 
   It returns an updated `conn`.

@@ -184,6 +184,7 @@ defmodule BrightWeb.UserAuth do
 
   def on_mount(:ensure_authenticated_and_onboarding, _params, session, socket) do
     socket = %{assigns: %{current_user: user}} = mount_current_user(socket, session)
+
     cond do
       user == nil ->
         socket
@@ -224,8 +225,6 @@ defmodule BrightWeb.UserAuth do
   defp is_onboarding?(%{view: module}) do
     Module.split(module) |> Enum.member?("OnboardingLive")
   end
-
-
 
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->

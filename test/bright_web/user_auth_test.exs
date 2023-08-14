@@ -203,7 +203,9 @@ defmodule BrightWeb.UserAuthTest do
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
-      {:halt, updated_socket} = UserAuth.on_mount(:ensure_authenticated_and_onboarding, %{}, session, socket)
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:ensure_authenticated_and_onboarding, %{}, session, socket)
+
       assert updated_socket.assigns.current_user == nil
     end
 
@@ -215,7 +217,9 @@ defmodule BrightWeb.UserAuthTest do
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
-      {:halt, updated_socket} = UserAuth.on_mount(:ensure_authenticated_and_onboarding, %{}, session, socket)
+      {:halt, updated_socket} =
+        UserAuth.on_mount(:ensure_authenticated_and_onboarding, %{}, session, socket)
+
       assert updated_socket.assigns.current_user == nil
     end
   end

@@ -10,6 +10,7 @@ defmodule BrightWeb.UserSettingsLiveTest do
       user = insert(:user)
       insert(:user_onboarding, user: user)
       user = Repo.preload(user, :user_onboardings)
+
       {:ok, _lv, html} =
         conn
         |> log_in_user(user)
@@ -96,7 +97,6 @@ defmodule BrightWeb.UserSettingsLiveTest do
       user = create_user_with_password(password)
       insert(:user_onboarding, user: user)
       user = Repo.preload(user, :user_onboardings)
-
 
       %{conn: log_in_user(conn, user), user: user, password: password}
     end

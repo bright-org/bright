@@ -73,7 +73,7 @@ defmodule BrightWeb.SkillUpLive.SkillPanels do
   end
 
   @impl true
-  def mount(_params, _session, %{assigns: %{current_user: user}}=socket) do
+  def mount(_params, _session, %{assigns: %{current_user: user}} = socket) do
     socket
     # tailwindの色情報が壊れるので応急処置でconfigから読み込み
     |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))

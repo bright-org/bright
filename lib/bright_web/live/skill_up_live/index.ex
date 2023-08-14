@@ -1,7 +1,6 @@
 defmodule BrightWeb.SkillUpLive.Index do
   use BrightWeb, :live_view
 
-
   @panels %{
     "want_todo_panel" => :open_want_todo,
     "wants_job_panel" => :open_wants_job
