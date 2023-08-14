@@ -200,10 +200,11 @@
   </div>
 </div>
 
-<.modal
+<.bright_modal
   :if={:show_evidences == @live_action}
   id="skill-evidence-modal"
   show
+  style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
   on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
 
   <.live_component
@@ -214,7 +215,7 @@
     user={@current_user}
     patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
   />
-</.modal>
+</.bright_modal>
 
 <.bright_modal
   :if={:show_reference == @live_action}
