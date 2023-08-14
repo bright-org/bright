@@ -1,8 +1,8 @@
 defmodule BrightWeb.OnboardingLive.SkillPanel do
-  alias Bright.Onboardings.UserOnboarding
   use BrightWeb, :live_view
 
   alias Bright.{Repo, SkillPanels, UserSkillPanels, Onboardings}
+  alias Bright.Onboardings.UserOnboarding
 
   @impl true
   def render(assigns) do

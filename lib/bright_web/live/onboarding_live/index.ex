@@ -1,8 +1,8 @@
 defmodule BrightWeb.OnboardingLive.Index do
-  alias Bright.Onboardings.UserOnboarding
   use BrightWeb, :live_view
 
   alias Bright.Onboardings
+  alias Bright.Onboardings.UserOnboarding
 
   @panels %{
     "want_todo_panel" => :open_want_todo,
