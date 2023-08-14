@@ -56,21 +56,12 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> assign(:skill_panel, skill_panel)
   end
 
-  def assign_skill_panel(%{assigns: %{me: false}} = socket, skill_panel_id) do
+  def assign_skill_panel(socket, skill_panel_id) do
     focus_user = socket.assigns.focus_user
 
     skill_panel =
       SkillPanels.get_user_skill_panel(focus_user, skill_panel_id) ||
         SkillPanels.get_user_latest_skill_panel!(focus_user)
-
-    socket
-    |> assign(:skill_panel, skill_panel)
-  end
-
-  def assign_skill_panel(socket, skill_panel_id) do
-    current_user = socket.assigns.current_user
-
-    skill_panel = SkillPanels.get_user_skill_panel!(current_user, skill_panel_id)
 
     socket
     |> assign(:skill_panel, skill_panel)

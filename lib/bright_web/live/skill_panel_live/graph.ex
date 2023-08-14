@@ -56,7 +56,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   end
 
   # TODO: 検討：本実装で同じ処理をまるっと共通化するのはimportではできそうにない
-  def handle_event("clear_focus_user", _params, socket) do
+  def handle_event("clear_target_user", _params, socket) do
     {:noreply,
      socket
      |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph")}
