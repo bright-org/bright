@@ -1,24 +1,23 @@
 defmodule BrightWeb.OnboardingLiveTest do
   use BrightWeb.ConnCase
 
-  alias Bright.Accounts
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   describe "Index" do
-    setup %{conn: conn} do
-      password = valid_user_password()
+    setup [:register_and_log_in_user]
 
-      {:ok, user} =
-        params_for(:user_before_registration, password: password) |> Accounts.register_user()
+    test "skip onboardings", %{conn: conn} do
+      {:ok, index_live, html} = live(conn, ~p"/onboardings")
 
-      %{conn: log_in_user(conn, user), user: user, password: password}
-    end
+      assert html =~ "オンボーディング"
 
-    test "lists all onboardings", %{conn: conn} do
-      {:ok, _index_live, html} = live(conn, ~p"/onboardings")
+      {:ok, conn} =
+        index_live
+        |> element("#skip_onboarding")
+        |> render_click()
+        |> follow_redirect(conn, "/mypage")
 
-      assert html =~ "Listing Onboardings"
+      assert conn.resp_body =~ "オンボーディングをスキップしました"
     end
   end
 end

@@ -146,12 +146,22 @@ defmodule Bright.SkillPanels do
     Repo.get_by(SkillClass, condition)
   end
 
-  def get_skill_class_by_skill_panel_id(skill_panel_id) do
+  @doc """
+  オンボーディング、スキルアップで選択したスキルパネルの詳細の表示に使用する
+  クラス１のユニットを一覧するためデフォルト値は１を指定
+
+  ## Examples
+
+      iex> get_skill_class_by_skill_panel_id()
+      %SkillClass{}
+  """
+
+  def get_skill_class_by_skill_panel_id(skill_panel_id, class_num \\ 1) do
     query =
       from sc in SkillClass,
         where:
           sc.skill_panel_id == ^skill_panel_id and
-            sc.class == 1,
+            sc.class == ^class_num,
         preload: :skill_units
 
     Repo.one(query)

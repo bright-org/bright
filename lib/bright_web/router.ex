@@ -189,14 +189,17 @@ defmodule BrightWeb.Router do
     end
   end
 
-  scope "/", BrightWeb do
+  # オンボーディング
+  scope "/onboardings", BrightWeb do
     pipe_through [:browser, :require_authenticated_user, :onboarding]
 
     live_session :require_authenticated_user_onboarding,
       on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
-      live "/onboardings", OnboardingLive.Index, :index
-      live "/onboardings/wants/:id", OnboardingLive.SkillPanels
-      live "/onboardings/wants/:career_want_id/skill_panels/:id", OnboardingLive.SkillPanel
+      live "/", OnboardingLive.Index, :index
+      live "/wants/:want_id", OnboardingLive.SkillPanels
+      live "/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
+      live "/jobs/:job_id", OnboardingLive.SkillPanels
+      live "/jobs/:job_id/skill_panels/:id", OnboardingLive.SkillPanel
     end
   end
 
