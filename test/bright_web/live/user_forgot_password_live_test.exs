@@ -3,6 +3,7 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
 
   import Phoenix.LiveViewTest
   import Bright.Factory
+  import Swoosh.TestAssertions
 
   alias Bright.Accounts
   alias Bright.Repo
@@ -66,6 +67,11 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
 
       assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context ==
                "reset_password"
+
+      assert_email_sent(fn email ->
+        assert email.subject == "Reset password instructions"
+        assert email.to == [{"", user.email}]
+      end)
     end
 
     test "does not send reset password token if email is invalid", %{conn: conn} do
@@ -78,6 +84,37 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
         |> follow_redirect(conn, "/users/send_reset_password_url")
 
       assert Repo.all(Accounts.UserToken) == []
+      assert_no_email_sent()
+    end
+
+    test "does not send reset password token if user.password_registered is false", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/reset_password")
+
+      user = insert(:user, password_registered: false)
+
+      {:ok, _conn} =
+        lv
+        |> form("#reset_password_form", user: %{"email" => user.email})
+        |> render_submit()
+        |> follow_redirect(conn, "/users/send_reset_password_url")
+
+      assert Repo.all(Accounts.UserToken) == []
+      assert_no_email_sent()
+    end
+
+    test "does not send reset password token if user is not confirmed", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/reset_password")
+
+      user = insert(:user_not_confirmed)
+
+      {:ok, _conn} =
+        lv
+        |> form("#reset_password_form", user: %{"email" => user.email})
+        |> render_submit()
+        |> follow_redirect(conn, "/users/send_reset_password_url")
+
+      assert Repo.all(Accounts.UserToken) == []
+      assert_no_email_sent()
     end
   end
 end

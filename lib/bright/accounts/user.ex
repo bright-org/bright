@@ -20,6 +20,10 @@ defmodule Bright.Accounts.User do
     field :password_registered, :boolean
     field :confirmed_at, :naive_datetime
 
+    has_many :users_tokens, Bright.Accounts.UserToken
+    has_one :user_2fa_codes, Bright.Accounts.User2faCodes
+    has_one :user_social_auths, Bright.Accounts.UserSocialAuth
+
     has_many :skill_scores, Bright.SkillScores.SkillScore
     has_many :skill_class_scores, Bright.SkillScores.SkillClassScore
     has_many :skill_unit_scores, Bright.SkillScores.SkillUnitScore
@@ -287,7 +291,9 @@ defmodule Bright.Accounts.User do
   end
 
   @doc """
-  Select confirmed user by email
+  Select confirmed user by email.
+
+  When `:including_not_confirmed` option is given and true, search user including not confirmed (default false).
   """
   def email_query(email) do
     from u in User,
@@ -296,7 +302,7 @@ defmodule Bright.Accounts.User do
           not is_nil(u.confirmed_at)
   end
 
-  def email_query(email, confirmed: false) do
+  def email_query(email, including_not_confirmed: true) do
     from u in User,
       where: u.email == ^email
   end

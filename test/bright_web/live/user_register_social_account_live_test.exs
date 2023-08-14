@@ -142,6 +142,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
 
       assert user
       refute user.confirmed_at
+      refute user.password_registered
       assert Repo.get_by(UserToken, user_id: user.id, context: "confirm")
     end
 
