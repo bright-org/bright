@@ -496,9 +496,9 @@ defmodule Bright.SkillScores do
       where:
         historical_skill_class.skill_panel_id == ^skill_panel_id and
           historical_skill_class.class == ^class,
-      select: %{
-        locked_date: historical_skill_class_scores.locked_date,
-        percentage: historical_skill_class_scores.percentage
+      select: {
+        historical_skill_class_scores.locked_date,
+        historical_skill_class_scores.percentage
       }
     )
     |> Repo.all()

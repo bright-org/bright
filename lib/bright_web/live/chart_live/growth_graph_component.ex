@@ -3,6 +3,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   Growth Graph Component
   """
 
+  alias Faker.Vehicle.En
   use BrightWeb, :live_component
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
@@ -203,13 +204,45 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
            }
          } = socket
        ) do
+    from_date =
+      data.labels
+      |> List.first()
+      |> label_to_date()
+
+    to_date =
+      data.labels
+      |> List.last()
+      |> label_to_date()
+
+    myself_init_data =
+      data.labels
+      |> Enum.map(fn x -> {:"#{label_to_key_date(x)}", 0} end)
+
+    myself =
+      SkillScores.get_historical_skill_class_scores(
+        skill_panel_id,
+        class,
+        user_id,
+        from_date,
+        to_date
+      )
+      |> Enum.reduce(myself_init_data, fn {key, val}, acc ->
+        Keyword.put(acc, label_to_key_date("#{key.year}.#{key.month}") |> String.to_atom(), val)
+      end)
+      |> Keyword.take(Keyword.keys(myself_init_data))
+      |> Enum.sort()
+      |> IO.inspect()
+      |> Keyword.values()
+
+    myself = [nil | myself]
+
     data =
       Map.merge(
         data,
         %{
           # role: [10, 20, 50, 60, 75, 100],
           # myself: [nil, 0, 35, 45, 55, 65],
-          myself: [nil, 0, 0, 0, 0, 0]
+          myself: myself
           # other: [10, 10, 25, 35, 45, 70],
           # otherSelected: "2022.12"
         }
@@ -226,6 +259,17 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         else: data |> Map.delete(:now)
 
     assign(socket, data: data)
+  end
+
+  defp label_to_date(label) do
+    [year, month] = String.split(label, ".") |> Enum.map(&String.to_integer/1)
+    {year, month, 1} |> Date.from_erl!()
+  end
+
+  defp label_to_key_date(label) do
+    [year, month] = String.split(label, ".")
+    month = String.pad_leading(month, 2, "0")
+    "#{year}.#{month}"
   end
 
   defp create_months(year, month, shift_month) do
