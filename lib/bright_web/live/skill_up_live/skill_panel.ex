@@ -1,8 +1,7 @@
 defmodule BrightWeb.SkillUpLive.SkillPanel do
-  alias Bright.Onboardings.UserOnboarding
   use BrightWeb, :live_view
 
-  alias Bright.{Repo, SkillPanels, UserSkillPanels, Onboardings}
+  alias Bright.{Repo, SkillPanels, UserSkillPanels}
 
   @impl true
   def render(assigns) do
@@ -90,8 +89,6 @@ defmodule BrightWeb.SkillUpLive.SkillPanel do
         %{"id" => skill_panel_id, "name" => name},
         %{assigns: %{current_user: user}} = socket
       ) do
-    finish_onboarding(user.user_onboardings, user.id, skill_panel_id)
-
     {:ok, _user_kill_panel} =
       UserSkillPanels.create_user_skill_panel(%{
         user_id: user.id,
@@ -103,15 +100,4 @@ defmodule BrightWeb.SkillUpLive.SkillPanel do
     |> redirect(to: "/panels/#{skill_panel_id}/graph")
     |> then(&{:noreply, &1})
   end
-
-  defp finish_onboarding(nil, user_id, skill_panel_id) do
-    {:ok, _onboarding} =
-      Onboardings.create_user_onboarding(%{
-        completed_at: NaiveDateTime.utc_now(),
-        user_id: user_id,
-        skill_panel_id: skill_panel_id
-      })
-  end
-
-  defp finish_onboarding(%UserOnboarding{}, _, _), do: false
 end
