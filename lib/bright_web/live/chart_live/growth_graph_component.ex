@@ -9,6 +9,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   alias Bright.SkillScores
   @start_year 2021
   @start_month 10
+  @monthly_interval 3
 
   @impl true
   def render(assigns) do
@@ -164,11 +165,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   end
 
   def handle_event("month_subtraction_click", _params, socket) do
-    {:noreply, create_labels(socket, -3) |> create_data()}
+    {:noreply, create_labels(socket, -@monthly_interval) |> create_data()}
   end
 
   def handle_event("month_add_click", _params, socket) do
-    {:noreply, create_labels(socket, 3) |> create_data()}
+    {:noreply, create_labels(socket, @monthly_interval) |> create_data()}
   end
 
   defp create_labels(socket, diff) do
@@ -180,7 +181,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     labels = create_months(String.to_integer(year), String.to_integer(month), diff)
 
     future = get_future_month()
-    future_enabled = labels |> List.last() == "#{future.year}.#{future.month}"
+    future_enabled = labels |> List.last() == date_to_label(future)
 
     past_enabled = labels |> List.first() != "#{@start_year}.#{@start_month}"
 
@@ -207,7 +208,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       data.labels
       |> List.first()
       |> label_to_date()
-      |> Timex.shift(months: -3)
+      |> Timex.shift(months: -@monthly_interval)
 
     to_date =
       data.labels
@@ -227,7 +228,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         to_date
       )
       |> Enum.reduce(myself_init_data, fn {key, val}, acc ->
-        Keyword.put(acc, label_to_key_date("#{key.year}.#{key.month}") |> String.to_atom(), val)
+        Keyword.put(acc, label_to_key_date(date_to_label(key)) |> String.to_atom(), val)
       end)
       |> Keyword.take(Keyword.keys(myself_init_data))
       |> Enum.sort()
