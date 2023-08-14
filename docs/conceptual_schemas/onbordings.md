@@ -7,8 +7,8 @@
 ### テーブル定義案
 
 - `id`, `inserted_at`, `updated_at` は省略
-- 新しく定義したいテーブル
-  - `career_wants`、`career_want_jobs`、`career_fields`、`jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
+- 新しく定義されたテーブル
+  - `career_wants`、`career_want_jobs`、`career_fields`、`career_field_jobs`, `jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
 - 既に定義案があるテーブル
   - `skill_panels`、`user_skill_panels`、`skill_panels`、`skill_classes`、`skill_class_units`
   - [概念データモデル スキル体系](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/skills.md) にて定義済み
@@ -23,7 +23,8 @@
 erDiagram
   career_wants ||--|{ career_want_jobs : ""
   career_want_jobs ||--|{ jobs : ""
-  jobs }|--|| career_fields : ""
+  jobs ||--|{ career_field_jobs : ""
+  career_field_jobs }|--|| career_fields : ""
   jobs ||--|{ job_skill_panels : ""
   job_skill_panels ||--|{ skill_panels : ""
   user_skill_panels ||--|{ skill_panels : ""
@@ -53,6 +54,11 @@ erDiagram
     string name_en "キャリアフィールド名(英語)"
     string name_ja "キャリアフィールド名(日本語)"
     int position "表示順"
+  }
+
+  career_field_jobs {
+    id career_field_id FK
+    id job_id FK
   }
 
   jobs {
