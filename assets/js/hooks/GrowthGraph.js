@@ -37,7 +37,7 @@ const createDataset = (data, borderColor, pointBackgroundColor, pointBorderColor
 }
 
 const createData = (data) => {
-  const futureEnabled = data['futureEnabled'] === undefined ? true : data['futureEnabled']
+  const futureEnabled = data['future_enabled'] === undefined ? true : data['future_enabled']
   const [myselfData, myselfFuture] = dataDivision(data['myself'], futureEnabled)
   const [otherData, otherFuture] = dataDivision(data['other'], futureEnabled)
   const [roleData, roleFuture] = dataDivision(data['role'], futureEnabled)

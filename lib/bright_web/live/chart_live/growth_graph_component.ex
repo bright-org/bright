@@ -7,7 +7,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
   alias Bright.SkillScores
-  @start_month 12
+  @start_year 2021
+  @start_month 10
 
   @impl true
   def render(assigns) do
@@ -15,7 +16,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     <div class="w-[880px] flex flex-col">
       <!-- グラフ -->
       <div class="ml-auto mr-28 mt-6 mb-1">
-          <button
+      <%# TODO 他者選択できるまで非表示 %>
+          <button :if={false}
             type="button"
             class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
           >
@@ -24,9 +26,24 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </div>
         <div class="flex">
           <div class="w-14 relative">
-            <button phx-target={@myself} phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })} class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute">
+            <button
+              :if={@data.past_enabled}
+              phx-target={@myself}
+              phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })}
+              class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={false}
+            >
               <span class="material-icons text-white !text-4xl">arrow_left</span>
             </button>
+            <button
+              :if={!@data.past_enabled}
+              phx-target={@myself}
+              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={true}
+            >
+            <span class="material-icons text-white !text-4xl">arrow_left</span>
+          </button>
+
           </div>
             <.growth_graph data={@data} id="growth-graph"/>
           <div class="ml-5 flex flex-col relative text-xl text-brightGray-500 text-bold">
@@ -34,10 +51,19 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-20">平均</p>
             <p class="py-6">見習い</p>
             <button
+              :if={@data.future_enabled}
               phx-target={@myself}
-              phx-click={if !@data.futureEnabled, do: JS.push("month_add_click", value: %{id: "myself" })}
-              class={["w-11 h-9", (if @data.futureEnabled, do: "bg-brightGray-300", else: "bg-brightGray-900") ,"flex justify-center items-center rounded bottom-1 absolute"]}
-              disabled={@data.futureEnabled}
+              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={true}
+            >
+              <span class="material-icons text-white !text-4xl">arrow_right</span>
+            </button>
+            <button
+              :if={!@data.future_enabled}
+              phx-target={@myself}
+              phx-click={if !@data.future_enabled, do: JS.push("month_add_click", value: %{id: "myself" })}
+              class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={false}
             >
               <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
@@ -49,7 +75,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           type="myself"
           dates={@data.labels}
           selected_date={@data.myselfSelected}
-          display_now={@data.futureEnabled}
+          display_now={@data.future_enabled}
         />
         <div class="flex py-4">
           <div class="w-14"></div>
@@ -65,7 +91,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
               </a>
             </div>
             <%# TODO 他者選択できるまで非表示 %>
-            <button
+            <button :if={false}
               type="button"
               class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
             >
@@ -102,7 +128,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
     socket =
       socket
-      |> assign(:data, %{myselfSelected: "now", labels: labels, futureEnabled: true})
+      |> assign(:data, %{
+        myselfSelected: "now",
+        labels: labels,
+        future_enabled: true,
+        past_enabled: true
+      })
       |> create_data()
 
     {:ok, socket}
@@ -117,7 +148,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     |> Enum.map(fn x -> x + start_month - 1 end)
     |> Enum.map(fn x -> month_shiht_add(now.year - 1, x) end)
     |> Enum.map(fn x -> Date.from_erl!(x) end)
-    |> Enum.filter(fn x -> Timex.compare(x, now.month) > 0 end)
+    |> Enum.filter(fn x -> Timex.compare(x, now) > 0 end)
     |> List.first()
   end
 
@@ -151,10 +182,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     future = get_future_month()
     future_enabled = labels |> List.last() == "#{future.year}.#{future.month}"
 
+    past_enabled = labels |> List.first() != "#{@start_year}.#{@start_month}"
+
     data =
       socket.assigns.data
       |> Map.put(:labels, labels)
-      |> Map.put(:futureEnabled, future_enabled)
+      |> Map.put(:future_enabled, future_enabled)
+      |> Map.put(:past_enabled, past_enabled)
 
     assign(socket, :data, data)
   end
@@ -182,7 +216,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       )
 
     data =
-      if data.futureEnabled,
+      if data.future_enabled,
         do:
           Map.put(
             data,

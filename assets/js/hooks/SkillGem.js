@@ -5,6 +5,7 @@ const myselfColorPattern = ['#72EAD9C0', '#3CC0A8C0', '#1DA091C0']
 const otherColorPattern = ['#E4BDE9AA', '#C063CDAA', '#9510B1AA']
 const pastColorPattern = ['#FFFFFF55', '#FFFFFF55', '#FFFFFF55']
 const linkColor = '#0000FF'
+const minValue = -5
 
 const getColorPattern = (length, colors) => {
   const pattern = [];
@@ -52,7 +53,7 @@ const fillSurface = (chart, data, index, color) => {
   const endValue = data[((index + 1) % data.length)]
   const endIndex = ((index + 1) % data.length)
 
-  const v0 = chart.scales.r.getPointPositionForValue(0, 0)
+  const v0 = chart.scales.r.getPointPositionForValue(0, minValue)
   const v1 = chart.scales.r.getPointPositionForValue(index, startValue)
   const v2 = chart.scales.r.getPointPositionForValue(endIndex, endValue)
   context.beginPath()
@@ -173,7 +174,7 @@ const createChartFromJSON = (labels, datasets, isLink) => {
       },
       scales: {
         r: {
-          min: 0,
+          min: minValue,
           max: 100,
           backgroundColor: scalesBackgroundColor,
           grid: {
@@ -219,7 +220,7 @@ export const SkillGem = {
     const ctx = document.querySelector('#' + element.id + ' canvas')
     const myChart = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
     myChart.canvas.parentNode.style.height = isSmall ? '165px' : '450px'
-    myChart.canvas.parentNode.style.width = isSmall ? '250px' : '450px'
+    myChart.canvas.parentNode.style.width = isSmall ? '250px' : '535px'
 
     ctx.addEventListener('click', function (event) {
       if (!isLink) return;
