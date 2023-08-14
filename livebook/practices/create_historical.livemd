@@ -18,16 +18,7 @@ defmodule Test do
     |> Repo.preload([:skill_panel, :historical_skill_class_scores])
   end
 
-  def get_historical_istorical_skill_class_scores(
-        locked_date,
-        skill_panel_id,
-        class,
-        user_id,
-        from_date,
-        to_date
-      ) do
-    IO.inspect(locked_date)
-
+  def get_historical_skill_class_scores(skill_panel_id, class, user_id, from_date, to_date) do
     from(
       historical_skill_class in HistoricalSkillClass,
       join:
@@ -71,8 +62,7 @@ to_date = {2025, 7, 2} |> Date.from_erl!()
 skill_panel = Repo.all(SkillPanel) |> List.first()
 user = Accounts.get_user_by_name_or_email("ymn")
 
-Test.get_historical_istorical_skill_class_scores(
-  locked_date,
+Test.get_historical_skill_class_scores(
   skill_panel.id,
   1,
   user.id,
