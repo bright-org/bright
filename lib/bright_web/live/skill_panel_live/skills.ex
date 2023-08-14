@@ -253,14 +253,14 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     skill = socket.assigns.skill
     skill_score = Map.get(socket.assigns.skill_score_dict, skill.id)
 
-    if !skill_score.reference_read do
+    if skill_score.reference_read do
+      socket
+    else
       {:ok, skill_score} =
         SkillScores.update_skill_score(skill_score, %{"reference_read" => true})
 
       socket
       |> update(:skill_score_dict, &Map.put(&1, skill.id, skill_score))
-    else
-      socket
     end
   end
 
@@ -275,13 +275,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     skill = socket.assigns.skill
     skill_score = Map.get(socket.assigns.skill_score_dict, skill.id)
 
-    if skill_score.exam_progress not in [:wip, :done] do
+    if skill_score.exam_progress in [:wip, :done] do
+      socket
+    else
       {:ok, skill_score} = SkillScores.update_skill_score(skill_score, %{"exam_progress" => :wip})
 
       socket
       |> update(:skill_score_dict, &Map.put(&1, skill.id, skill_score))
-    else
-      socket
     end
   end
 
