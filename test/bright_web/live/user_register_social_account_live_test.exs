@@ -2,7 +2,6 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Swoosh.TestAssertions
 
   import Bright.Factory
   alias Bright.Accounts.UserToken
@@ -133,10 +132,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
       |> render_submit()
       |> follow_redirect(conn, ~p"/users/finish_registration")
 
-      assert_email_sent(fn email ->
-        assert email.subject == "Confirmation instructions"
-        assert email.to == [{"", user_params[:email]}]
-      end)
+      assert_confirmation_mail_sent(user_params[:email])
 
       user = Repo.get_by(User, name: user_params[:name])
 
