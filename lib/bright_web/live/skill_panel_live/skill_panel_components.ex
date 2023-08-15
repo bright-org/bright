@@ -340,16 +340,21 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     end
   end
 
-  defp profile_skill_class_level(%{level: :beginner} = assigns), do: ~H"見習い"
+  defp profile_skill_class_level(%{level: :beginner} = assigns) do
+    ~H"""
+    <img src="/images/common/icons/beginner.svg" class="mr-2" />見習い
+    """
+  end
 
-  defp profile_skill_class_level(%{level: :normal} = assigns), do: ~H"平均"
+  defp profile_skill_class_level(%{level: :normal} = assigns) do
+    ~H"""
+    <img src="/images/common/icons/crown_copper.svg" class="mr-2" />平均
+    """
+  end
 
   defp profile_skill_class_level(%{level: :skilled} = assigns) do
     ~H"""
-    <img
-      src="/images/common/icons/crown.svg"
-      class="mr-2"
-      />ベテラン
+    <img src="/images/common/icons/crown.svg" class="mr-2" />ベテラン
     """
   end
 
