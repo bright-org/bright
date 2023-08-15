@@ -58,7 +58,7 @@ defmodule BrightWeb.SnsComponents do
       |> assign(src: "/images/common/#{assigns.sns_type}#{disable_icon_suffix(assigns.disable)}")
 
     ~H"""
-    <img src={@src} width="26px" />
+    <img src={@src} style="width: 26px; height: 26px" />
     """
   end
 

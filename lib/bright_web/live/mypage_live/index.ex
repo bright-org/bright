@@ -3,13 +3,13 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.ProfileComponents
   # import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
+  alias BrightWeb.DisplayUserHelper
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
     socket
+    |> DisplayUserHelper.assign_display_user(params)
     |> assign(:page_title, "マイページ")
-    # TODO 通知数はダミーデータ
-    |> assign(:notification_count, "99")
     |> then(&{:ok, &1})
   end
 

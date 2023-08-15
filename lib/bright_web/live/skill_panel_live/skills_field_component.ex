@@ -11,11 +11,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
 
   alias Bright.SkillUnits
   alias Bright.SkillScores
+  alias BrightWeb.SkillPanelLive.TimelineHelper
 
   def render(assigns) do
     ~H"""
     <div id={@id}>
-      <.compares current_user={@current_user} myself={@myself} />
+      <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
       <.skills_table
          table_structure={@table_structure}
          skill_panel={@skill_panel}
@@ -40,7 +41,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   def mount(socket) do
     {:ok,
      socket
-     |> assign(compared_users: [], compared_user_dict: %{})}
+     |> assign(compared_users: [], compared_user_dict: %{})
+     |> assign(timeline: TimelineHelper.get_current())}
   end
 
   def update(assigns, socket) do
@@ -83,6 +85,32 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      socket
      |> update(:compared_users, fn users -> Enum.reject(users, &(&1.name == name)) end)
      |> update(:compared_user_dict, &Map.delete(&1, name))}
+  end
+
+  def handle_event("timeline_bar_button_click", %{"date" => date}, socket) do
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.select_label(date)
+
+    # <= その他処理
+
+    {:noreply, socket |> assign(timeline: timeline)}
+  end
+
+  def handle_event("shift_timeline_past", _params, socket) do
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.shift_for_past()
+
+    {:noreply, socket |> assign(timeline: timeline)}
+  end
+
+  def handle_event("shift_timeline_future", _params, socket) do
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.shift_for_future()
+
+    {:noreply, socket |> assign(timeline: timeline)}
   end
 
   def assign_skill_units(socket) do
