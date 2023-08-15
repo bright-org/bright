@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+  <section class="absolute bg-white h-[320px] left-1/2 -ml-[400px] -mt-[160px] px-10 py-8 shadow text-sm top-1/2 w-[800px]">
+<!-- Start 優秀なエンジニア紹介 -->
+    <h2 class="font-bold text-3xl">
+      <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">優秀なエンジニア紹介</span>
+    </h2>
+
+    <div class="mt-8">
+      <!-- プロフィール -->
+      <div class="flex flex-wrap justify-between bg-white w-[760px]">
+        <div class="w-[380px]">
+          <div class="flex">
+            <div
+              class="bg-test bg-contain h-20 w-20 mr-5"
+              style="
+                background-image: url('./images/sample/sample-image.png');
+              "
+            ></div>
+
+            <div class="flex-1">
+              <div class="text-2xl font-bold">piacere</div>
+              <div
+                class="flex justify-between pt-3 border-brightGray-100 border-t"
+              >
+                <div class="text-xl">リードプログラマー</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8">
+           <p class="font-bold w-[98px]">推しポイント</p>
+           <p>エンジニア領域だけでなく、インフラやデザイン、マーケティングなど幅広い領域の知識を持っていて劇ヤバイです。</p>
+          </div>
+        </div>
+
+
+      <div class="ml-5 w-[360px]">
+        <p class="text-base !font-bold">
+          スキルセットジェム<span class="font-normal text-xs ml-2"
+        >※クリックしてください</span
+        >
+        </p>
+        <div class="chart-container flex justify-center h-[176px]">
+          <canvas id="myChart" height="100" width="100"></canvas>
+        </div>
+      </div>
+       </div>
+    </div><!-- End 優秀なエンジニア紹介 -->
+
+    <!-- close button -->
+    <button class="absolute right-5 top-5 z-10">
+      <span class="material-icons !text-3xl text-brightGray-900">close</span>
+    </button>
+  </section>
+</main>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById("myChart");
+
+  const data = {
+    labels: [
+      "エンジニア",
+      "デザイナー",
+      "マーケッター",
+      "セールス",
+      "インフラ",
+    ],
+    datasets: [
+      {
+        label: "My First Dataset",
+        data: [75, 30, 0, 0, 30],
+        fill: true,
+        backgroundColor: "rgba(82, 204, 181,0.6)",
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+    ],
+  };
+  new Chart(ctx, {
+    type: "radar",
+    data: data,
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+      scales: {
+        r: {
+          //グラフの最小値・最大値
+          min: 0,
+          max: 100,
+          //背景色
+          backgroundColor: "#EBFEFC",
+          ticks: {
+            min: 0, // 最小値
+            max: 100, // 最大値
+            stepSize: 20, // 目盛の間隔
+            display: false,
+          },
+          // グリッドライン
+          grid: {
+            color: "#ffffff",
+            lineWidth: 2,
+          },
+          // アングルライン
+            angleLines: {
+            color: "#ffffff",
+          },
+        },
+      },
+    },
+    layout: {
+      padding: {
+        top: 0, // 上
+        left: 0, // 左
+        right: 0, // 右
+        bottom: 0, // 下
+      },
+    },
+  });
+</script>
+</body>
+</html>

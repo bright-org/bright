@@ -19,8 +19,11 @@ defmodule Bright.Teams.TeamMemberUsers do
     field :invitation_confirmed_at, :naive_datetime
 
     belongs_to :team, Bright.Teams.Team
+    belongs_to :user, Bright.Accounts.User, references: :id
 
-    field :user_id, Ecto.ULID
+    # has_many :user_skill_panels, Bright.SkillPanels.UserSkillPanel, join_through: "user_skill_panels", references: :user_id
+
+    # field :user_id, Ecto.ULID
 
     timestamps()
   end

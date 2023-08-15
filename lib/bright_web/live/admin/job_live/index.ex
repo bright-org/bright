@@ -6,7 +6,8 @@ defmodule BrightWeb.Admin.JobLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :jobs, Jobs.list_jobs())}
+    {:ok,
+     stream(socket, :jobs, Bright.Repo.preload(Jobs.list_jobs(), [:career_fields, :skill_panels]))}
   end
 
   @impl true
@@ -17,15 +18,13 @@ defmodule BrightWeb.Admin.JobLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Job")
-    |> assign(:job, Jobs.get_job_with_career_fileds!(id))
-    |> assign(:career_fields, career_field_options())
+    |> assign(:job, Jobs.get_job!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Job")
     |> assign(:job, %Job{})
-    |> assign(:career_fields, career_field_options())
   end
 
   defp apply_action(socket, :index, _params) do
@@ -45,12 +44,5 @@ defmodule BrightWeb.Admin.JobLive.Index do
     {:ok, _} = Jobs.delete_job(job)
 
     {:noreply, stream_delete(socket, :jobs, job)}
-  end
-
-  defp career_field_options() do
-    Jobs.list_career_fields()
-    |> Enum.map(fn %{id: id_value, name: name_value} ->
-      {String.to_atom(name_value), id_value}
-    end)
   end
 end

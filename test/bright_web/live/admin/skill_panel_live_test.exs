@@ -33,7 +33,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @create_attrs)
@@ -56,7 +56,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @update_attrs)
@@ -100,7 +100,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       assert show_live
              |> form("#skill_panel-form", skill_panel: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert show_live
              |> form("#skill_panel-form", skill_panel: @update_attrs)

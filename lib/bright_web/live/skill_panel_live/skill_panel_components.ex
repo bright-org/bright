@@ -2,13 +2,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use Phoenix.Component
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
+  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
 
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
       <.skill_panel_switch current_user={@current_user} />
       <.target_switch current_user={@current_user} />
-      <.return_myself_button />
     </div>
     """
   end
@@ -17,7 +17,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
     <.skill_panel_menu current_user={@current_user} />
-    <.skill_set_menu />
+    <% # TODO: α版後にifを除去して表示 %>
+    <.skill_set_menu :if={false} />
     """
   end
 
@@ -28,7 +29,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         data-dropdown-toggle="dropdownOffset"
         data-dropdown-offset-skidding="320"
         data-dropdown-placement="bottom"
-        class="text-white bg-brightGreen-300 rounded-sm pl-3 flex items-center font-bold h-[35px]"
+        class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
         type="button"
       >
         <span class="min-w-[6em]">スキルパネル</span>
@@ -58,7 +59,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         data-dropdown-toggle="dropdown"
         data-dropdown-offset-skidding="20"
         data-dropdown-placement="bottom"
-        class="text-white bg-brightGreen-300 rounded-sm h-[35px] pl-3 flex items-center font-bold"
+        class="text-white bg-brightGreen-300 rounded h-[35px] pl-3 flex items-center font-bold"
         type="button"
       >
         スキルセット
@@ -112,9 +113,23 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def target_switch(assigns) do
     ~H"""
-      <p class="leading-tight ml-4">対象者の<br />切り替え</p>
-      <.individual_menu current_user={@current_user} />
-      <.team_menu current_user={@current_user} />
+    <p class="leading-tight ml-4">対象者の<br />切り替え</p>
+    <% # TODO: 共通コンポーネント完成後に表示 %>
+    <.individual_menu :if={false} current_user={@current_user} />
+    <% # TODO: α版後にifを除去して表示 %>
+    <.team_menu :if={false} current_user={@current_user} />
+
+    <% # TODO: 仮実装のため実装後に削除 %>
+    <button
+      class="text-white bg-brightGreen-300 rounded py-1.5 pl-3 flex items-center font-bold"
+      type="button"
+      phx-click="demo_change_user"
+    >
+      <span class="min-w-[6em]">個人</span>
+      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
+        expand_more
+      </span>
+    </button>
     """
   end
 
@@ -172,7 +187,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         id="related_team_card"
         module={BrightWeb.CardLive.RelatedTeamCardComponent}
         current_user={@current_user}
-        show_menue={false}
+        show_menu={false}
       />
     </div>
     """
@@ -180,9 +195,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def return_myself_button(assigns) do
     ~H"""
-      <button class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
-        自分に戻す
-      </button>
+    <button phx-click="clear_focus_user" class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
+      自分に戻す
+    </button>
     """
   end
 
@@ -217,73 +232,77 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def class_tab(assigns) do
     ~H"""
-      <ul class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGray-500 bg-brightGreen-50">
-        <li class="bg-white text-base">
-          <a id="class_tab_1" href="#" class="inline-block p-4 pt-3" aria-current="page">
-            <%= @skill_class.name %> <span class="text-xl ml-4">52</span>％
-          </a>
-        </li>
-        <li class="">
-          <a id="class_tab_2" href="#" class="inline-block p-4 pt-3">
-            クラス2 <span class="text-xl ml-4">52</span>％
-          </a>
-        </li>
-        <li class="">
-          <a id="class_tab_3" href="#" class="inline-block p-4 pt-3">
-          クラス3 <span class="text-xl ml-4">52</span>％
-        </a>
-        </li>
-      </ul>
+    <ul class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGray-500 bg-brightGreen-50">
+      <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
+        <%= if skill_class_score do %>
+          <% current = @skill_class.class == skill_class.class %>
+          <li class={current && "bg-white text-base"}>
+            <.link id={"class_tab_#{skill_class.class}"} patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"} class="inline-block p-4 pt-3" aria-current={current && "page"}>
+              クラス<%= skill_class.class %> <%= if(current, do: skill_class.name, else: "") %>
+              <span class="text-xl ml-4"><%= floor skill_class_score.percentage %></span>％
+            </.link>
+          </li>
+        <% else %>
+          <li class="bg-brightGray-100 text-white">
+            <span href="#" class="select-none inline-block p-4 pt-3">
+              クラス<%= skill_class.class %>
+              <span class="text-xl ml-4">0</span>％
+            </span>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
     """
   end
 
   def profile_area(assigns) do
+    # TODO: 自分に戻す、に対応が必要
     ~H"""
       <div class="flex justify-between">
         <div class="w-[850px] pt-6">
+          <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
+          <% # TODO: 他者のときの.profileの仕様確認と対応が必要 %>
           <.profile
-            user_name={@current_user.name}
-            title={@current_user.user_profile.title}
-            icon_file_path={@current_user.user_profile.icon_file_path}
-            display_excellent_person={true}
-            display_anxious_person={true}
+            user_name={@focus_user.name}
+            title={@focus_user.user_profile.title}
+            icon_file_path={@focus_user.user_profile.icon_file_path}
+            display_excellent_person={false}
+            display_anxious_person={false}
             display_return_to_yourself={true}
             display_sns={true}
-            twitter_url={@current_user.user_profile.twitter_url}
-            github_url={@current_user.user_profile.github_url}
-            facebook_url={@current_user.user_profile.facebook_url}
+            twitter_url={@focus_user.user_profile.twitter_url}
+            github_url={@focus_user.user_profile.github_url}
+            facebook_url={@focus_user.user_profile.facebook_url}
             display_detail={false}
           />
         </div>
         <div class="mr-auto flex ml-7">
           <div class="w-20 mt-auto">
-            <.doughnut_graph data={[30, 20, 10]} id="doughnut-graph-single-sample1"/>
+            <.doughnut_graph data={skill_score_percentages(@counter, @num_skills)} id="doughnut-graph-single-sample1"/>
           </div>
           <div class="h-20 mt-5 ml-2 flex flex-wrap">
             <p class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1">
-              <img
-                src="/images/common/icons/crown.svg"
-                class="mr-2"
-              />ベテラン
+              <.profile_skill_class_level level={@skill_class_score.level} />
             </p>
             <div class="flex flex-col w-24 pl-6">
               <div class="min-w-[4em] flex items-center">
                 <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
-                68％
+                <%= calc_percentage(@counter.high, @num_skills) %>％
               </div>
               <div class="min-w-[4em] flex items-center">
                 <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
-                12％
+                <%= calc_percentage(@counter.middle, @num_skills) %>％
               </div>
             </div>
             <div class="text-right text-xs">
-              エビデンスの登録率 30%<br />
-              教材の学習率 30%<br />
-              試験の合格率 30%
+              エビデンスの登録率 <%= calc_percentage(@counter.evidence_filled, @num_skills) %>%<br />
+              教材の学習率 <%= calc_percentage(@counter.reference_read, @num_skills) %>%<br />
+              試験の受験率 <%= calc_percentage(@counter.exam_touch, @num_skills) %>%
             </div>
           </div>
         </div>
-        <div class="mt-3 mr-3">
+        <% # TODO: α版後にifを除去して表示 %>
+        <div :if={false} class="mt-3 mr-3">
           <button class="flex items-center text-sm font-bold px-4 py-2 rounded !text-white bg-brightGray-900">
             <img src="/images/common/icons/up.svg" class="mr-2" />
             スキルアップする
@@ -291,5 +310,73 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         </div>
       </div>
     """
+  end
+
+  def score_mark_class(score, :me) do
+    score
+    |> case do
+      :high ->
+        "score-mark-high h-4 w-4 rounded-full bg-skillPanel-brightGreen600"
+
+      :middle ->
+        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
+
+      :low ->
+        "score-mark-low h-1 w-4 bg-brightGray-200"
+    end
+  end
+
+  def score_mark_class(score, :compared_user) do
+    score
+    |> case do
+      :high ->
+        "score-mark-high h-4 w-4 rounded-full bg-skillPanel-amethyst600"
+
+      :middle ->
+        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block"
+
+      v when v in [nil, :low] ->
+        "score-mark-low h-1 w-4 bg-brightGray-200"
+    end
+  end
+
+  defp profile_skill_class_level(%{level: :beginner} = assigns), do: ~H"見習い"
+
+  defp profile_skill_class_level(%{level: :normal} = assigns), do: ~H"平均"
+
+  defp profile_skill_class_level(%{level: :skilled} = assigns) do
+    ~H"""
+    <img
+      src="/images/common/icons/crown.svg"
+      class="mr-2"
+      />ベテラン
+    """
+  end
+
+  defp skill_score_percentages(counter, num_skills) do
+    high = calc_percentage(counter.high, num_skills)
+    middle = calc_percentage(counter.middle, num_skills)
+    low = 100 - high - middle
+
+    [high, middle, low]
+  end
+
+  defp pair_skill_class_score(nil), do: []
+
+  defp pair_skill_class_score(skill_classes) do
+    skill_classes
+    |> Enum.map(fn skill_class ->
+      skill_class.skill_class_scores
+      |> case do
+        [] -> {skill_class, nil}
+        [skill_class_score] -> {skill_class, skill_class_score}
+      end
+    end)
+  end
+
+  defp build_query(base, query) do
+    base
+    |> Map.merge(query)
+    |> URI.encode_query()
   end
 end

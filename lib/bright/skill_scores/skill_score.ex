@@ -1,25 +1,23 @@
 defmodule Bright.SkillScores.SkillScore do
   @moduledoc """
-  スキルスコアを扱うスキーマ。
+  スキル単位のスコアを扱うスキーマ。
   """
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
 
   schema "skill_scores" do
-    # NOTE: level
-    # スキルクラス単位のレベルを表します。
-    # 役職系の単語は誤解を招くため避けて命名しています。NG例: junior, middle, senior
-    field :level, Ecto.Enum, values: [:beginner, :normal, :skilled], default: :beginner
-    field :percentage, :float, default: 0.0
+    field :score, Ecto.Enum, values: [:low, :middle, :high]
+    field :exam_progress, Ecto.Enum, values: [:wip, :done]
+    field :reference_read, :boolean
+    field :evidence_filled, :boolean
 
     belongs_to(:user, Bright.Accounts.User)
-    belongs_to(:skill_class, Bright.SkillPanels.SkillClass)
-
-    has_many(:skill_score_items, Bright.SkillScores.SkillScoreItem)
+    belongs_to(:skill, Bright.SkillUnits.Skill)
 
     timestamps()
   end
@@ -27,7 +25,19 @@ defmodule Bright.SkillScores.SkillScore do
   @doc false
   def changeset(skill_score, attrs) do
     skill_score
-    |> cast(attrs, [:level, :percentage])
-    |> validate_required([:level, :percentage])
+    |> cast(attrs, [:score, :exam_progress, :reference_read, :evidence_filled])
+    |> validate_required([:score])
+  end
+
+  def user_query(user), do: user_id_query(user.id)
+
+  def user_id_query(user_id) do
+    from q in __MODULE__,
+      where: q.user_id == ^user_id
+  end
+
+  def skill_ids_query(query, skill_ids) do
+    from q in query,
+      where: q.skill_id in ^skill_ids
   end
 end

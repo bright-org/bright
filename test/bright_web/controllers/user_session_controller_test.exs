@@ -2,7 +2,6 @@ defmodule BrightWeb.UserSessionControllerTest do
   use BrightWeb.ConnCase, async: true
 
   import Bright.Factory
-  import Swoosh.TestAssertions
   alias Bright.Accounts.UserToken
   alias Bright.Accounts.User2faCodes
   alias Bright.Repo
@@ -29,10 +28,7 @@ defmodule BrightWeb.UserSessionControllerTest do
       assert Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
       assert Repo.get_by(User2faCodes, user_id: user.id)
 
-      assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
-        assert email.to == [{"", user.email}]
-      end)
+      assert_two_factor_auth_mail_sent(user)
     end
 
     test "redirects two_factor_auth page when two factor auth done cookie exists but was expired",
@@ -60,10 +56,7 @@ defmodule BrightWeb.UserSessionControllerTest do
       assert Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
       assert Repo.get_by(User2faCodes, user_id: user.id)
 
-      assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
-        assert email.to == [{"", user.email}]
-      end)
+      assert_two_factor_auth_mail_sent(user)
     end
 
     test "logs the user in when two factor auth done cookie exists", %{conn: conn, user: user} do
@@ -113,7 +106,7 @@ defmodule BrightWeb.UserSessionControllerTest do
           "user" => %{"email" => "invalid@email.com", "password" => "invalid_password"}
         })
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "メールアドレスまたはパスワードが不正です"
       assert redirected_to(conn) == ~p"/users/log_in"
     end
   end
@@ -121,16 +114,16 @@ defmodule BrightWeb.UserSessionControllerTest do
   describe "DELETE /users/log_out" do
     test "logs the user out", %{conn: conn, user: user} do
       conn = conn |> log_in_user(user) |> delete(~p"/users/log_out")
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/users/log_in"
       refute get_session(conn, :user_token)
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "ログアウトしました"
     end
 
     test "succeeds even if the user is not logged in", %{conn: conn} do
       conn = delete(conn, ~p"/users/log_out")
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/users/log_in"
       refute get_session(conn, :user_token)
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "ログアウトしました"
     end
   end
 end

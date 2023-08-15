@@ -1,80 +1,61 @@
 defmodule BrightWeb.OnboardingLive.Index do
   use BrightWeb, :live_view
 
-  embed_templates "index/*"
-
-  alias Bright.Jobs
   alias Bright.Onboardings
+
+  @panels %{
+    "want_todo_panel" => :open_want_todo,
+    "wants_job_panel" => :open_wants_job
+  }
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
-  end
-
-  @impl true
-  def handle_event("skip_onboarding", _value, socket) do
-    current_user = socket.assigns.current_user
-
-    onboarding = %{
-      completed_at: NaiveDateTime.utc_now(),
-      user_id: current_user.id
-    }
-
-    # TODO: user_onboardingは初回のみレコード登録する。スキルアップ画面対応のときはリンクを消す等検討する
-    case Onboardings.create_user_onboarding(onboarding) do
-      {:ok, _} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "オンボーディングをスキップしました")
-         |> redirect(to: ~p"/mypage")}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset)}
-    end
-  end
-
-  @impl true
-  def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
-
-  defp apply_action(socket, :index, params) do
     socket
-    |> assign(:page_title, "Listing Onboardings")
-    |> assign(:view_content, params["onboarding"])
+    |> assign(:page_title, "オンボーディング")
+    |> assign(:open_want_todo, false)
+    |> assign(:open_wants_job, false)
+    |> then(&{:ok, &1})
   end
 
   @impl true
-  def render(%{view_content: "select_skill_panel"} = assigns) do
-    ~H"""
-    <.select_skill_panel />
-    """
+  def handle_event("skip_onboarding", _value, %{assigns: %{current_user: user}} = socket) do
+    # TODO: user_onboardingは初回のみレコード登録する。スキルアップ画面対応のときはリンクを消す等検討する
+    {:ok, _onboarding} =
+      Onboardings.create_user_onboarding(%{
+        completed_at: NaiveDateTime.utc_now(),
+        user_id: user.id
+      })
+
+    socket
+    |> put_flash(:info, "オンボーディングをスキップしました")
+    |> redirect(to: ~p"/mypage")
+    |> then(&{:noreply, &1})
   end
 
-  def render(%{view_content: "select_skill_result"} = assigns) do
-    ~H"""
-    <.select_skill_result />
-    """
+  @impl true
+  def handle_event("toggle_panel", %{"panel" => panel}, socket) do
+    socket
+    |> assign(@panels[panel], !Map.get(socket.assigns, @panels[panel]))
+    |> assign(@panels[hide_panel(panel)], false)
+    |> then(&{:noreply, &1})
   end
 
-  def render(%{view_content: _} = assigns) do
-    career_wants = Jobs.list_career_want_jobs_with_career_wants()
-    career_fields_wants = Jobs.list_career_wants_jobs_with_career_fields()
-    career_fields = Jobs.list_career_fields()
-
-    assigns =
-      assign(assigns,
-        career_wants: career_wants,
-        career_fields_wants: career_fields_wants,
-        career_fields: career_fields
-      )
-
-    ~H"""
-    <.select_career
-      career_wants={@career_wants}
-      career_fields_wants={@career_fields_wants}
-      career_fields={@career_fields}
-    />
-    """
+  defp toggle(js \\ %JS{}, id) do
+    js
+    |> JS.push("toggle_panel", value: %{panel: id})
+    |> JS.toggle(to: "##{id}")
+    |> JS.hide(to: "##{hide_panel(id)}")
   end
+
+  defp hide_panel(id) do
+    Map.keys(@panels)
+    |> Enum.reject(&(&1 == id))
+    |> List.first()
+  end
+
+  defp close(),
+    do: "before:-mt-2 before:rotate-225"
+
+  defp open(),
+    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 end

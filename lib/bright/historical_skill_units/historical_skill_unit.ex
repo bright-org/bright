@@ -27,6 +27,8 @@ defmodule Bright.HistoricalSkillUnits.HistoricalSkillUnit do
     has_many :historical_skill_classes,
       through: [:historical_skill_class_units, :historical_skill_class]
 
+    has_many :historical_skill_unit_scores, Bright.HistoricalSkillScores.HistoricalSkillUnitScore
+
     timestamps()
   end
 end

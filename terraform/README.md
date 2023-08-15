@@ -31,11 +31,13 @@ Google Cloudのプロジェクトに自分のGoogleアカウントを招待し�
 .
 ├── environments
 │   ├── dev
-│   ├── stg  # TODO: stg環境を構築する際に作成
+│   ├── stg
 │   └── prod # TODO: prod環境を構築する際に作成
 └── modules
     └── google
+        ├── apis                    # 各種APIの有効化
         ├── bucket                  # ユーザーがアップロードしたファイルを保存するGCSバケット
+        ├── docker_registry         # Dockerイメージの管理
         ├── cloud_run_service       # 空のCloud Runサービス（デプロイはCloud Buildで実行）
         ├── db                      # データベース（PostgreSQL）
         ├── managed_service_account # Googleマネージドサービスアカウントへの権限付与

@@ -1,4 +1,11 @@
 import { Chart } from 'chart.js/auto'
+const scalesBackgroundColor = '#D4F9F7'
+const gridColor = '#FFFFFF44'
+const myselfColorPattern = ['#72EAD9C0', '#3CC0A8C0', '#1DA091C0']
+const otherColorPattern = ['#E4BDE9AA', '#C063CDAA', '#9510B1AA']
+const pastColorPattern = ['#FFFFFF55', '#FFFFFF55', '#FFFFFF55']
+const linkColor = '#0000FF'
+const minValue = -5
 
 const getColorPattern = (length, colors) => {
   const pattern = [];
@@ -46,7 +53,7 @@ const fillSurface = (chart, data, index, color) => {
   const endValue = data[((index + 1) % data.length)]
   const endIndex = ((index + 1) % data.length)
 
-  const v0 = chart.scales.r.getPointPositionForValue(0, 0)
+  const v0 = chart.scales.r.getPointPositionForValue(0, minValue)
   const v1 = chart.scales.r.getPointPositionForValue(index, startValue)
   const v2 = chart.scales.r.getPointPositionForValue(endIndex, endValue)
   context.beginPath()
@@ -69,7 +76,7 @@ const drawGridline = (chart, value, length) => {
   const v0 = chart.scales.r.getPointPositionForValue(0, value)
   context.beginPath()
   context.moveTo(v0.x, v0.y)
-  context.strokeStyle = "#FFFFFF44"
+  context.strokeStyle = gridColor
 
   for (let i = 1; i < length; i++) {
     chart.scales.r.getPointPositionForValue(i, value)
@@ -85,7 +92,7 @@ const drawUnderline = (chart, i) => {
   const label = chart.scales.r.getPointLabelPosition(i)
   context.beginPath()
   context.lineWidth = 1
-  context.strokeStyle = '#0000ff'
+  context.strokeStyle = linkColor
   context.moveTo(label.left, label.bottom)
   context.lineTo(label.right, label.bottom)
   context.stroke()
@@ -96,9 +103,9 @@ const beforeDatasetsDraw = (chart) => {
   const colorTheme = chart.canvas.parentNode.dataset.colorTheme
   const myselfData = chart.data.datasets[0].data
   const diffData = chart.data.datasets[1] !== undefined ? chart.data.datasets[1].data : []
-  const myselfColor = getColorPattern(myselfData.length, ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"])
-  const otherColor = getColorPattern(myselfData.length, ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"])
-  const pastColor = getColorPattern(myselfData.length,   ["#FFFFFF99", "#FFFFFF55", "#FFFFFF55"])
+  const myselfColor = getColorPattern(myselfData.length, myselfColorPattern)
+  const otherColor = getColorPattern(myselfData.length, otherColorPattern)
+  const pastColor = getColorPattern(myselfData.length, pastColorPattern)
   const diffColor = colorTheme === 'myself' ? pastColor : otherColor
   const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink)
 
@@ -138,7 +145,7 @@ const beforeDatasetsDraw = (chart) => {
 }
 
 const createChartFromJSON = (labels, datasets, isLink) => {
-  const color = isLink ? "#0000FF" : "#000000"
+  const color = isLink ? linkColor : "#000000"
   return ({
     type: 'radar',
     data: {
@@ -167,9 +174,9 @@ const createChartFromJSON = (labels, datasets, isLink) => {
       },
       scales: {
         r: {
-          min: 0,
+          min: minValue,
           max: 100,
-          backgroundColor: '#D4F9F7',
+          backgroundColor: scalesBackgroundColor,
           grid: {
             display: false
           },
@@ -193,47 +200,63 @@ const createChartFromJSON = (labels, datasets, isLink) => {
 }
 
 export const SkillGem = {
-  mounted() {
-    const element = this.el
+  drawRaderGraph(element) {
+    if (window.myRadar == undefined) window.myRadar = []
     const dataset = element.dataset
     const labels = JSON.parse(dataset.labels)
     const data = JSON.parse(dataset.data)
     const isSmall = dataset.size == "sm"
     const isLink = JSON.parse(dataset.displayLink)
     const datasets = [];
-    datasets.push(createData(data[0]));
+
+    if (labels.length < 3) return
+
+    datasets.push(createData(data[0]))
 
     if (data[1] !== undefined) {
       datasets.push(createData(data[1]))
     }
 
-    const ctx = document.querySelector('#' + element.id + ' canvas')
-    const myChart = new Chart(ctx, createChartFromJSON(labels, datasets, isLink))
-    myChart.canvas.parentNode.style.height = isSmall ? '165px' : '450px'
-    myChart.canvas.parentNode.style.width = isSmall ? '250px' : '450px'
+    this.ctx = document.querySelector('#' + element.id + ' canvas')
+    window.myRadar[element.id] = new Chart(this.ctx, createChartFromJSON(labels, datasets, isLink))
+    window.myRadar[element.id].canvas.parentNode.style.height = isSmall ? '165px' : '450px'
+    window.myRadar[element.id].canvas.parentNode.style.width = isSmall ? '250px' : '535px'
 
-    ctx.addEventListener('click', function (event) {
-      if (!isLink) return;
+    this.ctx.addEventListener('click', this.clickEvent)
+  },
+  clickEvent(event) {
+    const element = event.target.parentElement
+    const ctx = event.target
+    const dataset = element.dataset
+    const isLink = JSON.parse(dataset.displayLink)
+    if (!isLink) return;
 
-      // padding rightで拡張した部分がクリック判定できるようにする
-      const rect = ctx.getBoundingClientRect()
-      const x = event.clientX - rect.left
-      const y = event.clientY - rect.top
-      const length = myChart.data.labels.length
+    // padding rightで拡張した部分がクリック判定できるようにする
+    const rect = ctx.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    const length = window.myRadar[element.id].data.labels.length
 
-      // リンクの判定例
-      for (let i = 0; i < length; i++) {
-        const label = myChart.scales.r.getPointLabelPosition(i)
-        const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
-        if (judge) { alert('リンククリック：' + myChart.data.labels[i]) }
-      }
+    // リンクの判定例
+    for (let i = 0; i < length; i++) {
+      const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
+      const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
+      if (judge) { alert('リンククリック：' + window.myRadar[element.id].data.labels[i]) }
+    }
 
-      // アイコン判定例
-      for (let i = 0; i < length; i++) {
-        const label = myChart.scales.r.getPointLabelPosition(i)
-        const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
-        if (judge) { alert('アイコンクリック：' + myChart.data.labels[i]) }
-      }
-    })
+    // アイコン判定例
+    for (let i = 0; i < length; i++) {
+      const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
+      const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
+      if (judge) { alert('アイコンクリック：' + window.myRadar[element.id].data.labels[i]) }
+    }
+  },
+  mounted() {
+    this.drawRaderGraph(this.el)
+  },
+  updated() {
+    window.myRadar[this.el.id].destroy()
+    this.ctx.removeEventListener('click', this.clickEvent)
+    this.drawRaderGraph(this.el)
   }
 }

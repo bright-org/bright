@@ -1,7 +1,7 @@
 defmodule BrightWeb.Admin.CareerFieldLive.FormComponent do
   use BrightWeb, :live_component
 
-  alias Bright.Jobs
+  alias Bright.CareerFields
 
   @impl true
   def render(assigns) do
@@ -32,7 +32,7 @@ defmodule BrightWeb.Admin.CareerFieldLive.FormComponent do
 
   @impl true
   def update(%{career_field: career_field} = assigns, socket) do
-    changeset = Jobs.change_career_field(career_field)
+    changeset = CareerFields.change_career_field(career_field)
 
     {:ok,
      socket
@@ -44,7 +44,7 @@ defmodule BrightWeb.Admin.CareerFieldLive.FormComponent do
   def handle_event("validate", %{"career_field" => career_field_params}, socket) do
     changeset =
       socket.assigns.career_field
-      |> Jobs.change_career_field(career_field_params)
+      |> CareerFields.change_career_field(career_field_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
@@ -55,7 +55,7 @@ defmodule BrightWeb.Admin.CareerFieldLive.FormComponent do
   end
 
   defp save_career_field(socket, :edit, career_field_params) do
-    case Jobs.update_career_field(socket.assigns.career_field, career_field_params) do
+    case CareerFields.update_career_field(socket.assigns.career_field, career_field_params) do
       {:ok, career_field} ->
         notify_parent({:saved, career_field})
 
@@ -70,7 +70,7 @@ defmodule BrightWeb.Admin.CareerFieldLive.FormComponent do
   end
 
   defp save_career_field(socket, :new, career_field_params) do
-    case Jobs.create_career_field(career_field_params) do
+    case CareerFields.create_career_field(career_field_params) do
       {:ok, career_field} ->
         notify_parent({:saved, career_field})
 

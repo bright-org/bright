@@ -3,10 +3,19 @@ defmodule Bright.SkillScoreFactory do
   Factory for Bright.SkillScores.SkillScore
   """
 
+  alias Bright.SkillScores.SkillScore
+
   defmacro __using__(_opts) do
     quote do
       def skill_score_factory do
-        %Bright.SkillScores.SkillScore{}
+        %SkillScore{
+          user: build(:user),
+          skill: build(:skill),
+          score: Enum.random(Ecto.Enum.values(SkillScore, :score)),
+          exam_progress: Enum.random(Ecto.Enum.values(SkillScore, :exam_progress)),
+          reference_read: Enum.random([false, true]),
+          evidence_filled: Enum.random([false, true])
+        }
       end
     end
   end

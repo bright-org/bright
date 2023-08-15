@@ -32,7 +32,7 @@ defmodule BrightWeb.Admin.UserOnboardingLiveTest do
 
       assert index_live
              |> form("#user_onboarding-form", user_onboarding: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert index_live
              |> form("#user_onboarding-form", user_onboarding: @create_attrs)
@@ -56,7 +56,7 @@ defmodule BrightWeb.Admin.UserOnboardingLiveTest do
 
       assert index_live
              |> form("#user_onboarding-form", user_onboarding: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert index_live
              |> form("#user_onboarding-form", user_onboarding: @update_attrs)
@@ -98,7 +98,7 @@ defmodule BrightWeb.Admin.UserOnboardingLiveTest do
 
       assert show_live
              |> form("#user_onboarding-form", user_onboarding: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert show_live
              |> form("#user_onboarding-form", user_onboarding: @update_attrs)

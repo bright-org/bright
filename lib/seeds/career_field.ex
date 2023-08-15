@@ -3,8 +3,8 @@ defmodule Bright.Seeds.CareerField do
   開発用のキャリアフィールドSeedデータ
   """
   alias Bright.Repo
-  alias Bright.Jobs
-  alias Bright.Jobs.CareerField
+  alias Bright.CareerFields
+  alias Bright.CareerFields.CareerField
 
   @data [
     %{name_en: "engineer", name_ja: "エンジニア", position: 1},
@@ -12,14 +12,15 @@ defmodule Bright.Seeds.CareerField do
     %{name_en: "designer", name_ja: "デザイナー", position: 3},
     %{name_en: "marketer", name_ja: "マーケッター", position: 4}
   ]
-
-  def insert() do
+  def delete() do
     CareerField
     |> Repo.all()
     |> Enum.each(&Repo.delete(&1))
+  end
 
+  def insert() do
     Enum.each(@data, fn c ->
-      Jobs.create_career_field(c)
+      CareerFields.create_career_field(c)
     end)
   end
 end

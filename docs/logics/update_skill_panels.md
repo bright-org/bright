@@ -17,11 +17,11 @@
 
 # スキルパネル周りのテーブル設計
 
-スキルパネル周りのマスタデータは、「下書き」「公開」「履歴」の3種類のテーブルを作成する。
+スキルパネル周りのマスタデータは、「運営下書き」「公開」「履歴」の3種類のテーブルを作成する。
 
 | 種別 | 概要 |
 | --- | --- |
-| 下書き | 管理画面でのCRUD対象のテーブル。ユーザーから閲覧されることはない。 |
+| 運営下書き | 管理画面でのCRUD対象のテーブル。ユーザーから閲覧されることはない。 |
 | 公開 | 現在公開されているテーブル。ユーザーが閲覧したりスキルスコア等を登録したりする。 |
 | 履歴 | 過去の履歴を表すテーブル。成長グラフと過去のスキルパネルを表示するために参照する。 |
 
@@ -31,7 +31,7 @@
 - 時間が経つにつれて公開データに対する処理のパフォーマンスが落ちていくことを回避する
   - 参考：[スキルパネルレコード数予測](https://docs.google.com/spreadsheets/d/1U1GAmMHUVS7wm2ejQ9wXmVoRMr79BrMRR4gzmoe0upg/edit#gid=396976561)
 
-## 下書き
+## 運営下書き
 
 ```mermaid
 erDiagram
@@ -96,14 +96,15 @@ erDiagram
   users ||--o{ skill_improvements : "スキルアップを登録する"
   skill_improvements ||--|| skill_classes : ""
   skill_improvements ||--|| skill_units : ""
-  users ||--o{ skill_scores : "スキルスコアを登録する"
-  skill_scores ||--|| skill_classes : ""
-  skill_scores ||--|{ skill_score_items : ""
-  skill_score_items ||--|| skills : ""
-  users ||--|{ career_field_scores : ""
-  career_field_scores ||--|| career_fields : ""
+  users ||--o{ skill_class_scores : ""
   users ||--o{ skill_unit_scores : ""
+  users ||--o{ skill_scores : ""
+  users ||--|{ career_field_scores : ""
+  users ||--o{ skill_class_scores : ""
+  skill_class_scores ||--|| skill_classes : ""
+  skill_scores ||--|| skills : ""
   skill_unit_scores ||--|| skill_units : ""
+  career_fields ||--|| career_field_scores : ""
 
   skill_panels {
     string name "スキルパネル名"
@@ -160,9 +161,11 @@ erDiagram
     id skill_unit_id FK
   }
 
-  skill_scores {
+  skill_class_scores {
     id user_id FK
     id skill_class_id FK
+    float percentage
+    string level
   }
 
   skill_unit_scores {
@@ -171,10 +174,13 @@ erDiagram
     float percentage
   }
 
-  skill_score_items {
-    id skill_score_id FK
+  skill_scores {
+    id user_id FK
     id skill_id FK
-    string score "enum (low, middle, high)"
+    string score "enum（low=－、middle=△、high=◯）"
+    string exam_progress "enum（wip、done）"
+    boolean reference_read
+    boolean evidence_filled
   }
 
   career_field_scores {
@@ -199,10 +205,10 @@ erDiagram
   job_skill_panels }o--|| skill_panels : ""
   users ||--o{ user_skill_panels : "気になる"
   user_skill_panels }o--|| skill_panels : "気になる"
+  users ||--o{ historical_skill_class_scores : ""
+  historical_skill_class_scores ||--|| historical_skill_classes : ""
   users ||--o{ historical_skill_scores : "過去に登録されたスキルスコア"
-  historical_skill_scores ||--|| historical_skill_classes : ""
-  historical_skill_scores ||--|{ historical_skill_score_items : ""
-  historical_skill_score_items ||--|| historical_skills : ""
+  historical_skill_scores ||--|| historical_skills : ""
   users ||--|{ historical_career_field_scores : ""
   historical_career_field_scores ||--|| career_fields : ""
   users ||--o{ historical_skill_unit_scores : ""
@@ -257,10 +263,12 @@ erDiagram
     id skill_panel_id FK
   }
 
-  historical_skill_scores {
+  historical_skill_class_scores {
     id user_id FK
     id historical_skill_class_id FK
     date locked_date "固定された日"
+    float percentage
+    string level
   }
 
   historical_skill_unit_scores {
@@ -270,10 +278,13 @@ erDiagram
     float percentage
   }
 
-  historical_skill_score_items {
-    id historical_skill_score_id FK
+  historical_skill_scores {
+    id user_id FK
     id historical_skill_id FK
-    string score "enum (low, middle, high)"
+    string score "enum（low=－、middle=△、high=◯）"
+    string exam_progress "enum（wip、done）"
+    boolean reference_read
+    boolean evidence_filled
   }
 
   historical_career_field_scores {
@@ -293,7 +304,7 @@ erDiagram
 - 同種の過去データを辿るためのID `trace_id` について
     - 同じIDのものは同じデータの履歴を表す
     - 以下は実際に入るであろうスキルユニットのデータの例
-        - `draft_skill_units` （下書き）
+        - `draft_skill_units` （運営下書き）
             | trace_id | name | inserted_at | updated_at |
             | --- | --- | --- | --- |
             | 88E35D86-8A8B-4B0C-B906-0B840A0ACD2D | Elixir基礎 | 2023-07-01 00:00:00 | 2023-07-20 12:34:56 |
@@ -315,15 +326,15 @@ erDiagram
 
 # 更新ロジックのざっくりした流れ
 
-- 下書き→公開
-    1. 下書きテーブルに入っているデータを公開テーブルにコピーする
+- 運営下書き→公開
+    1. 運営下書きテーブルに入っているデータを公開テーブルにコピーする
         - `draft_skill_classes` → `skill_classes`
         - `draft_skill_class_units` → `skill_class_units`
         - `draft_skill_units` → `skill_units`
         - `draft_skill_categories` → `skill_categories`
         - `draft_skills` → `skills`
         - 公開テーブルの `locked_date` には処理を実行した日付を入れる
-    2. `skill_scores`, `skill_score_items`, `skill_unit_scores`, `career_field_scores` のデータを同テーブルにコピーし、1のコピー先データに紐付ける
+    2. `skill_class_scores`, `skill_scores`, `skill_unit_scores`, `career_field_scores` のデータを同テーブルにコピーし、1のコピー先データに紐付ける
         - 1のコピー先データがなければコピーしない
     3. `skill_improvements` の外部キーを1のコピー先データに付け替える
         - 1のコピー先データがなければ削除する
@@ -334,10 +345,10 @@ erDiagram
         - `skill_units` → `historical_skill_units`
         - `skill_categories` → `historical_skill_categories`
         - `skills` → `historical_skills`
+        - `skill_class_scores` → `historical_skill_class_scores`
         - `skill_scores` → `historical_skill_scores`
-        - `skill_score_items` → `historical_skill_score_items`
         - `skill_unit_scores` → `historical_skill_unit_scores`
         - `career_field_scores` → `historical_career_field_scores`
-        - `historical_skill_scores`, `historical_skill_unit_scores`, `historical_career_field_scores`の `locked_date` には処理を実行した日付を入れる
+        - `historical_skill_class_scores`, `historical_skill_unit_scores`, `historical_career_field_scores`の `locked_date` には処理を実行した日付を入れる
     2. 1のコピー元データを公開テーブルから削除する
 - 履歴はどこにもコピーしない

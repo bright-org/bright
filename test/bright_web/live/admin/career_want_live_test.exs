@@ -2,14 +2,14 @@ defmodule BrightWeb.Admin.CareerWantLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.JobsFixtures
+  import Bright.Factory
 
   @create_attrs %{name: "some name", position: 42}
   @update_attrs %{name: "some updated name", position: 43}
   @invalid_attrs %{name: nil, position: nil}
 
   defp create_career_want(_) do
-    career_want = career_want_fixture()
+    career_want = insert(:career_want)
     %{career_want: career_want}
   end
 
@@ -33,7 +33,7 @@ defmodule BrightWeb.Admin.CareerWantLiveTest do
 
       assert index_live
              |> form("#career_want-form", career_want: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert index_live
              |> form("#career_want-form", career_want: @create_attrs)
@@ -56,7 +56,7 @@ defmodule BrightWeb.Admin.CareerWantLiveTest do
 
       assert index_live
              |> form("#career_want-form", career_want: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert index_live
              |> form("#career_want-form", career_want: @update_attrs)
@@ -100,7 +100,7 @@ defmodule BrightWeb.Admin.CareerWantLiveTest do
 
       assert show_live
              |> form("#career_want-form", career_want: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert show_live
              |> form("#career_want-form", career_want: @update_attrs)
