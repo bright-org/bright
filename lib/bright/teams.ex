@@ -250,12 +250,16 @@ defmodule Bright.Teams do
 
     member_attr =
       member_users
-      |> Enum.map(fn x ->
+      |> Enum.map(fn member_user ->
+        # 招待メール用のtokenを作成
+        invitation_token = TeamMemberUsers.build_invitation_token(member_user)
+
         %{
-          user_id: x.id,
+          user_id: member_user.id,
           is_admin: false,
           # メンバーのプライマリ判定は承認後に実施する為一旦falseとする
-          is_primary: false
+          is_primary: false,
+          invitation_token: invitation_token,
         }
       end)
 

@@ -51,8 +51,13 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
 
+
+
     case Teams.create_team_multi(team_name, admin_user, member_users) do
       {:ok, _team} ->
+
+        #TODO 招待したメンバー全員に招待メールを送信する。
+
         {:noreply,
          socket
          |> put_flash(:info, "チームを登録しました")
