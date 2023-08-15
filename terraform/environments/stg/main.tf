@@ -66,6 +66,20 @@ module "secret_sendgrid_api_key" {
   data = var.sendgrid_api_key
 }
 
+module "secret_sentry_dsn" {
+  source = "../../modules/google/secret"
+
+  name = "bright-sentry-dsn"
+  data = var.sentry_dsn
+}
+
+module "secret_sentry_environment_name" {
+  source = "../../modules/google/secret"
+
+  name = "bright-sentry-environment-name"
+  data = "stg"
+}
+
 module "secret_google_client_id" {
   source = "../../modules/google/secret"
 
