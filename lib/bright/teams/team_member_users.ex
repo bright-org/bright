@@ -47,4 +47,8 @@ defmodule Bright.Teams.TeamMemberUsers do
     ])
     |> validate_required([:invitation_confirmed_at])
   end
+
+  def now_for_confirmed_at() do
+    NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+  end
 end

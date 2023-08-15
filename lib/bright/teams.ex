@@ -227,6 +227,7 @@ defmodule Bright.Teams do
 
   @doc """
   ユーザーが所属するチームの一覧取得
+  招待へ承認済のチームのみ対象
   Scrivenerのページングに対応
 
     iex> list_joined_teams_by_user_id(user_id, %{page: 1, page_size: 5})
@@ -241,8 +242,10 @@ defmodule Bright.Teams do
       }
   """
   def list_joined_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
-    TeamMemberUsers
-    |> where([member_user], member_user.user_id == ^user_id)
+    from(tmbu in TeamMemberUsers,
+      where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at),
+      order_by: [desc: tmbu.is_primary, desc: tmbu.updated_at]
+    )
     |> preload(:team)
     |> Repo.paginate(page_param)
   end
@@ -251,8 +254,9 @@ defmodule Bright.Teams do
         team_id,
         page_param \\ %{page: 1, page_size: 1}
       ) do
-    TeamMemberUsers
-    |> where([member_user], member_user.team_id == ^team_id)
+    from(tmbu in TeamMemberUsers,
+      where: tmbu.team_id == ^team_id and not is_nil(tmbu.invitation_confirmed_at)
+    )
     |> preload(user: [skill_class_scores: :skill_class])
     |> preload(user: [skill_unit_scores: :skill_unit])
     |> Repo.paginate(page_param)
@@ -273,7 +277,9 @@ defmodule Bright.Teams do
       user_id: admin_user.id,
       is_admin: true,
       # プライマリチーム判定
-      is_primary: is_primary(admin_user.id)
+      is_primary: is_primary(admin_user.id),
+      # 管理者本人は即時承認状態
+      invitation_confirmed_at: TeamMemberUsers.now_for_confirmed_at()
     }
 
     member_attr =
@@ -330,10 +336,20 @@ defmodule Bright.Teams do
     end
   end
 
-  def deliver_invitation_email_instructions(user, team, encoded_token, invite_team_url_fun)
+  @doc """
+  チーム招待メール送信
+  """
+  def deliver_invitation_email_instructions(
+        from_user,
+        to_user,
+        team,
+        encoded_token,
+        invite_team_url_fun
+      )
       when is_function(invite_team_url_fun, 1) do
     UserNotifier.deliver_invitation_team_instructions(
-      user,
+      from_user,
+      to_user,
       team,
       invite_team_url_fun.(encoded_token)
     )
@@ -350,46 +366,43 @@ defmodule Bright.Teams do
   end
 
   @doc """
-  チーム招待token認証
+  チーム招待token取得
   """
-  def verify_invitation_token(invitation_token_base64_encoded) do
+  def get_invitation_token(invitation_token_base64_encoded) do
     case Base.url_decode64(invitation_token_base64_encoded, padding: false) do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
 
-        # 渡されたtokenを元に期限内の未認証レコードがある場合は認証成功
-
+        # 渡されたtokenを元に期限内の未認証レコードを取得
         days = @invitation_validity_ago
 
         team_member_user =
           from(tmbu in TeamMemberUsers,
-            # tmbu.invitation_token == ^invitation_token and tmbu.inserted_at <= ago(^days, @invitation_validity_intervals)
             where: tmbu.invitation_token == ^hashed_token and tmbu.inserted_at > ago(^days, "day")
           )
           |> Repo.one()
 
-        cond do
-          team_member_user == nil ->
-            # 有効期限切れも含め対象のmember_userが存在しない場合は無効と判断
-            IO.puts("#### team_member_user == nil !!!!")
-            :error
-
-          team_member_user.invitation_confirmed_at != nil ->
-            # 既に承認されている場合、何もせずに認証スルー
-            {:ok, team_member_user}
-
-          true ->
-            # 未認証の場合は認証日時を更新
-            now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-
-            {:ok, _team_member_user} =
-              update_team_member_users_invitation_confirmed_at(team_member_user, %{
-                invitation_confirmed_at: now
-              })
+        if team_member_user == nil do
+          # 有効期限切れも含め対象のmember_userが存在しない場合は無効と判断
+          :error
+        else
+          {:ok, team_member_user}
         end
 
       :error ->
         :error
     end
+  end
+
+  @doc """
+  チーム招待承認
+  """
+  def confirm_invitation(team_member_user) do
+    now = TeamMemberUsers.now_for_confirmed_at()
+
+    {:ok, _team_member_user} =
+      update_team_member_users_invitation_confirmed_at(team_member_user, %{
+        invitation_confirmed_at: now
+      })
   end
 end
