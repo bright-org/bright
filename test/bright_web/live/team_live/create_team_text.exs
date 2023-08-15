@@ -7,7 +7,7 @@ defmodule BrightWeb.TeamLive.CreateTeamTest do
   describe "create_team" do
     setup [:register_and_log_in_user]
 
-    test "show create team view and user_add botton", %{
+    test "show create team view and user_add button", %{
       conn: conn
     } do
       assert {:ok, create_team_live, html} = live(conn, ~p"/teams/new")
@@ -25,7 +25,7 @@ defmodule BrightWeb.TeamLive.CreateTeamTest do
       assert add_user_result =~ member_user.name
     end
 
-    test "show create team view and create team botton", %{
+    test "show create team view and create team button", %{
       conn: conn
     } do
       assert {:ok, create_team_live, html} = live(conn, ~p"/teams/new")

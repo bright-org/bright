@@ -68,10 +68,7 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
       assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context ==
                "reset_password"
 
-      assert_email_sent(fn email ->
-        assert email.subject == "Reset password instructions"
-        assert email.to == [{"", user.email}]
-      end)
+      assert_reset_password_mail_sent(user)
     end
 
     test "does not send reset password token if email is invalid", %{conn: conn} do
