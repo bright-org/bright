@@ -2,10 +2,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   use BrightWeb, :live_view
 
   import BrightWeb.BrightModalComponents
-  import BrightWeb.SkillPanelLive.SkillsComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
 
+  alias Bright.SkillUnits
   alias Bright.SkillScores
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
@@ -37,13 +37,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_classes()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
-     |> assign_skill_units()
      |> assign_skill_score_dict()
      |> assign_counter()
-     |> assign_table_structure()
      |> assign_page_sub_title()
-     |> assign(compared_users: [], compared_user_dict: %{}, compared_users_stats: %{})
-     |> assign_compared_users_info()
      |> apply_action(socket.assigns.live_action, params)}
   end
 
@@ -80,32 +76,31 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_edit_off()}
   end
 
-  def handle_event("change", %{"score" => score, "row" => row}, socket) do
+  def handle_event("change", %{"score" => score, "skill_id" => skill_id}, socket) do
     score = String.to_atom(score)
-    row = String.to_integer(row)
-    skill_score = get_skill_score_from_table_structure(socket, row)
+    skill_score = Map.get(socket.assigns.skill_score_dict, skill_id)
 
     {:noreply,
      socket
      |> update_by_score_change(skill_score, score)
-     |> assign(focus_row: row)}
+     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))}
   end
 
-  def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(1 2 3) do
+  def handle_event("shortcut", %{"key" => key, "skill_id" => skill_id}, socket)
+      when key in ~w(1 2 3) do
     score = Map.get(@shortcut_key_score, key)
-    row = socket.assigns.focus_row
-    skill_score = get_skill_score_from_table_structure(socket, row)
+    skill_score = Map.get(socket.assigns.skill_score_dict, skill_id)
 
     {:noreply,
      socket
      |> update_by_score_change(skill_score, score)
-     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.max_row]))}
+     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))}
   end
 
   def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(ArrowDown Enter) do
     {:noreply,
      socket
-     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.max_row]))}
+     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))}
   end
 
   def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(ArrowUp) do
@@ -135,52 +130,19 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
       {:noreply,
        socket
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills/#{user.name}")}
+       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/#{user.name}")}
     else
       {:noreply,
        socket
        |> put_flash(:info, "demo: ユーザーがいません")
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills")}
+       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}")}
     end
   end
 
   def handle_event("clear_target_user", _params, socket) do
     {:noreply,
      socket
-     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills")}
-  end
-
-  # TODO: デモ用実装のため対象ユーザー実装後に削除
-  def handle_event("demo_compare_user", _params, socket) do
-    users =
-      Bright.Accounts.User
-      |> Bright.Repo.all()
-      |> Enum.reject(fn user ->
-        user.id == socket.assigns.focus_user.id ||
-          Ecto.assoc(user, :user_skill_panels)
-          |> Bright.Repo.all()
-          |> Enum.empty?()
-      end)
-
-    if users != [] do
-      user = Enum.random(users)
-
-      {:noreply,
-       socket
-       |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
-       |> assign_compared_user_dict(user)
-       |> assign_compared_users_info()}
-    else
-      {:noreply, socket}
-    end
-  end
-
-  def handle_event("reject_compared_user", %{"name" => name}, socket) do
-    {:noreply,
-     socket
-     |> update(:compared_users, fn users -> Enum.reject(users, &(&1.name == name)) end)
-     |> update(:compared_user_dict, &Map.delete(&1, name))
-     |> assign_compared_users_info()}
+     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}")}
   end
 
   defp apply_action(socket, :show, _params), do: socket
@@ -207,7 +169,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp assign_skill(socket, skill_id) do
-    skill = socket.assigns.skills |> Enum.find(&(&1.id == skill_id))
+    skill = SkillUnits.get_skill!(skill_id)
 
     socket |> assign(skill: skill)
   end
@@ -220,15 +182,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp assign_edit_on(socket) do
     socket
     |> assign(edit: true, focus_row: 1)
-  end
-
-  defp assign_table_structure(socket) do
-    table_structure = build_table_structure(socket.assigns.skill_units)
-    max_row = Enum.count(table_structure)
-
-    socket
-    |> assign(:table_structure, table_structure)
-    |> assign(:max_row, max_row)
   end
 
   defp assign_skill_evidence(socket) do
@@ -321,122 +274,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp create_skill_evidence_if_not_existing(socket), do: socket
-
-  defp assign_compared_user_dict(socket, user) do
-    # 比較対象になっているユーザーのデータを表示用に整理・集計してアサイン
-    skill_ids = Enum.map(socket.assigns.skills, & &1.id)
-    skill_scores = SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
-
-    {skill_score_dict, high_skills_count, middle_skills_count} =
-      skill_scores
-      |> Enum.reduce({%{}, 0, 0}, fn skill_score, {dict, high_c, middle_c} ->
-        score = skill_score.score
-
-        {
-          dict |> Map.put(skill_score.skill_id, score),
-          high_c + if(score == :high, do: 1, else: 0),
-          middle_c + if(score == :middle, do: 1, else: 0)
-        }
-      end)
-
-    size = Enum.count(skill_scores)
-    high_skills_percentage = calc_percentage(high_skills_count, size)
-    middle_skills_percentage = calc_percentage(middle_skills_count, size)
-
-    socket
-    |> update(
-      :compared_user_dict,
-      &Map.put(&1, user.name, %{
-        high_skills_percentage: high_skills_percentage,
-        middle_skills_percentage: middle_skills_percentage,
-        skill_score_dict: skill_score_dict
-      })
-    )
-  end
-
-  defp assign_compared_users_info(socket) do
-    # 比較対象ユーザーのデータを集計してスキルの合計用データをアサイン
-    compared_users_stats =
-      socket.assigns.skills
-      |> Enum.reduce(%{}, fn skill, acc ->
-        scores =
-          socket.assigns.compared_user_dict
-          |> Map.values()
-          |> Enum.map(&get_in(&1, [:skill_score_dict, skill.id]))
-
-        acc
-        |> Map.put(skill.id, %{
-          high_skills_count: Enum.count(scores, &(&1 == :high)),
-          middle_skills_count: Enum.count(scores, &(&1 == :middle))
-        })
-      end)
-
-    socket
-    |> assign(compared_users_stats: compared_users_stats)
-  end
-
-  defp get_skill_score_from_table_structure(socket, row) do
-    skill =
-      socket.assigns.table_structure
-      |> Enum.at(row - 1)
-      # col3
-      |> Enum.at(2)
-      |> Map.get(:skill)
-
-    socket.assigns.skill_score_dict[skill.id]
-  end
-
-  defp build_table_structure(skill_units) do
-    # スキルユニット～スキルの構造をテーブル表示で扱う形式に変換
-    #
-    # 出力サンプル:
-    # [
-    #   [%{size: 5, skill_unit: %SkillUnit{}}, %{size: 2, skill_category: %SkillCategory{}}, %{skill: %Skill{}}],
-    #   [nil, nil, %{skill: %Skill{}}],
-    #   [nil, %{size: 3, skill_category: %SkillCategory{}}, %{skill: %Skill{}}],
-    #   [nil, nil, %{skill: %Skill{}}],
-    #   [nil, nil, %{skill: %Skill{}}]
-    # ]
-
-    skill_units
-    |> Enum.flat_map(fn skill_unit ->
-      skill_category_items =
-        skill_unit.skill_categories
-        |> Enum.flat_map(&build_skill_category_table_structure/1)
-
-      build_skill_unit_table_structure(skill_unit, skill_category_items)
-    end)
-  end
-
-  defp build_skill_category_table_structure(skill_category) do
-    size = length(skill_category.skills)
-    skill_category_item = %{size: size, skill_category: skill_category}
-
-    skill_category.skills
-    |> Enum.with_index()
-    |> Enum.map(fn
-      {skill, 0} -> [skill_category_item] ++ [%{skill: skill}]
-      {skill, _i} -> [nil] ++ [%{skill: skill}]
-    end)
-  end
-
-  defp build_skill_unit_table_structure(skill_unit, skill_category_items) do
-    size =
-      skill_category_items
-      |> Enum.reduce(0, fn
-        [nil, _], acc -> acc
-        [%{size: size}, _], acc -> acc + size
-      end)
-
-    skill_unit_item = %{size: size, skill_unit: skill_unit}
-
-    skill_category_items
-    |> Enum.with_index()
-    |> Enum.map(fn
-      {skill_category_item, 0} -> [skill_unit_item] ++ skill_category_item
-      {skill_category_item, _i} -> [nil] ++ skill_category_item
-    end)
-  end
 
   defp skill_class_score_author?(skill_class_score, user) do
     skill_class_score.user_id == user.id

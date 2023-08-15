@@ -56,7 +56,7 @@ defmodule BrightWeb.SkillUpDummyLive do
 
     socket
     |> put_flash(:info, "スキルパネル:#{name}を取得しました")
-    |> push_navigate(to: "/panels/#{skill_panel_id}/graph")
+    |> push_navigate(to: "/graphs/#{skill_panel_id}")
     |> then(&{:noreply, &1})
   end
 end
