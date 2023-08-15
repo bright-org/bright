@@ -98,7 +98,7 @@ defmodule BrightWeb.TabComponents do
       |> assign(:style, style)
 
     ~H"""
-    <li class="w-full">
+    <li class="max-w-xs w-full">
       <a href="#" phx-click="tab_click"
         phx-target={@target}
         phx-value-id={@id}
