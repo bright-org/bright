@@ -177,6 +177,7 @@ defmodule BrightWeb.Router do
            :show_exam
 
       live "/teams", MyTeamLive, :index
+      live "/teams/:team_id", MyTeamLive, :index
       live "/teams/new", TeamCreateLive, :new
       live "/searchs", SearchLive.Index
     end

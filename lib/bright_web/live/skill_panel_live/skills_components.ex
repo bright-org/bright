@@ -164,7 +164,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         id="related_team_card_compare"
         module={BrightWeb.CardLive.RelatedTeamCardComponent}
         current_user={@current_user}
-        show_menue={false}
+        show_menu={false}
       />
     </div>
     """

@@ -1,6 +1,17 @@
 defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   @moduledoc """
   　関わっているチームカードコンポーネント
+
+  - current_user チーム一覧の取得対象となるユーザー
+  - over_ride_on_card_row_click_target カードコンポーネント内の行クリック時のハンドラを呼び出し元のハンドラで実装するか否か falseの場合、本実装デフォルトの挙動(チームIDのみ指定してのチームスキル分析への遷移)を実行する
+
+  ## Examples
+    <.live_component
+      id={@id}
+      module={BrightWeb.CardLive.RelatedTeamCardComponent}
+      current_user={@current_user}
+      over_ride_on_card_row_click_target={:true}
+    />
   """
   use BrightWeb, :live_component
 
@@ -9,29 +20,36 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   alias Bright.Teams
 
   @tabs [
-    {"joined_teams", "所属チーム"},
-    {"hr_teams", "人材チーム"},
-    {"suppored_from_teams", "人材支援されているチーム(仮)"}
+    {"joined_teams", "所属チーム"}
+    # TODO αリリース対象外 {"hr_teams", "人材チーム"},
+    # TODO αリリース対象外 {"suppored_from_teams", "人材支援されているチーム(仮)"}
   ]
 
-  @menu_items [
-    %{text: "チームを作る", on_click: show_modal("create-team-modal")},
-    %{text: "人材チームへのチーム登録依頼", href: "/"},
-    %{text: "管理チームの編集", href: "/"},
-    %{text: "管理チームの削除", href: "/"}
-  ]
+  @menu_items []
 
   @impl true
   def render(assigns) do
+    assigns =
+      if Map.has_key?(assigns, :over_ride_on_card_row_click_target) &&
+           assigns.over_ride_on_card_row_click_target == true do
+        # オーバーライド指定されている場合は、target指定しない（呼び出し元のハンドラへ返す）
+        assigns
+        |> assign(:low_on_click_target, nil)
+      else
+        # オーバーライド指定されていいない場合、target指定する(本実装のハンドラを実行する)
+        assigns
+        |> assign(:low_on_click_target, assigns.myself)
+      end
+
     ~H"""
     <div>
       <.tab
-        id="related_team_card"
+        id="related_team_card_tab#{@id}"
         tabs={@tabs}
         selected_tab={@card.selected_tab}
         page={@card.page_params.page}
         total_pages={@card.total_pages}
-        menu_items={show_menue(assigns)}
+        menu_items={show_menu(assigns)}
         target={@myself}
       >
         <div class="pt-3 pb-1 px-6">
@@ -52,7 +70,12 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         <%= if @card.total_entries > 0 do %>
           <ul class="flex gap-y-2.5 flex-col">
             <%= for team <- @card.entries do %>
-              <.team_small team={team.team} team_type={:general_team} />
+              <.team_small
+                id="team_small_#{team.id}"
+                team={team.team}
+                team_type={:general_team}
+                low_on_click_target={assigns.low_on_click_target}
+              />
             <% end %>
             <%= for _blank <- 0.. @card.page_params.page_size - length(@card.entries) do %>
               <li
@@ -156,6 +179,26 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     card_view(socket, card.selected_tab, page)
   end
 
+  @doc """
+  パラメータにlow_on_click_targetを指定されなかった場合のチーム行クリック時のデフォルトイベント
+  クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
+  """
+  def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
+    # TODO IO.puts("#### related_team_card_component handle_event !!!!!!!!! ###########")
+
+    current_team =
+      team_id
+      |> Teams.get_team!()
+
+    socket =
+      socket
+      |> assign(:current_team, current_team)
+      |> assign(:current_user, socket.assigns.current_user)
+      |> push_navigate(to: "/teams/#{current_team.id}")
+
+    {:noreply, socket}
+  end
+
   defp card_view(socket, tab_name, page) do
     card = create_card_param(tab_name, page)
 
@@ -176,8 +219,8 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     }
   end
 
-  defp show_menue(assings) do
-    if Map.has_key?(assings, :show_menue) && assings.show_menue == true do
+  defp show_menu(assings) do
+    if Map.has_key?(assings, :show_menu) && assings.show_menu == true do
       assings.card.menu_items
     else
       []
