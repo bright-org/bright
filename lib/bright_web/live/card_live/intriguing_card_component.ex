@@ -7,13 +7,35 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   import BrightWeb.ProfileComponents
   import BrightWeb.TabComponents
 
+  alias Bright.Teams
+
   @tabs [
-    {"intriguing", "気になる人"},
-    {"team", "チーム"},
-    {"candidate_for_employment", "採用候補者"}
+    # αリリース対象外 {"intriguing", "気になる人"},
+    {"team", "チーム"}
+    # αリリース対象外 {"candidate_for_employment", "採用候補者"}
   ]
 
-  @menu_items [%{text: "カスタムグループを作る", href: "/"}, %{text: "カスタムグループの編集", href: "/"}]
+  @menu_items [
+    # αリリース対象外 %{text: "カスタムグループを作る", href: "/"}, %{text: "カスタムグループの編集", href: "/"}
+  ]
+
+  @impl true
+  def mount(socket) do
+    IO.puts("### mount #############################")
+
+    socket =
+      socket
+      |> assign(:current_user, nil)
+      |> assign(:menu_items, nil)
+      |> assign(:tabs, @tabs)
+      # TODO タブが増えたら初期選択タブの変更に対応する
+      |> assign(:selected_tab, "team")
+      |> assign(:user_profiles, [])
+      |> assign(:inner_tab, [])
+      |> assign(:inner_selected_tab, nil)
+
+    {:ok, socket}
+  end
 
   @impl true
   @spec render(any) :: Phoenix.LiveView.Rendered.t()
@@ -21,7 +43,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     ~H"""
     <div>
       <.tab
-        id="intriguing_card"
+        id="intriguing_card#{@id}"
         tabs={@tabs}
         selected_tab={@selected_tab}
         menu_items={@menu_items}
@@ -46,53 +68,97 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
 
   @impl true
   def update(assigns, socket) do
+    page =
+      Teams.list_joined_teams_by_user_id(
+        assigns.current_user.id,
+        # TODO チーム一覧のページング
+        %{page: 1, page_size: 99999}
+      )
+
+    inner_tabs =
+      page.entries
+      |> Enum.map(fn member_user ->
+        {member_user.team.id, member_user.team.name}
+      end)
+
+    first_member_user =
+      page.entries
+      |> List.first()
+
+    first_team_id = first_member_user.team.id
+    first_tab_name = first_team_id
+
+    # mount直後のupdate時は最初のタブを自動選択
+    inner_selected_tab =
+      if socket.assigns.inner_selected_tab == nil do
+        first_tab_name
+      else
+        socket.assigns.inner_selected_tab
+      end
+
+    user_profile = get_team_member_user_profiles(inner_selected_tab)
+
     {
       :ok,
-      socket
-      |> assign(assigns)
-      |> assign(:menu_items, set_menu_items(assigns[:display_menu]))
-      |> assign(:tabs, @tabs)
-      |> assign(:selected_tab, "intriguing")
-      # TODO サンプルデータです　ここにDBから取得した結果をセットしてください
-      |> assign(:user_profiles, sample())
-      |> assign(:inner_tab, inner_tabs_sample())
-      |> assign(:inner_selected_tab, "tab1")
+      socket =
+        socket
+        |> assign(:current_user, assigns.current_user)
+        |> assign(:menu_items, set_menu_items(assigns[:display_menu]))
+        |> assign(:selected_tab, socket.assigns.selected_tab)
+        |> assign(:user_profiles, user_profile)
+        |> assign(:inner_tab, inner_tabs)
+        |> assign(:inner_selected_tab, inner_selected_tab)
     }
+  end
+
+  @doc """
+  チームタブクリック時の挙動
+
+  所属しているチームの一覧を取得する
+  """
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => id, "tab_name" => "team"},
+        socket
+      ) do
+    # TODO これは雛形です処理を記述すること
+
+    {:noreply, socket}
   end
 
   @impl true
   def handle_event(
         "tab_click",
-        %{"id" => "intriguing_card", "tab_name" => tab_name},
+        %{"id" => id, "tab_name" => tab_name},
         socket
       ) do
     # TODO これは雛形です処理を記述すること
 
-    assigns =
+    socket =
       socket
       |> assign(:selected_tab, tab_name)
 
-    {:noreply, assigns}
+    {:noreply, socket}
   end
 
   def handle_event(
         "inner_tab_click",
-        %{"tab_name" => tab_name},
+        %{"tab_name" => team_id},
         socket
       ) do
-    # TODO これは雛形です処理を記述すること
-
-    assigns =
+    socket =
       socket
-      |> assign(:inner_selected_tab, tab_name)
+      |> assign(:inner_selected_tab, team_id)
+      |> assign(:user_profiles, get_team_member_user_profiles(team_id))
 
-    {:noreply, assigns}
+    {:noreply, socket}
   end
 
   @impl true
   def handle_event(
         "previous_button_click",
-        %{"id" => "intriguing_card"},
+        %{"id" => id},
         socket
       ) do
     # TODO これは雛形です処理を記述すること
@@ -102,7 +168,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @impl true
   def handle_event(
         "next_button_click",
-        %{"id" => "intriguing_card"},
+        %{"id" => id},
         socket
       ) do
     # TODO これは雛形です処理を記述すること
@@ -145,33 +211,54 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     """
   end
 
-  # TODO サンプルデータです　DBの取得処理を追加後削除してください
-  defp sample() do
-    [
-      %{
-        user_name: "サンプルデータ",
-        title: "このデータはDBから取得してません",
-        icon_file_path:
-          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-      },
-      %{
-        user_name: "user2",
-        title: "固定データです",
-        icon_file_path:
-          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-      }
-    ]
+  defp assign_current_user_teams(assigns) do
+    page =
+      Teams.list_joined_teams_by_user_id(
+        assigns.current_user.id,
+        # TODO チーム一覧のページング
+        %{page: 1, page_size: 99999}
+      )
+
+    inner_tabs =
+      page.entries
+      |> Enum.map(fn member_user ->
+        {member_user.team.id, member_user.team.name}
+      end)
+
+    first_member_user =
+      page.entries
+      |> List.first()
+
+    first_team_id = first_member_user.team.id
+    first_tab_name = first_team_id
+
+    assigns =
+      assigns
+      |> assign(:selected_tab, "team")
+      |> assign(:inner_tab, inner_tabs)
+      |> assign(:inner_selected_tab, first_tab_name)
+      |> assign(:user_profiles, get_team_member_user_profiles(first_team_id))
   end
 
-  # TODO サンプルデータです　DBの取得処理を追加後削除してください
-  defp inner_tabs_sample() do
-    [
-      {"tab1", "キャリアの参考になる方々"},
-      {"tab2", "優秀なエンジニアの方々"},
-      {"tab3", "カスタムグループ３"},
-      {"tab4", "カスタムグループ４"},
-      {"tab5", "カスタムグループ５"},
-      {"tab6", "カスタムグループ６"}
-    ]
+  defp get_team_member_user_profiles(team_id) do
+    page =
+      Teams.list_jined_users_and_profiles_by_team_id(
+        team_id,
+        # TODO タブ内でのページング
+        %{page: 1, page_size: 10}
+      )
+
+    page.entries
+    |> Enum.map(fn member_users ->
+      member_users.user.user_profile
+
+      %{
+        user_name: member_users.user.name,
+        title: member_users.user.user_profile.title,
+        icon_file_path:
+          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+        # TODO アイコンの設定が動いたら置き換え member_users.user.user_profile.icon_file_path,
+      }
+    end)
   end
 end

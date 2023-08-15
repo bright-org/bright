@@ -241,6 +241,16 @@ defmodule Bright.Teams do
     |> Repo.paginate(page_param)
   end
 
+  def list_jined_users_and_profiles_by_team_id(
+        team_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    TeamMemberUsers
+    |> where([member_user], member_user.team_id == ^team_id)
+    |> preload(user: :user_profile)
+    |> Repo.paginate(page_param)
+  end
+
   @spec create_team_multi(any, atom | %{:id => any, optional(any) => any}, any) :: any
   @doc """
   チームおよびメンバーの一括登録
