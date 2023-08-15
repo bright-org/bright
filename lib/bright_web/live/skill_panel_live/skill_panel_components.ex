@@ -27,7 +27,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <button
         id="dropdownOffsetButton"
         data-dropdown-toggle="dropdownOffset"
-        data-dropdown-offset-skidding="320"
+        data-dropdown-offset-skidding="256"
         data-dropdown-placement="bottom"
         class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
         type="button"
