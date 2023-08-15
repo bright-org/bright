@@ -1,7 +1,7 @@
 defmodule BrightWeb.Admin.CareerFieldLive.Show do
   use BrightWeb, :live_view
 
-  alias Bright.Jobs
+  alias Bright.CareerFields
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,7 +13,7 @@ defmodule BrightWeb.Admin.CareerFieldLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:career_field, Jobs.get_career_field!(id))}
+     |> assign(:career_field, CareerFields.get_career_field!(id))}
   end
 
   defp page_title(:show), do: "Show Career field"

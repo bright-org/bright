@@ -1,12 +1,12 @@
 defmodule Bright.CareerFieldFactory do
   @moduledoc """
-  Factory for Bright.Jobs.CareerField
+  Factory for Bright.CareerFields.CareerField
   """
 
   defmacro __using__(_opts) do
     quote do
       def career_field_factory do
-        %Bright.Jobs.CareerField{
+        %Bright.CareerFields.CareerField{
           name_en: "engineer",
           name_ja: "エンジニア",
           position: 42

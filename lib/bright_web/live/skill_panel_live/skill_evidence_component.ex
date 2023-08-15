@@ -2,6 +2,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   use BrightWeb, :live_component
 
   alias Bright.SkillEvidences
+  alias Bright.SkillScores
 
   @impl true
   def render(assigns) do
@@ -67,6 +68,13 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     )
     |> case do
       {:ok, skill_evidence_post} ->
+        if post_by_myself(socket.assigns.user, socket.assigns.skill_evidence) do
+          SkillScores.update_skill_score_evidence_filled(
+            socket.assigns.user,
+            socket.assigns.skill
+          )
+        end
+
         {:noreply,
          socket
          |> stream_insert(:skill_evidence_posts, skill_evidence_post, at: -1)
@@ -99,5 +107,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   defp assign_form(socket) do
     changeset = SkillEvidences.change_skill_evidence_post(%SkillEvidences.SkillEvidencePost{})
     assign_form(socket, changeset)
+  end
+
+  defp post_by_myself(user, skill_evidence) do
+    user.id == skill_evidence.user_id
   end
 end

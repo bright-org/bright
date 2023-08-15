@@ -40,14 +40,14 @@ defmodule BrightWeb.UserSessionController do
   defp redirect_log_in_page(conn, email) do
     # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
     conn
-    |> put_flash(:error, "Invalid email or password")
+    |> put_flash(:error, "メールアドレスまたはパスワードが不正です")
     |> put_flash(:email, String.slice(email, 0, 160))
     |> redirect(to: ~p"/users/log_in")
   end
 
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, "Logged out successfully.")
+    |> put_flash(:info, "ログアウトしました")
     |> UserAuth.log_out_user()
   end
 end

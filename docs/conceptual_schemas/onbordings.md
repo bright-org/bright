@@ -1,4 +1,4 @@
-# オンボーディングに関わるテーブル定義案
+# オンボーディングに関わるテーブル定義
 [行動シナリオ「4. オンボーディングで最初のスキルパネルを選択する」](https://docs.google.com/spreadsheets/d/161ai6d8-26adTub9nlOtpVAfTmPt9NQp4--q68G0WZo/edit#gid=458681671)で必要なテーブルの定義案です。
 
 [figma](https://www.figma.com/file/q9SVY4YWjijOrgsQtJjlD6/Bright?type=design&node-id=627-3632&mode=design&t=aO8asUN6kiZ0xGCq-0) の対象画面は
@@ -7,8 +7,8 @@
 ### テーブル定義案
 
 - `id`, `inserted_at`, `updated_at` は省略
-- 新しく定義したいテーブル
-  - `career_wants`、`career_want_jobs`、`career_fields`、`jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
+- 新しく定義されたテーブル
+  - `career_wants`、`career_want_jobs`、`career_fields`、`career_field_jobs`, `jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
 - 既に定義案があるテーブル
   - `skill_panels`、`user_skill_panels`、`skill_panels`、`skill_classes`、`skill_class_units`
   - [概念データモデル スキル体系](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/skills.md) にて定義済み
@@ -23,11 +23,12 @@
 erDiagram
   career_wants ||--|{ career_want_jobs : ""
   career_want_jobs ||--|{ jobs : ""
-  jobs }|--|| career_fields : ""
+  jobs ||--|{ career_field_jobs : ""
+  career_field_jobs }|--|| career_fields : ""
   jobs ||--|{ job_skill_panels : ""
   job_skill_panels ||--|{ skill_panels : ""
   user_skill_panels ||--|{ skill_panels : ""
-  user_skill_panels }|--|| users : ""
+  user_skill_panels }o--|| users : ""
   user_onboardings ||--|| users : ""
   skill_panels ||--|{ skill_classes : ""
   skill_classes ||--|{ skill_class_units : ""
@@ -50,10 +51,14 @@ erDiagram
   }
 
   career_fields {
-    string name "キャリアフィールド名"
-    string background_color "背景色"
-    string button_color "ボタン色"
+    string name_en "キャリアフィールド名(英語)"
+    string name_ja "キャリアフィールド名(日本語)"
     int position "表示順"
+  }
+
+  career_field_jobs {
+    id career_field_id FK
+    id job_id FK
   }
 
   jobs {
@@ -71,26 +76,4 @@ erDiagram
     date locked_date "固定した日"
     string name "スキルパネル名"
   }
-
-  user_skill_panels {
-    id user_id FK
-    id skill_panel_id FK
-  }
-
-  skill_classes {
-    id skill_panel_id FK
-    string name "クラス名"
-    int rank
-  }
-
-  skill_class_units {
-    id skill_class_id FK
-    id skill_unit_id FK
-    int position
-  }
-
-  skill_units {
-    string name "スキルユニット（大分類）名"
-  }
-
 ```

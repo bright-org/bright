@@ -17,6 +17,8 @@ defmodule Bright.HistoricalSkillUnits.HistoricalSkill do
 
     belongs_to :historical_skill_category, HistoricalSkillCategory
 
+    has_many :historical_skill_scores, Bright.HistoricalSkillScores.HistoricalSkillScore
+
     timestamps()
   end
 end

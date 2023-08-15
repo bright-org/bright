@@ -62,7 +62,8 @@ defmodule Bright.MixProject do
       {:goth, "~> 1.3"},
       {:hackney, "~> 1.18"},
       {:scrivener_ecto, "~> 2.0"},
-      {:ueberauth_google, "~> 0.10"}
+      {:ueberauth_google, "~> 0.10"},
+      {:timex, "~> 3.7"}
     ]
   end
 
@@ -78,6 +79,7 @@ defmodule Bright.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "ecto.seed": ["run priv/repo/seeds.exs"],
+      "ecto.seed.dummy": ["run priv/repo/seed_dummy_data.exs"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": [
         "tailwind.install --if-missing",

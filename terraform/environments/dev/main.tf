@@ -1,3 +1,7 @@
+module "googleapis" {
+  source = "../../modules/google/apis"
+}
+
 module "bucket" {
   source = "../../modules/google/bucket"
 
@@ -10,6 +14,10 @@ module "db" {
   availability_type = "ZONAL"
   tier              = "db-g1-small"
   password          = var.db_password
+}
+
+module "docker_registry" {
+  source = "../../modules/google/docker_registry"
 }
 
 module "cloud_run_service" {

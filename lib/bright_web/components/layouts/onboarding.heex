@@ -1,0 +1,9 @@
+<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()}>
+  <body class="max-w-[1920px]">
+    <div class="flex">
+      <main class="bg-background flex flex-col flex-1 items-center justify-center">
+        <%= @inner_content %>
+      </main>
+    </div>
+  </body>
+</.root_layout>

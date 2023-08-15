@@ -1,44 +1,70 @@
 defmodule BrightWeb.SkillPanelLive.Graph do
   use BrightWeb, :live_view
-  import BrightWeb.ChartComponents
-  import BrightWeb.TimelineBarComponents
-  import BrightWeb.SkillPanelLive.SkillPanelComponents
-  alias Bright.SkillPanels
 
-  # 全体が仮実装です。
-  # - リソースロード回りは、Skillsと処理が被る可能性が高いです。参照（必要に応じて共通化）してください。
+  import BrightWeb.SkillPanelLive.SkillPanelComponents
+  import BrightWeb.SkillPanelLive.SkillPanelHelper
 
   @impl true
   def mount(_params, _session, socket) do
-    # リンクを出すための実装
-    # - 実際にはparamsからもろもろを引く
-    skill_panel =
-      SkillPanels.list_skill_panels()
-      |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
-      |> List.first()
-      |> Bright.Repo.preload(:skill_classes)
-
-    skill_class =
-      skill_panel.skill_classes
-      # 別タスクでクラスを表すカラムを追加必要（？）
-      |> Enum.sort_by(& &1.inserted_at, {:asc, NaiveDateTime})
-      |> List.first()
-
     {:ok,
      socket
-     |> assign(:page_title, "スキルパネル")
-     |> assign(:page_sub_title, skill_panel.name)
-     |> assign(:skill_panel, skill_panel)
-     |> assign(:skill_class, skill_class)}
+     |> assign(:page_title, "スキルパネル")}
   end
 
   @impl true
-  def handle_event(_event_name, _params, socket) do
-    # # TODO タイムラインバーイベント検証 タイムラインイベント周りの実装後削除予定
-    # IO.inspect("------------------")
-    # IO.inspect(event_name)
-    # IO.inspect(params)
-    # IO.inspect("------------------")
+  def handle_params(params, url, socket) do
+    # TODO: データ取得方法検討／LiveVIewコンポーネント化検討
+    {:noreply,
+     socket
+     |> assign_path(url)
+     |> assign_focus_user(params["user_name"])
+     |> assign_skill_panel(params["skill_panel_id"])
+     |> assign_skill_classes()
+     |> assign_skill_class_and_score(params["class"])
+     |> create_skill_class_score_if_not_existing()
+     |> assign_skill_units()
+     |> assign_skill_score_dict()
+     |> assign_counter()
+     |> assign_page_sub_title()}
+  end
+
+  @impl true
+  # TODO: デモ用実装のため対象ユーザー実装後に削除
+  def handle_event("demo_change_user", _params, socket) do
+    users =
+      Bright.Accounts.User
+      |> Bright.Repo.all()
+      |> Enum.reject(fn user ->
+        user.id == socket.assigns.current_user.id ||
+          Ecto.assoc(user, :user_skill_panels)
+          |> Bright.Repo.all()
+          |> Enum.empty?()
+      end)
+
+    if users != [] do
+      user = Enum.random(users)
+
+      {:noreply,
+       socket
+       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph/#{user.name}")}
+    else
+      {:noreply,
+       socket
+       |> put_flash(:info, "demo: ユーザーがいません")
+       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph")}
+    end
+  end
+
+  # TODO: 検討：本実装で同じ処理をまるっと共通化するのはimportではできそうにない
+  def handle_event("clear_target_user", _params, socket) do
+    {:noreply,
+     socket
+     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph")}
+  end
+
+  @impl true
+  def handle_info(%{event_name: "timeline_bar_button_click", params: _params}, socket) do
+    # TODO　スキルジェムを更新するイベントを追加すること
     {:noreply, socket}
   end
 end

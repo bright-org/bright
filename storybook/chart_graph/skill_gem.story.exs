@@ -6,6 +6,14 @@ defmodule Storybook.ChartComponents.SkillGem do
   def variations do
     [
       %Variation{
+        id: :skill_myself_3,
+        attributes: %{
+          data: [[60, 70, 80]],
+          labels: ["Elixir本体", "ライブラリ", "環境構築"],
+          color_theme: "myself"
+        }
+      },
+      %Variation{
         id: :skill_myself_6_2_3,
         attributes: %{
           data: [[60, 70, 80, 60, 60, 60], [50, 50, 50, 50, 50, 50]],
@@ -108,6 +116,30 @@ defmodule Storybook.ChartComponents.SkillGem do
         attributes: %{
           data: [[50, 50, 50, 80, 80, 80], [80, 80, 80, 50, 50, 50]],
           labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]
+        }
+      },
+      %Variation{
+        id: :do_not_draw_less_than_2_labels_lengt2,
+        attributes: %{
+          data: [[60, 70]],
+          labels: ["Elixir本体", "ライブラリ"],
+          color_theme: "myself"
+        }
+      },
+      %Variation{
+        id: :do_not_draw_less_than_2_labels_lengt1,
+        attributes: %{
+          data: [[60]],
+          labels: ["Elixir本体"],
+          color_theme: "myself"
+        }
+      },
+      %Variation{
+        id: :do_not_draw_less_than_2_labels_lengt0,
+        attributes: %{
+          data: [[]],
+          labels: [],
+          color_theme: "myself"
         }
       }
     ]

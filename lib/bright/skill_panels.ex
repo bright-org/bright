@@ -39,6 +39,28 @@ defmodule Bright.SkillPanels do
   """
   def get_skill_panel!(id), do: Repo.get!(SkillPanel, id)
 
+  def get_user_skill_panel!(user, skill_panel_id) do
+    user
+    |> Ecto.assoc(:skill_panels)
+    |> Bright.Repo.get_by!(id: skill_panel_id)
+  end
+
+  def get_user_skill_panel(user, skill_panel_id) do
+    user
+    |> Ecto.assoc(:skill_panels)
+    |> Bright.Repo.get_by(id: skill_panel_id)
+  end
+
+  def get_user_latest_skill_panel!(user) do
+    from(q in SkillPanel,
+      join: u in assoc(q, :user_skill_panels),
+      where: u.user_id == ^user.id,
+      order_by: [desc: u.updated_at],
+      limit: 1
+    )
+    |> Repo.one!()
+  end
+
   @doc """
   Creates a skill_panel.
 
@@ -116,7 +138,32 @@ defmodule Bright.SkillPanels do
       [%SkillClass{}, ...]
 
   """
-  def list_skill_classes do
-    Repo.all(SkillClass)
+  def list_skill_classes(query \\ SkillClass) do
+    Repo.all(query)
+  end
+
+  def get_skill_class_by(condition) do
+    Repo.get_by(SkillClass, condition)
+  end
+
+  @doc """
+  オンボーディング、スキルアップで選択したスキルパネルの詳細の表示に使用する
+  クラス１のユニットを一覧するためデフォルト値は１を指定
+
+  ## Examples
+
+      iex> get_skill_class_by_skill_panel_id()
+      %SkillClass{}
+  """
+
+  def get_skill_class_by_skill_panel_id(skill_panel_id, class_num \\ 1) do
+    query =
+      from sc in SkillClass,
+        where:
+          sc.skill_panel_id == ^skill_panel_id and
+            sc.class == ^class_num,
+        preload: :skill_units
+
+    Repo.one(query)
   end
 end

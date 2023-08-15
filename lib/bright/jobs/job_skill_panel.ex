@@ -21,6 +21,5 @@ defmodule Bright.Jobs.JobSkillPanel do
   def changeset(job_skill_panel, attrs) do
     job_skill_panel
     |> cast(attrs, [:job_id, :skill_panel_id])
-    |> validate_required([:job_id, :skill_panel_id])
   end
 end

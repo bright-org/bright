@@ -1,0 +1,58 @@
+<section class="bg-white p-8 min-h-[720px] min-w-[1300px] relative rounded-lg">
+  <h1 class="font-bold text-3xl">
+    <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:align-[-5px] before:w-9">
+      スキルを選ぶ
+    </span>
+  </h1>
+  <div class="mt-4">はじめに、気になるスキルを以下の中から選択してください</div>
+
+  <div class="flex flex-col mt-2 relative">
+    <section class="accordion mt-5 max-w-[1236px]">
+      <div class="bg-brightGray-50 rounded w-full">
+        <p
+          class={
+            "bg-brightGray-900 cursor-pointer font-bold px-4 py-2 relative rounded select-none text-white hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[''] before:h-3 before:right-4 before:top-1/2 before:w-3 " <>
+            if @open_want_todo, do: open(), else: close()
+          }
+          phx-click={toggle("want_todo_panel")}
+        >
+          やりたいことや興味・関心があることからスキルを選ぶ
+        </p>
+
+        <.live_component
+          id="want_to_do"
+          module={BrightWeb.OnboardingLive.WantToDoComponents}
+        />
+      </div>
+    </section>
+
+    <section class="accordion flex mt-8 max-w-[1236px]">
+      <div class="bg-brightGray-50 rounded w-full">
+        <p
+          class={
+            "bg-brightGray-900 cursor-pointer font-bold px-4 py-2 relative rounded select-none text-white hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[''] before:h-3 before:right-4 before:top-1/2 before:w-3 " <>
+            if @open_wants_job, do: open(), else: close()
+          }
+          phx-click={toggle("wants_job_panel")}
+        >
+          現在のジョブ、または、なりたいジョブからスキルを選ぶ
+        </p>
+
+        <.live_component
+          id="wants_job"
+          module={BrightWeb.OnboardingLive.WantsJobComponents}
+        />
+      </div>
+    </section>
+  </div>
+
+  <div class="mt-8 max-w-[1236px]">
+
+    <button
+      id="skip_onboarding"
+      class="w-full white cursor-pointer font-bold px-4 py-2 relative rounded select-none border-2 hover:opacity-50"
+      phx-click="skip_onboarding">
+      採用担当、人事、営業の方はこちら（自分のスキルを登録しません）
+    </button>
+  </div>
+</section>

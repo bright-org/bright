@@ -18,7 +18,9 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       assert html_response(conn, 302)
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
-               "User confirmation link is invalid or it has expired."
+               "リンクが無効であるか期限が切れています"
+
+      assert redirected_to(conn) == ~p"/users/log_in"
     end
 
     test "confirm user and logs the user in", %{conn: conn, user: user} do
@@ -32,7 +34,7 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
       assert redirected_to(conn) == ~p"/onboardings"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "User confirmed successfully."
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "メールアドレスの確認に成功しました"
       assert Repo.get!(User, user.id).confirmed_at
       assert Repo.all(from u in UserToken, where: u.context == "confirm") == []
     end

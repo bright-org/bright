@@ -10,12 +10,13 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   alias Bright.Notifications
 
   @tabs [
-    {"team_invitation", "チーム招待"},
-    {"daily", "デイリー"},
-    {"weekly", "ウイークリー"},
-    {"recruitment_coordination", "採用の調整"},
-    {"skill_panel_update", "スキルパネル更新"},
-    {"operation", "運営"}
+    {"team_invitation", "チーム招待"}
+    # TODO α版では実装しない
+    # {"daily", "デイリー"},
+    # {"weekly", "ウイークリー"},
+    # {"recruitment_coordination", "採用の調整"},
+    # {"skill_panel_update", "スキルパネル更新"},
+    # {"operation", "運営"}
   ]
 
   @impl true
@@ -30,8 +31,14 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
         total_pages={@card.total_pages}
         target={@myself}
       >
-        <div class="pt-4 px-8 h-[216px]">
+        <div class="pt-4 px-6 min-h-[216px]">
+
           <ul class="flex gap-y-2.5 flex-col">
+            <li :if={Enum.count(@card.notifications) == 0} class="flex">
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+                <%= Enum.into(@tabs, %{}) |> Map.get(@card.selected_tab) %>はありません
+              </div>
+            </li>
             <%= for notification <- @card.notifications do %>
               <.card_row type="contact" notification={notification} />
             <% end %>

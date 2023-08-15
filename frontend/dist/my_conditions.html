@@ -1784,9 +1784,24 @@
                           <span class="w-32">ハンドル名</span>
                           <input type="text" size="20" name="hn" class="border border-brightGray-200 px-2 py-1  rounded w-60">
                         </label>
-                        <label class="flex items-center py-4">
+                        <label class="border-b border-brightGray-200 flex items-center py-4">
                           <span class="w-32">称号</span>
                           <input type="text" size="20" name="title" class="border border-brightGray-200 px-2 py-1  rounded w-60">
+                        </label>
+
+                        <label class="flex items-center pt-4 pb-2">
+                          <span class="w-32">GitHub</span>
+                          <input type="text" size="20" name="url_github" class="border border-brightGray-200 px-2 py-1  rounded w-60">
+                        </label>
+
+                        <label class="flex items-center py-2">
+                          <span class="w-32">Twitter</span>
+                          <input type="text" size="20" name="url_twitter" class="border border-brightGray-200 px-2 py-1  rounded w-60">
+                        </label>
+
+                        <label class="flex items-center pt-2 pb-4">
+                          <span class="w-32">facebook</span>
+                          <input type="text" size="20" name="url_facebook" class="border border-brightGray-200 px-2 py-1  rounded w-60">
                         </label>
                       </div>
           
@@ -1822,19 +1837,37 @@
                         </label>
 
                         <div class="ml-4 mt-1 py-4 w-fit">
-                          <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">変更する</a>
+                          <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">保存する</a>
                         </div>
                       </div>
           
-                      <div class="w-1/2" id="sub_mail_0">
-                        <label class="flex items-center pb-4">
-                          <span class="flex items-center justify-between w-44">サブアドレス <i class="bg-brightGreen-900 block border border-brightGreen-900 cursor-pointer h-4 indent-40 mr-2 mt-px overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white after:top-1/2 after:left-1/2 after:-ml-1 after:-mt-px after:content-[''] after:block after:absolute after:w-2 after:h-0.5 after:bg-white after:rotate-90 hover:opacity-50">追加</i></span>
+                      <div class="sub_mail_address flex pb-4 w-9/12">
+                        <label class="flex items-center mr-4">
+                          <span class="flex items-center justify-between w-44">サブアドレス</span>
                           <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1  rounded w-48">
                         </label>
+                        <button type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
+                        <button type="button" class="hidden mail_add bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">追加する</button>
+                      </div>
+
+                      <div class="sub_mail_address flex pb-4 w-9/12">
+                        <label class="flex items-center mr-4 pl-44">
+                          <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1  rounded w-48">
+                        </label>
+                        <button type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
+                        <button type="button" class="hidden mail_add bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">追加する</button>
+                      </div>
+
+                      <div class="sub_mail_address flex pb-4 w-9/12">
+                        <label class="flex items-center mr-4 pl-44">
+                          <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1  rounded w-48">
+                        </label>
+                        <button type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
+                        <button type="button" class="hidden mail_add bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">追加する</button>
                       </div>
 
                       <div class="mt-1 ml-auto pb-4 w-fit">
-                        <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">変更する</a>
+                        <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">保存する</a>
                       </div>
                     </div>
           
@@ -1861,7 +1894,7 @@
                       </div>
 
                       <div class="absolute right-0 top-0 w-fit">
-                        <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">変更する</a>
+                        <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">保存する</a>
                       </div>
                     </div>
                   </li><!-- End メール・パスワード -->
@@ -2221,17 +2254,45 @@ $(function(){
 });
 //　Sub mail address
 $(function(){
-  let sub_mail = $("#sub_mail_0");
-  $("div[id^='sub_mail_']").find("i").on("click", function(){
+  let sub_mail = $(".sub_mail_address");
+  sub_mail.find(".mail_add").on("click", function(){
 //    console.log("success");
-    let submail_number = $("#mail_section").find("div[id^='sub_mail_']").length;
+    let submail_number = $("#mail_section").find(sub_mail).length;
+    let index = sub_mail.index(this);
 //    console.log(submail_number);
-    if(submail_number < 8){
-      let submail_input  = sub_mail.clone();
-      $("#sub_mail_" + (submail_number - 1)).before(submail_input).attr("id", "sub_mail_" + submail_number);
-      $("#sub_mail_" + submail_number).find("input").attr("name","sub_mail_" + submail_number);
-      $("#sub_mail_" + (submail_number - 1)).find("i").remove();
+    if(submail_number < 3){
+      let submail_input  = sub_mail.eq(index).attr("value","").clone();
+      $("#mail_section").append(submail_input);
     }
+    if(submail_number < 2){
+        sub_mail.eq(0).find(".mail_add").hide();
+        sub_mail.eq(0).find(".mail_delete").show();
+        sub_mail.eq(1).find(".mail_delete").hide();
+        sub_mail.eq(1).find("span").text("");
+    }
+  });
+
+/*
+  sub_mail.find(".mail_add").on("click", function(){
+//    console.log("success");
+    let submail_number = $("#mail_section").find(sub_mail).length;
+    let index = sub_mail.index(this);
+//    console.log(submail_number);
+    if(submail_number < 3){
+      let submail_input  = sub_mail.eq(index).attr("value","").clone();
+      $("#mail_section").append(submail_input);
+    }
+    if(submail_number < 2){
+        sub_mail.eq(0).find(".mail_add").hide();
+        sub_mail.eq(0).find(".mail_delete").show();
+        sub_mail.eq(1).find(".mail_delete").hide();
+        sub_mail.eq(1).find("span").text("");
+    }
+  });
+*/
+
+  $("div[id^='sub_mail_']").find(".mail_delete").on("click", function(){
+    let submail_number = $("#mail_section").find("div[id^='sub_mail_']").length;
   });
 });
 </script>
