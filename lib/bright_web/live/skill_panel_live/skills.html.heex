@@ -70,11 +70,11 @@
             <td>
               <div class="flex justify-center gap-x-2">
                 <div class="min-w-[3em] flex items-center">
-                  <span class="h-4 w-4 rounded-full bg-skillPanel-brightGreen600 inline-block mr-1" />
+                  <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
                   <span class="score-high-percentage"><%= floor calc_percentage(@counter.high, @num_skills) %>％</span>
                 </div>
                 <div class="min-w-[3em] flex items-center">
-                  <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-brightGreen300 inline-block mr-1" />
+                  <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
                   <span class="score-middle-percentage"><%= floor calc_percentage(@counter.middle, @num_skills) %>％</span>
                 </div>
               </div>
@@ -83,10 +83,10 @@
               <% user_data = Map.get(@compared_user_dict, user.name) %>
               <div class="flex justify-center gap-x-2">
                 <div class="min-w-[3em] flex items-center">
-                  <span class="h-4 w-4 rounded-full bg-skillPanel-amethyst600 inline-block mr-1"></span><%= user_data.high_skills_percentage %>％
+                  <span class={[score_mark_class(:high, :amethyst), "inline-block mr-1"]}></span><%= user_data.high_skills_percentage %>％
                 </div>
                 <div class="min-w-[3em] flex items-center">
-                  <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block mr-1"></span><%= user_data.middle_skills_percentage %>％
+                  <span class={[score_mark_class(:middle, :amethyst), "inline-block mr-1"]}></span><%= user_data.middle_skills_percentage %>％
                 </div>
               </div>
             </td>
@@ -114,7 +114,7 @@
               <td>
                 <div class="num-high-users flex justify-center gap-x-1">
                   <div class="min-w-[3em] flex items-center">
-                    <span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mr-1"></span>
+                    <span class={[score_mark_class(:high, :gray), "inline-block mr-1"]}></span>
                     <%= if skill_score.score == :high do %>
                       <%= get_in(@compared_users_stats, [col3.skill.id, :high_skills_count]) + 1 %>
                     <% else %>
@@ -122,7 +122,7 @@
                     <% end %>
                   </div>
                   <div class="min-w-[3em] flex items-center">
-                    <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-300 inline-block mr-1"></span>
+                    <span class={[score_mark_class(:middle, :gray), "inline-block mr-1"]}></span>
                     <%= if skill_score.score == :middle do %>
                       <%= get_in(@compared_users_stats, [col3.skill.id, :middle_skills_count]) + 1 %>
                     <% else %>
@@ -149,7 +149,7 @@
                         name={"score-#{row}-1"}
                         checked={skill_score.score == :high}
                         class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                      <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"></span>
+                      <span class={[score_mark_class(:high, :green), "ml-1"]} />
                     </label>
 
                     <label
@@ -163,7 +163,7 @@
                         name={"score-#{row}-2"}
                         checked={skill_score.score == :middle}
                         class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                      <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"></span>
+                      <span class={[score_mark_class(:middle, :green), "ml-1"]} />
                     </label>
 
                     <label
@@ -177,19 +177,19 @@
                         name={"score-#{row}-3"}
                         checked={skill_score.score == :low}
                         class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 hark:bg-gray-700 dark:border-gray-600" />
-                      <span class="h-1 w-4 bg-brightGray-200 ml-1"></span>
+                      <span class={[score_mark_class(:low, :green), "ml-1"]} />
                     </label>
                   </div>
                 <% else %>
                   <div class="flex justify-center gap-x-4 px-4 min-w-[150px]">
-                    <div class={score_mark_class(skill_score.score, :me)} />
+                    <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
                   </div>
                 <% end %>
               </td>
               <td :for={user <- @compared_users}>
                 <% score = get_in(@compared_user_dict, [user.name, :skill_score_dict, col3.skill.id]) %>
                 <div class="flex justify-center gap-x-4 px-4 h-[21px] items-center">
-                  <div class={score_mark_class(score, :compared_user)} />
+                  <span class={[score_mark_class(score, :amethyst), "inline-block"]} />
                 </div>
               </td>
             </tr>

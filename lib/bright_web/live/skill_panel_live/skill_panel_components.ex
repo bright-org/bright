@@ -4,6 +4,32 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
 
+  # スコア（〇 △ー） 各スタイルと色の定義
+  @score_mark %{
+    high: "high h-4 w-4 rounded-full",
+    middle:
+      "h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px]",
+    low: "h-1 w-4"
+  }
+
+  @score_mark_color %{
+    green: %{
+      high: "bg-skillPanel-brightGreen600",
+      middle: "border-b-skillPanel-brightGreen300",
+      low: "bg-brightGray-200"
+    },
+    amethyst: %{
+      high: "bg-skillPanel-amethyst600",
+      middle: "border-b-skillPanel-amethyst300",
+      low: "bg-brightGray-200"
+    },
+    gray: %{
+      high: "bg-brightGray-500",
+      middle: "border-b-brightGray-300",
+      low: "bg-brightGray-200"
+    }
+  }
+
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
@@ -286,11 +312,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             </p>
             <div class="flex flex-col w-24 pl-6">
               <div class="min-w-[4em] flex items-center">
-                <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
+                <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
                 <%= calc_percentage(@counter.high, @num_skills) %>％
               </div>
               <div class="min-w-[4em] flex items-center">
-                <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
+                <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
                 <%= calc_percentage(@counter.middle, @num_skills) %>％
               </div>
             </div>
@@ -312,32 +338,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
-  def score_mark_class(score, :me) do
-    score
-    |> case do
-      :high ->
-        "score-mark-high h-4 w-4 rounded-full bg-skillPanel-brightGreen600"
+  def score_mark_class(mark, color) do
+    mark = mark || :low
 
-      :middle ->
-        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
-
-      :low ->
-        "score-mark-low h-1 w-4 bg-brightGray-200"
-    end
-  end
-
-  def score_mark_class(score, :compared_user) do
-    score
-    |> case do
-      :high ->
-        "score-mark-high h-4 w-4 rounded-full bg-skillPanel-amethyst600"
-
-      :middle ->
-        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block"
-
-      v when v in [nil, :low] ->
-        "score-mark-low h-1 w-4 bg-brightGray-200"
-    end
+    [Map.get(@score_mark, mark), get_in(@score_mark_color, [color, mark])]
   end
 
   defp profile_skill_class_level(%{level: :beginner} = assigns) do
