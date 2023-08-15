@@ -5,10 +5,6 @@ defmodule Bright.Teams.TeamMemberUsers do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @hash_algorithm :sha256
-  @rand_size 32
-  @invitation_validity_in_days 7
-
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
   schema "team_member_users" do
@@ -31,35 +27,24 @@ defmodule Bright.Teams.TeamMemberUsers do
   @doc false
   def changeset(team_member_users, attrs) do
     team_member_users
-    |> cast(attrs, [:user_id, :team_id, :is_admin, :is_primary, :invitation_token])
+    |> cast(attrs, [
+      :user_id,
+      :team_id,
+      :is_admin,
+      :is_primary,
+      :invitation_token,
+      :invitation_sent_to,
+      :invitation_confirmed_at
+    ])
     |> validate_required([:user_id])
   end
 
-  def build_invitation_token(member_user) do
-    token = :crypto.strong_rand_bytes(@rand_size)
-    hashed_token = :crypto.hash(@hash_algorithm, token)
-
-    Base.url_encode64(token, padding: false)
-  end
-
-  def verify_email_token_query(token, context) do
-    case Base.url_decode64(token, padding: false) do
-      {:ok, decoded_token} ->
-        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
-        days = @invitation_validity_in_days
-
-        #query =
-        #  from(membet_users in ,
-        #    join: user in assoc(membet_users, :user),
-        #   # where: membet_users.inserted_at > ago(^days, "day") and token.sent_to == user.email,
-        #    select: membet_users
-        #  )
-          query = ""
-
-        {:ok, query}
-
-      :error ->
-        :error
-    end
+  @doc false
+  def update_invitation_confirmed_at_changeset(team_member_users, attrs) do
+    team_member_users
+    |> cast(attrs, [
+      :invitation_confirmed_at
+    ])
+    |> validate_required([:invitation_confirmed_at])
   end
 end

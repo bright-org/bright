@@ -7,6 +7,13 @@ defmodule Bright.Teams do
   alias Bright.Repo
 
   alias Bright.Teams.Team
+  alias Bright.Accounts.UserNotifier
+
+  # 招待メール関連定数
+  @hash_algorithm :sha256
+  @rand_size 32
+  # TODO 要件調整 招待メールの期限1日
+  @invitation_validity_ago 1
 
   @doc """
   Returns the list of teams.
@@ -37,6 +44,7 @@ defmodule Bright.Teams do
   """
   def get_team!(id) do
     Team
+    |> preload(member_users: :user)
     |> Repo.get!(id)
   end
 
@@ -179,6 +187,15 @@ defmodule Bright.Teams do
     |> Repo.update()
   end
 
+  def update_team_member_users_invitation_confirmed_at(
+        %TeamMemberUsers{} = team_member_users,
+        attrs
+      ) do
+    team_member_users
+    |> TeamMemberUsers.update_invitation_confirmed_at_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a team_member_users.
 
@@ -263,14 +280,16 @@ defmodule Bright.Teams do
       member_users
       |> Enum.map(fn member_user ->
         # 招待メール用のtokenを作成
-        invitation_token = TeamMemberUsers.build_invitation_token(member_user)
+        {base64_encoded_token, hashed_token} = build_invitation_token()
 
         %{
           user_id: member_user.id,
           is_admin: false,
           # メンバーのプライマリ判定は承認後に実施する為一旦falseとする
           is_primary: false,
-          invitation_token: invitation_token,
+          invitation_token: hashed_token,
+          invitation_sent_to: member_user.email,
+          base64_encoded_token: base64_encoded_token
         }
       end)
 
@@ -293,7 +312,7 @@ defmodule Bright.Teams do
       |> Ecto.Multi.insert(:team, team_and_members_changeset)
       |> Repo.transaction()
 
-    {:ok, Map.get(result, :team)}
+    {:ok, Map.get(result, :team), member_attr}
   end
 
   @doc """
@@ -308,6 +327,69 @@ defmodule Bright.Teams do
       true
     else
       false
+    end
+  end
+
+  def deliver_invitation_email_instructions(user, team, encoded_token, invite_team_url_fun)
+      when is_function(invite_team_url_fun, 1) do
+    UserNotifier.deliver_invitation_team_instructions(
+      user,
+      team,
+      invite_team_url_fun.(encoded_token)
+    )
+  end
+
+  @doc """
+  チーム招待認証要token発行
+  """
+  def build_invitation_token() do
+    token = :crypto.strong_rand_bytes(@rand_size)
+    hashed_token = :crypto.hash(@hash_algorithm, token)
+    base64_encoded_token = Base.url_encode64(token, padding: false)
+    {base64_encoded_token, hashed_token}
+  end
+
+  @doc """
+  チーム招待token認証
+  """
+  def verify_invitation_token(invitation_token_base64_encoded) do
+    case Base.url_decode64(invitation_token_base64_encoded, padding: false) do
+      {:ok, decoded_token} ->
+        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+
+        # 渡されたtokenを元に期限内の未認証レコードがある場合は認証成功
+
+        days = @invitation_validity_ago
+
+        team_member_user =
+          from(tmbu in TeamMemberUsers,
+            # tmbu.invitation_token == ^invitation_token and tmbu.inserted_at <= ago(^days, @invitation_validity_intervals)
+            where: tmbu.invitation_token == ^hashed_token and tmbu.inserted_at > ago(^days, "day")
+          )
+          |> Repo.one()
+
+        cond do
+          team_member_user == nil ->
+            # 有効期限切れも含め対象のmember_userが存在しない場合は無効と判断
+            IO.puts("#### team_member_user == nil !!!!")
+            :error
+
+          team_member_user.invitation_confirmed_at != nil ->
+            # 既に承認されている場合、何もせずに認証スルー
+            {:ok, team_member_user}
+
+          true ->
+            # 未認証の場合は認証日時を更新
+            now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+            {:ok, _team_member_user} =
+              update_team_member_users_invitation_confirmed_at(team_member_user, %{
+                invitation_confirmed_at: now
+              })
+        end
+
+      :error ->
+        :error
     end
   end
 end
