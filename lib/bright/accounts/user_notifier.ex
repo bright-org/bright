@@ -9,14 +9,14 @@ defmodule Bright.Accounts.UserNotifier do
   alias Bright.Mailer
 
   @signature """
-  ────────────−--- -- - - - - -- ---−────────────
+  ──────────────────−--- -- - - - - -- ---−──────────────────
   Bright https://bright-fun.org
   エンジニアやPM、UX・UIデザイナーのスキルを見える化
+  【カスタマーサクセス連絡先】customer-success@bright-fun.org
 
   運営会社：株式会社 DigiDockConsulting
   〒802-0001 福岡県北九州市小倉北区浅野3-8-1 AIMビル6階
-  contact@digi-dock.com
-  ────────────−--- -- - - - - -- ---−────────────
+  ──────────────────−--- -- - - - - -- ---−──────────────────
   """
 
   # Delivers the email using the application mailer.
