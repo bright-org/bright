@@ -19,14 +19,14 @@ defmodule Bright.Accounts do
   @doc """
   Gets a confirmed user by email.
 
-  When `:confirmed` option is given, gets a user including not confirmed.
+  When `:including_not_confirmed` option is given and true, gets a user including not confirmed.
 
   ## Examples
 
       iex> get_user_by_email("foo@example.com")
       %User{}
 
-      iex> get_user_by_email("foo@example.com", confirmed: false)
+      iex> get_user_by_email("foo@example.com", including_not_confirmed: true)
       %User{}
 
       iex> get_user_by_email("unknown@example.com")
@@ -38,8 +38,8 @@ defmodule Bright.Accounts do
     |> Repo.one()
   end
 
-  def get_user_by_email(email, confirmed: false) when is_binary(email) do
-    User.email_query(email, confirmed: false)
+  def get_user_by_email(email, including_not_confirmed: true) when is_binary(email) do
+    User.email_query(email, including_not_confirmed: true)
     |> Repo.one()
   end
 
@@ -232,7 +232,6 @@ defmodule Bright.Accounts do
     changeset =
       user
       |> User.email_changeset(%{email: email})
-      |> User.confirm_changeset()
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
@@ -448,6 +447,12 @@ defmodule Bright.Accounts do
   1. Delete existing token and Generate user two factor auth session token
   2. Delete existing code and Generate user two factor auth code
   3. Deliver two factor auth code to user
+
+  ## Examples
+
+      iex> setup_user_2fa_auth(user)
+      "token"
+
   """
   def setup_user_2fa_auth(user) do
     {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
@@ -494,13 +499,29 @@ defmodule Bright.Accounts do
     end
   end
 
-  def generate_user_2fa_done_token(user) do
+  @doc """
+  Finish user two factor auth and return two_factor_auth_done token.
+
+  1. Delete existing two_factor_auth_session, two_factor_auth_done tokens, user_2fa_code.
+  2. Generate two_factor_auth_done token.
+
+  ## Examples
+
+      iex> finish_user_2fa(user)
+      "token"
+
+  """
+  def finish_user_2fa(user) do
     {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
 
     Ecto.Multi.new()
     |> Ecto.Multi.delete_all(
       :delete_token,
-      UserToken.user_and_contexts_query(user, ["two_factor_auth_done"])
+      UserToken.user_and_contexts_query(user, ["two_factor_auth_session", "two_factor_auth_done"])
+    )
+    |> Ecto.Multi.delete_all(
+      :delete_2fa_code,
+      User2faCodes.user_query(user)
     )
     |> Ecto.Multi.insert(:user_token, user_token)
     |> Repo.transaction()
@@ -529,6 +550,12 @@ defmodule Bright.Accounts do
 
   @doc """
   Generate social indentifier token.
+
+  ## Examples
+
+      iex> generate_social_identifier_token(%{name: "koyo", email: "dummy@example.com", provider: :google, identifier: "1})
+      "token"
+
   """
   def generate_social_identifier_token(
         %{
@@ -554,6 +581,15 @@ defmodule Bright.Accounts do
 
   @doc """
   Gets social identifier token.
+
+  ## Examples
+
+      iex> get_social_identifier_token("valid token")
+      %SocialIdentifierToken{}
+
+      iex> get_social_identifier_token("invalid token")
+      nil
+
   """
   def get_social_identifier_token(token) do
     with {:ok, query} <-
@@ -569,10 +605,13 @@ defmodule Bright.Accounts do
   get user by name or email full match
 
   ## Examples
+
       iex> get_user_by_name_or_email("name or email full match")
       {:ok, %User{}}
+
       iex> get_user_by_name_or_email("not full match")
       nil
+
   """
   def get_user_by_name_or_email(name_or_email) do
     User
@@ -581,15 +620,24 @@ defmodule Bright.Accounts do
     |> Repo.one()
   end
 
+  def get_user_by_name(name) do
+    User
+    |> where([user], not is_nil(user.confirmed_at))
+    |> where([user], user.name == ^name)
+    |> Repo.one()
+  end
+
   @doc """
   Check if onboarding is already finished.
 
   ## Examples
+
       iex> onboarding_finished?(user)
       true
 
       iex> onboarding_finished?(user)
       false
+
   """
   def onboarding_finished?(user) do
     from(user_onboarding in UserOnboarding, where: user_onboarding.user_id == ^user.id)

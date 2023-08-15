@@ -42,3 +42,15 @@ config :google_api_storage, base_url: System.get_env("GCS_BASE_URL", "http://loc
 config :bright, :google_api_storage,
   bucket_id: "bright_storage_local_test",
   public_base_url: System.get_env("GCS_PUBLIC_BASE_URL", "http://localhost:4443")
+
+# NOTE: テスト用に Bright.Ueberauth.Strategy.Test を作成して使用
+config :ueberauth, Ueberauth,
+  providers: [
+    google:
+      {Bright.Ueberauth.Strategy.Test,
+       [aliased_strategy: Ueberauth.Strategy.Google, default_scope: "email profile"]}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: "dummy_client_id",
+  client_secret: "dummy_client_secret"

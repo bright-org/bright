@@ -1,0 +1,108 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "can't be blank"
+msgstr "入力してください"
+
+msgid "has already been taken"
+msgstr "すでに使用されています"
+
+msgid "is invalid"
+msgstr "無効です"
+
+msgid "must be accepted"
+msgstr "同意してください"
+
+msgid "has invalid format"
+msgstr "無効なフォーマットです"
+
+msgid "has an invalid entry"
+msgstr "無効な値です"
+
+msgid "is reserved"
+msgstr "使用できません"
+
+msgid "does not match confirmation"
+msgstr "同じ値を入力してください"
+
+msgid "is still associated with this entry"
+msgstr "削除できませんでした"
+
+msgid "are still associated with this entry"
+msgstr "削除できませんでした"
+
+msgid "should have %{count} item(s)"
+msgid_plural "should have %{count} item(s)"
+msgstr[0] "%{count}項目入力してください"
+
+msgid "should be %{count} character(s)"
+msgid_plural "should be %{count} character(s)"
+msgstr[0] "%{count}文字入力してください"
+
+msgid "should be %{count} byte(s)"
+msgid_plural "should be %{count} byte(s)"
+msgstr[0] "バイト入力してください"
+
+msgid "should have at least %{count} item(s)"
+msgid_plural "should have at least %{count} item(s)"
+msgstr[0] "%{count}項目以上で入力してください"
+
+msgid "should be at least %{count} character(s)"
+msgid_plural "should be at least %{count} character(s)"
+msgstr[0] "%{count}文字以上で入力してください"
+
+msgid "should be at least %{count} byte(s)"
+msgid_plural "should be at least %{count} byte(s)"
+msgstr[0] "%{count}バイト以上で入力してください"
+
+msgid "should have at most %{count} item(s)"
+msgid_plural "should have at most %{count} item(s)"
+msgstr[0] "%{count}項目以内で入力してください"
+
+msgid "should be at most %{count} character(s)"
+msgid_plural "should be at most %{count} character(s)"
+msgstr[0] "%{count}文字以内で入力してください"
+
+msgid "should be at most %{count} byte(s)"
+msgid_plural "should be at most %{count} byte(s)"
+msgstr[0] "%{count}バイト以内で入力してください"
+
+msgid "must be less than %{number}"
+msgstr "%{number}未満の値を入力してください"
+
+msgid "must be greater than %{number}"
+msgstr "%{number}よりも大きい値を入力してください"
+
+msgid "must be less than or equal to %{number}"
+msgstr "%{number}以内の値入力してください"
+
+msgid "must be greater than or equal to %{number}"
+msgstr "%{number}以上の値を入力してください"
+
+msgid "must be equal to %{number}"
+msgstr "%{number}と同じ値にしてください"
+
+msgid "does not match password"
+msgstr "パスワードが一致しません"
+
+msgid "did not change"
+msgstr "変更されていません"
+
+msgid "at least one upper or lower case character"
+msgstr "英字を1文字以上含めてください"
+
+msgid "at least one digit"
+msgstr "数字を1文字以上含めてください"
+
+msgid "only lower-case alphanumeric character and -_. is available"
+msgstr "小文字の半角英数字と「-_.」 のみ利用可能です"

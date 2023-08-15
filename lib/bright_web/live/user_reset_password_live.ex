@@ -67,7 +67,7 @@ defmodule BrightWeb.UserResetPasswordLive do
       assign(socket, user: user, token: token)
     else
       socket
-      |> put_flash(:error, "Reset password link is invalid or it has expired.")
+      |> put_flash(:error, "リンクが無効であるか期限が切れています")
       |> redirect(to: ~p"/users/log_in")
     end
   end

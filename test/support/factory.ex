@@ -9,6 +9,8 @@ defmodule Bright.Factory do
   use Bright.UserFactory
   use Bright.UserTokenFactory
   use Bright.User2faCodeFactory
+  use Bright.UserSocialAuthFactory
+  use Bright.SocialIdentifierTokenFactory
 
   # UserProfiles context
   use Bright.UserProfileFactory
@@ -21,6 +23,7 @@ defmodule Bright.Factory do
 
   # Jobs context
   use Bright.CareerFieldFactory
+  use Bright.CareerWantFactory
   use Bright.JobFactory
 
   # UserJobProfiles context
@@ -34,6 +37,7 @@ defmodule Bright.Factory do
   use Bright.DraftSkillUnitFactory
   use Bright.DraftSkillCategoryFactory
   use Bright.DraftSkillFactory
+  use Bright.DraftSkillClassUnitFactory
 
   # SkillPanels context
   use Bright.SkillPanelFactory
@@ -43,17 +47,19 @@ defmodule Bright.Factory do
   use Bright.SkillUnitFactory
   use Bright.SkillCategoryFactory
   use Bright.SkillFactory
+  use Bright.SkillClassUnitFactory
 
   # SkillScores context
   use Bright.SkillClassScoreFactory
   use Bright.SkillScoreFactory
+  use Bright.SkillUnitScoreFactory
+  use Bright.CareerFieldScoreFactory
 
   # SkillReferences context
   use Bright.SkillReferenceFactory
 
   # SkillExams context
   use Bright.SkillExamFactory
-  use Bright.SkillExamResultFactory
 
   # SkillEvidences context
   use Bright.SkillEvidenceFactory

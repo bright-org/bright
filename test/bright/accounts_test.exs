@@ -4,11 +4,11 @@ defmodule Bright.AccountsTest do
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.User2faCodes
+  alias Bright.Accounts.SocialIdentifierToken
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
   import Bright.Factory
-  import Swoosh.TestAssertions
   alias Bright.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -25,6 +25,13 @@ defmodule Bright.AccountsTest do
     test "returns the user if the email exists" do
       %{id: id} = user = insert(:user)
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
+    end
+
+    test "returns not confirmed user if including_not_confirmed: true" do
+      %{id: id} = user = insert(:user_not_confirmed)
+
+      assert %User{id: ^id} =
+               Accounts.get_user_by_email(user.email, including_not_confirmed: true)
     end
   end
 
@@ -72,15 +79,15 @@ defmodule Bright.AccountsTest do
     test "validates name and email and password when given" do
       {:error, changeset} =
         Accounts.register_user(%{
-          name: String.duplicate("a", 101),
+          name: String.duplicate("a", 256),
           email: "not valid",
-          password: "not valid"
+          password: "invalid"
         })
 
       assert %{
-               name: ["should be at most 100 character(s)"],
-               email: ["must have the @ sign and no spaces"],
-               password: ["should be at least 12 character(s)"]
+               name: ["should be at most 255 character(s)"],
+               email: ["has invalid format"],
+               password: ["at least one digit", "should be at least 8 character(s)"]
              } = errors_on(changeset)
     end
 
@@ -143,27 +150,144 @@ defmodule Bright.AccountsTest do
   end
 
   describe "change_user_registration/2" do
+    def setup_user_changeset(%{} = attrs) do
+      %{
+        name: unique_user_name(),
+        email: unique_user_email(),
+        password: valid_user_password()
+      }
+      |> Map.merge(attrs)
+      |> then(
+        &Accounts.change_user_registration(
+          %User{},
+          params_for(:user_before_registration, &1)
+        )
+      )
+    end
+
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
       assert changeset.required == [:password, :email, :name]
     end
 
     test "allows fields to be set" do
-      name = unique_user_name()
-      email = unique_user_email()
-      password = valid_user_password()
+      attrs = %{
+        name: unique_user_name(),
+        email: unique_user_email(),
+        password: valid_user_password()
+      }
 
-      changeset =
-        Accounts.change_user_registration(
-          %User{},
-          params_for(:user_before_registration, name: name, email: email, password: password)
-        )
+      changeset = setup_user_changeset(attrs)
 
       assert changeset.valid?
-      assert get_change(changeset, :name) == name
-      assert get_change(changeset, :email) == email
-      assert get_change(changeset, :password) == password
+      assert get_change(changeset, :name) == attrs[:name]
+      assert get_change(changeset, :email) == attrs[:email]
+      assert get_change(changeset, :password) == attrs[:password]
       assert is_nil(get_change(changeset, :hashed_password))
+    end
+
+    test "validates valid email format" do
+      [
+        "hoge@exmaple.com",
+        "hoge@exmaple2.com",
+        ~s(-_!"'#$%^&*{}/=?`|~@exmaple.com)
+      ]
+      |> Enum.each(fn valid_email ->
+        changeset = setup_user_changeset(%{email: valid_email})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid email format" do
+      [
+        {" @example.com", ["has invalid format"]},
+        {"hoge@ example.com", ["has invalid format"]},
+        {"", ["can't be blank"]},
+        {String.duplicate("a", 63) <>
+           "@" <> String.duplicate("a", 63) <> "." <> String.duplicate("a", 33),
+         ["should be at most 160 character(s)"]},
+        {String.duplicate("a", 65) <> "@example.com", ["has invalid format"]},
+        {"Ｈoge@example.com", ["has invalid format"]},
+        {"[@example.com", ["has invalid format"]},
+        {"hoge@.example.com", ["has invalid format"]},
+        {"hoge@example.com.", ["has invalid format"]},
+        {"hoge@examplecom.", ["has invalid format"]},
+        {"a@" <> String.duplicate("a", 64) <> ".com", ["has invalid format"]},
+        {"hoge@exam--ple.com", ["has invalid format"]}
+      ]
+      |> Enum.each(fn {invalid_email, reasons} ->
+        changeset = setup_user_changeset(%{email: invalid_email})
+
+        assert %{email: reasons} == errors_on(changeset)
+      end)
+    end
+
+    test "validates valid name format" do
+      [
+        "hoge",
+        "h1-_.",
+        String.duplicate("a", 255)
+      ]
+      |> Enum.each(fn valid_name ->
+        changeset = setup_user_changeset(%{name: valid_name})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid name format" do
+      [
+        {"", ["can't be blank"]},
+        {String.duplicate("a", 256), ["should be at most 255 character(s)"]},
+        {"A", ["only lower-case alphanumeric character and -_. is available"]},
+        {"@", ["only lower-case alphanumeric character and -_. is available"]},
+        {"ａ", ["only lower-case alphanumeric character and -_. is available"]},
+        {"Ａ", ["only lower-case alphanumeric character and -_. is available"]},
+        {"ひらがな", ["only lower-case alphanumeric character and -_. is available"]},
+        {"漢字", ["only lower-case alphanumeric character and -_. is available"]}
+      ]
+      |> Enum.each(fn {invalid_name, reasons} ->
+        changeset = setup_user_changeset(%{name: invalid_name})
+
+        assert %{name: reasons} == errors_on(changeset)
+      end)
+    end
+
+    test "validates valid password format" do
+      [
+        "hoge1hog",
+        "HOGE1HOG",
+        String.duplicate("a", 71) <> "1"
+      ]
+      |> Enum.each(fn valid_password ->
+        changeset = setup_user_changeset(%{password: valid_password})
+
+        assert changeset.valid?
+      end)
+    end
+
+    test "validates invalid password format" do
+      [
+        {"", ["can't be blank"]},
+        {"hoge1ho", ["should be at least 8 character(s)"]},
+        {String.duplicate("a", 72) <> "1", ["should be at most 72 character(s)"]},
+        {"hogeHoge", ["at least one digit"]},
+        {"12345678", ["at least one upper or lower case character"]}
+      ]
+      |> Enum.each(fn {invalid_password, reasons} ->
+        changeset = setup_user_changeset(%{password: invalid_password})
+
+        assert %{password: reasons} == errors_on(changeset)
+      end)
+    end
+
+    test "does not validate name, email uniqueness" do
+      %{name: name, email: email} = insert(:user)
+
+      changeset = setup_user_changeset(%{name: name, email: email})
+
+      assert changeset.valid?
     end
   end
 
@@ -188,7 +312,7 @@ defmodule Bright.AccountsTest do
       {:error, changeset} =
         Accounts.apply_user_email(user, valid_user_password(), %{email: "not valid"})
 
-      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
+      assert %{email: ["has invalid format"]} = errors_on(changeset)
     end
 
     test "validates maximum value for email for security", %{user: user} do
@@ -213,7 +337,7 @@ defmodule Bright.AccountsTest do
       {:error, changeset} =
         Accounts.apply_user_email(user, "invalid", %{email: unique_user_email()})
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["does not match password"]} = errors_on(changeset)
     end
 
     test "applies the email without persisting it", %{user: user} do
@@ -245,7 +369,7 @@ defmodule Bright.AccountsTest do
 
   describe "update_user_email/2" do
     setup do
-      user = insert(:user_not_confirmed)
+      user = insert(:user)
       email = unique_user_email()
 
       token =
@@ -261,8 +385,24 @@ defmodule Bright.AccountsTest do
       changed_user = Repo.get!(User, user.id)
       assert changed_user.email != user.email
       assert changed_user.email == email
-      assert changed_user.confirmed_at
-      assert changed_user.confirmed_at != user.confirmed_at
+      refute Repo.get_by(UserToken, user_id: user.id)
+    end
+
+    test "updates the email with not expired token", %{user: user, token: token, email: email} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert Accounts.update_user_email(user, token) == :ok
+      changed_user = Repo.get!(User, user.id)
+      assert changed_user.email != user.email
+      assert changed_user.email == email
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
@@ -279,7 +419,15 @@ defmodule Bright.AccountsTest do
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+          ]
+        )
+
       assert Accounts.update_user_email(user, token) == :error
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
@@ -295,11 +443,11 @@ defmodule Bright.AccountsTest do
     test "allows fields to be set" do
       changeset =
         Accounts.change_user_password(%User{}, %{
-          "password" => "new valid password"
+          "password" => "new valid password2"
         })
 
       assert changeset.valid?
-      assert get_change(changeset, :password) == "new valid password"
+      assert get_change(changeset, :password) == "new valid password2"
       assert is_nil(get_change(changeset, :hashed_password))
     end
   end
@@ -312,12 +460,12 @@ defmodule Bright.AccountsTest do
     test "validates password", %{user: user} do
       {:error, changeset} =
         Accounts.update_user_password(user, valid_user_password(), %{
-          password: "not valid",
+          password: "invalid",
           password_confirmation: "another"
         })
 
       assert %{
-               password: ["should be at least 12 character(s)"],
+               password: ["at least one digit", "should be at least 8 character(s)"],
                password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end
@@ -335,17 +483,17 @@ defmodule Bright.AccountsTest do
       {:error, changeset} =
         Accounts.update_user_password(user, "invalid", %{password: valid_user_password()})
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["does not match password"]} = errors_on(changeset)
     end
 
     test "updates the password", %{user: user} do
       {:ok, user} =
         Accounts.update_user_password(user, valid_user_password(), %{
-          password: "new valid password"
+          password: "new valid password2"
         })
 
       assert is_nil(user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password2")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
@@ -353,7 +501,7 @@ defmodule Bright.AccountsTest do
 
       {:ok, _} =
         Accounts.update_user_password(user, valid_user_password(), %{
-          password: "new valid password"
+          password: "new valid password2"
         })
 
       refute Repo.get_by(UserToken, user_id: user.id)
@@ -393,12 +541,31 @@ defmodule Bright.AccountsTest do
       assert session_user.id == user.id
     end
 
+    test "returns user for not expired token", %{user: user, token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24 * 60)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert session_user = Accounts.get_user_by_session_token(token)
+      assert session_user.id == user.id
+    end
+
     test "does not return user for invalid token" do
       refute Accounts.get_user_by_session_token("oops")
     end
 
-    test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+    test "does not return user for expired token after 60 days", %{token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24 * 60)]
+        )
+
       refute Accounts.get_user_by_session_token(token)
     end
   end
@@ -485,14 +652,39 @@ defmodule Bright.AccountsTest do
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
+    test "confirms email if token is not expired", %{user: user, token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 30 * 60)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert {:ok, confirmed_user} = Accounts.confirm_user(token)
+      assert confirmed_user.confirmed_at
+      assert confirmed_user.confirmed_at != user.confirmed_at
+      assert Repo.get!(User, user.id).confirmed_at
+      refute Repo.get_by(UserToken, user_id: user.id)
+    end
+
     test "does not confirm with invalid token", %{user: user} do
       assert Accounts.confirm_user("oops") == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
-    test "does not confirm email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+    test "does not confirm email if token is expired after 30 minutes", %{
+      user: user,
+      token: token
+    } do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 30 * 60)]
+        )
+
       assert Accounts.confirm_user(token) == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
@@ -535,13 +727,32 @@ defmodule Bright.AccountsTest do
       assert Repo.get_by(UserToken, user_id: id)
     end
 
+    test "returns the user if token is not expired", %{user: %{id: id}, token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert %User{id: ^id} = Accounts.get_user_by_reset_password_token(token)
+      assert Repo.get_by(UserToken, user_id: id)
+    end
+
     test "does not return the user with invalid token", %{user: user} do
       refute Accounts.get_user_by_reset_password_token("oops")
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
-    test "does not return the user if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+    test "does not return the user if token is expired after 1 days", %{user: user, token: token} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24)]
+        )
+
       refute Accounts.get_user_by_reset_password_token(token)
       assert Repo.get_by(UserToken, user_id: user.id)
     end
@@ -555,12 +766,12 @@ defmodule Bright.AccountsTest do
     test "validates password", %{user: user} do
       {:error, changeset} =
         Accounts.reset_user_password(user, %{
-          password: "not valid",
+          password: "invalid",
           password_confirmation: "another"
         })
 
       assert %{
-               password: ["should be at least 12 character(s)"],
+               password: ["at least one digit", "should be at least 8 character(s)"],
                password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end
@@ -572,14 +783,14 @@ defmodule Bright.AccountsTest do
     end
 
     test "updates the password", %{user: user} do
-      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password"})
+      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password2"})
       assert is_nil(updated_user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password2")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
       _ = Accounts.generate_user_session_token(user)
-      {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password"})
+      {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password2"})
       refute Repo.get_by(UserToken, user_id: user.id)
     end
   end
@@ -603,11 +814,7 @@ defmodule Bright.AccountsTest do
       assert user_2fa_code
       assert Repo.aggregate(User2faCodes, :count) == 1
 
-      assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
-        assert email.to == [{"", user.email}]
-        assert email.text_body =~ user_2fa_code.code
-      end)
+      assert_two_factor_auth_mail_sent(user, user_2fa_code.code)
     end
 
     test "deletes existing token and code before setup" do
@@ -626,11 +833,7 @@ defmodule Bright.AccountsTest do
       assert user_2fa_code != before_user_2fa_code
       assert Repo.aggregate(User2faCodes, :count) == 1
 
-      assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
-        assert email.to == [{"", user.email}]
-        assert email.text_body =~ user_2fa_code.code
-      end)
+      assert_two_factor_auth_mail_sent(user, user_2fa_code.code)
     end
   end
 
@@ -684,22 +887,30 @@ defmodule Bright.AccountsTest do
     end
   end
 
-  describe "generate_user_2fa_done_token/1" do
+  describe "finish_user_2fa/1" do
     test "generates user two_factor_auth_done token" do
       user = insert(:user)
 
-      Accounts.generate_user_2fa_done_token(user)
+      Accounts.finish_user_2fa(user)
 
       assert Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
     end
 
-    test "deletes existing token before generate" do
+    test "deletes existing tokens" do
       user = insert(:user)
-      before_user_token = insert(:user_token, user: user, context: "two_factor_auth_done")
 
-      Accounts.generate_user_2fa_done_token(user)
+      insert(:user_2fa_code, user: user)
+      insert(:user_token, user: user, context: "two_factor_auth_session")
 
-      assert before_user_token !=
+      before_two_factor_auth_done_token =
+        insert(:user_token, user: user, context: "two_factor_auth_done")
+
+      Accounts.finish_user_2fa(user)
+
+      refute Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
+      refute Repo.get_by(User2faCodes, user_id: user.id)
+
+      assert before_two_factor_auth_done_token !=
                Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
 
       assert Repo.aggregate(UserToken, :count) == 1
@@ -792,6 +1003,120 @@ defmodule Bright.AccountsTest do
         )
 
       assert Accounts.user_2fa_code_valid?(user_2fa_code.user, user_2fa_code.code)
+    end
+  end
+
+  describe "generate_social_identifier_token/1" do
+    setup do
+      social_identifier_attrs = %{
+        name: "koyo",
+        email: "dummy@example.com",
+        provider: :google,
+        identifier: "1"
+      }
+
+      %{social_identifier_attrs: social_identifier_attrs}
+    end
+
+    test "generates social identifier token", %{social_identifier_attrs: social_identifier_attrs} do
+      token = Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert Repo.get_by!(SocialIdentifierToken, name: social_identifier_attrs[:name])
+      assert Accounts.get_social_identifier_token(token)
+    end
+
+    test "deletes existing token before generate", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      before_token =
+        insert(:social_identifier_token_for_google,
+          identifier: social_identifier_attrs[:identifier]
+        )
+
+      Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert before_token !=
+               Repo.get_by!(SocialIdentifierToken, name: social_identifier_attrs[:name])
+
+      assert Repo.aggregate(SocialIdentifierToken, :count) == 1
+    end
+
+    test "does not delete other identifier's token", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      insert(:social_identifier_token_for_google, identifier: "10000")
+
+      Accounts.generate_social_identifier_token(social_identifier_attrs)
+
+      assert Repo.aggregate(SocialIdentifierToken, :count) == 2
+    end
+  end
+
+  describe "get_social_identifier_token/1" do
+    setup do
+      social_identifier_attrs = %{
+        name: "koyo",
+        email: "dummy@example.com",
+        provider: :google,
+        identifier: "1"
+      }
+
+      %{social_identifier_attrs: social_identifier_attrs}
+    end
+
+    test "token is valid", %{social_identifier_attrs: social_identifier_attrs} do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      social_identifier_token =
+        insert(:social_identifier_token, social_identifier_token |> Map.from_struct())
+
+      assert Accounts.get_social_identifier_token(token) == social_identifier_token
+    end
+
+    test "token is not exists" do
+      refute Accounts.get_social_identifier_token("not exist token")
+    end
+
+    test "token exists but was expired after 1 hours", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      insert(
+        :social_identifier_token,
+        social_identifier_token
+        |> Map.from_struct()
+        |> Map.put(
+          :inserted_at,
+          NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60)
+        )
+      )
+
+      refute Accounts.get_social_identifier_token(token)
+    end
+
+    test "token exists and is not expired", %{
+      social_identifier_attrs: social_identifier_attrs
+    } do
+      {token, social_identifier_token} =
+        SocialIdentifierToken.build_token(social_identifier_attrs)
+
+      social_identifier_token =
+        insert(
+          :social_identifier_token,
+          social_identifier_token
+          |> Map.from_struct()
+          |> Map.put(
+            :inserted_at,
+            NaiveDateTime.utc_now()
+            |> NaiveDateTime.add(-1 * 60 * 60)
+            |> NaiveDateTime.add(1 * 60)
+          )
+        )
+
+      assert Accounts.get_social_identifier_token(token) == social_identifier_token
     end
   end
 

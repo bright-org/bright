@@ -3,6 +3,9 @@ defmodule BrightWeb.UserRegistrationLiveTest do
 
   import Phoenix.LiveViewTest
   import Bright.Factory
+  alias Bright.Repo
+  alias Bright.Accounts.User
+  alias Bright.Accounts.UserToken
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
@@ -44,16 +47,16 @@ defmodule BrightWeb.UserRegistrationLiveTest do
         |> element("#registration_form")
         |> render_change(
           user: %{
-            "name" => String.duplicate("a", 101),
+            "name" => String.duplicate("a", 256),
             "email" => "with spaces",
-            "password" => "too short"
+            "password" => "short"
           }
         )
 
       assert result =~ "ユーザー新規作成"
-      assert result =~ "should be at most 100 character(s)"
-      assert result =~ "must have the @ sign and no spaces"
-      assert result =~ "should be at least 12 character"
+      assert result =~ "255文字以内で入力してください"
+      assert result =~ "無効なフォーマットです"
+      assert result =~ "8文字以上で入力してください"
     end
   end
 
@@ -62,15 +65,24 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       name = unique_user_name()
-      email = unique_user_email()
+      email_address = unique_user_email()
 
       form(lv, "#registration_form",
         user:
-          params_for(:user_before_registration, name: name, email: email)
+          params_for(:user_before_registration, name: name, email: email_address)
           |> Map.take([:name, :email, :password])
       )
       |> render_submit()
       |> follow_redirect(conn, ~p"/users/finish_registration")
+
+      assert_confirmation_mail_sent(email_address)
+
+      user = Repo.get_by(User, name: name)
+
+      assert user
+      refute user.confirmed_at
+      assert user.password_registered
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm")
     end
 
     test "renders errors for duplicated email", %{conn: conn} do
@@ -85,7 +97,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
         )
         |> render_submit()
 
-      assert result =~ "has already been taken"
+      assert result =~ "すでに使用されています"
     end
   end
 

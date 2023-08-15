@@ -21,7 +21,7 @@ defmodule BrightWeb.UserSettingsLiveTest do
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
-      assert %{"error" => "You must log in to access this page."} = flash
+      assert %{"error" => "ログインが必要です"} = flash
     end
   end
 
@@ -64,7 +64,7 @@ defmodule BrightWeb.UserSettingsLiveTest do
         })
 
       assert result =~ "Change Email"
-      assert result =~ "must have the @ sign and no spaces"
+      assert result =~ "無効なフォーマットです"
     end
 
     test "renders errors with invalid data (phx-submit)", %{conn: conn, user: user} do
@@ -79,8 +79,8 @@ defmodule BrightWeb.UserSettingsLiveTest do
         |> render_submit()
 
       assert result =~ "Change Email"
-      assert result =~ "did not change"
-      assert result =~ "is not valid"
+      assert result =~ "変更されていません"
+      assert result =~ "パスワードが一致しません"
     end
   end
 
@@ -131,14 +131,14 @@ defmodule BrightWeb.UserSettingsLiveTest do
         |> render_change(%{
           "current_password" => "invalid",
           "user" => %{
-            "password" => "too short",
+            "password" => "short",
             "password_confirmation" => "does not match"
           }
         })
 
       assert result =~ "Change Password"
-      assert result =~ "should be at least 12 character(s)"
-      assert result =~ "does not match password"
+      assert result =~ "8文字以上で入力してください"
+      assert result =~ "パスワードが一致しません"
     end
 
     test "renders errors with invalid data (phx-submit)", %{conn: conn} do
@@ -149,16 +149,15 @@ defmodule BrightWeb.UserSettingsLiveTest do
         |> form("#password_form", %{
           "current_password" => "invalid",
           "user" => %{
-            "password" => "too short",
+            "password" => "short",
             "password_confirmation" => "does not match"
           }
         })
         |> render_submit()
 
       assert result =~ "Change Password"
-      assert result =~ "should be at least 12 character(s)"
-      assert result =~ "does not match password"
-      assert result =~ "is not valid"
+      assert result =~ "8文字以上で入力してください"
+      assert result =~ "パスワードが一致しません"
     end
   end
 
@@ -208,7 +207,7 @@ defmodule BrightWeb.UserSettingsLiveTest do
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
       assert %{"error" => message} = flash
-      assert message == "You must log in to access this page."
+      assert message == "ログインが必要です"
     end
   end
 end

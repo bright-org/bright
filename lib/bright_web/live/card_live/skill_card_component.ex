@@ -5,6 +5,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   """
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
+  alias Bright.UserSkillPanels
 
   # TODO selected_tab,selected_tab,page,total_pagesは未実装でダミーです
   @impl true
@@ -19,24 +20,23 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         target={@myself}
         tabs={@tabs}
       >
-        <div class="py-4 px-7 flex gap-y-2 flex-col">
-          <div class="bg-brightGray-10 rounded-md text-base flex px-5 py-4 content-between">
-            <table class="table-fixed skill-table -mt-2">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th class="pl-8">クラス1</th>
-                  <th class="pl-8">クラス2</th>
-                  <th class="pl-8">クラス3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <%= for skill_panel <- @skill_panels do %>
-                  <.skill_panel skill_panel={skill_panel} />
-                <% end %>
-              </tbody>
-            </table>
+        <div class="py-6 px-7 flex gap-y-4 flex-col min-h-[464px]">
+          <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
+            <li class="flex">
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はありません
+              </div>
+            </li>
+          </ul>
+          <div :if={Enum.count(@skill_panels) > 0} class="flex">
+            <div class="flex-1 text-left font-bold"></div>
+            <div class="w-36 font-bold">クラス1</div>
+            <div class="w-36 font-bold">クラス2</div>
+            <div class="w-36 font-bold">クラス3</div>
           </div>
+          <%= for skill_panel <- @skill_panels do %>
+            <.skill_panel skill_panel={skill_panel} />
+          <% end %>
         </div>
       </.tab>
     </div>
@@ -46,7 +46,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   @impl true
   def mount(socket) do
     tabs =
-      Bright.Jobs.list_career_fields()
+      Bright.CareerFields.list_career_fields()
       |> Enum.map(&{&1.name_en, &1.name_ja})
 
     {:ok, assign(socket, :tabs, tabs)}
@@ -58,8 +58,10 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
      socket
      |> assign(assigns)
      |> assign(:selected_tab, "engineer")
-     # TODO　サンプルデータはDBの処理を作成後消すこと
-     |> assign(:skill_panels, sample())}
+     |> assign(
+       :skill_panels,
+       UserSkillPanels.get_level_by_class_in_skills_panel(assigns.current_user.id)
+     )}
   end
 
   @impl true
@@ -96,19 +98,25 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   defp skill_panel(assigns) do
     ~H"""
-    <tr>
-      <td><%= @skill_panel.name %></td>
-      <%= for level <- @skill_panel.levels do %>
-        <.skill_gem level={level}/>
+    <div class="flex">
+      <div class="flex-1 text-left font-bold">
+        <.link
+          href={~p"/panels/#{@skill_panel.id}/graph"}
+          method="get"
+        >
+          <%= @skill_panel.name %>
+        </.link>
+      </div>
+      <%= for {level, class} <- Enum.with_index(@skill_panel.levels, 1) do %>
+        <.skill_gem level={level} class={class} id={@skill_panel.id}/>
       <% end %>
-    </tr>
+    </div>
     """
   end
 
   defp skill_gem(%{level: :none} = assigns) do
     ~H"""
-    <td>
-    </td>
+    <div class="w-36"></div>
     """
   end
 
@@ -118,11 +126,16 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       |> assign(:icon_path, icon_path(assigns.level))
 
     ~H"""
-    <td>
-      <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-        <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
-      </p>
-    </td>
+    <div class="w-36">
+      <.link
+        href={~p"/panels/#{@id}/graph?class=#{@class}"}
+        method="get"
+      >
+        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+          <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
+        </p>
+      </.link>
+    </div>
     """
   end
 
@@ -134,14 +147,4 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp level_text(:beginner), do: "見習い"
   defp level_text(:normal), do: "平均"
   defp level_text(:skilled), do: "ベテラン"
-
-  # TODO　サンプルデータはDBの処理を作成後消すこと
-  defp sample() do
-    [
-      %{name: "Elixir", levels: [:skilled, :normal, :beginner]},
-      %{name: "Python", levels: [:skilled, :none, :none]},
-      %{name: "DBから読み込んでません", levels: [:skilled, :normal, :none]},
-      %{name: "DB処理未実装", levels: [:skilled, :normal, :none]}
-    ]
-  end
 end

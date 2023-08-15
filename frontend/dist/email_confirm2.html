@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+   <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+    <section class="bg-white -mt-10 max-w-[800px] p-10 rounded-lg w-full">
+      <h1 class="font-bold text-center text-3xl">
+        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">確認メールが届かなかった方へ</span>
+      </h1>
+
+      <p class="mt-8 mx-auto text-sm w-fit">確認メールを再度送信します。<br>登録時に使用したメールアドレスを入力してください<br><br>メールが届かない場合は、Brightからのメールが受信できるように<br>ドメイン指定受信で「xxxxxxxx.com」を許可するように設定してください。</p>
+
+      <form class="flex mt-8 mx-auto relative">
+        <section class="flex flex-col mx-auto">
+          <label for="email"class="mt-4">
+            <span class="block font-bold mb-2 text-xs">メールアドレス</span>
+            <input id="email" type="email" placeholder="" class="border border-solid border-black max-w-xs px-4 py-2 rounded w-full">
+            <p class="text-error text-xs">メールアドレスが正しくありません</p>
+          </label>
+
+          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold mt-8 max-w-xs px-4 py-2 rounded select-none text-white w-full hover:opacity-50">確認メールを送信</button>
+
+          <button class="bg-white border border-solid border-black font-bold mt-16 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">戻る</button>
+        </section>
+      </form>
+    </section>
+</main>
+
+
+
+</body>
+</html>
