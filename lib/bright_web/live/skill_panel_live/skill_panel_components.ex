@@ -7,7 +7,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
-      <.skill_panel_switch current_user={@current_user} />
+      <.skill_panel_switch current_user={@current_user} path={@path}/>
       <.target_switch current_user={@current_user} />
     </div>
     """
@@ -16,7 +16,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <.skill_panel_menu current_user={@current_user} />
+    <.skill_panel_menu current_user={@current_user} path={@path} />
     <% # TODO: α版後にifを除去して表示 %>
     <.skill_set_menu :if={false} />
     """
@@ -47,6 +47,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           id="skill_card"
           module={BrightWeb.CardLive.SkillCardComponent}
           current_user={@current_user}
+          path={@path}
         />
       </div>
     """
