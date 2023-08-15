@@ -14,11 +14,14 @@ defmodule BrightWeb.TeamComponents do
 
   ## Examples
       <.team_small
+        id="123"
         team=%{Brignt.Team}
         team_type={:general_team}
         low_on_click_target=@myself
       />
   """
+
+  attr :id, :string, required: true
   attr :team, Bright.Teams.Team, required: true
   attr :team_type, :atom, default: :general_team
   attr :low_on_click_target, :any, required: false, default: nil
