@@ -32,7 +32,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               <%= career_field.name_ja %>
             </li>
           <% end %>
-          <li>
+          <li :if={false}>
             <a
               href="#"
               class="absolute bg-brightGray-900 block cursor-pointer font-bold select-none py-2 right-0 rounded text-center text-white -top-1.5 w-48 hover:opacity-50"
