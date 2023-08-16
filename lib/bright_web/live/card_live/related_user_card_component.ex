@@ -1,7 +1,7 @@
 # TODO 「bfa3829b2692f756ab89e228d923ca1516edf31b」　「feat: さまざまな人たちとの交流 にボタン追加」　までデザイン更新
-defmodule BrightWeb.CardLive.IntriguingCardComponent do
+defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   @moduledoc """
-  Intriguing Card Components
+  Related Users Card Components
   """
   use BrightWeb, :live_component
   import BrightWeb.ProfileComponents
@@ -19,14 +19,14 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     # αリリース対象外 %{text: "カスタムグループを作る", href: "/"}, %{text: "カスタムグループの編集", href: "/"}
   ]
 
-  @page_size 4
+  @page_size 6
 
   @impl true
   def mount(socket) do
     socket =
       socket
       |> assign(:current_user, nil)
-      |> assign(:menu_items, nil)
+      |> assign(:menu_items, set_menu_items(socket.assigns[:display_menu]))
       |> assign(:tabs, @tabs)
       # TODO タブが増えたら初期選択タブの変更に対応する
       |> assign(:selected_tab, "team")
@@ -43,10 +43,6 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @impl true
   @spec render(any) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
-
-    IO.puts("### render ########################")
-    IO.inspect(assigns)
-
     ~H"""
     <div>
       <.tab
@@ -59,6 +55,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
         total_pages={@total_pages}
       >
         <.inner_tab
+          :if={Enum.count(@inner_tab) > 0}
           target={@myself}
           selected_tab={@selected_tab}
           inner_tab={@inner_tab}
@@ -85,55 +82,19 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
 
   @impl true
   def update(assigns, socket) do
-    page =
-      Teams.list_joined_teams_by_user_id(
-        assigns.current_user.id,
-        # TODO チーム一覧のページング
-        %{page: 1, page_size: 999}
+    socket =
+      socket
+      |> assign(:current_user, assigns.current_user)
+
+    # 初期表示データの取得 mount時に設定したselected_tabの選択処理を実行
+    {:noreply, socket} =
+      handle_event(
+        "tab_click",
+        %{"id" => assigns.id, "tab_name" => socket.assigns.selected_tab},
+        socket
       )
 
-    inner_tabs =
-      page.entries
-      |> Enum.map(fn member_user ->
-        {member_user.team.id, member_user.team.name}
-      end)
-
-    # mount直後のupdate時、チームが１以上あるなら最初のタブを自動選択
-    inner_selected_tab =
-      if length(inner_tabs) >= 1 && socket.assigns.inner_selected_tab == nil do
-        first_member_user =
-          page.entries
-          |> List.first()
-
-        first_member_user.team.id
-      else
-        socket.assigns.inner_selected_tab
-      end
-
-    # チームが１以上あるなら該当チームメンバーの情報を取得
-    member_and_users =
-      if inner_selected_tab != nil do
-        get_team_member_user_profiles(inner_selected_tab, %{
-          page: socket.assigns.page,
-          page_size: socket.assigns.page_size
-        })
-      else
-        []
-      end
-
-    {
-      :ok,
-      socket =
-        socket
-        |> assign(:current_user, assigns.current_user)
-        |> assign(:menu_items, set_menu_items(assigns[:display_menu]))
-        |> assign(:selected_tab, socket.assigns.selected_tab)
-        |> assign(:user_profiles, member_and_users.user_smalls)
-        |> assign(:inner_tab, inner_tabs)
-        |> assign(:inner_selected_tab, inner_selected_tab)
-        |> assign(:page, page.page_number)
-        |> assign(:total_pages, member_and_users.total_pages)
-    }
+    {:ok, socket}
   end
 
   @doc """
@@ -144,10 +105,50 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @impl true
   def handle_event(
         "tab_click",
-        %{"id" => id, "tab_name" => "team"},
+        %{"id" => _id, "tab_name" => "team"},
         socket
       ) do
-    # TODO これは雛形です処理を記述すること
+    # inner_tab用に所属チームの一覧を取得
+    page =
+      Teams.list_joined_teams_by_user_id(
+        socket.assigns.current_user.id,
+        # TODO inner_tab内のチーム一覧のページング実装
+        %{page: 1, page_size: 999}
+      )
+
+    inner_tabs =
+      page.entries
+      |> Enum.map(fn member_user ->
+        {member_user.team.id, member_user.team.name}
+      end)
+
+    socket =
+      socket
+      |> assign(:inner_tab, inner_tabs)
+
+    # チームが１以上あるなら最初のinner_tabを自動選択してcartの中身更新する
+    socket =
+      if length(inner_tabs) >= 1 do
+        first_member_users =
+          page.entries
+          |> List.first()
+
+        first_member_users.team.id
+
+        {:noreply, socket} =
+          handle_event(
+            "inner_tab_click",
+            %{
+              "tab_name" => "team",
+              "inner_tab_name" => first_member_users.team.id
+            },
+            socket
+          )
+
+        socket
+      else
+        socket
+      end
 
     {:noreply, socket}
   end
@@ -155,7 +156,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @impl true
   def handle_event(
         "tab_click",
-        %{"id" => id, "tab_name" => tab_name},
+        %{"id" => _id, "tab_name" => tab_name},
         socket
       ) do
     # TODO これは雛形です処理を記述すること
@@ -167,11 +168,7 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     {:noreply, socket}
   end
 
-  @doc """
-  チームタブのinnser_tab(=各所属チームのタブ)クリック時の処理
-
-  該当チームの一覧の１ページ目を取得する
-  """
+  @impl true
   def handle_event(
         "inner_tab_click",
         %{
@@ -180,16 +177,14 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
         },
         socket
       ) do
-
-        member_and_users = get_team_member_user_profiles(team_id, %{page: 1, page_size: socket.assigns.page_size})
-
     socket =
       socket
+      # 選択中のinnserタブを変更
       |> assign(:inner_selected_tab, team_id)
-      |> assign(
-        :user_profiles,
-        member_and_users.user_smalls
-      )
+      # １ページ目にリセット
+      |> assign(:page, 1)
+      # 選択中のタブ名に応じたassign_selected_cardを実行
+      |> assign_selected_card(socket.assigns.selected_tab)
 
     {:noreply, socket}
   end
@@ -197,17 +192,17 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @impl true
   def handle_event(
         "previous_button_click",
-        %{"id" => id},
+        %{"id" => _id},
         socket
       ) do
-    # TODO これは雛形です処理を記述すること
-
-    page = socket.assgins.page - 1
+    page = socket.assigns.page - 1
     page = if page < 1, do: 1, else: page
 
     socket =
       socket
       |> assign(:page, page)
+      # 選択中のタブ名に応じたassign_selected_cardを実行
+      |> assign_selected_card(socket.assigns.selected_tab)
 
     {:noreply, socket}
   end
@@ -215,34 +210,14 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   @impl true
   def handle_event(
         "next_button_click",
-        # %{"id" => id},
-        params,
+        %{"id" => _id},
         socket
       ) do
-    # TODO これは雛形です処理を記述すること
-    IO.puts("#### next_button_click ###################")
-    IO.inspect(params)
-    IO.inspect(socket)
-
     socket =
       socket
-      |> assign(:page, socket.assgins.page + 1)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event(
-        event,
-        # %{"id" => id},
-        params,
-        socket
-      ) do
-    # TODO これは雛形です処理を記述すること
-    IO.puts("#### handle_event ###################")
-    IO.inspect(event)
-    IO.inspect(params)
-    IO.inspect(socket)
+      |> assign(:page, socket.assigns.page + 1)
+      # 選択中のタブ名に応じたassign_selected_cardを実行
+      |> assign_selected_card(socket.assigns.selected_tab)
 
     {:noreply, socket}
   end
@@ -251,9 +226,6 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
   def set_menu_items(_), do: @menu_items
 
   defp inner_tab(assigns) do
-    IO.puts("### inner_tab ###################")
-    IO.inspect(assigns)
-
     ~H"""
     <div class="flex border-b border-brightGray-50">
       <div class="overflow-hidden">
@@ -287,59 +259,43 @@ defmodule BrightWeb.CardLive.IntriguingCardComponent do
     """
   end
 
-  defp assign_current_user_teams(assigns) do
-    page =
-      Teams.list_joined_teams_by_user_id(
-        assigns.current_user.id,
-        # TODO チーム一覧のページング
-        %{page: 1, page_size: 999}
+  defp assign_selected_card(socket, "team") do
+    member_and_users =
+      get_team_member_user_profiles(
+        socket.assigns.current_user.id,
+        socket.assigns.inner_selected_tab,
+        %{
+          page: socket.assigns.page,
+          page_size: socket.assigns.page_size
+        }
       )
 
-    inner_tabs =
-      page.entries
-      |> Enum.map(fn member_user ->
-        {member_user.team.id, member_user.team.name}
-      end)
-
-    first_member_user =
-      page.entries
-      |> List.first()
-
-    first_team_id = first_member_user.team.id
-    first_tab_name = first_team_id
-
-    member_and_users = get_team_member_user_profiles(first_team_id, %{page: 1, page_size: assigns.page_size})
-
-    assigns =
-      assigns
-      |> assign(:selected_tab, "team")
-      |> assign(:inner_tab, inner_tabs)
-      |> assign(:inner_selected_tab, first_tab_name)
-      |> assign(:user_profiles, member_and_users.user_smalls)
-      |> assign(:total_pages, member_and_users.total_pages)
+    socket
+    |> assign(:user_profiles, member_and_users.user_smalls)
+    |> assign(:total_pages, member_and_users.total_pages)
   end
 
-  defp get_team_member_user_profiles(team_id, page_params) do
+  defp get_team_member_user_profiles(user_id, team_id, page_params) do
     page =
-      Teams.list_jined_users_and_profiles_by_team_id(
+      Teams.list_jined_users_and_profiles_by_team_id_without_myself(
+        user_id,
         team_id,
-        # TODO タブ内でのページング
-        # %{page: 1, page_size: 10}
         page_params
       )
 
-    member_and_users = page.entries
-    |> Enum.map(fn member_users ->
-      member_users.user.user_profile
+    member_and_users =
+      page.entries
+      |> Enum.map(fn member_users ->
+        member_users.user.user_profile
 
-      %{
-        user_name: member_users.user.name,
-        title: member_users.user.user_profile.title,
-        icon_file_path:
-          "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-        # TODO アイコンの設定が動いたら置き換え member_users.user.user_profile.icon_file_path,
-      }
-    end)
+        %{
+          user_name: member_users.user.name,
+          title: member_users.user.user_profile.title,
+          icon_file_path:
+            "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+          # TODO アイコンの設定が動いたら置き換え member_users.user.user_profile.icon_file_path,
+        }
+      end)
 
     %{user_smalls: member_and_users, total_pages: page.total_pages}
   end

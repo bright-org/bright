@@ -19,6 +19,7 @@ defmodule BrightWeb.TeamComponents do
         low_on_click_target=@myself
       />
   """
+  attr :id, :string, required: true
   attr :team, Bright.Teams.Team, required: true
   attr :team_type, :atom, default: :general_team
   attr :low_on_click_target, :any, required: false, default: nil
@@ -26,6 +27,7 @@ defmodule BrightWeb.TeamComponents do
   def team_small(assigns) do
     ~H"""
     <li
+      id={@id}
       phx-click="on_card_row_click"
       phx-target={@low_on_click_target}
       phx-value-team_id={@team.id}

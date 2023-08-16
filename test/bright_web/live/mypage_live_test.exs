@@ -49,7 +49,7 @@ defmodule BrightWeb.MypageLiveTest do
       assert index_live |> has_element?("li a", "所属チーム")
 
       assert index_live |> has_element?("h5", "関わっているユーザー")
-      assert index_live |> has_element?("li a", "気になる人")
+      assert index_live |> has_element?("li a", "チーム")
     end
   end
 end

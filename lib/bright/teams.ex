@@ -241,12 +241,34 @@ defmodule Bright.Teams do
     |> Repo.paginate(page_param)
   end
 
+  @doc """
+  チームメンバーの一覧取得
+  自分自身も含めたい場合用
+  Scrivenerのページングに対応
+  """
   def list_jined_users_and_profiles_by_team_id(
         team_id,
         page_param \\ %{page: 1, page_size: 1}
       ) do
-    TeamMemberUsers
-    |> where([member_user], member_user.team_id == ^team_id)
+    from(tmu in TeamMemberUsers,
+      where: tmu.team_id == ^team_id
+    )
+    |> preload(user: :user_profile)
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  チームメンバーの一覧取得
+  自分自身を除外したい場合用
+  """
+  def list_jined_users_and_profiles_by_team_id_without_myself(
+        user_id,
+        team_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(tmu in TeamMemberUsers,
+      where: tmu.team_id == ^team_id and tmu.user_id != ^user_id
+    )
     |> preload(user: :user_profile)
     |> Repo.paginate(page_param)
   end
