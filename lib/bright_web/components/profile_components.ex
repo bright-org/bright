@@ -158,7 +158,7 @@ defmodule BrightWeb.ProfileComponents do
     </li>
     """
   end
-  
+
   defp profile_small_link(%{click_event: nil} = assigns) do
     ~H"""
     <a class="cursor-pointer inline-flex items-center gap-x-6" href={"/mypage/#{@user_name}"}>
