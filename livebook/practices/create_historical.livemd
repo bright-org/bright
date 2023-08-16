@@ -12,6 +12,7 @@ defmodule Test do
   alias Bright.HistoricalSkillPanels.HistoricalSkillClass
   alias Bright.Batches.UpdateSkillPanels
   alias Bright.HistoricalSkillScores.HistoricalSkillClassScore
+  alias Bright.HistoricalSkillScores.HistoricalSkillUnitScore
 
   def all do
     Repo.all(HistoricalSkillClass)
@@ -50,25 +51,49 @@ defmodule Test do
 
     UpdateSkillPanels.call(locked_date)
   end
+
+  def get_historical_skill_gem(user_id, skill_panel_id, class, locked_date) do
+    from_date = {locked_date.year, locked_date.month, 1} |> Date.from_erl!()
+    to_date = from_date |> Timex.shift(months: 1) |> Timex.shift(days: -1)
+    IO.inspect(to_date)
+
+    from(historical_skill_unit_score in HistoricalSkillUnitScore,
+      join: historical_skill_unit in assoc(historical_skill_unit_score, :historical_skill_unit),
+      join: historical_skill_classes in assoc(historical_skill_unit, :historical_skill_classes),
+      on: historical_skill_classes.class == ^class,
+      on: historical_skill_classes.skill_panel_id == ^skill_panel_id,
+      where:
+        historical_skill_unit_score.user_id == ^user_id and
+          historical_skill_unit_score.locked_date >= ^from_date and
+          historical_skill_unit_score.locked_date <= ^to_date,
+      select: %{
+        name: historical_skill_unit.name,
+        percentage: historical_skill_unit_score.percentage
+      }
+    )
+    |> Repo.all()
+  end
 end
 
-locked_date = {2023, 4, 1} |> Date.from_erl!()
+locked_date = {2021, 10, 12} |> Date.from_erl!()
 
 from_date = {2020, 4, 1} |> Date.from_erl!()
 to_date = {2025, 7, 2} |> Date.from_erl!()
 
 # Test.update(locked_date.year, locked_date.month)
 
-skill_panel = Repo.all(SkillPanel) |> List.first()
+# skill_panel = Repo.all(SkillPanel) |> List.first()
 user = Accounts.get_user_by_name_or_email("ymn")
 
-Test.get_historical_skill_class_scores(
-  skill_panel.id,
-  1,
-  user.id,
-  from_date,
-  to_date
-)
+Test.get_historical_skill_gem(user.id, "01H7RYBX11WFHVPHQXARFTKRV2", 1, locked_date)
+
+# Test.get_historical_skill_class_scores(
+#   skill_panel.id,
+#   1,
+#   user.id,
+#   from_date,
+#   to_date
+# )
 
 # Test.test_get_skillpanels()
 
