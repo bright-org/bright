@@ -49,7 +49,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
       <p class="mt-8 w-[1040px]">
         <.link
-          navigate="/onboardings"
+          navigate={@return_to}
           class=" self-center bg-white block border border-solid border-black font-bold mt-4 mx-auto px-4 py-2 rounded select-none text-black text-center w-40 hover:opacity-50"
         >
           戻る
@@ -79,6 +79,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
     socket
     |> assign(:route, "wants")
+    |> assign(:return_to, "/onboardings?open=want_todo_panel")
     |> assign(:id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})
@@ -91,8 +92,11 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
       |> then(&[&1])
       |> Enum.group_by(fn j -> j.career_fields |> List.first() end)
 
+    career_field = career_fields |> Map.keys() |> List.first()
+
     socket
     |> assign(:route, "jobs")
+    |> assign(:return_to, "/onboardings?open=wants_job_panel&tab=#{career_field.name_en}")
     |> assign(:id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})

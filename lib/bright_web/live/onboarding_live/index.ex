@@ -15,8 +15,25 @@ defmodule BrightWeb.OnboardingLive.Index do
     |> assign(:page_title, "オンボーディング")
     |> assign(:open_want_todo, false)
     |> assign(:open_wants_job, false)
+    |> assign(:tab, "engineer")
     |> then(&{:ok, &1})
   end
+
+  @impl true
+  def handle_params(%{"open" => panel, "tab" => tab}, _uri, socket) do
+    socket
+    |> assign(:open, panel)
+    |> assign(:tab, tab)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_params(%{"open" => panel}, _uri, socket) do
+    socket
+    |> assign(:open, panel)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_params(_, _uri, socket), do: {:noreply, assign(socket, open: false)}
 
   @impl true
   def handle_event("skip_onboarding", _value, %{assigns: %{current_user: user}} = socket) do
