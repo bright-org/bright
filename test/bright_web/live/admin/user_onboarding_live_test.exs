@@ -2,14 +2,14 @@ defmodule BrightWeb.Admin.UserOnboardingLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.OnboardingsFixtures
+  import Bright.Factory
 
   @create_attrs %{completed_at: "2023-07-08T11:20:00"}
   @update_attrs %{completed_at: "2023-07-09T11:20:00"}
   @invalid_attrs %{completed_at: nil}
 
   defp create_user_onboarding(_) do
-    user_onboarding = user_onboarding_fixture()
+    user_onboarding = insert(:user_onboarding)
     %{user_onboarding: user_onboarding}
   end
 

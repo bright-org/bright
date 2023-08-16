@@ -34,7 +34,7 @@
 <div class="px-10 py-3 flex justify-between">
   <div class="w-[850px] flex flex-col gap-y-6">
     <!-- 重要な連絡 -->
-    <div>
+    <div :if={@me}>
       <h5>重要な連絡</h5>
       <.live_component
         id="contact_card"
@@ -55,7 +55,7 @@
   </div>
   <div class="w-[750px] flex flex-col gap-y-6">
     <!-- さまざまな人たちとの交流 -->
-    <div>
+    <div :if={@me}>
       <h5>さまざまな人たちとの交流</h5>
       <.live_component
         id="contact_card"
@@ -64,7 +64,7 @@
       />
     </div>
     <!-- 関わっているチーム -->
-    <div>
+    <div :if={@me}>
       <h5>関わっているチーム</h5>
       <.live_component
         id="related_team_card"
@@ -75,7 +75,7 @@
 
     </div>
     <!-- 関わっているユーザー -->
-    <div>
+    <div :if={@me}>
       <h5>関わっているユーザー</h5>
       <.live_component
         id="intriguing_card"

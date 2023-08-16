@@ -20,6 +20,7 @@ defmodule BrightWeb.Admin.UserOnboardingLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:completed_at]} type="datetime-local" label="Completed at" />
+        <.input field={@form[:skill_panel_id]} type="text" label="Skill Panel Id" />
         <:actions>
           <.button phx-disable-with="Saving...">Save User onboarding</.button>
         </:actions>

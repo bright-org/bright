@@ -6,6 +6,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   @rank %{expert: "高度", advanced: "応用", basic: "基本"}
 
+  @impl true
   def render(assigns) do
     ~H"""
     <div id="wants_job_panel" class="hidden px-4 py-4">
@@ -31,10 +32,11 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               <%= career_field.name_ja %>
             </li>
           <% end %>
-          <li>
+          <!-- αは落とす -->
+          <li :if={false}>
             <a
               href="#"
-              class="absolute bg-brightGreen-300 block cursor-pointer font-bold select-none py-2 right-0 rounded text-center text-white -top-1.5 w-48 hover:opacity-50"
+              class="absolute bg-brightGray-900 block cursor-pointer font-bold select-none py-2 right-0 rounded text-center text-white -top-1.5 w-48 hover:opacity-50"
             >
               キャリアパスを見直す
             </a>
@@ -58,7 +60,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               <% jobs = Map.get(@jobs, @selected_career.name_en, %{}) %>
               <%= for job <- Map.get(jobs, rank, []) do %>
               <li>
-                <.link navigate={"/onboardings/jobs/#{job.id}"} class="block">
+                <.link navigate={"#{@current_path}/jobs/#{job.id}"} class="block">
                   <label
                     class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
                     style={"background-color:#{@colors[@selected_career.name_en][:dark]};"}
@@ -80,9 +82,8 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     """
   end
 
+  @impl true
   def mount(socket) do
-    career_fields = CareerFields.list_career_fields()
-
     jobs =
       Jobs.list_jobs()
       |> Repo.preload(:career_fields)
@@ -91,22 +92,26 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         Map.put(acc, key, Enum.group_by(value, & &1.rank))
       end)
 
-    socket
     # tailwindの色情報が壊れるので応急処置でconfigから読み込み
+    socket
     |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
     |> assign(:rank, @rank)
-    |> assign(:career_fields, career_fields)
-    |> assign(:selected_career, Enum.at(career_fields, 0))
     |> assign(:jobs, jobs)
     |> then(&{:ok, &1})
   end
 
-  def update(assigns, socket) do
+  @impl true
+  def update(%{tab: tab} = assigns, socket) do
+    career_fields = CareerFields.list_career_fields()
+
     socket
     |> assign(assigns)
+    |> assign(:career_fields, career_fields)
+    |> assign(:selected_career, Enum.find(career_fields, &(&1.name_en == tab)))
     |> then(&{:ok, &1})
   end
 
+  @impl true
   def handle_event(
         "tab_click",
         %{"id" => career_field_id},

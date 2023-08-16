@@ -73,6 +73,11 @@ defmodule Bright.Factory do
   use Bright.HistoricalSkillUnitFactory
   use Bright.HistoricalSkillCategoryFactory
   use Bright.HistoricalSkillFactory
+  use Bright.HistoricalSkillClassUnitFactory
+
+  # HistoricalSkillScores context
+  use Bright.HistoricalSkillScoreFactory
+  use Bright.HistoricalSkillClassScoreFactory
 
   # NotificationsFactory context
   use Bright.NotificationFactory

@@ -1,15 +1,19 @@
 defmodule BrightWeb.UserSettingsLiveTest do
   use BrightWeb.ConnCase
 
-  alias Bright.Accounts
+  alias Bright.{Accounts, Repo}
   import Phoenix.LiveViewTest
   import Bright.Factory
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do
+      user = insert(:user)
+      insert(:user_onboarding, user: user)
+      user = Repo.preload(user, :user_onboardings)
+
       {:ok, _lv, html} =
         conn
-        |> log_in_user(insert(:user))
+        |> log_in_user(user)
         |> live(~p"/users/settings")
 
       assert html =~ "Change Email"
@@ -30,6 +34,8 @@ defmodule BrightWeb.UserSettingsLiveTest do
       password = valid_user_password()
 
       user = create_user_with_password(password)
+      insert(:user_onboarding, user: user)
+      user = Repo.preload(user, :user_onboardings)
 
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
@@ -89,6 +95,8 @@ defmodule BrightWeb.UserSettingsLiveTest do
       password = valid_user_password()
 
       user = create_user_with_password(password)
+      insert(:user_onboarding, user: user)
+      user = Repo.preload(user, :user_onboardings)
 
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
@@ -164,6 +172,8 @@ defmodule BrightWeb.UserSettingsLiveTest do
   describe "confirm email" do
     setup %{conn: conn} do
       user = insert(:user)
+      insert(:user_onboarding, user: user)
+      user = Repo.preload(user, :user_onboardings)
       email = unique_user_email()
 
       token =
