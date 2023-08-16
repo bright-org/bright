@@ -184,7 +184,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
   """
   def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
-
     current_team =
       team_id
       |> Teams.get_team_with_member_users!()
