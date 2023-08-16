@@ -22,7 +22,6 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> assign_skill_classes()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
-     |> assign_skill_units()
      |> assign_skill_score_dict()
      |> assign_counter()
      |> assign_page_sub_title()}
