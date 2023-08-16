@@ -114,6 +114,18 @@ defmodule BrightWeb.ProfileComponents do
     """
   end
 
+  @doc """
+  Renders a Profile small with remove button
+
+  ## Examples
+      <.profile_small_with_remove_button
+        remove_user_target={@myself}
+        user_name="piacere"
+        user_id="1234"
+        title="リードプログラマー"
+        icon_file_path="/images/sample/sample-image.png"
+      />
+  """
   attr :remove_user_target, :any
   attr :user_name, :string, required: true
   attr :user_id, :string, required: true

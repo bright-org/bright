@@ -88,8 +88,8 @@
                             <.profile_small_with_remove_button
                               remove_user_target={@myself}
                               user_id={user.id} user_name={user.name}
-                              title="アプリエンジニア"
-                              icon_file_path="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                              title={user.user_profile.title}
+                              icon_file_path={user.user_profile.icon_file_path}
                               />
                           </ul>
                           <% end %>

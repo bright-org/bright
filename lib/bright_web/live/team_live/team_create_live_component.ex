@@ -44,7 +44,10 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     search_word = socket.assigns.search_word
 
     selected_users = socket.assigns.users
-    user = Accounts.get_user_by_name_or_email(search_word)
+
+    user =
+      search_word
+      |> Accounts.get_user_by_name_or_email()
 
     socket =
       if user == nil do
