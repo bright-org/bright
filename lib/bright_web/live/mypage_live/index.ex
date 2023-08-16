@@ -3,6 +3,8 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.ProfileComponents
   # import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
+  alias Bright.Accounts
+  alias Bright.Repo
 
   @impl true
   def mount(params, _session, socket) do
@@ -26,11 +28,12 @@ defmodule BrightWeb.MypageLive.Index do
   # TODO: プロフィール読み込み共通化対象
   def assign_display_user(socket, %{"user_name" => user_name}) do
     # TODO: チームに所属のチェックを実装すること
-    IO.inspect("-------------------------------指定------------------")
-    IO.inspect(user_name)
+    user =
+      Accounts.get_user_by_name_or_email(user_name)
+      |> Repo.preload(:user_profile)
 
     socket
-    |> assign(:display_user, socket.assigns.current_user)
+    |> assign(:display_user, user)
   end
 
   def assign_display_user(socket, %{"user_name_crypted" => user_name_crypted}) do
@@ -42,9 +45,6 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def assign_display_user(socket, params) do
-    IO.inspect("------------------------------自分自身------------------")
-    IO.inspect(params)
-
     socket
     |> assign(:display_user, socket.assigns.current_user)
   end
