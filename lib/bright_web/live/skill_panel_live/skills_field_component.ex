@@ -85,6 +85,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> update(:compared_user_dict, &Map.delete(&1, name))}
   end
 
+  def handle_event("timeline_bar_button_click", _params, socket) do
+    {:noreply, socket}
+  end
+
   def assign_skill_units(socket) do
     skill_units =
       Ecto.assoc(socket.assigns.skill_class, :skill_units)

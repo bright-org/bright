@@ -7,7 +7,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   def compares(assigns) do
     ~H"""
     <div class="flex mt-4 items-center">
-      <.compare_timeline />
+      <.compare_timeline myself={@myself} />
       <% # TODO: 仮UI コンポーネント完成後に削除 %>
       <div class="flex gap-x-4">
         <button
@@ -33,84 +33,29 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compare_timeline(assigns) do
     ~H"""
-      <div class="w-[566px] mr-10">
-        <div class="flex">
-          <div class="flex justify-center items-center ml-1 mr-3">
-            <button
-              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
-            >
-              <span class="material-icons text-white !text-3xl"
-                >arrow_left</span>
-            </button>
-          </div>
-          <div
-            class="bg-brightGray-50 h-[44px] rounded-full w-[500px] my-5 flex justify-around items-center relative"
-          >
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2022.12
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.3
-              </button>
-            </div>
-            <div class="h-[80px] w-[80px]">
-              <button
-                class="h-[80px] w-[80px] rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-xs flex justify-center items-center flex-col"
-              >
-                <span class="material-icons !text-[22px] !font-bold">check</span>
-                2022.6
-              </button>
-            </div>
-
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.9
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.12
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center absolute right-[58px]"
-            >
-              <button
-                class="h-[38px] w-[38px] border border-brightGray-50 text-attention-900 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                現在
-              </button>
-            </div>
-          </div>
-          <div class="flex justify-center items-center ml-2">
-            <button
-              class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded"
-            >
-              <span class="material-icons text-white !text-3xl"
-                >arrow_right</span>
-            </button>
-          </div>
+    <div class="w-[566px] mr-10">
+      <div class="flex">
+        <div class="flex justify-center items-center ml-1 mr-3">
+          <button class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded">
+            <span class="material-icons text-white !text-3xl">arrow_left</span>
+          </button>
+        </div>
+        <BrightWeb.TimelineBarComponents.timeline_bar
+          id="timeline"
+          target={@myself}
+          type="myself"
+          dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
+          selected_date={"2023.6"}
+          display_now={true}
+          scale="sm"
+        />
+        <div class="flex justify-center items-center ml-2">
+          <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+            <span class="material-icons text-white !text-3xl">arrow_right</span>
+          </button>
         </div>
       </div>
+    </div>
     """
   end
 
