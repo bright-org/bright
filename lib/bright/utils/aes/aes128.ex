@@ -21,7 +21,7 @@ defmodule Bright.Utils.Aes.Aes128 do
   def encrypt(plaintext) do
     # ivとは初期化ベクトルの意味で、毎回内容を変えることにより暗号解読をしにくくする
     # 16byte単位で処理できるようにする
-    # 出力形式はvi + 暗号化文字列をBase64にする
+    # 出力形式はiv + 暗号化文字列をBase64にする
     iv = :crypto.strong_rand_bytes(@block_size)
     plaintext = pad(plaintext, @block_size)
     encrypted_text = :crypto.crypto_one_time(:aes_128_cbc, @secret_key, iv, plaintext, true)
