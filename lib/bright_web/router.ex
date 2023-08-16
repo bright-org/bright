@@ -160,7 +160,10 @@ defmodule BrightWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [
+        {BrightWeb.UserAuth, :ensure_authenticated},
+        {BrightWeb.UserAuth, :ensure_onboarding}
+      ] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
