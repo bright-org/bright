@@ -11,7 +11,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
         <!-- やりたいこと ここから -->
         <%= for wants <- @career_wants do %>
         <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
-          <.link navigate={"/onboardings/wants/#{wants.id}"} class="block">
+          <.link navigate={"#{@path}/wants/#{wants.id}"} class="block">
             <b class="block text-center"><%= wants.name %></b>
             <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
               <%= for career_field <- wants.jobs do %>
@@ -31,7 +31,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
         <% end %>
       </ul>
 
-      <form class="flex flex-wrap gap-4 justify-start p-4">
+      <form class="flex flex-wrap gap-4 justify-start p-4" :if={false}>
         <input
           type="text"
           placeholder="やりたいことに関連するキーワードを入れてください"
@@ -47,7 +47,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
   end
 
   @impl true
-  def mount(socket) do
+  def update(assigns, socket) do
     career_wants =
       CareerWants.list_career_wants()
       |> Repo.preload(jobs: :career_fields)
@@ -62,6 +62,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
       end)
 
     socket
+    |> assign(assigns)
     # tailwindの色情報が壊れるので応急処置でconfigから読み込み
     |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
     |> assign(:open_panel, false)

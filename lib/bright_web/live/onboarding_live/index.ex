@@ -20,20 +20,18 @@ defmodule BrightWeb.OnboardingLive.Index do
   end
 
   @impl true
-  def handle_params(%{"open" => panel, "tab" => tab}, _uri, socket) do
+  def handle_params(params, uri, socket) do
     socket
-    |> assign(:open, panel)
-    |> assign(:tab, tab)
+    |> assign(:path, URI.parse(uri).path)
+    |> assign_params(params)
     |> then(&{:noreply, &1})
   end
 
-  def handle_params(%{"open" => panel}, _uri, socket) do
+  defp assign_params(socket, params) do
     socket
-    |> assign(:open, panel)
-    |> then(&{:noreply, &1})
+    |> assign(:open, Map.get(params, "open", false))
+    |> assign(:tab, Map.get(params, "tab", "engineer"))
   end
-
-  def handle_params(_, _uri, socket), do: {:noreply, assign(socket, open: false)}
 
   @impl true
   def handle_event("skip_onboarding", _value, %{assigns: %{current_user: user}} = socket) do
