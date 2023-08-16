@@ -234,8 +234,9 @@ defmodule Bright.Teams do
         team_id,
         page_param \\ %{page: 1, page_size: 1}
       ) do
-    TeamMemberUsers
-    |> where([member_user], member_user.team_id == ^team_id)
+    from(tmu in TeamMemberUsers,
+      where: tmu.team_id == ^team_id
+    )
     |> preload(user: [skill_class_scores: :skill_class])
     |> preload(user: [skill_unit_scores: :skill_unit])
     |> Repo.paginate(page_param)
