@@ -46,7 +46,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <div class="flex">
       <div class="flex-1 text-left font-bold">
-        <.link navigate={"/panels/#{@skill_panel.id}/#{@path}"} >
+        <.link href={"/panels/#{@skill_panel.id}/#{@path}"} >
           <%= @skill_panel.name %>
         </.link>
       </div>
@@ -76,7 +76,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
     ~H"""
     <div class="w-36">
-      <.link navigate={"/panels/#{@skill_panel_id}/#{@path}?class=#{@class_num}"}>
+      <.link href={"/panels/#{@skill_panel_id}/#{@path}?class=#{@class_num}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
           <img src={@icon_path} class="mr-1" />
           <span class="w-16"><%= level_text(@level) %></span>
