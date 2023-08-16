@@ -208,8 +208,10 @@ defmodule BrightWeb.UserAuth do
     end
   end
 
-  def on_mount(:ensure_onboarding, _params, _session, %{assigns: %{current_user: user}} = socket) do
-    if user.user_onboardings == nil do
+  def on_mount(:ensure_onboarding, _params, session, socket) do
+    socket = mount_current_user(socket, session)
+
+    if socket.assigns.current_user.user_onboardings == nil do
       socket
       |> Phoenix.LiveView.put_flash(:error, "オンボーディングが完了していません")
       |> Phoenix.LiveView.redirect(to: ~p"/onboardings")
@@ -219,13 +221,10 @@ defmodule BrightWeb.UserAuth do
     end
   end
 
-  def on_mount(
-        :redirect_if_onboarding_finished,
-        _params,
-        _session,
-        %{assigns: %{current_user: user}} = socket
-      ) do
-    if user.user_onboardings do
+  def on_mount(:redirect_if_onboarding_finished, _params, session, socket) do
+    socket = mount_current_user(socket, session)
+
+    if socket.assigns.current_user.user_onboardings do
       socket
       |> Phoenix.LiveView.redirect(to: ~p"/skill_up")
       |> then(&{:halt, &1})

@@ -247,6 +247,64 @@ defmodule BrightWeb.UserAuthTest do
     end
   end
 
+  describe "on_mount: ensure_onboarding" do
+    test "onboarding current_user based on a valid user_token", %{conn: conn, user: user} do
+      onboarding = insert(:user_onboarding, user: user)
+      user_token = Accounts.generate_user_session_token(user)
+      session = conn |> put_session(:user_token, user_token) |> get_session()
+
+      {:cont, updated_socket} =
+        UserAuth.on_mount(:ensure_onboarding, %{}, session, %LiveView.Socket{})
+
+      assert updated_socket.assigns.current_user.user_onboardings.id == onboarding.id
+    end
+
+    test "redirects to onboarding page if there isn't a finish onboarding", %{
+      conn: conn,
+      user: user
+    } do
+      user_token = Accounts.generate_user_session_token(user)
+      session = conn |> put_session(:user_token, user_token) |> get_session()
+
+      socket = %LiveView.Socket{
+        endpoint: BrightWeb.Endpoint,
+        assigns: %{__changed__: %{}, flash: %{}}
+      }
+
+      {:halt, updated_socket} = UserAuth.on_mount(:ensure_onboarding, %{}, session, socket)
+      assert updated_socket.assigns.current_user.user_onboardings == nil
+    end
+  end
+
+  describe "on_mount: redirect_if_onboarding_finished" do
+    test "redirects if there is an authenticated  user ", %{conn: conn, user: user} do
+      insert(:user_onboarding, user: user)
+      user_token = Accounts.generate_user_session_token(user)
+      session = conn |> put_session(:user_token, user_token) |> get_session()
+
+      assert {:halt, _updated_socket} =
+               UserAuth.on_mount(
+                 :redirect_if_onboarding_finished,
+                 %{},
+                 session,
+                 %LiveView.Socket{}
+               )
+    end
+
+    test "doesn't redirect if there is no onboarding user", %{conn: conn, user: user} do
+      user_token = Accounts.generate_user_session_token(user)
+      session = conn |> put_session(:user_token, user_token) |> get_session()
+
+      assert {:cont, _updated_socket} =
+               UserAuth.on_mount(
+                 :redirect_if_onboarding_finished,
+                 %{},
+                 session,
+                 %LiveView.Socket{}
+               )
+    end
+  end
+
   describe "redirect_if_user_is_authenticated/2" do
     test "redirects if user is authenticated", %{conn: conn, user: user} do
       conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
