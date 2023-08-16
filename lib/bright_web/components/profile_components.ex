@@ -5,6 +5,7 @@ defmodule BrightWeb.ProfileComponents do
   use Phoenix.Component
   import BrightWeb.BrightButtonComponents
   import BrightWeb.SnsComponents
+  alias Phoenix.LiveView.JS
 
   @doc """
   Renders a Profile
@@ -108,6 +109,38 @@ defmodule BrightWeb.ProfileComponents do
           <p><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
+      </a>
+    </li>
+    """
+  end
+
+  attr :remove_user_target, :any
+  attr :user_name, :string, required: true
+  attr :user_id, :string, required: true
+  attr :title, :string, default: ""
+  attr :icon_file_path, :string, default: ""
+
+  def profile_small_with_remove_button(assigns) do
+    ~H"""
+    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full">
+      <a class="inline-flex items-center gap-x-6 w-full">
+        <img
+          class="inline-block h-10 w-10 rounded-full"
+          src={@icon_file_path}
+        />
+        <div class="flex-auto">
+          <p><%= @user_name %></p>
+          <p class="text-brightGray-300"><%= @title %></p>
+        </div>
+        <button
+          phx-click={JS.push("remove_user", value: %{id: @user_id})}
+          phx-target={@remove_user_target}
+          class="mx-4"
+        >
+          <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+            close
+          </span>
+        </button>
       </a>
     </li>
     """
