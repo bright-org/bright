@@ -9,6 +9,7 @@ defmodule Bright.SkillScores do
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores.{SkillClassScore, SkillUnitScore, SkillScore}
+  alias Bright.HistoricalSkillPanels.HistoricalSkillClass
 
   # レベルの判定値
   @normal_level 40
@@ -302,7 +303,6 @@ defmodule Bright.SkillScores do
 
   @doc """
   Updates a skill_score.
-  TODO: 削除
 
   ## Examples
 
@@ -317,6 +317,19 @@ defmodule Bright.SkillScores do
     skill_score
     |> SkillScore.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Update a skill_score's evidence_filled
+  """
+  def update_skill_score_evidence_filled(user, skill) do
+    skill_score = Repo.get_by!(SkillScore, user_id: user.id, skill_id: skill.id)
+
+    if skill_score.evidence_filled do
+      {:ok, skill_score}
+    else
+      update_skill_score(skill_score, %{evidence_filled: true})
+    end
   end
 
   @doc """
@@ -477,5 +490,38 @@ defmodule Bright.SkillScores do
       where: skill_class_score.user_id == ^user_id
     )
     |> Repo.one()
+  end
+
+  @doc """
+  Get historical_skill_class_scores
+
+  ## Examples
+
+      iex> get_historical_skill_class_scores(locked_date, skill_panel_id, class, user_id,from_date, to_date)
+      [
+        %{locked_date: ~D[2022-10-01], percentage: 15.555555555555555}
+      ]
+  """
+  def get_historical_skill_class_scores(skill_panel_id, class, user_id, from_date, to_date) do
+    from(
+      historical_skill_class in HistoricalSkillClass,
+      join:
+        historical_skill_class_scores in assoc(
+          historical_skill_class,
+          :historical_skill_class_scores
+        ),
+      on:
+        historical_skill_class_scores.user_id == ^user_id and
+          historical_skill_class_scores.locked_date >= ^from_date and
+          historical_skill_class_scores.locked_date <= ^to_date,
+      where:
+        historical_skill_class.skill_panel_id == ^skill_panel_id and
+          historical_skill_class.class == ^class,
+      select: {
+        historical_skill_class_scores.locked_date,
+        historical_skill_class_scores.percentage
+      }
+    )
+    |> Repo.all()
   end
 end

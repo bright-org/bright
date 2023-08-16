@@ -2,7 +2,6 @@ defmodule BrightWeb.UserSessionControllerTest do
   use BrightWeb.ConnCase, async: true
 
   import Bright.Factory
-  import Swoosh.TestAssertions
   alias Bright.Accounts.UserToken
   alias Bright.Accounts.User2faCodes
   alias Bright.Repo
@@ -29,10 +28,7 @@ defmodule BrightWeb.UserSessionControllerTest do
       assert Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
       assert Repo.get_by(User2faCodes, user_id: user.id)
 
-      assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
-        assert email.to == [{"", user.email}]
-      end)
+      assert_two_factor_auth_mail_sent(user)
     end
 
     test "redirects two_factor_auth page when two factor auth done cookie exists but was expired",
@@ -60,10 +56,7 @@ defmodule BrightWeb.UserSessionControllerTest do
       assert Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
       assert Repo.get_by(User2faCodes, user_id: user.id)
 
-      assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
-        assert email.to == [{"", user.email}]
-      end)
+      assert_two_factor_auth_mail_sent(user)
     end
 
     test "logs the user in when two factor auth done cookie exists", %{conn: conn, user: user} do

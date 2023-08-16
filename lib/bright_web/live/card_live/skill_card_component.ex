@@ -5,9 +5,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   """
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
-  alias Bright.UserSkillPanels
+  alias Bright.{CareerFields, SkillPanels}
 
-  # TODO selected_tab,selected_tab,page,total_pagesは未実装でダミーです
   @impl true
   def render(assigns) do
     ~H"""
@@ -15,9 +14,9 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       <.tab
         id="skill_card"
         selected_tab={@selected_tab}
-        page={1}
-        total_pages={1}
         target={@myself}
+        page={@page}
+        total_pages={@total_pages}
         tabs={@tabs}
       >
         <div class="py-6 px-7 flex gap-y-4 flex-col min-h-[464px]">
@@ -35,7 +34,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
             <div class="w-36 font-bold">クラス3</div>
           </div>
           <%= for skill_panel <- @skill_panels do %>
-            <.skill_panel skill_panel={skill_panel} />
+            <.skill_panel skill_panel={skill_panel} root={@root} />
           <% end %>
         </div>
       </.tab>
@@ -43,100 +42,116 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
-  @impl true
-  def mount(socket) do
-    tabs =
-      Bright.CareerFields.list_career_fields()
-      |> Enum.map(&{&1.name_en, &1.name_ja})
-
-    {:ok, assign(socket, :tabs, tabs)}
-  end
-
-  @impl true
-  def update(assigns, socket) do
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign(:selected_tab, "engineer")
-     |> assign(
-       :skill_panels,
-       UserSkillPanels.get_level_by_class_in_skills_panel(assigns.current_user.id)
-     )}
-  end
-
-  @impl true
-  def handle_event(
-        "tab_click",
-        %{"id" => "skill_card", "tab_name" => tab_name},
-        socket
-      ) do
-    socket =
-      socket
-      |> assign(:selected_tab, tab_name)
-
-    # TODO 処理は未実装
-    {:noreply, socket}
-  end
-
-  def handle_event(
-        "previous_button_click",
-        %{"id" => "skill_card"},
-        socket
-      ) do
-    # TODO 処理は未実装
-    {:noreply, socket}
-  end
-
-  def handle_event(
-        "next_button_click",
-        %{"id" => "skill_card"},
-        socket
-      ) do
-    # TODO 処理は未実装
-    {:noreply, socket}
-  end
-
   defp skill_panel(assigns) do
     ~H"""
     <div class="flex">
       <div class="flex-1 text-left font-bold">
-        <.link
-          href={~p"/panels/#{@skill_panel.id}/graph"}
-          method="get"
-        >
+        <% # TODO: 対象ユーザーが指定されている場合jの対応 %>
+        <.link href={"/#{@root}/#{@skill_panel.id}"} >
           <%= @skill_panel.name %>
         </.link>
       </div>
-      <%= for {level, class} <- Enum.with_index(@skill_panel.levels, 1) do %>
-        <.skill_gem level={level} class={class} id={@skill_panel.id}/>
+      <%= for class <- @skill_panel.skill_classes do %>
+        <.skill_gem
+          score={List.first(class.skill_class_scores)}
+          class_num={class.class}
+          skill_panel_id={@skill_panel.id}
+          root={@root}
+        />
       <% end %>
     </div>
     """
   end
 
-  defp skill_gem(%{level: :none} = assigns) do
+  defp skill_gem(%{score: nil} = assigns) do
     ~H"""
     <div class="w-36"></div>
     """
   end
 
-  defp skill_gem(assigns) do
+  defp skill_gem(%{score: %{level: level}} = assigns) do
     assigns =
       assigns
-      |> assign(:icon_path, icon_path(assigns.level))
+      |> assign(:icon_path, icon_path(level))
+      |> assign(:level, level)
 
     ~H"""
     <div class="w-36">
-      <.link
-        href={~p"/panels/#{@id}/graph?class=#{@class}"}
-        method="get"
-      >
+      <.link href={"/#{@root}/#{@skill_panel_id}?class=#{@class_num}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
-          <img src={@icon_path} class="mr-1" /><%= level_text(@level) %>
+          <img src={@icon_path} class="mr-1" />
+          <span class="w-16"><%= level_text(@level) %></span>
         </p>
       </.link>
     </div>
     """
+  end
+
+  @impl true
+  def update(%{current_user: user} = assigns, socket) do
+    tabs =
+      CareerFields.list_career_fields()
+      |> Enum.map(&{&1.name_en, &1.name_ja})
+
+    socket
+    |> assign(assigns)
+    |> assign(:tabs, tabs)
+    |> assign(:selected_tab, "engineer")
+    |> assign_paginate(user.id, "engineer")
+    |> then(&{:ok, &1})
+  end
+
+  def assign_paginate(socket, user_id, career_field, page \\ 1) do
+    %{page_number: page, total_pages: total_pages, entries: skill_panels} =
+      SkillPanels.list_users_skill_panels_by_career_field(user_id, career_field, page)
+
+    socket
+    |> assign(:skill_panels, skill_panels)
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"tab_name" => tab_name},
+        %{assigns: %{current_user: user}} = socket
+      ) do
+    socket
+    |> assign(:selected_tab, tab_name)
+    |> assign_paginate(user.id, tab_name)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "previous_button_click",
+        _params,
+        %{assigns: %{page: page, selected_tab: tab_name, current_user: user}} = socket
+      ) do
+    page = if page - 1 < 1, do: 1, else: page - 1
+
+    socket
+    |> assign_paginate(user.id, tab_name, page)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "next_button_click",
+        _params,
+        %{
+          assigns: %{
+            page: page,
+            total_pages: total_pages,
+            selected_tab: tab_name,
+            current_user: user
+          }
+        } = socket
+      ) do
+    page = if page + 1 > total_pages, do: total_pages, else: page + 1
+
+    socket
+    |> assign_paginate(user.id, tab_name, page)
+    |> then(&{:noreply, &1})
   end
 
   defp icon_base_path(file), do: "/images/common/icons/#{file}"

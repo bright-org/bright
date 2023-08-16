@@ -9,7 +9,6 @@ defmodule Bright.AccountsTest do
   alias Bright.UserJobProfiles.UserJobProfile
 
   import Bright.Factory
-  import Swoosh.TestAssertions
   alias Bright.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -26,6 +25,13 @@ defmodule Bright.AccountsTest do
     test "returns the user if the email exists" do
       %{id: id} = user = insert(:user)
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
+    end
+
+    test "returns not confirmed user if including_not_confirmed: true" do
+      %{id: id} = user = insert(:user_not_confirmed)
+
+      assert %User{id: ^id} =
+               Accounts.get_user_by_email(user.email, including_not_confirmed: true)
     end
   end
 
@@ -363,7 +369,7 @@ defmodule Bright.AccountsTest do
 
   describe "update_user_email/2" do
     setup do
-      user = insert(:user_not_confirmed)
+      user = insert(:user)
       email = unique_user_email()
 
       token =
@@ -379,8 +385,6 @@ defmodule Bright.AccountsTest do
       changed_user = Repo.get!(User, user.id)
       assert changed_user.email != user.email
       assert changed_user.email == email
-      assert changed_user.confirmed_at
-      assert changed_user.confirmed_at != user.confirmed_at
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
@@ -399,8 +403,6 @@ defmodule Bright.AccountsTest do
       changed_user = Repo.get!(User, user.id)
       assert changed_user.email != user.email
       assert changed_user.email == email
-      assert changed_user.confirmed_at
-      assert changed_user.confirmed_at != user.confirmed_at
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
@@ -812,11 +814,7 @@ defmodule Bright.AccountsTest do
       assert user_2fa_code
       assert Repo.aggregate(User2faCodes, :count) == 1
 
-      assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
-        assert email.to == [{"", user.email}]
-        assert email.text_body =~ user_2fa_code.code
-      end)
+      assert_two_factor_auth_mail_sent(user, user_2fa_code.code)
     end
 
     test "deletes existing token and code before setup" do
@@ -835,11 +833,7 @@ defmodule Bright.AccountsTest do
       assert user_2fa_code != before_user_2fa_code
       assert Repo.aggregate(User2faCodes, :count) == 1
 
-      assert_email_sent(fn email ->
-        assert email.subject == "【Bright】二段階認証コード"
-        assert email.to == [{"", user.email}]
-        assert email.text_body =~ user_2fa_code.code
-      end)
+      assert_two_factor_auth_mail_sent(user, user_2fa_code.code)
     end
   end
 
@@ -893,22 +887,30 @@ defmodule Bright.AccountsTest do
     end
   end
 
-  describe "generate_user_2fa_done_token/1" do
+  describe "finish_user_2fa/1" do
     test "generates user two_factor_auth_done token" do
       user = insert(:user)
 
-      Accounts.generate_user_2fa_done_token(user)
+      Accounts.finish_user_2fa(user)
 
       assert Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
     end
 
-    test "deletes existing token before generate" do
+    test "deletes existing tokens" do
       user = insert(:user)
-      before_user_token = insert(:user_token, user: user, context: "two_factor_auth_done")
 
-      Accounts.generate_user_2fa_done_token(user)
+      insert(:user_2fa_code, user: user)
+      insert(:user_token, user: user, context: "two_factor_auth_session")
 
-      assert before_user_token !=
+      before_two_factor_auth_done_token =
+        insert(:user_token, user: user, context: "two_factor_auth_done")
+
+      Accounts.finish_user_2fa(user)
+
+      refute Repo.get_by(UserToken, user_id: user.id, context: "two_factor_auth_session")
+      refute Repo.get_by(User2faCodes, user_id: user.id)
+
+      assert before_two_factor_auth_done_token !=
                Repo.get_by!(UserToken, user_id: user.id, context: "two_factor_auth_done")
 
       assert Repo.aggregate(UserToken, :count) == 1

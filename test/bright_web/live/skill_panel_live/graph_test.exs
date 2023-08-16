@@ -20,7 +20,7 @@ defmodule BrightWeb.SkillPanelLive.GraphTest do
       skill_panel: skill_panel,
       skill_class: skill_class
     } do
-      {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}/graph")
+      {:ok, show_live, html} = live(conn, ~p"/graphs/#{skill_panel}")
 
       assert html =~ skill_panel.name
 

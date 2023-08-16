@@ -135,19 +135,19 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
       {:noreply,
        socket
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills/#{user.name}")}
+       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/#{user.name}")}
     else
       {:noreply,
        socket
        |> put_flash(:info, "demo: ユーザーがいません")
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills")}
+       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}")}
     end
   end
 
-  def handle_event("clear_focus_user", _params, socket) do
+  def handle_event("clear_target_user", _params, socket) do
     {:noreply,
      socket
-     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/skills")}
+     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}")}
   end
 
   # TODO: デモ用実装のため対象ユーザー実装後に削除

@@ -111,4 +111,10 @@ if config_env() == :prod do
   config :bright, Bright.Mailer,
     adapter: Swoosh.Adapters.Sendgrid,
     api_key: System.get_env("SENDGRID_API_KEY")
+
+  # Sentry
+  config :sentry,
+    dsn: System.get_env("SENTRY_DSN"),
+    environment_name: System.get_env("SENTRY_ENVIRONMENT_NAME"),
+    included_environments: [System.get_env("SENTRY_ENVIRONMENT_NAME")]
 end

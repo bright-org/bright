@@ -3,6 +3,9 @@ defmodule BrightWeb.UserRegistrationLiveTest do
 
   import Phoenix.LiveViewTest
   import Bright.Factory
+  alias Bright.Repo
+  alias Bright.Accounts.User
+  alias Bright.Accounts.UserToken
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
@@ -62,15 +65,24 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       name = unique_user_name()
-      email = unique_user_email()
+      email_address = unique_user_email()
 
       form(lv, "#registration_form",
         user:
-          params_for(:user_before_registration, name: name, email: email)
+          params_for(:user_before_registration, name: name, email: email_address)
           |> Map.take([:name, :email, :password])
       )
       |> render_submit()
       |> follow_redirect(conn, ~p"/users/finish_registration")
+
+      assert_confirmation_mail_sent(email_address)
+
+      user = Repo.get_by(User, name: name)
+
+      assert user
+      refute user.confirmed_at
+      assert user.password_registered
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm")
     end
 
     test "renders errors for duplicated email", %{conn: conn} do

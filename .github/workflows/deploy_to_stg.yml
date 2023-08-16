@@ -2,8 +2,8 @@ name: Deploy to stg
 
 on:
   push:
-    branches:
-      - develop
+    tags:
+      - stg-*
 
 jobs:
   call:

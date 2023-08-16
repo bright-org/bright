@@ -109,7 +109,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
 
     socket
     |> put_flash(:info, "スキルパネル:#{name}を取得しました")
-    |> redirect(to: "/panels/#{skill_panel_id}/graph")
+    |> redirect(to: "/graphs/#{skill_panel_id}")
     |> then(&{:noreply, &1})
   end
 

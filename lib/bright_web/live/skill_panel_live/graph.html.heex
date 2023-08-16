@@ -1,7 +1,7 @@
 <!-- feat: スキルパネル更新 861b28d9a8ec541ac03fe716ac0926b4e5575d5e　まで適用 -->
 <div :if={@skill_panel}>
   <!-- card -->
-  <.navigations current_user={@current_user} />
+  <.navigations current_user={@current_user} root="graphs" />
   <div class="mx-10">
     <div class="flex justify-between">
       <% # TODO: α版後にifと仮divブロックを除去して表示 %>
@@ -27,7 +27,8 @@
             skill_panel_id={@skill_panel.id}
             class={@skill_class.class}
           />
-          <div class="flex justify-center">
+          <% # TODO: α版後に:if={false}を除去して表示 %>
+          <div :if={false} class="flex justify-center">
             <p>
               あと<span class="text-error !text-2xl font-bold">8</span>%でベテランになれます。
             </p>

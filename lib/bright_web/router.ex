@@ -126,14 +126,6 @@ defmodule BrightWeb.Router do
   end
 
   # 認証前
-  ## OAuth
-  scope "/auth", BrightWeb do
-    pipe_through [:browser]
-
-    get "/:provider", OAuthController, :request
-    get "/:provider/callback", OAuthController, :callback
-  end
-
   ## ユーザー登録・ログイン
   scope "/", BrightWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
@@ -172,13 +164,18 @@ defmodule BrightWeb.Router do
       live "/skill_up/wants/:want_id/skill_panels/:id", SkillUpLive.SkillPanel
       live "/skill_up/jobs/:job_id", SkillUpLive.SkillPanels
       live "/skill_up/jobs/:job_id/skill_panels/:id", SkillUpLive.SkillPanel
+      live "/mypage/:user_name", MypageLive.Index, :index
+      live "/mypage/anon/:user_name_crypted", MypageLive.Index, :index
 
       live "/graphs", SkillPanelLive.Graph, :show
+      live "/graphs/:skill_panel_id", SkillPanelLive.Graph, :show
+      live "/graphs/:skill_panel_id/:user_name", SkillPanelLive.Graph, :show
+      live "/graphs/:skill_panel_id/anon/:user_name_crypted", SkillPanelLive.Graph, :show
+
       live "/panels", SkillPanelLive.Skills, :show
-      live "/panels/:skill_panel_id/graph", SkillPanelLive.Graph, :show
-      live "/panels/:skill_panel_id/graph/:user_name", SkillPanelLive.Graph, :show
-      live "/panels/:skill_panel_id/skills", SkillPanelLive.Skills, :show
-      live "/panels/:skill_panel_id/skills/:user_name", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id/:user_name", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id/anon/:user_name_crypted", SkillPanelLive.Skills, :show
 
       live "/panels/:skill_panel_id/skills/:skill_id/evidences",
            SkillPanelLive.Skills,
@@ -193,7 +190,9 @@ defmodule BrightWeb.Router do
            :show_exam
 
       live "/teams", MyTeamLive, :index
+      live "/teams/:team_id", MyTeamLive, :index
       live "/teams/new", TeamCreateLive, :new
+      live "/searchs", SearchLive.Index
     end
   end
 
@@ -220,5 +219,11 @@ defmodule BrightWeb.Router do
 
     get "/users/confirm/:token", UserConfirmationController, :confirm
     delete "/users/log_out", UserSessionController, :delete
+
+    ## OAuth
+    scope "/auth" do
+      get "/:provider", OAuthController, :request
+      get "/:provider/callback", OAuthController, :callback
+    end
   end
 end

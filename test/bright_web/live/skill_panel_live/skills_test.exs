@@ -47,7 +47,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_panel: skill_panel,
       skill_class: skill_class
     } do
-      {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}/skills")
+      {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}")
 
       assert html =~ "スキルパネル"
 
@@ -86,7 +86,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert_skill_categories_and_skills(skill_unit_2, [1, 1, 2])
       insert_skill_categories_and_skills(skill_unit_dummy, [1])
 
-      {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}/skills")
+      {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}")
 
       assert html =~ "スキルパネル"
 
@@ -119,7 +119,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
       insert(:init_skill_class_score, user: user, skill_class: skill_class_2)
 
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=2")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=2")
 
       assert show_live
              |> has_element?("#class_tab_2", skill_class_2.name)
@@ -131,7 +131,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: :low
     test "shows mark when score: low", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert show_live
              |> element(".score-mark-low")
@@ -140,7 +140,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: :middle
     test "shows mark when score: middle", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert show_live
              |> element(".score-mark-middle")
@@ -149,7 +149,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: :high
     test "shows mark when score: high", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert show_live
              |> element(".score-mark-high")
@@ -162,7 +162,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: :low
     test "update scores", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       # 編集モード IN
       show_live
@@ -194,7 +194,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert show_live |> has_element?("#skill-3 .score-mark-high")
 
       # 永続化確認のための再描画
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert show_live |> has_element?("#skill-1 .score-mark-low")
       assert show_live |> has_element?("#skill-2 .score-mark-middle")
@@ -203,7 +203,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: nil
     test "edits by key input", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       # 編集モード IN
       show_live
@@ -236,7 +236,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       # 永続化確認のための再描画
-      {:ok, _show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, _show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert show_live |> has_element?("#skill-1 .score-mark-high")
       assert show_live |> has_element?("#skill-2 .score-mark-middle")
@@ -245,7 +245,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: nil
     test "move by key input", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       # 編集モード IN
       show_live
@@ -292,7 +292,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: nil
     test "shows updated value", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       # 初期表示
       assert show_live
@@ -336,7 +336,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element(~s{button[phx-click="submit"]})
       |> render_click()
 
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert show_live
              |> element(".score-high-percentage", "66％")
@@ -367,7 +367,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element(~s{button[phx-click="submit"]})
       |> render_click()
 
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert show_live
              |> element(".score-high-percentage", "0％")
@@ -385,13 +385,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: nil
     test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
       |> element("#skill-1 .link-evidence")
       |> render_click()
 
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences")
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences?class=1")
 
       assert show_live
              |> render() =~ skill_1.name
@@ -416,7 +416,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
           content: "some content"
         )
 
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
       |> element("#skill-1 .link-evidence")
@@ -455,7 +455,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     @tag score: nil
     test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
       skill_reference = insert(:skill_reference, skill: skill_1)
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
       |> element("#skill-1 .link-reference")
@@ -471,7 +471,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: nil
     test "教材がないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       refute show_live
              |> element("#skill-1 .link-reference")
@@ -481,7 +481,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     @tag score: nil
     test "教材のURLがないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
       insert(:skill_reference, skill: skill_1, url: nil)
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       refute show_live
              |> element("#skill-1 .link-reference")
@@ -496,7 +496,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     @tag score: nil
     test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
       skill_exam = insert(:skill_exam, skill: skill_1)
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
       |> element("#skill-1 .link-exam")
@@ -512,7 +512,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     @tag score: nil
     test "試験がないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       refute show_live
              |> element("#skill-1 .link-exam")
@@ -522,7 +522,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     @tag score: nil
     test "試験のURLがないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
       insert(:skill_exam, skill: skill_1, url: nil)
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       refute show_live
              |> element("#skill-1 .link-exam")
@@ -548,7 +548,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:init_skill_class_score, user: dummy_user, skill_class: skill_class)
       insert(:skill_score, user: dummy_user, skill: skill, score: :high)
 
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/skills?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       refute show_live
              |> element(".score-mark-high")
