@@ -7,6 +7,7 @@ defmodule BrightWeb.MypageLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     socket
+    |> assign(:display_user, socket.assigns.current_user)
     |> assign(:page_title, "マイページ")
     |> then(&{:ok, &1})
   end
