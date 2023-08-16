@@ -34,7 +34,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
             <div class="w-36 font-bold">クラス3</div>
           </div>
           <%= for skill_panel <- @skill_panels do %>
-            <.skill_panel skill_panel={skill_panel} path={@path} />
+            <.skill_panel skill_panel={skill_panel} root={@root} />
           <% end %>
         </div>
       </.tab>
@@ -46,7 +46,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <div class="flex">
       <div class="flex-1 text-left font-bold">
-        <.link href={"/panels/#{@skill_panel.id}/#{@path}"} >
+        <% # TODO: 対象ユーザーが指定されている場合jの対応 %>
+        <.link href={"/#{@root}/#{@skill_panel.id}"} >
           <%= @skill_panel.name %>
         </.link>
       </div>
@@ -55,7 +56,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
           score={List.first(class.skill_class_scores)}
           class_num={class.class}
           skill_panel_id={@skill_panel.id}
-          path={@path}
+          root={@root}
         />
       <% end %>
     </div>
@@ -76,7 +77,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
     ~H"""
     <div class="w-36">
-      <.link href={"/panels/#{@skill_panel_id}/#{@path}?class=#{@class_num}"}>
+      <.link href={"/#{@root}/#{@skill_panel_id}?class=#{@class_num}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
           <img src={@icon_path} class="mr-1" />
           <span class="w-16"><%= level_text(@level) %></span>

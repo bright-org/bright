@@ -46,12 +46,12 @@ defmodule BrightWeb.SkillPanelLive.Graph do
 
       {:noreply,
        socket
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph/#{user.name}")}
+       |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}/#{user.name}")}
     else
       {:noreply,
        socket
        |> put_flash(:info, "demo: ユーザーがいません")
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph")}
+       |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}")}
     end
   end
 
@@ -59,7 +59,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   def handle_event("clear_target_user", _params, socket) do
     {:noreply,
      socket
-     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/graph")}
+     |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}")}
   end
 
   @impl true
