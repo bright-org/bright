@@ -189,7 +189,7 @@ defmodule BrightWeb.UserAuthTest do
       session = conn |> put_session(:user_token, user_token) |> get_session()
 
       {:cont, updated_socket} =
-        UserAuth.on_mount(:ensure_authenticated_and_onboarding, %{}, session, %LiveView.Socket{})
+        UserAuth.on_mount(:ensure_authenticated, %{}, session, %LiveView.Socket{})
 
       assert updated_socket.assigns.current_user.id == user.id
     end
@@ -203,9 +203,7 @@ defmodule BrightWeb.UserAuthTest do
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
-      {:halt, updated_socket} =
-        UserAuth.on_mount(:ensure_authenticated_and_onboarding, %{}, session, socket)
-
+      {:halt, updated_socket} = UserAuth.on_mount(:ensure_authenticated, %{}, session, socket)
       assert updated_socket.assigns.current_user == nil
     end
 
@@ -217,9 +215,7 @@ defmodule BrightWeb.UserAuthTest do
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
-      {:halt, updated_socket} =
-        UserAuth.on_mount(:ensure_authenticated_and_onboarding, %{}, session, socket)
-
+      {:halt, updated_socket} = UserAuth.on_mount(:ensure_authenticated, %{}, session, socket)
       assert updated_socket.assigns.current_user == nil
     end
   end
