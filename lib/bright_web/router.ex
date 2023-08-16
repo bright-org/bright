@@ -202,7 +202,10 @@ defmodule BrightWeb.Router do
     pipe_through [:browser, :require_authenticated_user, :onboarding]
 
     live_session :require_authenticated_user_onboarding,
-      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [
+        {BrightWeb.UserAuth, :ensure_authenticated},
+        {BrightWeb.UserAuth, :redirect_if_onboarding_finished}
+      ] do
       live "/", OnboardingLive.Index, :index
       live "/wants/:want_id", OnboardingLive.SkillPanels
       live "/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel

@@ -219,6 +219,22 @@ defmodule BrightWeb.UserAuth do
     end
   end
 
+  def on_mount(
+        :redirect_if_onboarding_finished,
+        _params,
+        _session,
+        %{assigns: %{current_user: user}} = socket
+      ) do
+    if user.user_onboardings do
+      socket
+      |> Phoenix.LiveView.put_flash(:error, "オンボーディングは完了しています")
+      |> Phoenix.LiveView.redirect(to: ~p"/skill_up")
+      |> then(&{:halt, &1})
+    else
+      {:cont, socket}
+    end
+  end
+
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
