@@ -147,7 +147,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         %{"id" => _id},
         %{assigns: %{card: card}} = socket
       ) do
-
     page = card.page_params.page - 1
     page = if page < 1, do: 1, else: page
 
@@ -159,14 +158,12 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         %{"id" => _id},
         %{assigns: %{card: card}} = socket
       ) do
-
     page = card.page_params.page + 1
 
     page =
       if page > card.total_pages,
         do: card.total_pages,
         else: page
-
 
     card_view(socket, card.selected_tab, page)
   end
