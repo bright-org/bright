@@ -19,7 +19,7 @@ defmodule Bright.Utils.Aes.Aes128 do
       "SRXHIrl3aAPXJcED2+rx4byNh6y1F/Vy9CNWLQ1Fr0Q="
   """
   def encrypt(plaintext) do
-    # viとは初期化ベクトルの意味で、毎回内容を変えることにより暗号解読をしにくくする
+    # ivとは初期化ベクトルの意味で、毎回内容を変えることにより暗号解読をしにくくする
     # 16byte単位で処理できるようにする
     # 出力形式はvi + 暗号化文字列をBase64にする
     iv = :crypto.strong_rand_bytes(@block_size)
@@ -40,7 +40,7 @@ defmodule Bright.Utils.Aes.Aes128 do
   def decrypt(ciphertext) do
     # Base64文字列を復号化する
     # 先頭の16バイトのviとそれ以降の暗号文字列に分割
-    # viとsecret_keyと暗号文字列を元に復号する
+    # ivとsecret_keyと暗号文字列を元に復号する
     # 16byte単位で処理できるようにする
     ciphertext = :base64.decode(ciphertext)
     <<iv::binary-16, ciphertext::binary>> = ciphertext
