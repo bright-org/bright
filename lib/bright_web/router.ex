@@ -156,13 +156,19 @@ defmodule BrightWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
+      live "/mypage/:user_name", MypageLive.Index, :index
+      live "/mypage/anon/:user_name_crypted", MypageLive.Index, :index
       live "/skill_up", SkillUpDummyLive, :index
+
       live "/graphs", SkillPanelLive.Graph, :show
+      live "/graphs/:skill_panel_id", SkillPanelLive.Graph, :show
+      live "/graphs/:skill_panel_id/:user_name", SkillPanelLive.Graph, :show
+      live "/graphs/:skill_panel_id/anon/:user_name_crypted", SkillPanelLive.Graph, :show
+
       live "/panels", SkillPanelLive.Skills, :show
-      live "/panels/:skill_panel_id/graph", SkillPanelLive.Graph, :show
-      live "/panels/:skill_panel_id/graph/:user_name", SkillPanelLive.Graph, :show
-      live "/panels/:skill_panel_id/skills", SkillPanelLive.Skills, :show
-      live "/panels/:skill_panel_id/skills/:user_name", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id/:user_name", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id/anon/:user_name_crypted", SkillPanelLive.Skills, :show
 
       live "/panels/:skill_panel_id/skills/:skill_id/evidences",
            SkillPanelLive.Skills,

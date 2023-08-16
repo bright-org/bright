@@ -33,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
-      <.skill_panel_switch current_user={@current_user} path={@path}/>
+      <.skill_panel_switch current_user={@current_user} root={@root}/>
       <.target_switch current_user={@current_user} />
     </div>
     """
@@ -42,7 +42,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <.skill_panel_menu current_user={@current_user} path={@path} />
+    <.skill_panel_menu current_user={@current_user} root={@root} />
     <% # TODO: α版後にifを除去して表示 %>
     <.skill_set_menu :if={false} />
     """
@@ -73,7 +73,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           id="skill_card"
           module={BrightWeb.CardLive.SkillCardComponent}
           current_user={@current_user}
-          path={@path}
+          root={@root}
         />
       </div>
     """
@@ -231,7 +231,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def toggle_link(assigns) do
     ~H"""
       <div class="bg-white text-brightGray-500 rounded-full inline-flex text-sm font-bold h-10">
-      <.link href={"/panels/dummy_id/graph"}>
+      <.link href="#">
         <button
           id="grid"
           class={
@@ -242,7 +242,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           成長パネル
         </button>
         </.link>
-        <.link href={"/panels/#{@skill_panel.id}/skills?class=1"}>
+        <.link href="#">
           <button
             id="list"
             class={

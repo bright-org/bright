@@ -1,7 +1,7 @@
 <!-- feat: スキルパネル更新 861b28d9a8ec541ac03fe716ac0926b4e5575d5e　まで適用 -->
 <div :if={@skill_panel}>
   <!-- card -->
-  <.navigations current_user={@current_user} path="graph" />
+  <.navigations current_user={@current_user} root="graphs" />
   <div class="mx-10">
     <div class="flex justify-between">
       <% # TODO: α版後にifと仮divブロックを除去して表示 %>
