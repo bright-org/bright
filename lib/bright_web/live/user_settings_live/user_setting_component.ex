@@ -8,15 +8,17 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     "general" => UserSettingsLive.GeneralSettingComponent,
     "auth" => UserSettingsLive.AuthSettingComponent,
     "sns" => UserSettingsLive.SnsSettingComponent,
-    "job" => UserSettingsLive.JobSettingComponent,
-    "notification" => UserSettingsLive.NotificationSettingComponent
+    "job" => UserSettingsLive.JobSettingComponent
+    # NOTE: α版では通知機能はなし
+    # "notification" => UserSettingsLive.NotificationSettingComponent　
   }
   @tabs [
     {"general", "一般"},
     {"auth", "メール・パスワード"},
     {"sns", "SNS連携"},
-    {"job", "求職"},
-    {"notification", "通知"}
+    {"job", "求職"}
+    # NOTE: α版では通知機能はなし
+    # {"notification", "通知"}
   ]
 
   @impl true
