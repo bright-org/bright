@@ -8,8 +8,6 @@ defmodule BrightWeb.MypageLive.Index do
   def mount(_params, _session, socket) do
     socket
     |> assign(:page_title, "マイページ")
-    # TODO 通知数はダミーデータ
-    |> assign(:notification_count, "99")
     |> then(&{:ok, &1})
   end
 
