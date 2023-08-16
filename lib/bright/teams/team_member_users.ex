@@ -10,7 +10,7 @@ defmodule Bright.Teams.TeamMemberUsers do
   schema "team_member_users" do
     field :is_admin, :boolean, default: false
     field :is_primary, :boolean, default: false
-    field(:invitation_token, :binary)
+    field :invitation_token, :binary
     field :invitation_sent_to, :string
     field :invitation_confirmed_at, :naive_datetime
 
@@ -40,7 +40,7 @@ defmodule Bright.Teams.TeamMemberUsers do
   end
 
   @doc false
-  def update_invitation_confirmed_at_changeset(team_member_users, attrs) do
+  def team_member_invitation_changeset(team_member_users, attrs) do
     team_member_users
     |> cast(attrs, [
       :invitation_confirmed_at

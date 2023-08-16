@@ -188,7 +188,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
     current_team =
       team_id
-      |> Teams.get_team!()
+      |> Teams.get_team_with_member_users!()
 
     socket =
       socket

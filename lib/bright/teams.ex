@@ -35,14 +35,14 @@ defmodule Bright.Teams do
 
   ## Examples
 
-      iex> get_team!(123)
+      iex> get_team_with_member_users!(123)
       %Team{}
 
-      iex> get_team!(456)
+      iex> get_team_with_member_users!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_team!(id) do
+  def get_team_with_member_users!(id) do
     Team
     |> preload(member_users: :user)
     |> Repo.get!(id)
@@ -192,7 +192,7 @@ defmodule Bright.Teams do
         attrs
       ) do
     team_member_users
-    |> TeamMemberUsers.update_invitation_confirmed_at_changeset(attrs)
+    |> TeamMemberUsers.team_member_invitation_changeset(attrs)
     |> Repo.update()
   end
 

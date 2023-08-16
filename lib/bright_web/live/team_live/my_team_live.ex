@@ -18,7 +18,7 @@ defmodule BrightWeb.MyTeamLive do
       current_team =
         params
         |> Map.get("team_id")
-        |> Teams.get_team!()
+        |> Teams.get_team_with_member_users!()
 
       page =
         current_team.id
@@ -69,11 +69,9 @@ defmodule BrightWeb.MyTeamLive do
   その際、選択済のスキルパネル、またはスキルセットがある場合IDを引き継ぐ
   """
   def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
-    # TODO IO.puts("#### my_team_live handle_event !!!!!!!!! ###########")
-
     current_team =
       team_id
-      |> Teams.get_team!()
+      |> Teams.get_team_with_member_users!()
 
     socket =
       socket

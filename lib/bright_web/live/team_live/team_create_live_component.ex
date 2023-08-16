@@ -54,7 +54,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     case Teams.create_team_multi(team_name, admin_user, member_users) do
       {:ok, team, member_user_attrs} ->
         # 全メンバーのuserを一気にpreloadしたいのでteamを再取得
-        preloaded_team = Teams.get_team!(team.id)
+        preloaded_team = Teams.get_team_with_member_users!(team.id)
 
         # 招待したメンバー全員に招待メールを送信する。
         send_invitation_mail(preloaded_team, admin_user, member_user_attrs)
