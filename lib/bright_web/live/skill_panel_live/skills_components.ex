@@ -14,6 +14,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
           type="button"
           phx-click="demo_compare_user"
+          phx-target={@myself}
         >
           <span class="min-w-[6em]">個人と比較</span>
           <span
@@ -260,6 +261,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 type="button"
                 class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
                 phx-click="reject_compared_user"
+                phx-target={@myself}
                 phx-value-name={user.name}
               >
                 <span class="material-icons-outlined !text-xs">close</span>
@@ -351,12 +353,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                   class="flex justify-center gap-x-4 px-4"
                   phx-window-keydown={focus && "shortcut"}
                   phx-throttle="1000"
+                  phx-value-skill_id={col3.skill.id}
                 >
                   <label
                     class="block flex items-center"
                     phx-click="change"
                     phx-value-score="high"
-                    phx-value-row={row}
+                    phx-value-skill_id={col3.skill.id}
                   >
                     <input
                       type="radio"
@@ -370,7 +373,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     class="block flex items-center"
                     phx-click="change"
                     phx-value-score="middle"
-                    phx-value-row={row}
+                    phx-value-skill_id={col3.skill.id}
                   >
                     <input
                       type="radio"
@@ -384,7 +387,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     class="block flex items-center"
                     phx-click="change"
                     phx-value-score="low"
-                    phx-value-row={row}
+                    phx-value-skill_id={col3.skill.id}
                   >
                     <input
                       type="radio"

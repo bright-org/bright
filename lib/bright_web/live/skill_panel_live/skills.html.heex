@@ -9,21 +9,21 @@
   </div>
   <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
     <.profile_area focus_user={@focus_user} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
-    <.compares current_user={@current_user} />
-    <.skills_table
-       table_structure={@table_structure}
-       skill_panel={@skill_panel}
-       skill_score_dict={@skill_score_dict}
-       focus_row={@focus_row}
-       counter={@counter}
-       num_skills={@num_skills}
-       compared_users={@compared_users}
-       compared_users_stats={@compared_users_stats}
-       path={@path}
-       query={@query}
-       focus_user={@focus_user}
-       editable={skill_class_score_author?(@skill_class_score, @current_user)}
-       edit={@edit}
+    <.live_component
+      id="skills-field"
+      module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
+      current_user={@current_user}
+      skill_panel={@skill_panel}
+      skill_class={@skill_class}
+      current_skill_score_dict={@skill_score_dict}
+      counter={@counter}
+      num_skills={@num_skills}
+      focus_row={@focus_row}
+      path={@path}
+      query={@query}
+      focus_user={@focus_user}
+      editable={skill_class_score_author?(@skill_class_score, @current_user)}
+      edit={@edit}
     />
   </div>
 </div>
