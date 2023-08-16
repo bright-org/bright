@@ -5,6 +5,8 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
   alias Bright.Accounts
   alias Bright.Repo
+  alias Bright.Utils.Aes.Aes128
+  alias Bright.Accounts.User
 
   @impl true
   def mount(params, _session, socket) do
@@ -37,15 +39,27 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def assign_display_user(socket, %{"user_name_crypted" => user_name_crypted}) do
-    IO.inspect("-------------------------------暗号化------------------")
-    IO.inspect(user_name_crypted)
+    user = decrypt_user_name(user_name_crypted)
+    |> Accounts.get_user_by_name_or_email()
+    |> Repo.preload(:user_profile)
 
+    socket
+    |> assign(:display_user, user)
+  end
+
+  def assign_display_user(socket, _params) do
     socket
     |> assign(:display_user, socket.assigns.current_user)
   end
 
-  def assign_display_user(socket, params) do
-    socket
-    |> assign(:display_user, socket.assigns.current_user)
+  def encrypt_user_name(%User{} = user) do
+    date_time = user.inserted_at |> NaiveDateTime.to_string
+    Aes128.encrypt("#{user.name},#{date_time}")
+  end
+
+  def decrypt_user_name(ciphertext) do
+      Aes128.decrypt(ciphertext)
+      |> String.split(",")
+      |> List.first()
   end
 end
