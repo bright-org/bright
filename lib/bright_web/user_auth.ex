@@ -227,7 +227,6 @@ defmodule BrightWeb.UserAuth do
       ) do
     if user.user_onboardings do
       socket
-      |> Phoenix.LiveView.put_flash(:error, "オンボーディングは完了しています")
       |> Phoenix.LiveView.redirect(to: ~p"/skill_up")
       |> then(&{:halt, &1})
     else
