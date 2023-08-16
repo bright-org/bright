@@ -13,6 +13,11 @@ variable "sendgrid_api_key" {
   type        = string
 }
 
+variable "sentry_dsn" {
+  description = "Bright Sentry DSN"
+  type        = string
+}
+
 variable "google_client_id" {
   description = "Bright Google OAuth2 CLIENT ID"
   type        = string

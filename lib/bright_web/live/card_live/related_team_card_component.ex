@@ -44,7 +44,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     ~H"""
     <div>
       <.tab
-        id="related_team_card_tab#{@id}"
+        id={"related_team_card_tab#{@id}"}
         tabs={@tabs}
         selected_tab={@card.selected_tab}
         page={@card.page_params.page}
@@ -148,7 +148,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   @impl true
   def handle_event(
         "tab_click",
-        %{"id" => "related_team_card", "tab_name" => tab_name},
+        %{"id" => _id, "tab_name" => tab_name},
         socket
       ) do
     card_view(socket, tab_name, 1)
@@ -156,7 +156,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
   def handle_event(
         "previous_button_click",
-        %{"id" => "related_team_card"},
+        %{"id" => _id},
         %{assigns: %{card: card}} = socket
       ) do
     page = card.page_params.page - 1
@@ -166,7 +166,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
   def handle_event(
         "next_button_click",
-        %{"id" => "related_team_card"},
+        %{"id" => _id},
         %{assigns: %{card: card}} = socket
       ) do
     page = card.page_params.page + 1
@@ -187,7 +187,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
     current_team =
       team_id
-      |> Teams.get_team!()
+      |> Teams.get_team_with_member_users!()
 
     socket =
       socket

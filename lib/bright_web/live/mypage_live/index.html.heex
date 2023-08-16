@@ -3,14 +3,15 @@
 <div class="flex justify-between py-6 px-10 bg-white">
   <div class="w-[850px] pt-4">
     <.profile
-      user_name={@current_user.name}
-      title={@current_user.user_profile.title}
-      detail={@current_user.user_profile.detail}
-      icon_file_path={@current_user.user_profile.icon_file_path}
+      user_name={@display_user.name}
+      title={@display_user.user_profile.title}
+      detail={@display_user.user_profile.detail}
+      icon_file_path={@display_user.user_profile.icon_file_path}
       display_sns
-      twitter_url={@current_user.user_profile.twitter_url}
-      github_url={@current_user.user_profile.github_url}
-      facebook_url={@current_user.user_profile.facebook_url}
+      twitter_url={@display_user.user_profile.twitter_url}
+      github_url={@display_user.user_profile.github_url}
+      facebook_url={@display_user.user_profile.facebook_url}
+      is_anonymous={@anonymous}
     />
   </div>
   <div>
@@ -33,12 +34,12 @@
 <div class="px-10 py-3 flex justify-between">
   <div class="w-[850px] flex flex-col gap-y-6">
     <!-- 重要な連絡 -->
-    <div>
+    <div :if={@me}>
       <h5>重要な連絡</h5>
       <.live_component
         id="contact_card"
         module={BrightWeb.CardLive.ContactCardComponent}
-        current_user={@current_user}
+        current_user={@display_user}
       />
     </div>
     <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
@@ -47,38 +48,39 @@
       <.live_component
         id="skill_card"
         module={BrightWeb.CardLive.SkillCardComponent}
-        current_user={@current_user}
+        current_user={@display_user}
+        root="graphs"
       />
     </div>
   </div>
   <div class="w-[750px] flex flex-col gap-y-6">
     <!-- さまざまな人たちとの交流 -->
-    <div>
+    <div :if={@me}>
       <h5>さまざまな人たちとの交流</h5>
       <.live_component
         id="contact_card"
         module={BrightWeb.CardLive.CommunicationCardComponent}
-        current_user={@current_user}
+        current_user={@display_user}
       />
     </div>
     <!-- 関わっているチーム -->
-    <div>
+    <div :if={@me}>
       <h5>関わっているチーム</h5>
       <.live_component
         id="related_team_card"
         module={BrightWeb.CardLive.RelatedTeamCardComponent}
-        current_user={@current_user}
+        current_user={@display_user}
         show_menu={true}
-      />   
+      />
 
     </div>
     <!-- 関わっているユーザー -->
-    <div>
+    <div :if={@me}>
       <h5>関わっているユーザー</h5>
       <.live_component
         id="intriguing_card"
-        module={BrightWeb.CardLive.RelatedUserCardComponent}
-        current_user={@current_user}
+        module={BrightWeb.CardLive.IntriguingCardComponent}
+        current_user={@display_user}
       />
     </div>
     <!-- 検証 -->
@@ -93,7 +95,7 @@
     module={BrightWeb.TeamCreateLiveComponent}
     id={@current_user.id || :new}
     action={@live_action}
-    current_user={@current_user}
+    current_user={@display_user}
     users={[]}
     patch={~p"/mypage"}
   />

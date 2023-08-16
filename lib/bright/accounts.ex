@@ -627,6 +627,13 @@ defmodule Bright.Accounts do
     |> Repo.one()
   end
 
+  def get_user_by_name!(name) do
+    User
+    |> where([user], not is_nil(user.confirmed_at))
+    |> where([user], user.name == ^name)
+    |> Repo.one!()
+  end
+
   @doc """
   Check if onboarding is already finished.
 

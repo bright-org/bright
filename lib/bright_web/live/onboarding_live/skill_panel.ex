@@ -1,8 +1,8 @@
 defmodule BrightWeb.OnboardingLive.SkillPanel do
-  alias Bright.Onboardings.UserOnboarding
   use BrightWeb, :live_view
 
   alias Bright.{Repo, SkillPanels, UserSkillPanels, Onboardings}
+  alias Bright.Onboardings.UserOnboarding
 
   @impl true
   def render(assigns) do
@@ -84,13 +84,15 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   end
 
   @impl true
-  def handle_params(%{"job_id" => job_id}, _uri, socket) do
-    {:noreply, assign(socket, :return_to, "/onboardings/jobs/#{job_id}")}
+  def handle_params(%{"job_id" => job_id}, uri, socket) do
+    path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+    {:noreply, assign(socket, :return_to, "/#{path}/jobs/#{job_id}")}
   end
 
   @impl true
-  def handle_params(%{"want_id" => want_id}, _uri, socket) do
-    {:noreply, assign(socket, :return_to, "/onboardings/wants/#{want_id}")}
+  def handle_params(%{"want_id" => want_id}, uri, socket) do
+    path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+    {:noreply, assign(socket, :return_to, "/#{path}/wants/#{want_id}")}
   end
 
   @impl true
@@ -100,17 +102,24 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
         %{assigns: %{current_user: user}} = socket
       ) do
     finish_onboarding(user.user_onboardings, user.id, skill_panel_id)
-
-    {:ok, _user_kill_panel} =
-      UserSkillPanels.create_user_skill_panel(%{
-        user_id: user.id,
-        skill_panel_id: skill_panel_id
-      })
+    select_skill_panel(user.id, skill_panel_id)
 
     socket
     |> put_flash(:info, "スキルパネル:#{name}を取得しました")
-    |> redirect(to: "/panels/#{skill_panel_id}/graph")
+    |> redirect(to: "/panels/#{skill_panel_id}")
     |> then(&{:noreply, &1})
+  end
+
+  defp select_skill_panel(user_id, skill_panel_id) do
+    # 一度取得したスキルパネルを再度選択してもエラーにしないためにUnique indexの例外を握りつぶす
+    try do
+      UserSkillPanels.create_user_skill_panel(%{
+        user_id: user_id,
+        skill_panel_id: skill_panel_id
+      })
+    rescue
+      Ecto.ConstraintError -> :ok
+    end
   end
 
   defp finish_onboarding(nil, user_id, skill_panel_id) do

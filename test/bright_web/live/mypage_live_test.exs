@@ -39,8 +39,9 @@ defmodule BrightWeb.MypageLiveTest do
       assert index_live |> has_element?("h5", "重要な連絡")
       assert index_live |> has_element?("li a", "チーム招待")
 
-      assert index_live |> has_element?("h5", "保有スキル（ジェムをクリックすると成長グラフが見れます）")
-      assert index_live |> has_element?("li a", "エンジニア")
+      # αリリース対象外
+      # assert index_live |> has_element?("h5", "保有スキル（ジェムをクリックすると成長グラフが見れます）")
+      # assert index_live |> has_element?("li a", "エンジニア")
 
       assert index_live |> has_element?("h5", "さまざまな人たちとの交流")
       assert index_live |> has_element?("li a", "スキルアップ")

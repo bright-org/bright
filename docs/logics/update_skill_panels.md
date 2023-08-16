@@ -336,7 +336,11 @@ erDiagram
         - 公開テーブルの `locked_date` には処理を実行した日付を入れる
     2. `skill_class_scores`, `skill_scores`, `skill_unit_scores`, `career_field_scores` のデータを同テーブルにコピーし、1のコピー先データに紐付ける
         - 1のコピー先データがなければコピーしない
-    3. `skill_improvements` の外部キーを1のコピー先データに付け替える
+    3. 関連する外部キーを1のコピー先データに付け替える
+        - `skill_improvements` の外部キー
+        - `skill_evidences` の外部キー(skill_id)
+        - `skill_exams` の外部キー(skill_id)
+        - `skill_references` の外部キー(skill_id)
         - 1のコピー先データがなければ削除する
 - 公開→履歴
     1. 公開テーブルに入っているデータを履歴テーブルにコピーする

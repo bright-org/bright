@@ -2,26 +2,25 @@ defmodule Bright.OnboardingsTest do
   use Bright.DataCase
 
   alias Bright.Onboardings
+  alias Bright.Onboardings.UserOnboarding
+
+  import Bright.Factory
 
   describe "user_onboardings" do
-    alias Bright.Onboardings.UserOnboarding
-
-    import Bright.OnboardingsFixtures
-
     @invalid_attrs %{completed_at: nil}
 
     test "list_user_onboardings/0 returns all user_onboardings" do
-      user_onboarding = user_onboarding_fixture()
-      assert Onboardings.list_user_onboardings() == [user_onboarding]
+      %{id: id} = insert(:user_onboarding)
+      assert [%{id: ^id}] = Onboardings.list_user_onboardings()
     end
 
     test "get_user_onboarding!/1 returns the user_onboarding with given id" do
-      user_onboarding = user_onboarding_fixture()
-      assert Onboardings.get_user_onboarding!(user_onboarding.id) == user_onboarding
+      %{id: id} = insert(:user_onboarding)
+      assert %{id: ^id} = Onboardings.get_user_onboarding!(id)
     end
 
     test "create_user_onboarding/1 with valid data creates a user_onboarding" do
-      valid_attrs = %{completed_at: ~N[2023-07-14 11:51:00]}
+      valid_attrs = %{completed_at: ~N[2023-07-14 11:51:00], user_id: insert(:user).id}
 
       assert {:ok, %UserOnboarding{} = user_onboarding} =
                Onboardings.create_user_onboarding(valid_attrs)
@@ -34,7 +33,7 @@ defmodule Bright.OnboardingsTest do
     end
 
     test "update_user_onboarding/2 with valid data updates the user_onboarding" do
-      user_onboarding = user_onboarding_fixture()
+      user_onboarding = insert(:user_onboarding)
       update_attrs = %{completed_at: ~N[2023-07-15 11:51:00]}
 
       assert {:ok, %UserOnboarding{} = user_onboarding} =
@@ -44,16 +43,17 @@ defmodule Bright.OnboardingsTest do
     end
 
     test "update_user_onboarding/2 with invalid data returns error changeset" do
-      user_onboarding = user_onboarding_fixture()
+      user_onboarding = insert(:user_onboarding)
 
       assert {:error, %Ecto.Changeset{}} =
                Onboardings.update_user_onboarding(user_onboarding, @invalid_attrs)
 
-      assert user_onboarding == Onboardings.get_user_onboarding!(user_onboarding.id)
+      assert user_onboarding.updated_at ==
+               Onboardings.get_user_onboarding!(user_onboarding.id).updated_at
     end
 
     test "delete_user_onboarding/1 deletes the user_onboarding" do
-      user_onboarding = user_onboarding_fixture()
+      user_onboarding = insert(:user_onboarding)
       assert {:ok, %UserOnboarding{}} = Onboardings.delete_user_onboarding(user_onboarding)
 
       assert_raise Ecto.NoResultsError, fn ->
@@ -62,7 +62,7 @@ defmodule Bright.OnboardingsTest do
     end
 
     test "change_user_onboarding/1 returns a user_onboarding changeset" do
-      user_onboarding = user_onboarding_fixture()
+      user_onboarding = insert(:user_onboarding)
       assert %Ecto.Changeset{} = Onboardings.change_user_onboarding(user_onboarding)
     end
   end

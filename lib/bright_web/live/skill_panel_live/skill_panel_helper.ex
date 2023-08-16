@@ -1,10 +1,11 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   alias Bright.SkillPanels
-  alias Bright.SkillUnits
   alias Bright.SkillScores
-  alias Bright.Accounts
 
   import Phoenix.Component, only: [assign: 2, assign: 3]
+  import Phoenix.LiveView, only: [push_redirect: 2]
+
+  alias BrightWeb.DisplayUserHelper
 
   @counter %{
     low: 0,
@@ -29,51 +30,45 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> assign(query: query)
   end
 
-  def assign_focus_user(socket, nil) do
-    socket
-    |> assign(focus_user: socket.assigns.current_user, me: true)
-  end
+  def assign_skill_panel(socket, nil, _root) do
+    display_user = socket.assigns.display_user
 
-  def assign_focus_user(socket, user_name) do
-    user =
-      Accounts.get_user_by_name(user_name)
-      |> Bright.Repo.preload(:user_profile)
-
-    # TODO: userを参照してよいかどうかアクセス制限が必要
-    # （マイページと同様のはずなので共通処理を使う）
-    # 現状は見つかったとしての実装
-
-    socket
-    |> assign(focus_user: user, me: false)
-  end
-
-  def assign_skill_panel(socket, nil) do
-    focus_user = socket.assigns.focus_user
-
-    skill_panel = SkillPanels.get_user_latest_skill_panel!(focus_user)
+    skill_panel = SkillPanels.get_user_latest_skill_panel!(display_user)
 
     socket
     |> assign(:skill_panel, skill_panel)
   end
 
-  def assign_skill_panel(socket, skill_panel_id) do
-    focus_user = socket.assigns.focus_user
+  def assign_skill_panel(socket, skill_panel_id, root) do
+    display_user = socket.assigns.display_user
 
-    skill_panel =
-      SkillPanels.get_user_skill_panel(focus_user, skill_panel_id) ||
-        SkillPanels.get_user_latest_skill_panel!(focus_user)
+    skill_panel = SkillPanels.get_user_skill_panel(display_user, skill_panel_id)
 
-    socket
-    |> assign(:skill_panel, skill_panel)
+    if skill_panel do
+      socket
+      |> assign(:skill_panel, skill_panel)
+    else
+      # 指定されているスキルパネルがない場合は、
+      # 直近のスキルパネルを取得して、
+      # URLと矛盾した表示にならないようにリダイレクト
+      skill_panel = SkillPanels.get_user_latest_skill_panel!(display_user)
+
+      path =
+        build_path(root, skill_panel, display_user, socket.assigns.me, socket.assigns.anonymous)
+
+      socket
+      |> assign(:skill_panel, nil)
+      |> push_redirect(to: path)
+    end
   end
 
   def assign_skill_classes(socket) do
-    focus_user = socket.assigns.focus_user
+    display_user = socket.assigns.display_user
 
     skill_classes =
       Ecto.assoc(socket.assigns.skill_panel, :skill_classes)
       |> SkillPanels.list_skill_classes()
-      |> Bright.Repo.preload(skill_class_scores: Ecto.assoc(focus_user, :skill_class_scores))
+      |> Bright.Repo.preload(skill_class_scores: Ecto.assoc(display_user, :skill_class_scores))
 
     socket
     |> assign(:skill_classes, skill_classes)
@@ -142,22 +137,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
   def create_skill_class_score_if_not_existing(socket), do: socket
 
-  def assign_skill_units(socket) do
-    skill_units =
-      Ecto.assoc(socket.assigns.skill_class, :skill_units)
-      |> SkillUnits.list_skill_units()
-      |> Bright.Repo.preload(skill_categories: [skills: [:skill_reference, :skill_exam]])
-
-    skills =
-      skill_units
-      |> Enum.flat_map(& &1.skill_categories)
-      |> Enum.flat_map(& &1.skills)
-
-    socket
-    |> assign(skill_units: skill_units)
-    |> assign(skills: skills)
-  end
-
   def assign_skill_score_dict(socket) do
     skill_score_dict =
       socket.assigns.skill_class_score
@@ -169,21 +148,27 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def assign_counter(socket) do
-    counter =
-      socket.assigns.skill_score_dict
-      |> Map.values()
-      |> Enum.reduce(@counter, fn skill_score, acc ->
-        acc
-        |> Map.update!(skill_score.score, &(&1 + 1))
-        |> Map.update!(:exam_touch, &if(skill_score.exam_progress, do: &1 + 1, else: &1))
-        |> Map.update!(:reference_read, &if(skill_score.reference_read, do: &1 + 1, else: &1))
-        |> Map.update!(:evidence_filled, &if(skill_score.evidence_filled, do: &1 + 1, else: &1))
-      end)
-
+    counter = count_skill_scores(socket.assigns.skill_score_dict)
     num_skills = Enum.count(socket.assigns.skill_score_dict)
 
     socket
     |> assign(counter: counter, num_skills: num_skills)
+  end
+
+  def count_skill_scores(skill_score_dict) do
+    skill_score_dict
+    |> Map.values()
+    |> Enum.reduce(@counter, fn skill_score, acc ->
+      acc
+      |> Map.update!(skill_score.score, &(&1 + 1))
+      |> Map.update!(:exam_touch, &if(skill_score.exam_progress, do: &1 + 1, else: &1))
+      |> Map.update!(:reference_read, &if(skill_score.reference_read, do: &1 + 1, else: &1))
+      |> Map.update!(:evidence_filled, &if(skill_score.evidence_filled, do: &1 + 1, else: &1))
+    end)
+  end
+
+  def assign_page_sub_title(%{assigns: %{skill_panel: nil}} = socket) do
+    socket
   end
 
   def assign_page_sub_title(socket) do
@@ -197,5 +182,21 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     (count / num_skills)
     |> Kernel.*(100)
     |> floor()
+  end
+
+  defp build_path(root, skill_panel, _display_user, true, _anonymous) do
+    # 自ユーザー
+    "/#{root}/#{skill_panel.id}"
+  end
+
+  defp build_path(root, skill_panel, display_user, _me, true) do
+    # 対象ユーザーかつ匿名
+    encrypted = DisplayUserHelper.encrypt_user_name(display_user)
+    "/#{root}/#{skill_panel.id}/anon/#{encrypted}"
+  end
+
+  defp build_path(root, skill_panel, display_user, _me, false) do
+    # 対象ユーザーかつ匿名ではない
+    "/#{root}/#{skill_panel.id}/#{display_user.name}"
   end
 end

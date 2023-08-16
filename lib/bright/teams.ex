@@ -7,6 +7,13 @@ defmodule Bright.Teams do
   alias Bright.Repo
 
   alias Bright.Teams.Team
+  alias Bright.Accounts.UserNotifier
+
+  # 招待メール関連定数
+  @hash_algorithm :sha256
+  @rand_size 32
+  # TODO 要件調整 招待メールの期限1日
+  @invitation_validity_ago 1
 
   @doc """
   Returns the list of teams.
@@ -28,15 +35,16 @@ defmodule Bright.Teams do
 
   ## Examples
 
-      iex> get_team!(123)
+      iex> get_team_with_member_users!(123)
       %Team{}
 
-      iex> get_team!(456)
+      iex> get_team_with_member_users!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_team!(id) do
+  def get_team_with_member_users!(id) do
     Team
+    |> preload(member_users: :user)
     |> Repo.get!(id)
   end
 
@@ -179,6 +187,15 @@ defmodule Bright.Teams do
     |> Repo.update()
   end
 
+  def update_team_member_users_invitation_confirmed_at(
+        %TeamMemberUsers{} = team_member_users,
+        attrs
+      ) do
+    team_member_users
+    |> TeamMemberUsers.team_member_invitation_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a team_member_users.
 
@@ -210,6 +227,7 @@ defmodule Bright.Teams do
 
   @doc """
   ユーザーが所属するチームの一覧取得
+  招待へ承認済のチームのみ対象
   Scrivenerのページングに対応
 
     iex> list_joined_teams_by_user_id(user_id, %{page: 1, page_size: 5})
@@ -224,8 +242,10 @@ defmodule Bright.Teams do
       }
   """
   def list_joined_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
-    TeamMemberUsers
-    |> where([member_user], member_user.user_id == ^user_id)
+    from(tmbu in TeamMemberUsers,
+      where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at),
+      order_by: [desc: tmbu.is_primary, desc: tmbu.updated_at]
+    )
     |> preload(:team)
     |> Repo.paginate(page_param)
   end
@@ -234,8 +254,8 @@ defmodule Bright.Teams do
         team_id,
         page_param \\ %{page: 1, page_size: 1}
       ) do
-    from(tmu in TeamMemberUsers,
-      where: tmu.team_id == ^team_id
+    from(tmbu in TeamMemberUsers,
+      where: tmbu.team_id == ^team_id and not is_nil(tmbu.invitation_confirmed_at)
     )
     |> preload(user: [skill_class_scores: :skill_class])
     |> preload(user: [skill_unit_scores: :skill_unit])
@@ -289,17 +309,25 @@ defmodule Bright.Teams do
       user_id: admin_user.id,
       is_admin: true,
       # プライマリチーム判定
-      is_primary: is_primary(admin_user.id)
+      is_primary: is_primary(admin_user.id),
+      # 管理者本人は即時承認状態
+      invitation_confirmed_at: TeamMemberUsers.now_for_confirmed_at()
     }
 
     member_attr =
       member_users
-      |> Enum.map(fn x ->
+      |> Enum.map(fn member_user ->
+        # 招待メール用のtokenを作成
+        {base64_encoded_token, hashed_token} = build_invitation_token()
+
         %{
-          user_id: x.id,
+          user_id: member_user.id,
           is_admin: false,
           # メンバーのプライマリ判定は承認後に実施する為一旦falseとする
-          is_primary: false
+          is_primary: false,
+          invitation_token: hashed_token,
+          invitation_sent_to: member_user.email,
+          base64_encoded_token: base64_encoded_token
         }
       end)
 
@@ -322,7 +350,7 @@ defmodule Bright.Teams do
       |> Ecto.Multi.insert(:team, team_and_members_changeset)
       |> Repo.transaction()
 
-    {:ok, Map.get(result, :team)}
+    {:ok, Map.get(result, :team), member_attr}
   end
 
   @doc """
@@ -338,5 +366,75 @@ defmodule Bright.Teams do
     else
       false
     end
+  end
+
+  @doc """
+  チーム招待メール送信
+  """
+  def deliver_invitation_email_instructions(
+        from_user,
+        to_user,
+        team,
+        encoded_token,
+        invite_team_url_fun
+      )
+      when is_function(invite_team_url_fun, 1) do
+    UserNotifier.deliver_invitation_team_instructions(
+      from_user,
+      to_user,
+      team,
+      invite_team_url_fun.(encoded_token)
+    )
+  end
+
+  @doc """
+  チーム招待認証要token発行
+  """
+  def build_invitation_token() do
+    token = :crypto.strong_rand_bytes(@rand_size)
+    hashed_token = :crypto.hash(@hash_algorithm, token)
+    base64_encoded_token = Base.url_encode64(token, padding: false)
+    {base64_encoded_token, hashed_token}
+  end
+
+  @doc """
+  チーム招待token取得
+  """
+  def get_invitation_token(invitation_token_base64_encoded) do
+    case Base.url_decode64(invitation_token_base64_encoded, padding: false) do
+      {:ok, decoded_token} ->
+        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+
+        # 渡されたtokenを元に期限内の未認証レコードを取得
+        days = @invitation_validity_ago
+
+        team_member_user =
+          from(tmbu in TeamMemberUsers,
+            where: tmbu.invitation_token == ^hashed_token and tmbu.inserted_at > ago(^days, "day")
+          )
+          |> Repo.one()
+
+        if team_member_user == nil do
+          # 有効期限切れも含め対象のmember_userが存在しない場合は無効と判断
+          :error
+        else
+          {:ok, team_member_user}
+        end
+
+      :error ->
+        :error
+    end
+  end
+
+  @doc """
+  チーム招待承認
+  """
+  def confirm_invitation(team_member_user) do
+    now = TeamMemberUsers.now_for_confirmed_at()
+
+    {:ok, _team_member_user} =
+      update_team_member_users_invitation_confirmed_at(team_member_user, %{
+        invitation_confirmed_at: now
+      })
   end
 end

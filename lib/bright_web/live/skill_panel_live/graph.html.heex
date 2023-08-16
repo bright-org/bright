@@ -1,7 +1,7 @@
 <!-- feat: スキルパネル更新 861b28d9a8ec541ac03fe716ac0926b4e5575d5e　まで適用 -->
 <div :if={@skill_panel}>
   <!-- card -->
-  <.navigations current_user={@current_user} />
+  <.navigations current_user={@current_user} display_user={@display_user} root="graphs" />
   <div class="mx-10">
     <div class="flex justify-between">
       <% # TODO: α版後にifと仮divブロックを除去して表示 %>
@@ -10,7 +10,7 @@
       <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
     </div>
     <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
-      <.profile_area focus_user={@focus_user} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
+      <.profile_area display_user={@display_user} anonymous={@anonymous} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
       <div class="flex">
         <.live_component
           id="rowth-graph"
@@ -26,8 +26,10 @@
             user_id={@current_user.id}
             skill_panel_id={@skill_panel.id}
             class={@skill_class.class}
+            select_label={@select_label}
           />
-          <div class="flex justify-center">
+          <% # TODO: α版後に:if={false}を除去して表示 %>
+          <div :if={false} class="flex justify-center">
             <p>
               あと<span class="text-error !text-2xl font-bold">8</span>%でベテランになれます。
             </p>

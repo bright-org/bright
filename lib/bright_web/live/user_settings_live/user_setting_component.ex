@@ -26,8 +26,16 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
       <BrightCore.flash_group flash={@modal_flash} />
       <div class="bg-zinc-50/90 fixed inset-0 transition-opacity" />
       <div class="fixed inset-0 overflow-y-auto">
-        <section id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20">
 
+        <section id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20">
+          <div class="w-full mb-4">
+          <button class="absolute top-4 right-8">
+            <span
+              class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+              phx-click={JS.hide(to: "#personal_setting_modal")}
+            >close</span>
+          </button>
+          </div>
           <.tab
             id="user_settings"
             tabs={@tabs}

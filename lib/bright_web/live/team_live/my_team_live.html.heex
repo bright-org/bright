@@ -57,17 +57,24 @@
 <!-- card -->
 <div class="ml-24 p-6">
   <!-- チームタイトルー -->
+  <!-- TODO チームがない場合の表示に対応
   <.team_skill_panels
     team={@current_team}
     team_type={:general_team}
   />
+  -->
+  
 
   <!-- チームメンバー -->
+
+  <!-- TODO チームがない場合の表示に対応する
   <div class="flex gap-8 pt-4 flex-wrap">
-    <%= for user <- @member_users do %>
+    <%= for _user <- @member_users do %>
       <.user_skill_card user={user} id={"skill_gem_#{user.id}"} />
     <% end %>
   </div>
+
+  -->
 
 </div>
 

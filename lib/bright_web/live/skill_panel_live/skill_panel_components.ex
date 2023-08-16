@@ -4,10 +4,36 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   import BrightWeb.ProfileComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
 
+  # スコア（〇 △ー） 各スタイルと色の定義
+  @score_mark %{
+    high: "high h-4 w-4 rounded-full",
+    middle:
+      "h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px]",
+    low: "h-1 w-4"
+  }
+
+  @score_mark_color %{
+    green: %{
+      high: "bg-skillPanel-brightGreen600",
+      middle: "border-b-skillPanel-brightGreen300",
+      low: "bg-brightGray-200"
+    },
+    amethyst: %{
+      high: "bg-skillPanel-amethyst600",
+      middle: "border-b-skillPanel-amethyst300",
+      low: "bg-brightGray-200"
+    },
+    gray: %{
+      high: "bg-brightGray-500",
+      middle: "border-b-brightGray-300",
+      low: "bg-brightGray-200"
+    }
+  }
+
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
-      <.skill_panel_switch current_user={@current_user} />
+      <.skill_panel_switch display_user={@display_user} root={@root}/>
       <.target_switch current_user={@current_user} />
     </div>
     """
@@ -16,39 +42,41 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <.skill_panel_menu current_user={@current_user} />
+    <.skill_panel_menu id="skill_panel_menu" display_user={@display_user} root={@root} />
     <% # TODO: α版後にifを除去して表示 %>
     <.skill_set_menu :if={false} />
     """
   end
 
   def skill_panel_menu(assigns) do
+    # TODO: 使えるならばMegaMenuComponentsに差し替え
     ~H"""
-      <button
-        id="dropdownOffsetButton"
-        data-dropdown-toggle="dropdownOffset"
-        data-dropdown-offset-skidding="320"
-        data-dropdown-placement="bottom"
-        class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
-        type="button"
-      >
-        <span class="min-w-[6em]">スキルパネル</span>
-        <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
-          expand_more
-        </span>
-      </button>
+    <button
+      id={"dropdownOffsetButton-#{@id}"}
+      data-dropdown-toggle={"dropdownOffset-#{@id}"}
+      data-dropdown-offset-skidding="256"
+      data-dropdown-placement="bottom"
+      class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
+      type="button"
+    >
+      <span class="min-w-[6em]">スキルパネル</span>
+      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
+        expand_more
+      </span>
+    </button>
 
-      <!-- スキルパネル menu -->
-      <div
-        id="dropdownOffset"
-        class="z-10 hidden bg-white rounded-sm shadow"
-      >
-        <.live_component
-          id="skill_card"
-          module={BrightWeb.CardLive.SkillCardComponent}
-          current_user={@current_user}
-        />
-      </div>
+    <!-- スキルパネル menu -->
+    <div
+      id={"dropdownOffset-#{@id}"}
+      class="z-10 hidden bg-white rounded-sm shadow"
+    >
+      <.live_component
+        id="skill_card"
+        module={BrightWeb.CardLive.SkillCardComponent}
+        current_user={@display_user}
+        root={@root}
+      />
+    </div>
     """
   end
 
@@ -195,7 +223,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def return_myself_button(assigns) do
     ~H"""
-    <button phx-click="clear_focus_user" class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
+    <button phx-click="clear_display_user" class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
       自分に戻す
     </button>
     """
@@ -204,7 +232,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def toggle_link(assigns) do
     ~H"""
       <div class="bg-white text-brightGray-500 rounded-full inline-flex text-sm font-bold h-10">
-      <.link href={"/panels/dummy_id/graph"}>
+      <.link href="#">
         <button
           id="grid"
           class={
@@ -215,7 +243,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           成長パネル
         </button>
         </.link>
-        <.link href={"/panels/#{@skill_panel.id}/skills?class=1"}>
+        <.link href="#">
           <button
             id="list"
             class={
@@ -261,19 +289,19 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <div class="flex justify-between">
         <div class="w-[850px] pt-6">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
-          <% # TODO: 他者のときの.profileの仕様確認と対応が必要 %>
           <.profile
-            user_name={@focus_user.name}
-            title={@focus_user.user_profile.title}
-            icon_file_path={@focus_user.user_profile.icon_file_path}
+            user_name={@display_user.name}
+            title={@display_user.user_profile.title}
+            detail={@display_user.user_profile.detail}
+            icon_file_path={@display_user.user_profile.icon_file_path}
             display_excellent_person={false}
             display_anxious_person={false}
             display_return_to_yourself={true}
             display_sns={true}
-            twitter_url={@focus_user.user_profile.twitter_url}
-            github_url={@focus_user.user_profile.github_url}
-            facebook_url={@focus_user.user_profile.facebook_url}
-            display_detail={false}
+            twitter_url={@display_user.user_profile.twitter_url}
+            github_url={@display_user.user_profile.github_url}
+            facebook_url={@display_user.user_profile.facebook_url}
+            is_anonymous={@anonymous}
           />
         </div>
         <div class="mr-auto flex ml-7">
@@ -286,11 +314,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             </p>
             <div class="flex flex-col w-24 pl-6">
               <div class="min-w-[4em] flex items-center">
-                <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
+                <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
                 <%= calc_percentage(@counter.high, @num_skills) %>％
               </div>
               <div class="min-w-[4em] flex items-center">
-                <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
+                <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
                 <%= calc_percentage(@counter.middle, @num_skills) %>％
               </div>
             </div>
@@ -312,44 +340,27 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
-  def score_mark_class(score, :me) do
-    score
-    |> case do
-      :high ->
-        "score-mark-high h-4 w-4 rounded-full bg-skillPanel-brightGreen600"
+  def score_mark_class(mark, color) do
+    mark = mark || :low
 
-      :middle ->
-        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300"
-
-      :low ->
-        "score-mark-low h-1 w-4 bg-brightGray-200"
-    end
+    [Map.get(@score_mark, mark), get_in(@score_mark_color, [color, mark])]
   end
 
-  def score_mark_class(score, :compared_user) do
-    score
-    |> case do
-      :high ->
-        "score-mark-high h-4 w-4 rounded-full bg-skillPanel-amethyst600"
-
-      :middle ->
-        "score-mark-middle h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-skillPanel-amethyst300 inline-block"
-
-      v when v in [nil, :low] ->
-        "score-mark-low h-1 w-4 bg-brightGray-200"
-    end
+  defp profile_skill_class_level(%{level: :beginner} = assigns) do
+    ~H"""
+    <img src="/images/common/icons/beginner.svg" class="mr-2" />見習い
+    """
   end
 
-  defp profile_skill_class_level(%{level: :beginner} = assigns), do: ~H"見習い"
-
-  defp profile_skill_class_level(%{level: :normal} = assigns), do: ~H"平均"
+  defp profile_skill_class_level(%{level: :normal} = assigns) do
+    ~H"""
+    <img src="/images/common/icons/crown_copper.svg" class="mr-2" />平均
+    """
+  end
 
   defp profile_skill_class_level(%{level: :skilled} = assigns) do
     ~H"""
-    <img
-      src="/images/common/icons/crown.svg"
-      class="mr-2"
-      />ベテラン
+    <img src="/images/common/icons/crown.svg" class="mr-2" />ベテラン
     """
   end
 
