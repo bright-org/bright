@@ -11,14 +11,30 @@ defmodule BrightWeb.UserLoginLiveTest do
       assert html =~ "ログイン"
       assert html =~ "ユーザー新規作成はこちら"
       assert html =~ "パスワードを忘れた方はこちら"
+      assert html =~ "確認メールの再送はこちら"
     end
 
-    test "redirects if already logged in", %{conn: conn} do
+    test "redirects onboardings if already logged in and does not finish onboarding", %{
+      conn: conn
+    } do
       result =
         conn
         |> log_in_user(insert(:user))
         |> live(~p"/users/log_in")
-        |> follow_redirect(conn, "/mypage")
+        |> follow_redirect(conn, ~p"/onboardings")
+
+      assert {:ok, _conn} = result
+    end
+
+    test "redirects mypage if already logged in and finished onboarding", %{conn: conn} do
+      user = insert(:user)
+      insert(:user_onboarding, user: user)
+
+      result =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/users/log_in")
+        |> follow_redirect(conn, ~p"/mypage")
 
       assert {:ok, _conn} = result
     end
@@ -35,6 +51,38 @@ defmodule BrightWeb.UserLoginLiveTest do
       form = form(lv, "#login_form", user: %{email: user.email, password: password})
 
       conn = submit_form(form, conn)
+
+      assert redirected_to(conn) =~ ~p"/users/two_factor_auth/"
+    end
+
+    test "redirects mypage if user already done two factor auth in operating browser",
+         %{conn: conn} do
+      password = "123456789abcd"
+
+      user = create_user_with_password(password)
+      insert(:user_onboarding, user: user)
+
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      form = form(lv, "#login_form", user: %{email: user.email, password: password})
+
+      conn = conn |> set_two_factor_auth_done(user) |> then(&submit_form(form, &1))
+
+      assert redirected_to(conn) == ~p"/mypage"
+    end
+
+    test "redirects mypage if user already finished onboardings and already done two factor auth in operating browser",
+         %{conn: conn} do
+      password = "123456789abcd"
+
+      user = create_user_with_password(password)
+      insert(:user_onboarding, user: user)
+
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      form = form(lv, "#login_form", user: %{email: user.email, password: password})
+
+      conn = conn |> set_two_factor_auth_done(user) |> then(&submit_form(form, &1))
 
       assert redirected_to(conn) == ~p"/mypage"
     end
@@ -64,10 +112,10 @@ defmodule BrightWeb.UserLoginLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/register")
 
-      assert login_html =~ "Register"
+      assert login_html =~ "ユーザー新規作成"
     end
 
-    test "redirects to forgot password page when the Forgot Password button is clicked", %{
+    test "redirects to forgot password page when the Forgot Password link is clicked", %{
       conn: conn
     } do
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
@@ -78,7 +126,22 @@ defmodule BrightWeb.UserLoginLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/reset_password")
 
-      assert conn.resp_body =~ "Forgot your password?"
+      assert conn.resp_body =~ "パスワードを忘れた方へ"
+    end
+
+    test "redirects to confirm instructions page when the confirm instructions link is clicked",
+         %{
+           conn: conn
+         } do
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      {:ok, conn} =
+        lv
+        |> element("a", "確認メールの再送はこちら")
+        |> render_click()
+        |> follow_redirect(conn, ~p"/users/confirm")
+
+      assert conn.resp_body =~ "確認メールが届かなかった方へ"
     end
   end
 end

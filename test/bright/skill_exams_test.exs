@@ -28,8 +28,20 @@ defmodule Bright.SkillExamsTest do
       assert SkillExams.get_skill_exam!(skill_exam.id).id == skill_exam.id
     end
 
+    test "get_skill_exam_by!/1 returns the skill_exam with given condition", %{
+      skill: skill
+    } do
+      skill_exam = insert(:skill_exam, skill: skill)
+
+      assert SkillExams.get_skill_exam_by!(id: skill_exam.id).id == skill_exam.id
+
+      assert_raise Ecto.NoResultsError, fn ->
+        SkillExams.get_skill_exam_by!(id: Ecto.ULID.generate())
+      end
+    end
+
     test "create_skill_exam/1 with valid data creates a skill_exam", %{skill: skill} do
-      valid_attrs = %{skill_id: skill.id}
+      valid_attrs = params_for(:skill_exam, skill_id: skill.id)
 
       assert {:ok, %SkillExam{}} = SkillExams.create_skill_exam(valid_attrs)
     end

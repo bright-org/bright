@@ -13,12 +13,7 @@ defmodule Bright.SkillEvidencesTest do
       user = insert(:user)
       skill_category = insert(:skill_category, skill_unit: build(:skill_unit), position: 1)
       skill = insert(:skill, skill_category: skill_category, position: 1)
-
-      valid_attrs = %{
-        user_id: user.id,
-        skill_id: skill.id,
-        progress: :done
-      }
+      valid_attrs = %{user_id: user.id, skill_id: skill.id, progress: :done}
 
       %{valid_attrs: valid_attrs}
     end
@@ -33,6 +28,17 @@ defmodule Bright.SkillEvidencesTest do
     } do
       skill_evidence = insert(:skill_evidence, valid_attrs)
       assert SkillEvidences.get_skill_evidence!(skill_evidence.id) == skill_evidence
+    end
+
+    test "get_skill_evidence_by/1 returns the skill_evidence with given condition", %{
+      valid_attrs: valid_attrs
+    } do
+      skill_evidence = insert(:skill_evidence, valid_attrs)
+
+      assert SkillEvidences.get_skill_evidence_by(id: skill_evidence.id, progress: :done) ==
+               skill_evidence
+
+      assert SkillEvidences.get_skill_evidence_by(id: skill_evidence.id, progress: :wip) == nil
     end
 
     test "create_skill_evidence/1 with valid data creates a skill_evidence", %{
@@ -83,6 +89,83 @@ defmodule Bright.SkillEvidencesTest do
     test "change_skill_evidence/1 returns a skill_evidence changeset", %{valid_attrs: valid_attrs} do
       skill_evidence = insert(:skill_evidence, valid_attrs)
       assert %Ecto.Changeset{} = SkillEvidences.change_skill_evidence(skill_evidence)
+    end
+  end
+
+  describe "skill_evidence_posts" do
+    alias Bright.SkillEvidences.SkillEvidencePost
+
+    setup do
+      user = insert(:user)
+      skill_category = insert(:skill_category, skill_unit: build(:skill_unit), position: 1)
+      skill = insert(:skill, skill_category: skill_category, position: 1)
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill, progress: :wip)
+
+      valid_attrs = %{
+        user_id: user.id,
+        skill_evidence_id: skill_evidence.id,
+        content: "some content"
+      }
+
+      %{user: user, skill_evidence: skill_evidence, valid_attrs: valid_attrs}
+    end
+
+    test "list_skill_evidence_posts/0 returns all skill_evidence_posts", %{
+      valid_attrs: valid_attrs
+    } do
+      skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
+      assert SkillEvidences.list_skill_evidence_posts() == [skill_evidence_post]
+    end
+
+    test "get_skill_evidence_post!/1 returns the skill_evidence_post with given id", %{
+      valid_attrs: valid_attrs
+    } do
+      skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
+
+      assert SkillEvidences.get_skill_evidence_post!(skill_evidence_post.id) ==
+               skill_evidence_post
+    end
+
+    test "create_skill_evidence_post/1 with valid data creates a skill_evidence_post", %{
+      user: user,
+      skill_evidence: skill_evidence
+    } do
+      attrs = %{content: "some content"}
+
+      assert {:ok, %SkillEvidencePost{} = skill_evidence_post} =
+               SkillEvidences.create_skill_evidence_post(skill_evidence, user, attrs)
+
+      assert skill_evidence_post.content == "some content"
+    end
+
+    test "create_skill_evidence_post/1 with invalid data returns error changeset", %{
+      user: user,
+      skill_evidence: skill_evidence
+    } do
+      attrs = %{content: nil}
+
+      assert {:error, %Ecto.Changeset{}} =
+               SkillEvidences.create_skill_evidence_post(skill_evidence, user, attrs)
+    end
+
+    test "delete_skill_evidence_post/1 deletes the skill_evidence_post", %{
+      valid_attrs: valid_attrs
+    } do
+      skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
+
+      assert {:ok, %SkillEvidencePost{}} =
+               SkillEvidences.delete_skill_evidence_post(skill_evidence_post)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        SkillEvidences.get_skill_evidence_post!(skill_evidence_post.id)
+      end
+    end
+
+    test "change_skill_evidence_post/1 returns a skill_evidence_post changeset", %{
+      valid_attrs: valid_attrs
+    } do
+      skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
+      assert %Ecto.Changeset{} = SkillEvidences.change_skill_evidence_post(skill_evidence_post)
     end
   end
 end

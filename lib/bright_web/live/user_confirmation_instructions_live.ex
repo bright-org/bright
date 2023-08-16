@@ -2,29 +2,38 @@ defmodule BrightWeb.UserConfirmationInstructionsLive do
   use BrightWeb, :live_view
 
   alias Bright.Accounts
+  alias BrightWeb.UserAuthComponents
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        No confirmation instructions received?
-        <:subtitle>We'll send a new confirmation link to your inbox</:subtitle>
-      </.header>
+    <UserAuthComponents.header>確認メールが届かなかった方へ</UserAuthComponents.header>
 
-      <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions">
-        <.input field={@form[:email]} type="email" placeholder="Email" required />
-        <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
-            Resend confirmation instructions
-          </.button>
-        </:actions>
-      </.simple_form>
+    <UserAuthComponents.description>
+      確認メールを再度送信します。
+      <br>
+      登録時に使用したメールアドレスを入力してください。
+      <br>
+      <br>
+      <span class="text-xs">
+        メールが届かない場合は、Brightからのメールが受信できるように
+        <br>
+        ドメイン指定受信で「bright-fun.org」を許可するように設定してください。
+      </span>
+    </UserAuthComponents.description>
 
-      <p class="text-center mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
-    </div>
+    <UserAuthComponents.auth_form
+      for={@form}
+      id="resend_confirmation_form"
+      phx-submit="send_instructions"
+    >
+      <UserAuthComponents.form_section variant="center">
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+
+        <UserAuthComponents.button variant="mt-sm">確認メールを送信</UserAuthComponents.button>
+
+        <UserAuthComponents.link_button href={~p"/users/log_in"}>戻る</UserAuthComponents.link_button>
+      </UserAuthComponents.form_section>
+    </UserAuthComponents.auth_form>
     """
   end
 
@@ -40,12 +49,9 @@ defmodule BrightWeb.UserConfirmationInstructionsLive do
       )
     end
 
-    info =
-      "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
-
     {:noreply,
      socket
-     |> put_flash(:info, info)
-     |> redirect(to: ~p"/")}
+     |> put_flash(:info, "確認メールを再度送信しました")
+     |> redirect(to: ~p"/users/log_in")}
   end
 end

@@ -2,28 +2,29 @@ defmodule BrightWeb.UserForgotPasswordLive do
   use BrightWeb, :live_view
 
   alias Bright.Accounts
+  alias BrightWeb.UserAuthComponents
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Forgot your password?
-        <:subtitle>We'll send a password reset link to your inbox</:subtitle>
-      </.header>
+    <UserAuthComponents.header>パスワードを忘れた方へ</UserAuthComponents.header>
 
-      <.simple_form for={@form} id="reset_password_form" phx-submit="send_email">
-        <.input field={@form[:email]} type="email" placeholder="Email" required />
-        <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
-            Send password reset instructions
-          </.button>
-        </:actions>
-      </.simple_form>
-      <p class="text-center text-sm mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
-    </div>
+    <UserAuthComponents.description>
+      パスワードをリセットするリンクをメールに送ります。<br>登録しているユーザーのメールアドレスを入力してください。
+    </UserAuthComponents.description>
+
+    <UserAuthComponents.auth_form
+      for={@form}
+      id="reset_password_form"
+      phx-submit="send_email"
+    >
+      <UserAuthComponents.form_section variant="center">
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+
+        <UserAuthComponents.button variant="mt-sm">パスワードリセット用リンクを送信</UserAuthComponents.button>
+
+        <UserAuthComponents.link_button href={~p"/users/log_in"}>戻る</UserAuthComponents.link_button>
+      </UserAuthComponents.form_section>
+    </UserAuthComponents.auth_form>
     """
   end
 
@@ -39,12 +40,6 @@ defmodule BrightWeb.UserForgotPasswordLive do
       )
     end
 
-    info =
-      "If your email is in our system, you will receive instructions to reset your password shortly."
-
-    {:noreply,
-     socket
-     |> put_flash(:info, info)
-     |> redirect(to: ~p"/")}
+    {:noreply, socket |> redirect(to: ~p"/users/send_reset_password_url")}
   end
 end

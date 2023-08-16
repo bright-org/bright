@@ -12,7 +12,6 @@
   rows={@streams.skill_panels}
   row_click={fn {_id, skill_panel} -> JS.navigate(~p"/admin/skill_panels/#{skill_panel}") end}
 >
-  <:col :let={{_id, skill_panel}} label="Locked date"><%= skill_panel.locked_date %></:col>
   <:col :let={{_id, skill_panel}} label="Name"><%= skill_panel.name %></:col>
   <:action :let={{_id, skill_panel}}>
     <div class="sr-only">

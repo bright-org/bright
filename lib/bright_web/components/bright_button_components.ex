@@ -3,11 +3,33 @@ defmodule BrightWeb.BrightButtonComponents do
   Bright Button Components
   """
   use Phoenix.Component
+  alias Phoenix.LiveView.JS
+
+  @doc """
+  Renders a Profile Button
+
+  ## Examples
+
+       <.profile_button>自分に戻す</.profile_button>
+  """
+  slot :inner_block
+
+  def profile_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
 
   @doc """
   Renders a "Excellent Person" Button
 
   ## Examples
+
       <.excellent_person_button />
   """
   def excellent_person_button(assigns) do
@@ -25,6 +47,7 @@ defmodule BrightWeb.BrightButtonComponents do
   Renders a "Anxious Person" Button
 
   ## Examples
+
       <.anxious_person_button />
   """
   def anxious_person_button(assigns) do
@@ -82,70 +105,77 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
-  Renders a "Return to Yourself" Button
+  Renders a Contact Customer Success Button
 
   ## Examples
-      <.return_to_yourself_button />
+
+      <.contact_customer_success_button />
   """
-  def return_to_yourself_button(assigns) do
+  def contact_customer_success_button(assigns) do
     ~H"""
-    <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-    >
-      自分に戻す
+    <button type="button"
+      class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
+      <span
+          class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold material-icons-outlined">sms</span>
+      カスタマーサクセスに連絡
     </button>
     """
   end
 
   @doc """
-  Renders a "Stock Candidates For Employment" Button
+  Renders a Search for Skill Holders Button
 
   ## Examples
-      <.stock_candidates_for_employment_button />
+
+      <.search_for_skill_holders_button />
   """
-  def stock_candidates_for_employment_button(assigns) do
+  def search_for_skill_holders_button(assigns) do
     ~H"""
-    <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-    >
-      採用候補者としてストック
+    <button type="button"
+      class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
+      <span
+          class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold">search</span>
+      スキル保有者を検索
     </button>
     """
   end
 
   @doc """
-  Renders a Adopt Button
+  Renders a User Button
 
   ## Examples
-      <.adopt_button />
+
+      <.user_button icon_file_path="/images/sample/sample-image.png" />
   """
-  def adopt_button(assigns) do
+  attr :icon_file_path, :string
+
+  def user_button(assigns) do
     ~H"""
     <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+      id="user_menu_dropmenu"
+      class="hover:opacity-70 z-20"
+      phx-click={JS.toggle(to: "#personal_setting_modal")}
+      phx-target={"#personal_settings"}
     >
-      採用する
+      <img
+        class="inline-block h-10 w-10 rounded-full"
+        src={@icon_file_path}
+      />
     </button>
     """
   end
 
-  @doc """
-  Renders a "Recruitment Coordination" Button
-
-  ## Examples
-      <.recruitment_coordination_button />
-  """
-  def recruitment_coordination_button(assigns) do
+  def logout_button(assigns) do
     ~H"""
-    <button
-      type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
-    >
-      採用の調整
-    </button>
+        <.link
+          href="/users/log_out"
+          method="delete"
+          class="hover:opacity-70"
+          >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-10 w-10 stroke-red-400">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+          </svg>
+        </.link>
     """
   end
 end

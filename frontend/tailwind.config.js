@@ -6,6 +6,7 @@ module.exports = {
   content: ["./*.{html,js}"],
   theme: {
     colors: {
+      current: "currentColor",
       base: "#333333",
       transparent: "transparent",
       brightGreen: {
@@ -61,12 +62,13 @@ module.exports = {
       sns: {
         facebook: "#1877F2",
         twitter: "#1DA1F2",
+        newTwitter: "#000000",
         github: "#0D1117",
       },
       infra: {
         dark: "#51971A",
         light: "#8CEB14",
-        dazzle: "#8CEB14",
+        dazzle: "#F2FFE1",
       },
       enginner: {
         dark: "#165BC8",
@@ -88,6 +90,12 @@ module.exports = {
         light: "#FD5B87",
         dazzle: "#FFE9EF",
       },
+      skillPanel: {
+        brightGreen600: "#0EA895",
+        brightGreen300: "#14D6BE",
+        amethyst600: "#C04CD0",
+        amethyst300: "#DD6DED",
+      },
     },
     extend: {
       backgroundImage: (theme) => ({
@@ -100,6 +108,8 @@ module.exports = {
         bgGithub: "url('./images/bg_github.png')",
         bgFacebook: "url('./images/bg_facebook.png')",
         bgTwitter: "url('./images/bg_twitter.png')",
+        bgNewTwitter: "url('./images/bg_new_twitter.png')",
+        bgAddAvatar: "url('./images/bg_add_avatar.png')",
       }),
       backgroundPosition: (theme) => ({
         "left-2.5": "10px center",
@@ -110,6 +120,7 @@ module.exports = {
         7: "auto 28px",
         8: "auto 32px",
         9: "auto 34px",
+        20: "auto 80px",
       }),
       fontFamily: (theme) => ({
         notosans: ["Noto Sans JP"],
@@ -142,7 +153,7 @@ module.exports = {
           alignSelf: "center",
         },
         h3: {
-          fontSize: theme("fontSize.2xl"),
+          fontSize: "28px",
           fontWeight: theme("fontWeight.bold"),
           letterSpacing: theme("letterSpacing.tight"),
           alignSelf: "center",

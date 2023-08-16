@@ -6,7 +6,7 @@
    <meta name="image" content="assets/images/ogp.png">
   <title>Bright</title>
   <script src="https://d3js.org/d3.v3.min.js"></script>
-  <script src="http://marvl.infotech.monash.edu/webcola/cola.min.js"></script>
+  <script src="https://marvl.infotech.monash.edu/webcola/cola.min.js"></script>
   <link rel="stylesheet" href="./output.css">
   <link rel="shortcut icon" href="favicon.ico">
 </head>
@@ -37,123 +37,134 @@ var dataset = {
     { no: 20, id : "engineer_021", size : 10, color : "#165BC8", name : "デスクトップアプリ開発 Elixir" },
     { no: 21, id : "engineer_022", size : 10, color : "#165BC8", name : "デスクトップアプリ開発 basic" },
     { no: 22, id : "engineer_023", size : 10, color : "#165BC8", name : "IoT Elixir" },
+    { no: 23, id : "infra_001", size : 25, color : "#51971A", name : "AWS プロフェッショナル" },
+    { no: 24, id : "infra_002", size : 25, color : "#51971A", name : "Google Cloud プロフェッショナル" },
+    { no: 25, id : "infra_003", size : 15, color : "#51971A", name : "AWSアソシエイト" },
+    { no: 26, id : "infra_004", size : 15, color : "#51971A", name : "Google Cloud アソシエイト" },
+    { no: 27, id : "infra_005", size : 10, color : "#51971A", name : "AWS プラクティショナー" },
+    { no: 28, id : "infra_006", size : 10, color : "#51971A", name : "Google Cloud ファンダメンタルズ" },
+    { no: 29, id : "marketer_001", size : 25, color : "#6B50A4", name : "ブランドマネージャー" },
+    { no: 30, id : "marketer_002", size : 25, color : "#6B50A4", name : "PMM" },
+    { no: 31, id : "marketer_003", size : 15, color : "#6B50A4", name : "デジタルマーケッター" },
+    { no: 32, id : "marketer_004", size : 15, color : "#6B50A4", name : "D2Cマーケッター" },
+    { no: 33, id : "marketer_005", size : 10, color : "#6B50A4", name : "Web広告マーケッター" },
+    { no: 34, id : "marketer_006", size : 10, color : "#6B50A4", name : "SNSマーケッター" },
+    { no: 35, id : "marketer_007", size : 10, color : "#6B50A4", name : "カスタマーサクセスリーダー" },
+    { no: 36, id : "marketer_008", size : 10, color : "#6B50A4", name : "データサイエンティスト R" },
+    { no: 37, id : "designer_001", size : 25, color : "#E96500", name : "プロダクトデザイナー" },
+    { no: 38, id : "designer_002", size : 25, color : "#E96500", name : "アートディレクター" },
+    { no: 39, id : "designer_003", size : 15, color : "#E96500", name : "Webデザインディレクター" },
+    { no: 40, id : "designer_004", size : 15, color : "#E96500", name : "UX・UIディレクター" },
+    { no: 41, id : "designer_005", size : 10, color : "#E96500", name : "Webデザイナー" },
+    { no: 42, id : "designer_006", size : 10, color : "#E96500", name : "UXデザイナー" },
+    { no: 43, id : "designer_007", size : 10, color : "#E96500", name : "グラフィックデザイナー" },
   ],
   edges: [
     { source: 0, target: 1 },
     { source: 1, target: 2 },
     { source: 2, target: 3 },
-    { source: 4, target: 0 },
-    { source: 4, target: 1 },
-    { source: 4, target: 2 },
-    { source: 4, target: 5 },
-    { source: 5, target: 0 },
-    { source: 5, target: 1 },
-    { source: 5, target: 2 },
-    { source: 5, target: 3 },
-    { source: 5, target: 6 },
-    { source: 6, target: 0 },
-    { source: 6, target: 1 },
-    { source: 6, target: 2 },
-    { source: 6, target: 3 },
-    { source: 6, target: 7 },
-    { source: 7, target: 0 },
-    { source: 7, target: 1 },
-    { source: 7, target: 2 },
-    { source: 7, target: 3 },
-    { source: 7, target: 8 },
-    { source: 8, target: 3 },
-    { source: 8, target: 9 },
-    { source: 9, target: 3 },
-    { source: 10, target: 4 },
-    { source: 10, target: 5 },
-    { source: 10, target: 6 },
-    { source: 10, target: 7 },
-    { source: 10, target: 8 },
-    { source: 10, target: 9 },
-    { source: 10, target: 11 },
-    { source: 11, target: 4 },
-    { source: 11, target: 5 },
-    { source: 11, target: 6 },
-    { source: 11, target: 7 },
-    { source: 11, target: 8 },
-    { source: 11, target: 9 },
-    { source: 11, target: 12 },
-    { source: 12, target: 4 },
-    { source: 12, target: 5 },
-    { source: 12, target: 6 },
-    { source: 12, target: 7 },
-    { source: 12, target: 8 },
-    { source: 12, target: 9 },
-    { source: 12, target: 13 },
-    { source: 13, target: 4 },
-    { source: 13, target: 5 },
-    { source: 13, target: 6 },
-    { source: 13, target: 7 },
-    { source: 13, target: 8 },
-    { source: 13, target: 9 },
-    { source: 13, target: 14 },
-    { source: 14, target: 4 },
-    { source: 14, target: 5 },
-    { source: 14, target: 6 },
-    { source: 14, target: 7 },
-    { source: 14, target: 8 },
-    { source: 14, target: 9 },
-    { source: 14, target: 15 },
-    { source: 15, target: 4 },
-    { source: 15, target: 5 },
-    { source: 15, target: 6 },
-    { source: 15, target: 7 },
-    { source: 15, target: 8 },
-    { source: 15, target: 9 },
-    { source: 15, target: 16 },
-    { source: 16, target: 4 },
-    { source: 16, target: 5 },
-    { source: 16, target: 6 },
-    { source: 16, target: 7 },
-    { source: 16, target: 8 },
-    { source: 16, target: 9 },
-    { source: 16, target: 17 },
-    { source: 17, target: 4 },
-    { source: 17, target: 5 },
-    { source: 17, target: 6 },
-    { source: 17, target: 7 },
-    { source: 17, target: 8 },
-    { source: 17, target: 9 },
-    { source: 17, target: 18 },
-    { source: 18, target: 4 },
-    { source: 18, target: 5 },
-    { source: 18, target: 6 },
-    { source: 18, target: 7 },
-    { source: 18, target: 8 },
-    { source: 18, target: 9 },
-    { source: 18, target: 19 },
-    { source: 19, target: 4 },
-    { source: 19, target: 5 },
-    { source: 19, target: 6 },
-    { source: 19, target: 7 },
-    { source: 19, target: 8 },
-    { source: 19, target: 9 },
-    { source: 19, target: 20 },
-    { source: 20, target: 4 },
-    { source: 20, target: 5 },
-    { source: 20, target: 6 },
-    { source: 20, target: 7 },
-    { source: 20, target: 8 },
-    { source: 20, target: 21 },
-    { source: 20, target: 9 },
-    { source: 21, target: 4 },
-    { source: 21, target: 5 },
-    { source: 21, target: 6 },
-    { source: 21, target: 7 },
-    { source: 21, target: 8 },
-    { source: 21, target: 9 },
-    { source: 22, target: 7 },
-    { source: 22, target: 8 },
+    { source: 3, target: 23 },
+    { source: 23, target: 24 },
+    { source: 24, target: 29 },
+    { source: 29, target: 30 },
+    { source: 30, target: 37 },
+    { source: 37, target: 38 },
+    { source: 38, target: 0 },
+    { source: 0, target: 4 },
+    { source: 0, target: 5 },
+    { source: 0, target: 6 },
+    { source: 0, target: 7 },
+    { source: 0, target: 8 },
+    { source: 0, target: 9 },
+    { source: 0, target: 22 },
+    { source: 1, target: 4 },
+    { source: 1, target: 5 },
+    { source: 1, target: 7 },
+    { source: 1, target: 8 },
+    { source: 2, target: 4 },
+    { source: 2, target: 5 },
+    { source: 2, target: 7 },
+    { source: 2, target: 8 },
+    { source: 3, target: 4 },
+    { source: 3, target: 5 },
+    { source: 3, target: 7 },
+    { source: 3, target: 8 },
+    { source: 3, target: 9 },
+    { source: 4, target: 10 },
+    { source: 4, target: 11 },
+    { source: 4, target: 12 },
+    { source: 4, target: 13 },
+    { source: 4, target: 14 },
+    { source: 4, target: 15 },
+    { source: 4, target: 16 },
+    { source: 4, target: 17 },
+    { source: 4, target: 18 },
+    { source: 4, target: 19 },
+    { source: 4, target: 20 },
+    { source: 4, target: 21 },
+    { source: 5, target: 10 },
+    { source: 5, target: 11 },
+    { source: 5, target: 12 },
+    { source: 5, target: 13 },
+    { source: 5, target: 14 },
+    { source: 5, target: 15 },
+    { source: 5, target: 16 },
+    { source: 5, target: 17 },
+    { source: 5, target: 18 },
+    { source: 5, target: 19 },
+    { source: 5, target: 20 },
+    { source: 5, target: 21 },
+    { source: 7, target: 10 },
+    { source: 7, target: 11 },
+    { source: 7, target: 12 },
+    { source: 7, target: 13 },
+    { source: 7, target: 14 },
+    { source: 7, target: 15 },
+    { source: 7, target: 16 },
+    { source: 7, target: 17 },
+    { source: 7, target: 18 },
+    { source: 7, target: 19 },
+    { source: 7, target: 20 },
+    { source: 7, target: 21 },
+    { source: 8, target: 10 },
+    { source: 8, target: 11 },
+    { source: 8, target: 12 },
+    { source: 8, target: 13 },
+    { source: 8, target: 14 },
+    { source: 8, target: 15 },
+    { source: 8, target: 16 },
+    { source: 8, target: 17 },
+    { source: 8, target: 18 },
+    { source: 8, target: 19 },
+    { source: 8, target: 20 },
+    { source: 8, target: 21 },
+    { source: 23, target: 25 },
+    { source: 24, target: 26 },
+    { source: 25, target: 27 },
+    { source: 26, target: 28 },
+    { source: 29, target: 31 },
+    { source: 29, target: 32 },
+    { source: 29, target: 33 },
+    { source: 29, target: 34 },
+    { source: 29, target: 35 },
+    { source: 30, target: 31 },
+    { source: 30, target: 32 },
+    { source: 30, target: 33 },
+    { source: 30, target: 34 },
+    { source: 30, target: 35 },
+    { source: 30, target: 36 },
+    { source: 37, target: 39 },
+    { source: 37, target: 40 },
+    { source: 38, target: 39 },
+    { source: 38, target: 40 },
+    { source: 38, target: 43 },
+    { source: 39, target: 41 },
+    { source: 40, target: 42 },
   ]
 };
 
 var w = window.innerWidth;
-var h = window.innerHeight;
+var h = 1200;
 
 var cola = cola.d3adaptor()
     .nodes(dataset.nodes)
@@ -169,7 +180,7 @@ var svg =
     .append("svg")
     .attr("width", w)
     .attr("height", h)
-    .attr("style", "min-height:100vh;left:50%;position:absolute;transform:translate(-55%,-50%);top:50%;");
+    .attr("style", "margin:70px 0 0 -300px;min-height:100vh;");
 
 var edges = 
   svg.selectAll("line")
@@ -198,17 +209,21 @@ var labels =
     .text( function(d) {return d.name;} )
     .style("cursor", "pointer");
 
+/* ここで表示位置とかきめてるっぽい  1.25* とか - 250 は調整で書いてます（return d.source.x)で良い */
 cola.on("tick", function() {
-  edges.attr("x1", function(d) { return (1.75*(d.source.x) - 400); })
-       .attr("y1", function(d) { return (1.75*(d.source.y) - 500); })
-       .attr("x2", function(d) { return (1.75*(d.target.x) - 400); })
-       .attr("y2", function(d) { return (1.75*(d.target.y) - 500); });
+  edges.attr("x1", function(d) { return (1.25*(d.source.x) - 0); })
+       .attr("y1", function(d) { return (1.25*(d.source.y) - 250); })
+       .attr("x2", function(d) { return (1.25*(d.target.x) - 0); })
+       .attr("y2", function(d) { return (1.25*(d.target.y) - 250); });
 
-  nodes.attr("cx", function(d) { return (1.75*(d.x) - 400); })
-       .attr("cy", function(d) { return (1.75*(d.y) - 500); });
+  nodes.attr("cx", function(d) { return (1.25*(d.x) - 0); })
+       .attr("cy", function(d) { return (1.25*(d.y) - 250); });
 
-  labels.attr("x", function(d) { return (1.75*(d.x) - 400); })
-        .attr("y", function(d) { return (1.75*(d.y) - 500); });
+  labels.attr("x", function(d) { return (1.25*(d.x) - 0); })
+        .attr("y", function(d) { return (1.25*(d.y) - 250); });
+  window.scroll({
+        top: 0,
+        behavior: "smooth",});
 });
 </script>
 
@@ -951,13 +966,670 @@ cola.on("tick", function() {
         </article>
       </li>
 <!-- ジョブここまで -->
+
+<!-- インフラ ジョブここから -->
+<li class="infra_001">
+  <label class="hidden" for="popup_infra_001">AWS プロフェッショナル</label>
+  <input type="checkbox" id="popup_infra_001" class="peer hidden">
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">AWS プロフェッショナル</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_infra_001" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+<!-- ジョブここまで (以降繰り返し) -->
+
+<!-- ジョブここから -->
+ <li class="infra_002">
+   <label class="hidden" for="popup_infra_002">Google Cloud プロフェッショナル</label>
+   <input type="checkbox" id="popup_infra_002" class="peer hidden">
+   <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">Google Cloud プロフェッショナル</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_infra_002" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="infra_003">
+  <label class="hidden">AWSアソシエイト</label>
+  <input type="checkbox" id="popup_infra_003" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">AWSアソシエイト</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_infra_003" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="infra_004">
+  <label class="hidden">Google Cloud アソシエイト</label>
+  <input type="checkbox" id="popup_infra_004" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">Google Cloud アソシエイト</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_infra_004" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="infra_005">
+  <label class="hidden" for="popup_infra_005">AWS プラクティショナー</label>
+  <input type="checkbox" id="popup_infra_005" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">AWS プラクティショナー</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_infra_005" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="infra_006">
+  <label class="hidden" for="popup_infra_006">Google Cloud ファンダメンタルズ</label>
+  <input type="checkbox" id="popup_infra_006" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">Google Cloud ファンダメンタルズ</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_infra_006" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- マーケッター ジョブここから -->
+<li class="marketer_001">
+  <label class="hidden" for="popup_marketer_001">ブランドマネージャ</label>
+  <input type="checkbox" id="popup_marketer_001" class="peer hidden">
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">ブランドマネージャ</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_marketer_001" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+<!-- ジョブここまで (以降繰り返し) -->
+
+<!-- ジョブここから -->
+ <li class="marketer_002">
+   <label class="hidden" for="popup_marketer_002">PMM</label>
+   <input type="checkbox" id="popup_marketer_002" class="peer hidden">
+   <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">PMM</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_marketer_002" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="marketer_003">
+  <label class="hidden">デジタルマーケッター</label>
+  <input type="checkbox" id="popup_marketer_003" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">デジタルマーケッター</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_marketer_003" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="marketer_004">
+  <label class="hidden">D2Cマーケッター</label>
+  <input type="checkbox" id="popup_marketer_004" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">D2Cマーケッター</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_marketer_004" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="marketer_005">
+  <label class="hidden" for="popup_marketer_005">Web広告マーケッター</label>
+  <input type="checkbox" id="popup_marketer_005" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">Web広告マーケッター</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_marketer_005" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="marketer_006">
+  <label class="hidden" for="popup_marketer_006">SNSマーケッター</label>
+  <input type="checkbox" id="popup_marketer_006" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">SNSマーケッター</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_marketer_006" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="marketer_007">
+  <label class="hidden" for="popup_marketer_007">カスタマーサクセスリーダー</label>
+  <input type="checkbox" id="popup_marketer_007" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">カスタマーサクセスリーダー</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_marketer_007" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="marketer_008">
+  <label class="hidden" for="popup_marketer_008">データサイエンティスト R</label>
+  <input type="checkbox" id="popup_marketer_008" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">データサイエンティスト R</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_marketer_008" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- デザイナー ジョブここから -->
+<li class="designer_001">
+  <label class="hidden" for="popup_designer_001">プロダクトデザイナー</label>
+  <input type="checkbox" id="popup_designer_001" class="peer hidden">
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">プロダクトデザイナー</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_designer_001" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+<!-- ジョブここまで (以降繰り返し) -->
+
+<!-- ジョブここから -->
+ <li class="designer_002">
+   <label class="hidden" for="popup_designer_002">アートディレクター</label>
+   <input type="checkbox" id="popup_designer_002" class="peer hidden">
+   <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">アートディレクター</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_designer_002" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="designer_003">
+  <label class="hidden">Webデザインディレクター</label>
+  <input type="checkbox" id="popup_designer_003" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">Webデザインディレクター</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_designer_003" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="designer_004">
+  <label class="hidden">UX・UIディレクター</label>
+  <input type="checkbox" id="popup_designer_004" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">UX・UIディレクター</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_designer_004" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="designer_005">
+  <label class="hidden" for="popup_designer_005">Webデザイナー</label>
+  <input type="checkbox" id="popup_designer_005" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">Webデザイナー</b>
+      <p class="mt-4">高度なプログラミングスキルに加え、チーム開発、プロジェクト運営、インフラなどの幅広い知識が求められます。</p>
+      <div class="mt-2 text-sm">
+        <span>このキャリアパスになるにはいくつか条件があります。</span>
+        <ul class="mt-1">
+<li>・アプリ開発のスキルパネルでベテラン以上が１つ</li>
+<li>・分野別のスキルパネルで平均以上が２つ</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_designer_005" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="designer_006">
+  <label class="hidden" for="popup_designer_006">UXデザイナー</label>
+  <input type="checkbox" id="popup_designer_006" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">UXデザイナー</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_designer_006" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
+
+<!-- ジョブここから -->
+<li class="designer_007">
+  <label class="hidden" for="popup_designer_007">グラフィックデザイナー</label>
+  <input type="checkbox" id="popup_designer_007" class="peer hidden">
+
+  <article class="border border-solid border-brightGray-200 bg-white fixed hidden left-1/2 max-w-xs px-6 py-4 rounded select-none top-1/2 -translate-x-1/2 -translate-y-1/2 z-2 peer-checked:block">
+    <div>
+      <b class="bg-bgGem bg-5 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-6 before:inline-block before:w-6">グラフィックデザイナー</b>
+      <p class="mt-4">Webアプリケーションを一人または、チームで開発します。開発言語での開発に加え、チーム開発、環境構築、初歩的な設計を行います。</p>
+      <div class="mt-2 text-sm">
+        <span>次のキャリアパス候補</span>
+        <ul class="flex mt-1 gap-x-2">
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">PdM</li>
+<li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">Tech Lead</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col mt-6">
+        <button class="bg-brightGray-900 border border-brightGray-900 border-solid mx-auto my-2 px-4 py-2 rounded select-none text-white w-56 hover:opacity-50">
+<span>このキャリアパスを選ぶ</span>
+        </button>
+      </div>
+
+      <label for="popup_designer_007" class="absolute block top-2 right-2 hover:opacity-50">
+        <span class="relative block cursor-pointer h-5 rounded-full w-5 before:absolute before:block before:border-t-2 before:border-brightGray-900 before:content-[''] before:h-0 before:left-1/2 before:rotate-[45deg] before:top-1/2 before:translate-x-[-50%] before:translate-y-[-50%] before:w-3 after:absolute after:block after:border-t-2 after:border-brightGray-900 after:content-[''] after:h-0 after:left-1/2 after:rotate-[-45deg] after:top-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-3 hover:bg-brightGray-900 hover:before:border-white hover:after:border-white"></span>
+      </label>
+    </div>
+  </article>
+</li>
+<!-- ジョブここまで -->
     </ul>
 <!-- ジョブ基本ここまで -->
   </section>
 
     
   <div class="flex fixed gap-4 right-4 top-4 w-fit z-999">
-    <button class="bg-white block border border-solid border-black font-bold px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">切り替える</button>
+    <button class="bg-white block border border-solid border-black font-bold px-4 py-2 rounded select-none text-black w-40 hover:opacity-50" onclick="document.location.href='./select_career_high.html';">切り替える</button>
     <button class="bg-white block border border-solid border-black font-bold px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">戻る</button>
   </div>
 <!-- ジョブエンジニアセクションここまで -->

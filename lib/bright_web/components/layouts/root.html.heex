@@ -1,30 +1,12 @@
-<!DOCTYPE html>
-<html lang="en" class="[scrollbar-gutter:stable]">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
-      <%= assigns[:page_title] || "Bright" %>
-    </.live_title>
-    <link
-      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone"
-      rel="stylesheet"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js">
-    </script>
-    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
-    </script>
-  </head>
-  <body class="w-[1920px]">
+<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()}>
+  <body class="max-w-[1920px]">
     <div class="flex">
-      <.side_menu />
+      <.side_menu  href={@conn.request_path} />
       <main class="bg-background flex flex-col flex-1">
         <!-- ヘッダー -->
-        <.user_header />
+        <.user_header profile={assigns.current_user.user_profile}  page_title={assigns[:page_title]} page_sub_title={assigns[:page_sub_title]} notification_count={assigns[:notification_count]} />
         <%= @inner_content %>
       </main>
     </div>
   </body>
-</html>
+</.root_layout>

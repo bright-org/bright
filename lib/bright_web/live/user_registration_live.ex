@@ -3,40 +3,40 @@ defmodule BrightWeb.UserRegistrationLive do
 
   alias Bright.Accounts
   alias Bright.Accounts.User
+  alias BrightWeb.UserAuthComponents
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Register for an account
-        <:subtitle>
-          Already registered?
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Sign in
-          </.link>
-          to your account now.
-        </:subtitle>
-      </.header>
+    <UserAuthComponents.header>ユーザー新規作成</UserAuthComponents.header>
 
-      <.simple_form
-        for={@form}
-        id="registration_form"
-        phx-submit="save"
-        phx-change="validate"
-      >
-        <.error :if={@check_errors}>
-          Oops, something went wrong! Please check the errors below.
-        </.error>
+    <UserAuthComponents.auth_form
+      :let={_f}
+      for={@form}
+      id="registration_form"
+      phx-submit="save"
+      phx-change="validate"
+    >
+      <UserAuthComponents.form_section variant="left">
+        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google" />
+        <UserAuthComponents.social_auth_button href="#" variant="github" />
+        <UserAuthComponents.social_auth_button href="#" variant="facebook" />
+        <UserAuthComponents.social_auth_button href="#" variant="twitter" />
+      </UserAuthComponents.form_section>
 
-        <.input field={@form[:name]} type="text" label="Name" required />
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+      <UserAuthComponents.or_text>または</UserAuthComponents.or_text>
 
-        <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
-        </:actions>
-      </.simple_form>
-    </div>
+      <UserAuthComponents.form_section variant="right">
+        <UserAuthComponents.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドルネーム" required/>
+
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+
+        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required/>
+
+        <UserAuthComponents.button>ユーザーを新規作成する</UserAuthComponents.button>
+      </UserAuthComponents.form_section>
+    </UserAuthComponents.auth_form>
+
+    <UserAuthComponents.link_text href={~p"/users/log_in"}>ログインはこちら</UserAuthComponents.link_text>
     """
   end
 

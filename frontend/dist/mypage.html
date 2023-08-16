@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body class="w-[1920px]">
-    <div class="flex">
+    <div class="flex w-full">
       <aside
         class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
       >
@@ -27,15 +27,30 @@
           <li>
             <a
               class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
-              href="/mypage"
-              >キャリアパス</a
+              href="/"
+              >スキルを選ぶ</a
             >
           </li>
           <li>
             <a
               class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
               href="/mypage"
-              >スキルアップ</a
+              >成長を見る・比較する</a
+            >
+          </li>
+          <li>
+            <a
+              class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+              href="/mypage"
+              >スキルパネルを入力</a
+            >
+          </li>
+
+          <li>
+            <a
+              class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+              href="/mypage"
+              >スキルアップを目指す</a
             >
           </li>
           <li>
@@ -43,6 +58,13 @@
               class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
               href="/mypage"
               >チームスキル分析</a
+            >
+          </li>
+          <li>
+            <a
+              class="!text-white text-base py-4 inline-block pl-4 w-full mb-1"
+              href="/mypage"
+              >キャリアパスを選ぶ</a
             >
           </li>
         </ul>
@@ -58,7 +80,7 @@
           <div class="flex gap-x-5">
             <button
               type="button"
-              class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9"
+              class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
             >
               <span
                 class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold material-icons-outlined"
@@ -69,7 +91,7 @@
 
             <button
               type="button"
-              class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9"
+              class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
             >
               <span
                 class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold"
@@ -82,22 +104,18 @@
               type="button"
               class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
             >
-              <span class="material-icons text-xs">notifications_none</span>
+              <span class="material-icons">notifications_none</span>
               <div
                 class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2"
               >
                 1
               </div>
             </button>
-            <img
-              class="inline-block h-10 w-10 rounded-full"
-              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-            />
-            <button
-              type="button"
-              class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-10 h-10 inline-flex items-center justify-center"
-            >
-              <span class="material-icons text-xs">settings</span>
+            <button class="hover:opacity-70">
+              <img
+                class="inline-block h-10 w-10 rounded-full"
+                src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+              />
             </button>
           </div>
         </div>
@@ -214,7 +232,7 @@
               <div
                 class="bg-test bg-contain h-20 w-20 mr-5"
                 style="
-                  background-image: url('/dist/images/sample/sample-image.png');
+                  background-image: url('./images/sample/sample-image.png');
                 "
               ></div>
               <div class="flex-1">
@@ -223,10 +241,10 @@
                   <div class="flex gap-x-3">
                     <button
                       type="button"
-                      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGreen-300"
+                      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border hover:border-brightGreen-300 group"
                     >
                       <span
-                        class="material-icons md-18 mr-1 text-brightGreen-300"
+                        class="material-icons md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300"
                         >share</span
                       >
                       優秀な人として紹介
@@ -236,10 +254,10 @@
                       type="button"
                       id="dropcheckmenu"
                       data-dropdown-toggle="checkmenu"
-                      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 active:border-brightGray-200"
+                      class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 hover:border-brightGreen-300 group"
                     >
                       <span
-                        class="material-icons md-18 mr-1 text-brightGray-200"
+                        class="material-icons md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300"
                         >star</span
                       >
                       気になる
@@ -359,7 +377,7 @@
             <!-- 重要な連絡 -->
             <div>
               <h5>重要な連絡</h5>
-              <div class="bg-white rounded-md mt-1">
+              <div class="bg-white rounded-md mt-1 shadow-md">
                 <div
                   class="text-sm font-medium text-center text-brightGray-500"
                 >
@@ -407,51 +425,6 @@
                         class="py-3.5 w-full items-center justify-center inline-block"
                         >運営</a
                       >
-                    </li>
-                    <li class="flex items-center">
-                      <button
-                        type="button"
-                        id="dropmenu01"
-                        data-dropdown-toggle="menu01"
-                        class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
-                      >
-                        <span
-                          class="material-icons text-xs text-brightGreen-900"
-                          >more_vert</span
-                        >
-                      </button>
-                      <!-- Dropdown menu -->
-                      <div
-                        id="menu01"
-                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-                      >
-                        <ul
-                          class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                          aria-labelledby="dropmenu01"
-                        >
-                          <li>
-                            <a
-                              href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu1-1</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu1-2</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu1-3</a
-                            >
-                          </li>
-                        </ul>
-                      </div>
                     </li>
                   </ul>
                   <div class="pt-4 pb-1 px-8">
@@ -872,117 +845,197 @@
                         >運営公式チーム発足</a
                       >
                     </li>
-                    <li class="flex items-center">
-                      <button
-                        type="button"
-                        id="dropmenu02"
-                        data-dropdown-toggle="menu02"
-                        class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
-                      >
-                        <span class="material-icons text-xs text-brightGray-900"
-                          >more_vert</span
-                        >
-                      </button>
-                      <!-- Dropdown menu -->
-                      <div
-                        id="menu02"
-                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-                      >
-                        <ul
-                          class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                          aria-labelledby="dropmenu02"
-                        >
-                          <li>
-                            <a
-                              href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu2-1</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu2-2</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="#"
-                              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >menu2-3</a
-                            >
-                          </li>
-                        </ul>
-                      </div>
-                    </li>
                   </ul>
                   <div class="pt-4 px-6">
                     <ul class="flex gap-y-2.5 flex-col">
-                      <li
-                        class="text-left flex items-center text-base hover:bg-brightGray-50 px-1"
-                      >
-                        <span
-                          class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
-                          >pentagon</span
+                      <li class="flex">
+                        <div
+                          class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2"
                         >
-                        中道洋介さんがスキルアップしました
-                        <span
-                          class="text-brightGreen-300 font-bold pl-4 inline-block"
-                          >1時間前</span
-                        >
+                          <span
+                            class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
+                            >pentagon</span
+                          >
+                          中道洋介さんがスキルアップしました
+                          <span
+                            class="text-brightGreen-300 font-bold pl-4 inline-block"
+                            >1時間前</span
+                          >
+                        </div>
+                        <div class="flex gap-x-2">
+                          <button
+                            class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm"
+                          >
+                            祝福する
+                          </button>
+                        </div>
                       </li>
-                      <li
-                        class="text-left flex items-center text-base hover:bg-brightGray-50 px-1"
-                      >
-                        <span
-                          class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
-                          >mail</span
+                      <li class="flex">
+                        <div
+                          class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2"
                         >
-                        チーム「Bright」からメッセージが届きました。
-                        <span
-                          class="text-brightGreen-300 font-bold pl-4 inline-block"
-                          >1時間前</span
-                        >
+                          <span
+                            class="material-icons-outlined !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
+                            >pentagon</span
+                          >
+                          中道洋介さんがスキルアップしました
+                          <span
+                            class="text-brightGreen-300 font-bold pl-4 inline-block"
+                            >1時間前</span
+                          >
+                        </div>
+                        <div class="flex gap-x-2">
+                          <button
+                            disabled
+                            class="text-bold inline-block bg-brightGray-300 !text-white min-w-[76px] rounded py-1 px-1 text-sm cursor-not-allowed"
+                          >
+                            祝福する
+                          </button>
+                        </div>
                       </li>
-                      <li
-                        class="text-left flex items-center text-base hover:bg-brightGray-50 px-1"
-                      >
-                        <span
-                          class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
-                          >mail</span
+                      <li class="flex">
+                        <div
+                          class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2"
                         >
-                        チーム「Elixir Fukuoka」からメッセージが届きました
-                        <span
-                          class="text-brightGreen-300 font-bold pl-4 inline-block"
-                          >1時間前</span
-                        >
+                          <span
+                            class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
+                            >mail</span
+                          >
+                          チーム「Bright」からメッセージが届きました。
+                          <span
+                            class="text-brightGreen-300 font-bold pl-4 inline-block"
+                            >1時間前</span
+                          >
+                        </div>
+                        <div class="flex gap-x-2">
+                          <button
+                            class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm"
+                          >
+                            受ける
+                          </button>
+                          <button
+                            class="!text-bold inline-block border border-brightGray-900 min-w-[76px] rounded py-1 px-1 text-sm text-base"
+                          >
+                            断る
+                          </button>
+                        </div>
                       </li>
-                      <li
-                        class="text-left flex items-center text-base hover:bg-brightGray-50 px-1"
-                      >
-                        <span
-                          class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
-                          >celebration</span
+                      <li class="flex">
+                        <div
+                          class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2"
                         >
-                        小柳史郎さんからお祝いがありました。
-                        <span
-                          class="text-brightGray-300 font-bold pl-4 inline-block"
-                          >8時間前</span
-                        >
+                          <span
+                            class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
+                            >mail</span
+                          >
+                          チーム「Bright」からメッセージが届きました。
+                          <span
+                            class="text-brightGreen-300 font-bold pl-4 inline-block"
+                            >1時間前</span
+                          >
+                        </div>
+                        <div class="flex gap-x-2">
+                          <button
+                            disabled
+                            class="text-bold inline-block bg-brightGray-300 !text-white min-w-[76px] rounded py-1 px-1 text-sm cursor-not-allowed"
+                          >
+                            受ける
+                          </button>
+                          <button
+                            disabled
+                            class="!text-bold inline-block border border-brightGray-300 min-w-[76px] rounded py-1 px-1 text-sm text-base text-brightGray-300 cursor-not-allowed"
+                          >
+                            断る
+                          </button>
+                        </div>
                       </li>
-                      <li
-                        class="text-left flex items-center text-base hover:bg-brightGray-50 px-1"
-                      >
-                        <span
-                          class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
-                          >favorite</span
+                      <li class="flex">
+                        <div
+                          class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2"
                         >
-                        小柳史郎さんから推し活がありました。
-                        <span
-                          class="text-brightGray-300 font-bold pl-4 inline-block"
-                          >1日前</span
+                          <span
+                            class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
+                            >mail</span
+                          >
+                          チーム「Elixir Fukuoka」からメッセージが届きました
+                          <span
+                            class="text-brightGreen-300 font-bold pl-4 inline-block"
+                            >1時間前</span
+                          >
+                        </div>
+                        <div class="flex gap-x-2">
+                          <button
+                            class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm"
+                          >
+                            見に行く
+                          </button>
+                        </div>
+                      </li>
+                      <li class="flex">
+                        <div
+                          class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2"
                         >
+                          <span
+                            class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
+                            >celebration</span
+                          >
+                          小柳史郎さんからお祝いがありました。
+                          <span
+                            class="text-brightGray-300 font-bold pl-4 inline-block"
+                            >8時間前</span
+                          >
+                        </div>
+                        <div class="flex gap-x-2">
+                          <button
+                            class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-3 text-sm"
+                          >
+                            相手を見る
+                          </button>
+                        </div>
+                      </li>
+                      <li class="flex">
+                        <div
+                          class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2"
+                        >
+                          <span
+                            class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
+                            >celebration</span
+                          >
+                          小柳史郎さんからお祝いがありました。
+                          <span
+                            class="text-brightGray-300 font-bold pl-4 inline-block"
+                            >8時間前</span
+                          >
+                        </div>
+                        <div class="flex gap-x-2">
+                          <button
+                            class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-1 text-sm"
+                          >
+                            参加する
+                          </button>
+                        </div>
+                      </li>
+                      <li class="flex">
+                        <div
+                          class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2"
+                        >
+                          <span
+                            class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center"
+                            >celebration</span
+                          >
+                          小柳史郎さんからお祝いがありました。
+                          <span
+                            class="text-brightGray-300 font-bold pl-4 inline-block"
+                            >8時間前</span
+                          >
+                        </div>
+                        <div class="flex gap-x-2">
+                          <button
+                            class="!text-bold inline-block border border-brightGray-900 min-w-[76px] rounded py-1 px-1 text-base !text-sm"
+                          >
+                            脱退する
+                          </button>
+                        </div>
                       </li>
                     </ul>
                   </div>
@@ -1047,17 +1100,18 @@
                         type="button"
                         id="dropmenu03"
                         data-dropdown-toggle="menu03"
+                        data-dropdown-offset-skidding="-130"
+                        data-dropdown-placement="bottom"
                         class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
                       >
-                        <span
-                          class="material-icons text-xs text-brightGreen-900"
+                        <span class="material-icons text-brightGreen-900"
                           >more_vert</span
                         >
                       </button>
                       <!-- Dropdown menu -->
                       <div
                         id="menu03"
-                        class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]"
+                        class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px]"
                       >
                         <ul
                           class="p-2 text-left text-base"
@@ -1239,6 +1293,8 @@
                       <button
                         type="button"
                         id="dropmenu04"
+                        data-dropdown-offset-skidding="-130"
+                        data-dropdown-placement="bottom"
                         data-dropdown-toggle="menu04"
                         class="text-black rounded-full w-10 h-10 inline-flex items-center justify-center"
                       >
@@ -1250,7 +1306,7 @@
                       <!-- 関わっているユーザー Dropdown menu -->
                       <div
                         id="menu04"
-                        class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]"
+                        class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
                       >
                         <ul
                           class="p-2 text-left text-base"
@@ -1260,7 +1316,7 @@
                             <a
                               data-modal-target="defaultModal"
                               data-modal-toggle="defaultModal"
-                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
                             >
                               カスタムグループを作る
                             </a>
@@ -1268,14 +1324,14 @@
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
                               >カスタムグループの編集</a
                             >
                           </li>
                           <li>
                             <a
                               href="#"
-                              class="block px-4 py-3 hover:bg-brightGray-50 text-base"
+                              class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
                               >カスタムグループの削除</a
                             >
                           </li>
@@ -1283,25 +1339,43 @@
                       </div>
                     </li>
                   </ul>
-                  <div class="overflow-hidden">
-                    <ul
-                      class="flex border-b border-brightGray-50 text-base !text-sm w-[800px]"
-                    >
-                      <li class="py-2 w-[200px] border-r border-brightGray-50">
-                        キャリアの参考になる方々
-                      </li>
-                      <li
-                        class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+                  <div class="flex border-b border-brightGray-50">
+                    <div class="overflow-hidden">
+                      <ul
+                        class="overflow-hidden flex text-base !text-sm w-[800px]"
                       >
-                        優秀なエンジニアの方々
-                      </li>
-                      <li class="py-2 w-[200px] border-r border-brightGray-50">
-                        カスタムグループ３
-                      </li>
-                      <li class="py-2 w-[200px] border-r border-brightGray-50">
-                        カスタムグループ４
-                      </li>
-                    </ul>
+                        <li
+                          class="py-2 w-[200px] border-r border-brightGray-50"
+                        >
+                          キャリアの参考になる方々
+                        </li>
+                        <li
+                          class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
+                        >
+                          優秀なエンジニアの方々
+                        </li>
+                        <li
+                          class="py-2 w-[200px] border-r border-brightGray-50"
+                        >
+                          カスタムグループ３
+                        </li>
+                        <li
+                          class="py-2 w-[200px] border-r border-brightGray-50"
+                        >
+                          カスタムグループ４
+                        </li>
+                      </ul>
+                    </div>
+                    <button class="px-1 border-l border-brightGray-50">
+                      <span
+                        class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+                      ></span>
+                    </button>
+                    <button class="px-1 border-l border-brightGray-50">
+                      <span
+                        class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+                      ></span>
+                    </button>
                   </div>
 
                   <div class="pt-3 pb-1 px-6">
@@ -1420,7 +1494,7 @@
                   >
                 </button>
                 <!-- Modal content -->
-                <div class="relative bg-white rounded-sm shadow p-16 pt-14">
+                <div class="relative bg-white rounded-sm shadow-md p-16 pt-14">
                   <!-- Modal header -->
                   <h3 class="text-[28px] mb-4">カスタムグループを作る</h3>
                   <!-- Modal body -->
@@ -1492,7 +1566,7 @@
                               <!-- Dropdown menu -->
                               <div
                                 id="menu04"
-                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700"
                               >
                                 <ul
                                   class="py-2 text-sm text-gray-700 dark:text-gray-200"
@@ -1785,7 +1859,7 @@
                   >
                 </button>
 
-                <div class="relative bg-white rounded-sm shadow p-8">
+                <div class="relative bg-white rounded-sm shadow-md p-8">
                   <div>
                     <p class="pb-2 text-base font-bold">
                       人材チームへのチーム登録依頼

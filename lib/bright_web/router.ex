@@ -37,18 +37,58 @@ defmodule BrightWeb.Router do
   scope "/admin", BrightWeb.Admin, as: :admin do
     pipe_through [:browser, :admin]
 
-    live "/skill_panels", SkillPanelLive.Index, :index
-    live "/skill_panels/new", SkillPanelLive.Index, :new
-    live "/skill_panels/:id/edit", SkillPanelLive.Index, :edit
-    live "/skill_panels/:id", SkillPanelLive.Show, :show
-    live "/skill_panels/:id/show/edit", SkillPanelLive.Show, :edit
+    live_session :fetch_current_user,
+      on_mount: [{BrightWeb.UserAuth, :mount_current_user}] do
+      live "/skill_panels", SkillPanelLive.Index, :index
+      live "/skill_panels/new", SkillPanelLive.Index, :new
+      live "/skill_panels/:id/edit", SkillPanelLive.Index, :edit
+      live "/skill_panels/:id", SkillPanelLive.Show, :show
+      live "/skill_panels/:id/show/edit", SkillPanelLive.Show, :edit
 
-    live "/skill_units", SkillUnitLive.Index, :index
-    live "/skill_units/new", SkillUnitLive.Index, :new
-    live "/skill_units/:id/edit", SkillUnitLive.Index, :edit
-    live "/skill_units/:id", SkillUnitLive.Show, :show
-    live "/skill_units/:id/show/edit", SkillUnitLive.Show, :edit
-    live "/skill_categories/:id/show/edit", SkillCategoryLive.Show, :edit
+      live "/skill_units", SkillUnitLive.Index, :index
+      live "/skill_units/new", SkillUnitLive.Index, :new
+      live "/skill_units/:id/edit", SkillUnitLive.Index, :edit
+      live "/skill_units/:id", SkillUnitLive.Show, :show
+      live "/skill_units/:id/show/edit", SkillUnitLive.Show, :edit
+      live "/skill_categories/:id/show/edit", SkillCategoryLive.Show, :edit
+      live "/skills/:id/show/edit", SkillLive.Show, :edit
+
+      live "/user_onboardings", UserOnboardingLive.Index, :index
+      live "/user_onboardings/new", UserOnboardingLive.Index, :new
+      live "/user_onboardings/:id/edit", UserOnboardingLive.Index, :edit
+      live "/user_onboardings/:id", UserOnboardingLive.Show, :show
+      live "/user_onboardings/:id/show/edit", UserOnboardingLive.Show, :edit
+
+      live "/career_wants", CareerWantLive.Index, :index
+      live "/career_wants/new", CareerWantLive.Index, :new
+      live "/career_wants/:id/edit", CareerWantLive.Index, :edit
+      live "/career_wants/:id", CareerWantLive.Show, :show
+      live "/career_wants/:id/show/edit", CareerWantLive.Show, :edit
+
+      live "/career_fields", CareerFieldLive.Index, :index
+      live "/career_fields/new", CareerFieldLive.Index, :new
+      live "/career_fields/:id/edit", CareerFieldLive.Index, :edit
+      live "/career_fields/:id", CareerFieldLive.Show, :show
+      live "/career_fields/:id/show/edit", CareerFieldLive.Show, :edit
+
+      live "/jobs", JobLive.Index, :index
+      live "/jobs/new", JobLive.Index, :new
+      live "/jobs/:id/edit", JobLive.Index, :edit
+      live "/jobs/:id", JobLive.Show, :show
+      live "/jobs/:id/show/edit", JobLive.Show, :edit
+
+      live "/career_want_jobs", CareerWantJobLive.Index, :index
+      live "/career_want_jobs/new", CareerWantJobLive.Index, :new
+      live "/career_want_jobs/:id/edit", CareerWantJobLive.Index, :edit
+      live "/career_want_jobs/:id", CareerWantJobLive.Show, :show
+      live "/career_want_jobs/:id/show/edit", CareerWantJobLive.Show, :edit
+
+      live "/job_skill_panels", JobSkillPanelLive.Index, :index
+      live "/job_skill_panels/new", JobSkillPanelLive.Index, :new
+      live "/job_skill_panels/:id/edit", JobSkillPanelLive.Index, :edit
+      live "/job_skill_panels/:id", JobSkillPanelLive.Show, :show
+      live "/job_skill_panels/:id/show/edit", JobSkillPanelLive.Show, :edit
+    end
   end
 
   # Other scopes may use custom stacks.
@@ -86,6 +126,13 @@ defmodule BrightWeb.Router do
 
   ## Authentication routes
 
+  scope "/auth", BrightWeb do
+    pipe_through [:browser]
+
+    get "/:provider", OAuthController, :request
+    get "/:provider/callback", OAuthController, :callback
+  end
+
   scope "/", BrightWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
 
@@ -95,10 +142,14 @@ defmodule BrightWeb.Router do
       live "/users/finish_registration", UserFinishRegistrationLive, :show
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
+      live "/users/send_reset_password_url", UserSendResetPasswordUrlLive, :show
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
+      live "/users/two_factor_auth/:token", UserTwoFactorAuthLive, :show
+      live "/users/register_social_account/:token", UserRegisterSocialAccountLive, :show
     end
 
     post "/users/log_in", UserSessionController, :create
+    post "/users/two_factor_auth", UserTwoFactorAuthController, :create
   end
 
   scope "/", BrightWeb do
@@ -113,6 +164,19 @@ defmodule BrightWeb.Router do
       live "/onboardings/:onboarding", OnboardingLive.Index, :index
       live "/panels/:skill_panel_id/graph", SkillPanelLive.Graph, :show
       live "/panels/:skill_panel_id/skills", SkillPanelLive.Skills, :show
+
+      live "/panels/:skill_panel_id/skills/:skill_id/evidences",
+           SkillPanelLive.Skills,
+           :show_evidences
+
+      live "/panels/:skill_panel_id/skills/:skill_id/reference",
+           SkillPanelLive.Skills,
+           :show_reference
+
+      live "/panels/:skill_panel_id/skills/:skill_id/exam",
+           SkillPanelLive.Skills,
+           :show_exam
+
       live "/teams", MyTeamLive, :index
       live "/teams/new", TeamCreateLive, :new
     end

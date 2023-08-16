@@ -7,6 +7,7 @@ defmodule BrightWeb.UserAuthTest do
   import Bright.Factory
 
   @cookie_key "_bright_web_user"
+  @user_2fa_cookie_key "_bright_web_user_2fa_done"
 
   setup %{conn: conn} do
     conn =
@@ -17,12 +18,41 @@ defmodule BrightWeb.UserAuthTest do
     %{user: insert(:user), conn: conn}
   end
 
+  describe "write_2fa_auth_done_cookie/1" do
+    test "writes cookie", %{conn: conn} do
+      conn = UserAuth.write_2fa_auth_done_cookie(conn, "token")
+
+      assert %{value: _value, max_age: max_age, same_site: "Lax"} =
+               conn.resp_cookies[@user_2fa_cookie_key]
+
+      assert max_age == 60 * 60 * 24 * 60
+    end
+  end
+
+  describe "valid_2fa_auth_done_cookie_exists?/2" do
+    test "returns true when cookie exist", %{conn: conn, user: user} do
+      assert set_two_factor_auth_done(conn, user)
+             |> UserAuth.valid_2fa_auth_done_cookie_exists?(user)
+    end
+
+    test "returns false when cookie exist but not own user", %{conn: conn, user: user} do
+      other_user = insert(:user)
+
+      refute set_two_factor_auth_done(conn, other_user)
+             |> UserAuth.valid_2fa_auth_done_cookie_exists?(user)
+    end
+
+    test "returns false when cookie does not exist", %{conn: conn, user: user} do
+      refute UserAuth.valid_2fa_auth_done_cookie_exists?(conn, user)
+    end
+  end
+
   describe "log_in_user/2" do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
       assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/onboardings"
       assert Accounts.get_user_by_session_token(token)
     end
 
@@ -31,8 +61,14 @@ defmodule BrightWeb.UserAuthTest do
       refute get_session(conn, :to_be_removed)
     end
 
+    test "redirects mypage if user already finished onboardings", %{conn: conn, user: user} do
+      insert(:user_onboarding, user: user)
+      conn = conn |> UserAuth.log_in_user(user)
+      assert redirected_to(conn) == ~p"/mypage"
+    end
+
     test "redirects to the configured path", %{conn: conn, user: user} do
-      conn = conn |> put_session(:user_return_to, "/hello") |> UserAuth.log_in_user(user)
+      conn = conn |> UserAuth.log_in_user(user, "/hello")
       assert redirected_to(conn) == "/hello"
     end
 
@@ -213,6 +249,13 @@ defmodule BrightWeb.UserAuthTest do
 
   describe "redirect_if_user_is_authenticated/2" do
     test "redirects if user is authenticated", %{conn: conn, user: user} do
+      conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
+      assert conn.halted
+      assert redirected_to(conn) == ~p"/onboardings"
+    end
+
+    test "redirects mypage if user already finished onboardings", %{conn: conn, user: user} do
+      insert(:user_onboarding, user: user)
       conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
       assert conn.halted
       assert redirected_to(conn) == ~p"/mypage"

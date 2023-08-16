@@ -1,17 +1,4 @@
-<!DOCTYPE html>
-<html lang="ja" class="[scrollbar-gutter:stable]">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
-      <%= assigns[:page_title] || "Bright" %>
-    </.live_title>
-    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
-    </script>
-    <link rel="icon" href={~p"/favicon.ico"} />
-  </head>
+<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()}>
   <body class="bg-background font-notosans">
     <main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
       <section class="bg-white -mt-10 max-w-[800px] p-10 rounded-lg w-full">
@@ -19,4 +6,4 @@
       </section>
     </main>
   </body>
-</html>
+</.root_layout>

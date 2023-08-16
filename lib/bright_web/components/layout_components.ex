@@ -3,150 +3,70 @@ defmodule BrightWeb.LayoutComponents do
   LayoutComponents
   """
   use Phoenix.Component
+  import BrightWeb.BrightButtonComponents
+  alias Bright.UserProfiles
+
+  @doc """
+  Renders root layout.
+  """
+
+  attr :csrf_token, :string, required: true
+  attr :page_title, :string
+
+  slot :inner_block, required: true
+
+  def root_layout(assigns) do
+    ~H"""
+    <!DOCTYPE html>
+    <html lang="ja">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="csrf-token" content={@csrf_token} />
+        <.live_title>
+          <%= @page_title || "Bright" %>
+        </.live_title>
+        <link phx-track-static rel="stylesheet" href={"/assets/app.css"} />
+        <script defer phx-track-static type="text/javascript" src={"/assets/app.js"}>
+        </script>
+        <link rel="icon" href={"/favicon.ico"} />
+      </head>
+      <%= render_slot(@inner_block) %>
+    </html>
+    """
+  end
 
   @doc """
   Renders a User Header
 
+  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までユーザーヘッダーのみデザイン更新
+
   ## Examples
       <.user_header />
   """
+  attr :profile, :map
+  attr :page_title, :string
+  attr :page_sub_title, :string
+  attr :notification_count, :integer
+
   def user_header(assigns) do
+    page_sub_title =
+      if assigns.page_sub_title != nil, do: " / #{assigns.page_sub_title}", else: ""
+
+    assigns =
+      assigns
+      |> assign(:profile, assigns.profile || %UserProfiles.UserProfile{})
+      |> assign(:notification_count, assigns.notification_count || 0)
+      |> assign(:page_sub_title, page_sub_title)
+
     ~H"""
-    <div class="w-full flex justify-between py-2.5 px-12 border-brightGray-100 border-b bg-brightGray-50">
-      <h4>マイページ</h4>
-      <div class="flex gap-x-6">
-        <button
-          type="button"
-          id="mega-menu-dropdown-button"
-          data-dropdown-toggle="mega-menu-dropdown"
-          class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
-        >
-          <span class="material-icons text-xs">search</span>
-        </button>
-        <button
-          type="button"
-          class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center relative"
-        >
-          <span class="material-icons text-xs">notifications_none</span>
-          <div class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-attention-600 rounded-full -top-0 -right-2">
-            1
-          </div>
-        </button>
-        <img
-          class="inline-block h-10 w-10 rounded-full"
-          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-        />
-        <button
-          type="button"
-          class="text-black bg-brightGray-100 hover:bg-brightGray-200 rounded-full w-10 h-10 inline-flex items-center justify-center"
-        >
-          <span class="material-icons text-xs">settings</span>
-        </button>
-      </div>
-    </div>
-    <div
-      id="mega-menu-dropdown"
-      class="absolute hidden z-10 w-[1000px] !top-1 min-h-full grid-cols-2 text-sm bg-white shadow-md dark:border-gray-700 md:grid-cols-3 dark:bg-gray-700"
-    >
-      <div class="p-4 pb-0 text-gray-900 md:pb-4 dark:text-white">
-        <ul class="space-y-4" aria-labelledby="mega-menu-dropdown-button">
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              About Us
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Library
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Resources
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Pro Version
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="p-4 pb-0 text-gray-900 md:pb-4 dark:text-white">
-        <ul class="space-y-4">
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Blog
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Newsletter
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Playground
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              License
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="p-4">
-        <ul class="space-y-4">
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Contact Us
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Support Center
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-            >
-              Terms
-            </a>
-          </li>
-        </ul>
+    <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
+      <h4><%= @page_title %><%= @page_sub_title %></h4>
+      <div class="flex gap-x-5">
+        <.contact_customer_success_button />
+        <.search_for_skill_holders_button />
+        <.user_button icon_file_path={@profile.icon_file_path}/>
+        <.logout_button />
       </div>
     </div>
     """
@@ -155,28 +75,44 @@ defmodule BrightWeb.LayoutComponents do
   @doc """
   Renders a Side Menu
 
+  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までメニューのみデザイン更新
+
   ## Examples
       <.side_menu />
   """
+
+  attr :href, :string
+
   def side_menu(assigns) do
     ~H"""
-    <aside class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-6 pl-3">
-      <img src="/images/common/logo.svg" } width="163px" />
-      <ul class="grid gap-y-10 pl-5 pt-6">
-        <li>
-          <a class="!text-white text-base" href="/mypage">マイページ</a>
-        </li>
-        <li>
-          <a class="!text-white text-base" href="/mypage">キャリアパス</a>
-        </li>
-        <li>
-          <a class="!text-white text-base" href="/mypage">スキルアップ</a>
-        </li>
-        <li>
-          <a class="!text-white text-base" href="/mypage">チームスキル分析</a>
-        </li>
+    <aside
+    class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
+    >
+      <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
+      <ul class="grid pt-2">
+        <%= for {title, path} <- links() do %>
+          <li>
+            <.link class={menu_active_style(path == @href)} href={path} ><%= title %></.link>
+          </li>
+        <% end %>
       </ul>
     </aside>
     """
   end
+
+  def links() do
+    [
+      {"スキルを選ぶ", "/onboardings"},
+      {"成長を見る・比較する", "/panels/dummy_id/graph"},
+      {"スキルパネルを入力", "/"},
+      {"スキルアップを目指す", "/"},
+      {"チームスキル分析", "/teams"},
+      {"キャリアパスを選ぶ", "/"}
+    ]
+  end
+
+  defp menu_active_style(true),
+    do: "!text-white bg-white bg-opacity-30 text-base py-4 inline-block pl-4 w-full mb-1"
+
+  defp menu_active_style(false), do: "!text-white text-base py-4 inline-block pl-4 w-full mb"
 end

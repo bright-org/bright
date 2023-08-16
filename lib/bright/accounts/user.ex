@@ -17,11 +17,18 @@ defmodule Bright.Accounts.User do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
+    field :password_registered, :boolean
     field :confirmed_at, :naive_datetime
 
     has_many :skill_scores, Bright.SkillScores.SkillScore
+    has_many :skill_unit_scores, Bright.SkillScores.SkillUnitScore
+    has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
     has_many :skill_exam_results, Bright.SkillExams.SkillExamResult
+    has_many :skill_evidence_posts, Bright.SkillEvidences.SkillEvidencePost
+    has_one :user_onboardings, Bright.Onboardings.UserOnboarding
+    has_one :user_profile, Bright.UserProfiles.UserProfile
+    has_one :user_job_profile, Bright.UserJobProfiles.UserJobProfile
 
     timestamps()
   end
@@ -127,6 +134,55 @@ defmodule Bright.Accounts.User do
   end
 
   @doc """
+  A user changeset for registration by social auth (OAuth).
+  """
+  def registration_by_social_auth_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast_user_when_social_auth(attrs, opts)
+    |> validate_password_registered(opts)
+    |> validate_name(opts)
+    |> validate_email(opts)
+    |> maybe_hash_password(opts)
+  end
+
+  defp cast_user_when_social_auth(user, attrs, opts) do
+    if Keyword.get(opts, :generate_dummy_password, true) do
+      attrs = merge_dummy_password(attrs)
+
+      user
+      |> cast(attrs, [:name, :email, :password, :password_registered])
+    else
+      user
+      |> cast(attrs, [:name, :email])
+    end
+  end
+
+  # NOTE: user テーブルの hashed_password カラムは NULL 不許可なので SNS ID 登録の際はダミーの値を生成
+  # 同時に password_registered を false にして無効なパスワード扱いとする
+  defp merge_dummy_password(attrs) do
+    attrs
+    |> Map.merge(%{
+      "password" => generate_dummy_password(),
+      "password_registered" => false
+    })
+  end
+
+  # ランダムな英字16文字
+  defp generate_dummy_password() do
+    for _ <- 1..16, into: "", do: <<Enum.random(?a..?z)>>
+  end
+
+  defp validate_password_registered(changeset, opts) do
+    if Keyword.get(opts, :validate_password_registered, true) do
+      changeset
+      |> validate_required([:password_registered])
+      |> validate_inclusion(:password_registered, [false])
+    else
+      changeset
+    end
+  end
+
+  @doc """
   A user changeset for changing the email.
 
   It requires the email to change otherwise an error is added.
@@ -174,7 +230,10 @@ defmodule Bright.Accounts.User do
   If there is no user or the user doesn't have a password, we call
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
-  def valid_password?(%Bright.Accounts.User{hashed_password: hashed_password}, password)
+  def valid_password?(
+        %Bright.Accounts.User{hashed_password: hashed_password, password_registered: true},
+        password
+      )
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end

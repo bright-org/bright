@@ -3,6 +3,8 @@ defmodule Bright.Accounts.UserNotifier do
   Bright ユーザーに対するメール通知を扱うスキーマ
   """
 
+  # TODO: メール文言の見直し
+
   import Swoosh.Email
 
   alias Bright.Mailer
@@ -78,6 +80,19 @@ defmodule Bright.Accounts.UserNotifier do
     If you didn't request this change, please ignore this.
 
     ==============================
+    """)
+  end
+
+  @doc """
+  Deliver two factor auth instructions.
+  """
+  def deliver_2fa_instructions(user, code) do
+    deliver(user.email, "【Bright】二段階認証コード", """
+    ２段階認証コードを送信します。
+
+    #{code}
+
+    有効期限は10分間です。
     """)
   end
 end

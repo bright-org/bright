@@ -4,14 +4,21 @@ defmodule Bright.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Bright.Accounts.User2faCodes
+  alias Bright.Accounts.SocialIdentifierToken
+  alias Bright.Accounts.UserSocialAuth
+  alias Bright.UserProfiles
+  alias Bright.UserJobProfiles
   alias Bright.Repo
 
   alias Bright.Accounts.{User, UserToken, UserNotifier}
+  alias Bright.Onboardings.UserOnboarding
 
   ## Database getters
 
   @doc """
-  Gets a user by email.
+  Gets a confirmed user by email.
+
   When `:confirmed` option is given, gets a user including not confirmed.
 
   ## Examples
@@ -37,7 +44,7 @@ defmodule Bright.Accounts do
   end
 
   @doc """
-  Gets a user by email and password.
+  Gets a confirmed and password registered user by email and password.
 
   ## Examples
 
@@ -70,9 +77,23 @@ defmodule Bright.Accounts do
 
   """
   def register_user(attrs) do
-    %User{}
-    |> User.registration_changeset(attrs)
-    |> Repo.insert()
+    user_changeset =
+      %User{}
+      |> User.registration_changeset(attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, user_changeset)
+    |> Ecto.Multi.run(:user_profile, fn _repo, %{user: user} ->
+      UserProfiles.create_initial_user_profile(user.id)
+    end)
+    |> Ecto.Multi.run(:user_job_profile, fn _repo, %{user: user} ->
+      UserJobProfiles.create_user_job_profile(%{user_id: user.id})
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, _, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -90,6 +111,68 @@ defmodule Bright.Accounts do
       hash_password: false,
       validate_email: false
     )
+  end
+
+  ## User registration by social auth
+
+  @doc """
+  Register user by social auth.
+  """
+  def register_user_by_social_auth(user_params, user_social_auth_params) do
+    user_changeset =
+      %User{}
+      |> User.registration_by_social_auth_changeset(user_params)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user, user_changeset)
+    |> Ecto.Multi.run(:user_social_auth, fn repo, %{user: user} ->
+      user_social_auth_params =
+        user_social_auth_params
+        |> Map.merge(%{user_id: user.id})
+
+      {:ok,
+       %UserSocialAuth{}
+       |> UserSocialAuth.change_user_social_auth(user_social_auth_params)
+       |> repo.insert!()}
+    end)
+    |> Ecto.Multi.run(:user_profile, fn _repo, %{user: user} ->
+      UserProfiles.create_initial_user_profile(user.id)
+    end)
+    |> Ecto.Multi.run(:user_job_profile, fn _repo, %{user: user} ->
+      UserJobProfiles.create_user_job_profile(%{user_id: user.id})
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, _, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for user registration by social auth (OAuth).
+
+  ## Examples
+
+      iex> change_user_registration_by_social_auth(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_registration_by_social_auth(%User{} = user, attrs \\ %{}) do
+    User.registration_by_social_auth_changeset(user, attrs,
+      validate_name: false,
+      hash_password: false,
+      validate_email: false,
+      validate_password_registered: false,
+      generate_dummy_password: false
+    )
+  end
+
+  @doc """
+  Gets user by provider and identifier
+  """
+  def get_user_by_provider_and_identifier(provider, identifier) do
+    UserSocialAuth.user_by_provider_and_identifier_query(provider, identifier)
+    |> Repo.one()
   end
 
   ## Settings
@@ -261,9 +344,17 @@ defmodule Bright.Accounts do
       {:error, :already_confirmed}
     else
       {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
-      Repo.insert!(user_token)
+      {:ok, _} = create_confirm_token(user, user_token)
       UserNotifier.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
     end
+  end
+
+  # NOTE: すでにある場合は削除する
+  defp create_confirm_token(user, user_token) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
+    |> Ecto.Multi.insert(:insert_user_token, user_token)
+    |> Repo.transaction()
   end
 
   @doc """
@@ -350,10 +441,158 @@ defmodule Bright.Accounts do
     end
   end
 
+  ## Two factor auth
   @doc """
-  get user by name
+  Setup user two factor auth.
+
+  1. Delete existing token and Generate user two factor auth session token
+  2. Delete existing code and Generate user two factor auth code
+  3. Deliver two factor auth code to user
   """
-  def get_user_by_name(name) do
-    Repo.get_by(User, name: name)
+  def setup_user_2fa_auth(user) do
+    {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_session")
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(
+      :delete_token,
+      UserToken.user_and_contexts_query(user, ["two_factor_auth_session"])
+    )
+    |> Ecto.Multi.insert(:user_token, user_token)
+    |> Ecto.Multi.delete_all(
+      :delete_2fa_code,
+      User2faCodes.user_query(user)
+    )
+    |> Ecto.Multi.insert(:user_2fa_code, User2faCodes.build_by_user(user))
+    |> Ecto.Multi.run(:deliver_2fa_auth_code, fn _repo, %{user_2fa_code: user_2fa_code} ->
+      UserNotifier.deliver_2fa_instructions(user, user_2fa_code.code)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, _} -> token
+    end
+  end
+
+  @doc """
+  Gets the user by two factor auth session token.
+
+  ## Examples
+
+      iex> get_user_by_2fa_auth_session_token("validtoken")
+      %User{}
+
+      iex> get_user_by_2fa_auth_session_token("invalidtoken")
+      nil
+
+  """
+  def get_user_by_2fa_auth_session_token(token) do
+    with {:ok, query} <-
+           UserToken.verify_two_factor_auth_token_query(token, "two_factor_auth_session"),
+         %User{} = user <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  def generate_user_2fa_done_token(user) do
+    {token, user_token} = UserToken.build_user_token(user, "two_factor_auth_done")
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(
+      :delete_token,
+      UserToken.user_and_contexts_query(user, ["two_factor_auth_done"])
+    )
+    |> Ecto.Multi.insert(:user_token, user_token)
+    |> Repo.transaction()
+    |> case do
+      {:ok, _} -> token
+    end
+  end
+
+  def get_user_by_2fa_done_token(token) do
+    with {:ok, query} <-
+           UserToken.verify_two_factor_auth_token_query(token, "two_factor_auth_done"),
+         %User{} = user <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  @doc """
+  Verify user two factor auth code and return true or false.
+  """
+  def user_2fa_code_valid?(user, code) do
+    User2faCodes.verify_user_2fa_code_query(user, code)
+    |> Repo.exists?()
+  end
+
+  @doc """
+  Generate social indentifier token.
+  """
+  def generate_social_identifier_token(
+        %{
+          name: _name,
+          email: _email,
+          provider: provider,
+          identifier: identifier
+        } = social_identifier_attrs
+      ) do
+    {token, social_identifier_token} = SocialIdentifierToken.build_token(social_identifier_attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(
+      :delete_token,
+      SocialIdentifierToken.provider_and_identifier_query(provider, identifier)
+    )
+    |> Ecto.Multi.insert(:insert_token, social_identifier_token)
+    |> Repo.transaction()
+    |> case do
+      {:ok, _} -> token
+    end
+  end
+
+  @doc """
+  Gets social identifier token.
+  """
+  def get_social_identifier_token(token) do
+    with {:ok, query} <-
+           SocialIdentifierToken.verify_token_query(token),
+         %SocialIdentifierToken{} = social_identifier_token <- Repo.one(query) do
+      social_identifier_token
+    else
+      _ -> nil
+    end
+  end
+
+  @doc """
+  get user by name or email full match
+
+  ## Examples
+      iex> get_user_by_name_or_email("name or email full match")
+      {:ok, %User{}}
+      iex> get_user_by_name_or_email("not full match")
+      nil
+  """
+  def get_user_by_name_or_email(name_or_email) do
+    User
+    |> where([user], not is_nil(user.confirmed_at))
+    |> where([user], user.name == ^name_or_email or user.email == ^name_or_email)
+    |> Repo.one()
+  end
+
+  @doc """
+  Check if onboarding is already finished.
+
+  ## Examples
+      iex> onboarding_finished?(user)
+      true
+
+      iex> onboarding_finished?(user)
+      false
+  """
+  def onboarding_finished?(user) do
+    from(user_onboarding in UserOnboarding, where: user_onboarding.user_id == ^user.id)
+    |> Repo.exists?()
   end
 end

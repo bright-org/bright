@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output0.css">
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Symbols+Outlined|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+  <section class="absolute bg-white min-h-[600px] left-1/2 -ml-[300px] -mt-[300px] px-10 py-8 shadow text-sm top-1/2 w-[600px]">
+    <h2 class="font-bold text-xl">
+      <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">採用候補者とのチャット</span>
+    </h2>
+
+    <p class="text-xs mt-1">※面談日時の重複は管理対象外ですので、別途管理を行ってください</p>
+
+    <div>
+      <!-- コメント表示「 -->
+      <div class="h-[360px] mt-4 overflow-y-auto">
+        <p class="mt-2 px-4 text-base text-sm font-bold">下記にメッセージを入力し、「送信」ボタンを押すと<br>採用候補者にメッセージが届きます</p>
+      </div>
+
+      <!-- コメント入力 -->
+      <div class="flex pb-2">
+        <div class="w-[50px] flex justify-center flex-col items-center">
+          <img
+            class="inline-block h-10 w-10 rounded-full"
+            src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+          />
+        </div>
+        <div class="w-full">
+          <textarea
+            placeholder="｜メッセージを入力"
+            class="w-full min-h-1 outline-none p-2"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- モーダル内フッター -->
+      <hr class="pb-1 border-brightGray-100">
+      <div class="flex justify-end gap-x-4 py-2 w-full">
+        <button class="mr-auto">
+          <span class="material-icons-outlined !text-4xl">
+            add_photo_alternate
+          </span>
+          <span class="material-symbols-outlined !text-4xl">
+            add_box
+          </span>
+        </button>
+
+        <button
+          class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-36"
+        >
+          メッセージを送る
+        </button>
+      </div>
+    </div>
+
+
+      <!-- close button -->
+      <button class="absolute right-5 top-5 z-10">
+        <span class="material-icons !text-3xl text-brightGray-900"
+          >close</span
+        >
+      </button>
+    </div>
+  </section>
+</main>
+
+
+
+</body>
+</html>

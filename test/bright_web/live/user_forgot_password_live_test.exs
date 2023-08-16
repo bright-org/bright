@@ -11,15 +11,38 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
     test "renders email page", %{conn: conn} do
       {:ok, lv, html} = live(conn, ~p"/users/reset_password")
 
-      assert html =~ "Forgot your password?"
-      assert has_element?(lv, ~s|a[href="#{~p"/users/register"}"]|, "Register")
-      assert has_element?(lv, ~s|a[href="#{~p"/users/log_in"}"]|, "Log in")
+      assert html =~ "パスワードを忘れた方へ"
+      assert has_element?(lv, ~s|a[href="/users/log_in"]|, "戻る")
     end
 
-    test "redirects if already logged in", %{conn: conn} do
+    test "redirects log_in page when click 戻る button", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/reset_password")
+
+      lv
+      |> element("a", "戻る")
+      |> render_click()
+      |> follow_redirect(conn, ~p"/users/log_in")
+    end
+
+    test "redirects onboardings if already logged in and does not finish onboarding", %{
+      conn: conn
+    } do
       result =
         conn
         |> log_in_user(insert(:user))
+        |> live(~p"/users/reset_password")
+        |> follow_redirect(conn, ~p"/onboardings")
+
+      assert {:ok, _conn} = result
+    end
+
+    test "redirects mypage if already logged in and finished onboarding", %{conn: conn} do
+      user = insert(:user)
+      insert(:user_onboarding, user: user)
+
+      result =
+        conn
+        |> log_in_user(user)
         |> live(~p"/users/reset_password")
         |> follow_redirect(conn, ~p"/mypage")
 
@@ -35,13 +58,11 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
     test "sends a new reset password token", %{conn: conn, user: user} do
       {:ok, lv, _html} = live(conn, ~p"/users/reset_password")
 
-      {:ok, conn} =
+      {:ok, _conn} =
         lv
         |> form("#reset_password_form", user: %{"email" => user.email})
         |> render_submit()
-        |> follow_redirect(conn, "/")
-
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
+        |> follow_redirect(conn, "/users/send_reset_password_url")
 
       assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context ==
                "reset_password"
@@ -50,13 +71,12 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
     test "does not send reset password token if email is invalid", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/reset_password")
 
-      {:ok, conn} =
+      {:ok, _conn} =
         lv
         |> form("#reset_password_form", user: %{"email" => "unknown@example.com"})
         |> render_submit()
-        |> follow_redirect(conn, "/")
+        |> follow_redirect(conn, "/users/send_reset_password_url")
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
       assert Repo.all(Accounts.UserToken) == []
     end
   end

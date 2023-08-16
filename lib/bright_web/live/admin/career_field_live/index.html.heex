@@ -1,0 +1,43 @@
+<.header>
+  Listing Career fields
+  <:actions>
+    <.link patch={~p"/admin/career_fields/new"}>
+      <.button>New Career field</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="career_fields"
+  rows={@streams.career_fields}
+  row_click={fn {_id, career_field} -> JS.navigate(~p"/admin/career_fields/#{career_field}") end}
+>
+  <:col :let={{_id, career_field}} label="Name English"><%= career_field.name_en %></:col>
+  <:col :let={{_id, career_field}} label="Name Japanese"><%= career_field.name_ja %></:col>
+  <:col :let={{_id, career_field}} label="Position"><%= career_field.position %></:col>
+  <:action :let={{_id, career_field}}>
+    <div class="sr-only">
+      <.link navigate={~p"/admin/career_fields/#{career_field}"}>Show</.link>
+    </div>
+    <.link patch={~p"/admin/career_fields/#{career_field}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, career_field}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: career_field.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="career_field-modal" show on_cancel={JS.patch(~p"/admin/career_fields")}>
+  <.live_component
+    module={BrightWeb.Admin.CareerFieldLive.FormComponent}
+    id={@career_field.id || :new}
+    title={@page_title}
+    action={@live_action}
+    career_field={@career_field}
+    patch={~p"/admin/career_fields"}
+  />
+</.modal>

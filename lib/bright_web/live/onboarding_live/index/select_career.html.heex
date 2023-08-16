@@ -1,13 +1,13 @@
 <section class="bg-white p-8 min-h-[720px] relative rounded-lg">
   <h1 class="font-bold text-3xl">
     <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:align-[-5px] before:w-9">
-      最初のスキルを選ぶ
+      スキルを選ぶ
     </span>
   </h1>
 
   <div class="flex flex-col mt-2 relative">
     <!-- やりたいことセクション ここから -->
-    <section class="accordion mt-5 w-[1236px]">
+    <section class="accordion mt-5 max-w-[1236px]">
       <div class="bg-brightGray-50 rounded w-full">
         <p class="bg-brightGray-900 cursor-pointer font-bold px-4 py-2 relative rounded select-none text-white transition-all hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[''] before:h-3 before:-mt-2 before:rotate-225 before:right-4 before:top-1/2 before:w-3">
           やりたいことや興味・関心があることからスキルを選ぶ
@@ -16,28 +16,32 @@
         <div class="hidden">
           <ul class="flex flex-wrap gap-4 justify-start p-4">
             <!-- やりたいこと ここから -->
+            <%= for {wants, index} <- Enum.with_index(@career_wants) do %>
             <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
               <a href="/onboardings/select_skill_panel" class="block">
-                <b class="block text-center">Webアプリを作りたい</b>
+                <b class="block text-center"><%= wants.career_want_name %></b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
-                  <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
-                    エンジニア
-                  </span>
-                  <span class="bg-infra-dark px-2 py-0.5 rounded-full text-white text-xs">
-                    インフラ
-                  </span>
-                  <span class="bg-designer-dark px-2 py-0.5 rounded-full text-white text-xs">
-                    デザイナー
-                  </span>
+                  <%= for career_field <- Enum.at(@career_fields_wants, index) do %>
+                    <span
+                      class={[
+                          "px-2 py-0.5 rounded-full text-white text-xs",
+                          "bg-#{career_field.career_field_name_en}-dark"
+                        ]}
+                      >
+                      <%= career_field.career_field_name_ja %>
+                    </span>
+                  <% end %>
                 </div>
               </a>
             </li>
+            <% end %>
             <!-- やりたいこと ここまで（以降繰り返し） -->
+            <!--
             <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
               <a href="/onboardings/select_skill_panel" class="block">
                 <b class="block text-center">スマホアプリを作りたい</b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
-                  <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
+                  <span class="bg-engineer-dark px-2 py-0.5 rounded-full text-white text-xs">
                     エンジニア
                   </span>
                   <span class="bg-designer-dark px-2 py-0.5 rounded-full text-white text-xs">
@@ -54,7 +58,7 @@
               <a href="/onboardings/select_skill_panel" class="block">
                 <b class="block text-center">Webサイトを作りたい</b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
-                  <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
+                  <span class="bg-engineer-dark px-2 py-0.5 rounded-full text-white text-xs">
                     エンジニア
                   </span>
                   <span class="bg-designer-dark px-2 py-0.5 rounded-full text-white text-xs">
@@ -68,7 +72,7 @@
               <a href="/onboardings/select_skill_panel" class="block">
                 <b class="block text-center">アプリやWebの広告に関りたい</b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
-                  <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
+                  <span class="bg-engineer-dark px-2 py-0.5 rounded-full text-white text-xs">
                     エンジニア
                   </span>
                   <span class="bg-infra-dark px-2 py-0.5 rounded-full text-white text-xs">
@@ -88,7 +92,7 @@
               <a href="/onboardings/select_skill_panel" class="block">
                 <b class="block text-center">アプリやWebの広告に関りたい</b>
                 <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
-                  <span class="bg-enginner-dark px-2 py-0.5 rounded-full text-white text-xs">
+                  <span class="bg-engineer-dark px-2 py-0.5 rounded-full text-white text-xs">
                     エンジニア
                   </span>
                   <span class="bg-designer-dark px-2 py-0.5 rounded-full text-white text-xs">
@@ -96,7 +100,7 @@
                   </span>
                 </div>
               </a>
-            </li>
+            </li>-->
           </ul>
 
           <form class="flex flex-wrap gap-4 justify-start p-4">
@@ -115,8 +119,8 @@
     </section>
     <!-- やりたいことセクション ここまで -->
 
-        <!-- なりたいジョブセクション ここから -->
-    <section class="accordion flex mt-8 w-[1236px]">
+    <!-- なりたいジョブセクション ここから -->
+    <section class="accordion flex mt-8 max-w-[1236px]">
       <div class="bg-brightGray-50 rounded w-full">
         <p class="bg-brightGray-900 cursor-pointer font-bold px-4 py-2 relative rounded select-none text-white hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[''] before:h-3 before:-mt-2 before:rotate-225 before:right-4 before:top-1/2 before:w-3">
           現在のジョブ、または、なりたいジョブからスキルを選ぶ
@@ -126,18 +130,19 @@
           <!-- タブここから -->
           <aside id="select_job">
             <ul class="flex relative">
-              <li class="bg-enginner-dark select-none py-2 rounded-tl text-center text-white w-40">
-                エンジニア
-              </li>
-              <li class="bg-infra-dazzle cursor-pointer select-none py-2 text-center text-brightGray-200 w-40 hover:bg-infra-dark hover:text-white">
-                インフラ
-              </li>
-              <li class="bg-designer-dazzle cursor-pointer select-none py-2 text-center text-brightGray-200 w-40 hover:bg-designer-dark hover:text-white">
-                デザイナー
-              </li>
-              <li class="bg-marketer-dazzle cursor-pointer select-none py-2 rounded-tr text-center text-brightGray-200 w-40 hover:bg-marketer-dark hover:text-white">
-                マーケッター
-              </li>
+              <%= for career_field <- @career_fields do %>
+                <li
+                  class={[
+                      "cursor-pointer select-none py-2 rounded-tl text-center w-40",
+                      "#{if "engineer" == career_field.name_en,
+                        do: "bg-#{career_field.name_en}-dark text-white",
+                        else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark text-brightGray-200 hover:text-white"
+                      }"
+                    ]}
+                  >
+                  <%= career_field.name_ja %>
+                </li>
+              <% end %>
               <li>
                 <a
                   href="#"
@@ -150,10 +155,10 @@
           </aside>
           <!-- タブここまで -->
 
-              <!-- ジョブセクションここから -->
+          <!-- ジョブセクションここから -->
           <section>
             <!-- ジョブエンジニアセクションここから -->
-            <section class="bg-enginner-dazzle px-4 py-4">
+            <section class="bg-engineer-dazzle px-4 py-4">
               <!-- ジョブ高度ここから -->
               <div>
                 <p class="font-bold">高度</p>
@@ -163,7 +168,7 @@
                       <!-- label for（2か所） と input id が連動しています-->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_001"
                     >
                       プロダクトオーナー
@@ -206,7 +211,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_002"
                     >
                       プロダクトマネージャー
@@ -224,13 +229,13 @@
                         <div class="mt-2 text-sm">
                           <span>次のキャリアパス候補</span>
                           <ul class="flex mt-1 gap-x-2">
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PdM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               Tech Lead
                             </li>
                           </ul>
@@ -257,7 +262,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_003"
                     >
                       プロジェクトマネージャー
@@ -299,7 +304,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_004"
                     >
                       プロダクトマーケティングマネージャー
@@ -348,7 +353,7 @@
                   <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_005"
                     >
                       リードエンジニア
@@ -391,7 +396,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_006"
                     >
                       レビュアー
@@ -409,13 +414,13 @@
                         <div class="mt-2 text-sm">
                           <span>次のキャリアパス候補</span>
                           <ul class="flex mt-1 gap-x-2">
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PdM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               Tech Lead
                             </li>
                           </ul>
@@ -442,7 +447,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_007"
                     >
                       情シス
@@ -460,13 +465,13 @@
                         <div class="mt-2 text-sm">
                           <span>次のキャリアパス候補</span>
                           <ul class="flex mt-1 gap-x-2">
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PdM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               Tech Lead
                             </li>
                           </ul>
@@ -493,7 +498,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_008"
                     >
                       テックリード
@@ -511,13 +516,13 @@
                         <div class="mt-2 text-sm">
                           <span>次のキャリアパス候補</span>
                           <ul class="flex mt-1 gap-x-2">
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PdM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               Tech Lead
                             </li>
                           </ul>
@@ -544,7 +549,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_009"
                     >
                       ITコンサルタント
@@ -562,13 +567,13 @@
                         <div class="mt-2 text-sm">
                           <span>次のキャリアパス候補</span>
                           <ul class="flex mt-1 gap-x-2">
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PdM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               Tech Lead
                             </li>
                           </ul>
@@ -595,7 +600,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_010"
                     >
                       ITデジタルマーケッター
@@ -613,13 +618,13 @@
                         <div class="mt-2 text-sm">
                           <span>次のキャリアパス候補</span>
                           <ul class="flex mt-1 gap-x-2">
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PdM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               Tech Lead
                             </li>
                           </ul>
@@ -653,7 +658,7 @@
                   <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_011"
                     >
                       PM
@@ -696,7 +701,7 @@
                       <!-- ジョブここから -->
                   <li>
                     <label
-                      class="bg-enginner-dark block border border-solid border-enginner-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
+                      class="bg-engineer-dark block border border-solid border-engineer-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"
                       for="popup_engineer_012"
                     >
                       Webアプリ開発
@@ -714,13 +719,13 @@
                         <div class="mt-2 text-sm">
                           <span>次のキャリアパス候補</span>
                           <ul class="flex mt-1 gap-x-2">
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               PdM
                             </li>
-                            <li class="before:bg-enginner-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
+                            <li class="before:bg-engineer-dark before:mr-1 before:rounded-full before:align-text-middle before:content-[''] before:h-3 before:inline-block before:w-3">
                               Tech Lead
                             </li>
                           </ul>
@@ -2555,7 +2560,7 @@
   </div>
 
   <p class="mt-8">
-    <a href="#" class="text-link text-xs underline">採用担当、人事、営業の方はこちら（自分のスキルを登録しません）</a>
+    <.link class="text-link text-xs underline" phx-click="skip_onboarding">採用担当、人事、営業の方はこちら（自分のスキルを登録しません）</.link>
   </p>
 </section>
 
@@ -2593,9 +2598,9 @@
   tab.on("click",function(){
   let index = $(this).index();
   // タブの色を変える ここから
-  tab.removeClass("bg-enginner-dark");
-  tab.removeClass("bg-enginner-dazzle");
-  tab.removeClass("hover:bg-enginner-dark");
+  tab.removeClass("bg-engineer-dark");
+  tab.removeClass("bg-engineer-dazzle");
+  tab.removeClass("hover:bg-engineer-dark");
   tab.removeClass("bg-infra-dark");
   tab.removeClass("bg-infra-dazzle");
   tab.removeClass("hover:bg-infra-dark");
@@ -2615,7 +2620,7 @@
   tab.eq(index).addClass("text-white");
   console.log(index);
   if(index == 0){
-    tab.eq(0).addClass("bg-enginner-dark");
+    tab.eq(0).addClass("bg-engineer-dark");
     tab.eq(1).addClass("bg-infra-dazzle");
     tab.eq(1).addClass("hover:bg-infra-dark");
     tab.eq(2).addClass("bg-designer-dazzle");
@@ -2623,24 +2628,24 @@
     tab.eq(3).addClass("bg-marketer-dazzle");
     tab.eq(3).addClass("hover:bg-marketer-dark");
   } else if(index == 1){
-    tab.eq(0).addClass("bg-enginner-dazzle");
-    tab.eq(0).addClass("hover:bg-enginner-dark");
+    tab.eq(0).addClass("bg-engineer-dazzle");
+    tab.eq(0).addClass("hover:bg-engineer-dark");
     tab.eq(1).addClass("bg-infra-dark");
     tab.eq(2).addClass("bg-designer-dazzle");
     tab.eq(2).addClass("hover:bg-designer-dark");
     tab.eq(3).addClass("bg-marketer-dazzle");
     tab.eq(3).addClass("hover:bg-marketer-dark");
   } else if(index == 2){
-    tab.eq(0).addClass("bg-enginner-dazzle");
-    tab.eq(0).addClass("hover:bg-enginner-dark");
+    tab.eq(0).addClass("bg-engineer-dazzle");
+    tab.eq(0).addClass("hover:bg-engineer-dark");
     tab.eq(1).addClass("bg-infra-dazzle");
     tab.eq(1).addClass("hover:bg-infra-dark");
     tab.eq(2).addClass("bg-designer-dark");
     tab.eq(3).addClass("bg-marketer-dazzle");
     tab.eq(3).addClass("hover:bg-marketer-dark");
   } else if(index == 3){
-    tab.eq(0).addClass("bg-enginner-dazzle");
-    tab.eq(0).addClass("hover:bg-enginner-dark");
+    tab.eq(0).addClass("bg-engineer-dazzle");
+    tab.eq(0).addClass("hover:bg-engineer-dark");
     tab.eq(1).addClass("bg-infra-dazzle");
     tab.eq(1).addClass("hover:bg-infra-dark");
     tab.eq(2).addClass("hover:bg-designer-dark");

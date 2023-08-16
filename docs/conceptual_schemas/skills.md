@@ -18,10 +18,11 @@
 
 ```mermaid
 erDiagram
+  "キャリアフィールド" ||--|{ "ジョブ" : ""
+  "ジョブ" ||--|{ "スキルパネル" : ""
   "スキルパネル" ||--|{ "クラス" : ""
   "クラス" }|--|{ "大分類／中分類（スキルユニット）" : ""
   "大分類／中分類（スキルユニット）" ||--|{ "小分類（スキル）" : ""
-  "ジャンル" }o--o{ "スキルパネル" : ""
   "Brightユーザー" }o--o{ "スキルパネル" : "気になる"
   "Brightユーザー" ||--o{ "スキルアップ" : "最大5件まで"
   "スキルアップ" ||--|| "クラス" : ""
@@ -30,6 +31,8 @@ erDiagram
   "スキルスコア" ||--|| "クラス" : ""
   "スキルスコア" ||--|{ "スキルスコア詳細" : ""
   "スキルスコア詳細" ||--||  "小分類（スキル）" : "◯△－を付ける"
+  "キャリアフィールド" ||--|{ "キャリアフィールドスコア" : ""
+  "Brightユーザー" ||--|{ "キャリアフィールドスコア" : ""
 ```
 
 ### 補足
@@ -42,34 +45,50 @@ erDiagram
 ### テーブル定義案
 
 - `id`, `inserted_at`, `updated_at` は省略
+- スキルパネル更新ロジックに係る情報は省略
+- 定義案が別ファイルにあるものを省略
 
 ```mermaid
 erDiagram
+  career_fields ||--|{ jobs : ""
+  jobs ||--|{ job_skill_panels : ""
   skill_panels ||--|{ skill_classes : ""
+  job_skill_panels ||--|{ skill_panels : ""
   skill_classes ||--|{ skill_class_units : ""
   skill_class_units }|--|| skill_units : ""
   skill_units ||--|{ skill_categories : ""
   skill_categories ||--|{ skills : ""
-  genres ||--o{ skill_panel_genres : ""
-  skill_panel_genres }o--|| skill_panels : ""
-  users ||--o{ user_skill_panels : "気になる"
-  user_skill_panels }o--|| skill_panels : "気になる"
+  users ||--o{ user_skill_panels : "スキルパネルを選ぶ等"
+  user_skill_panels }o--|| skill_panels : ""
   users ||--o{ skill_improvements : "スキルアップを登録する"
   skill_improvements ||--|| skill_classes : ""
   skill_improvements ||--|| skill_units : ""
   users ||--o{ skill_scores : ""
+  users ||--o{ skill_unit_scores : ""
+  users ||--|{ career_field_scores : ""
   skill_scores ||--|| skill_classes : ""
   skill_scores ||--|{ skill_score_items : ""
   skill_score_items ||--|| skills : ""
+  skill_unit_scores ||--|| skill_units : ""
+  career_fields ||--|| career_field_scores : ""
+
+  career_fields {
+  }
+
+  jobs {
+  }
+
+  job_skill_panels {
+  }
 
   skill_panels {
-    date locked_date "固定した日"
     string name "スキルパネル名"
   }
 
   skill_classes {
     id skill_panel_id FK
     string name "クラス名"
+    int class "クラス（クラス1なら1、クラス２なら２、...が入る）"
   }
 
   skill_class_units {
@@ -94,15 +113,6 @@ erDiagram
     int position
   }
 
-  genres {
-    string name "ジャンル名"
-  }
-
-  skill_panel_genres {
-    id skill_panel_id FK
-    id genre_id FK
-  }
-
   users {
     string username UK "ハンドルネーム"
   }
@@ -121,11 +131,26 @@ erDiagram
   skill_scores {
     id user_id FK
     id skill_panel_id FK
+    float percentage
+    string level
+  }
+
+  skill_unit_scores {
+    id user_id FK
+    id skill_unit_id FK
+    float percentage
   }
 
   skill_score_items {
     id skill_score_id FK
     id skill_id FK
     int score "enum（0: －、1: △、2: ◯）"
+  }
+
+  career_field_scores {
+    id user_id FK
+    id career_field_id FK
+    float percentage
+    integer high_skills_count
   }
 ```

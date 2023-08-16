@@ -8,9 +8,25 @@ defmodule Bright.Factory do
   # Accounts context
   use Bright.UserFactory
   use Bright.UserTokenFactory
+  use Bright.User2faCodeFactory
 
   # UserProfiles context
   use Bright.UserProfileFactory
+
+  # Onboardings context
+  use Bright.UserOnboardingFactory
+
+  # UserJobProfiles context
+  use Bright.UserJobProfileFactory
+
+  # DraftSkillPanels context
+  use Bright.DraftSkillPanelFactory
+  use Bright.DraftSkillClassFactory
+
+  # DraftSkillUnits context
+  use Bright.DraftSkillUnitFactory
+  use Bright.DraftSkillCategoryFactory
+  use Bright.DraftSkillFactory
 
   # SkillPanels context
   use Bright.SkillPanelFactory
@@ -34,6 +50,16 @@ defmodule Bright.Factory do
 
   # SkillEvidences context
   use Bright.SkillEvidenceFactory
+  use Bright.SkillEvidencePostFactory
+
+  # HistoricalSkillPanels context
+  use Bright.HistoricalSkillPanelFactory
+  use Bright.HistoricalSkillClassFactory
+
+  # HistoricalSkillUnits context
+  use Bright.HistoricalSkillUnitFactory
+  use Bright.HistoricalSkillCategoryFactory
+  use Bright.HistoricalSkillFactory
 
   # NotificationsFactory context
   use Bright.NotificationFactory

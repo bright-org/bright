@@ -1,96 +1,160 @@
-<div class="bg-white shadow flex p-6 relative z-2 flex-col">
-  <h2 class="text-3xl">スキルパネル ／ <%= @skill_panel.name %></h2>
-  <h3 class="text-xl">クラス：<%= @skill_class.name %></h3>
+<div :if={@skill_panel}>
+  <!-- card -->
+  <.navigations current_user={@current_user} />
+  <div class="mx-10">
+    <div class="flex justify-between">
+      <.toggle_link skill_panel={@skill_panel} active="panel" />
+      <.class_tab skill_class={@skill_class} />
+    </div>
+    <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
+      <.profile_area current_user={@current_user} />
+      <.compares current_user={@current_user} />
+      <div class="mt-4">
+        <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">
+          <tr>
+            <td colspan="3" width="420px" class="!border-t !border-l-white !border-t-white !border-l">
+            </td>
+            <td class="!border-l !border-brightGray-200">
+              <div class="flex justify-center items-center">
+                <p class="inline-flex flex-1 justify-center"><%= @current_user.name %></p>
 
-  <div class="flex justify-between my-10">
-    <div></div>
-    <div>
-      <nav>仮リンク</nav>
-      <.link navigate={~p"/panels/#{@skill_panel}/graph?class=1"}>
-        成長パネル
-      </.link>
+                <%= if skill_score_author?(@skill_score, @current_user) do %>
+                  <button
+                    :if={not @edit}
+                    type="button"
+                    class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    phx-click="edit"
+                  >
+                    <span class="material-icons-outlined !text-sm">edit</span>
+                  </button>
+                  <!-- TODO: デザイン適用 -->
+                  <button
+                    :if={@edit}
+                    type="button"
+                    class="text-black bg-brightGreen-600 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    phx-click="update"
+                  >
+                    <span class="material-icons-outlined !text-sm">edit</span>
+                  </button>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+          <!-- 未実装：デザインまま END -->
+          <tr>
+            <th class="bg-base text-white text-center w-[200px]">
+              知識エリア
+            </th>
+            <th class="bg-base text-white text-center w-[200px]">
+              カテゴリ
+            </th>
+            <th class="bg-base text-white text-center w-[420px]">
+              スキル
+            </th>
+            <td>
+              <div class="flex justify-center gap-x-2">
+                <div class="min-w-[4em] flex items-center">
+                  <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1" />
+                  <span class="score-high-percentage"><%= floor calc_percentage(@counter.high, @num_skills) %>％</span>
+                </div>
+                <div class="min-w-[4em] flex items-center">
+                  <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1" />
+                  <span class="score-middle-percentage"><%= floor calc_percentage(@counter.middle, @num_skills) %>％</span>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <%= for {[col1, col2, col3], row_number} <- build_table_structure(@skill_units) |> Enum.with_index(1) do %>
+            <tr id={"skill-#{row_number}"}>
+              <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
+              <td :if={col2} rowspan={col2.size} class="align-top">
+                <%= col2.skill_category.name %>
+              </td>
+              <td>
+                <div class="flex justify-between items-center">
+                  <p><%= col3.skill.name %></p>
+                  <div class="flex justify-between items-center gap-x-2">
+                    <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/evidences"}>
+                      <img src="/images/common/icons/addFile.svg" />
+                    </.link>
+                    <.link :if={skill_reference_existing?(col3.skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/reference"}>
+                      <img src="/images/common/icons/addFile.svg" />
+                    </.link>
+                    <.link :if={skill_exam_existing?(col3.skill.skill_exam)} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{col3.skill}/exam"}>
+                      <img src="/images/common/icons/addFile.svg" />
+                    </.link>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <.live_component
+                  module={BrightWeb.SkillPanelLive.SkillScoreItemComponent}
+                  id={"skill-score-item-#{row_number}"}
+                  row_number={row_number}
+                  first_row?={row_number == 1}
+                  last_row?={row_number == @num_skills}
+                  skill={col3.skill}
+                  skill_score={@skill_score}
+                  skill_score_item={@skill_score_item_dict[col3.skill.id]}
+                  input={false}
+                  edit={@edit}
+                />
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
     </div>
   </div>
+</div>
+
+<.modal
+  :if={:show_evidences == @live_action}
+  id="skill-evidence-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
+
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillEvidenceComponent}
+    id={"#{@skill.id}-evidence"}
+    skill={@skill}
+    skill_evidence={@skill_evidence}
+    user={@current_user}
+    patch={~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}"}
+  />
+</.modal>
+
+<.bright_modal
+  :if={:show_reference == @live_action}
+  id="skill-reference-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
+
+  <.header><%= @skill.name %></.header>
 
   <div class="mt-4">
-    <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">
-      <!-- 未実装：デザインまま START -->
-      <tr>
-        <td colspan="3" width="420px" class="!border-t !border-l-white !border-t-white !border-l">
-        </td>
-        <td class="!border-l !border-brightGray-200">
-          <div class="flex justify-center items-center">
-            <p class="inline-flex flex-1 justify-center">piacere</p>
-            <button
-              type="button"
-              class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-            >
-              <span class="material-icons-outlined !text-sm">edit</span>
-            </button>
-          </div>
-        </td>
-      </tr>
-      <!-- 未実装：デザインまま END -->
-      <tr>
-        <th class="bg-base text-white text-center w-[200px]">
-          知識エリア
-        </th>
-        <th class="bg-base text-white text-center w-[200px]">
-          カテゴリ
-        </th>
-        <th class="bg-base text-white text-center w-[420px]">
-          スキル
-        </th>
-        <!-- 未実装：デザインまま START -->
-        <td>
-          <div class="flex justify-center gap-x-2">
-            <div class="min-w-[4em] flex items-center">
-              <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1" />
-              68％
-            </div>
-            <div class="min-w-[4em] flex items-center">
-              <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1" />
-              12％
-            </div>
-          </div>
-        </td>
-        <!-- 未実装：デザインまま END -->
-      </tr>
-
-      <%= for [col1, col2, col3] <- build_table_structure(@skill_units) do %>
-        <tr>
-          <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
-          <td :if={col2} rowspan={col2.size} class="align-top">
-            <%= col2.skill_category.name %>
-          </td>
-          <td>
-            <div class="flex justify-between items-center">
-              <p><%= col3.skill.name %></p>
-              <!-- 未実装：デザインまま START -->
-              <div class="flex justify-between items-center gap-x-2">
-                <button>
-                  <img src="/images/common/icons/addFile.svg" />
-                </button>
-                <button>
-                  <img src="/images/common/icons/addFile.svg" />
-                </button>
-                <button>
-                  <img src="/images/common/icons/addFile.svg" />
-                </button>
-              </div>
-              <!-- 未実装：デザインまま END -->
-            </div>
-          </td>
-          <td>
-            <div class="flex justify-center gap-x-4 px-4">
-              <div class="flex items-center">
-                <label class={["inline_block", score_mark_class(@skill_score_items_dict[col3.skill.id])]}>
-                </label>
-              </div>
-            </div>
-          </td>
-        </tr>
-      <% end %>
-    </table>
+    <.link href={@skill_reference.url} target="_blank">
+      こちらの教材をご覧ください（外部サイトを開きます）。
+      <br />
+      <%= @skill_reference.url %>
+    </.link>
   </div>
-</div>
+</.bright_modal>
+
+<.bright_modal
+  :if={:show_exam == @live_action}
+  id="skill-exam-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}/skills?class=#{@skill_class.class}")}>
+
+  <.header><%= @skill.name %></.header>
+
+  <div class="mt-4">
+    <.link href={@skill_exam.url} target="_blank">
+      こちらから試験が行えます。
+      <br />
+      <%= @skill_exam.url %>
+    </.link>
+  </div>
+</.bright_modal>

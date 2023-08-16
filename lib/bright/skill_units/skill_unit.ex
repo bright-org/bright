@@ -13,6 +13,10 @@ defmodule Bright.SkillUnits.SkillUnit do
   @foreign_key_type Ecto.ULID
 
   schema "skill_units" do
+    # TODO: デフォルト値を消す
+    field :locked_date, :date, default: ~D[2023-07-01]
+    # TODO: 自動生成を消す
+    field :trace_id, Ecto.ULID, autogenerate: {Ecto.ULID, :generate, []}
     field :name, :string
 
     has_many :skill_categories, SkillCategory,
@@ -24,6 +28,8 @@ defmodule Bright.SkillUnits.SkillUnit do
       on_replace: :delete
 
     has_many :skill_classes, through: [:skill_class_units, :skill_class]
+
+    has_many(:skill_unit_scores, Bright.SkillScores.SkillUnitScore)
 
     timestamps()
   end

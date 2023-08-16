@@ -1,1 +1,25 @@
-<p>マイチーム画面ダミー</p>
+<!-- スキルと対象の切り替え -->
+<div class="flex gap-x-4">
+    <button
+     data-modal-target="defaultModal"
+     data-modal-toggle="defaultModal"
+     class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold"
+     phx-click={show_modal("create-team-modal")}
+    >
+      チームを作る
+    </button>
+</div>
+
+<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
+<.bright_modal
+  id="create-team-modal"
+>
+  <.live_component
+    module={BrightWeb.TeamCreateLiveComponent}
+    id={@current_user.id || :new}
+    action={@live_action}
+    current_user={@current_user}
+    users={[]}
+    patch={~p"/teams"}
+  />
+</.bright_modal>

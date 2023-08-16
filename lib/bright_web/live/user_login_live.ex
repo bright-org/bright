@@ -5,47 +5,42 @@ defmodule BrightWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-      <h1 class="font-bold text-center text-3xl">
-        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">ログイン</span>
-      </h1>
-      <.form
-        :let={_f}
-        for={@form}
-        id="login_form"
-        class="flex mt-8 mx-auto relative"
-        action={~p"/users/log_in"}
-        phx-update="ignore"
-      >
-        <section class="border-r border-solid border-brightGray-300 flex flex-col mt-5 pr-16 w-2/4">
-          <button class="bg-bgGoogle bg-5 bg-left-2.5 bg-no-repeat border border-solid border-black font-bold max-w-xs mt-4 mx-auto px-4 py-2 rounded select-none text-black w-full hover:opacity-50">Google</button>
+    <UserAuthComponents.header>ログイン</UserAuthComponents.header>
 
-          <button class="bg-bgGithub bg-5 bg-left-2.5 bg-sns-github bg-no-repeat border border-github border-solid font-bold max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-full hover:opacity-50">GitHub</button>
+    <UserAuthComponents.auth_form
+      for={@form}
+      id="login_form"
+      action={~p"/users/log_in"}
+      phx-update="ignore"
+    >
+      <UserAuthComponents.form_section variant="left">
+        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google" />
+        <UserAuthComponents.social_auth_button href="#" variant="github" />
+        <UserAuthComponents.social_auth_button href="#" variant="facebook" />
+        <UserAuthComponents.social_auth_button href="#" variant="twitter" />
+      </UserAuthComponents.form_section>
 
-          <button class="bg-bgFacebook bg-5 bg-left-2.5 bg-sns-facebook bg-no-repeat border border-facebook border-solid font-bold max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-full hover:opacity-50">Facebook</button>
+      <UserAuthComponents.or_text>または</UserAuthComponents.or_text>
 
-          <button class="bg-bgTwitter bg-5 bg-left-2.5 bg-sns-twitter bg-no-repeat border border-twitter border-solid font-bold max-w-xs mt-6 mx-auto px-4 py-2 rounded select-none text-white w-full hover:opacity-50">Twitter</button>
-        </section>
+      <UserAuthComponents.form_section variant="right">
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
 
-        <p class="absolute bg-white border border-solid border-brightGray-300 flex h-20 left-2/4 top-2/4 items-center justify-center -ml-10 -mt-10 rounded-full text-brightGray-500 text-xs w-20 z-2">または</p>
+        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required>
+          <:under_block>
+            <UserAuthComponents.link_text_under_input href={~p"/users/reset_password"}>
+              パスワードを忘れた方はこちら
+            </UserAuthComponents.link_text_under_input>
+            <UserAuthComponents.link_text_under_input href={~p"/users/confirm"}>
+              確認メールの再送はこちら
+            </UserAuthComponents.link_text_under_input>
+          </:under_block>
+        </UserAuthComponents.input_with_label>
 
+        <UserAuthComponents.button variant="mt-xs">ログイン</UserAuthComponents.button>
+      </UserAuthComponents.form_section>
+    </UserAuthComponents.auth_form>
 
-        <section class="flex flex-col pt-0 pr-0 pl-16 w-2/4">
-          <label for="email" class="mt-4">
-            <span class="block font-bold mb-2 text-xs">メールアドレス</span>
-            <UserAuthComponents.input field={@form[:email]} id="email" type="email" label="Email" required />
-          </label>
-
-          <label for="password" class="mt-4">
-            <span class="block font-bold mb-2 text-xs">パスワード</span>
-            <UserAuthComponents.input field={@form[:password]} id="password" type="password" required />
-            <.link href={~p"/users/reset_password"} class="block mr-2 mt-1 text-link text-right text-xs underline">パスワードを忘れた方はこちら</.link>
-          </label>
-
-          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs mt-12 px-4 py-2 rounded select-none text-white w-full hover:opacity-50">ログイン</button>
-        </section>
-      </.form>
-
-      <p class="mt-8 text-link text-center"><.link navigate={~p"/users/register"} class="text-xs underline">ユーザー新規作成はこちら</.link></p>
+    <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
     """
   end
 
