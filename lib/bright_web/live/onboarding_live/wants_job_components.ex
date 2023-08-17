@@ -32,6 +32,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               <%= career_field.name_ja %>
             </li>
           <% end %>
+          <!-- αは落とす -->
           <li :if={false}>
             <a
               href="#"

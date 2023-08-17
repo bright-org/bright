@@ -30,7 +30,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
         </li>
         <% end %>
       </ul>
-
+      <!-- αは落とす -->
       <form class="flex flex-wrap gap-4 justify-start p-4" :if={false}>
         <input
           type="text"
