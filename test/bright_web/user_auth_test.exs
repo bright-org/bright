@@ -349,4 +349,41 @@ defmodule BrightWeb.UserAuthTest do
       refute conn.status
     end
   end
+
+  describe "redirect_if_onboarding_finished/2" do
+    test "redirects mypage if user already finished onboardings", %{conn: conn, user: user} do
+      insert(:user_onboarding, user: user)
+      conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_onboarding_finished([])
+      assert conn.halted
+      assert redirected_to(conn) == ~p"/skill_up"
+    end
+
+    test "does not redirect if user is not authenticated", %{conn: conn, user: user} do
+      conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_onboarding_finished([])
+
+      refute conn.halted
+      refute conn.status
+    end
+  end
+
+  describe "require_onboarding/2" do
+    test "redirects if user is not finish onboarding", %{conn: conn, user: user} do
+      conn =
+        conn |> assign(:current_user, user) |> fetch_flash() |> UserAuth.require_onboarding([])
+
+      assert conn.halted
+
+      assert redirected_to(conn) == ~p"/onboardings"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
+               "オンボーディングが完了していません"
+    end
+
+    test "does not redirect if user is onboarding finish", %{conn: conn, user: user} do
+      insert(:user_onboarding, user: user)
+      conn = conn |> assign(:current_user, user) |> UserAuth.require_onboarding([])
+      refute conn.halted
+      refute conn.status
+    end
+  end
 end
