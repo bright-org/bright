@@ -7,7 +7,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   def compares(assigns) do
     ~H"""
     <div class="flex mt-4 items-center">
-      <.compare_timeline myself={@myself} />
+      <.compare_timeline myself={@myself} timeline={@timeline} />
       <% # TODO: 仮UI コンポーネント完成後に削除 %>
       <div class="flex gap-x-4">
         <button
@@ -35,24 +35,50 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div class="w-[566px] mr-10">
       <div class="flex">
+        <% # 過去方向ボタン %>
         <div class="flex justify-center items-center ml-1 mr-3">
-          <button class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded">
-            <span class="material-icons text-white !text-3xl">arrow_left</span>
-          </button>
+          <%= if @timeline.past_enabled do %>
+            <button
+              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              phx-click="shift_timeline_past"
+              phx-target={@myself}
+            >
+              <span class="material-icons text-white !text-3xl">arrow_left</span>
+            </button>
+          <% else %>
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+              <span class="material-icons text-white !text-3xl">arrow_left</span>
+            </button>
+          <% end %>
         </div>
+
+        <% # タイムラインバー %>
         <BrightWeb.TimelineBarComponents.timeline_bar
           id="timeline"
           target={@myself}
           type="myself"
-          dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
-          selected_date={"2023.6"}
-          display_now={true}
+          dates={@timeline.labels}
+          selected_date={@timeline.selected_label}
+          display_now={@timeline.display_now}
           scale="sm"
         />
+
+        <% # 未来方向ボタン %>
         <div class="flex justify-center items-center ml-2">
-          <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
-            <span class="material-icons text-white !text-3xl">arrow_right</span>
-          </button>
+          <%= if @timeline.future_enabled do %>
+            <button
+              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              phx-click="shift_timeline_future"
+              phx-target={@myself}
+              disabled={!@timeline.future_enabled}
+            >
+              <span class="material-icons text-white !text-3xl">arrow_right</span>
+            </button>
+          <% else %>
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+              <span class="material-icons text-white !text-3xl">arrow_right</span>
+            </button>
+          <% end %>
         </div>
       </div>
     </div>
