@@ -28,7 +28,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                 <%= for skill_panel <- get_career_job_skill_panels(jobs) do %>
                   <li>
                     <.link
-                      navigate={"/#{@path}/#{@route}/#{@id}/skill_panels/#{skill_panel.id}"}
+                      navigate={"/#{@current_path}/#{@route}/#{@id}/skill_panels/#{skill_panel.id}"}
                       class={[
                         "bg-#{career_field.name_en}-dark border-#{career_field.name_en}-dark",
                         "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50"
@@ -69,7 +69,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   @impl true
   def handle_params(%{"want_id" => id}, uri, socket) do
-    path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
 
     career_fields =
       CareerWants.get_career_want!(id)
@@ -80,16 +80,16 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
       end)
 
     socket
-    |> assign(:path, path)
+    |> assign(:current_path, current_path)
     |> assign(:route, "wants")
-    |> assign(:return_to, "/#{path}?open=want_todo_panel")
+    |> assign(:return_to, "/#{current_path}?open=want_todo_panel")
     |> assign(:id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})
   end
 
   def handle_params(%{"job_id" => id}, uri, socket) do
-    path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
 
     career_fields =
       Jobs.get_job!(id)
@@ -100,9 +100,9 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
     career_field = career_fields |> Map.keys() |> List.first()
 
     socket
-    |> assign(:path, path)
+    |> assign(:current_path, current_path)
     |> assign(:route, "jobs")
-    |> assign(:return_to, "/#{path}?open=wants_job_panel&tab=#{career_field.name_en}")
+    |> assign(:return_to, "/#{current_path}?open=wants_job_panel&tab=#{career_field.name_en}")
     |> assign(:id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})

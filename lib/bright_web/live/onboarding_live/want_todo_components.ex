@@ -11,7 +11,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
         <!-- やりたいこと ここから -->
         <%= for wants <- @career_wants do %>
         <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
-          <.link navigate={"#{@path}/wants/#{wants.id}"} class="block">
+          <.link navigate={"#{@current_path}/wants/#{wants.id}"} class="block">
             <b class="block text-center"><%= wants.name %></b>
             <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
               <%= for career_field <- wants.jobs do %>

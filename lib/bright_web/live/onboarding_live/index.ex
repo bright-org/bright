@@ -23,7 +23,7 @@ defmodule BrightWeb.OnboardingLive.Index do
   @impl true
   def handle_params(params, uri, socket) do
     socket
-    |> assign(:path, URI.parse(uri).path)
+    |> assign(:current_path, URI.parse(uri).path)
     |> assign_params(params)
     |> then(&{:noreply, &1})
   end
