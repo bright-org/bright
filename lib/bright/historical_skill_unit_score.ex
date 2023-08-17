@@ -20,7 +20,6 @@ defmodule Bright.HistoricalSkillUnitScore do
   def get_historical_skill_gem(user_id, skill_panel_id, class, locked_date) do
     from_date = {locked_date.year, locked_date.month, 1} |> Date.from_erl!()
     to_date = from_date |> Timex.shift(months: 1) |> Timex.shift(days: -1)
-    IO.inspect(to_date)
 
     from(historical_skill_unit_score in HistoricalSkillUnitScore,
       join: historical_skill_unit in assoc(historical_skill_unit_score, :historical_skill_unit),

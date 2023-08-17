@@ -30,13 +30,10 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     skill_gem =
       get_skill_gem(assigns.user_id, assigns.skill_panel_id, assigns.class, select_label)
 
-    skill_gem_data = [skill_gem |> Enum.map(fn x -> x.percentage end)]
-    skill_gem_labels = skill_gem |> Enum.map(fn x -> x.name end)
-
     socket =
       socket
-      |> assign(:skill_gem_data, skill_gem_data)
-      |> assign(:skill_gem_labels, skill_gem_labels)
+      |> assign(:skill_gem_data, get_skill_gem_data(skill_gem))
+      |> assign(:skill_gem_labels, get_skill_gem_labels(skill_gem))
 
     {:ok, socket}
   end
@@ -44,14 +41,22 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   def get_skill_gem(user_id, skill_panel_id, class, select_label) when select_label == "now",
     do: SkillScores.get_skill_gem(user_id, skill_panel_id, class)
 
-  def get_skill_gem(user_id, skill_panel_id, class, select_label),
-    do:
+  def get_skill_gem(user_id, skill_panel_id, class, select_label) do
+    skill_gem =
       HistoricalSkillUnitScore.get_historical_skill_gem(
         user_id,
         skill_panel_id,
         class,
         label_to_date(select_label)
       )
+
+    if skill_gem == [] do
+      get_skill_gem(user_id, skill_panel_id, class, "now")
+      |> Enum.map(fn x -> Map.put(x, :percentage, 0) end)
+    else
+      skill_gem
+    end
+  end
 
   defp label_to_date(date) do
     "#{date}.1"
@@ -60,4 +65,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     |> List.to_tuple()
     |> Date.from_erl!()
   end
+
+  defp get_skill_gem_data(skill_gem), do: [skill_gem |> Enum.map(fn x -> x.percentage end)]
+  defp get_skill_gem_labels(skill_gem), do: skill_gem |> Enum.map(fn x -> x.name end)
 end
