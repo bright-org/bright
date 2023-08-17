@@ -6,6 +6,7 @@ defmodule Bright.HistoricalSkillPanels.HistoricalSkillClass do
   use Ecto.Schema
 
   alias Bright.HistoricalSkillPanels.SkillPanel
+  alias Bright.HistoricalSkillUnits.HistoricalSkillClassUnit
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -17,6 +18,13 @@ defmodule Bright.HistoricalSkillPanels.HistoricalSkillClass do
     field :class, :integer
 
     belongs_to :skill_panel, SkillPanel
+
+    has_many :historical_skill_class_units, HistoricalSkillClassUnit,
+      preload_order: [asc: :position],
+      on_replace: :delete
+
+    has_many :historical_skill_units,
+      through: [:historical_skill_class_units, :historical_skill_unit]
 
     has_many :historical_skill_class_scores,
              Bright.HistoricalSkillScores.HistoricalSkillClassScore

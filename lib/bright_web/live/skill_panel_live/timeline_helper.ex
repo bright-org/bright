@@ -70,6 +70,24 @@ defmodule BrightWeb.SkillPanelLive.TimelineHelper do
   end
 
   def get_monthly_interval, do: @monthly_interval
+
+  @doc """
+  現在選択されているものが「現在」「未来」「過去」のいずれかを返す
+  """
+  def get_selected_tense(timeline) do
+    {timeline.selected_label, timeline.future_enabled, List.last(timeline.labels)}
+    |> case do
+      {"now", _, _} -> :now
+      {selected_label, false, latest_label} when selected_label == latest_label -> :future
+      _ -> :past
+    end
+  end
+
+  def label_to_date(label) do
+    [year, month] = label |> String.split(".") |> Enum.map(&String.to_integer/1)
+    Date.new!(year, month, 1)
+  end
+
   defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
 
   defp get_future_month(start_month, now) do
