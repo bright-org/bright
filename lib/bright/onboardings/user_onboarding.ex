@@ -6,14 +6,14 @@ defmodule Bright.Onboardings.UserOnboarding do
   import Ecto.Changeset
 
   alias Bright.Accounts.User
+  alias Bright.SkillPanels.SkillPanel
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
 
   schema "user_onboardings" do
     field :completed_at, :naive_datetime
-    field :skill_panel_id, :string
-
+    belongs_to :skill_panel, SkillPanel
     belongs_to :user, User
 
     timestamps()

@@ -3,7 +3,7 @@ defmodule Bright.Repo.Migrations.AddSkillPanelIdToUserOnboarding do
 
   def change do
     alter table(:user_onboardings) do
-      add :skill_panel_id, :string
+      add :skill_panel_id, references(:skill_panels, on_delete: :nothing)
     end
   end
 end
