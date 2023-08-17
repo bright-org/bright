@@ -9,10 +9,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   alias Bright.SkillScores
   alias BrightWeb.SkillPanelLive.TimelineHelper
 
-  @start_year 2021
-  @start_month 10
-  @monthly_interval 3
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -32,7 +28,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <button
               :if={@timeline.past_enabled}
               phx-target={@myself}
-              phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })}
+              phx-click={JS.push("shift_timeline_past", value: %{id: "myself" })}
               class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
               disabled={false}
             >
@@ -55,7 +51,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-6">見習い</p>
             <button
               :if={@timeline.future_enabled}
-              phx-click={JS.push("month_add_click", value: %{id: "myself" })}
+              phx-click={JS.push("shift_timeline_future", value: %{id: "myself" })}
               phx-target={@myself}
               class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
               disabled={false}
@@ -137,12 +133,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   end
 
   @impl true
-  def handle_event("timeline_bar_button_click", params, socket) do
+  def handle_event("timeline_bar_button_click", %{"date" => date} = params, socket) do
     Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
 
     timeline =
       socket.assigns.timeline
-      |> TimelineHelper.select_label(params["date"])
+      |> TimelineHelper.select_label(date)
 
     socket =
       socket
@@ -152,7 +148,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:noreply, socket}
   end
 
-  def handle_event("month_subtraction_click", _params, socket) do
+  def handle_event("shift_timeline_past", _params, socket) do
     timeline =
       socket.assigns.timeline
       |> TimelineHelper.shift_for_past()
@@ -165,7 +161,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:noreply, socket}
   end
 
-  def handle_event("month_add_click", _params, socket) do
+  def handle_event("shift_timeline_future", _params, socket) do
     timeline =
       socket.assigns.timeline
       |> TimelineHelper.shift_for_future()
@@ -199,7 +195,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       data.labels
       |> List.first()
       |> label_to_date()
-      |> Timex.shift(months: -@monthly_interval)
+      |> Timex.shift(months: -TimelineHelper.get_monthly_interval())
 
     to_date =
       data.labels
