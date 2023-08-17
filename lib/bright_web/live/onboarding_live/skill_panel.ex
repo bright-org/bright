@@ -111,8 +111,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   end
 
   defp select_skill_panel(user_id, skill_panel_id) do
-    # unique indexを貼っているため取得済みを選択すると例外を吐くが
-    # そのままスキル入力に推移して欲しいので握りつぶす
+    # 一度取得したスキルパネルを再度選択してもエラーにしないためにUnique indexの例外を握りつぶす
     try do
       UserSkillPanels.create_user_skill_panel(%{
         user_id: user_id,
