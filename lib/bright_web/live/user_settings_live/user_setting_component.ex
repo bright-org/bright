@@ -43,16 +43,12 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
             selected_tab={@selected_tab}
             target={@myself}
           >
-            <%= for {tab_name, module} <- @tab_module do %>
-            <div class={if @selected_tab == tab_name, do: "block", else: "hidden"}>
-              <.live_component
-                module={module}
-                id={"user_settings_#{tab_name}"}
-                user={@current_user}
-                action={:edit}
-              />
-            </div>
-            <% end %>
+            <.live_component
+              module={@module}
+              id={"user_settings"}
+              user={@current_user}
+              action={:edit}
+            />
           </.tab>
         </section>
       </div>
@@ -61,12 +57,12 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
   end
 
   @impl true
-  def update(%{action: tab_name} = assigns, socket) do
+  def update(%{action: action} = assigns, socket) do
     socket
     |> assign(assigns)
     |> assign(:tabs, @tabs)
-    |> assign(:tab_module, @tab_module)
-    |> assign(:selected_tab, tab_name)
+    |> assign(:selected_tab, action)
+    |> assign(:module, Map.get(@tab_module, action))
     |> assign(:modal_flash, Map.get(assigns, :modal_flash, %{}))
     |> then(&{:ok, &1})
   end
@@ -75,6 +71,8 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
   def handle_event("tab_click", %{"tab_name" => tab_name}, socket) do
     socket
     |> assign(:selected_tab, tab_name)
+    |> assign(:module, Map.get(@tab_module, tab_name))
+    |> assign(:action, tab_name)
     |> then(&{:noreply, &1})
   end
 end
