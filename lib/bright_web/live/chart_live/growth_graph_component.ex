@@ -131,19 +131,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       socket
       |> assign(assigns)
       |> assign(timeline: timeline)
-
-    socket =
-      socket
-      |> assign(:data, %{
-        myselfSelected: "now",
-        labels: timeline.labels,
-        future_enabled: !timeline.future_enabled,
-        past_enabled: timeline.past_enabled
-      })
       |> create_data()
 
     {:ok, socket}
-    |> IO.inspect()
   end
 
   @impl true
@@ -166,8 +156,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     socket =
       socket
       |> assign(timeline: timeline)
+      |> create_data()
 
-    {:noreply, create_labels(socket) |> create_data()}
+    {:noreply, socket}
   end
 
   def handle_event("month_add_click", _params, socket) do
@@ -178,8 +169,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     socket =
       socket
       |> assign(timeline: timeline)
+      |> create_data()
 
-    {:noreply, create_labels(socket) |> create_data()}
+    {:noreply, socket}
   end
 
   defp create_labels(socket) do
@@ -198,10 +190,17 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
              user_id: user_id,
              skill_panel_id: skill_panel_id,
              class: class,
-             data: data
+             timeline: timeline
            }
          } = socket
        ) do
+    data = %{
+      myselfSelected: timeline.selected_label,
+      labels: timeline.labels,
+      future_enabled: !timeline.future_enabled,
+      past_enabled: timeline.past_enabled
+    }
+
     from_date =
       data.labels
       |> List.first()
