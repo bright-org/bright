@@ -4,6 +4,7 @@ defmodule BrightWeb.OnboardingLive.Index do
   alias Bright.Onboardings
   alias Bright.Onboardings.UserOnboarding
 
+  @default_tab "engineer"
   @panels %{
     "want_todo_panel" => :open_want_todo,
     "wants_job_panel" => :open_wants_job
@@ -15,7 +16,7 @@ defmodule BrightWeb.OnboardingLive.Index do
     |> assign(:page_title, "オンボーディング")
     |> assign(:open_want_todo, false)
     |> assign(:open_wants_job, false)
-    |> assign(:tab, "engineer")
+    |> assign(:tab, @default_tab)
     |> then(&{:ok, &1})
   end
 
