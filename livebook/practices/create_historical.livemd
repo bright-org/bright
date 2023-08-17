@@ -60,8 +60,14 @@ defmodule Test do
     from(historical_skill_unit_score in HistoricalSkillUnitScore,
       join: historical_skill_unit in assoc(historical_skill_unit_score, :historical_skill_unit),
       join: historical_skill_classes in assoc(historical_skill_unit, :historical_skill_classes),
+      join:
+        historical_skill_class_units in assoc(
+          historical_skill_unit,
+          :historical_skill_class_units
+        ),
       on: historical_skill_classes.class == ^class,
       on: historical_skill_classes.skill_panel_id == ^skill_panel_id,
+      order_by: historical_skill_class_units.position,
       where:
         historical_skill_unit_score.user_id == ^user_id and
           historical_skill_unit_score.locked_date >= ^from_date and
@@ -75,7 +81,7 @@ defmodule Test do
   end
 end
 
-locked_date = {2021, 10, 12} |> Date.from_erl!()
+locked_date = {2022, 10, 1} |> Date.from_erl!()
 
 from_date = {2020, 4, 1} |> Date.from_erl!()
 to_date = {2025, 7, 2} |> Date.from_erl!()
