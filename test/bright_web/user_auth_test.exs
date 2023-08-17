@@ -252,9 +252,10 @@ defmodule BrightWeb.UserAuthTest do
       onboarding = insert(:user_onboarding, user: user)
       user_token = Accounts.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
+      socket = %LiveView.Socket{}
+      {:cont, socket} = UserAuth.on_mount(:mount_current_user, %{}, session, socket)
 
-      {:cont, updated_socket} =
-        UserAuth.on_mount(:ensure_onboarding, %{}, session, %LiveView.Socket{})
+      {:cont, updated_socket} = UserAuth.on_mount(:ensure_onboarding, %{}, session, socket)
 
       assert updated_socket.assigns.current_user.user_onboardings.id == onboarding.id
     end
@@ -271,6 +272,7 @@ defmodule BrightWeb.UserAuthTest do
         assigns: %{__changed__: %{}, flash: %{}}
       }
 
+      {:cont, socket} = UserAuth.on_mount(:mount_current_user, %{}, session, socket)
       {:halt, updated_socket} = UserAuth.on_mount(:ensure_onboarding, %{}, session, socket)
       assert updated_socket.assigns.current_user.user_onboardings == nil
     end
@@ -281,26 +283,30 @@ defmodule BrightWeb.UserAuthTest do
       insert(:user_onboarding, user: user)
       user_token = Accounts.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
+      socket = %LiveView.Socket{}
+      {:cont, socket} = UserAuth.on_mount(:mount_current_user, %{}, session, socket)
 
       assert {:halt, _updated_socket} =
                UserAuth.on_mount(
                  :redirect_if_onboarding_finished,
                  %{},
                  session,
-                 %LiveView.Socket{}
+                 socket
                )
     end
 
     test "doesn't redirect if there is no onboarding user", %{conn: conn, user: user} do
       user_token = Accounts.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
+      socket = %LiveView.Socket{}
+      {:cont, socket} = UserAuth.on_mount(:mount_current_user, %{}, session, socket)
 
       assert {:cont, _updated_socket} =
                UserAuth.on_mount(
                  :redirect_if_onboarding_finished,
                  %{},
                  session,
-                 %LiveView.Socket{}
+                 socket
                )
     end
   end
