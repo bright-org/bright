@@ -295,7 +295,7 @@ defmodule BrightWeb.UserAuthTest do
                )
     end
 
-    test "doesn't redirect if there is no onboarding user", %{conn: conn, user: user} do
+    test "doesn't redirect when user have not finished onboarding yet", %{conn: conn, user: user} do
       user_token = Accounts.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
       socket = %LiveView.Socket{}
