@@ -13,8 +13,9 @@ defmodule Bright.Onboardings.UserOnboarding do
 
   schema "user_onboardings" do
     field :completed_at, :naive_datetime
-    belongs_to :skill_panel, SkillPanel
     belongs_to :user, User
+    # 集計用でシステムで直接は使用しない
+    belongs_to :skill_panel, SkillPanel
 
     timestamps()
   end
