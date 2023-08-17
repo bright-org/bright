@@ -260,7 +260,7 @@ defmodule BrightWeb.UserAuthTest do
       assert updated_socket.assigns.current_user.user_onboardings.id == onboarding.id
     end
 
-    test "redirects to onboarding page if there isn't a finish onboarding", %{
+    test "redirects to onboarding page when user have not finished onboarding yet", %{
       conn: conn,
       user: user
     } do
