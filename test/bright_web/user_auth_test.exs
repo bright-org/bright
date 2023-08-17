@@ -279,7 +279,7 @@ defmodule BrightWeb.UserAuthTest do
   end
 
   describe "on_mount: redirect_if_onboarding_finished" do
-    test "redirects if there is an authenticated  user ", %{conn: conn, user: user} do
+    test "redirects when user already finished onboarding", %{conn: conn, user: user} do
       insert(:user_onboarding, user: user)
       user_token = Accounts.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
