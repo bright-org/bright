@@ -69,6 +69,7 @@ defmodule BrightWeb.SkillPanelLive.TimelineHelper do
     })
   end
 
+  def get_monthly_interval, do: @monthly_interval
   defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
 
   defp get_future_month(start_month, now) do
