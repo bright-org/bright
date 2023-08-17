@@ -35,20 +35,25 @@ defmodule BrightWeb.MypageLive.Index do
       |> Repo.preload(:user_profile)
 
     socket
+    |> assign(:is_anonymous, false)
     |> assign(:display_user, user)
   end
 
   def assign_display_user(socket, %{"user_name_crypted" => user_name_crypted}) do
     user = decrypt_user_name(user_name_crypted)
     |> Accounts.get_user_by_name_or_email()
-    |> Repo.preload(:user_profile)
 
+    display_user = %User{}
+    |> Map.put(:user_profile, %Bright.UserProfiles.UserProfile{})
+    |> Map.put(:id, user.id)
     socket
-    |> assign(:display_user, user)
+    |> assign(:is_anonymous, true)
+    |> assign(:display_user, display_user)
   end
 
   def assign_display_user(socket, _params) do
     socket
+    |> assign(:is_anonymous, false)
     |> assign(:display_user, socket.assigns.current_user)
   end
 
