@@ -144,7 +144,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       socket.assigns.timeline
       |> TimelineHelper.select_label(params["date"])
 
-    socket = socket |> assign(timeline: timeline) |> select_data()
+    socket =
+      socket
+      |> assign(timeline: timeline)
+      |> select_data()
+
     {:noreply, socket}
   end
 
@@ -172,16 +176,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       |> create_data()
 
     {:noreply, socket}
-  end
-
-  defp create_labels(socket) do
-    data =
-      socket.assigns.data
-      |> Map.put(:labels, socket.assigns.timeline.labels)
-      |> Map.put(:future_enabled, !socket.assigns.timeline.future_enabled)
-      |> Map.put(:past_enabled, socket.assigns.timeline.past_enabled)
-
-    assign(socket, :data, data)
   end
 
   defp create_data(
