@@ -77,9 +77,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             id="myself"
             target={@myself}
             type="myself"
-            dates={@data.labels}
-            selected_date={@data.myselfSelected}
-            display_now={@data.future_enabled}
+            dates={@timeline.labels}
+            selected_date={@timeline.selected_label}
+            display_now={@timeline.display_now}
           />
           <div class="flex justify-center items-center ml-2"></div>
         </div>
