@@ -119,7 +119,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
         skill_panel_id: skill_panel_id
       })
     rescue
-      _ -> :ok
+      Ecto.ConstraintError -> :ok
     end
   end
 
