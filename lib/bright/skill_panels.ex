@@ -11,6 +11,7 @@ defmodule Bright.SkillPanels do
 
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillPanels.SkillClass
+  alias Bright.Teams.TeamMemberUsers
 
   @doc """
   Returns the list of skill_panels.
@@ -53,6 +54,43 @@ defmodule Bright.SkillPanels do
     from(p in subquery(career_field_query),
       join: u in assoc(p, :user_skill_panels),
       on: u.user_id == ^user_id,
+      join: class in assoc(p, :skill_classes),
+      on: class.skill_panel_id == p.id,
+      join: score in assoc(class, :skill_class_scores),
+      on: class.id == score.skill_class_id,
+      preload: [skill_classes: :skill_class_scores],
+      order_by: p.updated_at,
+      distinct: true
+    )
+    |> Repo.paginate(page: page, page_size: 15)
+  end
+
+  def list_team_member_users_skill_panels_by_career_field(
+        team_id,
+        career_field_name,
+        page \\ 1
+      ) do
+
+    career_field_query =
+      from(
+        j in Job,
+        join: cf in assoc(j, :career_fields),
+        on: cf.name_en == ^career_field_name,
+        join: s in assoc(j, :skill_panels),
+        select: s,
+        distinct: true
+      )
+
+      team_member_users_query =
+        from(
+          tmu in TeamMemberUsers,
+          where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+          select: tmu.user_id,
+        )
+
+    from(p in subquery(career_field_query),
+      join: u in assoc(p, :user_skill_panels),
+      where: u.user_id in subquery(team_member_users_query),
       join: class in assoc(p, :skill_classes),
       on: class.skill_panel_id == p.id,
       join: score in assoc(class, :skill_class_scores),

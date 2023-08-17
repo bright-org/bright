@@ -6,10 +6,11 @@
     <!-- スキルパネル menu --> 
     <.mega_menu_button
       id="mega_menu_skill_panel"
-      label="スキルパネル"
+      label="スキル"
       dropdown_offset_skidding="307"
-      current_user={@current_user}
-      card_component={BrightWeb.CardLive.RelatedTeamCardComponent}
+      display_user={@current_user}
+      display_team={@display_team}
+      card_component={BrightWeb.CardLive.SkillCardComponent}
       over_ride_on_card_row_click_target={:true}
     />
 
@@ -21,7 +22,7 @@
     <.mega_menu_button
       id="mega_menu_team" 
       label="チーム"
-      current_user={@current_user}
+      display_user={@current_user}
       dropdown_offset_skidding="307"
       card_component={BrightWeb.CardLive.RelatedTeamCardComponent}
       over_ride_on_card_row_click_target={:true}
@@ -36,6 +37,23 @@
         チームを作る
       </button>
   </div>
+  
+  <!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
+  <.bright_modal
+    :if={@live_action in [:index, :new, :edit]}
+    id="create-team-modal"
+    show
+  >
+    <.live_component
+      module={BrightWeb.TeamCreateLiveComponent}
+      id={@current_user.id || :new}
+      action={@live_action}
+      current_user={@current_user}
+      users={[]}
+      patch={~p"/teams"}
+    />
+  </.bright_modal>
+
   <!-- プロフィール -->
   <div class="flex justify-between py-6 px-10 bg-white">
     <div class="w-[850px] pt-4">
@@ -51,44 +69,37 @@
       />
     </div>
   </div>
-
 </div>
 
 <!-- card -->
-<div class="ml-24 p-6">
+<div
+  :if={@display_team == nil}
+  class="m-10 bg-white shadow flex justify-center items-center flex-1 h-full"
+>
+  <div class="flex flex-col items-center text-center">
+    <p class="font-bold">管理／所属しているチームはありません</p>
+  </div>
+</div>
+<div
+  :if={@display_team != nil}
+  class="ml-24 p-6"
+  >
   <!-- チームタイトルー -->
-  <!-- TODO チームがない場合の表示に対応
+  <!-- TODO チームがない場合の表示に対応  -->
   <.team_skill_panels
-    team={@current_team}
+    team={@display_team}
     team_type={:general_team}
   />
-  -->
-  
 
   <!-- チームメンバー -->
 
-  <!-- TODO チームがない場合の表示に対応する
+  <!-- TODO チームがない場合の表示に対応する  -->
   <div class="flex gap-8 pt-4 flex-wrap">
-    <%= for _user <- @member_users do %>
+    <%= for user <- @member_users do %>
       <.user_skill_card user={user} id={"skill_gem_#{user.id}"} />
     <% end %>
   </div>
-
-  -->
-
 </div>
 
 
-<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
-<.bright_modal
-  id="create-team-modal"
->
-  <.live_component
-    module={BrightWeb.TeamCreateLiveComponent}
-    id={@current_user.id || :new}
-    action={@live_action}
-    current_user={@current_user}
-    users={[]}
-    patch={~p"/teams"}
-  />
-</.bright_modal>
+

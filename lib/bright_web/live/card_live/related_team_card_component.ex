@@ -2,14 +2,14 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   @moduledoc """
   　関わっているチームカードコンポーネント
 
-  - current_user チーム一覧の取得対象となるユーザー
+  - display_user チーム一覧の取得対象となるユーザー
   - over_ride_on_card_row_click_target カードコンポーネント内の行クリック時のハンドラを呼び出し元のハンドラで実装するか否か falseの場合、本実装デフォルトの挙動(チームIDのみ指定してのチームスキル分析への遷移)を実行する
 
   ## Examples
     <.live_component
       id={@id}
       module={BrightWeb.CardLive.RelatedTeamCardComponent}
-      current_user={@current_user}
+      display_user={@display_user}
       over_ride_on_card_row_click_target={:true}
     />
   """
@@ -92,7 +92,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   defp assign_card(socket, "joined_teams") do
     page =
       Teams.list_joined_teams_by_user_id(
-        socket.assigns.current_user.id,
+        socket.assigns.display_user.id,
         socket.assigns.card.page_params
       )
 
@@ -176,15 +176,15 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
   """
   def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
-    current_team =
+    display_team =
       team_id
       |> Teams.get_team_with_member_users!()
 
     socket =
       socket
-      |> assign(:current_team, current_team)
-      |> assign(:current_user, socket.assigns.current_user)
-      |> push_navigate(to: "/teams/#{current_team.id}")
+      |> assign(:display_team, display_team)
+      |> assign(:display_user, socket.assigns.display_user)
+      |> push_navigate(to: "/teams/#{display_team.id}")
 
     {:noreply, socket}
   end

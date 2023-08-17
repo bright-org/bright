@@ -4,24 +4,49 @@ defmodule BrightWeb.MyTeamLive do
   """
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
+  import BrightWeb.SkillPanelLive.SkillPanelComponents
+  import BrightWeb.DisplayUserHelper
+  import BrightWeb.TeamComponents
   import BrightWeb.MegaMenuComponents
   import BrightWeb.BrightModalComponents
   alias Bright.Teams
+  alias Bright.SkillPanels
 
-  def mount(params, _session, socket) do
+
+  def mount(%{live_action: :index} = params, _session, socket) do
+
+    IO.puts("#### mount ###########################")
+
     socket =
+    if Map.has_key?(params, "skill_panel_id") do
+      IO.puts("#### skill_panel_id exist !!!!!!!!!!!!!!!!!")
+      display_skill_panel = params
+      |> Map.get("skill_panel_id")
+      |> SkillPanels.get_skill_panel!()
+
+      IO.inspect(display_skill_panel)
+
+      socket
+      # TODO display_skill_panel
+      |> assign(:page_title, "チームスキル分析")
+      |> assign(:page_sub_title, display_skill_panel.name)
+      |> assign(:display_skill_panel, display_skill_panel)
+    else
+      IO.puts("#### skill_panel_id none !!!!!!!!!!!!!!!!!")
       socket
       # TODO current_skill_panelから取得する
-      |> assign(:page_title, "チームスキル分析 / ElixirWeb開発")
+      |> assign(:page_title, "チームスキル分析")
+      |> assign(:page_sub_title, nil)
+    end
 
     if Map.has_key?(params, "team_id") do
-      current_team =
+      display_team =
         params
         |> Map.get("team_id")
         |> Teams.get_team_with_member_users!()
 
       page =
-        current_team.id
+        display_team.id
         |> Teams.list_jined_users_and_skill_unit_scores_by_team_id()
 
       member_users =
@@ -32,7 +57,7 @@ defmodule BrightWeb.MyTeamLive do
 
       socket =
         socket
-        |> assign(:current_team, current_team)
+        |> assign(:display_team, display_team)
         |> assign(:current_user, socket.assigns.current_user)
         |> assign(:member_users, member_users)
 
@@ -47,13 +72,13 @@ defmodule BrightWeb.MyTeamLive do
           [team_member_user] = page.entries
 
           socket
-          |> assign(:current_team, team_member_user.team)
+          |> assign(:display_team, team_member_user.team)
           |> assign(:current_user, socket.assigns.current_user)
           |> push_navigate(to: "/teams/#{team_member_user.team.id}")
         else
           # 所属しているチームが存在しない場合、チーム表示なしの空のページを表示する
           socket
-          |> assign(:current_team, nil)
+          |> assign(:display_team, nil)
           |> assign(:current_user, socket.assigns.current_user)
           |> assign(:member_users, [])
         end
@@ -62,22 +87,42 @@ defmodule BrightWeb.MyTeamLive do
     end
   end
 
+  def mount(params, _session, socket) do
+    socket = socket
+          |> assign(:display_team, nil)
+          |> assign(:current_user, socket.assigns.current_user)
+          |> assign(:member_users, [])
+    {:ok, socket}
+  end
+
   @doc """
   メガメニューのチームカードからチームの行をクリックした場合のハンドラー
 
-  current_teamを選択したチームのチームIDで更新し、リダイレクトする。
+  display_teamを選択したチームのチームIDで更新し、リダイレクトする。
   その際、選択済のスキルパネル、またはスキルセットがある場合IDを引き継ぐ
   """
-  def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
-    current_team =
-      team_id
-      |> Teams.get_team_with_member_users!()
+  def handle_event("on_card_row_click", %{"team_id" => team_id}, socket) do
+    display_team = Teams.get_team_with_member_users!(team_id)
 
     socket =
       socket
-      |> assign(:current_team, current_team)
-      |> assign(:current_user, socket.assigns.current_user)
-      |> push_navigate(to: "/teams/#{current_team.id}")
+      |> assign(:display_team, display_team)
+      |> push_redirect(to: "/teams/#{display_team.id}")
+
+    {:noreply, socket}
+  end
+
+  def handle_event("on_skill_pannel_click", %{"skill_panel_id" => skill_panel_id}, socket) do
+
+    IO.puts("### handle_event on_skill_pannel_click !!!!!!!!!!!!!!!!!!!!!!!")
+
+    display_skill_panel = SkillPanels.get_skill_panel!(skill_panel_id)
+
+    socket =
+      socket
+      |> assign(:display_skill_panel, display_skill_panel)
+      #|> assign(:page_title, "チームスキル分析 / #{display_skill_panel.name}")
+      |> push_redirect(to: "/teams/#{socket.assigns.display_team.id}/skill_panels/#{skill_panel_id}")
 
     {:noreply, socket}
   end

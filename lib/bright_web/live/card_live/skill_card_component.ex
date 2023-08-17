@@ -7,9 +7,16 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   import BrightWeb.TabComponents
   alias Bright.{CareerFields, SkillPanels}
   alias BrightWeb.PathHelper
+  alias Bright.Teams.Team
 
   @impl true
   def render(assigns) do
+
+    # TODO: スキルパネル用のリダイレクト処理が定義されてない場合の初期値設定
+    # PathHelper.skill_panel_pathを使用せずにクリック時のアクションを自分で用意したい時用
+    assigns = assigns
+    |> set_default_attrs()
+
     ~H"""
     <div>
       <.tab
@@ -41,6 +48,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
               me={@me}
               anonymous={@anonymous}
               root={@root}
+              over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
             />
           <% end %>
         </div>
@@ -48,6 +56,52 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     </div>
     """
   end
+
+  defp set_default_attrs(assigns) do
+    assigns
+    |> set_default_me()
+    |> set_default_anonymous()
+    |> set_default_root()
+    |> set_default_over_ride_on_card_row_click_target()
+  end
+
+  defp set_default_me(%{me: me} = assigns) do
+    assigns
+  end
+
+  defp set_default_me(assigns) do
+    assigns
+    |> Map.put(:me, true)
+  end
+
+  defp set_default_anonymous(%{anonymous: anonymous} = assigns) do
+    assigns
+  end
+
+  defp set_default_anonymous(assigns) do
+    assigns
+    |> Map.put(:anonymous, false)
+  end
+
+  defp set_default_root(%{root: root} = assigns) do
+    assigns
+  end
+
+  defp set_default_root(assigns) do
+    assigns
+    |> Map.put(:root, "")
+  end
+
+  defp set_default_over_ride_on_card_row_click_target(%{over_ride_on_card_row_click_target: over_ride_on_card_row_click_target} = assigns) do
+    assigns
+  end
+
+  defp set_default_over_ride_on_card_row_click_target(assigns) do
+    assigns
+    |> Map.put(:over_ride_on_card_row_click_target, false)
+  end
+
+
 
   defp skill_panel(assigns) do
     skill_classes = assigns.skill_panel.skill_classes
@@ -73,6 +127,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
           me={@me}
           anonymous={@anonymous}
           root={@root}
+          over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
         />
       <% end %>
     </div>
@@ -94,7 +149,32 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
+  @doc """
+  over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
+  """
+  defp skill_gem(%{score: %{level: level}, over_ride_on_card_row_click_target: true} = assigns) do
+
+    assigns =
+      assigns
+      |> assign(:icon_path, icon_path(level))
+      |> assign(:level, level)
+
+    ~H"""
+    <div class="w-36">
+      <p
+        phx-click="on_skill_pannel_click"
+        phx-value-skill_panel_id={@skill_panel.id}
+        class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+        >
+        <img src={@icon_path} class="mr-1" />
+        <span class="w-16"><%= level_text(@level) %></span>
+      </p>
+    </div>
+    """
+  end
+
   defp skill_gem(%{score: %{level: level}} = assigns) do
+
     assigns =
       assigns
       |> assign(:icon_path, icon_path(level))
@@ -124,6 +204,55 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> assign(:selected_tab, "engineer")
     |> assign_paginate(user.id, "engineer")
     |> then(&{:ok, &1})
+  end
+
+  @impl true
+  def update(%{display_team: display_team} = assigns, socket) do
+
+    default_tab = "engineer"
+
+    tabs =
+      CareerFields.list_career_fields()
+      |> Enum.map(&{&1.name_en, &1.name_ja})
+
+    IO.puts("### update ############################")
+    IO.inspect(assigns)
+    IO.inspect(socket)
+
+    socket = socket
+    |> assign(assigns)
+    |> assign_over_ride_on_card_row_click_target(assigns)
+    |> assign(:tabs, tabs)
+    |> assign(:selected_tab, default_tab)
+    |> update_socket(assigns, display_team, default_tab)
+
+  end
+
+  defp assign_over_ride_on_card_row_click_target(socket, %{over_ride_on_card_row_click_target: over_ride_on_card_row_click_target} = _assigns) do
+    socket
+    |> assign(:over_ride_on_card_row_click_target, over_ride_on_card_row_click_target)
+  end
+
+  defp assign_over_ride_on_card_row_click_target(socket, _assigns) do
+    socket
+  end
+
+  defp update_socket(socket, assigns, %Team{} = team, selected_tab) do
+
+    socket
+    |> assign_paginate_team(team.id, selected_tab)
+    |> then(&{:ok, &1})
+  end
+
+  def assign_paginate_team(socket, team_id, career_field, page \\ 1) do
+    # TODO 一旦チームリーダーのUserIDのみセットするように仮実装で様子見
+    %{page_number: page, total_pages: total_pages, entries: skill_panels} =
+      SkillPanels.list_team_member_users_skill_panels_by_career_field(team_id, career_field, page)
+
+    socket
+    |> assign(:skill_panels, skill_panels)
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
   end
 
   def assign_paginate(socket, user_id, career_field, page \\ 1) do
