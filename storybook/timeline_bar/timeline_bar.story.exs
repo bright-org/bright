@@ -53,6 +53,35 @@ defmodule Storybook.Components.TimelineBar do
           selected_date: "2023.6",
           type: "other"
         }
+      },
+      %Variation{
+        id: :small,
+        attributes: %{
+          dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
+          selected_date: "2022.12",
+          type: "myself",
+          scale: "sm"
+        }
+      },
+      %Variation{
+        id: :small_with_now,
+        attributes: %{
+          dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
+          selected_date: "2023.6",
+          type: "myself",
+          display_now: true,
+          scale: "sm"
+        }
+      },
+      %Variation{
+        id: :small_now,
+        attributes: %{
+          dates: ["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"],
+          selected_date: "now",
+          type: "myself",
+          display_now: true,
+          scale: "sm"
+        }
       }
     ]
   end

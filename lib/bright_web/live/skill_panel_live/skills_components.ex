@@ -7,13 +7,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   def compares(assigns) do
     ~H"""
     <div class="flex mt-4 items-center">
-      <.compare_timeline />
+      <.compare_timeline myself={@myself} timeline={@timeline} />
       <% # TODO: 仮UI コンポーネント完成後に削除 %>
       <div class="flex gap-x-4">
         <button
           class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
           type="button"
           phx-click="demo_compare_user"
+          phx-target={@myself}
         >
           <span class="min-w-[6em]">個人と比較</span>
           <span
@@ -32,84 +33,55 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compare_timeline(assigns) do
     ~H"""
-      <div class="w-[566px] mr-10">
-        <div class="flex">
-          <div class="flex justify-center items-center ml-1 mr-3">
+    <div class="w-[566px] mr-10">
+      <div class="flex">
+        <% # 過去方向ボタン %>
+        <div class="flex justify-center items-center ml-1 mr-3">
+          <%= if @timeline.past_enabled do %>
             <button
               class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              phx-click="shift_timeline_past"
+              phx-target={@myself}
             >
-              <span class="material-icons text-white !text-3xl"
-                >arrow_left</span>
+              <span class="material-icons text-white !text-3xl">arrow_left</span>
             </button>
-          </div>
-          <div
-            class="bg-brightGray-50 h-[44px] rounded-full w-[500px] my-5 flex justify-around items-center relative"
-          >
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2022.12
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.3
-              </button>
-            </div>
-            <div class="h-[80px] w-[80px]">
-              <button
-                class="h-[80px] w-[80px] rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-xs flex justify-center items-center flex-col"
-              >
-                <span class="material-icons !text-[22px] !font-bold">check</span>
-                2022.6
-              </button>
-            </div>
+          <% else %>
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+              <span class="material-icons text-white !text-3xl">arrow_left</span>
+            </button>
+          <% end %>
+        </div>
 
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.9
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.12
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center absolute right-[58px]"
-            >
-              <button
-                class="h-[38px] w-[38px] border border-brightGray-50 text-attention-900 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                現在
-              </button>
-            </div>
-          </div>
-          <div class="flex justify-center items-center ml-2">
+        <% # タイムラインバー %>
+        <BrightWeb.TimelineBarComponents.timeline_bar
+          id="timeline"
+          target={@myself}
+          type="myself"
+          dates={@timeline.labels}
+          selected_date={@timeline.selected_label}
+          display_now={@timeline.display_now}
+          scale="sm"
+        />
+
+        <% # 未来方向ボタン %>
+        <div class="flex justify-center items-center ml-2">
+          <%= if @timeline.future_enabled do %>
             <button
-              class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded"
+              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              phx-click="shift_timeline_future"
+              phx-target={@myself}
+              disabled={!@timeline.future_enabled}
             >
-              <span class="material-icons text-white !text-3xl"
-                >arrow_right</span>
+              <span class="material-icons text-white !text-3xl">arrow_right</span>
             </button>
-          </div>
+          <% else %>
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+              <span class="material-icons text-white !text-3xl">arrow_right</span>
+            </button>
+          <% end %>
         </div>
       </div>
+    </div>
     """
   end
 
@@ -260,6 +232,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 type="button"
                 class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
                 phx-click="reject_compared_user"
+                phx-target={@myself}
                 phx-value-name={user.name}
               >
                 <span class="material-icons-outlined !text-xs">close</span>
@@ -351,12 +324,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                   class="flex justify-center gap-x-4 px-4"
                   phx-window-keydown={focus && "shortcut"}
                   phx-throttle="1000"
+                  phx-value-skill_id={col3.skill.id}
                 >
                   <label
                     class="block flex items-center"
                     phx-click="change"
                     phx-value-score="high"
-                    phx-value-row={row}
+                    phx-value-skill_id={col3.skill.id}
                   >
                     <input
                       type="radio"
@@ -370,7 +344,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     class="block flex items-center"
                     phx-click="change"
                     phx-value-score="middle"
-                    phx-value-row={row}
+                    phx-value-skill_id={col3.skill.id}
                   >
                     <input
                       type="radio"
@@ -384,7 +358,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     class="block flex items-center"
                     phx-click="change"
                     phx-value-score="low"
-                    phx-value-row={row}
+                    phx-value-skill_id={col3.skill.id}
                   >
                     <input
                       type="radio"

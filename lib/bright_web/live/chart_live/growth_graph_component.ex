@@ -7,9 +7,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
   alias Bright.SkillScores
-  @start_year 2021
-  @start_month 10
-  @monthly_interval 3
+  alias BrightWeb.SkillPanelLive.TimelineHelper
 
   @impl true
   def render(assigns) do
@@ -28,16 +26,16 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         <div class="flex">
           <div class="w-14 relative">
             <button
-              :if={@data.past_enabled}
+              :if={@timeline.past_enabled}
               phx-target={@myself}
-              phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })}
+              phx-click={JS.push("shift_timeline_past", value: %{id: "myself" })}
               class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
               disabled={false}
             >
               <span class="material-icons text-white !text-4xl">arrow_left</span>
             </button>
             <button
-              :if={!@data.past_enabled}
+              :if={!@timeline.past_enabled}
               phx-target={@myself}
               class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
               disabled={true}
@@ -52,32 +50,35 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-20">平均</p>
             <p class="py-6">見習い</p>
             <button
-              :if={@data.future_enabled}
+              :if={@timeline.future_enabled}
+              phx-click={JS.push("shift_timeline_future", value: %{id: "myself" })}
               phx-target={@myself}
-              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
-              disabled={true}
-            >
-              <span class="material-icons text-white !text-4xl">arrow_right</span>
-            </button>
-            <button
-              :if={!@data.future_enabled}
-              phx-target={@myself}
-              phx-click={if !@data.future_enabled, do: JS.push("month_add_click", value: %{id: "myself" })}
               class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
               disabled={false}
             >
               <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
+            <button
+              :if={!@timeline.future_enabled}
+              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={true}
+            >
+              <span class="material-icons text-white !text-4xl">arrow_right</span>
+            </button>
           </div>
         </div>
-        <.timeline_bar
-          id="myself"
-          target={@myself}
-          type="myself"
-          dates={@data.labels}
-          selected_date={@data.myselfSelected}
-          display_now={@data.future_enabled}
-        />
+        <div class="flex">
+          <div class="w-14"></div>
+          <.timeline_bar
+            id="myself"
+            target={@myself}
+            type="myself"
+            dates={@timeline.labels}
+            selected_date={@timeline.selected_label}
+            display_now={@timeline.display_now}
+          />
+          <div class="flex justify-center items-center ml-2"></div>
+        </div>
         <div class="flex py-4">
           <div class="w-14"></div>
           <div class="w-[725px] flex justify-between items-center">
@@ -103,95 +104,74 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </div>
 
         <%# TODO 他者選択できるまで非表示 %>
-        <.timeline_bar
-          :if={false}
-          id="other"
-          target={@myself}
-          type="other"
-          dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
-          selected_date="2022.12"
-        />
+        <div :if={false} class="flex">
+          <div class="w-14"></div>
+          <.timeline_bar
+            id="other"
+            target={@myself}
+            type="other"
+            dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
+            selected_date="2022.12"
+          />
+          <div class="flex justify-center items-center ml-2"></div>
+        </div>
       </div>
     """
   end
 
   @impl true
   def update(assigns, socket) do
-    start =
-      get_future_month()
-      |> Timex.shift(years: -1)
+    timeline = TimelineHelper.get_current()
 
     socket =
       socket
       |> assign(assigns)
-
-    labels = create_months(start.year, start.month, 0)
-
-    socket =
-      socket
-      |> assign(:data, %{
-        myselfSelected: "now",
-        labels: labels,
-        future_enabled: true,
-        past_enabled: true
-      })
+      |> assign(timeline: timeline)
       |> create_data()
 
     {:ok, socket}
   end
 
-  defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
-
-  defp get_future_month(start_month, now) do
-    {:ok, now} = Date.new(now.year, now.month, 1)
-
-    1..24//3
-    |> Enum.map(fn x -> x + start_month - 1 end)
-    |> Enum.map(fn x -> month_shiht_add(now.year - 1, x) end)
-    |> Enum.map(fn x -> Date.from_erl!(x) end)
-    |> Enum.filter(fn x -> Timex.compare(x, now) > 0 end)
-    |> List.first()
-  end
-
-  defp month_shiht_add(year, month) when month > 24, do: {year + 2, month - 24, 1}
-  defp month_shiht_add(year, month) when month > 12, do: {year + 1, month - 12, 1}
-  defp month_shiht_add(year, month) when month <= 12, do: {year, month, 1}
-
   @impl true
-  def handle_event("timeline_bar_button_click", params, socket) do
+  def handle_event("timeline_bar_button_click", %{"date" => date} = params, socket) do
     Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
-    socket = socket |> select_data(params["date"])
+
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.select_label(date)
+
+    socket =
+      socket
+      |> assign(timeline: timeline)
+      |> select_data()
+
     {:noreply, socket}
   end
 
-  def handle_event("month_subtraction_click", _params, socket) do
-    {:noreply, create_labels(socket, -@monthly_interval) |> create_data()}
+  def handle_event("shift_timeline_past", _params, socket) do
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.shift_for_past()
+
+    socket =
+      socket
+      |> assign(timeline: timeline)
+      |> create_data()
+
+    {:noreply, socket}
   end
 
-  def handle_event("month_add_click", _params, socket) do
-    {:noreply, create_labels(socket, @monthly_interval) |> create_data()}
-  end
+  def handle_event("shift_timeline_future", _params, socket) do
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.shift_for_future()
 
-  defp create_labels(socket, diff) do
-    [year, month] =
-      socket.assigns.data.labels
-      |> List.first()
-      |> String.split(".")
+    socket =
+      socket
+      |> assign(timeline: timeline)
+      |> create_data()
 
-    labels = create_months(String.to_integer(year), String.to_integer(month), diff)
-
-    future = get_future_month()
-    future_enabled = labels |> List.last() == date_to_label(future)
-
-    past_enabled = labels |> List.first() != "#{@start_year}.#{@start_month}"
-
-    data =
-      socket.assigns.data
-      |> Map.put(:labels, labels)
-      |> Map.put(:future_enabled, future_enabled)
-      |> Map.put(:past_enabled, past_enabled)
-
-    assign(socket, :data, data)
+    {:noreply, socket}
   end
 
   defp create_data(
@@ -200,15 +180,22 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
              user_id: user_id,
              skill_panel_id: skill_panel_id,
              class: class,
-             data: data
+             timeline: timeline
            }
          } = socket
        ) do
+    data = %{
+      myselfSelected: timeline.selected_label,
+      labels: timeline.labels,
+      future_enabled: !timeline.future_enabled,
+      past_enabled: timeline.past_enabled
+    }
+
     from_date =
       data.labels
       |> List.first()
       |> label_to_date()
-      |> Timex.shift(months: -@monthly_interval)
+      |> Timex.shift(months: -TimelineHelper.get_monthly_interval())
 
     to_date =
       data.labels
@@ -272,22 +259,10 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   defp date_to_label(data), do: "#{data.year}.#{data.month}"
 
-  defp create_months(year, month, shift_month) do
-    st =
-      {year, month, 1}
-      |> Date.from_erl!()
-      |> Timex.shift(months: shift_month)
-
-    0..4
-    |> Enum.map(fn x ->
-      Timex.shift(st, months: 3 * x) |> then(fn x -> "#{x.year}.#{x.month}" end)
-    end)
-  end
-
-  defp select_data(socket, date) do
+  defp select_data(socket) do
     data =
       socket.assigns.data
-      |> Map.put(:myselfSelected, date)
+      |> Map.put(:myselfSelected, socket.assigns.timeline.selected_label)
 
     assign(socket, :data, data)
   end
