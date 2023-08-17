@@ -40,6 +40,11 @@ defmodule BrightWeb.TimelineBarComponents do
     "sm" => "right-[58px]"
   }
 
+  @button_style %{
+    "md" => "",
+    "sm" => "border border-brightGray-50 font-bold"
+  }
+
   @doc """
   Renders a Timeline Bar
 
@@ -125,7 +130,7 @@ defmodule BrightWeb.TimelineBarComponents do
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: @date})}
         phx-target={@target}
-        class={["rounded-full bg-white text-xs flex justify-center items-center", button_scale_class(@scale)]}
+        class={["rounded-full bg-white text-xs flex justify-center items-center", button_scale_class(@scale), button_style_class(@scale)]}
       >
         <%= @date %>
       </button>
@@ -165,7 +170,7 @@ defmodule BrightWeb.TimelineBarComponents do
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}
-        class={["rounded-full bg-white text-xs text-attention-900 flex justify-center items-center", button_now_scale_class(@scale)]}
+        class={["rounded-full bg-white text-xs text-attention-900 flex justify-center items-center", button_now_scale_class(@scale), button_style_class(@scale)]}
       >
         現在
       </button>
@@ -237,5 +242,9 @@ defmodule BrightWeb.TimelineBarComponents do
 
   defp button_now_position_class(scale) do
     get_in(@button_now_position, [scale])
+  end
+
+  defp button_style_class(scale) do
+    get_in(@button_style, [scale])
   end
 end
