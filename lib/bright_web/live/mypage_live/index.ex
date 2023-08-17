@@ -3,12 +3,12 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.ProfileComponents
   # import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
-  alias BrightWeb.MypageLive.ProfileHelper
+  alias BrightWeb.DisplayUserHelper
 
   @impl true
   def mount(params, _session, socket) do
     socket
-    |> ProfileHelper.assign_display_user(params)
+    |> DisplayUserHelper.assign_display_user(params)
     |> assign(:page_title, "マイページ")
     |> then(&{:ok, &1})
   end

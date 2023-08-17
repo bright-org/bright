@@ -1,8 +1,8 @@
-defmodule BrightWeb.MypageLive.ProfileHelper do
+defmodule BrightWeb.DisplayUserHelper do
   @moduledoc """
   Profile取得共通処理
   """
-  use Phoenix.Component
+  import Phoenix.Component, only: [assign: 3]
   alias Bright.Accounts
   alias Bright.Repo
   alias Bright.Utils.Aes.Aes128
