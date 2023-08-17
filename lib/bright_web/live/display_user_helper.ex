@@ -16,7 +16,8 @@ defmodule BrightWeb.DisplayUserHelper do
       |> Repo.preload(:user_profile)
 
     socket
-    |> assign(:is_anonymous, false)
+    |> assign(:me, false)
+    |> assign(:anonymous, false)
     |> assign(:display_user, user)
   end
 
@@ -31,13 +32,15 @@ defmodule BrightWeb.DisplayUserHelper do
       |> Map.put(:id, user.id)
 
     socket
-    |> assign(:is_anonymous, true)
+    |> assign(:me, false)
+    |> assign(:anonymous, true)
     |> assign(:display_user, display_user)
   end
 
   def assign_display_user(socket, _params) do
     socket
-    |> assign(:is_anonymous, false)
+    |> assign(:me, true)
+    |> assign(:anonymous, false)
     |> assign(:display_user, socket.assigns.current_user)
   end
 
