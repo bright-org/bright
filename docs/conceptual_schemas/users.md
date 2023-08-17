@@ -164,8 +164,8 @@ erDiagram
   custom_groups {
     id user_id FK
     string group_type "enum (superior: 優秀なエンジニアの方々, custom: カスタムグループ)"
-    string name_en "カスタムグループ名(英語)"
-    string name_ja "カスタムグループ名（日本語）"
+    string group_name_en "カスタムグループ名(英語)"
+    string group_name_ja "カスタムグループ名（日本語）"
     int position
   }
 
