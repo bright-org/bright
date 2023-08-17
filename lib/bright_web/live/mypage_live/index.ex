@@ -40,12 +40,15 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def assign_display_user(socket, %{"user_name_crypted" => user_name_crypted}) do
-    user = decrypt_user_name(user_name_crypted)
-    |> Accounts.get_user_by_name_or_email()
+    user =
+      decrypt_user_name(user_name_crypted)
+      |> Accounts.get_user_by_name_or_email()
 
-    display_user = %User{}
-    |> Map.put(:user_profile, %Bright.UserProfiles.UserProfile{})
-    |> Map.put(:id, user.id)
+    display_user =
+      %User{}
+      |> Map.put(:user_profile, %Bright.UserProfiles.UserProfile{})
+      |> Map.put(:id, user.id)
+
     socket
     |> assign(:is_anonymous, true)
     |> assign(:display_user, display_user)
@@ -58,13 +61,13 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def encrypt_user_name(%User{} = user) do
-    date_time = user.inserted_at |> NaiveDateTime.to_string
+    date_time = user.inserted_at |> NaiveDateTime.to_string()
     Aes128.encrypt("#{user.name},#{date_time}")
   end
 
   def decrypt_user_name(ciphertext) do
-      Aes128.decrypt(ciphertext)
-      |> String.split(",")
-      |> List.first()
+    Aes128.decrypt(ciphertext)
+    |> String.split(",")
+    |> List.first()
   end
 end
