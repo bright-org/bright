@@ -169,21 +169,23 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def assign_counter(socket) do
-    counter =
-      socket.assigns.skill_score_dict
-      |> Map.values()
-      |> Enum.reduce(@counter, fn skill_score, acc ->
-        acc
-        |> Map.update!(skill_score.score, &(&1 + 1))
-        |> Map.update!(:exam_touch, &if(skill_score.exam_progress, do: &1 + 1, else: &1))
-        |> Map.update!(:reference_read, &if(skill_score.reference_read, do: &1 + 1, else: &1))
-        |> Map.update!(:evidence_filled, &if(skill_score.evidence_filled, do: &1 + 1, else: &1))
-      end)
-
+    counter = count_skill_scores(socket.assigns.skill_score_dict)
     num_skills = Enum.count(socket.assigns.skill_score_dict)
 
     socket
     |> assign(counter: counter, num_skills: num_skills)
+  end
+
+  def count_skill_scores(skill_score_dict) do
+    skill_score_dict
+    |> Map.values()
+    |> Enum.reduce(@counter, fn skill_score, acc ->
+      acc
+      |> Map.update!(skill_score.score, &(&1 + 1))
+      |> Map.update!(:exam_touch, &if(skill_score.exam_progress, do: &1 + 1, else: &1))
+      |> Map.update!(:reference_read, &if(skill_score.reference_read, do: &1 + 1, else: &1))
+      |> Map.update!(:evidence_filled, &if(skill_score.evidence_filled, do: &1 + 1, else: &1))
+    end)
   end
 
   def assign_page_sub_title(socket) do
