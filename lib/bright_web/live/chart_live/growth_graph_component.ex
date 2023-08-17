@@ -125,7 +125,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   @impl true
   def update(assigns, socket) do
-
     timeline = TimelineHelper.get_current()
 
     socket =
@@ -147,10 +146,10 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     |> IO.inspect()
   end
 
-
   @impl true
   def handle_event("timeline_bar_button_click", params, socket) do
     Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
+
     timeline =
       socket.assigns.timeline
       |> TimelineHelper.select_label(params["date"])
@@ -164,9 +163,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       socket.assigns.timeline
       |> TimelineHelper.shift_for_past()
 
-
-    socket = socket
-    |> assign(timeline: timeline)
+    socket =
+      socket
+      |> assign(timeline: timeline)
 
     {:noreply, create_labels(socket) |> create_data()}
   end
@@ -176,9 +175,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       socket.assigns.timeline
       |> TimelineHelper.shift_for_future()
 
-    socket = socket
-    |> assign(timeline: timeline)
-
+    socket =
+      socket
+      |> assign(timeline: timeline)
 
     {:noreply, create_labels(socket) |> create_data()}
   end
@@ -271,11 +270,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   defp date_to_label(data), do: "#{data.year}.#{data.month}"
 
-
   defp select_data(socket) do
     data =
       socket.assigns.data
       |> Map.put(:myselfSelected, socket.assigns.timeline.selected_label)
+
     assign(socket, :data, data)
   end
 
