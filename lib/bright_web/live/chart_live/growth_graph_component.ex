@@ -70,14 +70,18 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             </button>
           </div>
         </div>
-        <.timeline_bar
-          id="myself"
-          target={@myself}
-          type="myself"
-          dates={@data.labels}
-          selected_date={@data.myselfSelected}
-          display_now={@data.future_enabled}
-        />
+        <div class="flex">
+          <div class="w-14"></div>
+          <.timeline_bar
+            id="myself"
+            target={@myself}
+            type="myself"
+            dates={@data.labels}
+            selected_date={@data.myselfSelected}
+            display_now={@data.future_enabled}
+          />
+          <div class="flex justify-center items-center ml-2"></div>
+        </div>
         <div class="flex py-4">
           <div class="w-14"></div>
           <div class="w-[725px] flex justify-between items-center">
@@ -103,14 +107,17 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </div>
 
         <%# TODO 他者選択できるまで非表示 %>
-        <.timeline_bar
-          :if={false}
-          id="other"
-          target={@myself}
-          type="other"
-          dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
-          selected_date="2022.12"
-        />
+        <div :if={false} class="flex">
+          <div class="w-14"></div>
+          <.timeline_bar
+            id="other"
+            target={@myself}
+            type="other"
+            dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
+            selected_date="2022.12"
+          />
+          <div class="flex justify-center items-center ml-2"></div>
+        </div>
       </div>
     """
   end
