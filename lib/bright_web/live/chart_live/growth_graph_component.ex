@@ -7,6 +7,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
   alias Bright.SkillScores
+  alias BrightWeb.SkillPanelLive.TimelineHelper
+
   @start_year 2021
   @start_month 10
   @monthly_interval 3
@@ -53,18 +55,17 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-6">見習い</p>
             <button
               :if={@data.future_enabled}
+              phx-click={JS.push("month_add_click", value: %{id: "myself" })}
               phx-target={@myself}
-              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
-              disabled={true}
+              class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={false}
             >
               <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
             <button
               :if={!@data.future_enabled}
-              phx-target={@myself}
-              phx-click={if !@data.future_enabled, do: JS.push("month_add_click", value: %{id: "myself" })}
-              class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
-              disabled={false}
+              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
+              disabled={true}
             >
               <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
@@ -124,79 +125,70 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   @impl true
   def update(assigns, socket) do
-    start =
-      get_future_month()
-      |> Timex.shift(years: -1)
+
+    timeline = TimelineHelper.get_current()
 
     socket =
       socket
       |> assign(assigns)
-
-    labels = create_months(start.year, start.month, 0)
+      |> assign(timeline: timeline)
 
     socket =
       socket
       |> assign(:data, %{
         myselfSelected: "now",
-        labels: labels,
-        future_enabled: true,
-        past_enabled: true
+        labels: timeline.labels,
+        future_enabled: timeline.future_enabled,
+        past_enabled: timeline.past_enabled
       })
       |> create_data()
 
     {:ok, socket}
+    |> IO.inspect()
   end
 
-  defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
-
-  defp get_future_month(start_month, now) do
-    {:ok, now} = Date.new(now.year, now.month, 1)
-
-    1..24//3
-    |> Enum.map(fn x -> x + start_month - 1 end)
-    |> Enum.map(fn x -> month_shiht_add(now.year - 1, x) end)
-    |> Enum.map(fn x -> Date.from_erl!(x) end)
-    |> Enum.filter(fn x -> Timex.compare(x, now) > 0 end)
-    |> List.first()
-  end
-
-  defp month_shiht_add(year, month) when month > 24, do: {year + 2, month - 24, 1}
-  defp month_shiht_add(year, month) when month > 12, do: {year + 1, month - 12, 1}
-  defp month_shiht_add(year, month) when month <= 12, do: {year, month, 1}
 
   @impl true
   def handle_event("timeline_bar_button_click", params, socket) do
     Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
-    socket = socket |> select_data(params["date"])
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.select_label(params["date"])
+
+    socket = socket |> assign(timeline: timeline) |> select_data()
     {:noreply, socket}
   end
 
   def handle_event("month_subtraction_click", _params, socket) do
-    {:noreply, create_labels(socket, -@monthly_interval) |> create_data()}
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.shift_for_past()
+
+
+    socket = socket
+    |> assign(timeline: timeline)
+
+    {:noreply, create_labels(socket) |> create_data()}
   end
 
   def handle_event("month_add_click", _params, socket) do
-    {:noreply, create_labels(socket, @monthly_interval) |> create_data()}
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.shift_for_future()
+
+    socket = socket
+    |> assign(timeline: timeline)
+
+
+    {:noreply, create_labels(socket) |> create_data()}
   end
 
-  defp create_labels(socket, diff) do
-    [year, month] =
-      socket.assigns.data.labels
-      |> List.first()
-      |> String.split(".")
-
-    labels = create_months(String.to_integer(year), String.to_integer(month), diff)
-
-    future = get_future_month()
-    future_enabled = labels |> List.last() == date_to_label(future)
-
-    past_enabled = labels |> List.first() != "#{@start_year}.#{@start_month}"
-
+  defp create_labels(socket) do
     data =
       socket.assigns.data
-      |> Map.put(:labels, labels)
-      |> Map.put(:future_enabled, future_enabled)
-      |> Map.put(:past_enabled, past_enabled)
+      |> Map.put(:labels, socket.assigns.timeline.labels)
+      |> Map.put(:future_enabled, socket.assigns.timeline.future_enabled)
+      |> Map.put(:past_enabled, socket.assigns.timeline.past_enabled)
 
     assign(socket, :data, data)
   end
@@ -279,23 +271,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   defp date_to_label(data), do: "#{data.year}.#{data.month}"
 
-  defp create_months(year, month, shift_month) do
-    st =
-      {year, month, 1}
-      |> Date.from_erl!()
-      |> Timex.shift(months: shift_month)
 
-    0..4
-    |> Enum.map(fn x ->
-      Timex.shift(st, months: 3 * x) |> then(fn x -> "#{x.year}.#{x.month}" end)
-    end)
-  end
-
-  defp select_data(socket, date) do
+  defp select_data(socket) do
     data =
       socket.assigns.data
-      |> Map.put(:myselfSelected, date)
-
+      |> Map.put(:myselfSelected, socket.assigns.timeline.selected_label)
     assign(socket, :data, data)
   end
 
