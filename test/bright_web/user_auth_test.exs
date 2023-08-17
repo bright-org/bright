@@ -260,7 +260,7 @@ defmodule BrightWeb.UserAuthTest do
       assert updated_socket.assigns.current_user.user_onboardings.id == onboarding.id
     end
 
-    test "redirects to onboarding page if there isn't a finish onboarding", %{
+    test "redirects to onboarding page when user have not finished onboarding yet", %{
       conn: conn,
       user: user
     } do
@@ -279,7 +279,7 @@ defmodule BrightWeb.UserAuthTest do
   end
 
   describe "on_mount: redirect_if_onboarding_finished" do
-    test "redirects if there is an authenticated  user ", %{conn: conn, user: user} do
+    test "redirects when user already finished onboarding", %{conn: conn, user: user} do
       insert(:user_onboarding, user: user)
       user_token = Accounts.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
@@ -295,7 +295,7 @@ defmodule BrightWeb.UserAuthTest do
                )
     end
 
-    test "doesn't redirect if there is no onboarding user", %{conn: conn, user: user} do
+    test "doesn't redirect when user have not finished onboarding yet", %{conn: conn, user: user} do
       user_token = Accounts.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
       socket = %LiveView.Socket{}
