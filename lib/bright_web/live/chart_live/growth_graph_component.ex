@@ -30,7 +30,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         <div class="flex">
           <div class="w-14 relative">
             <button
-              :if={@data.past_enabled}
+              :if={@timeline.past_enabled}
               phx-target={@myself}
               phx-click={JS.push("month_subtraction_click", value: %{id: "myself" })}
               class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
@@ -39,7 +39,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
               <span class="material-icons text-white !text-4xl">arrow_left</span>
             </button>
             <button
-              :if={!@data.past_enabled}
+              :if={!@timeline.past_enabled}
               phx-target={@myself}
               class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
               disabled={true}
@@ -54,7 +54,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <p class="py-20">平均</p>
             <p class="py-6">見習い</p>
             <button
-              :if={@data.future_enabled}
+              :if={@timeline.future_enabled}
               phx-click={JS.push("month_add_click", value: %{id: "myself" })}
               phx-target={@myself}
               class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
@@ -63,7 +63,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
               <span class="material-icons text-white !text-4xl">arrow_right</span>
             </button>
             <button
-              :if={!@data.future_enabled}
+              :if={!@timeline.future_enabled}
               class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
               disabled={true}
             >
@@ -138,7 +138,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       |> assign(:data, %{
         myselfSelected: "now",
         labels: timeline.labels,
-        future_enabled: timeline.future_enabled,
+        future_enabled: !timeline.future_enabled,
         past_enabled: timeline.past_enabled
       })
       |> create_data()
@@ -187,7 +187,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     data =
       socket.assigns.data
       |> Map.put(:labels, socket.assigns.timeline.labels)
-      |> Map.put(:future_enabled, socket.assigns.timeline.future_enabled)
+      |> Map.put(:future_enabled, !socket.assigns.timeline.future_enabled)
       |> Map.put(:past_enabled, socket.assigns.timeline.past_enabled)
 
     assign(socket, :data, data)
