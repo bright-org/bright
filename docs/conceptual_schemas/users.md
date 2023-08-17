@@ -163,7 +163,10 @@ erDiagram
 
   custom_groups {
     id user_id FK
-    string name "カスタムユーザー名"
+    string group_type "enum (superior: 優秀なエンジニアの方々, custom: カスタムグループ)"
+    string name_en "カスタムグループ名(英語)"
+    string name_ja "カスタムグループ名（日本語）"
+    int position
   }
 
   custom_group_users {
@@ -180,31 +183,9 @@ erDiagram
 
 ```mermaid
 erDiagram
-"ユーザー"||--|{"特別なカスタームグループユーザー（優秀なユーザー）" : ""
-"特別なカスタームグループユーザー（優秀なユーザー）"||--||"他のユーザー" : ""
-"特別なカスタームグループ（優秀なユーザー）"||--o{"特別なカスタームグループユーザー（優秀なユーザー）" : ""
+"ユーザー"||--||"カスタームグループ（優秀なユーザー）" : ""
+"カスタームグループ（優秀なユーザー）"}o--o{"他のユーザー" : ""
 "ユーザー"||--o{"カスタームグループ" : ""
-"カスタームグループ"||--o{"カスタムグループユーザー" : ""
-"カスタムグループユーザー"||--||"他のユーザー" : ""
+"カスタームグループ"}o--o{"他のユーザー" : ""
 ```
 
-```mermaid
-erDiagram
-  "users"||--o{"special_custom_group_users" : ""
-  "special_custom_group_users"||--||"users" : ""
-  "special_custom_groups"||--o{"special_custom_group_users" : ""
-
-  users {
-    string username UK "ハンドルネーム"
-  }
-
-  special_custom_groups {
-    string name "カスタムユーザー名"
-  }
-
-  special_custom_group_users {
-    id custom_group_id FK
-    id user_id FK
-  }
-
-```
