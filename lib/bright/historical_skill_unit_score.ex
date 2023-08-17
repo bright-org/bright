@@ -21,6 +21,7 @@ defmodule Bright.HistoricalSkillUnitScore do
     from_date = {locked_date.year, locked_date.month, 1} |> Date.from_erl!()
     to_date = from_date |> Timex.shift(months: 1) |> Timex.shift(days: -1)
 
+    # TODO 現在は重複したデータ（該当月に２回以上実施）に未対応
     from(historical_skill_unit_score in HistoricalSkillUnitScore,
       join: historical_skill_unit in assoc(historical_skill_unit_score, :historical_skill_unit),
       join: historical_skill_classes in assoc(historical_skill_unit, :historical_skill_classes),
