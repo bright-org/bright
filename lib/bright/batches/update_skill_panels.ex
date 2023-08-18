@@ -31,6 +31,8 @@ defmodule Bright.Batches.UpdateSkillPanels do
     HistoricalCareerFieldScore
   }
 
+  alias Bright.SkillEvidences.SkillEvidence
+
   def call(locked_date \\ nil) do
     skill_panels = Repo.all(SkillPanel)
     now = NaiveDateTime.local_now()
@@ -100,6 +102,9 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
       create_skill_class_scores(draft_skill_class_pairs, now)
       create_career_field_scores(now)
+
+      # 公開データの外部キー付け替え
+      update_skill_evidences(draft_skill_pairs, now)
 
       # コピー元の公開データを削除
       delete_old_skill_classes(locked_date)
@@ -551,6 +556,25 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
     Repo.delete_all(CareerFieldScore)
     Repo.insert_all(CareerFieldScore, entries)
+  end
+
+  def update_skill_evidences(draft_skill_pairs, now) do
+    SkillEvidence
+    |> Repo.all()
+    |> Repo.preload(:skill)
+    |> Enum.each(fn skill_evidence ->
+      case Enum.find(draft_skill_pairs, fn {_draft_skill, skill} ->
+             skill_evidence.skill.trace_id == skill.trace_id
+           end) do
+        {_draft_skill, skill} ->
+          skill_evidence
+          |> Ecto.Changeset.change(skill_id: skill.id, updated_at: now)
+          |> Repo.update!()
+
+        nil ->
+          Repo.delete!(skill_evidence)
+      end
+    end)
   end
 
   defp delete_old_skill_classes(locked_date) do
