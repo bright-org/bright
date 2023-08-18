@@ -8,6 +8,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   def mount(_params, _session, socket) do
     {:ok,
      socket
+     |> assign(:select_label, "now")
      |> assign(:page_title, "スキルパネル")}
   end
 
@@ -62,8 +63,11 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   end
 
   @impl true
-  def handle_info(%{event_name: "timeline_bar_button_click", params: _params}, socket) do
-    # TODO　スキルジェムを更新するイベントを追加すること
+  def handle_info(%{event_name: "timeline_bar_button_click", params: %{"date" => date}}, socket) do
+    socket =
+      socket
+      |> assign(:select_label, date)
+
     {:noreply, socket}
   end
 end
