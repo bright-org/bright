@@ -342,7 +342,6 @@ erDiagram
         - `skill_exams` の外部キー(skill_id)
         - `skill_references` の外部キー(skill_id)
         - 1のコピー先データがなければ削除する
-          - `skill_evidences`を除く（公開の話もあるため）
 - 公開→履歴
     1. 公開テーブルに入っているデータを履歴テーブルにコピーする
         - `skill_classs` → `historical_skill_classes`
