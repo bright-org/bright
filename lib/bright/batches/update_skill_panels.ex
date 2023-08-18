@@ -529,7 +529,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
       |> Enum.reject(&is_nil/1)
 
-    Repo.delete_all(SkillClassScore, entries)
+    Repo.delete_all(SkillClassScore)
     Repo.insert_all(SkillClassScore, entries)
   end
 
@@ -549,18 +549,18 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.delete_all(CareerFieldScore, entries)
+    Repo.delete_all(CareerFieldScore)
     Repo.insert_all(CareerFieldScore, entries)
   end
 
   defp delete_old_skill_classes(locked_date) do
     from(scu in SkillClassUnit,
       join: sc in assoc(scu, :skill_class),
-      where: sc.locked_date < ^locked_date
+      where: sc.locked_date != ^locked_date
     )
     |> Repo.delete_all()
 
-    from(sc in SkillClass, where: sc.locked_date < ^locked_date)
+    from(sc in SkillClass, where: sc.locked_date != ^locked_date)
     |> Repo.delete_all()
   end
 
@@ -568,17 +568,17 @@ defmodule Bright.Batches.UpdateSkillPanels do
     from(s in Skill,
       join: sc in assoc(s, :skill_category),
       join: su in assoc(sc, :skill_unit),
-      where: su.locked_date < ^locked_date
+      where: su.locked_date != ^locked_date
     )
     |> Repo.delete_all()
 
     from(sc in SkillCategory,
       join: su in assoc(sc, :skill_unit),
-      where: su.locked_date < ^locked_date
+      where: su.locked_date != ^locked_date
     )
     |> Repo.delete_all()
 
-    from(su in SkillUnit, where: su.locked_date < ^locked_date)
+    from(su in SkillUnit, where: su.locked_date != ^locked_date)
     |> Repo.delete_all()
   end
 end

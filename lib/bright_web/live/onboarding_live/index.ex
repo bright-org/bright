@@ -2,7 +2,9 @@ defmodule BrightWeb.OnboardingLive.Index do
   use BrightWeb, :live_view
 
   alias Bright.Onboardings
+  alias Bright.Onboardings.UserOnboarding
 
+  @default_tab "engineer"
   @panels %{
     "want_todo_panel" => :open_want_todo,
     "wants_job_panel" => :open_wants_job
@@ -14,17 +16,27 @@ defmodule BrightWeb.OnboardingLive.Index do
     |> assign(:page_title, "オンボーディング")
     |> assign(:open_want_todo, false)
     |> assign(:open_wants_job, false)
+    |> assign(:tab, @default_tab)
     |> then(&{:ok, &1})
   end
 
   @impl true
+  def handle_params(params, uri, socket) do
+    socket
+    |> assign(:current_path, URI.parse(uri).path)
+    |> assign_params(params)
+    |> then(&{:noreply, &1})
+  end
+
+  defp assign_params(socket, params) do
+    socket
+    |> assign(:open, Map.get(params, "open", false))
+    |> assign(:tab, Map.get(params, "tab", "engineer"))
+  end
+
+  @impl true
   def handle_event("skip_onboarding", _value, %{assigns: %{current_user: user}} = socket) do
-    # TODO: user_onboardingは初回のみレコード登録する。スキルアップ画面対応のときはリンクを消す等検討する
-    {:ok, _onboarding} =
-      Onboardings.create_user_onboarding(%{
-        completed_at: NaiveDateTime.utc_now(),
-        user_id: user.id
-      })
+    skip_onboarding(user.user_onboardings, user.id)
 
     socket
     |> put_flash(:info, "オンボーディングをスキップしました")
@@ -39,6 +51,16 @@ defmodule BrightWeb.OnboardingLive.Index do
     |> assign(@panels[hide_panel(panel)], false)
     |> then(&{:noreply, &1})
   end
+
+  defp skip_onboarding(nil, user_id) do
+    {:ok, _onboarding} =
+      Onboardings.create_user_onboarding(%{
+        completed_at: NaiveDateTime.utc_now(),
+        user_id: user_id
+      })
+  end
+
+  defp skip_onboarding(%UserOnboarding{}, _), do: false
 
   defp toggle(js \\ %JS{}, id) do
     js

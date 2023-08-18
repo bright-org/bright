@@ -124,7 +124,7 @@ defmodule BrightWeb.UserAuth do
 
     user =
       (user_token && Accounts.get_user_by_session_token(user_token))
-      |> Repo.preload(:user_profile)
+      |> Repo.preload([:user_profile, :user_onboardings])
 
     assign(conn, :current_user, user)
   end
@@ -208,11 +208,32 @@ defmodule BrightWeb.UserAuth do
     end
   end
 
+  def on_mount(:ensure_onboarding, _params, _session, socket) do
+    if socket.assigns.current_user.user_onboardings do
+      {:cont, socket}
+    else
+      socket
+      |> Phoenix.LiveView.put_flash(:error, "オンボーディングが完了していません")
+      |> Phoenix.LiveView.redirect(to: ~p"/onboardings")
+      |> then(&{:halt, &1})
+    end
+  end
+
+  def on_mount(:redirect_if_onboarding_finished, _params, _session, socket) do
+    if socket.assigns.current_user.user_onboardings do
+      socket
+      |> Phoenix.LiveView.redirect(to: ~p"/skill_up")
+      |> then(&{:halt, &1})
+    else
+      {:cont, socket}
+    end
+  end
+
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
         Accounts.get_user_by_session_token(user_token)
-        |> Repo.preload(:user_profile)
+        |> Repo.preload([:user_profile, :user_onboardings])
       end
     end)
   end
@@ -246,6 +267,27 @@ defmodule BrightWeb.UserAuth do
       |> put_flash(:error, "ログインが必要です")
       |> redirect(to: ~p"/users/log_in")
       |> halt()
+    end
+  end
+
+  def require_onboarding(conn, _ops) do
+    if Accounts.onboarding_finished?(conn.assigns[:current_user]) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "オンボーディングが完了していません")
+      |> redirect(to: ~p"/onboardings")
+      |> halt()
+    end
+  end
+
+  def redirect_if_onboarding_finished(conn, _ops) do
+    if Accounts.onboarding_finished?(conn.assigns[:current_user]) do
+      conn
+      |> redirect(to: ~p"/skill_up")
+      |> halt()
+    else
+      conn
     end
   end
 

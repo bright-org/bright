@@ -4,6 +4,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   import BrightWeb.BrightModalComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
+  import BrightWeb.DisplayUserHelper
 
   alias Bright.SkillUnits
   alias Bright.SkillScores
@@ -19,10 +20,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   }
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
     {:ok,
      socket
+     |> assign_display_user(params)
+     |> assign_skill_panel(params["skill_panel_id"], "panels")
      |> assign(:page_title, "スキルパネル")
+     |> assign_page_sub_title()
      |> assign_edit_off()}
   end
 
@@ -32,20 +36,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply,
      socket
      |> assign_path(url)
-     |> assign_focus_user(params["user_name"])
-     |> assign_skill_panel(params["skill_panel_id"])
      |> assign_skill_classes()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_score_dict()
      |> assign_counter()
-     |> assign_page_sub_title()
      |> apply_action(socket.assigns.live_action, params)}
   end
 
   @impl true
   def handle_event("edit", _params, socket) do
-    skill_class_score_author?(socket.assigns.skill_class_score, socket.assigns.current_user)
+    socket.assigns.me
     |> if do
       {:noreply, socket |> assign_edit_on()}
     else
@@ -114,6 +115,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   # TODO: デモ用実装のため対象ユーザー実装後に削除
+  # TODO: 匿名に注意すること
   def handle_event("demo_change_user", _params, socket) do
     users =
       Bright.Accounts.User
@@ -274,8 +276,4 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp create_skill_evidence_if_not_existing(socket), do: socket
-
-  defp skill_class_score_author?(skill_class_score, user) do
-    skill_class_score.user_id == user.id
-  end
 end

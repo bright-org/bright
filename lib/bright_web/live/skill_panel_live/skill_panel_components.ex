@@ -33,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
-      <.skill_panel_switch current_user={@current_user} root={@root}/>
+      <.skill_panel_switch display_user={@display_user} root={@root}/>
       <.target_switch current_user={@current_user} />
     </div>
     """
@@ -42,40 +42,41 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <.skill_panel_menu current_user={@current_user} root={@root} />
+    <.skill_panel_menu id="skill_panel_menu" display_user={@display_user} root={@root} />
     <% # TODO: α版後にifを除去して表示 %>
     <.skill_set_menu :if={false} />
     """
   end
 
   def skill_panel_menu(assigns) do
+    # TODO: 使えるならばMegaMenuComponentsに差し替え
     ~H"""
-      <button
-        id="dropdownOffsetButton"
-        data-dropdown-toggle="dropdownOffset"
-        data-dropdown-offset-skidding="256"
-        data-dropdown-placement="bottom"
-        class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
-        type="button"
-      >
-        <span class="min-w-[6em]">スキルパネル</span>
-        <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
-          expand_more
-        </span>
-      </button>
+    <button
+      id={"dropdownOffsetButton-#{@id}"}
+      data-dropdown-toggle={"dropdownOffset-#{@id}"}
+      data-dropdown-offset-skidding="256"
+      data-dropdown-placement="bottom"
+      class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
+      type="button"
+    >
+      <span class="min-w-[6em]">スキルパネル</span>
+      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
+        expand_more
+      </span>
+    </button>
 
-      <!-- スキルパネル menu -->
-      <div
-        id="dropdownOffset"
-        class="z-10 hidden bg-white rounded-sm shadow"
-      >
-        <.live_component
-          id="skill_card"
-          module={BrightWeb.CardLive.SkillCardComponent}
-          current_user={@current_user}
-          root={@root}
-        />
-      </div>
+    <!-- スキルパネル menu -->
+    <div
+      id={"dropdownOffset-#{@id}"}
+      class="z-10 hidden bg-white rounded-sm shadow"
+    >
+      <.live_component
+        id="skill_card"
+        module={BrightWeb.CardLive.SkillCardComponent}
+        current_user={@display_user}
+        root={@root}
+      />
+    </div>
     """
   end
 
@@ -222,7 +223,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def return_myself_button(assigns) do
     ~H"""
-    <button phx-click="clear_focus_user" class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
+    <button phx-click="clear_display_user" class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
       自分に戻す
     </button>
     """
@@ -288,19 +289,19 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <div class="flex justify-between">
         <div class="w-[850px] pt-6">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
-          <% # TODO: 他者のときの.profileの仕様確認と対応が必要 %>
           <.profile
-            user_name={@focus_user.name}
-            title={@focus_user.user_profile.title}
-            icon_file_path={@focus_user.user_profile.icon_file_path}
+            user_name={@display_user.name}
+            title={@display_user.user_profile.title}
+            detail={@display_user.user_profile.detail}
+            icon_file_path={@display_user.user_profile.icon_file_path}
             display_excellent_person={false}
             display_anxious_person={false}
             display_return_to_yourself={true}
             display_sns={true}
-            twitter_url={@focus_user.user_profile.twitter_url}
-            github_url={@focus_user.user_profile.github_url}
-            facebook_url={@focus_user.user_profile.facebook_url}
-            display_detail={false}
+            twitter_url={@display_user.user_profile.twitter_url}
+            github_url={@display_user.user_profile.github_url}
+            facebook_url={@display_user.user_profile.facebook_url}
+            is_anonymous={@anonymous}
           />
         </div>
         <div class="mr-auto flex ml-7">

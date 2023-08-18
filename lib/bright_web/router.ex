@@ -149,16 +149,23 @@ defmodule BrightWeb.Router do
 
   # 認証後
   scope "/", BrightWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :require_onboarding]
 
     live_session :require_authenticated_user,
-      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [
+        {BrightWeb.UserAuth, :ensure_authenticated},
+        {BrightWeb.UserAuth, :ensure_onboarding}
+      ] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
+      live "/skill_up", OnboardingLive.Index, :index
+      live "/skill_up/wants/:want_id", OnboardingLive.SkillPanels
+      live "/skill_up/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
+      live "/skill_up/jobs/:job_id", OnboardingLive.SkillPanels
+      live "/skill_up/jobs/:job_id/skill_panels/:id", OnboardingLive.SkillPanel
       live "/mypage/:user_name", MypageLive.Index, :index
       live "/mypage/anon/:user_name_crypted", MypageLive.Index, :index
-      live "/skill_up", SkillUpDummyLive, :index
 
       live "/graphs", SkillPanelLive.Graph, :show
       live "/graphs/:skill_panel_id", SkillPanelLive.Graph, :show
@@ -184,16 +191,24 @@ defmodule BrightWeb.Router do
 
       live "/teams", MyTeamLive, :index
       live "/teams/:team_id", MyTeamLive, :index
-      live "/searchs", SearchLive.Index
+      live "/searches", SearchLive.Index
     end
   end
 
   # オンボーディング
   scope "/onboardings", BrightWeb do
-    pipe_through [:browser, :require_authenticated_user, :onboarding]
+    pipe_through [
+      :browser,
+      :require_authenticated_user,
+      :redirect_if_onboarding_finished,
+      :onboarding
+    ]
 
     live_session :require_authenticated_user_onboarding,
-      on_mount: [{BrightWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [
+        {BrightWeb.UserAuth, :ensure_authenticated},
+        {BrightWeb.UserAuth, :redirect_if_onboarding_finished}
+      ] do
       live "/", OnboardingLive.Index, :index
       live "/wants/:want_id", OnboardingLive.SkillPanels
       live "/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel

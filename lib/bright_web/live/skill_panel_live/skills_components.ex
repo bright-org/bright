@@ -203,7 +203,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           </td>
           <td class="!border-l !border-brightGray-200">
             <div class="flex justify-center items-center min-w-[150px]">
-              <p class="inline-flex flex-1 justify-center"><%= @focus_user.name %></p>
+              <p class="inline-flex flex-1 justify-center">
+                <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
+              </p>
 
               <%= if @editable do %>
                 <button
@@ -281,6 +283,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <%= for {[col1, col2, col3], row} <- @table_structure |> Enum.with_index(1) do %>
           <% focus = @focus_row == row %>
           <% skill_score = @skill_score_dict[col3.skill.id] %>
+          <% current_skill = Map.get(@current_skill_dict, col3.skill.trace_id) %>
+          <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
           <tr id={"skill-#{row}"} class="focus:bg-brightGray-100">
             <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
@@ -291,10 +295,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <div class="flex justify-between items-center">
                 <p><%= col3.skill.name %></p>
                 <div class="flex justify-between items-center gap-x-2">
-                  <% # TODO: 過去参照時はこのcol3.skillは使えないので今後修正 %>
-                  <.skill_evidence_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
-                  <.skill_reference_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
-                  <.skill_exam_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
+                  <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                 </div>
               </div>
             </td>
@@ -302,7 +305,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <div class="num-high-users flex justify-center gap-x-1">
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:high, :gray), "inline-block mr-1"]}></span>
-                  <%= if skill_score.score == :high do %>
+                  <%= if Map.get(skill_score, :score) == :high do %>
                     <%= get_in(@compared_users_stats, [col3.skill.id, :high_skills_count]) + 1 %>
                   <% else %>
                     <%= get_in(@compared_users_stats, [col3.skill.id, :high_skills_count]) %>
@@ -310,7 +313,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </div>
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:middle, :gray), "inline-block mr-1"]}></span>
-                  <%= if skill_score.score == :middle do %>
+                  <%= if Map.get(skill_score, :score) == :middle do %>
                     <%= get_in(@compared_users_stats, [col3.skill.id, :middle_skills_count]) + 1 %>
                   <% else %>
                     <%= get_in(@compared_users_stats, [col3.skill.id, :middle_skills_count]) %>
@@ -387,6 +390,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
+  def skill_evidence_link(%{skill_score: nil} = assigns), do: ~H""
+
   def skill_evidence_link(assigns) do
     ~H"""
     <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/evidences?#{@query}"}>
@@ -399,6 +404,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
+  def skill_reference_link(%{skill_score: nil} = assigns), do: ~H""
+
   def skill_reference_link(assigns) do
     ~H"""
     <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}>
@@ -410,6 +417,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     </.link>
     """
   end
+
+  def skill_exam_link(%{skill_score: nil} = assigns), do: ~H""
 
   def skill_exam_link(assigns) do
     ~H"""
