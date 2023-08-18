@@ -26,8 +26,6 @@ defmodule BrightWeb.DisplayUserHelper do
       decrypt_user_name(user_name_crypted)
       |> Accounts.get_user_by_name!()
 
-    if is_nil(user), do: raise(Bright.Exceptions.NotFoundError)
-
     display_user =
       %User{}
       |> Map.put(:user_profile, %Bright.UserProfiles.UserProfile{})
