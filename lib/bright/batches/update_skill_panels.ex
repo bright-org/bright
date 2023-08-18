@@ -33,6 +33,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
   alias Bright.SkillEvidences.SkillEvidence
   alias Bright.SkillExams.SkillExam
+  alias Bright.SkillReferences.SkillReference
 
   def call(locked_date \\ nil) do
     skill_panels = Repo.all(SkillPanel)
@@ -107,6 +108,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       # 公開データの外部キー付け替え
       update_skill_evidences(draft_skill_pairs, now)
       update_skill_exams(draft_skill_pairs, now)
+      update_skill_references(draft_skill_pairs, now)
 
       # コピー元の公開データを削除
       delete_old_skill_classes(locked_date)
@@ -594,6 +596,25 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
         nil ->
           Repo.delete!(skill_exam)
+      end
+    end)
+  end
+
+  def update_skill_references(draft_skill_pairs, now) do
+    SkillReference
+    |> Repo.all()
+    |> Repo.preload(:skill)
+    |> Enum.each(fn skill_reference ->
+      case Enum.find(draft_skill_pairs, fn {_draft_skill, skill} ->
+             skill_reference.skill.trace_id == skill.trace_id
+           end) do
+        {_draft_skill, skill} ->
+          skill_reference
+          |> Ecto.Changeset.change(skill_id: skill.id, updated_at: now)
+          |> Repo.update!()
+
+        nil ->
+          Repo.delete!(skill_reference)
       end
     end)
   end

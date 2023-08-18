@@ -9,8 +9,6 @@ defmodule Bright.SkillEvidenceFactory do
     quote do
       def skill_evidence_factory do
         %SkillEvidence{
-          user: build(:user),
-          skill: build(:skill),
           progress: Enum.random(Ecto.Enum.values(SkillEvidence, :progress))
         }
       end
