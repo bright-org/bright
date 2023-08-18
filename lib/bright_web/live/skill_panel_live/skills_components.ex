@@ -203,7 +203,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           </td>
           <td class="!border-l !border-brightGray-200">
             <div class="flex justify-center items-center min-w-[150px]">
-              <p class="inline-flex flex-1 justify-center"><%= @focus_user.name %></p>
+              <p class="inline-flex flex-1 justify-center">
+                <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
+              </p>
 
               <%= if @editable do %>
                 <button
@@ -294,8 +296,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 <p><%= col3.skill.name %></p>
                 <div class="flex justify-between items-center gap-x-2">
                   <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                  <.skill_reference_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                  <.skill_exam_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                 </div>
               </div>
             </td>

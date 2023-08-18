@@ -32,12 +32,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          compared_user_dict={@compared_user_dict}
          path={@path}
          query={@query}
-         focus_user={@focus_user}
+         display_user={@display_user}
          editable={@editable}
          edit={@edit}
          current_skill_dict={@current_skill_dict}
          current_skill_score_dict={@current_skill_score_dict}
          myself={@myself}
+         me={@me}
+         anonymous={@anonymous}
       />
     </div>
     """
@@ -65,7 +67,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       Bright.Accounts.User
       |> Bright.Repo.all()
       |> Enum.reject(fn user ->
-        user.id == socket.assigns.focus_user.id ||
+        user.id == socket.assigns.display_user.id ||
           Ecto.assoc(user, :user_skill_panels)
           |> Bright.Repo.all()
           |> Enum.empty?()
@@ -163,7 +165,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   defp assign_skill_units(socket, :past, label) do
-    focus_user = socket.assigns.focus_user
+    display_user = socket.assigns.display_user
 
     historical_skill_class =
       HistoricalSkillPanels.get_historical_skill_class_on_date(
@@ -172,7 +174,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
         date: TimelineHelper.label_to_date(label)
       )
       |> Bright.Repo.preload(
-        historical_skill_class_scores: Ecto.assoc(focus_user, :historical_skill_class_scores)
+        historical_skill_class_scores: Ecto.assoc(display_user, :historical_skill_class_scores)
       )
 
     # 過去分のため存在しない可能性がある
@@ -225,7 +227,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign_counter()
     |> assign_compared_user_dict_from_users()
     |> assign_compared_users_info()
-    |> assign(:editable, true)
+    |> assign(:editable, socket.assigns.me)
   end
 
   defp assign_on_timeline(socket, :future) do
