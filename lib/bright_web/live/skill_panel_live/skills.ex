@@ -189,7 +189,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp assign_skill_evidence(socket) do
     skill_evidence =
       SkillEvidences.get_skill_evidence_by(
-        user_id: socket.assigns.current_user.id,
+        user_id: socket.assigns.display_user.id,
         skill_id: socket.assigns.skill.id
       )
 
@@ -265,7 +265,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do
     {:ok, skill_evidence} =
       SkillEvidences.create_skill_evidence(%{
-        user_id: socket.assigns.current_user.id,
+        user_id: socket.assigns.display_user.id,
         skill_id: socket.assigns.skill.id,
         progress: :wip,
         skill_evidence_posts: []
