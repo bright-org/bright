@@ -1,6 +1,5 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   alias Bright.SkillPanels
-  alias Bright.SkillUnits
   alias Bright.SkillScores
   alias Bright.Accounts
 
@@ -141,22 +140,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def create_skill_class_score_if_not_existing(socket), do: socket
-
-  def assign_skill_units(socket) do
-    skill_units =
-      Ecto.assoc(socket.assigns.skill_class, :skill_units)
-      |> SkillUnits.list_skill_units()
-      |> Bright.Repo.preload(skill_categories: [skills: [:skill_reference, :skill_exam]])
-
-    skills =
-      skill_units
-      |> Enum.flat_map(& &1.skill_categories)
-      |> Enum.flat_map(& &1.skills)
-
-    socket
-    |> assign(skill_units: skill_units)
-    |> assign(skills: skills)
-  end
 
   def assign_skill_score_dict(socket) do
     skill_score_dict =
