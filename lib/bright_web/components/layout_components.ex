@@ -112,7 +112,8 @@ defmodule BrightWeb.LayoutComponents do
       {"成長グラフ", "/graphs"},
       {"スキル検索／スカウト", "/searchs"},
       {"チーム作成", "/teams/new"},
-      {"チームスキル分析", "/teams"}
+      {"チームスキル分析", "/teams"},
+      {"スキルアップを目指す", "/skill_up"} # TODO 結合テスト中限定
     ]
   end
 
