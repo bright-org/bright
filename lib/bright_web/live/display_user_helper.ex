@@ -56,8 +56,8 @@ defmodule BrightWeb.DisplayUserHelper do
       |> List.first()
     rescue
       # 復号出来ない場合はDecryptUserNameErrorにする
-      _exception ->
-        reraise(Bright.Exceptions.DecryptUserNameError, __STACKTRACE__)
+      exception ->
+        reraise(Bright.Exceptions.DecryptUserNameError, [exception: exception], __STACKTRACE__)
     end
   end
 end
