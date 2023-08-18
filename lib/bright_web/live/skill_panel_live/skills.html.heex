@@ -1,5 +1,5 @@
 <!-- card -->
-<.navigations current_user={@current_user} root="panels" />
+<.navigations current_user={@current_user} display_user={@display_user} root="panels" />
 <div class="mx-10">
   <div class="flex justify-between">
     <% # TODO: α版後にifと仮divブロックを除去して表示 %>
@@ -8,7 +8,7 @@
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
   <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
-    <.profile_area focus_user={@focus_user} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
+    <.profile_area display_user={@display_user} anonymous={@anonymous} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
     <.live_component
       id="skills-field"
       module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
@@ -21,8 +21,9 @@
       focus_row={@focus_row}
       path={@path}
       query={@query}
-      focus_user={@focus_user}
-      editable={skill_class_score_author?(@skill_class_score, @current_user)}
+      display_user={@display_user}
+      me={@me}
+      anonymous={@anonymous}
       edit={@edit}
     />
   </div>
