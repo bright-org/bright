@@ -105,7 +105,6 @@ defmodule BrightWeb.LayoutComponents do
     """
   end
 
-  @spec links :: [{<<_::144, _::_*24>>, nonempty_binary}, ...]
   def links() do
     [
       {"スキルを選ぶ", "/onboardings"},
