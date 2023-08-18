@@ -113,7 +113,8 @@ defmodule BrightWeb.LayoutComponents do
       {"スキル検索／スカウト", "/searchs"},
       {"チーム作成", "/teams/new"},
       {"チームスキル分析", "/teams"},
-      {"スキルアップを目指す", "/skill_up"} # TODO 結合テスト中限定
+      # TODO 結合テスト中限定
+      {"スキルアップを目指す", "/skill_up"}
     ]
   end
 
