@@ -149,7 +149,7 @@ defmodule BrightWeb.Router do
 
   # 認証後
   scope "/", BrightWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :require_onboarding]
 
     live_session :require_authenticated_user,
       on_mount: [
@@ -198,7 +198,12 @@ defmodule BrightWeb.Router do
 
   # オンボーディング
   scope "/onboardings", BrightWeb do
-    pipe_through [:browser, :require_authenticated_user, :onboarding]
+    pipe_through [
+      :browser,
+      :require_authenticated_user,
+      :redirect_if_onboarding_finished,
+      :onboarding
+    ]
 
     live_session :require_authenticated_user_onboarding,
       on_mount: [
