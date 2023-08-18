@@ -17,15 +17,15 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         <!-- スキルセクション ここから -->
         <section>
           <%= for {career_field, jobs} <- @career_fields do %>
-           <%= if !Enum.empty?(jobs) do %>
+            <% skill_panels = get_career_job_skill_panels(jobs) %>
             <section
               class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-[1040px]"}
-              style={"background-color: #{@colors[career_field.name_en][:dazzle]};"}
+              :if={Enum.count(skill_panels) > 0}
             >
               <p class="font-bold"><%= career_field.name_ja %>向けのスキル</p>
               <ul class="flex flex-wrap mt-2 gap-4">
                 <!-- スキル ここから -->
-                <%= for skill_panel <- get_career_job_skill_panels(jobs) do %>
+                <%= for skill_panel <- skill_panels do %>
                   <li>
                     <.link
                       navigate={"/#{@current_path}/#{@route}/#{@id}/skill_panels/#{skill_panel.id}"}
@@ -33,7 +33,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                         "bg-#{career_field.name_en}-dark border-#{career_field.name_en}-dark",
                         "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50"
                         ]}
-                        style={"background-color: #{@colors[career_field.name_en][:dark]}; border-color: #{@colors[career_field.name_en][:dark]};"}
                       >
                       <%= skill_panel.name %>
                     </.link>
@@ -41,7 +40,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                 <% end %>
               </ul>
             </section>
-            <% end %>
           <% end %>
         </section>
         <!-- スキルセクション ここまで -->
@@ -61,10 +59,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   @impl true
   def mount(_params, _session, socket) do
-    socket
-    # tailwindの色情報が壊れるので応急処置でconfigから読み込み
-    |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
-    |> then(&{:ok, &1})
+    {:ok, socket}
   end
 
   @impl true

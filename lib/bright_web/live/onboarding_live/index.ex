@@ -13,7 +13,6 @@ defmodule BrightWeb.OnboardingLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     socket
-    |> assign(:page_title, "オンボーディング")
     |> assign(:open_want_todo, false)
     |> assign(:open_wants_job, false)
     |> assign(:tab, @default_tab)
@@ -22,8 +21,11 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   @impl true
   def handle_params(params, uri, socket) do
+    current_path = URI.parse(uri).path
+
     socket
-    |> assign(:current_path, URI.parse(uri).path)
+    |> assign(:current_path, current_path)
+    |> assign(:page_title, page_title(current_path))
     |> assign_params(params)
     |> then(&{:noreply, &1})
   end
@@ -80,4 +82,7 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   defp open(),
     do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
+
+  defp page_title("/onboardings"), do: "オンボーディング"
+  defp page_title("/skill_up"), do: "スキルアップ"
 end
