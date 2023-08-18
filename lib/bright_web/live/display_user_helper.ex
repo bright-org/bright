@@ -11,9 +11,9 @@ defmodule BrightWeb.DisplayUserHelper do
   # TODO: プロフィール読み込み共通化対象
   def assign_display_user(socket, %{"user_name" => user_name}) do
     # TODO: チームに所属のチェックを実装すること
-    user = Accounts.get_user_by_name(user_name)
-    if is_nil(user), do: raise(Bright.Exceptions.NotFoundError)
-    user = user |> Repo.preload(:user_profile)
+    user =
+      Accounts.get_user_by_name!(user_name)
+      |> Repo.preload(:user_profile)
 
     socket
     |> assign(:me, false)
@@ -24,7 +24,7 @@ defmodule BrightWeb.DisplayUserHelper do
   def assign_display_user(socket, %{"user_name_crypted" => user_name_crypted}) do
     user =
       decrypt_user_name(user_name_crypted)
-      |> Accounts.get_user_by_name()
+      |> Accounts.get_user_by_name!()
 
     if is_nil(user), do: raise(Bright.Exceptions.NotFoundError)
 
@@ -57,9 +57,9 @@ defmodule BrightWeb.DisplayUserHelper do
       |> String.split(",")
       |> List.first()
     rescue
-      # 復号出来ない場合はNotFoundErrorにする
+      # 復号出来ない場合はDecryptUserNameErrorにする
       _exception ->
-        reraise(Bright.Exceptions.NotFoundError, __STACKTRACE__)
+        reraise(Bright.Exceptions.DecryptUserNameError, __STACKTRACE__)
     end
   end
 end
