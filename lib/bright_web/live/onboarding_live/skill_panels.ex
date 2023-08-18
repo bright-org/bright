@@ -33,7 +33,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                         "bg-#{career_field.name_en}-dark border-#{career_field.name_en}-dark",
                         "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50"
                         ]}
-                        style={"background-color: #{@colors[career_field.name_en][:dark]}; border-color: #{@colors[career_field.name_en][:dark]};"}
                       >
                       <%= skill_panel.name %>
                     </.link>

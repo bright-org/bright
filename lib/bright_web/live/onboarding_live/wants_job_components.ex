@@ -44,7 +44,6 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         <%= if @selected_career do %>
         <section
           class={"bg-#{@selected_career.name_en}-dazzle px-4 py-4"}
-          style={"background-color:#{@colors[@selected_career.name_en][:dazzle]};"}
         >
           <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
           <div class="mb-8">
