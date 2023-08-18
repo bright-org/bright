@@ -17,15 +17,16 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         <!-- スキルセクション ここから -->
         <section>
           <%= for {career_field, jobs} <- @career_fields do %>
-           <%= if !Enum.empty?(jobs) do %>
+            <% skill_panels = get_career_job_skill_panels(jobs) %>
             <section
               class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-[1040px]"}
               style={"background-color: #{@colors[career_field.name_en][:dazzle]};"}
+              :if={Enum.count(skill_panels) > 0}
             >
               <p class="font-bold"><%= career_field.name_ja %>向けのスキル</p>
               <ul class="flex flex-wrap mt-2 gap-4">
                 <!-- スキル ここから -->
-                <%= for skill_panel <- get_career_job_skill_panels(jobs) do %>
+                <%= for skill_panel <- skill_panels do %>
                   <li>
                     <.link
                       navigate={"/#{@current_path}/#{@route}/#{@id}/skill_panels/#{skill_panel.id}"}
@@ -41,7 +42,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                 <% end %>
               </ul>
             </section>
-            <% end %>
           <% end %>
         </section>
         <!-- スキルセクション ここまで -->
