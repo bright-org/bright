@@ -59,7 +59,7 @@ defmodule BrightWeb.DisplayUserHelper do
     rescue
       # 復号出来ない場合はNotFoundErrorにする
       _exception ->
-        raise(Bright.Exceptions.NotFoundError)
+        reraise(Bright.Exceptions.NotFoundError, __STACKTRACE__)
     end
   end
 end
