@@ -20,7 +20,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
             <% skill_panels = get_career_job_skill_panels(jobs) %>
             <section
               class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-[1040px]"}
-              style={"background-color: #{@colors[career_field.name_en][:dazzle]};"}
               :if={Enum.count(skill_panels) > 0}
             >
               <p class="font-bold"><%= career_field.name_ja %>向けのスキル</p>
@@ -61,10 +60,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   @impl true
   def mount(_params, _session, socket) do
-    socket
-    # tailwindの色情報が壊れるので応急処置でconfigから読み込み
-    |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
-    |> then(&{:ok, &1})
+    {:ok, socket}
   end
 
   @impl true

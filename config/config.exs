@@ -33,27 +33,6 @@ config :bright, BrightWeb.Endpoint,
 config :bright, Bright.Mailer, adapter: Swoosh.Adapters.Local
 
 config :bright, BrightWeb.Gettext, default_locale: "ja"
-# カラーコード応急処置
-config :bright,
-  career_field_colors: %{
-    "infra" => %{
-      dark: "#51971a",
-      dazzle: "#f2ffe1"
-    },
-    "engineer" => %{
-      dark: "#165bc8",
-      dazzle: "#eefbff"
-    },
-    "designer" => %{
-      dark: "#e96500",
-      dazzle: "#ffffdc"
-    },
-    "marketer" => %{
-      dark: "#6b50a4",
-      dazzle: "#f1e3ff"
-    }
-  }
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
