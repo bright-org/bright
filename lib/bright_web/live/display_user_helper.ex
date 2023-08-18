@@ -12,7 +12,7 @@ defmodule BrightWeb.DisplayUserHelper do
   def assign_display_user(socket, %{"user_name" => user_name}) do
     # TODO: チームに所属のチェックを実装すること
     user =
-      Accounts.get_user_by_name(user_name)
+      Accounts.get_user_by_name!(user_name)
       |> Repo.preload(:user_profile)
 
     socket
@@ -24,7 +24,7 @@ defmodule BrightWeb.DisplayUserHelper do
   def assign_display_user(socket, %{"user_name_crypted" => user_name_crypted}) do
     user =
       decrypt_user_name(user_name_crypted)
-      |> Accounts.get_user_by_name()
+      |> Accounts.get_user_by_name!()
 
     display_user =
       %User{}
@@ -50,8 +50,14 @@ defmodule BrightWeb.DisplayUserHelper do
   end
 
   def decrypt_user_name(ciphertext) do
-    Aes128.decrypt(ciphertext)
-    |> String.split(",")
-    |> List.first()
+    try do
+      Aes128.decrypt(ciphertext)
+      |> String.split(",")
+      |> List.first()
+    rescue
+      # 復号出来ない場合はDecryptUserNameErrorにする
+      exception ->
+        reraise(Bright.Exceptions.DecryptUserNameError, [exception: exception], __STACKTRACE__)
+    end
   end
 end

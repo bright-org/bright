@@ -1,5 +1,5 @@
 <!-- card -->
-<.navigations current_user={@current_user} root="panels" />
+<.navigations current_user={@current_user} display_user={@display_user} root="panels" />
 <div class="mx-10">
   <div class="flex justify-between">
     <% # TODO: α版後にifと仮divブロックを除去して表示 %>
@@ -8,7 +8,7 @@
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
   <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
-    <.profile_area focus_user={@focus_user} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
+    <.profile_area display_user={@display_user} anonymous={@anonymous} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
     <.live_component
       id="skills-field"
       module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
@@ -21,8 +21,9 @@
       focus_row={@focus_row}
       path={@path}
       query={@query}
-      focus_user={@focus_user}
-      editable={skill_class_score_author?(@skill_class_score, @current_user)}
+      display_user={@display_user}
+      me={@me}
+      anonymous={@anonymous}
       edit={@edit}
     />
   </div>
@@ -33,7 +34,7 @@
   id="skill-evidence-modal"
   show
   style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
-  on_cancel={JS.patch(~p"/panels/#{@skill_panel}?class=#{@skill_class.class}")}>
+  on_cancel={JS.patch(build_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}")}>
 
   <.live_component
     module={BrightWeb.SkillPanelLive.SkillEvidenceComponent}
@@ -41,7 +42,7 @@
     skill={@skill}
     skill_evidence={@skill_evidence}
     user={@current_user}
-    patch={~p"/panels/#{@skill_panel}?class=#{@skill_class.class}"}
+    patch={build_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
   />
 </.bright_modal>
 
