@@ -205,7 +205,14 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
       skill_evidences =
         Enum.map(skills, fn skill ->
-          insert(:skill_evidence, skill: skill, user: insert(:user))
+          skill_evidence = insert(:skill_evidence, skill: skill, user: insert(:user))
+
+          insert_pair(:skill_evidence_post,
+            skill_evidence: skill_evidence,
+            user: skill_evidence.user
+          )
+
+          skill_evidence
         end)
 
       skill_exams = Enum.map(skills, fn skill -> insert(:skill_exam, skill: skill) end)
@@ -691,7 +698,13 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       Enum.each(other_skill_units, fn skill_unit ->
         Enum.each(skill_unit.skill_categories, fn skill_category ->
           Enum.each(skill_category.skills, fn skill ->
-            insert(:skill_evidence, skill: skill, user: insert(:user))
+            skill_evidence = insert(:skill_evidence, skill: skill, user: insert(:user))
+
+            insert_pair(:skill_evidence_post,
+              skill_evidence: skill_evidence,
+              user: skill_evidence.user
+            )
+
             insert(:skill_exam, skill: skill)
             insert(:skill_reference, skill: skill)
           end)

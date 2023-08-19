@@ -31,7 +31,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
     HistoricalCareerFieldScore
   }
 
-  alias Bright.SkillEvidences.SkillEvidence
+  alias Bright.SkillEvidences.{SkillEvidence, SkillEvidencePost}
   alias Bright.SkillExams.SkillExam
   alias Bright.SkillReferences.SkillReference
 
@@ -576,6 +576,9 @@ defmodule Bright.Batches.UpdateSkillPanels do
           |> Repo.update!()
 
         nil ->
+          from(sep in SkillEvidencePost, where: sep.skill_evidence_id == ^skill_evidence.id)
+          |> Repo.delete_all()
+
           Repo.delete!(skill_evidence)
       end
     end)

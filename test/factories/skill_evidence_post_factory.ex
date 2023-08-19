@@ -6,7 +6,9 @@ defmodule Bright.SkillEvidencePostFactory do
   defmacro __using__(_opts) do
     quote do
       def skill_evidence_post_factory do
-        %Bright.SkillEvidences.SkillEvidencePost{}
+        %Bright.SkillEvidences.SkillEvidencePost{
+          content: Faker.Lorem.paragraph()
+        }
       end
     end
   end
