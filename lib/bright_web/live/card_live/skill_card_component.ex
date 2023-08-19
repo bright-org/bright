@@ -44,13 +44,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   defp skill_panel(assigns) do
     skill_classes = assigns.skill_panel.skill_classes
-
-    dummy =
-      %Bright.SkillPanels.SkillClass{}
-      |> Map.put(:skill_class_scores, [nil])
-
-    dummy_count = 3 - Enum.count(skill_classes)
-    dummy_classes = List.duplicate(dummy, dummy_count)
+    dummy_classes = cleate_dummy_classes(skill_classes)
 
     assigns =
       assigns
@@ -74,6 +68,15 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       <% end %>
     </div>
     """
+  end
+
+  defp cleate_dummy_classes(skill_classes) do
+    dummy =
+      %Bright.SkillPanels.SkillClass{}
+      |> Map.put(:skill_class_scores, [nil])
+
+    dummy_count = 3 - Enum.count(skill_classes)
+    List.duplicate(dummy, dummy_count)
   end
 
   defp skill_gem(%{score: nil} = assigns) do
