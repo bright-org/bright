@@ -75,6 +75,9 @@ module.exports = {
           newTwitter: "#000000",
           github: "#0D1117",
         },
+        // キャリアフィールドの色は文字列展開で動的に使用されるため追加した際は
+        // 合わせて以下のページに色見本を追加してください
+        // lib/bright_web/live/admin/career_field_live/index.html.heex
         infra: {
           dark: "#51971A",
           light: "#8CEB14",
