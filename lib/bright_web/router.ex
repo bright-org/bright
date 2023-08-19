@@ -191,7 +191,6 @@ defmodule BrightWeb.Router do
 
       live "/teams", MyTeamLive, :index
       live "/teams/:team_id", MyTeamLive, :index
-      live "/teams/new", TeamCreateLive, :new
       live "/searches", SearchLive.Index
     end
   end
@@ -224,6 +223,7 @@ defmodule BrightWeb.Router do
 
     get "/users/confirm/:token", UserConfirmationController, :confirm
     delete "/users/log_out", UserSessionController, :delete
+    get "/teams/invitation_confirm/:token", TeamInvitationConfirmController, :invitation_confirm
 
     ## OAuth
     scope "/auth" do
