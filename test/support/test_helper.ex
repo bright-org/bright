@@ -25,19 +25,27 @@ defmodule Bright.TestHelper do
   test context.
   """
   def register_and_log_in_user(%{conn: conn}) do
-    user = insert_user()
+    user = insert(:user) |> insert_user_relations()
+    insert(:user_onboarding, user: user)
+    user = user |> Repo.preload([:user_profile, :user_onboardings])
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
+  def register_and_log_in_social_account_user(%{conn: conn}) do
+    user = insert(:user_registered_by_social_auth) |> insert_user_relations()
     insert(:user_onboarding, user: user)
     user = user |> Repo.preload([:user_profile, :user_onboardings])
     %{conn: log_in_user(conn, user), user: user}
   end
 
   def register_and_log_in_user_not_onboarding(%{conn: conn}) do
-    user = insert_user() |> Repo.preload([:user_profile, :user_onboardings])
+    user =
+      insert(:user) |> insert_user_relations() |> Repo.preload([:user_profile, :user_onboardings])
+
     %{conn: log_in_user(conn, user), user: user}
   end
 
-  def insert_user() do
-    user = insert(:user)
+  def insert_user_relations(user) do
     insert(:user_profile, user: user)
     insert(:user_job_profile, user: user)
     user
