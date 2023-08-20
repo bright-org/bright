@@ -211,6 +211,7 @@ defmodule BrightWeb.Router do
         {BrightWeb.UserAuth, :redirect_if_onboarding_finished}
       ] do
       live "/", OnboardingLive.Index, :index
+      live "/welcome", OnboardingLive.Welcome
       live "/wants/:want_id", OnboardingLive.SkillPanels
       live "/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
       live "/jobs/:job_id", OnboardingLive.SkillPanels
