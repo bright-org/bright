@@ -20,12 +20,14 @@ defmodule BrightWeb.OnboardingLive.Welcome do
       <h1 class=" text-xl mt-4 mb-12">
         自分に合ったスキルパネルを選び、ご自身のスキルを把握し、スキルアップにつなげていきましょう
       </h1>
+      <div class="flex justify-center w-full">
       <.link
-        class="h-9 text-white bg-brightGreen-300 p-2 mt-16 rounded-md text-sm  font-bold hover:opacity-70"
+        class="h-12 text-white bg-brightGreen-300 p-2 rounded-md text-xl  font-bold hover:opacity-70"
         navigate={~p"/onboardings"}
       >
         自分に合ったスキルパネルを見つける
       </.link>
+      </div>
     </section>
     """
   end
