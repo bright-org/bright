@@ -243,40 +243,31 @@ defmodule BrightWeb.UserAuthComponents do
   """
   attr :variant, :string, values: ~w(google github facebook twitter)
   attr :href, :string
+  attr :method, :string, default: "get"
+
+  slot :inner_block
 
   def social_auth_button(assigns) do
-    assigns = assign(assigns, :social_auth_text, social_auth_text(assigns.variant))
-
     # NOTE: Google, Facebook, Twitter は実装できるまで bg-gray-400 にする。完了したら以下のスタイルに差し替える
     # bg-sns-github
     # bg-sns-facebook
     # bg-sns-twitter
     ~H"""
-    <.link href={@href}>
+    <.link href={@href} method={@method}>
       <button
         type="button"
         class={[
-          "bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs mx-auto px-4 py-2 rounded select-none w-full hover:opacity-50",
+          "bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs px-4 py-2 rounded select-none w-full hover:opacity-50",
           @variant == "google" && "bg-bgGoogle border-black mt-4 text-black",
           @variant == "github" && "bg-bgGithub bg-gray-400 border-github mt-6 text-white",
           @variant == "facebook" && "bg-bgFacebook bg-gray-400 border-facebook mt-6 text-white",
           @variant == "twitter" && "bg-bgTwitter bg-gray-400 border-twitter mt-6 text-white"
         ]}
       >
-        <%= @social_auth_text %>
+        <%= render_slot(@inner_block) %>
       </button>
     </.link>
     """
-  end
-
-  defp social_auth_text(variant) do
-    %{
-      "google" => "Google",
-      "github" => "GitHub",
-      "facebook" => "Facebook",
-      "twitter" => "Twitter"
-    }
-    |> Map.get(variant, "")
   end
 
   @doc """
@@ -287,7 +278,7 @@ defmodule BrightWeb.UserAuthComponents do
 
   def social_auth_banner(assigns) do
     ~H"""
-    <section class="flex flex-col mt-8 full">
+    <section class="flex flex-col mt-8">
       <span class="block font-bold mb-2 text-xs max-w-xs mx-auto w-full">認証</span>
       <span
         class={[
@@ -302,6 +293,16 @@ defmodule BrightWeb.UserAuthComponents do
       </span>
     </section>
     """
+  end
+
+  defp social_auth_text(variant) do
+    %{
+      "google" => "Google",
+      "github" => "GitHub",
+      "facebook" => "Facebook",
+      "twitter" => "Twitter"
+    }
+    |> Map.get(variant, "")
   end
 
   @doc """
