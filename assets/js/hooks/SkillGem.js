@@ -124,20 +124,21 @@ const beforeDatasetsDraw = (chart) => {
   // リンク非表示はこれ以降は処理をしない
   if (!isLink) return
 
-  const img = new Image()
-  img.src = "/images/icon_up_green.svg"
+  // α版はskill_upを表示しない
+  // const img = new Image()
+  // img.src = "/images/icon_up_green.svg"
 
-  const iconWidth = 21
-  const iconHeight = 21
+  // const iconWidth = 21
+  // const iconHeight = 21
 
-  // padding rightで拡張しないと、一番右にに表示するアイコンが削れる
-  img.onload = function () {
+  // // padding rightで拡張しないと、一番右にに表示するアイコンが削れる
+  // img.onload = function () {
 
-    for (let i = 0; i < myselfData.length; i++) {
-      const label = chart.scales.r.getPointLabelPosition(i);
-      context.drawImage(img, label.right + 2, label.top - 4, iconWidth, iconHeight)
-    }
-  }
+  //   for (let i = 0; i < myselfData.length; i++) {
+  //     const label = chart.scales.r.getPointLabelPosition(i);
+  //     context.drawImage(img, label.right + 2, label.top - 4, iconWidth, iconHeight)
+  //   }
+  // }
 
   for (let i = 0; i < myselfData.length; i++) {
     drawUnderline(chart, i)
@@ -244,12 +245,13 @@ export const SkillGem = {
       if (judge) { alert('リンククリック：' + window.myRadar[element.id].data.labels[i]) }
     }
 
-    // アイコン判定例
-    for (let i = 0; i < length; i++) {
-      const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
-      const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
-      if (judge) { alert('アイコンクリック：' + window.myRadar[element.id].data.labels[i]) }
-    }
+    // α版はskill_upを表示しない
+    // // アイコン判定例
+    // for (let i = 0; i < length; i++) {
+    //   const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
+    //   const judge = (x >= label.right + 2) && (x <= label.right + 20 + 2) && (y >= label.top - 5) && (y <= label.top + 20 - 5)
+    //   if (judge) { alert('アイコンクリック：' + window.myRadar[element.id].data.labels[i]) }
+    // }
   },
   mounted() {
     this.drawRaderGraph(this.el)
