@@ -5,6 +5,7 @@ defmodule Bright.AccountsTest do
   alias Bright.Accounts
   alias Bright.Accounts.User2faCodes
   alias Bright.Accounts.SocialIdentifierToken
+  alias Bright.Accounts.UserSocialAuth
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
@@ -1119,6 +1120,82 @@ defmodule Bright.AccountsTest do
         )
 
       assert Accounts.get_social_identifier_token(token) == social_identifier_token
+    end
+  end
+
+  describe "link_social_account/2" do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "links social account", %{user: user} do
+      attrs = params_for(:user_social_auth_for_google, user: user)
+
+      {:ok, _user_social_auth} = Accounts.link_social_account(user, attrs)
+
+      assert Repo.get_by!(UserSocialAuth, user_id: user.id, provider: :google)
+    end
+
+    test "validates required", %{user: user} do
+      {:error, changeset} = Accounts.link_social_account(user, %{})
+
+      assert %{identifier: ["can't be blank"], provider: ["can't be blank"]} =
+               errors_on(changeset)
+    end
+
+    test "validates unique constraint for :unique_user_provider", %{user: user} do
+      insert(:user_social_auth_for_google, user: user)
+
+      attrs = params_for(:user_social_auth_for_google, user: user)
+
+      {:error, changeset} = Accounts.link_social_account(user, attrs)
+
+      assert %{unique_user_provider: ["has already been taken"]} = errors_on(changeset)
+    end
+
+    test "validates unique constraint for :unique_provider_identifier", %{user: user} do
+      %UserSocialAuth{identifier: identifier} = insert(:user_social_auth_for_google)
+
+      attrs = params_for(:user_social_auth_for_google, user: user, identifier: identifier)
+
+      {:error, changeset} = Accounts.link_social_account(user, attrs)
+
+      assert %{unique_provider_identifier: ["has already been taken"]} = errors_on(changeset)
+    end
+  end
+
+  describe "unlink_social_account/2" do
+    test "unlinks social accounts" do
+      user = insert(:user)
+      %UserSocialAuth{provider: provider} = insert(:user_social_auth_for_google, user: user)
+
+      assert {1, nil} = Accounts.unlink_social_account(user, provider)
+      refute Repo.get_by(UserSocialAuth, user_id: user.id, provider: provider)
+    end
+
+    test "unlinks social accounts user.password_registerd is false and 2 accounts exist" do
+      user = insert(:user)
+      %UserSocialAuth{provider: :google} = insert(:user_social_auth_for_google, user: user)
+      %UserSocialAuth{provider: :github} = insert(:user_social_auth_for_github, user: user)
+
+      assert {1, nil} = Accounts.unlink_social_account(user, :google)
+      refute Repo.get_by(UserSocialAuth, user_id: user.id, provider: :google)
+      assert Repo.get_by(UserSocialAuth, user_id: user.id, provider: :github)
+    end
+
+    test "does not raise error when already deleted" do
+      user = insert(:user)
+
+      assert {0, nil} = Accounts.unlink_social_account(user, :google)
+      refute Repo.get_by(UserSocialAuth, user_id: user.id, provider: :google)
+    end
+
+    test "does not unlink and returns cannot_unlink_last_one when user.password_registerd is false" do
+      user = insert(:user_registered_by_social_auth)
+      %UserSocialAuth{provider: provider} = insert(:user_social_auth_for_google, user: user)
+
+      assert :cannot_unlink_last_one == Accounts.unlink_social_account(user, provider)
+      assert Repo.get_by(UserSocialAuth, user_id: user.id, provider: :google)
     end
   end
 
