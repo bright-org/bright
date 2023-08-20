@@ -124,7 +124,7 @@ const beforeDatasetsDraw = (chart) => {
   // リンク非表示はこれ以降は処理をしない
   if (!isLink) return
 
-    // α版はskill_upを表示しない
+  // α版はskill_upを表示しない
   // const img = new Image()
   // img.src = "/images/icon_up_green.svg"
 
