@@ -2,6 +2,7 @@ defmodule BrightWeb.UserAuthComponents do
   @moduledoc """
   Components for user auth.
   """
+  alias Bright.Accounts.UserSocialAuth
   use Phoenix.Component
   import BrightWeb.CoreComponents, only: [error: 1, translate_error: 1]
 
@@ -289,20 +290,10 @@ defmodule BrightWeb.UserAuthComponents do
           @variant == "twitter" && "bg-bgTwitter bg-sns-twitter border-twitter text-white",
         ]}
       >
-        <%= social_auth_text(@variant) %>
+        <%= UserSocialAuth.provider_name(String.to_atom(@variant)) %>
       </span>
     </section>
     """
-  end
-
-  defp social_auth_text(variant) do
-    %{
-      "google" => "Google",
-      "github" => "GitHub",
-      "facebook" => "Facebook",
-      "twitter" => "Twitter"
-    }
-    |> Map.get(variant, "")
   end
 
   @doc """
