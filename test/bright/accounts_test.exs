@@ -1011,6 +1011,7 @@ defmodule Bright.AccountsTest do
       social_identifier_attrs = %{
         name: "koyo",
         email: "dummy@example.com",
+        display_name: "dummy@example.com",
         provider: :google,
         identifier: "1"
       }
@@ -1057,6 +1058,7 @@ defmodule Bright.AccountsTest do
       social_identifier_attrs = %{
         name: "koyo",
         email: "dummy@example.com",
+        display_name: "dummy@example.com",
         provider: :google,
         identifier: "1"
       }

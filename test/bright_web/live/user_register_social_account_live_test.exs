@@ -18,7 +18,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
 
     token =
       user_params
-      |> Map.merge(%{provider: provider})
+      |> Map.merge(%{provider: provider, display_name: nil})
       |> Accounts.generate_social_identifier_token()
 
     %{conn: conn, session_token: token} |> Map.merge(user_params)
