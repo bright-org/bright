@@ -25,11 +25,22 @@ defmodule Bright.TestHelper do
   test context.
   """
   def register_and_log_in_user(%{conn: conn}) do
+    user = insert_user()
+    insert(:user_onboarding, user: user)
+    user = user |> Repo.preload([:user_profile, :user_onboardings])
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
+  def register_and_log_in_user_not_onboarding(%{conn: conn}) do
+    user = insert_user() |> Repo.preload([:user_profile, :user_onboardings])
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
+  def insert_user() do
     user = insert(:user)
     insert(:user_profile, user: user)
     insert(:user_job_profile, user: user)
-    user = user |> Repo.preload(:user_profile)
-    %{conn: log_in_user(conn, user), user: user}
+    user
   end
 
   @doc """

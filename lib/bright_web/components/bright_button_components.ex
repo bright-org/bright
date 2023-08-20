@@ -133,7 +133,7 @@ defmodule BrightWeb.BrightButtonComponents do
   """
   def search_for_skill_holders_button(assigns) do
     ~H"""
-    <.link navigate="/searchs">
+    <.link navigate="/searches">
     <button type="button"
       class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
       <span

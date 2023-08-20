@@ -7,6 +7,7 @@ defmodule Bright.HistoricalSkillPanels do
   alias Bright.Repo
 
   alias Bright.HistoricalSkillPanels.SkillPanel
+  alias Bright.HistoricalSkillPanels.HistoricalSkillClass
 
   @doc """
   Returns the list of skill_panels.
@@ -36,4 +37,22 @@ defmodule Bright.HistoricalSkillPanels do
 
   """
   def get_skill_panel!(id), do: Repo.get!(SkillPanel, id)
+
+  @doc """
+  スキルパネル＋日付条件に該当する過去スキルクラスを返す。
+
+  locked_dateはあくまでロックした日付のため（その日以降も使われる）、
+  引数date時点のスキルクラスを取るには、その前日より前にロックされたものを探す必要がある。
+  """
+  def get_historical_skill_class_on_date(skill_panel_id: skill_panel_id, class: class, date: date) do
+    from(
+      q in HistoricalSkillClass,
+      where: q.skill_panel_id == ^skill_panel_id,
+      where: q.class == ^class,
+      where: q.locked_date < ^date,
+      order_by: [desc: q.locked_date],
+      limit: 1
+    )
+    |> Repo.one()
+  end
 end

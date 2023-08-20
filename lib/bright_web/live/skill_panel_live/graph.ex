@@ -3,12 +3,17 @@ defmodule BrightWeb.SkillPanelLive.Graph do
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
+  import BrightWeb.DisplayUserHelper
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
     {:ok,
      socket
-     |> assign(:page_title, "スキルパネル")}
+     |> assign_display_user(params)
+     |> assign_skill_panel(params["skill_panel_id"], "graphs")
+     |> assign(:select_label, "now")
+     |> assign(:page_title, "スキルパネル")
+     |> assign_page_sub_title()}
   end
 
   @impl true
@@ -17,18 +22,16 @@ defmodule BrightWeb.SkillPanelLive.Graph do
     {:noreply,
      socket
      |> assign_path(url)
-     |> assign_focus_user(params["user_name"])
-     |> assign_skill_panel(params["skill_panel_id"])
      |> assign_skill_classes()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_score_dict()
-     |> assign_counter()
-     |> assign_page_sub_title()}
+     |> assign_counter()}
   end
 
   @impl true
   # TODO: デモ用実装のため対象ユーザー実装後に削除
+  # TODO: 匿名に注意すること
   def handle_event("demo_change_user", _params, socket) do
     users =
       Bright.Accounts.User
@@ -62,8 +65,11 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   end
 
   @impl true
-  def handle_info(%{event_name: "timeline_bar_button_click", params: _params}, socket) do
-    # TODO　スキルジェムを更新するイベントを追加すること
+  def handle_info(%{event_name: "timeline_bar_button_click", params: %{"date" => date}}, socket) do
+    socket =
+      socket
+      |> assign(:select_label, date)
+
     {:noreply, socket}
   end
 end

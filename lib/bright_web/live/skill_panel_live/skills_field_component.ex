@@ -7,15 +7,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.SkillPanelLive.SkillsComponents
-  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
+  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2, assign_counter: 1]
 
   alias Bright.SkillUnits
   alias Bright.SkillScores
+  alias Bright.HistoricalSkillUnits
+  alias Bright.HistoricalSkillPanels
+  alias Bright.HistoricalSkillScores
+  alias BrightWeb.SkillPanelLive.TimelineHelper
 
   def render(assigns) do
     ~H"""
     <div id={@id}>
-      <.compares current_user={@current_user} myself={@myself} />
+      <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
       <.skills_table
          table_structure={@table_structure}
          skill_panel={@skill_panel}
@@ -28,10 +32,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          compared_user_dict={@compared_user_dict}
          path={@path}
          query={@query}
-         focus_user={@focus_user}
+         display_user={@display_user}
          editable={@editable}
          edit={@edit}
+         current_skill_dict={@current_skill_dict}
+         current_skill_score_dict={@current_skill_score_dict}
          myself={@myself}
+         me={@me}
+         anonymous={@anonymous}
       />
     </div>
     """
@@ -40,17 +48,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   def mount(socket) do
     {:ok,
      socket
-     |> assign(compared_users: [], compared_user_dict: %{})}
+     |> assign(skill_class: nil)
+     |> assign(compared_users: [], compared_user_dict: %{})
+     |> assign(timeline: TimelineHelper.get_current())}
   end
 
   def update(assigns, socket) do
     {:ok,
      socket
-     |> assign(assigns)
-     |> assign_skill_units()
-     |> assign_table_structure()
-     # 初期は「現在」
-     |> assign(:skill_score_dict, assigns.current_skill_score_dict)
+     |> assign_assigns_with_current_if_updated(assigns)
+     |> assign_on_timeline(TimelineHelper.get_selected_tense(socket.assigns.timeline))
      |> assign_compared_users_info()}
   end
 
@@ -60,7 +67,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       Bright.Accounts.User
       |> Bright.Repo.all()
       |> Enum.reject(fn user ->
-        user.id == socket.assigns.focus_user.id ||
+        user.id == socket.assigns.display_user.id ||
           Ecto.assoc(user, :user_skill_panels)
           |> Bright.Repo.all()
           |> Enum.empty?()
@@ -72,7 +79,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       {:noreply,
        socket
        |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
-       |> assign_compared_user_dict(user)}
+       |> assign_compared_user_dict(user)
+       |> assign_compared_users_info()}
     else
       {:noreply, socket}
     end
@@ -82,10 +90,56 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     {:noreply,
      socket
      |> update(:compared_users, fn users -> Enum.reject(users, &(&1.name == name)) end)
-     |> update(:compared_user_dict, &Map.delete(&1, name))}
+     |> update(:compared_user_dict, &Map.delete(&1, name))
+     |> assign_compared_users_info()}
   end
 
-  def assign_skill_units(socket) do
+  def handle_event("timeline_bar_button_click", %{"date" => date}, socket) do
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.select_label(date)
+
+    {:noreply,
+     socket
+     |> clear_for_timeline_changed()
+     |> assign(timeline: timeline)
+     |> assign_on_timeline(TimelineHelper.get_selected_tense(timeline))}
+  end
+
+  def handle_event("shift_timeline_past", _params, socket) do
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.shift_for_past()
+
+    {:noreply, socket |> assign(timeline: timeline)}
+  end
+
+  def handle_event("shift_timeline_future", _params, socket) do
+    timeline =
+      socket.assigns.timeline
+      |> TimelineHelper.shift_for_future()
+
+    {:noreply, socket |> assign(timeline: timeline)}
+  end
+
+  defp assign_assigns_with_current_if_updated(socket, assigns) do
+    # 基本的には assigns をアサインするのみ
+    # ただし、表示上「現在」の情報を必要とするため、スキルクラスが更新されている場合には「現在」の情報を更新する
+    prev_skill_class = socket.assigns.skill_class
+    new_skill_class = assigns.skill_class
+
+    if prev_skill_class == new_skill_class do
+      socket
+      |> assign(assigns)
+    else
+      socket
+      |> assign(assigns)
+      |> assign_current_skill_units()
+      |> assign_current_skill_dict()
+    end
+  end
+
+  defp assign_current_skill_units(socket) do
     skill_units =
       Ecto.assoc(socket.assigns.skill_class, :skill_units)
       |> SkillUnits.list_skill_units()
@@ -97,8 +151,163 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       |> Enum.flat_map(& &1.skills)
 
     socket
-    |> assign(skill_units: skill_units)
-    |> assign(skills: skills)
+    |> assign(current_skill_units: skill_units)
+    |> assign(current_skills: skills)
+  end
+
+  defp assign_current_skill_dict(socket) do
+    current_skill_dict =
+      socket.assigns.current_skills
+      |> Map.new(&{&1.trace_id, &1})
+
+    socket
+    |> assign(current_skill_dict: current_skill_dict)
+  end
+
+  defp assign_skill_units(socket, :past, label) do
+    display_user = socket.assigns.display_user
+
+    historical_skill_class =
+      HistoricalSkillPanels.get_historical_skill_class_on_date(
+        skill_panel_id: socket.assigns.skill_panel.id,
+        class: socket.assigns.skill_class.class,
+        date: TimelineHelper.label_to_date(label)
+      )
+      |> Bright.Repo.preload(
+        historical_skill_class_scores: Ecto.assoc(display_user, :historical_skill_class_scores)
+      )
+
+    # 過去分のため存在しない可能性がある
+    if historical_skill_class do
+      skill_units =
+        Ecto.assoc(historical_skill_class, :historical_skill_units)
+        |> HistoricalSkillUnits.list_historical_skill_units()
+        |> Bright.Repo.preload(historical_skill_categories: [:historical_skills])
+
+      skills =
+        skill_units
+        |> Enum.flat_map(& &1.historical_skill_categories)
+        |> Enum.flat_map(& &1.historical_skills)
+
+      socket
+      |> assign(skill_units: skill_units)
+      |> assign(skills: skills)
+      |> assign(historical_skill_class: historical_skill_class)
+    else
+      socket
+      |> assign(skill_units: [])
+      |> assign(skills: [])
+      |> assign(historical_skill_class: nil)
+    end
+  end
+
+  defp clear_for_timeline_changed(socket) do
+    # スキル一覧で表示するための情報を初期化
+    socket
+    |> assign(skill_units: [])
+    |> assign(skills: [])
+    |> assign(skill_score_dict: %{})
+    |> assign(table_structure: [])
+    |> assign(counter: %{})
+    |> assign(num_skills: [])
+    |> assign(compared_users_stats: %{})
+    |> assign(compared_user_dict: %{})
+    |> assign(edit: false)
+    |> assign(editable: false)
+  end
+
+  defp assign_on_timeline(socket, :now) do
+    socket
+    |> assign(:tense, :now)
+    # 「現在」であればいまの情報で良い
+    |> assign(:skill_units, socket.assigns.current_skill_units)
+    |> assign(:skills, socket.assigns.current_skills)
+    |> assign(:skill_score_dict, socket.assigns.current_skill_score_dict)
+    |> assign_table_structure()
+    |> assign_counter()
+    |> assign_compared_user_dict_from_users()
+    |> assign_compared_users_info()
+    |> assign(:editable, socket.assigns.me)
+  end
+
+  defp assign_on_timeline(socket, :future) do
+    # TODO: スキルアップ機能後に実装
+    socket
+    |> assign(:tense, :future)
+    |> assign_on_timeline(:now)
+    |> assign(editable: false)
+  end
+
+  defp assign_on_timeline(socket, :past) do
+    socket
+    |> assign(:tense, :past)
+    |> assign_skill_units(:past, socket.assigns.timeline.selected_label)
+    |> assign_table_structure()
+    |> assign_skill_score_dict(:past)
+    |> assign_counter()
+    |> assign_compared_user_dict_from_users()
+    |> assign_compared_users_info()
+    |> assign(:editable, false)
+  end
+
+  defp assign_skill_score_dict(%{assigns: %{historical_skill_class: nil}} = socket, _past) do
+    socket
+    |> assign(skill_class_score: nil)
+    |> assign(skill_score_dict: %{})
+  end
+
+  defp assign_skill_score_dict(socket, :past) do
+    skill_class_score =
+      socket.assigns.historical_skill_class.historical_skill_class_scores |> List.first()
+
+    skill_score_dict =
+      skill_class_score
+      |> HistoricalSkillScores.list_historical_skill_scores_from_historical_skill_class_score()
+      |> Map.new(&{&1.historical_skill_id, &1})
+
+    socket
+    |> assign(skill_class_score: skill_class_score)
+    |> assign(skill_score_dict: skill_score_dict)
+  end
+
+  defp assign_compared_user_dict_from_users(socket) do
+    socket.assigns.compared_users
+    |> Enum.reduce(socket, fn user, acc ->
+      acc
+      |> assign_compared_user_dict(user)
+    end)
+  end
+
+  defp assign_compared_user_dict(socket, user) do
+    # 比較対象になっているユーザーのデータを表示用に整理・集計してアサイン
+    skill_ids = Enum.map(socket.assigns.skills, & &1.id)
+    skill_scores = list_user_skill_scores_from_skill_ids(user, skill_ids, socket.assigns.tense)
+
+    {skill_score_dict, high_skills_count, middle_skills_count} =
+      skill_scores
+      |> Enum.reduce({%{}, 0, 0}, fn skill_score, {dict, high_c, middle_c} ->
+        score = skill_score.score
+
+        {
+          dict |> Map.put(skill_scores_skill_id(skill_score), score),
+          high_c + if(score == :high, do: 1, else: 0),
+          middle_c + if(score == :middle, do: 1, else: 0)
+        }
+      end)
+
+    size = Enum.count(skill_scores)
+    high_skills_percentage = calc_percentage(high_skills_count, size)
+    middle_skills_percentage = calc_percentage(middle_skills_count, size)
+
+    socket
+    |> update(
+      :compared_user_dict,
+      &Map.put(&1, user.name, %{
+        high_skills_percentage: high_skills_percentage,
+        middle_skills_percentage: middle_skills_percentage,
+        skill_score_dict: skill_score_dict
+      })
+    )
   end
 
   defp assign_compared_users_info(socket) do
@@ -120,38 +329,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
 
     socket
     |> assign(compared_users_stats: compared_users_stats)
-  end
-
-  defp assign_compared_user_dict(socket, user) do
-    # 比較対象になっているユーザーのデータを表示用に整理・集計してアサイン
-    skill_ids = Enum.map(socket.assigns.skills, & &1.id)
-    skill_scores = SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
-
-    {skill_score_dict, high_skills_count, middle_skills_count} =
-      skill_scores
-      |> Enum.reduce({%{}, 0, 0}, fn skill_score, {dict, high_c, middle_c} ->
-        score = skill_score.score
-
-        {
-          dict |> Map.put(skill_score.skill_id, score),
-          high_c + if(score == :high, do: 1, else: 0),
-          middle_c + if(score == :middle, do: 1, else: 0)
-        }
-      end)
-
-    size = Enum.count(skill_scores)
-    high_skills_percentage = calc_percentage(high_skills_count, size)
-    middle_skills_percentage = calc_percentage(middle_skills_count, size)
-
-    socket
-    |> update(
-      :compared_user_dict,
-      &Map.put(&1, user.name, %{
-        high_skills_percentage: high_skills_percentage,
-        middle_skills_percentage: middle_skills_percentage,
-        skill_score_dict: skill_score_dict
-      })
-    )
   end
 
   defp assign_table_structure(socket) do
@@ -178,7 +355,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     skill_units
     |> Enum.flat_map(fn skill_unit ->
       skill_category_items =
-        skill_unit.skill_categories
+        list_skill_categories(skill_unit)
         |> Enum.flat_map(&build_skill_category_table_structure/1)
 
       build_skill_unit_table_structure(skill_unit, skill_category_items)
@@ -186,10 +363,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   defp build_skill_category_table_structure(skill_category) do
-    size = length(skill_category.skills)
+    skills = list_skills(skill_category)
+    size = length(skills)
     skill_category_item = %{size: size, skill_category: skill_category}
 
-    skill_category.skills
+    skills
     |> Enum.with_index()
     |> Enum.map(fn
       {skill, 0} -> [skill_category_item] ++ [%{skill: skill}]
@@ -213,5 +391,47 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       {skill_category_item, 0} -> [skill_unit_item] ++ skill_category_item
       {skill_category_item, _i} -> [nil] ++ skill_category_item
     end)
+  end
+
+  defp list_skill_categories(%SkillUnits.SkillUnit{} = skill_unit) do
+    skill_unit.skill_categories
+  end
+
+  defp list_skill_categories(%HistoricalSkillUnits.HistoricalSkillUnit{} = skill_unit) do
+    skill_unit.historical_skill_categories
+  end
+
+  defp list_skills(%SkillUnits.SkillCategory{} = skill_category) do
+    skill_category.skills
+  end
+
+  defp list_skills(%HistoricalSkillUnits.HistoricalSkillCategory{} = skill_category) do
+    skill_category.historical_skills
+  end
+
+  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :now) do
+    SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
+  end
+
+  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :future) do
+    # TODO: スキルアップ対応後に実装。比較ユーザー分のスキルアップを加味する（大変そう）
+    SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
+  end
+
+  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :past) do
+    HistoricalSkillScores.list_user_historical_skill_scores_from_historical_skill_ids(
+      user,
+      skill_ids
+    )
+  end
+
+  defp skill_scores_skill_id(%SkillScores.SkillScore{} = skill_score) do
+    skill_score.skill_id
+  end
+
+  defp skill_scores_skill_id(
+         %HistoricalSkillScores.HistoricalSkillScore{} = historical_skill_score
+       ) do
+    historical_skill_score.historical_skill_id
   end
 end

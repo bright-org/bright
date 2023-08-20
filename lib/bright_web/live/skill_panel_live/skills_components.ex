@@ -7,7 +7,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   def compares(assigns) do
     ~H"""
     <div class="flex mt-4 items-center">
-      <.compare_timeline />
+      <.compare_timeline myself={@myself} timeline={@timeline} />
       <% # TODO: 仮UI コンポーネント完成後に削除 %>
       <div class="flex gap-x-4">
         <button
@@ -33,84 +33,55 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compare_timeline(assigns) do
     ~H"""
-      <div class="w-[566px] mr-10">
-        <div class="flex">
-          <div class="flex justify-center items-center ml-1 mr-3">
+    <div class="w-[566px] mr-10">
+      <div class="flex">
+        <% # 過去方向ボタン %>
+        <div class="flex justify-center items-center ml-1 mr-3">
+          <%= if @timeline.past_enabled do %>
             <button
               class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              phx-click="shift_timeline_past"
+              phx-target={@myself}
             >
-              <span class="material-icons text-white !text-3xl"
-                >arrow_left</span>
+              <span class="material-icons text-white !text-3xl">arrow_left</span>
             </button>
-          </div>
-          <div
-            class="bg-brightGray-50 h-[44px] rounded-full w-[500px] my-5 flex justify-around items-center relative"
-          >
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2022.12
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.3
-              </button>
-            </div>
-            <div class="h-[80px] w-[80px]">
-              <button
-                class="h-[80px] w-[80px] rounded-full bg-brightGreen-50 border-white border-8 shadow text-brightGreen-600 font-bold text-xs flex justify-center items-center flex-col"
-              >
-                <span class="material-icons !text-[22px] !font-bold">check</span>
-                2022.6
-              </button>
-            </div>
+          <% else %>
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+              <span class="material-icons text-white !text-3xl">arrow_left</span>
+            </button>
+          <% end %>
+        </div>
 
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.9
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center"
-            >
-              <button
-                class="h-[56px] w-[56px] border border-brightGray-50 text-brightGray-500 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                2023.12
-              </button>
-            </div>
-            <div
-              class="h-[80px] w-[80px] flex justify-center items-center absolute right-[58px]"
-            >
-              <button
-                class="h-[38px] w-[38px] border border-brightGray-50 text-attention-900 font-bold rounded-full bg-white text-xs flex justify-center items-center"
-              >
-                現在
-              </button>
-            </div>
-          </div>
-          <div class="flex justify-center items-center ml-2">
+        <% # タイムラインバー %>
+        <BrightWeb.TimelineBarComponents.timeline_bar
+          id="timeline"
+          target={@myself}
+          type="myself"
+          dates={@timeline.labels}
+          selected_date={@timeline.selected_label}
+          display_now={@timeline.display_now}
+          scale="sm"
+        />
+
+        <% # 未来方向ボタン %>
+        <div class="flex justify-center items-center ml-2">
+          <%= if @timeline.future_enabled do %>
             <button
-              class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded"
+              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              phx-click="shift_timeline_future"
+              phx-target={@myself}
+              disabled={!@timeline.future_enabled}
             >
-              <span class="material-icons text-white !text-3xl"
-                >arrow_right</span>
+              <span class="material-icons text-white !text-3xl">arrow_right</span>
             </button>
-          </div>
+          <% else %>
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+              <span class="material-icons text-white !text-3xl">arrow_right</span>
+            </button>
+          <% end %>
         </div>
       </div>
+    </div>
     """
   end
 
@@ -232,7 +203,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           </td>
           <td class="!border-l !border-brightGray-200">
             <div class="flex justify-center items-center min-w-[150px]">
-              <p class="inline-flex flex-1 justify-center"><%= @focus_user.name %></p>
+              <p class="inline-flex flex-1 justify-center">
+                <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
+              </p>
 
               <%= if @editable do %>
                 <button
@@ -310,6 +283,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <%= for {[col1, col2, col3], row} <- @table_structure |> Enum.with_index(1) do %>
           <% focus = @focus_row == row %>
           <% skill_score = @skill_score_dict[col3.skill.id] %>
+          <% current_skill = Map.get(@current_skill_dict, col3.skill.trace_id) %>
+          <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
           <tr id={"skill-#{row}"} class="focus:bg-brightGray-100">
             <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
@@ -320,10 +295,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <div class="flex justify-between items-center">
                 <p><%= col3.skill.name %></p>
                 <div class="flex justify-between items-center gap-x-2">
-                  <% # TODO: 過去参照時はこのcol3.skillは使えないので今後修正 %>
-                  <.skill_evidence_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
-                  <.skill_reference_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
-                  <.skill_exam_link skill_panel={@skill_panel} skill={col3.skill} skill_score={skill_score} query={@query} />
+                  <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                 </div>
               </div>
             </td>
@@ -331,7 +305,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <div class="num-high-users flex justify-center gap-x-1">
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:high, :gray), "inline-block mr-1"]}></span>
-                  <%= if skill_score.score == :high do %>
+                  <%= if Map.get(skill_score, :score) == :high do %>
                     <%= get_in(@compared_users_stats, [col3.skill.id, :high_skills_count]) + 1 %>
                   <% else %>
                     <%= get_in(@compared_users_stats, [col3.skill.id, :high_skills_count]) %>
@@ -339,7 +313,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </div>
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:middle, :gray), "inline-block mr-1"]}></span>
-                  <%= if skill_score.score == :middle do %>
+                  <%= if Map.get(skill_score, :score) == :middle do %>
                     <%= get_in(@compared_users_stats, [col3.skill.id, :middle_skills_count]) + 1 %>
                   <% else %>
                     <%= get_in(@compared_users_stats, [col3.skill.id, :middle_skills_count]) %>
@@ -416,6 +390,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
+  def skill_evidence_link(%{skill_score: nil} = assigns), do: ~H""
+
   def skill_evidence_link(assigns) do
     ~H"""
     <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/evidences?#{@query}"}>
@@ -428,6 +404,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
+  def skill_reference_link(%{skill_score: nil} = assigns), do: ~H""
+
   def skill_reference_link(assigns) do
     ~H"""
     <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}>
@@ -439,6 +417,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     </.link>
     """
   end
+
+  def skill_exam_link(%{skill_score: nil} = assigns), do: ~H""
 
   def skill_exam_link(assigns) do
     ~H"""

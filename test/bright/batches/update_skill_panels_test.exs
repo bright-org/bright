@@ -55,7 +55,11 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     setup %{draft_skill_units: draft_skill_units} do
       draft_skill_panel = insert(:draft_skill_panel)
 
-      draft_skill_classes = insert_list(3, :draft_skill_class, skill_panel: draft_skill_panel)
+      draft_skill_classes = [
+        insert(:draft_skill_class, skill_panel: draft_skill_panel, class: 1),
+        insert(:draft_skill_class, skill_panel: draft_skill_panel, class: 2),
+        insert(:draft_skill_class, skill_panel: draft_skill_panel, class: 3)
+      ]
 
       draft_skill_class_units = [
         insert(:draft_skill_class_unit,
@@ -130,7 +134,8 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
           insert(:skill_class,
             skill_panel_id: draft_skill_class.skill_panel_id,
             locked_date: @before_locked_date,
-            trace_id: draft_skill_class.trace_id
+            trace_id: draft_skill_class.trace_id,
+            class: draft_skill_class.class
           )
         end)
 

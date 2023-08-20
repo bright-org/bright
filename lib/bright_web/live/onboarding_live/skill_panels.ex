@@ -17,22 +17,22 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         <!-- スキルセクション ここから -->
         <section>
           <%= for {career_field, jobs} <- @career_fields do %>
+            <% skill_panels = get_career_job_skill_panels(jobs) %>
             <section
               class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-[1040px]"}
-              style={"background-color: #{@colors[career_field.name_en][:dazzle]};"}
+              :if={Enum.count(skill_panels) > 0}
             >
               <p class="font-bold"><%= career_field.name_ja %>向けのスキル</p>
               <ul class="flex flex-wrap mt-2 gap-4">
                 <!-- スキル ここから -->
-                <%= for skill_panel <- get_career_job_skill_panels(jobs) do %>
+                <%= for skill_panel <- skill_panels do %>
                   <li>
                     <.link
-                      navigate={"/onboardings/#{@route}/#{@id}/skill_panels/#{skill_panel.id}"}
+                      navigate={"/#{@current_path}/#{@route}/#{@id}/skill_panels/#{skill_panel.id}"}
                       class={[
                         "bg-#{career_field.name_en}-dark border-#{career_field.name_en}-dark",
                         "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50"
                         ]}
-                        style={"background-color: #{@colors[career_field.name_en][:dark]}; border-color: #{@colors[career_field.name_en][:dark]};"}
                       >
                       <%= skill_panel.name %>
                     </.link>
@@ -47,7 +47,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
       <p class="mt-8 w-[1040px]">
         <.link
-          navigate="/onboardings"
+          navigate={@return_to}
           class=" self-center bg-white block border border-solid border-black font-bold mt-4 mx-auto px-4 py-2 rounded select-none text-black text-center w-40 hover:opacity-50"
         >
           戻る
@@ -59,14 +59,13 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   @impl true
   def mount(_params, _session, socket) do
-    socket
-    # tailwindの色情報が壊れるので応急処置でconfigから読み込み
-    |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
-    |> then(&{:ok, &1})
+    {:ok, socket}
   end
 
   @impl true
-  def handle_params(%{"want_id" => id}, _uri, socket) do
+  def handle_params(%{"want_id" => id}, uri, socket) do
+    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+
     career_fields =
       CareerWants.get_career_want!(id)
       |> Repo.preload(jobs: [:career_fields, :skill_panels])
@@ -76,21 +75,29 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
       end)
 
     socket
+    |> assign(:current_path, current_path)
     |> assign(:route, "wants")
+    |> assign(:return_to, "/#{current_path}?open=want_todo_panel")
     |> assign(:id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})
   end
 
-  def handle_params(%{"job_id" => id}, _uri, socket) do
+  def handle_params(%{"job_id" => id}, uri, socket) do
+    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+
     career_fields =
       Jobs.get_job!(id)
       |> Repo.preload([:career_fields, :skill_panels])
       |> then(&[&1])
       |> Enum.group_by(fn j -> j.career_fields |> List.first() end)
 
+    career_field = career_fields |> Map.keys() |> List.first()
+
     socket
+    |> assign(:current_path, current_path)
     |> assign(:route, "jobs")
+    |> assign(:return_to, "/#{current_path}?open=wants_job_panel&tab=#{career_field.name_en}")
     |> assign(:id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})

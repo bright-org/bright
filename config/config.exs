@@ -33,26 +33,9 @@ config :bright, BrightWeb.Endpoint,
 config :bright, Bright.Mailer, adapter: Swoosh.Adapters.Local
 
 config :bright, BrightWeb.Gettext, default_locale: "ja"
-# カラーコード応急処置
-config :bright,
-  career_field_colors: %{
-    "infra" => %{
-      dark: "#51971a",
-      dazzle: "#f2ffe1"
-    },
-    "engineer" => %{
-      dark: "#165bc8",
-      dazzle: "#eefbff"
-    },
-    "designer" => %{
-      dark: "#e96500",
-      dazzle: "#ffffdc"
-    },
-    "marketer" => %{
-      dark: "#6b50a4",
-      dazzle: "#f1e3ff"
-    }
-  }
+
+# aes128_secret_keyは16文字の文字列を指定すること
+config :bright, aes128_secret_key: "26McE/V0iwb8DWy5"
 
 # Configure esbuild (the version is required)
 config :esbuild,
