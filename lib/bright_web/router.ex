@@ -192,6 +192,11 @@ defmodule BrightWeb.Router do
       live "/teams", MyTeamLive, :index
       live "/teams/:team_id", MyTeamLive, :index
       live "/searches", SearchLive.Index
+
+      ## OAuth
+      scope "/auth" do
+        delete "/:provider", OAuthController, :delete
+      end
     end
   end
 
@@ -230,7 +235,6 @@ defmodule BrightWeb.Router do
     scope "/auth" do
       get "/:provider", OAuthController, :request
       get "/:provider/callback", OAuthController, :callback
-      delete "/:provider", OAuthController, :delete
     end
   end
 end
