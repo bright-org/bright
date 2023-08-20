@@ -90,6 +90,9 @@ defmodule BrightWeb.OAuthController do
 
       {:error, %Ecto.Changeset{errors: [unique_provider_identifier: _reason]}} ->
         conn |> put_flash(:error, "すでに他のユーザーと連携済みです") |> redirect(to: ~p"/mypage")
+
+      _ ->
+        conn |> put_flash(:error, "連携に失敗しました") |> redirect(to: ~p"/mypage")
     end
   end
 
