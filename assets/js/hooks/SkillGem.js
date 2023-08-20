@@ -121,11 +121,10 @@ const beforeDatasetsDraw = (chart) => {
     drawGridline(chart, 20 * i, myselfData.length)
   }
 
-  // α版はskill_upを表示しない
+  // リンク非表示はこれ以降は処理をしない
+  if (!isLink) return
 
-  // // リンク非表示はこれ以降は処理をしない
-  // if (!isLink) return
-
+    // α版はskill_upを表示しない
   // const img = new Image()
   // img.src = "/images/icon_up_green.svg"
 
