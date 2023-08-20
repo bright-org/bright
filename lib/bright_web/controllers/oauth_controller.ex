@@ -32,11 +32,12 @@ defmodule BrightWeb.OAuthController do
          %{
            assigns: %{
              current_user: nil,
-             ueberauth_auth: %Ueberauth.Auth{
-               info: %Ueberauth.Auth.Info{name: name, email: email},
-               provider: provider,
-               uid: identifier
-             }
+             ueberauth_auth:
+               %Ueberauth.Auth{
+                 info: %Ueberauth.Auth.Info{name: name, email: email},
+                 provider: provider,
+                 uid: identifier
+               } = ueberauth_auth
            }
          } = conn
        ) do
@@ -57,7 +58,8 @@ defmodule BrightWeb.OAuthController do
             name: name,
             email: email,
             provider: provider,
-            identifier: identifier
+            identifier: identifier,
+            display_name: display_name(ueberauth_auth)
           })
 
         conn
@@ -70,14 +72,19 @@ defmodule BrightWeb.OAuthController do
          %{
            assigns: %{
              current_user: current_user,
-             ueberauth_auth: %Ueberauth.Auth{
-               provider: provider,
-               uid: identifier
-             }
+             ueberauth_auth:
+               %Ueberauth.Auth{
+                 provider: provider,
+                 uid: identifier
+               } = ueberauth_auth
            }
          } = conn
        ) do
-    case Accounts.link_social_account(current_user, provider, identifier) do
+    case Accounts.link_social_account(current_user, %{
+           provider: provider,
+           identifier: identifier,
+           display_name: display_name(ueberauth_auth)
+         }) do
       {:ok, _user_social_auth} ->
         conn |> put_flash(:info, "連携しました") |> redirect(to: ~p"/mypage")
 
@@ -85,6 +92,15 @@ defmodule BrightWeb.OAuthController do
         conn |> put_flash(:error, "すでに他のユーザーと連携済みです") |> redirect(to: ~p"/mypage")
     end
   end
+
+  # プロバイダ毎の連携アカウントに対する表示名
+  # Google: メールアドレス
+  defp display_name(%Ueberauth.Auth{provider: :google, info: %Ueberauth.Auth.Info{email: email}}) do
+    email
+  end
+
+  # NOTE: 取得できなくても表示されないだけなのでエラーにはせず nil とする
+  defp display_name(_ueberauth_auth), do: nil
 
   # 連係解除
   def delete(%{assigns: %{current_user: current_user}} = conn, %{"provider" => provider}) do

@@ -13,6 +13,7 @@ defmodule Bright.Accounts.UserSocialAuth do
   schema "user_social_auths" do
     field :identifier, :string
     field :provider, Ecto.Enum, values: [:google, :github, :facebook, :twitter]
+    field :display_name, :string
     belongs_to(:user, Bright.Accounts.User)
 
     timestamps()
@@ -20,7 +21,8 @@ defmodule Bright.Accounts.UserSocialAuth do
 
   def change_user_social_auth(%UserSocialAuth{} = user_social_auth, attrs) do
     user_social_auth
-    |> cast(attrs, [:provider, :identifier, :user_id])
+    |> cast(attrs, [:provider, :identifier, :user_id, :display_name])
+    |> validate_required([:provider, :identifier, :user_id])
     |> unique_constraint([:user_id, :provider], error_key: :unique_user_provider)
     |> unique_constraint([:provider, :identifier], error_key: :unique_provider_identifier)
   end

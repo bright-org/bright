@@ -561,6 +561,7 @@ defmodule Bright.Accounts do
         %{
           name: _name,
           email: _email,
+          display_name: _display_name,
           provider: provider,
           identifier: identifier
         } = social_identifier_attrs
@@ -604,12 +605,9 @@ defmodule Bright.Accounts do
   @doc """
   Link a social account to a user.
   """
-  def link_social_account(user, provider, identifier) do
-    %{
-      user_id: user.id,
-      provider: provider,
-      identifier: identifier
-    }
+  def link_social_account(user, attrs) do
+    attrs
+    |> Map.merge(%{user_id: user.id})
     |> then(&UserSocialAuth.change_user_social_auth(%UserSocialAuth{}, &1))
     |> Repo.insert()
   end

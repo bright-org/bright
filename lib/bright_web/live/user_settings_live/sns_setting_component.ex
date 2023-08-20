@@ -15,7 +15,7 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponent do
             <BrightWeb.UserAuthComponents.social_auth_button method="delete" href={~p"/auth/#{linked_user_social_auth.provider}"} variant={to_string(linked_user_social_auth.provider)}>
               <%= UserSocialAuth.provider_name(linked_user_social_auth.provider) %>と連携解除する
             </BrightWeb.UserAuthComponents.social_auth_button>
-            <span class="ml-4"><%= "linked_user_social_auth.sns_display_name" %>で連携中</span>
+            <span class="ml-4"><%= linked_user_social_auth.display_name %>で連携中</span>
           </div>
         </div>
         <div class="flex items-center mb-4 text-left" :for={unlink_provider <- @unlink_providers}>

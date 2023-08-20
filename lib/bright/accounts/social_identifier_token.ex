@@ -21,6 +21,7 @@ defmodule Bright.Accounts.SocialIdentifierToken do
     field :provider, Ecto.Enum, values: [:google]
     field :name, :string
     field :email, :string
+    field :display_name, :string
 
     timestamps(updated_at: false)
   end
@@ -31,6 +32,7 @@ defmodule Bright.Accounts.SocialIdentifierToken do
   def build_token(%{
         name: name,
         email: email,
+        display_name: display_name,
         provider: provider,
         identifier: identifier
       }) do
@@ -42,6 +44,7 @@ defmodule Bright.Accounts.SocialIdentifierToken do
        token: hashed_token,
        provider: provider,
        identifier: identifier,
+       display_name: display_name,
        name: name,
        email: email
      }}
