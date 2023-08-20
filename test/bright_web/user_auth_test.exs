@@ -313,15 +313,28 @@ defmodule BrightWeb.UserAuthTest do
 
   describe "redirect_if_user_is_authenticated/2" do
     test "redirects if user is authenticated", %{conn: conn, user: user} do
-      conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
+      conn =
+        conn
+        |> fetch_flash()
+        |> assign(:current_user, user)
+        |> UserAuth.redirect_if_user_is_authenticated([])
+
       assert conn.halted
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "ログイン中はアクセスできません"
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
     test "redirects mypage if user already finished onboardings", %{conn: conn, user: user} do
       insert(:user_onboarding, user: user)
-      conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
+
+      conn =
+        conn
+        |> fetch_flash()
+        |> assign(:current_user, user)
+        |> UserAuth.redirect_if_user_is_authenticated([])
+
       assert conn.halted
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "ログイン中はアクセスできません"
       assert redirected_to(conn) == ~p"/mypage"
     end
 

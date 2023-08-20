@@ -143,6 +143,7 @@ defmodule BrightWeb.Router do
       live "/users/register_social_account/:token", UserRegisterSocialAccountLive, :show
     end
 
+    get "/users/confirm/:token", UserConfirmationController, :confirm
     post "/users/log_in", UserSessionController, :create
     post "/users/two_factor_auth", UserTwoFactorAuthController, :create
   end
@@ -227,7 +228,6 @@ defmodule BrightWeb.Router do
   scope "/", BrightWeb do
     pipe_through [:browser]
 
-    get "/users/confirm/:token", UserConfirmationController, :confirm
     delete "/users/log_out", UserSessionController, :delete
     get "/teams/invitation_confirm/:token", TeamInvitationConfirmController, :invitation_confirm
 

@@ -36,10 +36,10 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       assert redirected_to(conn) == ~p"/onboardings/welcome"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) == "メールアドレスの確認に成功しました"
       assert Repo.get!(User, user.id).confirmed_at
-      assert Repo.all(from u in UserToken, where: u.context == "confirm") == []
+      assert Repo.all(from(u in UserToken, where: u.context == "confirm")) == []
     end
 
-    test "already confirmed", %{conn: conn, user: user} do
+    test "confirms 2 times", %{conn: conn, user: user} do
       token =
         extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
@@ -48,13 +48,29 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       conn = get(conn, ~p"/users/confirm/#{token}")
 
       # confirm again
-      conn = get(conn, ~p"/users/confirm/#{token}")
+      conn = conn |> get(~p"/users/confirm/#{token}")
       assert html_response(conn, 302)
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "ログイン中はアクセスできません"
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
-    test "user already is confirmed and onbording is finished", %{conn: conn, user: user} do
-      insert(:user_onboarding, user: user)
+    test "confirms, logs out and confirms again", %{conn: conn, user: user} do
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_confirmation_instructions(user, url)
+        end)
+
+      conn = get(conn, ~p"/users/confirm/#{token}") |> delete(~p"/users/log_out")
+
+      # confirm again
+      conn = get(conn, ~p"/users/confirm/#{token}")
+      assert html_response(conn, 302)
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "リンクが無効であるか期限が切れています"
+      assert redirected_to(conn) == ~p"/users/log_in"
+    end
+
+    test "confirms a user while logs in other user", %{conn: conn, user: user} do
+      %{conn: conn, user: _other_user} = register_and_log_in_user(%{conn: conn})
 
       token =
         extract_user_token(fn url ->
@@ -63,9 +79,8 @@ defmodule BrightWeb.UserConfirmationControllerTest do
 
       conn = get(conn, ~p"/users/confirm/#{token}")
 
-      # confirm again
-      conn = get(conn, ~p"/users/confirm/#{token}")
       assert html_response(conn, 302)
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "ログイン中はアクセスできません"
       assert redirected_to(conn) == ~p"/mypage"
     end
   end
