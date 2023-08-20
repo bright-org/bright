@@ -604,6 +604,15 @@ defmodule Bright.Accounts do
 
   @doc """
   Link a social account to a user.
+
+  ## Examples
+
+      iex> link_social_account(user, attrs)
+      {:ok, %UserSocialAuth{}}
+
+      iex> link_social_account(user, attrs)
+      {:error, changeset}
+
   """
   def link_social_account(user, attrs) do
     attrs
@@ -616,6 +625,15 @@ defmodule Bright.Accounts do
   Unlink a social account to a user.
 
   It cannot unlink when user has not registered a password true and no other user_social_account exists to avoid user cannot login anymore.
+
+  ## Examples
+
+      iex> unlink_social_account(user, provider)
+      :ok
+
+      iex> unlink_social_account(user, provider)
+      :cannot_unlink_last_one
+
   """
   def unlink_social_account(user, provider) do
     case can_unlink_social_account?(user, provider) do

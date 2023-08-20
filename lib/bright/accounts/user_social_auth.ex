@@ -19,6 +19,9 @@ defmodule Bright.Accounts.UserSocialAuth do
     timestamps()
   end
 
+  @doc """
+  Returns changeset for user_social_auth.
+  """
   def change_user_social_auth(%UserSocialAuth{} = user_social_auth, attrs) do
     user_social_auth
     |> cast(attrs, [:provider, :identifier, :user_id, :display_name])
