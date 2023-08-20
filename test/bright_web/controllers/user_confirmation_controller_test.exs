@@ -33,7 +33,7 @@ defmodule BrightWeb.UserConfirmationControllerTest do
 
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
-      assert redirected_to(conn) == ~p"/onboardings"
+      assert redirected_to(conn) == ~p"/onboardings/welcome"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) == "メールアドレスの確認に成功しました"
       assert Repo.get!(User, user.id).confirmed_at
       assert Repo.all(from u in UserToken, where: u.context == "confirm") == []
@@ -50,7 +50,7 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       # confirm again
       conn = get(conn, ~p"/users/confirm/#{token}")
       assert html_response(conn, 302)
-      assert redirected_to(conn) == ~p"/onboardings"
+      assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
     test "user already is confirmed and onbording is finished", %{conn: conn, user: user} do

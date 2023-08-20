@@ -32,7 +32,7 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
         conn
         |> log_in_user(insert(:user))
         |> live(~p"/users/reset_password")
-        |> follow_redirect(conn, ~p"/onboardings")
+        |> follow_redirect(conn, ~p"/onboardings/welcome")
 
       assert {:ok, _conn} = result
     end
