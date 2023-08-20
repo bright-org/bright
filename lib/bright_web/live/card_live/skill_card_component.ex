@@ -43,6 +43,13 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   defp skill_panel(assigns) do
+    skill_classes = assigns.skill_panel.skill_classes
+    dummy_classes = cleate_dummy_classes(skill_classes)
+
+    assigns =
+      assigns
+      |> assign(:skill_classes, skill_classes ++ dummy_classes)
+
     ~H"""
     <div class="flex">
       <div class="flex-1 text-left font-bold">
@@ -51,7 +58,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
           <%= @skill_panel.name %>
         </.link>
       </div>
-      <%= for class <- @skill_panel.skill_classes do %>
+      <%= for class <- @skill_classes do %>
         <.skill_gem
           score={List.first(class.skill_class_scores)}
           class_num={class.class}
@@ -61,6 +68,15 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       <% end %>
     </div>
     """
+  end
+
+  defp cleate_dummy_classes(skill_classes) do
+    dummy =
+      %Bright.SkillPanels.SkillClass{}
+      |> Map.put(:skill_class_scores, [nil])
+
+    dummy_count = 3 - Enum.count(skill_classes)
+    List.duplicate(dummy, dummy_count)
   end
 
   defp skill_gem(%{score: nil} = assigns) do
