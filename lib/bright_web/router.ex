@@ -229,6 +229,7 @@ defmodule BrightWeb.Router do
     scope "/auth" do
       get "/:provider", OAuthController, :request
       get "/:provider/callback", OAuthController, :callback
+      delete "/:provider", OAuthController, :delete
     end
   end
 end

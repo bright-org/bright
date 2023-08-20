@@ -602,6 +602,44 @@ defmodule Bright.Accounts do
   end
 
   @doc """
+  Link a social account to a user.
+  """
+  def link_social_account(user, provider, identifier) do
+    %{
+      user_id: user.id,
+      provider: provider,
+      identifier: identifier
+    }
+    |> then(&UserSocialAuth.change_user_social_auth(%UserSocialAuth{}, &1))
+    |> Repo.insert()
+  end
+
+  @doc """
+  Unlink a social account to a user.
+
+  It cannot unlink when user has not registered a password true and no other user_social_account exists to avoid user cannot login anymore.
+  """
+  def unlink_social_account(user, provider) do
+    case can_unlink_social_account?(user, provider) do
+      true ->
+        UserSocialAuth.user_id_and_provider_query(user.id, provider)
+        |> Repo.delete_all()
+
+      false ->
+        :cannot_unlink_last_one
+    end
+  end
+
+  # 連係解除したことでログイン不可能にならないようにチェックする
+  # 独自 ID 登録ユーザーの場合は連係解除可能
+  defp can_unlink_social_account?(%User{password_registered: true}, _provider), do: true
+  # SNS ID 登録ユーザーの場合は他にも SNS 連携していれば削除可能
+  defp can_unlink_social_account?(%User{password_registered: false} = user, provider) do
+    UserSocialAuth.user_other_provider_query(user.id, provider)
+    |> Repo.exists?()
+  end
+
+  @doc """
   get user by name or email full match
 
   ## Examples

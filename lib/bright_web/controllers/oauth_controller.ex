@@ -22,18 +22,24 @@ defmodule BrightWeb.OAuthController do
     |> redirect(to: ~p"/users/register")
   end
 
-  def callback(
-        %{
-          assigns: %{
-            ueberauth_auth: %Ueberauth.Auth{
-              info: %Ueberauth.Auth.Info{name: name, email: email},
-              provider: provider,
-              uid: identifier
-            }
-          }
-        } = conn,
-        _params
-      ) do
+  def callback(%{assigns: %{ueberauth_auth: %Ueberauth.Auth{}}} = conn, _params) do
+    conn
+    |> handle_callback()
+  end
+
+  # 未ログイン時
+  defp handle_callback(
+         %{
+           assigns: %{
+             current_user: nil,
+             ueberauth_auth: %Ueberauth.Auth{
+               info: %Ueberauth.Auth.Info{name: name, email: email},
+               provider: provider,
+               uid: identifier
+             }
+           }
+         } = conn
+       ) do
     case Accounts.get_user_by_provider_and_identifier(provider, identifier) do
       %User{confirmed_at: nil} ->
         conn
@@ -56,6 +62,38 @@ defmodule BrightWeb.OAuthController do
 
         conn
         |> redirect(to: ~p"/users/register_social_account/#{token}")
+    end
+  end
+
+  # ログイン時
+  defp handle_callback(
+         %{
+           assigns: %{
+             current_user: current_user,
+             ueberauth_auth: %Ueberauth.Auth{
+               provider: provider,
+               uid: identifier
+             }
+           }
+         } = conn
+       ) do
+    case Accounts.link_social_account(current_user, provider, identifier) do
+      {:ok, _user_social_auth} ->
+        conn |> put_flash(:info, "連携しました") |> redirect(to: ~p"/mypage")
+
+      {:error, %Ecto.Changeset{errors: [unique_provider_identifier: _reason]}} ->
+        conn |> put_flash(:error, "すでに他のユーザーと連携済みです") |> redirect(to: ~p"/mypage")
+    end
+  end
+
+  # 連係解除
+  def delete(%{assigns: %{current_user: current_user}} = conn, %{"provider" => provider}) do
+    case Accounts.unlink_social_account(current_user, provider) do
+      :cannot_unlink_last_one ->
+        conn |> put_flash(:error, "SNS連携は少なくとも一つ必要なため連係解除できません") |> redirect(to: ~p"/mypage")
+
+      _ ->
+        conn |> put_flash(:info, "連係解除しました") |> redirect(to: ~p"/mypage")
     end
   end
 end
