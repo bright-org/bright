@@ -4,11 +4,8 @@ defmodule BrightWeb.MyTeamLive do
   """
   use BrightWeb, :live_view
   import BrightWeb.ProfileComponents
-  # import BrightWeb.ChartComponents
   import BrightWeb.MegaMenuComponents
   import BrightWeb.BrightModalComponents
-  # import BrightWeb.SkillPanelLive.SkillPanelComponents
-  import BrightWeb.TeamComponents
   alias Bright.Teams
 
   def mount(params, _session, socket) do
@@ -21,7 +18,7 @@ defmodule BrightWeb.MyTeamLive do
       current_team =
         params
         |> Map.get("team_id")
-        |> Teams.get_team!()
+        |> Teams.get_team_with_member_users!()
 
       page =
         current_team.id
@@ -41,15 +38,25 @@ defmodule BrightWeb.MyTeamLive do
 
       {:ok, socket}
     else
-      # チームIDが指定されていない場合、第１位優先のチームID指定でリダイレクト
+      # チームIDが指定されていない場合、所属しているチームを検索
       page = Teams.list_joined_teams_by_user_id(socket.assigns.current_user.id)
-      [team_member_user] = page.entries
 
       socket =
-        socket
-        |> assign(:current_team, team_member_user.team)
-        |> assign(:current_user, socket.assigns.current_user)
-        |> push_navigate(to: "/teams/#{team_member_user.team.id}")
+        if page.total_entries > 0 do
+          # 所属しているチームが存在する場合、第１位優先のチームID指定でリダイレクト
+          [team_member_user] = page.entries
+
+          socket
+          |> assign(:current_team, team_member_user.team)
+          |> assign(:current_user, socket.assigns.current_user)
+          |> push_navigate(to: "/teams/#{team_member_user.team.id}")
+        else
+          # 所属しているチームが存在しない場合、チーム表示なしの空のページを表示する
+          socket
+          |> assign(:current_team, nil)
+          |> assign(:current_user, socket.assigns.current_user)
+          |> assign(:member_users, [])
+        end
 
       {:ok, socket}
     end
@@ -62,11 +69,9 @@ defmodule BrightWeb.MyTeamLive do
   その際、選択済のスキルパネル、またはスキルセットがある場合IDを引き継ぐ
   """
   def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
-    # TODO IO.puts("#### my_team_live handle_event !!!!!!!!! ###########")
-
     current_team =
       team_id
-      |> Teams.get_team!()
+      |> Teams.get_team_with_member_users!()
 
     socket =
       socket

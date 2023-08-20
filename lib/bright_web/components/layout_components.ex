@@ -108,13 +108,14 @@ defmodule BrightWeb.LayoutComponents do
   def links() do
     [
       {"スキルを選ぶ", "/onboardings"},
-      {"スキルパネル", "/panels"},
-      {"成長グラフ", "/graphs"},
+      {"成長を見る・比較する", "/graphs"},
+      {"スキルパネルを入力", "/panels"},
+      # TODO α版はskill_upを表示しない
+      # {"スキルアップする", "/skill_up"},
       {"スキル検索／スカウト", "/searches"},
-      {"チーム作成", "/teams/new"},
+      {"キャリアパスを選ぶ", "/"},
       {"チームスキル分析", "/teams"},
-      # TODO 結合テスト中限定
-      {"スキルアップを目指す", "/skill_up"}
+      {"自分のチームを作る", "/teams/new"}
     ]
   end
 

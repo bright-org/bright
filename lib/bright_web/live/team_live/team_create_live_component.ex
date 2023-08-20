@@ -52,10 +52,20 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     admin_user = socket.assigns.current_user
 
     case Teams.create_team_multi(team_name, admin_user, member_users) do
-      {:ok, _team} ->
+      {:ok, team, member_user_attrs} ->
+        # 全メンバーのuserを一気にpreloadしたいのでteamを再取得
+        preloaded_team = Teams.get_team_with_member_users!(team.id)
+
+        # 招待したメンバー全員に招待メールを送信する。
+        send_invitation_mail(preloaded_team, admin_user, member_user_attrs)
+
+        # メール送信の成否に関わらず正常終了とする
+        # TODO メール送信エラーを運用上検知する必要がないか?
+
         {:noreply,
          socket
          |> put_flash(:info, "チームを登録しました")
+         # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
          |> redirect(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -68,5 +78,29 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     {:noreply,
      socket
      |> redirect(to: ~p"/mypage")}
+  end
+
+  defp send_invitation_mail(preloaded_team, admin_user, member_user_attrs) do
+    _results =
+      preloaded_team.member_users
+      |> Enum.map(fn member_user ->
+        if !member_user.is_admin do
+          # 管理者以外に招待メールを送信する
+          # member_attrのリストから該当ユーザーのbase64_encode済tokenを取得してメールに添付
+          member_user_attr =
+            member_user_attrs
+            |> Enum.find(fn member_user_attr ->
+              member_user_attr.user_id == member_user.user_id
+            end)
+
+          Teams.deliver_invitation_email_instructions(
+            admin_user,
+            member_user.user,
+            preloaded_team,
+            member_user_attr.base64_encoded_token,
+            &url(~p"/teams/invitation_confirm/#{&1}")
+          )
+        end
+      end)
   end
 end

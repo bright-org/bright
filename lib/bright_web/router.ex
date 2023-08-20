@@ -191,7 +191,6 @@ defmodule BrightWeb.Router do
 
       live "/teams", MyTeamLive, :index
       live "/teams/:team_id", MyTeamLive, :index
-      live "/teams/new", TeamCreateLive, :new
       live "/searches", SearchLive.Index
     end
   end
@@ -211,6 +210,7 @@ defmodule BrightWeb.Router do
         {BrightWeb.UserAuth, :redirect_if_onboarding_finished}
       ] do
       live "/", OnboardingLive.Index, :index
+      live "/welcome", OnboardingLive.Welcome
       live "/wants/:want_id", OnboardingLive.SkillPanels
       live "/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
       live "/jobs/:job_id", OnboardingLive.SkillPanels
@@ -224,6 +224,7 @@ defmodule BrightWeb.Router do
 
     get "/users/confirm/:token", UserConfirmationController, :confirm
     delete "/users/log_out", UserSessionController, :delete
+    get "/teams/invitation_confirm/:token", TeamInvitationConfirmController, :invitation_confirm
 
     ## OAuth
     scope "/auth" do

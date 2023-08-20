@@ -50,7 +50,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
         conn
         |> log_in_user(insert(:user))
         |> live(~p"/users/register_social_account/#{session_token}")
-        |> follow_redirect(conn, ~p"/onboardings")
+        |> follow_redirect(conn, ~p"/onboardings/welcome")
 
       assert {:ok, _conn} = result
     end
