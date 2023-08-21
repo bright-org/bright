@@ -22,5 +22,13 @@ defmodule BrightWeb.MypageLive.Index do
     socket
     |> assign(:page_title, "マイページ")
     |> assign(:mypage, nil)
+    |> assign(:search, false)
+  end
+
+  defp apply_action(socket, :search, _params) do
+    socket
+    |> assign(:page_title, "スキル検索／スカウト")
+    |> assign(:mypage, nil)
+    |> assign(:search, true)
   end
 end

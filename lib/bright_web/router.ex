@@ -160,6 +160,7 @@ defmodule BrightWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
+      live "/searches", MypageLive.Index, :search
       live "/skill_up", OnboardingLive.Index, :index
       live "/skill_up/wants/:want_id", OnboardingLive.SkillPanels
       live "/skill_up/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
