@@ -15,6 +15,9 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
     alias Bright.SkillPanels.SkillClass
     alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore, CareerFieldScore}
+    alias Bright.SkillEvidences.SkillEvidence
+    alias Bright.SkillExams.SkillExam
+    alias Bright.SkillReferences.SkillReference
 
     alias Bright.HistoricalSkillUnits.{
       HistoricalSkillUnit,
@@ -191,6 +194,37 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       }
     end
 
+    # エビデンス・試験・教材のデータを準備
+    setup %{skill_units: skill_units} do
+      skills =
+        Enum.flat_map(skill_units, fn skill_unit ->
+          Enum.flat_map(skill_unit.skill_categories, fn skill_category ->
+            skill_category.skills
+          end)
+        end)
+
+      skill_evidences =
+        Enum.map(skills, fn skill ->
+          skill_evidence = insert(:skill_evidence, skill: skill, user: insert(:user))
+
+          insert_pair(:skill_evidence_post,
+            skill_evidence: skill_evidence,
+            user: skill_evidence.user
+          )
+
+          skill_evidence
+        end)
+
+      skill_exams = Enum.map(skills, fn skill -> insert(:skill_exam, skill: skill) end)
+      skill_references = Enum.map(skills, fn skill -> insert(:skill_reference, skill: skill) end)
+
+      %{
+        skill_evidences: skill_evidences,
+        skill_exams: skill_exams,
+        skill_references: skill_references
+      }
+    end
+
     test "update skill panels when published data are less than draft data", %{
       draft_skill_units: draft_skill_units,
       draft_skill_classes: draft_skill_classes,
@@ -201,7 +235,10 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       skill_unit_scores: skill_unit_scores,
       skill_scores: skill_scores,
       skill_class_scores: skill_class_scores,
-      career_field_scores: career_field_scores
+      career_field_scores: career_field_scores,
+      skill_evidences: skill_evidences,
+      skill_exams: skill_exams,
+      skill_references: skill_references
     } do
       UpdateSkillPanels.call(@locked_date)
 
@@ -379,6 +416,45 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
         assert published_career_field_score.high_skills_count ==
                  career_field_score.high_skills_count
+      end)
+
+      # エビデンスのデータ更新を確認
+      updated_skill_evidences = Repo.all(SkillEvidence) |> Repo.preload(:skill)
+      assert length(updated_skill_evidences) == length(skill_evidences)
+
+      Enum.each(skill_evidences, fn skill_evidence ->
+        updated_skill_evidence =
+          Enum.find(updated_skill_evidences, fn %{id: id} ->
+            id == skill_evidence.id
+          end)
+
+        assert updated_skill_evidence.skill.trace_id == skill_evidence.skill.trace_id
+      end)
+
+      # 試験のデータ更新を確認
+      updated_skill_exams = Repo.all(SkillExam) |> Repo.preload(:skill)
+      assert length(updated_skill_exams) == length(skill_exams)
+
+      Enum.each(skill_exams, fn skill_exam ->
+        updated_skill_exam =
+          Enum.find(updated_skill_exams, fn %{id: id} ->
+            id == skill_exam.id
+          end)
+
+        assert updated_skill_exam.skill.trace_id == skill_exam.skill.trace_id
+      end)
+
+      # 教材のデータ更新を確認
+      updated_skill_references = Repo.all(SkillReference) |> Repo.preload(:skill)
+      assert length(updated_skill_references) == length(skill_references)
+
+      Enum.each(skill_references, fn skill_reference ->
+        updated_skill_reference =
+          Enum.find(updated_skill_references, fn %{id: id} ->
+            id == skill_reference.id
+          end)
+
+        assert updated_skill_reference.skill.trace_id == skill_reference.skill.trace_id
       end)
 
       # スキルユニットの履歴データ生成を確認
@@ -570,7 +646,10 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       skill_unit_scores: skill_unit_scores,
       skill_scores: skill_scores,
       skill_class_scores: skill_class_scores,
-      career_field_scores: career_field_scores
+      career_field_scores: career_field_scores,
+      skill_evidences: skill_evidences,
+      skill_exams: skill_exams,
+      skill_references: skill_references
     } do
       other_skill_units =
         insert_pair(:skill_unit, locked_date: @before_locked_date)
@@ -615,6 +694,22 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         Enum.flat_map(other_skill_classes, fn skill_class ->
           insert_pair(:skill_class_score, skill_class: skill_class)
         end)
+
+      Enum.each(other_skill_units, fn skill_unit ->
+        Enum.each(skill_unit.skill_categories, fn skill_category ->
+          Enum.each(skill_category.skills, fn skill ->
+            skill_evidence = insert(:skill_evidence, skill: skill, user: insert(:user))
+
+            insert_pair(:skill_evidence_post,
+              skill_evidence: skill_evidence,
+              user: skill_evidence.user
+            )
+
+            insert(:skill_exam, skill: skill)
+            insert(:skill_reference, skill: skill)
+          end)
+        end)
+      end)
 
       UpdateSkillPanels.call(@locked_date)
 
@@ -792,6 +887,45 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
         assert published_career_field_score.high_skills_count ==
                  career_field_score.high_skills_count
+      end)
+
+      # エビデンスのデータ更新を確認
+      updated_skill_evidences = Repo.all(SkillEvidence) |> Repo.preload(:skill)
+      assert length(updated_skill_evidences) == length(skill_evidences)
+
+      Enum.each(skill_evidences, fn skill_evidence ->
+        updated_skill_evidence =
+          Enum.find(updated_skill_evidences, fn %{id: id} ->
+            id == skill_evidence.id
+          end)
+
+        assert updated_skill_evidence.skill.trace_id == skill_evidence.skill.trace_id
+      end)
+
+      # 試験のデータ更新を確認
+      updated_skill_exams = Repo.all(SkillExam) |> Repo.preload(:skill)
+      assert length(updated_skill_exams) == length(skill_exams)
+
+      Enum.each(skill_exams, fn skill_exam ->
+        updated_skill_exam =
+          Enum.find(updated_skill_exams, fn %{id: id} ->
+            id == skill_exam.id
+          end)
+
+        assert updated_skill_exam.skill.trace_id == skill_exam.skill.trace_id
+      end)
+
+      # 教材のデータ更新を確認
+      updated_skill_references = Repo.all(SkillReference) |> Repo.preload(:skill)
+      assert length(updated_skill_references) == length(skill_references)
+
+      Enum.each(skill_references, fn skill_reference ->
+        updated_skill_reference =
+          Enum.find(updated_skill_references, fn %{id: id} ->
+            id == skill_reference.id
+          end)
+
+        assert updated_skill_reference.skill.trace_id == skill_reference.skill.trace_id
       end)
 
       # スキルユニットの履歴データ生成を確認
