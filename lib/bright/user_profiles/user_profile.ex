@@ -36,4 +36,33 @@ defmodule Bright.UserProfiles.UserProfile do
       :user_id
     ])
   end
+
+  def changeset_for_user_setting(user_profile, attrs) do
+    user_profile
+    |> cast(attrs, [
+      :user_id,
+      :title,
+      :detail,
+      :icon_file_path,
+      :twitter_url,
+      :facebook_url,
+      :github_url
+    ])
+    |> validate_required([:user_id])
+    |> validate_length(:title, max: 255)
+    |> validate_length(:detail, max: 255)
+    |> validate_length(:icon_file_path, max: 255)
+    |> validate_length(:twitter_url, max: 255)
+    |> validate_length(:facebook_url, max: 255)
+    |> validate_length(:github_url, max: 255)
+    |> validate_format(:twitter_url, ~r{https://twitter.com/},
+      message: "should start with https://twitter.com/"
+    )
+    |> validate_format(:facebook_url, ~r{https://www.facebook.com/},
+      message: "should start with https://www.facebook.com/"
+    )
+    |> validate_format(:github_url, ~r{https://github.com/},
+      message: "should start with https://github.com/"
+    )
+  end
 end

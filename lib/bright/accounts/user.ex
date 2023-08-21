@@ -8,6 +8,7 @@ defmodule Bright.Accounts.User do
   import Ecto.Query
 
   alias Bright.Accounts.User
+  alias Bright.UserProfiles.UserProfile
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -216,6 +217,16 @@ defmodule Bright.Accounts.User do
     else
       changeset
     end
+  end
+
+  @doc """
+  A user changeset fot changing user name and user_profile
+  """
+  def user_with_profile_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:name])
+    |> validate_name(opts)
+    |> cast_assoc(:user_profile, with: &UserProfile.changeset_for_user_setting/2)
   end
 
   @doc """
