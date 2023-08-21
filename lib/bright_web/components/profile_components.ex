@@ -96,20 +96,47 @@ defmodule BrightWeb.ProfileComponents do
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
-  attr :detail, :string, default: ""
   attr :icon_file_path, :string, default: ""
+  attr :click_event, :string, default: ""
+  attr :click_target, :string, default: nil
 
   def profile_small(assigns) do
     ~H"""
     <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
-      <a class="inline-flex items-center gap-x-6">
+      <.profile_small_link click_event={@click_event} click_target={@click_target} user_name={@user_name}>
         <img class="inline-block h-10 w-10 rounded-full" src={@icon_file_path} />
         <div>
           <p><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
-      </a>
+      </.profile_small_link>
     </li>
+    """
+  end
+
+  defp profile_small_link(%{click_event: nil} = assigns) do
+    ~H"""
+    <a class="cursor-pointer inline-flex items-center gap-x-6" href={"/mypage/#{@user_name}"}>
+      <span class="inline-flex items-center gap-x-6">
+        <%= render_slot(@inner_block) %>
+      </span>
+    </a>
+    """
+  end
+
+  defp profile_small_link(%{click_event: _, click_target: nil} = assigns) do
+    ~H"""
+    <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-value-name={@user_name}>
+      <%= render_slot(@inner_block) %>
+    </a>
+    """
+  end
+
+  defp profile_small_link(assigns) do
+    ~H"""
+    <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-target={@click_target} phx-value-name={@user_name}>
+      <%= render_slot(@inner_block) %>
+    </a>
     """
   end
 end
