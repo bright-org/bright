@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
 
+  alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
   alias Bright.SkillScores
   alias Bright.SkillEvidences
@@ -32,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   @impl true
-  def handle_params(params, url, socket) do
+  def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}}} = socket) do
     # TODO: データ取得方法検討／LiveVIewコンポーネント化検討
     {:noreply,
      socket
@@ -44,6 +45,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_counter()
      |> apply_action(socket.assigns.live_action, params)}
   end
+
+  def handle_params(_params, _url, %{assigns: %{skill_panel: nil}} = socket),
+    do: {:noreply, socket}
 
   @impl true
   def handle_event("edit", _params, socket) do
