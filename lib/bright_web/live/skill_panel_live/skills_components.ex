@@ -107,7 +107,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     >
       <.live_component
         id="intriguing_card_compare"
-        module={BrightWeb.CardLive.IntriguingCardComponent}
+        module={BrightWeb.CardLive.RelatedUserCardComponent}
         current_user={@current_user}
         display_menu={false}
       />
