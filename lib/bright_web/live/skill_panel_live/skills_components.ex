@@ -334,6 +334,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     phx-click="change"
                     phx-value-score="high"
                     phx-value-skill_id={col3.skill.id}
+                    phx-value-row={row}
                   >
                     <input
                       type="radio"
@@ -348,6 +349,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     phx-click="change"
                     phx-value-score="middle"
                     phx-value-skill_id={col3.skill.id}
+                    phx-value-row={row}
                   >
                     <input
                       type="radio"
@@ -362,6 +364,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     phx-click="change"
                     phx-value-score="low"
                     phx-value-skill_id={col3.skill.id}
+                    phx-value-row={row}
                   >
                     <input
                       type="radio"
