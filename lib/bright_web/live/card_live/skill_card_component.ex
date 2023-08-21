@@ -6,6 +6,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
   alias Bright.{CareerFields, SkillPanels}
+  alias BrightWeb.PathHelper
 
   @impl true
   def render(assigns) do
@@ -34,7 +35,13 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
             <div class="w-36 font-bold">クラス3</div>
           </div>
           <%= for skill_panel <- @skill_panels do %>
-            <.skill_panel skill_panel={skill_panel} root={@root} />
+            <.skill_panel
+              skill_panel={skill_panel}
+              display_user={@display_user}
+              me={@me}
+              anonymous={@anonymous}
+              root={@root}
+            />
           <% end %>
         </div>
       </.tab>
@@ -53,8 +60,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <div class="flex">
       <div class="flex-1 text-left font-bold">
-        <% # TODO: 対象ユーザーが指定されている場合jの対応 %>
-        <.link href={"/#{@root}/#{@skill_panel.id}"} >
+        <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous)}>
           <%= @skill_panel.name %>
         </.link>
       </div>
@@ -62,7 +68,10 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         <.skill_gem
           score={List.first(class.skill_class_scores)}
           class_num={class.class}
-          skill_panel_id={@skill_panel.id}
+          skill_panel={@skill_panel}
+          display_user={@display_user}
+          me={@me}
+          anonymous={@anonymous}
           root={@root}
         />
       <% end %>
@@ -93,7 +102,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
     ~H"""
     <div class="w-36">
-      <.link href={"/#{@root}/#{@skill_panel_id}?class=#{@class_num}"}>
+      <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@class_num}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
           <img src={@icon_path} class="mr-1" />
           <span class="w-16"><%= level_text(@level) %></span>
@@ -104,7 +113,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   @impl true
-  def update(%{current_user: user} = assigns, socket) do
+  def update(%{display_user: user} = assigns, socket) do
     tabs =
       CareerFields.list_career_fields()
       |> Enum.map(&{&1.name_en, &1.name_ja})
@@ -131,7 +140,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   def handle_event(
         "tab_click",
         %{"tab_name" => tab_name},
-        %{assigns: %{current_user: user}} = socket
+        %{assigns: %{display_user: user}} = socket
       ) do
     socket
     |> assign(:selected_tab, tab_name)
@@ -142,7 +151,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   def handle_event(
         "previous_button_click",
         _params,
-        %{assigns: %{page: page, selected_tab: tab_name, current_user: user}} = socket
+        %{assigns: %{page: page, selected_tab: tab_name, display_user: user}} = socket
       ) do
     page = if page - 1 < 1, do: 1, else: page - 1
 
@@ -159,7 +168,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
             page: page,
             total_pages: total_pages,
             selected_tab: tab_name,
-            current_user: user
+            display_user: user
           }
         } = socket
       ) do

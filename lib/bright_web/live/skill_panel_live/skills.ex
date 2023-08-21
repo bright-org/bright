@@ -12,6 +12,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillReferences
   alias Bright.SkillExams
   alias Bright.UserSkillPanels
+  alias BrightWeb.PathHelper
 
   @shortcut_key_score %{
     "1" => :high,

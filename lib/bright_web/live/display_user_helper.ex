@@ -21,15 +21,16 @@ defmodule BrightWeb.DisplayUserHelper do
     |> assign(:display_user, user)
   end
 
-  def assign_display_user(socket, %{"user_name_crypted" => user_name_crypted}) do
+  def assign_display_user(socket, %{"user_name_encrypted" => user_name_encrypted}) do
     user =
-      decrypt_user_name(user_name_crypted)
+      decrypt_user_name(user_name_encrypted)
       |> Accounts.get_user_by_name!()
 
     display_user =
       %User{}
       |> Map.put(:user_profile, %Bright.UserProfiles.UserProfile{})
       |> Map.put(:id, user.id)
+      |> Map.put(:name_encrypted, user_name_encrypted)
 
     socket
     |> assign(:me, false)
