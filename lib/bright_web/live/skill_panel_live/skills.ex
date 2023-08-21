@@ -78,14 +78,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_edit_off()}
   end
 
-  def handle_event("change", %{"score" => score, "skill_id" => skill_id}, socket) do
+  def handle_event("change", %{"score" => score, "skill_id" => skill_id, "row" => row}, socket) do
     score = String.to_atom(score)
     skill_score = Map.get(socket.assigns.skill_score_dict, skill_id)
+    row = String.to_integer(row)
 
     {:noreply,
      socket
      |> update_by_score_change(skill_score, score)
-     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))}
+     |> assign(:focus_row, row)}
   end
 
   def handle_event("shortcut", %{"key" => key, "skill_id" => skill_id}, socket)
