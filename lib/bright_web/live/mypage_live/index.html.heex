@@ -48,7 +48,9 @@
       <.live_component
         id="skill_card"
         module={BrightWeb.CardLive.SkillCardComponent}
-        current_user={@display_user}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
         root="graphs"
       />
     </div>
