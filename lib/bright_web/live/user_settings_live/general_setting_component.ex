@@ -11,17 +11,32 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
             <span class="w-32">ハンドル名</span>
             <input type="text" size="20" name="hn" class="border border-brightGray-200 px-2 py-1  rounded w-60">
           </label>
-          <label class="flex items-center py-4">
+          <label class="border-b border-brightGray-200 flex items-center py-4">
             <span class="w-32">称号</span>
             <input type="text" size="20" name="title" class="border border-brightGray-200 px-2 py-1  rounded w-60">
+          </label>
+
+          <label class="flex items-center pt-4 pb-2">
+            <span class="w-32">GitHub</span>
+            <input type="text" size="20" name="url_github" class="border border-brightGray-200 px-2 py-1  rounded w-60">
+          </label>
+
+          <label class="flex items-center py-2">
+            <span class="w-32">Twitter</span>
+            <input type="text" size="20" name="url_twitter" class="border border-brightGray-200 px-2 py-1  rounded w-60">
+          </label>
+
+          <label class="flex items-center pt-2 pb-4">
+            <span class="w-32">facebook</span>
+            <input type="text" size="20" name="url_facebook" class="border border-brightGray-200 px-2 py-1  rounded w-60">
           </label>
         </div>
 
         <div class="relative py-4 w-1/2">
           <p>アバター</p>
-          <label class="absolute bg-bgAddAvatar bg-20 block cursor-pointer h-20 left-1/2 -ml-10 -mt-10 top-1/2 w-20">
+          <lavel class="absolute bg-bgAddAvatar bg-20 block cursor-pointer h-20 left-1/2 -ml-10 -mt-10 top-1/2 w-20">
             <input type="file" name="avatar" class="cursor-pointer h-20 opacity-0 w-20">
-          </label>
+          </lavel>
         </div>
       </div>
 
@@ -32,8 +47,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
         </label>
       </div>
 
-      <div class="flex mt-8 mx-auto w-fit gap-4">
-        <a class="bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">保存する</a>
+      <div class="flex mt-8 relative">
+        <a class="bg-brightGray-900 border block border-solid border-brightGray-900 cursor-pointer font-bold mx-auto px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">保存する</a>
       </div>
     </li>
     """
