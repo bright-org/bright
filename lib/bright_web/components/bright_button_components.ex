@@ -133,14 +133,17 @@ defmodule BrightWeb.BrightButtonComponents do
   """
   def search_for_skill_holders_button(assigns) do
     ~H"""
-    <.link navigate="/searches">
-    <button type="button"
-      class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
+    <button
+      type="button"
+      class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
+      phx-click={JS.toggle(to: "#skill_search_modal")}
+      phx-target={"#skill_search"}
+    >
       <span
           class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold">search</span>
       スキル保有者を検索
     </button>
-    </.link>
+
     """
   end
 
