@@ -116,6 +116,9 @@ module.exports = {
           amethyst600: "#C04CD0",
           amethyst300: "#DD6DED",
         },
+        planUpgrade: {
+          600: "#f57f3e",
+        },
       },
       backgroundImage: (theme) => ({
         bgGem: "url('/images/bg_gem_title.png')",
