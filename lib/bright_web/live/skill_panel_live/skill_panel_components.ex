@@ -70,7 +70,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
       type="button"
     >
-      <span class="min-w-[6em]">スキルパネル</span>
+      <span class="min-w-[6em]">スキル</span>
       <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
         expand_more
       </span>
