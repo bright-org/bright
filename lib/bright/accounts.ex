@@ -561,6 +561,7 @@ defmodule Bright.Accounts do
         %{
           name: _name,
           email: _email,
+          display_name: _display_name,
           provider: provider,
           identifier: identifier
         } = social_identifier_attrs
@@ -599,6 +600,59 @@ defmodule Bright.Accounts do
     else
       _ -> nil
     end
+  end
+
+  @doc """
+  Link a social account to a user.
+
+  ## Examples
+
+      iex> link_social_account(user, attrs)
+      {:ok, %UserSocialAuth{}}
+
+      iex> link_social_account(user, attrs)
+      {:error, changeset}
+
+  """
+  def link_social_account(user, attrs) do
+    attrs
+    |> Map.merge(%{user_id: user.id})
+    |> then(&UserSocialAuth.change_user_social_auth(%UserSocialAuth{}, &1))
+    |> Repo.insert()
+  end
+
+  @doc """
+  Unlink a social account to a user.
+
+  It cannot unlink when user has not registered a password true and no other user_social_account exists to avoid user cannot login anymore.
+
+  ## Examples
+
+      iex> unlink_social_account(user, provider)
+      :ok
+
+      iex> unlink_social_account(user, provider)
+      :cannot_unlink_last_one
+
+  """
+  def unlink_social_account(user, provider) do
+    case can_unlink_social_account?(user, provider) do
+      true ->
+        UserSocialAuth.user_id_and_provider_query(user.id, provider)
+        |> Repo.delete_all()
+
+      false ->
+        :cannot_unlink_last_one
+    end
+  end
+
+  # 連係解除したことでログイン不可能にならないようにチェックする
+  # 独自 ID 登録ユーザーの場合は連係解除可能
+  defp can_unlink_social_account?(%User{password_registered: true}, _provider), do: true
+  # SNS ID 登録ユーザーの場合は他にも SNS 連携していれば削除可能
+  defp can_unlink_social_account?(%User{password_registered: false} = user, provider) do
+    UserSocialAuth.user_other_provider_query(user.id, provider)
+    |> Repo.exists?()
   end
 
   @doc """

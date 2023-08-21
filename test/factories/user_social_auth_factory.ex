@@ -15,6 +15,10 @@ defmodule Bright.UserSocialAuthFactory do
       def user_social_auth_for_google_factory do
         build(:user_social_auth, provider: :google)
       end
+
+      def user_social_auth_for_github_factory do
+        build(:user_social_auth, provider: :github)
+      end
     end
   end
 end

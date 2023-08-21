@@ -21,8 +21,8 @@ defmodule Bright.Accounts.User do
     field :confirmed_at, :naive_datetime
 
     has_many :users_tokens, Bright.Accounts.UserToken
-    has_one :user_2fa_codes, Bright.Accounts.User2faCodes
-    has_one :user_social_auths, Bright.Accounts.UserSocialAuth
+    has_one :user_2fa_code, Bright.Accounts.User2faCodes
+    has_many :user_social_auths, Bright.Accounts.UserSocialAuth
 
     has_many :skill_scores, Bright.SkillScores.SkillScore
     has_many :skill_class_scores, Bright.SkillScores.SkillClassScore
