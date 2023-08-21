@@ -33,7 +33,12 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
-      <.skill_panel_switch display_user={@display_user} root={@root}/>
+      <.skill_panel_switch
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        root={@root}
+      />
       <.target_switch current_user={@current_user} />
     </div>
     """
@@ -42,7 +47,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <.skill_panel_menu id="skill_panel_menu" display_user={@display_user} root={@root} />
+    <.skill_panel_menu
+      id="skill_panel_menu"
+      display_user={@display_user}
+      me={@me}
+      anonymous={@anonymous}
+      root={@root}
+    />
     <% # TODO: α版後にifを除去して表示 %>
     <.skill_set_menu :if={false} />
     """
@@ -59,7 +70,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
       type="button"
     >
-      <span class="min-w-[6em]">スキルパネル</span>
+      <span class="min-w-[6em]">スキル</span>
       <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
         expand_more
       </span>
@@ -73,7 +84,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <.live_component
         id="skill_card"
         module={BrightWeb.CardLive.SkillCardComponent}
-        current_user={@display_user}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
         root={@root}
       />
     </div>
@@ -183,7 +196,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       >
         <.live_component
           id="intriguing_card"
-          module={BrightWeb.CardLive.IntriguingCardComponent}
+          module={BrightWeb.CardLive.RelatedUserCardComponent}
           current_user={@current_user}
           display_menu={false}
         />

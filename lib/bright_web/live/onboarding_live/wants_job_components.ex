@@ -55,7 +55,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               <li>
                 <.link navigate={"#{@current_path}/jobs/#{job.id}"} class="block">
                   <label
-                    class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:bg-#{@selected_career.name_en}-dazzle min-w-[220px] h-10 leading-10"}
+                    class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
                   >
                     <%= job.name %>
                   </label>

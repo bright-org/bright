@@ -246,6 +246,7 @@ defmodule BrightWeb.UserAuth do
 
     if current_user do
       conn
+      |> put_flash(:error, "ログイン中はアクセスできません")
       |> redirect(to: log_in_redirect_path(current_user))
       |> halt()
     else
