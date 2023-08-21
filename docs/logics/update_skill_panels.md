@@ -337,14 +337,13 @@ erDiagram
     2. `skill_class_scores`, `skill_scores`, `skill_unit_scores`, `career_field_scores` のデータを同テーブルにコピーし、1のコピー先データに紐付ける
         - 1のコピー先データがなければコピーしない
     3. 関連する外部キーを1のコピー先データに付け替える
-        - `skill_improvements` の外部キー
         - `skill_evidences` の外部キー(skill_id)
         - `skill_exams` の外部キー(skill_id)
         - `skill_references` の外部キー(skill_id)
         - 1のコピー先データがなければ削除する
 - 公開→履歴
     1. 公開テーブルに入っているデータを履歴テーブルにコピーする
-        - `skill_classs` → `historical_skill_classes`
+        - `skill_classes` → `historical_skill_classes`
         - `skill_class_units` → `historical_skill_class_units`
         - `skill_units` → `historical_skill_units`
         - `skill_categories` → `historical_skill_categories`
@@ -356,3 +355,15 @@ erDiagram
         - `historical_skill_class_scores`, `historical_skill_unit_scores`, `historical_career_field_scores`の `locked_date` には処理を実行した日付を入れる
     2. 1のコピー元データを公開テーブルから削除する
 - 履歴はどこにもコピーしない
+
+## バッチ処理の手動実行メモ
+
+```elixir
+Bright.Batches.UpdateSkillPanels(~D[2023-07-01])
+```
+
+- 公開データのlocked_dateと同じ値を指定した場合
+  - ユニーク制約エラー
+- 履歴データのlocked_dateと同じ値を指定した場合
+  - エラーは出ない
+  - locked_dateが同じ履歴が複数件できる
