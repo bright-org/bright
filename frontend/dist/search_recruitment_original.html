@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, user-scalable=yes">
    <meta name="image" content="assets/images/ogp.png">
   <title>Bright</title>
-  <link rel="stylesheet" href="./output0.css">
   <link rel="stylesheet" href="./output.css">
   <link rel="shortcut icon" href="favicon.ico">
 </head>
@@ -173,7 +172,82 @@
                   <option value="">選択肢</option>
                 </select>
 
-                <a class="bg-white border border-solid border-brightGray-900 cursor-pointer font-bold ml-6 px-2 py-1 rounded select-none text-center text-brightGray-900 w-44 hover:opacity-50">スキル詳細も設定</a>
+                <label class="bg-white border border-solid border-brightGray-900 cursor-pointer font-bold ml-8 px-2 py-1 relative rounded select-none text-center text-brightGray-900 w-44">スキル詳細も設定
+                  <input type="checkbox" class="hidden peer" id="skill_detail">
+                  <div class="absolute bg-white border border-brightGray-200 hidden mt-1 right-0 top-8 w-[368px] peer-checked:block">
+                    <ul class="flex flex-wrap gap-y-1 p-4">
+<!-- 設定項目 Start -->
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_1" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li><!-- 設定項目 End 以降繰り返し -->
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_2" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_3" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_4" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_5" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_6" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_7" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+                    </ul>
+
+                    <div class="flex justify-between p-4">
+                      <label for="skill_detail" class="bg-brightGray-900 border border-brightGray-900 font-bold p-2 rounded select-none text-white w-48 hover:opacity-50">設定する</label>
+
+                      <button type="button" class="bg-white border border-brightGray-900 font-bold p-2 rounded select-none text-brightGray-900 w-32 hover:opacity-50">条件クリア</button>
+                    </div>
+                  </div>
+                </label>
               </div><!-- End スキル入力 -->
             </div>
           </div>
