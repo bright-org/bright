@@ -68,6 +68,7 @@ defmodule BrightWeb.LayoutComponents do
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
       <h4><%= @page_title %><%= @page_sub_title %></h4>
       <div class="flex gap-x-5">
+        <.plan_upgrade_button  />
         <.contact_customer_success_button />
         <.search_for_skill_holders_button />
         <.user_button icon_file_path={@profile.icon_file_path}/>

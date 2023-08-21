@@ -12,6 +12,14 @@ module.exports = {
     "../lib/*_web/**/*.*ex",
     "./node_modules/flowbite/**/*.js",
   ],
+  safelist: [
+    {
+      pattern:
+        /bg-(engineer|infra|designer|marketer|sales)-(dark|light|dazzle)/,
+      variants: ["hover"],
+    },
+  ],
+
   theme: {
     extend: {
       colors: {
@@ -75,8 +83,7 @@ module.exports = {
           newTwitter: "#000000",
           github: "#0D1117",
         },
-        // キャリアフィールドの色は文字列展開で動的に使用されるため追加した際は
-        // 合わせて以下のページに色見本を追加してください
+        // キャリアフィールドを追加した場合は合わせて以下のページに色見本を追加してください
         // lib/bright_web/live/admin/career_field_live/index.html.heex
         infra: {
           dark: "#51971A",
@@ -108,6 +115,9 @@ module.exports = {
           brightGreen300: "#14D6BE",
           amethyst600: "#C04CD0",
           amethyst300: "#DD6DED",
+        },
+        planUpgrade: {
+          600: "#f57f3e",
         },
       },
       backgroundImage: (theme) => ({

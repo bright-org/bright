@@ -107,6 +107,25 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
+  Renders a Plan Upgrade Button
+
+  ## Examples
+
+      <.plan_upgrade_button />
+  """
+  def plan_upgrade_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class="text-white bg-planUpgrade-600 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
+    >
+      <span class="bg-white material-icons mr-1 !text-base !text-[#f57f3e] rounded-full h-6 w-6 !font-bold material-icons-outlined">upgrade</span>
+      プランのアップグレード
+    </button>
+    """
+  end
+
+  @doc """
   Renders a Contact Customer Success Button
 
   ## Examples
@@ -171,16 +190,15 @@ defmodule BrightWeb.BrightButtonComponents do
 
   def logout_button(assigns) do
     ~H"""
-    <.link
-      href="/users/log_out"
-      method="delete"
-      >
-      <button
-        class="rounded-full border border-brightGray-600 h-10 w-10 flex items-center justify-center"
-      >
-        <span class="material-icons text-brightGray-600">logout</span>
-      </button>
-    </.link>
+        <.link
+          href="/users/log_out"
+          method="delete"
+          class="hover:opacity-70"
+          >
+          <button class="rounded-full border border-brightGray-600 h-10 w-10 flex items-center justify-center">
+            <span class="material-icons text-brightGray-600">logout</span>
+          </button>
+        </.link>
     """
   end
 end

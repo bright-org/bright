@@ -10,13 +10,13 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   alias Bright.Notifications
 
   @tabs [
-    {"team_invitation", "チーム招待"}
     # TODO α版では実装しない
+    # {"team_invitation", "チーム招待"},
     # {"daily", "デイリー"},
     # {"weekly", "ウイークリー"},
     # {"recruitment_coordination", "採用の調整"},
     # {"skill_panel_update", "スキルパネル更新"},
-    # {"operation", "運営"}
+    {"operation", "運営"}
   ]
 
   @impl true
@@ -55,7 +55,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
      socket
      |> assign(assigns)
      |> assign(:tabs, @tabs)
-     |> assign(:card, create_card_param("team_invitation"))
+     |> assign(:card, create_card_param("operation"))
      |> assign_card()}
   end
 
