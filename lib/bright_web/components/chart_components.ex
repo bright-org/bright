@@ -24,6 +24,7 @@ defmodule BrightWeb.ChartComponents do
       assigns
       |> assign(:labels, assigns.labels |> Jason.encode!())
       |> assign(:data, assigns.data |> Jason.encode!())
+      |> assign(:links, assigns.links |> Jason.encode!())
 
     ~H"""
     <div

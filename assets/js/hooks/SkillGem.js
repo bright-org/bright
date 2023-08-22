@@ -246,7 +246,10 @@ export const SkillGem = {
     for (let i = 0; i < length; i++) {
       const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
       const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
-      if (judge) { alert('リンククリック：' + window.myRadar[element.id].data.labels[i]) }
+      if (judge) {
+        location.href = links[i]
+        return
+      }
     }
 
     // α版はskill_upを表示しない
