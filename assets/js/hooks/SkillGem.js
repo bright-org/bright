@@ -232,6 +232,10 @@ export const SkillGem = {
     const isLink = JSON.parse(dataset.displayLink)
     if (!isLink) return;
 
+    if(dataset.links === undefined) return;
+    const links = JSON.parse(dataset.links)
+    console.log(links)
+
     // padding rightで拡張した部分がクリック判定できるようにする
     const rect = ctx.getBoundingClientRect()
     const x = event.clientX - rect.left
