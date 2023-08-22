@@ -32,7 +32,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
       >
         <div class="pt-4 px-6 min-h-[216px]">
 
-        <% #α版対応 :if={@card.selected_tab == "operation"}を外すこと %>
+        <% # TODO α版対応 :if={@card.selected_tab == "operation"}を外すこと %>
           <ul :if={@card.selected_tab == "operation"} class="flex gap-y-2.5 flex-col">
             <li :if={Enum.count(@card.notifications) == 0} class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
@@ -44,7 +44,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
             <% end %>
           </ul>
 
-          <% # ↓α版対応 %>
+          <% # TODO ↓α版対応 %>
           <ul :if={@card.selected_tab != "operation"} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
@@ -52,7 +52,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
               </div>
             </li>
           </ul>
-          <% # ↑α版対応 %>
+          <% # TODO ↑α版対応 %>
 
         </div>
       </.tab>
@@ -122,7 +122,11 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     }
   end
 
-  defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
+  # TODO α版が以降は　defp assign_card(%{assigns: %{current_user: _user, card: card}} = socket) do　を採用する
+  defp assign_card(
+         %{assigns: %{current_user: user, card: %{selected_tab: "operation"} = card}} = socket
+       ) do
+    # defp assign_card(%{assigns: %{current_user: _user, card: card}} = socket) do
     notifications =
       Notifications.list_notification_by_type(
         user.id,
@@ -134,6 +138,18 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
       card
       | notifications: notifications.entries,
         total_pages: notifications.total_pages
+    }
+
+    socket
+    |> assign(:card, card)
+  end
+
+  # TODO α版対応
+  defp assign_card(%{assigns: %{current_user: _user, card: card}} = socket) do
+    card = %{
+      card
+      | notifications: [],
+        total_pages: 0
     }
 
     socket
