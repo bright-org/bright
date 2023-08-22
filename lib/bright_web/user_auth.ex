@@ -67,7 +67,7 @@ defmodule BrightWeb.UserAuth do
     if Accounts.onboarding_finished?(user) do
       ~p"/mypage"
     else
-      ~p"/onboardings"
+      ~p"/onboardings/welcome"
     end
   end
 
@@ -214,7 +214,7 @@ defmodule BrightWeb.UserAuth do
     else
       socket
       |> Phoenix.LiveView.put_flash(:error, "オンボーディングが完了していません")
-      |> Phoenix.LiveView.redirect(to: ~p"/onboardings")
+      |> Phoenix.LiveView.redirect(to: ~p"/onboardings/welcome")
       |> then(&{:halt, &1})
     end
   end
@@ -246,6 +246,7 @@ defmodule BrightWeb.UserAuth do
 
     if current_user do
       conn
+      |> put_flash(:error, "ログイン中はアクセスできません")
       |> redirect(to: log_in_redirect_path(current_user))
       |> halt()
     else
@@ -276,7 +277,7 @@ defmodule BrightWeb.UserAuth do
     else
       conn
       |> put_flash(:error, "オンボーディングが完了していません")
-      |> redirect(to: ~p"/onboardings")
+      |> redirect(to: ~p"/onboardings/welcome")
       |> halt()
     end
   end

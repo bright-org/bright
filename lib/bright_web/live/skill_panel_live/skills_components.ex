@@ -8,20 +8,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div class="flex mt-4 items-center">
       <.compare_timeline myself={@myself} timeline={@timeline} />
-      <% # TODO: 仮UI コンポーネント完成後に削除 %>
       <div class="flex gap-x-4">
-        <button
-          class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-          type="button"
-          phx-click="demo_compare_user"
-          phx-target={@myself}
-        >
-          <span class="min-w-[6em]">個人と比較</span>
-          <span
-            class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]">add</span>
-        </button>
-        <% # TODO: コンポーネント完成後にifを除去して表示 %>
-        <.compare_individual :if={false} current_user={@current_user} />
+        <.compare_individual current_user={@current_user} myself={@myself} />
         <% # TODO: α版後にifを除去して表示 %>
         <.compare_team :if={false} current_user={@current_user} />
         <% # TODO: α版後にifを除去して表示 %>
@@ -88,8 +76,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   def compare_individual(assigns) do
     ~H"""
     <button
-      id="addCompareDropdownButton"
-      data-dropdown-toggle="addCompareDropdown"
+      id="addCompareDropdownButton-related-user"
+      data-dropdown-toggle="addCompareDropdown-related-user"
       data-dropdown-offset-skidding="300"
       data-dropdown-placement="bottom"
       class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
@@ -103,13 +91,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     <!-- 個人と比較Donwdrop -->
     <div
       class="bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden"
-      id="addCompareDropdown"
+      id="addCompareDropdown-related-user"
     >
       <.live_component
-        id="intriguing_card_compare"
-        module={BrightWeb.CardLive.IntriguingCardComponent}
+        id="related-user-card-compare"
+        module={BrightWeb.CardLive.RelatedUserCardComponent}
         current_user={@current_user}
         display_menu={false}
+        purpose="compare"
+        card_row_click_target={@myself}
       />
     </div>
     """
@@ -334,6 +324,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     phx-click="change"
                     phx-value-score="high"
                     phx-value-skill_id={col3.skill.id}
+                    phx-value-row={row}
                   >
                     <input
                       type="radio"
@@ -348,6 +339,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     phx-click="change"
                     phx-value-score="middle"
                     phx-value-skill_id={col3.skill.id}
+                    phx-value-row={row}
                   >
                     <input
                       type="radio"
@@ -362,6 +354,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                     phx-click="change"
                     phx-value-score="low"
                     phx-value-skill_id={col3.skill.id}
+                    phx-value-row={row}
                   >
                     <input
                       type="radio"

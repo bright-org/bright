@@ -6,9 +6,6 @@ defmodule Bright.Utils.Aes.Aes128 do
   # 参考にしたURL
   # https://elixirforum.com/t/help-with-crypto-module-crypto-one-time-method-argumenterror-argument-error-issue/38129
 
-  # TODO: @secret_keyを外部指定にすること
-  # secret_keyはblock_sizeで文字列を指定すること
-  @secret_key "1234567890123456"
   @block_size 16
 
   @doc """
@@ -24,7 +21,10 @@ defmodule Bright.Utils.Aes.Aes128 do
     # 出力形式はiv + 暗号化文字列をBase16にする
     iv = :crypto.strong_rand_bytes(@block_size)
     plaintext = pad(plaintext, @block_size)
-    encrypted_text = :crypto.crypto_one_time(:aes_128_cbc, @secret_key, iv, plaintext, true)
+
+    encrypted_text =
+      :crypto.crypto_one_time(:aes_128_cbc, aes128_secret_key(), iv, plaintext, true)
+
     encrypted_text = iv <> encrypted_text
     Base.encode16(encrypted_text)
   end
@@ -44,7 +44,10 @@ defmodule Bright.Utils.Aes.Aes128 do
     # 16byte単位で処理できるようにする
     {:ok, ciphertext} = Base.decode16(ciphertext)
     <<iv::binary-16, ciphertext::binary>> = ciphertext
-    decrypted_text = :crypto.crypto_one_time(:aes_128_cbc, @secret_key, iv, ciphertext, false)
+
+    decrypted_text =
+      :crypto.crypto_one_time(:aes_128_cbc, aes128_secret_key(), iv, ciphertext, false)
+
     unpad(decrypted_text)
   end
 
@@ -57,4 +60,6 @@ defmodule Bright.Utils.Aes.Aes128 do
     to_add = block_size - rem(byte_size(data), block_size)
     data <> :binary.copy(<<to_add>>, to_add)
   end
+
+  defp aes128_secret_key(), do: Application.fetch_env!(:bright, :aes128_secret_key)
 end

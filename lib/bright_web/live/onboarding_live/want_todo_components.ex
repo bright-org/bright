@@ -20,7 +20,6 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
                       "px-2 py-0.5 rounded-full text-white text-xs",
                       "bg-#{career_field.name_en}-dark"
                     ]}
-                    style={"background-color: #{@colors[career_field.name_en][:dark]};"}
                   >
                   <%= career_field.name_ja %>
                 </span>
@@ -58,13 +57,12 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
           Enum.map(wants.jobs, & &1.career_fields)
           |> List.flatten()
           |> Enum.uniq()
+          |> Enum.sort_by(& &1.position)
         )
       end)
 
     socket
     |> assign(assigns)
-    # tailwindの色情報が壊れるので応急処置でconfigから読み込み
-    |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
     |> assign(:open_panel, false)
     |> assign(:career_wants, career_wants)
     |> then(&{:ok, &1})

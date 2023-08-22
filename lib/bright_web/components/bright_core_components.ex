@@ -143,6 +143,7 @@ defmodule BrightWeb.BrightCoreComponents do
   """
   attr :id, :any, default: nil
   attr :container_class, :string, default: ""
+  attr :div_class, :string, default: ""
   attr :input_class, :string, default: ""
   attr :label_class, :string, default: ""
   attr :after_label_class, :string, default: ""
@@ -251,16 +252,13 @@ defmodule BrightWeb.BrightCoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+    <div phx-feedback-for={@name} class={@div_class}>
       <textarea
         id={@id}
         name={@name}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          "min-h-[6rem] phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          "border border-brightGray-200 px-2 py-1 rounded",
+          @input_class,
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
@@ -283,9 +281,6 @@ defmodule BrightWeb.BrightCoreComponents do
           class={[
             "border border-brightGray-200 px-2 py-1 rounded w-40",
             @input_class,
-            "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
-            @errors == [] && "border-zinc-300 focus:border-zinc-400",
-            @errors != [] && "border-rose-400 focus:border-rose-400"
           ]}
           {@rest}
         />

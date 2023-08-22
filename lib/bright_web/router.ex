@@ -143,6 +143,7 @@ defmodule BrightWeb.Router do
       live "/users/register_social_account/:token", UserRegisterSocialAccountLive, :show
     end
 
+    get "/users/confirm/:token", UserConfirmationController, :confirm
     post "/users/log_in", UserSessionController, :create
     post "/users/two_factor_auth", UserTwoFactorAuthController, :create
   end
@@ -165,17 +166,17 @@ defmodule BrightWeb.Router do
       live "/skill_up/jobs/:job_id", OnboardingLive.SkillPanels
       live "/skill_up/jobs/:job_id/skill_panels/:id", OnboardingLive.SkillPanel
       live "/mypage/:user_name", MypageLive.Index, :index
-      live "/mypage/anon/:user_name_crypted", MypageLive.Index, :index
+      live "/mypage/anon/:user_name_encrypted", MypageLive.Index, :index
 
       live "/graphs", SkillPanelLive.Graph, :show
       live "/graphs/:skill_panel_id", SkillPanelLive.Graph, :show
       live "/graphs/:skill_panel_id/:user_name", SkillPanelLive.Graph, :show
-      live "/graphs/:skill_panel_id/anon/:user_name_crypted", SkillPanelLive.Graph, :show
+      live "/graphs/:skill_panel_id/anon/:user_name_encrypted", SkillPanelLive.Graph, :show
 
       live "/panels", SkillPanelLive.Skills, :show
       live "/panels/:skill_panel_id", SkillPanelLive.Skills, :show
       live "/panels/:skill_panel_id/:user_name", SkillPanelLive.Skills, :show
-      live "/panels/:skill_panel_id/anon/:user_name_crypted", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id/anon/:user_name_encrypted", SkillPanelLive.Skills, :show
 
       live "/panels/:skill_panel_id/skills/:skill_id/evidences",
            SkillPanelLive.Skills,
@@ -192,6 +193,11 @@ defmodule BrightWeb.Router do
       live "/teams", MyTeamLive, :index
       live "/teams/:team_id", MyTeamLive, :index
       live "/searches", SearchLive.Index
+
+      ## OAuth
+      scope "/auth" do
+        delete "/:provider", OAuthController, :delete
+      end
     end
   end
 
@@ -210,6 +216,7 @@ defmodule BrightWeb.Router do
         {BrightWeb.UserAuth, :redirect_if_onboarding_finished}
       ] do
       live "/", OnboardingLive.Index, :index
+      live "/welcome", OnboardingLive.Welcome
       live "/wants/:want_id", OnboardingLive.SkillPanels
       live "/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
       live "/jobs/:job_id", OnboardingLive.SkillPanels
@@ -221,7 +228,6 @@ defmodule BrightWeb.Router do
   scope "/", BrightWeb do
     pipe_through [:browser]
 
-    get "/users/confirm/:token", UserConfirmationController, :confirm
     delete "/users/log_out", UserSessionController, :delete
     get "/teams/invitation_confirm/:token", TeamInvitationConfirmController, :invitation_confirm
 

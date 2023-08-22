@@ -96,6 +96,9 @@ module.exports = {
         amethyst600: "#C04CD0",
         amethyst300: "#DD6DED",
       },
+      planUpgrade: {
+        600: "#f57f3e",
+      },
     },
     extend: {
       backgroundImage: (theme) => ({
@@ -104,6 +107,7 @@ module.exports = {
         bgGemInfra: "url('./images/bg_gem_infra.png')",
         bgGemDesigner: "url('./images/bg_gem_designer.png')",
         bgGemMarketer: "url('./images/bg_gem_marketer.png')",
+        bgGemSales: "url('./images/bg_gem_sales.png')",
         bgGoogle: "url('./images/bg_google.png')",
         bgGithub: "url('./images/bg_github.png')",
         bgFacebook: "url('./images/bg_facebook.png')",

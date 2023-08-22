@@ -33,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   def assign_skill_panel(socket, nil, _root) do
     display_user = socket.assigns.display_user
 
-    skill_panel = SkillPanels.get_user_latest_skill_panel!(display_user)
+    skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
 
     socket
     |> assign(:skill_panel, skill_panel)
@@ -51,7 +51,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
       # 指定されているスキルパネルがない場合は、
       # 直近のスキルパネルを取得して、
       # URLと矛盾した表示にならないようにリダイレクト
-      skill_panel = SkillPanels.get_user_latest_skill_panel!(display_user)
+      skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
 
       path =
         build_path(root, skill_panel, display_user, socket.assigns.me, socket.assigns.anonymous)
@@ -184,18 +184,20 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> floor()
   end
 
-  defp build_path(root, skill_panel, _display_user, true, _anonymous) do
+  def build_path(root, skill_panel, display_user, me, anonymous)
+
+  def build_path(root, skill_panel, _display_user, true, _anonymous) do
     # 自ユーザー
     "/#{root}/#{skill_panel.id}"
   end
 
-  defp build_path(root, skill_panel, display_user, _me, true) do
+  def build_path(root, skill_panel, display_user, _me, true) do
     # 対象ユーザーかつ匿名
     encrypted = DisplayUserHelper.encrypt_user_name(display_user)
     "/#{root}/#{skill_panel.id}/anon/#{encrypted}"
   end
 
-  defp build_path(root, skill_panel, display_user, _me, false) do
+  def build_path(root, skill_panel, display_user, _me, false) do
     # 対象ユーザーかつ匿名ではない
     "/#{root}/#{skill_panel.id}/#{display_user.name}"
   end

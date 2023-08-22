@@ -19,14 +19,8 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
                   "cursor-pointer select-none py-2 rounded-tl text-center w-40 " <>
                   if @selected_career.name_en == career_field.name_en,
                     do: "bg-#{career_field.name_en}-dark text-white",
-                    else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark hover:opacity-50 text-brightGray-200"
+                    else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark text-brightGray-200 hover:text-white"
                 }
-              style={
-                if @selected_career.name_en == career_field.name_en,
-                    do: "background-color:#{@colors[career_field.name_en][:dark]};",
-                    else: "background-color:#{@colors[career_field.name_en][:dazzle]};"
-
-              }
               phx-click={JS.push("tab_click", target: @myself, value: %{id: career_field.id})}
             >
               <%= career_field.name_ja %>
@@ -50,7 +44,6 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         <%= if @selected_career do %>
         <section
           class={"bg-#{@selected_career.name_en}-dazzle px-4 py-4"}
-          style={"background-color:#{@colors[@selected_career.name_en][:dazzle]};"}
         >
           <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
           <div class="mb-8">
@@ -63,7 +56,6 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
                 <.link navigate={"#{@current_path}/jobs/#{job.id}"} class="block">
                   <label
                     class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
-                    style={"background-color:#{@colors[@selected_career.name_en][:dark]};"}
                   >
                     <%= job.name %>
                   </label>
@@ -92,9 +84,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         Map.put(acc, key, Enum.group_by(value, & &1.rank))
       end)
 
-    # tailwindの色情報が壊れるので応急処置でconfigから読み込み
     socket
-    |> assign(:colors, Application.fetch_env!(:bright, :career_field_colors))
     |> assign(:rank, @rank)
     |> assign(:jobs, jobs)
     |> then(&{:ok, &1})

@@ -68,6 +68,7 @@ defmodule BrightWeb.LayoutComponents do
     <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
       <h4><%= @page_title %><%= @page_sub_title %></h4>
       <div class="flex gap-x-5">
+        <.plan_upgrade_button  />
         <.contact_customer_success_button />
         <.search_for_skill_holders_button />
         <.user_button icon_file_path={@profile.icon_file_path}/>
@@ -108,13 +109,14 @@ defmodule BrightWeb.LayoutComponents do
   def links() do
     [
       {"スキルを選ぶ", "/onboardings"},
-      {"スキルパネル", "/panels"},
-      {"成長グラフ", "/graphs"},
+      {"成長を見る・比較する", "/graphs"},
+      {"スキルパネルを入力", "/panels"},
+      # TODO α版はskill_upを表示しない
+      # {"スキルアップする", "/skill_up"},
       {"スキル検索／スカウト", "/searches"},
-      {"チーム作成", "/teams/new"},
+      {"キャリアパスを選ぶ", "/"},
       {"チームスキル分析", "/teams"},
-      # TODO 結合テスト中限定
-      {"スキルアップを目指す", "/skill_up"}
+      {"自分のチームを作る", "/teams/new"}
     ]
   end
 

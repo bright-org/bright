@@ -29,6 +29,7 @@ defmodule BrightWeb.TeamComponents do
   def team_small(assigns) do
     ~H"""
     <li
+      id={@id}
       phx-click="on_card_row_click"
       phx-target={@low_on_click_target}
       phx-value-team_id={@team.id}

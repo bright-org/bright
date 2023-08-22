@@ -14,10 +14,10 @@ defmodule BrightWeb.UserLoginLive do
       phx-update="ignore"
     >
       <UserAuthComponents.form_section variant="left">
-        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google" />
-        <UserAuthComponents.social_auth_button href="#" variant="github" />
-        <UserAuthComponents.social_auth_button href="#" variant="facebook" />
-        <UserAuthComponents.social_auth_button href="#" variant="twitter" />
+        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">Google</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="github">GitHub</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="facebook">Facebook</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="twitter">Twitter</UserAuthComponents.social_auth_button>
       </UserAuthComponents.form_section>
 
       <UserAuthComponents.or_text>または</UserAuthComponents.or_text>

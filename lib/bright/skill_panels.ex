@@ -92,14 +92,14 @@ defmodule Bright.SkillPanels do
     |> Bright.Repo.get_by(id: skill_panel_id)
   end
 
-  def get_user_latest_skill_panel!(user) do
+  def get_user_latest_skill_panel(user) do
     from(q in SkillPanel,
       join: u in assoc(q, :user_skill_panels),
       where: u.user_id == ^user.id,
       order_by: [desc: u.updated_at],
       limit: 1
     )
-    |> Repo.one!()
+    |> Repo.one()
   end
 
   @doc """

@@ -33,7 +33,12 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
-      <.skill_panel_switch display_user={@display_user} root={@root}/>
+      <.skill_panel_switch
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        root={@root}
+      />
       <.target_switch current_user={@current_user} />
     </div>
     """
@@ -42,7 +47,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <.skill_panel_menu id="skill_panel_menu" display_user={@display_user} root={@root} />
+    <.skill_panel_menu
+      id="skill_panel_menu"
+      display_user={@display_user}
+      me={@me}
+      anonymous={@anonymous}
+      root={@root}
+    />
     <% # TODO: α版後にifを除去して表示 %>
     <.skill_set_menu :if={false} />
     """
@@ -59,7 +70,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
       type="button"
     >
-      <span class="min-w-[6em]">スキルパネル</span>
+      <span class="min-w-[6em]">スキル</span>
       <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
         expand_more
       </span>
@@ -73,7 +84,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <.live_component
         id="skill_card"
         module={BrightWeb.CardLive.SkillCardComponent}
-        current_user={@display_user}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
         root={@root}
       />
     </div>
@@ -142,30 +155,17 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def target_switch(assigns) do
     ~H"""
     <p class="leading-tight ml-4">対象者の<br />切り替え</p>
-    <% # TODO: 共通コンポーネント完成後に表示 %>
-    <.individual_menu :if={false} current_user={@current_user} />
+    <.related_user_menu current_user={@current_user} />
     <% # TODO: α版後にifを除去して表示 %>
     <.team_menu :if={false} current_user={@current_user} />
-
-    <% # TODO: 仮実装のため実装後に削除 %>
-    <button
-      class="text-white bg-brightGreen-300 rounded py-1.5 pl-3 flex items-center font-bold"
-      type="button"
-      phx-click="demo_change_user"
-    >
-      <span class="min-w-[6em]">個人</span>
-      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
-        expand_more
-      </span>
-    </button>
     """
   end
 
-  def individual_menu(assigns) do
+  def related_user_menu(assigns) do
     ~H"""
       <button
-        id="dropdownDefaultButton"
-        data-dropdown-toggle="dropdown2"
+        id="dropdownDefaultButton-related-user"
+        data-dropdown-toggle="dropdown-related-user"
         data-dropdown-offset-skidding="302"
         data-dropdown-placement="bottom"
         class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
@@ -178,14 +178,15 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       </button>
       <!-- 個人 menu -->
       <div
-        id="dropdown2"
+        id="dropdown-related-user"
         class="z-10 hidden bg-whiterounded-lg shadow w-[750px]"
       >
         <.live_component
-          id="intriguing_card"
-          module={BrightWeb.CardLive.IntriguingCardComponent}
+          id="related-user-card-menu"
+          module={BrightWeb.CardLive.RelatedUserCardComponent}
           current_user={@current_user}
           display_menu={false}
+          purpose="menu"
         />
       </div>
     """

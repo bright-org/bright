@@ -3,10 +3,14 @@ defmodule Bright.SkillEvidenceFactory do
   Factory for Bright.SkillEvidences.SkillEvidence
   """
 
+  alias Bright.SkillEvidences.SkillEvidence
+
   defmacro __using__(_opts) do
     quote do
       def skill_evidence_factory do
-        %Bright.SkillEvidences.SkillEvidence{}
+        %SkillEvidence{
+          progress: Enum.random(Ecto.Enum.values(SkillEvidence, :progress))
+        }
       end
     end
   end

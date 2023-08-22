@@ -6,12 +6,14 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
 
+  alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
   alias Bright.SkillScores
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
   alias Bright.UserSkillPanels
+  alias BrightWeb.PathHelper
 
   @shortcut_key_score %{
     "1" => :high,
@@ -31,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   @impl true
-  def handle_params(params, url, socket) do
+  def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}}} = socket) do
     # TODO: データ取得方法検討／LiveVIewコンポーネント化検討
     {:noreply,
      socket
@@ -43,6 +45,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_counter()
      |> apply_action(socket.assigns.live_action, params)}
   end
+
+  def handle_params(_params, _url, %{assigns: %{skill_panel: nil}} = socket),
+    do: {:noreply, socket}
 
   @impl true
   def handle_event("edit", _params, socket) do
@@ -77,14 +82,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_edit_off()}
   end
 
-  def handle_event("change", %{"score" => score, "skill_id" => skill_id}, socket) do
+  def handle_event("change", %{"score" => score, "skill_id" => skill_id, "row" => row}, socket) do
     score = String.to_atom(score)
     skill_score = Map.get(socket.assigns.skill_score_dict, skill_id)
+    row = String.to_integer(row)
 
     {:noreply,
      socket
      |> update_by_score_change(skill_score, score)
-     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))}
+     |> assign(:focus_row, row)}
   end
 
   def handle_event("shortcut", %{"key" => key, "skill_id" => skill_id}, socket)
@@ -114,31 +120,14 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, socket}
   end
 
-  # TODO: デモ用実装のため対象ユーザー実装後に削除
-  # TODO: 匿名に注意すること
-  def handle_event("demo_change_user", _params, socket) do
-    users =
-      Bright.Accounts.User
-      |> Bright.Repo.all()
-      |> Enum.reject(fn user ->
-        user.id == socket.assigns.current_user.id ||
-          Ecto.assoc(user, :user_skill_panels)
-          |> Bright.Repo.all()
-          |> Enum.empty?()
-      end)
+  def handle_event("click_on_related_user_card_menu", params, socket) do
+    # TODO: チームメンバー以外の対応時に匿名に注意すること
+    user = Bright.Accounts.get_user_by_name(params["name"])
 
-    if users != [] do
-      user = Enum.random(users)
-
-      {:noreply,
-       socket
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/#{user.name}")}
-    else
-      {:noreply,
-       socket
-       |> put_flash(:info, "demo: ユーザーがいません")
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}")}
-    end
+    # 参照可能なユーザーかどうかの判定は遷移先で行うので必要ない
+    {:noreply,
+     socket
+     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/#{user.name}")}
   end
 
   def handle_event("clear_target_user", _params, socket) do
@@ -189,7 +178,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp assign_skill_evidence(socket) do
     skill_evidence =
       SkillEvidences.get_skill_evidence_by(
-        user_id: socket.assigns.current_user.id,
+        user_id: socket.assigns.display_user.id,
         skill_id: socket.assigns.skill.id
       )
 
@@ -265,7 +254,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do
     {:ok, skill_evidence} =
       SkillEvidences.create_skill_evidence(%{
-        user_id: socket.assigns.current_user.id,
+        user_id: socket.assigns.display_user.id,
         skill_id: socket.assigns.skill.id,
         progress: :wip,
         skill_evidence_posts: []

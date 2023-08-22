@@ -23,7 +23,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
             <ul>
               <%= for skill_unit <- @skill_units do %>
               <li>
-                <span class={"bg-#{@career_field.name_en}-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"}>
+                <span class={"bg-#{@career_field.name_en}-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGem#{String.capitalize(@career_field.name_en)} before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"}>
                   <%= skill_unit.name %>
                 </span>
               </li>

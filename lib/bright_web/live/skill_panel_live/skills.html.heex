@@ -1,5 +1,12 @@
-<!-- card -->
-<.navigations current_user={@current_user} display_user={@display_user} root="panels" />
+<%= if @skill_panel do %>
+<.navigations
+  current_user={@current_user}
+  display_user={@display_user}
+  me={@me}
+  anonymous={@anonymous}
+  root="panels"
+/>
+
 <div class="mx-10">
   <div class="flex justify-between">
     <% # TODO: α版後にifと仮divブロックを除去して表示 %>
@@ -34,7 +41,7 @@
   id="skill-evidence-modal"
   show
   style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
-  on_cancel={JS.patch(~p"/panels/#{@skill_panel}?class=#{@skill_class.class}")}>
+  on_cancel={JS.patch(PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}")}>
 
   <.live_component
     module={BrightWeb.SkillPanelLive.SkillEvidenceComponent}
@@ -42,7 +49,7 @@
     skill={@skill}
     skill_evidence={@skill_evidence}
     user={@current_user}
-    patch={~p"/panels/#{@skill_panel}?class=#{@skill_class.class}"}
+    patch={PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
   />
 </.bright_modal>
 
@@ -71,3 +78,9 @@
     <iframe id="iframe-skill-exam" src={@skill_exam.url} phx-hook="IframeSizeFitting" />
   </div>
 </.bright_modal>
+<% else %>
+<div class="h-screen w-full flex flex-col justify-center items-center gap-y-2">
+  <p class="text-4xl">スキルパネルがありません</p>
+  <p class="text-xl">スキルを選ぶからスキルパネルを取得しましょう</p>
+</div>
+<% end %>
