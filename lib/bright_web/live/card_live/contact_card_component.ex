@@ -145,7 +145,7 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   end
 
   # TODO α版対応
-  defp assign_card(%{assigns: %{current_user: _user, card: card}} = socket) do
+  defp assign_card(%{assigns: %{card: card}} = socket) do
     card = %{
       card
       | notifications: [],
