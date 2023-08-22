@@ -3,6 +3,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
 
   alias Bright.Accounts
   alias BrightWeb.BrightCoreComponents, as: BrightCore
+  alias BrightWeb.UserSettingsLive.UserSettingComponent
 
   @impl true
   def render(assigns) do
@@ -110,7 +111,13 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
          |> Bright.Repo.preload(:user_profile)
          |> Accounts.update_user_with_user_profile(user_params) do
       {:ok, _user} ->
-        {:noreply, socket |> put_flash(:info, "保存しました") |> push_navigate(to: ~p"/mypage")}
+        send_update(UserSettingComponent,
+          id: "user_setting_modal",
+          modal_flash: %{info: "保存しました"},
+          action: "general"
+        )
+
+        {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
