@@ -61,29 +61,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> assign_compared_users_info()}
   end
 
-  # TODO: デモ用実装のため対象ユーザー実装後に削除
-  def handle_event("demo_compare_user", _params, socket) do
-    users =
-      Bright.Accounts.User
-      |> Bright.Repo.all()
-      |> Enum.reject(fn user ->
-        user.id == socket.assigns.display_user.id ||
-          Ecto.assoc(user, :user_skill_panels)
-          |> Bright.Repo.all()
-          |> Enum.empty?()
-      end)
+  def handle_event("click_on_related_user_card_compare", params, socket) do
+    # TODO: チームメンバー以外の対応時に匿名に注意すること
+    # TODO: 本当に参照可能かのチェックをいれること
+    user = Bright.Accounts.get_user_by_name(params["name"])
 
-    if users != [] do
-      user = Enum.random(users)
-
-      {:noreply,
-       socket
-       |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
-       |> assign_compared_user_dict(user)
-       |> assign_compared_users_info()}
-    else
-      {:noreply, socket}
-    end
+    {:noreply,
+     socket
+     |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
+     |> assign_compared_user_dict(user)
+     |> assign_compared_users_info()}
   end
 
   def handle_event("reject_compared_user", %{"name" => name}, socket) do

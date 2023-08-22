@@ -36,6 +36,8 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
       |> assign(:page, 1)
       |> assign(:total_pages, 0)
       |> assign(:page_size, @page_size)
+      |> assign(:card_row_click_target, nil)
+      |> assign(:purpose, nil)
 
     {:ok, socket}
   end
@@ -46,7 +48,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     ~H"""
     <div>
       <.tab
-        id="intriguing_card#{@id}"
+        id={"related-user-card-#{@id}"}
         tabs={@tabs}
         selected_tab={@selected_tab}
         menu_items={@menu_items}
@@ -71,7 +73,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           </ul>
           <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
-              <.profile_small user_name={user_profile.user_name} title={user_profile.title} icon_file_path={user_profile.icon_file_path} />
+              <.profile_small user_name={user_profile.user_name} title={user_profile.title} icon_file_path={user_profile.icon_file_path} click_event={click_event(@purpose)} click_target={@card_row_click_target} />
             <% end %>
           </ul>
         </div>
@@ -82,9 +84,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   @impl true
   def update(assigns, socket) do
-    socket =
-      socket
-      |> assign(:current_user, assigns.current_user)
+    socket = socket |> assign(assigns)
 
     # 初期表示データの取得 mount時に設定したselected_tabの選択処理を実行
     {:noreply, socket} =
@@ -299,4 +299,8 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
     %{user_smalls: member_and_users, total_pages: page.total_pages}
   end
+
+  defp click_event(nil), do: nil
+
+  defp click_event(purpose), do: "click_on_related_user_card_#{purpose}"
 end
