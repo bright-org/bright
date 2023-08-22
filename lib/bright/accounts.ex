@@ -693,9 +693,11 @@ defmodule Bright.Accounts do
 
   """
   def get_user_by_name_or_email(name_or_email) do
-    User
-    |> where([user], not is_nil(user.confirmed_at))
-    |> where([user], user.name == ^name_or_email or user.email == ^name_or_email)
+    from(u in User,
+      where:
+        (u.name == ^name_or_email or u.email == ^name_or_email) and not is_nil(u.confirmed_at)
+    )
+    |> preload(:user_profile)
     |> Repo.one()
   end
 
