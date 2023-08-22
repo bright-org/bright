@@ -353,12 +353,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     # ]
 
     skill_units
-    |> Enum.flat_map(fn skill_unit ->
+    |> Enum.with_index(1)
+    |> Enum.flat_map(fn {skill_unit, position} ->
       skill_category_items =
         list_skill_categories(skill_unit)
         |> Enum.flat_map(&build_skill_category_table_structure/1)
 
-      build_skill_unit_table_structure(skill_unit, skill_category_items)
+      build_skill_unit_table_structure(skill_unit, skill_category_items, position)
     end)
   end
 
@@ -375,7 +376,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     end)
   end
 
-  defp build_skill_unit_table_structure(skill_unit, skill_category_items) do
+  defp build_skill_unit_table_structure(skill_unit, skill_category_items, position) do
     size =
       skill_category_items
       |> Enum.reduce(0, fn
@@ -383,7 +384,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
         [%{size: size}, _], acc -> acc + size
       end)
 
-    skill_unit_item = %{size: size, skill_unit: skill_unit}
+    skill_unit_item = %{size: size, skill_unit: skill_unit, position: position}
 
     skill_category_items
     |> Enum.with_index()

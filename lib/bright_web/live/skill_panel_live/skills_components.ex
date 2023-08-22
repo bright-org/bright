@@ -287,7 +287,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
           <tr id={"skill-#{row}"} class="focus:bg-brightGray-100">
-            <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
+            <td :if={col1} rowspan={col1.size} id={"unit-#{col1.position}"} class="align-top">
+              <%= col1.skill_unit.name %>
+            </td>
             <td :if={col2} rowspan={col2.size} class="align-top">
               <%= col2.skill_category.name %>
             </td>
