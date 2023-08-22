@@ -41,4 +41,14 @@ defmodule BrightWeb.SkillPanelLive.GraphTest do
              |> has_element?("#class_tab_1", skill_class.name)
     end
   end
+
+  describe "Show no skill panel" do
+    setup [:register_and_log_in_user]
+
+    test "show content with no skill panel message", %{conn: conn} do
+      {:ok, _show_live, html} = live(conn, ~p"/graphs")
+
+      assert html =~ "スキルパネルがありません"
+    end
+  end
 end

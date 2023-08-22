@@ -1,6 +1,8 @@
 defmodule BrightWeb.SkillPanelLive.Graph do
   use BrightWeb, :live_view
 
+  alias Bright.SkillPanels.SkillPanel
+
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
@@ -17,7 +19,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   end
 
   @impl true
-  def handle_params(params, url, socket) do
+  def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}}} = socket) do
     # TODO: データ取得方法検討／LiveVIewコンポーネント化検討
     {:noreply,
      socket
@@ -28,6 +30,9 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> assign_skill_score_dict()
      |> assign_counter()}
   end
+
+  def handle_params(_params, _url, %{assigns: %{skill_panel: nil}} = socket),
+    do: {:noreply, socket}
 
   @impl true
   def handle_event("click_on_related_user_card_menu", params, socket) do

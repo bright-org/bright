@@ -101,7 +101,7 @@ defmodule Bright.SkillPanelsTest do
       end
     end
 
-    test "get_user_latest_skill_panel!/1 returns the skill_panel with given user" do
+    test "get_user_latest_skill_panel/1 returns the skill_panel with given user" do
       user = insert(:user)
       [skill_panel_1, skill_panel_2] = insert_pair(:skill_panel)
 
@@ -110,7 +110,7 @@ defmodule Bright.SkillPanelsTest do
 
       :timer.sleep(1000)
       UserSkillPanels.touch_user_skill_panel_updated(user, skill_panel_1)
-      assert SkillPanels.get_user_latest_skill_panel!(user) == skill_panel_1
+      assert SkillPanels.get_user_latest_skill_panel(user) == skill_panel_1
     end
   end
 

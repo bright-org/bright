@@ -126,6 +126,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  describe "Show no skill panel" do
+    setup [:register_and_log_in_user]
+
+    test "show content with no skill panel message", %{conn: conn} do
+      {:ok, _show_live, html} = live(conn, ~p"/graphs")
+
+      assert html =~ "スキルパネルがありません"
+    end
+  end
+
   describe "Show skill scores" do
     setup [:register_and_log_in_user, :setup_skills]
 
