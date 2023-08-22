@@ -10,6 +10,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
     # αでは落とす
     # {"team", "チーム検索"}
   ]
+  @default_tab "user"
 
   @impl true
   def render(assigns) do
@@ -54,7 +55,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
     socket
     |> assign(assigns)
     |> assign(:tabs, @tabs)
-    |> assign(:selected_tab, "user")
+    |> assign(:selected_tab, @default_tab)
     |> assign(:modal_flash, Map.get(assigns, :modal_flash, %{}))
     |> then(&{:ok, &1})
   end
