@@ -239,10 +239,12 @@ defmodule BrightWeb.Router do
   # See https://hexdocs.pm/plug/Plug.BasicAuth.html#module-runtime-time-usage
   defp admin_basic_auth(conn, _opts) do
     case System.fetch_env("MIX_ENV") do
+      # NOTE: ローカル環境以外は MIX_ENV=prod になる（Dockerfileを参照）
       {:ok, "prod"} ->
         username = System.fetch_env!("ADMIN_BASIC_AUTH_USERNAME")
         password = System.fetch_env!("ADMIN_BASIC_AUTH_PASSWORD")
         Plug.BasicAuth.basic_auth(conn, username: username, password: password)
+
       _ ->
         conn
     end
