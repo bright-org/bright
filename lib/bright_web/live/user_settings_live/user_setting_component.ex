@@ -50,7 +50,6 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
               id={"user_settings"}
               user={@current_user}
               action={:edit}
-              :if={@current_user}
             />
           </.tab>
         </section>
