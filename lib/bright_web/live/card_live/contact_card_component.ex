@@ -10,12 +10,11 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
   alias Bright.Notifications
 
   @tabs [
-    # TODO α版では実装しない
-    # {"team_invitation", "チーム招待"},
-    # {"daily", "デイリー"},
-    # {"weekly", "ウイークリー"},
-    # {"recruitment_coordination", "採用の調整"},
-    # {"skill_panel_update", "スキルパネル更新"},
+    {"team_invitation", "チーム招待"},
+    {"daily", "デイリー"},
+    {"weekly", "ウイークリー"},
+    {"recruitment_coordination", "採用の調整"},
+    {"skill_panel_update", "スキルパネル更新"},
     {"operation", "運営"}
   ]
 
@@ -33,7 +32,8 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
       >
         <div class="pt-4 px-6 min-h-[216px]">
 
-          <ul class="flex gap-y-2.5 flex-col">
+        <% # TODO α版対応 :if={@card.selected_tab == "operation"}を外すこと %>
+          <ul :if={@card.selected_tab == "operation"} class="flex gap-y-2.5 flex-col">
             <li :if={Enum.count(@card.notifications) == 0} class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
                 <%= Enum.into(@tabs, %{}) |> Map.get(@card.selected_tab) %>はありません
@@ -43,6 +43,17 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
               <.card_row type="contact" notification={notification} />
             <% end %>
           </ul>
+
+          <% # TODO ↓α版対応 %>
+          <ul :if={@card.selected_tab != "operation"} class="flex gap-y-2.5 flex-col">
+            <li class="flex">
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+                βリリース（10月予定）で利用可能になります
+              </div>
+            </li>
+          </ul>
+          <% # TODO ↑α版対応 %>
+
         </div>
       </.tab>
     </div>
@@ -111,7 +122,11 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
     }
   end
 
-  defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
+  # TODO α版が以降は　defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do　を採用
+  defp assign_card(
+         %{assigns: %{current_user: user, card: %{selected_tab: "operation"} = card}} = socket
+       ) do
+    # defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
     notifications =
       Notifications.list_notification_by_type(
         user.id,
@@ -123,6 +138,18 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
       card
       | notifications: notifications.entries,
         total_pages: notifications.total_pages
+    }
+
+    socket
+    |> assign(:card, card)
+  end
+
+  # TODO α版対応
+  defp assign_card(%{assigns: %{card: card}} = socket) do
+    card = %{
+      card
+      | notifications: [],
+        total_pages: 0
     }
 
     socket
