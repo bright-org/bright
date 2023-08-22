@@ -59,6 +59,20 @@ module "secret_host" {
   data = module.cloud_run_service.host
 }
 
+module "secret_admin_basic_auth_username" {
+  source = "../../modules/google/secret"
+
+  name = "bright-admin-basic-auth-username"
+  data = var.admin_basic_auth_username
+}
+
+module "secret_admin_basic_auth_password" {
+  source = "../../modules/google/secret"
+
+  name = "bright-admin-basic-auth-password"
+  data = var.admin_basic_auth_password
+}
+
 module "secret_sendgrid_api_key" {
   source = "../../modules/google/secret"
 

@@ -1,5 +1,5 @@
 <!-- feat: スキルパネル更新 861b28d9a8ec541ac03fe716ac0926b4e5575d5e　まで適用 -->
-
+<%= if @skill_panel do %>
 <.navigations
   current_user={@current_user}
   display_user={@display_user}
@@ -49,3 +49,9 @@
     </div>
   </div>
 </div>
+<% else %>
+<div class="h-screen w-full flex flex-col justify-center items-center gap-y-2">
+  <p class="text-4xl">スキルパネルがありません</p>
+  <p class="text-xl">スキルを選ぶからスキルパネルを取得しましょう</p>
+</div>
+<% end %>

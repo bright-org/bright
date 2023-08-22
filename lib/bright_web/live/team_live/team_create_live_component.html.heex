@@ -1,11 +1,13 @@
 
-          <div id="create-team-modal" class="relative max-h-full">
+<div class="relative w-[1280px] max-h-full">
+          <div id="create-team-modal" class="relative bg-white rounded-sm shadow px-16 py-8">
+
               <!-- Modal header -->
-              <h3>チームを作る</h3>
+              <h3>チームを作る</h3> 
               <!-- Modal body -->
               <div class="flex pt-8">
                 <!-- modal left -->
-                <div class="w-[790px] pr-10 border-r border-r-brightGray-200 border-dashed">
+                <div class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed">
                 <!-- TODO α対象外 
                   <p>
                     <span class="font-bold">気になる</span>からメンバーとして追加
@@ -15,71 +17,82 @@
                     <span class="font-bold">関わっているチーム</span>からサブチームとして追加
                   </p>
                 -->
+
                   <div class="flex items-center">
-                  <form id="add_user_form" phx-target={@myself} phx-submit="add_user">
+                  <form
+                    id="add_user_form"
+                    phx-target={@myself}
+                    phx-submit="add_user"
+                    >
                     <p>
                       <span class="font-bold">ハンドル名</span>または<span class="font-bold">メールアドレス</span>からメンバーとして追加
                     </p>
                       <input
+                        id="search_word"
                         name="search_word"
                         type="autocomplete"
                         placeholder="ハンドル名またはメールアドレスを入力してください"
                         class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1"
+                        phx-change="change_add_user"
+                        value={@search_word}
                       />
-                      <button class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5">
+                      <button
+                      phx-target={@myself}
+                       class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5"
+                       >
                         追加
                       </button>
                     </form>
                   </div>
+                  <div :if={@search_word_error != nil}>
+                    <p class= "text-error text-xs">
+                        <%= @search_word_error %>
+                    </p>
+                    </div>
                 </div>
                 <!-- modal-right -->
-                <form id="create_team_form" phx-target={@myself} phx-submit="create_team" class="flex">
+                <.simple_form
+                  for={@team_form}
+                  id="team_form" 
+                  phx-target={@myself} 
+                  phx-submit="create_team"
+                  phx-change="validate_team"
+                  class="flex">
                   <div class="w-[580px] pl-10 flex flex-col justify-between">
                     <div>
                       <h5>新しいチーム</h5>
-                      <div class="bg-brightGray-10 rounded-sm p-10">
+                      <div class="bg-brightGray-10 rounded-sm px-10 pt-6">
                         <dl class="flex flex-wrap">
-                          <dt class="font-bold w-20 flex items-center mb-10">
+                          <dt class="font-bold w-[100px] flex items-center mb-10 text-base">
                             チーム名
                           </dt>
                           <dd class="w-[340px] mb-10">
-                            <input
-                              name="team_name"
+                            <.input
+                              id="name"
+                              name="name"
+                              field={@team_form[:name]}
                               type="text"
+                              value={@name}
+                              required
                               placeholder="新しいチーム名を入力してください"
                               class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
                             />
                           </dd>
-                          <dt class="font-bold w-20 mb-10">メンバー</dt>
-                          <dd class="w-[340px] mb-10">
-                            <.table id="added_user" rows={@users}>
-                              <:col :let={user}>
-                                <ul class="flex flex-wrap gap-y-1">
-                                  <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full">
-                                    <a class="inline-flex items-center gap-x-6 w-full">
-                                      <img
-                                        class="inline-block h-10 w-10 rounded-full"
-                                        src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                      />
-                                      <div class="flex-auto">
-                                        <p><%= user.name %></p>
-                                        <p class="text-brightGray-300">
-                                          アプリエンジニア
-                                        </p>
-                                      </div>
-                                      <button
-                                        phx-click={JS.push("remove_user", value: %{id: user.id})}
-                                        class="mx-4"
-                                      >
-                                        <span class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center">
-                                          close
-                                        </span>
-                                      </button>
-                                    </a>
-                                  </li>
-                                </ul>
-                              </:col>
-                            </.table>
+
+                          <dt class="font-bold w-[100px] mb-10 text-base">
+                          メンバー
+                          </dt>
+                          <dd class="w-[340px] mb-6">
+                          <%= for user <- @users do %>
+                          <ul class="flex flex-wrap gap-y-10">
+                            <.profile_small_with_remove_button
+                              remove_user_target={@myself}
+                              user_id={user.id} user_name={user.name}
+                              title={user.user_profile.title}
+                              icon_file_path={user.user_profile.icon_file_path}
+                              />
+                          </ul>
+                          <% end %>
                           </dd>
                           <!-- TODO αリリース対象外 サブチーム -->
                         </dl>
@@ -92,6 +105,7 @@
                       </button>
                     </div>
                   </div>
-                </form>
+                </.simple_form>
               </div>
+          </div>
           </div>

@@ -33,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   def assign_skill_panel(socket, nil, _root) do
     display_user = socket.assigns.display_user
 
-    skill_panel = SkillPanels.get_user_latest_skill_panel!(display_user)
+    skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
 
     socket
     |> assign(:skill_panel, skill_panel)
@@ -51,7 +51,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
       # 指定されているスキルパネルがない場合は、
       # 直近のスキルパネルを取得して、
       # URLと矛盾した表示にならないようにリダイレクト
-      skill_panel = SkillPanels.get_user_latest_skill_panel!(display_user)
+      skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
 
       path =
         build_path(root, skill_panel, display_user, socket.assigns.me, socket.assigns.anonymous)

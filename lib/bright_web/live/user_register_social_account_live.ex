@@ -41,6 +41,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
       %SocialIdentifierToken{
         name: name,
         email: email,
+        display_name: display_name,
         identifier: identifier,
         provider: provider
       } = social_identifier_token
@@ -50,7 +51,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
 
       socket =
         socket
-        |> assign(identifier: identifier, provider: provider)
+        |> assign(identifier: identifier, provider: provider, display_name: display_name)
         |> assign(check_errors: false)
         |> assign_form(changeset)
 
@@ -66,11 +67,13 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
   def handle_event(
         "save",
         %{"user" => user_params},
-        %{assigns: %{identifier: identifier, provider: provider}} = socket
+        %{assigns: %{identifier: identifier, provider: provider, display_name: display_name}} =
+          socket
       ) do
     case Accounts.register_user_by_social_auth(user_params, %{
            identifier: identifier,
-           provider: provider
+           provider: provider,
+           display_name: display_name
          }) do
       {:ok, user} ->
         {:ok, _} =

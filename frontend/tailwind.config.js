@@ -96,6 +96,9 @@ module.exports = {
         amethyst600: "#C04CD0",
         amethyst300: "#DD6DED",
       },
+      planUpgrade: {
+        600: "#f57f3e",
+      },
     },
     extend: {
       backgroundImage: (theme) => ({

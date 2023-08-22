@@ -125,3 +125,12 @@ msgstr ""
 
 msgid "only lower-case alphanumeric character and -_. is available"
 msgstr ""
+
+msgid "should start with https://twitter.com/"
+msgstr ""
+
+msgid "should start with https://www.facebook.com/"
+msgstr ""
+
+msgid "should start with https://github.com/"
+msgstr ""

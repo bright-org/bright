@@ -62,7 +62,7 @@ defmodule Bright.Teams do
   """
   def create_team(attrs \\ %{}) do
     %Team{}
-    |> Team.changeset(attrs)
+    |> Team.registration_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -80,7 +80,7 @@ defmodule Bright.Teams do
   """
   def update_team(%Team{} = team, attrs) do
     team
-    |> Team.changeset(attrs)
+    |> Team.registration_changeset(attrs)
     |> Repo.update()
   end
 
@@ -333,7 +333,7 @@ defmodule Bright.Teams do
 
     team_changeset =
       %Team{}
-      |> Team.changeset(team_attr)
+      |> Team.registration_changeset(team_attr)
 
     team_member_user_changesets =
       [admin_attr | member_attr]
