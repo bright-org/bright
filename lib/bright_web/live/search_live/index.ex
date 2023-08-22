@@ -36,7 +36,7 @@ defmodule BrightWeb.SearchLive.Index do
 
             <div class="ml-auto w-fit">
               <label class="flex items-center py-4">
-                <span class="w-24">月予算<span class="block text-xs">（一人当たり）</span></span>
+                <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
                 <input type="text" size="20" name="budget" class="border border-brightGray-200 px-2 py-1 rounded w-40">
               </label>
             </div>
