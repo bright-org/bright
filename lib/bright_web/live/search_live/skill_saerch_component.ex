@@ -2,6 +2,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
   use BrightWeb, :live_component
 
   alias BrightWeb.BrightCoreComponents, as: BrightCore
+  alias BrightWeb.SearchLive.UserSearchComponent
   import BrightWeb.TabComponents
 
   @tabs [
@@ -17,7 +18,10 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
       <BrightCore.flash_group flash={@modal_flash} />
       <div class="bg-zinc-50/90 fixed inset-0 transition-opacity" />
       <div class="fixed inset-0 overflow-y-auto">
-        <section id="user_search" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20">
+        <section
+          id="user_search" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[1000px]"
+          phx-click-away={JS.hide(to: "#skill_search_modal")}
+        >
           <div class="w-full mb-4">
           <button class="absolute top-4 right-8">
             <span
@@ -34,6 +38,11 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
             target={@myself}
           >
           </.tab>
+          <.live_component
+            id="user_search"
+            module={UserSearchComponent}
+            current_user={@current_user}
+            />
         </section>
       </div>
     </div>
