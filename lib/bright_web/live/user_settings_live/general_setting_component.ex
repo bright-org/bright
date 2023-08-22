@@ -53,7 +53,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
               <.live_file_input upload={@uploads.icon} class="hidden" />
 
               <%= for entry <- @uploads.icon.entries do %>
-                <.live_img_preview entry={entry} class="cursor-pointer rounded-full" />
+                <.live_img_preview entry={entry} class="cursor-pointer h-20 w-20 rounded-full" />
               <% end %>
             </label>
           </div>
