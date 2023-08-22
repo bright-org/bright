@@ -656,6 +656,31 @@ defmodule Bright.Accounts do
   end
 
   @doc """
+  Returns changeset for changing a user and a user_profile
+  """
+  def change_user_with_user_profile(%User{} = user, attrs \\ %{}) do
+    User.user_with_profile_changeset(user, attrs, validate_name: false)
+  end
+
+  @doc """
+  Updates a user and a user_profile.
+
+  ## Examples
+
+      iex> update_user_with_user_profile(user, %{field: new_value})
+      {:ok, %User{}}
+
+      iex> update_user_with_user_profile(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_with_user_profile(%User{} = user, attrs) do
+    user
+    |> User.user_with_profile_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
   get user by name or email full match
 
   ## Examples
