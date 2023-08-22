@@ -650,4 +650,11 @@ defmodule Bright.Accounts do
     from(user_onboarding in UserOnboarding, where: user_onboarding.user_id == ^user.id)
     |> Repo.exists?()
   end
+
+  def list_users_without_current_user_dev(user_id) do
+    User
+    |> where([user], not (user.id == ^user_id))
+    |> preload(:skill_panels)
+    |> Repo.all()
+  end
 end
