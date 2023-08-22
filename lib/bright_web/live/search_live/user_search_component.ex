@@ -10,6 +10,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   @class [クラス1: "class1", クラス2: "class2", クラス3: "class3"]
   @level [見習い: "begenner", 平均: "normal", ベテラン: "skilled"]
 
+  @impl true
   def render(assigns) do
     ~H"""
     <li class="block">
@@ -238,7 +239,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     {:noreply, assign_form(socket, changeset)}
   end
 
-  def handle_event("search", params, socket) do
+  def handle_event("search", _params, socket) do
     users = Accounts.list_users_without_current_user_dev(socket.assigns.current_user.id)
     {:noreply, assign(socket, :search_results, users)}
   end
