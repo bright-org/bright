@@ -22,9 +22,13 @@ defmodule Bright.Factory do
   use Bright.UserOnboardingFactory
 
   # Jobs context
-  use Bright.CareerFieldFactory
   use Bright.CareerWantFactory
   use Bright.JobFactory
+  use Bright.JobSkillPanelFactory
+
+  # CareerFields context
+  use Bright.CareerFieldFactory
+  use Bright.CareerFieldJobFactory
 
   # UserJobProfiles context
   use Bright.UserJobProfileFactory

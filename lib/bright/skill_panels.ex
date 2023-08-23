@@ -11,6 +11,7 @@ defmodule Bright.SkillPanels do
 
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillPanels.SkillClass
+  alias Bright.SkillScores.SkillClassScore
 
   @doc """
   Returns the list of skill_panels.
@@ -57,7 +58,7 @@ defmodule Bright.SkillPanels do
       on: class.skill_panel_id == p.id,
       join: score in assoc(class, :skill_class_scores),
       on: class.id == score.skill_class_id,
-      preload: [skill_classes: :skill_class_scores],
+      preload: [skill_classes: [skill_class_scores: ^SkillClassScore.user_id_query(user_id)]],
       order_by: p.updated_at,
       distinct: true
     )
