@@ -50,26 +50,33 @@ defmodule BrightWeb.TeamCreateLiveComponent do
       |> Accounts.get_user_by_name_or_email()
 
     socket =
-      if user == nil do
-        socket
-        # TODO Gettext未対応
-        |> assign(search_word_error: "該当のユーザーが見つかりませんでした")
-      else
-        if id_duplidated_user?(user, selected_users) do
+      cond do
+        user == nil ->
           socket
           # TODO Gettext未対応
-          |> assign(search_word_error: "対象のユーザーは既に追加されています")
-        else
-          # メンバーユーザー一時リストに追加
-          added_users =
-            [user | selected_users]
-            |> Enum.reverse()
+          |> assign(search_word_error: "該当のユーザーが見つかりませんでした")
 
+        user.id == socket.assigns.current_user.id ->
           socket
-          |> assign(:users, added_users)
-          |> assign(:search_word, nil)
-          |> assign(:search_word_error, nil)
-        end
+          # TODO Gettext未対応
+          |> assign(search_word_error: "チーム作成者は自動的に管理者として追加されます")
+
+        true ->
+          if id_duplidated_user?(user, selected_users) do
+            socket
+            # TODO Gettext未対応
+            |> assign(search_word_error: "対象のユーザーは既に追加されています")
+          else
+            # メンバーユーザー一時リストに追加
+            added_users =
+              [user | selected_users]
+              |> Enum.reverse()
+
+            socket
+            |> assign(:users, added_users)
+            |> assign(:search_word, nil)
+            |> assign(:search_word_error, nil)
+          end
       end
 
     {:noreply, socket}
@@ -102,7 +109,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   @impl true
-  def handle_event("create_team", %{"team_name" => team_name}, socket) do
+  def handle_event("create_team", %{"name" => team_name}, socket) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
 
