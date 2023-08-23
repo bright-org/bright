@@ -8,7 +8,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   alias BrightWeb.BrightCoreComponents, as: BrightCore
 
   @class [クラス1: "class1", クラス2: "class2", クラス3: "class3"]
-  @level [見習い: "begenner", 平均: "normal", ベテラン: "skilled"]
+  @level [見習い: "beginner", 平均: "normal", ベテラン: "skilled"]
 
   @impl true
   def render(assigns) do
@@ -81,7 +81,6 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               type="select"
               options={Ecto.Enum.mappings(UserJobProfile, :office_pref)}
               prompt="希望勤務地"
-
             />
             <BrightCore.input
               field={@form[:office_work_hours]}
@@ -90,7 +89,6 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               type="select"
               options={Ecto.Enum.mappings(UserJobProfile, :office_working_hours)}
               prompt="希望勤務時間"
-
             />
             <BrightCore.input
               field={@form[:office_work_holidays]}
@@ -152,7 +150,6 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               options={@career_fields}
               prompt="キャリアフィールド"
             />
-
             <BrightCore.input
               field={sk[:skill_panel]}
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44"
@@ -193,11 +190,11 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       </div>
       </.form>
       <.live_component
-            id="user_search_result"
-            module={SearchResultComponent}
-            current_user={@current_user}
-            result={@search_results}
-            />
+        id="user_search_result"
+        module={SearchResultComponent}
+        current_user={@current_user}
+        result={@search_results}
+      />
     </li>
     """
   end
