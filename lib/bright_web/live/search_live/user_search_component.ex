@@ -240,7 +240,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       ) do
     params =
       user_search_params
-      |> reset_pj_end_when_pj_end_undecided(target)
+      |> reset_pj_end(target)
       |> reset_skill_form_when_career_field_change(target)
 
     changeset =
@@ -257,15 +257,13 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   def handle_event("search", _params, %{assigns: %{changeset: %{changes: changes}}} = socket) do
     skills = Map.get(changes, :skills, []) |> Enum.map(& &1.changes)
 
-    search_params =
-      {
-        Map.put(changes, :job_searching, true)
-        |> Map.drop([:skills, :pj_start, :pj_end, :desired_income])
-        |> Map.to_list(),
-        Map.take(changes, [:pj_start, :pj_end, :desired_income]),
-        skills
-      }
-      |> IO.inspect()
+    search_params = {
+      Map.put(changes, :job_searching, true)
+      |> Map.drop([:skills, :pj_start, :pj_end, :desired_income])
+      |> Map.to_list(),
+      Map.take(changes, [:pj_start, :pj_end, :desired_income]),
+      skills
+    }
 
     users = Searches.skill_search(socket.assigns.current_user.id, search_params)
 
@@ -275,12 +273,15 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> then(&{:noreply, &1})
   end
 
+  def handle_event("search", _params, socket), do: {:noreply, socket}
+
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
 
   defp disabled?(bool_or_string), do: to_string(bool_or_string) == "false"
 
+  # キャリアフィールドが変更されたら、それ以降の値はリセットされる
   defp reset_skill_form_when_career_field_change(params, [_, "skills", index, "career_field"]) do
     skills = Map.get(params, "skills")
 
@@ -293,13 +294,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
   defp reset_skill_form_when_career_field_change(params, _target), do: params
 
-  defp reset_pj_end_when_pj_end_undecided(params, [_, "pj_end_undecided"]) do
-    Map.put(params, "pj_end", "")
-  end
-
-  defp reset_pj_end_when_pj_end_undecided(params, [_, "pj_end"]) do
-    Map.put(params, "pj_end_undecided", "false")
-  end
-
-  defp reset_pj_end_when_pj_end_undecided(params, _target), do: params
+  # undecidedがクリックされたら pj_endがクリアされ、pj_endを入力するとundecidedがクリアされる
+  defp reset_pj_end(params, [_, "pj_end_undecided"]), do: Map.put(params, "pj_end", "")
+  defp reset_pj_end(params, [_, "pj_end"]), do: Map.put(params, "pj_end_undecided", "false")
+  defp reset_pj_end(params, _target), do: params
 end
