@@ -1,13 +1,13 @@
 defmodule BrightWeb.SearchLive.UserSearchComponent do
   use BrightWeb, :live_component
 
-  alias Bright.{CareerFields, SkillPanels, Accounts}
+  alias Bright.{CareerFields, SkillPanels, Searches, Repo, Jobs}
   alias Bright.SearchForm.{UserSearch, SkillSearch}
   alias Bright.UserJobProfiles.UserJobProfile
   alias BrightWeb.SearchLive.SearchResultComponent
   alias BrightWeb.BrightCoreComponents, as: BrightCore
 
-  @class [クラス1: "class1", クラス2: "class2", クラス3: "class3"]
+  @class [クラス1: 1, クラス2: 2, クラス3: 3]
   @level [見習い: "beginner", 平均: "normal", ベテラン: "skilled"]
 
   @impl true
@@ -55,7 +55,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
           <label class="flex items-center py-4">
             <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
             <BrightCore.input
-              field={@form[:budget]}
+              field={@form[:desired_income]}
               input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
               size="20"
               type="number"
@@ -108,7 +108,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               label="リモート"
             />
             <BrightCore.input
-              field={@form[:remote_work_huors]}
+              field={@form[:remote_working_hours]}
               input_class="w-36"
               disabled={disabled?(@form[:remote_work].value)}
               type="select"
@@ -154,7 +154,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               field={sk[:skill_panel]}
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44"
               type="select"
-              options={@skill_panels}
+              options={Map.get(@skill_panels, sk[:career_field].value)}
+              disabled={is_nil(sk[:career_field].value)}
               prompt="スキルパネル"
             />
             <BrightCore.input
@@ -162,6 +163,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-26"
               type="select"
               options={@class}
+              disabled={is_nil(sk[:career_field].value)}
               prompt="クラス"
             />
             <BrightCore.input
@@ -169,6 +171,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-26"
               type="select"
               options={@level}
+              disabled={is_nil(sk[:career_field].value)}
               prompt="レベル"
             />
             <a
@@ -194,6 +197,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         module={SearchResultComponent}
         current_user={@current_user}
         result={@search_results}
+        skill_params={@skill_params}
       />
     </li>
     """
@@ -201,24 +205,26 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
   @impl true
   def mount(socket) do
-    form = %UserSearch{skills: [%SkillSearch{}]}
-    changeset = UserSearch.changeset(form, %{})
+    search = %UserSearch{skills: [%SkillSearch{}]}
+    changeset = UserSearch.changeset(search, %{})
 
     career_fields =
       CareerFields.list_career_fields()
       |> Enum.map(&{&1.name_ja, &1.name_en})
 
     skill_panels =
-      SkillPanels.list_skill_panels()
-      |> Enum.map(&{&1.name, &1.id})
+      SkillPanels.list_skill_panel_with_career_field()
+      |> Enum.group_by(& &1.career_field, &{&1.name, &1.id})
+      |> Map.put(nil, [])
 
     socket
-    |> assign(:user_search, form)
+    |> assign(:user_search, search)
     |> assign(:career_fields, career_fields)
     |> assign(:skill_panels, skill_panels)
     |> assign(:class, @class)
     |> assign(:level, @level)
     |> assign(:search_results, [])
+    |> assign(:skill_params, [])
     |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
@@ -227,23 +233,73 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   def update(assigns, socket), do: {:ok, assign(socket, assigns)}
 
   @impl true
-  def handle_event("validate", %{"user_search" => user_search_params}, socket) do
+  def handle_event(
+        "validate",
+        %{"user_search" => user_search_params, "_target" => target},
+        socket
+      ) do
+    params =
+      user_search_params
+      |> reset_pj_end_when_pj_end_undecided(target)
+      |> reset_skill_form_when_career_field_change(target)
+
     changeset =
       socket.assigns.user_search
-      |> UserSearch.changeset(user_search_params)
+      |> UserSearch.changeset(params)
       |> Map.put(:action, :validte)
 
-    {:noreply, assign_form(socket, changeset)}
+    socket
+    |> assign(:changeset, changeset)
+    |> assign_form(changeset)
+    |> then(&{:noreply, &1})
   end
 
-  def handle_event("search", _params, socket) do
-    users = Accounts.list_users_without_current_user_dev(socket.assigns.current_user.id)
-    {:noreply, assign(socket, :search_results, users)}
+  def handle_event("search", _params, %{assigns: %{changeset: %{changes: changes}}} = socket) do
+    skills = Map.get(changes, :skills, []) |> Enum.map(& &1.changes)
+
+    search_params =
+      {
+        Map.put(changes, :job_searching, true)
+        |> Map.drop([:skills, :pj_start, :pj_end, :desired_income])
+        |> Map.to_list(),
+        Map.take(changes, [:pj_start, :pj_end, :desired_income]),
+        skills
+      }
+      |> IO.inspect()
+
+    users = Searches.skill_search(socket.assigns.current_user.id, search_params)
+
+    socket
+    |> assign(:search_results, users)
+    |> assign(:skill_params, skills)
+    |> then(&{:noreply, &1})
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
 
-  def disabled?(bool_or_string), do: to_string(bool_or_string) == "false"
+  defp disabled?(bool_or_string), do: to_string(bool_or_string) == "false"
+
+  defp reset_skill_form_when_career_field_change(params, [_, "skills", index, "career_field"]) do
+    skills = Map.get(params, "skills")
+
+    skill =
+      Map.get(skills, index)
+      |> Map.merge(%{"class" => "", "level" => "", "skill_panel" => ""})
+
+    Map.put(params, "skills", Map.put(skills, index, skill))
+  end
+
+  defp reset_skill_form_when_career_field_change(params, _target), do: params
+
+  defp reset_pj_end_when_pj_end_undecided(params, [_, "pj_end_undecided"]) do
+    Map.put(params, "pj_end", "")
+  end
+
+  defp reset_pj_end_when_pj_end_undecided(params, [_, "pj_end"]) do
+    Map.put(params, "pj_end_undecided", "false")
+  end
+
+  defp reset_pj_end_when_pj_end_undecided(params, _target), do: params
 end
