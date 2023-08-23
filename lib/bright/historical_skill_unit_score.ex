@@ -38,7 +38,7 @@ defmodule Bright.HistoricalSkillUnitScore do
       order_by: historical_skill_class_units.position,
       where:
         historical_skill_unit_score.user_id == ^user_id and
-          historical_skill_unit_score.locked_date >= ^locked_date,
+          historical_skill_unit_score.locked_date == ^locked_date,
       select: %{
         name: historical_skill_unit.name,
         percentage: historical_skill_unit_score.percentage,
