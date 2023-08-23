@@ -83,15 +83,17 @@
   </div>
 </div>
 
-<.class_tab skill_classes={@display_skill_classes} skill_class={@display_skill_class} path="" query="" />
+<!-- <.class_tab skill_classes={@display_skill_classes} skill_class={@display_skill_class} path="" query="" /> -->
 <div class="w-[700px] pl-28">
         <.live_component
           id={"skill-gem#{@current_user.id}"}
           module={BrightWeb.ChartLive.SkillGemComponent}
-          user_id={@current_user.id}
-          skill_panel_id={@display_skill_panel.id}
+          display_user={@current_user}
+          skill_panel={@display_skill_panel}
           class={@display_skill_class.class}
           select_label={"now"}
+          me={:false}
+          anonymous={:false}
         />
 </div>
 

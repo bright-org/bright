@@ -23,7 +23,7 @@ defmodule BrightWeb.MyTeamLive do
     rescue
       e in Ecto.NoResultsError ->
         # 結果が取得できない場合握りつぶしてnilを返す
-      nil
+        nil
     end
   end
 
@@ -33,6 +33,7 @@ defmodule BrightWeb.MyTeamLive do
     # キャリアフィールドを問わずチーム内の設定スキルのうち最も新しいスキルパネルを取得
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
       SkillPanels.list_team_member_users_skill_panels(display_team.id, 1)
+
     [skill_panels | _tail] = skill_panels
     skill_panels
   end
@@ -54,25 +55,28 @@ defmodule BrightWeb.MyTeamLive do
     try do
       team = Teams.get_team_with_member_users!(team_id)
       # チームがHITしても自分が所属していない場合は無視する
-      iam_member_user = team.member_users
-    |> Enum.find(fn member_user ->
-      member_user.user_id == user_id
-    end)
-    if iam_member_user == nil do
-      nil
-    else
-      team
-    end
+      iam_member_user =
+        team.member_users
+        |> Enum.find(fn member_user ->
+          member_user.user_id == user_id
+        end)
+
+      if iam_member_user == nil do
+        nil
+      else
+        team
+      end
     rescue
       e in Ecto.NoResultsError ->
         # 結果が取得できない場合握りつぶしてnilを返す
-      nil
+        nil
     end
   end
 
   defp get_display_team(_params, user_id) do
-    #チームのパラメータが指定されていないログインユーザーの所属するチームを取得
+    # チームのパラメータが指定されていないログインユーザーの所属するチームを取得
     page = Teams.list_joined_teams_by_user_id(user_id)
+
     if page.total_entries > 0 do
       # 所属しているチームが存在する場合、第１位優先のチームをディスプレイチームに指定
       [team_member_user] = page.entries
@@ -80,7 +84,6 @@ defmodule BrightWeb.MyTeamLive do
     else
       nil
     end
-
   end
 
   defp assign_page_title(socket, %SkillPanel{} = display_skill_panel) do
@@ -125,7 +128,8 @@ defmodule BrightWeb.MyTeamLive do
   defp assign_display_skill_class(socket, display_skill_classes) do
     # 表示するスキルクラスが指定されていない場合は最初のクラスを指定
     if !Map.has_key?(socket, :display_skill_class) || socket.assigns.display_skill_class == nil do
-      [first_skill_class | later ] = display_skill_classes
+      [first_skill_class | later] = display_skill_classes
+
       socket
       |> assign(:display_skill_classes, display_skill_classes)
       |> assign(:display_skill_class, first_skill_class)
@@ -135,15 +139,23 @@ defmodule BrightWeb.MyTeamLive do
     end
   end
 
-
-
-  #defp assign_push_redirect(socket, %{"team_id" => team_id, "skill_panel_id" => skill_panel_id}, _display_team, _display_skill_panel) do
-  defp assign_push_redirect(%{assigns: %{live_action: :index}} = socket, %{"team_id" => team_id, "skill_panel_id" => skill_panel_id}, _display_team, _display_skill_panel) do
+  # defp assign_push_redirect(socket, %{"team_id" => team_id, "skill_panel_id" => skill_panel_id}, _display_team, _display_skill_panel) do
+  defp assign_push_redirect(
+         %{assigns: %{live_action: :index}} = socket,
+         %{"team_id" => team_id, "skill_panel_id" => skill_panel_id},
+         _display_team,
+         _display_skill_panel
+       ) do
     # パラメータが完全に指定されていた場合、データの取得成否に関わらず、リダイレクトは行わない
     socket
   end
 
-  defp assign_push_redirect(%{assigns: %{live_action: :index}} = socket, params, %Team{} = display_team, %SkillPanel{} = display_skill_panel) do
+  defp assign_push_redirect(
+         %{assigns: %{live_action: :index}} = socket,
+         params,
+         %Team{} = display_team,
+         %SkillPanel{} = display_skill_panel
+       ) do
     # パラメータが完全に指定されていない場合、必要なデータが取得できていればパラメータを指定してリダイレクト
     socket
     |> push_redirect(to: "/teams/#{display_team.id}/skill_panels/#{display_skill_panel.id}")
@@ -157,7 +169,6 @@ defmodule BrightWeb.MyTeamLive do
   end
 
   def mount(params, _session, socket) do
-
     # TODO 所属していないチームのチームIDが指定されている場合は404エラー
     # スキルパネルIDはゆるして、ジェム非表示でよいとおもう
 
@@ -167,13 +178,14 @@ defmodule BrightWeb.MyTeamLive do
     display_skill_classes = list_display_skill_classes(display_skill_panel)
 
     # スキルとチームの取得結果に応じて各種assign
-    socket = socket
-    |> assign_page_title(display_skill_panel)
-    |> assign_display_team_and_member_users(display_team)
-    |> assign_display_skill_panel(display_skill_panel)
-    |> assign_display_skill_class(display_skill_classes)
-    # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
-    |> assign_push_redirect(params, display_team, display_skill_panel)
+    socket =
+      socket
+      |> assign_page_title(display_skill_panel)
+      |> assign_display_team_and_member_users(display_team)
+      |> assign_display_skill_panel(display_skill_panel)
+      |> assign_display_skill_class(display_skill_classes)
+      # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
+      |> assign_push_redirect(params, display_team, display_skill_panel)
 
     {:ok, socket}
   end
@@ -196,7 +208,6 @@ defmodule BrightWeb.MyTeamLive do
   end
 
   def handle_event("on_skill_pannel_click", %{"skill_panel_id" => skill_panel_id}, socket) do
-
     IO.puts("### handle_event on_skill_pannel_click !!!!!!!!!!!!!!!!!!!!!!!")
 
     display_skill_panel = SkillPanels.get_skill_panel!(skill_panel_id)
@@ -204,8 +215,10 @@ defmodule BrightWeb.MyTeamLive do
     socket =
       socket
       |> assign(:display_skill_panel, display_skill_panel)
-      #|> assign(:page_title, "チームスキル分析 / #{display_skill_panel.name}")
-      |> push_redirect(to: "/teams/#{socket.assigns.display_team.id}/skill_panels/#{skill_panel_id}")
+      # |> assign(:page_title, "チームスキル分析 / #{display_skill_panel.name}")
+      |> push_redirect(
+        to: "/teams/#{socket.assigns.display_team.id}/skill_panels/#{skill_panel_id}"
+      )
 
     {:noreply, socket}
   end
