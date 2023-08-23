@@ -14,6 +14,7 @@ defmodule BrightWeb.ChartComponents do
   attr :id, :string, required: true
   attr :data, :list, required: true
   attr :labels, :list, required: true
+  attr :links, :list, default: nil
   attr :size, :string, default: "base", values: ["sm", "base"]
   attr :display_link, :string, default: "true", values: ["true", "false"]
   attr :color_theme, :string, default: "other", values: ["myself", "other"]
@@ -23,6 +24,7 @@ defmodule BrightWeb.ChartComponents do
       assigns
       |> assign(:labels, assigns.labels |> Jason.encode!())
       |> assign(:data, assigns.data |> Jason.encode!())
+      |> assign(:links, assigns.links |> Jason.encode!())
 
     ~H"""
     <div
@@ -31,6 +33,7 @@ defmodule BrightWeb.ChartComponents do
       phx-update="ignore"
       data-data={@data}
       data-labels={@labels}
+      data-links={@links}
       data-size={@size}
       data-display-link={@display_link}
       data-color-theme={@color_theme}

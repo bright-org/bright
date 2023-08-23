@@ -100,12 +100,19 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
   def assign_skill_class_and_score(socket, class) do
     skill_class = socket.assigns.skill_classes |> Enum.find(&(&1.class == class))
-    # List.first(): preload時に絞り込んでいるためfirstで取得可能
-    skill_class_score = skill_class.skill_class_scores |> List.first()
 
-    socket
-    |> assign(:skill_class, skill_class)
-    |> assign(:skill_class_score, skill_class_score)
+    if skill_class do
+      # List.first(): preload時に絞り込んでいるためfirstで取得可能
+      skill_class_score = skill_class.skill_class_scores |> List.first()
+
+      socket
+      |> assign(:skill_class, skill_class)
+      |> assign(:skill_class_score, skill_class_score)
+    else
+      # 保有スキルパネルに存在しないクラスへのアクセスにあたるので404で返す。
+      # 導線はなく、クエリストリングで指定される可能性がある。
+      raise Ecto.NoResultsError, queryable: "Bright.SkillPanels.SkillClass"
+    end
   end
 
   def create_skill_class_score_if_not_existing(
@@ -136,6 +143,12 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def create_skill_class_score_if_not_existing(socket), do: socket
+
+  def assign_skill_score_dict(%{assigns: %{skill_class_score: nil}}) do
+    # 保有スキルパネルの開放していないクラスへのアクセスにあたるので404で返す。
+    # 導線はなく、クエリストリングで指定される可能性がある。
+    raise Ecto.NoResultsError, queryable: "Bright.SkillScores.SkillClassScore"
+  end
 
   def assign_skill_score_dict(socket) do
     skill_score_dict =
