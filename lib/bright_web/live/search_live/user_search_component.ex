@@ -1,7 +1,7 @@
 defmodule BrightWeb.SearchLive.UserSearchComponent do
   use BrightWeb, :live_component
 
-  alias Bright.{CareerFields, SkillPanels, Searches, Repo, Jobs}
+  alias Bright.{CareerFields, SkillPanels, Searches}
   alias Bright.SearchForm.{UserSearch, SkillSearch}
   alias Bright.UserJobProfiles.UserJobProfile
   alias BrightWeb.SearchLive.SearchResultComponent
