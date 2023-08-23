@@ -1,4 +1,8 @@
 defmodule Bright.Searches do
+  @moduledoc """
+  The Search context.
+  """
+
   import Ecto.Query, warn: false
 
   alias Bright.Repo
