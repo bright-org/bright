@@ -22,21 +22,20 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   end
 
   @impl true
-  def update(assigns, socket) do
+  def update(%{user_id: user_id, skill_panel_id: skill_panel_id, class: class} = assigns, socket) do
     socket =
       socket
       |> assign(assigns)
 
     select_label = assigns[:select_label] || "now"
 
-    skill_gem =
-      get_skill_gem(assigns.user_id, assigns.skill_panel_id, assigns.class, select_label)
+    skill_gem = get_skill_gem(user_id, skill_panel_id, class, select_label)
 
     socket =
       socket
       |> assign(:skill_gem_data, get_skill_gem_data(skill_gem))
       |> assign(:skill_gem_labels, get_skill_gem_labels(skill_gem))
-      |> assign(:skill_gem_links, get_skill_gem_links(skill_gem))
+      |> assign(:skill_gem_links, get_skill_gem_links(skill_gem, skill_panel_id, class))
 
     {:ok, socket}
   end
@@ -72,6 +71,6 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   defp get_skill_gem_data(skill_gem), do: [skill_gem |> Enum.map(fn x -> x.percentage end)]
   defp get_skill_gem_labels(skill_gem), do: skill_gem |> Enum.map(fn x -> x.name end)
 
-  defp get_skill_gem_links(skill_gem),
-    do: skill_gem |> Enum.map(fn x -> "/panels#unit-#{x.position}" end)
+  defp get_skill_gem_links(skill_gem, skill_panel_id, class),
+    do: skill_gem |> Enum.map(fn x -> "/panels/#{skill_panel_id}?#{class}#unit-#{x.position}" end)
 end
