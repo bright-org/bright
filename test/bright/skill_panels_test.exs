@@ -15,6 +15,45 @@ defmodule Bright.SkillPanelsTest do
       assert SkillPanels.list_skill_panels() == [skill_panel]
     end
 
+    test "list_users_skill_panels_by_career_field preloads user's skill_class_scores" do
+      # 指定したユーザーのスキルクラススコアを取得することの確認
+      user_1 = insert(:user)
+      user_2 = insert(:user)
+      career_field_name = "engineer"
+
+      # キャリアフィールドからスキルクラスまでの用意
+      career_field = insert(:career_field, name_en: career_field_name)
+      job = insert(:job)
+      insert(:career_field_job, career_field: career_field, job: job)
+      skill_panel = insert(:skill_panel)
+      insert(:job_skill_panel, job: job, skill_panel: skill_panel)
+      skill_class_1 = insert(:skill_class, skill_panel: skill_panel, class: 1)
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      # 保有スキルパネルとスキルクラススコアの用意
+      # user_1 はクラス１まで
+      # user_2 はクラス２まで
+      insert(:user_skill_panel, user: user_1, skill_panel: skill_panel)
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+      insert(:skill_class_score, user: user_1, skill_class: skill_class_1, percentage: 20.0)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class_1, percentage: 40.0)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class_2, percentage: 10.0)
+
+      # uesr_1 について、スキルクラスは１つまでロードされていること
+      ret = SkillPanels.list_users_skill_panels_by_career_field(user_1.id, career_field_name)
+      assert %{entries: [ret_skill_panel]} = ret
+      assert [ret_skill_class_1, ret_skill_class_2] = ret_skill_panel.skill_classes
+      assert 20.0 == hd(ret_skill_class_1.skill_class_scores).percentage
+      assert [] == ret_skill_class_2.skill_class_scores
+
+      # uesr_2 について、スキルクラスは２つまでロードされていること
+      ret = SkillPanels.list_users_skill_panels_by_career_field(user_2.id, career_field_name)
+      assert %{entries: [ret_skill_panel]} = ret
+      assert [ret_skill_class_1, ret_skill_class_2] = ret_skill_panel.skill_classes
+      assert 40.0 == hd(ret_skill_class_1.skill_class_scores).percentage
+      assert 10.0 == hd(ret_skill_class_2.skill_class_scores).percentage
+    end
+
     test "get_skill_panel!/1 returns the skill_panel with given id" do
       skill_panel = insert(:skill_panel)
       assert SkillPanels.get_skill_panel!(skill_panel.id) == skill_panel
