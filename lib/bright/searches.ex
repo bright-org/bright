@@ -78,6 +78,7 @@ defmodule Bright.Searches do
 
   def availability_date_query(query, _range_params), do: query
 
+  # job_profile 希望年収
   def desired_income_query(query, %{desired_income: income}) do
     where(query, [job], job.desired_income <= ^income)
   end
