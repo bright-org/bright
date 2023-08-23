@@ -196,6 +196,7 @@ defmodule Bright.SkillScores do
   def update_skill_class_scores_stats(user, skill_classes) do
     skill_classes
     |> Repo.preload(skill_class_scores: SkillClassScore.user_query(user))
+    |> Enum.filter(&(&1.skill_class_scores != []))
     |> Enum.reduce(Ecto.Multi.new(), fn skill_class, multi ->
       skill_class_score = List.first(skill_class.skill_class_scores)
 

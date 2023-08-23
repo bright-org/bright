@@ -128,9 +128,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
 
   defp assign_current_skill_units(socket) do
     skill_units =
-      Ecto.assoc(socket.assigns.skill_class, :skill_units)
-      |> SkillUnits.list_skill_units()
-      |> Bright.Repo.preload(skill_categories: [skills: [:skill_reference, :skill_exam]])
+      socket.assigns.skill_class
+      |> Bright.Repo.preload(
+        skill_units: [skill_categories: [skills: [:skill_reference, :skill_exam]]]
+      )
+      |> Map.get(:skill_units)
 
     skills =
       skill_units

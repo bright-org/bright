@@ -272,10 +272,17 @@ defmodule Bright.SkillScoresTest do
 
     setup do
       user = insert(:user)
-      skill_class = insert(:skill_class, skill_panel: build(:skill_panel), class: 1)
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
 
       skill_unit =
-        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+        insert(:skill_unit,
+          skill_class_units: [
+            %{skill_class_id: skill_class.id, position: 1},
+            %{skill_class_id: skill_class_2.id, position: 2}
+          ]
+        )
 
       skill_category = insert(:skill_category, skill_unit: skill_unit, position: 1)
       skill = insert(:skill, skill_category: skill_category, position: 1)
