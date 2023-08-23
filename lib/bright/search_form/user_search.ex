@@ -11,13 +11,13 @@ defmodule Bright.SearchForm.UserSearch do
     field :pj_start, :string, default: ""
     field :pj_end, :string, default: ""
     field :pj_end_undecided, :boolean, default: false
-    field :budget, :integer
+    field :desired_income, :integer
     field :office_work, :boolean, default: false
     field :office_pref, :string
     field :office_work_hours, :string
     field :office_work_holidays, :boolean, default: false
     field :remote_work, :boolean, default: false
-    field :remote_work_hours, :string
+    field :remote_working_hours, :string
     field :remote_work_holidays, :boolean, default: false
     embeds_many :skills, SkillSearch
   end
@@ -29,13 +29,13 @@ defmodule Bright.SearchForm.UserSearch do
       :pj_start,
       :pj_end,
       :pj_end_undecided,
-      :budget,
+      :desired_income,
       :office_work,
       :office_pref,
       :office_work_hours,
       :office_work_holidays,
       :remote_work,
-      :remote_work_hours,
+      :remote_working_hours,
       :remote_work_holidays
     ])
     |> cast_embed(:skills,
