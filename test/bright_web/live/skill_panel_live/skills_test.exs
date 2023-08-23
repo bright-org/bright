@@ -142,7 +142,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     setup [:register_and_log_in_user]
 
     test "show content with no skill panel message", %{conn: conn} do
-      {:ok, _show_live, html} = live(conn, ~p"/graphs")
+      {:ok, _show_live, html} = live(conn, ~p"/panels")
 
       assert html =~ "スキルパネルがありません"
     end
@@ -549,6 +549,38 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       refute show_live
              |> element("#skill-1 .link-exam")
              |> has_element?()
+    end
+  end
+
+  describe "Errors" do
+    setup [:register_and_log_in_user]
+
+    setup %{user: user} do
+      skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      %{skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    test "shows 404 if class not existing", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/#{skill_panel}?class=2")
+      end
+    end
+
+    test "shows 404 if class not allowed", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/#{skill_panel}?class=2")
+      end
     end
   end
 
