@@ -10,6 +10,7 @@ defmodule Bright.SkillPanels do
   alias Bright.Repo
 
   alias Bright.SkillPanels.SkillPanel
+  alias Bright.UserSkillPanels.UserSkillPanel
   alias Bright.SkillPanels.SkillClass
   alias Bright.SkillScores.SkillClassScore
   alias Bright.Teams.TeamMemberUsers
@@ -98,6 +99,29 @@ defmodule Bright.SkillPanels do
       on: class.id == score.skill_class_id,
       preload: [skill_classes: :skill_class_scores],
       order_by: p.updated_at,
+      distinct: true
+    )
+    |> Repo.paginate(page: page, page_size: 15)
+  end
+
+  def list_team_member_users_skill_panels(
+        team_id,
+        page \\ 1
+      ) do
+
+      team_member_users_query =
+        from(
+          tmu in TeamMemberUsers,
+          where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+          select: tmu.user_id,
+        )
+
+    from(u in UserSkillPanel,
+      where: u.user_id in subquery(team_member_users_query),
+      join: s in assoc(u, :skill_panel),
+      on: s.id == u.skill_panel_id,
+      select: s,
+      order_by: s.updated_at,
       distinct: true
     )
     |> Repo.paginate(page: page, page_size: 15)
@@ -245,5 +269,16 @@ defmodule Bright.SkillPanels do
         preload: :skill_units
 
     Repo.one(query)
+  end
+
+  def get_all_skill_class_by_skill_panel_id(skill_panel_id) do
+    query =
+      from sc in SkillClass,
+        where:
+          sc.skill_panel_id == ^skill_panel_id,
+        order_by: [asc: sc.class],
+        preload: :skill_units
+
+    Repo.all(query)
   end
 end

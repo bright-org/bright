@@ -245,7 +245,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   def assign_paginate_team(socket, team_id, career_field, page \\ 1) do
-    # TODO 一旦チームリーダーのUserIDのみセットするように仮実装で様子見
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
       SkillPanels.list_team_member_users_skill_panels_by_career_field(team_id, career_field, page)
 
