@@ -13,7 +13,11 @@ defmodule Bright.HistoricalSkillUnitScore do
 
       iex> get_historical_skill_gem(user_id, skill_panel_id, class, locked_date)
       [
-        %{name: "1-スキルユニット(class:1)", percentage: 22.22222222222222}
+        %{
+          name: "1-スキルユニット(class:1)",
+          percentage: 22.22222222222222,
+          position: 1
+        }
       ]
 
   """

@@ -459,7 +459,8 @@ defmodule Bright.SkillScores do
       [
         %{
           name: "name",
-          percentage: 50
+          percentage: 50,
+          position: 1
         }
      ]
   """
