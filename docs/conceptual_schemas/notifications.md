@@ -53,7 +53,7 @@ erDiagram
 erDiagram
   common {
     id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index：:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
