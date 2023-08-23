@@ -13,13 +13,16 @@ defmodule Bright.HistoricalSkillUnitScore do
 
       iex> get_historical_skill_gem(user_id, skill_panel_id, class, locked_date)
       [
-        %{name: "1-スキルユニット(class:1)", percentage: 22.22222222222222}
+        %{
+          name: "1-スキルユニット(class:1)",
+          percentage: 22.22222222222222,
+          position: 1
+        }
       ]
 
   """
   def get_historical_skill_gem(user_id, skill_panel_id, class, locked_date) do
-    from_date = {locked_date.year, locked_date.month, 1} |> Date.from_erl!()
-    to_date = from_date |> Timex.shift(months: 1) |> Timex.shift(days: -1)
+    locked_date = {locked_date.year, locked_date.month, 1} |> Date.from_erl!()
 
     # TODO 現在は重複したデータ（該当月に２回以上実施）に未対応
     from(historical_skill_unit_score in HistoricalSkillUnitScore,
@@ -35,11 +38,11 @@ defmodule Bright.HistoricalSkillUnitScore do
       order_by: historical_skill_class_units.position,
       where:
         historical_skill_unit_score.user_id == ^user_id and
-          historical_skill_unit_score.locked_date >= ^from_date and
-          historical_skill_unit_score.locked_date <= ^to_date,
+          historical_skill_unit_score.locked_date == ^locked_date,
       select: %{
         name: historical_skill_unit.name,
-        percentage: historical_skill_unit_score.percentage
+        percentage: historical_skill_unit_score.percentage,
+        position: historical_skill_class_units.position
       }
     )
     |> Repo.all()

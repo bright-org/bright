@@ -8,15 +8,17 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     "general" => UserSettingsLive.GeneralSettingComponent,
     "auth" => UserSettingsLive.AuthSettingComponent,
     "sns" => UserSettingsLive.SnsSettingComponent,
-    "job" => UserSettingsLive.JobSettingComponent,
-    "notification" => UserSettingsLive.NotificationSettingComponent
+    "job" => UserSettingsLive.JobSettingComponent
+    # NOTE: α版では通知機能はなし
+    # "notification" => UserSettingsLive.NotificationSettingComponent　
   }
   @tabs [
     {"general", "一般"},
     {"auth", "メール・パスワード"},
     {"sns", "SNS連携"},
-    {"job", "求職"},
-    {"notification", "通知"}
+    {"job", "求職"}
+    # NOTE: α版では通知機能はなし
+    # {"notification", "通知"}
   ]
 
   @impl true
@@ -26,8 +28,10 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
       <BrightCore.flash_group flash={@modal_flash} />
       <div class="bg-zinc-50/90 fixed inset-0 transition-opacity" />
       <div class="fixed inset-0 overflow-y-auto">
-
-        <section id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20">
+        <section
+          id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20"
+          phx-click-away={JS.hide(to: "#personal_setting_modal")}
+        >
           <div class="w-full mb-4">
           <button class="absolute top-4 right-8">
             <span

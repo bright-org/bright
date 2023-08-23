@@ -20,6 +20,19 @@ defmodule Bright.Teams.Team do
   def changeset(team, attrs) do
     team
     |> cast(attrs, [:name, :enable_hr_functions])
+  end
+
+  @doc false
+  def registration_changeset(team, attrs) do
+    team
+    |> cast(attrs, [:name, :enable_hr_functions])
     |> validate_required([:name, :enable_hr_functions])
+    |> validate_name()
+  end
+
+  @doc false
+  defp validate_name(changeset) do
+    changeset
+    |> validate_length(:name, max: 255)
   end
 end

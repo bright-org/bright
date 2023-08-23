@@ -14,9 +14,7 @@ defmodule BrightWeb.Router do
   end
 
   pipeline :admin do
-    # credo:disable-for-next-line
-    # TODO: Basic認証みたいな軽いアクセス制限を入れる
-    # See https://hexdocs.pm/plug/Plug.BasicAuth.html
+    plug :admin_basic_auth
     plug :put_root_layout, html: {BrightWeb.Layouts, :admin}
   end
 
@@ -160,6 +158,7 @@ defmodule BrightWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
+      live "/searches", MypageLive.Index, :search
       live "/skill_up", OnboardingLive.Index, :index
       live "/skill_up/wants/:want_id", OnboardingLive.SkillPanels
       live "/skill_up/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
@@ -194,7 +193,11 @@ defmodule BrightWeb.Router do
       live "/teams/new", MyTeamLive, :new
       live "/teams/:team_id", MyTeamLive, :index
       live "/teams/:team_id/skill_panels/:skill_panel_id", MyTeamLive, :index
-      live "/searches", SearchLive.Index
+
+      ## OAuth
+      scope "/auth" do
+        delete "/:provider", OAuthController, :delete
+      end
     end
   end
 
@@ -232,6 +235,20 @@ defmodule BrightWeb.Router do
     scope "/auth" do
       get "/:provider", OAuthController, :request
       get "/:provider/callback", OAuthController, :callback
+    end
+  end
+
+  # See https://hexdocs.pm/plug/Plug.BasicAuth.html#module-runtime-time-usage
+  defp admin_basic_auth(conn, _opts) do
+    case System.fetch_env("MIX_ENV") do
+      # NOTE: ローカル環境以外は MIX_ENV=prod になる（Dockerfileを参照）
+      {:ok, "prod"} ->
+        username = System.fetch_env!("ADMIN_BASIC_AUTH_USERNAME")
+        password = System.fetch_env!("ADMIN_BASIC_AUTH_PASSWORD")
+        Plug.BasicAuth.basic_auth(conn, username: username, password: password)
+
+      _ ->
+        conn
     end
   end
 end

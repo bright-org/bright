@@ -18,9 +18,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
           :for={{id, post} <- @streams.skill_evidence_posts}
           id={id}
         >
-          <div class="flex justify-between my-2">
-            <%= Phoenix.HTML.Format.text_to_html post.content %>
-            <div class="cursor-pointer" phx-click="delete" phx-target={@myself} phx-value-id={post.id}>
+          <div class="flex justify-between items-center my-2 gap-x-4">
+            <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all grow"] %>
+            <div class="cursor-pointer flex-none" phx-click="delete" phx-target={@myself} phx-value-id={post.id}>
               Ｘ削除
             </div>
           </div>

@@ -74,11 +74,17 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_class: skill_class
     } do
       [skill_unit_1, skill_unit_2] =
-        insert_list(2, :skill_unit,
-          skill_class_units: [
-            %{skill_class_id: skill_class.id, position: 1}
-          ]
-        )
+        insert_list(2, :skill_unit)
+        |> Enum.with_index(1)
+        |> Enum.map(fn {skill_unit, position} ->
+          insert(:skill_class_unit,
+            skill_class: skill_class,
+            skill_unit: skill_unit,
+            position: position
+          )
+
+          skill_unit
+        end)
 
       skill_unit_dummy = insert(:skill_unit, name: "紐づいていないダミー")
 
@@ -91,8 +97,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert html =~ "スキルパネル"
 
       # 知識エリアの表示確認
-      assert show_live |> element(~s{td[rowspan="3"]}, skill_unit_1.name) |> has_element?()
-      assert show_live |> element(~s{td[rowspan="4"]}, skill_unit_2.name) |> has_element?()
+      assert show_live
+             |> element(~s{td[id="unit-1"][rowspan="3"]}, skill_unit_1.name)
+             |> has_element?()
+
+      assert show_live
+             |> element(~s{td[id="unit-2"][rowspan="4"]}, skill_unit_2.name)
+             |> has_element?()
+
       refute html =~ skill_unit_dummy.name
 
       # カテゴリおよびスキルの表示確認
@@ -123,6 +135,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert show_live
              |> has_element?("#class_tab_2", skill_class_2.name)
+    end
+  end
+
+  describe "Show no skill panel" do
+    setup [:register_and_log_in_user]
+
+    test "show content with no skill panel message", %{conn: conn} do
+      {:ok, _show_live, html} = live(conn, ~p"/panels")
+
+      assert html =~ "スキルパネルがありません"
     end
   end
 
@@ -527,6 +549,38 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       refute show_live
              |> element("#skill-1 .link-exam")
              |> has_element?()
+    end
+  end
+
+  describe "Errors" do
+    setup [:register_and_log_in_user]
+
+    setup %{user: user} do
+      skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      %{skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    test "shows 404 if class not existing", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/#{skill_panel}?class=2")
+      end
+    end
+
+    test "shows 404 if class not allowed", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/#{skill_panel}?class=2")
+      end
     end
   end
 

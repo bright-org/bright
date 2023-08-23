@@ -11,6 +11,7 @@ defmodule Bright.SkillPanels do
 
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillPanels.SkillClass
+  alias Bright.SkillScores.SkillClassScore
   alias Bright.Teams.TeamMemberUsers
 
   @doc """
@@ -58,7 +59,7 @@ defmodule Bright.SkillPanels do
       on: class.skill_panel_id == p.id,
       join: score in assoc(class, :skill_class_scores),
       on: class.id == score.skill_class_id,
-      preload: [skill_classes: :skill_class_scores],
+      preload: [skill_classes: [skill_class_scores: ^SkillClassScore.user_id_query(user_id)]],
       order_by: p.updated_at,
       distinct: true
     )
@@ -130,14 +131,14 @@ defmodule Bright.SkillPanels do
     |> Bright.Repo.get_by(id: skill_panel_id)
   end
 
-  def get_user_latest_skill_panel!(user) do
+  def get_user_latest_skill_panel(user) do
     from(q in SkillPanel,
       join: u in assoc(q, :user_skill_panels),
       where: u.user_id == ^user.id,
       order_by: [desc: u.updated_at],
       limit: 1
     )
-    |> Repo.one!()
+    |> Repo.one()
   end
 
   @doc """

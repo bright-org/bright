@@ -57,6 +57,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
           Enum.map(wants.jobs, & &1.career_fields)
           |> List.flatten()
           |> Enum.uniq()
+          |> Enum.sort_by(& &1.position)
         )
       end)
 

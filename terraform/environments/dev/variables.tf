@@ -8,6 +8,16 @@ variable "secret_key_base" {
   type        = string
 }
 
+variable "admin_basic_auth_username" {
+  description = "Bright admin basic auth username"
+  type        = string
+}
+
+variable "admin_basic_auth_password" {
+  description = "Bright admin basic auth password"
+  type        = string
+}
+
 variable "sendgrid_api_key" {
   description = "Bright SendGrid API key"
   type        = string

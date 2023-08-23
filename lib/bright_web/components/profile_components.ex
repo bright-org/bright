@@ -5,6 +5,7 @@ defmodule BrightWeb.ProfileComponents do
   use Phoenix.Component
   import BrightWeb.BrightButtonComponents
   import BrightWeb.SnsComponents
+  alias Phoenix.LiveView.JS
 
   @doc """
   Renders a Profile
@@ -96,20 +97,91 @@ defmodule BrightWeb.ProfileComponents do
   """
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
-  attr :detail, :string, default: ""
   attr :icon_file_path, :string, default: ""
+  attr :click_event, :string, default: ""
+  attr :click_target, :string, default: nil
 
   def profile_small(assigns) do
     ~H"""
     <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
-      <a class="inline-flex items-center gap-x-6">
+      <.profile_small_link click_event={@click_event} click_target={@click_target} user_name={@user_name}>
         <img class="inline-block h-10 w-10 rounded-full" src={@icon_file_path} />
         <div>
           <p><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
+      </.profile_small_link>
+    </li>
+    """
+  end
+
+  @doc """
+  Renders a Profile small with remove button
+
+  ## Examples
+      <.profile_small_with_remove_button
+        remove_user_target={@myself}
+        user_name="piacere"
+        user_id="1234"
+        title="リードプログラマー"
+        icon_file_path="/images/sample/sample-image.png"
+      />
+  """
+  attr :remove_user_target, :any
+  attr :user_name, :string, required: true
+  attr :user_id, :string, required: true
+  attr :title, :string, default: ""
+  attr :icon_file_path, :string, default: ""
+
+  def profile_small_with_remove_button(assigns) do
+    ~H"""
+    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full">
+      <a class="inline-flex items-center gap-x-6 w-full">
+        <img
+          class="inline-block h-10 w-10 rounded-full"
+          src={@icon_file_path}
+        />
+        <div class="flex-auto">
+          <p><%= @user_name %></p>
+          <p class="text-brightGray-300"><%= @title %></p>
+        </div>
+        <button
+          phx-click={JS.push("remove_user", value: %{id: @user_id})}
+          phx-target={@remove_user_target}
+          class="mx-4"
+        >
+          <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+            close
+          </span>
+        </button>
       </a>
     </li>
+    """
+  end
+
+  defp profile_small_link(%{click_event: nil} = assigns) do
+    ~H"""
+    <a class="cursor-pointer inline-flex items-center gap-x-6" href={"/mypage/#{@user_name}"}>
+      <span class="inline-flex items-center gap-x-6">
+        <%= render_slot(@inner_block) %>
+      </span>
+    </a>
+    """
+  end
+
+  defp profile_small_link(%{click_event: _, click_target: nil} = assigns) do
+    ~H"""
+    <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-value-name={@user_name}>
+      <%= render_slot(@inner_block) %>
+    </a>
+    """
+  end
+
+  defp profile_small_link(assigns) do
+    ~H"""
+    <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-target={@click_target} phx-value-name={@user_name}>
+      <%= render_slot(@inner_block) %>
+    </a>
     """
   end
 end

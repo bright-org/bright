@@ -61,29 +61,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> assign_compared_users_info()}
   end
 
-  # TODO: デモ用実装のため対象ユーザー実装後に削除
-  def handle_event("demo_compare_user", _params, socket) do
-    users =
-      Bright.Accounts.User
-      |> Bright.Repo.all()
-      |> Enum.reject(fn user ->
-        user.id == socket.assigns.display_user.id ||
-          Ecto.assoc(user, :user_skill_panels)
-          |> Bright.Repo.all()
-          |> Enum.empty?()
-      end)
+  def handle_event("click_on_related_user_card_compare", params, socket) do
+    # TODO: チームメンバー以外の対応時に匿名に注意すること
+    # TODO: 本当に参照可能かのチェックをいれること
+    user = Bright.Accounts.get_user_by_name(params["name"])
 
-    if users != [] do
-      user = Enum.random(users)
-
-      {:noreply,
-       socket
-       |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
-       |> assign_compared_user_dict(user)
-       |> assign_compared_users_info()}
-    else
-      {:noreply, socket}
-    end
+    {:noreply,
+     socket
+     |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
+     |> assign_compared_user_dict(user)
+     |> assign_compared_users_info()}
   end
 
   def handle_event("reject_compared_user", %{"name" => name}, socket) do
@@ -141,9 +128,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
 
   defp assign_current_skill_units(socket) do
     skill_units =
-      Ecto.assoc(socket.assigns.skill_class, :skill_units)
-      |> SkillUnits.list_skill_units()
-      |> Bright.Repo.preload(skill_categories: [skills: [:skill_reference, :skill_exam]])
+      socket.assigns.skill_class
+      |> Bright.Repo.preload(
+        skill_units: [skill_categories: [skills: [:skill_reference, :skill_exam]]]
+      )
+      |> Map.get(:skill_units)
 
     skills =
       skill_units
@@ -353,12 +342,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     # ]
 
     skill_units
-    |> Enum.flat_map(fn skill_unit ->
+    |> Enum.with_index(1)
+    |> Enum.flat_map(fn {skill_unit, position} ->
       skill_category_items =
         list_skill_categories(skill_unit)
         |> Enum.flat_map(&build_skill_category_table_structure/1)
 
-      build_skill_unit_table_structure(skill_unit, skill_category_items)
+      build_skill_unit_table_structure(skill_unit, skill_category_items, position)
     end)
   end
 
@@ -375,7 +365,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     end)
   end
 
-  defp build_skill_unit_table_structure(skill_unit, skill_category_items) do
+  defp build_skill_unit_table_structure(skill_unit, skill_category_items, position) do
     size =
       skill_category_items
       |> Enum.reduce(0, fn
@@ -383,7 +373,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
         [%{size: size}, _], acc -> acc + size
       end)
 
-    skill_unit_item = %{size: size, skill_unit: skill_unit}
+    skill_unit_item = %{size: size, skill_unit: skill_unit, position: position}
 
     skill_category_items
     |> Enum.with_index()
