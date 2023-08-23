@@ -272,7 +272,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             </.link>
           </li>
         <% else %>
-          <li class="bg-brightGray-100 text-white">
+          <li class="bg-pureGray-600 text-pureGray-100">
             <span href="#" class="select-none inline-block p-4 pt-3">
               クラス<%= skill_class.class %>
               <span class="text-xl ml-4">0</span>％
