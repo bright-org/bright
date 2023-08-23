@@ -127,7 +127,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     }
   end
 
-  # TODO α版が以降対応
+  # TODO α版以降対応
   # defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
   #   notifications =
   #     Notifications.list_notification_by_type(
