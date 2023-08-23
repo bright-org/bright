@@ -34,7 +34,7 @@ erDiagram
 
 ``````
 
-### 重要な連絡　テーブル
+### 重要な連絡 テーブル
 ```mermaid
 erDiagram
   "users" ||--o{ "notification_team_invitations" : ""
@@ -74,8 +74,32 @@ erDiagram
 
 ``````
 
+## さまざまな人たちとの交流 テーブル
+
+```mermaid
+erDiagram
+  "users" ||--o{ "notification_skill_ups" : ""
+  "notification_skill_ups" ||--|| "users" : ""
+
+  "users" ||--o{ "notification_1on1_invitations" : ""
+  "notification_1on1_invitations" ||--|| "users" : ""
+
+  "users" ||--o{ "notification_promotions" : ""
+  "notification_promotions" ||--|| "users" : ""
+
+  "users" ||--o{ "notification_your_teams" : ""
+  "notification_your_teams" ||--|| "users" : ""
+
+  "users" ||--o{ "notification_intriguings" : ""
+  "notification_intriguings" ||--|| "users" : ""
+
+  "users" ||--o{ "notification_official_teams" : ""
+
+``````
+
 
 ## 旧通知テーブル 【廃止予定】
+
 ```mermaid
 erDiagram
   notifications {
