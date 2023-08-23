@@ -14,6 +14,7 @@ defmodule Bright.Searches do
         where: ^job,
         select: job.user_id
       )
+      |> where([j], not (j.user_id == ^user_id))
       |> availability_date_query(job_range)
       |> desired_income_query(job_range)
 
