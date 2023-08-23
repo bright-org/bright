@@ -20,10 +20,7 @@ defmodule BrightWeb.MegaMenuComponents do
     <.mega_menu_button
       id="mega_menu_team"
       label="ボタンに表示する文言"
-      current_user={@current_user}
       dropdown_offset_skidding="307"
-      card_component={BrightWeb.CardLive.RelatedTeamCardComponent}
-      over_ride_on_card_row_click_target={:true}
     />
   """
 
@@ -32,15 +29,13 @@ defmodule BrightWeb.MegaMenuComponents do
   attr :id, :string, required: true
   attr :label, :string, required: true
   attr :dropdown_offset_skidding, :string, required: true
-  attr :current_user, Bright.Accounts.User, required: true
-  attr :card_component, :any, required: true
-  attr :over_ride_on_card_row_click_target, :boolean, required: false, default: false
+  slot :inner_block
 
   def mega_menu_button(assigns) do
     ~H"""
     <button
-      id="dropdownOffsetButton#{@id}"
-      data-dropdown-toggle="dropdownOffset#{@id}"
+      id={"dropdownOffsetButton#{@id}"}
+      data-dropdown-toggle={"dropdownOffset#{@id}"}
       data-dropdown-offset-skidding={@dropdown_offset_skidding}
       data-dropdown-placement="bottom"
       class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
@@ -54,18 +49,14 @@ defmodule BrightWeb.MegaMenuComponents do
         expand_more
       </span>
     </button>
+
     <!-- メガメニューの内容 -->
-      <div
-        id="dropdownOffset#{@id}"
-        class="z-10 hidden bg-white rounded-sm shadow w-[750px]"
-      >
-        <.live_component
-          id={@id}
-          module={@card_component}
-          current_user={@current_user}
-          over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
-        />
-      </div>
+    <div
+      id={"dropdownOffset#{@id}"}
+      class="z-10 hidden bg-white rounded-sm shadow w-[750px]"
+    >
+      <%= render_slot(@inner_block) %>
+    </div>
     """
   end
 end
