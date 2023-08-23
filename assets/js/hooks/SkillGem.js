@@ -232,6 +232,9 @@ export const SkillGem = {
     const isLink = JSON.parse(dataset.displayLink)
     if (!isLink) return;
 
+    if(dataset.links === undefined) return;
+    const links = JSON.parse(dataset.links)
+
     // padding rightで拡張した部分がクリック判定できるようにする
     const rect = ctx.getBoundingClientRect()
     const x = event.clientX - rect.left
@@ -242,7 +245,10 @@ export const SkillGem = {
     for (let i = 0; i < length; i++) {
       const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
       const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
-      if (judge) { alert('リンククリック：' + window.myRadar[element.id].data.labels[i]) }
+      if (judge) {
+        location.href = links[i]
+        return
+      }
     }
 
     // α版はskill_upを表示しない

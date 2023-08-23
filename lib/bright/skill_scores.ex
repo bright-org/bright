@@ -459,7 +459,8 @@ defmodule Bright.SkillScores do
       [
         %{
           name: "name",
-          percentage: 50
+          percentage: 50,
+          position: 1
         }
      ]
   """
@@ -467,10 +468,17 @@ defmodule Bright.SkillScores do
     from(skill_unit_score in SkillUnitScore,
       join: skill_unit in assoc(skill_unit_score, :skill_unit),
       join: skill_classes in assoc(skill_unit, :skill_classes),
+      join: skill_class_units in assoc(skill_classes, :skill_class_units),
       on: skill_classes.class == ^class,
       on: skill_classes.skill_panel_id == ^skill_panel_id,
+      on: skill_class_units.skill_unit_id == skill_unit.id,
       where: skill_unit_score.user_id == ^user_id,
-      select: %{name: skill_unit.name, percentage: skill_unit_score.percentage}
+      order_by: skill_class_units.position,
+      select: %{
+        name: skill_unit.name,
+        percentage: skill_unit_score.percentage,
+        position: skill_class_units.position
+      }
     )
     |> Repo.all()
   end
