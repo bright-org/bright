@@ -11,7 +11,6 @@ erDiagram
     id to_user_id	FK "送信先ユーザ index"
     string message	"メッセージ内容"
     string detail	"詳細"
-    datetime read_at "開封日時 index"
   }
 ```
 
