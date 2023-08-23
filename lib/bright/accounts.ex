@@ -693,9 +693,11 @@ defmodule Bright.Accounts do
 
   """
   def get_user_by_name_or_email(name_or_email) do
-    User
-    |> where([user], not is_nil(user.confirmed_at))
-    |> where([user], user.name == ^name_or_email or user.email == ^name_or_email)
+    from(u in User,
+      where:
+        (u.name == ^name_or_email or u.email == ^name_or_email) and not is_nil(u.confirmed_at)
+    )
+    |> preload(:user_profile)
     |> Repo.one()
   end
 
@@ -728,5 +730,12 @@ defmodule Bright.Accounts do
   def onboarding_finished?(user) do
     from(user_onboarding in UserOnboarding, where: user_onboarding.user_id == ^user.id)
     |> Repo.exists?()
+  end
+
+  def list_users_without_current_user_dev(user_id) do
+    User
+    |> where([user], not (user.id == ^user_id))
+    |> preload(:skill_panels)
+    |> Repo.all()
   end
 end

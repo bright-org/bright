@@ -20,15 +20,15 @@ defmodule Bright.Seeds.SkillPanel do
     }
   end
 
-  def skill_unit(skill_class, panel_name) do
+  def skill_unit(skill_class, position) do
     %{
-      name: "#{panel_name}-スキルユニット(class:#{skill_class.class})",
+      name: "#{position}-スキルユニット(class:#{skill_class.class})",
       skill_categories:
         for x <- 1..3 do
-          skill_categories(panel_name, x, skill_class)
+          skill_categories(position, x, skill_class)
         end,
       skill_class_units: [
-        %{skill_class_id: skill_class.id, position: 1}
+        %{skill_class_id: skill_class.id, position: position}
       ]
     }
   end

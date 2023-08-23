@@ -52,36 +52,24 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         menu_items={show_menu(assigns)}
         target={@myself}
       >
-        <div class="pt-3 pb-1 px-6">
+        <div class="pt-3 pb-1 px-6 h-[216px]">
         <%= if @card.total_entries <= 0 do %>
           <ul class="flex gap-y-2.5 flex-col">
             <li
             class="flex items-center text-base p-1 rounded">
               <p class="w-full align-middle">所属しているチームはありません。</p>
             </li>
-            <%= for _blank <- 0.. @card.page_params.page_size - 1 do %>
-              <li
-              class="flex items-center text-base p-1 rounded">
-                <br/>
-              </li>
-            <% end %>
           </ul>
         <% end %>
         <%= if @card.total_entries > 0 do %>
           <ul class="flex gap-y-2.5 flex-col">
             <%= for team <- @card.entries do %>
               <.team_small
-                id="team_small_#{team.id}"
+                id={team.team.id}
                 team={team.team}
                 team_type={:general_team}
                 low_on_click_target={assigns.low_on_click_target}
               />
-            <% end %>
-            <%= for _blank <- 0.. @card.page_params.page_size - length(@card.entries) do %>
-              <li
-              class="flex items-center text-base p-1 rounded">
-                <br/>
-              </li>
             <% end %>
           </ul>
         <% end %>
@@ -161,6 +149,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
       ) do
     page = card.page_params.page - 1
     page = if page < 1, do: 1, else: page
+
     card_view(socket, card.selected_tab, page)
   end
 

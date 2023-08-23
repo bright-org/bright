@@ -28,8 +28,10 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
       <BrightCore.flash_group flash={@modal_flash} />
       <div class="bg-zinc-50/90 fixed inset-0 transition-opacity" />
       <div class="fixed inset-0 overflow-y-auto">
-
-        <section id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20">
+        <section
+          id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20"
+          phx-click-away={JS.hide(to: "#personal_setting_modal")}
+        >
           <div class="w-full mb-4">
           <button class="absolute top-4 right-8">
             <span
@@ -50,7 +52,6 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
               id={"user_settings"}
               user={@current_user}
               action={:edit}
-              :if={@current_user}
             />
           </.tab>
         </section>
