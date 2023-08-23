@@ -104,7 +104,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
 
               <p class="mb-2">
                 <span>担当者ステータス：</span>
-                <span>－</span>
+                <span><%= user.name %></span>
               </p>
             </div>
 
