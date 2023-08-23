@@ -102,7 +102,4 @@
     patch={~p"/mypage"}
   />
 </.bright_modal>
-<div
-  phx-mounted={if @search, do: JS.show(to: "#skill_search_modal")}
-  phx-target={"#skill_search"}
-></div>
+<div phx-mounted={if @search, do: JS.show(to: "#skill_search_modal")}></div>

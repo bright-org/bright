@@ -156,7 +156,6 @@ defmodule BrightWeb.BrightButtonComponents do
       type="button"
       class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
       phx-click={JS.toggle(to: "#skill_search_modal")}
-      phx-target={"#skill_search"}
     >
       <span
           class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold">search</span>
@@ -181,7 +180,6 @@ defmodule BrightWeb.BrightButtonComponents do
       id="user_menu_dropmenu"
       class="hover:opacity-70 z-20"
       phx-click={JS.toggle(to: "#personal_setting_modal")}
-      phx-target={"#personal_settings"}
     >
       <img
         class="inline-block h-10 w-10 rounded-full"
