@@ -40,17 +40,6 @@ defmodule Bright.Searches do
     )
   end
 
-  defp job_profile_query(user_id, job, job_range) do
-    from(
-      job in UserJobProfile,
-      where: ^job,
-      select: job.user_id
-    )
-    |> where([j], not (j.user_id == ^user_id))
-    |> availability_date_query(job_range)
-    |> desired_income_query(job_range)
-  end
-
   # classとlevelも含めると複雑すぎるので、skill_class_scoreのskill_panel_idでのみ絞り込み
   defp skill_query(query, []), do: query
 
@@ -66,6 +55,17 @@ defmodule Bright.Searches do
         )
       )
     )
+  end
+
+  defp job_profile_query(user_id, job, job_range) do
+    from(
+      job in UserJobProfile,
+      where: ^job,
+      select: job.user_id
+    )
+    |> where([j], not (j.user_id == ^user_id))
+    |> availability_date_query(job_range)
+    |> desired_income_query(job_range)
   end
 
   # job_profile 稼働可能日
@@ -100,7 +100,7 @@ defmodule Bright.Searches do
   defp filter_skill_class_and_level(skill_scores, skills) do
     Enum.map(skills, fn params ->
       filter(skill_scores, :skill_panel_id, Map.get(params, :skill_panel))
-      |> filter(:skill_class, class_to_integer(Map.get(params, :class)))
+      |> filter(:skill_class, class_nil_check(Map.get(params, :class)))
       |> filter(:level, level_to_atom(Map.get(params, :level)))
       |> Enum.map(& &1.user_id)
       |> Enum.uniq()
@@ -111,8 +111,8 @@ defmodule Bright.Searches do
     |> Enum.map(fn {key, _val} -> key end)
   end
 
-  defp class_to_integer(nil), do: nil
-  defp class_to_integer(class), do: String.to_integer(class)
+  defp class_nil_check(class) when is_nil(class), do: nil
+  defp class_nil_check(class), do: class
   defp level_to_atom(nil), do: nil
   defp level_to_atom(level), do: String.to_atom(level)
 
