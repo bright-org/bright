@@ -325,16 +325,28 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
   # キャリアフィールドが変更されたら、それ以降の値はリセットされる
   defp reset_skill_form_when_career_field_change(params, [_, "skills", index, "career_field"]) do
+    merge_skill_params(params, index, %{"class" => "", "level" => "", "skill_panel" => ""})
+  end
+
+  defp reset_skill_form_when_career_field_change(params, [_, "skills", index, "skill_panel"]) do
+    merge_skill_params(params, index, %{"class" => "", "level" => ""})
+  end
+
+  defp reset_skill_form_when_career_field_change(params, [_, "skills", index, "class"]) do
+    merge_skill_params(params, index, %{"level" => ""})
+  end
+
+  defp reset_skill_form_when_career_field_change(params, _target), do: params
+
+  defp merge_skill_params(params, index, clear_params) do
     skills = Map.get(params, "skills")
 
     skill =
       Map.get(skills, index)
-      |> Map.merge(%{"class" => "", "level" => "", "skill_panel" => ""})
+      |> Map.merge(clear_params)
 
     Map.put(params, "skills", Map.put(skills, index, skill))
   end
-
-  defp reset_skill_form_when_career_field_change(params, _target), do: params
 
   # 勤務体系のチェックが外れるとそれ以降の入力がクリアされる
   defp reset_work_style(params, [_, "office_work"]),
