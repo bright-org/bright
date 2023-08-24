@@ -28,7 +28,8 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_score_dict()
-     |> assign_counter()}
+     |> assign_counter()
+     |> touch_user_skill_panel()}
   end
 
   def handle_params(_params, _url, %{assigns: %{skill_panel: nil}} = socket),
