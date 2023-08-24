@@ -24,7 +24,13 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
 
   @impl true
   def update(
-        %{display_user: display_user, skill_panel: skill_panel, class: class} = assigns,
+        %{
+          display_user: display_user,
+          skill_panel: skill_panel,
+          class: class,
+          me: me,
+          anonymous: anonymous
+        } = assigns,
         socket
       ) do
     socket =
@@ -32,9 +38,6 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
       |> assign(assigns)
 
     select_label = assigns[:select_label] || "now"
-    me = assigns[:me] || false
-    anonymous = assigns[:anonymous] || false
-
     skill_gem = get_skill_gem(display_user.id, skill_panel.id, class, select_label)
 
     socket =
@@ -45,8 +48,6 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
         :skill_gem_links,
         get_skill_gem_links(skill_gem, skill_panel, class, display_user, me, anonymous)
       )
-      |> assign(:me, me)
-      |> assign(:anonymous, anonymous)
 
     {:ok, socket}
   end
