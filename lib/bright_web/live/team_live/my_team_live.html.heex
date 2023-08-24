@@ -3,15 +3,22 @@
   <!-- スキルと対象の切り替え -->
   <div class="flex gap-x-4">
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <!-- スキルパネル menu --> 
+    <!-- スキルパネル menu -->
     <.mega_menu_button
       id="mega_menu_skill_panel"
-      label="スキルパネル"
+      label="スキル"
       dropdown_offset_skidding="307"
-      current_user={@current_user}
-      card_component={BrightWeb.CardLive.RelatedTeamCardComponent}
-      over_ride_on_card_row_click_target={:true}
-    />
+    >
+      <% # TODO: 仮置き要対応 %>
+      <.live_component
+        id="skill_card"
+        module={BrightWeb.CardLive.SkillCardComponent}
+        display_user={@current_user}
+        me={true}
+        anonymous={false}
+        root={"graphs"}
+      />
+    </.mega_menu_button>
 
     <!-- TODO αリリースではスキルセットは対応しない -->
     <!-- スキルセット menu -->
@@ -19,22 +26,26 @@
     <p class="leading-tight ml-4">対象者の<br />切り替え</p>
     <!-- チーム menu -->
     <.mega_menu_button
-      id="mega_menu_team" 
+      id="mega_menu_team"
       label="チーム"
-      current_user={@current_user}
       dropdown_offset_skidding="307"
-      card_component={BrightWeb.CardLive.RelatedTeamCardComponent}
-      over_ride_on_card_row_click_target={:true}
-    />
+    >
+      <.live_component
+        id="team_card"
+        module={BrightWeb.CardLive.RelatedTeamCardComponent}
+        current_user={@current_user}
+        over_ride_on_card_row_click_target={:true}
+      />
+    </.mega_menu_button>
 
-      <button
-       data-modal-target="defaultModal"
-       data-modal-toggle="defaultModal"
-       class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold ml-auto"
-       phx-click={show_modal("create-team-modal")}
-      >
-        チームを作る
-      </button>
+    <button
+      data-modal-target="defaultModal"
+      data-modal-toggle="defaultModal"
+      class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold ml-auto"
+      phx-click={show_modal("create-team-modal")}
+    >
+      チームを作る
+    </button>
   </div>
   <!-- プロフィール -->
   <div class="flex justify-between py-6 px-10 bg-white">
@@ -63,7 +74,7 @@
     team_type={:general_team}
   />
   -->
-  
+
 
   <!-- チームメンバー -->
 
