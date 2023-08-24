@@ -76,6 +76,14 @@ module "secret_host" {
   data = module.cloud_run_service.host
 }
 
+module "secret_bucket_name" {
+  source     = "../../modules/google/secret"
+  depends_on = [module.googleapis]
+
+  name = "bright-bucket-name"
+  data = module.bucket.name
+}
+
 module "secret_admin_basic_auth_username" {
   source     = "../../modules/google/secret"
   depends_on = [module.googleapis]
@@ -141,7 +149,8 @@ module "service_account_cloud_run" {
 
   roles = [
     "roles/cloudsql.client",
-    "roles/secretmanager.secretAccessor"
+    "roles/secretmanager.secretAccessor",
+    "roles/storage.objectAdmin"
   ]
 }
 
