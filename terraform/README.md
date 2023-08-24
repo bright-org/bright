@@ -38,6 +38,7 @@ Google Cloudのプロジェクトに自分のGoogleアカウントを招待し�
         ├── apis                    # 各種APIの有効化
         ├── bucket                  # ユーザーがアップロードしたファイルを保存するGCSバケット
         ├── docker_registry         # Dockerイメージの管理
+        ├── cloud_run_batch         # 空のバッチ処理用Cloud Run Job（デプロイはCloud Buildで実行）
         ├── cloud_run_service       # 空のCloud Runサービス（デプロイはCloud Buildで実行）
         ├── db                      # データベース（PostgreSQL）
         ├── managed_service_account # Googleマネージドサービスアカウントへの権限付与

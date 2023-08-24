@@ -35,10 +35,16 @@ defmodule Bright.Batches.UpdateSkillPanels do
   alias Bright.SkillExams.SkillExam
   alias Bright.SkillReferences.SkillReference
 
-  def call(locked_date \\ nil) do
+  def call do
+    # NOTE: 日本時間の深夜に実行されるバッチのため、日付がずれないようにJSTで取得する
+    DateTime.now!("Asia/Tokyo")
+    |> DateTime.to_date()
+    |> call()
+  end
+
+  def call(locked_date) do
     skill_panels = Repo.all(SkillPanel)
     now = NaiveDateTime.local_now()
-    locked_date = if locked_date, do: locked_date, else: Date.utc_today()
 
     Repo.transaction(fn ->
       # 公開データから履歴データを生成
