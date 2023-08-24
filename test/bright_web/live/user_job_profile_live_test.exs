@@ -11,14 +11,14 @@ defmodule BrightWeb.UserJobProfileLiveTest do
       # 求職するが選択されていて、詳細部分が表示されている
       assert index_live
              |> element("#user_settings div ul li a", "求職")
-             |> render_click() =~ "求職種類"
+             |> render_click() =~ "求職種類</span><span class=\"pb-1 w-32\">(複数可)"
 
       index_live
       |> form("#job_profile-form", user_job_profile: %{job_searching: false})
       |> render_submit()
 
-      refute render(index_live) =~ "求職種類"
-      assert render(index_live) =~ "User Job profile updated successfully"
+      refute render(index_live) =~ "求職種類</span><span class=\"pb-1 w-32\">(複数可)"
+      assert render(index_live) =~ "保存しました"
     end
   end
 end
