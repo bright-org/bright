@@ -119,7 +119,7 @@ defmodule BrightWeb.BrightButtonComponents do
       type="button"
       class="text-white bg-planUpgrade-600 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
     >
-      <span class="bg-white material-icons mr-1 !text-base !text-[#f57f3e] rounded-full h-6 w-6 !font-bold material-icons-outlined">upgrade</span>
+      <span class="bg-white material-icons mr-1 !text-base !text-planUpgrade-600 rounded-full h-6 w-6 !font-bold material-icons-outlined">upgrade</span>
       プランのアップグレード
     </button>
     """

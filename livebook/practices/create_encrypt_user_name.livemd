@@ -1,0 +1,11 @@
+# 匿名の文字列を作る
+
+## Section
+
+```elixir
+alias Bright.Accounts
+alias BrightWeb.DisplayUserHelper
+
+Accounts.get_user_by_name("ymn")
+|> DisplayUserHelper.encrypt_user_name()
+```

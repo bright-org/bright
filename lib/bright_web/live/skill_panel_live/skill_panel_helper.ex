@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   import Phoenix.LiveView, only: [push_redirect: 2]
 
   alias BrightWeb.DisplayUserHelper
+  alias Bright.UserSkillPanels
 
   @counter %{
     low: 0,
@@ -32,7 +33,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
   def assign_skill_panel(socket, nil, _root) do
     display_user = socket.assigns.display_user
-
     skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
 
     socket
@@ -41,7 +41,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
   def assign_skill_panel(socket, skill_panel_id, root) do
     display_user = socket.assigns.display_user
-
     skill_panel = SkillPanels.get_user_skill_panel(display_user, skill_panel_id)
 
     if skill_panel do
@@ -179,6 +178,17 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
       |> Map.update!(:evidence_filled, &if(skill_score.evidence_filled, do: &1 + 1, else: &1))
     end)
   end
+
+  def touch_user_skill_panel(%{assigns: %{me: true}} = socket) do
+    UserSkillPanels.touch_user_skill_panel_updated(
+      socket.assigns.current_user,
+      socket.assigns.skill_panel
+    )
+
+    socket
+  end
+
+  def touch_user_skill_panel(socket), do: socket
 
   def assign_page_sub_title(%{assigns: %{skill_panel: nil}} = socket) do
     socket

@@ -18,3 +18,8 @@
 Cloud Buildでデプロイ（`cloudbuild.yaml`）する。
 
 GitHub Actionsで自動デプロイ（`.github/workflows/deploy_to_***.yml`）されるため、手動でデプロイする機会は基本的にない。
+
+## バッチ処理の設定・デプロイ
+
+「いつ実行するか」はTerraformで設定する。
+「何を実行するか」はCloud Buildでデプロイする。

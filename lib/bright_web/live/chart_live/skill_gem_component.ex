@@ -6,6 +6,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   import BrightWeb.ChartComponents
   alias Bright.SkillScores
   alias Bright.HistoricalSkillUnitScore
+  alias BrightWeb.PathHelper
 
   @impl true
   def render(assigns) do
@@ -16,26 +17,40 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
         id={@id}
         labels={@skill_gem_labels}
         links={@skill_gem_links}
+        display_link={@display_link}
       />
     </div>
     """
   end
 
   @impl true
-  def update(%{user_id: user_id, skill_panel_id: skill_panel_id, class: class} = assigns, socket) do
+  def update(
+        %{
+          display_user: display_user,
+          skill_panel: skill_panel,
+          class: class,
+          me: me,
+          anonymous: anonymous
+        } = assigns,
+        socket
+      ) do
     socket =
       socket
       |> assign(assigns)
 
     select_label = assigns[:select_label] || "now"
-
-    skill_gem = get_skill_gem(user_id, skill_panel_id, class, select_label)
+    display_link = assigns[:display_link] || "true"
+    skill_gem = get_skill_gem(display_user.id, skill_panel.id, class, select_label)
 
     socket =
       socket
       |> assign(:skill_gem_data, get_skill_gem_data(skill_gem))
       |> assign(:skill_gem_labels, get_skill_gem_labels(skill_gem))
-      |> assign(:skill_gem_links, get_skill_gem_links(skill_gem, skill_panel_id, class))
+      |> assign(
+        :skill_gem_links,
+        get_skill_gem_links(skill_gem, skill_panel, class, display_user, me, anonymous)
+      )
+      |> assign(:display_link, display_link)
 
     {:ok, socket}
   end
@@ -71,6 +86,12 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   defp get_skill_gem_data(skill_gem), do: [skill_gem |> Enum.map(fn x -> x.percentage end)]
   defp get_skill_gem_labels(skill_gem), do: skill_gem |> Enum.map(fn x -> x.name end)
 
-  defp get_skill_gem_links(skill_gem, skill_panel_id, class),
-    do: skill_gem |> Enum.map(fn x -> "/panels/#{skill_panel_id}?#{class}#unit-#{x.position}" end)
+  defp get_skill_gem_links(skill_gem, skill_panel, class, display_user, me, anonymous) do
+    base_path =
+      PathHelper.skill_panel_path("panels", skill_panel, display_user, me, anonymous) <>
+        "?class=#{class}"
+
+    skill_gem
+    |> Enum.map(fn x -> "#{base_path}#unit-#{x.position}" end)
+  end
 end
