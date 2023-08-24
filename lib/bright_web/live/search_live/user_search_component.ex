@@ -292,7 +292,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     {:noreply, assign(socket, :search_results, [])}
   end
 
-  def handle_event("search", params, %{assigns: %{changeset: %{changes: changes}}} = socket) do
+  def handle_event("search", _params, %{assigns: %{changeset: %{changes: changes}}} = socket) do
     skills = Map.get(changes, :skills, []) |> Enum.map(& &1.changes)
 
     search_params = {
