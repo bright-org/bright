@@ -69,7 +69,7 @@ erDiagram
   }
 
   notification_recruitment_coordinations {
-    id from_user_id	FK "送信元ユーザー:"
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
@@ -134,35 +134,37 @@ erDiagram
   "users" ||--o{ "notification_official_teams" : ""
 
   notification_skill_ups {
-    id from_user_id	FK "送信元ユーザー:"
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
+    boolean congratulate　"祝福する"
   }
 
   notification_1on1_invitations {
-    id from_user_id	FK "送信元ユーザー:"
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
+    string accept_status "受入ステータス： enum（acceptance、rejection）"
   }
 
   notification_promotions {
-    id from_user_id	FK "送信元ユーザー:"
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_your_teams {
-    id from_user_id	FK "送信元ユーザー:"
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_intriguings {
-    id from_user_id	FK "送信元ユーザー:"
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
@@ -172,6 +174,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
+    boolean participation "参加状況 true: 参加、 false: 脱退する"
   }
 
 ``````
