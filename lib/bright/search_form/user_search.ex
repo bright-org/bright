@@ -10,7 +10,6 @@ defmodule Bright.SearchForm.UserSearch do
   embedded_schema do
     field :pj_start, :string, default: ""
     field :pj_end, :string, default: ""
-    field :pj_end_undecided, :boolean, default: false
     field :desired_income, :integer
     field :office_work, :boolean, default: false
     field :office_pref, :string
@@ -32,7 +31,6 @@ defmodule Bright.SearchForm.UserSearch do
     |> cast(attrs, [
       :pj_start,
       :pj_end,
-      :pj_end_undecided,
       :desired_income,
       :office_work,
       :office_pref,
