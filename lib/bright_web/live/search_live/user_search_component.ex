@@ -65,6 +65,38 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       </div>
 
       <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
+        <span class="w-32">求職種類</span>
+        <div class="-ml-8">
+          <div class="flex items-center">
+            <BrightCore.input
+              field={@form[:wish_employed]}
+              label_class="w-16 text-left"
+              type="checkbox"
+              label="就職"
+            />
+            <BrightCore.input
+              field={@form[:wish_change_job]}
+              label_class="w-16 text-left"
+              type="checkbox"
+              label="転職"
+            />
+            <BrightCore.input
+              field={@form[:wish_side_job]}
+              label_class="w-16 text-left"
+              type="checkbox"
+              label="副業"
+            />
+            <BrightCore.input
+              field={@form[:wish_freelance]}
+              label_class="w-24 text-left"
+              type="checkbox"
+              label="フリーランス"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
         <span class="py-1 w-32">勤務体系</span>
         <div class="-ml-8">
           <div class="flex items-center">
