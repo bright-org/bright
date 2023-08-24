@@ -116,7 +116,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               prompt="希望勤務地"
             />
             <BrightCore.input
-              field={@form[:office_work_hours]}
+              field={@form[:office_working_hours]}
               input_class="w-36"
               disabled={disabled?(@form[:office_work].value)}
               type="select"
@@ -274,6 +274,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     params =
       user_search_params
       |> reset_pj_end(target)
+      |> reset_work_style(target)
       |> reset_skill_form_when_career_field_change(target)
 
     changeset =
@@ -331,6 +332,20 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   end
 
   defp reset_skill_form_when_career_field_change(params, _target), do: params
+
+  # 勤務体系のチェックが外れるとそれ以降の入力がクリアされる
+  defp reset_work_style(params, [_, "office_work"]),
+    do:
+      Map.merge(params, %{
+        "office_pref" => "",
+        "office_working_hours" => "",
+        "office_work_holidays" => "false"
+      })
+
+  defp reset_work_style(params, [_, "remote_work"]),
+    do: Map.merge(params, %{"remote_working_hours" => "", "remote_work_holidays" => "false"})
+
+  defp reset_work_style(params, _target), do: params
 
   # undecidedがクリックされたら pj_endがクリアされ、pj_endを入力するとundecidedがクリアされる
   defp reset_pj_end(params, [_, "pj_end_undecided"]), do: Map.put(params, "pj_end", "")
