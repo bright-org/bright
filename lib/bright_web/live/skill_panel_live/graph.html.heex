@@ -29,10 +29,12 @@
         <.live_component
           id="skill-gem"
           module={BrightWeb.ChartLive.SkillGemComponent}
-          user_id={@current_user.id}
-          skill_panel_id={@skill_panel.id}
+          display_user={@display_user}
+          skill_panel={@skill_panel}
           class={@skill_class.class}
           select_label={@select_label}
+          me={@me}
+          anonymous={@anonymous}
         />
         <% # TODO: α版後に:if={false}を除去して表示 %>
         <div :if={false} class="flex justify-center">
