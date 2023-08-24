@@ -148,6 +148,40 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  # # TODO: 時間操作の対応
+  # describe "Show latest skill panel" do
+  #   setup [:register_and_log_in_user]
+  #
+  #   setup %{user: user} do
+  #     [skill_panel_1, skill_panel_2] =
+  #       insert_pair(:skill_panel)
+  #       |> Enum.map(fn skill_panel ->
+  #         insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+  #         insert(:skill_class, skill_panel: skill_panel, class: 1)
+  #         skill_panel
+  #       end)
+  #
+  #     %{skill_panel_1: skill_panel_1, skill_panel_2: skill_panel_2}
+  #   end
+  #
+  #   test "switches latest skill panel by access", %{
+  #     skill_panel_1: skill_panel_1,
+  #     skill_panel_2: skill_panel_2,
+  #     conn: conn
+  #   } do
+  #     {:ok, _show_live, html} = live(conn, ~p"/panels/#{skill_panel_1}")
+  #     assert html =~ "スキルパネル / #{skill_panel_1.name}"
+  #     {:ok, _show_live, html} = live(conn, ~p"/panels")
+  #     assert html =~ "スキルパネル / #{skill_panel_1.name}"
+  #
+  #     :timer.sleep(1000)
+  #     {:ok, _show_live, html} = live(conn, ~p"/panels/#{skill_panel_2}")
+  #     assert html =~ "スキルパネル / #{skill_panel_2.name}"
+  #     {:ok, _show_live, html} = live(conn, ~p"/panels")
+  #     assert html =~ "スキルパネル / #{skill_panel_2.name}"
+  #   end
+  # end
+
   describe "Show skill scores" do
     setup [:register_and_log_in_user, :setup_skills]
 
