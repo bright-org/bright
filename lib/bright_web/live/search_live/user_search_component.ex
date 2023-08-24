@@ -163,7 +163,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-26"
               type="select"
               options={@class}
-              disabled={is_nil(sk[:career_field].value)}
+              disabled={sk[:skill_panel].value in ["", nil]}
               prompt="クラス"
             />
             <BrightCore.input
@@ -171,7 +171,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-26"
               type="select"
               options={@level}
-              disabled={is_nil(sk[:career_field].value)}
+              disabled={sk[:class].value in ["", nil]}
               prompt="レベル"
             />
             <a
