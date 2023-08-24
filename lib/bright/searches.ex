@@ -51,7 +51,7 @@ defmodule Bright.Searches do
       score.skill_class_id in subquery(
         from(
           sc in SkillClass,
-          where: sc.skill_panel_id in ^Enum.map(skills, & &1.skill_panel),
+          where: sc.skill_panel_id in ^Enum.map(skills, &Map.get(&1, :skill_panel)),
           select: sc.id
         )
       )
@@ -114,7 +114,7 @@ defmodule Bright.Searches do
 
   defp class_nil_check(class) when is_nil(class), do: nil
   defp class_nil_check(class), do: class
-  defp level_to_atom(nil), do: nil
+  defp level_to_atom(level) when level in ["", nil], do: nil
   defp level_to_atom(level), do: String.to_atom(level)
 
   defp filter(list, _key, nil), do: list
