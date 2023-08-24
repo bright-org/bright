@@ -26,6 +26,7 @@ defmodule Bright.Searches do
     |> Repo.all()
   end
 
+  # job_profile_queryで絞り込んだユーザーのスキルスコアを取得する
   defp skill_score_query(user_id, job, job_range) do
     from(
       score in SkillClassScore,

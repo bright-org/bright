@@ -59,6 +59,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
               size="20"
               type="number"
+              after_label="万円以下"
             />
           </label>
         </div>
