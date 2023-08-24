@@ -119,6 +119,10 @@ module.exports = {
         planUpgrade: {
           600: "#f57f3e",
         },
+        pureGray: {
+          100: "#e0e0e0",
+          600: "#acacac",
+        },
       },
       backgroundImage: (theme) => ({
         bgGem: "url('/images/bg_gem_title.png')",
