@@ -88,6 +88,15 @@
     <!-- 検証 -->
   </div>
 </div>
+<.bright_modal
+  id="notification-detail-modal"
+  style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+>
+  <.live_component
+    id="notification-detail"
+    module={BrightWeb.MypageLive.NotificationDetailComponents}
+  />
+</.bright_modal>
 
 <!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
 <.bright_modal
