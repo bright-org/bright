@@ -1,4 +1,4 @@
-defmodule BrightWeb.MypageLive.NotificationDetailComponents do
+defmodule BrightWeb.MypageLive.NotificationDetailComponent do
   @moduledoc """
   Notification Detail Components
   """
