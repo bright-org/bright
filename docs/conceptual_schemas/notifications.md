@@ -7,8 +7,8 @@
 ```mermaid
 erDiagram
   common {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー:（必須ではない）"
+    id to_user_id	FK "送信先ユーザー index:（必須ではない）"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
@@ -29,7 +29,7 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_採用の調整" : ""
   "通知_採用の調整" ||--|| "Brightユーザー" : ""
 
-  "通知_スキルパネル更新"
+  "Brightユーザー" ||--o{ "通知_スキルパネル更新" : ""
   "通知_運営"
 
 ``````
@@ -46,47 +46,42 @@ erDiagram
   "users" ||--o{ "notification_recruitment_coordinations" : ""
   "notification_recruitment_coordinations" ||--|| "users" : ""
 
-  "notification_skill_panel_updates"
+  "users" ||--o{　"notification_skill_panel_updates"　: ""
   "notification_operations"
 
   notification_team_invitations {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
   
   notification_dailies {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_weeklies {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_recruitment_coordinations {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー:"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_skill_panel_updates {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_operations {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
@@ -139,43 +134,42 @@ erDiagram
   "users" ||--o{ "notification_official_teams" : ""
 
   notification_skill_ups {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー:"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_1on1_invitations {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー:"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_promotions {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー:"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_your_teams {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー:"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_intriguings {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー:"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
 
   notification_official_teams {
-    id from_user_id	FK "送信元ユーザ:（必須ではない）"
-    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string detail	"詳細"
   }
@@ -188,8 +182,8 @@ erDiagram
 ```mermaid
 erDiagram
   notifications {
-    id from_user_id	FK "送信元ユーザ"
-    id to_user_id	FK "送信先ユーザ index"
+    id from_user_id	FK "送信元ユーザー"
+    id to_user_id	FK "送信先ユーザー index"
     string icon_type	"アイコン種別"
     string message	"メッセージ内容"
     string type	"種別（タブ） index"
