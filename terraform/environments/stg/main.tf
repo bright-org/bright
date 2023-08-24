@@ -149,7 +149,8 @@ module "service_account_cloud_run" {
 
   roles = [
     "roles/cloudsql.client",
-    "roles/secretmanager.secretAccessor"
+    "roles/secretmanager.secretAccessor",
+    "roles/storage.objectAdmin"
   ]
 }
 
