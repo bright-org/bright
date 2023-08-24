@@ -17,6 +17,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
         id={@id}
         labels={@skill_gem_labels}
         links={@skill_gem_links}
+        display_link={@display_link}
       />
     </div>
     """
@@ -38,6 +39,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
       |> assign(assigns)
 
     select_label = assigns[:select_label] || "now"
+    display_link = assigns[:display_link] || "true"
     skill_gem = get_skill_gem(display_user.id, skill_panel.id, class, select_label)
 
     socket =
@@ -48,6 +50,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
         :skill_gem_links,
         get_skill_gem_links(skill_gem, skill_panel, class, display_user, me, anonymous)
       )
+      |> assign(:display_link, display_link)
 
     {:ok, socket}
   end
