@@ -48,6 +48,49 @@ erDiagram
 
   "notification_skill_panel_updates"
   "notification_operations"
+
+  notification_team_invitations {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+  
+  notification_dailies {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_weeklies {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_recruitment_coordinations {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_skill_panel_updates {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_operations {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+  
 ```
 
 
@@ -94,6 +137,48 @@ erDiagram
   "notification_intriguings" ||--|| "users" : ""
 
   "users" ||--o{ "notification_official_teams" : ""
+
+  notification_skill_ups {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_1on1_invitations {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_promotions {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_your_teams {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_intriguings {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
+
+  notification_official_teams {
+    id from_user_id	FK "送信元ユーザ:（必須ではない）"
+    id to_user_id	FK "送信先ユーザ index:（必須ではない）"
+    string message	"メッセージ内容"
+    string detail	"詳細"
+  }
 
 ``````
 
