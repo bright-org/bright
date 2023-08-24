@@ -294,7 +294,10 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   end
 
   def handle_event("search", _params, %{assigns: %{changeset: %{changes: changes}}} = socket) do
-    skills = Map.get(changes, :skills, []) |> Enum.map(& &1.changes)
+    skills =
+      Map.get(changes, :skills, [])
+      |> Enum.map(& &1.changes)
+      |> Enum.reject(&(Map.get(&1, :skill_panel) == nil))
 
     search_params = {
       Map.put(changes, :job_searching, true)
