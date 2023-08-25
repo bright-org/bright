@@ -28,7 +28,7 @@ erDiagram
   "通知_採用の調整" ||--|| "Brightユーザー" : ""
 
   "Brightユーザー" ||--o{ "通知_スキルパネル更新" : ""
-  "通知_運営"
+  "Brightユーザー" ||--o{ "通知_運営" : ""
 
 ``````
 
@@ -44,24 +44,26 @@ erDiagram
   "users" ||--o{ "notification_recruitment_coordinations" : ""
   "notification_recruitment_coordinations" ||--|| "users" : ""
 
-  "users" ||--o{　"notification_skill_panel_updates"　: ""
-  "notification_operations"
+  "users" ||--o{ "notification_skill_panel_updates"　: ""
+  "users" ||--o{ "notification_operations" : ""
 
   notification_team_invitations {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
-    int status "ステータス： enum（0:参加しない、1:参加する）"
+    int status "ステータス： enum（participation:参加する, abstention:参加しない）"
   }
   
   notification_dailies {
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
   }
 
   notification_weeklies {
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
@@ -70,7 +72,7 @@ erDiagram
   notification_recruitment_coordinations {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
+    string url	"採用の回答するモーダルのURL"
   }
 
   notification_skill_panel_updates {
@@ -87,7 +89,6 @@ erDiagram
   
 ```
 
-
 ## さまざまな人たちとの交流 ER図
 
 ```mermaid
@@ -101,15 +102,15 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_推し活" : ""
   "通知_推し活" ||--|| "Brightユーザー" : ""
 
-  "Brightユーザー" ||--o{ "通知_所属チーム" : ""
-  "通知_所属チーム" ||--|| "Brightユーザー" : ""
+
 
   "Brightユーザー" ||--o{ "通知_気になる" : ""
   "通知_気になる" ||--|| "Brightユーザー" : ""
 
   "Brightユーザー" ||--o{ "通知_運営公式" : ""
+  "通知_運営公式" ||--|| "Brightユーザー" : ""
 
-``````
+```
 
 ## さまざまな人たちとの交流 テーブル
 
@@ -123,10 +124,7 @@ erDiagram
 
   "users" ||--o{ "notification_promotions" : ""
   "notification_promotions" ||--|| "users" : ""
-
-  "users" ||--o{ "notification_your_teams" : ""
-  "notification_your_teams" ||--|| "users" : ""
-
+¥
   "users" ||--o{ "notification_intriguings" : ""
   "notification_intriguings" ||--|| "users" : ""
 
@@ -152,48 +150,30 @@ erDiagram
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
-    text detail	"詳細"
-  }
-
-  notification_your_teams {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
+    string url	"エビデンスのURL"
   }
 
   notification_intriguings {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
-    text detail	"詳細"
+    string url	"相手のmypageのURL"
   }
 
   notification_official_teams {
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
     boolean participation "参加状況 true: 参加、 false: 脱退する"
   }
 
-``````
-
-
-## 旧通知テーブル 【廃止予定】
-
-```mermaid
-erDiagram
-  notifications {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string icon_type	"アイコン種別"
-    string message	"メッセージ内容"
-    string type	"種別（タブ） index"
-    string url "URL"
-    datetime read_at "開封日時 index"
-  }
 ```
 
+
+## 通知と同時に行われる処理
+
+```
 重要な連絡
 　・チーム招待
 　　「参加する」「参加しない」
@@ -237,5 +217,6 @@ erDiagram
 　　「内容を見る」　ラベル：「参加中」「未参加」
 　　　　└「参加する」「脱退する」のトグル
 　　　　└通知（DB）追加時にメールも送信する
-        └　ウンエイサンガノDBニモツイカスル
+　　　　└運営側のチームのDBにも追加
 　　　　
+```
