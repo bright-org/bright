@@ -52,7 +52,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
-    int status "ステータス： enum（participation:参加する, abstention:参加しない）"
+    string status "ステータス： enum（participation:参加する, abstention:参加しない）"
   }
   
   notification_dailies {
