@@ -308,7 +308,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     }
 
     users =
-      Searches.search_users_by_job_profile_and_skill_score(
+      UserSearches.search_users_by_job_profile_and_skill_score(
         search_params,
         [socket.assigns.current_user.id]
       )
