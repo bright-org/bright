@@ -4,7 +4,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   alias Bright.{CareerFields, SkillPanels, UserSearches}
   alias Bright.SearchForm.{UserSearch, SkillSearch}
   alias Bright.UserJobProfiles.UserJobProfile
-  alias BrightWeb.SearchLive.SearchResultComponent
+  alias BrightWeb.SearchLive.SearchResultsComponent
   alias BrightWeb.BrightCoreComponents, as: BrightCore
 
   @class [クラス1: 1, クラス2: 2, クラス3: 3]
@@ -21,50 +21,6 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         phx-change="validate"
         phx-submit="search"
       >
-      <div class="border-b border-brightGray-200 flex flex-wrap items-center">
-        <div class="flex items-center w-fit">
-          <label class="flex items-center py-4">
-            <span class="w-24">PJ期間</span>
-            <BrightCore.input
-              field={@form[:pj_start]}
-              input_class="border border-brightGray-200 px-2 py-1  rounded w-30"
-              type="date"
-              size="20"
-            />
-            <span class="mx-1">～</span>
-            <BrightCore.input
-              field={@form[:pj_end]}
-              input_class="border border-brightGray-200 px-2 py-1  rounded w-30"
-              type="date"
-              size="20"
-            />
-          </label>
-
-          <label class="flex items-center ml-2">
-          <BrightCore.input
-                field={@form[:pj_end_undecided]}
-                input_class="border border-brightGray-200 rounded"
-                label_class="ml-1 text-xs"
-                type="checkbox"
-                label="終了日未定"
-              />
-          </label>
-        </div>
-
-        <div class="ml-auto w-fit">
-          <label class="flex items-center py-4">
-            <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
-            <BrightCore.input
-              field={@form[:desired_income]}
-              input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
-              size="20"
-              type="number"
-              after_label="万円以下"
-            />
-          </label>
-        </div>
-      </div>
-
       <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
         <span class="w-32">求職種類</span>
         <div class="-ml-8">
@@ -159,6 +115,21 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
           </div>
         </div>
       </div>
+      <div class="border-b border-brightGray-200 flex flex-wrap items-center">
+        <div class="w-fit">
+          <label class="flex items-center py-4">
+            <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
+            <BrightCore.input
+              field={@form[:desired_income]}
+              input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
+              size="20"
+              type="number"
+              after_label="万円以下"
+            />
+          </label>
+        </div>
+      </div>
+
 
       <div class="flex mt-4" id="skill_section">
         <span class="mt-2 w-24">スキル</span>
@@ -227,7 +198,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       </.form>
       <.live_component
         id="user_search_result"
-        module={SearchResultComponent}
+        module={SearchResultsComponent}
         current_user={@current_user}
         result={@search_results}
         skill_params={@skill_params}
@@ -293,7 +264,15 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     {:noreply, assign(socket, :search_results, [])}
   end
 
-  def handle_event("search", _params, %{assigns: %{changeset: %{changes: changes}}} = socket) do
+  def handle_event("search", _params, %{assigns: %{changeset: %{valid?: false}}} = socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "search",
+        _params,
+        %{assigns: %{changeset: %{changes: changes}}} = socket
+      ) do
     skills =
       Map.get(changes, :skills, [])
       |> Enum.map(& &1.changes)
@@ -308,7 +287,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     }
 
     users =
-      Searches.search_users_by_job_profile_and_skill_score(
+      UserSearches.search_users_by_job_profile_and_skill_score(
         search_params,
         [socket.assigns.current_user.id]
       )
