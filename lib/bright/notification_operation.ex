@@ -1,10 +1,14 @@
 defmodule Bright.NotificationOperation do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Bright.Accounts.User
+
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "notification_operations" do
     field :message, :string
-    field :from_user_id, Ecto.UUID
+    belongs_to :from_user, User
     field :detail, :string
 
     timestamps()

@@ -3,7 +3,7 @@ defmodule Bright.Repo.Migrations.CreateNotificationOperations do
 
   def change do
     create table(:notification_operations) do
-      add :from_user_id, :uuid
+      add :from_user_id, references(:users, on_delete: :nothing), null: false
       add :message, :string
       add :detail, :text
 
