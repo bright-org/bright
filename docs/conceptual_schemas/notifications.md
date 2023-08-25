@@ -96,13 +96,14 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_スキルアップ" : ""
   "通知_スキルアップ" ||--|| "Brightユーザー" : ""
 
+  "Brightユーザー" ||--o{ "通知_祝福された" : ""
+  "通知_祝福された" ||--|| "Brightユーザー" : ""
+
   "Brightユーザー" ||--o{ "通知_1on1のお誘い" : ""
   "通知_1on1のお誘い" ||--|| "Brightユーザー" : ""
 
   "Brightユーザー" ||--o{ "通知_推し活" : ""
   "通知_推し活" ||--|| "Brightユーザー" : ""
-
-
 
   "Brightユーザー" ||--o{ "通知_気になる" : ""
   "通知_気になる" ||--|| "Brightユーザー" : ""
@@ -119,12 +120,15 @@ erDiagram
   "users" ||--o{ "notification_skill_ups" : ""
   "notification_skill_ups" ||--|| "users" : ""
 
+  "users" ||--o{ "notification_blesseds" : ""
+  "notification_blesseds" ||--|| "users" : ""
+
   "users" ||--o{ "notification_1on1_invitations" : ""
   "notification_1on1_invitations" ||--|| "users" : ""
 
   "users" ||--o{ "notification_promotions" : ""
   "notification_promotions" ||--|| "users" : ""
-¥
+
   "users" ||--o{ "notification_intriguings" : ""
   "notification_intriguings" ||--|| "users" : ""
 
@@ -136,6 +140,13 @@ erDiagram
     string message	"メッセージ内容"
     text detail	"詳細"
     boolean congratulate　"祝福する"
+  }
+
+  notification_blesseds {
+    id from_user_id	FK "送信元ユーザー"
+    id to_user_id	FK "送信先ユーザー index"
+    string message	"メッセージ内容"
+    text detail	"詳細"
   }
 
   notification_1on1_invitations {
