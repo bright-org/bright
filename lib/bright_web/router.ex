@@ -160,7 +160,11 @@ defmodule BrightWeb.Router do
       live "/mypage", MypageLive.Index, :index
       live "/mypage/:user_name", MypageLive.Index, :index
       live "/mypage/anon/:user_name_encrypted", MypageLive.Index, :index
-      live "/mypage/notification_detail/:type/:id", MypageLive.Index, :notification_detail
+
+      live "/mypage/notification_detail/:notification_type/:notification_id",
+           MypageLive.Index,
+           :notification_detail
+
       live "/searches", MypageLive.Index, :search
       live "/skill_up", OnboardingLive.Index, :index
       live "/skill_up/wants/:want_id", OnboardingLive.SkillPanels

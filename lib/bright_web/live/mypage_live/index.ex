@@ -25,12 +25,15 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:search, false)
   end
 
-  defp apply_action(socket, :notification_detail, %{"id" => id, "type" => type}) do
+  defp apply_action(socket, :notification_detail, %{
+         "notification_id" => notification_id,
+         "notification_type" => notification_type
+       }) do
     socket
     |> assign(:page_title, "マイページ")
     |> assign(:notification_detail, true)
-    |> assign(:notification_id, id)
-    |> assign(:notification_type, type)
+    |> assign(:notification_id, notification_id)
+    |> assign(:notification_type, notification_type)
     |> assign(:search, false)
   end
 
