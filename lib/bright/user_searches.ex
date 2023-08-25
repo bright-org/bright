@@ -1,4 +1,4 @@
-defmodule Bright.Searches do
+defmodule Bright.UserSearches do
   @moduledoc """
   The Search context.
   """

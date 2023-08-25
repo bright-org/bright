@@ -1,7 +1,7 @@
-defmodule Bright.SearchesTest do
+defmodule Bright.UserUserSearchesTest do
   use Bright.DataCase
 
-  alias Bright.Searches
+  alias Bright.UserSearches
 
   import Bright.Factory
 
@@ -47,7 +47,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "greater than equal pj_start", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -56,7 +56,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}], %{pj_start: "2023-09-01"}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "less than equal pj_start", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -65,7 +65,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}], %{pj_end: "2023-08-25"}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "between pj_start and pj_end", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -74,7 +74,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}], %{pj_start: "2023-08-25", pj_end: "2023-08-31"}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "less than equal desired_income", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -83,7 +83,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}], %{desired_income: 800}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only wish change_job", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -92,7 +92,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}, {:wish_change_job, true}], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only wish employed", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -101,7 +101,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}, {:wish_employed, true}], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only wish freelance", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -110,7 +110,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}, {:wish_freelance, true}], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only wish side_job", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -119,7 +119,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}, {:wish_side_job, true}], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only office work", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -128,7 +128,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}, {:office_work, true}], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only office work and work Tokyo", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -137,7 +137,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}, {:office_work, true}, {:office_pref, "東京都"}], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only office work and 160h/m orver", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -148,7 +148,7 @@ defmodule Bright.SearchesTest do
         {[{:job_searching, true}, {:office_work, true}, {:office_working_hours, "月160h以上"}], %{},
          []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only office work and work holiday", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -162,7 +162,7 @@ defmodule Bright.SearchesTest do
            {:office_work_holidays, true}
          ], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only remote work", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -171,7 +171,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}, {:remote_work, true}], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only remote work and 160h/m orver", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -182,7 +182,7 @@ defmodule Bright.SearchesTest do
         {[{:job_searching, true}, {:remote_work, true}, {:remote_working_hours, "月160h以上"}], %{},
          []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "only remote work and work holiday", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -196,7 +196,7 @@ defmodule Bright.SearchesTest do
            {:remote_work_holidays, true}
          ], %{}, []}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "having skill_panel_2", %{
@@ -209,7 +209,7 @@ defmodule Bright.SearchesTest do
 
       query = {[{:job_searching, true}], %{}, [%{skill_panel: panel.id}]}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "having skill_panel 1 & 2", %{
@@ -224,7 +224,7 @@ defmodule Bright.SearchesTest do
       query =
         {[{:job_searching, true}], %{}, [%{skill_panel: panel_1.id}, %{skill_panel: panel_2.id}]}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "having skill_panel 1 and open class 2", %{
@@ -236,7 +236,7 @@ defmodule Bright.SearchesTest do
       insert(:user_job_profile, user: user_2)
 
       query = {[{:job_searching, true}], %{}, [%{skill_panel: panel_1.id, class: 2}]}
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
     test "having skill_panel 1 and open class 1 and skilled", %{
@@ -250,7 +250,7 @@ defmodule Bright.SearchesTest do
       query =
         {[{:job_searching, true}], %{}, [%{skill_panel: panel_1.id, class: 1, level: "skilled"}]}
 
-      assert [%{id: ^id}] = Searches.search_users_by_job_profile_and_skill_score(query)
+      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
   end
 end
