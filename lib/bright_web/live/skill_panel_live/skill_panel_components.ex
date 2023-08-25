@@ -309,25 +309,25 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     [Map.get(@score_mark, mark), get_in(@score_mark_color, [color, mark])]
   end
 
-  defp profile_skill_class_level(%{level: :beginner} = assigns) do
+  def profile_skill_class_level(%{level: :beginner} = assigns) do
     ~H"""
     <img src="/images/common/icons/beginner.svg" class="mr-2" />見習い
     """
   end
 
-  defp profile_skill_class_level(%{level: :normal} = assigns) do
+  def profile_skill_class_level(%{level: :normal} = assigns) do
     ~H"""
     <img src="/images/common/icons/crown_copper.svg" class="mr-2" />平均
     """
   end
 
-  defp profile_skill_class_level(%{level: :skilled} = assigns) do
+  def profile_skill_class_level(%{level: :skilled} = assigns) do
     ~H"""
     <img src="/images/common/icons/crown.svg" class="mr-2" />ベテラン
     """
   end
 
-  defp skill_score_percentages(counter, num_skills) do
+  def skill_score_percentages(counter, num_skills) do
     high = calc_percentage(counter.high, num_skills)
     middle = calc_percentage(counter.middle, num_skills)
     low = 100 - high - middle
