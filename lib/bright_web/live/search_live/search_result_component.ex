@@ -8,7 +8,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
     <ul class="mt-4">
       <%= for user <- @result do %>
       <!-- Start 検索結果 単体 -->
-        <li class="border border-brightGray-200 flex h-64 mb-2 overflow-hidden p-2 rounded" :if={Enum.count(user.skill_panels) > 0}>
+        <li class="border border-brightGray-200 flex h-64 mb-2 overflow-hidden p-2 rounded" :if={Enum.count(user.skill_class_scores) > 0}>
         <div class="bg-white w-[448px]">
           <ul class="search_result_tab border-b border-brightGray-200 flex">
             <li class="border-b-2 border-brightGreen-300 cursor-pointer min-w-fit overflow-hidden p-1.5 text-center whitespace-nowrap hover:bg-brightGray-50">Webアプリ開発 Elixir</li>
@@ -32,7 +32,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
                   <div class="h-24 overflow-hidden w-28">
                     <div class="h-20 ml-2 flex flex-wrap">
                       <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
-                        <img src="./images/common/icons/crown.svg" class="mr-2">
+                        <img src="/images/common/icons/crown.svg" class="mr-2">
                         <span>ベテラン</span>
                       </p>
 
@@ -104,7 +104,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
 
               <p class="mb-2">
                 <span>担当者ステータス：</span>
-                <span>－</span>
+                <span><%= user.name %></span>
               </p>
             </div>
 
@@ -132,16 +132,22 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
               >inventory</span>
               候補者をストック
             </button>
-              <% skill_panel = List.first(user.skill_panels) %>
-              <.link
-                class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
-                href={"/panels/#{skill_panel.id}/anon/#{encrypt_user_name(user)}"}
-              >
-                成長グラフへ
-              </.link>
+              <% skill = List.first(@skill_params) %>
+              <%= if skill == nil do%>
+                <a class="bg-white block border border-solid border-brightGreen-300 font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 opacity-50" disabled>
+                  成長グラフへ
+                </a>
+              <% else %>
+                <.link
+                  class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
+                  href={"/panels/#{skill.skill_panel}/anon/#{encrypt_user_name(user)}"}
+                >
+                  成長グラフへ
+                </.link>
+              <% end %>
               <.link
                 class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
-                href={"mypage/anon/#{encrypt_user_name(user)}"}
+                href={"/mypage/anon/#{encrypt_user_name(user)}"}
               >
               マイページへ
               </.link>

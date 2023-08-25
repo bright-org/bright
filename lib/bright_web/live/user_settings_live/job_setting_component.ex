@@ -209,7 +209,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
       {:ok, user_job_profile} ->
         send_update(UserSettingComponent,
           id: "user_setting_modal",
-          modal_flash: %{info: "User Job profile updated successfully"},
+          modal_flash: %{info: "保存しました"},
           action: "job"
         )
 

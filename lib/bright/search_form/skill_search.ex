@@ -9,7 +9,7 @@ defmodule Bright.SearchForm.SkillSearch do
   embedded_schema do
     field :career_field, :string
     field :skill_panel, :string
-    field :class, :string
+    field :class, :integer
     field :level, :string
   end
 
