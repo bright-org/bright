@@ -11,7 +11,7 @@ defmodule Bright.Searches do
   alias Bright.SkillScores.SkillClassScore
   alias Bright.UserJobProfiles.UserJobProfile
 
-  def skill_search(user_id, {job_params, job_range_params, skill_params}) do
+  def search_users(user_id, {job_params, job_range_params, skill_params}) do
     user_ids =
       skill_score_query(user_id, job_params, job_range_params)
       |> skill_query(skill_params)
