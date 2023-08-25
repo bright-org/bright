@@ -7,7 +7,7 @@
 ```mermaid
 erDiagram
   common {
-    id from_user_id	FK "送信元ユーザー:（必須ではない）"
+    id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index:（必須ではない）"
     string message	"メッセージ内容"
     text detail	"詳細"
@@ -52,6 +52,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
+    int status "ステータス： enum（0:参加しない、1:参加する）"
   }
   
   notification_dailies {
@@ -70,7 +71,6 @@ erDiagram
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
-    text detail	"詳細"
   }
 
   notification_skill_panel_updates {
@@ -80,6 +80,7 @@ erDiagram
   }
 
   notification_operations {
+    id from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
   }
@@ -192,3 +193,49 @@ erDiagram
     datetime read_at "開封日時 index"
   }
 ```
+
+重要な連絡
+　・チーム招待
+　　「参加する」「参加しない」
+　　　（チーム招待側の処理でメールを送信しているため制御外）
+　・デイリー
+　　「内容を見る」
+　　　└通知（DB）追加時にメールも送信する
+　・ウイークリー
+　　「内容を見る」
+　　　└通知（DB）追加時にメールも送信する
+　・採用の調整
+　　「確認する」
+　　　└通知（DB）追加時にメールも送信する
+　　　└専用のモーダル（回答するモーダル）
+　　　　└詳細は不要
+　　　└URL
+　・スキルパネル更新
+　　「内容を見る」
+　　　└通知（DB）追加時にメールも送信する（「成長パネルを見る」をナビゲーションを案内）
+　・運営
+　　「内容を見る」
+　　　└通知（DB）追加時にメールも送信する
+
+さまざまな人たちとの交流
+　・スキルアップ
+　　「スキルを確認」「祝福する」
+　　　　└ジェムのリンクと同じ
+　・祝福された
+　　「内容を見る」（テーブルを作る　共通と同じ）
+　・1on1のお誘い
+　　「受ける」「断る」
+　　　└通知（DB）追加時にメールも送信する
+　・推し活
+　　「確認する」
+　　　└エビデンスに飛ぶ
+　　　└URL
+　・気になる
+　　「相手を見る」
+　　　└URL（詳細不要）
+　・運営公式
+　　「内容を見る」　ラベル：「参加中」「未参加」
+　　　　└「参加する」「脱退する」のトグル
+　　　　└通知（DB）追加時にメールも送信する
+        └　ウンエイサンガノDBニモツイカスル
+　　　　
