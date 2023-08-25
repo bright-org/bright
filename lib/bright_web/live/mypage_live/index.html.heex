@@ -89,8 +89,11 @@
   </div>
 </div>
 <.bright_modal
+  :if={@notification_detail}
   id="notification-detail-modal"
   style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+  on_cancel={JS.patch(~p"/mypage")}
+  show
 >
   <.live_component
     id="notification-detail"
