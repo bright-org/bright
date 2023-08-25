@@ -2,7 +2,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
   @moduledoc """
   Card List Components
   """
-  use BrightWeb, :html
+  use BrightWeb, :component
 
   @hour 60
   @day @hour * 24
