@@ -138,7 +138,7 @@ erDiagram
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
-    text detail	"詳細"
+    string url 	"ジェムのリンクと同じ"
     boolean congratulate　"祝福する"
   }
 
@@ -211,6 +211,7 @@ erDiagram
 さまざまな人たちとの交流
 　・スキルアップ
 　　「スキルを確認」「祝福する」
+        ｜　　　　　　　└　相手の祝福されたテーブルに追加
 　　　　└ジェムのリンクと同じ
 　・祝福された
 　　「内容を見る」（テーブルを作る　共通と同じ）
