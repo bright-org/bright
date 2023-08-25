@@ -11,9 +11,47 @@ defmodule Bright.Searches do
   alias Bright.SkillScores.SkillClassScore
   alias Bright.UserJobProfiles.UserJobProfile
 
-  def search_users(user_id, {job_params, job_range_params, skill_params}) do
+  @doc """
+  search user by user_job_profile and skill_class_score
+
+  job_params(Keyword List) ->
+    job_searching, wish_employed, wish_change_job, wish_side_job, wish_freelance,
+    office_work, office_pref, office_working_hours, office_work_holidays,
+    remote_work, remote_working_hours, remote_work_holidays
+
+  job_range_params(Map) ->
+    pj_start, pj_end -> availability_date
+    desired_income -> desired_income
+
+  skills(List) ->
+    skill_panel, class, level
+
+  ## Examples
+
+    iex> search_users_by_job_profile_and_skill_score(
+      {
+        [
+          {job_searching: true},
+          {wish_side_job: true},
+          {remote_work: true}
+        ],
+        %{pj_start: "2023-08-25"},
+        [
+          %{skill_panel: "skill_panel_1_id", class: 1, level: :normal},
+          %{skill_panel: "skill_panel_2_id"}
+        ]
+      },
+      ["exlucede_user_id"]
+    )
+    [%User{}]
+
+  """
+  def search_users_by_job_profile_and_skill_score(
+        {job_params, job_range_params, skill_params},
+        exclude_user_ids \\ []
+      ) do
     user_ids =
-      skill_score_query(user_id, job_params, job_range_params)
+      skill_score_query(exclude_user_ids, job_params, job_range_params)
       |> skill_query(skill_params)
       |> Repo.all()
       |> filter_skill_class_and_level(skill_params)
@@ -58,13 +96,13 @@ defmodule Bright.Searches do
     )
   end
 
-  defp job_profile_query(user_id, job, job_range) do
+  defp job_profile_query(exclude_user_ids, job, job_range) do
     from(
       job in UserJobProfile,
       where: ^job,
       select: job.user_id
     )
-    |> where([j], not (j.user_id == ^user_id))
+    |> where([j], j.user_id not in ^exclude_user_ids)
     |> availability_date_query(job_range)
     |> desired_income_query(job_range)
   end

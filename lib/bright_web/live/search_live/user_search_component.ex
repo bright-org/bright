@@ -307,7 +307,11 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       skills
     }
 
-    users = Searches.skill_search(socket.assigns.current_user.id, search_params)
+    users =
+      Searches.search_users_by_job_profile_and_skill_score(
+        search_params,
+        [socket.assigns.current_user.id]
+      )
 
     socket
     |> assign(:search_results, users)
