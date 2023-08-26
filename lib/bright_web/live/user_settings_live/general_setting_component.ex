@@ -1,5 +1,4 @@
 defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
-  alias Bright.UserProfiles
   use BrightWeb, :live_component
 
   alias Bright.Accounts
