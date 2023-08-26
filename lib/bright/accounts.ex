@@ -13,6 +13,7 @@ defmodule Bright.Accounts do
 
   alias Bright.Accounts.{User, UserToken, UserNotifier}
   alias Bright.Onboardings.UserOnboarding
+  alias Bright.Utils.GoogleCloud.Storage
 
   ## Database getters
 
@@ -667,17 +668,41 @@ defmodule Bright.Accounts do
 
   ## Examples
 
-      iex> update_user_with_user_profile(user, %{field: new_value})
+      # Without uploading file.
+      iex> update_user_with_user_profile(user, %{field: new_value}, nil)
+      {:ok, %User{}}
+
+      # With Uploading file.
+      iex> update_user_with_user_profile(user, %{field: new_value}, "/tmp/xxx.png")
       {:ok, %User{}}
 
       iex> update_user_with_user_profile(user, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user_with_user_profile(%User{} = user, attrs) do
+  def update_user_with_user_profile(%User{} = user, attrs, nil) do
     user
     |> User.user_with_profile_changeset(attrs)
     |> Repo.update()
+  end
+
+  def update_user_with_user_profile(
+        %User{} = user,
+        %{"user_profile" => %{"icon_file_path" => storage_path}} = attrs,
+        local_icon_file_path
+      ) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.user_with_profile_changeset(user, attrs))
+    |> Ecto.Multi.run(:upload_gcs, fn _repo, %{user: _user} ->
+      :ok = Storage.upload!(local_icon_file_path, storage_path)
+
+      {:ok, :uploaded}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """

@@ -649,4 +649,15 @@ defmodule BrightWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  def upload_error_to_string(:too_large), do: translate_error({"The file is too large", []})
+
+  def upload_error_to_string(:not_accepted),
+    do: translate_error({"You have selected an unacceptable file type", []})
+
+  def upload_error_to_string(:external_client_failure),
+    do: translate_error({"Something went terribly wrong", []})
+
+  def upload_error_to_string(:too_many_files),
+    do: translate_error({"Too many files are uploaded", []})
 end

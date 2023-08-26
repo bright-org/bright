@@ -8,6 +8,8 @@ defmodule Bright.UserProfiles do
 
   alias Bright.UserProfiles.UserProfile
   alias Bright.Accounts.User
+  alias Bright.UserProfiles.UserProfile
+  alias Bright.Utils.GoogleCloud.Storage
 
   @doc """
   Returns the list of user_profiles.
@@ -137,5 +139,36 @@ defmodule Bright.UserProfiles do
   """
   def change_user_profile(%UserProfile{} = user_profile, attrs \\ %{}) do
     UserProfile.changeset(user_profile, attrs)
+  end
+
+  @doc """
+  Return url for user_profile icon.
+
+  ## Examples
+
+      iex> icon_url(nil)
+      "/images/avatar.png"
+
+      iex> icon_url(icon_file_path)
+      "https://storage.googleapis.com/bucket_name/xxx.png"
+  """
+  def icon_url(nil) do
+    "/images/avatar.png"
+  end
+
+  def icon_url(icon_file_path) do
+    Storage.public_url(icon_file_path)
+  end
+
+  @doc """
+  Build icon_file_path by file_name.
+
+  ## Examples
+
+      iex> build_icon_path("uploaded_file.png")
+      "/users/profile_icon_xxxxx.png"
+  """
+  def build_icon_path(file_name) do
+    "users/profile_icon_#{Ecto.UUID.generate()}" <> Path.extname(file_name)
   end
 end

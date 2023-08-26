@@ -6,7 +6,7 @@
       user_name={@display_user.name}
       title={@display_user.user_profile.title}
       detail={@display_user.user_profile.detail}
-      icon_file_path={@display_user.user_profile.icon_file_path}
+      icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
       display_sns
       twitter_url={@display_user.user_profile.twitter_url}
       github_url={@display_user.user_profile.github_url}

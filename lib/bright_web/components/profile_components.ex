@@ -54,13 +54,16 @@ defmodule BrightWeb.ProfileComponents do
 
     assigns =
       assigns
-      |> assign(:icon_style, "background-image: url('#{icon_file_path}');")
+      |> assign(
+        :icon_style,
+        "background-repeat: no-repeat; background-image: url('#{icon_file_path}');"
+      )
       |> assign(:user_name, user_name)
       |> assign(:title, title)
 
     ~H"""
     <div class="flex">
-      <div class="bg-test bg-contain h-20 w-20 mr-5" style={@icon_style}></div>
+      <img class="bg-contain inline-block h-20 w-20 mr-5 rounded-full" src={@icon_file_path} />
       <div class="flex-1">
         <div class="flex justify-between pb-2 items-end">
           <div class="text-2xl font-bold"><%= @user_name %></div>
