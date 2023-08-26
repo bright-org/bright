@@ -118,7 +118,10 @@ defmodule Bright.NotificationsTest do
     test "delete_notification/1 deletes the notification" do
       notification = insert(:notification)
       assert {:ok, %Notification{}} = Notifications.delete_notification(notification)
-      assert_raise Ecto.NoResultsError, fn -> Notifications.get_notification!("test", notification.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Notifications.get_notification!("test", notification.id)
+      end
     end
 
     test "change_notification/1 returns a notification changeset" do
