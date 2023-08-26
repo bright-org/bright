@@ -134,16 +134,14 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
   defp handle_uploaded_entries(socket, user_params, {[_ | _] = entries, []}) do
     entry = List.first(entries)
 
-    if entry.done? do
-      consume_uploaded_entry(socket, entry, fn %{path: path} ->
-        {:ok,
-         update_user_with_user_profile(
-           socket,
-           merge_icon_file_path(user_params, entry),
-           path
-         )}
-      end)
-    end
+    consume_uploaded_entry(socket, entry, fn %{path: path} ->
+      {:ok,
+       update_user_with_user_profile(
+         socket,
+         merge_icon_file_path(user_params, entry),
+         path
+       )}
+    end)
   end
 
   # NOTE: ファイルアップロードなし
