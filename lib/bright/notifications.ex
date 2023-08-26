@@ -30,14 +30,17 @@ defmodule Bright.Notifications do
 
   ## Examples
 
-      iex> get_notification!(123)
-      %Notification{}
+      iex> get_notification!("operation", 123)
+      %{}
 
       iex> get_notification!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_notification!(id),
+  def get_notification!("operation", id),
+    do: Repo.get!(NotificationOperation, id)
+
+  def get_notification!(_type, id),
     do: Repo.get!(Notification, id) |> Repo.preload([:from_user, :to_user])
 
   @doc """
