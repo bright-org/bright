@@ -466,11 +466,6 @@ defmodule Bright.SkillScores do
      ]
   """
   def get_skill_gem(user_id, skill_panel_id, class) do
-
-    IO.inspect(user_id)
-    IO.inspect(skill_panel_id)
-    IO.inspect(class)
-
     from(skill_unit_score in SkillUnitScore,
       join: skill_unit in assoc(skill_unit_score, :skill_unit),
       join: skill_classes in assoc(skill_unit, :skill_classes),

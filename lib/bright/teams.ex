@@ -8,6 +8,9 @@ defmodule Bright.Teams do
 
   alias Bright.Teams.Team
   alias Bright.Accounts.UserNotifier
+  alias Bright.SkillPanels.SkillPanel
+  alias Bright.SkillPanels.SkillClass
+  alias Bright.SkillScores.SkillClassScore
 
   # 招待メール関連定数
   @hash_algorithm :sha256
@@ -196,6 +199,15 @@ defmodule Bright.Teams do
     |> Repo.update()
   end
 
+  def update_team_member_users_is_star(
+        %TeamMemberUsers{} = team_member_users,
+        attrs
+      ) do
+    team_member_users
+    |> TeamMemberUsers.is_star_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a team_member_users.
 
@@ -244,7 +256,7 @@ defmodule Bright.Teams do
   def list_joined_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
     from(tmbu in TeamMemberUsers,
       where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at),
-      order_by: [desc: tmbu.is_primary, desc: tmbu.updated_at]
+      order_by: [desc: tmbu.is_star, desc: tmbu.updated_at]
     )
     |> preload(:team)
     |> Repo.paginate(page_param)
@@ -267,14 +279,69 @@ defmodule Bright.Teams do
   自分自身も含めたい場合用
   Scrivenerのページングに対応
   """
-  def list_jined_users_and_profiles_by_team_id(
+  def list_joined_users_and_profiles_by_team_id(
         team_id,
         page_param \\ %{page: 1, page_size: 1}
       ) do
     from(tmu in TeamMemberUsers,
-      where: tmu.team_id == ^team_id
+      where: tmu.team_id == ^team_id,
+      order_by: [
+        desc: tmu.is_admin
+      ]
     )
     |> preload(user: :user_profile)
+    |> Repo.paginate(page_param)
+  end
+
+  def list_skill_scores_by_team_id(
+        team_id,
+        skill_panel_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    team_member_users_query =
+      from(
+        tmu in TeamMemberUsers,
+        where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+        select: tmu.user_id
+      )
+
+    from(
+      scs in SkillClassScore,
+      join: sc in assoc(scs, :skill_class),
+      on: scs.skill_class_id == sc.id,
+      where:
+        sc.skill_panel_id == ^skill_panel_id and scs.user_id in subquery(team_member_users_query)
+    )
+    |> preload(:skill_class)
+    |> Repo.paginate(page_param)
+  end
+
+  def list_joined_users_skill_card_by_team_id(
+        team_id,
+        skill_panel_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    # 要らなかったら削除
+    IO.inpect(team_id)
+
+    from(tmu in TeamMemberUsers,
+      join: u in assoc(tmu, :user),
+      on: tmu.user_id == u.id,
+      join: up in assoc(u, :user_profile),
+      on: up.user_id == u.id,
+      join: usp in assoc(u, :user_skill_panels),
+      on: usp.user_id == u.id,
+      join: sp in assoc(usp, :skill_panel),
+      on: sp.id == usp.skill_panel_id,
+      join: sc in assoc(sp, :skill_classes),
+      on: sc.skill_panel_id == sp.id,
+      join: scs in assoc(sc, :skill_class_scores),
+      on: scs.user_id == u.id and scs.skill_class_id == sc.id,
+      where: tmu.team_id == ^team_id and sp.skill_panel_id == ^skill_panel_id
+    )
+    |> preload(:user)
+    |> preload(user: :user_profile)
+    |> preload(user: [user_skill_panels: [skill_panel: [skill_classes: :skill_class_scores]]])
     |> Repo.paginate(page_param)
   end
 
@@ -282,7 +349,7 @@ defmodule Bright.Teams do
   チームメンバーの一覧取得
   自分自身を除外したい場合用
   """
-  def list_jined_users_and_profiles_by_team_id_without_myself(
+  def list_joined_users_and_profiles_by_team_id_without_myself(
         user_id,
         team_id,
         page_param \\ %{page: 1, page_size: 1}
@@ -309,7 +376,7 @@ defmodule Bright.Teams do
       user_id: admin_user.id,
       is_admin: true,
       # プライマリチーム判定
-      is_primary: is_primary(admin_user.id),
+      is_star: is_star(admin_user.id),
       # 管理者本人は即時承認状態
       invitation_confirmed_at: TeamMemberUsers.now_for_confirmed_at()
     }
@@ -324,7 +391,7 @@ defmodule Bright.Teams do
           user_id: member_user.id,
           is_admin: false,
           # メンバーのプライマリ判定は承認後に実施する為一旦falseとする
-          is_primary: false,
+          is_star: false,
           invitation_token: hashed_token,
           invitation_sent_to: member_user.email,
           base64_encoded_token: base64_encoded_token
@@ -358,7 +425,7 @@ defmodule Bright.Teams do
 
   最初に所属したチームは自動的にプライマリチームになる
   """
-  def is_primary(user_id) do
+  def is_star(user_id) do
     page = list_joined_teams_by_user_id(user_id)
 
     if page.total_entries == 0 do
@@ -436,5 +503,10 @@ defmodule Bright.Teams do
       update_team_member_users_invitation_confirmed_at(team_member_user, %{
         invitation_confirmed_at: now
       })
+  end
+
+  def toggle_is_star(team_member_user) do
+    {:ok, team_member_user} =
+      update_team_member_users_is_star(team_member_user, %{is_star: !team_member_user.is_star})
   end
 end

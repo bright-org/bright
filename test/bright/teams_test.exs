@@ -29,7 +29,7 @@ defmodule Bright.TeamsTest do
       # 管理者
       assert admin_result.is_admin == true
       # 管理者の最初のチームは即時プライマリチーム
-      assert admin_result.is_primary == true
+      assert admin_result.is_star == true
       # 管理者には招待メールは送信しない
       assert admin_result.invitation_sent_to == nil
       # 管理者本人は即時承認状態
@@ -41,7 +41,7 @@ defmodule Bright.TeamsTest do
       # 非管理者
       assert member_result.is_admin == false
       # ジョイン承認するまではかならず非プライマリチーム
-      assert member_result.is_primary == false
+      assert member_result.is_star == false
 
       # 招待メールの送信先は対象ユーザーのプライマリメールアドレス
       assert member_result.invitation_sent_to == member2.email
@@ -86,7 +86,7 @@ defmodule Bright.TeamsTest do
       # 管理者
       assert admin_result2.is_admin == true
       # ２つ目以降のチームは非プライマリチーム
-      assert admin_result2.is_primary == false
+      assert admin_result2.is_star == false
     end
   end
 

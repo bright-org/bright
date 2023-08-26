@@ -72,7 +72,6 @@ defmodule Bright.SkillPanels do
         career_field_name,
         page \\ 1
       ) do
-
     career_field_query =
       from(
         j in Job,
@@ -83,12 +82,12 @@ defmodule Bright.SkillPanels do
         distinct: true
       )
 
-      team_member_users_query =
-        from(
-          tmu in TeamMemberUsers,
-          where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
-          select: tmu.user_id,
-        )
+    team_member_users_query =
+      from(
+        tmu in TeamMemberUsers,
+        where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+        select: tmu.user_id
+      )
 
     from(p in subquery(career_field_query),
       join: u in assoc(p, :user_skill_panels),
@@ -108,13 +107,12 @@ defmodule Bright.SkillPanels do
         team_id,
         page \\ 1
       ) do
-
-      team_member_users_query =
-        from(
-          tmu in TeamMemberUsers,
-          where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
-          select: tmu.user_id,
-        )
+    team_member_users_query =
+      from(
+        tmu in TeamMemberUsers,
+        where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+        select: tmu.user_id
+      )
 
     from(u in UserSkillPanel,
       where: u.user_id in subquery(team_member_users_query),
@@ -274,8 +272,7 @@ defmodule Bright.SkillPanels do
   def get_all_skill_class_by_skill_panel_id(skill_panel_id) do
     query =
       from sc in SkillClass,
-        where:
-          sc.skill_panel_id == ^skill_panel_id,
+        where: sc.skill_panel_id == ^skill_panel_id,
         order_by: [asc: sc.class],
         preload: :skill_units
 

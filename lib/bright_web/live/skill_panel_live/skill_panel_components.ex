@@ -2,7 +2,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use Phoenix.Component
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
+  import BrightWeb.MegaMenuComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
+
+  alias Bright.Accounts.User
 
   # スコア（〇 △ー） 各スタイルと色の定義
   @score_mark %{
@@ -47,39 +50,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <.skill_panel_menu
+    <.mega_menu_button
       id="skill_panel_menu"
-      display_user={@display_user}
-      me={@me}
-      anonymous={@anonymous}
-      root={@root}
-    />
-    <% # TODO: α版後にifを除去して表示 %>
-    <.skill_set_menu :if={false} />
-    """
-  end
-
-  def skill_panel_menu(assigns) do
-    # TODO: 使えるならばMegaMenuComponentsに差し替え
-    ~H"""
-    <button
-      id={"dropdownOffsetButton-#{@id}"}
-      data-dropdown-toggle={"dropdownOffset-#{@id}"}
-      data-dropdown-offset-skidding="256"
-      data-dropdown-placement="bottom"
-      class="text-white bg-brightGreen-300 rounded pl-3 flex items-center font-bold h-[35px]"
-      type="button"
-    >
-      <span class="min-w-[6em]">スキル</span>
-      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
-        expand_more
-      </span>
-    </button>
-
-    <!-- スキルパネル menu -->
-    <div
-      id={"dropdownOffset-#{@id}"}
-      class="z-10 hidden bg-white rounded-sm shadow"
+      label="スキル"
+      dropdown_offset_skidding="307"
     >
       <.live_component
         id="skill_card"
@@ -89,7 +63,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         anonymous={@anonymous}
         root={@root}
       />
-    </div>
+    </.mega_menu_button>
+
+    <% # TODO: α版後にifを除去して表示 %>
+    <.skill_set_menu :if={false} />
     """
   end
 
@@ -163,32 +140,19 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def related_user_menu(assigns) do
     ~H"""
-      <button
-        id="dropdownDefaultButton-related-user"
-        data-dropdown-toggle="dropdown-related-user"
-        data-dropdown-offset-skidding="302"
-        data-dropdown-placement="bottom"
-        class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
-        type="button"
-      >
-        <span class="min-w-[6em]">個人</span>
-        <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
-          expand_more
-        </span>
-      </button>
-      <!-- 個人 menu -->
-      <div
-        id="dropdown-related-user"
-        class="z-10 hidden bg-whiterounded-lg shadow w-[750px]"
-      >
-        <.live_component
-          id="related-user-card-menu"
-          module={BrightWeb.CardLive.RelatedUserCardComponent}
-          current_user={@current_user}
-          display_menu={false}
-          purpose="menu"
-        />
-      </div>
+    <.mega_menu_button
+      id="related_user_card_menu"
+      label="個人"
+      dropdown_offset_skidding="307"
+    >
+      <.live_component
+        id="related_user"
+        module={BrightWeb.CardLive.RelatedUserCardComponent}
+        current_user={@current_user}
+        display_menu={false}
+        purpose="menu"
+      />
+    </.mega_menu_button>
     """
   end
 
@@ -256,6 +220,74 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           </button>
         </.link>
       </div>
+    """
+  end
+
+  attr :user, Bright.Accounts.User
+  attr :user_skill_class_score, :map
+  attr :select_skill_class, Bright.SkillPanels.SkillClass
+  attr :skill_class_tab_click_target, :any, default: nil
+
+  def class_tab(%{user_skill_class_score: user_skill_class_score} = assigns) do
+    # チーム表示用以下の都合で専用の関数を用意
+    # userを起点にpre_loadしていった場合、skill_score.skill_classの構造になる為pair_skill_class_score関数に対応できない
+    # チームスキル分析でタブをタップした場合の挙動をハンドラで実装したい
+
+    ~H"""
+    <ul class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full">
+      <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- user_skill_class_score do %>
+        <%= if skill_class_score do %>
+          <% current = @select_skill_class.class == skill_class.class %>
+          <%= if @select_skill_class.class == skill_class.class do %>
+          <li
+          class={"bg-white text-base w-full"}
+          phx-click="skill_class_tab_click"
+          phx-target={@skill_class_tab_click_target}
+          phx-value-user_id={@user.id}
+          phx-value-skill_class_id={skill_class.id}
+          >
+          <span
+            id={"class_tab_#{skill_class.class}"}
+            class="inline-block p-4 pt-3"
+            aria-current={current && "page"}>
+          クラス<%= skill_class.class %>
+          <span class="text-xl ml-4">
+          <%= floor skill_class_score.percentage %></span>％
+          </span>
+          </li>
+
+          <% else %>
+
+          <li
+          class={"w-full"}
+          phx-click="skill_class_tab_click"
+          phx-target={@skill_class_tab_click_target}
+          phx-value-user_id={@user.id}
+          phx-value-skill_class_id={skill_class.id}
+          >
+          <span
+            id={"class_tab_#{skill_class.class}"}
+            class="inline-block p-4 pt-3"
+          >
+          クラス<%= skill_class.class %>
+          <span class="text-xl ml-4">
+          <%= floor skill_class_score.percentage %></span>％
+          </span>
+          </li>
+
+          <% end %>
+        <% else %>
+          <li class="w-full">
+            <span
+              class="select-none inline-block p-4 pt-3"
+            >
+              クラス<%= skill_class.class %>
+              <span class="text-xl ml-4">0</span>％
+            </span>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
     """
   end
 

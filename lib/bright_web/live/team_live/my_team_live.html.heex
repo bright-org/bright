@@ -3,16 +3,23 @@
   <!-- スキルと対象の切り替え -->
   <div class="flex gap-x-4">
     <p class="leading-tight">対象スキルの<br />切り替え</p>
-    <!-- スキルパネル menu --> 
+    <!-- スキルパネル menu -->
     <.mega_menu_button
       id="mega_menu_skill_panel"
       label="スキル"
+      label="スキル"
       dropdown_offset_skidding="307"
-      display_user={@current_user}
-      display_team={@display_team}
-      card_component={BrightWeb.CardLive.SkillCardComponent}
-      over_ride_on_card_row_click_target={:true}
-    />
+    >
+      <.live_component
+        id="skill_card"
+        module={BrightWeb.CardLive.SkillCardComponent}
+        display_user={@current_user}
+        me={true}
+        anonymous={false}
+        root={"graphs"}
+        over_ride_on_card_row_click_target={:true}
+      />
+    </.mega_menu_button>
 
     <!-- TODO αリリースではスキルセットは対応しない -->
     <!-- スキルセット menu -->
@@ -20,22 +27,27 @@
     <p class="leading-tight ml-4">対象者の<br />切り替え</p>
     <!-- チーム menu -->
     <.mega_menu_button
-      id="mega_menu_team" 
+      id="mega_menu_team"
       label="チーム"
       display_user={@current_user}
       dropdown_offset_skidding="307"
-      card_component={BrightWeb.CardLive.RelatedTeamCardComponent}
-      over_ride_on_card_row_click_target={:true}
-    />
+    >
+      <.live_component
+        id="team_card"
+        module={BrightWeb.CardLive.RelatedTeamCardComponent}
+        display_user={@current_user}
+        over_ride_on_card_row_click_target={:true}
+      />
+    </.mega_menu_button>
 
-      <button
-       data-modal-target="defaultModal"
-       data-modal-toggle="defaultModal"
-       class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold ml-auto"
-       phx-click={show_modal("create-team-modal")}
-      >
-        チームを作る
-      </button>
+    <button
+      data-modal-target="defaultModal"
+      data-modal-toggle="defaultModal"
+      class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold ml-auto"
+      phx-click={show_modal("create-team-modal")}
+    >
+      チームを作る
+    </button>
   </div>
 
   <!-- プロフィール -->
@@ -70,31 +82,25 @@
   >
   <!-- チームタイトルー -->
   <!-- TODO チームがない場合の表示に対応  -->
-  <.team_skill_panels
+  <.team_header
     team={@display_team}
     team_type={:general_team}
+    current_users_team_member={@current_users_team_member}
   />
 
   <!-- チームメンバー -->
   <div class="flex gap-8 pt-4 flex-wrap">
-    <%= for user <- @member_users do %>
-      <.user_skill_card user={user} id={"skill_gem_#{user.id}"} />
+    <%= for display_skill_card <- @display_skill_cards do %>
+      <.live_component
+        module={BrightWeb.TeamMemberSkillCardComponent}
+        id={"skill_card_#{display_skill_card.user.id}"}
+        display_skill_panel={@display_skill_panel}
+        display_skill_card={display_skill_card}
+        display_skill_classes={@display_skill_classes}
+        select_skill_class={display_skill_card.select_skill_class}
+        />  
     <% end %>
   </div>
-</div>
-
-<!-- <.class_tab skill_classes={@display_skill_classes} skill_class={@display_skill_class} path="" query="" /> -->
-<div class="w-[700px] pl-28">
-        <.live_component
-          id={"skill-gem#{@current_user.id}"}
-          module={BrightWeb.ChartLive.SkillGemComponent}
-          display_user={@current_user}
-          skill_panel={@display_skill_panel}
-          class={@display_skill_class.class}
-          select_label={"now"}
-          me={:false}
-          anonymous={:false}
-        />
 </div>
 
 <!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->

@@ -48,7 +48,7 @@ defmodule BrightWeb.MyTeamLive do
   end
 
   defp list_display_skill_classes(skill_panel) do
-    nil
+    []
   end
 
   defp get_display_team(%{"team_id" => team_id} = params, user_id) do
@@ -98,31 +98,88 @@ defmodule BrightWeb.MyTeamLive do
     |> assign(:page_sub_title, nil)
   end
 
-  defp assign_display_team_and_member_users(socket, %Team{} = display_team) do
-    page =
-      display_team.id
-      |> Teams.list_jined_users_and_skill_unit_scores_by_team_id()
-
-    member_users =
-      page.entries
-      |> Enum.map(fn team_member_user ->
-        team_member_user.user
-      end)
-
+  defp assign_display_team(socket, display_team) do
     socket
     |> assign(:display_team, display_team)
-    |> assign(:member_users, member_users)
   end
 
-  defp assign_display_team_and_member_users(socket, nil) do
+  defp assign_display_skill_cards(
+         socket,
+         team_member_users,
+         display_skill_classes,
+         nil,
+         member_skill_classes
+       ) do
     socket
-    |> assign(:display_team, nil)
-    |> assign(:member_users, [])
+    |> assign(:display_skill_cards, [])
+    |> assign(:select_skill_class, nil)
+  end
+
+  defp assign_display_skill_cards(
+         socket,
+         team_member_users,
+         display_skill_classes,
+         first_skill_class,
+         member_skill_classes
+       ) do
+    display_member_for_skill_card =
+      team_member_users
+      |> Enum.map(fn member ->
+        # ユーザー毎に該当ユーザーのスキルクラススコアが取得出来ているか検索
+        filterd_member_skill_classes =
+          member_skill_classes
+          |> Enum.filter(fn member_skill_class ->
+            member_skill_class.user_id == member.user.id
+          end)
+
+        %{user: member.user}
+        |> add_user_skill_class_score(display_skill_classes, filterd_member_skill_classes)
+        |> add_select_skill_class(first_skill_class)
+      end)
+
+    [first_skill_class | _rest] = display_member_for_skill_card
+
+    socket
+    |> assign(:display_skill_cards, display_member_for_skill_card)
+    |> assign(:select_skill_class, first_skill_class)
+  end
+
+  defp add_select_skill_class(map, select_skill_class) do
+    map
+    |> Map.put(:select_skill_class, select_skill_class)
+  end
+
+  defp add_user_skill_class_score(map, display_skill_classes, filterd_member_skill_classes) do
+    # display_skill_classesに対応する該当ユーザーのスキルクラススコアが存在するかチェック
+    # 存在しない場合はnilを設定する
+
+    user_skill_class_score =
+      display_skill_classes
+      |> Enum.map(fn display_skill_class ->
+        skill_class_score =
+          filterd_member_skill_classes
+          |> Enum.find(fn filterd_member_skill_class ->
+            filterd_member_skill_class.skill_class_id == display_skill_class.id
+          end)
+
+        %{
+          skill_class: display_skill_class,
+          skill_class_score: skill_class_score
+        }
+      end)
+
+    map
+    |> Map.put(:user_skill_class_score, user_skill_class_score)
   end
 
   defp assign_display_skill_panel(socket, display_skill_panel) do
     socket
     |> assign(:display_skill_panel, display_skill_panel)
+  end
+
+  defp assign_display_skill_class(socket, []) do
+    socket
+    |> assign(:display_skill_classes, [])
   end
 
   defp assign_display_skill_class(socket, display_skill_classes) do
@@ -168,22 +225,111 @@ defmodule BrightWeb.MyTeamLive do
     socket
   end
 
+  defp list_skill_classes(nil, _display_skill_panel) do
+    []
+  end
+
+  defp list_skill_classes(nil, nil) do
+    []
+  end
+
+  defp list_skill_classes(%Team{} = display_team, display_skill_panel) do
+    # TODO 　チームメンバーのページング処理現状は上限が30名程度を想定して最大999件固定で取得
+    %Scrivener.Page{
+      page_number: _page_number,
+      page_size: _page_size,
+      total_entries: _total_entries,
+      total_pages: _total_pages,
+      entries: skill_classes
+    } =
+      Teams.list_skill_scores_by_team_id(
+        display_team.id,
+        display_skill_panel.id,
+        %{page: 1, page_size: 999}
+      )
+
+    skill_classes
+  end
+
+  defp list_display_skill_classes(nil, _display_skill_classes) do
+    []
+  end
+
+  defp get_display_team_members(%Team{} = team) do
+    %Scrivener.Page{
+      page_number: _page_number,
+      page_size: _page_size,
+      total_entries: _total_entries,
+      total_pages: _total_pages,
+      entries: member_users
+    } = Teams.list_joined_users_and_profiles_by_team_id(team.id, %{page: 1, page_size: 999})
+
+    member_users
+  end
+
+  defp get_display_team_members(nil) do
+    []
+  end
+
+  defp get_current_users_team_member(current_user, display_team_members) do
+    display_team_members
+    |> Enum.find(fn team_member ->
+      team_member.user_id == current_user.id
+    end)
+  end
+
+  defp assign_current_users_team_member(socket, current_users_team_member) do
+    socket
+    |> assign(:current_users_team_member, current_users_team_member)
+  end
+
+  defp get_first_skill_class([]) do
+    nil
+  end
+
+  defp get_first_skill_class(display_skill_classes) do
+    sorted_skill_classes =
+      display_skill_classes
+      |> Enum.sort(fn skill_class, n ->
+        skill_class.class <= n.class
+      end)
+
+    [first_skill_class | _rest] = sorted_skill_classes
+    first_skill_class
+  end
+
   def mount(params, _session, socket) do
     # TODO 所属していないチームのチームIDが指定されている場合は404エラー
     # スキルパネルIDはゆるして、ジェム非表示でよいとおもう
 
     # パラメータ指定がある場合それぞれの対象データを取得、ない場合はnil
     display_team = get_display_team(params, socket.assigns.current_user.id)
+    # TODO チームスキルカードのページング処理
+    display_team_members = get_display_team_members(display_team)
+
+    current_users_team_member =
+      get_current_users_team_member(socket.assigns.current_user, display_team_members)
+
     display_skill_panel = get_display_skill_panel(params, display_team)
     display_skill_classes = list_display_skill_classes(display_skill_panel)
+    selected_skill_class = get_first_skill_class(display_skill_classes)
+    member_skill_classes = list_skill_classes(display_team, display_skill_panel)
 
     # スキルとチームの取得結果に応じて各種assign
     socket =
       socket
       |> assign_page_title(display_skill_panel)
-      |> assign_display_team_and_member_users(display_team)
       |> assign_display_skill_panel(display_skill_panel)
       |> assign_display_skill_class(display_skill_classes)
+      |> assign_display_team(display_team)
+      |> assign_current_users_team_member(current_users_team_member)
+      # ユーザー事に表示するスキルカードのmap作成とassign
+      |> assign_display_skill_cards(
+        display_team_members,
+        display_skill_classes,
+        selected_skill_class,
+        member_skill_classes
+      )
       # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
       |> assign_push_redirect(params, display_team, display_skill_panel)
 
@@ -208,17 +354,24 @@ defmodule BrightWeb.MyTeamLive do
   end
 
   def handle_event("on_skill_pannel_click", %{"skill_panel_id" => skill_panel_id}, socket) do
-    IO.puts("### handle_event on_skill_pannel_click !!!!!!!!!!!!!!!!!!!!!!!")
 
     display_skill_panel = SkillPanels.get_skill_panel!(skill_panel_id)
 
     socket =
       socket
       |> assign(:display_skill_panel, display_skill_panel)
-      # |> assign(:page_title, "チームスキル分析 / #{display_skill_panel.name}")
       |> push_redirect(
         to: "/teams/#{socket.assigns.display_team.id}/skill_panels/#{skill_panel_id}"
       )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("click_star_button", _params, socket) do
+    {:ok, team_member_user} = Teams.toggle_is_star(socket.assigns.current_users_team_member)
+    socket =
+      socket
+      |> assign(:current_users_team_member, team_member_user)
 
     {:noreply, socket}
   end
