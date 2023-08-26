@@ -32,7 +32,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
     <.link patch={~p"/mypage/notification_detail/contact/#{@notification.id}"} >
       <li class="py-1 text-left flex items-center text-base">
         <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-          <%= @notification.icon_type %>
+          person
         </span>
         <%= @notification.message %>
         <.elapsed_time inserted_at={@notification.inserted_at} />
