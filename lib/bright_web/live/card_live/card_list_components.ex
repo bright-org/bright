@@ -18,7 +18,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
   attr :type, :string,
     values: [
-      "contact",
+      "operation",
       "skill_up",
       "1on1_invitation",
       "promotion",
@@ -27,9 +27,9 @@ defmodule BrightWeb.CardLive.CardListComponents do
       "official_team"
     ]
 
-  def card_row(%{type: "contact"} = assigns) do
+  def card_row(%{type: "operation"} = assigns) do
     ~H"""
-    <.link patch={~p"/mypage/notification_detail/contact/#{@notification.id}"} >
+    <.link patch={~p"/mypage/notification_detail/operation/#{@notification.id}"} >
       <li class="py-1 text-left flex items-center text-base">
         <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
           person
