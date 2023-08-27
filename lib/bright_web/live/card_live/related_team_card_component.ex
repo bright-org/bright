@@ -20,9 +20,9 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   alias Bright.Teams
 
   @tabs [
-    {"joined_teams", "所属チーム"}
-    # TODO αリリース対象外 {"hr_teams", "人材チーム"},
-    # TODO αリリース対象外 {"suppored_from_teams", "人材支援されているチーム(仮)"}
+    {"joined_teams", "所属チーム"},
+    {"hr_teams", "人材チーム"},
+    {"suppored_from_teams", "人材支援されているチーム(仮)"}
   ]
 
   @menu_items []
@@ -57,7 +57,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
           <ul class="flex gap-y-2.5 flex-col">
             <li
             class="flex items-center text-base p-1 rounded">
-              <p class="w-full align-middle">所属しているチームはありません。</p>
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">所属しているチームはありません</div>
             </li>
           </ul>
         <% end %>
