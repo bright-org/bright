@@ -8,10 +8,21 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   alias Bright.HistoricalSkillUnitScore
   alias BrightWeb.PathHelper
 
+  # SkillGemComponentの引数
+  # id: 一意になるid
+  # display_user: 表示するユーザー
+  # skill_panel: 表示するキルパネル
+  # class: 表示するクラス(1〜3)
+  # select_label 表示する時間　"now" or 例 "2023.10"
+  # me: 自分自身の場合はtrue
+  # anonymous: 匿名はfalse
+  # size: base: 成長グラフ md:チーム分析 sm:マイページ
+  # display_link:　falseでスキルジェムのリンクを非表示にする
+
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="w-[450px] mx-auto my-12">
+    <div class="w-[450px] mx-auto">
       <.skill_gem
         data={@skill_gem_data}
         id={@id}
