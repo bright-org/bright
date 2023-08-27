@@ -24,6 +24,11 @@ defmodule Bright.Application do
       # {Bright.Worker, arg}
     ]
 
+    children =
+      if Application.get_env(:goth, :disabled),
+        do: children,
+        else: children ++ [{Goth, name: Bright.Goth}]
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Bright.Supervisor]

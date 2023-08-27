@@ -133,3 +133,15 @@ msgstr ""
 
 msgid "should start with https://github.com/"
 msgstr ""
+
+msgid "The file is too large"
+msgstr ""
+
+msgid "You have selected an unacceptable file type"
+msgstr ""
+
+msgid "Something went terribly wrong"
+msgstr ""
+
+msgid "Too many files are uploaded"
+msgstr ""

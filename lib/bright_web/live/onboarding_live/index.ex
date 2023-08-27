@@ -42,7 +42,7 @@ defmodule BrightWeb.OnboardingLive.Index do
 
     socket
     |> put_flash(:info, "オンボーディングをスキップしました")
-    |> redirect(to: ~p"/mypage")
+    |> redirect(to: ~p"/teams")
     |> then(&{:noreply, &1})
   end
 

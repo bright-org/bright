@@ -359,7 +359,7 @@ erDiagram
 ## バッチ処理の手動実行メモ
 
 ```elixir
-Bright.Batches.UpdateSkillPanels(~D[2023-07-01])
+Bright.Batches.UpdateSkillPanels.call(~D[2023-07-01])
 ```
 
 - 公開データのlocked_dateと同じ値を指定した場合

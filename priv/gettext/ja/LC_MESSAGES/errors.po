@@ -115,3 +115,15 @@ msgstr "https://www.facebook.com/ から始めてください"
 
 msgid "should start with https://github.com/"
 msgstr "https://github.com/ から始めてください"
+
+msgid "The file is too large"
+msgstr "ファイルサイズが大きすぎます"
+
+msgid "You have selected an unacceptable file type"
+msgstr "アップロードできない拡張子です"
+
+msgid "Something went terribly wrong"
+msgstr "異常が発生しました"
+
+msgid "Too many files are uploaded"
+msgstr "アップロードするファイルが多すぎます"

@@ -71,7 +71,7 @@ defmodule BrightWeb.LayoutComponents do
         <.plan_upgrade_button  />
         <.contact_customer_success_button />
         <.search_for_skill_holders_button />
-        <.user_button icon_file_path={@profile.icon_file_path}/>
+        <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
         <.logout_button />
       </div>
     </div>

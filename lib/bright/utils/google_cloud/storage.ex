@@ -22,7 +22,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
       {:ok, %GoogleApi.Storage.V1.Model.Object{}} =
         GoogleApi.Storage.V1.Api.Objects.storage_objects_insert_iodata(
           get_connection!(),
-          get_bucket_id!(),
+          get_bucket_name!(),
           _upload_type = "multipart",
           %GoogleApi.Storage.V1.Model.Object{name: storage_path, contentType: content_type},
           File.read!(local_file_path)
@@ -52,7 +52,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
       {:ok, %Tesla.Env{}} =
         GoogleApi.Storage.V1.Api.Objects.storage_objects_delete(
           get_connection!(),
-          get_bucket_id!(),
+          get_bucket_name!(),
           storage_path
         )
 
@@ -69,13 +69,13 @@ defmodule Bright.Utils.GoogleCloud.Storage do
   ## Examples
 
       iex> Bright.Utils.GoogleCloud.Storage.public_url("phoenix.png")
-      "http://localhost:4443/<bucket_id>/phoenix.png"
+      "https://storage.googleapis.com/<get_bucket_name>/phoenix.png"
   """
   def public_url(path) do
     public_base_url =
       get_public_base_url() || Application.fetch_env!(:google_api_storage, :base_url)
 
-    Path.join([public_base_url, get_bucket_id!(), path])
+    Path.join([public_base_url, get_bucket_name!(), path])
   end
 
   defp file_path_to_content_type(file_path) do
@@ -90,24 +90,19 @@ defmodule Bright.Utils.GoogleCloud.Storage do
   defp get_connection! do
     case Application.get_env(:goth, :disabled) do
       true ->
-        # dev環境ではローカルにつなぐためgothを用いない。
+        # ローカル環境ではローカル環境の GCS に接続するため goth を用いない。
         GoogleApi.Storage.V1.Connection.new()
 
       _ ->
-        # NOTE: `Goth.Token.for_scope` is deprecated. クラウド接続タスク時に修正が必要です。
-        # see: https://github.com/peburrows/goth/blob/master/UPGRADE_GUIDE.md
-        # {:ok, token} = Goth.Token.for_scope("https://www.googleapis.com/auth/cloud-platform")
-        # GoogleApi.Storage.V1.Connection.new(token.token)
-        #
-        # 下記は仮コードです。上記対応時に削除。
-        GoogleApi.Storage.V1.Connection.new()
+        token = Goth.fetch!(Bright.Goth)
+        GoogleApi.Storage.V1.Connection.new(token.token)
     end
   end
 
-  @spec get_bucket_id!() :: binary()
-  defp get_bucket_id! do
+  @spec get_bucket_name!() :: binary()
+  defp get_bucket_name! do
     Application.fetch_env!(:bright, :google_api_storage)
-    |> Keyword.fetch!(:bucket_id)
+    |> Keyword.fetch!(:bucket_name)
   end
 
   defp get_public_base_url do

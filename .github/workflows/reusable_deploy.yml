@@ -12,6 +12,9 @@ on:
       image_name:
         type: string
         required: true
+      min_instances:
+        type: number
+        default: 0
       cloud_sql_instance:
         type: string
         required: true
@@ -33,9 +36,10 @@ jobs:
       - name: Cloud Build submit
         run: |
           gcloud builds submit \
-            --substitutions=_IMAGE_NAME=$IMAGE_NAME,_CLOUD_SQL_INSTANCE=$CLOUD_SQL_INSTANCE,_SERVICE_ACCOUNT=$SERVICE_ACCOUNT \
+            --substitutions=_IMAGE_NAME=$IMAGE_NAME,_MIN_INSTANCES=$MIN_INSTANCES,_CLOUD_SQL_INSTANCE=$CLOUD_SQL_INSTANCE,_SERVICE_ACCOUNT=$SERVICE_ACCOUNT \
             --async
         env:
           IMAGE_NAME: ${{ inputs.image_name }}
+          MIN_INSTANCES: ${{ inputs.min_instances }}
           CLOUD_SQL_INSTANCE: ${{ inputs.cloud_sql_instance }}
           SERVICE_ACCOUNT: ${{ inputs.cloud_run_service_account }}
