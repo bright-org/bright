@@ -403,4 +403,8 @@ defmodule BrightWeb.MyTeamLive do
         "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
     )
   end
+
+  def handle_params(_params, _path, socket) do
+    {:noreply, socket}
+  end
 end

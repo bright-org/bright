@@ -68,12 +68,12 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
             <li
             class="flex items-center text-base p-1 rounded">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">所属しているチームはありません</div>
-              <button
+              <a
                  href="/teams/new"
                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
                >
                  チームを作る
-               </button>
+               </a>
             </li>
           </ul>
         <% end %>

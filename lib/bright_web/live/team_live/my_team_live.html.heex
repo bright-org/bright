@@ -105,6 +105,7 @@
   <.bright_modal
     id="create-team-modal"
     show={if @live_action in [:new, :edit] do true else false end}
+    on_cancel={JS.patch(~p"/teams")}
   >
     <.live_component
       module={BrightWeb.TeamCreateLiveComponent}
