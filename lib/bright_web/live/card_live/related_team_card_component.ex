@@ -21,8 +21,8 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
   @tabs [
     {"joined_teams", "所属チーム"},
-    {"hr_teams", "人材チーム"},
-    {"suppored_from_teams", "人材支援されているチーム(仮)"}
+    {"hr_teams", "採用・育成チーム"},
+    {"supported_from_teams", "採用・育成支援先"}
   ]
 
   @menu_items []
@@ -53,7 +53,17 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         target={@myself}
       >
         <div class="pt-3 pb-1 px-6 h-[216px]">
-        <%= if @card.total_entries <= 0 do %>
+          <% # TODO ↓α版対応 %>
+          <ul :if={@card.selected_tab != "joined_teams"} class="flex gap-y-2.5 flex-col">
+            <li class="flex">
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+                βリリース（10月予定）で利用可能になります
+              </div>
+            </li>
+          </ul>
+          <% # TODO ↑α版対応 %>
+          <% # TODO ↓α版対応 @card.selected_tab == "joined_teams" && の条件を削除 %>
+        <%= if @card.selected_tab == "joined_teams" && @card.total_entries <= 0 do %>
           <ul class="flex gap-y-2.5 flex-col">
             <li
             class="flex items-center text-base p-1 rounded">
@@ -63,10 +73,10 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         <% end %>
         <%= if @card.total_entries > 0 do %>
           <ul class="flex gap-y-2.5 flex-col">
-            <%= for team <- @card.entries do %>
+            <%= for team_member_user <- @card.entries do %>
               <.team_small
-                id={team.team.id}
-                team={team.team}
+                id={team_member_user.team.id}
+                team_member_user={team_member_user}
                 team_type={:general_team}
                 low_on_click_target={assigns.low_on_click_target}
               />
@@ -120,7 +130,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     |> assign(:card, card)
   end
 
-  defp assign_card(socket, "suppored_from_teams") do
+  defp assign_card(socket, "supported_from_teams") do
     # TODO タブごとのteamをとってくる処理
 
     card = %{

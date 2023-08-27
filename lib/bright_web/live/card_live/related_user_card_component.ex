@@ -13,7 +13,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   alias BrightWeb.DisplayUserHelper
 
   @tabs [
-    # αリリース対象外 {"intriguing", "気になる人"},
+    {"intriguing", "気になる人"},
     {"team", "チーム"},
     {"candidate_for_employment", "採用候補者"}
   ]
@@ -68,7 +68,17 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           inner_selected_tab={@inner_selected_tab}
         />
         <div class="pt-3 pb-1 px-6 min-h-[192px]">
-          <ul :if={Enum.count(@user_profiles) == 0} class="flex gap-y-2.5 flex-col">
+          <% # TODO ↓α版対応 %>
+          <ul :if={@selected_tab == "intriguing"} class="flex gap-y-2.5 flex-col">
+            <li class="flex">
+              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+                βリリース（10月予定）で利用可能になります
+              </div>
+            </li>
+          </ul>
+          <% # TODO ↑α版対応 %>
+          <% # TODO ↓α版対応 @selected_tab == "joined_teams" && の条件を削除 %>
+          <ul :if={@selected_tab != "intriguing" && Enum.count(@user_profiles) == 0} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
               <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はいません
