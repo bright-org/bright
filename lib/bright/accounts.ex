@@ -270,6 +270,22 @@ defmodule Bright.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user password before submit.
+  It validates current password.
+
+  ## Examples
+
+      iex> change_user_password_before_submit(user, "xxx", %{})
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_password_before_submit(user, password, attrs \\ %{}) do
+    user
+    |> User.password_changeset(attrs, hash_password: false)
+    |> User.validate_current_password(password)
+  end
+
+  @doc """
   Updates the user password.
 
   ## Examples
