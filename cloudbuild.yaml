@@ -34,6 +34,7 @@ steps:
     entrypoint: gcloud
     args: ['run', 'deploy', 'bright',
            '--image=${_IMAGE_NAME}',
+           '--min-instances=${_MIN_INSTANCES}',
            '--execution-environment=gen2',
            '--set-secrets=DATABASE_USERNAME=bright-database-username:latest',
            '--set-secrets=DATABASE_PASSWORD=bright-database-password:latest',

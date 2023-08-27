@@ -117,4 +117,8 @@ if config_env() == :prod do
     dsn: System.get_env("SENTRY_DSN"),
     environment_name: System.get_env("SENTRY_ENVIRONMENT_NAME"),
     included_environments: [System.get_env("SENTRY_ENVIRONMENT_NAME")]
+
+  config :bright, :google_api_storage,
+    bucket_name: System.get_env("BUCKET_NAME"),
+    public_base_url: "https://storage.googleapis.com"
 end

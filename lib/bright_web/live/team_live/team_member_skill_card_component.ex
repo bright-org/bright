@@ -7,6 +7,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
   import BrightWeb.ChartComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
+  alias Bright.UserProfiles
 
   # attr :id, :string, required: true
   # attr :display_skill_panel, :any, required: true
@@ -29,9 +30,8 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <div class="text-2xl font-bold">
             <%= assigns.display_skill_card.user.name %>
           </div>
-          <!-- TODO サンプル表示 ユーザーアイコンが実装されたら修正 -->
-            <div class="bg-test bg-contain h-20 w-20 mt-4" style="
-              background-image: url('/images/sample/sample-image.png');"
+            <div class="bg-test bg-contain h-20 w-20 mt-4"
+            style={"background-image: url('#{icon_url(assigns.display_skill_card.user.user_profile.icon_file_path)}');"}
             >
             </div>
         </div>
@@ -69,6 +69,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
     socket =
       socket
       |> assign(assigns)
+
     {:ok, socket}
   end
 
@@ -100,5 +101,9 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
       |> assign(:display_skill_card, display_skill_card)
 
     {:noreply, socket}
+  end
+
+  defp icon_url(icon_file_path) do
+    UserProfiles.icon_url(icon_file_path)
   end
 end

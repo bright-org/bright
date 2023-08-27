@@ -126,6 +126,21 @@ defmodule Bright.SkillPanels do
   end
 
   @doc """
+  For Skill Search slecet input options
+  """
+  def list_skill_panel_with_career_field() do
+    from(
+      j in Job,
+      join: cf in assoc(j, :career_fields),
+      join: s in assoc(j, :skill_panels),
+      distinct: true,
+      order_by: s.id,
+      select: %{id: s.id, name: s.name, career_field: cf.name_en}
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single skill_panel.
 
   Raises `Ecto.NoResultsError` if the Skill panel does not exist.

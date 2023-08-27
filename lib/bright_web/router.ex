@@ -155,18 +155,20 @@ defmodule BrightWeb.Router do
         {BrightWeb.UserAuth, :ensure_authenticated},
         {BrightWeb.UserAuth, :ensure_onboarding}
       ] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
+      live "/mypage/:user_name", MypageLive.Index, :index
+      live "/mypage/anon/:user_name_encrypted", MypageLive.Index, :index
+
+      live "/mypage/notification_detail/:notification_type/:notification_id",
+           MypageLive.Index,
+           :notification_detail
+
       live "/searches", MypageLive.Index, :search
       live "/skill_up", OnboardingLive.Index, :index
       live "/skill_up/wants/:want_id", OnboardingLive.SkillPanels
       live "/skill_up/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
       live "/skill_up/jobs/:job_id", OnboardingLive.SkillPanels
       live "/skill_up/jobs/:job_id/skill_panels/:id", OnboardingLive.SkillPanel
-      live "/mypage/:user_name", MypageLive.Index, :index
-      live "/mypage/anon/:user_name_encrypted", MypageLive.Index, :index
-
       live "/graphs", SkillPanelLive.Graph, :show
       live "/graphs/:skill_panel_id", SkillPanelLive.Graph, :show
       live "/graphs/:skill_panel_id/:user_name", SkillPanelLive.Graph, :show
@@ -193,12 +195,15 @@ defmodule BrightWeb.Router do
       live "/teams/new", MyTeamLive, :new
       live "/teams/:team_id", MyTeamLive, :index
       live "/teams/:team_id/skill_panels/:skill_panel_id", MyTeamLive, :index
-
-      ## OAuth
-      scope "/auth" do
-        delete "/:provider", OAuthController, :delete
-      end
     end
+
+    ## OAuth
+    scope "/auth" do
+      delete "/:provider", OAuthController, :delete
+    end
+
+    post "/users/password_reset", UserPasswordResetController, :create
+    get "/users/confirm_email/:token", UserConfirmEmailController, :confirm
   end
 
   # オンボーディング

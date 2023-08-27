@@ -14,6 +14,7 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.Teams.Team
   alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel
+  alias Bright.UserProfiles
 
   defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id} = params, _display_team) do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
@@ -354,7 +355,6 @@ defmodule BrightWeb.MyTeamLive do
   end
 
   def handle_event("on_skill_pannel_click", %{"skill_panel_id" => skill_panel_id}, socket) do
-
     display_skill_panel = SkillPanels.get_skill_panel!(skill_panel_id)
 
     socket =
@@ -369,6 +369,7 @@ defmodule BrightWeb.MyTeamLive do
 
   def handle_event("click_star_button", _params, socket) do
     {:ok, team_member_user} = Teams.toggle_is_star(socket.assigns.current_users_team_member)
+
     socket =
       socket
       |> assign(:current_users_team_member, team_member_user)

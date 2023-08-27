@@ -5,6 +5,7 @@ defmodule BrightWeb.TeamComponents do
   use Phoenix.Component
   import BrightWeb.ChartComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
+  alias Bright.UserProfiles
 
   @doc """
   アイコン付きのチームコンポーネント
@@ -70,59 +71,10 @@ defmodule BrightWeb.TeamComponents do
     """
   end
 
-  attr :id, :string, required: true
-  attr :display_skill_panel, :any, required: true
-  attr :display_skill_card, :any, required: true
-  attr :select_skill_class, :any, required: true
-
-  def user_skill_card(assigns) do
-    ~H"""
-      <!-- メンバーデータ -->
-      <!-- チャートがはみ出すので全体を広げる -->
-      <!-- <div class="flex w-[474px] shadow flex-col bg-white"> -->
-      <div
-        id={@id}
-        class="flex w-[474px] shadow flex-col bg-white"
-      >
-        <.class_tab
-          user={@display_skill_card.user}
-          user_skill_class_score={@display_skill_card.user_skill_class_score}
-          select_skill_class={@select_skill_class}
-          path=""
-          query=""
-        />
-
-        <div class="flex justify-between px-6 pt-1 items-center">
-          <div class="text-2xl font-bold">
-            <%= assigns.display_skill_card.user.name %>
-          </div>
-          <!-- TODO サンプル表示 ユーザーアイコンが実装されたら修正 -->
-            <div class="bg-test bg-contain h-20 w-20 mt-4" style="
-              background-image: url('/images/sample/sample-image.png');"
-            >
-            </div>
-        </div>
-
-        <div class="w-[400px] flex justify-center mx-auto">
-          <.live_component
-            id={"skill-gem#{@display_skill_card.user.id}"}
-            module={BrightWeb.ChartLive.SkillGemComponent}
-            display_user={@display_skill_card.user}
-            skill_panel={@display_skill_panel}
-            class={@select_skill_class.class}
-            select_label={"now"}
-            me={:false}
-            anonymous={:false}
-          />
-        </div>
-      </div>
-    """
-  end
-
   @doc """
   チーム種別を示す文字列からアイコンのパスを取得する
   """
-  def get_team_icon_path(team_type) do
+  defp get_team_icon_path(team_type) do
     # TODO 全チーム種別のアイコンの追加、関数の実装場所の相談
     icons = [
       {:general_team, "/images/common/icons/team.svg"}
@@ -131,11 +83,13 @@ defmodule BrightWeb.TeamComponents do
     icons[team_type]
   end
 
-  def get_star_style(team_member_user) do
+  defp get_star_style(team_member_user) do
     if team_member_user.is_star do
       "brightGreen-300"
     else
+      # TODO スターのOFFの時の色指定確認
       "brightGray-500"
     end
   end
+
 end

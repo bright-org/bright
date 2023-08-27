@@ -40,7 +40,7 @@ config :goth, disabled: true
 config :google_api_storage, base_url: System.get_env("GCS_BASE_URL", "http://localhost:4443")
 
 config :bright, :google_api_storage,
-  bucket_id: "bright_storage_local_test",
+  bucket_name: "bright_storage_local_test",
   public_base_url: System.get_env("GCS_PUBLIC_BASE_URL", "http://localhost:4443")
 
 # NOTE: テスト用に Bright.Ueberauth.Strategy.Test を作成して使用

@@ -23,9 +23,9 @@ defmodule Bright.NotificationsTest do
       assert Notifications.list_notifications() == [notification]
     end
 
-    test "get_notification!/1 returns the notification with given id" do
+    test "get_notification!/2 returns the notification with given id" do
       notification = insert(:notification)
-      assert Notifications.get_notification!(notification.id) == notification
+      assert Notifications.get_notification!("test", notification.id) == notification
     end
 
     # TODO Scrivenerのテスト未実施
@@ -112,13 +112,16 @@ defmodule Bright.NotificationsTest do
       assert {:error, %Ecto.Changeset{}} =
                Notifications.update_notification(notification, @invalid_attrs)
 
-      assert notification == Notifications.get_notification!(notification.id)
+      assert notification == Notifications.get_notification!("test", notification.id)
     end
 
     test "delete_notification/1 deletes the notification" do
       notification = insert(:notification)
       assert {:ok, %Notification{}} = Notifications.delete_notification(notification)
-      assert_raise Ecto.NoResultsError, fn -> Notifications.get_notification!(notification.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Notifications.get_notification!("test", notification.id)
+      end
     end
 
     test "change_notification/1 returns a notification changeset" do

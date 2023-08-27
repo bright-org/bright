@@ -2,7 +2,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
   @moduledoc """
   Card List Components
   """
-  use Phoenix.Component
+  use BrightWeb, :component
 
   @hour 60
   @day @hour * 24
@@ -18,7 +18,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
   attr :type, :string,
     values: [
-      "contact",
+      "operation",
       "skill_up",
       "1on1_invitation",
       "promotion",
@@ -27,15 +27,25 @@ defmodule BrightWeb.CardLive.CardListComponents do
       "official_team"
     ]
 
-  def card_row(%{type: "contact"} = assigns) do
+  def card_row(%{type: "operation"} = assigns) do
     ~H"""
-    <li class="py-1 text-left flex items-center text-base">
-      <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-        <%= @notification.icon_type %>
-      </span>
-      <%= @notification.message %>
-      <.elapsed_time inserted_at={@notification.inserted_at} />
-    </li>
+      <li class="flex">
+        <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+          <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
+            person
+          </span>
+          <%= @notification.message %>
+          <.elapsed_time inserted_at={@notification.inserted_at} />
+        </div>
+        <div class="flex gap-x-2">
+          <.link patch={~p"/mypage/notification_detail/operation/#{@notification.id}"} >
+            <button class="text-bold inline-block bg-brightGray-900 text-sm !text-white min-w-[76px] rounded py-1 px-1 text-sm" >
+              内容を見る
+            </button>
+          </.link>
+        </div>
+      </li>
+
     """
   end
 

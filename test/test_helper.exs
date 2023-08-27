@@ -9,6 +9,6 @@ GoogleApi.Storage.V1.Api.Buckets.storage_buckets_insert(
   # project name
   "my_test",
   body: %GoogleApi.Storage.V1.Model.Bucket{
-    name: Application.fetch_env!(:bright, :google_api_storage) |> Keyword.fetch!(:bucket_id)
+    name: Application.fetch_env!(:bright, :google_api_storage) |> Keyword.fetch!(:bucket_name)
   }
 )

@@ -50,11 +50,11 @@
   </div>
 
   <div class="mt-8 max-w-[1236px]" :if={@current_user.user_onboardings == nil}>
-    <button
+    <a
       id="skip_onboarding"
-      class="w-full white cursor-pointer font-bold px-4 py-2 relative rounded select-none border-2 hover:opacity-50"
+      class="w-full white cursor-pointer font-bold px-4 py-2 relative select-none hover:opacity-50 underline text-blue-600"
       phx-click="skip_onboarding">
-      採用担当、人事、営業の方はこちら（自分のスキルを登録しません）
-    </button>
+      スカウトやチーム育成を行いたい方は、こちらをクリックして、「スキル保有者を検索」していただくか、採用・育成チームを作ってください」
+    </a>
   </div>
 </section>

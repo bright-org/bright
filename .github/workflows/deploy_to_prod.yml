@@ -1,0 +1,20 @@
+name: Deploy to prod
+
+on:
+  push:
+    tags:
+      - release-*
+
+jobs:
+  call:
+    uses: ./.github/workflows/reusable_deploy.yml
+    with:
+      workload_identity_provider: projects/155465725245/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+      service_account: github-actions@elite-firefly-383703.iam.gserviceaccount.com
+      image_name: asia-northeast1-docker.pkg.dev/elite-firefly-383703/bright-org/bright
+      min_instances: 1
+      cloud_sql_instance: elite-firefly-383703:asia-northeast1:instance
+      cloud_run_service_account: cloud-run@elite-firefly-383703.iam.gserviceaccount.com
+    permissions:
+      id-token: write
+      contents: read
