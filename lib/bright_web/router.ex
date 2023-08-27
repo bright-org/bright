@@ -155,8 +155,6 @@ defmodule BrightWeb.Router do
         {BrightWeb.UserAuth, :ensure_authenticated},
         {BrightWeb.UserAuth, :ensure_onboarding}
       ] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/mypage", MypageLive.Index, :index
       live "/mypage/:user_name", MypageLive.Index, :index
       live "/mypage/anon/:user_name_encrypted", MypageLive.Index, :index
@@ -203,6 +201,7 @@ defmodule BrightWeb.Router do
     end
 
     post "/users/password_reset", UserPasswordResetController, :create
+    get "/users/confirm_email/:token", UserConfirmEmailController, :confirm
   end
 
   # オンボーディング
