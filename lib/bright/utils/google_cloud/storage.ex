@@ -94,8 +94,8 @@ defmodule Bright.Utils.GoogleCloud.Storage do
         GoogleApi.Storage.V1.Connection.new()
 
       _ ->
-        Goth.fetch!(Bright.Goth)
-        |> GoogleApi.Storage.V1.Connection.new()
+        token = Goth.fetch!(Bright.Goth)
+        GoogleApi.Storage.V1.Connection.new(token.token)
     end
   end
 
