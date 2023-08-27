@@ -54,17 +54,17 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
             <% end %>
             <.inputs_for :let={ff} field={f[:user_profile]}>
               <label for={@uploads.icon.ref} class={[
-                "absolute bg-20 block cursor-pointer h-20 left-1/2 -ml-10 -mt-10 top-1/2 w-20",
+                "absolute bg-20 block cursor-pointer hover:opacity-70 h-20 left-1/2 -ml-10 -mt-10 top-1/2 w-20",
                 Enum.empty?(@uploads.icon.entries) && is_nil(Phoenix.HTML.Form.input_value(ff, :icon_file_path)) && "bg-bgAddAvatar"
               ]}>
                 <.live_file_input upload={@uploads.icon} class="hidden" />
                 <img
                   src={UserProfiles.icon_url(Phoenix.HTML.Form.input_value(ff, :icon_file_path))}
                   :if={Enum.empty?(@uploads.icon.entries) && !is_nil(Phoenix.HTML.Form.input_value(ff, :icon_file_path))}
-                  class="cursor-pointer h-20 w-20 rounded-full"
+                  class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full"
                 />
                 <%= for entry <- @uploads.icon.entries do %>
-                  <.live_img_preview entry={entry} class="cursor-pointer h-20 w-20 rounded-full" />
+                  <.live_img_preview entry={entry} class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full" />
                 <% end %>
               </label>
             </.inputs_for>
