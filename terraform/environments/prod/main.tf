@@ -33,7 +33,7 @@ module "cloud_run_batch_update_skill_panels" {
   depends_on = [module.googleapis]
 
   name     = "bright-batch-update-skill-panels"
-  schedule = "0 0 1 1,4,7,10 * "
+  schedule = "0 0 * * *"
 }
 
 module "secret_db_username" {
@@ -73,7 +73,7 @@ module "secret_host" {
   depends_on = [module.googleapis]
 
   name = "bright-host"
-  data = module.cloud_run_service.host
+  data = "app.bright-fun.org"
 }
 
 module "secret_bucket_name" {

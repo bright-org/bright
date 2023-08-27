@@ -6,11 +6,11 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   use BrightWeb, :live_component
   import BrightWeb.ProfileComponents
   import BrightWeb.TabComponents
+  import BrightWeb.DisplayUserHelper, only: [encrypt_user_name: 1]
 
   alias Bright.Teams
   alias Bright.UserProfiles
   alias Bright.RecruitmentStockUsers
-  alias BrightWeb.DisplayUserHelper
 
   @tabs [
     {"intriguing", "気になる人"},
@@ -87,7 +87,25 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           </ul>
           <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
-              <.profile_small user_name={user_profile.user_name} title={user_profile.title} icon_file_path={user_profile.icon_file_path} encrypt_user_name={user_profile.encrypt_user_name} click_event={click_event(@purpose)} click_target={@card_row_click_target} />
+              <%= if @selected_tab == "team" do %>
+                <.profile_small
+                  user_name={user_profile.user_name}
+                  title={user_profile.title}
+                  icon_file_path={user_profile.icon_file_path}
+                  encrypt_user_name={user_profile.encrypt_user_name}
+                  click_event={click_event(@purpose)}
+                  click_target={@card_row_click_target}
+                />
+              <% else %>
+                <.profile_stock_small_with_remove_button
+                  stock_id={user_profile.id}
+                  stock_date={Date.to_iso8601(user_profile.inserted_at)}
+                  skill_panel={user_profile.skill_panel}
+                  desired_income={if user_profile.desired_income == 0, do: "-" ,else: user_profile.desired_income}
+                  encrypt_user_name={encrypt_user_name(user_profile.user)}
+                  remove_user_target={@myself}
+                />
+              <% end %>
             <% end %>
           </ul>
         </div>
@@ -179,7 +197,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     {:noreply, socket}
   end
 
-  @impl true
   def handle_event(
         "tab_click",
         %{"id" => _id, "tab_name" => "candidate_for_employment"},
@@ -194,7 +211,15 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     {:noreply, socket}
   end
 
-  @impl true
+  def handle_event("remove_user", %{"stock_id" => id}, socket) do
+    RecruitmentStockUsers.get_recruitment_stock_user!(id)
+    |> RecruitmentStockUsers.delete_recruitment_stock_user()
+
+    socket
+    |> assign_selected_card("candidate_for_employment")
+    |> then(&{:noreply, &1})
+  end
+
   def handle_event(
         "tab_click",
         %{"id" => _id, "tab_name" => tab_name},
@@ -209,7 +234,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     {:noreply, socket}
   end
 
-  @impl true
   def handle_event(
         "inner_tab_click",
         %{
@@ -230,7 +254,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     {:noreply, socket}
   end
 
-  @impl true
   def handle_event(
         "previous_button_click",
         %{"id" => _id},
@@ -248,7 +271,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     {:noreply, socket}
   end
 
-  @impl true
   def handle_event(
         "next_button_click",
         %{"id" => _id},
@@ -326,19 +348,8 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
         }
       )
 
-    user_profiles =
-      list_recruitment_stock_users
-      |> Enum.map(fn user ->
-        %{
-          user_name: "非表示",
-          title: "非表示",
-          icon_file_path: UserProfiles.icon_url(nil),
-          encrypt_user_name: DisplayUserHelper.encrypt_user_name(user)
-        }
-      end)
-
     socket
-    |> assign(:user_profiles, user_profiles)
+    |> assign(:user_profiles, list_recruitment_stock_users)
     |> assign(:total_pages, list_recruitment_stock_users.total_pages)
   end
 

@@ -6,6 +6,7 @@ defmodule Bright.AccountsTest do
   alias Bright.Accounts.User2faCodes
   alias Bright.Accounts.SocialIdentifierToken
   alias Bright.Accounts.UserSocialAuth
+  alias Bright.UserProfiles
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
@@ -299,56 +300,45 @@ defmodule Bright.AccountsTest do
     end
   end
 
-  # TODO: テスト修正
-  # describe "apply_user_email/3" do
-  #   setup do
-  #     %{user: insert(:user)}
-  #   end
+  describe "apply_user_email/2" do
+    setup do
+      %{user: insert(:user)}
+    end
 
-  #   test "requires email to change", %{user: user} do
-  #     {:error, changeset} = Accounts.apply_user_email(user, valid_user_password(), %{})
-  #     assert %{email: ["did not change"]} = errors_on(changeset)
-  #   end
+    test "requires email to change", %{user: user} do
+      {:error, changeset} = Accounts.apply_user_email(user, %{})
+      assert %{email: ["did not change"]} = errors_on(changeset)
+    end
 
-  #   test "validates email", %{user: user} do
-  #     {:error, changeset} =
-  #       Accounts.apply_user_email(user, valid_user_password(), %{email: "not valid"})
+    test "validates email", %{user: user} do
+      {:error, changeset} = Accounts.apply_user_email(user, %{email: "not valid"})
 
-  #     assert %{email: ["has invalid format"]} = errors_on(changeset)
-  #   end
+      assert %{email: ["has invalid format"]} = errors_on(changeset)
+    end
 
-  #   test "validates maximum value for email for security", %{user: user} do
-  #     too_long = String.duplicate("db", 100)
+    test "validates maximum value for email for security", %{user: user} do
+      too_long = String.duplicate("a", 161)
 
-  #     {:error, changeset} =
-  #       Accounts.apply_user_email(user, valid_user_password(), %{email: too_long})
+      {:error, changeset} = Accounts.apply_user_email(user, %{email: too_long})
 
-  #     assert "should be at most 160 character(s)" in errors_on(changeset).email
-  #   end
+      assert "should be at most 160 character(s)" in errors_on(changeset).email
+    end
 
-  #   test "validates email uniqueness", %{user: user} do
-  #     %{email: email} = insert(:user)
-  #     password = valid_user_password()
+    test "validates email uniqueness", %{user: user} do
+      %{email: email} = insert(:user)
 
-  #     {:error, changeset} = Accounts.apply_user_email(user, password, %{email: email})
+      {:error, changeset} = Accounts.apply_user_email(user, %{email: email})
 
-  #     assert "has already been taken" in errors_on(changeset).email
-  #   end
+      assert "has already been taken" in errors_on(changeset).email
+    end
 
-  #   test "validates current password", %{user: user} do
-  #     {:error, changeset} =
-  #       Accounts.apply_user_email(user, "invalid", %{email: unique_user_email()})
-
-  #     assert %{current_password: ["does not match password"]} = errors_on(changeset)
-  #   end
-
-  #   test "applies the email without persisting it", %{user: user} do
-  #     email = unique_user_email()
-  #     {:ok, user} = Accounts.apply_user_email(user, valid_user_password(), %{email: email})
-  #     assert user.email == email
-  #     assert Repo.get!(User, user.id).email != email
-  #   end
-  # end
+    test "applies the email without persisting it", %{user: user} do
+      email = unique_user_email()
+      {:ok, user} = Accounts.apply_user_email(user, %{email: email})
+      assert user.email == email
+      assert Repo.get!(User, user.id).email != email
+    end
+  end
 
   describe "deliver_user_update_email_instructions/3" do
     setup do
@@ -445,6 +435,33 @@ defmodule Bright.AccountsTest do
     test "allows fields to be set" do
       changeset =
         Accounts.change_user_password(%User{}, %{
+          "password" => "new valid password2"
+        })
+
+      assert changeset.valid?
+      assert get_change(changeset, :password) == "new valid password2"
+      assert is_nil(get_change(changeset, :hashed_password))
+    end
+  end
+
+  describe "change_user_password_before_submit/3" do
+    test "validates a user current password and a new password" do
+      assert %Ecto.Changeset{} =
+               changeset = Accounts.change_user_password_before_submit(%User{}, "")
+
+      assert changeset.required == [:password]
+
+      assert %{
+               password: ["can't be blank"],
+               current_password: ["does not match current password"]
+             } = errors_on(changeset)
+    end
+
+    test "returns user changeset" do
+      user = create_user_with_password("new valid password1")
+
+      changeset =
+        Accounts.change_user_password_before_submit(user, "new valid password1", %{
           "password" => "new valid password2"
         })
 
@@ -1197,6 +1214,203 @@ defmodule Bright.AccountsTest do
 
       assert :cannot_unlink_last_one == Accounts.unlink_social_account(user, provider)
       assert Repo.get_by(UserSocialAuth, user_id: user.id, provider: :google)
+    end
+  end
+
+  describe "change_user_with_user_profile/2" do
+    setup do
+      %{user: insert(:user) |> with_user_profile() |> Repo.preload(:user_profile)}
+    end
+
+    test "returns changeset", %{user: user} do
+      new_name = unique_user_name()
+      user_profile_attrs = params_for(:user_profile)
+
+      changeset =
+        Accounts.change_user_with_user_profile(user, %{
+          name: new_name,
+          user_profile: user_profile_attrs |> Map.merge(%{id: user.user_profile.id})
+        })
+
+      assert changeset.valid?
+      assert get_change(changeset, :name) == new_name
+
+      user_profile_changeset = get_assoc(changeset, :user_profile)
+      assert user_profile_changeset.changes == user_profile_attrs
+    end
+
+    test "validates user_profile", %{user: user} do
+      user_profile_attrs = %{
+        title: String.duplicate("a", 256),
+        detail: String.duplicate("a", 256),
+        icon_file_path: String.duplicate("a", 256),
+        twitter_url: String.duplicate("a", 256),
+        facebook_url: String.duplicate("a", 256),
+        github_url: String.duplicate("a", 256)
+      }
+
+      changeset =
+        Accounts.change_user_with_user_profile(user, %{
+          user_profile: user_profile_attrs |> Map.merge(%{id: user.user_profile.id})
+        })
+
+      refute changeset.valid?
+
+      assert %{
+               user_profile: %{
+                 title: ["should be at most 255 character(s)"],
+                 detail: ["should be at most 255 character(s)"],
+                 icon_file_path: ["should be at most 255 character(s)"],
+                 twitter_url: [
+                   "should start with https://twitter.com/",
+                   "should be at most 255 character(s)"
+                 ],
+                 facebook_url: [
+                   "should start with https://www.facebook.com/",
+                   "should be at most 255 character(s)"
+                 ],
+                 github_url: [
+                   "should start with https://github.com/",
+                   "should be at most 255 character(s)"
+                 ]
+               }
+             } == errors_on(changeset)
+    end
+
+    test "does not validate whether name is unique", %{user: user} do
+      insert(:user, name: "koyo")
+      changeset = Accounts.change_user_with_user_profile(user, %{name: "koyo"})
+
+      assert changeset.valid?
+    end
+
+    test "validates name existence", %{user: user} do
+      changeset = Accounts.change_user_with_user_profile(user, %{name: ""})
+      assert %{name: ["can't be blank"]} = errors_on(changeset)
+    end
+
+    test "validates name length", %{user: user} do
+      changeset =
+        Accounts.change_user_with_user_profile(user, %{name: String.duplicate("a", 256)})
+
+      assert %{name: ["should be at most 255 character(s)"]} = errors_on(changeset)
+    end
+
+    test "validates name format", %{user: user} do
+      changeset = Accounts.change_user_with_user_profile(user, %{name: "Koyo"})
+
+      assert %{name: ["only lower-case alphanumeric character and -_. is available"]} =
+               errors_on(changeset)
+    end
+  end
+
+  describe "update_user_with_user_profile/3" do
+    setup do
+      %{user: insert(:user) |> with_user_profile() |> Repo.preload(:user_profile)}
+    end
+
+    test "updates user with user_profile", %{user: user} do
+      new_name = unique_user_name()
+
+      user_profile_attrs =
+        string_params_for(:user_profile, icon_file_path: UserProfiles.build_icon_path("hoge.png"))
+
+      {:ok, _user} =
+        Accounts.update_user_with_user_profile(
+          user,
+          %{
+            "name" => new_name,
+            "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+          },
+          nil
+        )
+
+      assert {:error, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
+
+      assert %User{name: ^new_name} = Repo.get(User, user.id)
+
+      assert Repo.get(UserProfile, user.user_profile.id)
+             |> Map.take([
+               :title,
+               :detail,
+               :icon_file_path,
+               :twitter_url,
+               :facebook_url,
+               :github_url
+             ]) ==
+               user_profile_attrs |> convert_map_string_key_to_atom()
+    end
+
+    test "updates user with user_profile and uploads file to GCS", %{user: user} do
+      new_name = unique_user_name()
+
+      user_profile_attrs =
+        string_params_for(:user_profile, icon_file_path: UserProfiles.build_icon_path("hoge.png"))
+
+      local_file_path = Path.join([test_support_dir(), "images", "sample.svg"])
+
+      {:ok, _user} =
+        Accounts.update_user_with_user_profile(
+          user,
+          %{
+            "name" => new_name,
+            "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+          },
+          local_file_path
+        )
+
+      assert {:ok, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
+
+      assert %User{name: ^new_name} = Repo.get(User, user.id)
+
+      assert Repo.get(UserProfile, user.user_profile.id)
+             |> Map.take([
+               :title,
+               :detail,
+               :icon_file_path,
+               :twitter_url,
+               :facebook_url,
+               :github_url
+             ]) ==
+               user_profile_attrs |> convert_map_string_key_to_atom()
+    end
+
+    test "does not upload file to GCS when validation error occurs", %{user: user} do
+      new_name = unique_user_name()
+
+      user_profile_attrs =
+        string_params_for(:user_profile, icon_file_path: UserProfiles.build_icon_path("hoge.png"))
+
+      insert(:user, name: new_name)
+
+      local_file_path = Path.join([test_support_dir(), "images", "sample.svg"])
+
+      {:error, changeset} =
+        Accounts.update_user_with_user_profile(
+          user,
+          %{
+            "name" => new_name,
+            "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+          },
+          local_file_path
+        )
+
+      assert {:error, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
+
+      assert %{name: ["has already been taken"]} = errors_on(changeset)
+
+      refute Repo.get(User, user.id).name == new_name
+
+      refute Repo.get(UserProfile, user.user_profile.id)
+             |> Map.take([
+               :title,
+               :detail,
+               :icon_file_path,
+               :twitter_url,
+               :facebook_url,
+               :github_url
+             ]) ==
+               user_profile_attrs |> convert_map_string_key_to_atom()
     end
   end
 

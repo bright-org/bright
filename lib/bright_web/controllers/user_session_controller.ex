@@ -10,7 +10,6 @@ defmodule BrightWeb.UserSessionController do
     if user = Accounts.get_user_by_email_and_password(email, password) do
       if UserAuth.valid_2fa_auth_done_cookie_exists?(conn, user) do
         conn
-        |> put_flash(:info, "ログインしました")
         |> UserAuth.log_in_user(user)
       else
         token = Accounts.setup_user_2fa_auth(user)

@@ -16,6 +16,8 @@ defmodule Bright.TestHelper do
 
   @user_2fa_cookie_key "_bright_web_user_2fa_done"
 
+  @test_support_dir __DIR__
+
   @doc """
   Setup helper that registers and logs in users.
 
@@ -25,10 +27,11 @@ defmodule Bright.TestHelper do
   test context.
   """
   def register_and_log_in_user(%{conn: conn}) do
-    user = insert(:user) |> insert_user_relations()
+    current_password = "password1"
+    user = create_user_with_password(current_password) |> insert_user_relations()
     insert(:user_onboarding, user: user)
     user = user |> Repo.preload([:user_profile, :user_onboardings])
-    %{conn: log_in_user(conn, user), user: user}
+    %{conn: log_in_user(conn, user), user: user, current_password: current_password}
   end
 
   def register_and_log_in_social_account_user(%{conn: conn}) do
@@ -119,4 +122,21 @@ defmodule Bright.TestHelper do
       assert email.text_body =~ code
     end)
   end
+
+  def assert_update_email_mail_sent(new_email) do
+    assert_email_sent(fn email ->
+      assert email.from == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
+      assert email.subject == "【Bright】メールアドレス変更を完了させてください（24 時間以内有効）"
+      assert email.to == [{"", new_email}]
+    end)
+  end
+
+  def convert_map_string_key_to_atom(map) do
+    Map.new(map, fn {k, v} -> {String.to_existing_atom(k), v} end)
+  end
+
+  @doc """
+  Returns support dir
+  """
+  def test_support_dir, do: @test_support_dir
 end

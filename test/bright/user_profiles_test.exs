@@ -122,4 +122,22 @@ defmodule Bright.UserProfilesTest do
       assert UserProfiles.get_user_profile_by_name(user_profile.user.name) == user_profile
     end
   end
+
+  describe "icon_url/1" do
+    test "returns avatar.png when icon_file_path is nil" do
+      assert "/images/avatar.png" == UserProfiles.icon_url(nil)
+    end
+
+    test "returns icon url when icon_file_path exists" do
+      assert "http://localhost:4443/bright_storage_local_test/uploaded_file.png" ==
+               UserProfiles.icon_url("uploaded_file.png")
+    end
+  end
+
+  describe "build_icon_path/1" do
+    test "builds icon path" do
+      assert UserProfiles.build_icon_path("uploaded_file.png") =~ "users/profile_icon_"
+      assert UserProfiles.build_icon_path("uploaded_file.png") |> Path.extname() == ".png"
+    end
+  end
 end

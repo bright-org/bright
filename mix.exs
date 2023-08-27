@@ -39,7 +39,7 @@ defmodule Bright.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.19.0"},
+      {:phoenix_live_view, "~> 0.19"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.0"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
@@ -64,7 +64,10 @@ defmodule Bright.MixProject do
       {:scrivener_ecto, "~> 2.0"},
       {:ueberauth_google, "~> 0.10"},
       {:timex, "~> 3.7"},
-      {:sentry, "~> 8.0"}
+      {:tzdata, "~> 1.1"},
+      {:sentry, "~> 8.0"},
+      {:mock, "~> 0.3.8", only: :test},
+      {:ex_parameterized, "~> 1.3", only: :test}
     ]
   end
 

@@ -49,7 +49,6 @@ defmodule BrightWeb.OAuthController do
 
       %User{} = user ->
         conn
-        |> put_flash(:info, "ログインしました")
         |> UserAuth.log_in_user(user)
 
       _ ->

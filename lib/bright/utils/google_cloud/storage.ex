@@ -71,6 +71,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
       iex> Bright.Utils.GoogleCloud.Storage.public_url("phoenix.png")
       "https://storage.googleapis.com/<get_bucket_name>/phoenix.png"
   """
+  @spec public_url(path :: String.t()) :: String.t()
   def public_url(path) do
     public_base_url =
       get_public_base_url() || Application.fetch_env!(:google_api_storage, :base_url)

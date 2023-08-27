@@ -8,7 +8,9 @@ defmodule Bright.RecruitmentStockUserFactory do
       def recruitment_stock_user_factory do
         %Bright.RecruitmentStockUsers.RecruitmentStockUser{
           recruiter: build(:user),
-          user: build(:user)
+          user: build(:user),
+          skill_panel: "テストスキルパネル",
+          desired_income: 1000
         }
       end
     end

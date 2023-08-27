@@ -75,67 +75,70 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compare_individual(assigns) do
     ~H"""
-    <button
-      id="addCompareDropdownButton-related-user"
-      data-dropdown-toggle="addCompareDropdown-related-user"
-      data-dropdown-offset-skidding="300"
-      data-dropdown-placement="bottom"
-      class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-      type="button"
-    >
-      <span class="min-w-[6em]">個人と比較</span>
-      <span
-        class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-        >add</span>
-    </button>
-    <!-- 個人と比較Donwdrop -->
     <div
-      class="bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden"
-      id="addCompareDropdown-related-user"
+      id="compare-indivividual-dropdown"
+      phx-hook="Dropdown"
+      data-dropdown-offset-skidding="307"
+      data-dropdown-placement="bottom"
     >
-      <.live_component
-        id="related-user-card-compare"
-        module={BrightWeb.CardLive.RelatedUserCardComponent}
-        current_user={@current_user}
-        display_menu={false}
-        purpose="compare"
-        card_row_click_target={@myself}
-      />
+      <button
+        class="dropdownTrigger border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
+        type="button"
+      >
+        <span class="min-w-[6em]">個人と比較</span>
+        <span
+          class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
+          >add</span>
+      </button>
+      <div
+        class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
+      >
+        <.live_component
+          id="related-user-card-compare"
+          module={BrightWeb.CardLive.RelatedUserCardComponent}
+          current_user={@current_user}
+          display_menu={false}
+          purpose="compare"
+          card_row_click_target={@myself}
+        />
+      </div>
     </div>
     """
   end
 
   def compare_team(assigns) do
     ~H"""
-    <button
-      id="compareAllDropdownButton"
-      data-dropdown-toggle="compareAllDropdown"
-      data-dropdown-offset-skidding="300"
-      data-dropdown-placement="bottom"
-      class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-      type="button"
-    >
-      <span class="min-w-[6em]">チーム全員と比較</span>
-      <span
-        class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-        >add</span>
-    </button>
-    <!-- チーム全員と比較Downdrop -->
     <div
-      class="bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden"
-      id="compareAllDropdown"
+      id="compare-team-dropdown"
+      phx-hook="Dropdown"
+      data-dropdown-offset-skidding="307"
+      data-dropdown-placement="bottom"
     >
-      <.live_component
-        id="related_team_card_compare"
-        module={BrightWeb.CardLive.RelatedTeamCardComponent}
-        current_user={@current_user}
-        show_menu={false}
-      />
+      <button
+        class="dropdownTrigger border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
+        type="button"
+      >
+        <span class="min-w-[6em]">チーム全員と比較</span>
+        <span
+          class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
+          >add</span>
+      </button>
+      <div
+        class="dropdownTarget bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden z-10"
+      >
+        <.live_component
+          id="related_team_card_compare"
+          module={BrightWeb.CardLive.RelatedTeamCardComponent}
+          current_user={@current_user}
+          show_menu={false}
+        />
+      </div>
     </div>
     """
   end
 
   def compare_custom_group(assigns) do
+    # TODO: 実装時、dropdownにHookを使うこと
     ~H"""
     <button
       id="addCustomGroupDropwonButton"
@@ -219,7 +222,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           </td>
           <td :for={user <- @compared_users} class="!border-l !border-brightGray-200">
             <div class="flex justify-center items-center">
-              <p class="inline-flex flex-1 justify-center"><%= user.name %></p>
+              <p class="inline-flex flex-1 justify-center"><%= if user.anonymous, do: "非表示", else: user.name %></p>
               <button
                 type="button"
                 class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"

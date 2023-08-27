@@ -13,8 +13,9 @@ defmodule Bright.SkillUnits.SkillClassUnit do
   @foreign_key_type Ecto.ULID
 
   schema "skill_class_units" do
-    # TODO: 自動生成を消す
+    # NOTE: 本来はスキルパネル更新バッチによってのみ生成されるデータのため自動生成は不要だが、現状では管理機能で作成することができてしまうため便宜上残している
     field :trace_id, Ecto.ULID, autogenerate: {Ecto.ULID, :generate, []}
+
     field :position, :integer
 
     belongs_to :skill_class, SkillClass

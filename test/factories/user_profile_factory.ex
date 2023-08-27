@@ -8,12 +8,13 @@ defmodule Bright.UserProfileFactory do
       def user_profile_factory do
         %Bright.UserProfiles.UserProfile{
           user: build(:user),
-          title: Faker.Lorem.word(),
-          detail: "私は" <> Faker.Lorem.word() <> "です",
-          icon_file_path: "gs://" <> Faker.Lorem.word() <> "/" <> Faker.Lorem.word(),
-          twitter_url: "https://twitter.com/" <> Faker.Lorem.word(),
-          facebook_url: "https://www.facebook.com/" <> Faker.Lorem.word(),
-          github_url: "https://github.com/" <> Faker.Lorem.word()
+          title: sequence(:title, &"#{Faker.Lorem.word()}#{&1}"),
+          detail: sequence(:detail, &"私は#{Faker.Lorem.word()}#{&1}です"),
+          icon_file_path: sequence(:icon_file_path, &"users/profile_icon_#{&1}.png"),
+          twitter_url: sequence(:twitter_url, &"https://twitter.com/#{Faker.Lorem.word()}#{&1}"),
+          facebook_url:
+            sequence(:facebook_url, &"https://www.facebook.com/#{Faker.Lorem.word()}#{&1}"),
+          github_url: sequence(:facebook_url, &"https://github.com/#{Faker.Lorem.word()}#{&1}")
         }
       end
     end

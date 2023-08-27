@@ -50,6 +50,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
       socket
       |> assign(:skill_panel, skill_panel)
     else
+      # TODO: この正規の導線はなくなった見込み。自動テストを補充後に削除して、`raise_if_not_exists_my_skill_panel`と統合し、404を返すこと
       # 指定されているスキルパネルがない場合は、
       # 直近のスキルパネルを取得して、
       # URLと矛盾した表示にならないようにリダイレクト
@@ -237,6 +238,22 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> case do
       nil -> "/#{root}"
       _ -> "/#{root}/#{skill_panel.id}"
+    end
+  end
+
+  def get_path_to_switch_display_user(root, user, skill_panel, anonymous) do
+    display_user_skill_panel =
+      SkillPanels.get_user_skill_panel(user, skill_panel.id) ||
+        SkillPanels.get_user_latest_skill_panel(user)
+
+    display_user_skill_panel
+    |> case do
+      nil ->
+        # 保有スキルパネルが1つもない場合は表示不可のためpathを返さない
+        :error
+
+      _ ->
+        {:ok, build_path(root, display_user_skill_panel, user, false, anonymous)}
     end
   end
 

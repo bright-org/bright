@@ -119,9 +119,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <div class="flex">
       <div class="flex-1 text-left font-bold">
-        <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous)}>
-          <%= @skill_panel.name %>
-        </.link>
+        <%= @skill_panel.name %>
       </div>
       <%= for skill_class <- @skill_classes do %>
         <.skill_gem
@@ -222,6 +220,17 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> assign(:selected_tab, "engineer")
     |> assign_paginate(user.id, "engineer")
     |> then(&{:ok, &1})
+  end
+
+  def update(%{status: "level_changed"}, socket) do
+    # 新しいスキルクラスを開放時のupdateを実施
+    %{
+      selected_tab: career_field,
+      display_user: display_user,
+      page: page
+    } = socket.assigns
+
+    {:ok, assign_paginate(socket, display_user.id, career_field, page)}
   end
 
   defp assign_over_ride_on_card_row_click_target(

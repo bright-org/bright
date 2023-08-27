@@ -1,7 +1,7 @@
 defmodule BrightWeb.SearchLive.SkillSearchComponent do
   use BrightWeb, :live_component
 
-  alias BrightWeb.BrightCoreComponents, as: BrightCore
+  alias Bright.RecruitmentStockUsers
   alias BrightWeb.SearchLive.UserSearchComponent
   import BrightWeb.TabComponents
 
@@ -16,8 +16,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
   def render(assigns) do
     ~H"""
     <div id="skill_search_modal" class="hidden">
-      <BrightCore.flash_group flash={@modal_flash} />
-      <div class="bg-zinc-50/90 fixed inset-0 transition-opacity" />
+      <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity" />
       <div class="fixed inset-0 overflow-y-auto">
         <section
           id="user_search" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[1000px]"
@@ -38,10 +37,11 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
             selected_tab={@selected_tab}
             target={@myself}
           >
-          <.live_component
-            id="user_search"
-            module={UserSearchComponent}
-            current_user={@current_user}
+            <.live_component
+              id="user_search_tab"
+              module={UserSearchComponent}
+              current_user={@current_user}
+              stock_user_ids={@stock_user_ids}
             />
           </.tab>
         </section>
@@ -51,12 +51,12 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
   end
 
   @impl true
-  def update(assigns, socket) do
+  def update(%{current_user: user} = assigns, socket) do
     socket
     |> assign(assigns)
     |> assign(:tabs, @tabs)
     |> assign(:selected_tab, @default_tab)
-    |> assign(:modal_flash, Map.get(assigns, :modal_flash, %{}))
+    |> assign(:stock_user_ids, RecruitmentStockUsers.list_stock_user_ids(user.id))
     |> then(&{:ok, &1})
   end
 
@@ -65,5 +65,17 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
     socket
     |> assign(:selected_tab, tab_name)
     |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "stock",
+        %{"params" => params},
+        %{assigns: %{current_user: user}} = socket
+      ) do
+    Map.put(params, "recruiter_id", user.id)
+    |> RecruitmentStockUsers.create_recruitment_stock_user()
+
+    {:noreply,
+     assign(socket, :stock_user_ids, RecruitmentStockUsers.list_stock_user_ids(user.id))}
   end
 end
