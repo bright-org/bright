@@ -52,10 +52,13 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           <.action_area skill_panel_id={@selected_tab} user={@user}/>
         </div>
         <div class="flex justify-between mt-8">
-          <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:opacity-50">
+          <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
+          <a
+            class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50"
+          >
           採用面談調整<br />βリリース（10月予定）から
           </a>
-          <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:opacity-50">
+          <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
           人材チームに採用依頼 <br />βリリース（10月予定）から
           </a>
         </div>
