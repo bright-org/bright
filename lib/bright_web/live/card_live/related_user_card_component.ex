@@ -111,11 +111,22 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     {:ok, socket}
   end
 
-  @doc """
-  チームタブクリック時の挙動
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => _id, "tab_name" => "intriguing"},
+        socket
+      ) do
+    socket =
+      socket
+      |> assign(:selected_tab, "intriguing")
+      |> assign(:inner_tab, [])
+      |> assign(:user_profiles, [])
+      |> assign(:total_pages, 1)
 
-  所属しているチームの一覧を取得する
-  """
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_event(
         "tab_click",

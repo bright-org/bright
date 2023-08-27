@@ -57,7 +57,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             スキルアップ確認
           </button>
         </div>
-        <div class="w-full text-center">
+        <div class="w-full text-center absolute bottom-1">
         βリリース（10月予定）で利用可能になります
         </div>
       </div>
