@@ -195,12 +195,14 @@ defmodule BrightWeb.Router do
 
       live "/teams", MyTeamLive, :index
       live "/teams/:team_id", MyTeamLive, :index
-
-      ## OAuth
-      scope "/auth" do
-        delete "/:provider", OAuthController, :delete
-      end
     end
+
+    ## OAuth
+    scope "/auth" do
+      delete "/:provider", OAuthController, :delete
+    end
+
+    post "/users/password_reset", UserPasswordResetController, :create
   end
 
   # オンボーディング
