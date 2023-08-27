@@ -95,6 +95,7 @@ defmodule Bright.Utils.GoogleCloud.Storage do
 
       _ ->
         Goth.fetch!(Bright.Goth)
+        |> GoogleApi.Storage.V1.Connection.new()
     end
   end
 
