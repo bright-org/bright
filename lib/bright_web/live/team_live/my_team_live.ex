@@ -13,6 +13,41 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.SkillPanels.SkillPanel
   alias Bright.UserProfiles
 
+  def mount(params, _session, socket) do
+    # パラメータ指定がある場合それぞれの対象データを取得、ない場合はnil
+    display_team = get_display_team(params, socket.assigns.current_user.id)
+    # TODO チームスキルカードのページング処理
+    display_team_members = get_display_team_members(display_team)
+
+    current_users_team_member =
+      get_current_users_team_member(socket.assigns.current_user, display_team_members)
+
+    display_skill_panel = get_display_skill_panel(params, display_team)
+    display_skill_classes = list_display_skill_classes(display_skill_panel)
+    selected_skill_class = get_first_skill_class(display_skill_classes)
+    member_skill_classes = list_skill_classes(display_team, display_skill_panel)
+
+    # スキルとチームの取得結果に応じて各種assign
+    socket =
+      socket
+      |> assign_page_title(display_skill_panel)
+      |> assign_display_skill_panel(display_skill_panel)
+      |> assign_display_skill_class(display_skill_classes)
+      |> assign_display_team(display_team)
+      |> assign_current_users_team_member(current_users_team_member)
+      # ユーザー事に表示するスキルカードのmap作成とassign
+      |> assign_display_skill_cards(
+        display_team_members,
+        display_skill_classes,
+        selected_skill_class,
+        member_skill_classes
+      )
+      # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
+      |> assign_push_redirect(params, display_team, display_skill_panel)
+
+    {:ok, socket}
+  end
+
   defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team) do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
 
@@ -195,7 +230,6 @@ defmodule BrightWeb.MyTeamLive do
     end
   end
 
-  # defp assign_push_redirect(socket, %{"team_id" => team_id, "skill_panel_id" => skill_panel_id}, _display_team, _display_skill_panel) do
   defp assign_push_redirect(
          %{assigns: %{live_action: :index}} = socket,
          %{"team_id" => _team_id, "skill_panel_id" => _skill_panel_id},
@@ -295,41 +329,6 @@ defmodule BrightWeb.MyTeamLive do
 
     [first_skill_class | _rest] = sorted_skill_classes
     first_skill_class
-  end
-
-  def mount(params, _session, socket) do
-    # パラメータ指定がある場合それぞれの対象データを取得、ない場合はnil
-    display_team = get_display_team(params, socket.assigns.current_user.id)
-    # TODO チームスキルカードのページング処理
-    display_team_members = get_display_team_members(display_team)
-
-    current_users_team_member =
-      get_current_users_team_member(socket.assigns.current_user, display_team_members)
-
-    display_skill_panel = get_display_skill_panel(params, display_team)
-    display_skill_classes = list_display_skill_classes(display_skill_panel)
-    selected_skill_class = get_first_skill_class(display_skill_classes)
-    member_skill_classes = list_skill_classes(display_team, display_skill_panel)
-
-    # スキルとチームの取得結果に応じて各種assign
-    socket =
-      socket
-      |> assign_page_title(display_skill_panel)
-      |> assign_display_skill_panel(display_skill_panel)
-      |> assign_display_skill_class(display_skill_classes)
-      |> assign_display_team(display_team)
-      |> assign_current_users_team_member(current_users_team_member)
-      # ユーザー事に表示するスキルカードのmap作成とassign
-      |> assign_display_skill_cards(
-        display_team_members,
-        display_skill_classes,
-        selected_skill_class,
-        member_skill_classes
-      )
-      # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
-      |> assign_push_redirect(params, display_team, display_skill_panel)
-
-    {:ok, socket}
   end
 
   def handle_event("click_star_button", _params, socket) do
