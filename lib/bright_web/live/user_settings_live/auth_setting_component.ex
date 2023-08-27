@@ -3,6 +3,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
   alias Bright.Accounts
   alias Bright.Accounts.User
   alias BrightWeb.BrightCoreComponents, as: BrightCore
+  alias BrightWeb.UserSettingsLive.UserSettingComponent
 
   @impl true
   def render(assigns) do
@@ -10,16 +11,31 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
     <li class="block text-left">
       <%!-- TODO: サブメールアドレスが実装されたら border-b を追加する --%>
       <div class="border-brightGray-200 flex flex-wrap" id="mail_section">
-        <div class="border-b border-brightGray-200 flex justify-between mb-4 w-full">
-          <label class="flex items-center py-4">
-            <span class="w-44">メールアドレス</span>
-            <input type="text" size="20" name="mail" class="border border-brightGray-200 px-2 py-1  rounded w-48">
-          </label>
+        <.form
+          for={@email_form}
+          id="email_form"
+          phx-submit="update_email"
+          phx-change="validate_email"
+          phx-target={@myself}
+          class="w-full"
+        >
+          <div class="border-b border-brightGray-200 flex justify-between mb-4 w-full">
+            <label class="flex items-center py-4">
+              <span class="w-44">メールアドレス</span>
+              <BrightCore.input
+                field={@email_form[:email]}
+                type="email"
+                size="20"
+                input_class="border border-brightGray-200 px-2 py-1 rounded w-48"
+                required
+              />
+            </label>
 
-          <div class="ml-4 mt-1 py-4 w-fit">
-            <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">保存する</a>
+            <div class="ml-4 mt-1 py-4 w-fit">
+              <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">保存する</button>
+            </div>
           </div>
-        </div>
+        </.form>
 
         <%!-- α版では未実装 --%>
         <%!-- <div class="sub_mail_address flex pb-4 w-9/12">
@@ -121,18 +137,13 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
   @impl true
   def update(assigns, socket) do
     user = assigns.user
-    #  email_changeset = Accounts.change_user_email(user)
+    email_changeset = Accounts.change_user_email(user)
 
     socket =
       socket
       |> assign(assigns)
       |> assign_password_form(user)
-      # |> assign(:current_password, nil)
-      # |> assign(:email_form_current_password, nil)
-      |> assign(:current_email, user.email)
-      |> assign(:trigger_submit, false)
-
-    # |> assign(:email_form, to_form(email_changeset))
+      |> assign(:email_form, to_form(email_changeset))
 
     {:ok, socket}
   end
@@ -142,14 +153,57 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
     password_changeset = Accounts.change_user_password(user)
 
     socket
+    |> assign(:current_email, user.email)
     |> assign(:current_password, nil)
     |> assign(:password_form, to_form(password_changeset))
+    |> assign(:trigger_submit, false)
   end
 
-  defp assign_password_form(socket, _user) do
-    socket
+  defp assign_password_form(socket, _user), do: socket
+
+  @impl true
+  def handle_event(
+        "validate_email",
+        %{"user" => user_params},
+        socket
+      ) do
+    email_form =
+      socket.assigns.user
+      |> Accounts.change_user_email(user_params)
+      |> Map.put(:action, :validate)
+      |> to_form()
+
+    {:noreply, assign(socket, email_form: email_form)}
   end
 
+  @impl true
+  def handle_event(
+        "update_email",
+        %{"user" => user_params},
+        socket
+      ) do
+    user = socket.assigns.user
+
+    case Accounts.apply_user_email(user, user_params) do
+      {:ok, applied_user} ->
+        Accounts.deliver_user_update_email_instructions(
+          applied_user,
+          user.email,
+          &url(~p"/users/confirm_email/#{&1}")
+        )
+
+        send_update_after_save()
+
+        applied_user
+        |> Accounts.change_user_email(user_params)
+        |> then(&{:noreply, socket |> assign(:email_form, to_form(&1))})
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, :email_form, to_form(Map.put(changeset, :action, :insert)))}
+    end
+  end
+
+  @impl true
   def handle_event(
         "validate_password",
         %{"current_password" => password, "user" => user_params},
@@ -164,6 +218,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
     {:noreply, assign(socket, password_form: password_form, current_password: password)}
   end
 
+  @impl true
   def handle_event(
         "update_password",
         %{"current_password" => password, "user" => user_params},
@@ -184,5 +239,14 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
            current_password: password
          )}
     end
+  end
+
+  defp send_update_after_save() do
+    send_update(
+      UserSettingComponent,
+      id: "user_setting_modal",
+      modal_flash: %{info: "本人確認メールを送信しましたご確認ください"},
+      action: "auth"
+    )
   end
 end
