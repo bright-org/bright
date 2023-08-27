@@ -3,9 +3,6 @@ defmodule BrightWeb.TeamComponents do
   Team Components
   """
   use Phoenix.Component
-  import BrightWeb.ChartComponents
-  import BrightWeb.SkillPanelLive.SkillPanelComponents
-  alias Bright.UserProfiles
 
   @doc """
   アイコン付きのチームコンポーネント
@@ -71,9 +68,6 @@ defmodule BrightWeb.TeamComponents do
     """
   end
 
-  @doc """
-  チーム種別を示す文字列からアイコンのパスを取得する
-  """
   defp get_team_icon_path(team_type) do
     # TODO 全チーム種別のアイコンの追加、関数の実装場所の相談
     icons = [
@@ -91,5 +85,4 @@ defmodule BrightWeb.TeamComponents do
       "brightGray-500"
     end
   end
-
 end

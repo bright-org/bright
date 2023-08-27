@@ -5,21 +5,17 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
   use BrightWeb, :live_component
 
-  import BrightWeb.ChartComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   alias Bright.UserProfiles
 
-  # attr :id, :string, required: true
-  # attr :display_skill_panel, :any, required: true
-  # attr :display_skill_card, :any, required: true
-  # attr :select_skill_class, :any, required: true
+  @impl true
   def render(assigns) do
     ~H"""
       <div class="flex w-[474px] h-[624px] shadow flex-col bg-white">
       <!-- メンバーデータ -->
         <!-- チャートがはみ出すので全体を広げる -->
         <!-- <div class="flex w-[474px] shadow flex-col bg-white"> -->
-        <.class_tab
+        <.team_member_class_tab
           user={@display_skill_card.user}
           user_skill_class_score={@display_skill_card.user_skill_class_score}
           select_skill_class={@display_skill_card.select_skill_class}
@@ -52,18 +48,6 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
     """
   end
 
-  # 元のCall内容
-  # <.live_component
-  #        id={"skill-catd#{@current_user.id}"}
-  #        module={BrightWeb.TeamMemberSkillCardComponent}
-  #        display_user={@current_user}
-  #        skill_panel={@display_skill_panel}
-  #        class={"1"}
-  #        select_label={"now"}
-  #        me={:false}
-  #        anonymous={:false}
-  # />
-
   @impl true
   def update(assigns, socket) do
     socket =
@@ -73,9 +57,10 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
     {:ok, socket}
   end
 
+  @impl true
   def handle_event(
         "skill_class_tab_click",
-        %{"user_id" => user_id, "skill_class_id" => skill_class_id},
+        %{"skill_class_id" => skill_class_id},
         socket
       ) do
     #  # skill_class_tabがクリックされたユーザーを検索する

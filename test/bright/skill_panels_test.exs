@@ -5,6 +5,9 @@ defmodule Bright.SkillPanelsTest do
   alias Bright.SkillPanels
   alias Bright.UserSkillPanels
 
+  alias Bright.Teams
+  alias Bright.TeamTestHelper
+
   describe "skill_panels" do
     alias Bright.SkillPanels.SkillPanel
 
@@ -159,6 +162,65 @@ defmodule Bright.SkillPanelsTest do
 
       assert SkillPanels.list_skill_classes()
              |> Bright.Repo.preload(:skill_panel) == [skill_class]
+    end
+  end
+
+  describe "list_team_member_users_skill_panels_by_career_field/3" do
+    test "select success" do
+      team_name = Faker.Lorem.word()
+      user_1 = insert(:user)
+      user_2 = insert(:user)
+      career_field_name = "engineer"
+
+      # キャリアフィールドからスキルクラスまでの用意
+      career_field = insert(:career_field, name_en: career_field_name)
+      job = insert(:job)
+      insert(:career_field_job, career_field: career_field, job: job)
+      skill_panel_1 = insert(:skill_panel)
+      insert(:job_skill_panel, job: job, skill_panel: skill_panel_1)
+      skill_class_1_1 = insert(:skill_class, skill_panel: skill_panel_1, class: 1)
+
+      skill_panel_2 = insert(:skill_panel)
+      insert(:job_skill_panel, job: job, skill_panel: skill_panel_2)
+      skill_class_2_1 = insert(:skill_class, skill_panel: skill_panel_2, class: 1)
+      skill_class_2_2 = insert(:skill_class, skill_panel: skill_panel_2, class: 2)
+
+      # 保有スキルパネルとスキルクラススコアの用意
+      # user_1 は最初のスキルパネルのクラス１まで
+      # user_2 は最初のスキルパネルのクラス１と二つ目のスキルパネルのクラス２まで
+      insert(:user_skill_panel, user: user_1, skill_panel: skill_panel_1)
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel_2)
+      insert(:skill_class_score, user: user_1, skill_class: skill_class_1_1, percentage: 20.0)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class_1_1, percentage: 30.0)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class_2_1, percentage: 40.0)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class_2_2, percentage: 10.0)
+
+      # チームを作成
+      assert {:ok, team, team_member_user_attrs} =
+               Teams.create_team_multi(team_name, user_1, [user_2])
+
+      # 未承認状態ではチーム作成者のスキルパネルしか取得できない
+      page =
+        SkillPanels.list_team_member_users_skill_panels_by_career_field(
+          team.id,
+          career_field_name
+        )
+
+      assert page.total_entries == 1
+
+      [skill_panel] = page.entries
+      assert skill_panel.id == skill_panel_1.id
+
+      # 承認するとユーザー２のスキルパネルも取得対象となる
+      TeamTestHelper.cofirm_invitation(team_member_user_attrs)
+
+      page2 =
+        SkillPanels.list_team_member_users_skill_panels_by_career_field(
+          team.id,
+          career_field_name
+        )
+
+      assert page2.total_entries == 2
     end
   end
 end

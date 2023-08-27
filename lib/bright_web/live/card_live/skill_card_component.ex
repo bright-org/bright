@@ -65,7 +65,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> set_default_over_ride_on_card_row_click_target()
   end
 
-  defp set_default_me(%{me: me} = assigns) do
+  defp set_default_me(%{me: _me} = assigns) do
     assigns
   end
 
@@ -74,7 +74,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> Map.put(:me, true)
   end
 
-  defp set_default_anonymous(%{anonymous: anonymous} = assigns) do
+  defp set_default_anonymous(%{anonymous: _anonymous} = assigns) do
     assigns
   end
 
@@ -83,7 +83,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> Map.put(:anonymous, false)
   end
 
-  defp set_default_root(%{root: root} = assigns) do
+  defp set_default_root(%{root: _root} = assigns) do
     assigns
   end
 
@@ -93,7 +93,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   defp set_default_over_ride_on_card_row_click_target(
-         %{over_ride_on_card_row_click_target: over_ride_on_card_row_click_target} = assigns
+         %{over_ride_on_card_row_click_target: _over_ride_on_card_row_click_target} = assigns
        ) do
     assigns
   end
@@ -149,10 +149,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
-  @doc """
-  over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
-  """
   defp skill_gem(%{score: %{level: level}, over_ride_on_card_row_click_target: true} = assigns) do
+    # over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
     assigns =
       assigns
       |> assign(:icon_path, icon_path(level))
@@ -191,6 +189,22 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   @impl true
+  def update(%{display_team: display_team, display_user: display_user} = assigns, socket) do
+    default_tab = "engineer"
+
+    tabs =
+      CareerFields.list_career_fields()
+      |> Enum.map(&{&1.name_en, &1.name_ja})
+
+    socket
+    |> assign(assigns)
+    |> assign_over_ride_on_card_row_click_target(assigns)
+    |> assign(:tabs, tabs)
+    |> assign(:selected_tab, default_tab)
+    |> update_socket(display_team, display_user, default_tab)
+  end
+
+  @impl true
   def update(%{display_user: user} = assigns, socket) do
     tabs =
       CareerFields.list_career_fields()
@@ -202,23 +216,6 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> assign(:selected_tab, "engineer")
     |> assign_paginate(user.id, "engineer")
     |> then(&{:ok, &1})
-  end
-
-  @impl true
-  def update(%{display_team: display_team} = assigns, socket) do
-    default_tab = "engineer"
-
-    tabs =
-      CareerFields.list_career_fields()
-      |> Enum.map(&{&1.name_en, &1.name_ja})
-
-    socket =
-      socket
-      |> assign(assigns)
-      |> assign_over_ride_on_card_row_click_target(assigns)
-      |> assign(:tabs, tabs)
-      |> assign(:selected_tab, default_tab)
-      |> update_socket(assigns, display_team, default_tab)
   end
 
   defp assign_over_ride_on_card_row_click_target(
@@ -233,20 +230,27 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     socket
   end
 
-  defp update_socket(socket, assigns, %Team{} = team, selected_tab) do
+  defp update_socket(socket, team, user, selected_tab) do
     socket
-    |> assign_paginate_team(team.id, selected_tab)
+    |> assign_paginate_team(team, user, selected_tab)
     |> then(&{:ok, &1})
   end
 
-  def assign_paginate_team(socket, team_id, career_field, page \\ 1) do
+  def assign_paginate_team(socket, team, user, career_field, page \\ 1)
+
+  def assign_paginate_team(socket, %Team{} = team, _user, career_field, page) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      SkillPanels.list_team_member_users_skill_panels_by_career_field(team_id, career_field, page)
+      SkillPanels.list_team_member_users_skill_panels_by_career_field(team.id, career_field, page)
 
     socket
     |> assign(:skill_panels, skill_panels)
     |> assign(:page, page)
     |> assign(:total_pages, total_pages)
+  end
+
+  def assign_paginate_team(socket, _team, user, career_field, page) do
+    # TODO 要件不明 チームが取得出来ていない場合は個人の場合とおなじスキルパネルを取得する
+    assign_paginate(socket, user.id, career_field, page)
   end
 
   def assign_paginate(socket, user_id, career_field, page \\ 1) do
@@ -257,6 +261,18 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> assign(:skill_panels, skill_panels)
     |> assign(:page, page)
     |> assign(:total_pages, total_pages)
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"tab_name" => tab_name},
+        %{assigns: %{display_team: team, display_user: user}} = socket
+      ) do
+    socket
+    |> assign(:selected_tab, tab_name)
+    |> assign_paginate_team(team, user, tab_name)
+    |> then(&{:noreply, &1})
   end
 
   @impl true

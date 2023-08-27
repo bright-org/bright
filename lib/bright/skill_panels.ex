@@ -67,6 +67,15 @@ defmodule Bright.SkillPanels do
     |> Repo.paginate(page: page, page_size: 15)
   end
 
+  @doc """
+    Returns the list skill panes witin class and score by career_field name.
+
+  ## Examples
+
+      iex> list_users_skill_panels_by_career_field(user_id, career_field)
+      [%SkillPanel{}]
+
+  """
   def list_team_member_users_skill_panels_by_career_field(
         team_id,
         career_field_name,
@@ -91,11 +100,14 @@ defmodule Bright.SkillPanels do
 
     from(p in subquery(career_field_query),
       join: u in assoc(p, :user_skill_panels),
-      where: u.user_id in subquery(team_member_users_query),
+      on: u.skill_panel_id == p.id,
       join: class in assoc(p, :skill_classes),
       on: class.skill_panel_id == p.id,
       join: score in assoc(class, :skill_class_scores),
-      on: class.id == score.skill_class_id,
+      on: score.skill_class_id == class.id and score.user_id == u.user_id,
+      where:
+        u.user_id in subquery(team_member_users_query) and
+          score.user_id in subquery(team_member_users_query),
       preload: [skill_classes: :skill_class_scores],
       order_by: p.updated_at,
       distinct: true

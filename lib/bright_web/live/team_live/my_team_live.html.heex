@@ -1,4 +1,3 @@
-<!-- スイッチ -->
 <div class="px-10 pt-4 pb-8 bg-white">
   <!-- スキルと対象の切り替え -->
   <div class="flex gap-x-4">
@@ -7,16 +6,16 @@
     <.mega_menu_button
       id="mega_menu_skill_panel"
       label="スキル"
-      label="スキル"
       dropdown_offset_skidding="307"
     >
       <.live_component
         id="skill_card"
         module={BrightWeb.CardLive.SkillCardComponent}
         display_user={@current_user}
+        display_team={@display_team}
         me={true}
         anonymous={false}
-        root={"graphs"}
+        root={""}
         over_ride_on_card_row_click_target={:true}
       />
     </.mega_menu_button>
@@ -29,7 +28,6 @@
     <.mega_menu_button
       id="mega_menu_team"
       label="チーム"
-      display_user={@current_user}
       dropdown_offset_skidding="307"
     >
       <.live_component

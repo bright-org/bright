@@ -5,8 +5,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   import BrightWeb.MegaMenuComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
 
-  alias Bright.Accounts.User
-
   # スコア（〇 △ー） 各スタイルと色の定義
   @score_mark %{
     high: "high h-4 w-4 rounded-full",
@@ -228,14 +226,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   attr :select_skill_class, Bright.SkillPanels.SkillClass
   attr :skill_class_tab_click_target, :any, default: nil
 
-  def class_tab(%{user_skill_class_score: user_skill_class_score} = assigns) do
+  def team_member_class_tab(assigns) do
     # チーム表示用以下の都合で専用の関数を用意
     # userを起点にpre_loadしていった場合、skill_score.skill_classの構造になる為pair_skill_class_score関数に対応できない
     # チームスキル分析でタブをタップした場合の挙動をハンドラで実装したい
 
     ~H"""
     <ul class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full">
-      <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- user_skill_class_score do %>
+      <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- @user_skill_class_score do %>
         <%= if skill_class_score do %>
           <% current = @select_skill_class.class == skill_class.class %>
           <%= if @select_skill_class.class == skill_class.class do %>
