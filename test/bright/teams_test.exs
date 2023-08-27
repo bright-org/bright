@@ -29,8 +29,8 @@ defmodule Bright.TeamsTest do
       admin_result = Enum.find(team.member_users, fn x -> x.user_id == admin_user.id end)
       # 管理者
       assert admin_result.is_admin == true
-      # 管理者の最初のチームは即時プライマリチーム
-      assert admin_result.is_star == true
+      # 初期状態ではスターは指定しない
+      assert admin_result.is_star == false
       # 管理者には招待メールは送信しない
       assert admin_result.invitation_sent_to == nil
       # 管理者本人は即時承認状態
@@ -91,7 +91,7 @@ defmodule Bright.TeamsTest do
     end
   end
 
-  describe "list_joined_teams_by_user_id/1" do
+  describe "list_joined_teams_by_user_id/3" do
     test "create team and member users. with no page params" do
       admin_team_name = Faker.Lorem.word()
       admin2_team_name = Faker.Lorem.word()
@@ -126,7 +126,7 @@ defmodule Bright.TeamsTest do
       user = insert(:user)
       other_user = insert(:user)
 
-      assert {:ok, admin_team, _admin_team_member_user_attrs} =
+      assert {:ok, _admin_team, _admin_team_member_user_attrs} =
                Teams.create_team_multi(admin_team_name, user, [other_user])
 
       assert {:ok, _joined_team, joined_team_member_user_attrs} =
@@ -185,14 +185,6 @@ defmodule Bright.TeamsTest do
       # ページパラメータで指定した数だけ結果が取得できる
       assert Enum.count(page1_3.entries) == 2
 
-      related_teams = page1_3.entries
-
-      # 作成したチームの属性チェック スター付きのチームが最初にくる
-      [admin_team_result | _rest] = related_teams
-      assert admin_team_result.team.name == admin_team.name
-
-      # スターがついてないチームの並び順について、承認が早すぎると並び順が安定しない為、テスト対象からはずす
-
       page2 = Teams.list_joined_teams_by_user_id(user.id, %{page: 2, page_size: 2})
 
       # ページ情報の確認
@@ -202,6 +194,37 @@ defmodule Bright.TeamsTest do
 
       # ２ページ目の残りは１件
       assert Enum.count(page2.entries) == 1
+    end
+
+    test "" do
+      team_name = Faker.Lorem.word()
+      team_name2 = Faker.Lorem.word()
+      user = insert(:user)
+
+      assert {:ok, _team, _team_member_user_attrs} = Teams.create_team_multi(team_name, user, [])
+
+      assert {:ok, _team2, _team2_member_user_attrs} =
+               Teams.create_team_multi(team_name2, user, [])
+
+      page = Teams.list_joined_teams_by_user_id(user.id, %{page: 1, page_size: 2})
+      last_team = List.last(page.entries)
+
+      # スター指定すると先頭にくる
+      assert {:ok, _toggled_team_member_user} = Teams.toggle_is_star(last_team)
+
+      page2 = Teams.list_joined_teams_by_user_id(user.id, %{page: 1, page_size: 2})
+      first_team = List.first(page2.entries)
+      assert first_team.id == last_team.id
+
+      # スターを入れ替えると順序が入れ替わる
+      last_team2 = List.last(page2.entries)
+      assert {:ok, _toggled_team_member_user2} = Teams.toggle_is_star(last_team2)
+
+      assert {:ok, _toggled_team_member_user3} = Teams.toggle_is_star(first_team)
+
+      page2 = Teams.list_joined_teams_by_user_id(user.id, %{page: 1, page_size: 2})
+      first_team2 = List.first(page2.entries)
+      assert first_team2.id == last_team2.id
     end
 
     test "nothing joined team" do
@@ -232,16 +255,16 @@ defmodule Bright.TeamsTest do
           team_member_user.team_id == team.id
         end)
 
-      # 最初に作られたチームはスター扱い
-      assert team_member_user.is_star == true
+      # 初期状態ではスターは指定しない
+      assert team_member_user.is_star == false
 
       # toggleすると逆転する
       assert {:ok, toggled_team_member_user} = Teams.toggle_is_star(team_member_user)
-      assert toggled_team_member_user.is_star == false
+      assert toggled_team_member_user.is_star == true
 
       # 再度toggleすると再度逆転する
       assert {:ok, toggled_team_member_user_2} = Teams.toggle_is_star(toggled_team_member_user)
-      assert toggled_team_member_user_2.is_star == true
+      assert toggled_team_member_user_2.is_star == false
     end
   end
 

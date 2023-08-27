@@ -254,7 +254,7 @@ defmodule Bright.Teams do
   def list_joined_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
     from(tmbu in TeamMemberUsers,
       where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at),
-      order_by: [desc: tmbu.is_star, desc: tmbu.updated_at]
+      order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
     )
     |> preload(:team)
     |> Repo.paginate(page_param)
@@ -284,7 +284,8 @@ defmodule Bright.Teams do
     from(tmu in TeamMemberUsers,
       where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
       order_by: [
-        desc: tmu.is_admin
+        desc: tmu.is_admin,
+        asc: tmu.invitation_confirmed_at
       ]
     )
     |> preload(user: :user_profile)
@@ -328,7 +329,8 @@ defmodule Bright.Teams do
         tmu.team_id == ^team_id and tmu.user_id != ^user_id and
           not is_nil(tmu.invitation_confirmed_at),
       order_by: [
-        desc: tmu.is_admin
+        desc: tmu.is_admin,
+        asc: tmu.invitation_confirmed_at
       ]
     )
     |> preload(user: :user_profile)
@@ -349,8 +351,7 @@ defmodule Bright.Teams do
     admin_attr = %{
       user_id: admin_user.id,
       is_admin: true,
-      # プライマリチーム判定
-      is_star: is_star(admin_user.id),
+      is_star: false,
       # 管理者本人は即時承認状態
       invitation_confirmed_at: TeamMemberUsers.now_for_confirmed_at()
     }
@@ -392,21 +393,6 @@ defmodule Bright.Teams do
       |> Repo.transaction()
 
     {:ok, Map.get(result, :team), member_attr}
-  end
-
-  @doc """
-  プライマリチーム判定
-
-  最初に所属したチームは自動的にプライマリチームになる
-  """
-  def is_star(user_id) do
-    page = list_joined_teams_by_user_id(user_id)
-
-    if page.total_entries == 0 do
-      true
-    else
-      false
-    end
   end
 
   @doc """

@@ -59,37 +59,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   defp set_default_attrs(assigns) do
     assigns
-    |> set_default_me()
-    |> set_default_anonymous()
-    |> set_default_root()
     |> set_default_over_ride_on_card_row_click_target()
-  end
-
-  defp set_default_me(%{me: _me} = assigns) do
-    assigns
-  end
-
-  defp set_default_me(assigns) do
-    assigns
-    |> Map.put(:me, true)
-  end
-
-  defp set_default_anonymous(%{anonymous: _anonymous} = assigns) do
-    assigns
-  end
-
-  defp set_default_anonymous(assigns) do
-    assigns
-    |> Map.put(:anonymous, false)
-  end
-
-  defp set_default_root(%{root: _root} = assigns) do
-    assigns
-  end
-
-  defp set_default_root(assigns) do
-    assigns
-    |> Map.put(:root, "")
   end
 
   defp set_default_over_ride_on_card_row_click_target(
@@ -101,6 +71,41 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp set_default_over_ride_on_card_row_click_target(assigns) do
     assigns
     |> Map.put(:over_ride_on_card_row_click_target, false)
+  end
+
+  defp skill_panel(%{over_ride_on_card_row_click_target: true} = assigns) do
+    # over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
+    skill_classes = assigns.skill_panel.skill_classes
+    dummy_classes = cleate_dummy_classes(skill_classes)
+
+    assigns =
+      assigns
+      |> assign(:skill_classes, skill_classes ++ dummy_classes)
+
+    ~H"""
+    <div class="flex">
+      <div class="flex-1 text-left font-bold">
+        <p
+          phx-click="on_skill_pannel_click"
+          phx-value-skill_panel_id={@skill_panel.id}
+        >
+          <%= @skill_panel.name %>
+        </p>
+      </div>
+      <%= for skill_class <- @skill_classes do %>
+        <.skill_gem
+          score={List.first(skill_class.skill_class_scores)}
+          skill_class={skill_class}
+          skill_panel={@skill_panel}
+          display_user={@display_user}
+          me={@me}
+          anonymous={@anonymous}
+          root={@root}
+          over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
+        />
+      <% end %>
+    </div>
+    """
   end
 
   defp skill_panel(assigns) do
@@ -118,10 +123,10 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
           <%= @skill_panel.name %>
         </.link>
       </div>
-      <%= for class <- @skill_classes do %>
+      <%= for skill_class <- @skill_classes do %>
         <.skill_gem
-          score={List.first(class.skill_class_scores)}
-          class_num={class.class}
+          score={List.first(skill_class.skill_class_scores)}
+          skill_class={skill_class}
           skill_panel={@skill_panel}
           display_user={@display_user}
           me={@me}
@@ -159,8 +164,9 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <div class="w-36">
       <p
-        phx-click="on_skill_pannel_click"
+        phx-click="on_skill_class_click"
         phx-value-skill_panel_id={@skill_panel.id}
+        phx-value-skill_class_id={@skill_class.id}
         class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
         >
         <img src={@icon_path} class="mr-1" />
@@ -178,7 +184,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
     ~H"""
     <div class="w-36">
-      <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@class_num}"}>
+      <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
           <img src={@icon_path} class="mr-1" />
           <span class="w-16"><%= level_text(@level) %></span>
