@@ -4,7 +4,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   alias Bright.{CareerFields, SkillPanels, UserSearches}
   alias Bright.SearchForm.{UserSearch, SkillSearch}
   alias Bright.UserJobProfiles.UserJobProfile
-  alias BrightWeb.SearchLive.SearchResultComponent
+  alias BrightWeb.SearchLive.SearchResultsComponent
   alias BrightWeb.BrightCoreComponents, as: BrightCore
 
   @class [クラス1: 1, クラス2: 2, クラス3: 3]
@@ -158,7 +158,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               field={sk[:skill_panel]}
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44"
               type="select"
-              options={Map.get(@skill_panels, sk[:career_field].value)}
+              options={Map.get(@skill_panels, sk[:career_field].value, [])}
               disabled={is_nil(sk[:career_field].value)}
               prompt="スキルパネル"
             />
@@ -196,9 +196,12 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         <BrightCore.button phx-disable-with="Searching...">検索する</BrightCore.button>
       </div>
       </.form>
+      <div :if={@no_result} class="mt-5 text-xl text-center">
+        該当するユーザーは見つかりませんでした
+      </div>
       <.live_component
         id="user_search_result"
-        module={SearchResultComponent}
+        module={SearchResultsComponent}
         current_user={@current_user}
         result={@search_results}
         skill_params={@skill_params}
@@ -229,6 +232,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> assign(:level, @level)
     |> assign(:search_results, [])
     |> assign(:skill_params, [])
+    |> assign(:no_result, false)
     |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
@@ -264,7 +268,15 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     {:noreply, assign(socket, :search_results, [])}
   end
 
-  def handle_event("search", _params, %{assigns: %{changeset: %{changes: changes}}} = socket) do
+  def handle_event("search", _params, %{assigns: %{changeset: %{valid?: false}}} = socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "search",
+        _params,
+        %{assigns: %{changeset: %{changes: changes}}} = socket
+      ) do
     skills =
       Map.get(changes, :skills, [])
       |> Enum.map(& &1.changes)
@@ -278,16 +290,20 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       skills
     }
 
-    users =
-      UserSearches.search_users_by_job_profile_and_skill_score(
-        search_params,
-        [socket.assigns.current_user.id]
-      )
+    case UserSearches.search_users_by_job_profile_and_skill_score(
+           search_params,
+           [socket.assigns.current_user.id]
+         ) do
+      [] ->
+        {:noreply, assign(socket, :no_result, true)}
 
-    socket
-    |> assign(:search_results, users)
-    |> assign(:skill_params, skills)
-    |> then(&{:noreply, &1})
+      users ->
+        socket
+        |> assign(:search_results, users)
+        |> assign(:skill_params, skills)
+        |> assign(:no_result, false)
+        |> then(&{:noreply, &1})
+    end
   end
 
   def handle_event("search", _params, socket), do: {:noreply, socket}

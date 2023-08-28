@@ -32,7 +32,7 @@ Google Cloudのプロジェクトに自分のGoogleアカウントを招待し�
 ├── environments
 │   ├── dev
 │   ├── stg
-│   └── prod # TODO: prod環境を構築する際に作成
+│   └── prod
 └── modules
     └── google
         ├── apis                    # 各種APIの有効化
@@ -57,3 +57,23 @@ dev環境を例とする。
 4. `develop` ブランチに反映すると、自動でプロビジョニングされる
 
 ※プロビジョニングのトリガーは環境ごとに異なる
+
+## 秘匿情報の変更と反映
+
+秘匿情報の管理にはTerraform Cloudの [Variable sets](https://app.terraform.io/app/bright-org/settings/varsets) を使用しており、環境ごとに `bright-***` という名前のVariable setを登録している。
+
+秘匿情報を変更（追加や削除も含む）する場合、以下の手順で変更と反映を行う。
+
+1. Terraform Cloud上で、Variable setの内容を変更する
+2. Terraform Cloud上で、手動でApplyする
+3. Phoenixアプリケーションをデプロイする（アプリに何も変更がなくても必要）
+
+### 例：prod環境のBasic認証のパスワードを変更する
+
+1. Terraform Cloud上で、Variable setの内容を変更する
+    ![](./images/variable_sets.png)
+2. Terraform Cloud上で、手動でApplyする
+    ![](./images/apply.png)
+3. Phoenixアプリケーションをデプロイする（アプリに何も変更がなくても必要）
+    - `release-` というprefixのGitタグをPushするとデプロイされる
+    - [GitHub Releaseを作成](https://github.com/bright-org/bright/releases/tag/release-sample) してデプロイすることも可能

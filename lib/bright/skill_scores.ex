@@ -303,6 +303,19 @@ defmodule Bright.SkillScores do
   def get_skill_score!(id), do: Repo.get!(SkillScore, id)
 
   @doc """
+  Gets a single last updated skill_score
+  """
+  def get_latest_skill_score(user_id) do
+    from(
+      ss in SkillScore,
+      where: ss.user_id == ^user_id,
+      order_by: [desc: :updated_at],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  @doc """
   Updates a skill_score.
 
   ## Examples
