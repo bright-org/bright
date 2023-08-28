@@ -2,11 +2,11 @@ defmodule BrightWeb.SearchLive.ResultComponents do
   use BrightWeb, :component
 
   import BrightWeb.ChartComponents, only: [doughnut_graph: 1]
+  import BrightWeb.DisplayUserHelper, only: [encrypt_user_name: 1]
+  import BrightWeb.PathHelper
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
     only: [profile_skill_class_level: 1, score_mark_class: 2, skill_score_percentages: 2]
-
-  import BrightWeb.DisplayUserHelper, only: [encrypt_user_name: 1]
 
   import BrightWeb.SkillPanelLive.SkillPanelHelper,
     only: [calc_percentage: 2]
@@ -95,7 +95,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
         <li>
           <p>
-            <span class="inline-block w-28">試験の合格率</span>
+            <span class="inline-block w-28">試験の受験率</span>
             <span><%= calc_percentage(@counter.exam_touch, @num_skills) %>%</span>
           </p>
         </li>
@@ -120,7 +120,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
       </button>
       <.link
         class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
-        href={"/panels/#{@skill_panel_id}/anon/#{encrypt_user_name(@user)}"}
+        href={skill_panel_path("panels",%{id: @skill_panel_id}, %{name_encrypted: encrypt_user_name(@user)},false,true)}
       >
         成長グラフの確認
       </.link>
