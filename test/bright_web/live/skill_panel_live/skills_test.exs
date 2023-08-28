@@ -563,6 +563,18 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       %{skill_panel: skill_panel, skill_class: skill_class}
     end
 
+    test "shows 404 if skill_panel_id is invalid ULID", %{conn: conn} do
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/abcd")
+      end
+    end
+
+    test "shows 404 if skill_panel not exists", %{conn: conn} do
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/#{Ecto.ULID.generate()}")
+      end
+    end
+
     test "shows 404 if class not existing", %{
       conn: conn,
       skill_panel: skill_panel
