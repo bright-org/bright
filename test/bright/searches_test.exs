@@ -1,4 +1,4 @@
-defmodule Bright.UserUserSearchesTest do
+defmodule Bright.UserSearchesTest do
   use Bright.DataCase
 
   alias Bright.UserSearches
