@@ -74,17 +74,6 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
             </div>
           </div>
 
-          <div class="border-b border-brightGray-200 flex flex-wrap">
-            <BrightCore.input
-              field={@form[:availability_date]}
-              container_class="py-4 w-full"
-              label_class="w-32"
-              type="date"
-              size="20"
-              label="就職可能日"
-            />
-          </div>
-
           <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
             <span class="py-1 w-32">勤務体系</span>
             <div>
