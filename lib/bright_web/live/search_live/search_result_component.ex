@@ -120,11 +120,8 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
   defp gen_tabs_tuple(skills) when length(skills) == 1,
     do: Enum.map(skills, &{&1.skill_panel, &1.skill_panel_name}) |> Enum.concat([{"", ""}])
 
-  defp gen_tabs_tuple(skills) when length(skills) == 2,
-    do: Enum.map(skills, &{&1.skill_panel, &1.skill_panel_name})
-
   defp gen_tabs_tuple(skills),
-    do: Enum.map(skills, &{&1.skill_panel, String.slice(&1.skill_panel_name, 0..10)})
+    do: Enum.map(skills, &{&1.skill_panel, &1.skill_panel_name})
 
   defp get_skill_gem_data(skill_gem), do: [skill_gem |> Enum.map(fn x -> x.percentage end)]
   defp get_skill_gem_labels(skill_gem), do: skill_gem |> Enum.map(fn x -> x.name end)
