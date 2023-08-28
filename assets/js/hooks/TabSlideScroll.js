@@ -15,34 +15,39 @@ const animateElement = function(element, property, startValue, endValue, duratio
   requestAnimationFrame(step)
 }
 
-const setElement = function(element, property, value) {
+const setElementMargin = function(element, property, value) {
   element.style[property] = value + "px"
+}
+
+const setButtonsDisplay = function(element, count) {
+  if (count > 3) {
+    element.style.display = "flex"
+  } else {
+    element.style.display = "none"
+  }
 }
 
 const TabSlideScroll = {
   mounted() {
     const relational_tab = this.el.querySelector(".inner_tab_list")
     const relational_tab_items = relational_tab.querySelectorAll("li")
-    const  relational_buttons = this.el.querySelector(".inner_tab_slide_buttons")
-    const count = relational_tab_items.length
-    const tab_width = count * 200
+    this.relational_buttons = this.el.querySelector(".inner_tab_slide_buttons")
     this.margin = 0
     this.first_tab_item = relational_tab_items[0]
+    this.count = relational_tab_items.length
+    const tab_width = this.count * 200
+    const buttons = this.relational_buttons.children
 
-    if (count > 3) {
-      relational_buttons.style.display = "block"
-    } else {
-      relational_buttons.style.display = "none"
-    }
+    // 表示設定
+    setButtonsDisplay(this.relational_buttons, this.count)
 
-    const buttons = relational_buttons.children
+    // イベント設定
     buttons[1].addEventListener("click", () => {
       if (tab_width + this.margin > 600) {
         this.margin = this.margin - 200
         animateElement(this.first_tab_item, "marginLeft", this.margin + 200, this.margin, 250)
       }
     })
-
     buttons[0].addEventListener("click", () => {
       if (this.margin < 0) {
         this.margin = this.margin + 200
@@ -52,8 +57,9 @@ const TabSlideScroll = {
   },
 
   updated() {
-    // タブ押下時(updated)の位置の再設定
-    setElement(this.first_tab_item, "marginLeft", this.margin)
+    // タブ押下時(updated)の位置と表示の再設定
+    setElementMargin(this.first_tab_item, "marginLeft", this.margin)
+    setButtonsDisplay(this.relational_buttons, this.count)
   }
 }
 
