@@ -196,6 +196,9 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         <BrightCore.button phx-disable-with="Searching...">検索する</BrightCore.button>
       </div>
       </.form>
+      <div :if={@no_result} class="mt-5 text-xl text-center">
+        該当するユーザーは見つかりませんでした
+      </div>
       <.live_component
         id="user_search_result"
         module={SearchResultsComponent}
@@ -229,6 +232,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> assign(:level, @level)
     |> assign(:search_results, [])
     |> assign(:skill_params, [])
+    |> assign(:no_result, false)
     |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
@@ -286,16 +290,20 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       skills
     }
 
-    users =
-      UserSearches.search_users_by_job_profile_and_skill_score(
-        search_params,
-        [socket.assigns.current_user.id]
-      )
+    case UserSearches.search_users_by_job_profile_and_skill_score(
+           search_params,
+           [socket.assigns.current_user.id]
+         ) do
+      [] ->
+        {:noreply, assign(socket, :no_result, true)}
 
-    socket
-    |> assign(:search_results, users)
-    |> assign(:skill_params, skills)
-    |> then(&{:noreply, &1})
+      users ->
+        socket
+        |> assign(:search_results, users)
+        |> assign(:skill_params, skills)
+        |> assign(:no_result, false)
+        |> then(&{:noreply, &1})
+    end
   end
 
   def handle_event("search", _params, socket), do: {:noreply, socket}
