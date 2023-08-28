@@ -120,12 +120,19 @@ defmodule BrightWeb.SearchLive.ResultComponents do
       </button>
       <.link
         class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
-        href={skill_panel_path("panels",%{id: @skill_panel_id}, %{name_encrypted: encrypt_user_name(@user)},false,true)}
+        target="_blank"
+        rel="noopener noreferrer"
+        href={
+          skill_panel_path("panels",%{id: @skill_panel_id}, %{name_encrypted: encrypt_user_name(@user)},false,true)
+          <> "?class=#{@class}"
+        }
       >
         成長グラフの確認
       </.link>
       <.link
         class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
+        target="_blank"
+        rel="noopener noreferrer"
         href={"/mypage/anon/#{encrypt_user_name(@user)}"}
       >
       保有スキルの確認
