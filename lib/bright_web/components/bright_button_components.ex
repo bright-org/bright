@@ -137,6 +137,7 @@ defmodule BrightWeb.BrightButtonComponents do
     <.link
       href="https://docs.google.com/forms/d/e/1FAIpQLScKrQbJajiE18Abh7HloDcJYTSY-HbiX280XcoHDIsfJKhpAA/viewform"
       target="_blank"
+      rel="noopener noreferrer"
     >
       <button type="button"
         class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
