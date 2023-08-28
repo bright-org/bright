@@ -1,4 +1,4 @@
-defmodule Bright.NotificationOperation do
+defmodule Bright.Notifications.NotificationOperation do
   @moduledoc """
   The NotificationOperation context.
   """

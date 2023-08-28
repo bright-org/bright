@@ -26,13 +26,9 @@ defmodule BrightWeb.MypageLive.NotificationDetailComponent do
     {:ok, socket}
   end
 
-  def get_notification(%{notification_type: "contact", notification_id: notification_id}) do
+  def get_notification(%{notification_type: "operation" = type, notification_id: notification_id}) do
     # TODO 仮実装 新しい通知テーブル作成後に実装する
-    Bright.Notifications.get_notification!(notification_id)
-    |> Map.put(
-      :detail,
-      "仮実装aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    )
+    Bright.Notifications.get_notification!(type, notification_id)
   end
 
   def get_notification(_), do: %{message: "", detail: ""}

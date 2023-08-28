@@ -5,7 +5,7 @@ defmodule Storybook.Card_list.CardListComponents do
   @hour 60
   @day @hour * 24
   @row_types [
-    "contact",
+    "operation",
     "skill_up",
     "1on1_invitation",
     "promotion",
@@ -48,5 +48,5 @@ defmodule Storybook.Card_list.CardListComponents do
   end
 
   def create_notification(inserted_at),
-    do: %{icon_type: "person", message: "メッセージの中身", inserted_at: inserted_at}
+    do: %{icon_type: "person", message: "メッセージの中身", inserted_at: inserted_at, id: "test"}
 end
