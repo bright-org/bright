@@ -197,7 +197,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
       socket
       |> assign(:display_team, display_team)
       |> assign(:display_user, socket.assigns.display_user)
-      |> push_navigate(to: "/teams/#{display_team.id}")
+      |> redirect(to: "/teams/#{display_team.id}")
 
     {:noreply, socket}
   end

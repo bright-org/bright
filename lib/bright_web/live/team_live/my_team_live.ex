@@ -13,6 +13,28 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.SkillPanels.SkillPanel
   alias Bright.UserProfiles
 
+  def mount(params, _session, %{assigns: %{live_action: :new}} = socket) do
+    # 直接チーム作成モーダルを起動した場合、データの取得は行わない
+    socket =
+      socket
+      |> assign_page_title(nil)
+      |> assign_display_skill_panel(nil)
+      |> assign_display_skill_classes([])
+      |> assign_display_team(nil)
+      |> assign_current_users_team_member(nil)
+      # ユーザー事に表示するスキルカードのmap作成とassign
+      |> assign_display_skill_cards(
+        [],
+        [],
+        nil,
+        []
+      )
+      # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
+      |> assign_push_redirect(params, nil, nil)
+
+    {:ok, socket}
+  end
+
   def mount(params, _session, socket) do
     # パラメータ指定がある場合それぞれの対象データを取得、ない場合はnil
     display_team = get_display_team(params, socket.assigns.current_user.id)
@@ -357,7 +379,7 @@ defmodule BrightWeb.MyTeamLive do
     socket =
       socket
       |> assign(:display_team, display_team)
-      |> deside_push_redirect(display_team, socket.assigns.display_skill_panel.id, nil)
+      |> deside_redirect(display_team, socket.assigns.display_skill_panel.id, nil)
 
     {:noreply, socket}
   end
@@ -367,7 +389,7 @@ defmodule BrightWeb.MyTeamLive do
     # 指定されているチームを引き継いで該当のスキルパネルを指定してリダイレクトする
     socket =
       socket
-      |> deside_push_redirect(socket.assigns.display_team, skill_panel_id, nil)
+      |> deside_redirect(socket.assigns.display_team, skill_panel_id, nil)
 
     {:noreply, socket}
   end
@@ -381,30 +403,40 @@ defmodule BrightWeb.MyTeamLive do
     # 指定されているチーム、スキルパネルを引き継いで該当のスキルクラスをURLパラメータに指定してリダイレクトする
     socket =
       socket
-      |> deside_push_redirect(socket.assigns.display_team, skill_panel_id, skill_class_id)
+      |> deside_redirect(socket.assigns.display_team, skill_panel_id, skill_class_id)
 
     {:noreply, socket}
   end
 
-  defp deside_push_redirect(socket, %Team{} = display_team, nil, nil) do
-    socket
-    |> push_redirect(to: "/teams/#{display_team.id}")
+  def handle_event(
+        "cancel_team_create",
+        _params,
+        socket
+      ) do
+    # チーム作成モーダルキャンセル時の挙動
+    # /teamsへリダイレクト
+    socket =
+      socket
+      |> redirect(to: "/teams")
+
+    {:noreply, socket}
   end
 
-  defp deside_push_redirect(socket, %Team{} = display_team, skill_panel_id, nil) do
+  defp deside_redirect(socket, %Team{} = display_team, nil, nil) do
     socket
-    |> push_redirect(to: "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}")
+    |> redirect(to: "/teams/#{display_team.id}")
   end
 
-  defp deside_push_redirect(socket, %Team{} = display_team, skill_panel_id, skill_class_id) do
+  defp deside_redirect(socket, %Team{} = display_team, skill_panel_id, nil) do
     socket
-    |> push_redirect(
+    |> redirect(to: "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}")
+  end
+
+  defp deside_redirect(socket, %Team{} = display_team, skill_panel_id, skill_class_id) do
+    socket
+    |> redirect(
       to:
         "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
     )
-  end
-
-  def handle_params(_params, _path, socket) do
-    {:noreply, socket}
   end
 end
