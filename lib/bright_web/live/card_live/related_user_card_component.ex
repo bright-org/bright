@@ -58,6 +58,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
       >
         <.inner_tab
           :if={Enum.count(@inner_tab) > 0}
+          id={"related-user-card-inner-tab-#{@id}"}
           target={@myself}
           selected_tab={@selected_tab}
           inner_tab={@inner_tab}
@@ -227,9 +228,9 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   defp inner_tab(assigns) do
     ~H"""
-    <div class="flex border-b border-brightGray-50">
+    <div id={@id} class="flex border-b border-brightGray-50" phx-hook="TabSlideScroll">
       <div class="overflow-hidden">
-        <ul id="relational_user_tab" class="overflow-hidden flex text-base !text-sm w-[99999px]" >
+        <ul class="inner_tab_list overflow-hidden flex text-base !text-sm w-[99999px]">
           <%= for {key, value} <- @inner_tab do %>
             <li
               class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
@@ -243,7 +244,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           <% end %>
         </ul>
       </div>
-      <div id="relational_user_tab_buttons" class="flex">
+      <div class="inner_tab_slide_buttons flex">
         <button class="px-1 border-l border-brightGray-50">
           <span
             class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
