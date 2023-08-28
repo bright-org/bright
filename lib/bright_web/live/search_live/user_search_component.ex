@@ -158,7 +158,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
               field={sk[:skill_panel]}
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44"
               type="select"
-              options={Map.get(@skill_panels, sk[:career_field].value)}
+              options={Map.get(@skill_panels, sk[:career_field].value, [])}
               disabled={is_nil(sk[:career_field].value)}
               prompt="スキルパネル"
             />
