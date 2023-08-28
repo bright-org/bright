@@ -25,7 +25,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
 
         <div class="relative">
           <p class="absolute left-0 ml-1 mt-1 top-0">
-            クラス<%= Map.get(@selected_skill, :class, 1) %>
+            クラス<%= @selected_skill_panel.class %>
           </p>
 
           <div class="flex justify-between">
@@ -49,7 +49,11 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       <div class="border-l border-brightGray-200 border-dashed w-[500px] ml-2 px-2">
         <div class="flex">
           <.job_area job={@user.user_job_profile} last_updated={@last_updated} />
-          <.action_area skill_panel_id={@selected_tab} user={@user}/>
+          <.action_area
+            skill_panel_id={@selected_tab}
+            user={@user}
+            class={@selected_skill_panel.class}
+          />
         </div>
         <div class="flex justify-between mt-8">
           <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
@@ -68,30 +72,30 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
   end
 
   @impl true
-  def update(%{skill_params: skills, user: user} = assigns, socket) do
-    selected_skill = List.first(skills)
+  def update(%{skill_params: skill_params, user: user} = assigns, socket) do
+    selected_skill_panel = List.first(skill_params)
 
     socket
     |> assign(assigns)
-    |> assign(:tabs, gen_tabs_tuple(skills))
-    |> assign(:selected_tab, selected_skill.skill_panel)
-    |> assign(:selected_skill, selected_skill)
+    |> assign(:tabs, gen_tabs_tuple(skill_params))
+    |> assign(:selected_tab, selected_skill_panel.skill_panel)
+    |> assign(:selected_skill_panel, selected_skill_panel)
     |> assign(:last_updated, SkillScores.get_latest_skill_score(user.id))
-    |> assign_skills(selected_skill)
+    |> assign_skill_panels(selected_skill_panel)
     |> then(&{:ok, &1})
   end
 
-  def assign_skills(%{assigns: %{user: user}} = socket, selected_skill) do
+  def assign_skill_panels(%{assigns: %{user: user}} = socket, selected_skill_panel) do
     skill_class_score =
       Enum.find(user.skill_class_scores, fn score ->
-        score.skill_class_id == selected_skill.skill_class_id
+        score.skill_class_id == selected_skill_panel.skill_class_id
       end)
 
     skill_gem =
       SkillScores.get_skill_gem(
         user.id,
-        selected_skill.skill_panel,
-        Map.get(selected_skill, :class, 1)
+        selected_skill_panel.skill_panel,
+        selected_skill_panel.class
       )
 
     socket
@@ -106,22 +110,22 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
   def handle_event(
         "tab_click",
         %{"tab_name" => tab_name},
-        %{assigns: %{skill_params: skills}} = socket
+        %{assigns: %{skill_params: skill_params}} = socket
       ) do
-    selected_skill = Enum.find(skills, &(&1.skill_panel == tab_name))
+    selected_skill_panel = Enum.find(skill_params, &(&1.skill_panel == tab_name))
 
     socket
     |> assign(:selected_tab, tab_name)
-    |> assign(:selected_skill, selected_skill)
-    |> assign_skills(selected_skill)
+    |> assign(:selected_skill_panel, selected_skill_panel)
+    |> assign_skill_panels(selected_skill_panel)
     |> then(&{:noreply, &1})
   end
 
-  defp gen_tabs_tuple(skills) when length(skills) == 1,
-    do: Enum.map(skills, &{&1.skill_panel, &1.skill_panel_name}) |> Enum.concat([{"", ""}])
+  defp gen_tabs_tuple(skill_params) when length(skill_params) == 1,
+    do: Enum.map(skill_params, &{&1.skill_panel, &1.skill_panel_name}) |> Enum.concat([{"", ""}])
 
-  defp gen_tabs_tuple(skills),
-    do: Enum.map(skills, &{&1.skill_panel, &1.skill_panel_name})
+  defp gen_tabs_tuple(skill_params),
+    do: Enum.map(skill_params, &{&1.skill_panel, &1.skill_panel_name})
 
   defp get_skill_gem_data(skill_gem), do: [skill_gem |> Enum.map(fn x -> x.percentage end)]
   defp get_skill_gem_labels(skill_gem), do: skill_gem |> Enum.map(fn x -> x.name end)

@@ -21,24 +21,25 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
     """
   end
 
-  def update(%{skill_params: skills} = assigns, socket) do
+  def update(%{skill_params: skill_params} = assigns, socket) do
     socket
     |> assign(assigns)
-    |> assign(:skill_params, put_skill_panel_name(skills))
+    |> assign(:skill_params, put_skill_panel_name(skill_params))
     |> then(&{:ok, &1})
   end
 
-  def put_skill_panel_name(skills) do
-    Enum.map(skills, fn skill ->
+  def put_skill_panel_name(skill_params) do
+    Enum.map(skill_params, fn params ->
       skill_panel =
-        SkillPanels.get_skill_panel!(skill.skill_panel)
+        SkillPanels.get_skill_panel!(params.skill_panel)
         |> Repo.preload(:skill_classes)
 
-      Map.merge(skill, %{
+      Map.merge(params, %{
         skill_panel_name: skill_panel.name,
+        class: Map.get(params, :class, 1),
         skill_class_id:
           Enum.find(skill_panel.skill_classes, fn class ->
-            class.class == Map.get(skill, :class, 1)
+            class.class == Map.get(params, :class, 1)
           end).id
       })
     end)
