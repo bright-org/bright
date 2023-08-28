@@ -295,7 +295,11 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
            [socket.assigns.current_user.id]
          ) do
       [] ->
-        {:noreply, assign(socket, :no_result, true)}
+        socket
+        |> assign(:search_results, [])
+        |> assign(:skill_params, [])
+        |> assign(:no_result, true)
+        |> then(&{:noreply, &1})
 
       users ->
         socket
