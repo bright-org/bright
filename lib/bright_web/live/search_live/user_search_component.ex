@@ -22,41 +22,12 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         phx-submit="search"
       >
       <div class="border-b border-brightGray-200 flex flex-wrap items-center">
-        <div class="flex items-center w-fit">
-          <label class="flex items-center py-4">
-            <span class="w-24">PJ期間</span>
-            <BrightCore.input
-              field={@form[:pj_start]}
-              input_class="border border-brightGray-200 px-2 py-1  rounded w-30"
-              type="date"
-              size="20"
-            />
-            <span class="mx-1">～</span>
-            <BrightCore.input
-              field={@form[:pj_end]}
-              input_class="border border-brightGray-200 px-2 py-1  rounded w-30"
-              type="date"
-              size="20"
-            />
-          </label>
-
-          <label class="flex items-center ml-2">
-          <BrightCore.input
-                field={@form[:pj_end_undecided]}
-                input_class="border border-brightGray-200 rounded"
-                label_class="ml-1 text-xs"
-                type="checkbox"
-                label="終了日未定"
-              />
-          </label>
-        </div>
-
-        <div class="ml-auto w-fit">
+        <div class="w-fit">
           <label class="flex items-center py-4">
             <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
             <BrightCore.input
               field={@form[:desired_income]}
-              input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
+              input_class="border border-brightGray-200 px-2 py-1 mr-2 rounded w-40"
               size="20"
               type="number"
               after_label="万円以下"
