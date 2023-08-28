@@ -114,6 +114,9 @@ msgstr ""
 msgid "does not match password"
 msgstr ""
 
+msgid "does not match current password"
+msgstr ""
+
 msgid "did not change"
 msgstr ""
 

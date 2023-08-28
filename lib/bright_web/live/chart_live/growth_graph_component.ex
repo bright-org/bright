@@ -197,9 +197,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       |> label_to_date()
       |> Timex.shift(months: -TimelineHelper.get_monthly_interval())
 
+    # 未来データは別のテーブから取得するため、過去の範囲の日付にする
+    to_date_label_index = if data.future_enabled, do: -2, else: -1
+
     to_date =
       data.labels
-      |> List.last()
+      |> Enum.at(to_date_label_index)
       |> label_to_date()
 
     myself_init_data =

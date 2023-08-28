@@ -40,8 +40,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def assign_skill_panel(socket, skill_panel_id, root) do
+    raise_if_not_ulid(skill_panel_id)
     display_user = socket.assigns.display_user
     skill_panel = SkillPanels.get_user_skill_panel(display_user, skill_panel_id)
+
+    raise_if_not_exists_my_skill_panel(skill_panel, socket.assigns.me)
 
     if skill_panel do
       socket
@@ -93,11 +96,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> then(&assign_skill_class_and_score(socket, &1))
   end
 
-  def assign_skill_class_and_score(socket, class) when is_bitstring(class) do
+  def assign_skill_class_and_score(socket, class) when class in ~w(1 2 3) do
     assign_skill_class_and_score(socket, String.to_integer(class))
   end
 
-  def assign_skill_class_and_score(socket, class) do
+  def assign_skill_class_and_score(socket, class) when class in [1, 2, 3] do
     skill_class = socket.assigns.skill_classes |> Enum.find(&(&1.class == class))
 
     if skill_class do
@@ -108,10 +111,12 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
       |> assign(:skill_class, skill_class)
       |> assign(:skill_class_score, skill_class_score)
     else
-      # 保有スキルパネルに存在しないクラスへのアクセスにあたるので404で返す。
-      # 導線はなく、クエリストリングで指定される可能性がある。
-      raise Ecto.NoResultsError, queryable: "Bright.SkillPanels.SkillClass"
+      raise_invalid_skill_class()
     end
+  end
+
+  def assign_skill_class_and_score(_socket, _class) do
+    raise_invalid_skill_class()
   end
 
   def create_skill_class_score_if_not_existing(
@@ -224,4 +229,29 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     # 対象ユーザーかつ匿名ではない
     "/#{root}/#{skill_panel.id}/#{display_user.name}"
   end
+
+  defp raise_invalid_skill_class do
+    # 保有スキルパネルに存在しないクラスなどへのアクセスにあたる。404で返す。
+    # 導線はなく、クエリストリングで指定される可能性がある。
+    raise Ecto.NoResultsError, queryable: "Bright.SkillPanels.SkillClass"
+  end
+
+  defp raise_if_not_ulid(ulid) do
+    # スキルパネルの指定が不正だった場合は404で返す。
+    # 導線はなく、URLで指定される可能性がある。
+    Ecto.ULID.cast(ulid)
+    |> case do
+      {:ok, _} -> nil
+      _ -> raise Ecto.NoResultsError, queryable: "Bright.SkillPanels.SkillPanel"
+    end
+  end
+
+  defp raise_if_not_exists_my_skill_panel(nil, true) do
+    # 自身のスキルパネルが存在しない場合は404で返す。
+    # 導線はなく、URLで指定される可能性がある。
+    # なお、他者(me: false)では、他者への切り替え時に存在しないスキルパネルを指定される可能性がある。
+    raise Ecto.NoResultsError, queryable: "Bright.SkillPanels.SkillPanel"
+  end
+
+  defp raise_if_not_exists_my_skill_panel(_skill_panel, _me), do: nil
 end

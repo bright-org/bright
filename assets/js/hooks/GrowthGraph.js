@@ -43,17 +43,20 @@ const createData = (data) => {
   const [roleData, roleFuture] = dataDivision(data['role'], futureEnabled)
   const datasets = [];
   datasets.push(createDataset(myselfData, myselfBorderColor, myselfPointColor, myselfPointColor, false))
-  if (futureEnabled) {
-    datasets.push(createDataset(myselfFuture, myselfBorderColor, futurePointColor, myselfPointColor, true))
-  }
+  // TODO: α版では未来非表示
+  // if (futureEnabled) {
+  //   datasets.push(createDataset(myselfFuture, myselfBorderColor, futurePointColor, myselfPointColor, true))
+  // }
   datasets.push(createDataset(otherData, otherBorderColor, otherPointColor, otherPointColor, false))
-  if (futureEnabled) {
-    datasets.push(createDataset(otherFuture, otherBorderColor, futurePointColor, otherPointColor, true))
-  }
+  // TODO: α版では未来非表示
+  // if (futureEnabled) {
+  //   datasets.push(createDataset(otherFuture, otherBorderColor, futurePointColor, otherPointColor, true))
+  // }
   datasets.push(createDataset(roleData, roleBorderColor, rolePointColor, rolePointColor, false))
-  if (futureEnabled) {
-    datasets.push(createDataset(roleFuture, roleBorderColor, futurePointColor, rolePointColor, true))
-  }
+  // TODO: α版では未来非表示
+  // if (futureEnabled) {
+  //   datasets.push(createDataset(roleFuture, roleBorderColor, futurePointColor, rolePointColor, true))
+  // }
 
   return {
     labels: data.labels,
@@ -250,6 +253,10 @@ const fillMyselfData = (chart, scales) => {
   // 期間外のデータを描画するかを判定　配列の先頭は期間外のデータ
   const isDrawBefore = drawData[0] !== null
 
+  //TODO: α版では未来非表示↓
+  const future_enabled = data.future_enabled
+  //TODO: α版では未来非表示↑
+
   // 期間外のデータがnullの場合は予め除外しておく、理由は通常のグリッド処理が可能の為
   drawData = isDrawBefore ? drawData : drawData.slice(1)
   context.lineWidth = 1
@@ -260,7 +267,11 @@ const fillMyselfData = (chart, scales) => {
   const startX = x.getPixelForValue(0) - padding
   const startY = y.getPixelForValue(0)
 
-  const endX = x.getPixelForValue(4)
+  //TODO: α版では未来非表示↓
+  const endX = x.getPixelForValue(future_enabled ? 3 : 4)
+  //TODO: α版では未来非表示↑
+  //const endX = x.getPixelForValue(4)
+
   const endY = y.getPixelForValue(0)
 
   const gradient = context.createLinearGradient(0, 0, 0, 300)
@@ -278,7 +289,11 @@ const fillMyselfData = (chart, scales) => {
 
   startIndex = isDrawBefore ? 1 : 0
 
-  for (let i = startIndex; i < drawData.length; i++) {
+  //α対応の為一時的に記述↓
+  const drawDataKLength = future_enabled ? drawData.length -1 : drawData.length
+  for (let i = startIndex; i < drawDataKLength; i++) {
+  //α対応の為一時的に記述↑
+  //for (let i = startIndex; i < drawData.length; i++) {
     let pointX = x.getPixelForValue(i - startIndex)
     let pointY = y.getPixelForValue(drawData[i])
     context.lineTo(pointX, pointY)

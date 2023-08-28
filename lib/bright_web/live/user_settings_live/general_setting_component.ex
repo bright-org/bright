@@ -75,7 +75,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
           <label class="flex py-4 w-full">
             <span class="py-1 w-32">自己紹介</span>
             <.inputs_for :let={ff} field={f[:user_profile]}>
-              <BrightCore.input type="textarea" field={ff[:detail]} div_class="w-full" input_class="w-full" rows="3" cols="20" />
+              <BrightCore.input type="textarea" field={ff[:detail]} div_class="flex-1 w-full" input_class="flex-1 w-full" rows="3" cols="20" />
             </.inputs_for>
           </label>
         </div>

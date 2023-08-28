@@ -95,6 +95,9 @@ msgstr "%{number}と同じ値にしてください"
 msgid "does not match password"
 msgstr "パスワードが一致しません"
 
+msgid "does not match current password"
+msgstr "現在のパスワードと一致しません"
+
 msgid "did not change"
 msgstr "変更されていません"
 

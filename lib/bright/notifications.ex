@@ -7,6 +7,7 @@ defmodule Bright.Notifications do
   alias Bright.Repo
 
   alias Bright.Notifications.Notification
+  alias Bright.Notifications.NotificationOperation
 
   @doc """
   Returns the list of notifications.
@@ -29,14 +30,17 @@ defmodule Bright.Notifications do
 
   ## Examples
 
-      iex> get_notification!(123)
-      %Notification{}
+      iex> get_notification!("operation", 123)
+      %{}
 
       iex> get_notification!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_notification!(id),
+  def get_notification!("operation", id),
+    do: Repo.get!(NotificationOperation, id)
+
+  def get_notification!(_type, id),
     do: Repo.get!(Notification, id) |> Repo.preload([:from_user, :to_user])
 
   @doc """
@@ -47,6 +51,14 @@ defmodule Bright.Notifications do
       iex> list_notification_by_type(user.id, "recruitment_coordination")
       %Notification{}
   """
+  def list_notification_by_type(_to_user_id, "operation", page_param) do
+    from(notification_operation in NotificationOperation,
+      order_by: [desc: notification_operation.inserted_at]
+    )
+    |> Repo.paginate(page_param)
+  end
+
+  # TODO Notification廃止後に削除予定
   def list_notification_by_type(to_user_id, type, page_param) do
     type_query(to_user_id, type)
     |> Repo.paginate(page_param)
