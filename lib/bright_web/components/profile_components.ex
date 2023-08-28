@@ -150,7 +150,7 @@ defmodule BrightWeb.ProfileComponents do
           <p><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
-        <button
+        <div
           phx-click={JS.push("remove_user", value: %{id: @user_id})}
           phx-target={@remove_user_target}
           class="mx-4"
@@ -160,7 +160,7 @@ defmodule BrightWeb.ProfileComponents do
           >
             close
           </span>
-        </button>
+        </div>
       </a>
     </li>
     """
