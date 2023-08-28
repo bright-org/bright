@@ -205,11 +205,6 @@ defmodule BrightWeb.MyTeamLive do
     # スキルが取得できていない場合、ダミーデータを設定
     map
     |> Map.put(:user_skill_class_score, nil)
-
-    # %{
-    #  skill_class: nil,
-    #  skill_class_score: 0
-    # })
   end
 
   defp add_user_skill_class_score(map, display_skill_classes, filterd_member_skill_classes) do

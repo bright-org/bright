@@ -15,7 +15,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
       <!-- メンバーデータ -->
         <div
           :if={is_nil(@display_skill_card.user_skill_class_score)}
-          class="h-[56px] bg-brightGreen-50"
+          class="h-[56px] bg-pureGray-600"
         >
         </div>
 
