@@ -153,7 +153,7 @@ defmodule BrightWeb.ProfileComponents do
         <div
           phx-click={JS.push("remove_user", value: %{id: @user_id})}
           phx-target={@remove_user_target}
-          class="mx-4"
+          class="mx-4 cursor-pointer"
         >
           <span
             class="material-icons !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
