@@ -40,6 +40,17 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
         </div>
 
         <%= if to_string(@form[:job_searching].value) == "true" do %>
+          <div class="border-b border-brightGray-200">
+            <BrightCore.input
+              field={@form[:desired_income]}
+              container_class="py-4 w-full"
+              label_class="py-1 w-32"
+              after_label_class="ml-1"
+              type="number"
+              label="希望年収"
+              after_label="万円以上"
+            />
+          </div>
           <div class="border-b border-brightGray-200 flex flex-wrap">
             <div class="flex py-4">
               <div class="flex flex-col">
@@ -74,7 +85,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
             </div>
           </div>
 
-          <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
+          <div class="flex flex-wrap py-4 w-full">
             <span class="py-1 w-32">勤務体系</span>
             <div>
               <div class="flex items-center">
@@ -133,18 +144,6 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 />
               </div>
             </div>
-          </div>
-
-          <div>
-            <BrightCore.input
-              field={@form[:desired_income]}
-              container_class="py-4 w-full"
-              label_class="py-1 w-32"
-              after_label_class="ml-1"
-              type="number"
-              label="希望年収"
-              after_label="万円以上"
-            />
           </div>
         <% end %>
 
