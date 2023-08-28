@@ -1,4 +1,4 @@
-defmodule Bright.UserUserSearchesTest do
+defmodule Bright.UserSearchesTest do
   use Bright.DataCase
 
   alias Bright.UserSearches
@@ -46,33 +46,6 @@ defmodule Bright.UserUserSearchesTest do
       insert(:user_job_profile, user: user_2, job_searching: false)
 
       query = {[{:job_searching, true}], %{}, []}
-
-      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
-    end
-
-    test "greater than equal pj_start", %{user_1: %{id: id} = user_1, user_2: user_2} do
-      insert(:user_job_profile, user: user_1, availability_date: ~D[2023-09-01])
-      insert(:user_job_profile, user: user_2, availability_date: ~D[2023-08-25])
-
-      query = {[{:job_searching, true}], %{pj_start: "2023-09-01"}, []}
-
-      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
-    end
-
-    test "less than equal pj_start", %{user_1: %{id: id} = user_1, user_2: user_2} do
-      insert(:user_job_profile, user: user_1, availability_date: ~D[2023-08-25])
-      insert(:user_job_profile, user: user_2, availability_date: ~D[2023-09-01])
-
-      query = {[{:job_searching, true}], %{pj_end: "2023-08-25"}, []}
-
-      assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
-    end
-
-    test "between pj_start and pj_end", %{user_1: %{id: id} = user_1, user_2: user_2} do
-      insert(:user_job_profile, user: user_1, availability_date: ~D[2023-08-25])
-      insert(:user_job_profile, user: user_2, availability_date: ~D[2023-09-01])
-
-      query = {[{:job_searching, true}], %{pj_start: "2023-08-25", pj_end: "2023-08-31"}, []}
 
       assert [%{id: ^id}] = UserSearches.search_users_by_job_profile_and_skill_score(query)
     end

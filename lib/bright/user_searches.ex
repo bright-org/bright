@@ -20,7 +20,6 @@ defmodule Bright.UserSearches do
     remote_work, remote_working_hours, remote_work_holidays
 
   job_range_params(Map) ->
-    pj_start, pj_end -> availability_date
     desired_income -> desired_income
 
   skills(List) ->
@@ -35,7 +34,7 @@ defmodule Bright.UserSearches do
           {wish_side_job: true},
           {remote_work: true}
         ],
-        %{pj_start: "2023-08-25"},
+        %{desired_income: 1000},
         [
           %{skill_panel: "skill_panel_1_id", class: 1, level: :normal},
           %{skill_panel: "skill_panel_2_id"}
@@ -103,28 +102,8 @@ defmodule Bright.UserSearches do
       select: job.user_id
     )
     |> where([j], j.user_id not in ^exclude_user_ids)
-    |> availability_date_query(job_range)
     |> desired_income_query(job_range)
   end
-
-  # job_profile 稼働可能日
-  defp availability_date_query(query, %{pj_start: start_date, pj_end: end_date}) do
-    where(
-      query,
-      [job],
-      ^start_date <= job.availability_date and job.availability_date <= ^end_date
-    )
-  end
-
-  defp availability_date_query(query, %{pj_start: start_date}) do
-    where(query, [job], ^start_date <= job.availability_date)
-  end
-
-  defp availability_date_query(query, %{pj_end: end_date}) do
-    where(query, [job], job.availability_date <= ^end_date)
-  end
-
-  defp availability_date_query(query, _range_params), do: query
 
   # job_profile 希望年収
   defp desired_income_query(query, %{desired_income: income}) do

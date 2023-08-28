@@ -18,7 +18,9 @@ defmodule Bright.CareerFields do
 
   """
   def list_career_fields do
-    Repo.all(CareerField)
+    CareerField
+    |> order_by(:position)
+    |> Repo.all()
   end
 
   @doc """

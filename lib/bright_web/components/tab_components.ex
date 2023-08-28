@@ -88,6 +88,19 @@ defmodule BrightWeb.TabComponents do
   slot :inner_block
   attr :target, :any
 
+  defp tab_header_item(%{tab_name: ""} = assigns) do
+    style = "py-3.5 w-full items-center justify-center inline-block"
+    assigns = assign(assigns, :style, style)
+
+    ~H"""
+    <li class="max-w-xs w-full">
+      <a class={@style}>
+        <%= render_slot(@inner_block) %>
+      </a>
+    </li>
+    """
+  end
+
   defp tab_header_item(assigns) do
     style = "py-3.5 w-full items-center justify-center inline-block"
     selected_style = " text-brightGreen-300 font-bold border-brightGreen-300 border-b-2"
