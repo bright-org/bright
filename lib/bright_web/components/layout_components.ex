@@ -16,6 +16,13 @@ defmodule BrightWeb.LayoutComponents do
   slot :inner_block, required: true
 
   def root_layout(assigns) do
+    page_sub_title = assigns[:page_sub_title]
+    page_sub_title = if page_sub_title != nil, do: " / #{page_sub_title}", else: ""
+
+    assigns =
+      assigns
+      |> assign(:page_sub_title, page_sub_title)
+
     ~H"""
     <!DOCTYPE html>
     <html lang="ja">
@@ -29,7 +36,7 @@ defmodule BrightWeb.LayoutComponents do
         <meta property="og:type" content="article">
         <meta property="og:url" contetnt="https://bright-fun.org/">
         <.live_title>
-          <%= @page_title || "Bright" %>
+         Bright - <%= @page_title %><%= @page_sub_title %>
         </.live_title>
         <link phx-track-static rel="stylesheet" href={"/assets/app.css"} />
         <script defer phx-track-static type="text/javascript" src={"/assets/app.js"}>
