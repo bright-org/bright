@@ -13,7 +13,14 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
     ~H"""
       <div class="flex w-[474px] h-[654px] shadow flex-col bg-white relative">
       <!-- メンバーデータ -->
+        <div
+          :if={is_nil(@display_skill_card.user_skill_class_score)}
+          class="h-[56px] bg-brightGreen-50"
+        >
+        </div>
+
         <.team_member_class_tab
+          :if={!is_nil(@display_skill_card.user_skill_class_score)}
           user={@display_skill_card.user}
           user_skill_class_score={@display_skill_card.user_skill_class_score}
           select_skill_class={@display_skill_card.select_skill_class}
@@ -30,7 +37,21 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             </div>
         </div>
 
-        <div class="w-[400px] flex justify-center mx-auto">
+        <div
+          :if={ is_nil(@display_skill_card.user_skill_class_score)}
+          class="w-[400px] h-[400px] flex justify-center mx-auto"
+          >
+          <p
+            class="font-bold inline-block align-middle my-auto mx-auto justify-center"
+          >
+            スキル保有していません
+          </p>
+        </div>
+
+        <div
+          :if={ !is_nil(@display_skill_card.user_skill_class_score)}
+          class="w-[400px] flex justify-center mx-auto"
+          >
           <.live_component
             id={"skill-gem#{@display_skill_card.user.id}"}
             module={BrightWeb.ChartLive.SkillGemComponent}
@@ -46,7 +67,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           />
         </div>
 
-        <div class="p-6 pt-0 flex w-full absolute bottom-0 justify-between ">
+        <div class="p-6 pt-0 flex w-full justify-between ">
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             1on1に誘う
           </button>
