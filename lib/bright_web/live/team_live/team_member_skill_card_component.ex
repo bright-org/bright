@@ -53,7 +53,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           class="w-[400px] flex justify-center mx-auto"
           >
           <.live_component
-            id={"skill-gem#{@display_skill_card.user.id}"}
+            id={"skill-gem-#{@id}"}
             module={BrightWeb.ChartLive.SkillGemComponent}
             display_user={@display_skill_card.user}
             skill_panel={@display_skill_panel}
