@@ -582,6 +582,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
         live(conn, ~p"/panels/#{skill_panel}?class=2")
       end
     end
+
+    test "shows 404 if class in not in [1, 2 3]", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/#{skill_panel}?class=abc")
+      end
+    end
   end
 
   # アクセス制御など
