@@ -26,6 +26,8 @@ defmodule Bright.HistoricalSkillScores do
   @doc """
   Returns the list of historical_skill_scores from historical_skill_class_score
   """
+  def list_historical_skill_scores_from_historical_skill_class_score(nil), do: []
+
   def list_historical_skill_scores_from_historical_skill_class_score(%{
         historical_skill_class_id: historical_skill_class_id,
         user_id: user_id
