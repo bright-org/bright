@@ -82,7 +82,7 @@ defmodule BrightWeb.ProfileComponents do
         </div>
       </div>
     </div>
-    <div :if={@display_detail} class="pt-5">
+    <div :if={@display_detail} class="pt-5 break-all grow">
       <%= @detail %>
     </div>
     """
