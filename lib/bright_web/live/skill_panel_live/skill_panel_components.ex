@@ -268,7 +268,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           />
         </div>
         <div class="mr-auto flex ml-7">
-          <div class="w-20 mt-auto">
+          <div class="w-20 mt-5">
             <.doughnut_graph data={skill_score_percentages(@counter, @num_skills)} id="doughnut-graph-single-sample1"/>
           </div>
           <div class="h-20 mt-5 ml-2 flex flex-wrap">
