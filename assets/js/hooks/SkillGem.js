@@ -206,7 +206,7 @@ export const SkillGem = {
     const dataset = element.dataset
     const labels = JSON.parse(dataset.labels)
     const data = JSON.parse(dataset.data)
-    const isSmall = dataset.size == "sm"
+    const gemSize = this.getGemSize(dataset.size)
     const isLink = JSON.parse(dataset.displayLink)
     const datasets = [];
 
@@ -220,10 +220,23 @@ export const SkillGem = {
 
     this.ctx = document.querySelector('#' + element.id + ' canvas')
     window.myRadar[element.id] = new Chart(this.ctx, createChartFromJSON(labels, datasets, isLink))
-    window.myRadar[element.id].canvas.parentNode.style.height = isSmall ? '165px' : '450px'
-    window.myRadar[element.id].canvas.parentNode.style.width = isSmall ? '250px' : '535px'
+    window.myRadar[element.id].canvas.parentNode.style.width = gemSize.width
+    window.myRadar[element.id].canvas.parentNode.style.height = gemSize.height
+
 
     this.ctx.addEventListener('click', this.clickEvent)
+  },
+  getGemSize(size) {
+    let gemSize = ({width: '535px', height: '450px'})
+    switch (size) {
+      case 'sm':
+        gemSize =  ({width: '250px', height: '165px'})
+        break;
+      case 'md':
+        gemSize = ({width: '450px', height: '450px'})
+        break;
+    }
+    return gemSize
   },
   clickEvent(event) {
     const element = event.target.parentElement
