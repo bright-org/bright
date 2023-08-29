@@ -53,7 +53,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
           </label>
         </div>
         <div class="mt-1 ml-auto w-fit py-2">
-          <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button>
+          <%!-- <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button> --%>
           <%!-- <button type="submit" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button> --%>
         </div>
 
