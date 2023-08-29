@@ -256,7 +256,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             user_name={@display_user.name}
             title={@display_user.user_profile.title}
             detail={@display_user.user_profile.detail}
-            icon_file_path={@display_user.user_profile.icon_file_path}
+            icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
             display_excellent_person={false}
             display_anxious_person={false}
             display_return_to_yourself={true}
