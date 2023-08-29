@@ -10,9 +10,9 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
 
   @tabs [
     {"skill_up", "スキルアップ"},
+    {"blessed", "祝福された"},
     {"1on1_invitation", "1on1のお誘い"},
     {"promotion", "推し活"},
-    {"your_team", "所属チーム"},
     {"intriguing", "気になる"},
     {"official_team", "運営公式"}
   ]
