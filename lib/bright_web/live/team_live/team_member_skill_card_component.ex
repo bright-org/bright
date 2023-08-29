@@ -42,6 +42,8 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             select_label={"now"}
             me={:false}
             anonymous={:false}
+            size="md"
+            display_link="false"
           />
         </div>
       </div>

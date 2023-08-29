@@ -147,6 +147,8 @@ const beforeDatasetsDraw = (chart) => {
 
 const createChartFromJSON = (labels, datasets, isLink) => {
   const color = isLink ? linkColor : "#000000"
+  const rightPadding = isLink ? 22 : 0
+  const pointLabelsPadding = isLink ? 25 : 5
   return ({
     type: 'radar',
     data: {
@@ -159,7 +161,7 @@ const createChartFromJSON = (labels, datasets, isLink) => {
       maintainAspectRatio: false,
       layout: {
         padding: {
-          right: 22
+          right: rightPadding
         }
       },
       gridLines: {
@@ -191,7 +193,7 @@ const createChartFromJSON = (labels, datasets, isLink) => {
           pointLabels: {
             color: color,
             backdropPadding: 5,
-            padding: 25,
+            padding: pointLabelsPadding,
           },
         },
       },
@@ -233,7 +235,7 @@ export const SkillGem = {
         gemSize =  ({width: '250px', height: '165px'})
         break;
       case 'md':
-        gemSize = ({width: '450px', height: '450px'})
+        gemSize = ({width: '450px', height: '400px'})
         break;
     }
     return gemSize
