@@ -10,7 +10,10 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
     ~H"""
     <li class="block text-left">
       <%!-- TODO: サブメールアドレスが実装されたら border-b を追加する --%>
-      <div class="border-brightGray-200 flex flex-wrap" id="mail_section">
+      <div class="border-b border-brightGray-200 flex flex-wrap" id="mail_section">
+        <div class="mt-4 mb-2 m-auto">
+          <p>※ 確認メールが送信され、完了後メールアドレスが変更されます</p>
+        </div>
         <.form
           for={@email_form}
           id="email_form"
@@ -19,14 +22,14 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
           phx-target={@myself}
           class="w-full"
         >
-          <div class="border-b border-brightGray-200 flex justify-between mb-4 w-full">
+          <div class="border-brightGray-200 flex justify-between mb-4 w-full">
             <label class="flex items-center py-4">
               <span class="w-44">メールアドレス</span>
               <BrightCore.input
                 field={@email_form[:email]}
                 type="email"
                 size="20"
-                input_class="border border-brightGray-200 px-2 py-1 rounded w-48"
+                input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
                 required
               />
             </label>
@@ -36,40 +39,46 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
             </div>
           </div>
         </.form>
+      </div>
 
-        <%!-- α版では未実装 --%>
-        <%!-- <div class="sub_mail_address flex pb-4 w-9/12">
+      <div class="border-b border-brightGray-200 flex flex-wrap pb-4" id="sub_mail_section">
+        <div class="my-4 m-auto">
+          <p>※ 確認メールが送信され、完了後メールアドレスが追加されます（βリリースで利用可能になります）</p>
+        </div>
+
+        <div class="sub_mail_address flex py-2">
           <label class="flex items-center mr-4">
             <span class="flex items-center justify-between w-44">サブアドレス</span>
-            <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1  rounded w-48">
+            <input type="text" size="20" name="sub_mail_0" class="bg-brightGray-50 border border-brightGray-200 px-2 py-1 rounded w-60" disabled>
           </label>
-          <button type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
-          <button type="button" class="hidden mail_add bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">追加する</button>
+        </div>
+        <div class="mt-1 ml-auto w-fit py-2">
+          <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button>
+          <%!-- <button type="submit" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button> --%>
         </div>
 
-        <div class="sub_mail_address flex pb-4 w-9/12">
+        <%!-- <div class="sub_mail_address flex py-2">
           <label class="flex items-center mr-4 pl-44">
-            <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1  rounded w-48">
+            <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1 rounded w-60">
           </label>
-          <button type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
-          <button type="button" class="hidden mail_add bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">追加する</button>
+        </div>
+        <div class="mt-1 ml-auto w-fit py-2">
+          <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button>
         </div>
 
-        <div class="sub_mail_address flex pb-4 w-9/12">
+        <div class="sub_mail_address flex py-2">
           <label class="flex items-center mr-4 pl-44">
-            <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1  rounded w-48">
+            <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1 rounded w-60">
           </label>
-          <button type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
-          <button type="button" class="hidden mail_add bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">追加する</button>
         </div>
-
-        <div class="mt-1 ml-auto pb-4 w-fit">
-          <a class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">保存する</a>
+        <div class="mt-1 ml-auto w-fit py-2">
+          <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button>
         </div> --%>
       </div>
 
       <.form
         :if={Map.has_key?(assigns, :password_form)}
+        class="pb-4"
         for={@password_form}
         id="password_form"
         action={~p"/users/password_reset"}
@@ -79,6 +88,9 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
         phx-trigger-action={@trigger_submit}
         phx-target={@myself}
       >
+        <div class="m-auto mt-4 mb-2 text-center">
+          <p>※ パスワード変更後は本設定画面が閉じるため、他の変更は先に済ませておいてください</p>
+        </div>
         <BrightCore.input
           field={@password_form[:email]}
           type="hidden"
@@ -94,7 +106,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
               id="current_password_for_password"
               name="current_password"
               size="20"
-              input_class="border border-brightGray-200 px-2 py-1 rounded w-48"
+              input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
               value={@current_password}
               required
             />
@@ -108,7 +120,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
                 field={@password_form[:password]}
                 type="password"
                 size="20"
-                input_class="border border-brightGray-200 px-2 py-1 rounded w-48"
+                input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
                 required
               />
             </label>
@@ -121,7 +133,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
                 field={@password_form[:password_confirmation]}
                 type="password"
                 size="20"
-                input_class="border border-brightGray-200 px-2 py-1 rounded w-48"
+                input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
               />
             </label>
           </div>
