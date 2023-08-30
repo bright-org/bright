@@ -59,7 +59,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, assign(socket, :page_title, "スキルを選ぶ")}
   end
 
   @impl true
@@ -79,7 +79,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
     |> assign(:route, "wants")
     |> assign(:return_to, "/#{current_path}?open=want_todo_panel")
     |> assign(:id, id)
-    |> assign(:page_title, "スキルを選ぶ")
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})
   end
