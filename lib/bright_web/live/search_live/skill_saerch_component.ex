@@ -38,12 +38,12 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
             selected_tab={@selected_tab}
             target={@myself}
           >
-          </.tab>
           <.live_component
             id="user_search"
             module={UserSearchComponent}
             current_user={@current_user}
             />
+          </.tab>
         </section>
       </div>
     </div>
