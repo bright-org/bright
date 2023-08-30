@@ -77,6 +77,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
     skill_class = SkillPanels.get_skill_class_by_skill_panel_id(id)
 
     socket
+    |> assign(:page_title, "スキルを選ぶ")
     |> assign(:skill_panel, skill_panel)
     |> assign(:career_field, List.first(career_fields))
     |> assign(:skill_units, skill_class.skill_units)
