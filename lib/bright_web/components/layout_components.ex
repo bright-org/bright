@@ -112,7 +112,7 @@ defmodule BrightWeb.LayoutComponents do
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
       {"スキル検索／スカウト", "/searches"},
-      {"キャリアパスを選ぶ", "/#"},
+      {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html"},
       {"チームスキル分析", "/teams"},
       {"自分のチームを作る", "/teams/new"}
     ]
