@@ -125,10 +125,11 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/#{user.name}")}
   end
 
-  def handle_event("clear_target_user", _params, socket) do
-    {:noreply,
-     socket
-     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}")}
+  def handle_event("clear_display_user", _params, socket) do
+    %{current_user: current_user, skill_panel: skill_panel} = socket.assigns
+    move_to = get_path_to_switch_me("panels", current_user, skill_panel)
+
+    {:noreply, push_redirect(socket, to: move_to)}
   end
 
   defp apply_action(socket, :show, _params), do: socket

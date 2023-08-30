@@ -14,7 +14,6 @@ defmodule Storybook.Components.UserHeader do
             title: "リードプログラマー",
             icon_file_path: "/images/sample/sample-image.png"
           },
-          notification_count: 99,
           page_title: "タイトル"
         }
       }

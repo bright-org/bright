@@ -435,6 +435,50 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  # 対象者の切り替え
+  describe "Display user" do
+    setup [:register_and_log_in_user]
+
+    setup %{user: user} do
+      skill_panel = insert(:skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      %{skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    test "clear display_user", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      # 対象者用意
+      user_2 = insert(:user)
+      skill_panel_2 = insert(:skill_panel)
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel_2)
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel_2, class: 1)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class_2)
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
+
+      # 対象者へアクセス
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel_2}/anon/#{encrypted_name}")
+
+      assert show_live
+             |> element("h4")
+             |> render() =~ skill_panel_2.name
+
+      # 自分に戻す
+      {:ok, show_live, _html} =
+        show_live
+        |> element("button", "自分に戻す")
+        |> render_click()
+        |> follow_redirect(conn)
+
+      assert show_live
+             |> element("h4")
+             |> render() =~ skill_panel.name
+    end
+  end
+
   # エビデンス登録
   describe "Skill evidence area" do
     setup [:register_and_log_in_user, :setup_skills]

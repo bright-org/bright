@@ -46,11 +46,11 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}/#{user.name}")}
   end
 
-  # TODO: 検討：本実装で同じ処理をまるっと共通化するのはimportではできそうにない
-  def handle_event("clear_target_user", _params, socket) do
-    {:noreply,
-     socket
-     |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}")}
+  def handle_event("clear_display_user", _params, socket) do
+    %{current_user: current_user, skill_panel: skill_panel} = socket.assigns
+    move_to = get_path_to_switch_me("graphs", current_user, skill_panel)
+
+    {:noreply, push_redirect(socket, to: move_to)}
   end
 
   @impl true
