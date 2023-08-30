@@ -11,7 +11,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
     <li class="block text-left">
       <%!-- TODO: サブメールアドレスが実装されたら border-b を追加する --%>
       <div class="border-b border-brightGray-200 flex flex-wrap" id="mail_section">
-        <div class="mt-4 mb-2 m-auto">
+        <div class="mt-4 mb-2">
           <p>※ 確認メールが送信され、完了後メールアドレスが変更されます</p>
         </div>
         <.form
@@ -42,7 +42,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
       </div>
 
       <div class="border-b border-brightGray-200 flex flex-wrap pb-4" id="sub_mail_section">
-        <div class="my-4 m-auto">
+        <div class="my-4">
           <p>※ 確認メールが送信され、完了後メールアドレスが追加されます（βリリースで利用可能になります）</p>
         </div>
 
@@ -88,7 +88,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
         phx-trigger-action={@trigger_submit}
         phx-target={@myself}
       >
-        <div class="m-auto mt-4 mb-2 text-center">
+        <div class="mt-4 mb-2">
           <p>※ パスワード変更後は本設定画面が閉じるため、他の変更は先に済ませておいてください</p>
         </div>
         <BrightCore.input
