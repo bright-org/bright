@@ -85,7 +85,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   end
 
   @impl true
-  @spec update(%{:id => any, optional(any) => any}, any) :: {:ok, map}
   def update(assigns, socket) do
     socket = socket |> assign(assigns)
 
