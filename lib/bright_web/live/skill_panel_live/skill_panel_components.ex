@@ -34,13 +34,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
+      <.target_switch current_user={@current_user} />
       <.skill_panel_switch
         display_user={@display_user}
         me={@me}
         anonymous={@anonymous}
         root={@root}
       />
-      <.target_switch current_user={@current_user} />
     </div>
     """
   end
