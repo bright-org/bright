@@ -79,6 +79,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
     |> assign(:route, "wants")
     |> assign(:return_to, "/#{current_path}?open=want_todo_panel")
     |> assign(:id, id)
+    |> assign(:page_title, "スキルを選ぶ")
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})
   end
