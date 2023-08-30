@@ -46,9 +46,16 @@ defmodule BrightWeb.SkillPanelLive.GraphTest do
     setup [:register_and_log_in_user]
 
     test "show content with no skill panel message", %{conn: conn} do
-      {:ok, _show_live, html} = live(conn, ~p"/graphs")
+      {:ok, show_live, html} = live(conn, ~p"/graphs")
 
       assert html =~ "スキルパネルがありません"
+
+      show_live
+      |> element("a", "スキルを選ぶ")
+      |> render_click()
+
+      {path, _} = assert_redirect(show_live)
+      assert path == "/onboardings"
     end
   end
 end
