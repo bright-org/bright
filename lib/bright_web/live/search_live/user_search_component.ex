@@ -133,7 +133,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
       <div class="flex mt-4" id="skill_section">
         <span class="mt-2 w-24">スキル</span>
-        <div class="-ml-5">
+        <div class="">
         <.inputs_for :let={sk} field={@form[:skills]} >
           <input type="hidden" name="user_search[skills_sort][]" value={sk.index}>
           <div class="flex items-center mb-4">
@@ -150,6 +150,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
             <BrightCore.input
               field={sk[:career_field]}
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-46 text-md"
+              error_class="absolute ml-4"
               type="select"
               options={@career_fields}
               prompt="キャリアフィールド"
@@ -157,6 +158,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
             <BrightCore.input
               field={sk[:skill_panel]}
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44"
+              error_class="absolute ml-4"
               type="select"
               options={Map.get(@skill_panels, sk[:career_field].value, [])}
               disabled={is_nil(sk[:career_field].value)}
