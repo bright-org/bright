@@ -462,14 +462,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       # 対象者へアクセス
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel_2}/anon/#{encrypted_name}")
 
+      assert show_live
+             |> element("h4")
+             |> render() =~ skill_panel_2.name
+
       # 自分に戻す
-      {:ok, _show_live, html} =
+      {:ok, show_live, _html} =
         show_live
         |> element("button", "自分に戻す")
         |> render_click()
         |> follow_redirect(conn)
 
-      assert html =~ skill_panel.name
+      assert show_live
+             |> element("h4")
+             |> render() =~ skill_panel.name
     end
   end
 

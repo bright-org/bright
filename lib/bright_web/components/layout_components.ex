@@ -52,7 +52,6 @@ defmodule BrightWeb.LayoutComponents do
   attr :profile, :map
   attr :page_title, :string
   attr :page_sub_title, :string
-  attr :notification_count, :integer
 
   def user_header(assigns) do
     page_sub_title =
@@ -61,7 +60,6 @@ defmodule BrightWeb.LayoutComponents do
     assigns =
       assigns
       |> assign(:profile, assigns.profile || %UserProfiles.UserProfile{})
-      |> assign(:notification_count, assigns.notification_count || 0)
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
