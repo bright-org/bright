@@ -1,4 +1,13 @@
+<% # ヘッダー %>
+<.user_header
+  :if={@render_header?}
+  profile={@current_user.user_profile}
+  page_title={@page_title}
+  page_sub_title={@page_sub_title}
+/>
+
 <.flash_group flash={@flash} />
+
 <%= @inner_content %>
 <.live_component
   id="user_setting_modal"
