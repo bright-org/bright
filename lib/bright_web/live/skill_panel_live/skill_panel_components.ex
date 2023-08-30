@@ -34,13 +34,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div class="flex gap-x-4 px-10 pt-4 pb-3">
+      <.target_switch current_user={@current_user} />
       <.skill_panel_switch
         display_user={@display_user}
         me={@me}
         anonymous={@anonymous}
         root={@root}
       />
-      <.target_switch current_user={@current_user} />
     </div>
     """
   end
@@ -256,7 +256,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             user_name={@display_user.name}
             title={@display_user.user_profile.title}
             detail={@display_user.user_profile.detail}
-            icon_file_path={@display_user.user_profile.icon_file_path}
+            icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
             display_excellent_person={false}
             display_anxious_person={false}
             display_return_to_yourself={true}
@@ -268,7 +268,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           />
         </div>
         <div class="mr-auto flex ml-7">
-          <div class="w-20 mt-auto">
+          <div class="w-20 mt-5">
             <.doughnut_graph data={skill_score_percentages(@counter, @num_skills)} id="doughnut-graph-single-sample1"/>
           </div>
           <div class="h-20 mt-5 ml-2 flex flex-wrap">

@@ -15,7 +15,7 @@ defmodule Bright.Jobs.Job do
     field :name, :string
     field :description, :string
     field :position, :integer
-    field :rank, Ecto.Enum, values: [:basic, :advanced, :expert]
+    field :rank, Ecto.Enum, values: [:entry, :basic, :advanced, :expert]
     field :career_field_id, :string
 
     has_many :career_field_jobs, CareerFieldJob, on_replace: :delete

@@ -10,7 +10,7 @@ defmodule BrightWeb.MypageLive.NotificationDetailComponent do
     <div id={@id}>
       <.header> <%= @notification.message %> </.header>
       <div class="flex justify-between items-center my-2 gap-x-4">
-        <%= Phoenix.HTML.Format.text_to_html @notification.detail, attributes: [class: "break-all grow"] %>
+        <%= Phoenix.HTML.Format.text_to_html @notification.detail || "", attributes: [class: "break-all grow"] %>
       </div>
     </div>
     """

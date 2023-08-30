@@ -130,21 +130,6 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
           </div>
         </div>
       </div>
-      <div class="border-b border-brightGray-200 flex flex-wrap items-center">
-        <div class="w-fit">
-          <label class="flex items-center py-4">
-            <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
-            <BrightCore.input
-              field={@form[:desired_income]}
-              input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
-              size="20"
-              type="number"
-              after_label="万円以下"
-            />
-          </label>
-        </div>
-      </div>
-
 
       <div class="flex mt-4" id="skill_section">
         <span class="mt-2 w-24">スキル</span>
@@ -310,7 +295,11 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
            [socket.assigns.current_user.id]
          ) do
       [] ->
-        {:noreply, assign(socket, :no_result, true)}
+        socket
+        |> assign(:search_results, [])
+        |> assign(:skill_params, [])
+        |> assign(:no_result, true)
+        |> then(&{:noreply, &1})
 
       users ->
         socket

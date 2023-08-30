@@ -83,7 +83,7 @@ defmodule BrightWeb.ProfileComponents do
       </div>
     </div>
     <div :if={@display_detail} class="pt-5">
-      <%= @detail %>
+      <%= Phoenix.HTML.Format.text_to_html @detail || "", attributes: [class: "break-all"] %>
     </div>
     """
   end
