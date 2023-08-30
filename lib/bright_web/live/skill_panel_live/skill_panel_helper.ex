@@ -232,6 +232,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     "/#{root}/#{skill_panel.id}/#{display_user.name}"
   end
 
+  def get_path_to_switch_me(root, user, skill_panel) do
+    SkillPanels.get_user_skill_panel(user, skill_panel.id)
+    |> case do
+      nil -> "/#{root}"
+      _ -> "/#{root}/#{skill_panel.id}"
+    end
+  end
+
   defp raise_invalid_skill_class do
     # 保有スキルパネルに存在しないクラスなどへのアクセスにあたる。404で返す。
     # 導線はなく、クエリストリングで指定される可能性がある。
