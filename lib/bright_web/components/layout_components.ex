@@ -98,7 +98,7 @@ defmodule BrightWeb.LayoutComponents do
       <ul class="grid pt-2">
         <%= for {title, path} <- links() do %>
           <li>
-            <.link class={menu_active_style(path == @href)} href={path} ><%= title %></.link>
+            <.link class={menu_active_style(String.starts_with?(@href, path))} href={path} ><%= title %></.link>
           </li>
         <% end %>
       </ul>
@@ -114,7 +114,7 @@ defmodule BrightWeb.LayoutComponents do
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
       {"スキル検索／スカウト", "/searches"},
-      {"キャリアパスを選ぶ", "/"},
+      {"キャリアパスを選ぶ", "/#"},
       {"チームスキル分析", "/teams"},
       {"自分のチームを作る", "/teams/new"}
     ]
