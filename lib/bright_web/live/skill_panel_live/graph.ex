@@ -1,6 +1,7 @@
 defmodule BrightWeb.SkillPanelLive.Graph do
   use BrightWeb, :live_view
 
+  alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
@@ -46,11 +47,17 @@ defmodule BrightWeb.SkillPanelLive.Graph do
      |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}/#{user.name}")}
   end
 
-  # TODO: 検討：本実装で同じ処理をまるっと共通化するのはimportではできそうにない
-  def handle_event("clear_target_user", _params, socket) do
-    {:noreply,
-     socket
-     |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}")}
+  def handle_event("clear_display_user", _params, socket) do
+    skill_panel =
+      SkillPanels.get_user_skill_panel(socket.assigns.current_user, socket.assigns.skill_panel.id)
+
+    if skill_panel do
+      {:noreply,
+       socket
+       |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}")}
+    else
+      {:noreply, socket |> push_redirect(to: ~p"/graphs")}
+    end
   end
 
   @impl true
