@@ -4,7 +4,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   alias Bright.{Jobs, CareerFields, Repo}
   alias Bright.Jobs.Job
 
-  @rank %{expert: "高度", advanced: "応用", basic: "基本"}
+  @rank %{entry: "入門", basic: "基本", advanced: "応用", expert: "高度"}
 
   @impl true
   def render(assigns) do
