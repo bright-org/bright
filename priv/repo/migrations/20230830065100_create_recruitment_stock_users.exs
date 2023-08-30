@@ -3,8 +3,8 @@ defmodule Bright.Repo.Migrations.CreateRecruitmentStockUsers do
 
   def change do
     create table(:recruitment_stock_users) do
-      add :recruiter_id, :uuid
-      add :user_id, :uuid
+      add :recruiter_id, references(:users, on_delete: :nothing), null: false
+      add :user_id, references(:users, on_delete: :nothing), null: false
 
       timestamps()
     end
