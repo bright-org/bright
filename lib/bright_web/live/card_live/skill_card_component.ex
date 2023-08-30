@@ -126,6 +126,17 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> then(&{:ok, &1})
   end
 
+  def update(%{status: "level_up"}, socket) do
+    # 新しいスキルクラスを開放時のupdateを実施
+    %{
+      selected_tab: career_field,
+      display_user: display_user,
+      page: page
+    } = socket.assigns
+
+    {:ok, assign_paginate(socket, display_user.id, career_field, page)}
+  end
+
   def assign_paginate(socket, user_id, career_field, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
       SkillPanels.list_users_skill_panels_by_career_field(user_id, career_field, page)
