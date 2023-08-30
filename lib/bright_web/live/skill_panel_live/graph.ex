@@ -1,7 +1,6 @@
 defmodule BrightWeb.SkillPanelLive.Graph do
   use BrightWeb, :live_view
 
-  alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
@@ -48,16 +47,10 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   end
 
   def handle_event("clear_display_user", _params, socket) do
-    skill_panel =
-      SkillPanels.get_user_skill_panel(socket.assigns.current_user, socket.assigns.skill_panel.id)
+    %{current_user: current_user, skill_panel: skill_panel} = socket.assigns
+    move_to = get_path_to_switch_me("graphs", current_user, skill_panel)
 
-    if skill_panel do
-      {:noreply,
-       socket
-       |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}")}
-    else
-      {:noreply, socket |> push_redirect(to: ~p"/graphs")}
-    end
+    {:noreply, push_redirect(socket, to: move_to)}
   end
 
   @impl true

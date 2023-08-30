@@ -6,7 +6,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
 
-  alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
   alias Bright.SkillScores
@@ -127,16 +126,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("clear_display_user", _params, socket) do
-    skill_panel =
-      SkillPanels.get_user_skill_panel(socket.assigns.current_user, socket.assigns.skill_panel.id)
+    %{current_user: current_user, skill_panel: skill_panel} = socket.assigns
+    move_to = get_path_to_switch_me("panels", current_user, skill_panel)
 
-    if skill_panel do
-      {:noreply,
-       socket
-       |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}")}
-    else
-      {:noreply, socket |> push_redirect(to: ~p"/panels")}
-    end
+    {:noreply, push_redirect(socket, to: move_to)}
   end
 
   defp apply_action(socket, :show, _params), do: socket
