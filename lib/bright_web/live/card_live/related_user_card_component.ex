@@ -9,6 +9,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   alias Bright.Teams
   alias Bright.UserProfiles
+  alias Bright.RecruitmentStockUsers
 
   @tabs [
     # αリリース対象外 {"intriguing", "気になる人"},
@@ -165,8 +166,8 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     socket =
       socket
       |> assign(:selected_tab, "candidate_for_employment")
-      |> assign(:user_profiles, [])
       |> assign(:inner_tab, [])
+      |> assign_selected_card("candidate_for_employment")
 
     {:noreply, socket}
   end
@@ -291,6 +292,22 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     socket
     |> assign(:user_profiles, member_and_users.user_smalls)
     |> assign(:total_pages, member_and_users.total_pages)
+  end
+
+  defp assign_selected_card(socket, "candidate_for_employment") do
+    user_profiles =
+      RecruitmentStockUsers.list_recruitment_stock_users(socket.assigns.current_user.id)
+      |> Enum.map(fn _x ->
+        %{
+          user_name: "匿名",
+          title: "",
+          icon_file_path: nil
+        }
+      end)
+
+    socket
+    |> assign(:user_profiles, user_profiles)
+    |> assign(:total_pages, 1)
   end
 
   defp get_team_member_user_profiles(user_id, team_id, page_params) do

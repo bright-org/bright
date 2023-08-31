@@ -10,8 +10,7 @@ defmodule Bright.RecruitmentStockUsersTest do
 
       assert RecruitmentStockUsers.list_recruitment_stock_users(
                recruitment_stock_user.recruiter_id
-             )
-             |> Repo.preload([:recruiter, :user]) == [recruitment_stock_user]
+             ) == [recruitment_stock_user.user_id]
     end
   end
 end

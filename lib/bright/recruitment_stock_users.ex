@@ -19,7 +19,8 @@ defmodule Bright.RecruitmentStockUsers do
   """
   def list_recruitment_stock_users(recruiter_id) do
     from(recruitment_stock_users in RecruitmentStockUser,
-      where: recruitment_stock_users.recruiter_id == ^recruiter_id
+      where: recruitment_stock_users.recruiter_id == ^recruiter_id,
+      select: recruitment_stock_users.user_id
     )
     |> Repo.all()
   end
