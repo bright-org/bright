@@ -13,11 +13,14 @@ defmodule Bright.RecruitmentStockUsers do
 
   ## Examples
 
-      iex> list_recruitment_stock_users()
+      iex> list_recruitment_stock_users(recruiter_id)
       [%RecruitmentStockUser{}, ...]
 
   """
-  def list_recruitment_stock_users do
-    Repo.all(RecruitmentStockUser)
+  def list_recruitment_stock_users(recruiter_id) do
+    from(recruitment_stock_users in RecruitmentStockUser,
+      where: recruitment_stock_users.recruiter_id == ^recruiter_id
+    )
+    |> Repo.all()
   end
 end
