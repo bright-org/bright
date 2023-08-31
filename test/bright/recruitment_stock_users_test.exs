@@ -10,7 +10,7 @@ defmodule Bright.RecruitmentStockUsersTest do
 
       assert RecruitmentStockUsers.list_recruitment_stock_users(
                recruitment_stock_user.recruiter_id
-             ) == [recruitment_stock_user.user_id]
+             ) == [recruitment_stock_user.user]
     end
   end
 end
