@@ -7,6 +7,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   alias BrightWeb.SearchLive.SearchResultsComponent
   alias BrightWeb.BrightCoreComponents, as: BrightCore
 
+  import BrightWeb.TabComponents, only: [tab_footer: 1]
+
   @class [クラス1: 1, クラス2: 2, クラス3: 3]
   @level [見習い: "beginner", 平均: "normal", ベテラン: "skilled"]
 
@@ -198,16 +200,25 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         <BrightCore.button phx-disable-with="Searching...">検索する</BrightCore.button>
       </div>
       </.form>
+
       <div :if={@no_result} class="mt-5 text-xl text-center">
         該当するユーザーは見つかりませんでした
       </div>
-      <.live_component
-        id="user_search_result"
-        module={SearchResultsComponent}
-        current_user={@current_user}
-        result={@search_results}
-        skill_params={@skill_params}
-      />
+      <div :if={length(@search_results) > 0} >
+        <.live_component
+          id="user_search_result"
+          module={SearchResultsComponent}
+          current_user={@current_user}
+          result={@search_results}
+          skill_params={@skill_params}
+        />
+        <.tab_footer
+          id="user_search_result_footer"
+          page={@page}
+          total_pages={@total_pages}
+          target={@myself}
+        />
+      </div>
     </li>
     """
   end
@@ -235,6 +246,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> assign(:search_results, [])
     |> assign(:skill_params, [])
     |> assign(:no_result, false)
+    |> assign(:total_pages, 0)
+    |> assign(:page, 1)
     |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
@@ -277,8 +290,85 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   def handle_event(
         "search",
         _params,
-        %{assigns: %{changeset: %{changes: changes}}} = socket
+        %{assigns: %{changeset: %{changes: changes}, current_user: user}} = socket
       ) do
+    {skills, search_params} = convert_changes_to_search_params(changes)
+
+    case UserSearches.search_users_by_job_profile_and_skill_score(
+           search_params,
+           [user.id]
+         ) do
+      %{entries: []} ->
+        socket
+        |> assign(:search_results, [])
+        |> assign(:skill_params, [])
+        |> assign(:no_result, true)
+        |> then(&{:noreply, &1})
+
+      %{entries: users, total_pages: total_pages, page_number: page} ->
+        socket
+        |> assign(:search_results, users)
+        |> assign(:total_pages, total_pages)
+        |> assign(:page, page)
+        |> assign(:skill_params, skills)
+        |> assign(:no_result, false)
+        |> then(&{:noreply, &1})
+    end
+  end
+
+  def handle_event(
+        "previous_button_click",
+        _params,
+        %{assigns: %{page: page, changeset: changeset, current_user: user}} = socket
+      ) do
+    page = page - 1
+    page = if page < 1, do: 1, else: page
+    {_, search_params} = convert_changes_to_search_params(changeset.changes)
+
+    %{entries: users} =
+      UserSearches.search_users_by_job_profile_and_skill_score(search_params, [user.id], page)
+
+    socket
+    |> assign(:search_results, users)
+    |> assign(:page, page)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "next_button_click",
+        _params,
+        %{
+          assigns: %{
+            page: page,
+            total_pages: total_pages,
+            changeset: changeset,
+            current_user: user
+          }
+        } = socket
+      ) do
+    page = page + 1
+    page = if page > total_pages, do: total_pages, else: page
+
+    {_, search_params} = convert_changes_to_search_params(changeset.changes)
+
+    %{entries: users} =
+      UserSearches.search_users_by_job_profile_and_skill_score(search_params, [user.id], page)
+
+    socket
+    |> assign(:search_results, users)
+    |> assign(:page, page)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("search", _params, socket), do: {:noreply, socket}
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
+  end
+
+  defp disabled?(bool_or_string), do: to_string(bool_or_string) == "false"
+
+  defp convert_changes_to_search_params(changes) do
     skills =
       Map.get(changes, :skills, [])
       |> Enum.map(& &1.changes)
@@ -292,33 +382,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       skills
     }
 
-    case UserSearches.search_users_by_job_profile_and_skill_score(
-           search_params,
-           [socket.assigns.current_user.id]
-         ) do
-      [] ->
-        socket
-        |> assign(:search_results, [])
-        |> assign(:skill_params, [])
-        |> assign(:no_result, true)
-        |> then(&{:noreply, &1})
-
-      users ->
-        socket
-        |> assign(:search_results, users)
-        |> assign(:skill_params, skills)
-        |> assign(:no_result, false)
-        |> then(&{:noreply, &1})
-    end
+    {skills, search_params}
   end
-
-  def handle_event("search", _params, socket), do: {:noreply, socket}
-
-  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :form, to_form(changeset))
-  end
-
-  defp disabled?(bool_or_string), do: to_string(bool_or_string) == "false"
 
   # キャリアフィールドが変更されたら、それ以降の値はリセットされる
   defp reset_skill_form_when_career_field_change(params, [_, "skills", index, "career_field"]) do
