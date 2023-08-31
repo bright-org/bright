@@ -24,7 +24,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
       <p class="mb-2">
         <span>
-        <%= if !@job.remote_work, do: "　リモート可", else: "リモート不可" %>：</span>
+        <%= if @job.remote_work, do: "　リモート可", else: "リモート不可" %>：</span>
         <span><%= @job.remote_working_hours %></span>
         <span>土日祝日<%= enable?(@job.remote_work_holidays)%></span>
       </p>
