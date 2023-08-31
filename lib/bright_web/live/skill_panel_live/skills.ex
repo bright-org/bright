@@ -116,7 +116,12 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   @impl true
-  def handle_event("click_on_related_user_card_menu", %{"encrypt_user_name" => encrypt_user_name}, socket) when encrypt_user_name != "" do
+  def handle_event(
+        "click_on_related_user_card_menu",
+        %{"encrypt_user_name" => encrypt_user_name},
+        socket
+      )
+      when encrypt_user_name != "" do
     {:noreply,
      socket
      |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/anon/#{encrypt_user_name}")}

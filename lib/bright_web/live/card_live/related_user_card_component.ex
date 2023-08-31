@@ -296,8 +296,17 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   end
 
   defp assign_selected_card(socket, "candidate_for_employment") do
+    list_recruitment_stock_users =
+      RecruitmentStockUsers.list_recruitment_stock_users(
+        socket.assigns.current_user.id,
+        %{
+          page: socket.assigns.page,
+          page_size: socket.assigns.page_size
+        }
+      )
+
     user_profiles =
-      RecruitmentStockUsers.list_recruitment_stock_users(socket.assigns.current_user.id)
+      list_recruitment_stock_users
       |> Enum.map(fn user ->
         %{
           user_name: "非表示",
@@ -306,11 +315,10 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           encrypt_user_name: DisplayUserHelper.encrypt_user_name(user)
         }
       end)
-      |> IO.inspect()
 
     socket
     |> assign(:user_profiles, user_profiles)
-    |> assign(:total_pages, 1)
+    |> assign(:total_pages, list_recruitment_stock_users.total_pages)
   end
 
   defp get_team_member_user_profiles(user_id, team_id, page_params) do
