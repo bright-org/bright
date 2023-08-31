@@ -43,8 +43,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
       )
       when encrypt_user_name != "" do
     {:noreply,
-     socket
-     |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}/anon/#{encrypt_user_name}")}
+     push_redirect(socket, to: ~p"/graphs/#{socket.assigns.skill_panel}/anon/#{encrypt_user_name}")}
   end
 
   @impl true
@@ -53,9 +52,7 @@ defmodule BrightWeb.SkillPanelLive.Graph do
     user = Bright.Accounts.get_user_by_name(params["name"])
 
     # 参照可能なユーザーかどうかの判定は遷移先で行うので必要ない
-    {:noreply,
-     socket
-     |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}/#{user.name}")}
+    {:noreply, push_redirect(socket, to: ~p"/graphs/#{socket.assigns.skill_panel}/#{user.name}")}
   end
 
   def handle_event("clear_display_user", _params, socket) do
