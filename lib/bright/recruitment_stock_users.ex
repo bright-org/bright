@@ -13,7 +13,7 @@ defmodule Bright.RecruitmentStockUsers do
 
   ## Examples
 
-      iex> list_recruitment_stock_users(recruiter_id)
+      iex> list_recruitment_stock_users(recruiter_id, %{page: 1, page_size: 10})
       [%RecruitmentStockUser{}, ...]
 
   """
