@@ -1129,7 +1129,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
     } do
       UpdateSkillPanels.call(@locked_date, true)
 
-      # スキルユニットの公開データ生成を確認
+      # スキルユニットの公開データ生成がロールバックされることを確認
       published_skill_units = Repo.all(SkillUnit)
       assert length(published_skill_units) == length(skill_units)
 
