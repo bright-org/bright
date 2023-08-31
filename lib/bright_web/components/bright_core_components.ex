@@ -147,6 +147,7 @@ defmodule BrightWeb.BrightCoreComponents do
   attr :input_class, :string, default: ""
   attr :label_class, :string, default: ""
   attr :after_label_class, :string, default: ""
+  attr :error_class, :string, default: ""
   attr :name, :any
   attr :label, :string, default: nil
   attr :after_label, :string, default: nil
@@ -200,7 +201,9 @@ defmodule BrightWeb.BrightCoreComponents do
         />
         <span class={["ml-1", @label_class]}><%= @label %></span>
       </label>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <div class={@error_class}>
+        <.error :for={msg <- @errors}><%= msg %></.error>
+      </div>
     </div>
     """
   end
@@ -223,7 +226,10 @@ defmodule BrightWeb.BrightCoreComponents do
         />
         <span class={["ml-1", @label_class]}><%= @label %></span>
       </label>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <div class={@error_class}>
+        <.error :for={msg <- @errors}><%= msg %></.error>
+      </div>
+
     </div>
     """
   end
@@ -245,7 +251,9 @@ defmodule BrightWeb.BrightCoreComponents do
         <option :if={@prompt} value=""><%= @prompt %></option>
         <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
       </select>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <div class={@error_class}>
+        <.error :for={msg <- @errors}><%= msg %></.error>
+      </div>
     </div>
     """
   end
@@ -262,7 +270,9 @@ defmodule BrightWeb.BrightCoreComponents do
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <div class={@error_class}>
+        <.error :for={msg <- @errors}><%= msg %></.error>
+      </div>
     </div>
     """
   end
@@ -286,7 +296,9 @@ defmodule BrightWeb.BrightCoreComponents do
         />
         <span class={@after_label_class}><%= @after_label %></span>
       </label>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <div class={@error_class}>
+        <.error :for={msg <- @errors}><%= msg %></.error>
+      </div>
     </div>
     """
   end
