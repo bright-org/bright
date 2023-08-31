@@ -8,6 +8,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   import BrightWeb.TabComponents
 
   alias Bright.Teams
+  alias Bright.UserProfiles
 
   @tabs [
     # αリリース対象外 {"intriguing", "気になる人"},
@@ -292,9 +293,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
         %{
           user_name: member_users.user.name,
           title: member_users.user.user_profile.title,
-          icon_file_path:
-            "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-          # TODO アイコンの設定が動いたら置き換え member_users.user.user_profile.icon_file_path,
+          icon_file_path: UserProfiles.icon_url(member_users.user.user_profile.icon_file_path)
         }
       end)
 
