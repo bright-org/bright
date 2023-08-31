@@ -8,6 +8,7 @@ defmodule Bright.Teams do
 
   alias Bright.Teams.Team
   alias Bright.Accounts.UserNotifier
+  alias Bright.SkillScores.SkillClassScore
 
   # 招待メール関連定数
   @hash_algorithm :sha256
@@ -196,6 +197,15 @@ defmodule Bright.Teams do
     |> Repo.update()
   end
 
+  def update_team_member_users_is_star(
+        %TeamMemberUsers{} = team_member_users,
+        attrs
+      ) do
+    team_member_users
+    |> TeamMemberUsers.is_star_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a team_member_users.
 
@@ -244,7 +254,7 @@ defmodule Bright.Teams do
   def list_joined_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
     from(tmbu in TeamMemberUsers,
       where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at),
-      order_by: [desc: tmbu.is_primary, desc: tmbu.updated_at]
+      order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
     )
     |> preload(:team)
     |> Repo.paginate(page_param)
@@ -267,14 +277,41 @@ defmodule Bright.Teams do
   自分自身も含めたい場合用
   Scrivenerのページングに対応
   """
-  def list_jined_users_and_profiles_by_team_id(
+  def list_joined_users_and_profiles_by_team_id(
         team_id,
         page_param \\ %{page: 1, page_size: 1}
       ) do
     from(tmu in TeamMemberUsers,
-      where: tmu.team_id == ^team_id
+      where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+      order_by: [
+        desc: tmu.is_admin,
+        asc: tmu.invitation_confirmed_at
+      ]
     )
     |> preload(user: :user_profile)
+    |> Repo.paginate(page_param)
+  end
+
+  def list_skill_scores_by_team_id(
+        team_id,
+        skill_panel_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    team_member_users_query =
+      from(
+        tmu in TeamMemberUsers,
+        where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+        select: tmu.user_id
+      )
+
+    from(
+      scs in SkillClassScore,
+      join: sc in assoc(scs, :skill_class),
+      on: scs.skill_class_id == sc.id,
+      where:
+        sc.skill_panel_id == ^skill_panel_id and scs.user_id in subquery(team_member_users_query)
+    )
+    |> preload(:skill_class)
     |> Repo.paginate(page_param)
   end
 
@@ -282,13 +319,19 @@ defmodule Bright.Teams do
   チームメンバーの一覧取得
   自分自身を除外したい場合用
   """
-  def list_jined_users_and_profiles_by_team_id_without_myself(
+  def list_joined_users_and_profiles_by_team_id_without_myself(
         user_id,
         team_id,
         page_param \\ %{page: 1, page_size: 1}
       ) do
     from(tmu in TeamMemberUsers,
-      where: tmu.team_id == ^team_id and tmu.user_id != ^user_id
+      where:
+        tmu.team_id == ^team_id and tmu.user_id != ^user_id and
+          not is_nil(tmu.invitation_confirmed_at),
+      order_by: [
+        desc: tmu.is_admin,
+        asc: tmu.invitation_confirmed_at
+      ]
     )
     |> preload(user: :user_profile)
     |> Repo.paginate(page_param)
@@ -308,8 +351,7 @@ defmodule Bright.Teams do
     admin_attr = %{
       user_id: admin_user.id,
       is_admin: true,
-      # プライマリチーム判定
-      is_primary: is_primary(admin_user.id),
+      is_star: false,
       # 管理者本人は即時承認状態
       invitation_confirmed_at: TeamMemberUsers.now_for_confirmed_at()
     }
@@ -324,7 +366,7 @@ defmodule Bright.Teams do
           user_id: member_user.id,
           is_admin: false,
           # メンバーのプライマリ判定は承認後に実施する為一旦falseとする
-          is_primary: false,
+          is_star: false,
           invitation_token: hashed_token,
           invitation_sent_to: member_user.email,
           base64_encoded_token: base64_encoded_token
@@ -351,21 +393,6 @@ defmodule Bright.Teams do
       |> Repo.transaction()
 
     {:ok, Map.get(result, :team), member_attr}
-  end
-
-  @doc """
-  プライマリチーム判定
-
-  最初に所属したチームは自動的にプライマリチームになる
-  """
-  def is_primary(user_id) do
-    page = list_joined_teams_by_user_id(user_id)
-
-    if page.total_entries == 0 do
-      true
-    else
-      false
-    end
   end
 
   @doc """
@@ -436,5 +463,10 @@ defmodule Bright.Teams do
       update_team_member_users_invitation_confirmed_at(team_member_user, %{
         invitation_confirmed_at: now
       })
+  end
+
+  def toggle_is_star(team_member_user) do
+    {:ok, _team_member_user} =
+      update_team_member_users_is_star(team_member_user, %{is_star: !team_member_user.is_star})
   end
 end

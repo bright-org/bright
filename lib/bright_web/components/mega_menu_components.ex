@@ -11,7 +11,7 @@ defmodule BrightWeb.MegaMenuComponents do
   - id 画面内でメガメニューボタンを一意に識別できるID
   - card_component 　一覧表示に使用するカードコンポーネント
   - label ボタンに表示する名称
-  - current_user  カードの取得に使用するユーザー
+  - display_user  カードの取得に使用するユーザー
   - dropdown_offset_skidding ドロップダウンの描画オフセット(labelの文字数に応じて調整する必要がある)
   - card_component liveComponentによるカード実装
   - over_ride_on_card_row_click_target カードコンポーネント内の行クリック時のハンドラを呼び出し元のハンドラで実装するか否か falseの場合、本実装デフォルトの挙動(チームIDのみ指定してのチームスキル分析への遷移)を実行する

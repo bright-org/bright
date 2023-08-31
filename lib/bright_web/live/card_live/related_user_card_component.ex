@@ -279,7 +279,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   defp get_team_member_user_profiles(user_id, team_id, page_params) do
     page =
-      Teams.list_jined_users_and_profiles_by_team_id_without_myself(
+      Teams.list_joined_users_and_profiles_by_team_id_without_myself(
         user_id,
         team_id,
         page_params

@@ -37,4 +37,9 @@ defmodule Bright.SkillScores.SkillClassScore do
   def user_id_query(user_id) do
     from(q in __MODULE__, where: q.user_id == ^user_id)
   end
+
+  def user_id_in_sub_query_query(subquery) do
+    from q in __MODULE__,
+      where: q.user_id in subquery(subquery)
+  end
 end

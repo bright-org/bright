@@ -3,7 +3,6 @@ defmodule BrightWeb.TeamComponents do
   Team Components
   """
   use Phoenix.Component
-  import BrightWeb.ChartComponents
 
   @doc """
   アイコン付きのチームコンポーネント
@@ -43,102 +42,47 @@ defmodule BrightWeb.TeamComponents do
 
   attr :team, Bright.Teams.Team, required: true
   attr :team_type, :atom, default: :general_team
+  attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: true
 
-  def team_skill_panels(assigns) do
+  def team_header(assigns) do
     ~H"""
-    <div class="flex items-center">
-    <h3>
-      <span
-        class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center">
-        group
-      </span>
-      <%= assigns.team.name %>
-    </h3>
-    <label
-      class="text-white bg-lapislazuli-300 ml-8 rounded-md font-bold px-3 inline-flex items-center h-7">
-      プライマリ
-    </label>
+    <div class="flex gap-x-4">
+      <h3>
+        <span
+          class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center">
+          group
+        </span>
+        <%= @team.name %>
+      </h3>
+      <button
+        class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
+        phx-click="click_star_button"
+      >
+        <span
+          class={"material-icons text-#{get_star_style(@current_users_team_member)}"}
+        >
+          star
+        </span>
+      </button>
     </div>
     """
   end
 
-  attr :id, :string
-  attr :user, Bright.Accounts.User, required: true
-
-  def user_skill_card(assigns) do
-    ~H"""
-      <div class="flex w-[474px] shadow flex-col bg-white">
-        <ul
-          class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full"
-        >
-          <li class="bg-white text-base w-full">
-            <a
-              href="#"
-              class="w-full py-3 text-center inline-block"
-              aria-current="page"
-            >
-              クラス1
-              <span class="text-xl ml-4">52</span>％</a>
-          </li>
-          <li class="w-full">
-            <a href="#" class="w-full py-3 text-center inline-block"
-              >クラス2 <span class="text-xl ml-4">52</span>％</a>
-          </li>
-          <li class="w-full">
-            <a href="#" class="w-full py-3 text-center inline-block"
-              >クラス3 <span class="text-xl ml-4">52</span>％</a>
-          </li>
-        </ul>
-        <div class="flex justify-between px-6 pt-1 items-center">
-          <div class="text-2xl font-bold">piacere</div>
-          <div
-            class="bg-test bg-contain h-20 w-20 mt-4"
-            style="
-              background-image: url('./images/sample/sample-image.png');
-            "
-          ></div>
-        </div>
-        <div class="w-[400px] flex justify-center mx-auto">
-          <!-- <canvas id="radarChart" width="300" height="300"></canvas> -->
-          <.skill_gem
-        data={[[50, 60, 40, 30, 75, 60]]}
-        id={@id}
-        display_link="false"
-        labels={["エンジニア", "マーケター", "デザイナー", "インフラ", "営業", "昼寝"]}
-      />
-        </div>
-        <!--
-        <div class="p-6 pt-0 flex justify-between">
-          <button
-            class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-          >
-            1on1に誘う
-          </button>
-          <button
-            class="text-sm font-bold px-5 py-3 rounded border border-base"
-          >
-            この人と比較
-          </button>
-          <button
-            class="text-sm font-bold px-5 py-3 rounded border border-base"
-          >
-            スキルアップ確認
-          </button>
-        </div>
-        -->
-      </div>
-    """
-  end
-
-  @doc """
-  チーム種別を示す文字列からアイコンのパスを取得する
-  """
-  def get_team_icon_path(team_type) do
+  defp get_team_icon_path(team_type) do
     # TODO 全チーム種別のアイコンの追加、関数の実装場所の相談
     icons = [
       {:general_team, "/images/common/icons/team.svg"}
     ]
 
     icons[team_type]
+  end
+
+  defp get_star_style(team_member_user) do
+    if team_member_user.is_star do
+      "brightGreen-300"
+    else
+      # TODO スターのOFFの時の色指定確認
+      "brightGray-500"
+    end
   end
 end
