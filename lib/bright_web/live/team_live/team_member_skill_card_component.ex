@@ -43,6 +43,8 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             me={:true}
             anonymous={:false}
             root={""}
+            size="md"
+            display_link="false"
           />
         </div>
       </div>

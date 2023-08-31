@@ -15,7 +15,7 @@ defmodule BrightWeb.ChartComponents do
   attr :data, :list, required: true
   attr :labels, :list, required: true
   attr :links, :list, default: nil
-  attr :size, :string, default: "base", values: ["sm", "base"]
+  attr :size, :string, default: "base", values: ["sm", "md", "base"]
   attr :display_link, :string, default: "true", values: ["true", "false"]
   attr :color_theme, :string, default: "other", values: ["myself", "other"]
 
