@@ -12,8 +12,8 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   @tabs [
     # αリリース対象外 {"intriguing", "気になる人"},
-    {"team", "チーム"}
-    # αリリース対象外 {"candidate_for_employment", "採用候補者"}
+    {"team", "チーム"},
+    {"candidate_for_employment", "採用候補者"}
   ]
 
   @menu_items [
@@ -126,6 +126,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
     socket =
       socket
+      |> assign(:selected_tab, "team")
       |> assign(:inner_tab, inner_tabs)
 
     # チームが１以上あるなら最初のinner_tabを自動選択してcartの中身更新する
@@ -151,6 +152,21 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
       else
         socket
       end
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => _id, "tab_name" => "candidate_for_employment"},
+        socket
+      ) do
+    socket =
+      socket
+      |> assign(:selected_tab, "candidate_for_employment")
+      |> assign(:user_profiles, [])
+      |> assign(:inner_tab, [])
 
     {:noreply, socket}
   end

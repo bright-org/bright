@@ -8,7 +8,9 @@ defmodule Bright.RecruitmentStockUsersTest do
     test "list_recruitment_stock_users/0 returns all recruitment_stock_users" do
       recruitment_stock_user = insert(:recruitment_stock_user)
 
-      assert RecruitmentStockUsers.list_recruitment_stock_users(recruitment_stock_user.recruiter_id)
+      assert RecruitmentStockUsers.list_recruitment_stock_users(
+               recruitment_stock_user.recruiter_id
+             )
              |> Repo.preload([:recruiter, :user]) == [recruitment_stock_user]
     end
   end
