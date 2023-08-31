@@ -184,7 +184,7 @@ defmodule BrightWeb.ProfileComponents do
 
   defp profile_small_link(%{click_event: _, click_target: nil} = assigns) do
     ~H"""
-    <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-value-name={@user_name}>
+    <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-value-name={@user_name} phx-value-encrypt_user_name={@encrypt_user_name}>
       <%= render_slot(@inner_block) %>
     </a>
     """

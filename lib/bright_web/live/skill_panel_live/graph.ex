@@ -35,6 +35,13 @@ defmodule BrightWeb.SkillPanelLive.Graph do
   def handle_params(_params, _url, %{assigns: %{skill_panel: nil}} = socket),
     do: {:noreply, socket}
 
+    @impl true
+  def handle_event("click_on_related_user_card_menu", %{"encrypt_user_name" => encrypt_user_name}, socket) when encrypt_user_name != "" do
+    {:noreply,
+     socket
+     |> push_redirect(to: ~p"/graphs/#{socket.assigns.skill_panel}/anon/#{encrypt_user_name}")}
+  end
+
   @impl true
   def handle_event("click_on_related_user_card_menu", params, socket) do
     # TODO: チームメンバー以外の対応時に匿名に注意すること
