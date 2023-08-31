@@ -67,8 +67,7 @@ defmodule BrightWeb.MyTeamLive do
     %{page_number: _page, total_pages: _total_pages, entries: skill_panels} =
       SkillPanels.list_team_member_users_skill_panels(display_team.id, 1)
 
-    [skill_panels | _tail] = skill_panels
-    skill_panels
+    List.first(skill_panels)
   end
 
   defp get_display_skill_panel(_params, _display_team) do
