@@ -18,7 +18,7 @@ defmodule BrightWeb.Router do
     plug :put_root_layout, html: {BrightWeb.Layouts, :admin}
   end
 
-  pipeline :no_header do
+  pipeline :auth do
     plug :put_root_layout, html: {BrightWeb.Layouts, :auth}
   end
 
@@ -32,7 +32,7 @@ defmodule BrightWeb.Router do
 
   # TODO 本番では出ないように
   scope "/", BrightWeb do
-    pipe_through [:browser, :no_header]
+    pipe_through [:browser, :auth]
 
     get "/", PageController, :home
   end
@@ -42,7 +42,10 @@ defmodule BrightWeb.Router do
     pipe_through [:browser, :admin]
 
     live_session :fetch_current_user,
-      on_mount: [{BrightWeb.UserAuth, :mount_current_user}] do
+      on_mount: [
+        {BrightWeb.UserAuth, :mount_current_user},
+        {BrightWeb.InitAssigns, :without_header}
+      ] do
       live "/skill_panels", SkillPanelLive.Index, :index
       live "/skill_panels/new", SkillPanelLive.Index, :new
       live "/skill_panels/:id/edit", SkillPanelLive.Index, :edit
@@ -126,10 +129,13 @@ defmodule BrightWeb.Router do
   # 認証前
   ## ユーザー登録・ログイン
   scope "/", BrightWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated, :no_header]
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :auth]
 
     live_session :redirect_if_user_is_authenticated,
-      on_mount: [{BrightWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      on_mount: [
+        {BrightWeb.UserAuth, :redirect_if_user_is_authenticated},
+        {BrightWeb.InitAssigns, :without_header}
+      ] do
       live "/users/register", UserRegistrationLive, :new
       live "/users/finish_registration", UserFinishRegistrationLive, :show
       live "/users/log_in", UserLoginLive, :new
@@ -153,7 +159,8 @@ defmodule BrightWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [
         {BrightWeb.UserAuth, :ensure_authenticated},
-        {BrightWeb.UserAuth, :ensure_onboarding}
+        {BrightWeb.UserAuth, :ensure_onboarding},
+        BrightWeb.InitAssigns
       ] do
       live "/mypage", MypageLive.Index, :index
       live "/mypage/:user_name", MypageLive.Index, :index
@@ -218,7 +225,8 @@ defmodule BrightWeb.Router do
     live_session :require_authenticated_user_onboarding,
       on_mount: [
         {BrightWeb.UserAuth, :ensure_authenticated},
-        {BrightWeb.UserAuth, :redirect_if_onboarding_finished}
+        {BrightWeb.UserAuth, :redirect_if_onboarding_finished},
+        {BrightWeb.InitAssigns, :without_header}
       ] do
       live "/", OnboardingLive.Index, :index
       live "/welcome", OnboardingLive.Welcome

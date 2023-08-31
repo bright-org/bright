@@ -7,6 +7,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   alias BrightWeb.SearchLive.SearchResultsComponent
   alias BrightWeb.BrightCoreComponents, as: BrightCore
 
+  import BrightWeb.TabComponents, only: [tab_footer: 1]
+
   @class [クラス1: 1, クラス2: 2, クラス3: 3]
   @level [見習い: "beginner", 平均: "normal", ベテラン: "skilled"]
 
@@ -21,6 +23,21 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         phx-change="validate"
         phx-submit="search"
       >
+      <div class="border-b border-brightGray-200 flex flex-wrap items-center">
+        <div class="w-fit">
+          <label class="flex items-center py-4">
+            <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
+            <BrightCore.input
+              field={@form[:desired_income]}
+              input_class="border border-brightGray-200 px-2 py-1 mr-2 rounded w-40"
+              size="20"
+              type="number"
+              after_label="万円以下"
+            />
+          </label>
+        </div>
+      </div>
+
       <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
         <span class="w-32">求職種類</span>
         <div class="-ml-8">
@@ -115,25 +132,10 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
           </div>
         </div>
       </div>
-      <div class="border-b border-brightGray-200 flex flex-wrap items-center">
-        <div class="w-fit">
-          <label class="flex items-center py-4">
-            <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
-            <BrightCore.input
-              field={@form[:desired_income]}
-              input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
-              size="20"
-              type="number"
-              after_label="万円以下"
-            />
-          </label>
-        </div>
-      </div>
-
 
       <div class="flex mt-4" id="skill_section">
         <span class="mt-2 w-24">スキル</span>
-        <div class="-ml-5">
+        <div class="">
         <.inputs_for :let={sk} field={@form[:skills]} >
           <input type="hidden" name="user_search[skills_sort][]" value={sk.index}>
           <div class="flex items-center mb-4">
@@ -150,6 +152,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
             <BrightCore.input
               field={sk[:career_field]}
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-46 text-md"
+              error_class="absolute ml-4"
               type="select"
               options={@career_fields}
               prompt="キャリアフィールド"
@@ -157,6 +160,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
             <BrightCore.input
               field={sk[:skill_panel]}
               input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44"
+              error_class="absolute ml-4"
               type="select"
               options={Map.get(@skill_panels, sk[:career_field].value, [])}
               disabled={is_nil(sk[:career_field].value)}
@@ -196,16 +200,25 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         <BrightCore.button phx-disable-with="Searching...">検索する</BrightCore.button>
       </div>
       </.form>
+
       <div :if={@no_result} class="mt-5 text-xl text-center">
         該当するユーザーは見つかりませんでした
       </div>
-      <.live_component
-        id="user_search_result"
-        module={SearchResultsComponent}
-        current_user={@current_user}
-        result={@search_results}
-        skill_params={@skill_params}
-      />
+      <div :if={length(@search_results) > 0} >
+        <.live_component
+          id="user_search_result"
+          module={SearchResultsComponent}
+          current_user={@current_user}
+          result={@search_results}
+          skill_params={@skill_params}
+        />
+        <.tab_footer
+          id="user_search_result_footer"
+          page={@page}
+          total_pages={@total_pages}
+          target={@myself}
+        />
+      </div>
     </li>
     """
   end
@@ -233,6 +246,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> assign(:search_results, [])
     |> assign(:skill_params, [])
     |> assign(:no_result, false)
+    |> assign(:total_pages, 0)
+    |> assign(:page, 1)
     |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
@@ -275,8 +290,85 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   def handle_event(
         "search",
         _params,
-        %{assigns: %{changeset: %{changes: changes}}} = socket
+        %{assigns: %{changeset: %{changes: changes}, current_user: user}} = socket
       ) do
+    {skills, search_params} = convert_changes_to_search_params(changes)
+
+    case UserSearches.search_users_by_job_profile_and_skill_score(
+           search_params,
+           [user.id]
+         ) do
+      %{entries: []} ->
+        socket
+        |> assign(:search_results, [])
+        |> assign(:skill_params, [])
+        |> assign(:no_result, true)
+        |> then(&{:noreply, &1})
+
+      %{entries: users, total_pages: total_pages, page_number: page} ->
+        socket
+        |> assign(:search_results, users)
+        |> assign(:total_pages, total_pages)
+        |> assign(:page, page)
+        |> assign(:skill_params, skills)
+        |> assign(:no_result, false)
+        |> then(&{:noreply, &1})
+    end
+  end
+
+  def handle_event(
+        "previous_button_click",
+        _params,
+        %{assigns: %{page: page, changeset: changeset, current_user: user}} = socket
+      ) do
+    page = page - 1
+    page = if page < 1, do: 1, else: page
+    {_, search_params} = convert_changes_to_search_params(changeset.changes)
+
+    %{entries: users} =
+      UserSearches.search_users_by_job_profile_and_skill_score(search_params, [user.id], page)
+
+    socket
+    |> assign(:search_results, users)
+    |> assign(:page, page)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "next_button_click",
+        _params,
+        %{
+          assigns: %{
+            page: page,
+            total_pages: total_pages,
+            changeset: changeset,
+            current_user: user
+          }
+        } = socket
+      ) do
+    page = page + 1
+    page = if page > total_pages, do: total_pages, else: page
+
+    {_, search_params} = convert_changes_to_search_params(changeset.changes)
+
+    %{entries: users} =
+      UserSearches.search_users_by_job_profile_and_skill_score(search_params, [user.id], page)
+
+    socket
+    |> assign(:search_results, users)
+    |> assign(:page, page)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("search", _params, socket), do: {:noreply, socket}
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
+  end
+
+  defp disabled?(bool_or_string), do: to_string(bool_or_string) == "false"
+
+  defp convert_changes_to_search_params(changes) do
     skills =
       Map.get(changes, :skills, [])
       |> Enum.map(& &1.changes)
@@ -290,29 +382,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       skills
     }
 
-    case UserSearches.search_users_by_job_profile_and_skill_score(
-           search_params,
-           [socket.assigns.current_user.id]
-         ) do
-      [] ->
-        {:noreply, assign(socket, :no_result, true)}
-
-      users ->
-        socket
-        |> assign(:search_results, users)
-        |> assign(:skill_params, skills)
-        |> assign(:no_result, false)
-        |> then(&{:noreply, &1})
-    end
+    {skills, search_params}
   end
-
-  def handle_event("search", _params, socket), do: {:noreply, socket}
-
-  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :form, to_form(changeset))
-  end
-
-  defp disabled?(bool_or_string), do: to_string(bool_or_string) == "false"
 
   # キャリアフィールドが変更されたら、それ以降の値はリセットされる
   defp reset_skill_form_when_career_field_change(params, [_, "skills", index, "career_field"]) do

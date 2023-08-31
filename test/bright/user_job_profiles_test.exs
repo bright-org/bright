@@ -10,7 +10,6 @@ defmodule Bright.UserJobProfilesTest do
     alias Bright.Accounts.User
 
     @invalid_attrs %{
-      availability_date: nil,
       desired_income: nil,
       job_searching: nil,
       office_working_hours: nil,
@@ -56,7 +55,6 @@ defmodule Bright.UserJobProfilesTest do
       user = insert(:user)
 
       valid_attrs = %{
-        availability_date: ~D[2023-07-20],
         desired_income: 80,
         job_searching: true,
         office_working_hours: "月140h~159h",
@@ -76,7 +74,6 @@ defmodule Bright.UserJobProfilesTest do
       assert {:ok, %UserJobProfile{} = user_job_profile} =
                UserJobProfiles.create_user_job_profile(valid_attrs)
 
-      assert user_job_profile.availability_date == ~D[2023-07-20]
       assert user_job_profile.desired_income == 80
       assert user_job_profile.job_searching == true
       assert user_job_profile.office_working_hours == :"月140h~159h"
@@ -100,7 +97,6 @@ defmodule Bright.UserJobProfilesTest do
       user_job_profile = insert(:user_job_profile)
 
       update_attrs = %{
-        availability_date: ~D[2023-07-25],
         desired_income: 43,
         job_searching: false,
         office_working_hours: "月80h~99h",
@@ -119,7 +115,6 @@ defmodule Bright.UserJobProfilesTest do
       assert {:ok, %UserJobProfile{} = user_job_profile} =
                UserJobProfiles.update_user_job_profile(user_job_profile, update_attrs)
 
-      assert user_job_profile.availability_date == ~D[2023-07-25]
       assert user_job_profile.desired_income == 43
       assert user_job_profile.job_searching == false
       assert user_job_profile.office_working_hours == :"月80h~99h"

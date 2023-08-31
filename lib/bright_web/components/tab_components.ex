@@ -204,7 +204,7 @@ defmodule BrightWeb.TabComponents do
   attr :total_pages, :integer
   attr :target, :any
 
-  defp tab_footer(assigns) do
+  def tab_footer(assigns) do
     previous_enable = assigns.page > 1
     next_enable = assigns.page < assigns.total_pages
 

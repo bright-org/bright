@@ -40,8 +40,9 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             skill_panel={@display_skill_panel}
             class={@display_skill_card.select_skill_class.class}
             select_label={"now"}
-            me={:false}
+            me={:true}
             anonymous={:false}
+            root={""}
             size="md"
             display_link="false"
           />

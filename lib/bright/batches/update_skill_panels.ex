@@ -5,6 +5,8 @@ defmodule Bright.Batches.UpdateSkillPanels do
   https://github.com/bright-org/bright/blob/develop/docs/logics/update_skill_panels.md
   """
 
+  require Logger
+
   import Ecto.Query, warn: false
   alias Bright.Repo
 
@@ -35,16 +37,12 @@ defmodule Bright.Batches.UpdateSkillPanels do
   alias Bright.SkillExams.SkillExam
   alias Bright.SkillReferences.SkillReference
 
-  def call do
-    # NOTE: 日本時間の深夜に実行されるバッチのため、日付がずれないようにJSTで取得する
-    DateTime.now!("Asia/Tokyo")
-    |> DateTime.to_date()
-    |> call()
-  end
-
-  def call(locked_date) do
+  def call(locked_date, dry_run \\ false) do
     skill_panels = Repo.all(SkillPanel)
     now = NaiveDateTime.local_now()
+
+    if dry_run, do: log("dry-run mode")
+    log("skill_panels count: #{length(skill_panels)}")
 
     Repo.transaction(fn ->
       # 公開データから履歴データを生成
@@ -78,6 +76,9 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
       create_historical_skill_class_scores(skill_class_pairs, now, locked_date)
       create_historical_career_field_scores(now, locked_date)
+
+      log("historical_skill_classes inserted count: #{length(skill_class_pairs)}")
+      log("historical_skill_units inserted count: #{length(skill_unit_pairs)}")
 
       # 運営下書きデータから公開データを生成
       draft_skill_unit_pairs = create_skill_units(now, locked_date)
@@ -119,7 +120,16 @@ defmodule Bright.Batches.UpdateSkillPanels do
       # コピー元の公開データを削除
       delete_old_skill_classes(locked_date)
       delete_old_skill_units(locked_date)
+
+      log("skill_classes inserted count: #{length(draft_skill_class_pairs)}")
+      log("skill_units inserted count: #{length(draft_skill_unit_pairs)}")
+
+      if dry_run, do: Repo.rollback(:dry_run_finished)
     end)
+  end
+
+  defp log(message, level \\ :info) do
+    Logger.log(level, "[Batches.UpdateSkillPanels] #{message}")
   end
 
   defp create_historical_skill_units(now) do

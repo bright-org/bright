@@ -70,7 +70,7 @@ defmodule BrightWeb.ProfileComponents do
           <div class="flex gap-x-3">
            <.excellent_person_button :if={@display_excellent_person}/>
            <.anxious_person_button :if={@display_anxious_person} />
-           <.profile_button :if={@display_return_to_yourself} phx-click="clear_target_user">自分に戻す</.profile_button>
+           <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>
            <.profile_button :if={@display_stock_candidates_for_employment}>採用候補者としてストック</.profile_button>
            <.profile_button :if={@display_adopt}>採用する</.profile_button>
            <.profile_button :if={@display_recruitment_coordination}>採用の調整</.profile_button>
@@ -83,7 +83,7 @@ defmodule BrightWeb.ProfileComponents do
       </div>
     </div>
     <div :if={@display_detail} class="pt-5">
-      <%= @detail %>
+      <%= Phoenix.HTML.Format.text_to_html @detail || "", attributes: [class: "break-all"] %>
     </div>
     """
   end

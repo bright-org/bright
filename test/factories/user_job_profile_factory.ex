@@ -7,7 +7,6 @@ defmodule Bright.UserJobProfileFactory do
     quote do
       def user_job_profile_factory do
         %Bright.UserJobProfiles.UserJobProfile{
-          availability_date: ~D[2023-07-20],
           desired_income: 80,
           job_searching: true,
           office_working_hours: "月140h~159h",

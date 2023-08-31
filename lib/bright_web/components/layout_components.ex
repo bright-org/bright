@@ -52,7 +52,6 @@ defmodule BrightWeb.LayoutComponents do
   attr :profile, :map
   attr :page_title, :string
   attr :page_sub_title, :string
-  attr :notification_count, :integer
 
   def user_header(assigns) do
     page_sub_title =
@@ -61,7 +60,6 @@ defmodule BrightWeb.LayoutComponents do
     assigns =
       assigns
       |> assign(:profile, assigns.profile || %UserProfiles.UserProfile{})
-      |> assign(:notification_count, assigns.notification_count || 0)
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
@@ -98,7 +96,7 @@ defmodule BrightWeb.LayoutComponents do
       <ul class="grid pt-2">
         <%= for {title, path} <- links() do %>
           <li>
-            <.link class={menu_active_style(path == @href)} href={path} ><%= title %></.link>
+            <.link class={menu_active_style(String.starts_with?(@href, path))} href={path} ><%= title %></.link>
           </li>
         <% end %>
       </ul>
@@ -114,7 +112,7 @@ defmodule BrightWeb.LayoutComponents do
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
       {"スキル検索／スカウト", "/searches"},
-      {"キャリアパスを選ぶ", "/"},
+      {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html"},
       {"チームスキル分析", "/teams"},
       {"自分のチームを作る", "/teams/new"}
     ]

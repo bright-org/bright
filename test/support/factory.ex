@@ -85,4 +85,7 @@ defmodule Bright.Factory do
 
   # NotificationsFactory context
   use Bright.NotificationFactory
+
+  # Bright.RecruitmentStockUserFactory
+  use Bright.RecruitmentStockUserFactory
 end

@@ -68,9 +68,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     display_user = socket.assigns.display_user
 
     skill_classes =
-      Ecto.assoc(socket.assigns.skill_panel, :skill_classes)
-      |> SkillPanels.list_skill_classes()
-      |> Bright.Repo.preload(skill_class_scores: Ecto.assoc(display_user, :skill_class_scores))
+      socket.assigns.skill_panel
+      |> Bright.Repo.preload(
+        skill_classes: [skill_class_scores: Ecto.assoc(display_user, :skill_class_scores)]
+      )
+      |> Map.get(:skill_classes)
 
     socket
     |> assign(:skill_classes, skill_classes)
@@ -228,6 +230,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   def build_path(root, skill_panel, display_user, _me, false) do
     # 対象ユーザーかつ匿名ではない
     "/#{root}/#{skill_panel.id}/#{display_user.name}"
+  end
+
+  def get_path_to_switch_me(root, user, skill_panel) do
+    SkillPanels.get_user_skill_panel(user, skill_panel.id)
+    |> case do
+      nil -> "/#{root}"
+      _ -> "/#{root}/#{skill_panel.id}"
+    end
   end
 
   defp raise_invalid_skill_class do

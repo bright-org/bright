@@ -108,7 +108,11 @@ defmodule Bright.SkillPanels do
       where:
         u.user_id in subquery(team_member_users_query) and
           score.user_id in subquery(team_member_users_query),
-      preload: [skill_classes: :skill_class_scores],
+      preload: [
+        skill_classes: [
+          skill_class_scores: ^SkillClassScore.user_id_in_sub_query_query(team_member_users_query)
+        ]
+      ],
       order_by: p.updated_at,
       distinct: true
     )
@@ -296,7 +300,7 @@ defmodule Bright.SkillPanels do
     Repo.one(query)
   end
 
-  def get_all_skill_class_by_skill_panel_id(skill_panel_id) do
+  def get_all_skill_classes_by_skill_panel_id(skill_panel_id) do
     query =
       from sc in SkillClass,
         where: sc.skill_panel_id == ^skill_panel_id,

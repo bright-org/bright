@@ -24,7 +24,7 @@ defmodule BrightWeb.MyTeamLive do
 
     display_skill_panel = get_display_skill_panel(params, display_team)
     display_skill_classes = list_display_skill_classes(display_skill_panel)
-    selected_skill_class = get_first_skill_class(display_skill_classes)
+    selected_skill_class = get_selected_skill_class(params, display_skill_classes)
     member_skill_classes = list_skill_classes(display_team, display_skill_panel)
 
     # スキルとチームの取得結果に応じて各種assign
@@ -32,7 +32,7 @@ defmodule BrightWeb.MyTeamLive do
       socket
       |> assign_page_title(display_skill_panel)
       |> assign_display_skill_panel(display_skill_panel)
-      |> assign_display_skill_class(display_skill_classes)
+      |> assign_display_skill_classes(display_skill_classes)
       |> assign_display_team(display_team)
       |> assign_current_users_team_member(current_users_team_member)
       # ユーザー事に表示するスキルカードのmap作成とassign
@@ -77,7 +77,7 @@ defmodule BrightWeb.MyTeamLive do
   end
 
   defp list_display_skill_classes(%SkillPanel{} = skill_panel) do
-    SkillPanels.get_all_skill_class_by_skill_panel_id(skill_panel.id)
+    SkillPanels.get_all_skill_classes_by_skill_panel_id(skill_panel.id)
   end
 
   defp list_display_skill_classes(_skill_panel) do
@@ -171,16 +171,13 @@ defmodule BrightWeb.MyTeamLive do
         |> add_select_skill_class(first_skill_class)
       end)
 
-    [first_skill_class | _rest] = display_member_for_skill_card
-
     socket
     |> assign(:display_skill_cards, display_member_for_skill_card)
-    |> assign(:select_skill_class, first_skill_class)
   end
 
   defp add_select_skill_class(map, select_skill_class) do
     map
-    |> Map.put(:select_skill_class, select_skill_class)
+    |> Map.put_new(:select_skill_class, select_skill_class)
   end
 
   defp add_user_skill_class_score(map, display_skill_classes, filterd_member_skill_classes) do
@@ -211,23 +208,14 @@ defmodule BrightWeb.MyTeamLive do
     |> assign(:display_skill_panel, display_skill_panel)
   end
 
-  defp assign_display_skill_class(socket, []) do
+  defp assign_display_skill_classes(socket, []) do
     socket
     |> assign(:display_skill_classes, [])
   end
 
-  defp assign_display_skill_class(socket, display_skill_classes) do
-    # 表示するスキルクラスが指定されていない場合は最初のクラスを指定
-    if !Map.has_key?(socket, :display_skill_class) || socket.assigns.display_skill_class == nil do
-      [first_skill_class | _rest] = display_skill_classes
-
-      socket
-      |> assign(:display_skill_classes, display_skill_classes)
-      |> assign(:display_skill_class, first_skill_class)
-    else
-      socket
-      |> assign(:display_skill_classes, display_skill_classes)
-    end
+  defp assign_display_skill_classes(socket, display_skill_classes) do
+    socket
+    |> assign(:display_skill_classes, display_skill_classes)
   end
 
   defp assign_push_redirect(
@@ -315,20 +303,38 @@ defmodule BrightWeb.MyTeamLive do
     |> assign(:current_users_team_member, current_users_team_member)
   end
 
-  defp get_first_skill_class([]) do
-    # スキルクラスが取得できていない場合初期設定のスキルクラス取得を行わない
+  defp get_selected_skill_class(
+         %{"skill_class_id" => skill_class_id},
+         display_skill_classes
+       ) do
+    # URLパラメータにスキルクラスIDの指定がある場合該当のクラスを初期表示クラスとする
+    selected_skill_class =
+      display_skill_classes
+      |> Enum.find(fn skill_class ->
+        skill_class.id == skill_class_id
+      end)
+
+    if selected_skill_class == nil do
+      # 該当のスキルクラスが取得できない場合は最初のクラスを採用
+      get_selected_skill_class(%{}, display_skill_classes)
+    else
+      selected_skill_class
+    end
+  end
+
+  defp get_selected_skill_class(_params, []) do
     nil
   end
 
-  defp get_first_skill_class(display_skill_classes) do
+  defp get_selected_skill_class(_params, display_skill_classes) do
+    # URLパラメータにスキルクラスIDの指定がない場合は最初のスキルクラスを指定
     sorted_skill_classes =
       display_skill_classes
       |> Enum.sort(fn skill_class, n ->
         skill_class.class <= n.class
       end)
 
-    [first_skill_class | _rest] = sorted_skill_classes
-    first_skill_class
+    List.first(sorted_skill_classes)
   end
 
   def handle_event("click_star_button", _params, socket) do
@@ -341,46 +347,61 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, socket}
   end
 
-  @doc """
-  メガメニューのチームカードからチームの行をクリックした場合のハンドラー
-
-  display_teamを選択したチームのチームIDで更新し、リダイレクトする。
-  その際、選択済のスキルパネル、またはスキルセットがある場合IDを引き継ぐ
-  """
   def handle_event("on_card_row_click", %{"team_id" => team_id}, socket) do
+    # メガメニューのチームカードからチームの行をクリックした場合のハンドラー
+    # display_teamを選択したチームのチームIDで更新し、リダイレクトする。
+    # その際、選択済のスキルパネル、またはスキルセットがある場合IDを引き継ぐ
+    # スキルクラスは引き継がず初期化する
+
     display_team = Teams.get_team_with_member_users!(team_id)
 
     socket =
       socket
       |> assign(:display_team, display_team)
-      |> deside_push_redirect(display_team, socket.assigns.display_skill_panel)
+      |> deside_push_redirect(display_team, socket.assigns.display_skill_panel.id, nil)
 
     {:noreply, socket}
   end
 
   def handle_event("on_skill_pannel_click", %{"skill_panel_id" => skill_panel_id}, socket) do
-    display_skill_panel = SkillPanels.get_skill_panel!(skill_panel_id)
-
+    # メガメニューのスキルパネルカードからスキルクラスをクリックした場合のハンドラー
+    # 指定されているチームを引き継いで該当のスキルパネルを指定してリダイレクトする
     socket =
       socket
-      |> assign(:display_skill_panel, display_skill_panel)
-      |> deside_push_redirect(socket.assigns.display_team, display_skill_panel)
+      |> deside_push_redirect(socket.assigns.display_team, skill_panel_id, nil)
 
     {:noreply, socket}
   end
 
-  defp deside_push_redirect(socket, %Team{} = display_team, %SkillPanel{} = display_skill_panel) do
-    socket
-    |> push_redirect(to: "/teams/#{display_team.id}/skill_panels/#{display_skill_panel.id}")
+  def handle_event(
+        "on_skill_class_click",
+        %{"skill_panel_id" => skill_panel_id, "skill_class_id" => skill_class_id},
+        socket
+      ) do
+    # メガメニューのスキルパネルカードからスキルクラスをクリックした場合のハンドラー
+    # 指定されているチーム、スキルパネルを引き継いで該当のスキルクラスをURLパラメータに指定してリダイレクトする
+    socket =
+      socket
+      |> deside_push_redirect(socket.assigns.display_team, skill_panel_id, skill_class_id)
+
+    {:noreply, socket}
   end
 
-  defp deside_push_redirect(socket, %Team{} = display_team, nil) do
+  defp deside_push_redirect(socket, %Team{} = display_team, nil, nil) do
     socket
     |> push_redirect(to: "/teams/#{display_team.id}")
   end
 
-  defp deside_push_redirect(socket, nil, _display_skill_panel) do
+  defp deside_push_redirect(socket, %Team{} = display_team, skill_panel_id, nil) do
     socket
-    |> push_redirect(to: "/teams")
+    |> push_redirect(to: "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}")
+  end
+
+  defp deside_push_redirect(socket, %Team{} = display_team, skill_panel_id, skill_class_id) do
+    socket
+    |> push_redirect(
+      to:
+        "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
+    )
   end
 end

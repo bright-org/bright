@@ -62,6 +62,6 @@ defmodule BrightWeb.SnsComponents do
     """
   end
 
-  defp disable_icon_suffix(true), do: "_disable.png"
+  defp disable_icon_suffix(true), do: "_gray.svg"
   defp disable_icon_suffix(false), do: ".svg"
 end
