@@ -299,9 +299,9 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
       RecruitmentStockUsers.list_recruitment_stock_users(socket.assigns.current_user.id)
       |> Enum.map(fn _x ->
         %{
-          user_name: "匿名",
-          title: "",
-          icon_file_path: nil
+          user_name: "非表示",
+          title: "非表示",
+          icon_file_path: UserProfiles.icon_url(nil)
         }
       end)
 
