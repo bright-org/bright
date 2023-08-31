@@ -115,14 +115,23 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_event(
+        "click_on_related_user_card_menu",
+        %{"encrypt_user_name" => encrypt_user_name},
+        socket
+      )
+      when encrypt_user_name != "" do
+    {:noreply,
+     push_redirect(socket, to: ~p"/panels/#{socket.assigns.skill_panel}/anon/#{encrypt_user_name}")}
+  end
+
   def handle_event("click_on_related_user_card_menu", params, socket) do
     # TODO: チームメンバー以外の対応時に匿名に注意すること
     user = Bright.Accounts.get_user_by_name(params["name"])
 
     # 参照可能なユーザーかどうかの判定は遷移先で行うので必要ない
-    {:noreply,
-     socket
-     |> push_redirect(to: ~p"/panels/#{socket.assigns.skill_panel}/#{user.name}")}
+    {:noreply, push_redirect(socket, to: ~p"/panels/#{socket.assigns.skill_panel}/#{user.name}")}
   end
 
   def handle_event("clear_display_user", _params, socket) do

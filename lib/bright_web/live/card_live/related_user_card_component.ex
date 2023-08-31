@@ -9,11 +9,13 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   alias Bright.Teams
   alias Bright.UserProfiles
+  alias Bright.RecruitmentStockUsers
+  alias BrightWeb.DisplayUserHelper
 
   @tabs [
     # αリリース対象外 {"intriguing", "気になる人"},
-    {"team", "チーム"}
-    # αリリース対象外 {"candidate_for_employment", "採用候補者"}
+    {"team", "チーム"},
+    {"candidate_for_employment", "採用候補者"}
   ]
 
   @menu_items [
@@ -75,7 +77,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           </ul>
           <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
-              <.profile_small user_name={user_profile.user_name} title={user_profile.title} icon_file_path={user_profile.icon_file_path} click_event={click_event(@purpose)} click_target={@card_row_click_target} />
+              <.profile_small user_name={user_profile.user_name} title={user_profile.title} icon_file_path={user_profile.icon_file_path} encrypt_user_name={user_profile.encrypt_user_name} click_event={click_event(@purpose)} click_target={@card_row_click_target} />
             <% end %>
           </ul>
         </div>
@@ -126,6 +128,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
     socket =
       socket
+      |> assign(:selected_tab, "team")
       |> assign(:inner_tab, inner_tabs)
 
     # チームが１以上あるなら最初のinner_tabを自動選択してcartの中身更新する
@@ -151,6 +154,21 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
       else
         socket
       end
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"id" => _id, "tab_name" => "candidate_for_employment"},
+        socket
+      ) do
+    socket =
+      socket
+      |> assign(:selected_tab, "candidate_for_employment")
+      |> assign(:inner_tab, [])
+      |> assign_selected_card("candidate_for_employment")
 
     {:noreply, socket}
   end
@@ -277,6 +295,32 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     |> assign(:total_pages, member_and_users.total_pages)
   end
 
+  defp assign_selected_card(socket, "candidate_for_employment") do
+    list_recruitment_stock_users =
+      RecruitmentStockUsers.list_recruitment_stock_users(
+        socket.assigns.current_user.id,
+        %{
+          page: socket.assigns.page,
+          page_size: socket.assigns.page_size
+        }
+      )
+
+    user_profiles =
+      list_recruitment_stock_users
+      |> Enum.map(fn user ->
+        %{
+          user_name: "非表示",
+          title: "非表示",
+          icon_file_path: UserProfiles.icon_url(nil),
+          encrypt_user_name: DisplayUserHelper.encrypt_user_name(user)
+        }
+      end)
+
+    socket
+    |> assign(:user_profiles, user_profiles)
+    |> assign(:total_pages, list_recruitment_stock_users.total_pages)
+  end
+
   defp get_team_member_user_profiles(user_id, team_id, page_params) do
     page =
       Teams.list_joined_users_and_profiles_by_team_id_without_myself(
@@ -293,7 +337,8 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
         %{
           user_name: member_users.user.name,
           title: member_users.user.user_profile.title,
-          icon_file_path: UserProfiles.icon_url(member_users.user.user_profile.icon_file_path)
+          icon_file_path: UserProfiles.icon_url(member_users.user.user_profile.icon_file_path),
+          encrypt_user_name: ""
         }
       end)
 

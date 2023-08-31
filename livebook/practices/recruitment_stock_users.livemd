@@ -1,0 +1,50 @@
+# create_recruitment_stock_users
+
+## Section
+
+```elixir
+defmodule Test do
+  import Ecto.Query, warn: false
+  alias Bright.Accounts.User
+  alias Bright.Repo
+  alias Bright.Accounts
+  alias Bright.RecruitmentStockUsers.RecruitmentStockUser
+
+  def select_users(name) do
+    from(u in User,
+      where: u.name != ^name,
+      select: u.id
+    )
+    |> Repo.all()
+  end
+
+  def insert_recruitment_stock_users(name) do
+    Accounts.get_user_by_name(name) |> Map.get(:id)
+  end
+
+  def insert(name) do
+    recruiter_id = insert_recruitment_stock_users(name)
+
+    select_users(name)
+    |> Enum.each(fn x ->
+      %RecruitmentStockUser{recruiter_id: recruiter_id, user_id: x}
+      |> Repo.insert()
+    end)
+  end
+
+  def list() do
+    RecruitmentStockUser
+    |> Repo.all()
+  end
+
+  def delete_all() do
+    list() |> Enum.each(&Repo.delete/1)
+  end
+end
+
+# Test.select_users("ymn") 
+# Test.insert_recruitment_stock_users("ymn")
+# Test.delete_all()
+# Test.list()
+Test.insert("ymn")
+```
