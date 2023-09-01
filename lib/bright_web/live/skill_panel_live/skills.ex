@@ -130,16 +130,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   def handle_event("click_on_related_user_card_menu", params, socket) do
     skill_panel = socket.assigns.skill_panel
     # TODO: 参照可能なユーザーかどうかの判定を行うこと
-    anonymous = params["encrypt_user_name"] != ""
-
-    user_name =
-      if anonymous,
-        do: decrypt_user_name(params["encrypt_user_name"]),
-        else: params["name"]
-
-    user =
-      Bright.Accounts.get_user_by_name(user_name)
-      |> Map.put(:name_encrypted, params["encrypt_user_name"])
+    {user, anonymous} =
+      get_user_from_name_or_name_encrypted(params["name"], params["encrypt_user_name"])
 
     get_path_to_switch_display_user("panels", user, skill_panel, anonymous)
     |> case do

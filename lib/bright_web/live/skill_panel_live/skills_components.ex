@@ -219,7 +219,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           </td>
           <td :for={user <- @compared_users} class="!border-l !border-brightGray-200">
             <div class="flex justify-center items-center">
-              <p class="inline-flex flex-1 justify-center"><%= user.name %></p>
+              <p class="inline-flex flex-1 justify-center"><%= if user.anonymous, do: "非表示", else: user.name %></p>
               <button
                 type="button"
                 class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"

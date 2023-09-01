@@ -61,4 +61,19 @@ defmodule BrightWeb.DisplayUserHelper do
         reraise(Bright.Exceptions.DecryptUserNameError, [exception: exception], __STACKTRACE__)
     end
   end
+
+  @doc """
+  nameあるいはencrypted_nameからuserとanonymousかどうかを返す
+  """
+  def get_user_from_name_or_name_encrypted(name, name_encrypted)
+      when is_nil(name_encrypted) or name_encrypted == "" do
+    user = Bright.Accounts.get_user_by_name(name)
+    {user, false}
+  end
+
+  def get_user_from_name_or_name_encrypted(_name, name_encrypted) do
+    user_name = decrypt_user_name(name_encrypted)
+    user = Bright.Accounts.get_user_by_name(user_name)
+    {user, true}
+  end
 end

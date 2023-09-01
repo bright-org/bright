@@ -16,6 +16,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias Bright.HistoricalSkillScores
   alias BrightWeb.SkillPanelLive.TimelineHelper
   alias BrightWeb.BrightCoreComponents
+  alias BrightWeb.DisplayUserHelper
 
   def render(assigns) do
     ~H"""
@@ -65,9 +66,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   def handle_event("click_on_related_user_card_compare", params, socket) do
-    # TODO: チームメンバー以外の対応時に匿名に注意すること
     # TODO: 本当に参照可能かのチェックをいれること
-    user = Bright.Accounts.get_user_by_name(params["name"])
+    {user, anonymous} =
+      DisplayUserHelper.get_user_from_name_or_name_encrypted(
+        params["name"],
+        params["encrypt_user_name"]
+      )
+
+    user = Map.put(user, :anonymous, anonymous)
+
     display_user_id = socket.assigns.display_user.id
     existing_user_ids = socket.assigns.compared_users |> Enum.map(& &1.id)
 
