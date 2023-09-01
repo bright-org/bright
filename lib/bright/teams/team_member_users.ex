@@ -9,7 +9,7 @@ defmodule Bright.Teams.TeamMemberUsers do
   @foreign_key_type Ecto.ULID
   schema "team_member_users" do
     field :is_admin, :boolean, default: false
-    field :is_primary, :boolean, default: false
+    field :is_star, :boolean, default: false
     field :invitation_token, :binary
     field :invitation_sent_to, :string
     field :invitation_confirmed_at, :naive_datetime
@@ -31,7 +31,7 @@ defmodule Bright.Teams.TeamMemberUsers do
       :user_id,
       :team_id,
       :is_admin,
-      :is_primary,
+      :is_star,
       :invitation_token,
       :invitation_sent_to,
       :invitation_confirmed_at
@@ -46,6 +46,12 @@ defmodule Bright.Teams.TeamMemberUsers do
       :invitation_confirmed_at
     ])
     |> validate_required([:invitation_confirmed_at])
+  end
+
+  def is_star_changeset(team_member_users, attrs) do
+    team_member_users
+    |> cast(attrs, [:is_star])
+    |> validate_required([:is_star])
   end
 
   def now_for_confirmed_at() do

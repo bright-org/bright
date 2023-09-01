@@ -1,5 +1,5 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
-  use Phoenix.Component
+  use BrightWeb, :component
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
   import BrightWeb.MegaMenuComponents
@@ -221,6 +221,72 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
+  attr :user, Bright.Accounts.User
+  attr :user_skill_class_score, :map
+  attr :select_skill_class, Bright.SkillPanels.SkillClass
+  attr :skill_class_tab_click_target, :any, default: nil
+
+  def team_member_class_tab(assigns) do
+    # チーム表示用以下の都合で専用の関数を用意
+    # userを起点にpre_loadしていった場合、skill_score.skill_classの構造になる為pair_skill_class_score関数に対応できない
+    # チームスキル分析でタブをタップした場合の挙動をハンドラで実装したい
+    ~H"""
+    <ul class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full">
+      <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- @user_skill_class_score do %>
+        <%= if skill_class_score do %>
+          <% current = @select_skill_class.class == skill_class.class %>
+          <%= if @select_skill_class.class == skill_class.class do %>
+            <li
+              class={"bg-white text-base w-full"}
+              phx-click="skill_class_tab_click"
+              phx-target={@skill_class_tab_click_target}
+              phx-value-user_id={@user.id}
+              phx-value-skill_class_id={skill_class.id}
+            >
+              <span
+                id={"class_tab_#{skill_class.class}"}
+                class="inline-block p-4 pt-3"
+                aria-current={current && "page"}
+              >
+                クラス<%= skill_class.class %>
+              <span class="text-xl ml-4">
+                <%= floor skill_class_score.percentage %></span>％
+              </span>
+            </li>
+          <% else %>
+
+            <li
+              class={"w-full bg-pureGray-100 text-pureGray-300"}
+              phx-click="skill_class_tab_click"
+              phx-target={@skill_class_tab_click_target}
+              phx-value-user_id={@user.id}
+              phx-value-skill_class_id={skill_class.id}
+            >
+              <span
+                id={"class_tab_#{skill_class.class}"}
+                class="inline-block p-4 pt-3"
+              >
+                クラス<%= skill_class.class %>
+                <span class="text-xl ml-4">
+                <%= floor skill_class_score.percentage %></span>％
+              </span>
+            </li>
+          <% end %>
+        <% else %>
+          <li class="w-full bg-pureGray-600 text-pureGray-100">
+            <span
+              class="select-none inline-block p-4 pt-3"
+            >
+              クラス<%= skill_class.class %>
+              <span class="text-xl ml-4">0</span>％
+            </span>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+    """
+  end
+
   def class_tab(assigns) do
     ~H"""
     <ul class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGray-500 bg-brightGreen-50">
@@ -300,6 +366,18 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           </button>
         </div>
       </div>
+    """
+  end
+
+  def no_skill_panel(assigns) do
+    ~H"""
+    <div class="h-screen w-full flex flex-col justify-center items-center gap-y-2">
+      <p class="text-4xl">スキルパネルがありません</p>
+      <p class="text-xl">スキルを選ぶからスキルパネルを取得しましょう</p>
+      <a href={~p"/onboardings"} class="text-xl cursor-pointer bg-brightGray-900 !text-white font-bold px-6 py-4 rounded mt-10 hover:opacity-50">
+      スキルを選ぶ
+      </a>
+    </div>
     """
   end
 

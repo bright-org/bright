@@ -47,7 +47,8 @@ defmodule Bright.UserSearches do
   """
   def search_users_by_job_profile_and_skill_score(
         {job_params, job_range_params, skill_params},
-        exclude_user_ids \\ []
+        exclude_user_ids \\ [],
+        page \\ 1
       ) do
     user_ids =
       skill_score_query(exclude_user_ids, job_params, job_range_params)
@@ -60,7 +61,7 @@ defmodule Bright.UserSearches do
       where: u.id in ^user_ids,
       preload: [:skill_class_scores, :user_job_profile]
     )
-    |> Repo.all()
+    |> Repo.paginate(page: page, page_size: 5)
   end
 
   # job_profile_queryで絞り込んだユーザーのスキルスコアを取得する

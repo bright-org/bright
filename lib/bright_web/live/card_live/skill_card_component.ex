@@ -7,9 +7,16 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   import BrightWeb.TabComponents
   alias Bright.{CareerFields, SkillPanels}
   alias BrightWeb.PathHelper
+  alias Bright.Teams.Team
 
   @impl true
   def render(assigns) do
+    # スキルパネル用のリダイレクト処理が定義されてない場合の初期値設定
+    # PathHelper.skill_panel_pathを使用せずにクリック時のアクションを自分で用意したい時用
+    assigns =
+      assigns
+      |> set_default_attrs()
+
     ~H"""
     <div>
       <.tab
@@ -41,10 +48,62 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
               me={@me}
               anonymous={@anonymous}
               root={@root}
+              over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
             />
           <% end %>
         </div>
       </.tab>
+    </div>
+    """
+  end
+
+  defp set_default_attrs(assigns) do
+    assigns
+    |> set_default_over_ride_on_card_row_click_target()
+  end
+
+  defp set_default_over_ride_on_card_row_click_target(
+         %{over_ride_on_card_row_click_target: _over_ride_on_card_row_click_target} = assigns
+       ) do
+    assigns
+  end
+
+  defp set_default_over_ride_on_card_row_click_target(assigns) do
+    assigns
+    |> Map.put(:over_ride_on_card_row_click_target, false)
+  end
+
+  defp skill_panel(%{over_ride_on_card_row_click_target: true} = assigns) do
+    # over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
+    skill_classes = assigns.skill_panel.skill_classes
+    dummy_classes = cleate_dummy_classes(skill_classes)
+
+    assigns =
+      assigns
+      |> assign(:skill_classes, skill_classes ++ dummy_classes)
+
+    ~H"""
+    <div class="flex">
+      <div class="flex-1 text-left font-bold">
+        <p
+          phx-click="on_skill_pannel_click"
+          phx-value-skill_panel_id={@skill_panel.id}
+        >
+          <%= @skill_panel.name %>
+        </p>
+      </div>
+      <%= for skill_class <- @skill_classes do %>
+        <.skill_gem
+          score={List.first(skill_class.skill_class_scores)}
+          skill_class={skill_class}
+          skill_panel={@skill_panel}
+          display_user={@display_user}
+          me={@me}
+          anonymous={@anonymous}
+          root={@root}
+          over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
+        />
+      <% end %>
     </div>
     """
   end
@@ -64,15 +123,16 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
           <%= @skill_panel.name %>
         </.link>
       </div>
-      <%= for class <- @skill_classes do %>
+      <%= for skill_class <- @skill_classes do %>
         <.skill_gem
-          score={List.first(class.skill_class_scores)}
-          class_num={class.class}
+          score={List.first(skill_class.skill_class_scores)}
+          skill_class={skill_class}
           skill_panel={@skill_panel}
           display_user={@display_user}
           me={@me}
           anonymous={@anonymous}
           root={@root}
+          over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
         />
       <% end %>
     </div>
@@ -94,6 +154,28 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
+  defp skill_gem(%{score: %{level: level}, over_ride_on_card_row_click_target: true} = assigns) do
+    # over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
+    assigns =
+      assigns
+      |> assign(:icon_path, icon_path(level))
+      |> assign(:level, level)
+
+    ~H"""
+    <div class="w-36">
+      <p
+        phx-click="on_skill_class_click"
+        phx-value-skill_panel_id={@skill_panel.id}
+        phx-value-skill_class_id={@skill_class.id}
+        class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+        >
+        <img src={@icon_path} class="mr-1" />
+        <span class="w-16"><%= level_text(@level) %></span>
+      </p>
+    </div>
+    """
+  end
+
   defp skill_gem(%{score: %{level: level}} = assigns) do
     assigns =
       assigns
@@ -102,7 +184,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
     ~H"""
     <div class="w-36">
-      <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@class_num}"}>
+      <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
           <img src={@icon_path} class="mr-1" />
           <span class="w-16"><%= level_text(@level) %></span>
@@ -110,6 +192,22 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       </.link>
     </div>
     """
+  end
+
+  @impl true
+  def update(%{display_team: display_team, display_user: display_user} = assigns, socket) do
+    default_tab = "engineer"
+
+    tabs =
+      CareerFields.list_career_fields()
+      |> Enum.map(&{&1.name_en, &1.name_ja})
+
+    socket
+    |> assign(assigns)
+    |> assign_over_ride_on_card_row_click_target(assigns)
+    |> assign(:tabs, tabs)
+    |> assign(:selected_tab, default_tab)
+    |> update_socket(display_team, display_user, default_tab)
   end
 
   @impl true
@@ -137,6 +235,41 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     {:ok, assign_paginate(socket, display_user.id, career_field, page)}
   end
 
+  defp assign_over_ride_on_card_row_click_target(
+         socket,
+         %{over_ride_on_card_row_click_target: over_ride_on_card_row_click_target} = _assigns
+       ) do
+    socket
+    |> assign(:over_ride_on_card_row_click_target, over_ride_on_card_row_click_target)
+  end
+
+  defp assign_over_ride_on_card_row_click_target(socket, _assigns) do
+    socket
+  end
+
+  defp update_socket(socket, team, user, selected_tab) do
+    socket
+    |> assign_paginate_team(team, user, selected_tab)
+    |> then(&{:ok, &1})
+  end
+
+  def assign_paginate_team(socket, team, user, career_field, page \\ 1)
+
+  def assign_paginate_team(socket, %Team{} = team, _user, career_field, page) do
+    %{page_number: page, total_pages: total_pages, entries: skill_panels} =
+      SkillPanels.list_team_member_users_skill_panels_by_career_field(team.id, career_field, page)
+
+    socket
+    |> assign(:skill_panels, skill_panels)
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
+  end
+
+  def assign_paginate_team(socket, _team, user, career_field, page) do
+    # TODO 要件不明 チームが取得出来ていない場合は個人の場合とおなじスキルパネルを取得する
+    assign_paginate(socket, user.id, career_field, page)
+  end
+
   def assign_paginate(socket, user_id, career_field, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
       SkillPanels.list_users_skill_panels_by_career_field(user_id, career_field, page)
@@ -145,6 +278,18 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> assign(:skill_panels, skill_panels)
     |> assign(:page, page)
     |> assign(:total_pages, total_pages)
+  end
+
+  @impl true
+  def handle_event(
+        "tab_click",
+        %{"tab_name" => tab_name},
+        %{assigns: %{display_team: team, display_user: user}} = socket
+      ) do
+    socket
+    |> assign(:selected_tab, tab_name)
+    |> assign_paginate_team(team, user, tab_name)
+    |> then(&{:noreply, &1})
   end
 
   @impl true
