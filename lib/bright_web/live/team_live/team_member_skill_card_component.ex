@@ -26,7 +26,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <div class="text-2xl font-bold">
             <%= assigns.display_skill_card.user.name %>
           </div>
-            <div class="bg-test bg-contain h-20 w-20 mt-4"
+            <div class="bg-test bg-contain h-20 w-20 mt-4 rounded-full"
             style={"background-image: url('#{icon_url(assigns.display_skill_card.user.user_profile.icon_file_path)}');"}
             >
             </div>
