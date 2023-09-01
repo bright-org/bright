@@ -48,11 +48,21 @@ defmodule BrightWeb.SkillPanelLive.Graph do
 
   @impl true
   def handle_event("click_on_related_user_card_menu", params, socket) do
+    skill_panel = socket.assigns.skill_panel
     # TODO: チームメンバー以外の対応時に匿名に注意すること
+    # TODO: 参照可能なユーザーかどうかの判定を行うこと
     user = Bright.Accounts.get_user_by_name(params["name"])
 
-    # 参照可能なユーザーかどうかの判定は遷移先で行うので必要ない
-    {:noreply, push_redirect(socket, to: ~p"/graphs/#{socket.assigns.skill_panel}/#{user.name}")}
+    get_path_to_switch_display_user("graphs", user, skill_panel, false)
+    |> case do
+      {:ok, path} ->
+        {:noreply, push_redirect(socket, to: path)}
+
+      :error ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "選択された対象者がスキルパネルを保有していないため、対象者を表示できません")}
+    end
   end
 
   def handle_event("clear_display_user", _params, socket) do
