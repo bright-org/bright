@@ -1,7 +1,6 @@
 defmodule BrightWeb.SearchLive.SkillSearchComponent do
   use BrightWeb, :live_component
 
-  alias BrightWeb.BrightCoreComponents, as: BrightCore
   alias BrightWeb.SearchLive.UserSearchComponent
   import BrightWeb.TabComponents
 
@@ -16,8 +15,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
   def render(assigns) do
     ~H"""
     <div id="skill_search_modal" class="hidden">
-      <BrightCore.flash_group flash={@modal_flash} />
-      <div class="bg-zinc-50/90 fixed inset-0 transition-opacity" />
+      <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity" />
       <div class="fixed inset-0 overflow-y-auto">
         <section
           id="user_search" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[1000px]"
@@ -38,10 +36,10 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
             selected_tab={@selected_tab}
             target={@myself}
           >
-          <.live_component
-            id="user_search"
-            module={UserSearchComponent}
-            current_user={@current_user}
+            <.live_component
+              id="user_search_tab"
+              module={UserSearchComponent}
+              current_user={@current_user}
             />
           </.tab>
         </section>
