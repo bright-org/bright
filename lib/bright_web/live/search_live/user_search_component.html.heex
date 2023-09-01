@@ -1,0 +1,205 @@
+<li class="block">
+  <.form
+    for={@form}
+    id="user_search_form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="search"
+  >
+  <div class="border-b border-brightGray-200 flex flex-wrap items-center">
+    <div class="w-fit">
+      <label class="flex items-center py-4">
+        <span class="w-24">希望年収<span class="block text-xs">（一人当たり）</span></span>
+        <BrightCore.input
+          field={@form[:desired_income]}
+          input_class="border border-brightGray-200 px-2 py-1 mr-2 rounded w-40"
+          size="20"
+          type="number"
+          after_label="万円以下"
+        />
+      </label>
+    </div>
+  </div>
+
+  <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
+    <span class="w-32">求職種類</span>
+    <div class="-ml-8">
+      <div class="flex items-center">
+        <BrightCore.input
+          field={@form[:wish_employed]}
+          label_class="w-16 text-left"
+          type="checkbox"
+          label="就職"
+        />
+        <BrightCore.input
+          field={@form[:wish_change_job]}
+          label_class="w-16 text-left"
+          type="checkbox"
+          label="転職"
+        />
+        <BrightCore.input
+          field={@form[:wish_side_job]}
+          label_class="w-16 text-left"
+          type="checkbox"
+          label="副業"
+        />
+        <BrightCore.input
+          field={@form[:wish_freelance]}
+          label_class="w-24 text-left"
+          type="checkbox"
+          label="フリーランス"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
+    <span class="py-1 w-32">勤務体系</span>
+    <div class="-ml-8">
+      <div class="flex items-center">
+        <BrightCore.input
+          field={@form[:office_work]}
+          label_class="w-16 text-left"
+          type="checkbox"
+          label="出勤"
+        />
+        <BrightCore.input
+          field={@form[:office_pref]}
+          input_class="w-36"
+          disabled={disabled?(@form[:office_work].value)}
+          type="select"
+          options={Ecto.Enum.mappings(UserJobProfile, :office_pref)}
+          prompt="希望勤務地"
+        />
+        <BrightCore.input
+          field={@form[:office_working_hours]}
+          input_class="w-36"
+          disabled={disabled?(@form[:office_work].value)}
+          type="select"
+          options={Ecto.Enum.mappings(UserJobProfile, :office_working_hours)}
+          prompt="希望勤務時間"
+        />
+        <BrightCore.input
+          field={@form[:office_work_holidays]}
+          container_class="ml-4"
+          disabled={disabled?(@form[:office_work].value)}
+          type="checkbox"
+          label_class={if disabled?(@form[:office_work].value), do: "opacity-50"}
+          label="土日祝の稼働も含む"
+        />
+      </div>
+
+      <div class="flex items-center mt-2">
+        <BrightCore.input
+          field={@form[:remote_work]}
+          label_class="w-16 text-left"
+          type="checkbox"
+          label="リモート"
+        />
+        <BrightCore.input
+          field={@form[:remote_working_hours]}
+          input_class="w-36"
+          disabled={disabled?(@form[:remote_work].value)}
+          type="select"
+          options={Ecto.Enum.mappings(UserJobProfile, :remote_working_hours)}
+          prompt="希望勤務時間"
+        />
+        <BrightCore.input
+          field={@form[:remote_work_holidays]}
+          container_class="ml-4"
+          disabled={disabled?(@form[:remote_work].value)}
+          type="checkbox"
+          label_class={if disabled?(@form[:remote_work].value), do: "opacity-50"}
+          label="土日祝の稼働も含む"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="flex mt-4" id="skill_section">
+    <span class="mt-2 w-24">スキル</span>
+    <div class="">
+    <.inputs_for :let={sk} field={@form[:skills]} >
+      <input type="hidden" name="user_search[skills_sort][]" value={sk.index}>
+      <div class="flex items-center mb-4">
+        <label class="cursor-pointer" :if={sk.index > 0}>
+          <input
+            type="checkbox"
+            name="user_search[skills_drop][]"
+            value={sk.index}
+            class="hidden"
+          />
+          <i class="delete_skill_conditions bg-base block border border-base cursor-pointer h-4 indent-40 -ml-5 mr-1 overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white hover:opacity-50">スキル削除</i>
+        </label>
+
+        <BrightCore.input
+          field={sk[:career_field]}
+          input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-46 text-md"
+          error_class="absolute ml-4"
+          type="select"
+          options={@career_fields}
+          prompt="キャリアフィールド"
+        />
+        <BrightCore.input
+          field={sk[:skill_panel]}
+          input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44"
+          error_class="absolute ml-4"
+          type="select"
+          options={Map.get(@skill_panels, sk[:career_field].value, [])}
+          disabled={is_nil(sk[:career_field].value)}
+          prompt="スキルパネル"
+        />
+        <BrightCore.input
+          field={sk[:class]}
+          input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-26"
+          type="select"
+          options={@class}
+          disabled={sk[:skill_panel].value in ["", nil]}
+          prompt="クラス"
+        />
+        <BrightCore.input
+          field={sk[:level]}
+          input_class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-26"
+          type="select"
+          options={@level}
+          disabled={sk[:class].value in ["", nil]}
+          prompt="レベル"
+        />
+        <a
+          class="bg-white border border-solid border-brightGray-900 cursor-pointer font-bold ml-6 px-2 py-1 rounded select-none text-center text-brightGray-900 w-44 hover:opacity-50"
+        >
+          スキル詳細も設定
+        </a>
+      </div>
+    </.inputs_for>
+    </div>
+  </div>
+  <label class="block cursor-pointer" :if={Enum.count(@form[:skills].value) < 3}>
+    <input type="checkbox" name="user_search[skills_sort][]" class="hidden" />
+    <i id="set_skill_conditions" class="bg-base block border border-base cursor-pointer h-4 indent-40 mx-auto overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white after:top-1/2 after:left-1/2 after:-ml-1 after:-mt-px after:content-[''] after:block after:absolute after:w-2 after:h-0.5 after:bg-white after:rotate-90 hover:opacity-50">追加</i>
+  </label>
+
+  <div class="flex mt-16 mx-auto w-fit">
+    <BrightCore.button class="bg-base" phx-disable-with="Searching...">検索する</BrightCore.button>
+  </div>
+  </.form>
+
+  <div :if={@no_result} class="mt-5 text-xl text-center">
+    該当するユーザーは見つかりませんでした
+  </div>
+  <div :if={length(@search_results) > 0} >
+    <.live_component
+      id="user_search_result"
+      module={SearchResultsComponent}
+      current_user={@current_user}
+      result={@search_results}
+      skill_params={@skill_params}
+    />
+    <.tab_footer
+      id="user_search_result_footer"
+      page={@page}
+      total_pages={@total_pages}
+      target={@myself}
+    />
+  </div>
+</li>
