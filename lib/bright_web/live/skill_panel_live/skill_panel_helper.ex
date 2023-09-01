@@ -253,7 +253,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
         :error
 
       _ ->
-        {:ok, build_path(root, skill_panel, user, false, anonymous)}
+        {:ok, build_path(root, display_user_skill_panel, user, false, anonymous)}
     end
   end
 

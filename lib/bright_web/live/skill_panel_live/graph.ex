@@ -36,24 +36,21 @@ defmodule BrightWeb.SkillPanelLive.Graph do
     do: {:noreply, socket}
 
   @impl true
-  def handle_event(
-        "click_on_related_user_card_menu",
-        %{"encrypt_user_name" => encrypt_user_name},
-        socket
-      )
-      when encrypt_user_name != "" do
-    {:noreply,
-     push_redirect(socket, to: ~p"/graphs/#{socket.assigns.skill_panel}/anon/#{encrypt_user_name}")}
-  end
-
-  @impl true
   def handle_event("click_on_related_user_card_menu", params, socket) do
     skill_panel = socket.assigns.skill_panel
-    # TODO: チームメンバー以外の対応時に匿名に注意すること
     # TODO: 参照可能なユーザーかどうかの判定を行うこと
-    user = Bright.Accounts.get_user_by_name(params["name"])
+    anonymous = params["encrypt_user_name"] != ""
 
-    get_path_to_switch_display_user("graphs", user, skill_panel, false)
+    user_name =
+      if anonymous,
+        do: decrypt_user_name(params["encrypt_user_name"]),
+        else: params["name"]
+
+    user =
+      Bright.Accounts.get_user_by_name(user_name)
+      |> Map.put(:name_encrypted, params["encrypt_user_name"])
+
+    get_path_to_switch_display_user("graphs", user, skill_panel, anonymous)
     |> case do
       {:ok, path} ->
         {:noreply, push_redirect(socket, to: path)}

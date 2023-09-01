@@ -13,12 +13,12 @@ defmodule BrightWeb.PathHelper do
     "/#{root}/#{skill_panel.id}"
   end
 
-  def skill_panel_path(root, skill_panel, display_user, _me, false) do
+  def skill_panel_path(root, skill_panel, display_user, false, false) do
     # 対象ユーザーかつ匿名ではない
     "/#{root}/#{skill_panel.id}/#{display_user.name}"
   end
 
-  def skill_panel_path(root, skill_panel, display_user, _me, true) do
+  def skill_panel_path(root, skill_panel, display_user, false, true) do
     # 対象ユーザーかつ匿名
     "/#{root}/#{skill_panel.id}/anon/#{display_user.name_encrypted}"
   end
