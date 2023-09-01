@@ -15,10 +15,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias Bright.HistoricalSkillPanels
   alias Bright.HistoricalSkillScores
   alias BrightWeb.SkillPanelLive.TimelineHelper
+  alias BrightWeb.BrightCoreComponents
 
   def render(assigns) do
     ~H"""
     <div id={@id}>
+      <BrightCoreComponents.flash_group flash={@inner_flash} />
       <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
       <.skills_table
          table_structure={@table_structure}
@@ -50,7 +52,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      socket
      |> assign(skill_class: nil)
      |> assign(compared_users: [], compared_user_dict: %{})
-     |> assign(timeline: TimelineHelper.get_current())}
+     |> assign(timeline: TimelineHelper.get_current())
+     |> assign(inner_flash: %{})}
   end
 
   def update(assigns, socket) do
@@ -65,12 +68,21 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     # TODO: チームメンバー以外の対応時に匿名に注意すること
     # TODO: 本当に参照可能かのチェックをいれること
     user = Bright.Accounts.get_user_by_name(params["name"])
+    display_user_id = socket.assigns.display_user.id
+    existing_user_ids = socket.assigns.compared_users |> Enum.map(& &1.id)
 
-    {:noreply,
-     socket
-     |> update(:compared_users, &((&1 ++ [user]) |> Enum.uniq()))
-     |> assign_compared_user_dict(user)
-     |> assign_compared_users_info()}
+    (user.id == display_user_id or user.id in existing_user_ids)
+    |> case do
+      false ->
+        {:noreply,
+         socket
+         |> update(:compared_users, &(&1 ++ [user]))
+         |> assign_compared_user_dict(user)
+         |> assign_compared_users_info()}
+
+      true ->
+        {:noreply, assign(socket, :inner_flash, %{error: "既に一覧に表示されています"})}
+    end
   end
 
   def handle_event("reject_compared_user", %{"name" => name}, socket) do
