@@ -13,6 +13,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillReferences
   alias Bright.SkillExams
   alias BrightWeb.PathHelper
+  alias BrightWeb.CardLive.SkillCardComponent
 
   @shortcut_key_score %{
     "1" => :high,
@@ -65,8 +66,19 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Map.values()
       |> Enum.filter(& &1.changed)
 
-    {:ok, _} = SkillScores.update_skill_scores(socket.assigns.current_user, target_skill_scores)
+    {:ok, updated_result} =
+      SkillScores.update_skill_scores(socket.assigns.current_user, target_skill_scores)
+
     skill_class_score = SkillScores.get_skill_class_score!(socket.assigns.skill_class_score.id)
+
+    # スキルクラス解放時に保有スキルカードの更新を通知
+    if get_in(updated_result, [
+         :skill_class_scores,
+         :"skill_class_score_#{skill_class_score.id}",
+         :level_up_skill_class_score
+       ]) do
+      send_update(SkillCardComponent, id: "skill_card", status: "level_up")
+    end
 
     {:noreply,
      socket

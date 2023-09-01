@@ -224,6 +224,17 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> then(&{:ok, &1})
   end
 
+  def update(%{status: "level_up"}, socket) do
+    # 新しいスキルクラスを開放時のupdateを実施
+    %{
+      selected_tab: career_field,
+      display_user: display_user,
+      page: page
+    } = socket.assigns
+
+    {:ok, assign_paginate(socket, display_user.id, career_field, page)}
+  end
+
   defp assign_over_ride_on_card_row_click_target(
          socket,
          %{over_ride_on_card_row_click_target: over_ride_on_card_row_click_target} = _assigns
