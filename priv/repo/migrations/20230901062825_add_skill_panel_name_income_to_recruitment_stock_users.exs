@@ -3,7 +3,7 @@ defmodule Bright.Repo.Migrations.AddSkillPanelNameIncomeToRecruitmentStockUsers 
 
   def change do
     alter table(:recruitment_stock_users) do
-      add :skill_panel, :string, default: "", null: false
+      add :skill_panel, :string, default: ""
       add :desired_income, :integer, default: 0
     end
   end
