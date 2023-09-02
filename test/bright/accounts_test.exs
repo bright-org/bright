@@ -299,7 +299,6 @@ defmodule Bright.AccountsTest do
     end
   end
 
-  # TODO: テスト修正
   # describe "apply_user_email/3" do
   #   setup do
   #     %{user: insert(:user)}
@@ -1197,6 +1196,93 @@ defmodule Bright.AccountsTest do
 
       assert :cannot_unlink_last_one == Accounts.unlink_social_account(user, provider)
       assert Repo.get_by(UserSocialAuth, user_id: user.id, provider: :google)
+    end
+  end
+
+  describe "change_user_with_user_profile/2" do
+    setup do
+      %{user: insert(:user) |> with_user_profile() |> Repo.preload(:user_profile)}
+    end
+
+    test "returns changeset", %{user: user} do
+      new_name = unique_user_name()
+      user_profile_attrs = params_for(:user_profile)
+
+      changeset =
+        Accounts.change_user_with_user_profile(user, %{
+          name: new_name,
+          user_profile: user_profile_attrs |> Map.merge(%{id: user.user_profile.id})
+        })
+
+      assert changeset.valid?
+      assert get_change(changeset, :name) == new_name
+
+      user_profile_changeset = get_assoc(changeset, :user_profile)
+      assert user_profile_changeset.changes == user_profile_attrs
+    end
+
+    test "validates user_profile", %{user: user} do
+      user_profile_attrs = %{
+        title: String.duplicate("a", 256),
+        detail: String.duplicate("a", 256),
+        icon_file_path: String.duplicate("a", 256),
+        twitter_url: String.duplicate("a", 256),
+        facebook_url: String.duplicate("a", 256),
+        github_url: String.duplicate("a", 256)
+      }
+
+      changeset =
+        Accounts.change_user_with_user_profile(user, %{
+          user_profile: user_profile_attrs |> Map.merge(%{id: user.user_profile.id})
+        })
+
+      refute changeset.valid?
+
+      assert %{
+               user_profile: %{
+                 title: ["should be at most 255 character(s)"],
+                 detail: ["should be at most 255 character(s)"],
+                 icon_file_path: ["should be at most 255 character(s)"],
+                 twitter_url: [
+                   "should start with https://twitter.com/",
+                   "should be at most 255 character(s)"
+                 ],
+                 facebook_url: [
+                   "should start with https://www.facebook.com/",
+                   "should be at most 255 character(s)"
+                 ],
+                 github_url: [
+                   "should start with https://github.com/",
+                   "should be at most 255 character(s)"
+                 ]
+               }
+             } == errors_on(changeset)
+    end
+
+    test "does not validate whether name is unique", %{user: user} do
+      insert(:user, name: "koyo")
+      changeset = Accounts.change_user_with_user_profile(user, %{name: "koyo"})
+
+      assert changeset.valid?
+    end
+
+    test "validates name existence", %{user: user} do
+      changeset = Accounts.change_user_with_user_profile(user, %{name: ""})
+      assert %{name: ["can't be blank"]} = errors_on(changeset)
+    end
+
+    test "validates name length", %{user: user} do
+      changeset =
+        Accounts.change_user_with_user_profile(user, %{name: String.duplicate("a", 256)})
+
+      assert %{name: ["should be at most 255 character(s)"]} = errors_on(changeset)
+    end
+
+    test "validates name format", %{user: user} do
+      changeset = Accounts.change_user_with_user_profile(user, %{name: "Koyo"})
+
+      assert %{name: ["only lower-case alphanumeric character and -_. is available"]} =
+               errors_on(changeset)
     end
   end
 
