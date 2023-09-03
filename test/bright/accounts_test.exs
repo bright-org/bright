@@ -445,6 +445,33 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "change_user_password_before_submit/3" do
+    test "validates a user current password and a new password" do
+      assert %Ecto.Changeset{} =
+               changeset = Accounts.change_user_password_before_submit(%User{}, "")
+
+      assert changeset.required == [:password]
+
+      assert %{
+               password: ["can't be blank"],
+               current_password: ["does not match current password"]
+             } = errors_on(changeset)
+    end
+
+    test "returns user changeset" do
+      user = create_user_with_password("new valid password1")
+
+      changeset =
+        Accounts.change_user_password_before_submit(user, "new valid password1", %{
+          "password" => "new valid password2"
+        })
+
+      assert changeset.valid?
+      assert get_change(changeset, :password) == "new valid password2"
+      assert is_nil(get_change(changeset, :hashed_password))
+    end
+  end
+
   describe "update_user_password/3" do
     setup do
       %{user: insert(:user)}
