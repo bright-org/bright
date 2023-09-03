@@ -12,14 +12,18 @@ defmodule BrightWeb.UserConfirmEmailControllerTest do
   setup [:register_and_log_in_user]
 
   setup %{conn: conn, user: user} do
-    email = unique_user_email()
+    new_email = unique_user_email()
 
     token =
       extract_user_token(fn url ->
-        Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
+        Accounts.deliver_user_update_email_instructions(
+          %{user | email: new_email},
+          user.email,
+          url
+        )
       end)
 
-    %{conn: conn, user: user, token: token, email: email}
+    %{conn: conn, user: user, token: token, new_email: new_email}
   end
 
   describe "GET /users/confirm_email/:token" do
@@ -27,26 +31,26 @@ defmodule BrightWeb.UserConfirmEmailControllerTest do
       conn: conn,
       user: user,
       token: token,
-      email: email
+      new_email: new_email
     } do
       conn = get(conn, ~p"/users/confirm_email/#{token}")
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) == "メールアドレスの更新に成功しました"
       assert redirected_to(conn) == ~p"/mypage"
-      assert Repo.get_by(User, email: email)
+      assert Repo.get_by(User, email: new_email)
       refute Repo.get_by(UserToken, user_id: user.id, context: "change:#{user.email}")
     end
 
     test "fails to update user email when token is invalid", %{
       conn: conn,
       user: user,
-      email: email
+      new_email: new_email
     } do
       conn = get(conn, ~p"/users/confirm_email/invalid")
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "リンクが無効であるか期限が切れています"
       assert redirected_to(conn) == ~p"/mypage"
-      refute Repo.get_by(User, email: email)
+      refute Repo.get_by(User, email: new_email)
       assert Repo.get_by(UserToken, user_id: user.id, context: "change:#{user.email}")
     end
 
@@ -54,7 +58,7 @@ defmodule BrightWeb.UserConfirmEmailControllerTest do
       conn: conn,
       user: user,
       token: token,
-      email: email
+      new_email: new_email
     } do
       {1, nil} =
         from(u in UserToken,
@@ -75,7 +79,7 @@ defmodule BrightWeb.UserConfirmEmailControllerTest do
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "リンクが無効であるか期限が切れています"
       assert redirected_to(conn) == ~p"/mypage"
-      refute Repo.get_by(User, email: email)
+      refute Repo.get_by(User, email: new_email)
       assert Repo.get_by(UserToken, user_id: user.id, context: "change:#{user.email}")
     end
   end
