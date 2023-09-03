@@ -33,8 +33,6 @@ defmodule Bright.DataCase do
     :ok
   end
 
-  @test_support_dir __DIR__
-
   @doc """
   Sets up the sandbox based on the test tags.
   """
@@ -58,9 +56,4 @@ defmodule Bright.DataCase do
       end)
     end)
   end
-
-  @doc """
-  Returns support dir
-  """
-  def test_support_dir, do: @test_support_dir
 end

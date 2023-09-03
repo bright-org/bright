@@ -15,6 +15,7 @@ defmodule Bright.TestHelper do
   alias Bright.Repo
 
   @user_2fa_cookie_key "_bright_web_user_2fa_done"
+  @test_support_dir __DIR__
 
   @doc """
   Setup helper that registers and logs in users.
@@ -117,6 +118,47 @@ defmodule Bright.TestHelper do
       assert email.subject == "【Bright】2段階認証コード"
       assert email.to == [{"", user.email}]
       assert email.text_body =~ code
+    end)
+  end
+
+  @doc """
+  Returns support dir
+  """
+  def test_support_dir, do: @test_support_dir
+
+  @doc """
+  Matches 1st-arg and 2nd-arg ignoring not loaded associations on 1st-arg.
+  """
+  def assert_match_shallowly(structs_1, structs_2) when is_list(structs_1) do
+    [structs_1_dropped, structs_2_dropped] =
+      Enum.zip(structs_1, structs_2)
+      |> Enum.map(fn {struct_1, struct_2} ->
+        assoc_keys = get_assoc_keys(struct_1)
+        struct_1_dropped = Map.drop(struct_1, assoc_keys)
+        struct_2_dropped = Map.drop(struct_2, assoc_keys)
+
+        [struct_1_dropped, struct_2_dropped]
+      end)
+      |> Enum.zip_reduce([], &(&2 ++ [&1]))
+
+    assert ^structs_1_dropped = structs_2_dropped
+    assert Enum.count(structs_1) == Enum.count(structs_2)
+  end
+
+  def assert_match_shallowly(struct_1, struct_2) do
+    assoc_keys = get_assoc_keys(struct_1)
+    struct_1_dropped = Map.drop(struct_1, assoc_keys)
+    struct_2_dropped = Map.drop(struct_2, assoc_keys)
+
+    assert ^struct_1_dropped = struct_2_dropped
+  end
+
+  defp get_assoc_keys(struct) do
+    struct
+    |> Map.from_struct()
+    |> Enum.reduce([], fn
+      {key, %Ecto.Association.NotLoaded{}}, acc -> acc ++ [key]
+      _, acc -> acc
     end)
   end
 end

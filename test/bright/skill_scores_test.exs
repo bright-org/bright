@@ -23,8 +23,7 @@ defmodule Bright.SkillScoresTest do
     } do
       skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
 
-      assert SkillScores.list_skill_class_scores()
-             |> Enum.map(& &1.id) == [skill_class_score.id]
+      assert_match_shallowly(SkillScores.list_skill_class_scores(), [skill_class_score])
     end
 
     test "get_skill_class_score!/1 returns the skill_class_score with given id", %{
@@ -32,7 +31,11 @@ defmodule Bright.SkillScoresTest do
       skill_class: skill_class
     } do
       skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
-      assert skill_class_score.id == SkillScores.get_skill_class_score!(skill_class_score.id).id
+
+      assert_match_shallowly(
+        SkillScores.get_skill_class_score!(skill_class_score.id),
+        skill_class_score
+      )
     end
 
     test "create_skill_class_score/2 creates a skill_class_score and skill_scores", %{
