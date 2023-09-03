@@ -9,6 +9,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
     alias Bright.SkillUnits.{
       SkillUnit,
+      SkillCategory,
       SkillClassUnit,
       Skill
     }
@@ -1131,51 +1132,31 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
       # スキルユニットの公開データ生成がロールバックされることを確認
       published_skill_units = Repo.all(SkillUnit)
-      assert length(published_skill_units) == length(skill_units)
+      assert_match_shallowly(published_skill_units, skill_units)
 
-      Enum.each(skill_units, fn skill_unit ->
-        published_skill_unit =
-          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == skill_unit.trace_id
-          end)
+      # カテゴリの公開データ生成がロールバックされることを確認
+      skill_categories =
+        skill_units
+        |> Enum.flat_map(& &1.skill_categories)
+        |> Enum.sort_by(& &1.id)
 
-        assert published_skill_unit.locked_date == @before_locked_date
-        assert published_skill_unit.name == skill_unit.name
+      published_skill_categories =
+        Repo.all(SkillCategory)
+        |> Enum.sort_by(& &1.id)
 
-        # カテゴリの公開データ生成がロールバックされることを確認
-        skill_categories = skill_unit.skill_categories
+      assert_match_shallowly(published_skill_categories, skill_categories)
 
-        published_skill_categories = Repo.all(Ecto.assoc(published_skill_unit, :skill_categories))
+      # スキルの公開データ生成がロールバックされることを確認
+      skills =
+        skill_categories
+        |> Enum.flat_map(& &1.skills)
+        |> Enum.sort_by(& &1.id)
 
-        assert length(published_skill_categories) == length(skill_categories)
+      published_skills =
+        Repo.all(Skill)
+        |> Enum.sort_by(& &1.id)
 
-        Enum.each(skill_categories, fn skill_category ->
-          published_skill_category =
-            Enum.find(published_skill_categories, fn %{trace_id: trace_id} ->
-              trace_id == skill_category.trace_id
-            end)
-
-          assert published_skill_category.skill_unit_id == published_skill_unit.id
-          assert published_skill_category.name == skill_category.name
-          assert published_skill_category.position == skill_category.position
-
-          # スキルの公開データ生成がロールバックされることを確認
-          skills = skill_category.skills
-          published_skills = Repo.all(Ecto.assoc(published_skill_category, :skills))
-          assert length(published_skills) == length(skills)
-
-          Enum.each(skills, fn skill ->
-            published_skill =
-              Enum.find(published_skills, fn %{trace_id: trace_id} ->
-                trace_id == skill.trace_id
-              end)
-
-            assert published_skill.skill_category_id == published_skill_category.id
-            assert published_skill.name == skill.name
-            assert published_skill.position == skill.position
-          end)
-        end)
-      end)
+      assert_match_shallowly(published_skills, skills)
 
       # スキルクラスの公開データ生成がロールバックされることを確認
       published_skill_classes = Repo.all(SkillClass)
