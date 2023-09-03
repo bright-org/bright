@@ -1,17 +1,11 @@
 defmodule BrightWeb.UserPasswordResetControllerTest do
   use BrightWeb.ConnCase, async: true
 
-  import Bright.Factory
   alias Bright.Repo
   alias Bright.Accounts.UserToken
   alias Bright.Accounts
 
-  setup %{conn: conn} do
-    current_password = "password1"
-    user = create_user_with_password(current_password)
-    insert(:user_onboarding, user: user)
-    %{conn: log_in_user(conn, user), user: user, current_password: current_password}
-  end
+  setup [:register_and_log_in_user]
 
   describe "POST /users/password_reset" do
     test "updates user password and deletes token and log in", %{
