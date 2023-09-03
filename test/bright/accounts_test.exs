@@ -1,6 +1,7 @@
 defmodule Bright.AccountsTest do
   use Bright.DataCase
 
+  alias Bright.Utils.GoogleCloud.Storage
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.User2faCodes
@@ -10,6 +11,7 @@ defmodule Bright.AccountsTest do
   alias Bright.UserJobProfiles.UserJobProfile
 
   import Bright.Factory
+  import Mock
   alias Bright.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -1283,6 +1285,114 @@ defmodule Bright.AccountsTest do
 
       assert %{name: ["only lower-case alphanumeric character and -_. is available"]} =
                errors_on(changeset)
+    end
+  end
+
+  describe "update_user_with_user_profile/3" do
+    setup do
+      %{user: insert(:user) |> with_user_profile() |> Repo.preload(:user_profile)}
+    end
+
+    test "updates user with user_profile", %{user: user} do
+      new_name = unique_user_name()
+      user_profile_attrs = string_params_for(:user_profile)
+
+      with_mock(Storage, [:passthrough], upload!: fn _local_file_path, _storage_path -> :ok end) do
+        {:ok, _user} =
+          Accounts.update_user_with_user_profile(
+            user,
+            %{
+              "name" => new_name,
+              "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+            },
+            nil
+          )
+
+        assert_not_called(Storage.upload!(:_, :_))
+      end
+
+      assert %User{name: ^new_name} = Repo.get(User, user.id)
+
+      assert Repo.get(UserProfile, user.user_profile.id)
+             |> Map.take([
+               :title,
+               :detail,
+               :icon_file_path,
+               :twitter_url,
+               :facebook_url,
+               :github_url
+             ]) ==
+               user_profile_attrs |> convert_map_string_key_to_atom()
+    end
+
+    test "updates user with user_profile and uploads file to GCS", %{user: user} do
+      new_name = unique_user_name()
+      user_profile_attrs = string_params_for(:user_profile)
+
+      with_mock(Storage, [:passthrough], upload!: fn _local_file_path, _storage_path -> :ok end) do
+        local_file_path = "/tmp/xxx.png"
+
+        {:ok, _user} =
+          Accounts.update_user_with_user_profile(
+            user,
+            %{
+              "name" => new_name,
+              "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+            },
+            local_file_path
+          )
+
+        assert_called(Storage.upload!(local_file_path, user_profile_attrs["icon_file_path"]))
+      end
+
+      assert %User{name: ^new_name} = Repo.get(User, user.id)
+
+      assert Repo.get(UserProfile, user.user_profile.id)
+             |> Map.take([
+               :title,
+               :detail,
+               :icon_file_path,
+               :twitter_url,
+               :facebook_url,
+               :github_url
+             ]) ==
+               user_profile_attrs |> convert_map_string_key_to_atom()
+    end
+
+    test "does not upload file to GCS when validation error occurs", %{user: user} do
+      new_name = unique_user_name()
+      user_profile_attrs = string_params_for(:user_profile)
+      insert(:user, name: new_name)
+
+      with_mock(Storage, [:passthrough], upload!: fn _local_file_path, _storage_path -> :ok end) do
+        local_file_path = "/tmp/xxx.png"
+
+        {:error, changeset} =
+          Accounts.update_user_with_user_profile(
+            user,
+            %{
+              "name" => new_name,
+              "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+            },
+            local_file_path
+          )
+
+        assert_not_called(Storage.upload!(:_, :_))
+        assert %{name: ["has already been taken"]} = errors_on(changeset)
+      end
+
+      refute Repo.get(User, user.id).name == new_name
+
+      refute Repo.get(UserProfile, user.user_profile.id)
+             |> Map.take([
+               :title,
+               :detail,
+               :icon_file_path,
+               :twitter_url,
+               :facebook_url,
+               :github_url
+             ]) ==
+               user_profile_attrs |> convert_map_string_key_to_atom()
     end
   end
 

@@ -119,4 +119,8 @@ defmodule Bright.TestHelper do
       assert email.text_body =~ code
     end)
   end
+
+  def convert_map_string_key_to_atom(map) do
+    Map.new(map, fn {k, v} -> {String.to_existing_atom(k), v} end)
+  end
 end
