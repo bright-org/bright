@@ -180,7 +180,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :stock_date, :string, required: true
   attr :skill_panel, :string, required: true
   attr :desired_income, :string, default: ""
-  attr :encrypted_user_name, :string, required: true
+  attr :encrypt_user_name, :string, required: true
 
   def profile_stock_small_with_remove_button(assigns) do
     ~H"""
