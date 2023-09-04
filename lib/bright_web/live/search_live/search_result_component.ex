@@ -50,9 +50,9 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
         <div class="flex">
           <.job_area job={@user.user_job_profile} last_updated={@last_updated} />
           <.action_area
-            skill_panel_id={@selected_tab}
             user={@user}
-            class={@selected_skill_panel.class}
+            skill_panel={@selected_skill_panel}
+            stock_user_ids={@stock_user_ids}
           />
         </div>
         <div class="flex justify-between mt-8">

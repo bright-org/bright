@@ -27,6 +27,22 @@ defmodule Bright.RecruitmentStockUsers do
   end
 
   @doc """
+  Return the list of recuitemnt_stock_user_ids.
+
+  ## Examples
+
+    iex> list_stock_user_ids(recruiter_id)
+    [1,2,...]
+  """
+  def list_stock_user_ids(recruiter_id) do
+    from(stock_user in RecruitmentStockUser,
+      where: stock_user.recruiter_id == ^recruiter_id,
+      select: stock_user.user_id
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single recruitment_stock_user.
 
   Raises `Ecto.NoResultsError` if the User onboarding does not exist.

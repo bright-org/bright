@@ -1,7 +1,7 @@
 defmodule BrightWeb.SearchLive.UserSearchComponent do
   use BrightWeb, :live_component
 
-  alias Bright.{CareerFields, SkillPanels, UserSearches}
+  alias Bright.{CareerFields, SkillPanels, UserSearches, RecruitmentStockUsers}
   alias Bright.SearchForm.{UserSearch, SkillSearch}
   alias Bright.UserJobProfiles.UserJobProfile
   alias BrightWeb.SearchLive.SearchResultsComponent
@@ -34,6 +34,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> assign(:level, @level)
     |> assign(:search_results, [])
     |> assign(:skill_params, [])
+    |> assign(:stock_user_ids, [])
     |> assign(:no_result, false)
     |> assign(:total_pages, 0)
     |> assign(:page, 1)
@@ -100,6 +101,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         |> assign(:total_pages, total_pages)
         |> assign(:page, page)
         |> assign(:skill_params, skills)
+        |> assign(:stock_user_ids, RecruitmentStockUsers.list_stock_user_ids(user.id))
         |> assign(:no_result, false)
         |> then(&{:noreply, &1})
     end
