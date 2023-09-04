@@ -224,7 +224,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     |> then(&{:ok, &1})
   end
 
-  def update(%{status: "level_up"}, socket) do
+  def update(%{status: "level_changed"}, socket) do
     # 新しいスキルクラスを開放時のupdateを実施
     %{
       selected_tab: career_field,
