@@ -10,7 +10,7 @@ defmodule Bright.RecruitmentStockUsers.RecruitmentStockUser do
   @foreign_key_type Ecto.ULID
 
   schema "recruitment_stock_users" do
-    field :skill_panel_name, :string
+    field :skill_panel, :string
     field :desired_income, :integer
     belongs_to :recruiter, User
     belongs_to :user, User
@@ -21,7 +21,7 @@ defmodule Bright.RecruitmentStockUsers.RecruitmentStockUser do
   @doc false
   def changeset(recruitment_stock_user, attrs) do
     recruitment_stock_user
-    |> cast(attrs, [:recruiter_id, :user_id, :skill_panel_name, :desired_income])
-    |> validate_required([:recruiter_id, :user_id, :skill_panel_name])
+    |> cast(attrs, [:recruiter_id, :user_id, :skill_panel, :desired_income])
+    |> validate_required([:recruiter_id, :user_id, :skill_panel])
   end
 end
