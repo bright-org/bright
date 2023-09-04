@@ -64,7 +64,10 @@ defmodule Bright.MixProject do
       {:scrivener_ecto, "~> 2.0"},
       {:ueberauth_google, "~> 0.10"},
       {:timex, "~> 3.7"},
-      {:sentry, "~> 8.0"}
+      {:tzdata, "~> 1.1"},
+      {:sentry, "~> 8.0"},
+      {:mock, "~> 0.3.8", only: :test},
+      {:ex_parameterized, "~> 1.3", only: :test}
     ]
   end
 

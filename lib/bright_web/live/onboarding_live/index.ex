@@ -85,5 +85,5 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   defp page_title("/onboardings"), do: "オンボーディング"
   # αはスキルを選ぶにしておく
-  defp page_title("/skill_up"), do: "スキルを選ぶ"
+  defp page_title("/more_skills"), do: "スキルを選ぶ"
 end

@@ -171,11 +171,11 @@ defmodule BrightWeb.Router do
            :notification_detail
 
       live "/searches", MypageLive.Index, :search
-      live "/skill_up", OnboardingLive.Index, :index
-      live "/skill_up/wants/:want_id", OnboardingLive.SkillPanels
-      live "/skill_up/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
-      live "/skill_up/jobs/:job_id", OnboardingLive.SkillPanels
-      live "/skill_up/jobs/:job_id/skill_panels/:id", OnboardingLive.SkillPanel
+      live "/more_skills", OnboardingLive.Index, :index
+      live "/more_skills/wants/:want_id", OnboardingLive.SkillPanels
+      live "/more_skills/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
+      live "/more_skills/jobs/:job_id", OnboardingLive.SkillPanels
+      live "/more_skills/jobs/:job_id/skill_panels/:id", OnboardingLive.SkillPanel
       live "/graphs", SkillPanelLive.Graph, :show
       live "/graphs/:skill_panel_id", SkillPanelLive.Graph, :show
       live "/graphs/:skill_panel_id/:user_name", SkillPanelLive.Graph, :show
