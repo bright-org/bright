@@ -42,3 +42,20 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+// shows alert if editting
+window.addEventListener('phx:form-edit-start', (_info) => {
+  document.body.classList.add('maybe-editting')
+})
+
+window.addEventListener('phx:form-edit-end', (_info) => {
+  document.body.classList.remove('maybe-editting')
+})
+
+window.addEventListener('beforeunload', (event) => {
+  if(document.body.classList.contains('maybe-editting')){
+    // Cancel the event as stated by the standard.
+    event.preventDefault()
+    // Chrome requires returnValue to be set.
+    event.returnValue = ""
+  }
+})

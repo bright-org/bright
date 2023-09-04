@@ -184,11 +184,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp assign_edit_off(socket) do
     socket
     |> assign(edit: false, focus_row: nil)
+    |> push_event("form-edit-end", %{})
   end
 
   defp assign_edit_on(socket) do
     socket
     |> assign(edit: true, focus_row: 1)
+    |> push_event("form-edit-start", %{})
   end
 
   defp assign_skill_evidence(socket) do
