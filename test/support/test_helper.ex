@@ -16,6 +16,8 @@ defmodule Bright.TestHelper do
 
   @user_2fa_cookie_key "_bright_web_user_2fa_done"
 
+  @test_support_dir __DIR__
+
   @doc """
   Setup helper that registers and logs in users.
 
@@ -132,4 +134,9 @@ defmodule Bright.TestHelper do
   def convert_map_string_key_to_atom(map) do
     Map.new(map, fn {k, v} -> {String.to_existing_atom(k), v} end)
   end
+
+  @doc """
+  Returns support dir
+  """
+  def test_support_dir, do: @test_support_dir
 end
