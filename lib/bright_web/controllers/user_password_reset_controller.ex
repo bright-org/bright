@@ -8,7 +8,9 @@ defmodule BrightWeb.UserPasswordResetController do
         conn,
         %{
           "current_password" => current_password,
-          "user" => %{"email" => _email, "password" => _password} = user_params
+          "user" =>
+            %{"password" => _password, "password_confirmation" => _password_confirmation} =
+              user_params
         }
       ) do
     case Accounts.update_user_password(conn.assigns.current_user, current_password, user_params) do

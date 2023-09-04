@@ -1,4 +1,4 @@
-defmodule BrightWeb.UserSettingsLive.SnsSettingComponentLiveTest do
+defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest

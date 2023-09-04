@@ -91,12 +91,6 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
         <div class="mt-4 mb-2">
           <p>※ パスワード変更後は本設定画面が閉じるため、他の変更は先に済ませておいてください</p>
         </div>
-        <BrightCore.input
-          field={@password_form[:email]}
-          type="hidden"
-          id="hidden_user_email"
-          value={@current_email}
-        />
         <div class="mb-4 w-full">
           <label class="flex items-center pb-4 pt-4">
             <span class="w-44">現在のパスワード</span>
@@ -165,7 +159,6 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
     password_changeset = Accounts.change_user_password(user)
 
     socket
-    |> assign(:current_email, user.email)
     |> assign(:current_password, nil)
     |> assign(:password_form, to_form(password_changeset))
     |> assign(:trigger_submit, false)

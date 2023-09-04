@@ -34,6 +34,11 @@ defmodule Bright.UserFactory do
       def unique_user_name, do: "user_name_#{System.unique_integer()}"
       def unique_user_email, do: "user#{System.unique_integer()}@example.com"
       def valid_user_password, do: "hello world2!"
+
+      def with_user_profile(%Bright.Accounts.User{} = user) do
+        insert(:user_profile, user: user)
+        user
+      end
     end
   end
 end
