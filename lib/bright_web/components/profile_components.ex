@@ -164,15 +164,15 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   @doc """
-  Renders a Profile small with remove button
+  Renders a Profile for stock small with remove button
 
   ## Examples
-      <.profile_small_with_remove_button
+      <.profile_stock_small_with_remove_button
         remove_user_target={@myself}
-        user_name="piacere"
-        user_id="1234"
-        title="リードプログラマー"
-        icon_file_path="/images/sample/sample-image.png"
+        stok_id="1234"
+        stock_date="2023-09-02"
+        skill_panel="Webアプリ開発 Elixir"
+        desired_income="1000"
       />
   """
   attr :remove_user_target, :any
