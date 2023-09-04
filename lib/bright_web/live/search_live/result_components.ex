@@ -123,7 +123,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         target="_blank"
         rel="noopener noreferrer"
         href={
-          skill_panel_path("panels",%{id: @skill_panel_id}, %{name_encrypted: encrypt_user_name(@user)},false,true)
+          skill_panel_path("graphs",%{id: @skill_panel_id}, %{name_encrypted: encrypt_user_name(@user)},false,true)
           <> "?class=#{@class}"
         }
       >
