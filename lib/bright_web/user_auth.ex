@@ -222,7 +222,7 @@ defmodule BrightWeb.UserAuth do
   def on_mount(:redirect_if_onboarding_finished, _params, _session, socket) do
     if socket.assigns.current_user.user_onboardings do
       socket
-      |> Phoenix.LiveView.redirect(to: ~p"/skill_up")
+      |> Phoenix.LiveView.redirect(to: ~p"/more_skills")
       |> then(&{:halt, &1})
     else
       {:cont, socket}
@@ -285,7 +285,7 @@ defmodule BrightWeb.UserAuth do
   def redirect_if_onboarding_finished(conn, _ops) do
     if Accounts.onboarding_finished?(conn.assigns[:current_user]) do
       conn
-      |> redirect(to: ~p"/skill_up")
+      |> redirect(to: ~p"/more_skills")
       |> halt()
     else
       conn
