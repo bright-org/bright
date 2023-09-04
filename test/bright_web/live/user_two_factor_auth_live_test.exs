@@ -94,7 +94,6 @@ defmodule BrightWeb.UserTwoFactorAuthLiveTest do
 
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "ログインしました"
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
@@ -120,7 +119,6 @@ defmodule BrightWeb.UserTwoFactorAuthLiveTest do
 
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "ログインしました"
       assert redirected_to(conn) == ~p"/mypage"
     end
 

@@ -25,7 +25,6 @@ defmodule BrightWeb.UserTwoFactorAuthController do
       true ->
         Accounts.finish_user_2fa(user)
         |> then(fn token -> UserAuth.write_2fa_auth_done_cookie(conn, token) end)
-        |> put_flash(:info, "ログインしました")
         |> UserAuth.log_in_user(user)
 
       false ->
