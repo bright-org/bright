@@ -41,6 +41,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
               id="user_search_tab"
               module={UserSearchComponent}
               current_user={@current_user}
+              stock_user_ids={@stock_user_ids}
             />
           </.tab>
         </section>
@@ -50,12 +51,12 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
   end
 
   @impl true
-  def update(assigns, socket) do
+  def update(%{current_user: user} = assigns, socket) do
     socket
     |> assign(assigns)
     |> assign(:tabs, @tabs)
     |> assign(:selected_tab, @default_tab)
-    |> assign(:modal_flash, Map.get(assigns, :modal_flash, %{}))
+    |> assign(:stock_user_ids, RecruitmentStockUsers.list_stock_user_ids(user.id))
     |> then(&{:ok, &1})
   end
 
@@ -66,12 +67,15 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
     |> then(&{:noreply, &1})
   end
 
-  def handle_event("stock", %{"user_id" => user_id}, socket) do
-    RecruitmentStockUsers.create_recruitment_stock_user(%{
-      recruiter_id: socket.assigns.current_user.id,
-      user_id: user_id
-    })
+  def handle_event(
+        "stock",
+        %{"params" => params},
+        %{assigns: %{current_user: user}} = socket
+      ) do
+    Map.put(params, "recruiter_id", user.id)
+    |> RecruitmentStockUsers.create_recruitment_stock_user()
 
-    {:noreply, socket}
+    {:noreply,
+     assign(socket, :stock_user_ids, RecruitmentStockUsers.list_stock_user_ids(user.id))}
   end
 end

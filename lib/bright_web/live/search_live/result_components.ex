@@ -106,7 +106,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
     ~H"""
     <div class="border-l border-brightGray-200 border-dashed ml-2 pl-2 w-52">
       <%= if @user.id in @stock_user_ids do %>
-        <p class="mb-2 justify-center text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGreen-300 w-52 cursor-default">
+        <p class="mb-2 justify-center text-gray-300 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-gray-300 w-52 cursor-default">
           <span
             class="material-symbols-outlined md-18 mr-1 text-brightGreen-300"
           >inventory</span>
@@ -116,7 +116,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
       <button
         type="button"
         phx-click={JS.push("stock", value: %{
-          params: %{user_id: @user.id, skill_panel_name: @skill_panel.skill_panel_name, desired_income: @user.user_job_profile.desired_income}
+          params: %{user_id: @user.id, skill_panel: @skill_panel.skill_panel_name, desired_income: @user.user_job_profile.desired_income}
         }, target: "#skill_search_modal")}
         class="mb-2 justify-center text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 group w-52"
       >
