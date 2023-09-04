@@ -13,11 +13,9 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
   def job_area(assigns) do
     ~H"""
-    <div class="w-64">
-      <p class="mb-2">
-        <span>
-          <%= if @job.office_work, do: "　　　出勤可", else: "　　出勤不可" %>
-          ：</span>
+    <div class="w-64 text-start">
+      <p class="mb-2 ">
+        <span><%= if @job.office_work, do: "　　　出勤可", else: "　　出勤不可" %>：</span>
         <span><%= @job.office_working_hours %></span>
         <span>土日祝日<%= enable?(@job.office_work_holidays)%></span>
       </p>
@@ -107,24 +105,34 @@ defmodule BrightWeb.SearchLive.ResultComponents do
   def action_area(assigns) do
     ~H"""
     <div class="border-l border-brightGray-200 border-dashed ml-2 pl-2 w-52">
+      <%= if @user.id in @stock_user_ids do %>
+        <p class="mb-2 justify-center text-gray-300 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-gray-300 w-52 cursor-default">
+          <span
+            class="material-symbols-outlined md-18 mr-1 text-brightGreen-300"
+          >inventory</span>
+          候補者をストック
+        </p>
+      <% else %>
       <button
         type="button"
-        id="dropcheckmenu"
-        data-dropdown-toggle="checkmenu"
-        class="mb-2 justify-center text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 hover:border-brightGreen-300 group w-52"
+        phx-click={JS.push("stock", value: %{
+          params: %{user_id: @user.id, skill_panel: @skill_panel.skill_panel_name, desired_income: @user.user_job_profile.desired_income}
+        }, target: "#skill_search_modal")}
+        class="mb-2 justify-center text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 group w-52"
       >
         <span
-          class="material-symbols-outlined md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300"
+          class="material-symbols-outlined md-18 mr-1 text-brightGray-200"
         >inventory</span>
         候補者をストック
       </button>
+      <% end %>
       <.link
         class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
         target="_blank"
         rel="noopener noreferrer"
         href={
-          skill_panel_path("panels",%{id: @skill_panel_id}, %{name_encrypted: encrypt_user_name(@user)},false,true)
-          <> "?class=#{@class}"
+          skill_panel_path("panels",%{id: @skill_panel.skill_panel}, %{name_encrypted: encrypt_user_name(@user)},false,true)
+          <> "?class=#{@skill_panel.class}"
         }
       >
         成長グラフの確認
