@@ -1,59 +1,59 @@
 steps:
-  # # Dockerイメージのビルド
-  # - name: gcr.io/kaniko-project/executor
-  #   args: ['--destination=${_IMAGE_NAME}', '--cache=true']
+  # Dockerイメージのビルド
+  - name: gcr.io/kaniko-project/executor
+    args: ['--destination=${_IMAGE_NAME}', '--cache=true']
 
-  # # DBマイグレーション
-  # - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-  #   entrypoint: gcloud
-  #   args: ['run', 'jobs', 'deploy', 'bright-ecto-migrate',
-  #          '--image=${_IMAGE_NAME}',
-  #          '--command=/app/bin/migrate',
-  #          '--set-secrets=DATABASE_USERNAME=bright-database-username:latest',
-  #          '--set-secrets=DATABASE_PASSWORD=bright-database-password:latest',
-  #          '--set-secrets=DATABASE_SOCKET_DIR=bright-database-socket-dir:latest',
-  #          '--set-secrets=SECRET_KEY_BASE=bright-secret-key-base:latest',
-  #          '--set-secrets=PHX_HOST=bright-host:latest',
-  #          '--set-secrets=BUCKET_NAME=bright-bucket-name:latest',
-  #          '--set-secrets=ADMIN_BASIC_AUTH_USERNAME=bright-admin-basic-auth-username:latest',
-  #          '--set-secrets=ADMIN_BASIC_AUTH_PASSWORD=bright-admin-basic-auth-password:latest',
-  #          '--set-secrets=SENDGRID_API_KEY=bright-sendgrid-api-key:latest',
-  #          '--set-secrets=SENTRY_DSN=bright-sentry-dsn:latest',
-  #          '--set-secrets=SENTRY_ENVIRONMENT_NAME=bright-sentry-environment-name:latest',
-  #          '--set-secrets=GOOGLE_CLIENT_ID=bright-google-client-id:latest',
-  #          '--set-secrets=GOOGLE_CLIENT_SECRET=bright-google-client-secret:latest',
-  #          '--set-cloudsql-instances=${_CLOUD_SQL_INSTANCE}',
-  #          '--service-account=${_SERVICE_ACCOUNT}',
-  #          '--region=asia-northeast1',
-  #          '--tasks=1',
-  #          '--max-retries=0',
-  #          '--execute-now', '--wait']
+  # DBマイグレーション
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args: ['run', 'jobs', 'deploy', 'bright-ecto-migrate',
+           '--image=${_IMAGE_NAME}',
+           '--command=/app/bin/migrate',
+           '--set-secrets=DATABASE_USERNAME=bright-database-username:latest',
+           '--set-secrets=DATABASE_PASSWORD=bright-database-password:latest',
+           '--set-secrets=DATABASE_SOCKET_DIR=bright-database-socket-dir:latest',
+           '--set-secrets=SECRET_KEY_BASE=bright-secret-key-base:latest',
+           '--set-secrets=PHX_HOST=bright-host:latest',
+           '--set-secrets=BUCKET_NAME=bright-bucket-name:latest',
+           '--set-secrets=ADMIN_BASIC_AUTH_USERNAME=bright-admin-basic-auth-username:latest',
+           '--set-secrets=ADMIN_BASIC_AUTH_PASSWORD=bright-admin-basic-auth-password:latest',
+           '--set-secrets=SENDGRID_API_KEY=bright-sendgrid-api-key:latest',
+           '--set-secrets=SENTRY_DSN=bright-sentry-dsn:latest',
+           '--set-secrets=SENTRY_ENVIRONMENT_NAME=bright-sentry-environment-name:latest',
+           '--set-secrets=GOOGLE_CLIENT_ID=bright-google-client-id:latest',
+           '--set-secrets=GOOGLE_CLIENT_SECRET=bright-google-client-secret:latest',
+           '--set-cloudsql-instances=${_CLOUD_SQL_INSTANCE}',
+           '--service-account=${_SERVICE_ACCOUNT}',
+           '--region=asia-northeast1',
+           '--tasks=1',
+           '--max-retries=0',
+           '--execute-now', '--wait']
 
-  # # Phoenixアプリケーションのデプロイ
-  # - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-  #   entrypoint: gcloud
-  #   args: ['run', 'deploy', 'bright',
-  #          '--image=${_IMAGE_NAME}',
-  #          '--min-instances=${_MIN_INSTANCES}',
-  #          '--execution-environment=gen2',
-  #          '--set-secrets=DATABASE_USERNAME=bright-database-username:latest',
-  #          '--set-secrets=DATABASE_PASSWORD=bright-database-password:latest',
-  #          '--set-secrets=DATABASE_SOCKET_DIR=bright-database-socket-dir:latest',
-  #          '--set-secrets=SECRET_KEY_BASE=bright-secret-key-base:latest',
-  #          '--set-secrets=PHX_HOST=bright-host:latest',
-  #          '--set-secrets=BUCKET_NAME=bright-bucket-name:latest',
-  #          '--set-secrets=ADMIN_BASIC_AUTH_USERNAME=bright-admin-basic-auth-username:latest',
-  #          '--set-secrets=ADMIN_BASIC_AUTH_PASSWORD=bright-admin-basic-auth-password:latest',
-  #          '--set-secrets=SENDGRID_API_KEY=bright-sendgrid-api-key:latest',
-  #          '--set-secrets=SENTRY_DSN=bright-sentry-dsn:latest',
-  #          '--set-secrets=SENTRY_ENVIRONMENT_NAME=bright-sentry-environment-name:latest',
-  #          '--set-secrets=GOOGLE_CLIENT_ID=bright-google-client-id:latest',
-  #          '--set-secrets=GOOGLE_CLIENT_SECRET=bright-google-client-secret:latest',
-  #          '--add-cloudsql-instances=${_CLOUD_SQL_INSTANCE}',
-  #          '--service-account=${_SERVICE_ACCOUNT}',
-  #          '--region=asia-northeast1',
-  #          '--platform=managed',
-  #          '--allow-unauthenticated']
+  # Phoenixアプリケーションのデプロイ
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args: ['run', 'deploy', 'bright',
+           '--image=${_IMAGE_NAME}',
+           '--min-instances=${_MIN_INSTANCES}',
+           '--execution-environment=gen2',
+           '--set-secrets=DATABASE_USERNAME=bright-database-username:latest',
+           '--set-secrets=DATABASE_PASSWORD=bright-database-password:latest',
+           '--set-secrets=DATABASE_SOCKET_DIR=bright-database-socket-dir:latest',
+           '--set-secrets=SECRET_KEY_BASE=bright-secret-key-base:latest',
+           '--set-secrets=PHX_HOST=bright-host:latest',
+           '--set-secrets=BUCKET_NAME=bright-bucket-name:latest',
+           '--set-secrets=ADMIN_BASIC_AUTH_USERNAME=bright-admin-basic-auth-username:latest',
+           '--set-secrets=ADMIN_BASIC_AUTH_PASSWORD=bright-admin-basic-auth-password:latest',
+           '--set-secrets=SENDGRID_API_KEY=bright-sendgrid-api-key:latest',
+           '--set-secrets=SENTRY_DSN=bright-sentry-dsn:latest',
+           '--set-secrets=SENTRY_ENVIRONMENT_NAME=bright-sentry-environment-name:latest',
+           '--set-secrets=GOOGLE_CLIENT_ID=bright-google-client-id:latest',
+           '--set-secrets=GOOGLE_CLIENT_SECRET=bright-google-client-secret:latest',
+           '--add-cloudsql-instances=${_CLOUD_SQL_INSTANCE}',
+           '--service-account=${_SERVICE_ACCOUNT}',
+           '--region=asia-northeast1',
+           '--platform=managed',
+           '--allow-unauthenticated']
 
   # バッチ処理のデプロイ（スキルパネル更新）
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
@@ -62,6 +62,7 @@ steps:
            '--image=${_IMAGE_NAME}',
            '--command=/app/bin/bright',
            '--args=eval,Bright.Batches.update_skill_panels',
+           '--set-env-vars=REPO_TIMEOUT=infinity',
            '--set-secrets=DATABASE_USERNAME=bright-database-username:latest',
            '--set-secrets=DATABASE_PASSWORD=bright-database-password:latest',
            '--set-secrets=DATABASE_SOCKET_DIR=bright-database-socket-dir:latest',
