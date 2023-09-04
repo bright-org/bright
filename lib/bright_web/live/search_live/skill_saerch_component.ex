@@ -1,6 +1,7 @@
 defmodule BrightWeb.SearchLive.SkillSearchComponent do
   use BrightWeb, :live_component
 
+  alias Bright.RecruitmentStockUsers
   alias BrightWeb.SearchLive.UserSearchComponent
   import BrightWeb.TabComponents
 
@@ -63,5 +64,14 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
     socket
     |> assign(:selected_tab, tab_name)
     |> then(&{:noreply, &1})
+  end
+
+  def handle_event("stock", %{"user_id" => user_id}, socket) do
+    RecruitmentStockUsers.create_recruitment_stock_user(%{
+      recruiter_id: socket.assigns.current_user.id,
+      user_id: user_id
+    })
+
+    {:noreply, socket}
   end
 end
