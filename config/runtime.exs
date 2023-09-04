@@ -23,6 +23,13 @@ end
 if config_env() == :prod do
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
+  repo_timeout =
+    case System.get_env("REPO_TIMEOUT") do
+      "infinity" -> :infinity
+      nil -> 15_000
+      string -> Integer.parse(string) |> Tuple.to_list() |> hd()
+    end
+
   config :bright, Bright.Repo,
     # ssl: true,
     username: System.get_env("DATABASE_USERNAME"),
@@ -30,6 +37,7 @@ if config_env() == :prod do
     database: "bright",
     socket_dir: System.get_env("DATABASE_SOCKET_DIR"),
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    timeout: repo_timeout,
     socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.

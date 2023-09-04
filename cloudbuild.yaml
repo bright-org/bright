@@ -60,7 +60,9 @@ steps:
     entrypoint: gcloud
     args: ['run', 'jobs', 'deploy', 'bright-batch-update-skill-panels',
            '--image=${_IMAGE_NAME}',
-           '--command=/app/bin/bright eval Bright.Batches.update_skill_panels',
+           '--command=/app/bin/bright',
+           '--args=eval,Bright.Batches.update_skill_panels',
+           '--set-env-vars=REPO_TIMEOUT=infinity',
            '--set-secrets=DATABASE_USERNAME=bright-database-username:latest',
            '--set-secrets=DATABASE_PASSWORD=bright-database-password:latest',
            '--set-secrets=DATABASE_SOCKET_DIR=bright-database-socket-dir:latest',

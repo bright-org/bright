@@ -20,6 +20,7 @@ defmodule Bright.Batches do
 
   defp load_app do
     Application.load(@app)
+    Application.ensure_all_started(@app)
   end
 
   # NOTE: 日本時間の深夜に実行されるバッチを考慮し、日付がずれないようにJSTで実行日を取得する
