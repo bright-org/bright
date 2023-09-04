@@ -19,9 +19,9 @@ defmodule Bright.RecruitmentStockUsers do
   """
   def list_recruitment_stock_users(recruiter_id, page_param) do
     from(stock_user in RecruitmentStockUser,
-      join: user in assoc(stock_user, :user),
       where: stock_user.recruiter_id == ^recruiter_id,
-      order_by: [asc: stock_user.inserted_at]
+      order_by: [asc: stock_user.inserted_at],
+      preload: :user
     )
     |> Repo.paginate(page_param)
   end
