@@ -33,29 +33,30 @@ defmodule BrightWeb.MegaMenuComponents do
 
   def mega_menu_button(assigns) do
     ~H"""
-    <button
-      id={"dropdownOffsetButton#{@id}"}
-      data-dropdown-toggle={"dropdownOffset#{@id}"}
+    <div
+      id={"dropdown-#{@id}"}
+      phx-hook="Dropdown"
       data-dropdown-offset-skidding={@dropdown_offset_skidding}
       data-dropdown-placement="bottom"
-      class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
-      type="button"
     >
-      <span class="min-w-[6em]">
-        <%= @label %>
-      </span>
-      <span
-        class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
-        expand_more
-      </span>
-    </button>
+      <button
+        class="dropdownTrigger text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+        type="button"
+      >
+        <span class="min-w-[6em]">
+          <%= @label %>
+        </span>
+        <span
+          class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
+          expand_more
+        </span>
+      </button>
 
-    <!-- メガメニューの内容 -->
-    <div
-      id={"dropdownOffset#{@id}"}
-      class="z-10 hidden bg-white rounded-sm shadow w-[750px]"
-    >
-      <%= render_slot(@inner_block) %>
+      <div
+        class="dropdownTarget z-10 hidden bg-white rounded-sm shadow w-[750px]"
+      >
+        <%= render_slot(@inner_block) %>
+      </div>
     </div>
     """
   end

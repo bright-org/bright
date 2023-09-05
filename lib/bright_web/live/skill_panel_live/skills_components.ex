@@ -91,7 +91,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           >add</span>
       </button>
       <div
-        class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden"
+        class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
       >
         <.live_component
           id="related-user-card-compare"
@@ -124,7 +124,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           >add</span>
       </button>
       <div
-        class="dropdownTarget bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden"
+        class="dropdownTarget bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden z-10"
       >
         <.live_component
           id="related_team_card_compare"
@@ -138,6 +138,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   end
 
   def compare_custom_group(assigns) do
+    # TODO: 実装時、dropdownにHookを使うこと
     ~H"""
     <button
       id="addCustomGroupDropwonButton"
