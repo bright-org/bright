@@ -119,9 +119,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <div class="flex">
       <div class="flex-1 text-left font-bold">
-        <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous)}>
-          <%= @skill_panel.name %>
-        </.link>
+        <%= @skill_panel.name %>
       </div>
       <%= for skill_class <- @skill_classes do %>
         <.skill_gem
