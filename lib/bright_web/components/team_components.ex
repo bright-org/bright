@@ -32,7 +32,7 @@ defmodule BrightWeb.TeamComponents do
       phx-click="on_card_row_click"
       phx-target={@low_on_click_target}
       phx-value-team_id={@team_member_user.team.id}
-      class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+      class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
       <span
         :if={@team_member_user.is_star}
