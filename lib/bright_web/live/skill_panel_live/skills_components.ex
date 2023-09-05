@@ -191,7 +191,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <tr>
           <td colspan="4" class="!border-t !border-l-white !border-t-white !border-l">
           </td>
-          <td class="!border-l !border-brightGray-200">
+          <td class={[@editable && "pointer-events-auto", "!border-l !border-brightGray-200"]}>
             <div class="flex justify-center items-center min-w-[150px]">
               <p class="inline-flex flex-1 justify-center">
                 <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
@@ -313,7 +313,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </div>
               </div>
             </td>
-            <td class={[focus && "bg-brightGray-50"]}>
+            <td class={[@edit && "pointer-events-auto", focus && "bg-brightGray-50"]}>
               <%= if @edit do %>
                 <div
                   class="flex justify-center gap-x-4 px-4"
