@@ -1,6 +1,21 @@
 <div class="px-10 pt-4 pb-8 bg-white">
   <!-- スキルと対象の切り替え -->
   <div class="flex gap-x-4">
+    <p class="leading-tight ml-4">対象者の<br />切り替え</p>
+    <!-- チーム menu -->
+    <.mega_menu_button
+      id="mega_menu_team"
+      label="チーム"
+      dropdown_offset_skidding="307"
+    >
+      <.live_component
+        id="team_card"
+        module={BrightWeb.CardLive.RelatedTeamCardComponent}
+        display_user={@current_user}
+        over_ride_on_card_row_click_target={:true}
+      />
+    </.mega_menu_button>
+
     <p class="leading-tight">対象スキルの<br />切り替え</p>
     <!-- スキルパネル menu -->
     <.mega_menu_button
@@ -22,21 +37,6 @@
 
     <!-- TODO αリリースではスキルセットは対応しない -->
     <!-- スキルセット menu -->
-
-    <p class="leading-tight ml-4">対象者の<br />切り替え</p>
-    <!-- チーム menu -->
-    <.mega_menu_button
-      id="mega_menu_team"
-      label="チーム"
-      dropdown_offset_skidding="307"
-    >
-      <.live_component
-        id="team_card"
-        module={BrightWeb.CardLive.RelatedTeamCardComponent}
-        display_user={@current_user}
-        over_ride_on_card_row_click_target={:true}
-      />
-    </.mega_menu_button>
 
     <button
       data-modal-target="defaultModal"
@@ -95,7 +95,7 @@
         display_skill_panel={@display_skill_panel}
         display_skill_card={display_skill_card}
         display_skill_classes={@display_skill_classes}
-        />  
+        />
     <% end %>
   </div>
 </div>
