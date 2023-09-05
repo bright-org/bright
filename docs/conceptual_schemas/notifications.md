@@ -117,24 +117,24 @@ erDiagram
 
 ```mermaid
 erDiagram
-  "users" ||--o{ "notification_skill_ups" : ""
-  "notification_skill_ups" ||--|| "users" : ""
+  "users" ||--o{ "notification_improve_skills" : ""
+  "notification_improve_skills" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_blesseds" : ""
-  "notification_blesseds" ||--|| "users" : ""
+  "users" ||--o{ "notification_blesses" : ""
+  "notification_blesses" ||--|| "users" : ""
 
   "users" ||--o{ "notification_1on1_invitations" : ""
   "notification_1on1_invitations" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_promotions" : ""
-  "notification_promotions" ||--|| "users" : ""
+  "users" ||--o{ "notification_faves" : ""
+  "notification_faves" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_intriguings" : ""
-  "notification_intriguings" ||--|| "users" : ""
+  "users" ||--o{ "notification_watches" : ""
+  "notification_watches" ||--|| "users" : ""
 
   "users" ||--o{ "notification_official_teams" : ""
 
-  notification_skill_ups {
+  notification_improve_skills {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
@@ -142,7 +142,7 @@ erDiagram
     boolean congratulate　"祝福する"
   }
 
-  notification_blesseds {
+  notification_blesses {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
@@ -157,14 +157,14 @@ erDiagram
     string accept_status "受入ステータス： enum（acceptance、rejection）"
   }
 
-  notification_promotions {
+  notification_faves {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string url	"エビデンスのURL"
   }
 
-  notification_intriguings {
+  notification_watches {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
