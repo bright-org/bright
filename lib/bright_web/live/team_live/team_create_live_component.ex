@@ -9,6 +9,42 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   alias Bright.Teams
   alias Bright.Teams.Team
 
+  @doc """
+  Renders a simple form for tema create.
+
+  ## Examples
+
+      <.simple_form for={@form} phx-change="validate" phx-submit="save">
+        <.input field={@form[:email]} label="Email"/>
+        <.input field={@form[:username]} label="Username" />
+        <:actions>
+          <.button>Save</.button>
+        </:actions>
+      </.simple_form>
+  """
+  attr :for, :any, required: true, doc: "the datastructure for the form"
+  attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
+
+  attr :rest, :global,
+    include: ~w(autocomplete name rel action enctype method novalidate target multipart),
+    doc: "the arbitrary HTML attributes to apply to the form tag"
+
+  slot :inner_block, required: true
+  slot :actions, doc: "the slot for form actions, such as a submit button"
+
+  def team_form(assigns) do
+    ~H"""
+    <.form :let={f} for={@for} as={@as} {@rest}>
+      <div class="space-y-8 bg-white">
+        <%= render_slot(@inner_block, f) %>
+        <div :for={action <- @actions} class="flex items-center justify-between">
+          <%= render_slot(action, f) %>
+        </div>
+      </div>
+    </.form>
+    """
+  end
+
   @impl true
   def update(assigns, socket) do
     team_changeset = Team.changeset(%Team{}, %{})
@@ -43,41 +79,10 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   def handle_event("add_user", _params, socket) do
     search_word = socket.assigns.search_word
 
-    selected_users = socket.assigns.users
-
-    user =
-      search_word
-      |> Accounts.get_user_by_name_or_email()
-
     socket =
-      cond do
-        user == nil ->
-          socket
-          # TODO Gettext未対応
-          |> assign(search_word_error: "該当のユーザーが見つかりませんでした")
-
-        user.id == socket.assigns.current_user.id ->
-          socket
-          # TODO Gettext未対応
-          |> assign(search_word_error: "チーム作成者は自動的に管理者として追加されます")
-
-        true ->
-          if id_duplidated_user?(user, selected_users) do
-            socket
-            # TODO Gettext未対応
-            |> assign(search_word_error: "対象のユーザーは既に追加されています")
-          else
-            # メンバーユーザー一時リストに追加
-            added_users =
-              [user | selected_users]
-              |> Enum.reverse()
-
-            socket
-            |> assign(:users, added_users)
-            |> assign(:search_word, nil)
-            |> assign(:search_word_error, nil)
-          end
-      end
+      socket
+      |> validate_search_word(search_word)
+      |> search_and_add_user(search_word)
 
     {:noreply, socket}
   end
@@ -133,6 +138,58 @@ defmodule BrightWeb.TeamCreateLiveComponent do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
     end
+  end
+
+  defp validate_search_word(socket, search_word) do
+    if is_nil(search_word) || search_word == "" do
+      socket =
+        socket
+        # TODO Gettext未対応
+        |> assign(search_word_error: "検索条件を入力してください")
+
+      {:error, socket}
+    else
+      {:ok, socket}
+    end
+  end
+
+  defp search_and_add_user({:ok, socket}, search_word) do
+    selected_users = socket.assigns.users
+
+    user =
+      search_word
+      |> Accounts.get_user_by_name_or_email()
+
+    cond do
+      user == nil ->
+        socket
+        # TODO Gettext未対応
+        |> assign(search_word_error: "該当のユーザーが見つかりませんでした")
+
+      user.id == socket.assigns.current_user.id ->
+        socket
+        # TODO Gettext未対応
+        |> assign(search_word_error: "チーム作成者は自動的に管理者として追加されます")
+
+      true ->
+        if id_duplidated_user?(user, selected_users) do
+          socket
+          # TODO Gettext未対応
+          |> assign(search_word_error: "対象のユーザーは既に追加されています")
+        else
+          # メンバーユーザー一時リストに追加
+          added_users = [user | selected_users]
+
+          socket
+          |> assign(:users, added_users)
+          |> assign(:search_word, nil)
+          |> assign(:search_word_error, nil)
+        end
+    end
+  end
+
+  defp search_and_add_user({:error, socket}, _search_word) do
+    socket
   end
 
   defp send_invitation_mail(preloaded_team, admin_user, member_user_attrs) do

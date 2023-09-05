@@ -256,7 +256,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <% else %>
 
             <li
-              class={"w-full bg-pureGray-100 text-pureGray-300"}
+              class={"w-full bg-brightGreen-50 text-brightGray-500"}
               phx-click="skill_class_tab_click"
               phx-target={@skill_class_tab_click_target}
               phx-value-user_id={@user.id}

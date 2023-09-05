@@ -6,6 +6,7 @@ defmodule BrightWeb.ProfileComponents do
   import BrightWeb.BrightButtonComponents
   import BrightWeb.SnsComponents
   alias Phoenix.LiveView.JS
+  alias Bright.UserProfiles
 
   @doc """
   Renders a Profile
@@ -143,7 +144,7 @@ defmodule BrightWeb.ProfileComponents do
       <a class="inline-flex items-center gap-x-6 w-full">
         <img
           class="inline-block h-10 w-10 rounded-full"
-          src={@icon_file_path}
+          src={UserProfiles.icon_url(@icon_file_path)}
         />
         <div class="flex-auto">
           <p><%= @user_name %></p>
@@ -154,7 +155,9 @@ defmodule BrightWeb.ProfileComponents do
           phx-target={@remove_user_target}
           class="mx-4"
         >
-          <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+          <span
+            class="material-icons !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+          >
             close
           </span>
         </button>
