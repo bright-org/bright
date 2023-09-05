@@ -123,6 +123,31 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       end)
     end
 
+    test "shows when skill_score is missing", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      skill_unit = insert(:skill_unit)
+      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit, position: 1)
+
+      # ２つのスキルのうち、１つのみスキルスコアを生成
+      [%{skills: [skill_1, _skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
+      build(:skill_score, user: user, skill: skill_1) |> make_fullmark() |> insert()
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
+
+      # ドーナツグラフまわりの表記
+      assert has_element?(show_live, ~s{#profile_score_stats}, "平均")
+      assert has_element?(show_live, ~s{#profile_score_stats .evidence_percentage}, "50%")
+      assert has_element?(show_live, ~s{#profile_score_stats .reference_percentage}, "50%")
+      assert has_element?(show_live, ~s{#profile_score_stats .exam_percentage}, "50%")
+
+      # スキル一覧
+      assert has_element?(show_live, ~s{#skill-2 .score-mark-low})
+    end
+
     test "shows the skill class by query string parameter", %{
       conn: conn,
       user: user,
@@ -141,7 +166,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   describe "Show no skill panel" do
     setup [:register_and_log_in_user]
 
-    test "show content with no skill panel message", %{conn: conn} do
+    test "shows content with no skill panel message", %{conn: conn} do
       {:ok, show_live, html} = live(conn, ~p"/panels")
 
       assert html =~ "スキルパネルがありません"
