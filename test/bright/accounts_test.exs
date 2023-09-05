@@ -1,17 +1,16 @@
 defmodule Bright.AccountsTest do
   use Bright.DataCase
 
-  alias Bright.Utils.GoogleCloud.Storage
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.User2faCodes
   alias Bright.Accounts.SocialIdentifierToken
   alias Bright.Accounts.UserSocialAuth
+  alias Bright.UserProfiles
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
   import Bright.Factory
-  import Mock
   alias Bright.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -1312,21 +1311,21 @@ defmodule Bright.AccountsTest do
 
     test "updates user with user_profile", %{user: user} do
       new_name = unique_user_name()
-      user_profile_attrs = string_params_for(:user_profile)
 
-      with_mock(Storage, [:passthrough], upload!: fn _local_file_path, _storage_path -> :ok end) do
-        {:ok, _user} =
-          Accounts.update_user_with_user_profile(
-            user,
-            %{
-              "name" => new_name,
-              "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
-            },
-            nil
-          )
+      user_profile_attrs =
+        string_params_for(:user_profile, icon_file_path: UserProfiles.build_icon_path("hoge.png"))
 
-        assert_not_called(Storage.upload!(:_, :_))
-      end
+      {:ok, _user} =
+        Accounts.update_user_with_user_profile(
+          user,
+          %{
+            "name" => new_name,
+            "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+          },
+          nil
+        )
+
+      assert {:error, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
 
@@ -1344,23 +1343,23 @@ defmodule Bright.AccountsTest do
 
     test "updates user with user_profile and uploads file to GCS", %{user: user} do
       new_name = unique_user_name()
-      user_profile_attrs = string_params_for(:user_profile)
 
-      with_mock(Storage, [:passthrough], upload!: fn _local_file_path, _storage_path -> :ok end) do
-        local_file_path = "/tmp/xxx.png"
+      user_profile_attrs =
+        string_params_for(:user_profile, icon_file_path: UserProfiles.build_icon_path("hoge.png"))
 
-        {:ok, _user} =
-          Accounts.update_user_with_user_profile(
-            user,
-            %{
-              "name" => new_name,
-              "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
-            },
-            local_file_path
-          )
+      local_file_path = Path.join([test_support_dir(), "images", "sample.svg"])
 
-        assert_called(Storage.upload!(local_file_path, user_profile_attrs["icon_file_path"]))
-      end
+      {:ok, _user} =
+        Accounts.update_user_with_user_profile(
+          user,
+          %{
+            "name" => new_name,
+            "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+          },
+          local_file_path
+        )
+
+      assert {:ok, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
 
@@ -1378,25 +1377,27 @@ defmodule Bright.AccountsTest do
 
     test "does not upload file to GCS when validation error occurs", %{user: user} do
       new_name = unique_user_name()
-      user_profile_attrs = string_params_for(:user_profile)
+
+      user_profile_attrs =
+        string_params_for(:user_profile, icon_file_path: UserProfiles.build_icon_path("hoge.png"))
+
       insert(:user, name: new_name)
 
-      with_mock(Storage, [:passthrough], upload!: fn _local_file_path, _storage_path -> :ok end) do
-        local_file_path = "/tmp/xxx.png"
+      local_file_path = Path.join([test_support_dir(), "images", "sample.svg"])
 
-        {:error, changeset} =
-          Accounts.update_user_with_user_profile(
-            user,
-            %{
-              "name" => new_name,
-              "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
-            },
-            local_file_path
-          )
+      {:error, changeset} =
+        Accounts.update_user_with_user_profile(
+          user,
+          %{
+            "name" => new_name,
+            "user_profile" => user_profile_attrs |> Map.merge(%{"id" => user.user_profile.id})
+          },
+          local_file_path
+        )
 
-        assert_not_called(Storage.upload!(:_, :_))
-        assert %{name: ["has already been taken"]} = errors_on(changeset)
-      end
+      assert {:error, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
+
+      assert %{name: ["has already been taken"]} = errors_on(changeset)
 
       refute Repo.get(User, user.id).name == new_name
 

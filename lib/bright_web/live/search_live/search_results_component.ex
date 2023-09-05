@@ -14,6 +14,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
           user={user}
           index={index}
           skill_params={@skill_params}
+          stock_user_ids={@stock_user_ids}
         />
       </li>
       <% end %>

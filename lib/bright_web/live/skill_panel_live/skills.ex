@@ -66,18 +66,16 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> Map.values()
       |> Enum.filter(& &1.changed)
 
-    {:ok, updated_result} =
-      SkillScores.update_skill_scores(socket.assigns.current_user, target_skill_scores)
+    {:ok, _} = SkillScores.update_skill_scores(socket.assigns.current_user, target_skill_scores)
 
     skill_class_score = SkillScores.get_skill_class_score!(socket.assigns.skill_class_score.id)
 
-    # スキルクラス解放時に保有スキルカードの更新を通知
-    if get_in(updated_result, [
-         :skill_class_scores,
-         :"skill_class_score_#{skill_class_score.id}",
-         :level_up_skill_class_score
-       ]) do
-      send_update(SkillCardComponent, id: "skill_card", status: "level_up")
+    # スキルクラスのレベル変更時に保有スキルカードの表示変更を通知
+    prev_level = socket.assigns.skill_class_score.level
+    new_level = skill_class_score.level
+
+    if prev_level != new_level do
+      send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
     end
 
     {:noreply,

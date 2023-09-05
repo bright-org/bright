@@ -10,8 +10,7 @@ defmodule Bright.UserProfileFactory do
           user: build(:user),
           title: sequence(:title, &"#{Faker.Lorem.word()}#{&1}"),
           detail: sequence(:detail, &"私は#{Faker.Lorem.word()}#{&1}です"),
-          icon_file_path:
-            sequence(:icon_file_path, &"gs://#{Faker.Lorem.word()}/#{Faker.Lorem.word()}#{&1}"),
+          icon_file_path: sequence(:icon_file_path, &"users/profile_icon_#{&1}.png"),
           twitter_url: sequence(:twitter_url, &"https://twitter.com/#{Faker.Lorem.word()}#{&1}"),
           facebook_url:
             sequence(:facebook_url, &"https://www.facebook.com/#{Faker.Lorem.word()}#{&1}"),

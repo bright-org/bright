@@ -163,6 +163,57 @@ defmodule BrightWeb.ProfileComponents do
     """
   end
 
+  @doc """
+  Renders a Profile for stock small with remove button
+
+  ## Examples
+      <.profile_stock_small_with_remove_button
+        remove_user_target={@myself}
+        stok_id="1234"
+        stock_date="2023-09-02"
+        skill_panel="Webアプリ開発 Elixir"
+        desired_income="1000"
+      />
+  """
+  attr :remove_user_target, :any
+  attr :stock_id, :string, required: true
+  attr :stock_date, :string, required: true
+  attr :skill_panel, :string, required: true
+  attr :desired_income, :string, default: ""
+  attr :encrypt_user_name, :string, required: true
+
+  def profile_stock_small_with_remove_button(assigns) do
+    ~H"""
+    <li class="relative text-left flex items-center text-base p-1  bg-white w-1/2">
+      <.link
+        class="inline-flex items-center gap-x-6 w-full hover:bg-brightGray-50"
+        href={"/mypage/anon/#{@encrypt_user_name}"}
+      >
+        <img
+          class="inline-block h-10 w-10 rounded-full"
+          src="/images/avatar.png"
+        />
+        <div class="flex-auto gap-x-2">
+          <p>検索：<%= @skill_panel %></p>
+          <span class="text-brightGray-300">(<%= @stock_date %>)</span>
+          <span class="text-brightGray-300">希望年収：<%= @desired_income %></span>
+
+        </div>
+      </.link>
+      <button
+          phx-click={JS.push("remove_user", value: %{stock_id: @stock_id})}
+          phx-target={@remove_user_target}
+          class="absolute top-1 right-4"
+        >
+          <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+            close
+          </span>
+        </button>
+
+    </li>
+    """
+  end
+
   defp profile_small_link(%{click_event: nil} = assigns) do
     user_name =
       if assigns.encrypt_user_name == "",
