@@ -1,0 +1,27 @@
+# チームに所属検証
+
+## Section
+
+```elixir
+defmodule Test do
+  import Ecto.Query, warn: false
+  alias Bright.Repo
+
+  alias Bright.Teams.Team
+  alias Bright.Accounts.UserNotifier
+  alias Bright.SkillScores.SkillClassScore
+  alias Bright.Teams.TeamMemberUsers
+
+  def list_joined_teams_by_user_id(user_id) do
+    from(tmbu in TeamMemberUsers,
+      where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at)
+    )
+    |> preload(:team)
+    |> Repo.all()
+  end
+end
+
+user = Bright.Accounts.get_user_by_name("ymn")
+
+Test.list_joined_teams_by_user_id(user.id)
+```
