@@ -69,6 +69,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> then(&{:noreply, &1})
   end
 
+  # 空post
   def handle_event(
         "search",
         %{"user_search" => params},
@@ -85,10 +86,19 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> then(&{:noreply, &1})
   end
 
+  # スキルの検索項目でスキルパネルまで入力していないものがある
   def handle_event(
         "search",
         _params,
-        %{assigns: %{changeset: %{changes: changes}, current_user: user}} = socket
+        %{assigns: %{changeset: %{valid?: false}}} = socket
+      ) do
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "search",
+        _params,
+        %{assigns: %{changeset: %{changes: changes} = changeset, current_user: user}} = socket
       ) do
     {skills, search_params} = convert_changes_to_search_params(changes)
 
