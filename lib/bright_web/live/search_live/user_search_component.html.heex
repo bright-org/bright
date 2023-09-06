@@ -188,6 +188,23 @@
     該当するユーザーは見つかりませんでした
   </div>
   <div :if={length(@search_results) > 0} >
+    <div class="flex items-center mt-8">
+      <span><%= if @total_entries > 5, do: 5 * @page, else: @total_entries %></span><span class="text-xs">件／</span>
+      <span><%= @total_entries %></span><span class="text-xs">件中</span>
+
+      <form phx-change="change_sort" phx-target={@myself}>
+        <BrightCore.input
+          name="sort"
+          value={@sort}
+          input_class="border border-brightGray-200 ml-4 px-2 py-1 rounded"
+          type="select"
+          options={@sort_options}
+        />
+      </form>
+
+      <p class="ml-2">※採用面談が決まるまで匿名で表示されます</p>
+    </div>
+
     <.live_component
       id="user_search_result"
       module={SearchResultsComponent}
