@@ -335,28 +335,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         </div>
         <div class="mr-auto flex ml-7">
           <div class="w-20 mt-5">
-            <.doughnut_graph data={skill_score_percentages(@counter, @num_skills)} id="doughnut-graph-single-sample1"/>
+            <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
           </div>
-          <div class="h-20 mt-5 ml-2 flex flex-wrap">
-            <p class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1">
-              <.profile_skill_class_level level={@skill_class_score.level} />
-            </p>
-            <div class="flex flex-col w-24 pl-6">
-              <div class="min-w-[4em] flex items-center">
-                <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-                <%= calc_percentage(@counter.high, @num_skills) %>％
-              </div>
-              <div class="min-w-[4em] flex items-center">
-                <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-                <%= calc_percentage(@counter.middle, @num_skills) %>％
-              </div>
-            </div>
-            <div class="text-right text-xs">
-              エビデンスの登録率 <%= calc_percentage(@counter.evidence_filled, @num_skills) %>%<br />
-              教材の学習率 <%= calc_percentage(@counter.reference_read, @num_skills) %>%<br />
-              試験の受験率 <%= calc_percentage(@counter.exam_touch, @num_skills) %>%
-            </div>
-          </div>
+          <.profile_score_stats
+            skill_class_score={@skill_class_score}
+            counter={@counter}
+            num_skills={@num_skills}
+          />
         </div>
         <% # TODO: α版後にifを除去して表示 %>
         <div :if={false} class="mt-3 mr-3">
@@ -385,6 +370,31 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     mark = mark || :low
 
     [Map.get(@score_mark, mark), get_in(@score_mark_color, [color, mark])]
+  end
+
+  defp profile_score_stats(assigns) do
+    ~H"""
+    <div id="profile_score_stats" class="h-20 mt-5 ml-2 flex flex-wrap">
+      <p class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1">
+        <.profile_skill_class_level level={@skill_class_score.level} />
+      </p>
+      <div class="flex flex-col w-24 pl-6">
+        <div class="min-w-[4em] flex items-center">
+          <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
+          <%= calc_percentage(@counter.high, @num_skills) %>％
+        </div>
+        <div class="min-w-[4em] flex items-center">
+          <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
+          <%= calc_percentage(@counter.middle, @num_skills) %>％
+        </div>
+      </div>
+      <div class="text-right text-xs">
+        エビデンスの登録率 <span class="evidence_percentage"><%= calc_percentage(@counter.evidence_filled, @num_skills) %>%</span><br />
+        教材の学習率 <span class="reference_percentage"><%= calc_percentage(@counter.reference_read, @num_skills) %>%</span><br />
+        試験の受験率 <span class="exam_percentage"><%= calc_percentage(@counter.exam_touch, @num_skills) %>%</span>
+      </div>
+    </div>
+    """
   end
 
   def profile_skill_class_level(%{level: :beginner} = assigns) do
