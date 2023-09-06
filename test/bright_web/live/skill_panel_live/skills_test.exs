@@ -134,7 +134,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       # ２つのスキルのうち、１つのみスキルスコアを生成
       [%{skills: [skill_1, _skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
-      build(:skill_score, user: user, skill: skill_1) |> make_fullmark() |> insert()
+      insert(:full_mark_skill_score, user: user, skill: skill_1)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
 

@@ -372,7 +372,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     [Map.get(@score_mark, mark), get_in(@score_mark_color, [color, mark])]
   end
 
-  def profile_score_stats(assigns) do
+  defp profile_score_stats(assigns) do
     ~H"""
     <div id="profile_score_stats" class="h-20 mt-5 ml-2 flex flex-wrap">
       <p class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1">

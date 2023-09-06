@@ -25,8 +25,8 @@ defmodule Bright.SkillScoreFactory do
         }
       end
 
-      def make_fullmark(%SkillScore{} = skill_score) do
-        skill_score
+      def full_mark_skill_score_factory do
+        init_skill_score_factory()
         |> Map.merge(%{
           score: :high,
           exam_progress: :done,
