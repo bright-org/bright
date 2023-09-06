@@ -30,73 +30,60 @@ defmodule Bright.SkillScores do
           skill_categories: [skills: [:skill_scores]]
         ],
       ])
-    target_user_ids = Enum.map(skill_class.skill_class_scores, & &1.user_id)
 
     Ecto.Multi.new()
     |> Ecto.Multi.run(:skill_unit_scores, fn _repo, data ->
-      results = Enum.map(skill_class.skill_units, & rescore_skill_unit(&1, target_user_ids))
+      results = Enum.map(skill_class.skill_units, & update_skill_unit_scores_associated_by/1)
       {:ok, results}
     end)
     |> Ecto.Multi.run(:skill_class_scores, fn _repo, data ->
-      results = Enum.map(skill_class.skill_class_scores, & update_skill_class_score_stats(skill_class, skill_class_score))
+      results = update_skill_class_scores_associated_by(skill_class)
       {:ok, results}
     end)
     |> Repo.transaction()
   end
 
-  defp rescore_skill_unit(skill_unit, user_ids) do
-    # NOTE: スキル構造に変更があったときを想定した処理
-    # skill_unit_scoreがない場合には新規で作成する
-    skill_unit_score_user_dict = Map.new(skill_unit.skill_unit_scores, & {&1.user_id, &1})
+  defp update_skill_unit_scores_associated_by(skill_unit) do
     skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
     skills_count = Enum.count(skills)
     skill_scores_user_dict = Enum.reduce(skills, fn skill, acc ->
-      skill.skill_class_scores
-      |> Enum.reduce(acc, fn skill_class_score, inner_acc ->
-        Map.update(
-          inner_acc,
-          skill_class_score.user_id,
-          [skill_class_score],
-          & &1 ++ [skill_class_score]
-        )
+      skill.skill_scores
+      |> Enum.reduce(acc, fn skill_score, inner_acc ->
+        Map.update(inner_acc, skill_score.user_id, [skill_score], & &1 ++ [skill_score])
       end)
     end)
 
-    user_ids
-    |> Enum.reduce(Ecto.Multi.new(), fn user_id, multi ->
-      Map.get(skill_unit_score_user_dict, user_id)
-      |> case do
-        nil ->
-            # # TODO 作成
-            # multi
-            # |> Ecto.Multi.insert(:"update_skill_unit_score_#{user_id}", changeset)
-        skill_unit_score ->
-            # # TODO 更新
-            # multi
-            # |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
-      end
+    skill_unit.skill_unit_scores
+    |> Enum.reduce(Ecto.Multi.new(), fn skill_unit_score, multi ->
+      user_id = skill_unit_score.user_id
+      skill_unit_score
+      # # TODO 更新
+      # multi
+      # |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
     end)
   end
 
-  def update_skill_class_score_stats(skill_class, skill_class_score) do
+  defp update_skill_class_scores_associated_by(skill_class) do
     skills =
       skill_class.skill_units
       |> Enum.flat_map(& &1.skill_categories)
       |> Enum.flat_map(& &1.skills)
     skills_count = Enum.count(skills)
     skill_scores_user_dict = Enum.reduce(skills, fn skill, acc ->
-      skill.skill_class_scores
-      |> Enum.reduce(acc, fn skill_class_score, inner_acc ->
-        Map.update(
-          inner_acc,
-          skill_class_score.user_id,
-          [skill_class_score],
-          & &1 ++ [skill_class_score]
-        )
+      skill.skill_scores
+      |> Enum.reduce(acc, fn skill_score, inner_acc ->
+        Map.update(inner_acc, skill_score.user_id, [skill_score], & &1 ++ [skill_score])
       end)
     end)
 
-    # 更新処理
+    skill_class.skill_class_scores
+    |> Enum.reduce(Ecto.Multi.new(), fn skill_class_score, multi ->
+      user_id = skill_class_score.user_id
+      skill_class_score
+      # # TODO 更新
+      # multi
+      # |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
+    end)
   end
 
   @doc """
