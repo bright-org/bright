@@ -7,6 +7,13 @@ defmodule Bright.SkillScoreFactory do
 
   defmacro __using__(_opts) do
     quote do
+      def init_skill_score_factory do
+        %SkillScore{
+          user: build(:user),
+          skill: build(:skill)
+        }
+      end
+
       def skill_score_factory do
         %SkillScore{
           user: build(:user),
@@ -16,6 +23,16 @@ defmodule Bright.SkillScoreFactory do
           reference_read: Enum.random([false, true]),
           evidence_filled: Enum.random([false, true])
         }
+      end
+
+      def full_mark_skill_score_factory do
+        init_skill_score_factory()
+        |> Map.merge(%{
+          score: :high,
+          exam_progress: :done,
+          reference_read: true,
+          evidence_filled: true
+        })
       end
     end
   end

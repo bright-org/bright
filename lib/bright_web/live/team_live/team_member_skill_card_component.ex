@@ -11,10 +11,8 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
   @impl true
   def render(assigns) do
     ~H"""
-      <div class="flex w-[474px] h-[624px] shadow flex-col bg-white">
+      <div class="flex w-[474px] h-[654px] shadow flex-col bg-white relative">
       <!-- メンバーデータ -->
-        <!-- チャートがはみ出すので全体を広げる -->
-        <!-- <div class="flex w-[474px] shadow flex-col bg-white"> -->
         <.team_member_class_tab
           user={@display_skill_card.user}
           user_skill_class_score={@display_skill_card.user_skill_class_score}
@@ -46,6 +44,21 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             size="md"
             display_link="false"
           />
+        </div>
+
+        <div class="p-6 pt-0 flex w-full absolute bottom-0 justify-between ">
+          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
+            1on1に誘う
+          </button>
+          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
+            この人と比較
+          </button>
+          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
+            スキルアップ確認
+          </button>
+        </div>
+        <div class="w-full text-center absolute bottom-1">
+        βリリース（10月予定）で利用可能になります
         </div>
       </div>
     """

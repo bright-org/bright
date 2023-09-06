@@ -94,9 +94,9 @@ defmodule BrightWeb.LayoutComponents do
     >
       <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
       <ul class="grid pt-2">
-        <%= for {title, path} <- links() do %>
+        <%= for {title, path, regex} <- links() do %>
           <li>
-            <.link class={menu_active_style(String.starts_with?(@href, path))} href={path} ><%= title %></.link>
+            <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>
           </li>
         <% end %>
       </ul>
@@ -106,15 +106,15 @@ defmodule BrightWeb.LayoutComponents do
 
   def links() do
     [
-      {"スキルを選ぶ", "/more_skills"},
-      {"成長を見る・比較する", "/graphs"},
-      {"スキルパネルを入力", "/panels"},
+      {"スキルを選ぶ", "/more_skills", nil},
+      {"成長を見る・比較する", "/graphs", nil},
+      {"スキルパネルを入力", "/panels", nil},
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
-      {"スキル検索／スカウト", "/searches"},
-      {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html"},
-      {"チームスキル分析", "/teams"},
-      {"自分のチームを作る", "/teams/new"}
+      {"スキル検索／スカウト", "/searches", nil},
+      {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html", nil},
+      {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/},
+      {"自分のチームを作る", "/teams/new", nil}
     ]
   end
 
@@ -122,4 +122,12 @@ defmodule BrightWeb.LayoutComponents do
     do: "!text-white bg-white bg-opacity-30 text-base py-4 inline-block pl-4 w-full mb-1"
 
   defp menu_active_style(false), do: "!text-white text-base py-4 inline-block pl-4 w-full mb"
+
+  defp match_link?(href, path, nil) do
+    String.starts_with?(href, path)
+  end
+
+  defp match_link?(href, _path, regex) do
+    String.match?(href, regex)
+  end
 end

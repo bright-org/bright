@@ -21,7 +21,7 @@ defmodule BrightWeb.TeamComponents do
   """
 
   attr :id, :string, required: true
-  attr :team, Bright.Teams.Team, required: true
+  attr :team_member_user, Bright.Teams.TeamMemberUsers, required: true
   attr :team_type, :atom, default: :general_team
   attr :low_on_click_target, :any, required: false, default: nil
 
@@ -31,11 +31,29 @@ defmodule BrightWeb.TeamComponents do
       id={@id}
       phx-click="on_card_row_click"
       phx-target={@low_on_click_target}
-      phx-value-team_id={@team.id}
-      class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded"
+      phx-value-team_id={@team_member_user.team.id}
+      class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
-      <img src={get_team_icon_path(@team_type)} class="mr-2"/>
-      <%= @team.name %>
+      <span
+        :if={@team_member_user.is_star}
+        class="material-icons text-brightGreen-300"
+      >
+        star
+      </span>
+      <span
+        :if={!@team_member_user.is_star}
+        class="material-icons text-brightGray-100"
+      >
+        star
+      </span>
+      <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2"/>
+      <%= @team_member_user.team.name %>
+      <span
+        :if={@team_member_user.is_admin}
+        class="text-white text-sm font-bold ml-4 px-2 py-1 inline-block bg-lapislazuli-300 rounded"
+      >
+        管理者
+      </span>
     </li>
     """
   end
