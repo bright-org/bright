@@ -9,12 +9,12 @@ erDiagram
 ### 優秀なエンジニア紹介 テーブル
 ```mermaid
 erDiagram
-  "excellent_persons" ||--|| "users" : "紹介ユーザー"
-  "excellent_persons" ||--|| "users" : "推しユーザー"
-  "excellent_persons" ||--|| "teams" : ""
+  "talented_persons" ||--|| "users" : "紹介ユーザー"
+  "talented_persons" ||--|| "users" : "推しユーザー"
+  "talented_persons" ||--|| "teams" : ""
 
 
-  excellent_persons {
+  talented_persons {
     id introducer_user_id	FK "紹介者ユーザーID"
     id fave_user_id	FK "推しユーザーID"
     id team_id "チームID index"
