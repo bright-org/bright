@@ -98,7 +98,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   def handle_event(
         "search",
         _params,
-        %{assigns: %{changeset: %{changes: changes} = changeset, current_user: user}} = socket
+        %{assigns: %{changeset: %{changes: changes}, current_user: user}} = socket
       ) do
     {skills, search_params} = convert_changes_to_search_params(changes)
 
