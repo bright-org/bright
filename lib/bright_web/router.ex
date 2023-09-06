@@ -30,7 +30,7 @@ defmodule BrightWeb.Router do
     plug :accepts, ["json"]
   end
 
-  # TODO 本番では出ないように
+  # デバッグ用画面（prod環境以外）
   scope "/", BrightWeb do
     pipe_through [:browser, :auth]
 
