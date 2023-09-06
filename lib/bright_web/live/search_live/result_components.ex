@@ -61,32 +61,34 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
   def doughnut_area(assigns) do
     ~H"""
-    <div class="flex flex-wrap items-start ml-2 mt-6 w-52">
-      <div class="h-24 overflow-hidden w-20">
-        <.doughnut_graph
-          id={"doughnut-graph-single-sample-#{@index}"}
-          data={skill_score_percentages(@counter, @num_skills)}
-        />
-      </div>
-      <div class="h-24 overflow-hidden w-28">
-        <div class="h-20 ml-2 flex flex-wrap">
-          <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
-            <.profile_skill_class_level level={@skill_class_score.level} />
-          </p>
+    <div class="ml-2 mt-8 ">
+      <div class="flex w-[180px]">
+        <div class="h-24 overflow-hidden w-[80px]">
+          <.doughnut_graph
+            id={"doughnut-graph-single-sample-#{@index}"}
+            data={skill_score_percentages(@counter, @num_skills)}
+          />
+        </div>
+        <div class="h-24 overflow-hidden w-[100px]">
+          <div class="h-20 ml-2 flex flex-wrap">
+            <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
+              <.profile_skill_class_level level={@skill_class_score.level} />
+            </p>
 
-          <div class="flex flex-col w-24 pl-6">
-            <div class="min-w-[4em] flex items-center">
-              <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-              <%= calc_percentage(@counter.high, @num_skills) %>％
-            </div>
-            <div class="min-w-[4em] flex items-center mt-1">
-              <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-              <%= calc_percentage(@counter.middle, @num_skills) %>％
+            <div class="flex flex-col w-24 pl-6">
+              <div class="min-w-[4em] flex items-center">
+                <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
+                <%= calc_percentage(@counter.high, @num_skills) %>％
+              </div>
+              <div class="min-w-[4em] flex items-center mt-1">
+                <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
+                <%= calc_percentage(@counter.middle, @num_skills) %>％
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <ul class="text-xs w-40">
+      <ul class="text-xs w-40 text-start">
         <li>
           <p>
             <span class="inline-block w-28">エビデンスの登録率</span>
