@@ -19,7 +19,7 @@ defmodule Bright.SkillScores do
 
   @doc """
   指定のスキルクラスに関わるスコア集計をまとめて再計算する
-  NOTE: スキル構造に変更があったときを想定した重い処理
+  NOTE: スキルパネル更新処理といった構造変更があったときを想定した重い処理
   """
   def rescore_skill_class(skill_class) do
     skill_class =
@@ -28,15 +28,15 @@ defmodule Bright.SkillScores do
         skill_units: [
           :skill_unit_scores,
           skill_categories: [skills: [:skill_scores]]
-        ],
+        ]
       ])
 
     Ecto.Multi.new()
-    |> Ecto.Multi.run(:skill_unit_scores, fn _repo, data ->
-      results = Enum.map(skill_class.skill_units, & update_skill_unit_scores_associated_by/1)
+    |> Ecto.Multi.run(:skill_unit_scores, fn _repo, _data ->
+      results = Enum.map(skill_class.skill_units, &update_skill_unit_scores_associated_by/1)
       {:ok, results}
     end)
-    |> Ecto.Multi.run(:skill_class_scores, fn _repo, data ->
+    |> Ecto.Multi.run(:skill_class_scores, fn _repo, _data ->
       results = update_skill_class_scores_associated_by(skill_class)
       {:ok, results}
     end)
@@ -45,22 +45,19 @@ defmodule Bright.SkillScores do
 
   defp update_skill_unit_scores_associated_by(skill_unit) do
     skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
-    skills_count = Enum.count(skills)
-    skill_scores_user_dict = Enum.reduce(skills, fn skill, acc ->
-      skill.skill_scores
-      |> Enum.reduce(acc, fn skill_score, inner_acc ->
-        Map.update(inner_acc, skill_score.user_id, [skill_score], & &1 ++ [skill_score])
-      end)
-    end)
+    {skills_count, score_count_user_dict} = count_skill_scores_each_user(skills)
 
     skill_unit.skill_unit_scores
     |> Enum.reduce(Ecto.Multi.new(), fn skill_unit_score, multi ->
       user_id = skill_unit_score.user_id
-      skill_unit_score
-      # # TODO 更新
-      # multi
-      # |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
+      high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
+      percentage = calc_percentage(high_scores_count, skills_count)
+      changeset = SkillUnitScore.changeset(skill_unit_score, %{percentage: percentage})
+
+      multi
+      |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
     end)
+    |> Repo.transaction()
   end
 
   defp update_skill_class_scores_associated_by(skill_class) do
@@ -68,22 +65,45 @@ defmodule Bright.SkillScores do
       skill_class.skill_units
       |> Enum.flat_map(& &1.skill_categories)
       |> Enum.flat_map(& &1.skills)
-    skills_count = Enum.count(skills)
-    skill_scores_user_dict = Enum.reduce(skills, fn skill, acc ->
-      skill.skill_scores
-      |> Enum.reduce(acc, fn skill_score, inner_acc ->
-        Map.update(inner_acc, skill_score.user_id, [skill_score], & &1 ++ [skill_score])
-      end)
-    end)
+
+    {skills_count, score_count_user_dict} = count_skill_scores_each_user(skills)
 
     skill_class.skill_class_scores
     |> Enum.reduce(Ecto.Multi.new(), fn skill_class_score, multi ->
       user_id = skill_class_score.user_id
-      skill_class_score
-      # # TODO 更新
-      # multi
-      # |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
+      high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
+      percentage = calc_percentage(high_scores_count, skills_count)
+      level = get_level(percentage)
+      changeset = SkillUnitScore.changeset(skill_class_score, %{percentage: percentage})
+      SkillClassScore.changeset(skill_class_score, %{percentage: percentage, level: level})
+
+      multi
+      |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
+
+      # # TODO: レベルアップと付随処理はUIをそろえる
+      # |> Ecto.Multi.run(:"level_up_skill_class_score_#{uesr_id}", fn _repo, _ ->
+      # end)
     end)
+    |> Repo.transaction()
+  end
+
+  defp count_skill_scores_each_user(skills) do
+    skills_count = Enum.count(skills)
+    init_count = %{high: 0, middle: 0, low: 0}
+
+    score_count_user_dict =
+      Enum.reduce(skills, %{}, fn skill, acc ->
+        Enum.reduce(skill.skill_scores, acc, fn skill_score, dict ->
+          user_dict =
+            dict
+            |> Map.get(skill_score.user_id, init_count)
+            |> Map.update(skill_score.score, 1, &(&1 + 1))
+
+          Map.put(dict, skill_score.user_id, user_dict)
+        end)
+      end)
+
+    {skills_count, score_count_user_dict}
   end
 
   @doc """
