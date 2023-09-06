@@ -73,7 +73,7 @@ module "secret_host" {
   depends_on = [module.googleapis]
 
   name = "bright-host"
-  data = module.cloud_run_service.host
+  data = "app.bright-fun.org"
 }
 
 module "secret_bucket_name" {
