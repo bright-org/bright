@@ -36,7 +36,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
         |> Repo.preload(:skill_classes)
 
       Map.merge(params, %{
-        skill_panel_name: String.slice(skill_panel.name, 0..20),
+        skill_panel_name: String.slice(skill_panel.name, 0..19),
         class: Map.get(params, :class, 1),
         skill_class_id:
           Enum.find(skill_panel.skill_classes, fn class ->
