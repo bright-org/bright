@@ -14,10 +14,14 @@ defmodule BrightWeb.SearchLive.ResultComponents do
   def job_area(assigns) do
     ~H"""
     <div class="w-[280px] text-start">
+      <p class="mb-2">
+        <span>　希望年収：</span>
+        <span><%= if @job.desired_income, do: "#{@job.desired_income} 万円以上", else: "-" %></span>
+      </p>
 
       <%= if @job.office_work do %>
       <p class="mb-2 ">
-        <span>　　　出勤：可　土日祝<%= enable?(@job.office_work_holidays)%>　<%= @job.office_working_hours %></span>
+        <span>　　　出勤：可<%= if @job.office_working_hours, do: "　#{@job.office_working_hours}" %>　土日祝<%= enable?(@job.office_work_holidays)%></span>
       </p>
       <p class="mb-2">
         <span>希望勤務地：<%= @job.office_pref %></span>
@@ -28,18 +32,12 @@ defmodule BrightWeb.SearchLive.ResultComponents do
       </p>
       <% end %>
 
-
-      <p class="mb-2">
+      <p class="mb-4">
         <%= if @job.remote_work do %>
-          <span>　リモート：可　土日祝<%= enable?(@job.remote_work_holidays)%>　<%= @job.remote_working_hours %></span>
+          <span>　リモート：可<%= if @job.remote_working_hours, do: "　#{@job.remote_working_hours}" %>　土日祝<%= enable?(@job.remote_work_holidays)%></span>
         <% else %>
           <span>　リモート：不可</span>
         <% end %>
-      </p>
-
-      <p class="mb-4">
-        <span>　希望年収：</span>
-        <span><%= if @job.desired_income, do: "#{@job.desired_income} 万円以上", else: "-" %></span>
       </p>
 
       <p class="mb-2">
