@@ -13,10 +13,10 @@ defmodule Bright.SkillUnits.SkillUnit do
   @foreign_key_type Ecto.ULID
 
   schema "skill_units" do
-    # TODO: デフォルト値を消す
+    # NOTE: 本来はスキルパネル更新バッチによってのみ生成されるデータのためデフォルト値や自動生成は不要だが、現状では管理機能で作成することができてしまうため便宜上残している
     field :locked_date, :date, default: ~D[2023-07-01]
-    # TODO: 自動生成を消す
     field :trace_id, Ecto.ULID, autogenerate: {Ecto.ULID, :generate, []}
+
     field :name, :string
 
     has_many :skill_categories, SkillCategory,
