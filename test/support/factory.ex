@@ -88,4 +88,8 @@ defmodule Bright.Factory do
 
   # Bright.RecruitmentStockUserFactory
   use Bright.RecruitmentStockUserFactory
+
+  use Bright.TalentedPersonFactory
+
+  use Bright.TeamFactory
 end
