@@ -19,7 +19,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
       <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity" />
       <div class="fixed inset-0 overflow-y-auto">
         <section
-          id="user_search" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[1000px]"
+          id="user_search" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[1024px]"
           phx-click-away={JS.hide(to: "#skill_search_modal")}
         >
           <div class="w-full mb-4">

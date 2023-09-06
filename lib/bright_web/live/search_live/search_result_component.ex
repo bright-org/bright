@@ -46,7 +46,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           </div>
         </div>
       </div>
-      <div class="border-l border-brightGray-200 border-dashed w-[500px] ml-2 px-2">
+      <div class="border-l border-brightGray-200 border-dashed w-[512px] ml-2 px-2">
         <div class="flex">
           <.job_area job={@user.user_job_profile} last_updated={@last_updated} />
           <.action_area
