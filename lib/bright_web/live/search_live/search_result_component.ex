@@ -72,7 +72,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
   end
 
   @impl true
-  def update(%{skill_params: skill_params, user: user} = assigns, socket) do
+  def update(%{skill_params: skill_params} = assigns, socket) do
     selected_skill_panel = List.first(skill_params)
 
     socket
