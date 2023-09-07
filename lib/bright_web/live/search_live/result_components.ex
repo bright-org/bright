@@ -13,23 +13,31 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
   def job_area(assigns) do
     ~H"""
-    <div class="w-64 text-start">
-      <p class="mb-2 ">
-        <span><%= if @job.office_work, do: "　　　出勤可", else: "　　出勤不可" %>：</span>
-        <span><%= @job.office_working_hours %></span>
-        <span>土日祝日<%= enable?(@job.office_work_holidays)%></span>
+    <div class="w-[280px] text-start">
+      <p class="mb-2">
+        <span>　希望年収：</span>
+        <span><%= if @job.desired_income, do: "#{@job.desired_income} 万円以上", else: "-" %></span>
       </p>
 
-      <p class="mb-2">
-        <span>
-        <%= if @job.remote_work, do: "　リモート可", else: "リモート不可" %>：</span>
-        <span><%= @job.remote_working_hours %></span>
-        <span>土日祝日<%= enable?(@job.remote_work_holidays)%></span>
+      <%= if @job.office_work do %>
+      <p class="mb-2 ">
+        <span>　　　出勤：可<%= if @job.office_working_hours, do: "　#{@job.office_working_hours}" %>　土日祝<%= enable?(@job.office_work_holidays)%></span>
       </p>
+      <p class="mb-2">
+        <span>希望勤務地：<%= @job.office_pref %></span>
+      </p>
+      <% else %>
+      <p class="mb-2 ">
+        <span>　　　出勤：不可</span>
+      </p>
+      <% end %>
 
       <p class="mb-4">
-        <span>　　希望年収：</span>
-        <span><%= if @job.desired_income, do: "#{@job.desired_income} 万円以上", else: "-" %></span>
+        <%= if @job.remote_work do %>
+          <span>　リモート：可<%= if @job.remote_working_hours, do: "　#{@job.remote_working_hours}" %>　土日祝<%= enable?(@job.remote_work_holidays)%></span>
+        <% else %>
+          <span>　リモート：不可</span>
+        <% end %>
       </p>
 
       <p class="mb-2">
@@ -51,32 +59,34 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
   def doughnut_area(assigns) do
     ~H"""
-    <div class="flex flex-wrap items-start ml-2 mt-6 w-52">
-      <div class="h-24 overflow-hidden w-20">
-        <.doughnut_graph
-          id={"doughnut-graph-single-sample-#{@index}"}
-          data={skill_score_percentages(@counter, @num_skills)}
-        />
-      </div>
-      <div class="h-24 overflow-hidden w-28">
-        <div class="h-20 ml-2 flex flex-wrap">
-          <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
-            <.profile_skill_class_level level={@skill_class_score.level} />
-          </p>
+    <div class="ml-2 mt-8 ">
+      <div class="flex w-[180px]">
+        <div class="h-24 overflow-hidden w-[80px]">
+          <.doughnut_graph
+            id={"doughnut-graph-single-sample-#{@index}"}
+            data={skill_score_percentages(@counter, @num_skills)}
+          />
+        </div>
+        <div class="h-24 overflow-hidden w-[100px]">
+          <div class="h-20 ml-2 flex flex-wrap">
+            <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
+              <.profile_skill_class_level level={@skill_class_score.level} />
+            </p>
 
-          <div class="flex flex-col w-24 pl-6">
-            <div class="min-w-[4em] flex items-center">
-              <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-              <%= calc_percentage(@counter.high, @num_skills) %>％
-            </div>
-            <div class="min-w-[4em] flex items-center mt-1">
-              <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-              <%= calc_percentage(@counter.middle, @num_skills) %>％
+            <div class="flex flex-col w-24 pl-6">
+              <div class="min-w-[4em] flex items-center">
+                <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
+                <%= calc_percentage(@counter.high, @num_skills) %>％
+              </div>
+              <div class="min-w-[4em] flex items-center mt-1">
+                <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
+                <%= calc_percentage(@counter.middle, @num_skills) %>％
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <ul class="text-xs w-40">
+      <ul class="text-xs w-40 text-start">
         <li>
           <p>
             <span class="inline-block w-28">エビデンスの登録率</span>

@@ -146,8 +146,8 @@
           error_class="absolute ml-4"
           type="select"
           options={Map.get(@skill_panels, sk[:career_field].value, [])}
-          disabled={is_nil(sk[:career_field].value)}
-          prompt="スキルパネル"
+          disabled={is_nil(sk[:career_field].value) || sk[:career_field].value == ""}
+          prompt="スキル"
         />
         <BrightCore.input
           field={sk[:class]}
@@ -165,11 +165,13 @@
           disabled={sk[:class].value in ["", nil]}
           prompt="レベル"
         />
+        <!--- αでは落とす
         <a
           class="bg-white border border-solid border-brightGray-900 cursor-pointer font-bold ml-6 px-2 py-1 rounded select-none text-center text-brightGray-900 w-44 hover:opacity-50"
         >
           スキル詳細も設定
         </a>
+        --->
       </div>
     </.inputs_for>
     </div>

@@ -1,7 +1,7 @@
 defmodule BrightWeb.SearchLive.UserSearchComponent do
   use BrightWeb, :live_component
 
-  alias Bright.{CareerFields, SkillPanels, UserSearches, RecruitmentStockUsers}
+  alias Bright.{CareerFields, SkillPanels, UserSearches}
   alias Bright.SearchForm.{UserSearch, SkillSearch}
   alias Bright.UserJobProfiles.UserJobProfile
   alias BrightWeb.SearchLive.SearchResultsComponent
@@ -48,6 +48,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> assign(:total_pages, 0)
     |> assign(:page, 1)
     |> assign(:sort, :last_updated_desc)
+    |> assign(:changeset, changeset)
     |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
@@ -78,12 +79,29 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> then(&{:noreply, &1})
   end
 
-  def handle_event("search", _params, %{assigns: %{changeset: %{changes: changes}}} = socket)
+  # 空post
+  def handle_event(
+        "search",
+        %{"user_search" => params},
+        %{assigns: %{changeset: %{changes: changes}}} = socket
+      )
       when map_size(changes) == 0 do
-    {:noreply, assign(socket, :search_results, [])}
+    changeset =
+      socket.assigns.user_search
+      |> UserSearch.changeset(params)
+      |> Map.put(:action, :validte)
+
+    socket
+    |> assign_form(changeset)
+    |> then(&{:noreply, &1})
   end
 
-  def handle_event("search", _params, %{assigns: %{changeset: %{valid?: false}}} = socket) do
+  # スキルの検索項目でスキルパネルまで入力していないものがある
+  def handle_event(
+        "search",
+        _params,
+        %{assigns: %{changeset: %{valid?: false}}} = socket
+      ) do
     {:noreply, socket}
   end
 
@@ -113,13 +131,10 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         |> assign(:page, result.page_number)
         |> assign(:total_entries, result.total_entries)
         |> assign(:skill_params, skills)
-        |> assign(:stock_user_ids, RecruitmentStockUsers.list_stock_user_ids(user.id))
         |> assign(:no_result, false)
         |> then(&{:noreply, &1})
     end
   end
-
-  def handle_event("search", _params, socket), do: {:noreply, socket}
 
   def handle_event(
         "previous_button_click",
