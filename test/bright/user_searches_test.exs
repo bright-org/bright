@@ -64,6 +64,93 @@ defmodule Bright.UserSearchesTest do
                )
     end
 
+    test "sort_by last_update_desc and last_update_asc", %{
+      user_1: %{id: id_1} = user_1,
+      user_2: %{id: id_2} = user_2,
+      skill_class_1: skill_class
+    } do
+      skill_unit = insert(:skill_unit, skill_classes: [skill_class])
+      skill_category = insert(:skill_category, skill_unit: skill_unit)
+      skill = insert(:skill, skill_category: skill_category)
+      insert(:user_job_profile, user: user_1)
+      insert(:user_job_profile, user: user_2)
+      insert(:skill_score, user: user_1, updated_at: ~N[2023-01-01 00:00:00], skill: skill)
+      insert(:skill_score, user: user_2, updated_at: ~N[2023-01-02 00:00:00], skill: skill)
+
+      query = {[{:job_searching, true}], %{}, []}
+
+      assert %{entries: [%{id: ^id_2}, %{id: ^id_1}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 sort: :last_updated_desc
+               )
+
+      assert %{entries: [%{id: ^id_1}, %{id: ^id_2}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 sort: :last_updated_asc
+               )
+    end
+
+    test "sort_by income_desc and income_asc", %{
+      user_1: %{id: id_1} = user_1,
+      user_2: %{id: id_2} = user_2
+    } do
+      insert(:user_job_profile, user: user_1, desired_income: 500)
+      insert(:user_job_profile, user: user_2, desired_income: 600)
+
+      query = {[{:job_searching, true}], %{}, []}
+
+      assert %{entries: [%{id: ^id_2}, %{id: ^id_1}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 sort: :income_desc
+               )
+
+      assert %{entries: [%{id: ^id_1}, %{id: ^id_2}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 sort: :income_asc
+               )
+    end
+
+    test "sort_by income_desc and income_asc null_last", %{
+      user_1: %{id: id_1} = user_1,
+      user_2: %{id: id_2} = user_2
+    } do
+      insert(:user_job_profile, user: user_1, desired_income: nil)
+      insert(:user_job_profile, user: user_2, desired_income: 600)
+
+      query = {[{:job_searching, true}], %{}, []}
+
+      assert %{entries: [%{id: ^id_2}, %{id: ^id_1}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 sort: :income_desc
+               )
+
+      assert %{entries: [%{id: ^id_2}, %{id: ^id_1}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 sort: :income_asc
+               )
+    end
+
+    test "sort_by score_desc and score_asc", %{
+      user_1: %{id: id_1} = user_1,
+      user_2: %{id: id_2} = user_2,
+      skill_panel_1: panel_1
+    } do
+      insert(:user_job_profile, user: user_1)
+      insert(:user_job_profile, user: user_2)
+
+      query = {[{:job_searching, true}], %{}, [%{skill_panel: panel_1.id, class: 1}]}
+
+      assert %{entries: [%{id: ^id_2}, %{id: ^id_1}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 sort: :score_desc
+               )
+
+      assert %{entries: [%{id: ^id_1}, %{id: ^id_2}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 sort: :score_asc
+               )
+    end
+
     test "pagination over 5 users", %{skill_class_1: skill_class} do
       insert_list(6, :user,
         user_job_profile: params_with_assocs(:user_job_profile),
