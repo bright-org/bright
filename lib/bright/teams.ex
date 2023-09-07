@@ -478,8 +478,9 @@ defmodule Bright.Teams do
       join: t in assoc(tmbu, :team),
       join: m in assoc(t, :member_users),
       join: u in assoc(m, :user),
-
-      where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at) and u.name == ^other_user_name,
+      where:
+        tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at) and
+          u.name == ^other_user_name,
       select: u.name,
       distinct: true
     )

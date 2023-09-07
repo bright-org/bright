@@ -338,8 +338,8 @@ defmodule Bright.TeamsTest do
       # 全員チーム招待に承認する
       TeamTestHelper.cofirm_invitation(team_member_user_attrs)
 
-      assert other_user1.name == Teams.joined_teams_by_user_id_and_user_name!(user.id, other_user1.name)
-
+      assert other_user1.name ==
+               Teams.joined_teams_by_user_id_and_user_name!(user.id, other_user1.name)
     end
 
     test "failure" do
@@ -357,8 +357,6 @@ defmodule Bright.TeamsTest do
       assert_raise Ecto.NoResultsError, fn ->
         Teams.joined_teams_by_user_id_and_user_name!(user.id, other_user2.name)
       end
-
     end
-
   end
 end
