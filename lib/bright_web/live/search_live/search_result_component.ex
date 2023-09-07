@@ -48,7 +48,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       </div>
       <div class="border-l border-brightGray-200 border-dashed w-[512px] ml-2 px-2">
         <div class="flex">
-          <.job_area job={@user.user_job_profile} last_updated={@last_updated} />
+          <.job_area job={@user.user_job_profile} last_updated={@user.last_updated} />
           <.action_area
             user={@user}
             skill_panel={@selected_skill_panel}
@@ -72,7 +72,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
   end
 
   @impl true
-  def update(%{skill_params: skill_params, user: user} = assigns, socket) do
+  def update(%{skill_params: skill_params} = assigns, socket) do
     selected_skill_panel = List.first(skill_params)
 
     socket
@@ -80,7 +80,6 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
     |> assign(:tabs, gen_tabs_tuple(skill_params))
     |> assign(:selected_tab, selected_skill_panel.skill_panel)
     |> assign(:selected_skill_panel, selected_skill_panel)
-    |> assign(:last_updated, SkillScores.get_latest_skill_score(user.id))
     |> assign_skill_panels(selected_skill_panel)
     |> then(&{:ok, &1})
   end

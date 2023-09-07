@@ -44,7 +44,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         <span>スキルの最終更新日：</span>
         <span><%=
           if @last_updated,
-          do: NaiveDateTime.to_date(@last_updated.updated_at),
+          do: NaiveDateTime.to_date(@last_updated),
           else: "-"
         %></span>
       </p>

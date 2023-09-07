@@ -40,28 +40,93 @@ defmodule Bright.UserSearches do
           %{skill_panel: "skill_panel_2_id"}
         ]
       },
-      ["exlucede_user_id"]
+      exclude_user_id: ["exlucede_user_id"],
+      page: 1,
+      sort: :last_update_desc
     )
     [%User{}]
 
   """
   def search_users_by_job_profile_and_skill_score(
         {job_params, job_range_params, skill_params},
-        exclude_user_ids \\ [],
-        page \\ 1
+        options \\ []
       ) do
-    user_ids =
+    default = [exclude_user_ids: [], page: 1, sort: :last_updated_desc]
+
+    %{exclude_user_ids: exclude_user_ids, page: page, sort: sort} =
+      Keyword.merge(default, options)
+      |> Enum.into(%{})
+
+    # user_job_profileとskill_paramsのskill_panel_idで絞り込んだ skill_scoreの一覧
+    skill_scores =
       skill_score_query(exclude_user_ids, job_params, job_range_params)
       |> skill_query(skill_params)
       |> Repo.all()
-      |> filter_skill_class_and_level(skill_params)
+
+    # skill_scoreをskill_paramsのskill_panel_id,class,levelでフィルタリングして
+    # skill_paramsのすべての条件を満たすユーザーのIDのみを抽出
+    user_ids = filter_skill_class_and_level(skill_scores, skill_params)
+
+    # ソート用の1つ目のskill_paramsのskill_classのidを取得
+    skill_class_id =
+      get_first_skill_query_params_skill_class_id(skill_scores, List.first(skill_params))
 
     from(
       u in User,
       where: u.id in ^user_ids,
-      preload: [:skill_class_scores, :user_job_profile]
+      left_join: s_score in assoc(u, :skill_scores),
+      join: job in assoc(u, :user_job_profile),
+      left_join: sc_score in assoc(u, :skill_class_scores),
+      on: sc_score.skill_class_id in ^skill_class_id,
+      group_by: [u.id, job.id],
+      preload: [:skill_class_scores, :user_job_profile],
+      # 匿名リンク生成のためUserを保ったまま、ソート用カラムを追加している
+      select: %{
+        u
+        | last_updated: fragment("MAX(?) AS last_updated", s_score.updated_at),
+          desired_income: fragment("? AS desired_income", job.desired_income),
+          skill_score: fragment("MAX(?) AS skill_score", sc_score.percentage)
+      }
     )
+    |> set_order(sort)
     |> Repo.paginate(page: page, page_size: 5)
+  end
+
+  # joinしたデータで動的なorderを設定する場合は fragment asでschemaのvirtual fieldのカラム名を指定する
+  defp set_order(query, :last_updated_desc),
+    do: order_by(query, [{:desc, fragment("last_updated")}])
+
+  defp set_order(query, :last_updated_asc),
+    do: order_by(query, [{:asc, fragment("last_updated")}])
+
+  defp set_order(query, :income_desc),
+    do:
+      order_by(query, [
+        {:desc_nulls_last, fragment("desired_income")},
+        {:desc, fragment("last_updated")}
+      ])
+
+  defp set_order(query, :income_asc),
+    do:
+      order_by(query, [
+        {:asc_nulls_last, fragment("desired_income")},
+        {:desc, fragment("last_updated")}
+      ])
+
+  defp set_order(query, :score_desc),
+    do: order_by(query, [{:desc, fragment("skill_score")}, {:desc, fragment("last_updated")}])
+
+  defp set_order(query, :score_asc),
+    do: order_by(query, [{:asc, fragment("skill_score")}, {:desc, fragment("last_updated")}])
+
+  defp get_first_skill_query_params_skill_class_id(_scores, nil), do: []
+
+  defp get_first_skill_query_params_skill_class_id(skill_scores, skill_param) do
+    Enum.filter(skill_scores, fn score ->
+      score.skill_panel_id == Map.get(skill_param, :skill_panel) &&
+        score.skill_class == Map.get(skill_param, :class, 1)
+    end)
+    |> Enum.map(& &1.skill_class_id)
   end
 
   # job_profile_queryで絞り込んだユーザーのスキルスコアを取得する
@@ -74,7 +139,8 @@ defmodule Bright.UserSearches do
         user_id: score.user_id,
         level: score.level,
         skill_panel_id: sc.skill_panel_id,
-        skill_class: sc.class
+        skill_class: sc.class,
+        skill_class_id: sc.id
       }
     )
   end
@@ -117,6 +183,7 @@ defmodule Bright.UserSearches do
   defp filter_skill_class_and_level(skill_scores, []), do: Enum.map(skill_scores, & &1.user_id)
 
   defp filter_skill_class_and_level(skill_scores, skills) do
+    # 検索条件skills毎にフィルタリングしたユーザーIDのユニークなリストを作成
     Enum.map(skills, fn params ->
       filter(skill_scores, :skill_panel_id, Map.get(params, :skill_panel))
       |> filter(:skill_class, class_nil_check(Map.get(params, :class)))
@@ -124,13 +191,14 @@ defmodule Bright.UserSearches do
       |> Enum.map(& &1.user_id)
       |> Enum.uniq()
     end)
+    # 結合して同一のユーザーIDでグルーピングし、検索条件の数と一致するユーザーIDのみフィルタリング
     |> List.flatten()
     |> Enum.frequencies()
     |> Enum.filter(fn {_key, val} -> val == Enum.count(skills) end)
     |> Enum.map(fn {key, _val} -> key end)
   end
 
-  defp class_nil_check(class) when is_nil(class), do: nil
+  defp class_nil_check(class) when is_nil(class), do: 1
   defp class_nil_check(class), do: class
   defp level_to_atom(level) when level in ["", nil], do: nil
   defp level_to_atom(level), do: String.to_atom(level)

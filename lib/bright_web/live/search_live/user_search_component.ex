@@ -11,6 +11,14 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
   @class [クラス1: 1, クラス2: 2, クラス3: 3]
   @level [見習い: "beginner", 平均: "normal", ベテラン: "skilled"]
+  @sort_options [
+    スキルパネルの最終更新日降順: :last_updated_desc,
+    スキルパネルの最終更新日昇順: :last_updated_asc,
+    希望年収降順: :income_desc,
+    希望年収昇順: :income_asc,
+    スキルスコア降順: :score_desc,
+    スキルスコア昇順: :score_asc
+  ]
 
   @impl true
   def mount(socket) do
@@ -32,12 +40,14 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> assign(:skill_panels, skill_panels)
     |> assign(:class, @class)
     |> assign(:level, @level)
+    |> assign(:sort_options, @sort_options)
     |> assign(:search_results, [])
     |> assign(:skill_params, [])
     |> assign(:stock_user_ids, [])
     |> assign(:no_result, false)
     |> assign(:total_pages, 0)
     |> assign(:page, 1)
+    |> assign(:sort, :last_updated_desc)
     |> assign(:changeset, changeset)
     |> assign_form(changeset)
     |> then(&{:ok, &1})
@@ -98,13 +108,14 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   def handle_event(
         "search",
         _params,
-        %{assigns: %{changeset: %{changes: changes}, current_user: user}} = socket
+        %{assigns: %{changeset: %{changes: changes}, current_user: user, sort: sort}} = socket
       ) do
     {skills, search_params} = convert_changes_to_search_params(changes)
 
     case UserSearches.search_users_by_job_profile_and_skill_score(
            search_params,
-           [user.id]
+           exclude_user_ids: [user.id],
+           sort: sort
          ) do
       %{entries: []} ->
         socket
@@ -113,11 +124,12 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         |> assign(:no_result, true)
         |> then(&{:noreply, &1})
 
-      %{entries: users, total_pages: total_pages, page_number: page} ->
+      result ->
         socket
-        |> assign(:search_results, users)
-        |> assign(:total_pages, total_pages)
-        |> assign(:page, page)
+        |> assign(:search_results, result.entries)
+        |> assign(:total_pages, result.total_pages)
+        |> assign(:page, result.page_number)
+        |> assign(:total_entries, result.total_entries)
         |> assign(:skill_params, skills)
         |> assign(:no_result, false)
         |> then(&{:noreply, &1})
@@ -127,14 +139,18 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   def handle_event(
         "previous_button_click",
         _params,
-        %{assigns: %{page: page, changeset: changeset, current_user: user}} = socket
+        %{assigns: %{page: page, sort: sort, changeset: changeset, current_user: user}} = socket
       ) do
     page = page - 1
     page = if page < 1, do: 1, else: page
     {_, search_params} = convert_changes_to_search_params(changeset.changes)
 
     %{entries: users} =
-      UserSearches.search_users_by_job_profile_and_skill_score(search_params, [user.id], page)
+      UserSearches.search_users_by_job_profile_and_skill_score(search_params,
+        exclude_user_ids: [user.id],
+        page: page,
+        sort: sort
+      )
 
     socket
     |> assign(:search_results, users)
@@ -148,6 +164,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
         %{
           assigns: %{
             page: page,
+            sort: sort,
             total_pages: total_pages,
             changeset: changeset,
             current_user: user
@@ -160,11 +177,35 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     {_, search_params} = convert_changes_to_search_params(changeset.changes)
 
     %{entries: users} =
-      UserSearches.search_users_by_job_profile_and_skill_score(search_params, [user.id], page)
+      UserSearches.search_users_by_job_profile_and_skill_score(search_params,
+        exclude_user_ids: [user.id],
+        page: page,
+        sort: sort
+      )
 
     socket
     |> assign(:search_results, users)
     |> assign(:page, page)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "change_sort",
+        %{"sort" => sort},
+        %{assigns: %{changeset: changeset, current_user: user}} = socket
+      ) do
+    {_, search_params} = convert_changes_to_search_params(changeset.changes)
+
+    %{entries: users} =
+      UserSearches.search_users_by_job_profile_and_skill_score(search_params,
+        exclude_user_ids: [user.id],
+        sort: String.to_atom(sort)
+      )
+
+    socket
+    |> assign(:search_results, users)
+    |> assign(:page, 1)
+    |> assign(:sort, String.to_atom(sort))
     |> then(&{:noreply, &1})
   end
 

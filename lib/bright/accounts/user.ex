@@ -20,6 +20,10 @@ defmodule Bright.Accounts.User do
     field :hashed_password, :string, redact: true
     field :password_registered, :boolean
     field :confirmed_at, :naive_datetime
+    # 検索用 ソートカラム
+    field :last_updated, :naive_datetime, virtual: true
+    field :desired_income, :integer, virtual: true
+    field :skill_score, :float, virtual: true
 
     has_many :users_tokens, Bright.Accounts.UserToken
     has_one :user_2fa_code, Bright.Accounts.User2faCodes
