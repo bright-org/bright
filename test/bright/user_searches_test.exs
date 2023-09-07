@@ -52,6 +52,18 @@ defmodule Bright.UserSearchesTest do
                UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
+    test "reject includes exlude_user_ids user", %{user_1: %{id: id} = user_1, user_2: user_2} do
+      insert(:user_job_profile, user: user_1)
+      insert(:user_job_profile, user: user_2)
+
+      query = {[{:job_searching, true}], %{}, []}
+
+      assert %{entries: [%{id: ^id}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 exclude_user_ids: [user_2.id]
+               )
+    end
+
     test "pagination over 5 users", %{skill_class_1: skill_class} do
       insert_list(6, :user,
         user_job_profile: params_with_assocs(:user_job_profile),
@@ -73,7 +85,7 @@ defmodule Bright.UserSearchesTest do
       query = {[{:job_searching, true}], %{}, []}
 
       assert %{total_pages: 2, page_number: 2, total_entries: 6, entries: entries} =
-               UserSearches.search_users_by_job_profile_and_skill_score(query, [], 2)
+               UserSearches.search_users_by_job_profile_and_skill_score(query, page: 2)
 
       assert length(entries) == 1
     end
