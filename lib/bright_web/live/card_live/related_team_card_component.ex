@@ -68,6 +68,12 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
             <li
             class="flex items-center text-base p-1 rounded">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">所属しているチームはありません</div>
+              <a
+                 href="/teams/new"
+                 class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+               >
+                 チームを作る
+               </a>
             </li>
           </ul>
         <% end %>
@@ -191,7 +197,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
       socket
       |> assign(:display_team, display_team)
       |> assign(:display_user, socket.assigns.display_user)
-      |> push_navigate(to: "/teams/#{display_team.id}")
+      |> redirect(to: "/teams/#{display_team.id}")
 
     {:noreply, socket}
   end
