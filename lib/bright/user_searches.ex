@@ -8,7 +8,7 @@ defmodule Bright.UserSearches do
   alias Bright.Repo
   alias Bright.Accounts.User
   alias Bright.SkillPanels.SkillClass
-  alias Bright.SkillScores.{SkillClassScore, SkillScore}
+  alias Bright.SkillScores.SkillClassScore
   alias Bright.UserJobProfiles.UserJobProfile
 
   @doc """
@@ -49,7 +49,7 @@ defmodule Bright.UserSearches do
   """
   def search_users_by_job_profile_and_skill_score(
         {job_params, job_range_params, skill_params},
-        options
+        options \\ []
       ) do
     default = [exclude_user_ids: [], page: 1, sort: :last_updated_desc]
 
@@ -69,22 +69,15 @@ defmodule Bright.UserSearches do
 
     # ソート用の1つ目のskill_paramsのskill_classのidを取得
     skill_class_id =
-      skill_params
-      |> List.first()
-      |> then(
-        &Enum.find(skill_scores, fn score ->
-          score.skill_panel_id == &1.skill_panel && score.skill_class == Map.get(&1, :class, 1)
-        end)
-      )
-      |> Map.get(:skill_class_id)
+      get_first_skill_query_params_skill_class_id(skill_scores, List.first(skill_params))
 
     from(
       u in User,
       where: u.id in ^user_ids,
-      join: s_score in assoc(u, :skill_scores),
+      left_join: s_score in assoc(u, :skill_scores),
       join: job in assoc(u, :user_job_profile),
-      join: sc_score in assoc(u, :skill_class_scores),
-      on: sc_score.skill_class_id == ^skill_class_id,
+      left_join: sc_score in assoc(u, :skill_class_scores),
+      on: sc_score.skill_class_id in ^skill_class_id,
       group_by: [u.id, job.id],
       preload: [:skill_class_scores, :user_job_profile],
       # 匿名リンク生成のためUserを保ったまま、ソート用カラムを追加している
@@ -114,6 +107,16 @@ defmodule Bright.UserSearches do
 
   defp set_order(query, :score_desc), do: order_by(query, [{:desc, fragment("skill_score")}])
   defp set_order(query, :score_asc), do: order_by(query, [{:asc, fragment("skill_score")}])
+
+  defp get_first_skill_query_params_skill_class_id(_scores, nil), do: []
+
+  defp get_first_skill_query_params_skill_class_id(skill_scores, skill_param) do
+    Enum.filter(skill_scores, fn score ->
+      score.skill_panel_id == Map.get(skill_param, :skill_panel) &&
+        score.skill_class == Map.get(skill_param, :class, 1)
+    end)
+    |> Enum.map(& &1.skill_class_id)
+  end
 
   # job_profile_queryで絞り込んだユーザーのスキルスコアを取得する
   defp skill_score_query(user_id, job, job_range) do
