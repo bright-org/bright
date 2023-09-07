@@ -61,19 +61,20 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("submit", _params, socket) do
-    target_skill_scores =
-      socket.assigns.skill_score_dict
-      |> Map.values()
-      |> Enum.filter(& &1.changed)
+    %{
+      current_user: current_user,
+      skill_class_score: skill_class_score,
+      skill_score_dict: skill_score_dict
+    } = socket.assigns
 
-    {:ok, _} = SkillScores.update_skill_scores(socket.assigns.current_user, target_skill_scores)
+    target_skill_scores = skill_score_dict |> Map.values() |> Enum.filter(& &1.changed)
+    {:ok, _} = SkillScores.insert_or_update_skill_scores(target_skill_scores, current_user)
 
-    skill_class_score = SkillScores.get_skill_class_score!(socket.assigns.skill_class_score.id)
-
-    # スキルクラスのレベル変更時に保有スキルカードの表示変更を通知
-    prev_level = socket.assigns.skill_class_score.level
+    prev_level = skill_class_score.level
+    skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
     new_level = skill_class_score.level
 
+    # スキルクラスのレベル変更時に保有スキルカードの表示変更を通知
     if prev_level != new_level do
       send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
     end
@@ -211,18 +212,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp update_reference_read(socket) do
-    skill = socket.assigns.skill
-    skill_score = Map.get(socket.assigns.skill_score_dict, skill.id)
+    %{current_user: user, skill: skill} = socket.assigns
 
-    if skill_score.reference_read do
-      socket
-    else
-      {:ok, skill_score} =
-        SkillScores.update_skill_score(skill_score, %{"reference_read" => true})
-
-      socket
-      |> update(:skill_score_dict, &Map.put(&1, skill.id, skill_score))
-    end
+    {:ok, skill_score} = SkillScores.make_skill_score_reference_read(user, skill)
+    update(socket, :skill_score_dict, &Map.put(&1, skill.id, skill_score))
   end
 
   defp assign_skill_exam(socket) do
@@ -233,16 +226,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp update_exam_progress_wip(socket) do
-    skill = socket.assigns.skill
-    skill_score = Map.get(socket.assigns.skill_score_dict, skill.id)
+    %{current_user: user, skill: skill, skill_score_dict: skill_score_dict} = socket.assigns
+    skill_score = Map.get(skill_score_dict, skill.id)
 
-    if skill_score.exam_progress in [:wip, :done] do
+    (skill_score && skill_score.exam_progress in [:wip, :done])
+    |> if do
       socket
     else
-      {:ok, skill_score} = SkillScores.update_skill_score(skill_score, %{"exam_progress" => :wip})
-
-      socket
-      |> update(:skill_score_dict, &Map.put(&1, skill.id, skill_score))
+      {:ok, skill_score} = SkillScores.make_skill_score_exam_progress(user, skill, :wip)
+      update(socket, :skill_score_dict, &Map.put(&1, skill.id, skill_score))
     end
   end
 

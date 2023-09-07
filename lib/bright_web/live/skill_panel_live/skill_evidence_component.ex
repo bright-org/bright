@@ -69,7 +69,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     |> case do
       {:ok, skill_evidence_post} ->
         if post_by_myself(socket.assigns.user, socket.assigns.skill_evidence) do
-          SkillScores.update_skill_score_evidence_filled(
+          SkillScores.make_skill_score_evidence_filled(
             socket.assigns.user,
             socket.assigns.skill
           )

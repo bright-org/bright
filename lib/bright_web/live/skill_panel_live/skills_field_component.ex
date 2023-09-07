@@ -289,7 +289,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   defp assign_compared_user_dict(socket, user) do
     # 比較対象になっているユーザーのデータを表示用に整理・集計してアサイン
     skill_ids = Enum.map(socket.assigns.skills, & &1.id)
-    skill_scores = list_user_skill_scores_from_skill_ids(user, skill_ids, socket.assigns.tense)
+    skill_scores = list_user_skill_scores_from_skill_ids(skill_ids, user.id, socket.assigns.tense)
 
     {skill_score_dict, high_skills_count, middle_skills_count} =
       skill_scores
@@ -418,19 +418,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     skill_category.historical_skills
   end
 
-  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :now) do
-    SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
+  defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :now) do
+    SkillScores.list_user_skill_scores_from_skill_ids(user_id, skill_ids)
   end
 
-  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :future) do
+  defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :future) do
     # TODO: スキルアップ対応後に実装。比較ユーザー分のスキルアップを加味する（大変そう）
-    SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
+    SkillScores.list_user_skill_scores_from_skill_ids(skill_ids, user_id)
   end
 
-  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :past) do
+  defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :past) do
     HistoricalSkillScores.list_user_historical_skill_scores_from_historical_skill_ids(
-      user,
-      skill_ids
+      skill_ids,
+      user_id
     )
   end
 

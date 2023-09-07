@@ -53,83 +53,37 @@ defmodule Bright.SkillScores do
   @doc """
   Creates a skill_class_score with skill_scores
   """
-  def create_skill_class_score(user, skill_class) do
-    skill_units =
-      Ecto.assoc(skill_class, :skill_units)
-      |> SkillUnits.list_skill_units()
-      |> Repo.preload(skill_unit_scores: SkillUnitScore.user_query(user))
-
-    skills =
-      SkillUnits.list_skills_on_skill_class(skill_class)
-      |> Repo.preload(skill_scores: SkillScore.user_query(user))
-
+  def create_skill_class_score(skill_class, user_id) do
     Ecto.Multi.new()
-    # スキルクラススコアの新規作成処理
     |> Ecto.Multi.insert(:skill_class_score_init, %SkillClassScore{
-      user_id: user.id,
+      user_id: user_id,
       skill_class_id: skill_class.id
     })
-    # スキルクラスに含まれるスキルユニットの新規作成処理
-    # ただし、別のスキルクラスで作成済みの可能性がある
-    |> Ecto.Multi.insert_all(:skill_unit_scores, SkillUnitScore, fn _ ->
-      skill_units
-      |> Enum.filter(&(&1.skill_unit_scores == []))
-      |> Enum.map(&build_skill_unit_score_attrs(user, &1))
-    end)
-    # スキルクラスに含まれるスキルスコアの新規作成処理
-    # ただし、別のスキルクラスで作成済みの可能性がある
-    |> Ecto.Multi.insert_all(:skill_scores, SkillScore, fn _ ->
-      skills
-      |> Enum.filter(&(&1.skill_scores == []))
-      |> Enum.map(&build_skill_score_attrs(user, &1))
-    end)
-    # スキルクラススコアの更新処理
-    # 既にスキルスコアが入っているケースのための更新
+    # 初期更新
+    # 共有スキルユニットが含まれるケースでは作成時にスコアが存在する
     |> Ecto.Multi.run(:skill_class_score, fn _repo, data ->
       skill_class_score = Map.get(data, :skill_class_score_init)
-      update_skill_class_score_stats(user, skill_class, skill_class_score)
+      update_skill_class_score_stats(skill_class_score, skill_class)
     end)
     |> Repo.transaction()
-  end
-
-  defp build_skill_unit_score_attrs(user, skill_unit) do
-    %{
-      id: Ecto.ULID.generate(),
-      user_id: user.id,
-      skill_unit_id: skill_unit.id,
-      percentage: 0.0
-    }
-    |> Map.merge(current_time_stamp())
-  end
-
-  defp build_skill_score_attrs(user, skill) do
-    %{
-      id: Ecto.ULID.generate(),
-      user_id: user.id,
-      skill_id: skill.id,
-      score: :low
-    }
-    |> Map.merge(current_time_stamp())
-  end
-
-  defp current_time_stamp do
-    current_time = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-
-    %{
-      inserted_at: current_time,
-      updated_at: current_time
-    }
   end
 
   @doc """
   Updates a skill_class_score aggregation columns.
   """
-  def update_skill_class_score_stats(user, skill_class, skill_class_score) do
-    skill_scores = list_skill_scores_from_skill_class_score(skill_class_score)
+  def update_skill_class_score_stats(skill_class_score, skill_class) do
+    prev_percentage = skill_class_score.percentage
+    skills = SkillUnits.list_skills_on_skill_class(skill_class)
 
-    size = Enum.count(skill_scores)
-    num_high_scores = Enum.count(skill_scores, &(&1.score == :high))
-    percentage = calc_percentage(num_high_scores, size)
+    skill_scores =
+      list_user_skill_scores_from_skill_ids(
+        Enum.map(skills, & &1.id),
+        skill_class_score.user_id
+      )
+
+    size = Enum.count(skills)
+    high_scores_count = Enum.count(skill_scores, &(&1.score == :high))
+    percentage = calc_percentage(high_scores_count, size)
     level = get_level(percentage)
 
     changeset =
@@ -138,18 +92,35 @@ defmodule Bright.SkillScores do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:update_skill_class_score, changeset)
     |> Ecto.Multi.run(:level_up_skill_class_score, fn _repo, _ ->
-      if skill_up_to_next_skill_class?(skill_class_score.percentage, percentage) do
-        result = create_next_skill_class_score(user, skill_class)
-        {:ok, result}
-      else
-        # 次スキルクラスを開放しないケース
-        {:ok, nil}
-      end
+      maybe_skill_up_to_next_skill_class(
+        prev_percentage,
+        percentage,
+        skill_class_score.user_id,
+        skill_class
+      )
     end)
     |> Repo.transaction()
   end
 
-  defp create_next_skill_class_score(user, skill_class) do
+  @doc """
+  Updates a skill_class_scores aggregation columns.
+  """
+  def update_skill_class_scores_stats(skill_classes, user) do
+    skill_classes
+    |> Repo.preload(skill_class_scores: SkillClassScore.user_query(user))
+    |> Enum.filter(&(&1.skill_class_scores != []))
+    |> Enum.reduce(Ecto.Multi.new(), fn skill_class, multi ->
+      skill_class_score = List.first(skill_class.skill_class_scores)
+
+      multi
+      |> Ecto.Multi.run(:"skill_class_score_#{skill_class_score.id}", fn _repo, _ ->
+        update_skill_class_score_stats(skill_class_score, skill_class)
+      end)
+    end)
+    |> Repo.transaction()
+  end
+
+  defp create_next_skill_class_score(skill_class, user_id) do
     # 上位クラスのスキルクラススコアを作成
     next_skill_class =
       SkillPanels.get_skill_class_by(
@@ -160,33 +131,15 @@ defmodule Bright.SkillScores do
     next_skill_class_score =
       next_skill_class &&
         get_skill_class_score_by(
-          user_id: user.id,
+          user_id: user_id,
           skill_class_id: next_skill_class.id
         )
 
     # 未作成時のみ作成
     if next_skill_class && is_nil(next_skill_class_score) do
-      {:ok, result} = create_skill_class_score(user, next_skill_class)
+      {:ok, result} = create_skill_class_score(next_skill_class, user_id)
       result
     end
-  end
-
-  @doc """
-  Updates a skill_class_scores aggregation columns.
-  """
-  def update_skill_class_scores_stats(user, skill_classes) do
-    skill_classes
-    |> Repo.preload(skill_class_scores: SkillClassScore.user_query(user))
-    |> Enum.filter(&(&1.skill_class_scores != []))
-    |> Enum.reduce(Ecto.Multi.new(), fn skill_class, multi ->
-      skill_class_score = List.first(skill_class.skill_class_scores)
-
-      multi
-      |> Ecto.Multi.run(:"skill_class_score_#{skill_class_score.id}", fn _repo, _ ->
-        update_skill_class_score_stats(user, skill_class, skill_class_score)
-      end)
-    end)
-    |> Repo.transaction()
   end
 
   @doc """
@@ -231,8 +184,8 @@ defmodule Bright.SkillScores do
   @doc """
   Returns the list of skill_scores from user and skill_ids
   """
-  def list_user_skill_scores_from_skill_ids(user, skill_ids) do
-    SkillScore.user_id_query(user.id)
+  def list_user_skill_scores_from_skill_ids(skill_ids, user_id) do
+    SkillScore.user_id_query(user_id)
     |> SkillScore.skill_ids_query(skill_ids)
     |> list_skill_scores()
   end
@@ -267,6 +220,24 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
+  Creates a skill_score.
+
+  ## Examples
+
+      iex> create_skill_score(%{field: value})
+      {:ok, %SkillScore{}}
+
+      iex> create_skill_score(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_skill_score!(attrs \\ %{}) do
+    %SkillScore{}
+    |> SkillScore.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  @doc """
   Updates a skill_score.
 
   ## Examples
@@ -285,22 +256,38 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
-  Update a skill_score's evidence_filled
+  Makes a skill_score's evidence_filled
   """
-  def update_skill_score_evidence_filled(user, skill) do
-    skill_score = Repo.get_by!(SkillScore, user_id: user.id, skill_id: skill.id)
-
-    if skill_score.evidence_filled do
-      {:ok, skill_score}
-    else
-      update_skill_score(skill_score, %{evidence_filled: true})
-    end
+  def make_skill_score_evidence_filled(user, skill) do
+    get_or_insert_skill_score!(user, skill)
+    |> update_skill_score(%{evidence_filled: true})
   end
 
   @doc """
-  Updates skill_scores.
+  Makes a skill_score's reference_read
   """
-  def update_skill_scores(user, skill_scores) do
+  def make_skill_score_reference_read(user, skill) do
+    get_or_insert_skill_score!(user, skill)
+    |> update_skill_score(%{reference_read: true})
+  end
+
+  @doc """
+  Makes a skill_score's exam_progress value
+  """
+  def make_skill_score_exam_progress(user, skill, progress) do
+    get_or_insert_skill_score!(user, skill)
+    |> update_skill_score(%{exam_progress: progress})
+  end
+
+  defp get_or_insert_skill_score!(user, skill) do
+    Repo.get_by(SkillScore, user_id: user.id, skill_id: skill.id) ||
+      Repo.insert!(%SkillScore{user_id: user.id, skill_id: skill.id})
+  end
+
+  @doc """
+  Inserts or updates skill_scores.
+  """
+  def insert_or_update_skill_scores(skill_scores, user) do
     # 更新対象のスキルが属するスキルユニット/スキルクラスは集計更新対象
     skill_units =
       skill_scores
@@ -316,20 +303,26 @@ defmodule Bright.SkillScores do
 
     skill_scores
     |> Enum.reduce(Ecto.Multi.new(), fn skill_score, multi ->
-      # 値はすでに保存済みなのでforce_changeでchangesetを構成
-      changeset =
-        skill_score
-        |> Ecto.Changeset.change()
-        |> Ecto.Changeset.force_change(:score, skill_score.score)
+      skill_score.id
+      |> if do
+        # 更新：値はすでに保存済みなのでforce_changeでchangesetを構成
+        changeset =
+          skill_score
+          |> Ecto.Changeset.change()
+          |> Ecto.Changeset.force_change(:score, skill_score.score)
 
-      multi
-      |> Ecto.Multi.update(:"skill_score_#{skill_score.id}", changeset)
+        Ecto.Multi.update(multi, :"skill_score_#{skill_score.id}", changeset)
+      else
+        # 新規
+        skill_score = %{skill_score | user_id: user.id}
+        Ecto.Multi.insert(multi, :"skill_score_new_#{skill_score.skill_id}", skill_score)
+      end
     end)
     |> Ecto.Multi.run(:skill_unit_scores, fn _repo, _ ->
-      update_skill_unit_scores_stats(user, skill_units)
+      insert_or_update_skill_unit_scores_stats(skill_units, user)
     end)
     |> Ecto.Multi.run(:skill_class_scores, fn _repo, _ ->
-      update_skill_class_scores_stats(user, skill_classes)
+      update_skill_class_scores_stats(skill_classes, user)
     end)
     |> Repo.transaction()
   end
@@ -351,9 +344,9 @@ defmodule Bright.SkillScores do
   def get_skill_unit_score!(id), do: Repo.get!(SkillUnitScore, id)
 
   @doc """
-  Updates a skill_unit_score aggregation columns.
+  Inserts or updates a skill_unit_score aggregation columns.
   """
-  def update_skill_unit_scores_stats(user, skill_units) do
+  def insert_or_update_skill_unit_scores_stats(skill_units, user) do
     skill_units
     |> Repo.preload(
       skill_unit_scores: SkillUnitScore.user_query(user),
@@ -361,20 +354,25 @@ defmodule Bright.SkillScores do
     )
     |> Enum.reduce(Ecto.Multi.new(), fn skill_unit, multi ->
       skill_unit_score = List.first(skill_unit.skill_unit_scores)
+      skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
+      skill_scores = skills |> Enum.map(&List.first(&1.skill_scores)) |> Enum.filter(& &1)
+      size = Enum.count(skills)
+      high_scores_count = Enum.count(skill_scores, &(&1.score == :high))
+      percentage = calc_percentage(high_scores_count, size)
 
-      skill_scores =
-        skill_unit.skill_categories
-        |> Enum.flat_map(& &1.skills)
-        |> Enum.map(&List.first(&1.skill_scores))
-        |> Enum.filter(& &1)
+      skill_unit_score
+      |> if do
+        # 更新
+        changeset = SkillUnitScore.changeset(skill_unit_score, %{percentage: percentage})
+        Ecto.Multi.update(multi, :"skill_unit_score_#{skill_unit_score.id}", changeset)
+      else
+        # 新規
+        changeset =
+          %SkillUnitScore{skill_unit_id: skill_unit.id, user_id: user.id}
+          |> SkillUnitScore.changeset(%{percentage: percentage})
 
-      size = Enum.count(skill_scores)
-      num_high_scores = Enum.count(skill_scores, &(&1.score == :high))
-      percentage = calc_percentage(num_high_scores, size)
-      changeset = SkillUnitScore.changeset(skill_unit_score, %{percentage: percentage})
-
-      multi
-      |> Ecto.Multi.update(:"skill_unit_score_#{skill_unit_score.id}", changeset)
+        Ecto.Multi.insert(multi, :"skill_unit_score_new_#{skill_unit.id}", changeset)
+      end
     end)
     |> Repo.transaction()
   end
@@ -400,22 +398,29 @@ defmodule Bright.SkillScores do
      ]
   """
   def get_skill_gem(user_id, skill_panel_id, class) do
-    from(skill_unit_score in SkillUnitScore,
-      join: skill_unit in assoc(skill_unit_score, :skill_unit),
+    from(skill_unit in SkillUnits.SkillUnit,
       join: skill_classes in assoc(skill_unit, :skill_classes),
       join: skill_class_units in assoc(skill_classes, :skill_class_units),
       on: skill_classes.class == ^class,
       on: skill_classes.skill_panel_id == ^skill_panel_id,
       on: skill_class_units.skill_unit_id == skill_unit.id,
-      where: skill_unit_score.user_id == ^user_id,
       order_by: skill_class_units.position,
-      select: %{
-        name: skill_unit.name,
-        percentage: skill_unit_score.percentage,
-        position: skill_class_units.position
-      }
+      preload: [
+        skill_class_units: skill_class_units,
+        skill_unit_scores: ^SkillUnitScore.user_id_query(user_id)
+      ]
     )
     |> Repo.all()
+    |> Enum.map(fn skill_unit ->
+      skill_unit_score = List.first(skill_unit.skill_unit_scores)
+      skill_class_unit = List.first(skill_unit.skill_class_units)
+
+      %{
+        name: skill_unit.name,
+        percentage: Map.get(skill_unit_score || %{}, :percentage, 0.0),
+        position: Map.get(skill_class_unit, :position)
+      }
+    end)
   end
 
   @doc """
@@ -542,12 +547,10 @@ defmodule Bright.SkillScores do
     |> Repo.transaction()
   end
 
-  # TODO: 本PRでcredoにひっかかったためいったん追加。別PRで共通部分に変更があるので再整理
   defp maybe_skill_up_to_next_skill_class(prev_percentage, percentage, user_id, skill_class) do
-    if skill_up_to_next_skill_class?(prev_percentage, percentage) do
-      # TODO: 別PRでuser_idのまま処理をするように対応済み
-      user = Repo.get!(Bright.Accounts.User, user_id)
-      result = create_next_skill_class_score(user, skill_class)
+    skill_up_to_next_skill_class?(prev_percentage, percentage)
+    |> if do
+      result = create_next_skill_class_score(skill_class, user_id)
       {:ok, result}
     else
       # 次スキルクラスを開放しないケース
