@@ -28,7 +28,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             クラス<%= @selected_skill_panel.class %>
           </p>
 
-          <div class="flex justify-between">
+          <div class="flex">
             <div class="mt-4 w-64">
                 <.skill_gem
                   data={@skill_gem_data}
@@ -46,7 +46,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           </div>
         </div>
       </div>
-      <div class="border-l border-brightGray-200 border-dashed w-[500px] ml-2 px-2">
+      <div class="border-l border-brightGray-200 border-dashed w-[512px] ml-2 px-2">
         <div class="flex">
           <.job_area job={@user.user_job_profile} last_updated={@last_updated} />
           <.action_area
