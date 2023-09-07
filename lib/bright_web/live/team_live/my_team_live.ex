@@ -160,14 +160,36 @@ defmodule BrightWeb.MyTeamLive do
 
   defp assign_display_skill_cards(
          socket,
-         _team_member_users,
+         [],
          _display_skill_classes,
          nil,
          _member_skill_classes
        ) do
+    # チームメンバーが取得できていない場合、スキルカードは空表示
     socket
     |> assign(:display_skill_cards, [])
     |> assign(:select_skill_class, nil)
+  end
+
+  defp assign_display_skill_cards(
+         socket,
+         team_member_users,
+         [],
+         nil,
+         _member_skill_classes
+       ) do
+    # チームメンバーは存在するが、スキルが取得できていない場合
+    display_member_for_skill_card =
+      team_member_users
+      |> Enum.map(fn member ->
+        # カードにはダミーのスコアを設定
+        %{user: member.user}
+        |> add_user_skill_class_score([], [])
+        |> add_select_skill_class(nil)
+      end)
+
+    socket
+    |> assign(:display_skill_cards, display_member_for_skill_card)
   end
 
   defp assign_display_skill_cards(
@@ -201,10 +223,15 @@ defmodule BrightWeb.MyTeamLive do
     |> Map.put_new(:select_skill_class, select_skill_class)
   end
 
+  defp add_user_skill_class_score(map, _display_skill_classes, []) do
+    # スキルが取得できていない場合、ダミーデータを設定
+    map
+    |> Map.put(:user_skill_class_score, nil)
+  end
+
   defp add_user_skill_class_score(map, display_skill_classes, filterd_member_skill_classes) do
     # display_skill_classesに対応する該当ユーザーのスキルクラススコアが存在するかチェック
     # 存在しない場合はnilを設定する
-
     user_skill_class_score =
       display_skill_classes
       |> Enum.map(fn display_skill_class ->
