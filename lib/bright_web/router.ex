@@ -28,6 +28,8 @@ defmodule BrightWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+
+    resources "/notification_official_teams", NotificationOfficialTeamController, except: [:new, :edit]
   end
 
   # デバッグ用画面（prod環境以外）
