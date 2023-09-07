@@ -4,7 +4,7 @@ defmodule Bright.SkillScoresTest do
 
   alias Bright.SkillScores
 
-  describe "rescore by batch" do
+  describe "re-aggregate by batch" do
     # スキル構造の初期データ作成
     setup do
       user = insert(:user)
@@ -28,7 +28,7 @@ defmodule Bright.SkillScoresTest do
       %{skill_class_score: skill_class_score, skill_unit_score: skill_unit_score}
     end
 
-    test "rescore_skill_class simple run", %{
+    test "re_aggregate_scores simple run", %{
       user: user,
       skill_class: skill_class,
       skill_unit: skill_unit,
@@ -36,7 +36,8 @@ defmodule Bright.SkillScoresTest do
       skill_unit_score: skill_unit_score
     } do
       # skillがない状態
-      SkillScores.rescore_skill_class(skill_class)
+      SkillScores.re_aggregate_scores([skill_class])
+
       assert %{percentage: 0.0} = SkillScores.get_skill_class_score!(skill_class_score.id)
       assert %{percentage: 0.0} = SkillScores.get_skill_unit_score!(skill_unit_score.id)
 
@@ -44,7 +45,7 @@ defmodule Bright.SkillScoresTest do
       [%{skills: [skill_1]}] = insert_skill_categories_and_skills(skill_unit, [1])
       insert(:skill_score, user: user, skill: skill_1, score: :high)
 
-      SkillScores.rescore_skill_class(skill_class)
+      SkillScores.re_aggregate_scores([skill_class])
       assert %{percentage: 100.0} = SkillScores.get_skill_class_score!(skill_class_score.id)
       assert %{percentage: 100.0} = SkillScores.get_skill_unit_score!(skill_unit_score.id)
     end

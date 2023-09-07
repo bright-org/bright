@@ -21,23 +21,27 @@ defmodule Bright.SkillScores do
   指定のスキルクラスに関わるスコア集計をまとめて再計算する
   NOTE: スキルパネル更新処理といった構造変更があったときを想定した重い処理
   """
-  def rescore_skill_class(skill_class) do
-    skill_class =
-      Repo.preload(skill_class, [
-        :skill_class_scores,
-        skill_units: [
-          :skill_unit_scores,
-          skill_categories: [skills: [:skill_scores]]
-        ]
-      ])
+  def re_aggregate_scores(skill_classes) do
+    skill_classes =
+      Enum.map(skill_classes, fn skill_class ->
+        Repo.preload(skill_class, [
+          :skill_class_scores,
+          skill_units: [
+            :skill_unit_scores,
+            skill_categories: [skills: [:skill_scores]]
+          ]
+        ])
+      end)
+
+    skill_units = skill_classes |> Enum.flat_map(& &1.skill_units) |> Enum.uniq()
 
     Ecto.Multi.new()
-    |> Ecto.Multi.run(:skill_unit_scores, fn _repo, _data ->
-      results = Enum.map(skill_class.skill_units, &update_skill_unit_scores_associated_by/1)
+    |> Ecto.Multi.run(:all_skill_unit_scores, fn _repo, _data ->
+      results = Enum.map(skill_units, &update_skill_unit_scores_associated_by/1)
       {:ok, results}
     end)
-    |> Ecto.Multi.run(:skill_class_scores, fn _repo, _data ->
-      results = update_skill_class_scores_associated_by(skill_class)
+    |> Ecto.Multi.run(:all_skill_class_scores, fn _repo, _data ->
+      results = Enum.map(skill_classes, &update_skill_class_scores_associated_by/1)
       {:ok, results}
     end)
     |> Repo.transaction()
