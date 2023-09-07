@@ -325,4 +325,40 @@ defmodule Bright.TeamsTest do
       assert normal_user.is_admin == false
     end
   end
+
+  describe "joined_teams_by_user_id_and_user_name!/2" do
+    test "success" do
+      team_name = Faker.Lorem.word()
+      user = insert(:user)
+      other_user1 = insert(:user)
+
+      assert {:ok, _team, team_member_user_attrs} =
+               Teams.create_team_multi(team_name, user, [other_user1])
+
+      # 全員チーム招待に承認する
+      TeamTestHelper.cofirm_invitation(team_member_user_attrs)
+
+      assert other_user1.name == Teams.joined_teams_by_user_id_and_user_name!(user.id, other_user1.name)
+
+    end
+
+    test "failure" do
+      team_name = Faker.Lorem.word()
+      user = insert(:user)
+      other_user1 = insert(:user)
+      other_user2 = insert(:user)
+
+      assert {:ok, _team, team_member_user_attrs} =
+               Teams.create_team_multi(team_name, user, [other_user1])
+
+      # 全員チーム招待に承認する
+      TeamTestHelper.cofirm_invitation(team_member_user_attrs)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Teams.joined_teams_by_user_id_and_user_name!(user.id, other_user2.name)
+      end
+
+    end
+
+  end
 end
