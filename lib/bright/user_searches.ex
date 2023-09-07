@@ -100,13 +100,24 @@ defmodule Bright.UserSearches do
     do: order_by(query, [{:asc, fragment("last_updated")}])
 
   defp set_order(query, :income_desc),
-    do: order_by(query, [{:desc_nulls_last, fragment("desired_income")}])
+    do:
+      order_by(query, [
+        {:desc_nulls_last, fragment("desired_income")},
+        {:desc, fragment("last_updated")}
+      ])
 
   defp set_order(query, :income_asc),
-    do: order_by(query, [{:asc_nulls_last, fragment("desired_income")}])
+    do:
+      order_by(query, [
+        {:asc_nulls_last, fragment("desired_income")},
+        {:desc, fragment("last_updated")}
+      ])
 
-  defp set_order(query, :score_desc), do: order_by(query, [{:desc, fragment("skill_score")}])
-  defp set_order(query, :score_asc), do: order_by(query, [{:asc, fragment("skill_score")}])
+  defp set_order(query, :score_desc),
+    do: order_by(query, [{:desc, fragment("skill_score")}, {:desc, fragment("last_updated")}])
+
+  defp set_order(query, :score_asc),
+    do: order_by(query, [{:asc, fragment("skill_score")}, {:desc, fragment("last_updated")}])
 
   defp get_first_skill_query_params_skill_class_id(_scores, nil), do: []
 
