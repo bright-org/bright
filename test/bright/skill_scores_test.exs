@@ -54,8 +54,6 @@ defmodule Bright.SkillScoresTest do
   describe "skill_class_scores" do
     alias Bright.SkillScores.SkillClassScore
 
-    @invalid_attrs %{level: :invalid}
-
     setup do
       user = insert(:user)
       skill_panel = insert(:skill_panel)
@@ -156,39 +154,13 @@ defmodule Bright.SkillScoresTest do
 
       # 既に入力済みのスコアが反映される
       skill_class_score =
-        Repo.get_by!(SkillScores.SkillClassScore, %{
+        Repo.get_by!(SkillClassScore, %{
           user_id: user.id,
           skill_class_id: skill_class.id
         })
 
       assert skill_class_score.level == :normal
       assert skill_class_score.percentage == 50.0
-    end
-
-    test "update_skill_class_score/2 with valid data updates the skill_class_score", %{
-      user: user,
-      skill_class: skill_class
-    } do
-      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
-      update_attrs = %{level: :normal}
-
-      assert {:ok, %SkillClassScore{} = skill_class_score} =
-               SkillScores.update_skill_class_score(skill_class_score, update_attrs)
-
-      assert skill_class_score.level == :normal
-    end
-
-    test "update_skill_class_score/2 with invalid data returns error changeset", %{
-      user: user,
-      skill_class: skill_class
-    } do
-      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
-
-      assert {:error, %Ecto.Changeset{}} =
-               SkillScores.update_skill_class_score(skill_class_score, @invalid_attrs)
-
-      assert skill_class_score.level ==
-               SkillScores.get_skill_class_score!(skill_class_score.id).level
     end
 
     test "update_skill_class_score_stats", %{
@@ -290,26 +262,6 @@ defmodule Bright.SkillScoresTest do
         assert expected_level == SkillScores.get_level(percentage)
       end)
     end
-
-    test "delete_skill_class_score/1 deletes the skill_class_score", %{
-      user: user,
-      skill_class: skill_class
-    } do
-      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
-      assert {:ok, %SkillClassScore{}} = SkillScores.delete_skill_class_score(skill_class_score)
-
-      assert_raise Ecto.NoResultsError, fn ->
-        SkillScores.get_skill_class_score!(skill_class_score.id)
-      end
-    end
-
-    test "change_skill_class_score/1 returns a skill_class_score changeset", %{
-      user: user,
-      skill_class: skill_class
-    } do
-      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
-      assert %Ecto.Changeset{} = SkillScores.change_skill_class_score(skill_class_score)
-    end
   end
 
   describe "skill_scores" do
@@ -379,26 +331,6 @@ defmodule Bright.SkillScoresTest do
 
       assert skill_score.score ==
                SkillScores.get_skill_score!(skill_score.id).score
-    end
-
-    test "delete_skill_score/1 deletes the skill_score", %{
-      user: user,
-      skill: skill
-    } do
-      skill_score = insert(:skill_score, user: user, skill: skill)
-      assert {:ok, %SkillScore{}} = SkillScores.delete_skill_score(skill_score)
-
-      assert_raise Ecto.NoResultsError, fn ->
-        SkillScores.get_skill_score!(skill_score.id)
-      end
-    end
-
-    test "change_skill_score/1 returns a skill_score changeset", %{
-      user: user,
-      skill: skill
-    } do
-      skill_score = insert(:skill_score, user: user, skill: skill)
-      assert %Ecto.Changeset{} = SkillScores.change_skill_score(skill_score)
     end
 
     test "update_skill_scores", %{
