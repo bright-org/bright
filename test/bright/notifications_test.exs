@@ -129,4 +129,115 @@ defmodule Bright.NotificationsTest do
       assert %Ecto.Changeset{} = Notifications.change_notification(notification)
     end
   end
+
+  describe "notification_official_teams" do
+    alias Bright.Notifications.NotificationOfficialTeam
+
+    @invalid_attrs %{
+      message: nil,
+      detail: nil,
+      from_user_id: nil,
+      to_user_id: nil,
+      participation: nil
+    }
+
+    test "list_notification_official_teams/0 returns all notification_official_teams" do
+      notification_official_team = insert(:notification_official_team)
+
+      assert Notifications.list_notification_official_teams()
+             |> Repo.preload([:from_user, :to_user]) == [notification_official_team]
+    end
+
+    test "get_notification_official_team!/1 returns the notification_official_team with given id" do
+      notification_official_team = insert(:notification_official_team)
+
+      assert Notifications.get_notification_official_team!(notification_official_team.id)
+             |> Repo.preload([:from_user, :to_user]) == notification_official_team
+    end
+
+    test "create_notification_official_team/1 with valid data creates a notification_official_team" do
+      from_user = insert(:user)
+      to_user = insert(:user)
+
+      valid_attrs = %{
+        message: "some message",
+        detail: "some detail",
+        from_user_id: from_user.id,
+        to_user_id: to_user.id,
+        participation: true
+      }
+
+      assert {:ok, %NotificationOfficialTeam{} = notification_official_team} =
+               Notifications.create_notification_official_team(valid_attrs)
+
+      assert notification_official_team.message == "some message"
+      assert notification_official_team.detail == "some detail"
+      assert notification_official_team.from_user_id == from_user.id
+      assert notification_official_team.to_user_id == to_user.id
+      assert notification_official_team.participation == true
+    end
+
+    test "create_notification_official_team/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} =
+               Notifications.create_notification_official_team(@invalid_attrs)
+    end
+
+    test "update_notification_official_team/2 with valid data updates the notification_official_team" do
+      notification_official_team = insert(:notification_official_team)
+      from_user = insert(:user)
+      to_user = insert(:user)
+
+      update_attrs = %{
+        message: "some updated message",
+        detail: "some updated detail",
+        from_user_id: from_user.id,
+        to_user_id: to_user.id,
+        participation: false
+      }
+
+      assert {:ok, %NotificationOfficialTeam{} = notification_official_team} =
+               Notifications.update_notification_official_team(
+                 notification_official_team,
+                 update_attrs
+               )
+
+      assert notification_official_team.message == "some updated message"
+      assert notification_official_team.detail == "some updated detail"
+      assert notification_official_team.from_user_id == from_user.id
+      assert notification_official_team.to_user_id == to_user.id
+      assert notification_official_team.participation == false
+    end
+
+    test "update_notification_official_team/2 with invalid data returns error changeset" do
+      notification_official_team = insert(:notification_official_team)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Notifications.update_notification_official_team(
+                 notification_official_team,
+                 @invalid_attrs
+               )
+
+      assert notification_official_team ==
+               Notifications.get_notification_official_team!(notification_official_team.id)
+               |> Repo.preload([:from_user, :to_user])
+    end
+
+    test "delete_notification_official_team/1 deletes the notification_official_team" do
+      notification_official_team = insert(:notification_official_team)
+
+      assert {:ok, %NotificationOfficialTeam{}} =
+               Notifications.delete_notification_official_team(notification_official_team)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Notifications.get_notification_official_team!(notification_official_team.id)
+      end
+    end
+
+    test "change_notification_official_team/1 returns a notification_official_team changeset" do
+      notification_official_team = insert(:notification_official_team)
+
+      assert %Ecto.Changeset{} =
+               Notifications.change_notification_official_team(notification_official_team)
+    end
+  end
 end
