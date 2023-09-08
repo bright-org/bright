@@ -536,18 +536,23 @@ defmodule Bright.SkillScores do
       multi
       |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
       |> Ecto.Multi.run(:"level_up_skill_class_score_#{user_id}", fn _repo, _ ->
-        if skill_up_to_next_skill_class?(prev_percentage, percentage) do
-          # TODO: 別PRでuser_idのまま処理をするように対応済み。マージ後にここも対応する
-          user = Repo.get!(Bright.Accounts.User, user_id)
-          result = create_next_skill_class_score(user, skill_class)
-          {:ok, result}
-        else
-          # 次スキルクラスを開放しないケース
-          {:ok, nil}
-        end
+        maybe_skill_up_to_next_skill_class(prev_percentage, percentage, user_id, skill_class)
       end)
     end)
     |> Repo.transaction()
+  end
+
+  # TODO: 本PRでcredoにひっかかったためいったん追加。別PRで共通部分に変更があるので再整理
+  defp maybe_skill_up_to_next_skill_class(prev_percentage, percentage, user_id, skill_class) do
+    if skill_up_to_next_skill_class?(prev_percentage, percentage) do
+      # TODO: 別PRでuser_idのまま処理をするように対応済み
+      user = Repo.get!(Bright.Accounts.User, user_id)
+      result = create_next_skill_class_score(user, skill_class)
+      {:ok, result}
+    else
+      # 次スキルクラスを開放しないケース
+      {:ok, nil}
+    end
   end
 
   defp count_skill_scores_each_user(skills) do
