@@ -255,8 +255,6 @@ defmodule BrightWeb.Router do
     pipe_through(:api)
 
     scope "/v1" do
-      resources "/notification_official_teams", NotificationOfficialTeamController,
-        except: [:new, :edit]
     end
   end
 
