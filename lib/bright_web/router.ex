@@ -251,7 +251,7 @@ defmodule BrightWeb.Router do
     end
   end
 
-  scope "/api", BrightWeb.Api do
+  scope "/api", BrightWeb do
     pipe_through(:api)
 
     scope "/v1" do
