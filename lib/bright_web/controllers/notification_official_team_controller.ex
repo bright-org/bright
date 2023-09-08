@@ -18,7 +18,7 @@ defmodule BrightWeb.NotificationOfficialTeamController do
       |> put_status(:created)
       |> put_resp_header(
         "location",
-        ~p"/api/notification_official_teams/#{notification_official_team}"
+        ~p"/api/v1/notification_official_teams/#{notification_official_team}"
       )
       |> render(:show, notification_official_team: notification_official_team)
     end
