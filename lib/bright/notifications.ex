@@ -198,7 +198,10 @@ defmodule Bright.Notifications do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_notification_official_team(%NotificationOfficialTeam{} = notification_official_team, attrs) do
+  def update_notification_official_team(
+        %NotificationOfficialTeam{} = notification_official_team,
+        attrs
+      ) do
     notification_official_team
     |> NotificationOfficialTeam.changeset(attrs)
     |> Repo.update()
@@ -229,7 +232,10 @@ defmodule Bright.Notifications do
       %Ecto.Changeset{data: %NotificationOfficialTeam{}}
 
   """
-  def change_notification_official_team(%NotificationOfficialTeam{} = notification_official_team, attrs \\ %{}) do
+  def change_notification_official_team(
+        %NotificationOfficialTeam{} = notification_official_team,
+        attrs \\ %{}
+      ) do
     NotificationOfficialTeam.changeset(notification_official_team, attrs)
   end
 end

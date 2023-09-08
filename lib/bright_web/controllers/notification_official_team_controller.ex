@@ -12,10 +12,14 @@ defmodule BrightWeb.NotificationOfficialTeamController do
   end
 
   def create(conn, %{"notification_official_team" => notification_official_team_params}) do
-    with {:ok, %NotificationOfficialTeam{} = notification_official_team} <- Notifications.create_notification_official_team(notification_official_team_params) do
+    with {:ok, %NotificationOfficialTeam{} = notification_official_team} <-
+           Notifications.create_notification_official_team(notification_official_team_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/notification_official_teams/#{notification_official_team}")
+      |> put_resp_header(
+        "location",
+        ~p"/api/notification_official_teams/#{notification_official_team}"
+      )
       |> render(:show, notification_official_team: notification_official_team)
     end
   end
@@ -25,10 +29,17 @@ defmodule BrightWeb.NotificationOfficialTeamController do
     render(conn, :show, notification_official_team: notification_official_team)
   end
 
-  def update(conn, %{"id" => id, "notification_official_team" => notification_official_team_params}) do
+  def update(conn, %{
+        "id" => id,
+        "notification_official_team" => notification_official_team_params
+      }) do
     notification_official_team = Notifications.get_notification_official_team!(id)
 
-    with {:ok, %NotificationOfficialTeam{} = notification_official_team} <- Notifications.update_notification_official_team(notification_official_team, notification_official_team_params) do
+    with {:ok, %NotificationOfficialTeam{} = notification_official_team} <-
+           Notifications.update_notification_official_team(
+             notification_official_team,
+             notification_official_team_params
+           ) do
       render(conn, :show, notification_official_team: notification_official_team)
     end
   end
@@ -36,7 +47,8 @@ defmodule BrightWeb.NotificationOfficialTeamController do
   def delete(conn, %{"id" => id}) do
     notification_official_team = Notifications.get_notification_official_team!(id)
 
-    with {:ok, %NotificationOfficialTeam{}} <- Notifications.delete_notification_official_team(notification_official_team) do
+    with {:ok, %NotificationOfficialTeam{}} <-
+           Notifications.delete_notification_official_team(notification_official_team) do
       send_resp(conn, :no_content, "")
     end
   end

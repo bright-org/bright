@@ -5,7 +5,13 @@ defmodule BrightWeb.NotificationOfficialTeamJSON do
   Renders a list of notification_official_teams.
   """
   def index(%{notification_official_teams: notification_official_teams}) do
-    %{data: for(notification_official_team <- notification_official_teams, do: data(notification_official_team))}
+    %{
+      data:
+        for(
+          notification_official_team <- notification_official_teams,
+          do: data(notification_official_team)
+        )
+    }
   end
 
   @doc """

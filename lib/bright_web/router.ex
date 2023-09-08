@@ -28,8 +28,6 @@ defmodule BrightWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-
-    resources "/notification_official_teams", NotificationOfficialTeamController, except: [:new, :edit]
   end
 
   # デバッグ用画面（prod環境以外）
@@ -250,6 +248,15 @@ defmodule BrightWeb.Router do
     scope "/auth" do
       get "/:provider", OAuthController, :request
       get "/:provider/callback", OAuthController, :callback
+    end
+  end
+
+  scope "/api", BrightWeb.Api do
+    pipe_through(:api)
+
+    scope "/v1" do
+      resources "/notification_official_teams", NotificationOfficialTeamController,
+        except: [:new, :edit]
     end
   end
 
