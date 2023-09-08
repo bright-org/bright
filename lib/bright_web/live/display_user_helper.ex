@@ -7,13 +7,17 @@ defmodule BrightWeb.DisplayUserHelper do
   alias Bright.Repo
   alias Bright.Utils.Aes.Aes128
   alias Bright.Accounts.User
+  alias Bright.Teams
 
-  # TODO: プロフィール読み込み共通化対象
-  def assign_display_user(socket, %{"user_name" => user_name}) do
-    # TODO: チームに所属のチェックを実装すること
+  def assign_display_user(%{assigns: %{current_user: current_user}} = socket, %{
+        "user_name" => user_name
+      }) do
     user =
       Accounts.get_user_by_name!(user_name)
       |> Repo.preload(:user_profile)
+
+    # チームに所属していない人を指定した場合はEcto.NoResultsErrorで404を表示する
+    Teams.joined_teams_by_user_id!(current_user.id, user.id)
 
     socket
     |> assign(:me, false)
