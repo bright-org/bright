@@ -474,15 +474,17 @@ defmodule Bright.Teams do
   チームに所属しているかを確認
   """
   def joined_teams_by_user_id!(current_user_id, other_user_id) do
-    from(tmbu in TeamMemberUsers,
-      join: t in assoc(tmbu, :team),
-      join: m in assoc(t, :member_users),
-      where:
-        tmbu.user_id == ^current_user_id and not is_nil(tmbu.invitation_confirmed_at) and
-          m.user_id == ^other_user_id,
-      select: m.user_id,
-      distinct: true
-    )
-    |> Repo.one!()
+    query =
+      from(tmbu in TeamMemberUsers,
+        join: t in assoc(tmbu, :team),
+        join: m in assoc(t, :member_users),
+        where:
+          tmbu.user_id == ^current_user_id and not is_nil(tmbu.invitation_confirmed_at) and
+            m.user_id == ^other_user_id,
+        select: m.user_id,
+        distinct: true
+      )
+
+    if Repo.exists?(query), do: true, else: raise(Ecto.NoResultsError, queryable: query)
   end
 end

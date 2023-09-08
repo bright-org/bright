@@ -338,8 +338,7 @@ defmodule Bright.TeamsTest do
       # 全員チーム招待に承認する
       TeamTestHelper.cofirm_invitation(team_member_user_attrs)
 
-      assert other_user1.id ==
-               Teams.joined_teams_by_user_id!(current_user.id, other_user1.id)
+      assert Teams.joined_teams_by_user_id!(current_user.id, other_user1.id)
     end
 
     test "failure" do
