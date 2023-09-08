@@ -326,36 +326,36 @@ defmodule Bright.TeamsTest do
     end
   end
 
-  describe "joined_teams_by_user_id_and_user_name!/2" do
+  describe "joined_teams_by_user_id!/2" do
     test "success" do
       team_name = Faker.Lorem.word()
-      user = insert(:user)
+      current_user = insert(:user)
       other_user1 = insert(:user)
 
       assert {:ok, _team, team_member_user_attrs} =
-               Teams.create_team_multi(team_name, user, [other_user1])
+               Teams.create_team_multi(team_name, current_user, [other_user1])
 
       # 全員チーム招待に承認する
       TeamTestHelper.cofirm_invitation(team_member_user_attrs)
 
-      assert other_user1.name ==
-               Teams.joined_teams_by_user_id_and_user_name!(user.id, other_user1.name)
+      assert other_user1.id ==
+               Teams.joined_teams_by_user_id!(current_user.id, other_user1.id)
     end
 
     test "failure" do
       team_name = Faker.Lorem.word()
-      user = insert(:user)
+      current_user = insert(:user)
       other_user1 = insert(:user)
       other_user2 = insert(:user)
 
       assert {:ok, _team, team_member_user_attrs} =
-               Teams.create_team_multi(team_name, user, [other_user1])
+               Teams.create_team_multi(team_name, current_user, [other_user1])
 
       # 全員チーム招待に承認する
       TeamTestHelper.cofirm_invitation(team_member_user_attrs)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Teams.joined_teams_by_user_id_and_user_name!(user.id, other_user2.name)
+        Teams.joined_teams_by_user_id!(current_user.id, other_user2.id)
       end
     end
   end

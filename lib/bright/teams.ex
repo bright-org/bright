@@ -473,15 +473,14 @@ defmodule Bright.Teams do
   @doc """
   チームに所属しているかを確認
   """
-  def joined_teams_by_user_id_and_user_name!(user_id, other_user_name) do
+  def joined_teams_by_user_id!(current_user_id, other_user_id) do
     from(tmbu in TeamMemberUsers,
       join: t in assoc(tmbu, :team),
       join: m in assoc(t, :member_users),
-      join: u in assoc(m, :user),
       where:
-        tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at) and
-          u.name == ^other_user_name,
-      select: u.name,
+        tmbu.user_id == ^current_user_id and not is_nil(tmbu.invitation_confirmed_at) and
+          m.user_id == ^other_user_id,
+      select: m.user_id,
       distinct: true
     )
     |> Repo.one!()

@@ -12,12 +12,12 @@ defmodule BrightWeb.DisplayUserHelper do
   def assign_display_user(%{assigns: %{current_user: current_user}} = socket, %{
         "user_name" => user_name
       }) do
-    # チームに所属していない人を指定した場合はEcto.NoResultsErrorで404を表示する
-    Teams.joined_teams_by_user_id_and_user_name!(current_user.id, user_name)
-
     user =
       Accounts.get_user_by_name!(user_name)
       |> Repo.preload(:user_profile)
+
+    # チームに所属していない人を指定した場合はEcto.NoResultsErrorで404を表示する
+    Teams.joined_teams_by_user_id!(current_user.id, user.id)
 
     socket
     |> assign(:me, false)
