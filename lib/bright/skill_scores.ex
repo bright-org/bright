@@ -215,25 +215,6 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
-  Updates a skill_class_score.
-  TODO: 削除
-
-  ## Examples
-
-      iex> update_skill_class_score(skill_class_score, %{field: new_value})
-      {:ok, %SkillClassScore{}}
-
-      iex> update_skill_class_score(skill_class_score, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_skill_class_score(%SkillClassScore{} = skill_class_score, attrs) do
-    skill_class_score
-    |> SkillClassScore.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
   Updates a skill_class_score aggregation columns.
   """
   def update_skill_class_score_stats(user, skill_class, skill_class_score) do
@@ -245,7 +226,7 @@ defmodule Bright.SkillScores do
     level = get_level(percentage)
 
     changeset =
-      change_skill_class_score(skill_class_score, %{percentage: percentage, level: level})
+      SkillClassScore.changeset(skill_class_score, %{percentage: percentage, level: level})
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:update_skill_class_score, changeset)
@@ -299,36 +280,6 @@ defmodule Bright.SkillScores do
       end)
     end)
     |> Repo.transaction()
-  end
-
-  @doc """
-  Deletes a skill_class_score.
-  TODO: 削除
-
-  ## Examples
-
-      iex> delete_skill_class_score(skill_class_score)
-      {:ok, %SkillClassScore{}}
-
-      iex> delete_skill_class_score(skill_class_score)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_skill_class_score(%SkillClassScore{} = skill_class_score) do
-    Repo.delete(skill_class_score)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking skill_class_score changes.
-
-  ## Examples
-
-      iex> change_skill_class_score(skill_class_score)
-      %Ecto.Changeset{data: %SkillClassScore{}}
-
-  """
-  def change_skill_class_score(%SkillClassScore{} = skill_class_score, attrs \\ %{}) do
-    SkillClassScore.changeset(skill_class_score, attrs)
   end
 
   @doc """
@@ -474,36 +425,6 @@ defmodule Bright.SkillScores do
       update_skill_class_scores_stats(user, skill_classes)
     end)
     |> Repo.transaction()
-  end
-
-  @doc """
-  Deletes a skill_score.
-  TODO: 削除
-
-  ## Examples
-
-      iex> delete_skill_score(skill_score)
-      {:ok, %SkillScore{}}
-
-      iex> delete_skill_score(skill_score)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_skill_score(%SkillScore{} = skill_score) do
-    Repo.delete(skill_score)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking skill_score changes.
-
-  ## Examples
-
-      iex> change_skill_score(skill_score)
-      %Ecto.Changeset{data: %SkillScore{}}
-
-  """
-  def change_skill_score(%SkillScore{} = skill_score, attrs \\ %{}) do
-    SkillScore.changeset(skill_score, attrs)
   end
 
   @doc """
