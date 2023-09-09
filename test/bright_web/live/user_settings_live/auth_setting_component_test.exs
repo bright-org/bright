@@ -91,7 +91,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponentTest do
         )
         |> submit_form(conn)
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "パスワードを更新しました"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "パスワードを変更しました"
       assert redirected_to(conn) == ~p"/mypage"
       assert Accounts.get_user_by_email_and_password(user.email, new_password)
       assert get_session(conn, :user_token)

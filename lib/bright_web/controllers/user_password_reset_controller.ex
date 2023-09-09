@@ -15,14 +15,14 @@ defmodule BrightWeb.UserPasswordResetController do
       ) do
     case Accounts.update_user_password(conn.assigns.current_user, current_password, user_params) do
       {:ok, user} ->
-        # NOTE: パスワード更新時はセッションを作り替えるので再ログイン（phx.gen.auth デフォルトの挙動）
+        # NOTE: パスワード変更時はセッションを作り替えるので再ログイン（phx.gen.auth デフォルトの挙動）
         conn
-        |> put_flash(:info, "パスワードを更新しました")
+        |> put_flash(:info, "パスワードを変更しました")
         |> UserAuth.log_in_user(user, ~p"/mypage")
 
       _ ->
         conn
-        |> put_flash(:error, "パスワードの更新に失敗しました")
+        |> put_flash(:error, "パスワードの変更に失敗しました")
         |> redirect(to: ~p"/mypage")
     end
   end

@@ -23,7 +23,7 @@ defmodule BrightWeb.UserPasswordResetControllerTest do
           "user" => %{"password" => new_password, "password_confirmation" => new_password}
         })
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "パスワードを更新しました"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "パスワードを変更しました"
       assert redirected_to(conn) == ~p"/mypage"
       assert Accounts.get_user_by_email_and_password(user.email, new_password)
       assert get_session(conn, :user_token)
@@ -45,7 +45,7 @@ defmodule BrightWeb.UserPasswordResetControllerTest do
           "user" => %{"password" => new_password, "password_confirmation" => new_password}
         })
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "パスワードの更新に失敗しました"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "パスワードの変更に失敗しました"
       assert redirected_to(conn) == ~p"/mypage"
       refute Accounts.get_user_by_email_and_password(user.email, new_password)
       assert Repo.get(UserToken, before_user_token.id)
@@ -65,7 +65,7 @@ defmodule BrightWeb.UserPasswordResetControllerTest do
           "user" => %{"password" => new_password, "password_confirmation" => "not_match"}
         })
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "パスワードの更新に失敗しました"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "パスワードの変更に失敗しました"
       assert redirected_to(conn) == ~p"/mypage"
       refute Accounts.get_user_by_email_and_password(user.email, new_password)
       assert Repo.get(UserToken, before_user_token.id)
