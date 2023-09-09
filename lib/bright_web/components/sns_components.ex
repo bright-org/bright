@@ -43,7 +43,7 @@ defmodule BrightWeb.SnsComponents do
       |> assign(:url, "window.open('#{assigns.url}')")
 
     ~H"""
-    <button type="button" onclick={@url}>
+    <button type="button" onclick={@url} class="flex">
       <.icon sns_type={@sns_type} disable={false} />
     </button>
     """
@@ -58,7 +58,7 @@ defmodule BrightWeb.SnsComponents do
       |> assign(src: "/images/common/#{assigns.sns_type}#{disable_icon_suffix(assigns.disable)}")
 
     ~H"""
-    <img src={@src} style="width: 26px; height: 26px" />
+    <img src={@src} class="w-[26px] h-[26px] mt-1" />
     """
   end
 
