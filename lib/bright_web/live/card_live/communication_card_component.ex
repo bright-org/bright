@@ -1,4 +1,3 @@
-# TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
 defmodule BrightWeb.CardLive.CommunicationCardComponent do
   @moduledoc """
   Communication Card Component
@@ -12,9 +11,9 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     {"skill_up", "スキルアップ"},
     {"blessed", "祝福された"},
     {"1on1_invitation", "1on1のお誘い"},
-    {"promotion", "推し活"},
-    {"intriguing", "気になる"},
-    {"official_team", "運営公式"}
+    {"faves", "推し活"},
+    {"watches", "気になる"},
+    {"コミュニティ", "コミュニティ"}
   ]
 
   @impl true
