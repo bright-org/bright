@@ -1,5 +1,5 @@
 defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
-  use BrightWeb.ConnCase
+  use BrightWeb.ConnCase, async: true
 
   alias Bright.Repo
   alias Bright.Accounts.User
@@ -93,8 +93,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       )
       |> render_submit()
 
-      # NOTE: フラッシュメッセージが出るまで 1s 程度待つ
-      Process.sleep(1_000)
+      # NOTE: フラッシュメッセージが出るまで 600ms 程度待つ
+      Process.sleep(600)
       assert lv |> has_element?("#modal_flash", "保存しました")
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
@@ -134,8 +134,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       )
       |> render_submit()
 
-      # NOTE: フラッシュメッセージが出るまで 1s 程度待つ
-      Process.sleep(1_000)
+      # NOTE: フラッシュメッセージが出るまで 600ms 程度待つ
+      Process.sleep(600)
       assert lv |> has_element?("#modal_flash", "保存しました")
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
