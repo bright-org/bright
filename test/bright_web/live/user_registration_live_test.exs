@@ -114,4 +114,46 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       assert login_html =~ "ログイン"
     end
   end
+
+  describe "SNS link button" do
+    test "shows sns link buttons", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      assert lv
+             |> has_element?(
+               ~s{a[href="/auth/google"]},
+               "Google"
+             )
+
+      assert lv
+             |> has_element?(
+               ~s{a[href="#"]},
+               "GitHub"
+             )
+
+      assert lv
+             |> has_element?(
+               ~s{a[href="#"]},
+               "Facebook"
+             )
+
+      assert lv
+             |> has_element?(
+               ~s{a[href="#"]},
+               "Twitter"
+             )
+    end
+
+    test "clicks 「Google」 button", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      lv
+      |> element(
+        "a",
+        "Google"
+      )
+      |> render_click()
+      |> follow_redirect(conn, ~p"/auth/google")
+    end
+  end
 end
