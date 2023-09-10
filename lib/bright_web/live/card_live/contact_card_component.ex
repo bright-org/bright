@@ -1,4 +1,3 @@
-# TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までマイページのみ部品デザイン更新
 defmodule BrightWeb.CardLive.ContactCardComponent do
   @moduledoc """
   Contact Card Component
@@ -11,10 +10,8 @@ defmodule BrightWeb.CardLive.ContactCardComponent do
 
   @tabs [
     {"team_invitation", "チーム招待"},
-    {"daily", "デイリー"},
-    {"weekly", "ウイークリー"},
+    {"looking back", "振り返り"},
     {"recruitment_coordination", "採用の調整"},
-    {"skill_panel_update", "スキルパネル更新"},
     {"operation", "運営"}
   ]
 
