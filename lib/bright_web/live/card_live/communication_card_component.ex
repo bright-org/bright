@@ -13,7 +13,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     {"1on1_invitation", "1on1のお誘い"},
     {"faves", "推し活"},
     {"watches", "気になる"},
-    {"コミュニティ", "コミュニティ"}
+    {"community ", "コミュニティ"}
   ]
 
   @impl true
