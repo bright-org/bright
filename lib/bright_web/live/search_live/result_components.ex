@@ -40,7 +40,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         <% end %>
       </p>
 
-      <p class="mb-2">
+      <p class="border-t border-brightGray-200 mb-2 mt-2 pt-2">
         <span>スキルの最終更新日：</span>
         <span><%=
           if @last_updated,
