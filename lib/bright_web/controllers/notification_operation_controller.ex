@@ -16,7 +16,7 @@ defmodule BrightWeb.NotificationOperationController do
            Notifications.create_notification_operation(notification_operation_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/notification_operations/#{notification_operation}")
+      |> put_resp_header("location", ~p"/api/v1/notification_operations/#{notification_operation}")
       |> render(:show, notification_operation: notification_operation)
     end
   end
