@@ -255,6 +255,7 @@ defmodule BrightWeb.Router do
     pipe_through(:api)
 
     scope "/v1" do
+      resources "/notification_operations", NotificationOperationController, except: [:new, :edit]
     end
   end
 
