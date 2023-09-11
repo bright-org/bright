@@ -18,99 +18,6 @@ defmodule Bright.SkillScores do
   @next_skill_class_level 40
 
   @doc """
-  指定のスキルクラスに関わるスコア集計をまとめて再計算する
-  NOTE: スキルパネル更新処理といった構造変更があったときを想定した重い処理
-  """
-  def re_aggregate_scores(skill_classes) do
-    skill_classes =
-      Enum.map(skill_classes, fn skill_class ->
-        Repo.preload(skill_class, [
-          :skill_class_scores,
-          skill_units: [
-            :skill_unit_scores,
-            skill_categories: [skills: [:skill_scores]]
-          ]
-        ])
-      end)
-
-    skill_units = skill_classes |> Enum.flat_map(& &1.skill_units) |> Enum.uniq()
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.run(:all_skill_unit_scores, fn _repo, _data ->
-      results = Enum.map(skill_units, &update_skill_unit_scores_associated_by/1)
-      {:ok, results}
-    end)
-    |> Ecto.Multi.run(:all_skill_class_scores, fn _repo, _data ->
-      results = Enum.map(skill_classes, &update_skill_class_scores_associated_by/1)
-      {:ok, results}
-    end)
-    |> Repo.transaction()
-  end
-
-  defp update_skill_unit_scores_associated_by(skill_unit) do
-    skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
-    {skills_count, score_count_user_dict} = count_skill_scores_each_user(skills)
-
-    skill_unit.skill_unit_scores
-    |> Enum.reduce(Ecto.Multi.new(), fn skill_unit_score, multi ->
-      user_id = skill_unit_score.user_id
-      high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
-      percentage = calc_percentage(high_scores_count, skills_count)
-      changeset = SkillUnitScore.changeset(skill_unit_score, %{percentage: percentage})
-
-      multi
-      |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
-    end)
-    |> Repo.transaction()
-  end
-
-  defp update_skill_class_scores_associated_by(skill_class) do
-    skills =
-      skill_class.skill_units
-      |> Enum.flat_map(& &1.skill_categories)
-      |> Enum.flat_map(& &1.skills)
-
-    {skills_count, score_count_user_dict} = count_skill_scores_each_user(skills)
-
-    skill_class.skill_class_scores
-    |> Enum.reduce(Ecto.Multi.new(), fn skill_class_score, multi ->
-      user_id = skill_class_score.user_id
-      high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
-      percentage = calc_percentage(high_scores_count, skills_count)
-      level = get_level(percentage)
-      changeset = SkillUnitScore.changeset(skill_class_score, %{percentage: percentage})
-      SkillClassScore.changeset(skill_class_score, %{percentage: percentage, level: level})
-
-      multi
-      |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
-
-      # # TODO: レベルアップと付随処理はUIをそろえる
-      # |> Ecto.Multi.run(:"level_up_skill_class_score_#{uesr_id}", fn _repo, _ ->
-      # end)
-    end)
-    |> Repo.transaction()
-  end
-
-  defp count_skill_scores_each_user(skills) do
-    skills_count = Enum.count(skills)
-    init_count = %{high: 0, middle: 0, low: 0}
-
-    score_count_user_dict =
-      Enum.reduce(skills, %{}, fn skill, acc ->
-        Enum.reduce(skill.skill_scores, acc, fn skill_score, dict ->
-          user_dict =
-            dict
-            |> Map.get(skill_score.user_id, init_count)
-            |> Map.update(skill_score.score, 1, &(&1 + 1))
-
-          Map.put(dict, skill_score.user_id, user_dict)
-        end)
-      end)
-
-    {skills_count, score_count_user_dict}
-  end
-
-  @doc """
   Returns the list of skill_class_scores.
 
   ## Examples
@@ -215,25 +122,6 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
-  Updates a skill_class_score.
-  TODO: 削除
-
-  ## Examples
-
-      iex> update_skill_class_score(skill_class_score, %{field: new_value})
-      {:ok, %SkillClassScore{}}
-
-      iex> update_skill_class_score(skill_class_score, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_skill_class_score(%SkillClassScore{} = skill_class_score, attrs) do
-    skill_class_score
-    |> SkillClassScore.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
   Updates a skill_class_score aggregation columns.
   """
   def update_skill_class_score_stats(user, skill_class, skill_class_score) do
@@ -245,7 +133,7 @@ defmodule Bright.SkillScores do
     level = get_level(percentage)
 
     changeset =
-      change_skill_class_score(skill_class_score, %{percentage: percentage, level: level})
+      SkillClassScore.changeset(skill_class_score, %{percentage: percentage, level: level})
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:update_skill_class_score, changeset)
@@ -299,36 +187,6 @@ defmodule Bright.SkillScores do
       end)
     end)
     |> Repo.transaction()
-  end
-
-  @doc """
-  Deletes a skill_class_score.
-  TODO: 削除
-
-  ## Examples
-
-      iex> delete_skill_class_score(skill_class_score)
-      {:ok, %SkillClassScore{}}
-
-      iex> delete_skill_class_score(skill_class_score)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_skill_class_score(%SkillClassScore{} = skill_class_score) do
-    Repo.delete(skill_class_score)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking skill_class_score changes.
-
-  ## Examples
-
-      iex> change_skill_class_score(skill_class_score)
-      %Ecto.Changeset{data: %SkillClassScore{}}
-
-  """
-  def change_skill_class_score(%SkillClassScore{} = skill_class_score, attrs \\ %{}) do
-    SkillClassScore.changeset(skill_class_score, attrs)
   end
 
   @doc """
@@ -477,36 +335,6 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
-  Deletes a skill_score.
-  TODO: 削除
-
-  ## Examples
-
-      iex> delete_skill_score(skill_score)
-      {:ok, %SkillScore{}}
-
-      iex> delete_skill_score(skill_score)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_skill_score(%SkillScore{} = skill_score) do
-    Repo.delete(skill_score)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking skill_score changes.
-
-  ## Examples
-
-      iex> change_skill_score(skill_score)
-      %Ecto.Changeset{data: %SkillScore{}}
-
-  """
-  def change_skill_score(%SkillScore{} = skill_score, attrs \\ %{}) do
-    SkillScore.changeset(skill_score, attrs)
-  end
-
-  @doc """
   Gets a single skill_unit_score.
 
   Raises `Ecto.NoResultsError` if the Skill score does not exist.
@@ -638,5 +466,111 @@ defmodule Bright.SkillScores do
       }
     )
     |> Repo.all()
+  end
+
+  @doc """
+  指定のスキルクラスに関わるスコア集計をまとめて再計算する
+  NOTE: スキルパネル更新処理といった構造変更があったときを想定した重い処理
+  """
+  def re_aggregate_scores(skill_classes) do
+    skill_classes = Repo.preload(skill_classes, [:skill_units])
+    skill_units = skill_classes |> Enum.flat_map(& &1.skill_units) |> Enum.uniq()
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:all_skill_unit_scores, fn _repo, _data ->
+      results = Enum.map(skill_units, &update_skill_unit_scores_associated_by/1)
+      {:ok, results}
+    end)
+    |> Ecto.Multi.run(:all_skill_class_scores, fn _repo, _data ->
+      results = Enum.map(skill_classes, &update_skill_class_scores_associated_by/1)
+      {:ok, results}
+    end)
+    |> Repo.transaction()
+  end
+
+  defp update_skill_unit_scores_associated_by(skill_unit) do
+    skill_unit =
+      Repo.preload(skill_unit, [:skill_unit_scores, skill_categories: [skills: [:skill_scores]]])
+
+    skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
+    {skills_count, score_count_user_dict} = count_skill_scores_each_user(skills)
+
+    skill_unit.skill_unit_scores
+    |> Enum.reduce(Ecto.Multi.new(), fn skill_unit_score, multi ->
+      user_id = skill_unit_score.user_id
+      high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
+      percentage = calc_percentage(high_scores_count, skills_count)
+      changeset = SkillUnitScore.changeset(skill_unit_score, %{percentage: percentage})
+
+      multi
+      |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
+    end)
+    |> Repo.transaction()
+  end
+
+  defp update_skill_class_scores_associated_by(skill_class) do
+    skill_class =
+      Repo.preload(skill_class, [
+        :skill_class_scores,
+        skill_units: [skill_categories: [skills: [:skill_scores]]]
+      ])
+
+    skills =
+      skill_class.skill_units
+      |> Enum.flat_map(& &1.skill_categories)
+      |> Enum.flat_map(& &1.skills)
+
+    {skills_count, score_count_user_dict} = count_skill_scores_each_user(skills)
+
+    skill_class.skill_class_scores
+    |> Enum.reduce(Ecto.Multi.new(), fn skill_class_score, multi ->
+      prev_percentage = skill_class_score.percentage
+      user_id = skill_class_score.user_id
+      high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
+      percentage = calc_percentage(high_scores_count, skills_count)
+      level = get_level(percentage)
+
+      changeset =
+        SkillClassScore.changeset(skill_class_score, %{percentage: percentage, level: level})
+
+      multi
+      |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
+      |> Ecto.Multi.run(:"level_up_skill_class_score_#{user_id}", fn _repo, _ ->
+        maybe_skill_up_to_next_skill_class(prev_percentage, percentage, user_id, skill_class)
+      end)
+    end)
+    |> Repo.transaction()
+  end
+
+  # TODO: 本PRでcredoにひっかかったためいったん追加。別PRで共通部分に変更があるので再整理
+  defp maybe_skill_up_to_next_skill_class(prev_percentage, percentage, user_id, skill_class) do
+    if skill_up_to_next_skill_class?(prev_percentage, percentage) do
+      # TODO: 別PRでuser_idのまま処理をするように対応済み
+      user = Repo.get!(Bright.Accounts.User, user_id)
+      result = create_next_skill_class_score(user, skill_class)
+      {:ok, result}
+    else
+      # 次スキルクラスを開放しないケース
+      {:ok, nil}
+    end
+  end
+
+  defp count_skill_scores_each_user(skills) do
+    skills_count = Enum.count(skills)
+    init_count = %{high: 0, middle: 0, low: 0}
+
+    score_count_user_dict =
+      Enum.reduce(skills, %{}, fn skill, acc ->
+        Enum.reduce(skill.skill_scores, acc, fn skill_score, dict ->
+          user_dict =
+            dict
+            |> Map.get(skill_score.user_id, init_count)
+            |> Map.update(skill_score.score, 1, &(&1 + 1))
+
+          Map.put(dict, skill_score.user_id, user_dict)
+        end)
+      end)
+
+    {skills_count, score_count_user_dict}
   end
 end

@@ -28,8 +28,21 @@ defmodule Bright.UserSearchesTest do
       insert(:user_skill_panel, user: user_1, skill_panel: skill_panel_1)
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel_1)
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel_2)
-      insert(:skill_class_score, user: user_1, skill_class: skill_class_1, level: :normal)
-      insert(:skill_class_score, user: user_2, skill_class: skill_class_1, level: :skilled)
+
+      insert(:skill_class_score,
+        user: user_1,
+        skill_class: skill_class_1,
+        level: :normal,
+        percentage: 40
+      )
+
+      insert(:skill_class_score,
+        user: user_2,
+        skill_class: skill_class_1,
+        level: :skilled,
+        percentage: 60
+      )
+
       insert(:skill_class_score, user: user_2, skill_class: skill_class_2, level: :normal)
       insert(:skill_class_score, user: user_2, skill_class: skill_class_3, level: :normal)
 

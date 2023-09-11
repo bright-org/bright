@@ -35,7 +35,7 @@ defmodule BrightWeb.UserConfirmEmailControllerTest do
     } do
       conn = get(conn, ~p"/users/confirm_email/#{token}")
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "メールアドレスの更新に成功しました"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "メールアドレスの変更に成功しました"
       assert redirected_to(conn) == ~p"/mypage"
       assert Repo.get_by(User, email: new_email)
       refute Repo.get_by(UserToken, user_id: user.id, context: "change:#{user.email}")

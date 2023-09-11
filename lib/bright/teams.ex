@@ -469,4 +469,22 @@ defmodule Bright.Teams do
     {:ok, _team_member_user} =
       update_team_member_users_is_star(team_member_user, %{is_star: !team_member_user.is_star})
   end
+
+  @doc """
+  チームに所属しているかを確認
+  """
+  def joined_teams_by_user_id!(current_user_id, other_user_id) do
+    query =
+      from(tmbu in TeamMemberUsers,
+        join: t in assoc(tmbu, :team),
+        join: m in assoc(t, :member_users),
+        where:
+          tmbu.user_id == ^current_user_id and not is_nil(tmbu.invitation_confirmed_at) and
+            m.user_id == ^other_user_id,
+        select: m.user_id,
+        distinct: true
+      )
+
+    if Repo.exists?(query), do: true, else: raise(Ecto.NoResultsError, queryable: query)
+  end
 end

@@ -144,4 +144,46 @@ defmodule BrightWeb.UserLoginLiveTest do
       assert conn.resp_body =~ "確認メールが届かなかった方へ"
     end
   end
+
+  describe "SNS link button" do
+    test "shows sns link buttons", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      assert lv
+             |> has_element?(
+               ~s{a[href="/auth/google"]},
+               "Google"
+             )
+
+      assert lv
+             |> has_element?(
+               ~s{a[href="#"]},
+               "GitHub"
+             )
+
+      assert lv
+             |> has_element?(
+               ~s{a[href="#"]},
+               "Facebook"
+             )
+
+      assert lv
+             |> has_element?(
+               ~s{a[href="#"]},
+               "Twitter"
+             )
+    end
+
+    test "clicks 「Google」 button", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      lv
+      |> element(
+        "a",
+        "Google"
+      )
+      |> render_click()
+      |> follow_redirect(conn, ~p"/auth/google")
+    end
+  end
 end

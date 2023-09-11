@@ -251,6 +251,13 @@ defmodule BrightWeb.Router do
     end
   end
 
+  scope "/api", BrightWeb do
+    pipe_through(:api)
+
+    scope "/v1" do
+    end
+  end
+
   # See https://hexdocs.pm/plug/Plug.BasicAuth.html#module-runtime-time-usage
   defp admin_basic_auth(conn, _opts) do
     case System.fetch_env("MIX_ENV") do
