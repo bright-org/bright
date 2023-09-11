@@ -1,4 +1,4 @@
-defmodule BrightWeb.SkillPanelLive.Graph do
+defmodule BrightWeb.GraphLive.Graphs do
   use BrightWeb, :live_view
 
   alias Bright.SkillPanels.SkillPanel
