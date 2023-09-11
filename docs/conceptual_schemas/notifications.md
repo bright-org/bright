@@ -21,6 +21,8 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_チーム招待" : ""
   "通知_チーム招待" ||--|| "Brightユーザー" : ""
 
+  "Brightユーザー" ||--o{ "通知_振り返り" : ""
+
   "Brightユーザー" ||--o{ "通知_採用の調整" : ""
   "通知_採用の調整" ||--|| "Brightユーザー" : ""
 
@@ -34,6 +36,8 @@ erDiagram
 erDiagram
   "users" ||--o{ "notification_team_invitations" : ""
   "notification_team_invitations" ||--|| "users" : ""
+
+  "users" ||--o{ "notification_looking_backs" : ""
 
   "users" ||--o{ "notification_recruitment_coordinations" : ""
   "notification_recruitment_coordinations" ||--|| "users" : ""
@@ -49,19 +53,13 @@ erDiagram
     string status "ステータス： enum（participation:参加する, abstention:参加しない）"
   }
   
-  notification_dailies {
+  notification_looking_backs {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
   }
 
-  notification_weeklies {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
-  }
 
   notification_recruitment_coordinations {
     id from_user_id	FK "送信元ユーザー"
