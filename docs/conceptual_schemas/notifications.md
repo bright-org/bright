@@ -21,9 +21,6 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_チーム招待" : ""
   "通知_チーム招待" ||--|| "Brightユーザー" : ""
 
-  "Brightユーザー" ||--o{ "通知_デイリー" : ""
-  "Brightユーザー" ||--o{ "通知_ウイークリー" : ""
-
   "Brightユーザー" ||--o{ "通知_採用の調整" : ""
   "通知_採用の調整" ||--|| "Brightユーザー" : ""
 
@@ -37,9 +34,6 @@ erDiagram
 erDiagram
   "users" ||--o{ "notification_team_invitations" : ""
   "notification_team_invitations" ||--|| "users" : ""
-
-  "users" ||--o{ "notification_dailies" : ""
-  "users" ||--o{ "notification_weeklies" : ""
 
   "users" ||--o{ "notification_recruitment_coordinations" : ""
   "notification_recruitment_coordinations" ||--|| "users" : ""
@@ -136,7 +130,7 @@ erDiagram
 
   "users" ||--o{ "notification_communities" : "" 
   "notification_communities" ||--o{ "communities" : ""
-  
+
    "communities" ||--|| "users" : ""
 
   notification_improve_skills {
