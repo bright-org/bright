@@ -403,10 +403,17 @@ defmodule BrightWeb.MyTeamLive do
 
     display_team = Teams.get_team_with_member_users!(team_id)
 
+    display_skill_panel_id =
+      if is_nil(socket.assigns.display_skill_panel) do
+        nil
+      else
+        socket.assigns.display_skill_panel.id
+      end
+
     socket =
       socket
       |> assign(:display_team, display_team)
-      |> deside_redirect(display_team, socket.assigns.display_skill_panel.id, nil)
+      |> deside_redirect(display_team, display_skill_panel_id, nil)
 
     {:noreply, socket}
   end

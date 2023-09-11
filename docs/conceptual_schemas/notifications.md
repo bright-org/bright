@@ -21,13 +21,11 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_チーム招待" : ""
   "通知_チーム招待" ||--|| "Brightユーザー" : ""
 
-  "Brightユーザー" ||--o{ "通知_デイリー" : ""
-  "Brightユーザー" ||--o{ "通知_ウイークリー" : ""
+  "Brightユーザー" ||--o{ "通知_振り返り" : ""
 
   "Brightユーザー" ||--o{ "通知_採用の調整" : ""
   "通知_採用の調整" ||--|| "Brightユーザー" : ""
 
-  "Brightユーザー" ||--o{ "通知_スキルパネル更新" : ""
   "Brightユーザー" ||--o{ "通知_運営" : ""
 
 ``````
@@ -38,13 +36,11 @@ erDiagram
   "users" ||--o{ "notification_team_invitations" : ""
   "notification_team_invitations" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_dailies" : ""
-  "users" ||--o{ "notification_weeklies" : ""
+  "users" ||--o{ "notification_looking_backs" : ""
 
   "users" ||--o{ "notification_recruitment_coordinations" : ""
   "notification_recruitment_coordinations" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_skill_panel_updates"　: ""
   "users" ||--o{ "notification_operations" : ""
 
   notification_team_invitations {
@@ -55,30 +51,18 @@ erDiagram
     string status "ステータス： enum（participation:参加する, abstention:参加しない）"
   }
   
-  notification_dailies {
+  notification_looking_backs {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
   }
 
-  notification_weeklies {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
-  }
 
   notification_recruitment_coordinations {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string url	"採用の回答するモーダルのURL"
-  }
-
-  notification_skill_panel_updates {
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
   }
 
   notification_operations {
@@ -108,8 +92,10 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_気になる" : ""
   "通知_気になる" ||--|| "Brightユーザー" : ""
 
-  "Brightユーザー" ||--o{ "通知_運営公式" : ""
-  "通知_運営公式" ||--|| "Brightユーザー" : ""
+  "Brightユーザー" ||--o{ "通知_コミュニティ" : ""
+  "通知_コミュニティ" ||--o{ "コミュニティ" : ""
+
+  "コミュニティ" ||--|| "Brightユーザー" : ""
 
 ```
 
@@ -132,7 +118,10 @@ erDiagram
   "users" ||--o{ "notification_watches" : ""
   "notification_watches" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_official_teams" : ""
+  "users" ||--o{ "notification_communities" : "" 
+  "notification_communities" ||--o{ "communities" : ""
+
+   "communities" ||--|| "users" : ""
 
   notification_improve_skills {
     id from_user_id	FK "送信元ユーザー"
@@ -171,11 +160,16 @@ erDiagram
     string url	"相手のmypageのURL"
   }
 
-  notification_official_teams {
+  notification_communities {
     id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
+  }
+
+  communities {
+    id user_id FK "ユーザー index"
+    id community_id	FK "コミュニティid"
+    string name "コミュニティ名"
     boolean participation "参加状況 true: 参加、 false: 脱退する"
   }
 
@@ -189,13 +183,7 @@ erDiagram
 　・チーム招待
 　　「参加する」「参加しない」
 　　　（チーム招待側の処理でメールを送信しているため制御外）
-　・デイリー
-　　「内容を見る」
-　　　└通知（DB）追加時にメールも送信する
-　・ウイークリー
-　　「内容を見る」
-　　　└通知（DB）追加時にメールも送信する
-　・採用の調整
+　・採用の調整　※面談調整の方で別枠化する可能性があるため今は暫定
 　　「確認する」
 　　　└通知（DB）追加時にメールも送信する
 　　　└専用のモーダル（回答するモーダル）
@@ -204,12 +192,13 @@ erDiagram
 　・スキルパネル更新
 　　「内容を見る」
 　　　└通知（DB）追加時にメールも送信する（「成長グラフを見る」をナビゲーションを案内）
-　・運営
+　・運営　※CRUD API
 　　「内容を見る」
 　　　└通知（DB）追加時にメールも送信する
+　　　※「デイリー」「ウイークリー」もこのタブに含む
 
 さまざまな人たちとの交流
-　・スキルアップ
+　・スキルアップ ※スキルアップの方で別枠化する可能性があるため今は暫定
 　　「スキルを確認」「祝福する」
         ｜　　　　　　　└　相手の祝福されたテーブルに追加
 　　　　└ジェムのリンクと同じ
@@ -225,7 +214,7 @@ erDiagram
 　・気になる
 　　「相手を見る」
 　　　└URL（詳細不要）
-　・運営公式
+　・コミュニティ　※CRUD API
 　　「内容を見る」　ラベル：「参加中」「未参加」
 　　　　└「参加する」「脱退する」のトグル
 　　　　└通知（DB）追加時にメールも送信する
