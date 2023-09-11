@@ -21,7 +21,9 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   @impl true
   def handle_params(params, uri, socket) do
-    current_path = URI.parse(uri).path
+    current_path =
+      URI.parse(uri).path
+      |> String.replace("/", "")
 
     socket
     |> assign(:current_path, current_path)
@@ -83,7 +85,6 @@ defmodule BrightWeb.OnboardingLive.Index do
   defp open(),
     do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 
-  defp page_title("/onboardings"), do: "オンボーディング"
-  # αはスキルを選ぶにしておく
-  defp page_title("/more_skills"), do: "スキルを選ぶ"
+  defp page_title("onboardings"), do: "オンボーディング"
+  defp page_title("more_skills"), do: "スキルを選ぶ"
 end
