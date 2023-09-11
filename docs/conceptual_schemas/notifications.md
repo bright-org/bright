@@ -108,8 +108,8 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_気になる" : ""
   "通知_気になる" ||--|| "Brightユーザー" : ""
 
-  "Brightユーザー" ||--o{ "通知_運営公式" : ""
-  "通知_運営公式" ||--|| "Brightユーザー" : ""
+  "Brightユーザー" ||--o{ "通知_コミュニティ" : ""
+  "通知_コミュニティ" ||--|| "Brightユーザー" : ""
 
 ```
 
@@ -132,7 +132,7 @@ erDiagram
   "users" ||--o{ "notification_watches" : ""
   "notification_watches" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_official_teams" : ""
+  "users" ||--o{ "notification_communities" : ""
 
   notification_improve_skills {
     id from_user_id	FK "送信元ユーザー"
@@ -171,9 +171,8 @@ erDiagram
     string url	"相手のmypageのURL"
   }
 
-  notification_official_teams {
+  notification_communities {
     id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
     boolean participation "参加状況 true: 参加、 false: 脱退する"
