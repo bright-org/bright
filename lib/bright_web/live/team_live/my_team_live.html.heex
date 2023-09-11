@@ -19,6 +19,23 @@
     <p class="leading-tight">対象スキルの<br />切り替え</p>
     <!-- スキルパネル menu -->
     <.mega_menu_button
+      :if={is_nil(@display_team)}
+      id="mega_menu_skill_panel"
+      label="スキル"
+      dropdown_offset_skidding="156"
+      menu_width="w-[450px]"
+    >
+      <div
+        class="w-[440px] flex items-center text-base rounded"
+        >
+        <div class="text-left flex items-center text-base px-1 py-1 flex-1 m-2">所属しているチームはありません</div>
+          <a href="/teams/new" class="text-sm font-bold px-5 py-3 rounded text-white bg-base m-2">
+             チームを作る
+           </a>
+      </div>
+    </.mega_menu_button>
+    <.mega_menu_button
+      :if={!is_nil(@display_team)}
       id="mega_menu_skill_panel"
       label="スキル"
       dropdown_offset_skidding="307"
@@ -41,7 +58,7 @@
     <button
       data-modal-target="defaultModal"
       data-modal-toggle="defaultModal"
-      class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold ml-auto"
+      class="text-sm font-bold px-5 py-3 rounded text-white bg-base ml-auto"
       phx-click={show_modal("create-team-modal")}
     >
       チームを作る
