@@ -14,6 +14,11 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
   def render(assigns) do
     ~H"""
     <div class="flex">
+      <%= if is_nil(@skill_class_score) do %>
+      <div class="bg-white w-[450px] flex items-center justify-center">
+        <p class="text-start">データが破損しています</p>
+      </div>
+      <% else %>
       <div class="bg-white w-[450px]">
         <.tab
           id={"skill_search_result_tab_#{@index}"}
@@ -46,6 +51,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           </div>
         </div>
       </div>
+      <% end %>
       <div class="border-l border-brightGray-200 border-dashed w-[512px] ml-2 px-2">
         <div class="flex">
           <.job_area job={@user.user_job_profile} last_updated={@user.last_updated} />
@@ -97,12 +103,18 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
         selected_skill_panel.class
       )
 
-    socket
-    |> assign(:skill_class_score, skill_class_score)
-    |> assign(:skill_gem_data, get_skill_gem_data(skill_gem))
-    |> assign(:skill_gem_labels, get_skill_gem_labels(skill_gem))
-    |> assign_skill_score_dict()
-    |> assign_counter()
+    case length(skill_gem) > 2 do
+      true ->
+        socket
+        |> assign(:skill_class_score, skill_class_score)
+        |> assign(:skill_gem_data, get_skill_gem_data(skill_gem))
+        |> assign(:skill_gem_labels, get_skill_gem_labels(skill_gem))
+        |> assign_skill_score_dict()
+        |> assign_counter()
+
+      false ->
+        assign(socket, :skill_class_score, nil)
+    end
   end
 
   @impl true
