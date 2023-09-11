@@ -26,7 +26,6 @@ erDiagram
   "Brightユーザー" ||--o{ "通知_採用の調整" : ""
   "通知_採用の調整" ||--|| "Brightユーザー" : ""
 
-  "Brightユーザー" ||--o{ "通知_スキルパネル更新" : ""
   "Brightユーザー" ||--o{ "通知_運営" : ""
 
 ``````
@@ -42,7 +41,6 @@ erDiagram
   "users" ||--o{ "notification_recruitment_coordinations" : ""
   "notification_recruitment_coordinations" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_skill_panel_updates"　: ""
   "users" ||--o{ "notification_operations" : ""
 
   notification_team_invitations {
@@ -65,12 +63,6 @@ erDiagram
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string url	"採用の回答するモーダルのURL"
-  }
-
-  notification_skill_panel_updates {
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
   }
 
   notification_operations {
