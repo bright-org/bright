@@ -176,10 +176,10 @@ defmodule BrightWeb.Router do
       live "/more_skills/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel
       live "/more_skills/jobs/:job_id", OnboardingLive.SkillPanels
       live "/more_skills/jobs/:job_id/skill_panels/:id", OnboardingLive.SkillPanel
-      live "/graphs", SkillPanelLive.Graph, :show
-      live "/graphs/:skill_panel_id", SkillPanelLive.Graph, :show
-      live "/graphs/:skill_panel_id/:user_name", SkillPanelLive.Graph, :show
-      live "/graphs/:skill_panel_id/anon/:user_name_encrypted", SkillPanelLive.Graph, :show
+      live "/graphs", GraphLive.Graphs, :show
+      live "/graphs/:skill_panel_id", GraphLive.Graphs, :show
+      live "/graphs/:skill_panel_id/:user_name", GraphLive.Graphs, :show
+      live "/graphs/:skill_panel_id/anon/:user_name_encrypted", GraphLive.Graphs, :show
 
       live "/panels", SkillPanelLive.Skills, :show
       live "/panels/:skill_panel_id", SkillPanelLive.Skills, :show
