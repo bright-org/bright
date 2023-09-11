@@ -14,7 +14,7 @@ defmodule BrightWeb.GraphLive.Graphs do
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"], "graphs")
      |> assign(:select_label, "now")
-     |> assign(:page_title, "スキルパネル")
+     |> assign(:page_title, "成長グラフ")
      |> assign_page_sub_title()}
   end
 
