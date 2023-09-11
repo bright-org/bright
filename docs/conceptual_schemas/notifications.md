@@ -168,7 +168,8 @@ erDiagram
 
   communities {
     id user_id FK "ユーザー index"
-    id community_id	FK "コミュニティーid"
+    id community_id	FK "コミュニティid"
+    string name "コミュニティ名"
     boolean participation "参加状況 true: 参加、 false: 脱退する"
   }
 
@@ -191,7 +192,7 @@ erDiagram
 　・スキルパネル更新
 　　「内容を見る」
 　　　└通知（DB）追加時にメールも送信する（「成長グラフを見る」をナビゲーションを案内）
-　・運営
+　・運営　※CRUD API
 　　「内容を見る」
 　　　└通知（DB）追加時にメールも送信する
 　　　※「デイリー」「ウイークリー」もこのタブに含む
@@ -213,7 +214,7 @@ erDiagram
 　・気になる
 　　「相手を見る」
 　　　└URL（詳細不要）
-　・コミュニティ
+　・コミュニティ　※CRUD API
 　　「内容を見る」　ラベル：「参加中」「未参加」
 　　　　└「参加する」「脱退する」のトグル
 　　　　└通知（DB）追加時にメールも送信する
