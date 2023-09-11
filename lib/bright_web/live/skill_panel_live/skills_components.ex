@@ -189,7 +189,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skills_table(assigns) do
     ~H"""
-    <div class="skills-table-field h-[50vh] w-full overflow-auto mt-4">
+    <div class="skills-table-field h-[50vh] w-full overflow-auto scroll-pt-[76px] mt-4">
       <table class="skill-panel-table min-w-full border-t border-l border-brightGray-200">
         <thead class="sticky top-0 bg-white">
           <tr>
