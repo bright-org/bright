@@ -109,7 +109,9 @@ erDiagram
   "通知_気になる" ||--|| "Brightユーザー" : ""
 
   "Brightユーザー" ||--o{ "通知_コミュニティ" : ""
-  "通知_コミュニティ" ||--|| "Brightユーザー" : ""
+  "通知_コミュニティ" ||--o{ "コミュニティ" : ""
+
+  "コミュニティ" ||--|| "Brightユーザー" : ""
 
 ```
 
@@ -132,7 +134,10 @@ erDiagram
   "users" ||--o{ "notification_watches" : ""
   "notification_watches" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_communities" : ""
+  "users" ||--o{ "notification_communities" : "" 
+  "notification_communities" ||--o{ "communities" : ""
+  
+   "communities" ||--|| "users" : ""
 
   notification_improve_skills {
     id from_user_id	FK "送信元ユーザー"
@@ -175,6 +180,11 @@ erDiagram
     id from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
+  }
+
+  communities {
+    id user_id FK "ユーザー index"
+    id community_id	FK "コミュニティーid"
     boolean participation "参加状況 true: 参加、 false: 脱退する"
   }
 
