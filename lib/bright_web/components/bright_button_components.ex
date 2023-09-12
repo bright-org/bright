@@ -115,13 +115,19 @@ defmodule BrightWeb.BrightButtonComponents do
   """
   def plan_upgrade_button(assigns) do
     ~H"""
-    <button
-      type="button"
-      class="text-white bg-planUpgrade-600 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
+    <.link
+      href="https://bright-fun.org/plan"
+      target="_blank"
+      rel="noopener noreferrer"
     >
-      <span class="bg-white material-icons mr-1 !text-base !text-planUpgrade-600 rounded-full h-6 w-6 !font-bold material-icons-outlined">upgrade</span>
-      プランのアップグレード
-    </button>
+      <button
+        type="button"
+        class="text-white bg-planUpgrade-600 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
+      >
+        <span class="bg-white material-icons mr-1 !text-base !text-planUpgrade-600 rounded-full h-6 w-6 !font-bold material-icons-outlined">upgrade</span>
+        プランのアップグレード
+      </button>
+    </.link>
     """
   end
 
