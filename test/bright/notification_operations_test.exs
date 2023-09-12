@@ -1,7 +1,7 @@
 defmodule Bright.NotificationOperationsTest do
   use Bright.DataCase
 
-  alias Bright.Notifications
+  alias Bright.NotificationOperations
 
   import Bright.Factory
 
@@ -13,15 +13,16 @@ defmodule Bright.NotificationOperationsTest do
     test "list_notification_operations/0 returns all notification_operations" do
       notification_operation = insert(:notification_operation)
 
-      assert Notifications.list_notification_operations() |> Repo.preload(:from_user) == [
-               notification_operation
-             ]
+      assert NotificationOperations.list_notification_operations() |> Repo.preload(:from_user) ==
+               [
+                 notification_operation
+               ]
     end
 
     test "get_notification_operation!/1 returns the notification_operation with given id" do
       notification_operation = insert(:notification_operation)
 
-      assert Notifications.get_notification_operation!(notification_operation.id)
+      assert NotificationOperations.get_notification_operation!(notification_operation.id)
              |> Repo.preload(:from_user) ==
                notification_operation
     end
@@ -36,7 +37,7 @@ defmodule Bright.NotificationOperationsTest do
       }
 
       assert {:ok, %NotificationOperation{} = notification_operation} =
-               Notifications.create_notification_operation(valid_attrs)
+               NotificationOperations.create_notification_operation(valid_attrs)
 
       assert notification_operation.message == "some message"
       assert notification_operation.from_user_id == user.id
@@ -45,7 +46,7 @@ defmodule Bright.NotificationOperationsTest do
 
     test "create_notification_operation/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
-               Notifications.create_notification_operation(@invalid_attrs)
+               NotificationOperations.create_notification_operation(@invalid_attrs)
     end
 
     test "update_notification_operation/2 with valid data updates the notification_operation" do
@@ -60,7 +61,10 @@ defmodule Bright.NotificationOperationsTest do
       }
 
       assert {:ok, %NotificationOperation{} = notification_operation} =
-               Notifications.update_notification_operation(notification_operation, update_attrs)
+               NotificationOperations.update_notification_operation(
+                 notification_operation,
+                 update_attrs
+               )
 
       assert notification_operation.message == "some updated message"
       assert notification_operation.from_user_id == user.id
@@ -71,10 +75,13 @@ defmodule Bright.NotificationOperationsTest do
       notification_operation = insert(:notification_operation)
 
       assert {:error, %Ecto.Changeset{}} =
-               Notifications.update_notification_operation(notification_operation, @invalid_attrs)
+               NotificationOperations.update_notification_operation(
+                 notification_operation,
+                 @invalid_attrs
+               )
 
       assert notification_operation ==
-               Notifications.get_notification_operation!(notification_operation.id)
+               NotificationOperations.get_notification_operation!(notification_operation.id)
                |> Repo.preload(:from_user)
     end
 
@@ -82,10 +89,10 @@ defmodule Bright.NotificationOperationsTest do
       notification_operation = insert(:notification_operation)
 
       assert {:ok, %NotificationOperation{}} =
-               Notifications.delete_notification_operation(notification_operation)
+               NotificationOperations.delete_notification_operation(notification_operation)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Notifications.get_notification_operation!(notification_operation.id)
+        NotificationOperations.get_notification_operation!(notification_operation.id)
       end
     end
 
@@ -93,7 +100,7 @@ defmodule Bright.NotificationOperationsTest do
       notification_operation = insert(:notification_operation)
 
       assert %Ecto.Changeset{} =
-               Notifications.change_notification_operation(notification_operation)
+               NotificationOperations.change_notification_operation(notification_operation)
     end
   end
 end
