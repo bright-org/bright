@@ -184,14 +184,13 @@ defmodule BrightWeb.ProfileComponents do
   attr :skill_panel, :string, required: true
   attr :desired_income, :string, default: ""
   attr :encrypt_user_name, :string, required: true
+  attr :click_event, :string, default: ""
+  attr :click_target, :string, default: nil
 
   def profile_stock_small_with_remove_button(assigns) do
     ~H"""
     <li class="relative text-left flex items-center text-base p-1  bg-white w-1/2">
-      <.link
-        class="inline-flex items-center gap-x-6 w-full hover:bg-brightGray-50"
-        href={"/mypage/anon/#{@encrypt_user_name}"}
-      >
+      <.profile_stock_small_link click_event={@click_event} click_target={@click_target} encrypt_user_name={@encrypt_user_name}>
         <img
           class="inline-block h-10 w-10 rounded-full"
           src="/images/avatar.png"
@@ -200,32 +199,29 @@ defmodule BrightWeb.ProfileComponents do
           <p>検索：<%= @skill_panel %></p>
           <span class="text-brightGray-300">(<%= @stock_date %>)</span>
           <span class="text-brightGray-300">希望年収：<%= @desired_income %></span>
-
         </div>
-      </.link>
+      </.profile_stock_small_link>
       <button
-          phx-click={JS.push("remove_user", value: %{stock_id: @stock_id})}
-          phx-target={@remove_user_target}
-          class="absolute top-1 right-4"
-        >
-          <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
-            close
-          </span>
-        </button>
-
+        phx-click={JS.push("remove_user", value: %{stock_id: @stock_id})}
+        phx-target={@remove_user_target}
+        class="absolute top-1 right-4"
+      >
+        <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+          close
+        </span>
+      </button>
     </li>
     """
   end
 
+  # 基本プロフィール マイページ遷移用リンク
   defp profile_small_link(%{click_event: nil} = assigns) do
     user_name =
       if assigns.encrypt_user_name == "",
         do: assigns.user_name,
         else: "anon/#{assigns.encrypt_user_name}"
 
-    assigns =
-      assigns
-      |> assign(:user_name, user_name)
+    assigns = assign(assigns, :user_name, user_name)
 
     ~H"""
     <a class="cursor-pointer inline-flex items-center gap-x-6" href={"/mypage/#{@user_name}"}>
@@ -236,6 +232,7 @@ defmodule BrightWeb.ProfileComponents do
     """
   end
 
+  # 基本プロフィール root LiveView用イベント
   defp profile_small_link(%{click_event: _, click_target: nil} = assigns) do
     ~H"""
     <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-value-name={@user_name} phx-value-encrypt_user_name={@encrypt_user_name}>
@@ -244,11 +241,53 @@ defmodule BrightWeb.ProfileComponents do
     """
   end
 
+  # 基本プロフィール LiveComponent用イベント
   defp profile_small_link(assigns) do
     ~H"""
     <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-target={@click_target} phx-value-name={@user_name} phx-value-encrypt_user_name={@encrypt_user_name}>
       <%= render_slot(@inner_block) %>
     </a>
+    """
+  end
+
+  # 採用候補者 マイページ遷移用リンク
+  defp profile_stock_small_link(%{click_event: nil} = assigns) do
+    ~H"""
+    <.link
+      class="inline-flex items-center gap-x-6 w-full hover:bg-brightGray-50"
+      href={"/mypage/anon/#{@encrypt_user_name}"}
+    >
+      <%= render_slot(@inner_block) %>
+    </.link>
+    """
+  end
+
+  # 採用候補者 root LiveView用イベント
+  # 成長グラフ／スキルパネルのメガメニューで利用
+  defp profile_stock_small_link(%{click_event: _, click_target: nil} = assigns) do
+    ~H"""
+    <.link
+      class="inline-flex items-center gap-x-6 w-full hover:bg-brightGray-50"
+      phx-click={@click_event}
+      phx-value-encrypt_user_name={@encrypt_user_name}
+    >
+      <%= render_slot(@inner_block) %>
+    </.link>
+    """
+  end
+
+  # 採用候補者 LiveComponent用イベント
+  # スキルパネル「個人と比較」で利用
+  defp profile_stock_small_link(assigns) do
+    ~H"""
+    <.link
+      class="inline-flex items-center gap-x-6 w-full hover:bg-brightGray-50"
+      phx-click={@click_event}
+      phx-target={@click_target}
+      phx-value-encrypt_user_name={@encrypt_user_name}
+    >
+      <%= render_slot(@inner_block) %>
+    </.link>
     """
   end
 end
