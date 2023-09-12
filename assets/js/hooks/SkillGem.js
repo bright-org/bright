@@ -278,6 +278,7 @@ export const SkillGem = {
     this.drawRaderGraph(this.el)
   },
   updated() {
+    if (window.myRadar[this.el.id] == undefined) return
     window.myRadar[this.el.id].destroy()
     this.ctx.removeEventListener('click', this.clickEvent)
     this.drawRaderGraph(this.el)
