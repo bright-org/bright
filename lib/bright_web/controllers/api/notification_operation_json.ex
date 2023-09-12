@@ -1,4 +1,4 @@
-defmodule BrightWeb.NotificationOperationJSON do
+defmodule BrightWeb.Api.NotificationOperationJSON do
   alias Bright.Notifications.NotificationOperation
 
   @doc """

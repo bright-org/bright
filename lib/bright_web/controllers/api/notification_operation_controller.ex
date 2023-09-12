@@ -1,4 +1,4 @@
-defmodule BrightWeb.NotificationOperationController do
+defmodule BrightWeb.Api.NotificationOperationController do
   use BrightWeb, :controller
 
   alias Bright.Notifications
