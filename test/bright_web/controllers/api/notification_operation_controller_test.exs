@@ -1,4 +1,4 @@
-defmodule BrightWeb.NotificationOperationControllerTest do
+defmodule BrightWeb.Api.NotificationOperationControllerTest do
   use BrightWeb.ConnCase
   import Bright.Factory
   alias Bright.Notifications.NotificationOperation
