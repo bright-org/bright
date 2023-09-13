@@ -44,7 +44,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     ~H"""
     <div>
       <.tab
-        id={"related_team_card_tab#{@id}"}
+        id={"related-team-card-tab#{@id}"}
         tabs={@tabs}
         selected_tab={@card.selected_tab}
         page={@card.page_params.page}
@@ -52,9 +52,9 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         menu_items={show_menu(assigns)}
         target={@myself}
       >
-        <div class="pt-3 pb-1 px-6 h-[216px]">
+        <div class="pt-3 pb-1 px-6 h-[226px]">
           <% # TODO ↓α版対応 %>
-          <ul :if={@card.selected_tab != "joined_teams"} class="flex gap-y-2.5 flex-col">
+          <ul :if={@card.selected_tab != "joined_teams"} class="flex gap-y-2 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
                 βリリース（10月予定）で利用可能になります
@@ -64,7 +64,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
           <% # TODO ↑α版対応 %>
           <% # TODO ↓α版対応 @card.selected_tab == "joined_teams" && の条件を削除 %>
         <%= if @card.selected_tab == "joined_teams" && @card.total_entries <= 0 do %>
-          <ul class="flex gap-y-2.5 flex-col">
+          <ul class="flex gap-y-2 flex-col">
             <li
             class="flex items-center text-base p-1 rounded">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">所属しているチームはありません</div>
@@ -78,7 +78,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
           </ul>
         <% end %>
         <%= if @card.total_entries > 0 do %>
-          <ul class="flex gap-y-2.5 flex-col">
+          <ul class="flex gap-y-2 flex-col">
             <%= for team_member_user <- @card.entries do %>
               <.team_small
                 id={team_member_user.team.id}
