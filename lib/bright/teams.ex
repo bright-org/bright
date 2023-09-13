@@ -487,4 +487,12 @@ defmodule Bright.Teams do
 
     if Repo.exists?(query), do: true, else: raise(Ecto.NoResultsError, queryable: query)
   end
+
+  def raise_if_not_ulid(team_id) do
+    Ecto.ULID.cast(team_id)
+    |> case do
+      {:ok, _} -> nil
+      _ -> raise Ecto.NoResultsError, queryable: "Bright.Teams.Team"
+    end
+  end
 end
