@@ -1,4 +1,4 @@
-defmodule BrightWeb.SkillPanelLive.GraphTest do
+defmodule BrightWeb.GraphLive.GraphsTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest

@@ -104,6 +104,8 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
                   desired_income={if user_profile.desired_income == 0, do: "-" ,else: user_profile.desired_income}
                   encrypt_user_name={encrypt_user_name(user_profile.user)}
                   remove_user_target={@myself}
+                  click_event={click_event(@purpose)}
+                  click_target={@card_row_click_target}
                 />
               <% end %>
             <% end %>

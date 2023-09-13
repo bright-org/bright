@@ -106,19 +106,22 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply,
      socket
      |> update_by_score_change(skill_score, score)
-     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))}
+     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))
+     |> push_scroll_to()}
   end
 
   def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(ArrowDown Enter) do
     {:noreply,
      socket
-     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))}
+     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))
+     |> push_scroll_to()}
   end
 
   def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(ArrowUp) do
     {:noreply,
      socket
-     |> update(:focus_row, &Enum.max([1, &1 - 1]))}
+     |> update(:focus_row, &Enum.max([1, &1 - 1]))
+     |> push_scroll_to()}
   end
 
   def handle_event("shortcut", _params, socket) do
@@ -263,6 +266,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       counter: counter,
       skill_score_dict: skill_score_dict
     )
+  end
+
+  defp push_scroll_to(socket) do
+    # ヘッダーがstickyで非可視領域が2行あるため、フォーカス行から4つ前を指定
+    # 2つ前にして最上部に移動すると1つ前に入力した自分の結果が見えなくなる
+    socket
+    |> push_event("scroll-to", %{target: "skill-#{socket.assigns.focus_row - 4}"})
   end
 
   defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do

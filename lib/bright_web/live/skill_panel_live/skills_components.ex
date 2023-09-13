@@ -189,89 +189,91 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skills_table(assigns) do
     ~H"""
-    <div class="mt-4">
-      <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">
-        <tr>
-          <td colspan="4" class="!border-t !border-l-white !border-t-white !border-l">
-          </td>
-          <td class="!border-l !border-brightGray-200">
-            <div class="flex justify-center items-center min-w-[150px]">
-              <p class="inline-flex flex-1 justify-center">
-                <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
-              </p>
+    <div class="skills-table-field h-[50vh] w-full overflow-auto scroll-pt-[76px] mt-4">
+      <table class="skill-panel-table min-w-full border-t border-l border-brightGray-200">
+        <thead class="sticky top-0 bg-white">
+          <tr>
+            <td colspan="4" class="!border-t !border-l-white !border-t-white !border-l">
+            </td>
+            <td class="!border-l !border-brightGray-200">
+              <div class="flex justify-center items-center min-w-[150px]">
+                <p class="inline-flex flex-1 justify-center">
+                  <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
+                </p>
 
-              <%= if @editable do %>
+                <%= if @editable do %>
+                  <button
+                    :if={not @edit}
+                    type="button"
+                    class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    phx-click="edit"
+                  >
+                    <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
+                  </button>
+                  <button
+                    :if={@edit}
+                    type="button"
+                    class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    phx-click="submit"
+                  >
+                    <span class="material-symbols-outlined text-white hover:text-brightGray-900 !text-sm">cloud_done</span>
+                  </button>
+                <% end %>
+              </div>
+            </td>
+            <td :for={user <- @compared_users} class="!border-l !border-brightGray-200">
+              <div class="flex justify-center items-center">
+                <p class="inline-flex flex-1 justify-center"><%= if user.anonymous, do: "非表示", else: user.name %></p>
                 <button
-                  :if={not @edit}
                   type="button"
-                  class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-                  phx-click="edit"
+                  class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
+                  phx-click="reject_compared_user"
+                  phx-target={@myself}
+                  phx-value-name={user.name}
                 >
-                  <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
+                  <span class="material-icons-outlined !text-xs">close</span>
                 </button>
-                <button
-                  :if={@edit}
-                  type="button"
-                  class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-                  phx-click="submit"
-                >
-                  <span class="material-symbols-outlined text-white hover:text-brightGray-900 !text-sm">cloud_done</span>
-                </button>
-              <% end %>
-            </div>
-          </td>
-          <td :for={user <- @compared_users} class="!border-l !border-brightGray-200">
-            <div class="flex justify-center items-center">
-              <p class="inline-flex flex-1 justify-center"><%= if user.anonymous, do: "非表示", else: user.name %></p>
-              <button
-                type="button"
-                class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
-                phx-click="reject_compared_user"
-                phx-target={@myself}
-                phx-value-name={user.name}
-              >
-                <span class="material-icons-outlined !text-xs">close</span>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th class="bg-base text-white text-center w-[200px]">
-            知識エリア
-          </th>
-          <th class="bg-base text-white text-center w-[200px]">
-            カテゴリー
-          </th>
-          <th class="bg-base text-white text-center w-[420px]">
-            スキル
-          </th>
-          <th class="bg-base text-white text-center">
-            合計
-          </th>
-          <td>
-            <div class="flex justify-center gap-x-2">
-              <div class="min-w-[3em] flex items-center">
-                <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
-                <span class="score-high-percentage"><%= floor calc_percentage(@counter.high, @num_skills) %>％</span>
               </div>
-              <div class="min-w-[3em] flex items-center">
-                <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
-                <span class="score-middle-percentage"><%= floor calc_percentage(@counter.middle, @num_skills) %>％</span>
+            </td>
+          </tr>
+          <tr>
+            <th class="bg-base text-white text-center min-w-[200px]">
+              知識エリア
+            </th>
+            <th class="bg-base text-white text-center min-w-[200px]">
+              カテゴリー
+            </th>
+            <th class="bg-base text-white text-center min-w-[420px]">
+              スキル
+            </th>
+            <th class="bg-base text-white text-center">
+              合計
+            </th>
+            <td>
+              <div class="flex justify-center gap-x-2">
+                <div class="min-w-[3em] flex items-center">
+                  <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
+                  <span class="score-high-percentage"><%= floor calc_percentage(@counter.high, @num_skills) %>％</span>
+                </div>
+                <div class="min-w-[3em] flex items-center">
+                  <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
+                  <span class="score-middle-percentage"><%= floor calc_percentage(@counter.middle, @num_skills) %>％</span>
+                </div>
               </div>
-            </div>
-          </td>
-          <td :for={user <- @compared_users}>
-            <% user_data = Map.get(@compared_user_dict, user.name) %>
-            <div class="flex justify-center gap-x-2">
-              <div class="min-w-[3em] flex items-center">
-                <span class={[score_mark_class(:high, :amethyst), "inline-block mr-1"]}></span><%= user_data.high_skills_percentage %>％
+            </td>
+            <td :for={user <- @compared_users}>
+              <% user_data = Map.get(@compared_user_dict, user.name) %>
+              <div class="flex justify-center gap-x-2">
+                <div class="min-w-[3em] flex items-center">
+                  <span class={[score_mark_class(:high, :amethyst), "inline-block mr-1"]}></span><%= user_data.high_skills_percentage %>％
+                </div>
+                <div class="min-w-[3em] flex items-center">
+                  <span class={[score_mark_class(:middle, :amethyst), "inline-block mr-1"]}></span><%= user_data.middle_skills_percentage %>％
+                </div>
               </div>
-              <div class="min-w-[3em] flex items-center">
-                <span class={[score_mark_class(:middle, :amethyst), "inline-block mr-1"]}></span><%= user_data.middle_skills_percentage %>％
-              </div>
-            </div>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </thead>
 
         <%= for {[col1, col2, col3], row} <- @table_structure |> Enum.with_index(1) do %>
           <% focus = @focus_row == row %>

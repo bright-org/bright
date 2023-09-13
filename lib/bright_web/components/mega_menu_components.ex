@@ -9,18 +9,16 @@ defmodule BrightWeb.MegaMenuComponents do
   以下のattrを指定可能
 
   - id 画面内でメガメニューボタンを一意に識別できるID
-  - card_component 　一覧表示に使用するカードコンポーネント
   - label ボタンに表示する名称
-  - display_user  カードの取得に使用するユーザー
   - dropdown_offset_skidding ドロップダウンの描画オフセット(labelの文字数に応じて調整する必要がある)
-  - card_component liveComponentによるカード実装
-  - over_ride_on_card_row_click_target カードコンポーネント内の行クリック時のハンドラを呼び出し元のハンドラで実装するか否か falseの場合、本実装デフォルトの挙動(チームIDのみ指定してのチームスキル分析への遷移)を実行する
+  - menu_width ドロップダウンメニューの幅指定（デフォルトは750px）
 
   ## Examples
     <.mega_menu_button
       id="mega_menu_team"
       label="ボタンに表示する文言"
       dropdown_offset_skidding="307"
+      menu_width="w-[750px]"
     />
   """
 
@@ -29,6 +27,7 @@ defmodule BrightWeb.MegaMenuComponents do
   attr :id, :string, required: true
   attr :label, :string, required: true
   attr :dropdown_offset_skidding, :string, required: true
+  attr :menu_width, :string, required: false, default: "w-[750px]"
   slot :inner_block
 
   def mega_menu_button(assigns) do
@@ -53,7 +52,7 @@ defmodule BrightWeb.MegaMenuComponents do
       </button>
 
       <div
-        class="dropdownTarget z-10 hidden bg-white rounded-sm shadow w-[750px]"
+        class={"dropdownTarget z-10 hidden bg-white rounded-sm shadow #{@menu_width}"}
       >
         <%= render_slot(@inner_block) %>
       </div>
