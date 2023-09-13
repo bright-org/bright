@@ -174,7 +174,9 @@ defmodule Bright.UserSearches do
 
   # job_profile 希望年収
   defp desired_income_query(query, %{desired_income: income}) do
-    where(query, [job], job.desired_income <= ^income)
+    query
+    |> where([job], job.desired_income <= ^income)
+    |> or_where([job], is_nil(job.desired_income))
   end
 
   defp desired_income_query(query, _range_params), do: query
