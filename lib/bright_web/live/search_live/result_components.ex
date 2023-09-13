@@ -1,4 +1,5 @@
 defmodule BrightWeb.SearchLive.ResultComponents do
+  alias Bright.UserJobProfiles.UserJobProfile
   use BrightWeb, :component
 
   import BrightWeb.ChartComponents, only: [doughnut_graph: 1]
@@ -27,12 +28,12 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         <span>希望勤務地：<%= @job.office_pref %></span>
       </p>
       <% else %>
-      <p class="mb-2 ">
+      <p class="mb-2">
         <span>　　　出勤：不可</span>
       </p>
       <% end %>
 
-      <p class="mb-4">
+      <p class="mb-2">
         <%= if @job.remote_work do %>
           <span>　リモート：可<%= if @job.remote_working_hours, do: "　#{@job.remote_working_hours}" %>　土日祝<%= enable?(@job.remote_work_holidays)%></span>
         <% else %>
@@ -40,6 +41,9 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         <% end %>
       </p>
 
+      <p class="mb-4">
+        <span>　求職種類：<%= UserJobProfile.wish_job_type(@job) %></span>
+      </p>
       <p class="border-t border-brightGray-200 mb-2 mt-2 pt-2">
         <span>スキルの最終更新日：</span>
         <span><%=
