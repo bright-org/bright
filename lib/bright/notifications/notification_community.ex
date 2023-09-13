@@ -1,4 +1,7 @@
 defmodule Bright.Notifications.NotificationCommunity do
+  @moduledoc """
+  The NotificationCommunity context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias Bright.Accounts.User

@@ -98,7 +98,10 @@ defmodule Bright.NotificationCommunities do
       %Ecto.Changeset{data: %NotificationCommunity{}}
 
   """
-  def change_notification_community(%NotificationCommunity{} = notification_community, attrs \\ %{}) do
+  def change_notification_community(
+        %NotificationCommunity{} = notification_community,
+        attrs \\ %{}
+      ) do
     NotificationCommunity.changeset(notification_community, attrs)
   end
 end
