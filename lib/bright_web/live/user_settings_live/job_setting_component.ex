@@ -52,7 +52,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
             />
           </div>
           <div class="border-b border-brightGray-200 flex flex-wrap">
-            <div class="flex py-4">
+            <div class="flex pt-4">
               <div class="flex flex-col">
                 <span class="pt-1 w-32">求職種類</span>
                 <span class="pb-1 w-32">(複数可)</span>
@@ -83,6 +83,9 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               />
               </div>
             </div>
+            <div class="pl-32 pb-4 flex">
+              <span class="">※求職優先の方は、すべて選択するとスカウト検索がヒットしやすくなります</span>
+            </div>
           </div>
 
           <div class="flex flex-wrap py-4 w-full">
@@ -97,7 +100,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 />
                 <BrightCore.input
                   field={@form[:office_pref]}
-                  input_class="w-32"
+                  input_class="w-36"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :office_pref)}
                   prompt="希望勤務地"
@@ -105,7 +108,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 />
                 <BrightCore.input
                   field={@form[:office_working_hours]}
-                  input_class="w-32"
+                  input_class="w-36"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :office_working_hours)}
                   prompt="希望勤務時間"
@@ -129,7 +132,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 />
                 <BrightCore.input
                   field={@form[:remote_working_hours]}
-                  input_class="w-32"
+                  input_class="w-36"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :remote_working_hours)}
                   prompt="希望勤務時間"
