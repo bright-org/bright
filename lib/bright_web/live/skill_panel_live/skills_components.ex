@@ -202,14 +202,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </p>
 
                 <%= if @editable do %>
-                  <button
-                    :if={not @edit}
-                    type="button"
-                    class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-                    phx-click="edit"
-                  >
-                    <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
-                  </button>
+                  <.link class="link-form" patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}>
+                    <button
+                      :if={not @edit}
+                      type="button"
+                      class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
+                    >
+                      <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
+                    </button>
+                  </.link>
                   <button
                     :if={@edit}
                     type="button"

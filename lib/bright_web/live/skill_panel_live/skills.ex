@@ -156,6 +156,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp apply_action(socket, :show, _params), do: socket
 
+  defp apply_action(socket, :edit, _params), do: socket
+
   defp apply_action(socket, :show_evidences, params) do
     socket
     |> assign_skill(params["skill_id"])

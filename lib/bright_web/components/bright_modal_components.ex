@@ -18,7 +18,7 @@ defmodule BrightWeb.BrightModalComponents do
 
   - style_of_modal_flame_out モーダルフレーム外のスタイル
   - style_of_modal_flame モーダル枠全体のスタイル
-  - show_cancel_button 閉じるボタン(X)を表示するか否か
+  - enable_cancel_button 閉じるボタン(X)を表示するか否か
   - style_of_cancel_button_rayout 閉じるボタン(X)を囲むdevのスタイル
   - style_of_cancel_button 閉じるボタン(X)のスタイル
   - style_of_cancel_button_x_mark 閉じるボタン(X)のXマークのスタイル
