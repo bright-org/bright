@@ -21,7 +21,12 @@ defmodule Bright.CommunitiesTest do
     end
 
     test "create_community/1 with valid data creates a community" do
-      valid_attrs = %{name: "some name", user_id: "7488a646-e31f-11e4-aace-600308960662", community_id: "7488a646-e31f-11e4-aace-600308960662", participation: true}
+      valid_attrs = %{
+        name: "some name",
+        user_id: "7488a646-e31f-11e4-aace-600308960662",
+        community_id: "7488a646-e31f-11e4-aace-600308960662",
+        participation: true
+      }
 
       assert {:ok, %Community{} = community} = Communities.create_community(valid_attrs)
       assert community.name == "some name"
@@ -36,9 +41,17 @@ defmodule Bright.CommunitiesTest do
 
     test "update_community/2 with valid data updates the community" do
       community = community_fixture()
-      update_attrs = %{name: "some updated name", user_id: "7488a646-e31f-11e4-aace-600308960668", community_id: "7488a646-e31f-11e4-aace-600308960668", participation: false}
 
-      assert {:ok, %Community{} = community} = Communities.update_community(community, update_attrs)
+      update_attrs = %{
+        name: "some updated name",
+        user_id: "7488a646-e31f-11e4-aace-600308960668",
+        community_id: "7488a646-e31f-11e4-aace-600308960668",
+        participation: false
+      }
+
+      assert {:ok, %Community{} = community} =
+               Communities.update_community(community, update_attrs)
+
       assert community.name == "some updated name"
       assert community.user_id == "7488a646-e31f-11e4-aace-600308960668"
       assert community.community_id == "7488a646-e31f-11e4-aace-600308960668"
