@@ -19,7 +19,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       _skill_unit_score = insert(:skill_unit_score, user: user, skill_unit: skill_unit)
       insert(:skill_score, user: user, skill: skill_1, score: score)
       insert(:skill_score, user: user, skill: skill_2)
-      insert(:skill_score, user: user, skill: skill_3)
+      # skill_3 スコアを意図的に未作成
+      # insert(:skill_score, user: user, skill: skill_3)
     end
 
     %{
@@ -516,7 +517,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     setup [:register_and_log_in_user, :setup_skills]
 
     @tag score: nil
-    test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
+    test "shows modal case: skill_score NOT existing", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_1: skill_1
+    } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
@@ -524,9 +529,23 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences?class=1")
+      assert render(show_live) =~ skill_1.name
+    end
 
-      assert show_live
-             |> render() =~ skill_1.name
+    @tag score: :low
+    test "shows modal case: skill_score existing", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_1: skill_1
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      show_live
+      |> element("#skill-1 .link-evidence")
+      |> render_click()
+
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences?class=1")
+      assert render(show_live) =~ skill_1.name
     end
 
     @tag score: nil
@@ -585,7 +604,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     setup [:register_and_log_in_user, :setup_skills]
 
     @tag score: nil
-    test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
+    test "shows modal case: skill_score NOT existing", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_1: skill_1
+    } do
       skill_reference = insert(:skill_reference, skill: skill_1)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
@@ -594,11 +617,34 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/reference?class=1")
-
       assert render(show_live) =~ skill_1.name
 
-      assert show_live
-             |> has_element?(~s(iframe#iframe-skill-reference[src="#{skill_reference.url}"]))
+      assert has_element?(
+               show_live,
+               ~s(iframe#iframe-skill-reference[src="#{skill_reference.url}"])
+             )
+    end
+
+    @tag score: :low
+    test "shows modal case: skill_score existing", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_1: skill_1
+    } do
+      skill_reference = insert(:skill_reference, skill: skill_1)
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      show_live
+      |> element("#skill-1 .link-reference")
+      |> render_click()
+
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/reference?class=1")
+      assert render(show_live) =~ skill_1.name
+
+      assert has_element?(
+               show_live,
+               ~s(iframe#iframe-skill-reference[src="#{skill_reference.url}"])
+             )
     end
 
     @tag score: nil
@@ -626,7 +672,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     setup [:register_and_log_in_user, :setup_skills]
 
     @tag score: nil
-    test "shows modal", %{conn: conn, skill_panel: skill_panel, skill_1: skill_1} do
+    test "shows modal case: skill_score NOT existing", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_1: skill_1
+    } do
       skill_exam = insert(:skill_exam, skill: skill_1)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
@@ -635,11 +685,26 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/exam?class=1")
-
       assert render(show_live) =~ skill_1.name
+      assert has_element?(show_live, ~s(iframe#iframe-skill-exam[src="#{skill_exam.url}"]))
+    end
 
-      assert show_live
-             |> has_element?(~s(iframe#iframe-skill-exam[src="#{skill_exam.url}"]))
+    @tag score: :low
+    test "shows modal case: skill_score existing", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_1: skill_1
+    } do
+      skill_exam = insert(:skill_exam, skill: skill_1)
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      show_live
+      |> element("#skill-1 .link-exam")
+      |> render_click()
+
+      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/exam?class=1")
+      assert render(show_live) =~ skill_1.name
+      assert has_element?(show_live, ~s(iframe#iframe-skill-exam[src="#{skill_exam.url}"]))
     end
 
     @tag score: nil
