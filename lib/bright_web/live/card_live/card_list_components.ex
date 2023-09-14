@@ -151,7 +151,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
     """
   end
 
-  def card_row(%{type: "official_team"} = assigns) do
+  def card_row(%{type: "community"} = assigns) do
     # TODO　仮実装 「参加する」「脱退する」切り替え
     assigns =
       assigns
@@ -160,9 +160,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
     ~H"""
     <li class="flex">
       <div class="text-left flex items-center text-base px-1 py-1 hover:bg-brightGray-50 flex-1 mr-2">
-        <span class="material-icons !text-sm !text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
-          <%= @notification.icon_type %>
-        </span>
+        <img src="/images/common/icons/other_team.svg" class="mr-2"/>
         <%= @notification.message %>
         <.elapsed_time inserted_at={@notification.inserted_at} />
       </div>
