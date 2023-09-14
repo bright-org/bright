@@ -263,7 +263,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     raise Ecto.NoResultsError, queryable: "Bright.SkillPanels.SkillClass"
   end
 
-  defp raise_if_not_ulid(ulid) do
+  def raise_if_not_ulid(ulid) do
     # スキルパネルの指定が不正だった場合は404で返す。
     # 導線はなく、URLで指定される可能性がある。
     Ecto.ULID.cast(ulid)

@@ -256,6 +256,9 @@ defmodule BrightWeb.Router do
 
     scope "/v1" do
       resources "/notification_operations", NotificationOperationController, except: [:new, :edit]
+
+      resources "/notification_communities", NotificationCommunityController,
+        except: [:new, :edit]
     end
   end
 
