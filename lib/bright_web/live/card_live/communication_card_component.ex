@@ -139,12 +139,4 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     socket
     |> assign(:card, card)
   end
-
-  # # TODO α版対応
-  # defp assign_card(%{assigns: %{card: card}} = socket) do
-  #   card = %{card | notifications: [], total_pages: 0}
-
-  #   socket
-  #   |> assign(:card, card)
-  # end
 end
