@@ -3,35 +3,43 @@ defmodule Bright.CommunitiesTest do
 
   alias Bright.Communities
 
+  import Bright.Factory
+
   describe "communities" do
     alias Bright.Communities.Community
-
-    import Bright.CommunitiesFixtures
 
     @invalid_attrs %{name: nil, user_id: nil, community_id: nil, participation: nil}
 
     test "list_communities/0 returns all communities" do
-      community = community_fixture()
-      assert Communities.list_communities() == [community]
+      community = insert(:community)
+
+      assert Communities.list_communities() |> Repo.preload([:user, community: [:from_user]]) == [
+               community
+             ]
     end
 
     test "get_community!/1 returns the community with given id" do
-      community = community_fixture()
-      assert Communities.get_community!(community.id) == community
+      community = insert(:community)
+
+      assert Communities.get_community!(community.id)
+             |> Repo.preload([:user, community: [:from_user]]) == community
     end
 
     test "create_community/1 with valid data creates a community" do
+      user = insert(:user)
+      notification_community = insert(:notification_community)
+
       valid_attrs = %{
         name: "some name",
-        user_id: "7488a646-e31f-11e4-aace-600308960662",
-        community_id: "7488a646-e31f-11e4-aace-600308960662",
+        user_id: user.id,
+        community_id: notification_community.id,
         participation: true
       }
 
       assert {:ok, %Community{} = community} = Communities.create_community(valid_attrs)
       assert community.name == "some name"
-      assert community.user_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert community.community_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert community.user_id == user.id
+      assert community.community_id == notification_community.id
       assert community.participation == true
     end
 
@@ -40,12 +48,14 @@ defmodule Bright.CommunitiesTest do
     end
 
     test "update_community/2 with valid data updates the community" do
-      community = community_fixture()
+      community = insert(:community)
+      user = insert(:user)
+      notification_community = insert(:notification_community)
 
       update_attrs = %{
         name: "some updated name",
-        user_id: "7488a646-e31f-11e4-aace-600308960668",
-        community_id: "7488a646-e31f-11e4-aace-600308960668",
+        user_id: user.id,
+        community_id: notification_community.id,
         participation: false
       }
 
@@ -53,25 +63,28 @@ defmodule Bright.CommunitiesTest do
                Communities.update_community(community, update_attrs)
 
       assert community.name == "some updated name"
-      assert community.user_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert community.community_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert community.user_id == user.id
+      assert community.community_id == notification_community.id
       assert community.participation == false
     end
 
     test "update_community/2 with invalid data returns error changeset" do
-      community = community_fixture()
+      community = insert(:community)
       assert {:error, %Ecto.Changeset{}} = Communities.update_community(community, @invalid_attrs)
-      assert community == Communities.get_community!(community.id)
+
+      assert community ==
+               Communities.get_community!(community.id)
+               |> Repo.preload([:user, community: [:from_user]])
     end
 
     test "delete_community/1 deletes the community" do
-      community = community_fixture()
+      community = insert(:community)
       assert {:ok, %Community{}} = Communities.delete_community(community)
       assert_raise Ecto.NoResultsError, fn -> Communities.get_community!(community.id) end
     end
 
     test "change_community/1 returns a community changeset" do
-      community = community_fixture()
+      community = insert(:community)
       assert %Ecto.Changeset{} = Communities.change_community(community)
     end
   end

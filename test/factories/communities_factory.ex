@@ -6,10 +6,10 @@ defmodule Bright.CommunityFactory do
   defmacro __using__(_opts) do
     quote do
       def community_factory do
-        %Bright.Notifications.NotificationCommunity{
+        %Bright.Communities.Community{
           name: Faker.Lorem.word(),
-          user_id: build(:user),
-          community_id: build(:notification_community),
+          user: build(:user),
+          community: build(:notification_community),
           participation: true
         }
       end
