@@ -37,20 +37,31 @@ defmodule BrightWeb.MypageLiveTest do
 
       # 各カードがあることを確認（コンポーネントが貼られていることのみを確認）
       assert index_live |> has_element?("h5", "重要な連絡")
+
       assert index_live |> has_element?("li a", "運営")
 
-      # αリリース対象外
-      # assert index_live |> has_element?("h5", "保有スキル（ジェムをクリックすると成長グラフが見れます）")
-      # assert index_live |> has_element?("li a", "エンジニア")
+      ["チーム招待", "振り返り", "採用の調整", "運営"]
+      |> Enum.each(fn x -> assert_tab(x, index_live) end)
+
+      assert index_live |> has_element?("h5", "保有スキル（ジェムをクリックすると成長グラフが見れます）")
+      # assert index_live |> has_element?("li a", "インフラ")
 
       assert index_live |> has_element?("h5", "さまざまな人たちとの交流")
-      assert index_live |> has_element?("li a", "コミュニティ")
+
+      ["スキルアップ", "祝福された", "1on1のお誘い", "推し活", "気になる", "コミュニティ"]
+      |> Enum.each(fn x -> assert_tab(x, index_live) end)
 
       assert index_live |> has_element?("h5", "関わっているチーム")
-      assert index_live |> has_element?("li a", "所属チーム")
+
+      ["所属チーム", "採用・育成チーム", "採用・育成支援先"]
+      |> Enum.each(fn x -> assert_tab(x, index_live) end)
 
       assert index_live |> has_element?("h5", "関わっているユーザー")
-      assert index_live |> has_element?("li a", "チーム")
+
+      ["気になる人", "チーム", "採用候補者"]
+      |> Enum.each(fn x -> assert_tab(x, index_live) end)
     end
   end
+
+  defp assert_tab(tab_name, live), do: assert(has_element?(live, "li a", tab_name))
 end
