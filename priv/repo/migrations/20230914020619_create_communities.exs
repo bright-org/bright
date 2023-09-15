@@ -3,7 +3,7 @@ defmodule Bright.Repo.Migrations.CreateCommunities do
 
   def change do
     create table(:communities) do
-      add :name, :string
+      add :name, :string, null: false
 
       timestamps()
     end
