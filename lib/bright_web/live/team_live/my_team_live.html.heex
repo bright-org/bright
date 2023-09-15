@@ -105,10 +105,10 @@
 
   <!-- チームメンバー -->
   <div class="flex gap-8 pt-4 flex-wrap">
-    <%= for display_skill_card <- @display_skill_cards do %>
+    <%= for {display_skill_card, index} <- Enum.with_index(@display_skill_cards) do %>
       <.live_component
         module={BrightWeb.TeamMemberSkillCardComponent}
-        id={"skill_card_#{display_skill_card.user.id}"}
+        id={"skill_card_#{index}"}
         display_skill_panel={@display_skill_panel}
         display_skill_card={display_skill_card}
         display_skill_classes={@display_skill_classes}

@@ -5,7 +5,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
   import BrightWeb.CardLive.CardListComponents
-  # alias Bright.Notifications
+  alias Bright.Notifications
 
   @tabs [
     {"skill_up", "スキルアップ"},
@@ -13,7 +13,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     {"1on1_invitation", "1on1のお誘い"},
     {"faves", "推し活"},
     {"watches", "気になる"},
-    {"community ", "コミュニティ"}
+    {"community", "コミュニティ"}
   ]
 
   @impl true
@@ -29,8 +29,8 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
         target={@myself}
       >
         <div class="pt-4 px-6 min-h-[216px]">
-        <% # TODO α版対応 :if={false"}を外すこと %>
-          <ul :if={false} class="flex gap-y-2.5 flex-col">
+        <% # TODO α版対応 :if={}を外すこと %>
+          <ul :if={@card.selected_tab == "community"} class="flex gap-y-2.5 flex-col">
             <li :if={Enum.count(@card.notifications) == 0} class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2" >
               <%= Enum.into(@tabs, %{}) |> Map.get(@card.selected_tab) %>はまだありません
@@ -42,7 +42,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
           </ul>
 
           <% # TODO ↓α版対応 %>
-          <ul class="flex gap-y-2.5 flex-col">
+          <ul :if={@card.selected_tab != "community"} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
                 βリリース（10月予定）で利用可能になります
@@ -64,7 +64,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
       socket
       |> assign(assigns)
       |> assign(:tabs, @tabs)
-      |> assign(:card, create_card_param("official_team"))
+      |> assign(:card, create_card_param("community"))
       |> assign_card()
     }
   end
@@ -126,24 +126,15 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
     }
   end
 
-  # TODO α版以降対応
-  # defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
-  #   notifications =
-  #     Notifications.list_notification_by_type(
-  #       user.id,
-  #       card.selected_tab,
-  #       card.page_params
-  #     )
+  defp assign_card(%{assigns: %{current_user: user, card: card}} = socket) do
+    notifications =
+      Notifications.list_notification_by_type(
+        user.id,
+        card.selected_tab,
+        card.page_params
+      )
 
-  #   card = %{card | notifications: notifications, total_pages: notifications.total_pages}
-
-  #   socket
-  #   |> assign(:card, card)
-  # end
-
-  # TODO α版対応
-  defp assign_card(%{assigns: %{card: card}} = socket) do
-    card = %{card | notifications: [], total_pages: 0}
+    card = %{card | notifications: notifications, total_pages: notifications.total_pages}
 
     socket
     |> assign(:card, card)

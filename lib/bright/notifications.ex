@@ -8,6 +8,7 @@ defmodule Bright.Notifications do
 
   alias Bright.Notifications.Notification
   alias Bright.Notifications.NotificationOperation
+  alias Bright.Notifications.NotificationCommunity
 
   @doc """
   Returns the list of notifications.
@@ -58,18 +59,22 @@ defmodule Bright.Notifications do
     |> Repo.paginate(page_param)
   end
 
-  # TODO Notification廃止後に削除予定
-  def list_notification_by_type(to_user_id, type, page_param) do
-    type_query(to_user_id, type)
+  def list_notification_by_type(_to_user_id, "community", page_param) do
+    from(notification_operation in NotificationCommunity,
+      order_by: [desc: notification_operation.inserted_at]
+    )
     |> Repo.paginate(page_param)
   end
 
-  defp type_query(to_user_id, type) do
-    from n in Notification,
-      where:
-        n.to_user_id == ^to_user_id and
-          n.type == ^type,
-      order_by: [desc: n.inserted_at]
+  # TODO Notification廃止後に削除予定
+  def list_notification_by_type(_to_user_id, _type, _page_param) do
+    %Scrivener.Page{
+      page_number: 1,
+      page_size: 5,
+      total_entries: 0,
+      total_pages: 0,
+      entries: []
+    }
   end
 
   @doc """

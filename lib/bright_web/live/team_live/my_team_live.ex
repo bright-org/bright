@@ -11,6 +11,7 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.Teams.Team
   alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel
+  alias BrightWeb.SkillPanelLive.SkillPanelHelper
   alias Bright.UserProfiles
 
   def mount(params, _session, %{assigns: %{live_action: :new}} = socket) do
@@ -74,6 +75,7 @@ defmodule BrightWeb.MyTeamLive do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
 
     try do
+      SkillPanelHelper.raise_if_not_ulid(skill_panel_id)
       SkillPanels.get_skill_panel!(skill_panel_id)
     rescue
       _e in Ecto.NoResultsError ->
@@ -108,6 +110,8 @@ defmodule BrightWeb.MyTeamLive do
 
   defp get_display_team(%{"team_id" => team_id}, user_id) do
     try do
+      Teams.raise_if_not_ulid(team_id)
+
       team = Teams.get_team_with_member_users!(team_id)
       # チームがHITしても自分が所属していない場合は無視する
       iam_member_user =
@@ -268,12 +272,21 @@ defmodule BrightWeb.MyTeamLive do
 
   defp assign_push_redirect(
          %{assigns: %{live_action: :index}} = socket,
-         %{"team_id" => _team_id, "skill_panel_id" => _skill_panel_id},
+         %{"team_id" => team_id, "skill_panel_id" => skill_panel_id},
          _display_team,
          _display_skill_panel
        ) do
-    # パラメータが完全に指定されていた場合、データの取得成否に関わらず、リダイレクトは行わない
-    socket
+    # パラメータが完全に指定されていた場合、指定されたULIDの妥当性チェック
+    try do
+      Teams.raise_if_not_ulid(team_id)
+      SkillPanelHelper.raise_if_not_ulid(skill_panel_id)
+      socket
+    rescue
+      _e in Ecto.NoResultsError ->
+        # パラメータ指定が不正な場合デフォルトでリダイレクト
+        socket
+        |> push_redirect(to: "/teams")
+    end
   end
 
   defp assign_push_redirect(
