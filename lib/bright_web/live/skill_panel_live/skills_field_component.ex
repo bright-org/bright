@@ -419,7 +419,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :now) do
-    SkillScores.list_user_skill_scores_from_skill_ids(user_id, skill_ids)
+    SkillScores.list_user_skill_scores_from_skill_ids(skill_ids, user_id)
   end
 
   defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :future) do
