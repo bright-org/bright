@@ -1,4 +1,7 @@
 defmodule Bright.Communities.Community do
+  @moduledoc """
+  コミュニティを扱うスキーマ。
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
