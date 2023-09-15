@@ -40,7 +40,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
               <% focus = row == @focus_row %>
               <% skill_score = @skill_score_dict[skill.id] %>
 
-              <div id={"skill-#{row}"} class={[focus && "bg-brightGray-50", "flex justify-between border p-2 my-1"]}>
+              <div id={"skill-#{row}-form"} class={[focus && "bg-brightGray-50", "flex justify-between border p-2 my-1"]}>
                 <p> <%= skill.name %> </p>
                 <div
                   class="flex-none flex justify-center gap-x-4 px-4"

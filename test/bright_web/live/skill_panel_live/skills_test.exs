@@ -276,15 +276,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       # skill_1
       # lowからlowのキャンセル操作相当
       show_live
-      |> element(~s{#skill-1 label[phx-value-score="low"]})
+      |> element(~s{#skill-1-form label[phx-value-score="low"]})
       |> render_click()
 
       show_live
-      |> element(~s{#skill-2 label[phx-value-score="middle"]})
+      |> element(~s{#skill-2-form label[phx-value-score="middle"]})
       |> render_click()
 
       show_live
-      |> element(~s{#skill-3 label[phx-value-score="high"]})
+      |> element(~s{#skill-3-form label[phx-value-score="high"]})
       |> render_click()
 
       submit_form(show_live)
@@ -306,22 +306,22 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       # 1を押してスコアを設定する。以下、2, 3と続く
       # 最終行は押してもそのままフォーカスした状態を継続する
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "1"})
 
-      refute has_element?(show_live, ~s{#skill-1 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-1-form [phx-window-keydown="shortcut"]})
 
       show_live
-      |> element(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "2"})
 
-      refute has_element?(show_live, ~s{#skill-2 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-2-form [phx-window-keydown="shortcut"]})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
 
-      assert has_element?(show_live, ~s{#skill-3 [phx-window-keydown="shortcut"]})
+      assert has_element?(show_live, ~s{#skill-3-form [phx-window-keydown="shortcut"]})
 
       submit_form(show_live)
 
@@ -342,30 +342,30 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       # ↓、Enter、↑による移動
       # 最初と最終行は押してもそのままフォーカスした状態を継続する
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "ArrowUp"})
 
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "ArrowDown"})
 
-      refute show_live |> has_element?(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-1-form [phx-window-keydown="shortcut"]})
 
       show_live
-      |> element(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "Enter"})
 
-      refute show_live |> has_element?(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-2-form [phx-window-keydown="shortcut"]})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "ArrowDown"})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "ArrowUp"})
 
-      refute show_live |> has_element?(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-3-form [phx-window-keydown="shortcut"]})
 
       submit_form(show_live)
     end
@@ -385,15 +385,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       start_edit(show_live)
 
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "1"})
 
       show_live
-      |> element(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "1"})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "2"})
 
       submit_form(show_live)
@@ -407,15 +407,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       start_edit(show_live)
 
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
 
       show_live
-      |> element(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
 
       submit_form(show_live)
