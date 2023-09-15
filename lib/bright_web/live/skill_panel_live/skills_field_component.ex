@@ -27,7 +27,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          table_structure={@table_structure}
          skill_panel={@skill_panel}
          skill_score_dict={@skill_score_dict}
-         focus_row={@focus_row}
          counter={@counter}
          num_skills={@num_skills}
          compared_users={@compared_users}
@@ -37,7 +36,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          query={@query}
          display_user={@display_user}
          editable={@editable}
-         edit={@edit}
          current_skill_dict={@current_skill_dict}
          current_skill_score_dict={@current_skill_score_dict}
          myself={@myself}
@@ -220,7 +218,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign(num_skills: [])
     |> assign(compared_users_stats: %{})
     |> assign(compared_user_dict: %{})
-    |> assign(edit: false)
     |> assign(editable: false)
   end
 

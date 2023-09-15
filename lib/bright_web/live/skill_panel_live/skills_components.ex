@@ -201,25 +201,18 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                   <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
                 </p>
 
-                <%= if @editable do %>
-                  <.link id="link-skills-form" patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}>
-                    <button
-                      :if={not @edit}
-                      type="button"
-                      class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-                    >
-                      <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
-                    </button>
-                  </.link>
+                <.link
+                  :if={@editable}
+                  id="link-skills-form"
+                  patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+                >
                   <button
-                    :if={@edit}
                     type="button"
                     class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-                    phx-click="submit"
                   >
-                    <span class="material-symbols-outlined text-white hover:text-brightGray-900 !text-sm">cloud_done</span>
+                    <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
                   </button>
-                <% end %>
+                </.link>
               </div>
             </td>
             <td :for={user <- @compared_users} class="!border-l !border-brightGray-200">
@@ -277,19 +270,18 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         </thead>
 
         <%= for {[col1, col2, col3], row} <- @table_structure |> Enum.with_index(1) do %>
-          <% focus = @focus_row == row %>
           <% skill_score = @skill_score_dict[col3.skill.id] || %{score: :low} %>
           <% current_skill = Map.get(@current_skill_dict, col3.skill.trace_id) %>
           <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
-          <tr id={"skill-#{row}"} class="focus:bg-brightGray-100">
+          <tr id={"skill-#{row}"}>
             <td :if={col1} rowspan={col1.size} id={"unit-#{col1.position}"} class="align-top">
               <%= col1.skill_unit.name %>
             </td>
             <td :if={col2} rowspan={col2.size} class="align-top">
               <%= col2.skill_category.name %>
             </td>
-            <td class={[focus && "bg-brightGray-50"]}>
+            <td>
               <div class="flex justify-between items-center">
                 <p><%= col3.skill.name %></p>
                 <div class="flex justify-between items-center gap-x-2">
@@ -319,64 +311,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </div>
               </div>
             </td>
-            <td class={[focus && "bg-brightGray-50"]}>
-              <%= if @edit do %>
-                <div
-                  class="flex justify-center gap-x-4 px-4"
-                  phx-window-keydown={focus && "shortcut"}
-                  phx-throttle="1000"
-                  phx-value-skill_id={col3.skill.id}
-                >
-                  <label
-                    class="block flex items-center"
-                    phx-click="change"
-                    phx-value-score="high"
-                    phx-value-skill_id={col3.skill.id}
-                    phx-value-row={row}
-                  >
-                    <input
-                      type="radio"
-                      name={"score-#{row}-1"}
-                      checked={skill_score.score == :high}
-                      class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <span class={[score_mark_class(:high, :green), "ml-1"]} />
-                  </label>
-
-                  <label
-                    class="block flex items-center"
-                    phx-click="change"
-                    phx-value-score="middle"
-                    phx-value-skill_id={col3.skill.id}
-                    phx-value-row={row}
-                  >
-                    <input
-                      type="radio"
-                      name={"score-#{row}-2"}
-                      checked={skill_score.score == :middle}
-                      class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <span class={[score_mark_class(:middle, :green), "ml-1"]} />
-                  </label>
-
-                  <label
-                    class="block flex items-center"
-                    phx-click="change"
-                    phx-value-score="low"
-                    phx-value-skill_id={col3.skill.id}
-                    phx-value-row={row}
-                  >
-                    <input
-                      type="radio"
-                      name={"score-#{row}-3"}
-                      checked={skill_score.score == :low}
-                      class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 hark:bg-gray-700 dark:border-gray-600" />
-                    <span class={[score_mark_class(:low, :green), "ml-1"]} />
-                  </label>
-                </div>
-              <% else %>
-                <div class="flex justify-center gap-x-4 px-4 min-w-[150px]">
-                  <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
-                </div>
-              <% end %>
+            <td>
+              <div class="flex justify-center gap-x-4 px-4 min-w-[150px]">
+                <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
+              </div>
             </td>
             <td :for={user <- @compared_users}>
               <% score = get_in(@compared_user_dict, [user.name, :skill_score_dict, col3.skill.id]) %>

@@ -13,13 +13,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillReferences
   alias Bright.SkillExams
   alias BrightWeb.PathHelper
-  alias BrightWeb.CardLive.SkillCardComponent
-
-  @shortcut_key_score %{
-    "1" => :high,
-    "2" => :middle,
-    "3" => :low
-  }
 
   @impl true
   def mount(params, _session, socket) do
@@ -28,8 +21,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"], "panels")
      |> assign(:page_title, "スキルパネル")
-     |> assign_page_sub_title()
-     |> assign_edit_off()}
+     |> assign_page_sub_title()}
   end
 
   @impl true
@@ -51,84 +43,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     do: {:noreply, socket}
 
   @impl true
-  def handle_event("edit", _params, socket) do
-    socket.assigns.me
-    |> if do
-      {:noreply, socket |> assign_edit_on()}
-    else
-      {:noreply, socket}
-    end
-  end
-
-  def handle_event("submit", _params, socket) do
-    %{
-      current_user: current_user,
-      skill_class_score: skill_class_score,
-      skill_score_dict: skill_score_dict
-    } = socket.assigns
-
-    target_skill_scores = skill_score_dict |> Map.values() |> Enum.filter(& &1.changed)
-    {:ok, _} = SkillScores.insert_or_update_skill_scores(target_skill_scores, current_user)
-
-    prev_level = skill_class_score.level
-    skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
-    new_level = skill_class_score.level
-
-    # スキルクラスのレベル変更時に保有スキルカードの表示変更を通知
-    if prev_level != new_level do
-      send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
-    end
-
-    {:noreply,
-     socket
-     |> assign_skill_classes()
-     |> assign(skill_class_score: skill_class_score)
-     |> assign_skill_score_dict()
-     |> assign_counter()
-     |> assign_edit_off()}
-  end
-
-  def handle_event("change", %{"score" => score, "skill_id" => skill_id, "row" => row}, socket) do
-    score = String.to_atom(score)
-    skill_score = Map.get(socket.assigns.skill_score_dict, skill_id)
-    row = String.to_integer(row)
-
-    {:noreply,
-     socket
-     |> update_by_score_change(skill_score, score)
-     |> assign(:focus_row, row)}
-  end
-
-  def handle_event("shortcut", %{"key" => key, "skill_id" => skill_id}, socket)
-      when key in ~w(1 2 3) do
-    score = Map.get(@shortcut_key_score, key)
-    skill_score = Map.get(socket.assigns.skill_score_dict, skill_id)
-
-    {:noreply,
-     socket
-     |> update_by_score_change(skill_score, score)
-     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))
-     |> push_scroll_to()}
-  end
-
-  def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(ArrowDown Enter) do
-    {:noreply,
-     socket
-     |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))
-     |> push_scroll_to()}
-  end
-
-  def handle_event("shortcut", %{"key" => key}, socket) when key in ~w(ArrowUp) do
-    {:noreply,
-     socket
-     |> update(:focus_row, &Enum.max([1, &1 - 1]))
-     |> push_scroll_to()}
-  end
-
-  def handle_event("shortcut", _params, socket) do
-    {:noreply, socket}
-  end
-
   def handle_event("click_on_related_user_card_menu", params, socket) do
     skill_panel = socket.assigns.skill_panel
     # TODO: 参照可能なユーザーかどうかの判定を行うこと
@@ -185,16 +99,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket |> assign(skill: skill)
   end
 
-  defp assign_edit_off(socket) do
-    socket
-    |> assign(edit: false, focus_row: nil)
-  end
-
-  defp assign_edit_on(socket) do
-    socket
-    |> assign(edit: true, focus_row: 1)
-  end
-
   defp assign_skill_evidence(socket) do
     skill_evidence =
       SkillEvidences.get_skill_evidence_by(
@@ -238,35 +142,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       {:ok, skill_score} = SkillScores.make_skill_score_exam_progress(user, skill, :wip)
       update(socket, :skill_score_dict, &Map.put(&1, skill.id, skill_score))
     end
-  end
-
-  defp update_by_score_change(socket, skill_score, score) do
-    # 習得率の変動反映
-    current_score = skill_score.score
-
-    counter =
-      socket.assigns.counter
-      |> Map.update!(current_score, &(&1 - 1))
-      |> Map.update!(score, &(&1 + 1))
-
-    # 表示スコア更新
-    # 永続化は全体一括のため、ここでは実施してない
-    skill_score_dict =
-      socket.assigns.skill_score_dict
-      |> Map.put(skill_score.skill_id, %{skill_score | score: score, changed: true})
-
-    socket
-    |> assign(
-      counter: counter,
-      skill_score_dict: skill_score_dict
-    )
-  end
-
-  defp push_scroll_to(socket) do
-    # ヘッダーがstickyで非可視領域が2行あるため、フォーカス行から4つ前を指定
-    # 2つ前にして最上部に移動すると1つ前に入力した自分の結果が見えなくなる
-    socket
-    |> push_event("scroll-to", %{target: "skill-#{socket.assigns.focus_row - 4}"})
   end
 
   defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do
