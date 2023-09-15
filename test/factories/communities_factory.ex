@@ -7,10 +7,7 @@ defmodule Bright.CommunityFactory do
     quote do
       def community_factory do
         %Bright.Communities.Community{
-          name: Faker.Lorem.word(),
-          user: build(:user),
-          community: build(:notification_community),
-          participation: true
+          name: Faker.Lorem.word()
         }
       end
     end

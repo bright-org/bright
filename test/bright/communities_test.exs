@@ -13,34 +13,22 @@ defmodule Bright.CommunitiesTest do
     test "list_communities/0 returns all communities" do
       community = insert(:community)
 
-      assert Communities.list_communities() |> Repo.preload([:user, community: [:from_user]]) == [
-               community
-             ]
+      assert Communities.list_communities() == [community]
     end
 
     test "get_community!/1 returns the community with given id" do
       community = insert(:community)
 
-      assert Communities.get_community!(community.id)
-             |> Repo.preload([:user, community: [:from_user]]) == community
+      assert Communities.get_community!(community.id) == community
     end
 
     test "create_community/1 with valid data creates a community" do
-      user = insert(:user)
-      notification_community = insert(:notification_community)
-
       valid_attrs = %{
-        name: "some name",
-        user_id: user.id,
-        community_id: notification_community.id,
-        participation: true
+        name: "some name"
       }
 
       assert {:ok, %Community{} = community} = Communities.create_community(valid_attrs)
       assert community.name == "some name"
-      assert community.user_id == user.id
-      assert community.community_id == notification_community.id
-      assert community.participation == true
     end
 
     test "create_community/1 with invalid data returns error changeset" do
@@ -49,32 +37,22 @@ defmodule Bright.CommunitiesTest do
 
     test "update_community/2 with valid data updates the community" do
       community = insert(:community)
-      user = insert(:user)
-      notification_community = insert(:notification_community)
 
       update_attrs = %{
-        name: "some updated name",
-        user_id: user.id,
-        community_id: notification_community.id,
-        participation: false
+        name: "some updated name"
       }
 
       assert {:ok, %Community{} = community} =
                Communities.update_community(community, update_attrs)
 
       assert community.name == "some updated name"
-      assert community.user_id == user.id
-      assert community.community_id == notification_community.id
-      assert community.participation == false
     end
 
     test "update_community/2 with invalid data returns error changeset" do
       community = insert(:community)
       assert {:error, %Ecto.Changeset{}} = Communities.update_community(community, @invalid_attrs)
 
-      assert community ==
-               Communities.get_community!(community.id)
-               |> Repo.preload([:user, community: [:from_user]])
+      assert community == Communities.get_community!(community.id)
     end
 
     test "delete_community/1 deletes the community" do
