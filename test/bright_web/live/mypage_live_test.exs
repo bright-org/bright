@@ -11,6 +11,15 @@ defmodule BrightWeb.MypageLiveTest do
 
       assert html =~ "マイページ"
 
+      #ページヘッダー
+      assert index_live |> has_element?("button", "プランのアップグレード")
+      assert index_live |> has_element?("button", "カスタマーサクセスに連絡")
+      assert index_live |> has_element?("button", "スキル保有者を検索")
+      #ユーザーアイコン
+      assert index_live |> has_element?("button img.inline-block.h-10.w-10.rounded-full")
+      #ログアウト
+      assert index_live |> has_element?("a button span", "logout")
+
       # プロフィールの検証
       assert index_live |> has_element?("div .text-2xl.font-bold", user.name)
       assert index_live |> has_element?("div .text-2xl", user.user_profile.title)
