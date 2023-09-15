@@ -93,9 +93,11 @@ erDiagram
   "通知_気になる" ||--|| "Brightユーザー" : ""
 
   "Brightユーザー" ||--o{ "通知_コミュニティ" : ""
-  "通知_コミュニティ" ||--o{ "コミュニティ" : ""
+  "通知_コミュニティ" ||--|| "コミュニティ" : ""
 
-  "コミュニティ" ||--|| "Brightユーザー" : ""
+  "コミュニティ" ||--|| "ユーザーコミュニティ" : ""
+
+  "ユーザーコミュニティ" ||--o{ "Brightユーザー" : ""
 
 ```
 
@@ -119,9 +121,12 @@ erDiagram
   "notification_watches" ||--|| "users" : ""
 
   "users" ||--o{ "notification_communities" : "" 
-  "notification_communities" ||--o{ "communities" : ""
+  "notification_communities" ||--|| "communities" : ""
 
-   "communities" ||--|| "users" : ""
+  "communities" ||--|| "user_communities" : ""
+
+  "user_communities" ||--o{ "users" : ""
+
 
   notification_improve_skills {
     id from_user_id	FK "送信元ユーザー"
@@ -162,15 +167,19 @@ erDiagram
 
   notification_communities {
     id from_user_id	FK "送信元ユーザー"
+    id community_id	FK "対象コミュニティ"
     string message	"メッセージ内容"
     text detail	"詳細"
   }
 
   communities {
-    id user_id FK "ユーザー index"
-    id community_id	FK "コミュニティid"
     string name "コミュニティ名"
-    boolean participation "参加状況 true: 参加、 false: 脱退する"
+  }
+
+  user_communities {
+    id user_id FK "ユーザーid index"
+    id community_id FK "コミュニティid"
+    boolean participation_status "参加状況"
   }
 
 ```
