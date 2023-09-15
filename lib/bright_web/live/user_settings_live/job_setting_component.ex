@@ -18,7 +18,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
       >
         <div class="border-b border-brightGray-200 flex flex-wrap">
           <div class="flex py-4">
-            <span class="w-32">求職</span>
+            <span class="w-24 text-start">求職</span>
             <BrightCore.input
               id="user_job_profile_job_searching_on"
               type="radio"
@@ -44,7 +44,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
             <BrightCore.input
               field={@form[:desired_income]}
               container_class="py-4 w-full"
-              label_class="py-1 w-32"
+              label_class="py-1 w-24 text-start"
               after_label_class="ml-1"
               type="number"
               label="希望年収"
@@ -53,9 +53,9 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
           </div>
           <div class="border-b border-brightGray-200 flex flex-wrap">
             <div class="flex pt-4">
-              <div class="flex flex-col">
-                <span class="pt-1 w-32">求職種類</span>
-                <span class="pb-1 w-32">(複数可)</span>
+              <div class="flex flex-col mt-2 text-start">
+                <span class="pt-1 w-24">希望する</span>
+                <span class="pb-1 w-24">形態</span>
               </div>
               <div class="py-4 flex">
               <BrightCore.input
@@ -89,14 +89,17 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
           </div>
 
           <div class="flex flex-wrap py-4 w-full">
-            <span class="py-1 w-32">勤務体系</span>
+            <div class="flex flex-col text-start">
+              <span class="pt-1 w-24">希望する</span>
+              <span class="pb-1 w-24">勤務体系</span>
+            </div>
             <div>
               <div class="flex items-center">
                 <BrightCore.input
                   field={@form[:office_work]}
-                  label_class="w-16 text-left"
+                  label_class="w-20 text-left"
                   type="checkbox"
-                  label="出勤"
+                  label="出勤も可"
                 />
                 <BrightCore.input
                   field={@form[:office_pref]}
@@ -126,9 +129,9 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               <div class="flex items-center mt-2">
                 <BrightCore.input
                   field={@form[:remote_work]}
-                  label_class="w-16 text-left"
+                  label_class="w-22 text-left"
                   type="checkbox"
-                  label="リモート"
+                  label="リモートも可"
                 />
                 <BrightCore.input
                   field={@form[:remote_working_hours]}
