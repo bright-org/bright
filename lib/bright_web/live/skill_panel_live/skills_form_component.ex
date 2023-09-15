@@ -40,7 +40,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
               <% focus = row == @focus_row %>
               <% skill_score = @skill_score_dict[skill.id] %>
 
-              <div class={[focus && "bg-brightGray-50", "flex justify-between border p-2 my-1"]}>
+              <div id={"skill-#{row}"} class={[focus && "bg-brightGray-50", "flex justify-between border p-2 my-1"]}>
                 <p> <%= skill.name %> </p>
                 <div
                   class="flex-none flex justify-center gap-x-4 px-4"
@@ -70,7 +70,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
                     phx-target={@myself}
                     phx-value-score="middle"
                     phx-value-skill_id={skill.id}
-                    phx-value-row={row}
                   >
                     <input
                       type="radio"
@@ -86,7 +85,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
                     phx-target={@myself}
                     phx-value-score="low"
                     phx-value-skill_id={skill.id}
-                    phx-value-row={row}
                   >
                     <input
                       type="radio"
@@ -100,10 +98,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
             <% end %>
           </div>
         </div>
-
-        <BrightCoreComponents.button type="button" phx-click="submit" phx-target={@myself}>
-          保存
-        </BrightCoreComponents.button>
       </section>
     </div>
     """
@@ -117,10 +111,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   @impl true
   def update(assigns, socket) do
     {:ok,
-      socket
-      |> assign(assigns)
-      |> assign_skill_units()
-      |> assign_row_dict()}
+     socket
+     |> assign(assigns)
+     |> assign_skill_units()
+     |> assign_row_dict()}
   end
 
   @impl true
@@ -140,10 +134,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     {:noreply, push_patch(socket, to: socket.assigns.patch)}
   end
 
-  def handle_event("change", %{"score" => score, "skill_id" => skill_id, "row" => row}, socket) do
+  def handle_event("change", %{"score" => score, "skill_id" => skill_id}, socket) do
     score = String.to_atom(score)
     skill_score = Map.get(socket.assigns.skill_score_dict, skill_id)
-    row = String.to_integer(row)
+    row = Map.get(socket.assigns.row_dict, skill_id)
 
     {:noreply,
      socket

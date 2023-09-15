@@ -202,7 +202,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </p>
 
                 <%= if @editable do %>
-                  <.link class="link-form" patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}>
+                  <.link id="link-skills-form" patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}>
                     <button
                       :if={not @edit}
                       type="button"
