@@ -2,6 +2,7 @@ defmodule BrightWeb.MypageLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
+  import Bright.Factory
 
   describe "Index" do
     setup [:register_and_log_in_user]
@@ -70,7 +71,17 @@ defmodule BrightWeb.MypageLiveTest do
       ["気になる人", "チーム", "採用候補者"]
       |> Enum.each(fn x -> assert_tab(x, index_live) end)
     end
+
+    test "tabs", %{conn: conn, user: user} do
+
+      data = insert(:notification_operation, message: "運営テスト", detail: "運営テスト内容")
+      {:ok, index_live, html} = live(conn, ~p"/mypage")
+
+      assert html =~ "運営テスト"
+    end
+
   end
+
 
   defp assert_tab(tab_name, live), do: assert(has_element?(live, "li a", tab_name))
 end
