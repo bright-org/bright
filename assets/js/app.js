@@ -51,3 +51,13 @@ window.addEventListener("phx:scroll-to", info => {
     })
   }
 })
+
+// scroll to parent element
+window.addEventListener("phx:scroll-to-parent", info => {
+  const element = document.getElementById(info.detail.target).parentElement
+  if(element){
+    element.scrollIntoView({
+      behavior: "smooth"
+    })
+  }
+})
