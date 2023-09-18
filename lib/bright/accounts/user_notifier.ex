@@ -145,9 +145,9 @@ defmodule Bright.Accounts.UserNotifier do
   @doc """
   Deliver instructions to add a user sub email.
   """
-  def deliver_add_sub_email_instructions(user_name, email, url) do
+  def deliver_add_sub_email_instructions(user, email, url) do
     deliver(email, "【Bright】サブメールアドレス追加を完了させてください（24 時間以内有効）", """
-    #{user_name}さん
+    #{user.name}さん
     Brightカスタマーサクセスです。
 
     いつも Bright をご利用いただき、ありがとうございます。
