@@ -169,8 +169,37 @@ defmodule Bright.UserSearches do
       select: job.user_id
     )
     |> where([j], j.user_id not in ^exclude_user_ids)
+    |> office_work_query_include_nil(job[:office_work], job)
+    |> remote_work_query_include_nil(job[:remote_work], job)
     |> desired_income_query(job_range)
   end
+
+  defp office_work_query_include_nil(query, true, job_params) do
+    query
+    |> then(
+      &if is_nil(job_params[:office_pref]),
+        do: &1,
+        else: or_where(&1, [j], is_nil(j.office_pref) and j.office_work == true)
+    )
+    |> then(
+      &if is_nil(job_params[:office_working_hours]),
+        do: &1,
+        else: or_where(&1, [j], is_nil(j.office_working_hours) and j.office_work == true)
+    )
+  end
+
+  defp office_work_query_include_nil(query, _f_or_nil, _job_params), do: query
+
+  defp remote_work_query_include_nil(query, true, job_params) do
+    query
+    |> then(
+      &if is_nil(job_params.remote_working_hours),
+        do: &1,
+        else: or_where(&1, [j], is_nil(j.remote_working_hours) and j.remote_work == true)
+    )
+  end
+
+  defp remote_work_query_include_nil(query, _f_or_nil, _job_params), do: query
 
   # job_profile 希望年収
   defp desired_income_query(query, %{desired_income: income}) do
