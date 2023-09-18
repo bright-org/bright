@@ -9,7 +9,6 @@ defmodule Bright.Notifications do
   alias Bright.Notifications.NotificationOperation
   alias Bright.Notifications.NotificationCommunity
 
-
   @doc """
   Gets a single notification.
 
