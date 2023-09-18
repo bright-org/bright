@@ -94,12 +94,20 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               <span class="pb-1 w-24">勤務体系</span>
             </div>
             <div>
+            <div class="flex items-center">
+                <BrightCore.input
+                  field={@form[:office_work]}
+                  label_class="w-20 text-left"
+                  type="checkbox"
+                  label="どちらでも可"
+                />
+              </div>
               <div class="flex items-center">
                 <BrightCore.input
                   field={@form[:office_work]}
                   label_class="w-20 text-left"
                   type="checkbox"
-                  label="出勤も可"
+                  label="出勤のみ可"
                 />
                 <BrightCore.input
                   field={@form[:office_pref]}
@@ -131,7 +139,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                   field={@form[:remote_work]}
                   label_class="w-22 text-left"
                   type="checkbox"
-                  label="リモートも可"
+                  label="リモートのみ可"
                 />
                 <BrightCore.input
                   field={@form[:remote_working_hours]}
