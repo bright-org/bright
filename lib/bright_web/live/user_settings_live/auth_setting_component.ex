@@ -1,7 +1,9 @@
 defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
   use BrightWeb, :live_component
+  alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.User
+  alias Bright.Accounts.UserSubEmail
   alias BrightWeb.BrightCoreComponents, as: BrightCore
   alias BrightWeb.UserSettingsLive.UserSettingComponent
 
@@ -9,7 +11,6 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
   def render(assigns) do
     ~H"""
     <li class="block text-left">
-      <%!-- TODO: サブメールアドレスが実装されたら border-b を追加する --%>
       <div class="border-b border-brightGray-200 flex flex-wrap" id="mail_section">
         <div class="mt-4 mb-2">
           <p>※ 確認メールが送信され、完了後メールアドレスが変更されます</p>
@@ -43,37 +44,47 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
 
       <div class="border-b border-brightGray-200 flex flex-wrap pb-4" id="sub_mail_section">
         <div class="my-4">
-          <p>※ 確認メールが送信され、完了後メールアドレスが追加されます（βリリースで利用可能になります）</p>
+          <p>※ 確認メールが送信され、完了後メールアドレスが追加されます</p>
         </div>
 
-        <div class="sub_mail_address flex py-2">
-          <label class="flex items-center mr-4">
-            <span class="flex items-center justify-between w-44">サブアドレス</span>
-            <input type="text" size="20" name="sub_mail_0" class="bg-brightGray-50 border border-brightGray-200 px-2 py-1 rounded w-60" disabled>
-          </label>
-        </div>
-        <div class="mt-1 ml-auto w-fit py-2">
-          <%!-- <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button> --%>
-          <%!-- <button type="submit" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button> --%>
-        </div>
+        <div class="w-full flex">
+          <div class="w-44 py-2">
+            <span>サブアドレス</span>
+          </div>
+          <div class="flex-1">
+            <div :for={{user_sub_email, index} <- Enum.with_index(@user_sub_emails, 1)} class="sub_mail_address flex w-full py-2">
+              <label class="flex items-center mr-4">
+                <input type="text" size="20" name={"sub_mail_#{index}"} value={user_sub_email.email} class="bg-brightGray-50 border border-brightGray-200 px-2 py-1 rounded w-60" disabled>
+              </label>
+              <div class="mt-1 ml-auto w-fit">
+                <button phx-click="delete_sub_email" phx-value-sub_email={user_sub_email.email} phx-target={@myself} type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
+              </div>
+            </div>
 
-        <%!-- <div class="sub_mail_address flex py-2">
-          <label class="flex items-center mr-4 pl-44">
-            <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1 rounded w-60">
-          </label>
+            <.form
+              :if={display_add_sub_email_form?(@user_sub_emails)}
+              for={@sub_email_form}
+              id="sub_email_form"
+              phx-submit="add_sub_email"
+              phx-change="validate_sub_email"
+              phx-target={@myself}
+              class="sub_mail_address flex w-full py-2"
+            >
+              <label class="flex items-center mr-4">
+                <BrightCore.input
+                  field={@sub_email_form[:email]}
+                  type="email"
+                  size="20"
+                  input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+                  required
+                />
+              </label>
+              <div class="mt-1 ml-auto w-fit">
+                <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button>
+              </div>
+            </.form>
+          </div>
         </div>
-        <div class="mt-1 ml-auto w-fit py-2">
-          <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button>
-        </div>
-
-        <div class="sub_mail_address flex py-2">
-          <label class="flex items-center mr-4 pl-44">
-            <input type="text" size="20" name="sub_mail_0" class="border border-brightGray-200 px-2 py-1 rounded w-60">
-          </label>
-        </div>
-        <div class="mt-1 ml-auto w-fit py-2">
-          <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">追加する</button>
-        </div> --%>
       </div>
 
       <.form
@@ -142,14 +153,17 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
 
   @impl true
   def update(assigns, socket) do
-    user = assigns.user
+    user = assigns.user |> Repo.preload(:user_sub_emails)
     email_changeset = Accounts.change_user_email(user)
+    sub_email_changeset = Accounts.change_new_user_sub_email(user)
 
     socket =
       socket
       |> assign(assigns)
       |> assign_password_form(user)
       |> assign(:email_form, to_form(email_changeset))
+      |> assign(:sub_email_form, to_form(sub_email_changeset))
+      |> assign(:user_sub_emails, user.user_sub_emails)
 
     {:ok, socket}
   end
@@ -197,7 +211,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
           &url(~p"/users/confirm_email/#{&1}")
         )
 
-        send_update_after_save()
+        send_update_after_save("本人確認メールを送信しましたご確認ください")
 
         applied_user
         |> Accounts.change_user_email(user_params)
@@ -206,6 +220,65 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
       {:error, changeset} ->
         {:noreply, assign(socket, :email_form, to_form(Map.put(changeset, :action, :insert)))}
     end
+  end
+
+  @impl true
+  def handle_event(
+        "validate_sub_email",
+        %{"user_sub_email" => user_sub_email_params},
+        socket
+      ) do
+    sub_email_form =
+      socket.assigns.user
+      |> Accounts.change_new_user_sub_email(user_sub_email_params)
+      |> Map.put(:action, :validate)
+      |> to_form()
+
+    {:noreply, assign(socket, sub_email_form: sub_email_form)}
+  end
+
+  @impl true
+  def handle_event(
+        "add_sub_email",
+        %{"user_sub_email" => user_sub_email_params},
+        socket
+      ) do
+    user = socket.assigns.user
+
+    case Accounts.apply_new_user_sub_email(user, user_sub_email_params) do
+      {:ok, applied_user_sub_email} ->
+        Accounts.deliver_user_add_sub_email_instructions(
+          user,
+          applied_user_sub_email.email,
+          &url(~p"/users/confirm_sub_email/#{&1}")
+        )
+
+        send_update_after_save("サブメールアドレス追加確認メールを送信しましたご確認ください")
+
+        user
+        |> Accounts.change_new_user_sub_email(user_sub_email_params)
+        |> then(&{:noreply, socket |> assign(:sub_email_form, to_form(&1))})
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, :sub_email_form, to_form(Map.put(changeset, :action, :insert)))}
+    end
+  end
+
+  @impl true
+  def handle_event(
+        "delete_sub_email",
+        %{"sub_email" => sub_email},
+        socket
+      ) do
+    user = socket.assigns.user
+
+    :ok = Accounts.delete_user_sub_email(socket.assigns.user, sub_email)
+
+    send_update_after_save("サブメールアドレスを削除しました")
+
+    user
+    |> Repo.preload(:user_sub_emails, force: true)
+    |> then(&{:noreply, socket |> assign(:user_sub_emails, &1.user_sub_emails)})
   end
 
   @impl true
@@ -246,12 +319,16 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
     end
   end
 
-  defp send_update_after_save() do
+  defp send_update_after_save(message) do
     send_update(
       UserSettingComponent,
       id: "user_setting_modal",
-      modal_flash: %{info: "本人確認メールを送信しましたご確認ください"},
+      modal_flash: %{info: message},
       action: "auth"
     )
+  end
+
+  defp display_add_sub_email_form?(user_sub_emails) do
+    length(user_sub_emails) < UserSubEmail.max_sub_email_num()
   end
 end
