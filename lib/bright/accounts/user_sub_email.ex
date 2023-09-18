@@ -1,4 +1,8 @@
 defmodule Bright.Accounts.UserSubEmail do
+  @moduledoc """
+  Bright ユーザーのサブメールアドレスを扱うスキーマ
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query, warn: false
