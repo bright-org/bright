@@ -112,9 +112,12 @@ defmodule Bright.HistoricalSkillScoresTest do
         insert(:historical_skill_score, user: user, historical_skill: historical_skill)
 
       ret =
-        HistoricalSkillScores.list_user_historical_skill_scores_from_historical_skill_ids(user, [
-          historical_skill.id
-        ])
+        HistoricalSkillScores.list_user_historical_skill_scores_from_historical_skill_ids(
+          [
+            historical_skill.id
+          ],
+          user.id
+        )
 
       assert ret |> Enum.map(& &1.id) == [historical_skill_score.id]
     end

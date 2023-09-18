@@ -1,10 +1,10 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
-  alias Bright.SkillPanels
-  alias Bright.SkillScores
-
   import Phoenix.Component, only: [assign: 2, assign: 3]
   import Phoenix.LiveView, only: [push_redirect: 2]
 
+  alias Bright.SkillPanels
+  alias Bright.SkillUnits
+  alias Bright.SkillScores
   alias BrightWeb.DisplayUserHelper
   alias Bright.UserSkillPanels
 
@@ -137,7 +137,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     user = socket.assigns.current_user
     skill_class = socket.assigns.skill_class
 
-    {:ok, _} = SkillScores.create_skill_class_score(user, skill_class)
+    {:ok, _} = SkillScores.create_skill_class_score(skill_class, user.id)
 
     skill_class_score =
       SkillScores.get_skill_class_score_by!(
@@ -158,10 +158,27 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def assign_skill_score_dict(socket) do
+    %{skill_class: skill_class, skill_class_score: skill_class_score} = socket.assigns
+    skills = SkillUnits.list_skills_on_skill_class(skill_class)
+
+    # skillからskill_scoreを引く辞書を生成
+    # skillに対して未作成のときは、フォームの都合でStructで初期化
     skill_score_dict =
-      socket.assigns.skill_class_score
-      |> SkillScores.list_skill_scores_from_skill_class_score()
-      |> Map.new(&{&1.skill_id, Map.put(&1, :changed, false)})
+      SkillScores.list_user_skill_scores_from_skill_ids(
+        Enum.map(skills, & &1.id),
+        skill_class_score.user_id
+      )
+      |> Map.new(&{&1.skill_id, &1})
+
+    skill_score_dict =
+      Map.new(skills, fn skill ->
+        skill_score =
+          Map.get(skill_score_dict, skill.id)
+          |> Kernel.||(%SkillScores.SkillScore{skill_id: skill.id, score: :low})
+          |> Map.put(:changed, false)
+
+        {skill.id, skill_score}
+      end)
 
     socket
     |> assign(skill_score_dict: skill_score_dict)
