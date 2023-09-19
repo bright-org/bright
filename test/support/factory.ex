@@ -84,7 +84,6 @@ defmodule Bright.Factory do
   use Bright.HistoricalSkillClassScoreFactory
 
   # NotificationsFactory context
-  use Bright.NotificationFactory
   use Bright.NotificationOperationFactory
   use Bright.NotificationCommunityFactory
 
