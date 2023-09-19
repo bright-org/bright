@@ -11,7 +11,9 @@ defmodule BrightWeb.LayoutComponents do
   """
 
   attr :csrf_token, :string, required: true
+  attr :user_id, :string, required: true
   attr :page_title, :string
+  attr :enable_google_tag_manager, :boolean, default: true
 
   slot :inner_block, required: true
 
@@ -20,6 +22,18 @@ defmodule BrightWeb.LayoutComponents do
     <!DOCTYPE html>
     <html lang="ja">
       <head>
+        <script :if={@enable_google_tag_manager && Bright.Utils.Env.prod?()}>
+          dataLayer = [{
+            'user_id': "<%= @user_id %>",
+          }];
+        </script>
+        <!-- Google Tag Manager -->
+        <script :if={@enable_google_tag_manager && Bright.Utils.Env.prod?()}>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-P98L4WM');</script>
+        <!-- End Google Tag Manager -->
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content={@csrf_token} />
@@ -38,6 +52,15 @@ defmodule BrightWeb.LayoutComponents do
       </head>
       <%= render_slot(@inner_block) %>
     </html>
+    """
+  end
+
+  def google_tag_manager_noscript(assigns) do
+    ~H"""
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P98L4WM"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     """
   end
 
