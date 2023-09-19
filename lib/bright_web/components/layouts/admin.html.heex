@@ -1,4 +1,4 @@
-<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()}>
+<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()} user_id="" enable_google_tag_manager={false}>
   <body class="bg-white antialiased">
     <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
       <%= if @current_user do %>

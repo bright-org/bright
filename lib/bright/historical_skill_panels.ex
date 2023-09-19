@@ -42,15 +42,20 @@ defmodule Bright.HistoricalSkillPanels do
   スキルパネル＋日付条件に該当する過去スキルクラスを返す。
 
   locked_dateはあくまでロックした日付のため（その日以降も使われる）、
-  引数date時点のスキルクラスを取るには、その前日より前にロックされたものを探す必要がある。
+  引数date時点のスキルクラスを取るには、その３か月前のlocked_dateをみる必要がある。
+
+  TODO: 日付を暗黙的に3か月前にしているのを共通処理に移すこと。成長グラフ側と同様
+  TODO: 現状では同じ日付に複数存在する可能性がある。別課題で対応後に修正
   """
   def get_historical_skill_class_on_date(skill_panel_id: skill_panel_id, class: class, date: date) do
+    locked_date = Timex.shift(date, months: -3)
+
     from(
       q in HistoricalSkillClass,
       where: q.skill_panel_id == ^skill_panel_id,
       where: q.class == ^class,
-      where: q.locked_date < ^date,
-      order_by: [desc: q.locked_date],
+      where: q.locked_date == ^locked_date,
+      order_by: [desc: q.inserted_at],
       limit: 1
     )
     |> Repo.one()

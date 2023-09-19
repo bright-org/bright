@@ -27,6 +27,10 @@ defmodule Bright.SkillScores.SkillUnitScore do
   end
 
   def user_query(user) do
-    from(q in __MODULE__, where: q.user_id == ^user.id)
+    user_id_query(user.id)
+  end
+
+  def user_id_query(user_id) do
+    from(q in __MODULE__, where: q.user_id == ^user_id)
   end
 end
