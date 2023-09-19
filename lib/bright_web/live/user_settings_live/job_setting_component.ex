@@ -83,7 +83,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               />
               </div>
             </div>
-            <div class="pl-32 pb-4 flex">
+            <div class="pl-24 pb-4 flex">
               <span class="">※求職優先の方は、すべて選択するとスカウト検索がヒットしやすくなります</span>
             </div>
           </div>
@@ -96,65 +96,73 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
             <div>
             <div class="flex items-center">
                 <BrightCore.input
-                  field={@form[:office_work]}
+                  name={@form[:work_style].name}
+                  checked={@form[:work_style].value == "both"}
+                  value="both"
                   label_class="w-20 text-left"
-                  type="checkbox"
+                  type="radio"
                   label="どちらでも可"
                 />
               </div>
               <div class="flex items-center">
                 <BrightCore.input
-                  field={@form[:office_work]}
-                  label_class="w-20 text-left"
-                  type="checkbox"
+                  name={@form[:work_style].name}
+                  checked={@form[:work_style].value == "office"}
+                  value="office"
+                  label_class="w-24 text-left"
+                  type="radio"
                   label="出勤のみ可"
                 />
                 <BrightCore.input
                   field={@form[:office_pref]}
-                  input_class="w-36"
+                  input_class="w-40"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :office_pref)}
                   prompt="希望勤務地"
-                  disabled={to_string(@form[:office_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["office", "both"]}
                 />
                 <BrightCore.input
                   field={@form[:office_working_hours]}
-                  input_class="w-36"
+                  input_class="w-40"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :office_working_hours)}
                   prompt="希望勤務時間"
-                  disabled={to_string(@form[:office_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["office", "both"]}
                 />
                 <BrightCore.input
                   field={@form[:office_work_holidays]}
                   container_class="ml-4"
                   type="checkbox"
                   label="土日祝の稼働も含む"
-                  disabled={to_string(@form[:office_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["office", "both"]}
+                  label_class={if @form[:work_style].value not in ["office", "both"], do: "text-pureGray-600"}
                 />
               </div>
 
               <div class="flex items-center mt-2">
                 <BrightCore.input
-                  field={@form[:remote_work]}
-                  label_class="w-22 text-left"
-                  type="checkbox"
+                  name={@form[:work_style].name}
+                  checked={@form[:work_style].value == "remote"}
+                  value="remote"
+                  label_class="w-24 text-left"
+                  type="radio"
                   label="リモートのみ可"
                 />
                 <BrightCore.input
                   field={@form[:remote_working_hours]}
-                  input_class="w-36"
+                  input_class="w-40"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :remote_working_hours)}
                   prompt="希望勤務時間"
-                  disabled={to_string(@form[:remote_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["remote", "both"]}
                 />
                 <BrightCore.input
                   field={@form[:remote_work_holidays]}
                   container_class="ml-4"
+                  label_class={if @form[:work_style].value not in ["remote", "both"], do: "text-pureGray-600"}
                   type="checkbox"
                   label="土日祝の稼働も含む"
-                  disabled={to_string(@form[:remote_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["remote", "both"]}
                 />
               </div>
             </div>
