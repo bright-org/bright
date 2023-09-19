@@ -1,106 +1,135 @@
 defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   use BrightWeb, :live_component
 
-  import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [score_mark_class: 2]
-
   alias Bright.SkillScores
-  alias BrightWeb.BrightCoreComponents
   alias BrightWeb.CardLive.SkillCardComponent
 
+  # キーボード入力 1,2,3 と対応するスコア
   @shortcut_key_score %{
     "1" => :high,
     "2" => :middle,
     "3" => :low
   }
 
+  # スコアと対応するHTML class属性
+  @score_mark_class %{
+    "high" =>
+      "bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:h-4 before:w-4 before:rounded-full before:bg-brightGray-300 before:block peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white hover:opacity-50",
+    "middle" =>
+      "bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:h-0 before:w-0 before:border-solid before:border-t-0 before:border-r-8 before:border-l-8 before:border-transparent before:border-b-[14px] before:border-b-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:border-b-white hover:opacity-50",
+    "low" =>
+      "bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:block before:w-4 before:h-1 before:bg-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white hover:opacity-50"
+  }
+
   @impl true
   def render(assigns) do
     ~H"""
-    <div id={@id}>
-      <% # デザインは全て仮 %>
-      <header class="mb-6">
-        <h2 class="text-xl">
-          <%= @skill_panel.name %>
-          <span class="ml-2"><%= @skill_class.name %></span>
+    <div id={@id} class="flex justify-center items-center">
+      <section class="text-sm w-[390px]">
+        <h2 class="font-bold mt-4 mb-2 text-lg truncate">
+          <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
+            <%= @skill_panel.name %>
+          </span>
         </h2>
 
-        <BrightCoreComponents.button class="mt-4" type="button" phx-click="submit" phx-target={@myself}>
-          保存
-        </BrightCoreComponents.button>
-      </header>
+        <div id={"#{@id}-scroll"} class="h-[644px] overflow-y-auto" phx-hook="ScrollOccupancy">
+          <%= for skill_unit <- @skill_units do %>
+            <b class="block font-bold mt-6 text-xl">
+              <%= skill_unit.name %>
+            </b>
 
-      <section class="relative h-[60vh]">
-        <div class="absolute top-0 right-0 bottom-0 left-0 overflow-y-auto">
-          <div :for={skill_unit <- @skill_units} class="my-8">
-            <div :for={skill_category <- skill_unit.skill_categories} class="my-4">
-              <div class="font-bold">
-                <p><%= skill_unit.name %></p>
-                <p><%= skill_category.name %></p>
+            <%= for skill_category <- skill_unit.skill_categories do %>
+              <div class="category-top">
+                <b class="block font-bold mt-2 text-base">
+                  <%= skill_category.name %>
+                </b>
+
+                <table class="mt-2 w-[350px]">
+                  <%= for skill <- skill_category.skills do %>
+                    <% row = Map.get(@row_dict, skill.id) %>
+                    <% focus = row == @focus_row %>
+                    <% skill_score = @skill_score_dict[skill.id] %>
+                    <tr
+                      id={"skill-#{row}-form"}
+                      class={[focus && "bg-brightGray-50", "border border-brightGray-200"]}
+                    >
+                      <th class="align-middle w-[250px] mb-2 min-h-8 p-2 text-left">
+                        <%= skill.name %>
+                      </th>
+
+                      <td class="align-middle border-l border-brightGray-200 p-2">
+                        <div
+                          class="flex gap-1"
+                          phx-window-keydown={focus && "shortcut"}
+                          phx-target={@myself}
+                          phx-throttle="1000"
+                          phx-value-skill_id={skill.id}
+                        >
+                          <label
+                            class="inline"
+                            phx-click="change"
+                            phx-target={@myself}
+                            phx-value-score="high"
+                            phx-value-skill_id={skill.id}
+                          >
+                            <input
+                              type="radio"
+                              name={"score-#{row}-1"}
+                              checked={skill_score.score == :high}
+                              class="hidden peer"
+                            />
+                            <span class={Map.get(score_mark_class(), "high")}></span>
+                          </label>
+
+                          <label
+                            class="inline"
+                            phx-click="change"
+                            phx-target={@myself}
+                            phx-value-score="middle"
+                            phx-value-skill_id={skill.id}
+                          >
+                            <input
+                              type="radio"
+                              name={"score-#{row}-1"}
+                              checked={skill_score.score == :middle}
+                              class="hidden peer"
+                            />
+                            <span class={Map.get(score_mark_class(), "middle")}></span>
+                          </label>
+
+                          <label
+                            class="inline"
+                            phx-click="change"
+                            phx-target={@myself}
+                            phx-value-score="low"
+                            phx-value-skill_id={skill.id}
+                          >
+                            <input
+                              type="radio"
+                              name={"score-#{row}-1"}
+                              checked={skill_score.score == :low}
+                              class="hidden peer"
+                            />
+                            <span class={Map.get(score_mark_class(), "low")}></span>
+                          </label>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </table>
               </div>
+            <% end %>
+          <% end %>
+        </div>
 
-              <%= for skill <- skill_category.skills do %>
-                <% row = Map.get(@row_dict, skill.id) %>
-                <% focus = row == @focus_row %>
-                <% skill_score = @skill_score_dict[skill.id] %>
-
-                <div id={"skill-#{row}-form"} class={[focus && "bg-brightGray-50", "flex justify-between border p-2 my-1"]}>
-                  <p> <%= skill.name %> </p>
-                  <div
-                    class="flex-none flex justify-center gap-x-4 px-4"
-                    phx-window-keydown={focus && "shortcut"}
-                    phx-target={@myself}
-                    phx-throttle="1000"
-                    phx-value-skill_id={skill.id}
-                  >
-                    <label
-                      class="block flex items-center"
-                      phx-click="change"
-                      phx-target={@myself}
-                      phx-value-score="high"
-                      phx-value-skill_id={skill.id}
-                    >
-                      <input
-                        type="radio"
-                        name={"score-#{row}-1"}
-                        checked={skill_score.score == :high}
-                        class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                      <span class={[score_mark_class(:high, :green), "ml-1"]} />
-                    </label>
-
-                    <label
-                      class="block flex items-center"
-                      phx-click="change"
-                      phx-target={@myself}
-                      phx-value-score="middle"
-                      phx-value-skill_id={skill.id}
-                    >
-                      <input
-                        type="radio"
-                        name={"score-#{row}-2"}
-                        checked={skill_score.score == :middle}
-                        class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                      <span class={[score_mark_class(:middle, :green), "ml-1"]} />
-                    </label>
-
-                    <label
-                      class="block flex items-center"
-                      phx-click="change"
-                      phx-target={@myself}
-                      phx-value-score="low"
-                      phx-value-skill_id={skill.id}
-                    >
-                      <input
-                        type="radio"
-                        name={"score-#{row}-3"}
-                        checked={skill_score.score == :low}
-                        class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 hark:bg-gray-700 dark:border-gray-600" />
-                      <span class={[score_mark_class(:low, :green), "ml-1"]} />
-                    </label>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
+        <div class="flex justify-center gap-x-4 mt-4 pb-2 relative w-full">
+          <button
+            class="text-sm font-bold px-2 py-2 rounded border bg-base text-white w-60"
+            phx-click="submit"
+            phx-target={@myself}
+          >
+            保存する
+          </button>
         </div>
       </section>
     </div>
@@ -225,6 +254,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   defp push_scroll_to(socket) do
     %{focus_row: row} = socket.assigns
     # キーショートカットによる入力時スクロール
-    push_event(socket, "scroll-to-parent", %{target: "skill-#{row}-form"})
+    push_event(socket, "scroll-to-parent", %{
+      target: "skill-#{row}-form",
+      parent_selector: ".category-top"
+    })
   end
+
+  defp score_mark_class, do: @score_mark_class
 end

@@ -44,7 +44,7 @@ window.liveSocket = liveSocket
 
 // scroll to parent element
 window.addEventListener("phx:scroll-to-parent", info => {
-  const element = document.getElementById(info.detail.target).parentElement
+  const element = document.getElementById(info.detail.target).closest(info.detail.parent_selector)
   if(element){
     element.scrollIntoView({
       behavior: "smooth"

@@ -4,6 +4,7 @@ import {DoughnutGraph} from './DoughnutGraph.js'
 import IframeSizeFitting from './IframeSizeFitting.js'
 import TabSlideScroll from './TabSlideScroll.js'
 import Dropdown from './Dropdown.js'
+import ScrollOccupancy from './ScrollOccupancy.js'
 
 export const Hooks = {
   SkillGem: SkillGem,
@@ -11,5 +12,6 @@ export const Hooks = {
   DoughnutGraph: DoughnutGraph,
   IframeSizeFitting: IframeSizeFitting,
   TabSlideScroll: TabSlideScroll,
-  Dropdown: Dropdown
+  Dropdown: Dropdown,
+  ScrollOccupancy: ScrollOccupancy
 }
