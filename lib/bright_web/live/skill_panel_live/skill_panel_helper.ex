@@ -158,8 +158,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def assign_skill_score_dict(socket) do
-    %{skill_class: skill_class, skill_class_score: skill_class_score} = socket.assigns
-    skills = SkillUnits.list_skills_on_skill_class(skill_class)
+    %{skill_class_score: skill_class_score} = socket.assigns
+    skills = SkillUnits.list_skills_on_skill_class(%{id: skill_class_score.skill_class_id})
 
     # skillからskill_scoreを引く辞書を生成
     # skillに対して未作成のときは、フォームの都合でStructで初期化
