@@ -202,7 +202,12 @@
 
       <p class="ml-2">※採用面談が決まるまで匿名で表示されます</p>
     </div>
-
+    <.tab_footer
+      id="user_search_result_footer"
+      page={@page}
+      total_pages={@total_pages}
+      target={@myself}
+    />
     <.live_component
       id="user_search_result"
       module={SearchResultsComponent}
@@ -210,12 +215,6 @@
       result={@search_results}
       skill_params={@skill_params}
       stock_user_ids={@stock_user_ids}
-    />
-    <.tab_footer
-      id="user_search_result_footer"
-      page={@page}
-      total_pages={@total_pages}
-      target={@myself}
     />
   </div>
 </li>
