@@ -215,7 +215,7 @@ defmodule Bright.UserSearchesTest do
       query = {[{:job_searching, true}], %{desired_income: 800}, []}
 
       assert %{entries: [%{id: ^id_1}, %{id: ^id_3}]} =
-               UserSearches.search_users_by_job_profile_and_skill_score(query)
+               UserSearches.search_users_by_job_profile_and_skill_score(query, sort: :income_asc)
     end
 
     test "only wish change_job", %{user_1: %{id: id} = user_1, user_2: user_2} do
