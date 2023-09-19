@@ -87,20 +87,27 @@ defmodule Bright.UserJobProfiles.UserJobProfile do
   end
 
   defp convert_work_style_to_works(attrs) do
-    if Map.keys(attrs) |> List.first() |> is_atom() do
-      case Map.get(attrs, :work_style) do
-        "both" -> Map.merge(attrs, %{:office_work => true, :remote_work => true})
-        "office" -> Map.merge(attrs, %{:office_work => true, :remote_work => false})
-        "remote" -> Map.merge(attrs, %{:office_work => false, :remote_work => true})
-        _ -> attrs
-      end
-    else
-      case Map.get(attrs, "work_style") do
-        "both" -> Map.merge(attrs, %{"office_work" => true, "remote_work" => true})
-        "office" -> Map.merge(attrs, %{"office_work" => true, "remote_work" => false})
-        "remote" -> Map.merge(attrs, %{"office_work" => false, "remote_work" => true})
-        _ -> attrs
-      end
+    case Map.keys(attrs) |> List.first() |> is_atom() do
+      true -> convert_work_style_to_works_atom(attrs)
+      false -> convert_work_style_to_works_string(attrs)
+    end
+  end
+
+  defp convert_work_style_to_works_atom(attrs) do
+    case Map.get(attrs, :work_style) do
+      "both" -> Map.merge(attrs, %{:office_work => true, :remote_work => true})
+      "office" -> Map.merge(attrs, %{:office_work => true, :remote_work => false})
+      "remote" -> Map.merge(attrs, %{:office_work => false, :remote_work => true})
+      _ -> attrs
+    end
+  end
+
+  defp convert_work_style_to_works_string(attrs) do
+    case Map.get(attrs, "work_style") do
+      "both" -> Map.merge(attrs, %{"office_work" => true, "remote_work" => true})
+      "office" -> Map.merge(attrs, %{"office_work" => true, "remote_work" => false})
+      "remote" -> Map.merge(attrs, %{"office_work" => false, "remote_work" => true})
+      _ -> attrs
     end
   end
 
