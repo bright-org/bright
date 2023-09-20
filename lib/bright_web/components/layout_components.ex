@@ -128,6 +128,15 @@ defmodule BrightWeb.LayoutComponents do
               <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>
             </li>
           <% end %>
+          <li class="lg:hidden">
+            <.link
+            href="/users/log_out"
+            method="delete"
+            class="!text-white text-base py-4 inline-block pl-4 w-full mb"
+            >
+              ログアウト
+            </.link>
+          </li>
         </ul>
       </div>
     </aside>
