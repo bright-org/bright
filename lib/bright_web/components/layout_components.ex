@@ -112,17 +112,20 @@ defmodule BrightWeb.LayoutComponents do
 
   def side_menu(assigns) do
     ~H"""
-    <aside
-    class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
-    >
-      <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
-      <ul class="grid pt-2">
-        <%= for {title, path, regex} <- links() do %>
-          <li>
-            <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>
-          </li>
-        <% end %>
-      </ul>
+    <aside class="relative">
+      <input id="sp_navi_input" class="hidden peer group" type="checkbox">
+      <label id="sp_navi_open"  class="bg-brightGray-300 block cursor-pointer fixed h-[3px] ml-4 right-4 top-4 w-8 z-50 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 before:z-50 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8 after:z-50 peer-checked:fixed peer-checked:bg-brightGray-900 peer-checked:top-[44px] peer-checked:before:bg-white peer-checked:before:rotate-[135deg] peer-checked:after:bg-white peer-checked:after:-translate-y-[12px] peer-checked:after:rotate-45 lg:hidden" for="sp_navi_input"></label>
+      <label id="sp_navi_close" for="sp_navi_input" class="cursor-pointer hidden h-full fixed right-0 top-0 w-full z-20"></label>
+      <div class="fixed bg-brightGray-900 pt-3 min-h-screen hidden flex-col w-full z-40 lg:flex lg:static lg:w-[200px] peer-checked:flex">
+        <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
+        <ul class="grid pt-2">
+          <%= for {title, path, regex} <- links() do %>
+            <li>
+              <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     </aside>
     """
   end

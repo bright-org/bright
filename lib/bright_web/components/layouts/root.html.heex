@@ -1,5 +1,5 @@
 <.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()} user_id={get_user_id(assigns)}>
-  <body class="w-[1920px]">
+  <body class="lg:w-[1920px]">
     <.google_tag_manager_noscript />
     <div class="flex">
       <.side_menu  href={@conn.request_path} />
