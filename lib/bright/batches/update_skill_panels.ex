@@ -121,6 +121,9 @@ defmodule Bright.Batches.UpdateSkillPanels do
       delete_old_skill_classes(locked_date)
       delete_old_skill_units(locked_date)
 
+      # スコアの再計算
+      re_aggregate_scores()
+
       log("skill_classes inserted count: #{length(draft_skill_class_pairs)}")
       log("skill_units inserted count: #{length(draft_skill_unit_pairs)}")
 
@@ -665,5 +668,12 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
     from(su in SkillUnit, where: su.locked_date != ^locked_date)
     |> Repo.delete_all()
+  end
+
+  defp re_aggregate_scores do
+    {:ok, _} =
+      SkillClass
+      |> Repo.all()
+      |> Bright.SkillScores.re_aggregate_scores()
   end
 end
