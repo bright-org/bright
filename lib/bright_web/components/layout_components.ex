@@ -86,11 +86,15 @@ defmodule BrightWeb.LayoutComponents do
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
-    <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
+    <div class="flex justify-between items-center px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:px-10">
       <h4><%= @page_title %><%= @page_sub_title %></h4>
-      <div class="flex gap-x-5">
-        <.plan_upgrade_button  />
-        <.contact_customer_success_button />
+      <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto z-20 lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
+        <div class="flex justify-between">
+          <.plan_upgrade_button  />
+          <.contact_customer_success_button />
+        </div>
+      </div>
+      <div class="flex gap-2 items-center">
         <.search_for_skill_holders_button />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
         <.logout_button />
