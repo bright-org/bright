@@ -116,15 +116,16 @@ defmodule BrightWeb.BrightButtonComponents do
   def plan_upgrade_button(assigns) do
     ~H"""
     <.link
+      class="w-[calc(50%-8px)] lg:w-56"
       href="https://bright-fun.org/plan"
       target="_blank"
       rel="noopener noreferrer"
     >
       <button
         type="button"
-        class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-sm items-center font-bold h-9 w-44 hover:opacity-70 lg:px-2 lg:w-52"
+        class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm"
       >
-        <span class="bg-white material-icons mr-1 !text-base !text-planUpgrade-600 rounded-full h-6 w-6 !font-bold material-icons-outlined lg:mr-2">upgrade</span>
+        <span class="bg-white material-icons mr-1 !text-sm !text-planUpgrade-600 rounded-full h-5 w-5 !font-bold material-icons-outlined lg:mr-2 lg:h-6 lg:!text-base lg:w-6">upgrade</span>
         プランのアップグレード
       </button>
     </.link>
@@ -141,14 +142,15 @@ defmodule BrightWeb.BrightButtonComponents do
   def contact_customer_success_button(assigns) do
     ~H"""
     <.link
+      class="w-[calc(50%-8px)] lg:ml-2 lg:w-56"
       href="https://docs.google.com/forms/d/e/1FAIpQLScKrQbJajiE18Abh7HloDcJYTSY-HbiX280XcoHDIsfJKhpAA/viewform"
       target="_blank"
       rel="noopener noreferrer"
     >
       <button type="button"
-        class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-sm items-center justify-center font-bold h-9 w-44 hover:opacity-70 lg:ml-2 lg:px-2 lg:w-56">
+        class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm">
         <span
-            class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold material-icons-outlined lg:mr-2">sms</span>
+            class="bg-white material-icons mr-1 !text-sm !text-brightGreen-300 rounded-full h-5 w-5 !font-bold material-icons-outlined lg:mr-2 lg:h-6 lg:!text-base lg:w-6">sms</span>
         カスタマーサクセスに連絡
       </button>
     </.link>
@@ -190,7 +192,7 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       id="user_menu_dropmenu"
-      class="ml-4 hover:opacity-70 mr-8 lg:mr-0"
+      class="mr-8 hover:opacity-70 lg:ml-4 lg:mr-0"
       phx-click={JS.toggle(to: "#personal_setting_modal")}
     >
       <img
