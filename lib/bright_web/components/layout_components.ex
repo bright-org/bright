@@ -86,7 +86,7 @@ defmodule BrightWeb.LayoutComponents do
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
-    <div class="flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10">
+    <div class="sticky top-0 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
       <h4 class="font-bold mt-2 text-sm lg:mt-0 lg:text-xl"><%= @page_title %><%= @page_sub_title %></h4>
       <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto z-20 lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
         <div class="flex justify-between">
