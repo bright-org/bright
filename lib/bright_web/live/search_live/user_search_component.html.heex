@@ -116,6 +116,7 @@
 
   <div class="flex mt-4" id="skill_section">
     <span class="mt-2 w-32 text-start">スキルで絞り込む</span>
+    <div>
     <.inputs_for :let={sk} field={@form[:skills]} >
       <input type="hidden" name="user_search[skills_sort][]" value={sk.index}>
       <div class="flex items-center mb-4">
@@ -171,6 +172,7 @@
         --->
       </div>
     </.inputs_for>
+    </div>
   </div>
   <label class="block cursor-pointer" :if={Enum.count(@form[:skills].value) < 3}>
     <input type="checkbox" name="user_search[skills_sort][]" class="hidden" />
