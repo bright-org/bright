@@ -131,7 +131,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         class="mb-2 justify-center text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 group w-52"
       >
         <span
-          class="material-symbols-outlined md-18 mr-1 text-brightGray-200"
+          class="material-symbols-outlined md-18 mr-1 text-brightGray-600"
         >inventory</span>
         候補者をストック
       </button>
