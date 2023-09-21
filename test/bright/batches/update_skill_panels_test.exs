@@ -7,24 +7,14 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
   describe "call/2" do
     alias Bright.Repo
 
-    alias Bright.SkillUnits.{
-      SkillUnit,
-      SkillClassUnit,
-      Skill
-    }
-
+    alias Bright.SkillUnits.{SkillUnit, SkillClassUnit}
     alias Bright.SkillPanels.SkillClass
     alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore, CareerFieldScore}
     alias Bright.SkillEvidences.SkillEvidence
     alias Bright.SkillExams.SkillExam
     alias Bright.SkillReferences.SkillReference
 
-    alias Bright.HistoricalSkillUnits.{
-      HistoricalSkillUnit,
-      HistoricalSkillClassUnit,
-      HistoricalSkill
-    }
-
+    alias Bright.HistoricalSkillUnits.{HistoricalSkillUnit, HistoricalSkillClassUnit}
     alias Bright.HistoricalSkillPanels.HistoricalSkillClass
 
     alias Bright.HistoricalSkillScores.{
@@ -165,26 +155,40 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
     # 公開スキルスコアのデータを準備
     setup %{skill_units: skill_units, skill_classes: skill_classes} do
+      [user1, user2] = insert_pair(:user)
+
       skill_unit_scores =
         Enum.flat_map(skill_units, fn skill_unit ->
-          insert_pair(:skill_unit_score, skill_unit: skill_unit)
+          [
+            insert(:skill_unit_score, skill_unit: skill_unit, user: user1),
+            insert(:skill_unit_score, skill_unit: skill_unit, user: user2)
+          ]
         end)
 
       skill_scores =
         Enum.flat_map(skill_units, fn skill_unit ->
           Enum.flat_map(skill_unit.skill_categories, fn skill_category ->
             Enum.flat_map(skill_category.skills, fn skill ->
-              insert_pair(:skill_score, skill: skill)
+              [
+                insert(:skill_score, skill: skill, user: user1),
+                insert(:skill_score, skill: skill, user: user2)
+              ]
             end)
           end)
         end)
 
       skill_class_scores =
         Enum.flat_map(skill_classes, fn skill_class ->
-          insert_pair(:skill_class_score, skill_class: skill_class)
+          [
+            insert(:skill_class_score, skill_class: skill_class, user: user1),
+            insert(:skill_class_score, skill_class: skill_class, user: user2)
+          ]
         end)
 
-      career_field_scores = insert_pair(:career_field_score)
+      career_field_scores = [
+        insert(:career_field_score, user: user1),
+        insert(:career_field_score, user: user2)
+      ]
 
       %{
         skill_unit_scores: skill_unit_scores,
@@ -332,44 +336,33 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルユニット単位の集計の公開データ生成を確認
-      published_skill_units = Repo.all(SkillUnit)
-      published_skill_unit_scores = Repo.all(SkillUnitScore)
+      published_skill_unit_scores = Repo.all(SkillUnitScore) |> Repo.preload(:skill_unit)
       assert length(published_skill_unit_scores) == length(skill_unit_scores)
 
       Enum.each(skill_unit_scores, fn skill_unit_score ->
         published_skill_unit_score =
-          Enum.find(published_skill_unit_scores, fn %{user_id: user_id} ->
-            user_id == skill_unit_score.user_id
+          Enum.find(published_skill_unit_scores, fn %{
+                                                      user_id: user_id,
+                                                      skill_unit: %{trace_id: trace_id}
+                                                    } ->
+            user_id == skill_unit_score.user_id &&
+              trace_id == skill_unit_score.skill_unit.trace_id
           end)
 
-        published_skill_unit =
-          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == skill_unit_score.skill_unit.trace_id
-          end)
-
-        assert published_skill_unit_score.user_id == skill_unit_score.user_id
-        assert published_skill_unit_score.skill_unit_id == published_skill_unit.id
-        assert published_skill_unit_score.percentage == skill_unit_score.percentage
+        # 再計算を確認
+        assert published_skill_unit_score.percentage != skill_unit_score.percentage
       end)
 
       # スキル単位のスコアの公開データ生成を確認
-      published_skills = Repo.all(Skill)
-      published_skill_scores = Repo.all(SkillScore)
+      published_skill_scores = Repo.all(SkillScore) |> Repo.preload(:skill)
       assert length(published_skill_scores) == length(skill_scores)
 
       Enum.each(skill_scores, fn skill_score ->
         published_skill_score =
-          Enum.find(published_skill_scores, fn %{user_id: user_id} ->
-            user_id == skill_score.user_id
+          Enum.find(published_skill_scores, fn %{user_id: user_id, skill: %{trace_id: trace_id}} ->
+            user_id == skill_score.user_id && trace_id == skill_score.skill.trace_id
           end)
 
-        published_skill =
-          Enum.find(published_skills, fn %{trace_id: trace_id} ->
-            trace_id == skill_score.skill.trace_id
-          end)
-
-        assert published_skill_score.user_id == skill_score.user_id
-        assert published_skill_score.skill_id == published_skill.id
         assert published_skill_score.score == skill_score.score
         assert published_skill_score.exam_progress == skill_score.exam_progress
         assert published_skill_score.reference_read == skill_score.reference_read
@@ -377,25 +370,21 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルクラス単位の集計の公開データ生成を確認
-      published_skill_classes = Repo.all(SkillClass)
-      published_skill_class_scores = Repo.all(SkillClassScore)
+      published_skill_class_scores = Repo.all(SkillClassScore) |> Repo.preload(:skill_class)
       assert length(published_skill_class_scores) == length(skill_class_scores)
 
       Enum.each(skill_class_scores, fn skill_class_score ->
         published_skill_class_score =
-          Enum.find(published_skill_class_scores, fn %{user_id: user_id} ->
-            user_id == skill_class_score.user_id
+          Enum.find(published_skill_class_scores, fn %{
+                                                       user_id: user_id,
+                                                       skill_class: %{trace_id: trace_id}
+                                                     } ->
+            user_id == skill_class_score.user_id &&
+              trace_id == skill_class_score.skill_class.trace_id
           end)
 
-        published_skill_class =
-          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
-            trace_id == skill_class_score.skill_class.trace_id
-          end)
-
-        assert published_skill_class_score.user_id == skill_class_score.user_id
-        assert published_skill_class_score.skill_class_id == published_skill_class.id
-        assert published_skill_class_score.level == skill_class_score.level
-        assert published_skill_class_score.percentage == skill_class_score.percentage
+        # 再計算を確認
+        assert published_skill_class_score.percentage != skill_class_score.percentage
       end)
 
       # キャリアフィールド単位の集計の公開データ生成を確認
@@ -548,44 +537,40 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルユニット単位の集計の履歴データ生成を確認
-      historical_skill_unit_scores = Repo.all(HistoricalSkillUnitScore)
+      historical_skill_unit_scores =
+        Repo.all(HistoricalSkillUnitScore) |> Repo.preload(:historical_skill_unit)
+
       assert length(historical_skill_unit_scores) == length(skill_unit_scores)
 
       Enum.each(skill_unit_scores, fn skill_unit_score ->
         historical_skill_unit_score =
-          Enum.find(historical_skill_unit_scores, fn %{user_id: user_id} ->
-            user_id == skill_unit_score.user_id
+          Enum.find(historical_skill_unit_scores, fn %{
+                                                       user_id: user_id,
+                                                       historical_skill_unit: %{
+                                                         trace_id: trace_id
+                                                       }
+                                                     } ->
+            user_id == skill_unit_score.user_id &&
+              trace_id == skill_unit_score.skill_unit.trace_id
           end)
 
-        historical_skill_unit =
-          Enum.find(historical_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == skill_unit_score.skill_unit.trace_id
-          end)
-
-        assert historical_skill_unit_score.user_id == skill_unit_score.user_id
-        assert historical_skill_unit_score.historical_skill_unit_id == historical_skill_unit.id
         assert historical_skill_unit_score.locked_date == @locked_date
         assert historical_skill_unit_score.percentage == skill_unit_score.percentage
       end)
 
       # スキル単位のスコアの履歴データ生成を確認
-      historical_skills = Repo.all(HistoricalSkill)
-      historical_skill_scores = Repo.all(HistoricalSkillScore)
+      historical_skill_scores = Repo.all(HistoricalSkillScore) |> Repo.preload(:historical_skill)
       assert length(historical_skill_scores) == length(skill_scores)
 
       Enum.each(skill_scores, fn skill_score ->
         historical_skill_score =
-          Enum.find(historical_skill_scores, fn %{user_id: user_id} ->
-            user_id == skill_score.user_id
+          Enum.find(historical_skill_scores, fn %{
+                                                  user_id: user_id,
+                                                  historical_skill: %{trace_id: trace_id}
+                                                } ->
+            user_id == skill_score.user_id && trace_id == skill_score.skill.trace_id
           end)
 
-        historical_skill =
-          Enum.find(historical_skills, fn %{trace_id: trace_id} ->
-            trace_id == skill_score.skill.trace_id
-          end)
-
-        assert historical_skill_score.user_id == skill_score.user_id
-        assert historical_skill_score.historical_skill_id == historical_skill.id
         assert historical_skill_score.score == skill_score.score
         assert historical_skill_score.exam_progress == skill_score.exam_progress
         assert historical_skill_score.reference_read == skill_score.reference_read
@@ -593,24 +578,24 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルクラス単位の集計の履歴データ生成を確認
-      historical_skill_class_scores = Repo.all(HistoricalSkillClassScore)
+      historical_skill_class_scores =
+        Repo.all(HistoricalSkillClassScore) |> Repo.preload(:historical_skill_class)
+
       assert length(historical_skill_class_scores) == length(skill_class_scores)
 
       Enum.each(skill_class_scores, fn skill_class_score ->
         historical_skill_class_score =
-          Enum.find(historical_skill_class_scores, fn %{user_id: user_id} ->
-            user_id == skill_class_score.user_id
+          Enum.find(historical_skill_class_scores, fn %{
+                                                        user_id: user_id,
+                                                        historical_skill_class: %{
+                                                          trace_id: trace_id
+                                                        }
+                                                      } ->
+            user_id == skill_class_score.user_id &&
+              trace_id == skill_class_score.skill_class.trace_id
           end)
 
-        historical_skill_class =
-          Enum.find(historical_skill_classes, fn %{trace_id: trace_id} ->
-            trace_id == skill_class_score.skill_class.trace_id
-          end)
-
-        assert historical_skill_class_score.user_id == skill_class_score.user_id
-        assert historical_skill_class_score.historical_skill_class_id == historical_skill_class.id
         assert historical_skill_class_score.locked_date == @locked_date
-        assert historical_skill_class_score.level == skill_class_score.level
         assert historical_skill_class_score.percentage == skill_class_score.percentage
       end)
 
@@ -803,44 +788,33 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルユニット単位の集計の公開データ生成を確認
-      published_skill_units = Repo.all(SkillUnit)
-      published_skill_unit_scores = Repo.all(SkillUnitScore)
+      published_skill_unit_scores = Repo.all(SkillUnitScore) |> Repo.preload(:skill_unit)
       assert length(published_skill_unit_scores) == length(skill_unit_scores)
 
       Enum.each(skill_unit_scores, fn skill_unit_score ->
         published_skill_unit_score =
-          Enum.find(published_skill_unit_scores, fn %{user_id: user_id} ->
-            user_id == skill_unit_score.user_id
+          Enum.find(published_skill_unit_scores, fn %{
+                                                      user_id: user_id,
+                                                      skill_unit: %{trace_id: trace_id}
+                                                    } ->
+            user_id == skill_unit_score.user_id &&
+              trace_id == skill_unit_score.skill_unit.trace_id
           end)
 
-        published_skill_unit =
-          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == skill_unit_score.skill_unit.trace_id
-          end)
-
-        assert published_skill_unit_score.user_id == skill_unit_score.user_id
-        assert published_skill_unit_score.skill_unit_id == published_skill_unit.id
-        assert published_skill_unit_score.percentage == skill_unit_score.percentage
+        # 再計算を確認
+        assert published_skill_unit_score.percentage != skill_unit_score.percentage
       end)
 
       # スキル単位のスコアの公開データ生成を確認
-      published_skills = Repo.all(Skill)
-      published_skill_scores = Repo.all(SkillScore)
+      published_skill_scores = Repo.all(SkillScore) |> Repo.preload(:skill)
       assert length(published_skill_scores) == length(skill_scores)
 
       Enum.each(skill_scores, fn skill_score ->
         published_skill_score =
-          Enum.find(published_skill_scores, fn %{user_id: user_id} ->
-            user_id == skill_score.user_id
+          Enum.find(published_skill_scores, fn %{user_id: user_id, skill: %{trace_id: trace_id}} ->
+            user_id == skill_score.user_id && trace_id == skill_score.skill.trace_id
           end)
 
-        published_skill =
-          Enum.find(published_skills, fn %{trace_id: trace_id} ->
-            trace_id == skill_score.skill.trace_id
-          end)
-
-        assert published_skill_score.user_id == skill_score.user_id
-        assert published_skill_score.skill_id == published_skill.id
         assert published_skill_score.score == skill_score.score
         assert published_skill_score.exam_progress == skill_score.exam_progress
         assert published_skill_score.reference_read == skill_score.reference_read
@@ -848,25 +822,21 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルクラス単位の集計の公開データ生成を確認
-      published_skill_classes = Repo.all(SkillClass)
-      published_skill_class_scores = Repo.all(SkillClassScore)
+      published_skill_class_scores = Repo.all(SkillClassScore) |> Repo.preload(:skill_class)
       assert length(published_skill_class_scores) == length(skill_class_scores)
 
       Enum.each(skill_class_scores, fn skill_class_score ->
         published_skill_class_score =
-          Enum.find(published_skill_class_scores, fn %{user_id: user_id} ->
-            user_id == skill_class_score.user_id
+          Enum.find(published_skill_class_scores, fn %{
+                                                       user_id: user_id,
+                                                       skill_class: %{trace_id: trace_id}
+                                                     } ->
+            user_id == skill_class_score.user_id &&
+              trace_id == skill_class_score.skill_class.trace_id
           end)
 
-        published_skill_class =
-          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
-            trace_id == skill_class_score.skill_class.trace_id
-          end)
-
-        assert published_skill_class_score.user_id == skill_class_score.user_id
-        assert published_skill_class_score.skill_class_id == published_skill_class.id
-        assert published_skill_class_score.level == skill_class_score.level
-        assert published_skill_class_score.percentage == skill_class_score.percentage
+        # 再計算を確認
+        assert published_skill_class_score.percentage != skill_class_score.percentage
       end)
 
       # キャリアフィールド単位の集計の公開データ生成を確認
@@ -1023,46 +993,41 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルユニット単位の集計の履歴データ生成を確認
-      historical_skill_unit_scores = Repo.all(HistoricalSkillUnitScore)
+      historical_skill_unit_scores =
+        Repo.all(HistoricalSkillUnitScore) |> Repo.preload(:historical_skill_unit)
 
       assert length(historical_skill_unit_scores) ==
                length(skill_unit_scores) + length(other_skill_unit_scores)
 
       Enum.each(skill_unit_scores, fn skill_unit_score ->
         historical_skill_unit_score =
-          Enum.find(historical_skill_unit_scores, fn %{user_id: user_id} ->
-            user_id == skill_unit_score.user_id
+          Enum.find(historical_skill_unit_scores, fn %{
+                                                       user_id: user_id,
+                                                       historical_skill_unit: %{
+                                                         trace_id: trace_id
+                                                       }
+                                                     } ->
+            user_id == skill_unit_score.user_id &&
+              trace_id == skill_unit_score.skill_unit.trace_id
           end)
 
-        historical_skill_unit =
-          Enum.find(historical_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == skill_unit_score.skill_unit.trace_id
-          end)
-
-        assert historical_skill_unit_score.user_id == skill_unit_score.user_id
-        assert historical_skill_unit_score.historical_skill_unit_id == historical_skill_unit.id
         assert historical_skill_unit_score.locked_date == @locked_date
         assert historical_skill_unit_score.percentage == skill_unit_score.percentage
       end)
 
       # スキル単位のスコアの履歴データ生成を確認
-      historical_skills = Repo.all(HistoricalSkill)
-      historical_skill_scores = Repo.all(HistoricalSkillScore)
+      historical_skill_scores = Repo.all(HistoricalSkillScore) |> Repo.preload(:historical_skill)
       assert length(historical_skill_scores) == length(skill_scores) + length(other_skill_scores)
 
       Enum.each(skill_scores, fn skill_score ->
         historical_skill_score =
-          Enum.find(historical_skill_scores, fn %{user_id: user_id} ->
-            user_id == skill_score.user_id
+          Enum.find(historical_skill_scores, fn %{
+                                                  user_id: user_id,
+                                                  historical_skill: %{trace_id: trace_id}
+                                                } ->
+            user_id == skill_score.user_id && trace_id == skill_score.skill.trace_id
           end)
 
-        historical_skill =
-          Enum.find(historical_skills, fn %{trace_id: trace_id} ->
-            trace_id == skill_score.skill.trace_id
-          end)
-
-        assert historical_skill_score.user_id == skill_score.user_id
-        assert historical_skill_score.historical_skill_id == historical_skill.id
         assert historical_skill_score.score == skill_score.score
         assert historical_skill_score.exam_progress == skill_score.exam_progress
         assert historical_skill_score.reference_read == skill_score.reference_read
@@ -1070,24 +1035,24 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルクラス単位の集計の履歴データ生成を確認
-      historical_skill_class_scores = Repo.all(HistoricalSkillClassScore)
+      historical_skill_class_scores =
+        Repo.all(HistoricalSkillClassScore) |> Repo.preload(:historical_skill_class)
 
       assert length(historical_skill_class_scores) ==
                length(skill_class_scores) + length(other_skill_class_scores)
 
       Enum.each(skill_class_scores, fn skill_class_score ->
         historical_skill_class_score =
-          Enum.find(historical_skill_class_scores, fn %{user_id: user_id} ->
-            user_id == skill_class_score.user_id
+          Enum.find(historical_skill_class_scores, fn %{
+                                                        user_id: user_id,
+                                                        historical_skill_class: %{
+                                                          trace_id: trace_id
+                                                        }
+                                                      } ->
+            user_id == skill_class_score.user_id &&
+              trace_id == skill_class_score.skill_class.trace_id
           end)
 
-        historical_skill_class =
-          Enum.find(historical_skill_classes, fn %{trace_id: trace_id} ->
-            trace_id == skill_class_score.skill_class.trace_id
-          end)
-
-        assert historical_skill_class_score.user_id == skill_class_score.user_id
-        assert historical_skill_class_score.historical_skill_class_id == historical_skill_class.id
         assert historical_skill_class_score.locked_date == @locked_date
         assert historical_skill_class_score.level == skill_class_score.level
         assert historical_skill_class_score.percentage == skill_class_score.percentage
@@ -1219,44 +1184,32 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルユニット単位の集計の公開データ生成がロールバックされることを確認
-      published_skill_units = Repo.all(SkillUnit)
-      published_skill_unit_scores = Repo.all(SkillUnitScore)
+      published_skill_unit_scores = Repo.all(SkillUnitScore) |> Repo.preload(:skill_unit)
       assert length(published_skill_unit_scores) == length(skill_unit_scores)
 
       Enum.each(skill_unit_scores, fn skill_unit_score ->
         published_skill_unit_score =
-          Enum.find(published_skill_unit_scores, fn %{user_id: user_id} ->
-            user_id == skill_unit_score.user_id
+          Enum.find(published_skill_unit_scores, fn %{
+                                                      user_id: user_id,
+                                                      skill_unit: %{trace_id: trace_id}
+                                                    } ->
+            user_id == skill_unit_score.user_id &&
+              trace_id == skill_unit_score.skill_unit.trace_id
           end)
 
-        published_skill_unit =
-          Enum.find(published_skill_units, fn %{trace_id: trace_id} ->
-            trace_id == skill_unit_score.skill_unit.trace_id
-          end)
-
-        assert published_skill_unit_score.user_id == skill_unit_score.user_id
-        assert published_skill_unit_score.skill_unit_id == published_skill_unit.id
         assert published_skill_unit_score.percentage == skill_unit_score.percentage
       end)
 
       # スキル単位のスコアの公開データ生成がロールバックされることを確認
-      published_skills = Repo.all(Skill)
-      published_skill_scores = Repo.all(SkillScore)
+      published_skill_scores = Repo.all(SkillScore) |> Repo.preload(:skill)
       assert length(published_skill_scores) == length(skill_scores)
 
       Enum.each(skill_scores, fn skill_score ->
         published_skill_score =
-          Enum.find(published_skill_scores, fn %{user_id: user_id} ->
-            user_id == skill_score.user_id
+          Enum.find(published_skill_scores, fn %{user_id: user_id, skill: %{trace_id: trace_id}} ->
+            user_id == skill_score.user_id && trace_id == skill_score.skill.trace_id
           end)
 
-        published_skill =
-          Enum.find(published_skills, fn %{trace_id: trace_id} ->
-            trace_id == skill_score.skill.trace_id
-          end)
-
-        assert published_skill_score.user_id == skill_score.user_id
-        assert published_skill_score.skill_id == published_skill.id
         assert published_skill_score.score == skill_score.score
         assert published_skill_score.exam_progress == skill_score.exam_progress
         assert published_skill_score.reference_read == skill_score.reference_read
@@ -1264,23 +1217,19 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       end)
 
       # スキルクラス単位の集計の公開データ生成がロールバックされることを確認
-      published_skill_classes = Repo.all(SkillClass)
-      published_skill_class_scores = Repo.all(SkillClassScore)
+      published_skill_class_scores = Repo.all(SkillClassScore) |> Repo.preload(:skill_class)
       assert length(published_skill_class_scores) == length(skill_class_scores)
 
       Enum.each(skill_class_scores, fn skill_class_score ->
         published_skill_class_score =
-          Enum.find(published_skill_class_scores, fn %{user_id: user_id} ->
-            user_id == skill_class_score.user_id
+          Enum.find(published_skill_class_scores, fn %{
+                                                       user_id: user_id,
+                                                       skill_class: %{trace_id: trace_id}
+                                                     } ->
+            user_id == skill_class_score.user_id &&
+              trace_id == skill_class_score.skill_class.trace_id
           end)
 
-        published_skill_class =
-          Enum.find(published_skill_classes, fn %{trace_id: trace_id} ->
-            trace_id == skill_class_score.skill_class.trace_id
-          end)
-
-        assert published_skill_class_score.user_id == skill_class_score.user_id
-        assert published_skill_class_score.skill_class_id == published_skill_class.id
         assert published_skill_class_score.level == skill_class_score.level
         assert published_skill_class_score.percentage == skill_class_score.percentage
       end)
