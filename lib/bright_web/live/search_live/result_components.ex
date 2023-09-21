@@ -42,7 +42,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
       </p>
 
       <p class="mb-4">
-        <span>　求職種類：<%= UserJobProfile.wish_job_type(@job) %></span>
+        <span>　　　形態：<%= UserJobProfile.wish_job_type(@job) %></span>
       </p>
       <p class="border-t border-brightGray-200 mb-2 mt-2 pt-2">
         <span>スキルの最終更新日：</span>
