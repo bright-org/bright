@@ -12,7 +12,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     skill_unit =
       insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
 
-    [%{skills: [skill_1, skill_2, skill_3]}] = insert_skill_categories_and_skills(skill_unit, [3])
+    [%{skills: [skill_1, skill_2, skill_3]} = skill_category] =
+      insert_skill_categories_and_skills(skill_unit, [3])
 
     if score do
       insert(:init_skill_class_score, user: user, skill_class: skill_class)
@@ -26,6 +27,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     %{
       skill_panel: skill_panel,
       skill_class: skill_class,
+      skill_unit: skill_unit,
+      skill_category: skill_category,
       skill_1: skill_1,
       skill_2: skill_2,
       skill_3: skill_3
@@ -724,6 +727,94 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       refute show_live
              |> element("#skill-1 .link-exam")
              |> has_element?()
+    end
+  end
+
+  # タイムライン切り替え
+  describe "Timeline bar" do
+    alias BrightWeb.SkillPanelLive.TimelineHelper
+    setup [:register_and_log_in_user, :setup_skills]
+
+    setup do
+      timeline = TimelineHelper.get_current()
+      %{labels: labels} = TimelineHelper.shift_for_past(timeline)
+      past_label = List.last(labels)
+      past_date = TimelineHelper.label_to_date(past_label)
+
+      %{timeline: timeline, past_label: past_label, past_date: past_date}
+    end
+
+    # 過去分のデータ用意
+    setup %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_unit: skill_unit,
+      skill_category: skill_category,
+      skill_1: skill_1,
+      past_date: past_date
+    } do
+      locked_date = TimelineHelper.get_shift_date_from_date(past_date, -1)
+
+      h_skill_class =
+        insert(:historical_skill_class,
+          skill_panel_id: skill_panel.id,
+          locked_date: locked_date,
+          class: 1,
+          trace_id: skill_class.trace_id
+        )
+
+      h_skill_unit =
+        insert(:historical_skill_unit, locked_date: locked_date, trace_id: skill_unit.trace_id)
+
+      insert(:historical_skill_class_unit,
+        historical_skill_class: h_skill_class,
+        historical_skill_unit: h_skill_unit
+      )
+
+      h_skill_category =
+        insert(:historical_skill_category,
+          trace_id: skill_category.trace_id,
+          historical_skill_unit: h_skill_unit
+        )
+
+      h_skill_1 =
+        insert(:historical_skill,
+          trace_id: skill_1.trace_id,
+          historical_skill_category: h_skill_category,
+          position: 1
+        )
+
+      # 現在にはないスキルとして用意
+      h_skill_x =
+        insert(:historical_skill, historical_skill_category: h_skill_category, position: 2)
+
+      # ユーザーのスコアの用意
+      insert(:historical_skill_class_score,
+        historical_skill_class: h_skill_class,
+        user: user,
+        locked_date: past_date
+      )
+
+      insert(:historical_skill_score, historical_skill: h_skill_1, user: user, score: :middle)
+      insert(:historical_skill_score, historical_skill: h_skill_x, user: user, score: :high)
+
+      :ok
+    end
+
+    @tag score: :high
+    test "shows past skills", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      past_label: past_label
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
+
+      show_live
+      |> element("button", past_label)
+      |> render_click()
+
+      assert has_element?(show_live, "#skill-1 .score-mark-middle")
     end
   end
 
