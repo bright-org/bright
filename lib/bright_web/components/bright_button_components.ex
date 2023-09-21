@@ -122,9 +122,9 @@ defmodule BrightWeb.BrightButtonComponents do
     >
       <button
         type="button"
-        class="text-white bg-planUpgrade-600 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
+        class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-sm items-center font-bold h-9 w-44 hover:opacity-70 lg:px-2 lg:w-52"
       >
-        <span class="bg-white material-icons mr-1 !text-base !text-planUpgrade-600 rounded-full h-6 w-6 !font-bold material-icons-outlined">upgrade</span>
+        <span class="bg-white material-icons mr-1 !text-base !text-planUpgrade-600 rounded-full h-6 w-6 !font-bold material-icons-outlined lg:mr-2">upgrade</span>
         プランのアップグレード
       </button>
     </.link>
@@ -146,9 +146,9 @@ defmodule BrightWeb.BrightButtonComponents do
       rel="noopener noreferrer"
     >
       <button type="button"
-        class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70">
+        class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-sm items-center justify-center font-bold h-9 w-44 hover:opacity-70 lg:ml-2 lg:px-2 lg:w-56">
         <span
-            class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold material-icons-outlined">sms</span>
+            class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold material-icons-outlined lg:mr-2">sms</span>
         カスタマーサクセスに連絡
       </button>
     </.link>
@@ -166,11 +166,11 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       type="button"
-      class="text-white bg-brightGreen-300 px-4 inline-flex rounded-md text-sm items-center font-bold h-9 hover:opacity-70"
+      class="hidden text-white bg-brightGreen-300 px-4 justify-center rounded-md text-sm items-center font-bold h-9 w-48 hover:opacity-50 lg:inline-flex"
       phx-click={JS.toggle(to: "#skill_search_modal")}
     >
       <span
-          class="bg-white material-icons mr-1 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold">search</span>
+          class="bg-white material-icons mr-2 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold">search</span>
       スキル保有者を検索
     </button>
 
@@ -190,7 +190,7 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       id="user_menu_dropmenu"
-      class="hover:opacity-70"
+      class="ml-4 hover:opacity-70 mr-8 lg:mr-0"
       phx-click={JS.toggle(to: "#personal_setting_modal")}
     >
       <img
@@ -208,7 +208,7 @@ defmodule BrightWeb.BrightButtonComponents do
           method="delete"
           class="hover:opacity-70"
           >
-          <button class="rounded-full border border-brightGray-600 h-10 w-10 flex items-center justify-center">
+          <button class="hidden rounded-full border border-brightGray-600 h-10 w-10 items-center justify-center hover:opacity-50 lg:flex">
             <span class="material-icons text-brightGray-600">logout</span>
           </button>
         </.link>

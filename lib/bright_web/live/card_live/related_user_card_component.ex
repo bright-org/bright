@@ -67,7 +67,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           inner_tab={@inner_tab}
           inner_selected_tab={@inner_selected_tab}
         />
-        <div class="pt-3 pb-1 px-6 min-h-[192px]">
+        <div class="pt-3 pb-1 px-6 lg:min-h-[192px]">
           <% # TODO ↓α版対応 %>
           <ul :if={@selected_tab == "intriguing"} class="flex gap-y-2.5 flex-col">
             <li class="flex">

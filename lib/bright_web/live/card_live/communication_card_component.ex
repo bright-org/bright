@@ -27,8 +27,10 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
         page={@card.page_params.page}
         total_pages={@card.total_pages}
         target={@myself}
+        rest="overflow-x-auto"
+        header_rest="w-[600px] lg:w-full"
       >
-        <div class="pt-4 px-6 min-h-[216px]">
+        <div class="pt-4 px-6 lg:min-h-[216px]">
         <% # TODO α版対応 :if={}を外すこと %>
           <ul :if={@card.selected_tab == "community"} class="flex gap-y-2.5 flex-col">
             <li :if={Enum.count(@card.notifications) == 0} class="flex">
@@ -42,7 +44,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
           </ul>
 
           <% # TODO ↓α版対応 %>
-          <ul :if={@card.selected_tab != "community"} class="flex gap-y-2.5 flex-col">
+          <ul :if={@card.selected_tab != "community"} class="flex content-between border-b border-brightGray-200 text-brightGray-500 w-[600px] lg:w-full">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
                 βリリース（10月予定）で利用可能になります
