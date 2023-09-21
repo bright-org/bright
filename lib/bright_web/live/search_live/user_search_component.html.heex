@@ -9,7 +9,7 @@
   <div class="border-b border-brightGray-200 flex flex-wrap items-center">
     <div class="w-fit">
       <label class="flex items-center py-4">
-        <span class="w-32">希望年収<span class="block text-xs">（一人当たり）</span></span>
+        <span class="w-36 text-start">希望年収で絞り込む</span>
         <BrightCore.input
           field={@form[:desired_income]}
           input_class="border border-brightGray-200 px-2 py-1 mr-2 rounded w-40"
@@ -22,7 +22,7 @@
   </div>
 
   <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
-    <span class="w-32">求職種類</span>
+    <span class="w-36 text-start">形態で絞り込む</span>
     <div class="flex items-center">
       <BrightCore.input
         field={@form[:wish_employed]}
@@ -52,7 +52,7 @@
   </div>
 
   <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
-    <span class="py-1 w-32">勤務体系</span>
+    <span class="py-1 w-36 text-start">勤務体系で絞り込む</span>
     <div>
       <div class="flex items-center">
         <BrightCore.input
@@ -115,7 +115,7 @@
   </div>
 
   <div class="flex mt-4" id="skill_section">
-    <span class="mt-2 mr-4 w-24">スキル</span>
+    <span class="mt-2 w-32 text-start">スキルで絞り込む</span>
     <.inputs_for :let={sk} field={@form[:skills]} >
       <input type="hidden" name="user_search[skills_sort][]" value={sk.index}>
       <div class="flex items-center mb-4">
@@ -202,7 +202,12 @@
 
       <p class="ml-2">※採用面談が決まるまで匿名で表示されます</p>
     </div>
-
+    <.tab_footer
+      id="user_search_result_footer"
+      page={@page}
+      total_pages={@total_pages}
+      target={@myself}
+    />
     <.live_component
       id="user_search_result"
       module={SearchResultsComponent}
@@ -210,12 +215,6 @@
       result={@search_results}
       skill_params={@skill_params}
       stock_user_ids={@stock_user_ids}
-    />
-    <.tab_footer
-      id="user_search_result_footer"
-      page={@page}
-      total_pages={@total_pages}
-      target={@myself}
     />
   </div>
 </li>

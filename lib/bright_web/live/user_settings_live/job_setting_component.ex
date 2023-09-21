@@ -18,7 +18,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
       >
         <div class="border-b border-brightGray-200 flex flex-wrap">
           <div class="flex py-4">
-            <span class="w-32">求職</span>
+            <span class="w-24 text-start">求職</span>
             <BrightCore.input
               id="user_job_profile_job_searching_on"
               type="radio"
@@ -44,7 +44,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
             <BrightCore.input
               field={@form[:desired_income]}
               container_class="py-4 w-full"
-              label_class="py-1 w-32"
+              label_class="py-1 w-24 text-start"
               after_label_class="ml-1"
               type="number"
               label="希望年収"
@@ -52,10 +52,10 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
             />
           </div>
           <div class="border-b border-brightGray-200 flex flex-wrap">
-            <div class="flex py-4">
-              <div class="flex flex-col">
-                <span class="pt-1 w-32">求職種類</span>
-                <span class="pb-1 w-32">(複数可)</span>
+            <div class="flex pt-4">
+              <div class="flex flex-col mt-2 text-start">
+                <span class="pt-1 w-24">希望する</span>
+                <span class="pb-1 w-24">形態</span>
               </div>
               <div class="py-4 flex">
               <BrightCore.input
@@ -83,64 +83,86 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               />
               </div>
             </div>
+            <div class="pl-24 pb-4 flex">
+              <span class="">※求職優先の方は、すべて選択するとスカウト検索がヒットしやすくなります</span>
+            </div>
           </div>
 
           <div class="flex flex-wrap py-4 w-full">
-            <span class="py-1 w-32">勤務体系</span>
+            <div class="flex flex-col text-start">
+              <span class="pt-1 w-24">希望する</span>
+              <span class="pb-1 w-24">勤務体系</span>
+            </div>
             <div>
+            <div class="flex items-center">
+                <BrightCore.input
+                  name={@form[:work_style].name}
+                  checked={@form[:work_style].value == "both"}
+                  value="both"
+                  label_class="w-20 text-left"
+                  type="radio"
+                  label="どちらでも可"
+                />
+              </div>
               <div class="flex items-center">
                 <BrightCore.input
-                  field={@form[:office_work]}
-                  label_class="w-16 text-left"
-                  type="checkbox"
-                  label="出勤"
+                  name={@form[:work_style].name}
+                  checked={@form[:work_style].value == "office"}
+                  value="office"
+                  label_class="w-24 text-left"
+                  type="radio"
+                  label="出勤のみ可"
                 />
                 <BrightCore.input
                   field={@form[:office_pref]}
-                  input_class="w-32"
+                  input_class="w-40"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :office_pref)}
                   prompt="希望勤務地"
-                  disabled={to_string(@form[:office_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["office", "both"]}
                 />
                 <BrightCore.input
                   field={@form[:office_working_hours]}
-                  input_class="w-32"
+                  input_class="w-40"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :office_working_hours)}
                   prompt="希望勤務時間"
-                  disabled={to_string(@form[:office_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["office", "both"]}
                 />
                 <BrightCore.input
                   field={@form[:office_work_holidays]}
                   container_class="ml-4"
                   type="checkbox"
                   label="土日祝の稼働も含む"
-                  disabled={to_string(@form[:office_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["office", "both"]}
+                  label_class={if @form[:work_style].value not in ["office", "both"], do: "text-pureGray-600"}
                 />
               </div>
 
               <div class="flex items-center mt-2">
                 <BrightCore.input
-                  field={@form[:remote_work]}
-                  label_class="w-16 text-left"
-                  type="checkbox"
-                  label="リモート"
+                  name={@form[:work_style].name}
+                  checked={@form[:work_style].value == "remote"}
+                  value="remote"
+                  label_class="w-24 text-left"
+                  type="radio"
+                  label="リモートのみ可"
                 />
                 <BrightCore.input
                   field={@form[:remote_working_hours]}
-                  input_class="w-32"
+                  input_class="w-40"
                   type="select"
                   options={Ecto.Enum.mappings(UserJobProfile, :remote_working_hours)}
                   prompt="希望勤務時間"
-                  disabled={to_string(@form[:remote_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["remote", "both"]}
                 />
                 <BrightCore.input
                   field={@form[:remote_work_holidays]}
                   container_class="ml-4"
+                  label_class={if @form[:work_style].value not in ["remote", "both"], do: "text-pureGray-600"}
                   type="checkbox"
                   label="土日祝の稼働も含む"
-                  disabled={to_string(@form[:remote_work].value) == "false"}
+                  disabled={@form[:work_style].value not in ["remote", "both"]}
                 />
               </div>
             </div>

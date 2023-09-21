@@ -223,9 +223,9 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
     search_params = {
       Map.put(changes, :job_searching, true)
-      |> Map.drop([:skills, :pj_start, :pj_end, :desired_income])
+      |> Map.drop([:skills, :desired_income])
       |> Map.to_list(),
-      Map.take(changes, [:pj_start, :pj_end, :desired_income]),
+      Map.take(changes, [:desired_income]),
       skills
     }
 

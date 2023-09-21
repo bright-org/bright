@@ -14,16 +14,15 @@ defmodule Bright.UserJobProfilesTest do
       job_searching: nil,
       office_working_hours: nil,
       office_pref: nil,
-      office_work: nil,
       office_work_holidays: nil,
       remote_working_hours: nil,
       remote_work_holidays: nil,
-      remote_work: nil,
       user_id: nil,
       wish_change_job: nil,
       wish_employed: nil,
       wish_freelance: nil,
-      wish_side_job: nil
+      wish_side_job: nil,
+      work_style: nil
     }
 
     test "list_user_job_profiles/0 returns all user_job_profiles" do
@@ -59,11 +58,10 @@ defmodule Bright.UserJobProfilesTest do
         job_searching: true,
         office_working_hours: "月140h~159h",
         office_pref: "福岡県",
-        office_work: true,
         office_work_holidays: true,
         remote_working_hours: "月140h~159h",
         remote_work_holidays: true,
-        remote_work: true,
+        work_style: "both",
         wish_change_job: true,
         wish_employed: false,
         wish_freelance: true,

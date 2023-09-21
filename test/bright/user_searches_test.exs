@@ -9,6 +9,7 @@ defmodule Bright.UserSearchesTest do
     setup do
       user_1 = insert(:user)
       user_2 = insert(:user)
+      user_3 = insert(:user)
 
       # キャリアフィールドからスキルクラスまでの用意
       career_field = insert(:career_field, name_en: "engineer")
@@ -28,6 +29,7 @@ defmodule Bright.UserSearchesTest do
       insert(:user_skill_panel, user: user_1, skill_panel: skill_panel_1)
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel_1)
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel_2)
+      insert(:user_skill_panel, user: user_3, skill_panel: skill_panel_1)
 
       insert(:skill_class_score,
         user: user_1,
@@ -46,16 +48,27 @@ defmodule Bright.UserSearchesTest do
       insert(:skill_class_score, user: user_2, skill_class: skill_class_2, level: :normal)
       insert(:skill_class_score, user: user_2, skill_class: skill_class_3, level: :normal)
 
+      insert(:skill_class_score,
+        user: user_3,
+        skill_class: skill_class_1,
+        level: :skilled,
+        percentage: 60
+      )
+
       %{
         user_1: user_1,
         user_2: user_2,
+        user_3: user_3,
         skill_panel_1: skill_panel_1,
         skill_panel_2: skill_panel_2,
         skill_class_1: skill_class_1
       }
     end
 
-    test "only job_searching true user", %{user_1: %{id: id} = user_1, user_2: user_2} do
+    test "only job_searching true user", %{
+      user_1: %{id: id} = user_1,
+      user_2: user_2
+    } do
       insert(:user_job_profile, user: user_1)
       insert(:user_job_profile, user: user_2, job_searching: false)
 
@@ -190,14 +203,19 @@ defmodule Bright.UserSearchesTest do
       assert length(entries) == 1
     end
 
-    test "less than equal desired_income", %{user_1: %{id: id} = user_1, user_2: user_2} do
+    test "less than equal desired_income or nil", %{
+      user_1: %{id: id_1} = user_1,
+      user_2: user_2,
+      user_3: %{id: id_3} = user_3
+    } do
       insert(:user_job_profile, user: user_1, desired_income: 800)
       insert(:user_job_profile, user: user_2, desired_income: 1000)
+      insert(:user_job_profile, user: user_3, desired_income: nil)
 
       query = {[{:job_searching, true}], %{desired_income: 800}, []}
 
-      assert %{entries: [%{id: ^id}]} =
-               UserSearches.search_users_by_job_profile_and_skill_score(query)
+      assert %{entries: [%{id: ^id_1}, %{id: ^id_3}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query, sort: :income_asc)
     end
 
     test "only wish change_job", %{user_1: %{id: id} = user_1, user_2: user_2} do
@@ -250,29 +268,42 @@ defmodule Bright.UserSearchesTest do
                UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
-    test "only office work and work Tokyo", %{user_1: %{id: id} = user_1, user_2: user_2} do
+    test "only office work and work Tokyo or nil", %{
+      user_1: %{id: id_1} = user_1,
+      user_2: user_2,
+      user_3: %{id: id_3} = user_3
+    } do
       insert(:user_job_profile, user: user_1, office_work: true, office_pref: "東京都")
       insert(:user_job_profile, user: user_2, office_work: true, office_pref: "福岡県")
+      insert(:user_job_profile, user: user_3, office_work: true, office_pref: nil)
 
       query = {[{:job_searching, true}, {:office_work, true}, {:office_pref, "東京都"}], %{}, []}
 
-      assert %{entries: [%{id: ^id}]} =
+      assert %{entries: [%{id: ^id_1}, %{id: ^id_3}]} =
                UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
-    test "only office work and 160h/m orver", %{user_1: %{id: id} = user_1, user_2: user_2} do
+    test "only office work and 160h/m orver or nil", %{
+      user_1: %{id: id_1} = user_1,
+      user_2: user_2,
+      user_3: %{id: id_3} = user_3
+    } do
       insert(:user_job_profile, user: user_1, office_work: true, office_working_hours: "月160h以上")
       insert(:user_job_profile, user: user_2, office_work: true, office_working_hours: "月79h以下")
+      insert(:user_job_profile, user: user_3, office_work: true, office_working_hours: nil)
 
       query =
         {[{:job_searching, true}, {:office_work, true}, {:office_working_hours, "月160h以上"}], %{},
          []}
 
-      assert %{entries: [%{id: ^id}]} =
+      assert %{entries: [%{id: ^id_1}, %{id: ^id_3}]} =
                UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
-    test "only office work and work holiday", %{user_1: %{id: id} = user_1, user_2: user_2} do
+    test "only office work and work holiday", %{
+      user_1: %{id: id} = user_1,
+      user_2: user_2
+    } do
       insert(:user_job_profile, user: user_1, office_work: true, office_work_holidays: true)
       insert(:user_job_profile, user: user_2, office_work: true, office_work_holidays: false)
 
@@ -297,15 +328,20 @@ defmodule Bright.UserSearchesTest do
                UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
-    test "only remote work and 160h/m orver", %{user_1: %{id: id} = user_1, user_2: user_2} do
+    test "only remote work and 160h/m orver or nil", %{
+      user_1: %{id: id_1} = user_1,
+      user_2: user_2,
+      user_3: %{id: id_3} = user_3
+    } do
       insert(:user_job_profile, user: user_1, remote_work: true, remote_working_hours: "月160h以上")
       insert(:user_job_profile, user: user_2, remote_work: true, remote_working_hours: "月79h以下")
+      insert(:user_job_profile, user: user_3, remote_work: true, remote_working_hours: nil)
 
       query =
         {[{:job_searching, true}, {:remote_work, true}, {:remote_working_hours, "月160h以上"}], %{},
          []}
 
-      assert %{entries: [%{id: ^id}]} =
+      assert %{entries: [%{id: ^id_1}, %{id: ^id_3}]} =
                UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
 
