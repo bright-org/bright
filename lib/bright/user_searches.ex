@@ -163,76 +163,67 @@ defmodule Bright.UserSearches do
   end
 
   defp job_profile_query(exclude_user_ids, job, job_range) do
-    wish_type =
+    base_query =
       Keyword.take(job, [
         :job_searching,
         :wish_employed,
         :wish_change_job,
         :wish_side_job,
-        :wish_freelance
+        :wish_freelance,
+        :office_work,
+        :remote_work
       ])
 
     from(
       job in UserJobProfile,
-      where: ^wish_type,
+      where: ^base_query,
       select: job.user_id
     )
     |> where([j], j.user_id not in ^exclude_user_ids)
-    |> office_work_query(job[:office_work], job)
-    |> remote_work_query(job[:remote_work], job)
+    |> then(
+      &if job[:office_work],
+        do:
+          &1
+          |> office_pref_query(job[:office_pref])
+          |> office_working_hours_query(job[:office_working_hours])
+          |> office_work_holidays_query(job[:office_work_holidays]),
+        else: &1
+    )
+    |> then(
+      &if job[:remote_work],
+        do:
+          &1
+          |> remote_working_hours_query(job[:remote_working_hours])
+          |> remote_work_holidays_query(job[:remote_work_holidays]),
+        else: &1
+    )
     |> desired_income_query(job_range)
   end
 
-  defp office_work_query(query, true, job_params) do
-    query
-    |> where([j], j.office_work == true)
-    |> then(
-      &if is_nil(job_params[:office_pref]),
-        do: &1,
-        else: where(&1, [j], j.office_pref == ^job_params[:office_pref] or is_nil(j.office_pref))
-    )
-    |> then(
-      &if is_nil(job_params[:office_working_hours]),
-        do: &1,
-        else:
-          where(
-            &1,
-            [j],
-            j.office_working_hours ==
-              ^job_params[:office_working_hours] or is_nil(j.office_working_hours)
-          )
-    )
-    |> then(
-      &if is_nil(job_params[:office_work_holidays]),
-        do: &1,
-        else: where(&1, [j], j.office_work_holidays == ^job_params[:office_work_holidays])
-    )
-  end
+  defp office_pref_query(query, nil), do: query
 
-  defp office_work_query(query, _f_or_nil, _job_params), do: query
+  defp office_pref_query(query, pref),
+    do: where(query, [j], j.office_pref == ^pref or is_nil(j.office_pref))
 
-  defp remote_work_query(query, true, job_params) do
-    query
-    |> where([j], j.remote_work == true)
-    |> then(
-      &if is_nil(job_params[:remote_working_hours]),
-        do: &1,
-        else:
-          where(
-            &1,
-            [j],
-            j.remote_working_hours == ^job_params[:remote_working_hours] or
-              is_nil(j.remote_working_hours)
-          )
-    )
-    |> then(
-      &if is_nil(job_params[:remote_work_holidays]),
-        do: &1,
-        else: where(&1, [j], j.remote_work_holidays == ^job_params[:remote_work_holidays])
-    )
-  end
+  defp office_working_hours_query(query, nil), do: query
 
-  defp remote_work_query(query, _f_or_nil, _job_params), do: query
+  defp office_working_hours_query(query, hours),
+    do: where(query, [j], j.office_working_hours == ^hours or is_nil(j.office_working_hours))
+
+  defp office_work_holidays_query(query, nil), do: query
+
+  defp office_work_holidays_query(query, holidays),
+    do: where(query, [j], j.office_work_holidays == ^holidays)
+
+  defp remote_working_hours_query(query, nil), do: query
+
+  defp remote_working_hours_query(query, hours),
+    do: where(query, [j], j.remote_working_hours == ^hours or is_nil(j.remote_working_hours))
+
+  defp remote_work_holidays_query(query, nil), do: query
+
+  defp remote_work_holidays_query(query, holidays),
+    do: where(query, [j], j.remote_work_holidays == ^holidays)
 
   # job_profile 希望年収
   defp desired_income_query(query, %{desired_income: income}) do
