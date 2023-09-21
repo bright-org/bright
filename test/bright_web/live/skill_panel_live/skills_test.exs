@@ -769,7 +769,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       insert(:historical_skill_class_unit,
         historical_skill_class: h_skill_class,
-        historical_skill_unit: h_skill_unit
+        historical_skill_unit: h_skill_unit,
+        position: 1
       )
 
       h_skill_category =
@@ -799,7 +800,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:historical_skill_score, historical_skill: h_skill_1, user: user, score: :middle)
       insert(:historical_skill_score, historical_skill: h_skill_x, user: user, score: :high)
 
-      :ok
+      %{
+        locked_date: locked_date,
+        historical_skill_class: h_skill_class,
+        historical_skill_unit: h_skill_unit
+      }
     end
 
     @tag score: :high
@@ -815,6 +820,47 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       assert has_element?(show_live, "#skill-1 .score-mark-middle")
+    end
+
+    @tag score: nil
+    test "shows historical_skill_units in order", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      historical_skill_class: h_skill_class,
+      locked_date: locked_date,
+      past_label: past_label
+    } do
+      [h_skill_unit_2, h_skill_unit_3] =
+        insert_pair(:historical_skill_unit, locked_date: locked_date)
+
+      [{h_skill_unit_2, 3}, {h_skill_unit_3, 2}]
+      |> Enum.each(fn {h_skill_unit, position} ->
+        insert(:historical_skill,
+          historical_skill_category:
+            build(:historical_skill_category, historical_skill_unit: h_skill_unit),
+          position: 1
+        )
+
+        insert(:historical_skill_class_unit,
+          historical_skill_class: h_skill_class,
+          historical_skill_unit: h_skill_unit,
+          position: position
+        )
+      end)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
+
+      show_live
+      |> element("button", past_label)
+      |> render_click()
+
+      assert show_live
+             |> element("#unit-2")
+             |> render() =~ h_skill_unit_3.name
+
+      assert show_live
+             |> element("#unit-3")
+             |> render() =~ h_skill_unit_2.name
     end
   end
 
