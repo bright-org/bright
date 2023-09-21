@@ -68,17 +68,11 @@ defmodule Bright.UserJobProfiles.UserJobProfile do
 
   def wish_job_type(user_job_profile) do
     job_types =
-      user_job_profile
-      |> Map.to_list()
-      |> Keyword.take([
-        :wish_employed,
-        :wish_change_job,
-        :wish_side_job,
-        :wish_freelance
-      ])
-      |> Enum.filter(fn {_key, value} -> value end)
-      |> then(&Keyword.take(@wish_job, Keyword.keys(&1)))
-      |> Keyword.values()
+      @wish_job
+      |> Enum.map(fn {key, value} ->
+        if Map.get(user_job_profile, key), do: value
+      end)
+      |> Enum.filter(& &1)
 
     case length(job_types) do
       0 -> "-"
