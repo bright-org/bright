@@ -671,6 +671,8 @@ defmodule Bright.Batches.UpdateSkillPanels do
   end
 
   defp re_aggregate_scores do
+    # NOTE: スキルクラスの構成に変更があったことを検出するのが大変なため、一旦すべて再計算するようにしている
+    #       実行時間によってはチューニングの必要あり
     {:ok, _} =
       SkillClass
       |> Repo.all()
