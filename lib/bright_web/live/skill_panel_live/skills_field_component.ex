@@ -188,9 +188,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     # 過去分のため存在しない可能性がある
     if historical_skill_class do
       skill_units =
-        Ecto.assoc(historical_skill_class, :historical_skill_units)
-        |> HistoricalSkillUnits.list_historical_skill_units()
-        |> Bright.Repo.preload(historical_skill_categories: [:historical_skills])
+        historical_skill_class
+        |> Bright.Repo.preload(
+          historical_skill_units: [historical_skill_categories: [:historical_skills]]
+        )
+        |> Map.get(:historical_skill_units)
 
       skills =
         skill_units
