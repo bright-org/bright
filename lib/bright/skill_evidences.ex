@@ -123,6 +123,17 @@ defmodule Bright.SkillEvidences do
     |> Repo.all()
   end
 
+  def list_skill_evidence_posts_from_skill_evidence(skill_evidence) do
+    from(
+      sep in Ecto.assoc(skill_evidence, :skill_evidence_posts),
+      order_by: sep.inserted_at,
+      join: u in assoc(sep, :user),
+      join: up in assoc(u, :user_profile),
+      preload: [user: {u, [user_profile: up]}]
+    )
+    |> list_skill_evidence_posts()
+  end
+
   @doc """
   Gets a single skill_evidence_post.
 
