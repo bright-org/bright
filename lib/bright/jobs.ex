@@ -166,10 +166,10 @@ defmodule Bright.Jobs do
       %{
         "engineer" =>
           %{
-            "entry" => [%Job{}],
-            "basic" => [%Job{}],
-            "advanced" => [%Job{}],
-            "expert" => [%Job{}],
+            entry: [%Job{}],
+            basic: [%Job{}],
+            advanced:[%Job{}],
+            expert: [%Job{}]
           }
       }
   """

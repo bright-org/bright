@@ -61,5 +61,19 @@ defmodule Bright.CareerWantsTest do
       career_want = insert(:career_want)
       assert %Ecto.Changeset{} = CareerWants.change_career_want(career_want)
     end
+
+    test "list_skill_panels_group_by_career_field/1 returns skill_panels group by career_field" do
+      career_want = insert(:career_want)
+      job = insert(:job)
+      career_field = insert(:career_field)
+      skill_panel = insert(:skill_panel)
+
+      insert(:career_field_job, career_field_id: career_field.id, job_id: job.id)
+      insert(:career_want_job, career_want_id: career_want.id, job_id: job.id)
+      insert(:job_skill_panel, job_id: job.id, skill_panel_id: skill_panel.id)
+
+      assert %{career_field => [skill_panel]} ==
+               CareerWants.list_skill_panels_group_by_career_field(career_want.id)
+    end
   end
 end
