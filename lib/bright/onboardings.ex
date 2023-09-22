@@ -18,8 +18,7 @@ defmodule Bright.Onboardings do
 
   """
   def list_user_onboardings do
-    from(o in UserOnboarding, order_by: o.position)
-    |> Repo.all
+    Repo.all(UserOnboarding)
   end
 
   @doc """

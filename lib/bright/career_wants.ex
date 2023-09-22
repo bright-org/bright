@@ -144,7 +144,7 @@ defmodule Bright.CareerWants do
         select: %{
           career_want_id: cw.id,
           career_want_name: cw.name
-        }, order_by: cwj.position
+        }
 
     Repo.all(query)
   end
