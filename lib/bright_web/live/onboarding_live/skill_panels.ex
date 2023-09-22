@@ -65,9 +65,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   @impl true
   def handle_params(%{"want_id" => id}, uri, socket) do
     current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-
-    career_fields =
-      CareerWants.list_skill_panels_group_by_career_field(id)
+    career_fields = CareerWants.list_skill_panels_group_by_career_field(id)
 
     socket
     |> assign(:current_path, current_path)
@@ -80,10 +78,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   def handle_params(%{"job_id" => id}, uri, socket) do
     current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-
-    career_fields =
-      Jobs.list_skill_panels_group_by_career_field(id)
-
+    career_fields = Jobs.list_skill_panels_group_by_career_field(id)
     career_field = Map.keys(career_fields) |> List.first()
 
     socket

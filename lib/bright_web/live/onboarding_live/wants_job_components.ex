@@ -76,8 +76,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   @impl true
   def mount(socket) do
-    jobs =
-      Jobs.list_jobs_group_by_career_field_and_rank()
+    jobs = Jobs.list_jobs_group_by_career_field_and_rank()
 
     socket
     |> assign(:rank, @rank)
