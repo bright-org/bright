@@ -18,7 +18,8 @@ defmodule Bright.CareerWants do
 
   """
   def list_career_wants do
-    Repo.all(CareerWant)
+    from(c in CareerWant, order_by: c.position)
+    |> Repo.all
   end
 
   @doc """
@@ -143,7 +144,7 @@ defmodule Bright.CareerWants do
         select: %{
           career_want_id: cw.id,
           career_want_name: cw.name
-        }
+        }, order_by: cwj.position
 
     Repo.all(query)
   end

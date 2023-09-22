@@ -25,7 +25,8 @@ defmodule Bright.SkillPanels do
 
   """
   def list_skill_panels do
-    Repo.all(SkillPanel)
+    from(s in SkillPanel, order_by: s.updated_at)
+    |> Repo.all
   end
 
   @doc """

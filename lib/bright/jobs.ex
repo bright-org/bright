@@ -18,7 +18,8 @@ defmodule Bright.Jobs do
 
   """
   def list_jobs do
-    Repo.all(Job)
+    from(j in Job, order_by: j.position)
+    |> Repo.all
   end
 
   def list_jobs_with_career_fields do
