@@ -19,8 +19,7 @@ defmodule Bright.CareerWants do
 
   """
   def list_career_wants do
-    CareerWant
-    |> order_by(:position)
+    from(c in CareerWant, order_by: c.position)
     |> Repo.all()
   end
 
