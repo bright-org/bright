@@ -29,17 +29,17 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
   def card_row(%{type: "operation"} = assigns) do
     ~H"""
-    <li class="flex">
-      <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+    <li class="flex flex-wrap">
+      <div class="text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-2 w-full lg:w-auto lg:flex-nowrap">
         <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-2.5 !items-center !justify-center">
           person
         </span>
-        <%= @notification.message %>
+        <span class="order-3 lg:order-2"><%= @notification.message %></span>
         <.elapsed_time inserted_at={@notification.inserted_at} />
       </div>
-      <div class="flex gap-x-2">
+      <div class="flex gap-x-2 w-full justify-end lg:justify-start lg:w-auto">
         <.link patch={~p"/mypage/notification_detail/operation/#{@notification.id}"} >
-          <button class="text-bold inline-block bg-brightGray-900 text-sm !text-white min-w-[76px] rounded py-1 px-2 text-sm">
+          <button class="text-bold inline-block bg-brightGray-900 !text-white min-w-[76px] rounded py-1 px-2 text-sm" >
             内容を見る
           </button>
         </.link>
@@ -184,7 +184,9 @@ defmodule BrightWeb.CardLive.CardListComponents do
       DateTime.diff(DateTime.utc_now(), inserted_at, :minute)
       |> trunc()
 
-    style = highlight(minutes < @highlight_minutes) <> " font-bold pl-4 inline-block"
+    style =
+      highlight(minutes < @highlight_minutes) <>
+        " font-bold pl-0 inline-block w-full text-sm order-1 lg:pl-4 lg:order-3 lg:w-auto"
 
     assigns =
       assigns

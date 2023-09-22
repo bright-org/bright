@@ -27,7 +27,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         total_pages={@total_pages}
         tabs={@tabs}
       >
-        <div class="py-6 px-7 flex gap-y-4 flex-col min-h-[464px]">
+        <div class="py-4 px-2 flex gap-y-4 flex-col lg:py-6 lg:px-7 lg:min-h-[464px]">
           <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
@@ -35,7 +35,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
               </div>
             </li>
           </ul>
-          <div :if={Enum.count(@skill_panels) > 0} class="flex">
+          <div :if={Enum.count(@skill_panels) > 0} class="hidden lg:flex">
             <div class="flex-1 text-left font-bold"></div>
             <div class="w-36 font-bold">クラス1</div>
             <div class="w-36 font-bold">クラス2</div>
@@ -83,8 +83,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       |> assign(:skill_classes, skill_classes ++ dummy_classes)
 
     ~H"""
-    <div class="flex">
-      <div class="flex-1 text-left font-bold">
+    <div class="flex flex-wrap lg:flex-nowrap">
+      <div class="text-left font-bold w-full lg:flex-1 lg:w-fit">
         <p
           phx-click="on_skill_pannel_click"
           phx-value-skill_panel_id={@skill_panel.id}
@@ -117,8 +117,8 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       |> assign(:skill_classes, skill_classes ++ dummy_classes)
 
     ~H"""
-    <div class="flex">
-      <div class="flex-1 text-left font-bold">
+    <div class="flex flex-wrap lg:flex-nowrap">
+      <div class="text-left font-bold w-full lg:flex-1 lg:w-fit">
         <%= @skill_panel.name %>
       </div>
       <%= for skill_class <- @skill_classes do %>

@@ -7,7 +7,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
     ~H"""
     <ul class="mt-4">
       <%= for {user, index} <- Enum.with_index(@result) do %>
-      <li class="border border-brightGray-200 min-h-64 max-h-72 mb-2 overflow-hidden p-2 rounded">
+      <li class="border border-brightGray-200 min-h-64 max-h-76 mb-2 overflow-hidden p-2 rounded">
         <.live_component
           id={"user_search_result_#{index}"}
           module={BrightWeb.SearchLive.SearchResultComponent}

@@ -52,7 +52,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         menu_items={show_menu(assigns)}
         target={@myself}
       >
-        <div class="pt-3 pb-1 px-6 h-[226px]">
+        <div class="pt-3 pb-1 px-6 lg:h-[226px]">
           <% # TODO ↓α版対応 %>
           <ul :if={@card.selected_tab != "joined_teams"} class="flex gap-y-2 flex-col">
             <li class="flex">

@@ -29,17 +29,20 @@ defmodule BrightWeb.TabComponents do
   attr :total_pages, :integer, default: 1
   attr :hidden_footer, :boolean, default: false
   attr :target, :any, default: nil
+  attr :rest, :string, default: ""
+  attr :header_rest, :string, default: ""
 
   def tab(assigns) do
     ~H"""
     <div id={@id} class="bg-white rounded-md mt-1">
-      <div class="text-sm font-medium text-center">
+      <div class={["text-sm font-medium text-center", @rest]}>
         <.tab_header
           id={@id}
           tabs={@tabs}
           selected_tab={@selected_tab}
           menu_items={@menu_items}
           target={@target}
+          rest={@header_rest}
         />
         <%= render_slot(@inner_block) %>
         <.tab_footer
@@ -59,10 +62,11 @@ defmodule BrightWeb.TabComponents do
   attr :selected_tab, :string, default: ""
   attr :menu_items, :list
   attr :target, :any
+  attr :rest, :string, default: ""
 
   defp tab_header(assigns) do
     ~H"""
-    <ul class="flex content-between border-b border-brightGray-200 text-brightGray-500">
+    <ul class={["flex content-between border-b border-brightGray-200 text-brightGray-500", @rest]}>
       <%= for {key, value} <- @tabs do %>
         <.tab_header_item
           id={@id}

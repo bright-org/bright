@@ -163,18 +163,71 @@ defmodule Bright.UserSearches do
   end
 
   defp job_profile_query(exclude_user_ids, job, job_range) do
+    base_query =
+      Keyword.take(job, [
+        :job_searching,
+        :wish_employed,
+        :wish_change_job,
+        :wish_side_job,
+        :wish_freelance,
+        :office_work,
+        :remote_work
+      ])
+
     from(
       job in UserJobProfile,
-      where: ^job,
+      where: ^base_query,
       select: job.user_id
     )
     |> where([j], j.user_id not in ^exclude_user_ids)
+    |> then(
+      &if job[:office_work],
+        do:
+          &1
+          |> office_pref_query(job[:office_pref])
+          |> office_working_hours_query(job[:office_working_hours])
+          |> office_work_holidays_query(job[:office_work_holidays]),
+        else: &1
+    )
+    |> then(
+      &if job[:remote_work],
+        do:
+          &1
+          |> remote_working_hours_query(job[:remote_working_hours])
+          |> remote_work_holidays_query(job[:remote_work_holidays]),
+        else: &1
+    )
     |> desired_income_query(job_range)
   end
 
+  defp office_pref_query(query, nil), do: query
+
+  defp office_pref_query(query, pref),
+    do: where(query, [j], j.office_pref == ^pref or is_nil(j.office_pref))
+
+  defp office_working_hours_query(query, nil), do: query
+
+  defp office_working_hours_query(query, hours),
+    do: where(query, [j], j.office_working_hours == ^hours or is_nil(j.office_working_hours))
+
+  defp office_work_holidays_query(query, nil), do: query
+
+  defp office_work_holidays_query(query, holidays),
+    do: where(query, [j], j.office_work_holidays == ^holidays)
+
+  defp remote_working_hours_query(query, nil), do: query
+
+  defp remote_working_hours_query(query, hours),
+    do: where(query, [j], j.remote_working_hours == ^hours or is_nil(j.remote_working_hours))
+
+  defp remote_work_holidays_query(query, nil), do: query
+
+  defp remote_work_holidays_query(query, holidays),
+    do: where(query, [j], j.remote_work_holidays == ^holidays)
+
   # job_profile 希望年収
   defp desired_income_query(query, %{desired_income: income}) do
-    where(query, [job], job.desired_income <= ^income)
+    where(query, [j], j.desired_income <= ^income or is_nil(j.desired_income))
   end
 
   defp desired_income_query(query, _range_params), do: query
