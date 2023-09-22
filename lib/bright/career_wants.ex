@@ -18,7 +18,8 @@ defmodule Bright.CareerWants do
 
   """
   def list_career_wants do
-    Repo.all(CareerWant)
+    from(c in CareerWant, order_by: c.position)
+    |> Repo.all()
   end
 
   @doc """
