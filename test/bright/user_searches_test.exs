@@ -275,12 +275,18 @@ defmodule Bright.UserSearchesTest do
     } do
       insert(:user_job_profile, user: user_1, office_work: true, office_pref: "東京都")
       insert(:user_job_profile, user: user_2, office_work: true, office_pref: "福岡県")
-      insert(:user_job_profile, user: user_3, office_work: true, office_pref: nil)
+
+      insert(:user_job_profile,
+        user: user_3,
+        office_work: true,
+        office_pref: nil,
+        desired_income: nil
+      )
 
       query = {[{:job_searching, true}, {:office_work, true}, {:office_pref, "東京都"}], %{}, []}
 
       assert %{entries: [%{id: ^id_1}, %{id: ^id_3}]} =
-               UserSearches.search_users_by_job_profile_and_skill_score(query)
+               UserSearches.search_users_by_job_profile_and_skill_score(query, sort: :income_asc)
     end
 
     test "only office work and 160h/m orver or nil", %{
@@ -290,14 +296,20 @@ defmodule Bright.UserSearchesTest do
     } do
       insert(:user_job_profile, user: user_1, office_work: true, office_working_hours: "月160h以上")
       insert(:user_job_profile, user: user_2, office_work: true, office_working_hours: "月79h以下")
-      insert(:user_job_profile, user: user_3, office_work: true, office_working_hours: nil)
+
+      insert(:user_job_profile,
+        user: user_3,
+        office_work: true,
+        office_working_hours: nil,
+        desired_income: nil
+      )
 
       query =
         {[{:job_searching, true}, {:office_work, true}, {:office_working_hours, "月160h以上"}], %{},
          []}
 
       assert %{entries: [%{id: ^id_1}, %{id: ^id_3}]} =
-               UserSearches.search_users_by_job_profile_and_skill_score(query)
+               UserSearches.search_users_by_job_profile_and_skill_score(query, sort: :income_asc)
     end
 
     test "only office work and work holiday", %{
@@ -335,14 +347,20 @@ defmodule Bright.UserSearchesTest do
     } do
       insert(:user_job_profile, user: user_1, remote_work: true, remote_working_hours: "月160h以上")
       insert(:user_job_profile, user: user_2, remote_work: true, remote_working_hours: "月79h以下")
-      insert(:user_job_profile, user: user_3, remote_work: true, remote_working_hours: nil)
+
+      insert(:user_job_profile,
+        user: user_3,
+        remote_work: true,
+        remote_working_hours: nil,
+        desired_income: nil
+      )
 
       query =
         {[{:job_searching, true}, {:remote_work, true}, {:remote_working_hours, "月160h以上"}], %{},
          []}
 
       assert %{entries: [%{id: ^id_1}, %{id: ^id_3}]} =
-               UserSearches.search_users_by_job_profile_and_skill_score(query)
+               UserSearches.search_users_by_job_profile_and_skill_score(query, sort: :income_asc)
     end
 
     test "only remote work and work holiday", %{user_1: %{id: id} = user_1, user_2: user_2} do
