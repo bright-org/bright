@@ -1,7 +1,7 @@
 defmodule BrightWeb.OnboardingLive.SkillPanels do
   use BrightWeb, :live_view
 
-  alias Bright.{CareerWants, Jobs, Repo}
+  alias Bright.{CareerWants, Jobs}
 
   @impl true
   def render(assigns) do
@@ -16,8 +16,8 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
       <div class="flex flex-col mt-4">
         <!-- スキルセクション ここから -->
         <section>
-          <%= for {career_field, jobs} <- @career_fields do %>
-            <% skill_panels = get_career_job_skill_panels(jobs) %>
+          <%= for {career_field, skill_panels} <- @career_fields do %>
+            <% skill_panels = Enum.uniq(skill_panels)%>
             <section
               class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-[1040px]"}
               :if={Enum.count(skill_panels) > 0}
@@ -65,14 +65,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   @impl true
   def handle_params(%{"want_id" => id}, uri, socket) do
     current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-
-    career_fields =
-      CareerWants.get_career_want!(id)
-      |> Repo.preload(jobs: [:career_fields, :skill_panels])
-      |> Map.get(:jobs)
-      |> Enum.group_by(fn job ->
-        job.career_fields |> List.first()
-      end)
+    career_fields = CareerWants.list_skill_panels_group_by_career_field(id)
 
     socket
     |> assign(:current_path, current_path)
@@ -85,14 +78,8 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   def handle_params(%{"job_id" => id}, uri, socket) do
     current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-
-    career_fields =
-      Jobs.get_job!(id)
-      |> Repo.preload([:career_fields, :skill_panels])
-      |> then(&[&1])
-      |> Enum.group_by(fn j -> j.career_fields |> List.first() end)
-
-    career_field = career_fields |> Map.keys() |> List.first()
+    career_fields = Jobs.list_skill_panels_group_by_career_field(id)
+    career_field = Map.keys(career_fields) |> List.first()
 
     socket
     |> assign(:current_path, current_path)
@@ -101,12 +88,5 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
     |> assign(:id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})
-  end
-
-  def get_career_job_skill_panels(jobs) do
-    Enum.reduce(jobs, [], fn job, acc ->
-      acc ++ job.skill_panels
-    end)
-    |> Enum.uniq()
   end
 end

@@ -26,7 +26,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     ~H"""
     <div id="personal_setting_modal" class="hidden">
       <BrightCore.flash_group flash={@modal_flash} />
-      <div class="bg-zinc-50/90 fixed inset-0 transition-opacity" />
+      <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity" />
       <div class="fixed inset-0 overflow-y-auto">
         <section
           id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[800px] z-20"

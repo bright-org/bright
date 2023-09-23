@@ -23,6 +23,7 @@ defmodule Bright.Factory do
 
   # Jobs context
   use Bright.CareerWantFactory
+  use Bright.CareerWantJobFactory
   use Bright.JobFactory
   use Bright.JobSkillPanelFactory
 

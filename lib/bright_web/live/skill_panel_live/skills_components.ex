@@ -278,7 +278,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <%= for {[col1, col2, col3], row} <- @table_structure |> Enum.with_index(1) do %>
           <% focus = @focus_row == row %>
           <% skill_score = @skill_score_dict[col3.skill.id] || %{score: :low} %>
-          <% current_skill = Map.get(@current_skill_dict, col3.skill.trace_id) %>
+          <% current_skill = Map.get(@current_skill_dict, col3.skill.trace_id, %{}) %>
           <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
           <tr id={"skill-#{row}"} class="focus:bg-brightGray-100">
