@@ -33,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def navigations(assigns) do
     ~H"""
-    <div class="flex gap-x-4 px-10 pt-4 pb-3">
+    <div class="flex flex-col gap-x-4 mt-4 px-4 pb-2 lg:flex-row lg:px-10 lg:pb-3">
       <.target_switch current_user={@current_user} />
       <.skill_panel_switch
         display_user={@display_user}
@@ -47,7 +47,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def skill_panel_switch(assigns) do
     ~H"""
-    <p class="leading-tight">対象スキルの<br />切り替え</p>
+    <p class="leading-tight mt-4 mb-2 lg:mt-0 lg:mb-0">対象スキルの<br class="hidden lg:inline">切り替え</p>
     <.mega_menu_button
       id="skill_panel_menu"
       label="スキル"
@@ -129,7 +129,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def target_switch(assigns) do
     ~H"""
-    <p class="leading-tight ml-4">対象者の<br />切り替え</p>
+    <p class="leading-tight mb-2 lg:ml-4 lg:mb-0">対象者の<br class="hidden lg:inline">切り替え</p>
     <.related_user_menu current_user={@current_user} />
     <% # TODO: α版後にifを除去して表示 %>
     <.team_menu :if={false} current_user={@current_user} />
