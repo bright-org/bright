@@ -27,7 +27,7 @@ defmodule BrightWeb.MegaMenuComponents do
   attr :id, :string, required: true
   attr :label, :string, required: true
   attr :dropdown_offset_skidding, :string, required: true
-  attr :menu_width, :string, required: false, default: "w-[750px]"
+  attr :menu_width, :string, required: false, default: "lg:w-[750px]"
   slot :inner_block
 
   def mega_menu_button(assigns) do
@@ -52,7 +52,7 @@ defmodule BrightWeb.MegaMenuComponents do
       </button>
 
       <div
-        class={"dropdownTarget z-10 hidden bg-white rounded-sm shadow #{@menu_width}"}
+        class={["dropdownTarget z-10 hidden bg-white rounded-sm shadow static w-full", @menu_width]}
       >
         <%= render_slot(@inner_block) %>
       </div>
