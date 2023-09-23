@@ -19,7 +19,7 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       type="button"
-      class="text-brightGreen-300 bg-white px-2 py-1 inline-flex rounded-md text-sm items-center border border-brightGreen-300 font-bold"
+      class="text-brightGreen-300 bg-white px-1 inline-flex rounded-md text-[10px] items-center border border-brightGreen-300 font-bold lg:px-2 lg:py-1 lg:text-sm"
       {@rest}
     >
       <%= render_slot(@inner_block) %>
@@ -200,20 +200,6 @@ defmodule BrightWeb.BrightButtonComponents do
         src={@icon_file_path}
       />
     </button>
-    """
-  end
-
-  def logout_button(assigns) do
-    ~H"""
-        <.link
-          href="/users/log_out"
-          method="delete"
-          class="hover:opacity-70"
-          >
-          <button class="hidden rounded-full border border-brightGray-600 h-10 w-10 items-center justify-center hover:opacity-50 lg:flex">
-            <span class="material-icons text-brightGray-600">logout</span>
-          </button>
-        </.link>
     """
   end
 end

@@ -86,9 +86,9 @@ defmodule BrightWeb.LayoutComponents do
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
-    <div class="sticky top-0 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
+    <div class="sticky top-0 z-10 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
       <h4 class="font-bold mt-2 text-sm lg:mt-0 lg:text-xl"><%= @page_title %><%= @page_sub_title %></h4>
-      <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto z-20 lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
+      <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
         <div class="flex justify-between">
           <.plan_upgrade_button  />
           <.contact_customer_success_button />
@@ -97,7 +97,6 @@ defmodule BrightWeb.LayoutComponents do
       <div class="flex gap-2 items-center w-24 lg:ml-1 lg:w-fit">
         <.search_for_skill_holders_button />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
-        <.logout_button />
       </div>
     </div>
     """
@@ -128,7 +127,7 @@ defmodule BrightWeb.LayoutComponents do
               <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>
             </li>
           <% end %>
-          <li class="lg:hidden">
+          <li>
             <.link
             href="/users/log_out"
             method="delete"
