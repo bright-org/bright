@@ -29,6 +29,7 @@ defmodule BrightWeb.ChartComponents do
     ~H"""
     <div
       id={@id}
+      class="w-full"
       phx-hook="SkillGem"
       phx-update="ignore"
       data-data={@data}
@@ -38,7 +39,7 @@ defmodule BrightWeb.ChartComponents do
       data-display-link={@display_link}
       data-color-theme={@color_theme}
     >
-      <canvas></canvas>
+      <canvas class="w-full"></canvas>
     </div>
     """
   end
@@ -74,11 +75,13 @@ defmodule BrightWeb.ChartComponents do
     ~H"""
     <div
       id={@id}
+      class="w-full"
       phx-hook="GrowthGraph"
       phx-update="ignore"
       data-data={@data}
+      style="max-height: 357px; max-width: 714px"
     >
-      <canvas></canvas>
+      <canvas class="w-full"></canvas>
     </div>
     """
   end

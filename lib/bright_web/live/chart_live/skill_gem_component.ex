@@ -22,7 +22,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="w-[450px] mx-auto">
+    <div class="mx-auto w-full lg:w-[450px]">
       <.skill_gem
         data={@skill_gem_data}
         id={@id}
