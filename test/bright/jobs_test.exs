@@ -61,5 +61,27 @@ defmodule Bright.JobsTest do
       job = insert(:job)
       assert %Ecto.Changeset{} = Jobs.change_job(job)
     end
+
+    test "list_job_group_by_career_field_and_rank/0 returns jobs group by career field and rank" do
+      job = insert(:job)
+      career_field = insert(:career_field)
+      skill_panel = insert(:skill_panel)
+      insert(:career_field_job, career_field_id: career_field.id, job_id: job.id)
+      insert(:job_skill_panel, job_id: job.id, skill_panel_id: skill_panel.id)
+
+      assert %{"engineer" => %{basic: [job]}} ==
+               Jobs.list_jobs_group_by_career_field_and_rank()
+    end
+
+    test "list_skill_panels_group_by_career_field/1 Returns Job Related SkillPanels group by CareerField" do
+      job = insert(:job)
+      career_field = insert(:career_field)
+      skill_panel = insert(:skill_panel)
+      insert(:career_field_job, career_field_id: career_field.id, job_id: job.id)
+      insert(:job_skill_panel, job_id: job.id, skill_panel_id: skill_panel.id)
+
+      assert %{career_field => [skill_panel]} ==
+               Jobs.list_skill_panels_group_by_career_field(job.id)
+    end
   end
 end

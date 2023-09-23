@@ -158,24 +158,52 @@ defmodule Bright.Jobs do
     JobSkillPanel.changeset(job_skill_panel, attrs)
   end
 
-  def list_skill_panels_by_career_want_id do
-    # TODO: DBからデータ取得
-    %{
-      "01H75APD4QK5WDQMQCVY1XM9XT" => [
-        %{name: "Webアプリ開発 Elixir", skill_panel_id: "01H77AMPH7X5ZZPN3FRVNACTYH"},
-        %{name: "コミュニケーションスキル", skill_panel_id: "01H77ANY2SXDRD0PX8VP66SNPZ"}
-      ],
-      "01H75APD6YQPVR7Z6M3NA66WCB" => [
-        %{name: "Webデザイン", skill_panel_id: "01H77ANY2SXDRD0PX8VP66SNPZ"}
-      ]
-    }
+  @doc """
+  Returns jobs group by career_field and job.rank
+
+  ## Examples
+
+      iex> list_jobs_group_by_career_field_and_rank()
+      %{
+        "engineer" =>
+          %{
+            entry: [%Job{}],
+            basic: [%Job{}],
+            advanced:[%Job{}],
+            expert: [%Job{}]
+          }
+      }
+  """
+  def list_jobs_group_by_career_field_and_rank() do
+    from(job in Job,
+      join: cf in assoc(job, :career_fields),
+      select: {cf.name_en, job}
+    )
+    |> Repo.all()
+    |> Enum.group_by(fn {cf, _job} -> cf end, fn {_cf, job} -> job end)
+    |> Enum.reduce(%{}, fn {key, value}, acc ->
+      sorted = Enum.sort_by(value, & &1.position)
+      Map.put(acc, key, Enum.group_by(sorted, & &1.rank))
+    end)
   end
 
-  def list_career_fields_by_career_wants do
-    # TODO: DBからデータ取得
-    %{
-      "01H75APD4QK5WDQMQCVY1XM9XT" => %{name_en: "engineer", name_ja: "エンジニア"},
-      "01H75APD6YQPVR7Z6M3NA66WCB" => %{name_en: "designer", name_ja: "デザイナー"}
-    }
+  @doc """
+  Returns Job Related SkillPanels group by CareerField
+
+  ## Examples
+
+      iex> list_skill_panels_group_by_career_field(id)
+      %{%CareerField{} => [%SkillPanel{}, %SkillPanel{}]}
+  """
+
+  def list_skill_panels_group_by_career_field(id) do
+    from(job in Job,
+      where: job.id == ^id,
+      join: sk in assoc(job, :skill_panels),
+      join: cf in assoc(job, :career_fields),
+      select: {cf, sk}
+    )
+    |> Repo.all()
+    |> Enum.group_by(fn {cf, _sk} -> cf end, fn {_cf, sk} -> sk end)
   end
 end

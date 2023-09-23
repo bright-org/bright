@@ -1,7 +1,7 @@
 defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   use BrightWeb, :live_component
 
-  alias Bright.{Jobs, CareerFields, Repo}
+  alias Bright.{Jobs, CareerFields}
   alias Bright.Jobs.Job
 
   @rank %{entry: "入門", basic: "基本", advanced: "応用", expert: "高度"}
@@ -76,13 +76,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   @impl true
   def mount(socket) do
-    jobs =
-      Jobs.list_jobs()
-      |> Repo.preload(:career_fields)
-      |> Enum.group_by(&List.first(&1.career_fields).name_en)
-      |> Enum.reduce(%{}, fn {key, value}, acc ->
-        Map.put(acc, key, Enum.group_by(value, & &1.rank))
-      end)
+    jobs = Jobs.list_jobs_group_by_career_field_and_rank()
 
     socket
     |> assign(:rank, @rank)

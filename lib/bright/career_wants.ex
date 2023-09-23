@@ -7,6 +7,7 @@ defmodule Bright.CareerWants do
   alias Bright.Repo
 
   alias Bright.CareerWants.{CareerWant, CareerWantJob}
+  alias Bright.Jobs.Job
 
   @doc """
   Returns the list of career_wants.
@@ -134,74 +135,28 @@ defmodule Bright.CareerWants do
     CareerWantJob.changeset(career_want_job, attrs)
   end
 
-  def list_career_want_jobs_with_career_wants do
-    query =
-      from cw in CareerWant,
-        join: cwj in CareerWantJob,
-        on: cwj.career_want_id == cw.id,
-        group_by: [cw.id],
-        order_by: [cw.position],
-        select: %{
-          career_want_id: cw.id,
-          career_want_name: cw.name
-        }
-
-    Repo.all(query)
-  end
-
   @doc """
-  やりたいことに関連づいているキャリアフィールドを取得し、やりたいこと単位でリストに
-  [
-    [
-      %{
-        career_field_name_en: "engineer",
-        career_field_name_ja: "エンジニア"
-      },
-      %{
-        career_field_name_en: "designer",
-        career_field_name_ja: "デザイナー"
-      }
-    ],
-    [
-      %{
-        career_field_name_en: "designer",
-        career_field_name_ja: "デザイナー"
-      }
-    ],
-    [
-      %{
-        career_field_name_en: "infra",
-        career_field_name_ja: "インフラ"
-      }
-    ]
-  ]
-  """
-  def list_career_wants_jobs_with_career_fields do
-    query =
-      from cw in CareerWant,
-        join: cwj in CareerWantJob,
-        on: cwj.career_want_id == cw.id,
-        join: j in Job,
-        on: cwj.job_id == j.id,
-        join: cf in CareerField,
-        on: j.career_field_id == cf.id,
-        group_by: [cw.id, cf.id],
-        order_by: [asc: cw.position, asc: cf.position],
-        select: %{
-          career_want_id: cw.id,
-          career_field_name_ja: cf.name_ja,
-          career_field_name_en: cf.name_en
-        }
+  Returns CareerWant Related SkillPanels group by CareerField
 
-    Repo.all(query)
-    |> Enum.group_by(fn x -> x.career_want_id end)
-    |> Enum.map(fn {_key, value} ->
-      Enum.map(value, fn x ->
-        %{
-          career_field_name_ja: x.career_field_name_ja,
-          career_field_name_en: x.career_field_name_en
-        }
-      end)
-    end)
+  ## Examples
+
+      iex> list_skill_panels_group_by_career_field(id)
+      %{%CareerField{} => [%SkillPanel{}, %SkillPanel{}]}
+  """
+  def list_skill_panels_group_by_career_field(id) do
+    job_ids =
+      from(cwj in CareerWantJob,
+        where: cwj.career_want_id == ^id,
+        select: cwj.job_id
+      )
+
+    from(job in Job,
+      where: job.id in subquery(job_ids),
+      join: sk in assoc(job, :skill_panels),
+      join: cf in assoc(job, :career_fields),
+      select: {cf, sk}
+    )
+    |> Repo.all()
+    |> Enum.group_by(fn {cf, _sk} -> cf end, fn {_cf, sk} -> sk end)
   end
 end
