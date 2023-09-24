@@ -104,14 +104,14 @@ defmodule BrightWeb.OAuthController do
   # NOTE: 取得できなくても表示されないだけなのでエラーにはせず nil とする
   defp display_name(_ueberauth_auth), do: nil
 
-  # 連係解除
+  # 連携解除
   def delete(%{assigns: %{current_user: current_user}} = conn, %{"provider" => provider}) do
     case Accounts.unlink_social_account(current_user, provider) do
       :cannot_unlink_last_one ->
-        conn |> put_flash(:error, "SNS連携は少なくとも一つ必要なため連係解除できません") |> redirect(to: ~p"/mypage")
+        conn |> put_flash(:error, "SNS連携は少なくとも一つ必要なため連携解除できません") |> redirect(to: ~p"/mypage")
 
       _ ->
-        conn |> put_flash(:info, "連係解除しました") |> redirect(to: ~p"/mypage")
+        conn |> put_flash(:info, "連携解除しました") |> redirect(to: ~p"/mypage")
     end
   end
 end
