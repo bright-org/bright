@@ -29,7 +29,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
         <h2 class="font-bold mt-4 mb-2 text-lg truncate">
           <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
             <%= @skill_panel.name %>
-            <%= SkillScores.count_user_skill_scores(@user) %>
           </span>
         </h2>
 
@@ -167,10 +166,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     maybe_update_skill_card_component(skill_class_score)
 
     {:noreply,
-      socket
-      |> put_flash_next_skill_class_open(updated_result, skill_class_score.id)
-      |> put_flash_first_time_submit()
-      |> push_patch(to: socket.assigns.patch)}
+     socket
+     |> put_flash_next_skill_class_opened(updated_result, skill_class_score.id)
+     |> put_flash_first_time_submit()
+     |> push_patch(to: socket.assigns.patch)}
   end
 
   def handle_event("change", %{"score" => score, "skill_id" => skill_id}, socket) do
@@ -252,7 +251,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     # 無駄な処理を省くため、簡易判定後に正確な判定処理を実行
     %{user: user, skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
     skill_scores = Map.values(skill_score_dict)
-    maybe_first_time = skill_class.class == 1 && Enum.all?(skill_scores, & &1.id == nil)
+    maybe_first_time = skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil))
     first_time = maybe_first_time && SkillScores.count_user_skill_scores(user) == 0
 
     assign(socket, :first_time, first_time)
@@ -269,13 +268,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   end
 
   # スキルクラス解放時のみメッセージ表示のためflashを設定
-  defp put_flash_next_skill_class_open(socket, updated_result, skill_class_score_id) do
+  defp put_flash_next_skill_class_opened(socket, updated_result, skill_class_score_id) do
     get_in(updated_result, [
       :skill_class_scores,
       :"skill_class_score_#{skill_class_score_id}",
       :next_skill_class_score
     ])
-    |> if(do: put_flash(socket, :next_skill_class_open, true), else: socket)
+    |> if(do: put_flash(socket, :next_skill_class_opened, true), else: socket)
   end
 
   # スキルを初めて入力したときのみメッセージ表示のためflashを設定

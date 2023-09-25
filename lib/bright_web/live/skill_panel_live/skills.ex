@@ -168,9 +168,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     %{skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
     skill_scores = Map.values(skill_score_dict)
 
-    (skill_class.class == 1 && Enum.all?(skill_scores, & &1.score == :low))
+    (skill_class.class == 1 && Enum.all?(skill_scores, &(&1.score == :low)))
     |> if do
-      update(socket, :flash, & Map.put(&1, "first_skills_edit", true))
+      update(socket, :flash, &Map.put(&1, "first_skills_edit", true))
     else
       socket
     end

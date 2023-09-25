@@ -132,8 +132,8 @@
 
   <% # クラス開放メッセージ %>
   <div
-    :if={Map.get(@flash, "next_skill_class_open")}
-    id="next_skill_class_open_message"
+    :if={Map.get(@flash, "next_skill_class_opened")}
+    id="next_skill_class_opened_message"
     class="absolute bg-designer-dazzle leading-normal px-4 py-2 right-0 rounded text-xs top-32 w-fit z-10">
     <div>
       <p>クラス開放おめでとうございます！</p>
@@ -146,19 +146,19 @@
       <button
         type="button"
         class="bg-brightGray-900 border border-brightGray-900 font-bold p-1 rounded text-white w-48"
-        phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_open"}) |> hide("#next_skill_class_open_message")}>
+        phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_opened"}) |> hide("#next_skill_class_opened_message")}>
         この説明は分かりやすい
       </button>
       <button
         type="button"
         class="bg-white border border-brightGray-900 font-bold p-1 rounded text-brightGray-900 w-24"
-        phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_open"}) |> hide("#next_skill_class_open_message")}>
+        phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_opened"}) |> hide("#next_skill_class_opened_message")}>
         わかりにくい
       </button>
     </div>
     <button
       class="absolute top-2 right-2"
-      phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_open"}) |> hide("#next_skill_class_open_message")}>
+      phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_opened"}) |> hide("#next_skill_class_opened_message")}>
       <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5 flex justify-center items-center">close</span>
     </button>
   </div>

@@ -191,13 +191,16 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
-  スキルスコア数をカウントして返す
+  スキルスコア数を返す
   """
-  def count_skill_scores(query) do
+  def count_skill_scores(query \\ SkillScore) do
     from(q in query, select: count(q.id))
     |> Repo.one()
   end
 
+  @doc """
+  ユーザーのスキルスコア数を返す
+  """
   def count_user_skill_scores(user) do
     Ecto.assoc(user, :skill_scores)
     |> count_skill_scores()

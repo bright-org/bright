@@ -225,6 +225,26 @@ defmodule Bright.SkillScoresTest do
              |> Enum.map(& &1.id) == [skill_score.id]
     end
 
+    test "count_skill_scores returns skill_scores count", %{
+      user: user,
+      skill: skill
+    } do
+      user_2 = insert(:user)
+      insert(:skill_score, user: user, skill: skill)
+      insert(:skill_score, user: user_2, skill: skill)
+      assert SkillScores.count_skill_scores() == 2
+    end
+
+    test "count_user_skill_scores returns user's skill_scores count", %{
+      user: user,
+      skill: skill
+    } do
+      user_2 = insert(:user)
+      insert(:skill_score, user: user, skill: skill)
+      insert(:skill_score, user: user_2, skill: skill)
+      assert SkillScores.count_user_skill_scores(user) == 1
+    end
+
     test "get_skill_score!/1 returns the skill_score with given id", %{
       user: user,
       skill: skill
