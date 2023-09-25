@@ -130,3 +130,6 @@ msgstr "異常が発生しました"
 
 msgid "Too many files are uploaded"
 msgstr "アップロードするファイルが多すぎます"
+
+msgid "already has max number of sub emails"
+msgstr "サブメールアドレスはこれ以上追加できません"

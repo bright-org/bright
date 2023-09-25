@@ -12,110 +12,114 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="w-[880px] flex flex-col">
+    <div class="flex flex-col w-full lg:w-[880px]">
       <!-- グラフ -->
       <div class="ml-auto mr-28 mt-6 mb-1">
-      <%# TODO 他者選択できるまで非表示 %>
+        <%# TODO 他者選択できるまで非表示 %>
           <button :if={false}
             type="button"
             class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
           >
             ロールモデルを解除
           </button>
-        </div>
-        <div class="flex">
-          <div class="w-14 relative">
-            <button
-              :if={@timeline.past_enabled}
-              phx-target={@myself}
-              phx-click={JS.push("shift_timeline_past", value: %{id: "myself" })}
-              class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
-              disabled={false}
-            >
-              <span class="material-icons text-white !text-4xl">arrow_left</span>
-            </button>
-            <button
-              :if={!@timeline.past_enabled}
-              phx-target={@myself}
-              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
-              disabled={true}
-            >
+      </div>
+      <div class="flex">
+        <div class="w-14 relative">
+          <button
+            :if={@timeline.past_enabled}
+            phx-target={@myself}
+            phx-click={JS.push("shift_timeline_past", value: %{id: "myself" })}
+            class="w-8 h-6 bg-brightGray-900 flex justify-center items-center rounded absolute -bottom-1 lg:bottom-1 lg:w-11 lg:h-9"
+            disabled={false}
+          >
+            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
+          </button>
+          <button
+            :if={!@timeline.past_enabled}
+            phx-target={@myself}
+            class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
+            disabled={true}
+          >
             <span class="material-icons text-white !text-4xl">arrow_left</span>
           </button>
-
-          </div>
-            <.growth_graph data={@data} id="growth-graph"/>
-          <div class="ml-5 flex flex-col relative text-xl text-brightGray-500 text-bold">
-            <p class="py-5">ベテラン</p>
-            <p class="py-20">平均</p>
-            <p class="py-6">見習い</p>
-            <button
-              :if={@timeline.future_enabled}
-              phx-click={JS.push("shift_timeline_future", value: %{id: "myself" })}
-              phx-target={@myself}
-              class="w-11 h-9 bg-brightGray-900 flex justify-center items-center rounded bottom-1 absolute"
-              disabled={false}
-            >
-              <span class="material-icons text-white !text-4xl">arrow_right</span>
-            </button>
-            <button
-              :if={!@timeline.future_enabled}
-              class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
-              disabled={true}
-            >
-              <span class="material-icons text-white !text-4xl">arrow_right</span>
-            </button>
-          </div>
         </div>
-        <div class="flex">
-          <div class="w-14"></div>
-          <.timeline_bar
-            id="myself"
-            target={@myself}
-            type="myself"
-            dates={@timeline.labels}
-            selected_date={@timeline.selected_label}
-            display_now={@timeline.display_now}
-          />
-          <div class="flex justify-center items-center ml-2"></div>
+        <div class="hidden lg:block">
+          <.growth_graph data={@data} id="growth-graph"/>
         </div>
-        <div class="flex py-4">
-          <div class="w-14"></div>
-          <div class="w-[725px] flex justify-between items-center">
-            <div class="text-left flex items-center text-base hover:bg-brightGray-50">
-            <%# TODO 他者選択できるまで非表示 %>
-              <a :if={false} class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded">
-                <img class="inline-block h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
-                <div>
-                  <p>nokichi</p>
-                  <p class="text-brightGray-300">アプリエンジニア</p>
-                </div>
-              </a>
-            </div>
-            <%# TODO 他者選択できるまで非表示 %>
-            <button :if={false}
-              type="button"
-              class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-            >
-              ロールモデルに固定
-            </button>
-          </div>
-          <div></div>
+        <div class="lg:hidden">
+          <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
         </div>
-
-        <%# TODO 他者選択できるまで非表示 %>
-        <div :if={false} class="flex">
-          <div class="w-14"></div>
-          <.timeline_bar
-            id="other"
-            target={@myself}
-            type="other"
-            dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
-            selected_date="2022.12"
-          />
-          <div class="flex justify-center items-center ml-2"></div>
+        <div class="ml-1 flex flex-col relative text-xs text-brightGray-500 text-bold w-20 lg:ml-5 lg:text-xl lg:w-20">
+          <p class="py-4 lg:py-5">ベテラン</p>
+          <p class="py-3 lg:py-20">平均</p>
+          <p class="py-2 lg:py-6">見習い</p>
+          <button
+            :if={@timeline.future_enabled}
+            phx-click={JS.push("shift_timeline_future", value: %{id: "myself" })}
+            phx-target={@myself}
+            class="w-8 h-6 bg-brightGray-300 flex justify-center items-center rounded absolute -bottom-1 lg:bottom-1 lg:w-11 lg:h-9"
+            disabled={false}
+          >
+            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
+          </button>
+          <button
+            :if={!@timeline.future_enabled}
+            class="w-8 h-6 bg-brightGray-300 flex justify-center items-center rounded absolute -bottom-1 lg:bottom-1 lg:w-11 lg:h-9"
+            disabled={true}
+          >
+            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
+          </button>
         </div>
       </div>
+      <div class="flex">
+        <div class="w-14"></div>
+        <.timeline_bar
+          id="myself"
+          target={@myself}
+          type="myself"
+          dates={@timeline.labels}
+          selected_date={@timeline.selected_label}
+          display_now={@timeline.display_now}
+        />
+        <div class="flex justify-center items-center ml-2"></div>
+      </div>
+      <div class="flex py-4">
+        <div class="w-14"></div>
+        <div class="w-[725px] flex justify-between items-center">
+          <div class="text-left flex items-center text-base hover:bg-brightGray-50">
+          <%# TODO 他者選択できるまで非表示 %>
+            <a :if={false} class="inline-flex items-center border border-brightGray-200 px-3 py-1 rounded">
+              <img class="inline-block h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" />
+              <div>
+                <p>nokichi</p>
+                <p class="text-brightGray-300">アプリエンジニア</p>
+              </div>
+            </a>
+          </div>
+          <%# TODO 他者選択できるまで非表示 %>
+          <button :if={false}
+            type="button"
+            class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+          >
+            ロールモデルに固定
+          </button>
+        </div>
+        <div></div>
+      </div>
+
+      <%# TODO 他者選択できるまで非表示 %>
+      <div :if={false} class="flex">
+        <div class="w-14"></div>
+        <.timeline_bar
+          id="other"
+          target={@myself}
+          type="other"
+          dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
+          selected_date="2023.12"
+        />
+        <div class="flex justify-center items-center ml-2"></div>
+      </div>
+    </div>
     """
   end
 

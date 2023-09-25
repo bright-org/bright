@@ -33,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def navigations(assigns) do
     ~H"""
-    <div class="flex gap-x-4 px-10 pt-4 pb-3">
+    <div class="flex flex-col gap-x-4 mt-4 px-4 pb-2 lg:flex-row lg:px-10 lg:pb-3">
       <.target_switch current_user={@current_user} />
       <.skill_panel_switch
         display_user={@display_user}
@@ -47,7 +47,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def skill_panel_switch(assigns) do
     ~H"""
-    <p class="leading-tight">対象スキルの<br />切り替え</p>
+    <p class="leading-tight mt-4 mb-2 lg:mt-0 lg:mb-0">対象スキルの<br class="hidden lg:inline">切り替え</p>
     <.mega_menu_button
       id="skill_panel_menu"
       label="スキル"
@@ -129,7 +129,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def target_switch(assigns) do
     ~H"""
-    <p class="leading-tight ml-4">対象者の<br />切り替え</p>
+    <p class="leading-tight mb-2 lg:ml-4 lg:mb-0">対象者の<br class="hidden lg:inline">切り替え</p>
     <.related_user_menu current_user={@current_user} />
     <% # TODO: α版後にifを除去して表示 %>
     <.team_menu :if={false} current_user={@current_user} />
@@ -289,14 +289,20 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def class_tab(assigns) do
     ~H"""
-    <ul class="flex text-center shadow relative z-1 -bottom-1 text-md font-bold text-brightGray-500 bg-brightGreen-50">
+    <ul class="flex flex-col shadow relative z-1 text-base font-bold text-brightGray-500 bg-brightGreen-50 w-full lg:-bottom-1 lg:flex-row lg:text-center lg:text-md lg:w-fit">
       <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
         <%= if skill_class_score do %>
           <% current = @skill_class.class == skill_class.class %>
           <li class={current && "bg-white text-base"}>
-            <.link id={"class_tab_#{skill_class.class}"} patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"} class="inline-block p-4 pt-3" aria-current={current && "page"}>
+            <.link
+              id={"class_tab_#{skill_class.class}"}
+              patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
+              class="flex justify-start items-center p-4 pt-2 lg:inline-block lg:pt-3"
+              aria-current={current && "page"}
+            >
               クラス<%= skill_class.class %> <%= if(current, do: skill_class.name, else: "") %>
-              <span class="text-xl ml-4"><%= floor skill_class_score.percentage %></span>％
+              <span class="text-xl ml-2 lg:ml-4"><%= floor skill_class_score.percentage %></span>％
+              <span class="material-symbols-outlined ml-auto lg:hidden">stat_minus_1</span>
             </.link>
           </li>
         <% else %>
@@ -315,8 +321,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def profile_area(assigns) do
     # TODO: 自分に戻す、に対応が必要
     ~H"""
-      <div class="flex justify-between">
-        <div class="w-[850px] pt-6">
+      <div class="flex flex-col justify-between lg:flex-row">
+        <div class="pt-2 w-full lg:pt-6 lg:w-[850px]">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
           <.profile
             user_name={@display_user.name}
@@ -333,8 +339,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             is_anonymous={@anonymous}
           />
         </div>
-        <div class="mr-auto flex ml-7">
-          <div class="w-20 mt-5">
+        <div class="mr-auto flex ml-2 lg:ml-7">
+          <div class="w-20 lg:mt-5">
             <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
           </div>
           <.profile_score_stats
@@ -383,7 +389,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   defp profile_score_stats(assigns) do
     ~H"""
-    <div id="profile_score_stats" class="h-20 mt-5 ml-2 flex flex-wrap">
+    <div id="profile_score_stats" class="h-20 ml-2 flex flex-wrap lg:mt-5">
       <p class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1">
         <.profile_skill_class_level level={@skill_class_score.level} />
       </p>

@@ -212,6 +212,7 @@ defmodule BrightWeb.Router do
 
     post "/users/password_reset", UserPasswordResetController, :create
     get "/users/confirm_email/:token", UserConfirmEmailController, :confirm
+    get "/users/confirm_sub_email/:token", UserConfirmSubEmailController, :confirm
   end
 
   # オンボーディング

@@ -15,6 +15,7 @@ defmodule Bright.Accounts.UserToken do
   @reset_password_validity %{"ago" => 1, "intervals" => "day"}
   @confirm_validity %{"ago" => 30, "intervals" => "minute"}
   @change_email_validity %{"ago" => 1, "intervals" => "day"}
+  @confirm_sub_email_validity %{"ago" => 1, "intervals" => "day"}
   @session_validity_in_days 60
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
@@ -87,6 +88,10 @@ defmodule Bright.Accounts.UserToken do
   """
   def build_email_token(user, context) do
     build_hashed_token(user, context, user.email)
+  end
+
+  def build_email_token(user, context, sent_to) do
+    build_hashed_token(user, context, sent_to)
   end
 
   @doc """
@@ -197,6 +202,31 @@ defmodule Bright.Accounts.UserToken do
                   ^validity_intervals(context)
                 ),
             select: user
+          )
+
+        {:ok, query}
+
+      :error ->
+        :error
+    end
+  end
+
+  @doc """
+  Checks if the confirm sub email token is valid and returns its underlying lookup query.
+  """
+  def verify_confirm_sub_email_token_query(token, context) do
+    case Base.url_decode64(token, padding: false) do
+      {:ok, decoded_token} ->
+        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+
+        query =
+          from(token in token_and_context_query(hashed_token, context),
+            where:
+              token.inserted_at >
+                ago(
+                  ^@confirm_sub_email_validity["ago"],
+                  ^@confirm_sub_email_validity["intervals"]
+                )
           )
 
         {:ok, query}

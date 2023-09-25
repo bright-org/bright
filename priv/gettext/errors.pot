@@ -148,3 +148,6 @@ msgstr ""
 
 msgid "Too many files are uploaded"
 msgstr ""
+
+msgid "already has max number of sub emails"
+msgstr ""

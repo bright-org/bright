@@ -20,7 +20,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
       phx-change="validate"
     >
       <UserAuthComponents.form_section variant="center-w-full">
-        <UserAuthComponents.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドルネーム" variant="w-full" required/>
+        <UserAuthComponents.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドル名" variant="w-full" required/>
 
         <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" variant="w-full" required/>
 
