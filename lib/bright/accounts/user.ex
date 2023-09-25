@@ -7,6 +7,8 @@ defmodule Bright.Accounts.User do
   import Ecto.Changeset
   import Ecto.Query
 
+  alias Bright.Repo
+  alias Bright.Accounts.UserSubEmail
   alias Bright.Accounts.User
   alias Bright.UserProfiles.UserProfile
 
@@ -28,6 +30,7 @@ defmodule Bright.Accounts.User do
     has_many :users_tokens, Bright.Accounts.UserToken
     has_one :user_2fa_code, Bright.Accounts.User2faCodes
     has_many :user_social_auths, Bright.Accounts.UserSocialAuth
+    has_many :user_sub_emails, Bright.Accounts.UserSubEmail
 
     has_many :skill_scores, Bright.SkillScores.SkillScore
     has_many :skill_class_scores, Bright.SkillScores.SkillClassScore
@@ -80,7 +83,7 @@ defmodule Bright.Accounts.User do
       validations on a LiveView form), this option can be set to `false`.
       Defaults to `true`.
 
-    * `:validate_email` - Validates the uniqueness of the email, in case
+    * `:validate_email` - Validates the uniqueness of the email and sub_email, in case
       you don't want to validate the uniqueness of the email (like when
       using this changeset for validations on a LiveView form before
       submitting the form), this option can be set to `false`.
@@ -91,6 +94,7 @@ defmodule Bright.Accounts.User do
     |> cast(attrs, [:name, :email, :password])
     |> validate_name(opts)
     |> validate_email(opts)
+    |> maybe_validate_uniqueness_in_user_sub_email(opts)
     |> validate_password(opts)
   end
 
@@ -106,7 +110,18 @@ defmodule Bright.Accounts.User do
     |> maybe_validate_unique_name(opts)
   end
 
-  defp validate_email(changeset, opts) do
+  @doc """
+  Validates user email.
+
+  ## Options
+
+    * `:validate_email` - Validates the uniqueness of the email, in case
+      you don't want to validate the uniqueness of the email (like when
+      using this changeset for validations on a LiveView form before
+      submitting the form), this option can be set to `false`.
+      Defaults to `true`.
+  """
+  def validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])
     |> validate_format(
@@ -165,6 +180,24 @@ defmodule Bright.Accounts.User do
     end
   end
 
+  defp maybe_validate_uniqueness_in_user_sub_email(changeset, opts) do
+    if Keyword.get(opts, :validate_email, true) do
+      validate_uniqueness_in_user_sub_email(changeset)
+    else
+      changeset
+    end
+  end
+
+  defp validate_uniqueness_in_user_sub_email(changeset) do
+    validate_change(changeset, :email, fn :email, email ->
+      if UserSubEmail.email_query(email) |> Repo.exists?() do
+        [email: "has already been taken"]
+      else
+        []
+      end
+    end)
+  end
+
   @doc """
   A user changeset for registration by social auth (OAuth).
   """
@@ -174,6 +207,7 @@ defmodule Bright.Accounts.User do
     |> validate_password_registered(opts)
     |> validate_name(opts)
     |> validate_email(opts)
+    |> maybe_validate_uniqueness_in_user_sub_email(opts)
     |> maybe_hash_password(opts)
   end
 
@@ -224,7 +258,7 @@ defmodule Bright.Accounts.User do
   end
 
   @doc """
-  A user changeset fot changing user name and user_profile
+  A user changeset for changing user name and user_profile
   """
   def user_with_profile_changeset(user, attrs, opts \\ []) do
     user
@@ -242,6 +276,7 @@ defmodule Bright.Accounts.User do
     user
     |> cast(attrs, [:email])
     |> validate_email(opts)
+    |> maybe_validate_uniqueness_in_user_sub_email(opts)
     |> case do
       %{changes: %{email: _}} = changeset -> changeset
       %{} = changeset -> add_error(changeset, :email, "did not change")
@@ -311,14 +346,16 @@ defmodule Bright.Accounts.User do
   When `:including_not_confirmed` option is given and true, search user including not confirmed (default false).
   """
   def email_query(email) do
-    from u in User,
+    from(u in User,
       where:
         u.email == ^email and
           not is_nil(u.confirmed_at)
+    )
   end
 
   def email_query(email, including_not_confirmed: true) do
-    from u in User,
+    from(u in User,
       where: u.email == ^email
+    )
   end
 end

@@ -7,6 +7,7 @@ defmodule Bright.Accounts do
   alias Bright.Accounts.User2faCodes
   alias Bright.Accounts.SocialIdentifierToken
   alias Bright.Accounts.UserSocialAuth
+  alias Bright.Accounts.UserSubEmail
   alias Bright.UserProfiles
   alias Bright.UserJobProfiles
   alias Bright.Repo
@@ -214,7 +215,6 @@ defmodule Bright.Accounts do
   Updates the user email using the given token.
 
   If the token matches, the user email is updated and the token is deleted.
-  The confirmed_at date is also updated to the current time.
   """
   def update_user_email(user, token) do
     context = "change:#{user.email}"
@@ -243,7 +243,7 @@ defmodule Bright.Accounts do
 
   ## Examples
 
-      iex> deliver_user_update_email_instructions(user, current_email, &url(~p"/users/settings/confirm_email/#{&1})")
+      iex> deliver_user_update_email_instructions(user, current_email, &url(~p"/users/confirm_email/#{&1})")
       {:ok, %{to: ..., body: ...}}
 
   """
@@ -253,6 +253,29 @@ defmodule Bright.Accounts do
 
     Repo.insert!(user_token)
     UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
+  end
+
+  @doc ~S"""
+  Delivers the add email instructions to the given user.
+
+  ## Examples
+
+      iex> deliver_user_add_sub_email_instructions(user, current_email, &url(~p"/users/confirm_sub_email/#{&1})")
+      {:ok, %{to: ..., body: ...}}
+
+  """
+  def deliver_user_add_sub_email_instructions(%User{} = user, new_sub_email, add_email_url_fun)
+      when is_function(add_email_url_fun, 1) do
+    {encoded_token, user_token} =
+      UserToken.build_email_token(user, "confirm_sub_email", new_sub_email)
+
+    Repo.insert!(user_token)
+
+    UserNotifier.deliver_add_sub_email_instructions(
+      user,
+      new_sub_email,
+      add_email_url_fun.(encoded_token)
+    )
   end
 
   @doc """
@@ -310,6 +333,91 @@ defmodule Bright.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for adding the new user sub email.
+
+  ## Examples
+
+      iex> change_new_user_sub_email(user)
+      %Ecto.Changeset{data: %UserSubEmail{}}
+
+  """
+  def change_new_user_sub_email(user, attrs \\ %{}) do
+    user
+    |> Ecto.build_assoc(:user_sub_emails)
+    |> UserSubEmail.changeset(attrs, validate_sub_email_count: false, validate_email: false)
+  end
+
+  @doc """
+  Emulates that the sub_email will add without actually changing
+  it in the database.
+
+  ## Examples
+
+      iex> apply_new_user_sub_email(user, %{email: ...})
+      {:ok, %UserSubEmail{}}
+
+      iex> apply_new_user_sub_email(user, %{email: ...})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def apply_new_user_sub_email(user, attrs) do
+    user
+    |> Ecto.build_assoc(:user_sub_emails)
+    |> UserSubEmail.changeset(attrs)
+    |> Ecto.Changeset.apply_action(:update)
+  end
+
+  @doc """
+  Adds the user sub email using the given token.
+
+  If the token matches, the user email is added and the token is deleted.
+  """
+  def add_user_sub_email(user, token) do
+    context = "confirm_sub_email"
+
+    with {:ok, query} <-
+           UserToken.verify_confirm_sub_email_token_query(token, context),
+         %UserToken{sent_to: email, token: token} <- Repo.one(query),
+         {:ok, _} <-
+           Repo.transaction(user_add_sub_email_multi(user, email, context, token)) do
+      :ok
+    else
+      {:error, :user_sub_email,
+       %Ecto.Changeset{errors: [email: {"already has max number of sub emails", []}]}, _} ->
+        :already_has_max_number_of_sub_emails
+
+      _ ->
+        :error
+    end
+  end
+
+  defp user_add_sub_email_multi(user, email, context, token) do
+    changeset =
+      user
+      |> Ecto.build_assoc(:user_sub_emails)
+      |> UserSubEmail.changeset(%{email: email})
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user_sub_email, changeset)
+    |> Ecto.Multi.delete_all(:tokens, UserToken.token_and_context_query(token, context))
+  end
+
+  @doc """
+  Delete user sub email.
+
+  NOTE:
+  `user_sub_email` has uniqueness in email.
+  Nevertheless, you need `user` to avoid deleting other user's sub email
+  """
+  def delete_user_sub_email(user, sub_email) do
+    user
+    |> UserSubEmail.user_and_email_query(sub_email)
+    |> Repo.delete_all()
+
+    :ok
   end
 
   ## Session
