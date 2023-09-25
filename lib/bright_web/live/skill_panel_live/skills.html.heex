@@ -59,7 +59,7 @@
     <div>
       <p class="flex items-center">
         スキル入力は、1キーを押すと
-        <span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mx-1 "></span>
+        <span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mx-1"></span>
         が付き、2キーを押すと
         <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-300 inline-block mx-1"></span>
         、3キーで
@@ -88,6 +88,44 @@
     <button
       class="absolute top-2 right-2"
       phx-click={JS.push("lv:clear-flash", value: %{key: "first_skills_edit"}) |> hide("#first_skills_edit_message")}>
+      <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5 flex justify-center items-center">close</span>
+    </button>
+  </div>
+
+  <% # スキル入力後メッセージ（初回のみ） %>
+  <div
+    :if={Map.get(@flash, "first_time_submit")}
+    id="first_time_submit_message"
+    class="absolute bg-designer-dazzle leading-normal px-4 py-2 right-0 rounded text-xs top-32 w-fit z-10">
+    <div>
+      <p>スキル入力完了おめでとうございます！</p>
+      <p class="mt-2">スキル入力後は「成長を見る・比較する」メニューで現在のスキルレベルを確認できます。<br>スキル合計の％が40％より下は「見習い」、40％以上で「平均」、60％以上で「ベテラン」となります。</p>
+      <p class="mt-2">また、3ヶ月区切りでスキルレベルを集計するので、スキルの成長も体感できます。</p>
+    </div>
+    <div class="mt-4 w-[400px]">
+      <img src="/images/sample_groth_graph.png" alt="成長グラフ" width="600" height="250">
+    </div>
+    <div class="flex gap-4 justify-center pt-2">
+      <button
+        type="button"
+        class="bg-brightGray-900 border border-brightGray-900 font-bold p-1 rounded text-white w-48"
+        phx-click={JS.push("lv:clear-flash", value: %{key: "first_time_submit"}) |> hide("#first_time_submit_message")}>
+        この説明は分かりやすい
+      </button>
+      <button
+        type="button"
+        class="bg-white border border-brightGray-900 font-bold p-1 rounded text-brightGray-900 w-24"
+        phx-click={JS.push("lv:clear-flash", value: %{key: "first_time_submit"}) |> hide("#first_time_submit_message")}>
+        わかりにくい
+      </button>
+    </div>
+    <button class="absolute top-2 right-2">
+      <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5 flex justify-center items-center">close</span>
+    </button>
+
+    <button
+      class="absolute top-2 right-2"
+      phx-click={JS.push("lv:clear-flash", value: %{key: "first_time_submit"}) |> hide("#first_time_submit_message")}>
       <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5 flex justify-center items-center">close</span>
     </button>
   </div>

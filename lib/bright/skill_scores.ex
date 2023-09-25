@@ -191,6 +191,19 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
+  スキルスコア数をカウントして返す
+  """
+  def count_skill_scores(query) do
+    from(q in query, select: count(q.id))
+    |> Repo.one()
+  end
+
+  def count_user_skill_scores(user) do
+    Ecto.assoc(user, :skill_scores)
+    |> count_skill_scores()
+  end
+
+  @doc """
   Gets a single skill_score.
 
   Raises `Ecto.NoResultsError` if the Skill score item does not exist.
