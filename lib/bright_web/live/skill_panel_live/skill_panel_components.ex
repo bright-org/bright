@@ -343,10 +343,19 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             num_skills={@num_skills}
           />
         </div>
-        <% # TODO: α版後にifを除去して表示 %>
-        <div :if={false} class="mt-3 mr-3">
-          <button class="flex items-center text-sm font-bold px-4 py-2 rounded !text-white bg-brightGray-900">
-            <img src="/images/common/icons/up.svg" class="mr-2" />
+
+        <div class="mt-2 mr-3 flex flex-col gap-y-4">
+          <.link
+            :if={@display_button_skill_edit}
+            patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+            class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-48 hover:opacity-50">
+            <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
+            スキル入力する
+          </.link>
+
+          <% # TODO: α版後にifを除去して表示 %>
+          <button :if={false} class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-48 hover:opacity-50">
+            <img src="/images/common/icons/up.svg" class="absolute left-4 top-1/2 -translate-y-1/2">
             スキルアップする
           </button>
         </div>

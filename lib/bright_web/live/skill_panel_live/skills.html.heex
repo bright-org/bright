@@ -7,15 +7,25 @@
   root="panels"
 />
 
-<div class="mx-10">
+<div class="mx-10 relative">
   <div class="flex justify-between">
     <% # TODO: α版後にifと仮divブロックを除去して表示 %>
     <.toggle_link :if={false} skill_panel={@skill_panel} active="graph" />
     <div> </div>
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
-  <div class="bg-white shadow pl-7 pr-5 relative z-2 pb-10">
-    <.profile_area display_user={@display_user} anonymous={@anonymous} skill_class_score={@skill_class_score} counter={@counter} num_skills={@num_skills} />
+  <div class="bg-white shadow px-6 relative z-2 pb-10 pt-3">
+    <.profile_area
+      display_user={@display_user}
+      anonymous={@anonymous}
+      skill_class_score={@skill_class_score}
+      counter={@counter}
+      num_skills={@num_skills}
+      display_button_skill_edit={true}
+      skill_panel={@skill_panel}
+      query={@query}
+    />
+
     <.live_component
       id="skills-field"
       module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
