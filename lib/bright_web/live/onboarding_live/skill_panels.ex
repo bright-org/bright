@@ -31,7 +31,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                       navigate={"/#{@current_path}/#{@route}/#{@id}/skill_panels/#{skill_panel.id}"}
                       class={[
                         "bg-#{career_field.name_en}-dark border-#{career_field.name_en}-dark",
-                        "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50"
+                        "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-full lg:w-60 hover:opacity-50"
                         ]}
                       >
                       <%= skill_panel.name %>
@@ -45,10 +45,10 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         <!-- スキルセクション ここまで -->
       </div>
 
-      <p class="mt-8 w-[1040px]">
+      <p class="mt-8 w-full lg:w-[1040px]">
         <.link
           navigate={@return_to}
-          class=" self-center bg-white block border border-solid border-black font-bold mt-4 mx-auto px-4 py-2 rounded select-none text-black text-center w-40 hover:opacity-50"
+          class="self-start lg:self-center bg-white block border border-solid border-black font-bold mt-4 mx-auto px-4 py-2 rounded select-none text-black text-center w-full lg:w-40 hover:opacity-50"
         >
           戻る
         </.link>
