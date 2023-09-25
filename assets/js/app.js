@@ -42,9 +42,9 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
-// scroll to element
-window.addEventListener("phx:scroll-to", info => {
-  const element = document.getElementById(info.detail.target)
+// scroll to parent element
+window.addEventListener("phx:scroll-to-parent", info => {
+  const element = document.getElementById(info.detail.target).closest(info.detail.parent_selector)
   if(element){
     element.scrollIntoView({
       behavior: "smooth"

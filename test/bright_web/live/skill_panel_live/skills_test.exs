@@ -252,130 +252,125 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   describe "Input skill score item score" do
     setup [:register_and_log_in_user, :setup_skills]
 
-    @tag score: :low
-    test "update scores", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      # 編集モード IN
+    # 共通処理: 入力開始
+    def start_edit(show_live) do
       show_live
-      |> element(~s{button[phx-click="edit"]})
+      |> element("#link-skills-form")
       |> render_click()
 
-      # skill_1
-      # lowからlowのキャンセル操作相当
-      show_live
-      |> element(~s{#skill-1 label[phx-value-score="low"]})
-      |> render_click()
+      assert has_element?(show_live, "#skills-form")
+    end
 
-      show_live
-      |> element(~s{#skill-2 label[phx-value-score="middle"]})
-      |> render_click()
-
-      show_live
-      |> element(~s{#skill-3 label[phx-value-score="high"]})
-      |> render_click()
-
-      # 編集モード OUT
+    # 共通処理: 入力完了
+    def submit_form(show_live) do
       show_live
       |> element(~s{button[phx-click="submit"]})
       |> render_click()
 
-      # 編集モードが解除されているかの確認
-      assert show_live |> has_element?("#skill-1 .score-mark-low")
-      assert show_live |> has_element?("#skill-2 .score-mark-middle")
-      assert show_live |> has_element?("#skill-3 .score-mark-high")
+      refute has_element?(show_live, "#skills-form")
+    end
+
+    @tag score: :low
+    test "update scores", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      start_edit(show_live)
+
+      # skill_1
+      # lowからlowのキャンセル操作相当
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="low"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{#skill-2-form label[phx-value-score="middle"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{#skill-3-form label[phx-value-score="high"]})
+      |> render_click()
+
+      submit_form(show_live)
 
       # 永続化確認のための再描画
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      assert show_live |> has_element?("#skill-1 .score-mark-low")
-      assert show_live |> has_element?("#skill-2 .score-mark-middle")
-      assert show_live |> has_element?("#skill-3 .score-mark-high")
+      assert has_element?(show_live, "#skill-1 .score-mark-low")
+      assert has_element?(show_live, "#skill-2 .score-mark-middle")
+      assert has_element?(show_live, "#skill-3 .score-mark-high")
     end
 
     @tag score: nil
     test "edits by key input", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      # 編集モード IN
-      show_live
-      |> element(~s{button[phx-click="edit"]})
-      |> render_click()
+      start_edit(show_live)
 
       # 1を押してスコアを設定する。以下、2, 3と続く
       # 最終行は押してもそのままフォーカスした状態を継続する
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "1"})
 
-      refute show_live |> has_element?(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-1-form [phx-window-keydown="shortcut"]})
 
       show_live
-      |> element(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "2"})
 
-      refute show_live |> has_element?(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-2-form [phx-window-keydown="shortcut"]})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
 
-      assert show_live |> has_element?(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      assert has_element?(show_live, ~s{#skill-3-form [phx-window-keydown="shortcut"]})
 
-      # 編集モード OUT
-      show_live
-      |> element(~s{button[phx-click="submit"]})
-      |> render_click()
+      submit_form(show_live)
 
       # 永続化確認のための再描画
       {:ok, _show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      assert show_live |> has_element?("#skill-1 .score-mark-high")
-      assert show_live |> has_element?("#skill-2 .score-mark-middle")
-      assert show_live |> has_element?("#skill-3 .score-mark-low")
+      assert has_element?(show_live, "#skill-1 .score-mark-high")
+      assert has_element?(show_live, "#skill-2 .score-mark-middle")
+      assert has_element?(show_live, "#skill-3 .score-mark-low")
     end
 
     @tag score: nil
     test "move by key input", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      # 編集モード IN
-      show_live
-      |> element(~s{button[phx-click="edit"]})
-      |> render_click()
+      start_edit(show_live)
 
       # ↓、Enter、↑による移動
       # 最初と最終行は押してもそのままフォーカスした状態を継続する
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "ArrowUp"})
 
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "ArrowDown"})
 
-      refute show_live |> has_element?(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-1-form [phx-window-keydown="shortcut"]})
 
       show_live
-      |> element(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "Enter"})
 
-      refute show_live |> has_element?(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-2-form [phx-window-keydown="shortcut"]})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "ArrowDown"})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "ArrowUp"})
 
-      refute show_live |> has_element?(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      refute has_element?(show_live, ~s{#skill-3-form [phx-window-keydown="shortcut"]})
 
-      # 編集モード OUT
-      show_live
-      |> element(~s{button[phx-click="submit"]})
-      |> render_click()
+      submit_form(show_live)
     end
   end
 
@@ -387,87 +382,51 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       # 初期表示
-      assert show_live
-             |> element(".score-high-percentage", "0％")
-             |> has_element?()
+      assert has_element?(show_live, ".score-high-percentage", "0％")
+      assert has_element?(show_live, ".score-middle-percentage", "0％")
 
-      assert show_live
-             |> element(".score-middle-percentage", "0％")
-             |> has_element?()
-
-      # 各スキルスコア入力と、習得率表示更新
-      show_live
-      |> element(~s{button[phx-click="edit"]})
-      |> render_click()
+      start_edit(show_live)
 
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "1"})
 
-      assert show_live
-             |> element(".score-high-percentage", "33％")
-             |> has_element?()
-
       show_live
-      |> element(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "1"})
 
-      assert show_live
-             |> element(".score-high-percentage", "66％")
-             |> has_element?()
-
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "2"})
 
-      assert show_live
-             |> element(".score-middle-percentage", "33％")
-             |> has_element?()
-
-      show_live
-      |> element(~s{button[phx-click="submit"]})
-      |> render_click()
+      submit_form(show_live)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      assert show_live
-             |> element(".score-high-percentage", "66％")
-             |> has_element?()
-
-      assert show_live
-             |> element(".score-middle-percentage", "33％")
-             |> has_element?()
+      assert has_element?(show_live, ".score-high-percentage", "66％")
+      assert has_element?(show_live, ".score-middle-percentage", "33％")
 
       # 各スキルスコアの削除（lowにする操作）と、習得率表示更新
-      show_live
-      |> element(~s{button[phx-click="edit"]})
-      |> render_click()
+      start_edit(show_live)
 
       show_live
-      |> element(~s{#skill-1 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
 
       show_live
-      |> element(~s{#skill-2 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
 
       show_live
-      |> element(~s{#skill-3 [phx-window-keydown="shortcut"]})
+      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
 
-      show_live
-      |> element(~s{button[phx-click="submit"]})
-      |> render_click()
+      submit_form(show_live)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      assert show_live
-             |> element(".score-high-percentage", "0％")
-             |> has_element?()
-
-      assert show_live
-             |> element(".score-middle-percentage", "0％")
-             |> has_element?()
+      assert has_element?(show_live, ".score-high-percentage", "0％")
+      assert has_element?(show_live, ".score-middle-percentage", "0％")
     end
   end
 
@@ -576,8 +535,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#skill-1 .link-evidence")
       |> render_click()
 
-      assert show_live
-             |> render() =~ skill_evidence_post.content
+      assert render(show_live) =~ skill_evidence_post.content
 
       assert show_live
              |> form("#skill_evidence_post-form", skill_evidence_post: %{content: ""})
@@ -587,18 +545,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
       |> render_submit()
 
-      assert show_live
-             |> has_element?("#skill_evidence_posts", "input 1")
-
-      refute show_live
-             |> has_element?("#skill_evidence_post-form", "input 1")
+      assert has_element?(show_live, "#skill_evidence_posts", "input 1")
+      refute has_element?(show_live, "#skill_evidence_post-form", "input 1")
 
       show_live
       |> element(~s([phx-click="delete"][phx-value-id="#{skill_evidence_post.id}"]))
       |> render_click()
 
-      refute show_live
-             |> has_element?("#skill_evidence_posts", "some content")
+      refute has_element?(show_live, "#skill_evidence_posts", "some content")
     end
   end
 
@@ -654,9 +608,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "教材がないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      refute show_live
-             |> element("#skill-1 .link-reference")
-             |> has_element?()
+      refute has_element?(show_live, "#skill-1 .link-reference")
     end
 
     @tag score: nil
@@ -664,9 +616,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:skill_reference, skill: skill_1, url: nil)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      refute show_live
-             |> element("#skill-1 .link-reference")
-             |> has_element?()
+      refute has_element?(show_live, "#skill-1 .link-reference")
     end
   end
 
@@ -714,9 +664,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "試験がないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      refute show_live
-             |> element("#skill-1 .link-exam")
-             |> has_element?()
+      refute has_element?(show_live, "#skill-1 .link-exam")
     end
 
     @tag score: nil
@@ -724,9 +672,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:skill_exam, skill: skill_1, url: nil)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      refute show_live
-             |> element("#skill-1 .link-exam")
-             |> has_element?()
+      refute has_element?(show_live, "#skill-1 .link-exam")
     end
   end
 
@@ -937,13 +883,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      refute show_live
-             |> element(".score-mark-high")
-             |> has_element?()
+      refute has_element?(show_live, ".score-mark-high")
 
-      assert show_live
-             |> element(".score-mark-low")
-             |> has_element?()
+      assert has_element?(show_live, ".score-mark-low")
     end
 
     # # TODO: 画面にアクセスできるようになったらテストを実装する。

@@ -18,7 +18,8 @@ defmodule BrightWeb.BrightModalComponents do
 
   - style_of_modal_flame_out モーダルフレーム外のスタイル
   - style_of_modal_flame モーダル枠全体のスタイル
-  - show_cancel_button 閉じるボタン(X)を表示するか否か
+  - enable_cancel_button 閉じるボタン(X)を表示するか否か
+  - cancel_button_confirm 閉じるボタン(X)時のdata-confirm表示内容. 未指定(nil)で非表示
   - style_of_cancel_button_rayout 閉じるボタン(X)を囲むdevのスタイル
   - style_of_cancel_button 閉じるボタン(X)のスタイル
   - style_of_cancel_button_x_mark 閉じるボタン(X)のXマークのスタイル
@@ -55,6 +56,7 @@ defmodule BrightWeb.BrightModalComponents do
       "shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-md bg-white p-14 shadow-lg ring-1 transition"
 
   attr :enable_cancel_button, :boolean, default: true
+  attr :cancel_button_confirm, :string, default: nil
   attr :style_of_cancel_button_rayout, :string, default: "absolute top-6 right-5"
   attr :style_of_cancel_button, :string, default: "-m-3 flex-none p-3 opacity-80"
   attr :style_of_cancel_button_x_mark, :string, default: "h-8 w-8"
@@ -91,6 +93,7 @@ defmodule BrightWeb.BrightModalComponents do
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
                   class={@style_of_cancel_button}
+                  data-confirm={@cancel_button_confirm}
                   aria-label={gettext("close")}
                 >
                   <.icon name="hero-x-mark-solid" class={@style_of_cancel_button_x_mark} />
