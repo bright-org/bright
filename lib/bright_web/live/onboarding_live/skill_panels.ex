@@ -19,11 +19,11 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
           <%= for {career_field, skill_panels} <- @career_fields do %>
             <% skill_panels = Enum.uniq(skill_panels)%>
             <section
-              class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-[1040px]"}
+              class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-full lg:w-[1040px]"}
               :if={Enum.count(skill_panels) > 0}
             >
               <p class="font-bold"><%= career_field.name_ja %>向けのスキル</p>
-              <ul class="flex flex-wrap mt-2 gap-4">
+              <ul class="flex flex-wrap flex-col lg:flex-row mt-2 gap-4">
                 <!-- スキル ここから -->
                 <%= for skill_panel <- skill_panels do %>
                   <li>

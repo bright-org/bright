@@ -7,7 +7,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
   def render(assigns) do
     ~H"""
     <div id="want_todo_panel" class="hidden">
-      <ul class="flex flex-wrap gap-4 justify-start p-4">
+      <ul class="flex flex-wrap gap-4 justify-center p-4 lg:justify-start">
         <!-- やりたいこと ここから -->
         <%= for wants <- @career_wants do %>
         <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">

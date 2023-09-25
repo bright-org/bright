@@ -12,11 +12,12 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     <div id="wants_job_panel" class="hidden px-4 py-4">
       <!-- タブここから -->
       <aside id="select_job">
-        <ul class="flex relative">
+        <ul class="flex relative text-xs">
           <%= for career_field <- @career_fields do %>
             <li
               class={
-                  "cursor-pointer select-none py-2 rounded-tl text-center w-40 " <>
+                  "cursor-pointer select-none py-2 text-center w-40 " <>
+                  add_edge_style(@career_fields, career_field) <>
                   if @selected_career.name_en == career_field.name_en,
                     do: "bg-#{career_field.name_en}-dark text-white",
                     else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark text-brightGray-200 hover:text-white"
@@ -47,8 +48,8 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         >
           <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
           <div class="mb-8">
-            <p class="font-bold"><%= @rank[rank] %></p>
-            <ul class="flex flex-wrap gap-4 mt-2">
+            <p class="font-bold text-center lg:text-left"><%= @rank[rank] %></p>
+            <ul class="flex flex-wrap gap-4 justify-center mt-2 lg:justify-start">
 
               <% jobs = Map.get(@jobs, @selected_career.name_en, %{}) %>
               <%= for job <- Map.get(jobs, rank, []) do %>
@@ -104,5 +105,15 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     socket
     |> assign(:selected_career, Enum.find(career_fields, fn c -> c.id == career_field_id end))
     |> then(&{:noreply, &1})
+  end
+
+  defp add_edge_style(career_fields, career_field) do
+    index = Enum.find_index(career_fields, &(&1 == career_field))
+
+    case index do
+      0 -> "rounded-tl "
+      3 -> "rounded-tr "
+      _ -> ""
+    end
   end
 end
