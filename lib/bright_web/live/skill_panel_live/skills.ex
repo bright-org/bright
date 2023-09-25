@@ -68,7 +68,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, push_redirect(socket, to: move_to)}
   end
 
-  defp apply_action(socket, :show, _params), do: socket
+  defp apply_action(socket, :show, _params) do
+    put_flash_first_skills_edit(socket)
+  end
 
   defp apply_action(socket, :edit, _params), do: socket
 
@@ -158,4 +160,19 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp create_skill_evidence_if_not_existing(socket), do: socket
+
+  # 初回入力時のみメッセージを表示
+  # 初回入力: スキルクラスがclass: 1でスキルスコアがない状態とする
+  # メッセージ表示にはflashを利用している
+  defp put_flash_first_skills_edit(socket) do
+    %{skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
+    skill_scores = Map.values(skill_score_dict)
+
+    (skill_class.class == 1 && Enum.all?(skill_scores, & &1.score == :low))
+    |> if do
+      update(socket, :flash, & Map.put(&1, "first_skills_edit", true))
+    else
+      socket
+    end
+  end
 end
