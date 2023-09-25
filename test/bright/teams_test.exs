@@ -358,4 +358,108 @@ defmodule Bright.TeamsTest do
       end
     end
   end
+
+  describe "get_enable_functions_by_joined_teams/1" do
+    test "disable all functions" do
+      team_name = Faker.Lorem.word()
+      admin_user = insert(:user)
+
+      assert {:ok, _team, _team_member_user_attrs} =
+               Teams.create_team_multi(team_name, admin_user, [])
+
+      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+
+      assert enable_functions.enable_team_up_factions == false
+      assert enable_functions.enable_hr_functions == false
+    end
+
+    test "enable team_up_factions" do
+      team_name = Faker.Lorem.word()
+      admin_user = insert(:user)
+
+      assert {:ok, _team, _team_member_user_attrs} =
+               Teams.create_team_multi(team_name, admin_user, [], %{
+                 enable_team_up_functions: true,
+                 enable_hr_functions: false
+               })
+
+      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+
+      assert enable_functions.enable_team_up_factions == true
+      assert enable_functions.enable_hr_functions == false
+    end
+
+    test "enable hr_factions" do
+      team_name = Faker.Lorem.word()
+      admin_user = insert(:user)
+
+      assert {:ok, _team, _team_member_user_attrs} =
+               Teams.create_team_multi(team_name, admin_user, [], %{
+                 enable_team_up_functions: false,
+                 enable_hr_functions: true
+               })
+
+      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+
+      assert enable_functions.enable_team_up_factions == false
+      assert enable_functions.enable_hr_functions == true
+    end
+
+    test "enable all factions and multi teams records" do
+      team_name = Faker.Lorem.word()
+      admin_user = insert(:user)
+
+      # １件以上enabled trueのチームがあれば複数件あってもtrueになる
+      assert {:ok, _team, _team_member_user_attrs} =
+               Teams.create_team_multi(team_name, admin_user, [], %{
+                 enable_team_up_functions: true,
+                 enable_hr_functions: true
+               })
+
+      assert {:ok, _team, _team_member_user_attrs} =
+               Teams.create_team_multi(team_name, admin_user, [], %{
+                 enable_team_up_functions: true,
+                 enable_hr_functions: true
+               })
+
+      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+
+      assert enable_functions.enable_team_up_factions == true
+      assert enable_functions.enable_hr_functions == true
+    end
+
+    test "no joined team" do
+      team_name = Faker.Lorem.word()
+      admin_user = insert(:user)
+      member_user = insert(:user)
+
+      # チームに招待されていても承認していなければカウントされない
+      assert {:ok, _team, _team_member_user_attrs} =
+               Teams.create_team_multi(team_name, admin_user, [member_user], %{
+                 enable_team_up_functions: true,
+                 enable_hr_functions: true
+               })
+
+      assert {:ok, _team2, _team_member_user_attrs2} =
+               Teams.create_team_multi(team_name, admin_user, [member_user], %{
+                 enable_team_up_functions: true,
+                 enable_hr_functions: true
+               })
+
+      enable_functions = Teams.get_enable_functions_by_joined_teams(member_user.id)
+
+      assert enable_functions.enable_team_up_factions == false
+      assert enable_functions.enable_hr_functions == false
+    end
+
+    test "no count not confirmed team" do
+      admin_user = insert(:user)
+
+      # チームに所属していない場合は全機能false
+      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+
+      assert enable_functions.enable_team_up_factions == false
+      assert enable_functions.enable_hr_functions == false
+    end
+  end
 end

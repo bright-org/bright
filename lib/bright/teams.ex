@@ -9,6 +9,7 @@ defmodule Bright.Teams do
   alias Bright.Teams.Team
   alias Bright.Accounts.UserNotifier
   alias Bright.SkillScores.SkillClassScore
+  alias Bright.Accounts.User
 
   # 招待メール関連定数
   @hash_algorithm :sha256
@@ -341,11 +342,29 @@ defmodule Bright.Teams do
   @spec create_team_multi(any, atom | %{:id => any, optional(any) => any}, any) :: any
   @doc """
   チームおよびメンバーの一括登録
+
+  iex> create_team_multi(
+    name,
+    admin_user,
+    member_users,
+      %{
+          enable_team_up_functions: true,
+          enable_hr_functions: false
+      }
+    )
+  {:ok, team, team_member_user_attrs}
+
   """
-  def create_team_multi(name, admin_user, member_users) do
+  def create_team_multi(
+        name,
+        admin_user,
+        member_users,
+        enable_functions \\ %{enable_team_up_functions: false, enable_hr_functions: false}
+      ) do
     team_attr = %{
       name: name,
-      enable_hr_functions: false
+      enable_team_up_functions: enable_functions.enable_team_up_functions,
+      enable_hr_functions: enable_functions.enable_hr_functions
     }
 
     # 作成者本人は自動的に管理者となる
@@ -495,5 +514,74 @@ defmodule Bright.Teams do
       {:ok, _} -> nil
       _ -> raise Ecto.NoResultsError, queryable: "Bright.Teams.Team"
     end
+  end
+
+  @doc """
+    所属チームによる各種機能の利用可否判定を取得する
+    - enable_team_up_factions チームスキル分析などチームアップ系機能の利用可否
+    - enable_hr_functions 採用・人材支援等人材支援系機能の利用可否
+
+    iex > get_enable_functions_by_joined_teams(user_id)
+    %{
+      enable_team_up_factions: true,
+      enable_hr_functions: false
+    }
+
+    iex > get_enable_functions_by_joined_teams(not_exist_user_id)
+    ** (Ecto.NoResultsError) expected at least one result but got none in query:
+
+  """
+  def get_enable_functions_by_joined_teams(user_id) do
+    # user_idをキーにenable_xxx_functionsフラグの立った所属チームの数を検索する
+    {_user_id, enable_team_up_functions_count, enable_hr_functions_count} =
+      get_count_enable_functions_by_joined_teams(user_id)
+
+    # 各機能の利用可否の判定
+    %{
+      enable_team_up_factions: is_enable_by_count?(enable_team_up_functions_count),
+      enable_hr_functions: is_enable_by_count?(enable_hr_functions_count)
+    }
+  end
+
+  # 　Ectoのcountを使うと0件の場合のnilが返るのでnil=0件=権限なしと判定
+  defp is_enable_by_count?(nil) do
+    false
+  end
+
+  defp is_enable_by_count?(_count) do
+    true
+  end
+
+  def get_count_enable_functions_by_joined_teams(user_id) do
+    count_team_up_query = count_enable_team_up_function()
+    count_hr_query = count_enable_hr_function()
+
+    from(u in User,
+      left_join: enable_team_up_functions in subquery(count_team_up_query),
+      on: u.id == enable_team_up_functions.user_id,
+      left_join: enable_hr_functions in subquery(count_hr_query),
+      on: u.id == enable_hr_functions.user_id,
+      where: u.id == ^user_id,
+      select: {u.id, enable_team_up_functions.count, enable_hr_functions.count}
+    )
+    |> Repo.one!()
+  end
+
+  defp count_enable_hr_function() do
+    from(tmu in TeamMemberUsers,
+      left_join: t in assoc(tmu, :team),
+      where: not is_nil(tmu.invitation_confirmed_at) and t.enable_hr_functions == true,
+      select: %{user_id: tmu.user_id, count: count(tmu.user_id)},
+      group_by: tmu.user_id
+    )
+  end
+
+  defp count_enable_team_up_function() do
+    from(tmu in TeamMemberUsers,
+      left_join: t in assoc(tmu, :team),
+      where: not is_nil(tmu.invitation_confirmed_at) and t.enable_team_up_functions == true,
+      select: %{user_id: tmu.user_id, count: count(tmu.user_id)},
+      group_by: tmu.user_id
+    )
   end
 end
