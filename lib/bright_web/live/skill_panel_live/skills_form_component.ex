@@ -252,7 +252,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     %{user: user, skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
     skill_scores = Map.values(skill_score_dict)
     maybe_first_time = skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil))
-    first_time = maybe_first_time && SkillScores.count_user_skill_scores(user) == 0
+    first_time = maybe_first_time && !SkillScores.get_user_entered_skill_score_at_least_one?(user)
 
     assign(socket, :first_time, first_time)
   end

@@ -191,22 +191,6 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
-  スキルスコア数を返す
-  """
-  def count_skill_scores(query \\ SkillScore) do
-    from(q in query, select: count(q.id))
-    |> Repo.one()
-  end
-
-  @doc """
-  ユーザーのスキルスコア数を返す
-  """
-  def count_user_skill_scores(user) do
-    Ecto.assoc(user, :skill_scores)
-    |> count_skill_scores()
-  end
-
-  @doc """
   Gets a single skill_score.
 
   Raises `Ecto.NoResultsError` if the Skill score item does not exist.
@@ -269,6 +253,14 @@ defmodule Bright.SkillScores do
     skill_score
     |> SkillScore.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Returns whether the given user has entered at least one skill score.
+  """
+  def get_user_entered_skill_score_at_least_one?(user) do
+    Ecto.assoc(user, :skill_scores)
+    |> Repo.exists?()
   end
 
   @doc """
