@@ -15,7 +15,7 @@ module.exports = {
   safelist: [
     {
       pattern:
-        /bg-(engineer|infra|designer|marketer|sales)-(dark|light|dazzle)/,
+        /bg-(engineer|infra|designer|marketer|sales|cxo)-(dark|light|dazzle)/,
       variants: ["hover"],
     },
   ],
@@ -110,6 +110,11 @@ module.exports = {
           light: "#FD5B87",
           dazzle: "#FFE9EF",
         },
+        cxo: {
+          dark: "#A9A9AF",
+          light: "#F0F0F9",
+          dazzle: "#E0E0E5",
+        },
         skillPanel: {
           brightGreen600: "#0EA895",
           brightGreen300: "#14D6BE",
@@ -131,6 +136,7 @@ module.exports = {
         bgGemDesigner: "url('/images/bg_gem_designer.png')",
         bgGemMarketer: "url('/images/bg_gem_marketer.png')",
         bgGemSales: "url('/images/bg_gem_sales.png')",
+        bgGemCxo: "url('/images/bg_gem_cxo.png')",
         bgGoogle: "url('/images/bg_google.png')",
         bgGithub: "url('/images/bg_github.png')",
         bgFacebook: "url('/images/bg_facebook.png')",

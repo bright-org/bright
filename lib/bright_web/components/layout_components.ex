@@ -11,7 +11,9 @@ defmodule BrightWeb.LayoutComponents do
   """
 
   attr :csrf_token, :string, required: true
+  attr :user_id, :string, required: true
   attr :page_title, :string
+  attr :enable_google_tag_manager, :boolean, default: true
 
   slot :inner_block, required: true
 
@@ -20,6 +22,18 @@ defmodule BrightWeb.LayoutComponents do
     <!DOCTYPE html>
     <html lang="ja">
       <head>
+        <script :if={@enable_google_tag_manager && Bright.Utils.Env.prod?()}>
+          dataLayer = [{
+            'user_id': "<%= @user_id %>",
+          }];
+        </script>
+        <!-- Google Tag Manager -->
+        <script :if={@enable_google_tag_manager && Bright.Utils.Env.prod?()}>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-P98L4WM');</script>
+        <!-- End Google Tag Manager -->
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content={@csrf_token} />
@@ -38,6 +52,15 @@ defmodule BrightWeb.LayoutComponents do
       </head>
       <%= render_slot(@inner_block) %>
     </html>
+    """
+  end
+
+  def google_tag_manager_noscript(assigns) do
+    ~H"""
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P98L4WM"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     """
   end
 
@@ -63,11 +86,15 @@ defmodule BrightWeb.LayoutComponents do
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
-    <div class="w-full flex justify-between py-2.5 px-10 border-brightGray-100 border-b bg-white">
+    <div class="flex justify-between items-center px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:px-10">
       <h4><%= @page_title %><%= @page_sub_title %></h4>
-      <div class="flex gap-x-5">
-        <.plan_upgrade_button  />
-        <.contact_customer_success_button />
+      <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto z-20 lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
+        <div class="flex justify-between">
+          <.plan_upgrade_button  />
+          <.contact_customer_success_button />
+        </div>
+      </div>
+      <div class="flex gap-2 items-center">
         <.search_for_skill_holders_button />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
         <.logout_button />
@@ -89,17 +116,20 @@ defmodule BrightWeb.LayoutComponents do
 
   def side_menu(assigns) do
     ~H"""
-    <aside
-    class="flex bg-brightGray-900 min-h-screen flex-col w-[200px] pt-3"
-    >
-      <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
-      <ul class="grid pt-2">
-        <%= for {title, path, regex} <- links() do %>
-          <li>
-            <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>
-          </li>
-        <% end %>
-      </ul>
+    <aside class="relative">
+      <input id="sp_navi_input" class="hidden peer group" type="checkbox">
+      <label id="sp_navi_open"  class="bg-brightGray-300 block cursor-pointer fixed h-[3px] ml-4 right-4 top-4 w-8 z-50 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 before:z-50 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8 after:z-50 peer-checked:fixed peer-checked:bg-brightGray-900 peer-checked:top-[44px] peer-checked:before:bg-white peer-checked:before:rotate-[135deg] peer-checked:after:bg-white peer-checked:after:-translate-y-[12px] peer-checked:after:rotate-45 lg:hidden" for="sp_navi_input"></label>
+      <label id="sp_navi_close" for="sp_navi_input" class="cursor-pointer hidden h-full fixed right-0 top-0 w-full z-20"></label>
+      <div class="fixed bg-brightGray-900 pt-3 min-h-screen hidden flex-col w-full z-40 lg:flex lg:static lg:w-[200px] peer-checked:flex">
+        <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4" /></.link>
+        <ul class="grid pt-2">
+          <%= for {title, path, regex} <- links() do %>
+            <li>
+              <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     </aside>
     """
   end

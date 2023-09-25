@@ -27,7 +27,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          table_structure={@table_structure}
          skill_panel={@skill_panel}
          skill_score_dict={@skill_score_dict}
-         focus_row={@focus_row}
          counter={@counter}
          num_skills={@num_skills}
          compared_users={@compared_users}
@@ -37,7 +36,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          query={@query}
          display_user={@display_user}
          editable={@editable}
-         edit={@edit}
          current_skill_dict={@current_skill_dict}
          current_skill_score_dict={@current_skill_score_dict}
          myself={@myself}
@@ -188,9 +186,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     # 過去分のため存在しない可能性がある
     if historical_skill_class do
       skill_units =
-        Ecto.assoc(historical_skill_class, :historical_skill_units)
-        |> HistoricalSkillUnits.list_historical_skill_units()
-        |> Bright.Repo.preload(historical_skill_categories: [:historical_skills])
+        historical_skill_class
+        |> Bright.Repo.preload(
+          historical_skill_units: [historical_skill_categories: [:historical_skills]]
+        )
+        |> Map.get(:historical_skill_units)
 
       skills =
         skill_units
@@ -220,7 +220,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign(num_skills: [])
     |> assign(compared_users_stats: %{})
     |> assign(compared_user_dict: %{})
-    |> assign(edit: false)
     |> assign(editable: false)
   end
 
@@ -289,7 +288,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   defp assign_compared_user_dict(socket, user) do
     # 比較対象になっているユーザーのデータを表示用に整理・集計してアサイン
     skill_ids = Enum.map(socket.assigns.skills, & &1.id)
-    skill_scores = list_user_skill_scores_from_skill_ids(user, skill_ids, socket.assigns.tense)
+    skill_scores = list_user_skill_scores_from_skill_ids(skill_ids, user.id, socket.assigns.tense)
 
     {skill_score_dict, high_skills_count, middle_skills_count} =
       skill_scores
@@ -418,19 +417,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     skill_category.historical_skills
   end
 
-  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :now) do
-    SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
+  defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :now) do
+    SkillScores.list_user_skill_scores_from_skill_ids(skill_ids, user_id)
   end
 
-  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :future) do
+  defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :future) do
     # TODO: スキルアップ対応後に実装。比較ユーザー分のスキルアップを加味する（大変そう）
-    SkillScores.list_user_skill_scores_from_skill_ids(user, skill_ids)
+    SkillScores.list_user_skill_scores_from_skill_ids(skill_ids, user_id)
   end
 
-  defp list_user_skill_scores_from_skill_ids(user, skill_ids, :past) do
+  defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :past) do
     HistoricalSkillScores.list_user_historical_skill_scores_from_historical_skill_ids(
-      user,
-      skill_ids
+      skill_ids,
+      user_id
     )
   end
 

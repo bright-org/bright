@@ -24,6 +24,7 @@ defmodule Bright.Factory do
 
   # Jobs context
   use Bright.CareerWantFactory
+  use Bright.CareerWantJobFactory
   use Bright.JobFactory
   use Bright.JobSkillPanelFactory
 
@@ -85,7 +86,6 @@ defmodule Bright.Factory do
   use Bright.HistoricalSkillClassScoreFactory
 
   # NotificationsFactory context
-  use Bright.NotificationFactory
   use Bright.NotificationOperationFactory
   use Bright.NotificationCommunityFactory
 

@@ -6,23 +6,8 @@ defmodule Bright.Notifications do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.Notifications.Notification
   alias Bright.Notifications.NotificationOperation
   alias Bright.Notifications.NotificationCommunity
-
-  @doc """
-  Returns the list of notifications.
-
-  ## Examples
-
-      iex> list_notifications()
-      [%Notification{}, ...]
-
-  """
-  def list_notifications do
-    Repo.all(Notification)
-    |> Repo.preload([:from_user, :to_user])
-  end
 
   @doc """
   Gets a single notification.
@@ -75,70 +60,5 @@ defmodule Bright.Notifications do
       total_pages: 0,
       entries: []
     }
-  end
-
-  @doc """
-  Creates a notification.
-
-  ## Examples
-
-      iex> create_notification(%{field: value})
-      {:ok, %Notification{}}
-
-      iex> create_notification(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_notification(attrs \\ %{}) do
-    %Notification{}
-    |> Notification.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a notification.
-
-  ## Examples
-
-      iex> update_notification(notification, %{field: new_value})
-      {:ok, %Notification{}}
-
-      iex> update_notification(notification, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_notification(%Notification{} = notification, attrs) do
-    notification
-    |> Notification.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a notification.
-
-  ## Examples
-
-      iex> delete_notification(notification)
-      {:ok, %Notification{}}
-
-      iex> delete_notification(notification)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_notification(%Notification{} = notification) do
-    Repo.delete(notification)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking notification changes.
-
-  ## Examples
-
-      iex> change_notification(notification)
-      %Ecto.Changeset{data: %Notification{}}
-
-  """
-  def change_notification(%Notification{} = notification, attrs \\ %{}) do
-    Notification.changeset(notification, attrs)
   end
 end

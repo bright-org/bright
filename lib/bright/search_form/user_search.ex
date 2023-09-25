@@ -8,8 +8,6 @@ defmodule Bright.SearchForm.UserSearch do
   alias Bright.SearchForm.SkillSearch
 
   embedded_schema do
-    field :pj_start, :string, default: ""
-    field :pj_end, :string, default: ""
     field :desired_income, :integer
     field :office_work, :boolean, default: false
     field :office_pref, :string
@@ -29,8 +27,6 @@ defmodule Bright.SearchForm.UserSearch do
   def changeset(user_search, attrs) do
     user_search
     |> cast(attrs, [
-      :pj_start,
-      :pj_end,
       :desired_income,
       :office_work,
       :office_pref,

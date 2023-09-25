@@ -770,8 +770,8 @@ defmodule Bright.Accounts do
     end
   end
 
-  # 連係解除したことでログイン不可能にならないようにチェックする
-  # 独自 ID 登録ユーザーの場合は連係解除可能
+  # 連携解除したことでログイン不可能にならないようにチェックする
+  # 独自 ID 登録ユーザーの場合は連携解除可能
   defp can_unlink_social_account?(%User{password_registered: true}, _provider), do: true
   # SNS ID 登録ユーザーの場合は他にも SNS 連携していれば削除可能
   defp can_unlink_social_account?(%User{password_registered: false} = user, provider) do

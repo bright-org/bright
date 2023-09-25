@@ -260,6 +260,7 @@ defmodule Bright.Teams do
     |> Repo.paginate(page_param)
   end
 
+  # TODO: 使用されていなければ削除
   def list_jined_users_and_skill_unit_scores_by_team_id(
         team_id,
         page_param \\ %{page: 1, page_size: 1}

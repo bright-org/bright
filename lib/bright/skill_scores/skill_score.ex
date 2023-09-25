@@ -11,7 +11,7 @@ defmodule Bright.SkillScores.SkillScore do
   @foreign_key_type Ecto.ULID
 
   schema "skill_scores" do
-    field :score, Ecto.Enum, values: [:low, :middle, :high]
+    field :score, Ecto.Enum, values: [:low, :middle, :high], default: :low
     field :exam_progress, Ecto.Enum, values: [:wip, :done]
     field :reference_read, :boolean
     field :evidence_filled, :boolean

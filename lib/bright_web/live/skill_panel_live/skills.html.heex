@@ -25,17 +25,38 @@
       current_skill_score_dict={@skill_score_dict}
       counter={@counter}
       num_skills={@num_skills}
-      focus_row={@focus_row}
       path={@path}
       query={@query}
       display_user={@display_user}
       me={@me}
       anonymous={@anonymous}
-      edit={@edit}
     />
   </div>
 </div>
 
+<% # スコア入力用モーダル %>
+<.bright_modal
+  :if={:edit == @live_action && @me}
+  id="skills-form-modal"
+  show
+  style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+  cancel_button_confirm="入力画面を閉じますか？入力内容は保存されません。"
+  on_cancel={JS.patch(PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}")}>
+
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillsFormComponent}
+    id={"skills-form"}
+    user={@current_user}
+    skill_panel={@skill_panel}
+    skill_class={@skill_class}
+    skill_class_score={@skill_class_score}
+    skill_score_dict={@skill_score_dict}
+    patch={PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
+  />
+</.bright_modal>
+
+
+<% # エビデンス用モーダル %>
 <.bright_modal
   :if={:show_evidences == @live_action}
   id="skill-evidence-modal"
@@ -53,6 +74,7 @@
   />
 </.bright_modal>
 
+<% # 教材用モーダル %>
 <.bright_modal
   :if={:show_reference == @live_action}
   id="skill-reference-modal"
@@ -66,6 +88,7 @@
   </div>
 </.bright_modal>
 
+<% # 試験用モーダル %>
 <.bright_modal
   :if={:show_exam == @live_action}
   id="skill-exam-modal"

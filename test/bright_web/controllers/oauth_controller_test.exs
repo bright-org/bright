@@ -267,7 +267,7 @@ defmodule BrightWeb.OAuthControllerTest do
 
       conn = conn |> delete(~p"/auth/google")
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "連係解除しました"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "連携解除しました"
       assert redirected_to(conn) == ~p"/mypage"
       refute Repo.exists?(UserSocialAuth)
     end
@@ -275,7 +275,7 @@ defmodule BrightWeb.OAuthControllerTest do
     test "does not raise error when already deleted", %{conn: conn} do
       conn = conn |> delete(~p"/auth/google")
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "連係解除しました"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "連携解除しました"
       assert redirected_to(conn) == ~p"/mypage"
     end
   end
@@ -286,7 +286,7 @@ defmodule BrightWeb.OAuthControllerTest do
     test "does not delete when deletes last social account", %{conn: conn} do
       conn = conn |> delete(~p"/auth/google")
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "SNS連携は少なくとも一つ必要なため連係解除できません"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "SNS連携は少なくとも一つ必要なため連携解除できません"
       assert redirected_to(conn) == ~p"/mypage"
     end
   end

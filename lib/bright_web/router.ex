@@ -183,6 +183,7 @@ defmodule BrightWeb.Router do
 
       live "/panels", SkillPanelLive.Skills, :show
       live "/panels/:skill_panel_id", SkillPanelLive.Skills, :show
+      live "/panels/:skill_panel_id/edit", SkillPanelLive.Skills, :edit
       live "/panels/:skill_panel_id/:user_name", SkillPanelLive.Skills, :show
       live "/panels/:skill_panel_id/anon/:user_name_encrypted", SkillPanelLive.Skills, :show
 

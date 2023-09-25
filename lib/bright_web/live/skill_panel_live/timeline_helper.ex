@@ -72,6 +72,13 @@ defmodule BrightWeb.SkillPanelLive.TimelineHelper do
   def get_monthly_interval, do: @monthly_interval
 
   @doc """
+  引数dateを起点として引数numで指定したインターバル分をずらした日付を返す
+  """
+  def get_shift_date_from_date(date, num_shifts) do
+    Timex.shift(date, months: num_shifts * @monthly_interval)
+  end
+
+  @doc """
   現在選択されているものが「現在」「未来」「過去」のいずれかを返す
   """
   def get_selected_tense(timeline) do

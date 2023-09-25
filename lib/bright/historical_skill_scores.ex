@@ -42,8 +42,8 @@ defmodule Bright.HistoricalSkillScores do
   @doc """
   Returns the list of historical_skill_scores from user and historical_skill_ids
   """
-  def list_user_historical_skill_scores_from_historical_skill_ids(user, historical_skill_ids) do
-    HistoricalSkillScore.user_id_query(user.id)
+  def list_user_historical_skill_scores_from_historical_skill_ids(historical_skill_ids, user_id) do
+    HistoricalSkillScore.user_id_query(user_id)
     |> HistoricalSkillScore.historical_skill_ids_query(historical_skill_ids)
     |> list_historical_skill_scores()
   end

@@ -26,7 +26,7 @@ defmodule BrightWeb.UserAuthComponents do
       :let={f}
       for={@for}
       as={@as}
-      class="flex mt-8 mx-auto relative"
+      class="flex mt-8 mx-auto relative flex-col-reverse lg:flex-row"
       {@rest}
     >
       <%= render_slot(@inner_block, f) %>
@@ -47,8 +47,8 @@ defmodule BrightWeb.UserAuthComponents do
       class={[
         @variant == "center" && "flex flex-col mx-auto",
         @variant == "center-w-full" && "flex flex-col w-full",
-        @variant == "left" && "border-r border-solid border-brightGray-300 flex flex-col mt-5 pr-16 w-2/4",
-        @variant == "right" && "flex flex-col pt-0 pr-0 pl-16 w-2/4",
+        @variant == "left" && "flex flex-col border-0 mt-0 pr-0 w-full lg:border-r lg:border-solidlg: border-brightGray-300 lg:mt-4 lg:pr-16 lg:w-2/4",
+        @variant == "right" && "flex flex-col pt-0 pr-0 pl-0 w-full lg:pl-16 lg:w-2/4",
       ]}
     >
       <%= render_slot(@inner_block) %>
@@ -303,7 +303,7 @@ defmodule BrightWeb.UserAuthComponents do
 
   def or_text(assigns) do
     ~H"""
-    <p class="absolute bg-white border border-solid border-brightGray-300 flex h-20 left-2/4 top-2/4 items-center justify-center -ml-10 -mt-10 rounded-full text-brightGray-500 text-xs w-20 z-2"><%= render_slot(@inner_block) %></p>
+    <p class="bg-white border border-solid border-brightGray-300 flex h-20 items-center justify-center ml-auto mr-auto mt-4 rounded-full static text-brightGray-500 text-xs w-20 z-20 lg:absolute lg:left-2/4 lg:-ml-10 lg:mr-0 lg:-mt-10 lg:top-2/4"><%= render_slot(@inner_block) %></p>
     """
   end
 end

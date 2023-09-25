@@ -1,8 +1,9 @@
-<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()}>
-  <body class="w-[1920px]">
+<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()} user_id={get_user_id(assigns)}>
+  <body class="lg:w-[1920px]">
+    <.google_tag_manager_noscript />
     <div class="flex">
       <.side_menu  href={@conn.request_path} />
-      <main class="bg-background flex flex-col flex-1">
+      <main class="bg-background flex flex-col flex-1 w-full">
         <%= @inner_content %>
       </main>
     </div>

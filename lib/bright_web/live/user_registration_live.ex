@@ -26,7 +26,7 @@ defmodule BrightWeb.UserRegistrationLive do
       <UserAuthComponents.or_text>または</UserAuthComponents.or_text>
 
       <UserAuthComponents.form_section variant="right">
-        <UserAuthComponents.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドルネーム" required/>
+        <UserAuthComponents.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドル名" required/>
 
         <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
 
