@@ -64,11 +64,11 @@ defmodule BrightWeb.ProfileComponents do
 
     ~H"""
     <div class="flex">
-      <img class="bg-contain inline-block h-20 w-20 mr-5 rounded-full" src={@icon_file_path} />
+      <img class="bg-contain inline-block mr-5 h-16 w-16 rounded-full lg:h-20 lg:w-20" src={@icon_file_path} />
       <div class="flex-1">
-        <div class="flex justify-between pb-2 items-end">
+        <div class="flex justify-between pb-4 lg:items-end lg:pb-2">
           <div class="text-2xl font-bold"><%= @user_name %></div>
-          <div class="flex gap-x-3">
+          <div class="flex gap-x-3 mt-2 lg:mt-0">
            <.excellent_person_button :if={@display_excellent_person}/>
            <.anxious_person_button :if={@display_anxious_person} />
            <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>

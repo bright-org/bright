@@ -6,23 +6,23 @@ defmodule BrightWeb.TimelineBarComponents do
   alias Phoenix.LiveView.JS
 
   @layout_size %{
-    "md" => %{height: "h-[70px]", width: "w-[714px]"},
-    "sm" => %{height: "h-[44px]", width: "w-[500px]"}
+    "md" => %{height: "h-[70px]", width: "lg:w-[714px]"},
+    "sm" => %{height: "lg:h-[44px]", width: "lg:w-[500px]"}
   }
 
   @button_outer_size %{
-    "md" => %{height: "h-28", width: "w-28"},
-    "sm" => %{height: "h-[80px]", width: "w-[80px]"}
+    "md" => %{height: "lg:h-28", width: "lg:w-28"},
+    "sm" => %{height: "lg:h-[80px]", width: "lg:w-[80px]"}
   }
 
   @button_size %{
-    "md" => %{height: "h-16", width: "w-16"},
-    "sm" => %{height: "h-[56px]", width: "w-[56px]"}
+    "md" => %{height: "lg:h-16", width: "lg:w-16"},
+    "sm" => %{height: "lg:h-[56px]", width: "lg:w-[56px]"}
   }
 
   @button_selected_size %{
-    "md" => %{height: "h-28", width: "w-28"},
-    "sm" => %{height: "h-[80px]", width: "w-[80px]"}
+    "md" => %{height: "lg:h-28", width: "lg:w-28"},
+    "sm" => %{height: "lg:h-[80px]", width: "lg:w-[80px]"}
   }
 
   @button_selected_font_size %{
@@ -31,8 +31,8 @@ defmodule BrightWeb.TimelineBarComponents do
   }
 
   @button_now_size %{
-    "md" => %{height: "h-10", width: "w-10"},
-    "sm" => %{height: "h-[38px]", width: "w-[38px]"}
+    "md" => %{height: "lg:h-10", width: "lg:w-10"},
+    "sm" => %{height: "lg:h-[38px]", width: "lg:w-[38px]"}
   }
 
   @button_now_position %{
@@ -62,7 +62,7 @@ defmodule BrightWeb.TimelineBarComponents do
   def timeline_bar(assigns) do
     ~H"""
     <div
-      class={["bg-brightGray-50 rounded-full my-5 flex justify-around items-center relative", layout_scale_class(@scale)]}>
+      class={["bg-brightGray-50 rounded-full my-5 flex justify-around items-center relative w-full", layout_scale_class(@scale)]}>
       <.close_button
        :if={@type == "other"}
        id={@id}
@@ -103,7 +103,7 @@ defmodule BrightWeb.TimelineBarComponents do
     %{whole: font_whole, check: font_check} = button_selected_font_class(assigns.scale)
 
     style =
-      "#{button_selected_scale_class(assigns.scale)} rounded-full #{color.bg} border-white border-8 shadow #{color.text} font-bold #{font_whole} flex justify-center items-center flex-col"
+      "#{button_selected_scale_class(assigns.scale)} rounded-full #{color.bg} border-white border-8 shadow #{color.text} font-bold #{font_whole} flex justify-center items-center flex-col h-16 w-16 text-xs"
 
     assigns =
       assigns
@@ -111,13 +111,13 @@ defmodule BrightWeb.TimelineBarComponents do
       |> assign(:font_check, font_check)
 
     ~H"""
-    <div class={["flex justify-center items-center", button_outer_scale_class(@scale)]}>
+    <div class={["flex justify-center items-center h-24 w-24", button_outer_scale_class(@scale)]}>
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: @date})}
         phx-target={@target}
         class={@style}
       >
-        <span class={["material-icons !font-bold", @font_check]}>check</span>
+        <span class={["material-icons !font-bold !text-xl lg:!text-4xl", @font_check]}>check</span>
         <%= @date %>
       </button>
     </div>
@@ -126,11 +126,11 @@ defmodule BrightWeb.TimelineBarComponents do
 
   defp date_button(assigns) do
     ~H"""
-    <div class={["flex justify-center items-center", button_outer_scale_class(@scale)]}>
+    <div class={["flex justify-center items-center h-24 w-24", button_outer_scale_class(@scale)]}>
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: @date})}
         phx-target={@target}
-        class={["rounded-full bg-white text-xs flex justify-center items-center", button_scale_class(@scale), button_style_class(@scale)]}
+        class={["rounded-full bg-white text-xs flex justify-center items-center h-16 w-16", button_scale_class(@scale), button_style_class(@scale)]}
       >
         <%= @date %>
       </button>
@@ -150,13 +150,13 @@ defmodule BrightWeb.TimelineBarComponents do
 
     ~H"""
     <div
-      class={["flex justify-center items-center absolute", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
+      class={["flex justify-center items-center absolute h-24 w-24", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}
-        class={["rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold flex justify-center items-center flex-col", button_selected_scale_class(@scale), @font.whole]}
+        class={["rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold flex justify-center items-center flex-col h-20 w-20 text-sm", button_selected_scale_class(@scale), @font.whole]}
       >
-        <span class={["material-icons !font-bold", @font.check]}>check</span>
+        <span class={["material-icons !font-bold !text-xl lg:!text-4xl", @font.check]}>check</span>
         現在
       </button>
     </div>
@@ -166,7 +166,7 @@ defmodule BrightWeb.TimelineBarComponents do
   defp now_button(assigns) do
     ~H"""
     <div
-      class={["flex justify-center items-center absolute", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
+      class={["flex justify-center items-center absolute  h-24 w-24", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}

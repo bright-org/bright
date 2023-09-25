@@ -1,128 +1,129 @@
-import { Chart } from 'chart.js/auto'
-const scalesBackgroundColor = '#D4F9F7'
-const gridColor = '#FFFFFF44'
-const myselfColorPattern = ['#72EAD9C0', '#3CC0A8C0', '#1DA091C0']
-const otherColorPattern = ['#E4BDE9AA', '#C063CDAA', '#9510B1AA']
-const pastColorPattern = ['#FFFFFF55', '#FFFFFF55', '#FFFFFF55']
-const linkColor = '#0000FF'
-const minValue = -5
+import { Chart } from "chart.js/auto";
+const scalesBackgroundColor = "#D4F9F7";
+const gridColor = "#FFFFFF44";
+const myselfColorPattern = ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"];
+const otherColorPattern = ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"];
+const pastColorPattern = ["#FFFFFF55", "#FFFFFF55", "#FFFFFF55"];
+const linkColor = "#0000FF";
+const minValue = -5;
 
 const getColorPattern = (length, colors) => {
   const pattern = [];
-  if (length < 3) return
+  if (length < 3) return;
 
   // lengthが4の時は先頭から2色の交互
   if (length === 4) {
     for (let i = 0; i < length; i++) {
-      pattern.push(colors[i % 2])
+      pattern.push(colors[i % 2]);
     }
-    return pattern
+    return pattern;
   }
 
   // lengthが3で割り切れる時
   if (length % 3 === 0) {
     for (let i = 0; i < length; i++) {
-      pattern.push(colors[i % colors.length])
+      pattern.push(colors[i % colors.length]);
     }
-    return pattern
+    return pattern;
   }
 
   // lengthが3で割り切れるない時は3色の繰り返しで、最後は先頭から2番目の色を代入
   for (let i = 0; i < length - 1; i++) {
-    pattern.push(colors[i % colors.length])
+    pattern.push(colors[i % colors.length]);
   }
-  pattern.push(colors[1])
-  return pattern
-}
+  pattern.push(colors[1]);
+  return pattern;
+};
 
 const createData = (data) => {
   return {
-    label: '',
+    label: "",
     data: data,
-    borderColor: '#FFFFFF00',
-    backgroundColor: '#FFFFFF00',
+    borderColor: "#FFFFFF00",
+    backgroundColor: "#FFFFFF00",
     borderWidth: 0,
     pointRadius: 0,
-  }
-}
+  };
+};
 
 const fillSurface = (chart, data, index, color) => {
-  const context = chart.ctx
+  const context = chart.ctx;
 
-  const startValue = data[(index % data.length)]
-  const endValue = data[((index + 1) % data.length)]
-  const endIndex = ((index + 1) % data.length)
+  const startValue = data[index % data.length];
+  const endValue = data[(index + 1) % data.length];
+  const endIndex = (index + 1) % data.length;
 
-  const v0 = chart.scales.r.getPointPositionForValue(0, minValue)
-  const v1 = chart.scales.r.getPointPositionForValue(index, startValue)
-  const v2 = chart.scales.r.getPointPositionForValue(endIndex, endValue)
-  context.beginPath()
-  context.strokeStyle = color
-  context.moveTo(v0.x, v0.y)
-  context.lineTo(v1.x, v1.y)
-  context.lineTo(v2.x, v2.y)
-  context.lineTo(v0.x, v0.y)
-  context.fillStyle = color
-  context.fill()
-}
+  const v0 = chart.scales.r.getPointPositionForValue(0, minValue);
+  const v1 = chart.scales.r.getPointPositionForValue(index, startValue);
+  const v2 = chart.scales.r.getPointPositionForValue(endIndex, endValue);
+  context.beginPath();
+  context.strokeStyle = color;
+  context.moveTo(v0.x, v0.y);
+  context.lineTo(v1.x, v1.y);
+  context.lineTo(v2.x, v2.y);
+  context.lineTo(v0.x, v0.y);
+  context.fillStyle = color;
+  context.fill();
+};
 
 const fillSurfaces = (chart, data, color) => {
   for (let i = 0; i < data.length; i++) {
-    fillSurface(chart, data, i, color[i])
+    fillSurface(chart, data, i, color[i]);
   }
-}
+};
 const drawGridline = (chart, value, length) => {
-  const context = chart.ctx
-  const v0 = chart.scales.r.getPointPositionForValue(0, value)
-  context.beginPath()
-  context.moveTo(v0.x, v0.y)
-  context.strokeStyle = gridColor
+  const context = chart.ctx;
+  const v0 = chart.scales.r.getPointPositionForValue(0, value);
+  context.beginPath();
+  context.moveTo(v0.x, v0.y);
+  context.strokeStyle = gridColor;
 
   for (let i = 1; i < length; i++) {
-    chart.scales.r.getPointPositionForValue(i, value)
-    const v1 = chart.scales.r.getPointPositionForValue(i, value)
-    context.lineTo(v1.x, v1.y)
+    chart.scales.r.getPointPositionForValue(i, value);
+    const v1 = chart.scales.r.getPointPositionForValue(i, value);
+    context.lineTo(v1.x, v1.y);
   }
-  context.lineTo(v0.x, v0.y)
-  context.stroke()
-}
+  context.lineTo(v0.x, v0.y);
+  context.stroke();
+};
 
 const drawUnderline = (chart, i) => {
-  const context = chart.ctx
-  const label = chart.scales.r.getPointLabelPosition(i)
-  context.beginPath()
-  context.lineWidth = 1
-  context.strokeStyle = linkColor
-  context.moveTo(label.left, label.bottom)
-  context.lineTo(label.right, label.bottom)
-  context.stroke()
-}
+  const context = chart.ctx;
+  const label = chart.scales.r.getPointLabelPosition(i);
+  context.beginPath();
+  context.lineWidth = 1;
+  context.strokeStyle = linkColor;
+  context.moveTo(label.left, label.bottom);
+  context.lineTo(label.right, label.bottom);
+  context.stroke();
+};
 
 const beforeDatasetsDraw = (chart) => {
-  const context = chart.ctx
-  const colorTheme = chart.canvas.parentNode.dataset.colorTheme
-  const myselfData = chart.data.datasets[0].data
-  const diffData = chart.data.datasets[1] !== undefined ? chart.data.datasets[1].data : []
-  const myselfColor = getColorPattern(myselfData.length, myselfColorPattern)
-  const otherColor = getColorPattern(myselfData.length, otherColorPattern)
-  const pastColor = getColorPattern(myselfData.length, pastColorPattern)
-  const diffColor = colorTheme === 'myself' ? pastColor : otherColor
-  const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink)
+  const context = chart.ctx;
+  const colorTheme = chart.canvas.parentNode.dataset.colorTheme;
+  const myselfData = chart.data.datasets[0].data;
+  const diffData =
+    chart.data.datasets[1] !== undefined ? chart.data.datasets[1].data : [];
+  const myselfColor = getColorPattern(myselfData.length, myselfColorPattern);
+  const otherColor = getColorPattern(myselfData.length, otherColorPattern);
+  const pastColor = getColorPattern(myselfData.length, pastColorPattern);
+  const diffColor = colorTheme === "myself" ? pastColor : otherColor;
+  const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink);
 
-  if (colorTheme === 'myself') {
-    fillSurfaces(chart, myselfData, myselfColor)
-    fillSurfaces(chart, diffData, diffColor)
+  if (colorTheme === "myself") {
+    fillSurfaces(chart, myselfData, myselfColor);
+    fillSurfaces(chart, diffData, diffColor);
   } else {
-    fillSurfaces(chart, diffData, diffColor)
-    fillSurfaces(chart, myselfData, myselfColor)
+    fillSurfaces(chart, diffData, diffColor);
+    fillSurfaces(chart, myselfData, myselfColor);
   }
 
   for (let i = 1; i < 5; i++) {
-    drawGridline(chart, 20 * i, myselfData.length)
+    drawGridline(chart, 20 * i, myselfData.length);
   }
 
   // リンク非表示はこれ以降は処理をしない
-  if (!isLink) return
+  if (!isLink) return;
 
   // α版はskill_upを表示しない
   // const img = new Image()
@@ -141,19 +142,19 @@ const beforeDatasetsDraw = (chart) => {
   // }
 
   for (let i = 0; i < myselfData.length; i++) {
-    drawUnderline(chart, i)
+    drawUnderline(chart, i);
   }
-}
+};
 
 const createChartFromJSON = (labels, datasets, isLink) => {
-  const color = isLink ? linkColor : "#000000"
-  const rightPadding = isLink ? 22 : 0
-  const pointLabelsPadding = isLink ? 25 : 5
-  return ({
-    type: 'radar',
+  const color = isLink ? linkColor : "#000000";
+  const rightPadding = isLink ? 22 : 0;
+  const pointLabelsPadding = isLink ? 25 : 5;
+  return {
+    type: "radar",
     data: {
       labels: labels,
-      datasets: datasets
+      datasets: datasets,
     },
     options: {
       animation: false,
@@ -161,19 +162,19 @@ const createChartFromJSON = (labels, datasets, isLink) => {
       maintainAspectRatio: false,
       layout: {
         padding: {
-          right: rightPadding
-        }
+          right: rightPadding,
+        },
       },
       gridLines: {
-        circular: true
+        circular: true,
       },
       plugins: {
         legend: {
-          display: false
+          display: false,
         },
         tooltip: {
-          enabled: false
-        }
+          enabled: false,
+        },
       },
       scales: {
         r: {
@@ -181,14 +182,14 @@ const createChartFromJSON = (labels, datasets, isLink) => {
           max: 100,
           backgroundColor: scalesBackgroundColor,
           grid: {
-            display: false
+            display: false,
           },
           angleLines: {
-            display: false
+            display: false,
           },
           ticks: {
             stepSize: 20,
-            display: false
+            display: false,
           },
           pointLabels: {
             color: color,
@@ -198,71 +199,81 @@ const createChartFromJSON = (labels, datasets, isLink) => {
         },
       },
     },
-    plugins: [{ beforeDatasetsDraw: beforeDatasetsDraw }]
-  })
-}
+    plugins: [{ beforeDatasetsDraw: beforeDatasetsDraw }],
+  };
+};
 
 export const SkillGem = {
   drawRaderGraph(element) {
-    if (window.myRadar == undefined) window.myRadar = []
-    const dataset = element.dataset
-    const labels = JSON.parse(dataset.labels)
-    const data = JSON.parse(dataset.data)
-    const gemSize = this.getGemSize(dataset.size)
-    const isLink = JSON.parse(dataset.displayLink)
+    if (window.myRadar == undefined) window.myRadar = [];
+    const dataset = element.dataset;
+    const labels = JSON.parse(dataset.labels);
+    const data = JSON.parse(dataset.data);
+    const gemSize = this.getGemSize(dataset.size);
+    const isLink = JSON.parse(dataset.displayLink);
     const datasets = [];
 
-    if (labels.length < 3) return
+    if (labels.length < 3) return;
 
-    datasets.push(createData(data[0]))
+    datasets.push(createData(data[0]));
 
     if (data[1] !== undefined) {
-      datasets.push(createData(data[1]))
+      datasets.push(createData(data[1]));
     }
 
-    this.ctx = document.querySelector('#' + element.id + ' canvas')
-    window.myRadar[element.id] = new Chart(this.ctx, createChartFromJSON(labels, datasets, isLink))
-    window.myRadar[element.id].canvas.parentNode.style.width = gemSize.width
-    window.myRadar[element.id].canvas.parentNode.style.height = gemSize.height
+    this.ctx = document.querySelector("#" + element.id + " canvas");
+    window.myRadar[element.id] = new Chart(
+      this.ctx,
+      createChartFromJSON(labels, datasets, isLink)
+    );
+    window.myRadar[element.id].canvas.parentNode.style.width = gemSize.width;
+    window.myRadar[element.id].canvas.parentNode.style.height = gemSize.height;
 
-
-    this.ctx.addEventListener('click', this.clickEvent)
+    this.ctx.addEventListener("click", this.clickEvent);
   },
   getGemSize(size) {
-    let gemSize = ({width: '535px', height: '450px'})
+    let gemSize = { width: "535px", height: "450px" };
     switch (size) {
-      case 'sm':
-        gemSize =  ({width: '250px', height: '165px'})
+      case "sm":
+        gemSize = { width: "250px", height: "165px" };
         break;
-      case 'md':
-        gemSize = ({width: '450px', height: '400px'})
+      case "sp":
+        gemSize = { width: "350px", height: "300px" };
+        break;
+      case "md":
+        gemSize = { width: "450px", height: "400px" };
         break;
     }
-    return gemSize
+    return gemSize;
   },
   clickEvent(event) {
-    const element = event.target.parentElement
-    const ctx = event.target
-    const dataset = element.dataset
-    const isLink = JSON.parse(dataset.displayLink)
+    const element = event.target.parentElement;
+    const ctx = event.target;
+    const dataset = element.dataset;
+    const isLink = JSON.parse(dataset.displayLink);
     if (!isLink) return;
 
-    if(dataset.links === undefined) return;
-    const links = JSON.parse(dataset.links)
+    if (dataset.links === undefined) return;
+    const links = JSON.parse(dataset.links);
 
     // padding rightで拡張した部分がクリック判定できるようにする
-    const rect = ctx.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
-    const length = window.myRadar[element.id].data.labels.length
+    const rect = ctx.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const length = window.myRadar[element.id].data.labels.length;
 
     // リンクの判定例
     for (let i = 0; i < length; i++) {
-      const label = window.myRadar[element.id].scales.r.getPointLabelPosition(i)
-      const judge = (x >= label.left) && (x <= label.right) && (y >= label.top) && (y <= label.bottom)
+      const label =
+        window.myRadar[element.id].scales.r.getPointLabelPosition(i);
+      const judge =
+        x >= label.left &&
+        x <= label.right &&
+        y >= label.top &&
+        y <= label.bottom;
       if (judge) {
-        location.href = links[i]
-        return
+        location.href = links[i];
+        return;
       }
     }
 
@@ -275,12 +286,12 @@ export const SkillGem = {
     // }
   },
   mounted() {
-    this.drawRaderGraph(this.el)
+    this.drawRaderGraph(this.el);
   },
   updated() {
-    if (window.myRadar[this.el.id] == undefined) return
-    window.myRadar[this.el.id].destroy()
-    this.ctx.removeEventListener('click', this.clickEvent)
-    this.drawRaderGraph(this.el)
-  }
-}
+    if (window.myRadar[this.el.id] == undefined) return;
+    window.myRadar[this.el.id].destroy();
+    this.ctx.removeEventListener("click", this.clickEvent);
+    this.drawRaderGraph(this.el);
+  },
+};
