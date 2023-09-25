@@ -188,13 +188,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
            }
          } = socket
        ) do
-    data =
-      %{
+    data = %{
         myselfSelected: timeline.selected_label,
         labels: timeline.labels,
         future_enabled: !timeline.future_enabled,
         past_enabled: timeline.past_enabled
-      }
+    }
 
     from_date =
       data.labels
