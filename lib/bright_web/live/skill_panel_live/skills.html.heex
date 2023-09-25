@@ -107,3 +107,39 @@
 <.no_skill_panel />
 
 <% end %>
+
+
+<% # クラス開放メッセージ %>
+<div
+  :if={Map.get(@flash, "next_skill_class_open")}
+  id="next_skill_class_open_message"
+  class="absolute bg-designer-dazzle leading-normal px-4 py-2 right-0 rounded text-xs top-32 w-fit z-10">
+  <div>
+    <p>クラス開放おめでとうございます！</p>
+    <p class="mt-2">クラス開放後は「成長を見る・比較する」メニューでスキルレベルを確認できます。</p>
+  </div>
+  <div class="mt-4 w-[400px]">
+    <img src="/images/sample_groth_graph.png" alt="成長グラフ" width="600" height="250">
+  </div>
+  <div class="flex gap-4 justify-center pt-2">
+    <button
+      type="button"
+      class="bg-brightGray-900 border border-brightGray-900 font-bold p-1 rounded text-white w-48"
+      phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_open"}) |> hide("#next_skill_class_open_message")}>
+      この説明は分かりやすい
+    </button>
+    <button
+      type="button"
+      class="bg-white border border-brightGray-900 font-bold p-1 rounded text-brightGray-900 w-24"
+      phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_open"}) |> hide("#next_skill_class_open_message")}>
+      わかりにくい
+    </button>
+  </div>
+  <button
+    class="absolute top-2 right-2"
+    phx-click={JS.push("lv:clear-flash", value: %{key: "next_skill_class_open"}) |> hide("#next_skill_class_open_message")}
+  >
+    <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5 flex justify-center items-center">close</span>
+  </button>
+</div>
+

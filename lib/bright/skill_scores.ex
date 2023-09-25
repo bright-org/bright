@@ -91,7 +91,7 @@ defmodule Bright.SkillScores do
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:update_skill_class_score, changeset)
-    |> Ecto.Multi.run(:level_up_skill_class_score, fn _repo, _ ->
+    |> Ecto.Multi.run(:next_skill_class_score, fn _repo, _ ->
       maybe_skill_up_to_next_skill_class(
         prev_percentage,
         percentage,
@@ -540,7 +540,7 @@ defmodule Bright.SkillScores do
 
       multi
       |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
-      |> Ecto.Multi.run(:"level_up_skill_class_score_#{user_id}", fn _repo, _ ->
+      |> Ecto.Multi.run(:"next_skill_class_score_#{user_id}", fn _repo, _ ->
         maybe_skill_up_to_next_skill_class(prev_percentage, percentage, user_id, skill_class)
       end)
     end)
