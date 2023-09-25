@@ -66,6 +66,7 @@ defmodule BrightWeb.ChartComponents do
   """
   attr :id, :string, required: true
   attr :data, :map, required: true
+  attr :size, :string, default: "md"
 
   def growth_graph(assigns) do
     assigns =
@@ -79,7 +80,7 @@ defmodule BrightWeb.ChartComponents do
       phx-hook="GrowthGraph"
       phx-update="ignore"
       data-data={@data}
-      style="max-height: 357px; max-width: 714px"
+      data-size={@size}
     >
       <canvas class="w-full"></canvas>
     </div>

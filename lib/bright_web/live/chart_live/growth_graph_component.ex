@@ -43,11 +43,16 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             <span class="material-icons text-white !text-4xl">arrow_left</span>
           </button>
         </div>
-        <.growth_graph data={@data} id="growth-graph"/>
-        <div class="ml-1 flex flex-col relative text-xs text-brightGray-500 text-bold w-16 lg:ml-5 lg:text-xl lg:w-20">
-          <p class="py-5">ベテラン</p>
-          <p class="py-20">平均</p>
-          <p class="py-6">見習い</p>
+        <div class="hidden lg:block">
+          <.growth_graph data={@data} id="growth-graph"/>
+        </div>
+        <div class="lg:hidden">
+          <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
+        </div>
+        <div class="ml-1 flex flex-col relative text-xs text-brightGray-500 text-bold w-20 lg:ml-5 lg:text-xl lg:w-20">
+          <p class="py-4 lg:py-5">ベテラン</p>
+          <p class="py-3 lg:py-20">平均</p>
+          <p class="py-2 lg:py-6">見習い</p>
           <button
             :if={@timeline.future_enabled}
             phx-click={JS.push("shift_timeline_future", value: %{id: "myself" })}
@@ -110,7 +115,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           target={@myself}
           type="other"
           dates={["2022.12", "2023.3", "2023.6", "2023.9", "2023.12"]}
-          selected_date="2022.12"
+          selected_date="2023.12"
         />
         <div class="flex justify-center items-center ml-2"></div>
       </div>
@@ -183,12 +188,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
            }
          } = socket
        ) do
-    data = %{
-      myselfSelected: timeline.selected_label,
-      labels: timeline.labels,
-      future_enabled: !timeline.future_enabled,
-      past_enabled: timeline.past_enabled
-    }
+    data =
+      %{
+        myselfSelected: timeline.selected_label,
+        labels: timeline.labels,
+        future_enabled: !timeline.future_enabled,
+        past_enabled: timeline.past_enabled
+      }
 
     from_date =
       data.labels
