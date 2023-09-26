@@ -46,7 +46,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponentTest do
       lv |> form("#email_form", user: %{email: new_email}) |> render_submit()
 
       assert_update_email_mail_sent(new_email)
-      assert lv |> has_element?("#modal_flash", "本人確認メールを送信しましたご確認ください")
+      assert lv |> has_element?("#modal_flash", "本人確認メールを送信しました")
       lv |> refute_redirected(~p"/mypage")
     end
 
