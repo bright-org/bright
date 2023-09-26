@@ -12,6 +12,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
+  alias Bright.UserJobProfiles
   alias BrightWeb.PathHelper
 
   @impl true
@@ -174,5 +175,11 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     else
       socket
     end
+  end
+
+  defp user_job_searching?(user) do
+    user.id
+    |> UserJobProfiles.get_user_job_profile_by_user_id!()
+    |> Map.get(:job_searching)
   end
 end

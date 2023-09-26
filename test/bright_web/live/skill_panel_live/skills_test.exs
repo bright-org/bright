@@ -4,6 +4,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   import Phoenix.LiveViewTest
   import Bright.Factory
 
+  alias Bright.UserJobProfiles
+
   defp setup_skills(%{user: user, score: score}) do
     skill_panel = insert(:skill_panel)
     insert(:user_skill_panel, user: user, skill_panel: skill_panel)
@@ -841,7 +843,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       submit_form(show_live)
-      assert has_element?(show_live, "#first_time_submit_message")
+      assert has_element?(show_live, "#first_submit_in_overall_message")
     end
 
     @tag score: :low
@@ -858,7 +860,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       submit_form(show_live)
-      refute has_element?(show_live, "#first_time_submit_message")
+      refute has_element?(show_live, "#first_submit_in_overall_message")
     end
 
     @tag score: :low
@@ -896,6 +898,65 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       submit_form(show_live)
       refute has_element?(show_live, "#next_skill_class_opened_message")
+    end
+
+    @tag score: nil
+    test "shows job searching message", %{conn: conn, user: user, skill_panel: skill_panel} do
+      # job_searching: false に設定
+      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
+      |> UserJobProfiles.update_user_job_profile(%{job_searching: false})
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      start_edit(show_live)
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="low"]})
+      |> render_click()
+
+      submit_form(show_live)
+      assert has_element?(show_live, "#job_searching_message")
+    end
+
+    @tag score: :low
+    test "not shows job searching message when job_searching is already true", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
+      # job_searching: true に設定
+      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
+      |> UserJobProfiles.update_user_job_profile(%{job_searching: true})
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      start_edit(show_live)
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="low"]})
+      |> render_click()
+
+      submit_form(show_live)
+      refute has_element?(show_live, "#job_searching_message")
+    end
+
+    @tag score: :low
+    test "not shows job searching message when score is already existing", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
+      # job_searching: false に設定
+      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
+      |> UserJobProfiles.update_user_job_profile(%{job_searching: false})
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      start_edit(show_live)
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="low"]})
+      |> render_click()
+
+      submit_form(show_live)
+      refute has_element?(show_live, "job_searching_message")
     end
   end
 
