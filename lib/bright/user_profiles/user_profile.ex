@@ -49,7 +49,7 @@ defmodule Bright.UserProfiles.UserProfile do
       :github_url
     ])
     |> validate_required([:user_id])
-    |> validate_length(:title, max: 255)
+    |> validate_length(:title, max: 30)
     |> validate_length(:detail, max: 255)
     |> validate_length(:icon_file_path, max: 255)
     |> validate_length(:twitter_url, max: 255)

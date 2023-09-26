@@ -1241,7 +1241,7 @@ defmodule Bright.AccountsTest do
 
     test "validates user_profile", %{user: user} do
       user_profile_attrs = %{
-        title: String.duplicate("a", 256),
+        title: String.duplicate("a", 31),
         detail: String.duplicate("a", 256),
         icon_file_path: String.duplicate("a", 256),
         twitter_url: String.duplicate("a", 256),
@@ -1258,7 +1258,7 @@ defmodule Bright.AccountsTest do
 
       assert %{
                user_profile: %{
-                 title: ["should be at most 255 character(s)"],
+                 title: ["should be at most 30 character(s)"],
                  detail: ["should be at most 255 character(s)"],
                  icon_file_path: ["should be at most 255 character(s)"],
                  twitter_url: [
