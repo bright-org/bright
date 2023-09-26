@@ -52,7 +52,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         />
 
         <% # 未来方向ボタン %>
-        <div class="flex justify-center items-center ml-2">
+        <div class="order-3 flex justify-center items-center ml-2">
           <%= if @timeline.future_enabled do %>
             <button
               class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
@@ -77,6 +77,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div
       id="compare-indivividual-dropdown"
+      class="mt-4 lg:mt-0"
       phx-hook="Dropdown"
       data-dropdown-offset-skidding="307"
       data-dropdown-placement="bottom"
