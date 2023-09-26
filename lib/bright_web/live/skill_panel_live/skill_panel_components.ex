@@ -355,6 +355,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <.link
             :if={@display_skill_edit_button}
             patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+            id="link-skills-form"
             class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-48 hover:opacity-50">
             <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
             スキル入力する

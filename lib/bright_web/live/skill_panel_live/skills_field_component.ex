@@ -35,7 +35,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          path={@path}
          query={@query}
          display_user={@display_user}
-         editable={@editable}
          current_skill_dict={@current_skill_dict}
          current_skill_score_dict={@current_skill_score_dict}
          myself={@myself}
@@ -220,7 +219,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign(num_skills: [])
     |> assign(compared_users_stats: %{})
     |> assign(compared_user_dict: %{})
-    |> assign(editable: false)
   end
 
   defp assign_on_timeline(socket, :now) do
@@ -234,7 +232,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign_counter()
     |> assign_compared_user_dict_from_users()
     |> assign_compared_users_info()
-    |> assign(:editable, socket.assigns.me)
   end
 
   defp assign_on_timeline(socket, :future) do
@@ -242,7 +239,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     socket
     |> assign(:tense, :future)
     |> assign_on_timeline(:now)
-    |> assign(editable: false)
   end
 
   defp assign_on_timeline(socket, :past) do
@@ -254,7 +250,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign_counter()
     |> assign_compared_user_dict_from_users()
     |> assign_compared_users_info()
-    |> assign(:editable, false)
   end
 
   defp assign_skill_score_dict(%{assigns: %{historical_skill_class: nil}} = socket, _past) do
