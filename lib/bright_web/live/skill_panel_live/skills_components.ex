@@ -6,7 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compares(assigns) do
     ~H"""
-    <div class="flex mt-4 items-center">
+    <div class="flex flex-wrap mt-4 items-center lg:flex-nowrap">
       <.compare_timeline myself={@myself} timeline={@timeline} />
       <div class="flex gap-x-4">
         <.compare_individual current_user={@current_user} myself={@myself} />
@@ -21,10 +21,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compare_timeline(assigns) do
     ~H"""
-    <div class="w-[566px] mr-10">
-      <div class="flex">
+    <div class="max-w-[566px] w-full lg:mr-8 lg:w-[566px]">
+      <div class="flex flex-wrap justify-center lg:flex-nowrap lg:justify-start">
         <% # 過去方向ボタン %>
-        <div class="flex justify-center items-center ml-1 mr-3">
+        <div class="order-2 flex justify-center items-center ml-1 mr-3 lg:order-1">
           <%= if @timeline.past_enabled do %>
             <button
               class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
@@ -189,14 +189,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skills_table(assigns) do
     ~H"""
-    <div class="skills-table-field h-[50vh] w-full overflow-auto scroll-pt-[76px] mt-4">
+    <div class="skills-table-field h-[70vh] w-full overflow-auto scroll-pt-[76px] mt-4 lg:h-[50vh]">
       <table class="skill-panel-table min-w-full border-t border-l border-brightGray-200">
         <thead class="sticky top-0 bg-white">
           <tr>
             <td colspan="4" class="!border-t !border-l-white !border-t-white !border-l">
             </td>
             <td class="!border-l !border-brightGray-200">
-              <div class="flex justify-center items-center min-w-[150px]">
+              <div class="flex justify-center items-center min-w-[80px] lg:min-w-[150px]">
                 <p class="inline-flex flex-1 justify-center">
                   <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
                 </p>
@@ -231,20 +231,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
             </td>
           </tr>
           <tr>
-            <th class="bg-base text-white text-center min-w-[200px]">
+            <th class="bg-base text-white text-center lg:min-w-[200px">
               知識エリア
             </th>
-            <th class="bg-base text-white text-center min-w-[200px]">
+            <th class="bg-base text-white text-center lg:min-w-[200px">
               カテゴリー
             </th>
-            <th class="bg-base text-white text-center min-w-[420px]">
+            <th class="bg-base text-white text-center lg:min-w-[420px]">
               スキル
             </th>
             <th class="bg-base text-white text-center">
               合計
             </th>
             <td>
-              <div class="flex justify-center gap-x-2">
+              <div class="flex justify-center flex-wrap gap-x-2">
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
                   <span class="score-high-percentage"><%= floor calc_percentage(@counter.high, @num_skills) %>％</span>
