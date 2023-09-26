@@ -200,19 +200,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 <p class="inline-flex flex-1 justify-center">
                   <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
                 </p>
-
-                <.link
-                  :if={@editable}
-                  id="link-skills-form"
-                  patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
-                >
-                  <button
-                    type="button"
-                    class="bg-brightGreen-300 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-                  >
-                    <span class="material-icons-outlined text-white hover:text-brightGray-900 !text-sm">edit</span>
-                  </button>
-                </.link>
               </div>
             </td>
             <td :for={user <- @compared_users} class="!border-l !border-brightGray-200">
