@@ -37,7 +37,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponentTest do
              )
     end
 
-    test "submits email form", %{conn: conn} do
+    test "submits email form", %{conn: conn, user: user} do
       {:ok, lv, _html} = live(conn, ~p"/mypage")
 
       lv |> element("a", "メール・パスワード") |> render_click()
@@ -47,6 +47,10 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponentTest do
 
       assert_update_email_mail_sent(new_email)
       assert lv |> has_element?("#modal_flash", "本人確認メールを送信しました")
+
+      # NOTE: Reset input form after submit
+      assert lv |> has_element?(~s{#email_form input[name="user[email]"][value="#{user.email}"]})
+
       lv |> refute_redirected(~p"/mypage")
     end
 
