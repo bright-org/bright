@@ -3,6 +3,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   import BrightWeb.BrightModalComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
+  import BrightWeb.SkillPanelLive.SkillsComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
 
