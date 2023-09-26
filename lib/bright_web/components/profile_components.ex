@@ -77,8 +77,8 @@ defmodule BrightWeb.ProfileComponents do
            <.profile_button :if={@display_recruitment_coordination}>採用の調整</.profile_button>
           </div>
         </div>
-        <div class="flex justify-between pt-3 border-brightGray-100 border-t">
-          <div class="text-2xl max-w-[600px] break-all"><%= @title %></div>
+        <div class="flex flex-col lg:flex-row lg:justify-between pt-3 border-brightGray-100 border-t">
+          <div class="text-xl mb-4 max-w-[600px] break-all"><%= @title %></div>
           <.sns :if={@display_sns} twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
         </div>
       </div>

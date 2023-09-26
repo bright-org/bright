@@ -321,7 +321,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def profile_area(assigns) do
     # TODO: 自分に戻す、に対応が必要
     ~H"""
-      <div class="flex flex-col justify-between lg:flex-row">
+      <div class="flex flex-col lg:justify-between lg:flex-row">
         <div class="pt-2 w-full lg:pt-6 lg:w-[850px]">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
           <.profile
@@ -339,10 +339,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             is_anonymous={@anonymous}
           />
         </div>
-        <div class="mr-auto flex ml-2 lg:ml-7">
+        <div class="flex h-[160px] ml-2 lg:ml-7">
           <div class="w-20 lg:mt-5">
             <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
           </div>
+
           <.profile_score_stats
             skill_class_score={@skill_class_score}
             counter={@counter}
@@ -393,7 +394,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <p class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1">
         <.profile_skill_class_level level={@skill_class_score.level} />
       </p>
-      <div class="flex flex-col w-24 pl-6">
+      <div class="flex flex-col w-20 mr-2 pl-6">
         <div class="min-w-[4em] flex items-center">
           <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
           <%= calc_percentage(@counter.high, @num_skills) %>％

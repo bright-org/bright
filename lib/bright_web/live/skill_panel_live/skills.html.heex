@@ -7,7 +7,7 @@
   root="panels"
 />
 
-<div class="mx-10 relative">
+<div class="mx-4 lg:mx-10 relative">
   <div class="flex justify-between">
     <% # TODO: α版後にifと仮divブロックを除去して表示 %>
     <.toggle_link :if={false} skill_panel={@skill_panel} active="graph" />
@@ -95,6 +95,7 @@
   id="skills-form-modal"
   show
   style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+  style_of_modal_flame="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-md bg-white px-4 py-8 lg:px-14 shadow-lg ring-1 transition"
   cancel_button_confirm="入力画面を閉じますか？入力内容は保存されません。"
   on_cancel={JS.patch(PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}")}>
 
