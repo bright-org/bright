@@ -211,10 +211,10 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
           &url(~p"/users/confirm_email/#{&1}")
         )
 
-        send_update_after_save("本人確認メールを送信しましたご確認ください")
+        send_update_after_save("本人確認メールを送信しました")
 
-        applied_user
-        |> Accounts.change_user_email(user_params)
+        user
+        |> Accounts.change_user_email()
         |> then(&{:noreply, socket |> assign(:email_form, to_form(&1))})
 
       {:error, changeset} ->
@@ -253,10 +253,10 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
           &url(~p"/users/confirm_sub_email/#{&1}")
         )
 
-        send_update_after_save("サブメールアドレス追加確認メールを送信しましたご確認ください")
+        send_update_after_save("サブメールアドレス追加確認メールを送信しました")
 
         user
-        |> Accounts.change_new_user_sub_email(user_sub_email_params)
+        |> Accounts.change_new_user_sub_email()
         |> then(&{:noreply, socket |> assign(:sub_email_form, to_form(&1))})
 
       {:error, changeset} ->
