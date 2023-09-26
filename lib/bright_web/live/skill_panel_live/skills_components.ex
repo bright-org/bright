@@ -77,7 +77,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div
       id="compare-indivividual-dropdown"
-      class="mt-4 lg:mt-0"
+      class="mt-4 lg:mt-0 hidden lg:block"
       phx-hook="Dropdown"
       data-dropdown-offset-skidding="307"
       data-dropdown-placement="bottom"
