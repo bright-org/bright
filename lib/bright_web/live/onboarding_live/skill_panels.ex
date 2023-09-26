@@ -19,11 +19,11 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
           <%= for {career_field, skill_panels} <- @career_fields do %>
             <% skill_panels = Enum.uniq(skill_panels)%>
             <section
-              class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-[1040px]"}
+              class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-full lg:w-[1040px]"}
               :if={Enum.count(skill_panels) > 0}
             >
               <p class="font-bold"><%= career_field.name_ja %>向けのスキル</p>
-              <ul class="flex flex-wrap mt-2 gap-4">
+              <ul class="flex flex-wrap flex-col lg:flex-row mt-2 gap-4">
                 <!-- スキル ここから -->
                 <%= for skill_panel <- skill_panels do %>
                   <li>
@@ -31,7 +31,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                       navigate={"/#{@current_path}/#{@route}/#{@id}/skill_panels/#{skill_panel.id}"}
                       class={[
                         "bg-#{career_field.name_en}-dark border-#{career_field.name_en}-dark",
-                        "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-60 hover:opacity-50"
+                        "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-full lg:w-60 hover:opacity-50"
                         ]}
                       >
                       <%= skill_panel.name %>
@@ -45,10 +45,10 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         <!-- スキルセクション ここまで -->
       </div>
 
-      <p class="mt-8 w-[1040px]">
+      <p class="mt-8 w-full lg:w-[1040px]">
         <.link
           navigate={@return_to}
-          class=" self-center bg-white block border border-solid border-black font-bold mt-4 mx-auto px-4 py-2 rounded select-none text-black text-center w-40 hover:opacity-50"
+          class="self-start lg:self-center bg-white block border border-solid border-black font-bold mt-4 mx-auto px-4 py-2 rounded select-none text-black text-center w-full lg:w-40 hover:opacity-50"
         >
           戻る
         </.link>

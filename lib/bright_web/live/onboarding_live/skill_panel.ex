@@ -17,9 +17,9 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
       <div class="mt-8">
         <!-- スキルセクション　ここから -->
         <section>
-          <h2 class="font-bold text-xl"><%= "#{@skill_panel.name} に含まれるスキル" %></h2>
+          <h2 class="font-bold text-base lg:text-xl"><%= "#{@skill_panel.name} に含まれるスキル" %></h2>
           <!-- スキルWebアプリ開発セクション　ここから -->
-          <section class="mt-1 px-4 py-4 w-[1040px]">
+          <section class="mt-1 lg:px-4 py-4 w-full lg:w-[1040px]">
             <ul>
               <%= for skill_unit <- @skill_units do %>
               <li>
@@ -35,10 +35,10 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
         <!-- スキルセクション　ここまで -->
       </div>
 
-      <p class="flex justify-center mt-8 px-4 w-[1040px]">
+      <p class="flex flex-col lg:flex-row gap-y-4 lg:gap-y-0 justify-center mt-8 lg:px-4 w-full lg:w-[1040px]">
         <button
           phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "input"})}
-          class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold px-4 py-2 rounded select-none text-white w-65 hover:opacity-50"
+          class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold px-4 py-2 rounded select-none text-white w-full lg:w-64 hover:opacity-50"
         >
           このスキルでスキル入力に進む
         </button>
@@ -46,7 +46,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
         <!-- αは落とす
         <button
           phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "skillup"})}
-          class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold ml-4  px-4 py-2 rounded select-none text-white w-65 hover:opacity-50"
+          class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold ml-4  px-4 py-2 rounded select-none text-white w-full lg:w-64 hover:opacity-50"
         >
           このスキルでスキルアップに進む
         </button>
@@ -54,7 +54,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
 
         <.link
           navigate={@return_to}
-          class="bg-white block border border-solid border-black font-bold ml-16 px-4 py-2 rounded select-none text-black text-center w-40 hover:opacity-50"
+          class="bg-white block border border-solid border-black font-bold lg:ml-16 px-4 py-2 rounded select-none text-black text-center w-full lg:w-40 hover:opacity-50"
         >
           戻る
         </.link>

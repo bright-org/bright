@@ -1,4 +1,4 @@
-<section class="bg-white p-8 min-h-[720px] min-w-[1300px] relative rounded-lg">
+<section class="bg-white p-2 pb-20 relative rounded-lg lg:p-8 lg:pb-8 lg:min-h-[720px] lg:min-w-[1300px]">
   <h1 class="font-bold text-3xl">
     <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:align-[-5px] before:w-9">
       スキルを選ぶ
@@ -11,7 +11,7 @@
       <div class="bg-brightGray-50 rounded w-full">
         <p
           class={
-            "bg-brightGray-900 cursor-pointer font-bold px-4 py-2 relative rounded select-none text-white hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[''] before:h-3 before:right-4 before:top-1/2 before:w-3 " <>
+            "bg-brightGray-900 cursor-pointer font-bold pl-2 pr-12 py-2 relative rounded select-none text-white text-xs hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 lg:text-sm " <>
             if @open_want_todo, do: open(), else: close()
           }
           phx-click={toggle("want_todo_panel")}
@@ -31,7 +31,7 @@
       <div class="bg-brightGray-50 rounded w-full">
         <p
           class={
-            "bg-brightGray-900 cursor-pointer font-bold px-4 py-2 relative rounded select-none text-white hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[''] before:h-3 before:right-4 before:top-1/2 before:w-3 " <>
+            "bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-xs hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 lg:text-sm " <>
             if @open_wants_job, do: open(), else: close()
           }
           phx-click={toggle("wants_job_panel")}
