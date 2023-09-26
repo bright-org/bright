@@ -259,6 +259,20 @@ defmodule Bright.SkillScoresTest do
                SkillScores.get_skill_score!(skill_score.id).score
     end
 
+    test "get_user_entered_skill_score_at_least_one? returns true", %{
+      user: user,
+      skill: skill
+    } do
+      insert(:skill_score, user: user, skill: skill)
+      assert true == SkillScores.get_user_entered_skill_score_at_least_one?(user)
+    end
+
+    test "get_user_entered_skill_score_at_least_one? returns false", %{
+      user: user
+    } do
+      assert false == SkillScores.get_user_entered_skill_score_at_least_one?(user)
+    end
+
     test "inserts by insert_or_update_skill_scores", %{user: user, skill: skill} do
       skill_score =
         build(:init_skill_score, user: user, skill: skill, skill_id: skill.id, score: :low)

@@ -35,6 +35,24 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     }
   end
 
+  # 共通処理: 入力開始
+  defp start_edit(show_live) do
+    show_live
+    |> element("#link-skills-form")
+    |> render_click()
+
+    assert has_element?(show_live, "#skills-form")
+  end
+
+  # 共通処理: 入力完了
+  defp submit_form(show_live) do
+    show_live
+    |> element(~s{button[phx-click="submit"]})
+    |> render_click()
+
+    refute has_element?(show_live, "#skills-form")
+  end
+
   describe "Show" do
     setup [:register_and_log_in_user]
 
@@ -251,24 +269,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
   describe "Input skill score item score" do
     setup [:register_and_log_in_user, :setup_skills]
-
-    # 共通処理: 入力開始
-    def start_edit(show_live) do
-      show_live
-      |> element("#link-skills-form")
-      |> render_click()
-
-      assert has_element?(show_live, "#skills-form")
-    end
-
-    # 共通処理: 入力完了
-    def submit_form(show_live) do
-      show_live
-      |> element(~s{button[phx-click="submit"]})
-      |> render_click()
-
-      refute has_element?(show_live, "#skills-form")
-    end
 
     @tag score: :low
     test "update scores", %{conn: conn, skill_panel: skill_panel} do
@@ -807,6 +807,95 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert show_live
              |> element("#unit-3")
              |> render() =~ h_skill_unit_2.name
+    end
+  end
+
+  describe "Messages" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    @tag score: nil
+    test "shows first skills edit message", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      assert has_element?(show_live, "#first_skills_edit_message")
+
+      # 入力後に表示されないことの確認
+      start_edit(show_live)
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="middle"]})
+      |> render_click()
+
+      submit_form(show_live)
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      refute has_element?(show_live, "#first_skills_edit_message")
+    end
+
+    @tag score: nil
+    test "shows first time submit message", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      start_edit(show_live)
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="low"]})
+      |> render_click()
+
+      submit_form(show_live)
+      assert has_element?(show_live, "#first_time_submit_message")
+    end
+
+    @tag score: :low
+    test "not shows first time submit message when score is already existing", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      start_edit(show_live)
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="low"]})
+      |> render_click()
+
+      submit_form(show_live)
+      refute has_element?(show_live, "#first_time_submit_message")
+    end
+
+    @tag score: :low
+    test "shows next skill class opened message", %{conn: conn, skill_panel: skill_panel} do
+      insert(:skill_class, skill_panel: skill_panel, class: 2)
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      start_edit(show_live)
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="high"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{#skill-2-form label[phx-value-score="high"]})
+      |> render_click()
+
+      submit_form(show_live)
+      assert has_element?(show_live, "#next_skill_class_opened_message")
+    end
+
+    @tag score: :low
+    test "not shows next skill class opened message when not opened", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      insert(:skill_class, skill_panel: skill_panel, class: 2)
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      start_edit(show_live)
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="middle"]})
+      |> render_click()
+
+      submit_form(show_live)
+      refute has_element?(show_live, "#next_skill_class_opened_message")
     end
   end
 

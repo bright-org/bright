@@ -147,7 +147,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
      socket
      |> assign(assigns)
      |> assign_skill_units()
-     |> assign_row_dict()}
+     |> assign_row_dict()
+     |> assign_first_time()}
   end
 
   @impl true
@@ -159,12 +160,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     } = socket.assigns
 
     target_skill_scores = skill_score_dict |> Map.values() |> Enum.filter(& &1.changed)
-    {:ok, _} = SkillScores.insert_or_update_skill_scores(target_skill_scores, user)
+    {:ok, updated_result} = SkillScores.insert_or_update_skill_scores(target_skill_scores, user)
 
     # スキルクラスのレベル変更時に保有スキルカードの表示変更を通知
     maybe_update_skill_card_component(skill_class_score)
 
-    {:noreply, push_patch(socket, to: socket.assigns.patch)}
+    {:noreply,
+     socket
+     |> put_flash_next_skill_class_opened(updated_result, skill_class_score.id)
+     |> put_flash_first_time_submit()
+     |> push_patch(to: socket.assigns.patch)}
   end
 
   def handle_event("change", %{"score" => score, "skill_id" => skill_id}, socket) do
@@ -241,6 +246,17 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     assign(socket, :skill_score_dict, skill_score_dict)
   end
 
+  defp assign_first_time(socket) do
+    # スキルを初めて入力したときのメッセージ表示用のフラグ管理
+    # 無駄な処理を省くため、簡易判定後に正確な判定処理を実行
+    %{user: user, skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
+    skill_scores = Map.values(skill_score_dict)
+    maybe_first_time = skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil))
+    first_time = maybe_first_time && !SkillScores.get_user_entered_skill_score_at_least_one?(user)
+
+    assign(socket, :first_time, first_time)
+  end
+
   defp maybe_update_skill_card_component(skill_class_score) do
     prev_level = skill_class_score.level
     skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
@@ -249,6 +265,22 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     if prev_level != new_level do
       send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
     end
+  end
+
+  # スキルクラス解放時のみメッセージ表示のためflashを設定
+  defp put_flash_next_skill_class_opened(socket, updated_result, skill_class_score_id) do
+    get_in(updated_result, [
+      :skill_class_scores,
+      :"skill_class_score_#{skill_class_score_id}",
+      :next_skill_class_score
+    ])
+    |> if(do: put_flash(socket, :next_skill_class_opened, true), else: socket)
+  end
+
+  # スキルを初めて入力したときのみメッセージ表示のためflashを設定
+  defp put_flash_first_time_submit(socket) do
+    socket.assigns.first_time
+    |> if(do: put_flash(socket, :first_time_submit, true), else: socket)
   end
 
   defp push_scroll_to(socket) do
