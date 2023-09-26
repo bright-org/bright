@@ -232,10 +232,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
             </td>
           </tr>
           <tr>
-            <th class="bg-base text-white text-center lg:min-w-[200px">
+            <th class="bg-base text-white text-center lg:min-w-[200px]">
               知識エリア
             </th>
-            <th class="bg-base text-white text-center lg:min-w-[200px">
+            <th class="bg-base text-white text-center lg:min-w-[200px]">
               カテゴリー
             </th>
             <th class="bg-base text-white text-center lg:min-w-[420px]">
