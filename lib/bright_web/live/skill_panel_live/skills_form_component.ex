@@ -25,14 +25,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   def render(assigns) do
     ~H"""
     <div id={@id} class="flex justify-center items-center">
-      <section class="text-sm w-[390px]">
+      <section class="text-sm w-full lg:w-[390px]">
         <h2 class="font-bold mt-4 mb-2 text-lg truncate">
           <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
             <%= @skill_panel.name %>
           </span>
         </h2>
 
-        <div id={"#{@id}-scroll"} class="h-[644px] overflow-y-auto" phx-hook="ScrollOccupancy">
+        <div id={"#{@id}-scroll"} class="h-[400px] lg:h-[644px] overflow-y-auto" phx-hook="ScrollOccupancy">
           <%= for skill_unit <- @skill_units do %>
             <b class="block font-bold mt-6 text-xl">
               <%= skill_unit.name %>
@@ -44,7 +44,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
                   <%= skill_category.name %>
                 </b>
 
-                <table class="mt-2 w-[350px]">
+                <table class="mt-2 w-full lg:w-[350px]">
                   <%= for skill <- skill_category.skills do %>
                     <% row = Map.get(@row_dict, skill.id) %>
                     <% focus = row == @focus_row %>
