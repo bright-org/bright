@@ -168,7 +168,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     {:noreply,
      socket
      |> put_flash_next_skill_class_opened(updated_result, skill_class_score.id)
-     |> put_flash_first_time_submit()
+     |> put_flash_first_submit_in_overall()
+     |> put_flash_first_submit_in_skill_panel()
      |> push_patch(to: socket.assigns.patch)}
   end
 
@@ -248,13 +249,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
   defp assign_first_time(socket) do
     # スキルを初めて入力したときのメッセージ表示用のフラグ管理
-    # 無駄な処理を省くため、簡易判定後に正確な判定処理を実行
     %{user: user, skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
     skill_scores = Map.values(skill_score_dict)
-    maybe_first_time = skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil))
-    first_time = maybe_first_time && !SkillScores.get_user_entered_skill_score_at_least_one?(user)
+    first_time_in_skill_panel = skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil))
 
-    assign(socket, :first_time, first_time)
+    first_time_overall =
+      first_time_in_skill_panel && !SkillScores.get_user_entered_skill_score_at_least_one?(user)
+
+    socket
+    |> assign(:first_time_in_overall, first_time_overall)
+    |> assign(:first_time_in_skill_panel, first_time_in_skill_panel)
   end
 
   defp maybe_update_skill_card_component(skill_class_score) do
@@ -267,7 +271,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     end
   end
 
-  # スキルクラス解放時のみメッセージ表示のためflashを設定
+  # スキルクラス解放時のメッセージ表示のためflashを設定
   defp put_flash_next_skill_class_opened(socket, updated_result, skill_class_score_id) do
     get_in(updated_result, [
       :skill_class_scores,
@@ -277,10 +281,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     |> if(do: put_flash(socket, :next_skill_class_opened, true), else: socket)
   end
 
-  # スキルを初めて入力したときのみメッセージ表示のためflashを設定
-  defp put_flash_first_time_submit(socket) do
-    socket.assigns.first_time
-    |> if(do: put_flash(socket, :first_time_submit, true), else: socket)
+  # スキル初回入力（全体初）後に表示するメッセージのためのflashを設定
+  defp put_flash_first_submit_in_overall(socket) do
+    socket.assigns.first_time_in_overall
+    |> if(do: put_flash(socket, :first_submit_in_overall, true), else: socket)
+  end
+
+  # スキル初回入力（本スキルパネル初）後に表示するメッセージのためのflashを設定
+  defp put_flash_first_submit_in_skill_panel(socket) do
+    socket.assigns.first_time_in_skill_panel
+    |> if(do: put_flash(socket, :first_submit_in_skill_panel, true), else: socket)
   end
 
   defp push_scroll_to(socket) do
