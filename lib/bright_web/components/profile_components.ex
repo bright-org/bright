@@ -78,7 +78,7 @@ defmodule BrightWeb.ProfileComponents do
           </div>
         </div>
         <div class="flex justify-between pt-3 border-brightGray-100 border-t">
-          <div class="text-2xl max-w-[600px] break-all"><%= @title %></div>
+          <div class="text-xl max-w-[600px] break-all"><%= @title %></div>
           <.sns :if={@display_sns} twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
         </div>
       </div>
