@@ -21,20 +21,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compare_timeline(assigns) do
     ~H"""
-    <div class="max-w-[566px] w-full lg:mr-8 lg:w-[566px]">
+    <div class="max-w-[566px] w-full mb-8 lg:mb-0 lg:mr-8 lg:w-[566px]">
       <div class="flex flex-wrap justify-center lg:flex-nowrap lg:justify-start">
         <% # 過去方向ボタン %>
-        <div class="order-2 flex justify-center items-center ml-1 mr-3 lg:order-1">
+        <div class="order-2 flex justify-center items-center ml-1 mr-2 lg:order-1">
           <%= if @timeline.past_enabled do %>
             <button
-              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative"
               phx-click="shift_timeline_past"
               phx-target={@myself}
             >
               <span class="material-icons text-white !text-3xl">arrow_left</span>
             </button>
           <% else %>
-            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative">
               <span class="material-icons text-white !text-3xl">arrow_left</span>
             </button>
           <% end %>
@@ -55,7 +55,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <div class="order-3 flex justify-center items-center ml-2">
           <%= if @timeline.future_enabled do %>
             <button
-              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative"
               phx-click="shift_timeline_future"
               phx-target={@myself}
               disabled={!@timeline.future_enabled}
@@ -63,7 +63,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <span class="material-icons text-white !text-3xl">arrow_right</span>
             </button>
           <% else %>
-            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative">
               <span class="material-icons text-white !text-3xl">arrow_right</span>
             </button>
           <% end %>
@@ -313,6 +313,63 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           </tr>
         <% end %>
       </table>
+    </div>
+    """
+  end
+
+  def skills_table_sp(assigns) do
+    ~H"""
+    <div class="flex justify-center items-center mb-20">
+      <section class="text-sm w-full">
+        <h2 class="font-bold mt-4 mb-2 text-lg truncate">
+          <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
+            <%= @skill_panel.name %>
+          </span>
+        </h2>
+        <div>
+          <%= for skill_unit <- @skill_units do %>
+            <b class="block font-bold mt-6 text-xl">
+              <%= skill_unit.name %>
+            </b>
+
+            <%= for skill_category <- skill_unit.skill_categories do %>
+              <div class="category-top">
+                <b class="block font-bold mt-2 text-base">
+                  <%= skill_category.name %>
+                </b>
+
+                <table class="mt-2 w-full">
+                  <%= for skill <- skill_category.skills do %>
+                    <% skill_score = @skill_score_dict[skill.id] || %{score: :low} %>
+                    <% current_skill = Map.get(@current_skill_dict, skill.trace_id, %{}) %>
+                    <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
+
+                    <tr
+                      id={"skill-#{skill.id}"}
+                      class={["bg-brightGray-50", "border border-brightGray-200"]}
+                    >
+                      <th class="flex justify-between align-middle w-[250px] mb-2 min-h-8 p-2 text-left">
+                        <%= skill.name %>
+                        <div class="flex justify-between items-center gap-x-2">
+                          <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                        </div>
+                      </th>
+
+                      <td class="align-middle border-l border-brightGray-200 p-2">
+                        <div class="flex justify-center gap-x-1 px-2">
+                          <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </section>
     </div>
     """
   end

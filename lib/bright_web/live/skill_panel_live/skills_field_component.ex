@@ -23,24 +23,40 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     <div id={@id}>
       <BrightCoreComponents.flash_group flash={@inner_flash} />
       <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
-      <.skills_table
-         table_structure={@table_structure}
-         skill_panel={@skill_panel}
-         skill_score_dict={@skill_score_dict}
-         counter={@counter}
-         num_skills={@num_skills}
-         compared_users={@compared_users}
-         compared_users_stats={@compared_users_stats}
-         compared_user_dict={@compared_user_dict}
-         path={@path}
-         query={@query}
-         display_user={@display_user}
-         current_skill_dict={@current_skill_dict}
-         current_skill_score_dict={@current_skill_score_dict}
-         myself={@myself}
-         me={@me}
-         anonymous={@anonymous}
-      />
+      <div class="hidden lg:block">
+        <.skills_table
+          table_structure={@table_structure}
+          skill_panel={@skill_panel}
+          skill_score_dict={@skill_score_dict}
+          counter={@counter}
+          num_skills={@num_skills}
+          compared_users={@compared_users}
+          compared_users_stats={@compared_users_stats}
+          compared_user_dict={@compared_user_dict}
+          path={@path}
+          query={@query}
+          display_user={@display_user}
+          current_skill_dict={@current_skill_dict}
+          current_skill_score_dict={@current_skill_score_dict}
+          myself={@myself}
+          me={@me}
+          anonymous={@anonymous}
+        />
+      </div>
+      <div class="lg:hidden">
+        <.skills_table_sp
+          skill_panel={@skill_panel}
+          skill_score_dict={@skill_score_dict}
+          skill_class={@skill_class}
+          skill_units={@skill_units}
+          skill_class_score={@skill_class_score}
+          query={@query}
+          current_skill_dict={@current_skill_dict}
+          current_skill_score_dict={@current_skill_score_dict}
+          myself={@myself}
+          me={@me}
+        />
+      </div>
     </div>
     """
   end
