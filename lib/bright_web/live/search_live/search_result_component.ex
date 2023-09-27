@@ -123,8 +123,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
         %{"tab_name" => tab_name},
         %{assigns: %{skill_params: skill_params}} = socket
       ) do
-    selected_skill_panel =
-      Enum.find(skill_params, &("#{&1.skill_panel}_#{&1.class}" == tab_name))
+    selected_skill_panel = Enum.find(skill_params, &("#{&1.skill_panel}_#{&1.class}" == tab_name))
 
     socket
     |> assign(:selected_tab, tab_name)
