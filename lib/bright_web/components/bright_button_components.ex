@@ -192,7 +192,7 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       id="user_menu_dropmenu"
-      class="mr-8 hover:opacity-70 lg:ml-4 lg:mr-0"
+      class="fixed top-2 right-0 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:mr-0 lg:relative"
       phx-click={JS.toggle(to: "#personal_setting_modal")}
     >
       <img
