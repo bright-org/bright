@@ -389,6 +389,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       start_edit(show_live)
 
+      assert has_element?(show_live, "#doughnut_area_in_skills_form", "見習い")
+      assert has_element?(show_live, "#doughnut_area_in_skills_form .score-high-percentage", "0％")
+
+      assert has_element?(
+               show_live,
+               "#doughnut_area_in_skills_form .score-middle-percentage",
+               "0％"
+             )
+
       show_live
       |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "1"})
@@ -400,6 +409,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       show_live
       |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "2"})
+
+      assert has_element?(show_live, "#doughnut_area_in_skills_form", "ベテラン")
+
+      assert has_element?(
+               show_live,
+               "#doughnut_area_in_skills_form .score-high-percentage",
+               "66％"
+             )
+
+      assert has_element?(
+               show_live,
+               "#doughnut_area_in_skills_form .score-middle-percentage",
+               "33％"
+             )
 
       submit_form(show_live)
 
@@ -422,6 +445,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       show_live
       |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
       |> render_keydown(%{"key" => "3"})
+
+      assert has_element?(show_live, "#doughnut_area_in_skills_form", "見習い")
+      assert has_element?(show_live, "#doughnut_area_in_skills_form .score-high-percentage", "0％")
+
+      assert has_element?(
+               show_live,
+               "#doughnut_area_in_skills_form .score-middle-percentage",
+               "0％"
+             )
 
       submit_form(show_live)
 
