@@ -84,7 +84,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
     socket
     |> assign(assigns)
     |> assign(:tabs, gen_tabs_tuple(skill_params))
-    |> assign(:selected_tab, selected_skill_panel.skill_panel)
+    |> assign(:selected_tab, "#{selected_skill_panel.skill_panel}_#{selected_skill_panel.class}")
     |> assign(:selected_skill_panel, selected_skill_panel)
     |> assign_skill_panels(selected_skill_panel)
     |> then(&{:ok, &1})
@@ -123,7 +123,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
         %{"tab_name" => tab_name},
         %{assigns: %{skill_params: skill_params}} = socket
       ) do
-    selected_skill_panel = Enum.find(skill_params, &(&1.skill_panel == tab_name))
+    selected_skill_panel = Enum.find(skill_params, &("#{&1.skill_panel}_#{&1.class}" == tab_name))
 
     socket
     |> assign(:selected_tab, tab_name)
@@ -133,10 +133,12 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
   end
 
   defp gen_tabs_tuple(skill_params) when length(skill_params) == 1,
-    do: Enum.map(skill_params, &{&1.skill_panel, &1.skill_panel_name}) |> Enum.concat([{"", ""}])
+    do:
+      Enum.map(skill_params, &{"#{&1.skill_panel}_#{&1.class}", &1.skill_panel_name})
+      |> Enum.concat([{"", ""}])
 
   defp gen_tabs_tuple(skill_params),
-    do: Enum.map(skill_params, &{&1.skill_panel, &1.skill_panel_name})
+    do: Enum.map(skill_params, &{"#{&1.skill_panel}_#{&1.class}", &1.skill_panel_name})
 
   defp get_skill_gem_data(skill_gem), do: [skill_gem |> Enum.map(fn x -> x.percentage end)]
   defp get_skill_gem_labels(skill_gem), do: skill_gem |> Enum.map(fn x -> x.name end)
