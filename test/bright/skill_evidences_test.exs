@@ -96,7 +96,7 @@ defmodule Bright.SkillEvidencesTest do
     alias Bright.SkillEvidences.SkillEvidencePost
 
     setup do
-      user = insert(:user)
+      user = insert(:user) |> with_user_profile()
       skill_category = insert(:skill_category, skill_unit: build(:skill_unit), position: 1)
       skill = insert(:skill, skill_category: skill_category, position: 1)
       skill_evidence = insert(:skill_evidence, user: user, skill: skill, progress: :wip)
@@ -107,7 +107,12 @@ defmodule Bright.SkillEvidencesTest do
         content: "some content"
       }
 
-      %{user: user, skill_evidence: skill_evidence, valid_attrs: valid_attrs}
+      %{
+        user: user,
+        skill_category: skill_category,
+        skill_evidence: skill_evidence,
+        valid_attrs: valid_attrs
+      }
     end
 
     test "list_skill_evidence_posts/0 returns all skill_evidence_posts", %{
@@ -115,6 +120,35 @@ defmodule Bright.SkillEvidencesTest do
     } do
       skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
       assert SkillEvidences.list_skill_evidence_posts() == [skill_evidence_post]
+    end
+
+    test "list_skill_evidence_posts_from_skill_evidence/1 returns skill_evidence_posts", %{
+      user: user,
+      skill_category: skill_category,
+      skill_evidence: skill_evidence
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+
+      skill_evidence_post_1 =
+        insert(:skill_evidence_post, user: user, skill_evidence: skill_evidence)
+
+      skill_evidence_post_2 =
+        insert(:skill_evidence_post, user: user_2, skill_evidence: skill_evidence)
+
+      # ダミーとして別スキルの投稿を作成
+      skill_dummy = insert(:skill, skill_category: skill_category, position: 2)
+
+      skill_evidence_dummy =
+        insert(:skill_evidence, user: user, skill: skill_dummy, progress: :wip)
+
+      insert(:skill_evidence_post, user: user, skill_evidence: skill_evidence_dummy)
+
+      hits = SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
+
+      assert Enum.map(hits, & &1.id) ==
+               Enum.map([skill_evidence_post_1, skill_evidence_post_2], & &1.id)
+
+      assert Enum.all?(hits, & &1.user.user_profile)
     end
 
     test "get_skill_evidence_post!/1 returns the skill_evidence_post with given id", %{
