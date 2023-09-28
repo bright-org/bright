@@ -55,16 +55,16 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
             <.inputs_for :let={ff} field={f[:user_profile]}>
               <label for={@uploads.icon.ref} class={[
                 "absolute bg-20 block cursor-pointer hover:opacity-70 h-20 left-1/2 -ml-10 -mt-10 top-1/2 w-20",
-                Enum.empty?(@uploads.icon.entries) && is_nil(Phoenix.HTML.Form.input_value(ff, :icon_file_path)) && "bg-bgAddAvatar"
+                ((!uploaded?(@uploads) || upload_error?(@uploads)) && !has_icon?(ff)) && "bg-bgAddAvatar"
               ]}>
                 <.live_file_input upload={@uploads.icon} class="hidden" />
                 <img
                   src={UserProfiles.icon_url(Phoenix.HTML.Form.input_value(ff, :icon_file_path))}
-                  :if={Enum.empty?(@uploads.icon.entries) && !is_nil(Phoenix.HTML.Form.input_value(ff, :icon_file_path))}
+                  :if={(!uploaded?(@uploads) || upload_error?(@uploads)) && has_icon?(ff)}
                   class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full"
                 />
                 <%= for entry <- @uploads.icon.entries do %>
-                  <.live_img_preview entry={entry} class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full" />
+                  <.live_img_preview :if={!upload_error?(@uploads, entry)} entry={entry} class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full" />
                 <% end %>
               </label>
             </.inputs_for>
@@ -191,6 +191,28 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
     socket.assigns.user
     |> Bright.Repo.preload(:user_profile)
     |> Accounts.update_user_with_user_profile(user_params, uploaded_icon_file_path)
+  end
+
+  defp uploaded?(uploads) do
+    uploads.icon.entries
+    |> Enum.empty?()
+    |> Kernel.not()
+  end
+
+  defp has_icon?(ff) do
+    ff
+    |> Phoenix.HTML.Form.input_value(:icon_file_path)
+    |> is_nil()
+    |> Kernel.not()
+  end
+
+  defp upload_error?(uploads) do
+    uploads.icon.entries
+    |> Enum.any?(&upload_error?(uploads, &1))
+  end
+
+  defp upload_error?(uploads, entry) do
+    uploads.icon |> upload_errors(entry) |> length() > 0
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do

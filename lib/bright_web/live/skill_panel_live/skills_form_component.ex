@@ -1,8 +1,17 @@
 defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   use BrightWeb, :live_component
 
+  import BrightWeb.ChartComponents, only: [doughnut_graph: 1]
+
+  import BrightWeb.SkillPanelLive.SkillPanelComponents,
+    only: [profile_skill_class_level: 1, score_mark_class: 2, skill_score_percentages: 2]
+
+  import BrightWeb.SkillPanelLive.SkillPanelHelper,
+    only: [calc_percentage: 2]
+
   alias Bright.SkillScores
   alias BrightWeb.CardLive.SkillCardComponent
+  alias BrightWeb.SkillPanelLive.SkillPanelHelper
 
   # キーボード入力 1,2,3 と対応するスコア
   @shortcut_key_score %{
@@ -31,6 +40,28 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
             <%= @skill_panel.name %>
           </span>
         </h2>
+
+        <% # ドーナツグラフとレベル表記 %>
+        <div id="doughnut_area_in_skills_form" class="flex justify-center items-center mt-2 mb-4">
+          <.doughnut_graph id="doughnut_graph_in_skills_form" data={skill_score_percentages(@counter, @num_skills)} />
+          <div class="flex justify-center items-center ml-2">
+            <div class="flex flex-wrap">
+              <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
+                <.profile_skill_class_level level={get_level(@counter, @num_skills)} />
+              </p>
+              <div class="flex flex-col pl-6">
+                <div class="flex items-center">
+                  <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
+                  <span class="score-high-percentage"><%= calc_percentage(@counter.high, @num_skills) %>％</span>
+                </div>
+                <div class="flex items-center mt-1">
+                  <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
+                  <span class="score-middle-percentage"><%= calc_percentage(@counter.middle, @num_skills) %>％</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div id={"#{@id}-scroll"} class="h-[400px] lg:h-[644px] overflow-y-auto" phx-hook="ScrollOccupancy">
           <%= for skill_unit <- @skill_units do %>
@@ -74,7 +105,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
                           >
                             <input
                               type="radio"
-                              name={"score-#{row}-1"}
+                              name={"score-#{row}"}
                               checked={skill_score.score == :high}
                               class="hidden peer"
                             />
@@ -90,7 +121,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
                           >
                             <input
                               type="radio"
-                              name={"score-#{row}-1"}
+                              name={"score-#{row}"}
                               checked={skill_score.score == :middle}
                               class="hidden peer"
                             />
@@ -106,7 +137,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
                           >
                             <input
                               type="radio"
-                              name={"score-#{row}-1"}
+                              name={"score-#{row}"}
                               checked={skill_score.score == :low}
                               class="hidden peer"
                             />
@@ -148,6 +179,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
      |> assign(assigns)
      |> assign_skill_units()
      |> assign_row_dict()
+     |> assign_counter()
      |> assign_first_time()}
   end
 
@@ -237,6 +269,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     |> assign(:num_skills, Enum.count(dict))
   end
 
+  defp assign_counter(socket) do
+    counter = SkillPanelHelper.count_skill_scores(socket.assigns.skill_score_dict)
+    assign(socket, :counter, counter)
+  end
+
   defp update_by_score_change(socket, skill_score, score) do
     # 表示スコア更新
     # 永続化は全体一括のため、ここでは実施してない
@@ -244,7 +281,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
       socket.assigns.skill_score_dict
       |> Map.put(skill_score.skill_id, %{skill_score | score: score, changed: true})
 
-    assign(socket, :skill_score_dict, skill_score_dict)
+    socket
+    |> assign(:skill_score_dict, skill_score_dict)
+    |> assign_counter()
   end
 
   defp assign_first_time(socket) do
@@ -303,4 +342,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   end
 
   defp score_mark_class, do: @score_mark_class
+
+  defp get_level(counter, num_skills) do
+    percentage = calc_percentage(counter.high, num_skills)
+    SkillScores.get_level(percentage)
+  end
 end
