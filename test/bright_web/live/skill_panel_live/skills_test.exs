@@ -850,7 +850,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     @tag score: nil
     test "shows first skills edit message", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      assert has_element?(show_live, "#first_skills_edit_message")
+      assert has_element?(show_live, "#help-enter-skills")
 
       # 入力後に表示されないことの確認
       start_edit(show_live)
@@ -861,7 +861,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       submit_form(show_live)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      refute has_element?(show_live, "#first_skills_edit_message")
+      refute has_element?(show_live, "#help-enter-skills")
     end
 
     @tag score: nil
@@ -875,7 +875,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       submit_form(show_live)
-      assert has_element?(show_live, "#first_submit_in_overall_message")
+      assert has_element?(show_live, "#help-first-skill-submit-in-overall")
     end
 
     @tag score: :low
@@ -892,7 +892,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       submit_form(show_live)
-      refute has_element?(show_live, "#first_submit_in_overall_message")
+      refute has_element?(show_live, "#help-first-skill-submit-in-overall")
     end
 
     @tag score: :low
@@ -911,7 +911,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       submit_form(show_live)
-      assert has_element?(show_live, "#next_skill_class_opened_message")
+      assert has_element?(show_live, "#help-next-class-opened")
     end
 
     @tag score: :low
@@ -929,7 +929,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       submit_form(show_live)
-      refute has_element?(show_live, "#next_skill_class_opened_message")
+      refute has_element?(show_live, "#help-next-class-opened")
     end
 
     @tag score: nil

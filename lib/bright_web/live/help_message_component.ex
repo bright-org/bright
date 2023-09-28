@@ -24,12 +24,14 @@ defmodule BrightWeb.HelpMessageComponent do
 
       <div class="flex gap-4 justify-center pt-2">
         <button
+          id={"good-#{@id}"}
           type="button"
           class="bg-brightGray-900 border border-brightGray-900 font-bold p-1 rounded text-white w-48"
           phx-click={JS.push("good", target: @myself) |> hide("##{@id}")}>
           この説明は分かりやすい
         </button>
         <button
+          id={"bad-#{@id}"}
           type="button"
           class="bg-white border border-brightGray-900 font-bold p-1 rounded text-brightGray-900 w-24"
           phx-click={JS.push("bad", target: @myself) |> hide("##{@id}")}>
