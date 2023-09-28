@@ -28,6 +28,44 @@ defmodule BrightWeb.SnsComponents do
     """
   end
 
+  @doc """
+  フローティングシェアボタン
+  Facebook, Twitter(X) のシェアボタンを画面右上に固定表示する
+
+  ## Examples
+      <.floating_share_buttons
+        text="成長グラフ"
+        full_path="/graphs"
+      />
+  """
+  attr :text, :string, default: ""
+  attr :full_path, :string, required: true
+
+  def floating_share_buttons(assigns) do
+    assigns = Map.put(assigns, :url, "https://app.bright-fun.org#{assigns.full_path}")
+
+    ~H"""
+      <div class="fixed gap-x-2 flex p-2 top-16 right-8">
+        <a
+          class="p-1 border"
+          href={"https://www.facebook.com/share.php?#{URI.encode_query(%{u: @url})}"}
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Facebook
+        </a>
+        <a
+          class="p-1 border"
+          href={"https://twitter.com/share?#{URI.encode_query(%{text: @text, url: @url})}"}
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Twitter(X)
+        </a>
+      </div>
+    """
+  end
+
   attr :url, :string
   attr :sns_type, :string, values: ~w(twitter github facebook)
 
