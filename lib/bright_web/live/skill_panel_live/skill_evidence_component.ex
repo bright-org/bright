@@ -34,7 +34,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
             </div>
 
             <div class="w-[370px] flex justify-between gap-x-4 pb-4">
-              <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all grow"] %>
+              <div class="grow">
+                <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all first:mt-0 mt-3"] %>
+              </div>
               <div class="cursor-pointer flex-none" phx-click="delete" phx-target={@myself} phx-value-id={post.id}>
                 <.icon name="hero-x-mark-solid" />
               </div>
