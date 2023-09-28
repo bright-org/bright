@@ -81,7 +81,7 @@ defmodule BrightWeb.OnboardingLive.Index do
     do: "before:-mt-2 before:rotate-225"
 
   defp open(),
-    do: "rounded-bl-none rounded-br-none before:-mt-1 before:rotate-45"
+    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 
   defp page_title(<<"/onboardings", _rest::binary>>), do: "オンボーディング"
   defp page_title(<<"/more_skills", _rest::binary>>), do: "スキルを選ぶ"
