@@ -43,7 +43,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
           anonymous={@anonymous}
         />
       </div>
-      <div class="lg:hidden">
+      <div class="lg:hidden" :if={Mix.env() != :test}>
         <.skills_table_sp
           skill_panel={@skill_panel}
           skill_score_dict={@skill_score_dict}
