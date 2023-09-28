@@ -17,7 +17,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
         <div
           id="skill_evidence_posts"
-          class="h-[356px] lg:h-[600px] overflow-y-auto"
+          class="max-h-[356px] lg:max-h-[600px] overflow-y-auto"
           phx-hook="ScrollOccupancy"
           phx-update="stream"
         >
@@ -27,8 +27,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
             class="flex flex-wrap my-2"
           >
             <div class="w-[50px] flex justify-center flex-col items-center">
-              <img class="inline-block h-10 w-10 rounded-full" src={icon_file_path(post.user, @anonymous)} />
-              <hr class="w-[1px] bg-brightGray-200 h-full" />
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src={icon_file_path(post.user, @anonymous)} />
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2" />
             </div>
 
             <div class="w-[370px] flex justify-between gap-x-4 pb-4">
