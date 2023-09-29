@@ -331,15 +331,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
             <b class="block font-bold mt-6 text-xl">
               <%= skill_unit.name %>
             </b>
-
-            <%= for skill_category <- skill_unit.skill_categories do %>
+            <%= for skill_category <- get_current_or_historical(skill_unit, "skill_categories") do %>
               <div class="category-top">
                 <b class="block font-bold mt-2 text-base">
                   <%= skill_category.name %>
                 </b>
 
                 <table class="mt-2 w-full">
-                  <%= for skill <- skill_category.skills do %>
+                  <%= for skill <- get_current_or_historical(skill_category, "skills") do %>
                     <% skill_score = @skill_score_dict[skill.id] || %{score: :low} %>
                     <% current_skill = Map.get(@current_skill_dict, skill.trace_id, %{}) %>
                     <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
@@ -372,6 +371,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       </section>
     </div>
     """
+  end
+
+  defp get_current_or_historical(list, attr) do
+    Map.get(list, String.to_atom(attr), Map.get(list, String.to_atom("historical_#{attr}"), []))
   end
 
   def skill_evidence_link(%{skill_score: nil} = assigns), do: ~H""
