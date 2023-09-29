@@ -7,6 +7,7 @@ defmodule Bright.SkillEvidences do
   alias Bright.Repo
 
   alias Bright.SkillEvidences.{SkillEvidence, SkillEvidencePost}
+  alias Bright.Utils.GoogleCloud.Storage
 
   @doc """
   Returns the list of skill_evidences.
@@ -171,6 +172,13 @@ defmodule Bright.SkillEvidences do
     |> Repo.insert()
   end
 
+  # image_names: 添付画像名リスト
+  def create_skill_evidence_post(skill_evidence, user, attrs, image_names) do
+    image_paths = Enum.map(image_names, & build_image_path/1)
+    attrs = Map.put(attrs, "image_paths", image_paths)
+    create_skill_evidence_post(skill_evidence, user, attrs)
+  end
+
   @doc """
   Deletes a skill_evidence_post.
 
@@ -184,7 +192,23 @@ defmodule Bright.SkillEvidences do
 
   """
   def delete_skill_evidence_post(%SkillEvidencePost{} = skill_evidence_post) do
-    Repo.delete(skill_evidence_post)
+    # 削除は添付画像を含む。先に存在確認を実施
+    image_paths =
+      (skill_evidence_post.image_paths || [])
+      |> Enum.filter(fn storage_path ->
+        case Storage.get(storage_path) do
+          {:ok, _} -> true
+          _ -> false
+        end
+      end)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete(:delete, skill_evidence_post)
+    |> Ecto.Multi.run(:delete_images, fn _repo, _data ->
+      Enum.each(image_paths, & Storage.delete!/1)
+      {:ok, :deleted}
+    end)
+    |> Repo.transaction()
   end
 
   @doc """
@@ -198,5 +222,10 @@ defmodule Bright.SkillEvidences do
   """
   def change_skill_evidence_post(%SkillEvidencePost{} = skill_evidence_post, attrs \\ %{}) do
     SkillEvidencePost.changeset(skill_evidence_post, attrs)
+  end
+
+  # Build image_path by file_name.
+  defp build_image_path(file_name) do
+    "skill_evidence_posts/image_#{Ecto.UUID.generate()}" <> Path.extname(file_name)
   end
 end

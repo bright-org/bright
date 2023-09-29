@@ -1,6 +1,7 @@
 defmodule Bright.TestStorage do
   @moduledoc """
   GCS API for test
+  TODO: getをStorageに生やしたため削除可能になる見込み
   """
 
   def get(storage_path) do
