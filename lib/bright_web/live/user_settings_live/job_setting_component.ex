@@ -57,9 +57,10 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 <span class="pt-1 w-24">希望する</span>
                 <span class="pb-1 w-24">形態</span>
               </div>
-              <div class="py-4 flex">
+              <div class="py-4 flex flex-col gap-y-2 lg:flex-row">
               <BrightCore.input
                 field={@form[:wish_employed]}
+                container_class="ml-4 lg:ml-0"
                 type="checkbox"
                 label="就職"
               />
@@ -83,7 +84,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               />
               </div>
             </div>
-            <div class="pl-24 pb-4 flex">
+            <div class="pl-24 pb-4">
               <span class="">※求職優先の方は、すべて選択するとスカウト検索がヒットしやすくなります</span>
             </div>
           </div>
@@ -94,7 +95,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               <span class="pb-1 w-24">勤務体系</span>
             </div>
             <div>
-            <div class="flex items-center">
+              <div class="flex flex-col lg:flex-row lg:items-center">
                 <BrightCore.input
                   name={@form[:work_style].name}
                   checked={@form[:work_style].value == "both"}
@@ -104,7 +105,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                   label="どちらでも可"
                 />
               </div>
-              <div class="flex items-center">
+              <div class="flex flex-col gap-y-2 lg:flex-row lg:items-center">
                 <BrightCore.input
                   name={@form[:work_style].name}
                   checked={@form[:work_style].value == "office"}
@@ -139,7 +140,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 />
               </div>
 
-              <div class="flex items-center mt-2">
+              <div class="flex flex-col gap-y-2 lg:flex-row lg:items-center mt-2">
                 <BrightCore.input
                   name={@form[:work_style].name}
                   checked={@form[:work_style].value == "remote"}

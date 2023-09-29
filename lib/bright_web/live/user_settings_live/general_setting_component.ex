@@ -11,8 +11,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
     ~H"""
     <li class="block">
       <.form id="general_setting_form" :let={f} for={@form} phx-target={@myself} phx-submit="save" phx-change="validate">
-        <div class="border-b border-brightGray-200 flex flex-wrap text-left">
-          <div class="w-1/2">
+        <div class="border-b border-brightGray-200 flex flex-col lg:flex-row lg:flex-wrap text-left">
+          <div class="w-full lg:w-1/2">
             <label class="border-b border-brightGray-200 flex items-center py-4">
               <span class="w-32">ハンドル名</span>
               <BrightCore.input field={f[:name]} type="text" size="20" input_class="px-2 py-1 rounded w-60" />
@@ -46,7 +46,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
             </label>
           </div>
 
-          <div class="relative py-4 w-1/2">
+          <div class="w-full flex lg:relative py-4 lg:w-1/2">
             <p>アイコン</p>
             <.error :for={err <- upload_errors(@uploads.icon)}><%= upload_error_to_string(err) %></.error>
             <%= for entry <- @uploads.icon.entries do %>
@@ -54,7 +54,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
             <% end %>
             <.inputs_for :let={ff} field={f[:user_profile]}>
               <label for={@uploads.icon.ref} class={[
-                "absolute bg-20 block cursor-pointer hover:opacity-70 h-20 left-1/2 -ml-10 -mt-10 top-1/2 w-20",
+                "lg:absolute bg-20 block cursor-pointer hover:opacity-70 h-20 lg:left-1/2 ml-16 lg:-ml-10 lg:-mt-10 lg:top-1/2 w-20",
                 ((!uploaded?(@uploads) || upload_error?(@uploads)) && !has_icon?(ff)) && "bg-bgAddAvatar"
               ]}>
                 <.live_file_input upload={@uploads.icon} class="hidden" />
