@@ -342,7 +342,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                       id={"skill-sp-#{skill.id}"}
                       class={["bg-brightGray-50", "border border-brightGray-200"]}
                     >
-                      <th class="flex justify-between align-middle w-[250px] mb-2 min-h-8 p-2 text-left">
+                      <th class="flex justify-between align-middle w-full mb-2 min-h-8 p-2 text-left">
                         <%= skill.name %>
                         <div class="flex justify-between items-center gap-x-2">
                           <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
@@ -352,7 +352,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                       </th>
 
                       <td class="align-middle border-l border-brightGray-200 p-2">
-                        <div class="flex justify-center gap-x-1 px-2">
+                        <div class="flex justify-center gap-x-1">
                           <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
                         </div>
                       </td>

@@ -14,7 +14,8 @@
     <div> </div>
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
-  <div class="bg-white shadow px-6 relative z-2 pb-10 pt-3">
+  <div class="bg-white shadow relative z-2 pb-10 pt-3">
+    <div class="px-6">
     <.profile_area
       display_user={@display_user}
       anonymous={@anonymous}
@@ -25,7 +26,7 @@
       skill_panel={@skill_panel}
       query={@query}
     />
-
+    </div>
     <.live_component
       id="skills-field"
       module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
