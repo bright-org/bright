@@ -37,7 +37,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           <button
             :if={!@timeline.past_enabled}
             phx-target={@myself}
-            class="w-11 h-9 bg-brightGray-300 flex justify-center items-center rounded bottom-1 absolute"
+            class="w-8 h-6 bg-brightGray-900 flex justify-center items-center rounded absolute -bottom-1 lg:bottom-1 lg:w-11 lg:h-9"
             disabled={true}
           >
             <span class="material-icons text-white !text-4xl">arrow_left</span>
