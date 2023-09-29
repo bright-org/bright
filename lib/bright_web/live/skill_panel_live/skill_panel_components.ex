@@ -33,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def navigations(assigns) do
     ~H"""
-    <div class="flex flex-col gap-x-4 mt-4 px-4 pb-2 lg:flex-row lg:px-10 lg:pb-3">
+    <div class="flex flex-col gap-x-4 mt-2 px-4 pb-2 lg:flex-row lg:mt-4 lg:px-10 lg:pb-3">
       <.target_switch current_user={@current_user} />
       <.skill_panel_switch
         display_user={@display_user}
@@ -47,7 +47,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def skill_panel_switch(assigns) do
     ~H"""
-    <p class="leading-tight mt-4 mb-2 lg:mt-0 lg:mb-0">対象スキルの<br class="hidden lg:inline">切り替え</p>
+    <p class="leading-tight my-2 lg:mt-0 lg:mb-0">対象スキルの<br class="hidden lg:inline">切り替え</p>
     <.mega_menu_button
       id="skill_panel_menu"
       label="スキル"

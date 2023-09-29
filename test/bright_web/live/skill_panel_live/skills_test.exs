@@ -745,7 +745,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
         )
 
       h_skill_unit =
-        insert(:historical_skill_unit, locked_date: locked_date, trace_id: skill_unit.trace_id)
+        insert(:historical_skill_unit,
+          locked_date: locked_date,
+          trace_id: skill_unit.trace_id
+        )
 
       insert(:historical_skill_class_unit,
         historical_skill_class: h_skill_class,

@@ -36,6 +36,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_score_dict()
+     |> assign_skill_units()
      |> assign_counter()
      |> apply_action(socket.assigns.live_action, params)
      |> touch_user_skill_panel()}
@@ -101,6 +102,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     skill = SkillUnits.get_skill!(skill_id)
 
     socket |> assign(skill: skill)
+  end
+
+  defp assign_skill_units(socket) do
+    skill_units =
+      socket.assigns.skill_class
+      |> Bright.Repo.preload(skill_units: [skill_categories: [:skills]])
+      |> Map.get(:skill_units)
+
+    assign(socket, :skill_units, skill_units)
   end
 
   defp assign_skill_evidence(socket) do
