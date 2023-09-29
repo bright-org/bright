@@ -49,7 +49,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
           skill_score_dict={@skill_score_dict}
           skill_class={@skill_class}
           skill_units={@skill_units}
-          skill_class_score={@skill_class_score}
           query={@query}
           current_skill_dict={@current_skill_dict}
           current_skill_score_dict={@current_skill_score_dict}
