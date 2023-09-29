@@ -321,11 +321,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div class="flex justify-center items-center mb-20">
       <section class="text-sm w-full">
-        <h2 class="font-bold mt-4 mb-2 text-lg truncate">
-          <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
-            <%= @skill_panel.name %>
-          </span>
-        </h2>
         <div>
           <%= for skill_unit <- @skill_units do %>
             <b class="block font-bold mt-6 text-xl">
