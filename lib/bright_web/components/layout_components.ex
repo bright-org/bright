@@ -87,7 +87,12 @@ defmodule BrightWeb.LayoutComponents do
 
     ~H"""
     <div class="sticky top-0 z-10 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
-      <h4 class="font-bold mt-2 text-sm lg:mt-0 lg:text-xl"><%= @page_title %><%= @page_sub_title %></h4>
+      <h4 class="lg:hidden font-bold mt-2 text-sm before:bg-bgGem before:bg-6 before:bg-left before:bg-no-repeat before:content-[''] before:h-6 before:inline-block before:align-[-5px] before:w-6">
+        <%= @page_title %><%= @page_sub_title %>
+      </h4>
+      <h4 class="hidden lg:block font-bold lg:mt-0 lg:text-xl">
+        <%= @page_title %><%= @page_sub_title %>
+      </h4>
       <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
         <div class="flex justify-between">
           <.plan_upgrade_button  />
