@@ -340,7 +340,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
                     <tr
                       id={"skill-sp-#{skill.id}"}
-                      class={["bg-brightGray-50", "border border-brightGray-200"]}
+                      class={["border border-brightGray-200"]}
                     >
                       <th class="flex justify-between align-middle w-full mb-2 min-h-8 p-2 text-left">
                         <%= skill.name %>
