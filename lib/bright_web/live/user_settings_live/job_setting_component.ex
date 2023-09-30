@@ -100,7 +100,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                   name={@form[:work_style].name}
                   checked={@form[:work_style].value == "both"}
                   value="both"
-                  label_class="w-20 text-left"
+                  label_class="w-full lg:w-20 text-left"
                   type="radio"
                   label="どちらでも可"
                 />
