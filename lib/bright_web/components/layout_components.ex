@@ -87,7 +87,12 @@ defmodule BrightWeb.LayoutComponents do
 
     ~H"""
     <div class="sticky top-0 z-10 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
-      <h4 class="font-bold mt-2 text-sm lg:mt-0 lg:text-xl"><%= @page_title %><%= @page_sub_title %></h4>
+      <h4 class="lg:hidden font-bold mt-2 text-sm before:bg-bgGem before:bg-6 before:bg-left before:bg-no-repeat before:content-[''] before:h-6 before:inline-block before:align-[-5px] before:w-6">
+        <%= @page_title %><%= @page_sub_title %>
+      </h4>
+      <h4 class="hidden lg:block font-bold lg:mt-0 lg:text-xl">
+        <%= @page_title %><%= @page_sub_title %>
+      </h4>
       <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
         <div class="flex justify-between">
           <.plan_upgrade_button  />
@@ -117,13 +122,13 @@ defmodule BrightWeb.LayoutComponents do
     ~H"""
     <aside class="relative">
       <input id="sp_navi_input" class="hidden peer" type="checkbox">
-      <label id="sp_navi_open" class="bg-white block cursor-pointer fixed h-10 ml-4 left-0 rounded top-2 w-10 z-50 lg:hidden" for="sp_navi_input">
+      <label id="sp_navi_open" class="bg-white block cursor-pointer fixed h-10 ml-4 left-0 rounded top-2 w-10 z-[20] lg:hidden" for="sp_navi_input">
         <span class="absolute bg-brightGray-300 block cursor-pointer h-[3px] left-1 top-1.5 w-8 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8"></span>
       </label>
-      <label id="sp_navi_close" for="sp_navi_input" class="cursor-pointer hidden h-full fixed right-0 top-0 w-full z-20"></label>
+      <label id="sp_navi_close" for="sp_navi_input" class="cursor-pointer hidden h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
       <div class="fixed bg-brightGray-900 pt-3 min-h-screen h-full hidden flex-col w-full z-40 lg:flex lg:static lg:w-[200px] peer-checked:flex">
-        <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-4 mt-6 lg:mt-0" /></.link>
-        <ul class="grid pt-2">
+        <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-2 lg:ml-4 mt-12 lg:mt-0" /></.link>
+        <ul class="grid lg:pt-2">
           <%= for {title, path, regex} <- links() do %>
             <li>
               <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>

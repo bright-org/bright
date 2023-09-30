@@ -33,17 +33,57 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def navigations(assigns) do
     ~H"""
-    <div class="flex flex-col gap-x-4 mt-2 px-4 pb-2 lg:flex-row lg:mt-4 lg:px-10 lg:pb-3">
-      <.target_switch current_user={@current_user} />
-      <.skill_panel_switch
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        root={@root}
-      />
+    <div>
+      <section class="accordion flex my-2 max-w-[1236px] lg:hidden mt-2 px-4">
+        <div class="bg-brightGray-50 rounded w-full">
+          <p
+            id="close_navigation"
+            class={
+              "hidden bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
+              open()
+            }
+            phx-click={
+              JS.hide(to: "#switch")
+              |> JS.hide(to: "#close_navigation")
+              |> JS.show(to: "#open_navigation")
+            }
+          >
+            表示するスキル／ユーザー／チームを切り替える
+          </p>
+          <p
+            id="open_navigation"
+            class={
+              "bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
+              close()
+            }
+            phx-click={
+              JS.show(to: "#switch")
+              |> JS.show(to: "#close_navigation")
+              |> JS.hide(to: "#open_navigation")
+            }
+          >
+            表示するスキル／ユーザー／チームを切り替える
+          </p>
+        </div>
+      </section>
+      <div id="switch" class="hidden lg:flex flex-col lg:flex-row gap-x-4 mt-2 px-4 pb-2 lg:mt-4 lg:px-10 lg:pb-3">
+        <.target_switch current_user={@current_user} />
+        <.skill_panel_switch
+          display_user={@display_user}
+          me={@me}
+          anonymous={@anonymous}
+          root={@root}
+        />
+      </div>
     </div>
     """
   end
+
+  defp close(),
+    do: "before:-mt-2 before:rotate-225"
+
+  defp open(),
+    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 
   def skill_panel_switch(assigns) do
     ~H"""
@@ -297,7 +337,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             <.link
               id={"class_tab_#{skill_class.class}"}
               patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
-              class="flex justify-start items-center p-4 pt-2 lg:inline-block lg:pt-3"
+              class="flex justify-start items-center p-4 pt-2 lg:inline-block lg:pt-3 text-xs"
               aria-current={current && "page"}
             >
               クラス<%= skill_class.class %> <%= if(current, do: skill_class.name, else: "") %>
@@ -351,18 +391,18 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           />
         </div>
 
-        <div class="mt-2 mr-3 flex flex-col gap-y-4">
+        <div class="-mt-12 lg:mt-2 mr-3 flex flex-col gap-y-4">
           <.link
             :if={@display_skill_edit_button}
             patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
             id="link-skills-form"
-            class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-48 hover:opacity-50">
+            class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-full lg:w-48 hover:opacity-50">
             <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
             スキル入力する
           </.link>
 
           <% # TODO: α版後にifを除去して表示 %>
-          <button :if={false} class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-48 hover:opacity-50">
+          <button :if={false} class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-full lg:w-48 hover:opacity-50">
             <img src="/images/common/icons/up.svg" class="absolute left-4 top-1/2 -translate-y-1/2">
             スキルアップする
           </button>

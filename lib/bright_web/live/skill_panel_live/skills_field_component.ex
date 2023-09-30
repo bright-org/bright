@@ -22,8 +22,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     ~H"""
     <div id={@id}>
       <BrightCoreComponents.flash_group flash={@inner_flash} />
-      <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
-      <div class="hidden lg:block">
+      <div class="px-6">
+        <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
+      </div>
+      <div class="px-6 hidden lg:block">
         <.skills_table
           table_structure={@table_structure}
           skill_panel={@skill_panel}
@@ -43,13 +45,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
           anonymous={@anonymous}
         />
       </div>
-      <div class="lg:hidden">
+      <div class="lg:hidden px-2">
         <.skills_table_sp
           skill_panel={@skill_panel}
           skill_score_dict={@skill_score_dict}
           skill_class={@skill_class}
           skill_units={@skill_units}
-          skill_class_score={@skill_class_score}
           query={@query}
           current_skill_dict={@current_skill_dict}
           current_skill_score_dict={@current_skill_score_dict}

@@ -4,17 +4,19 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   alias Bright.{Repo, SkillPanels, UserSkillPanels, Onboardings}
   alias Bright.Onboardings.UserOnboarding
 
+  import BrightWeb.OnboardingLive.Index, only: [hidden_more_skills: 1]
+
   @impl true
   def render(assigns) do
     ~H"""
-    <section class="bg-white p-8 min-h-[720px] relative rounded-lg">
-      <h1 class="font-bold text-3xl">
+    <section class="bg-white py-6 px-8 lg:py-8 min-h-[720px] relative rounded-lg">
+      <h1 class={["font-bold text-3xl",hidden_more_skills(@current_path)] }>
         <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
           スキルを選ぶ
         </span>
       </h1>
 
-      <div class="mt-8">
+      <div class="mt-0 lg:mt-8">
         <!-- スキルセクション　ここから -->
         <section>
           <h2 class="font-bold text-base lg:text-xl"><%= "#{@skill_panel.name} に含まれるスキル" %></h2>
@@ -87,13 +89,21 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   @impl true
   def handle_params(%{"job_id" => job_id}, uri, socket) do
     path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-    {:noreply, assign(socket, :return_to, "/#{path}/jobs/#{job_id}")}
+
+    socket
+    |> assign(:current_path, path)
+    |> assign(:return_to, "/#{path}/jobs/#{job_id}")
+    |> then(&{:noreply, &1})
   end
 
   @impl true
   def handle_params(%{"want_id" => want_id}, uri, socket) do
     path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-    {:noreply, assign(socket, :return_to, "/#{path}/wants/#{want_id}")}
+
+    socket
+    |> assign(:current_path, path)
+    |> assign(:return_to, "/#{path}/wants/#{want_id}")
+    |> then(&{:noreply, &1})
   end
 
   @impl true

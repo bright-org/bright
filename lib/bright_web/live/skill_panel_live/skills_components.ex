@@ -321,33 +321,28 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div class="flex justify-center items-center mb-20">
       <section class="text-sm w-full">
-        <h2 class="font-bold mt-4 mb-2 text-lg truncate">
-          <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
-            <%= @skill_panel.name %>
-          </span>
-        </h2>
         <div>
           <%= for skill_unit <- @skill_units do %>
             <b class="block font-bold mt-6 text-xl">
               <%= skill_unit.name %>
             </b>
-            <%= for skill_category <- get_current_or_historical(skill_unit, "skill_categories") do %>
+            <%= for skill_category <- get_children(skill_unit, "skill_categories") do %>
               <div class="category-top">
                 <b class="block font-bold mt-2 text-base">
                   <%= skill_category.name %>
                 </b>
 
                 <table class="mt-2 w-full">
-                  <%= for skill <- get_current_or_historical(skill_category, "skills") do %>
+                  <%= for skill <- get_children(skill_category, "skills") do %>
                     <% skill_score = @skill_score_dict[skill.id] || %{score: :low} %>
                     <% current_skill = Map.get(@current_skill_dict, skill.trace_id, %{}) %>
                     <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
                     <tr
-                      id={"skill-#{skill.id}"}
-                      class={["bg-brightGray-50", "border border-brightGray-200"]}
+                      id={"skill-sp-#{skill.id}"}
+                      class={["border border-brightGray-200"]}
                     >
-                      <th class="flex justify-between align-middle w-[250px] mb-2 min-h-8 p-2 text-left">
+                      <th class="flex justify-between align-middle w-full mb-2 min-h-8 p-2 text-left">
                         <%= skill.name %>
                         <div class="flex justify-between items-center gap-x-2">
                           <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
@@ -357,7 +352,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                       </th>
 
                       <td class="align-middle border-l border-brightGray-200 p-2">
-                        <div class="flex justify-center gap-x-1 px-2">
+                        <div class="flex justify-center gap-x-1">
                           <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
                         </div>
                       </td>
@@ -373,8 +368,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
-  defp get_current_or_historical(list, attr) do
-    Map.get(list, String.to_atom(attr), Map.get(list, String.to_atom("historical_#{attr}"), []))
+  defp get_children(unit_or_category, attr) do
+    Map.get(
+      unit_or_category,
+      String.to_atom(attr),
+      Map.get(unit_or_category, String.to_atom("historical_#{attr}"), [])
+    )
   end
 
   def skill_evidence_link(%{skill_score: nil} = assigns), do: ~H""
