@@ -99,7 +99,7 @@ defmodule BrightWeb.Router do
   end
 
   # dev server 自動テスト用
-  if Mix.env() == :prod && System.get_env("DEV_SERVER") do
+  if System.get_env("DEV_SERVER") do
     scope "/dev" do
       pipe_through [:browser, :admin]
 
