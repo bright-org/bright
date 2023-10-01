@@ -298,6 +298,29 @@ defmodule Bright.AccountsTest do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})
       assert changeset.required == [:email]
     end
+
+    test "does not validate email uniqueness" do
+      [user, other_user] = insert_pair(:user)
+
+      changeset = Accounts.change_user_email(user, %{email: other_user.email})
+
+      assert changeset.valid?
+    end
+
+    test "does not validate sub email uniqueness" do
+      user = insert(:user)
+      sub_email = insert(:user_sub_email)
+
+      changeset = Accounts.change_user_email(user, %{email: sub_email.email})
+
+      assert changeset.valid?
+    end
+
+    test "validates if email did not change" do
+      user = insert(:user)
+      changeset = Accounts.change_user_email(user, %{email: user.email})
+      assert %{email: ["did not change"]} = errors_on(changeset)
+    end
   end
 
   describe "apply_user_email/2" do
