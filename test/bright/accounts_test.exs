@@ -1,5 +1,5 @@
 defmodule Bright.AccountsTest do
-  use Bright.DataCase
+  use Bright.DataCase, async: true
 
   alias Bright.Repo
   alias Bright.Accounts
@@ -1146,6 +1146,27 @@ defmodule Bright.AccountsTest do
 
       assert Repo.aggregate(UserSubEmail, :count) == 0
       assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+  end
+
+  describe "delete_user_sub_email/2" do
+    test "deletes user sub email" do
+      user_sub_email = insert(:user_sub_email)
+
+      :ok = Accounts.delete_user_sub_email(user_sub_email.user, user_sub_email.email)
+
+      refute Repo.get_by(UserSubEmail, user_id: user_sub_email.user.id)
+    end
+
+    test "does not delete other user sub email" do
+      other_user = insert(:user)
+
+      user_sub_email = insert(:user_sub_email)
+
+      :ok = Accounts.delete_user_sub_email(other_user, user_sub_email.email)
+
+      assert user_sub_email ==
+               Repo.get_by(UserSubEmail, user_id: user_sub_email.user.id) |> Repo.preload(:user)
     end
   end
 
