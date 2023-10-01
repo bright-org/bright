@@ -355,6 +355,14 @@ defmodule Bright.AccountsTest do
       assert "has already been taken" in errors_on(changeset).email
     end
 
+    test "validates email uniqueness in sub_email", %{user: user} do
+      %{email: email} = insert(:user_sub_email)
+
+      {:error, changeset} = Accounts.apply_user_email(user, %{email: email})
+
+      assert "has already been taken" in errors_on(changeset).email
+    end
+
     test "applies the email without persisting it", %{user: user} do
       email = unique_user_email()
       {:ok, user} = Accounts.apply_user_email(user, %{email: email})
