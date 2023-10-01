@@ -351,6 +351,8 @@ defmodule Bright.AccountsTest do
           Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
         end)
 
+      assert_update_email_mail_sent(user.email)
+
       {:ok, token} = Base.url_decode64(token, padding: false)
       assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
       assert user_token.user_id == user.id
