@@ -133,6 +133,7 @@ defmodule Bright.AccountsTest do
       {:error, _changeset} = Accounts.register_user(%{})
 
       refute Repo.exists?(UserProfile)
+      refute Repo.exists?(UserJobProfile)
     end
 
     test "registers users with a hashed password and user initial data" do
