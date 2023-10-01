@@ -132,10 +132,9 @@ defmodule Bright.Accounts do
         user_social_auth_params
         |> Map.merge(%{user_id: user.id})
 
-      {:ok,
-       %UserSocialAuth{}
-       |> UserSocialAuth.change_user_social_auth(user_social_auth_params)
-       |> repo.insert!()}
+      %UserSocialAuth{}
+      |> UserSocialAuth.change_user_social_auth(user_social_auth_params)
+      |> repo.insert()
     end)
     |> Ecto.Multi.run(:user_profile, fn _repo, %{user: user} ->
       UserProfiles.create_initial_user_profile(user.id)

@@ -8,6 +8,7 @@ defmodule Bright.UserSocialAuthFactory do
       def user_social_auth_factory do
         %Bright.Accounts.UserSocialAuth{
           identifier: sequence(:identifier, &"#{&1}"),
+          display_name: "display_name",
           user: build(:user)
         }
       end

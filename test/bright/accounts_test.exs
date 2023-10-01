@@ -311,6 +311,188 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "register_user_by_social_auth/2" do
+    setup do
+      user_params = %{
+        "name" => unique_user_name(),
+        "email" => unique_user_email()
+      }
+
+      user_social_auth_params =
+        params_for(:user_social_auth_for_google)
+        |> Map.take([:provider, :identifier, :display_name])
+
+      %{user_params: user_params, user_social_auth_params: user_social_auth_params}
+    end
+
+    test "registers user with user_social_auth and initial data", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      {:ok, %User{id: user_id} = user} =
+        user_params |> Accounts.register_user_by_social_auth(user_social_auth_params)
+
+      assert user ==
+               Accounts.get_user_by_provider_and_identifier(
+                 user_social_auth_params.provider,
+                 user_social_auth_params.identifier
+               )
+
+      refute user.password_registered
+      assert user.name == user_params["name"]
+      assert user.email == user_params["email"]
+
+      assert %UserSocialAuth{} =
+               Repo.get_by(UserSocialAuth,
+                 user_id: user.id,
+                 provider: user_social_auth_params.provider,
+                 identifier: user_social_auth_params.identifier
+               )
+
+      assert %UserProfile{
+               user_id: ^user_id,
+               title: nil,
+               detail: nil,
+               icon_file_path: nil,
+               twitter_url: nil,
+               facebook_url: nil,
+               github_url: nil
+             } = Repo.get_by(UserProfile, user_id: user.id)
+
+      assert %UserJobProfile{
+               user_id: ^user_id
+             } = Repo.get_by(UserJobProfile, user_id: user_id)
+    end
+
+    test "registers user if display_name is nil", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      {:ok, %User{}} =
+        user_params
+        |> Accounts.register_user_by_social_auth(%{user_social_auth_params | display_name: nil})
+    end
+
+    test "validates required user_params" do
+      {:error, changeset} = Accounts.register_user_by_social_auth(%{}, %{})
+
+      assert %{
+               name: ["can't be blank"],
+               email: ["can't be blank"]
+             } == errors_on(changeset)
+    end
+
+    test "validates required user_social_auth_params", %{user_params: user_params} do
+      {:error, changeset} = Accounts.register_user_by_social_auth(user_params, %{})
+
+      assert %{
+               identifier: ["can't be blank"],
+               provider: ["can't be blank"]
+             } == errors_on(changeset)
+    end
+
+    test "validates name and email format", %{
+      user_social_auth_params: user_social_auth_params
+    } do
+      {:error, changeset} =
+        %{
+          "name" => String.duplicate("a", 256),
+          "email" => "not valid"
+        }
+        |> Accounts.register_user_by_social_auth(user_social_auth_params)
+
+      assert %{
+               name: ["should be at most 255 character(s)"],
+               email: ["has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "validates name uniqueness", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      %{name: name} = insert(:user)
+
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "name" => name},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).name
+    end
+
+    test "validates provider and identifier uniqueness", %{
+      user_params: user_params
+    } do
+      %{provider: provider, identifier: identifier} = insert(:user_social_auth_for_google)
+
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          user_params,
+          %{provider: provider, identifier: identifier}
+        )
+
+      assert "has already been taken" in errors_on(changeset).unique_provider_identifier
+    end
+
+    test "validates email uniqueness", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      %{email: email} = insert(:user)
+
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "email" => email},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).email
+
+      # Now try with the upper cased email too, to check that email case is ignored.
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "email" => String.upcase(email)},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).email
+    end
+
+    test "validates email uniqueness in sub email", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      %{email: email} = insert(:user_sub_email)
+
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "email" => email},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).email
+
+      # Now try with the upper cased email too, to check that email case is ignored.
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "email" => String.upcase(email)},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).email
+    end
+
+    test "user_social_auth and initial data are not created when error" do
+      {:error, _changeset} = Accounts.register_user_by_social_auth(%{}, %{})
+
+      refute Repo.exists?(UserSocialAuth)
+      refute Repo.exists?(UserProfile)
+      refute Repo.exists?(UserJobProfile)
+    end
+  end
+
   describe "change_user_registration_by_social_auth/2" do
     defp setup_user_by_social_auth_changeset(%{} = attrs) do
       %{
