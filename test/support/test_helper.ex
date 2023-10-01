@@ -131,6 +131,14 @@ defmodule Bright.TestHelper do
     end)
   end
 
+  def assert_add_sub_email_mail_sent(new_email) do
+    assert_email_sent(fn email ->
+      assert email.from == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
+      assert email.subject == "【Bright】サブメールアドレス追加を完了させてください（24 時間以内有効）"
+      assert email.to == [{"", new_email}]
+    end)
+  end
+
   def convert_map_string_key_to_atom(map) do
     Map.new(map, fn {k, v} -> {String.to_existing_atom(k), v} end)
   end

@@ -359,6 +359,27 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "deliver_user_add_sub_email_instructions/3" do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "sends token through notification", %{user: user} do
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_add_sub_email_instructions(user, "new_sub_email@example.com", url)
+        end)
+
+      assert_add_sub_email_mail_sent("new_sub_email@example.com")
+
+      {:ok, token} = Base.url_decode64(token, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      assert user_token.user_id == user.id
+      assert user_token.sent_to == "new_sub_email@example.com"
+      assert user_token.context == "confirm_sub_email"
+    end
+  end
+
   describe "update_user_email/2" do
     setup do
       user = insert(:user)

@@ -260,7 +260,7 @@ defmodule Bright.Accounts do
 
   ## Examples
 
-      iex> deliver_user_add_sub_email_instructions(user, current_email, &url(~p"/users/confirm_sub_email/#{&1})")
+      iex> deliver_user_add_sub_email_instructions(user, new_sub_email, &url(~p"/users/confirm_sub_email/#{&1})")
       {:ok, %{to: ..., body: ...}}
 
   """
