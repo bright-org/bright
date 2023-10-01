@@ -6,6 +6,7 @@ defmodule Bright.AccountsTest do
   alias Bright.Accounts.User2faCodes
   alias Bright.Accounts.SocialIdentifierToken
   alias Bright.Accounts.UserSocialAuth
+  alias Bright.Accounts.UserSubEmail
   alias Bright.UserProfiles
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
@@ -945,6 +946,106 @@ defmodule Bright.AccountsTest do
         })
 
       assert changeset.valid?
+    end
+  end
+
+  describe "apply_new_user_sub_email/2" do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "returns changeset", %{user: user} do
+      new_email = unique_user_email()
+
+      {:ok, user_sub_email} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: new_email
+        })
+
+      assert user_sub_email.email == new_email
+      assert user_sub_email.user_id == user.id
+    end
+
+    test "validates required", %{user: user} do
+      {:error, changeset} = Accounts.apply_new_user_sub_email(user, %{})
+
+      refute changeset.valid?
+
+      assert %{
+               email: ["can't be blank"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email format", %{user: user} do
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: "invalid"
+        })
+
+      assert %{
+               email: ["has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email length", %{user: user} do
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: String.duplicate("a", 161)
+        })
+
+      assert %{
+               email: ["should be at most 160 character(s)", "has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email uniqueness", %{user: user} do
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: user.email
+        })
+
+      assert %{
+               email: ["has already been taken"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email uniqueness in sub email", %{user: user} do
+      user_sub_email = insert(:user_sub_email)
+
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: user_sub_email.email
+        })
+
+      assert %{
+               email: ["has already been taken"]
+             } == errors_on(changeset)
+    end
+
+    test "validates sub email count", %{user: user} do
+      insert_list(3, :user_sub_email, user: user)
+
+      new_email = unique_user_email()
+
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: new_email
+        })
+
+      assert %{
+               email: ["already has max number of sub emails"]
+             } == errors_on(changeset)
+    end
+
+    test "valids if other user has already 3 user_sub_email", %{user: user} do
+      insert_list(3, :user_sub_email)
+
+      new_email = unique_user_email()
+
+      {:ok, %UserSubEmail{}} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: new_email
+        })
     end
   end
 
