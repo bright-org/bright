@@ -935,7 +935,7 @@ defmodule Bright.AccountsTest do
     end
 
     test "does not validates sub email count", %{user: user} do
-      insert_list(3, :user_sub_email)
+      insert_list(3, :user_sub_email, user: user)
 
       new_email = unique_user_email()
 
