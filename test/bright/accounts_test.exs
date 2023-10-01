@@ -162,7 +162,7 @@ defmodule Bright.AccountsTest do
   end
 
   describe "change_user_registration/2" do
-    def setup_user_changeset(%{} = attrs) do
+    defp setup_user_changeset(%{} = attrs) do
       %{
         name: unique_user_name(),
         email: unique_user_email(),
@@ -306,6 +306,56 @@ defmodule Bright.AccountsTest do
       %{email: email} = insert(:user_sub_email)
 
       changeset = setup_user_changeset(%{email: email})
+
+      assert changeset.valid?
+    end
+  end
+
+  describe "change_user_registration_by_social_auth/2" do
+    defp setup_user_by_social_auth_changeset(%{} = attrs) do
+      %{
+        name: unique_user_name(),
+        email: unique_user_email()
+      }
+      |> Map.merge(attrs)
+      |> then(
+        &Accounts.change_user_registration_by_social_auth(
+          %User{},
+          params_for(:user_before_registration, &1)
+        )
+      )
+    end
+
+    test "returns changeset without generated password" do
+      changeset = setup_user_by_social_auth_changeset(%{})
+
+      assert changeset.valid?
+      assert get_change(changeset, :name)
+      assert get_change(changeset, :email)
+      refute get_change(changeset, :password)
+      refute get_change(changeset, :password_registered)
+      assert is_nil(get_change(changeset, :hashed_password))
+    end
+
+    test "validates required" do
+      assert %Ecto.Changeset{} =
+               changeset = Accounts.change_user_registration_by_social_auth(%User{})
+
+      assert changeset.required == [:email, :name]
+    end
+
+    test "does not validate name, email uniqueness" do
+      %{name: name, email: email} = insert(:user)
+
+      changeset = setup_user_by_social_auth_changeset(%{name: name, email: email})
+
+      assert changeset.valid?
+    end
+
+    test "does not validate email uniqueness in sub email" do
+      %{email: email} = insert(:user_sub_email)
+
+      changeset = setup_user_by_social_auth_changeset(%{email: email})
 
       assert changeset.valid?
     end
