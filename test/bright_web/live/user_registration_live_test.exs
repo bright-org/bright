@@ -93,7 +93,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       result =
         lv
         |> form("#registration_form",
-          user: %{"email" => user.email, "password" => "valid_password"}
+          user: %{"email" => user.email, "password" => "valid_password1"}
         )
         |> render_submit()
 
@@ -108,7 +108,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       result =
         lv
         |> form("#registration_form",
-          user: %{"email" => user_sub_email.email, "password" => "valid_password"}
+          user: %{"email" => user_sub_email.email, "password" => "valid_password1"}
         )
         |> render_submit()
 
