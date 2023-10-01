@@ -99,6 +99,21 @@ defmodule BrightWeb.UserRegistrationLiveTest do
 
       assert result =~ "すでに使用されています"
     end
+
+    test "renders errors for duplicated email in sub email", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      user_sub_email = insert(:user_sub_email, email: "test@email.com")
+
+      result =
+        lv
+        |> form("#registration_form",
+          user: %{"email" => user_sub_email.email, "password" => "valid_password"}
+        )
+        |> render_submit()
+
+      assert result =~ "すでに使用されています"
+    end
   end
 
   describe "registration navigation" do
