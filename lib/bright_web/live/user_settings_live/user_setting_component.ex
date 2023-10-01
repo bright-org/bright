@@ -26,8 +26,8 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     ~H"""
     <div id="personal_setting_modal" class="hidden">
       <BrightCore.flash_group flash={@modal_flash} />
-      <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-20" />
-      <div class="fixed inset-0 overflow-y-auto z-50">
+      <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
+      <div class="fixed inset-0 overflow-y-auto z-[60]">
         <section
           id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-full lg:w-[800px] z-20"
           phx-click-away={JS.hide(to: "#personal_setting_modal")}
