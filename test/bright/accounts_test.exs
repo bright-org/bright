@@ -311,6 +311,17 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "get_user_by_provider_and_identifier/2" do
+    test "returns user by provider and identifier" do
+      refute Accounts.get_user_by_provider_and_identifier(:google, "1")
+
+      %{provider: provider, identifier: identifier, user: user} =
+        insert(:user_social_auth_for_google)
+
+      assert user == Accounts.get_user_by_provider_and_identifier(provider, identifier)
+    end
+  end
+
   describe "change_user_email/2" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})

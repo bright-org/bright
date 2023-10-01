@@ -171,6 +171,12 @@ defmodule Bright.Accounts do
 
   @doc """
   Gets user by provider and identifier
+
+  ## Examples
+
+      iex> get_user_by_provider_and_identifier(:google, "1")
+      %User{}
+
   """
   def get_user_by_provider_and_identifier(provider, identifier) do
     UserSocialAuth.user_by_provider_and_identifier_query(provider, identifier)
