@@ -291,6 +291,14 @@ defmodule Bright.AccountsTest do
 
       assert changeset.valid?
     end
+
+    test "does not validate email uniqueness in sub email" do
+      %{email: email} = insert(:user_sub_email)
+
+      changeset = setup_user_changeset(%{email: email})
+
+      assert changeset.valid?
+    end
   end
 
   describe "change_user_email/2" do
