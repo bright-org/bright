@@ -1049,6 +1049,91 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "add_user_sub_email/2" do
+    setup do
+      user = insert(:user)
+      new_email = unique_user_email()
+
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_add_sub_email_instructions(user, new_email, url)
+        end)
+
+      %{user: user, token: token, email: new_email}
+    end
+
+    test "adds the email with a valid token", %{user: user, token: token, email: email} do
+      assert Accounts.add_user_sub_email(user, token) == :ok
+
+      user_sub_email = Repo.get_by!(UserSubEmail, user_id: user.id)
+
+      assert Repo.aggregate(UserSubEmail, :count) == 1
+      assert user_sub_email.email == email
+      refute Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "adds the email with not expired token", %{user: user, token: token, email: email} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert Accounts.add_user_sub_email(user, token) == :ok
+      user_sub_email = Repo.get_by!(UserSubEmail, user_id: user.id)
+
+      assert Repo.aggregate(UserSubEmail, :count) == 1
+      assert user_sub_email.email == email
+      refute Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email with invalid token", %{user: user} do
+      assert Accounts.add_user_sub_email(user, "invalid") == :error
+
+      assert Repo.aggregate(UserSubEmail, :count) == 0
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email when email is already used by other user", %{
+      user: user,
+      token: token,
+      email: email
+    } do
+      insert(:user, email: email)
+      assert Accounts.add_user_sub_email(user, token) == :error
+
+      assert Repo.aggregate(UserSubEmail, :count) == 0
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email when email is already used by sub email", %{
+      user: user,
+      token: token,
+      email: email
+    } do
+      insert(:user_sub_email, email: email)
+      assert Accounts.add_user_sub_email(user, token) == :error
+
+      assert Repo.aggregate(UserSubEmail, :count) == 1
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email when user has already 3 user_sub_emails", %{
+      user: user,
+      token: token
+    } do
+      insert_list(3, :user_sub_email, user: user)
+      assert Accounts.add_user_sub_email(user, token) == :already_has_max_number_of_sub_emails
+
+      assert Repo.aggregate(UserSubEmail, :count) == 3
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+  end
+
   describe "generate_user_session_token/1" do
     setup do
       %{user: insert(:user)}
