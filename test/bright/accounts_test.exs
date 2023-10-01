@@ -677,7 +677,7 @@ defmodule Bright.AccountsTest do
           set: [
             inserted_at:
               NaiveDateTime.utc_now()
-              |> NaiveDateTime.add(-1 * 30 * 60)
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
               |> NaiveDateTime.add(1 * 60)
           ]
         )
@@ -695,13 +695,13 @@ defmodule Bright.AccountsTest do
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
-    test "does not confirm email if token is expired after 30 minutes", %{
+    test "does not confirm email if token is expired after 1 days", %{
       user: user,
       token: token
     } do
       {1, nil} =
         Repo.update_all(UserToken,
-          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 30 * 60)]
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24)]
         )
 
       assert Accounts.confirm_user(token) == :error
