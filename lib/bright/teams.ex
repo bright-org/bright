@@ -518,32 +518,32 @@ defmodule Bright.Teams do
 
   @doc """
     所属チームによる各種機能の利用可否判定を取得する
-    - enable_team_up_factions チームスキル分析などチームアップ系機能の利用可否
+    - enable_team_up_functions チームスキル分析などチームアップ系機能の利用可否
     - enable_hr_functions 採用・人材支援等人材支援系機能の利用可否
 
-    iex > get_enable_functions_by_joined_teams(user_id)
+    iex > get_enable_functions_by_joined_teams!(user_id)
     %{
-      enable_team_up_factions: true,
+      enable_team_up_functions: true,
       enable_hr_functions: false
     }
 
-    iex > get_enable_functions_by_joined_teams(not_exist_user_id)
+    iex > get_enable_functions_by_joined_teams!(not_exist_user_id)
     ** (Ecto.NoResultsError) expected at least one result but got none in query:
 
   """
-  def get_enable_functions_by_joined_teams(user_id) do
+  def get_enable_functions_by_joined_teams!(user_id) do
     # user_idをキーにenable_xxx_functionsフラグの立った所属チームの数を検索する
     {_user_id, enable_team_up_functions_count, enable_hr_functions_count} =
       get_count_enable_functions_by_joined_teams(user_id)
 
     # 各機能の利用可否の判定
     %{
-      enable_team_up_factions: is_enable_by_count?(enable_team_up_functions_count),
+      enable_team_up_functions: is_enable_by_count?(enable_team_up_functions_count),
       enable_hr_functions: is_enable_by_count?(enable_hr_functions_count)
     }
   end
 
-  # 　Ectoのcountを使うと0件の場合のnilが返るのでnil=0件=権限なしと判定
+  # Ectoのcountを使うと0件の場合のnilが返るのでnil=0件=権限なしと判定
   defp is_enable_by_count?(nil) do
     false
   end

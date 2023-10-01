@@ -359,7 +359,7 @@ defmodule Bright.TeamsTest do
     end
   end
 
-  describe "get_enable_functions_by_joined_teams/1" do
+  describe "get_enable_functions_by_joined_teams!/1" do
     test "disable all functions" do
       team_name = Faker.Lorem.word()
       admin_user = insert(:user)
@@ -367,9 +367,9 @@ defmodule Bright.TeamsTest do
       assert {:ok, _team, _team_member_user_attrs} =
                Teams.create_team_multi(team_name, admin_user, [])
 
-      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+      enable_functions = Teams.get_enable_functions_by_joined_teams!(admin_user.id)
 
-      assert enable_functions.enable_team_up_factions == false
+      assert enable_functions.enable_team_up_functions == false
       assert enable_functions.enable_hr_functions == false
     end
 
@@ -383,9 +383,9 @@ defmodule Bright.TeamsTest do
                  enable_hr_functions: false
                })
 
-      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+      enable_functions = Teams.get_enable_functions_by_joined_teams!(admin_user.id)
 
-      assert enable_functions.enable_team_up_factions == true
+      assert enable_functions.enable_team_up_functions == true
       assert enable_functions.enable_hr_functions == false
     end
 
@@ -399,9 +399,9 @@ defmodule Bright.TeamsTest do
                  enable_hr_functions: true
                })
 
-      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+      enable_functions = Teams.get_enable_functions_by_joined_teams!(admin_user.id)
 
-      assert enable_functions.enable_team_up_factions == false
+      assert enable_functions.enable_team_up_functions == false
       assert enable_functions.enable_hr_functions == true
     end
 
@@ -422,9 +422,9 @@ defmodule Bright.TeamsTest do
                  enable_hr_functions: true
                })
 
-      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+      enable_functions = Teams.get_enable_functions_by_joined_teams!(admin_user.id)
 
-      assert enable_functions.enable_team_up_factions == true
+      assert enable_functions.enable_team_up_functions == true
       assert enable_functions.enable_hr_functions == true
     end
 
@@ -446,9 +446,9 @@ defmodule Bright.TeamsTest do
                  enable_hr_functions: true
                })
 
-      enable_functions = Teams.get_enable_functions_by_joined_teams(member_user.id)
+      enable_functions = Teams.get_enable_functions_by_joined_teams!(member_user.id)
 
-      assert enable_functions.enable_team_up_factions == false
+      assert enable_functions.enable_team_up_functions == false
       assert enable_functions.enable_hr_functions == false
     end
 
@@ -456,9 +456,9 @@ defmodule Bright.TeamsTest do
       admin_user = insert(:user)
 
       # チームに所属していない場合は全機能false
-      enable_functions = Teams.get_enable_functions_by_joined_teams(admin_user.id)
+      enable_functions = Teams.get_enable_functions_by_joined_teams!(admin_user.id)
 
-      assert enable_functions.enable_team_up_factions == false
+      assert enable_functions.enable_team_up_functions == false
       assert enable_functions.enable_hr_functions == false
     end
   end
