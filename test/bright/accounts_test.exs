@@ -865,6 +865,89 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "change_new_user_sub_email/2" do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "returns changeset", %{user: user} do
+      new_email = unique_user_email()
+
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: new_email
+        })
+
+      assert changeset.valid?
+      assert get_change(changeset, :email) == new_email
+    end
+
+    test "validates required", %{user: user} do
+      changeset = Accounts.change_new_user_sub_email(user, %{})
+
+      refute changeset.valid?
+
+      assert %{
+               email: ["can't be blank"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email format", %{user: user} do
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: "invalid"
+        })
+
+      assert %{
+               email: ["has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email length", %{user: user} do
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: String.duplicate("a", 161)
+        })
+
+      assert %{
+               email: ["should be at most 160 character(s)", "has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "does not validates email uniqueness", %{user: user} do
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: user.email
+        })
+
+      assert changeset.valid?
+    end
+
+    test "does not validates email uniqueness in sub email", %{user: user} do
+      user_sub_email = insert(:user_sub_email)
+
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: user_sub_email.email
+        })
+
+      assert changeset.valid?
+    end
+
+    test "does not validates sub email count", %{user: user} do
+      insert_list(3, :user_sub_email)
+
+      new_email = unique_user_email()
+
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: new_email
+        })
+
+      assert changeset.valid?
+    end
+  end
+
   describe "generate_user_session_token/1" do
     setup do
       %{user: insert(:user)}
