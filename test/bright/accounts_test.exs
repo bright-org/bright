@@ -464,6 +464,28 @@ defmodule Bright.AccountsTest do
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
+    test "does not update email if user email already registered by other user", %{
+      user: user,
+      token: token,
+      email: email
+    } do
+      insert(:user, email: email)
+      assert Accounts.update_user_email(user, token) == :error
+      assert Repo.get!(User, user.id).email == user.email
+      assert Repo.get_by(UserToken, user_id: user.id)
+    end
+
+    test "does not update email if user email already registered as sub email", %{
+      user: user,
+      token: token,
+      email: email
+    } do
+      insert(:user_sub_email, email: email)
+      assert Accounts.update_user_email(user, token) == :error
+      assert Repo.get!(User, user.id).email == user.email
+      assert Repo.get_by(UserToken, user_id: user.id)
+    end
+
     test "does not update email if token expired", %{user: user, token: token} do
       {1, nil} =
         Repo.update_all(UserToken,
