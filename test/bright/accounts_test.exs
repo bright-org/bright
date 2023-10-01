@@ -1132,6 +1132,21 @@ defmodule Bright.AccountsTest do
       assert Repo.aggregate(UserSubEmail, :count) == 3
       assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
     end
+
+    test "does not add email when token is expired after 1 days", %{
+      user: user,
+      token: token
+    } do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24)]
+        )
+
+      assert Accounts.add_user_sub_email(user, token) == :error
+
+      assert Repo.aggregate(UserSubEmail, :count) == 0
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
   end
 
   describe "generate_user_session_token/1" do
