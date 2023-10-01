@@ -41,6 +41,35 @@ defmodule BrightWeb.UserConfirmEmailControllerTest do
       refute Repo.get_by(UserToken, user_id: user.id, context: "change:#{user.email}")
     end
 
+    test "fails to update user email when email is not unique", %{
+      conn: conn,
+      user: user,
+      token: token,
+      new_email: new_email
+    } do
+      insert(:user, email: new_email)
+      conn = get(conn, ~p"/users/confirm_email/#{token}")
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "リンクが無効であるか期限が切れています"
+      assert redirected_to(conn) == ~p"/mypage"
+      assert Repo.get_by(UserToken, user_id: user.id, context: "change:#{user.email}")
+    end
+
+    test "fails to update user email when email is not unique in sub email", %{
+      conn: conn,
+      user: user,
+      token: token,
+      new_email: new_email
+    } do
+      insert(:user_sub_email, email: new_email)
+      conn = get(conn, ~p"/users/confirm_email/#{token}")
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "リンクが無効であるか期限が切れています"
+      assert redirected_to(conn) == ~p"/mypage"
+      refute Repo.get_by(User, email: new_email)
+      assert Repo.get_by(UserToken, user_id: user.id, context: "change:#{user.email}")
+    end
+
     test "fails to update user email when token is invalid", %{
       conn: conn,
       user: user,
