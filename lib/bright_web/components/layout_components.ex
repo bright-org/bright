@@ -156,7 +156,7 @@ defmodule BrightWeb.LayoutComponents do
       {"成長を見る・比較する", "/graphs", nil},
       {"スキルを入力", "/panels", nil},
       {"チームのスキルを見る", "/teams", ~r/\/teams(?!\/new)/},
-      {"チームを作る", "/teams/new", nil},
+      {"チームを作る（β）", "/teams/new", nil},
       {"スキル検索する（β）", "/searches", nil}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
