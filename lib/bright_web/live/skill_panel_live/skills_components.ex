@@ -364,16 +364,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   """
   def first_skills_edit_message(assigns) do
     ~H"""
-    <div class="flex items-center">
+    <p>
       <span class="font-bold">まずは「スキル入力する」ボタンをクリック</span>してスキル入力を始めてください
-    </div>
+    </p>
     <ul class="my-2">
       <li class="flex items-center"><span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mr-1"></span> 実務経験がある、もしくは依頼されたら短期間で実行できる</li>
       <li class="flex items-center"><span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-300 inline-block mr-1"></span> 知識はあるが、実務経験が浅く、自信が無い（調査が必要）</li>
       <li class="flex items-center"><span class="h-1 w-4 bg-brightGray-200 inline-block mr-1"></span> 知識や実務経験が無い</li>
     </ul>
-    <div>
-      <p class="flex items-center">
+    <div class="hidden lg:block">
+      <p class="flex flex-wrap items-center">
         スキル入力は、1キーを押すと
         <span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mx-1"></span>
         が付き、2キーを押すと
@@ -385,7 +385,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <p>マウス無しのキーボード操作だけで快適にスキル入力できます。</p>
     </div>
     <div class="mt-2">
-      なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br>できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
+      なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br class="hidden lg:inline">できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
     </div>
     """
   end
@@ -400,8 +400,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <p class="mt-2">スキル入力後は「成長を見る・比較する」メニューで現在のスキルレベルを確認できます。<br>スキル合計の％が40％より下は「見習い」、40％以上で「平均」、60％以上で「ベテラン」となります。</p>
       <p class="mt-2">また、3ヶ月区切りでスキルレベルを集計するので、スキルの成長も体感できます。</p>
     </div>
-    <div class="mt-4 w-[400px]">
-      <img src="/images/sample_groth_graph.png" alt="成長グラフ" width="600" height="250">
+    <div class="mt-4 max-w-[400px]">
+      <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
     </div>
     """
   end
@@ -415,8 +415,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <p>クラス開放おめでとうございます！</p>
       <p class="mt-2">クラス開放後は「成長を見る・比較する」メニューでスキルレベルを確認できます。</p>
     </div>
-    <div class="mt-4 w-[400px]">
-      <img src="/images/sample_groth_graph.png" alt="成長グラフ" width="600" height="250">
+    <div class="mt-4 max-w-[400px]">
+      <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
     </div>
     """
   end
