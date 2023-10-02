@@ -1,7 +1,7 @@
 <div class="px-10 pt-4 pb-8 bg-white">
   <!-- スキルと対象の切り替え -->
-  <div class="flex gap-x-4">
-    <p class="leading-tight ml-4">対象者の<br />切り替え</p>
+  <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4">
+    <p class="leading-tight ml-4">対象者の<br class="hidden lg:block" />切り替え</p>
     <!-- チーム menu -->
     <.mega_menu_button
       id="mega_menu_team"
@@ -16,14 +16,14 @@
       />
     </.mega_menu_button>
 
-    <p class="leading-tight">対象スキルの<br />切り替え</p>
+    <p class="leading-tight">対象スキルの<br class="hidden lg:block"/>切り替え</p>
     <!-- スキルパネル menu -->
     <.mega_menu_button
       :if={is_nil(@display_team)}
       id="mega_menu_skill_panel"
       label="スキル"
       dropdown_offset_skidding="156"
-      menu_width="w-[450px]"
+      menu_width="lg:w-[450px]"
     >
       <div
         class="w-[440px] flex items-center text-base rounded"

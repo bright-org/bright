@@ -122,7 +122,7 @@ defmodule BrightWeb.LayoutComponents do
     ~H"""
     <aside class="relative">
       <input id="sp_navi_input" class="hidden peer" type="checkbox">
-      <label id="sp_navi_open" class="bg-white block cursor-pointer fixed h-10 ml-4 left-0 rounded top-2 w-10 z-[20] lg:hidden" for="sp_navi_input">
+      <label id="sp_navi_open" class="bg-white block cursor-pointer fixed h-10 ml-4 left-0 rounded top-2 w-10 z-50 lg:hidden" for="sp_navi_input">
         <span class="absolute bg-brightGray-300 block cursor-pointer h-[3px] left-1 top-1.5 w-8 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8"></span>
       </label>
       <label id="sp_navi_close" for="sp_navi_input" class="cursor-pointer hidden h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
@@ -153,13 +153,13 @@ defmodule BrightWeb.LayoutComponents do
     [
       {"スキルを選ぶ", "/more_skills", nil},
       {"成長を見る・比較する", "/graphs", nil},
-      {"スキルパネルを入力", "/panels", nil},
+      {"スキルを入力", "/panels", nil},
+      {"チームのスキルを見る", "/teams", ~r/\/teams(?!\/new)/},
+      {"Brightに招待する", "/teams/new", nil},
+      {"スキル検索する", "/searches", nil}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
-      {"スキル検索／スカウト", "/searches", nil},
-      {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html", nil},
-      {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/},
-      {"自分のチームを作る", "/teams/new", nil}
+      # {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html", nil},
     ]
   end
 

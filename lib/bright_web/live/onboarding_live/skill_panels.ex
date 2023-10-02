@@ -7,7 +7,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   @impl true
   def render(assigns) do
     ~H"""
-    <section class="bg-white py-2 px-8 lg:py-8 min-h-[720px] relative rounded-lg mb-12">
+    <section class="bg-white pt-2 px-8 lg:py-8 min-h-[720px] relative rounded-lg pb-28">
       <h1 class={["font-bold text-3xl",hidden_more_skills(@current_path)]}>
         <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
           スキルを選ぶ
