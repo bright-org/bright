@@ -166,12 +166,30 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
     } do
       {:ok, lv, _html} = live(conn, ~p"/users/register_social_account/#{session_token}")
 
-      user = insert(:user, name: "name")
+      user = insert(:user)
 
       result =
         lv
         |> form("#registration_by_social_auth_form",
           user: %{"email" => user.email, "name" => "koyo"}
+        )
+        |> render_submit()
+
+      assert result =~ "すでに使用されています"
+    end
+
+    test "renders errors for duplicated email in sub email", %{
+      conn: conn,
+      session_token: session_token
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/users/register_social_account/#{session_token}")
+
+      user_sub_email = insert(:user_sub_email)
+
+      result =
+        lv
+        |> form("#registration_by_social_auth_form",
+          user: %{"email" => user_sub_email.email, "name" => "koyo"}
         )
         |> render_submit()
 

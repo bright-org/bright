@@ -1,11 +1,12 @@
 defmodule Bright.AccountsTest do
-  use Bright.DataCase
+  use Bright.DataCase, async: true
 
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.User2faCodes
   alias Bright.Accounts.SocialIdentifierToken
   alias Bright.Accounts.UserSocialAuth
+  alias Bright.Accounts.UserSubEmail
   alias Bright.UserProfiles
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
@@ -119,10 +120,21 @@ defmodule Bright.AccountsTest do
       assert "has already been taken" in errors_on(changeset).email
     end
 
+    test "validates email uniqueness in sub email" do
+      %{email: email} = insert(:user_sub_email)
+      {:error, changeset} = Accounts.register_user(%{email: email})
+      assert "has already been taken" in errors_on(changeset).email
+
+      # Now try with the upper cased email too, to check that email case is ignored.
+      {:error, changeset} = Accounts.register_user(%{email: String.upcase(email)})
+      assert "has already been taken" in errors_on(changeset).email
+    end
+
     test "user initial data is not created when error" do
       {:error, _changeset} = Accounts.register_user(%{})
 
       refute Repo.exists?(UserProfile)
+      refute Repo.exists?(UserJobProfile)
     end
 
     test "registers users with a hashed password and user initial data" do
@@ -152,7 +164,7 @@ defmodule Bright.AccountsTest do
   end
 
   describe "change_user_registration/2" do
-    def setup_user_changeset(%{} = attrs) do
+    defp setup_user_changeset(%{} = attrs) do
       %{
         name: unique_user_name(),
         email: unique_user_email(),
@@ -291,12 +303,286 @@ defmodule Bright.AccountsTest do
 
       assert changeset.valid?
     end
+
+    test "does not validate email uniqueness in sub email" do
+      %{email: email} = insert(:user_sub_email)
+
+      changeset = setup_user_changeset(%{email: email})
+
+      assert changeset.valid?
+    end
+  end
+
+  describe "register_user_by_social_auth/2" do
+    setup do
+      user_params = %{
+        "name" => unique_user_name(),
+        "email" => unique_user_email()
+      }
+
+      user_social_auth_params =
+        params_for(:user_social_auth_for_google)
+        |> Map.take([:provider, :identifier, :display_name])
+
+      %{user_params: user_params, user_social_auth_params: user_social_auth_params}
+    end
+
+    test "registers user with user_social_auth and initial data", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      {:ok, %User{id: user_id} = user} =
+        user_params |> Accounts.register_user_by_social_auth(user_social_auth_params)
+
+      assert user ==
+               Accounts.get_user_by_provider_and_identifier(
+                 user_social_auth_params.provider,
+                 user_social_auth_params.identifier
+               )
+
+      refute user.password_registered
+      assert user.name == user_params["name"]
+      assert user.email == user_params["email"]
+
+      assert %UserSocialAuth{} =
+               Repo.get_by(UserSocialAuth,
+                 user_id: user.id,
+                 provider: user_social_auth_params.provider,
+                 identifier: user_social_auth_params.identifier
+               )
+
+      assert %UserProfile{
+               user_id: ^user_id,
+               title: nil,
+               detail: nil,
+               icon_file_path: nil,
+               twitter_url: nil,
+               facebook_url: nil,
+               github_url: nil
+             } = Repo.get_by(UserProfile, user_id: user.id)
+
+      assert %UserJobProfile{
+               user_id: ^user_id
+             } = Repo.get_by(UserJobProfile, user_id: user_id)
+    end
+
+    test "registers user if display_name is nil", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      {:ok, %User{}} =
+        user_params
+        |> Accounts.register_user_by_social_auth(%{user_social_auth_params | display_name: nil})
+    end
+
+    test "validates required user_params" do
+      {:error, changeset} = Accounts.register_user_by_social_auth(%{}, %{})
+
+      assert %{
+               name: ["can't be blank"],
+               email: ["can't be blank"]
+             } == errors_on(changeset)
+    end
+
+    test "validates required user_social_auth_params", %{user_params: user_params} do
+      {:error, changeset} = Accounts.register_user_by_social_auth(user_params, %{})
+
+      assert %{
+               identifier: ["can't be blank"],
+               provider: ["can't be blank"]
+             } == errors_on(changeset)
+    end
+
+    test "validates name and email format", %{
+      user_social_auth_params: user_social_auth_params
+    } do
+      {:error, changeset} =
+        %{
+          "name" => String.duplicate("a", 256),
+          "email" => "not valid"
+        }
+        |> Accounts.register_user_by_social_auth(user_social_auth_params)
+
+      assert %{
+               name: ["should be at most 255 character(s)"],
+               email: ["has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "validates name uniqueness", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      %{name: name} = insert(:user)
+
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "name" => name},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).name
+    end
+
+    test "validates provider and identifier uniqueness", %{
+      user_params: user_params
+    } do
+      %{provider: provider, identifier: identifier} = insert(:user_social_auth_for_google)
+
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          user_params,
+          %{provider: provider, identifier: identifier}
+        )
+
+      assert "has already been taken" in errors_on(changeset).unique_provider_identifier
+    end
+
+    test "validates email uniqueness", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      %{email: email} = insert(:user)
+
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "email" => email},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).email
+
+      # Now try with the upper cased email too, to check that email case is ignored.
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "email" => String.upcase(email)},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).email
+    end
+
+    test "validates email uniqueness in sub email", %{
+      user_params: user_params,
+      user_social_auth_params: user_social_auth_params
+    } do
+      %{email: email} = insert(:user_sub_email)
+
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "email" => email},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).email
+
+      # Now try with the upper cased email too, to check that email case is ignored.
+      {:error, changeset} =
+        Accounts.register_user_by_social_auth(
+          %{user_params | "email" => String.upcase(email)},
+          user_social_auth_params
+        )
+
+      assert "has already been taken" in errors_on(changeset).email
+    end
+
+    test "user_social_auth and initial data are not created when error" do
+      {:error, _changeset} = Accounts.register_user_by_social_auth(%{}, %{})
+
+      refute Repo.exists?(UserSocialAuth)
+      refute Repo.exists?(UserProfile)
+      refute Repo.exists?(UserJobProfile)
+    end
+  end
+
+  describe "change_user_registration_by_social_auth/2" do
+    defp setup_user_by_social_auth_changeset(%{} = attrs) do
+      %{
+        name: unique_user_name(),
+        email: unique_user_email()
+      }
+      |> Map.merge(attrs)
+      |> then(
+        &Accounts.change_user_registration_by_social_auth(
+          %User{},
+          params_for(:user_before_registration, &1)
+        )
+      )
+    end
+
+    test "returns changeset without generated password" do
+      changeset = setup_user_by_social_auth_changeset(%{})
+
+      assert changeset.valid?
+      assert get_change(changeset, :name)
+      assert get_change(changeset, :email)
+      refute get_change(changeset, :password)
+      refute get_change(changeset, :password_registered)
+      assert is_nil(get_change(changeset, :hashed_password))
+    end
+
+    test "validates required" do
+      assert %Ecto.Changeset{} =
+               changeset = Accounts.change_user_registration_by_social_auth(%User{})
+
+      assert changeset.required == [:email, :name]
+    end
+
+    test "does not validate name, email uniqueness" do
+      %{name: name, email: email} = insert(:user)
+
+      changeset = setup_user_by_social_auth_changeset(%{name: name, email: email})
+
+      assert changeset.valid?
+    end
+
+    test "does not validate email uniqueness in sub email" do
+      %{email: email} = insert(:user_sub_email)
+
+      changeset = setup_user_by_social_auth_changeset(%{email: email})
+
+      assert changeset.valid?
+    end
+  end
+
+  describe "get_user_by_provider_and_identifier/2" do
+    test "returns user by provider and identifier" do
+      refute Accounts.get_user_by_provider_and_identifier(:google, "1")
+
+      %{provider: provider, identifier: identifier, user: user} =
+        insert(:user_social_auth_for_google)
+
+      assert user == Accounts.get_user_by_provider_and_identifier(provider, identifier)
+    end
   end
 
   describe "change_user_email/2" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})
       assert changeset.required == [:email]
+    end
+
+    test "does not validate email uniqueness" do
+      [user, other_user] = insert_pair(:user)
+
+      changeset = Accounts.change_user_email(user, %{email: other_user.email})
+
+      assert changeset.valid?
+    end
+
+    test "does not validate sub email uniqueness" do
+      user = insert(:user)
+      sub_email = insert(:user_sub_email)
+
+      changeset = Accounts.change_user_email(user, %{email: sub_email.email})
+
+      assert changeset.valid?
+    end
+
+    test "validates if email did not change" do
+      user = insert(:user)
+      changeset = Accounts.change_user_email(user, %{email: user.email})
+      assert %{email: ["did not change"]} = errors_on(changeset)
     end
   end
 
@@ -332,6 +618,14 @@ defmodule Bright.AccountsTest do
       assert "has already been taken" in errors_on(changeset).email
     end
 
+    test "validates email uniqueness in sub_email", %{user: user} do
+      %{email: email} = insert(:user_sub_email)
+
+      {:error, changeset} = Accounts.apply_user_email(user, %{email: email})
+
+      assert "has already been taken" in errors_on(changeset).email
+    end
+
     test "applies the email without persisting it", %{user: user} do
       email = unique_user_email()
       {:ok, user} = Accounts.apply_user_email(user, %{email: email})
@@ -351,11 +645,34 @@ defmodule Bright.AccountsTest do
           Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
         end)
 
+      assert_update_email_mail_sent(user.email)
+
       {:ok, token} = Base.url_decode64(token, padding: false)
       assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "change:current@example.com"
+    end
+  end
+
+  describe "deliver_user_add_sub_email_instructions/3" do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "sends token through notification", %{user: user} do
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_add_sub_email_instructions(user, "new_sub_email@example.com", url)
+        end)
+
+      assert_add_sub_email_mail_sent("new_sub_email@example.com")
+
+      {:ok, token} = Base.url_decode64(token, padding: false)
+      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      assert user_token.user_id == user.id
+      assert user_token.sent_to == "new_sub_email@example.com"
+      assert user_token.context == "confirm_sub_email"
     end
   end
 
@@ -406,6 +723,28 @@ defmodule Bright.AccountsTest do
 
     test "does not update email if user email changed", %{user: user, token: token} do
       assert Accounts.update_user_email(%{user | email: "current@example.com"}, token) == :error
+      assert Repo.get!(User, user.id).email == user.email
+      assert Repo.get_by(UserToken, user_id: user.id)
+    end
+
+    test "does not update email if user email already registered by other user", %{
+      user: user,
+      token: token,
+      email: email
+    } do
+      insert(:user, email: email)
+      assert Accounts.update_user_email(user, token) == :error
+      assert Repo.get!(User, user.id).email == user.email
+      assert Repo.get_by(UserToken, user_id: user.id)
+    end
+
+    test "does not update email if user email already registered as sub email", %{
+      user: user,
+      token: token,
+      email: email
+    } do
+      insert(:user_sub_email, email: email)
+      assert Accounts.update_user_email(user, token) == :error
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
@@ -524,6 +863,310 @@ defmodule Bright.AccountsTest do
         })
 
       refute Repo.get_by(UserToken, user_id: user.id)
+    end
+  end
+
+  describe "change_new_user_sub_email/2" do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "returns changeset", %{user: user} do
+      new_email = unique_user_email()
+
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: new_email
+        })
+
+      assert changeset.valid?
+      assert get_change(changeset, :email) == new_email
+    end
+
+    test "validates required", %{user: user} do
+      changeset = Accounts.change_new_user_sub_email(user, %{})
+
+      refute changeset.valid?
+
+      assert %{
+               email: ["can't be blank"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email format", %{user: user} do
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: "invalid"
+        })
+
+      assert %{
+               email: ["has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email length", %{user: user} do
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: String.duplicate("a", 161)
+        })
+
+      assert %{
+               email: ["should be at most 160 character(s)", "has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "does not validates email uniqueness", %{user: user} do
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: user.email
+        })
+
+      assert changeset.valid?
+    end
+
+    test "does not validates email uniqueness in sub email", %{user: user} do
+      user_sub_email = insert(:user_sub_email)
+
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: user_sub_email.email
+        })
+
+      assert changeset.valid?
+    end
+
+    test "does not validates sub email count", %{user: user} do
+      insert_list(3, :user_sub_email, user: user)
+
+      new_email = unique_user_email()
+
+      changeset =
+        Accounts.change_new_user_sub_email(user, %{
+          email: new_email
+        })
+
+      assert changeset.valid?
+    end
+  end
+
+  describe "apply_new_user_sub_email/2" do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "returns changeset", %{user: user} do
+      new_email = unique_user_email()
+
+      {:ok, user_sub_email} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: new_email
+        })
+
+      assert user_sub_email.email == new_email
+      assert user_sub_email.user_id == user.id
+    end
+
+    test "validates required", %{user: user} do
+      {:error, changeset} = Accounts.apply_new_user_sub_email(user, %{})
+
+      refute changeset.valid?
+
+      assert %{
+               email: ["can't be blank"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email format", %{user: user} do
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: "invalid"
+        })
+
+      assert %{
+               email: ["has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email length", %{user: user} do
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: String.duplicate("a", 161)
+        })
+
+      assert %{
+               email: ["should be at most 160 character(s)", "has invalid format"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email uniqueness", %{user: user} do
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: user.email
+        })
+
+      assert %{
+               email: ["has already been taken"]
+             } == errors_on(changeset)
+    end
+
+    test "validates email uniqueness in sub email", %{user: user} do
+      user_sub_email = insert(:user_sub_email)
+
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: user_sub_email.email
+        })
+
+      assert %{
+               email: ["has already been taken"]
+             } == errors_on(changeset)
+    end
+
+    test "validates sub email count", %{user: user} do
+      insert_list(3, :user_sub_email, user: user)
+
+      new_email = unique_user_email()
+
+      {:error, changeset} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: new_email
+        })
+
+      assert %{
+               email: ["already has max number of sub emails"]
+             } == errors_on(changeset)
+    end
+
+    test "valids if other user has already 3 user_sub_email", %{user: user} do
+      insert_list(3, :user_sub_email)
+
+      new_email = unique_user_email()
+
+      {:ok, %UserSubEmail{}} =
+        Accounts.apply_new_user_sub_email(user, %{
+          email: new_email
+        })
+    end
+  end
+
+  describe "add_user_sub_email/2" do
+    setup do
+      user = insert(:user)
+      new_email = unique_user_email()
+
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_add_sub_email_instructions(user, new_email, url)
+        end)
+
+      %{user: user, token: token, email: new_email}
+    end
+
+    test "adds the email with a valid token", %{user: user, token: token, email: email} do
+      assert Accounts.add_user_sub_email(user, token) == :ok
+
+      user_sub_email = Repo.get_by!(UserSubEmail, user_id: user.id)
+
+      assert Repo.aggregate(UserSubEmail, :count) == 1
+      assert user_sub_email.email == email
+      refute Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "adds the email with not expired token", %{user: user, token: token, email: email} do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert Accounts.add_user_sub_email(user, token) == :ok
+      user_sub_email = Repo.get_by!(UserSubEmail, user_id: user.id)
+
+      assert Repo.aggregate(UserSubEmail, :count) == 1
+      assert user_sub_email.email == email
+      refute Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email with invalid token", %{user: user} do
+      assert Accounts.add_user_sub_email(user, "invalid") == :error
+
+      assert Repo.aggregate(UserSubEmail, :count) == 0
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email when email is already used by other user", %{
+      user: user,
+      token: token,
+      email: email
+    } do
+      insert(:user, email: email)
+      assert Accounts.add_user_sub_email(user, token) == :error
+
+      assert Repo.aggregate(UserSubEmail, :count) == 0
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email when email is already used by sub email", %{
+      user: user,
+      token: token,
+      email: email
+    } do
+      insert(:user_sub_email, email: email)
+      assert Accounts.add_user_sub_email(user, token) == :error
+
+      assert Repo.aggregate(UserSubEmail, :count) == 1
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email when user has already 3 user_sub_emails", %{
+      user: user,
+      token: token
+    } do
+      insert_list(3, :user_sub_email, user: user)
+      assert Accounts.add_user_sub_email(user, token) == :already_has_max_number_of_sub_emails
+
+      assert Repo.aggregate(UserSubEmail, :count) == 3
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+
+    test "does not add email when token is expired after 1 days", %{
+      user: user,
+      token: token
+    } do
+      {1, nil} =
+        Repo.update_all(UserToken,
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24)]
+        )
+
+      assert Accounts.add_user_sub_email(user, token) == :error
+
+      assert Repo.aggregate(UserSubEmail, :count) == 0
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm_sub_email")
+    end
+  end
+
+  describe "delete_user_sub_email/2" do
+    test "deletes user sub email" do
+      user_sub_email = insert(:user_sub_email)
+
+      :ok = Accounts.delete_user_sub_email(user_sub_email.user, user_sub_email.email)
+
+      refute Repo.get_by(UserSubEmail, user_id: user_sub_email.user.id)
+    end
+
+    test "does not delete other user sub email" do
+      other_user = insert(:user)
+
+      user_sub_email = insert(:user_sub_email)
+
+      :ok = Accounts.delete_user_sub_email(other_user, user_sub_email.email)
+
+      assert user_sub_email ==
+               Repo.get_by(UserSubEmail, user_id: user_sub_email.user.id) |> Repo.preload(:user)
     end
   end
 

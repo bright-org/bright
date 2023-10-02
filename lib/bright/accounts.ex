@@ -132,10 +132,9 @@ defmodule Bright.Accounts do
         user_social_auth_params
         |> Map.merge(%{user_id: user.id})
 
-      {:ok,
-       %UserSocialAuth{}
-       |> UserSocialAuth.change_user_social_auth(user_social_auth_params)
-       |> repo.insert!()}
+      %UserSocialAuth{}
+      |> UserSocialAuth.change_user_social_auth(user_social_auth_params)
+      |> repo.insert()
     end)
     |> Ecto.Multi.run(:user_profile, fn _repo, %{user: user} ->
       UserProfiles.create_initial_user_profile(user.id)
@@ -171,6 +170,12 @@ defmodule Bright.Accounts do
 
   @doc """
   Gets user by provider and identifier
+
+  ## Examples
+
+      iex> get_user_by_provider_and_identifier(:google, "1")
+      %User{}
+
   """
   def get_user_by_provider_and_identifier(provider, identifier) do
     UserSocialAuth.user_by_provider_and_identifier_query(provider, identifier)
@@ -260,7 +265,7 @@ defmodule Bright.Accounts do
 
   ## Examples
 
-      iex> deliver_user_add_sub_email_instructions(user, current_email, &url(~p"/users/confirm_sub_email/#{&1})")
+      iex> deliver_user_add_sub_email_instructions(user, new_sub_email, &url(~p"/users/confirm_sub_email/#{&1})")
       {:ok, %{to: ..., body: ...}}
 
   """

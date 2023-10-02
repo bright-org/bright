@@ -57,7 +57,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
                 <input type="text" size="20" name={"sub_mail_#{index}"} value={user_sub_email.email} class="bg-brightGray-50 border border-brightGray-200 px-2 py-1 rounded w-60" disabled>
               </label>
               <div class="mt-1 ml-auto w-fit">
-                <button phx-click="delete_sub_email" phx-value-sub_email={user_sub_email.email} phx-target={@myself} type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
+                <button id={"delete_sub_email_button_#{index}"} phx-click="delete_sub_email" phx-value-sub_email={user_sub_email.email} phx-target={@myself} type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
               </div>
             </div>
 
