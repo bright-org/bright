@@ -419,6 +419,42 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   end
 
   @doc """
+  案内メッセージエリア
+  """
+  def help_messages_area(assigns) do
+    ~H"""
+    <div class="lg:absolute lg:right-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col">
+      <% # スキル入力前メッセージ %>
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        :if={Map.get(@flash, "first_skills_edit")}
+        module={BrightWeb.HelpMessageComponent}
+        id="help-enter-skills">
+        <.first_skills_edit_message />
+      </.live_component>
+
+      <% # スキル入力後メッセージ（初回のみ） %>
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        :if={Map.get(@flash, "first_submit_in_overall")}
+        module={BrightWeb.HelpMessageComponent}
+        id="help-first-skill-submit-in-overall">
+        <.first_submit_in_overall_message />
+      </.live_component>
+
+      <% # クラス開放メッセージ %>
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        :if={Map.get(@flash, "next_skill_class_opened")}
+        module={BrightWeb.HelpMessageComponent}
+        id="help-next-class-opened">
+        <.next_skill_class_opened_message />
+      </.live_component>
+    </div>
+    """
+  end
+
+  @doc """
   スキル入力前メッセージ
   """
   def first_skills_edit_message(assigns) do

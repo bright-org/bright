@@ -19,7 +19,7 @@ defmodule BrightWeb.HelpMessageComponent do
 
   def render(assigns) do
     ~H"""
-    <div id={@id} class="px-4 py-2 rounded w-fit text-xs bg-designer-dazzle leading-normal">
+    <div id={@id} class="relative px-4 py-2 my-1 rounded w-fit text-xs bg-designer-dazzle leading-normal">
       <%= render_slot(@inner_block) %>
 
       <div class="flex gap-4 justify-center pt-2">
