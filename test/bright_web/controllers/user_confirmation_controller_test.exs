@@ -23,6 +23,29 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       assert redirected_to(conn) == ~p"/users/log_in"
     end
 
+    test "token is already expired", %{conn: conn, user: user} do
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_user_confirmation_instructions(user, url)
+        end)
+
+      {1, nil} =
+        Repo.update_all(
+          UserToken,
+          set: [
+            inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+          ]
+        )
+
+      conn = get(conn, ~p"/users/confirm/#{token}")
+      assert html_response(conn, 302)
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
+               "リンクが無効であるか期限が切れています"
+
+      assert redirected_to(conn) == ~p"/users/log_in"
+    end
+
     test "confirm user and logs the user in", %{conn: conn, user: user} do
       token =
         extract_user_token(fn url ->

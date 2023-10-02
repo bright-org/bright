@@ -98,6 +98,15 @@ defmodule BrightWeb.Router do
     end
   end
 
+  # dev server 自動テスト用
+  if System.get_env("DEV_SERVER") do
+    scope "/dev" do
+      pipe_through [:browser, :admin]
+
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+  end
+
   # ローカル開発用
   if Application.compile_env(:bright, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put

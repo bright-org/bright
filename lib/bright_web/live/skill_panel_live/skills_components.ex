@@ -21,20 +21,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compare_timeline(assigns) do
     ~H"""
-    <div class="max-w-[566px] w-full lg:mr-8 lg:w-[566px]">
+    <div class="max-w-[566px] w-full mb-8 lg:mb-0 lg:mr-8 lg:w-[566px]">
       <div class="flex flex-wrap justify-center lg:flex-nowrap lg:justify-start">
         <% # 過去方向ボタン %>
-        <div class="order-2 flex justify-center items-center ml-1 mr-3 lg:order-1">
+        <div class="order-2 flex justify-center items-center ml-1 mr-2 lg:order-1">
           <%= if @timeline.past_enabled do %>
             <button
-              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative"
               phx-click="shift_timeline_past"
               phx-target={@myself}
             >
               <span class="material-icons text-white !text-3xl">arrow_left</span>
             </button>
           <% else %>
-            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative">
               <span class="material-icons text-white !text-3xl">arrow_left</span>
             </button>
           <% end %>
@@ -55,7 +55,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <div class="order-3 flex justify-center items-center ml-2">
           <%= if @timeline.future_enabled do %>
             <button
-              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded"
+              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative"
               phx-click="shift_timeline_future"
               phx-target={@myself}
               disabled={!@timeline.future_enabled}
@@ -63,7 +63,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <span class="material-icons text-white !text-3xl">arrow_right</span>
             </button>
           <% else %>
-            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded">
+            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative">
               <span class="material-icons text-white !text-3xl">arrow_right</span>
             </button>
           <% end %>
@@ -317,6 +317,65 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
+  def skills_table_sp(assigns) do
+    ~H"""
+    <div class="flex justify-center items-center mb-20">
+      <section class="text-sm w-full">
+        <div>
+          <%= for skill_unit <- @skill_units do %>
+            <b class="block font-bold mt-6 text-xl">
+              <%= skill_unit.name %>
+            </b>
+            <%= for skill_category <- get_children(skill_unit, "skill_categories") do %>
+              <div class="category-top">
+                <b class="block font-bold mt-2 text-base">
+                  <%= skill_category.name %>
+                </b>
+
+                <table class="mt-2 w-full">
+                  <%= for skill <- get_children(skill_category, "skills") do %>
+                    <% skill_score = @skill_score_dict[skill.id] || %{score: :low} %>
+                    <% current_skill = Map.get(@current_skill_dict, skill.trace_id, %{}) %>
+                    <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
+
+                    <tr
+                      id={"skill-sp-#{skill.id}"}
+                      class={["border border-brightGray-200"]}
+                    >
+                      <th class="flex justify-between align-middle w-full mb-2 min-h-8 p-2 text-left">
+                        <%= skill.name %>
+                        <div class="flex justify-between items-center gap-x-2">
+                          <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                        </div>
+                      </th>
+
+                      <td class="align-middle border-l border-brightGray-200 p-2">
+                        <div class="flex justify-center gap-x-1">
+                          <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </section>
+    </div>
+    """
+  end
+
+  defp get_children(unit_or_category, attr) do
+    Map.get(
+      unit_or_category,
+      String.to_atom(attr),
+      Map.get(unit_or_category, String.to_atom("historical_#{attr}"), [])
+    )
+  end
+
   def skill_evidence_link(%{skill_score: nil} = assigns), do: ~H""
 
   def skill_evidence_link(assigns) do
@@ -364,16 +423,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   """
   def first_skills_edit_message(assigns) do
     ~H"""
-    <div class="flex items-center">
+    <p>
       <span class="font-bold">まずは「スキル入力する」ボタンをクリック</span>してスキル入力を始めてください
-    </div>
+    </p>
     <ul class="my-2">
       <li class="flex items-center"><span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mr-1"></span> 実務経験がある、もしくは依頼されたら短期間で実行できる</li>
       <li class="flex items-center"><span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-300 inline-block mr-1"></span> 知識はあるが、実務経験が浅く、自信が無い（調査が必要）</li>
       <li class="flex items-center"><span class="h-1 w-4 bg-brightGray-200 inline-block mr-1"></span> 知識や実務経験が無い</li>
     </ul>
-    <div>
-      <p class="flex items-center">
+    <div class="hidden lg:block">
+      <p class="flex flex-wrap items-center">
         スキル入力は、1キーを押すと
         <span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mx-1"></span>
         が付き、2キーを押すと
@@ -385,7 +444,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <p>マウス無しのキーボード操作だけで快適にスキル入力できます。</p>
     </div>
     <div class="mt-2">
-      なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br>できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
+      なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br class="hidden lg:inline">できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
     </div>
     """
   end
@@ -400,8 +459,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <p class="mt-2">スキル入力後は「成長を見る・比較する」メニューで現在のスキルレベルを確認できます。<br>スキル合計の％が40％より下は「見習い」、40％以上で「平均」、60％以上で「ベテラン」となります。</p>
       <p class="mt-2">また、3ヶ月区切りでスキルレベルを集計するので、スキルの成長も体感できます。</p>
     </div>
-    <div class="mt-4 w-[400px]">
-      <img src="/images/sample_groth_graph.png" alt="成長グラフ" width="600" height="250">
+    <div class="mt-4 max-w-[400px]">
+      <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
     </div>
     """
   end
@@ -415,8 +474,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <p>クラス開放おめでとうございます！</p>
       <p class="mt-2">クラス開放後は「成長を見る・比較する」メニューでスキルレベルを確認できます。</p>
     </div>
-    <div class="mt-4 w-[400px]">
-      <img src="/images/sample_groth_graph.png" alt="成長グラフ" width="600" height="250">
+    <div class="mt-4 max-w-[400px]">
+      <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
     </div>
     """
   end

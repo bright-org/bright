@@ -23,20 +23,20 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
           phx-target={@myself}
           class="w-full"
         >
-          <div class="border-brightGray-200 flex justify-between mb-4 w-full">
+          <div class="border-brightGray-200 flex flex-col lg:flex-row justify-between mb-4 w-full">
             <label class="flex items-center py-4">
               <span class="w-44">メールアドレス</span>
               <BrightCore.input
                 field={@email_form[:email]}
                 type="email"
                 size="20"
-                input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+                input_class="border border-brightGray-200 px-2 py-1 rounded w-full lg:w-60"
                 required
               />
             </label>
 
-            <div class="ml-4 mt-1 py-4 w-fit">
-              <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">保存する</button>
+            <div class="lg:ml-4 mt-1 py-4 w-full lg:w-fit">
+              <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-full lg:w-28 hover:opacity-50">保存する</button>
             </div>
           </div>
         </.form>
@@ -47,7 +47,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
           <p>※ 確認メールが送信され、完了後メールアドレスが追加されます</p>
         </div>
 
-        <div class="w-full flex">
+        <div class="w-full flex flex-col lg:flex-row">
           <div class="w-44 py-2">
             <span>サブアドレス</span>
           </div>
@@ -57,7 +57,7 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
                 <input type="text" size="20" name={"sub_mail_#{index}"} value={user_sub_email.email} class="bg-brightGray-50 border border-brightGray-200 px-2 py-1 rounded w-60" disabled>
               </label>
               <div class="mt-1 ml-auto w-fit">
-                <button phx-click="delete_sub_email" phx-value-sub_email={user_sub_email.email} phx-target={@myself} type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
+                <button id={"delete_sub_email_button_#{index}"} phx-click="delete_sub_email" phx-value-sub_email={user_sub_email.email} phx-target={@myself} type="button" class="mail_delete bg-white block border border-solid border-brightGray-900 cursor-pointer font-bold my-0.5 px-2 py-1 rounded select-none text-center text-brightGray-900 w-28 hover:opacity-50">削除する</button>
               </div>
             </div>
 
@@ -142,8 +142,8 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponent do
               />
             </label>
           </div>
-          <div class="absolute right-0 bottom-0 w-fit">
-            <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-28 hover:opacity-50">保存する</button>
+          <div class="w-full mt-4 lg:mt-0 lg:absolute lg:right-0 lg:bottom-0 lg:w-fit">
+            <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-full lg:w-28 hover:opacity-50">保存する</button>
           </div>
         </div>
       </.form>

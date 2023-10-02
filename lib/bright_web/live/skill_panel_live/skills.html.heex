@@ -14,7 +14,8 @@
     <div> </div>
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
-  <div class="bg-white shadow px-6 relative z-2 pb-10 pt-3">
+  <div class="bg-white shadow relative z-2 pb-10 pt-3">
+    <div class="px-6">
     <.profile_area
       display_user={@display_user}
       anonymous={@anonymous}
@@ -25,7 +26,7 @@
       skill_panel={@skill_panel}
       query={@query}
     />
-
+    </div>
     <.live_component
       id="skills-field"
       module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
@@ -47,9 +48,10 @@
   <div
     :if={Map.get(@flash, "first_skills_edit")}
     class="absolute right-0 top-32 z-10">
+    <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
     <.live_component
       module={BrightWeb.HelpMessageComponent}
-      id="first_skills_edit_message">
+      id="help-enter-skills">
       <.first_skills_edit_message />
     </.live_component>
   </div>
@@ -58,9 +60,10 @@
   <div
     :if={Map.get(@flash, "first_submit_in_overall")}
     class="absolute right-0 top-32 z-10">
+    <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
     <.live_component
       module={BrightWeb.HelpMessageComponent}
-      id="first_submit_in_overall_message">
+      id="help-first-skill-submit-in-overall">
       <.first_submit_in_overall_message />
     </.live_component>
   </div>
@@ -69,9 +72,10 @@
   <div
     :if={Map.get(@flash, "next_skill_class_opened")}
     class="absolute right-0 top-32 z-10">
+    <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
     <.live_component
       module={BrightWeb.HelpMessageComponent}
-      id="next_skill_class_opened_message">
+      id="help-next-class-opened">
       <.next_skill_class_opened_message />
     </.live_component>
   </div>

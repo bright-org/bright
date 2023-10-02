@@ -116,9 +116,13 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
-  config :bright, Bright.Mailer,
-    adapter: Swoosh.Adapters.Sendgrid,
-    api_key: System.get_env("SENDGRID_API_KEY")
+  if System.get_env("DEV_SERVER") do
+    config :bright, Bright.Mailer, adapter: Swoosh.Adapters.Local
+  else
+    config :bright, Bright.Mailer,
+      adapter: Swoosh.Adapters.Sendgrid,
+      api_key: System.get_env("SENDGRID_API_KEY")
+  end
 
   # Sentry
   config :sentry,

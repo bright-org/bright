@@ -13,7 +13,7 @@ defmodule Bright.Accounts.UserToken do
   @two_factor_auth_session_validity %{"ago" => 1, "intervals" => "hour"}
   @two_factor_auth_done_validity %{"ago" => 60, "intervals" => "day"}
   @reset_password_validity %{"ago" => 1, "intervals" => "day"}
-  @confirm_validity %{"ago" => 30, "intervals" => "minute"}
+  @confirm_validity %{"ago" => 1, "intervals" => "day"}
   @change_email_validity %{"ago" => 1, "intervals" => "day"}
   @confirm_sub_email_validity %{"ago" => 1, "intervals" => "day"}
   @session_validity_in_days 60
