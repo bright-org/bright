@@ -47,6 +47,7 @@
   <div
     :if={Map.get(@flash, "first_skills_edit")}
     class="absolute right-0 top-32 z-10">
+    <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
     <.live_component
       module={BrightWeb.HelpMessageComponent}
       id="help-enter-skills">
@@ -58,6 +59,7 @@
   <div
     :if={Map.get(@flash, "first_submit_in_overall")}
     class="absolute right-0 top-32 z-10">
+    <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
     <.live_component
       module={BrightWeb.HelpMessageComponent}
       id="help-first-skill-submit-in-overall">
@@ -69,6 +71,7 @@
   <div
     :if={Map.get(@flash, "next_skill_class_opened")}
     class="absolute right-0 top-32 z-10">
+    <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
     <.live_component
       module={BrightWeb.HelpMessageComponent}
       id="help-next-class-opened">

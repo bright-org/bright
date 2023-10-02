@@ -24,14 +24,14 @@ defmodule BrightWeb.HelpMessageComponent do
 
       <div class="flex gap-4 justify-center pt-2">
         <button
-          id={"good-#{@id}"}
+          id={good_button_id(@id)}
           type="button"
           class="bg-brightGray-900 border border-brightGray-900 font-bold p-1 rounded text-white w-48"
           phx-click={JS.push("good", target: @myself) |> hide("##{@id}")}>
           この説明は分かりやすい
         </button>
         <button
-          id={"bad-#{@id}"}
+          id={bad_button_id(@id)}
           type="button"
           class="bg-white border border-brightGray-900 font-bold p-1 rounded text-brightGray-900 w-24"
           phx-click={JS.push("bad", target: @myself) |> hide("##{@id}")}>
@@ -62,4 +62,10 @@ defmodule BrightWeb.HelpMessageComponent do
     # TODO: 所定の処理を追加
     {:noreply, assign(socket, :open, false)}
   end
+
+  # NOTE:
+  #   idはGAイベントトラッキング対象、変更の際は確認と共有必要
+  defp good_button_id(id), do: "btn-#{id}-good"
+
+  defp bad_button_id(id), do: "btn-#{id}-bad"
 end
