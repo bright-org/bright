@@ -10,20 +10,25 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponent do
     ~H"""
     <li class="block">
       <div class="flex flex-col mt-8">
-        <div id="user_settings_sns_linked_provider" class="flex items-center mb-4 text-left" :for={linked_user_social_auth <- @linked_user_social_auths}>
-          <div class="w-full">
-            <BrightWeb.UserAuthComponents.social_auth_button method="delete" href={~p"/auth/#{linked_user_social_auth.provider}"} variant={to_string(linked_user_social_auth.provider)}>
-              <%= UserSocialAuth.provider_name(linked_user_social_auth.provider) %>と連携解除する
-            </BrightWeb.UserAuthComponents.social_auth_button>
-            <span class="ml-4"><%= linked_user_social_auth.display_name %>で連携中</span>
-          </div>
-        </div>
-        <div id="user_settings_sns_unlinked_provider" class="flex items-center mb-4 text-left" :for={unlink_provider <- @unlink_providers}>
-          <div class="w-full">
-            <BrightWeb.UserAuthComponents.social_auth_button href={if unlink_provider in not_implemented_providers(), do: "#", else: ~p"/auth/#{unlink_provider}"} variant={to_string(unlink_provider)}>
-              <%= UserSocialAuth.provider_name(unlink_provider) %>と連携する
-            </BrightWeb.UserAuthComponents.social_auth_button>
-          </div>
+        <div
+          id={if provider in linked_providers(@linked_user_social_auths), do: "user_settings_sns_linked_provider", else: "user_settings_sns_unlinked_provider"}
+          class="flex items-center mb-4 text-left"
+          :for={provider <- UserSocialAuth.providers()}
+        >
+          <%= if provider in linked_providers(@linked_user_social_auths) do %>
+            <div class="w-full">
+              <BrightWeb.UserAuthComponents.social_auth_button method="delete" href={~p"/auth/#{provider}"} variant={to_string(provider)}>
+                <%= UserSocialAuth.provider_name(provider) %>と連携解除する
+              </BrightWeb.UserAuthComponents.social_auth_button>
+              <span class="ml-4"><%= user_social_auth_by_provider(@linked_user_social_auths, provider).display_name %>で連携中</span>
+            </div>
+          <% else %>
+            <div class="w-full">
+              <BrightWeb.UserAuthComponents.social_auth_button href={if provider in not_implemented_providers(), do: "#", else: ~p"/auth/#{provider}"} variant={to_string(provider)}>
+                <%= UserSocialAuth.provider_name(provider) %>と連携する
+              </BrightWeb.UserAuthComponents.social_auth_button>
+            </div>
+          <% end %>
         </div>
       </div>
     </li>
@@ -38,18 +43,17 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponent do
 
     {:ok,
      socket
-     |> assign(
-       linked_user_social_auths: user_social_auths,
-       unlink_providers: unlink_providers(user_social_auths)
-     )}
+     |> assign(linked_user_social_auths: user_social_auths)}
   end
 
-  defp unlink_providers(user_social_auths) do
-    linked_providers = user_social_auths |> Enum.map(& &1.provider)
+  defp linked_providers(user_social_auths) do
+    user_social_auths |> Enum.map(& &1.provider)
+  end
 
-    UserSocialAuth.providers() |> Enum.reject(&(&1 in linked_providers))
+  defp user_social_auth_by_provider(user_social_auths, provider) do
+    user_social_auths |> Enum.find(&(&1.provider == provider))
   end
 
   # github, facebook, twitter 連携は未実装
-  defp not_implemented_providers, do: ~w(github facebook twitter)a
+  defp not_implemented_providers, do: ~w(facebook twitter)a
 end

@@ -682,7 +682,7 @@ defmodule Bright.Accounts do
 
   ## Examples
 
-      iex> generate_social_identifier_token(%{name: "koyo", email: "dummy@example.com", provider: :google, identifier: "1})
+      iex> generate_social_identifier_token(%{name: "koyo", email: "dummy@example.com", provider: :google, identifier: "1"})
       "token"
 
   """
