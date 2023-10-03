@@ -20,7 +20,7 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
 
       assert lv
              |> has_element?(
-               ~s{#user_settings_sns_unlinked_provider a[href="#"]},
+               ~s{#user_settings_sns_unlinked_provider a[href="/auth/github"]},
                "GitHubと連携する"
              )
 
@@ -59,7 +59,10 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
       lv |> element("a", "SNS連携") |> render_click()
 
       assert lv
-             |> has_element?(~s{#user_settings_sns_unlinked_provider a[href="#"]}, "GitHubと連携する")
+             |> has_element?(
+               ~s{#user_settings_sns_unlinked_provider a[href="/auth/github"]},
+               "GitHubと連携する"
+             )
 
       assert lv
              |> has_element?(

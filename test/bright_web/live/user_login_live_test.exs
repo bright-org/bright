@@ -157,7 +157,7 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       assert lv
              |> has_element?(
-               ~s{a[href="#"]},
+               ~s{a[href="/auth/github"]},
                "GitHub"
              )
 
