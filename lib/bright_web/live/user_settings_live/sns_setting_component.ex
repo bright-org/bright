@@ -54,6 +54,6 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponent do
     user_social_auths |> Enum.find(&(&1.provider == provider))
   end
 
-  # github, facebook, twitter 連携は未実装
+  # facebook, twitter 連携は未実装
   defp not_implemented_providers, do: ~w(facebook twitter)a
 end
