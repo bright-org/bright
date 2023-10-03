@@ -847,6 +847,56 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  # 他者との比較
+  describe "Compared User" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    # 他者 user_2 用意
+    setup %{
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_1: skill_1
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+      insert(:skill_score, user: user_2, skill: skill_1, score: :high)
+      insert(:init_skill_class_score, user: user_2, skill_class: skill_class)
+
+      %{user_2: user_2}
+    end
+
+    # 他者とのチーム関連付け
+    setup %{user: user, user_2: user_2} do
+      team = insert(:team)
+      insert(:team_member_users, user: user, team: team)
+      insert(:team_member_users, user: user_2, team: team)
+      :ok
+    end
+
+    @tag score: :low
+    test "shows compared user skills percentage", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      user_2: user_2
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      # 「個人と比較」 チームタブ選択
+      show_live
+      |> element(~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]})
+      |> render_click()
+
+      # 対象ユーザー選択
+      show_live
+      |> element(~s{a[phx-click="click_on_related_user_card_compare"]}, user_2.name)
+      |> render_click()
+
+      assert has_element?(show_live, "#skills-table-field", user_2.name)
+      assert has_element?(show_live, "#user-1-percentages .score-middle-percentage", "0％")
+      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
+    end
+  end
+
   describe "Messages" do
     setup [:register_and_log_in_user, :setup_skills]
 

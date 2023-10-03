@@ -306,15 +306,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       skill_scores
       |> Enum.reduce({%{}, 0, 0}, fn skill_score, {dict, high_c, middle_c} ->
         score = skill_score.score
+        skill_id = skill_scores_skill_id(skill_score)
 
         {
-          dict |> Map.put(skill_scores_skill_id(skill_score), score),
+          Map.put(dict, skill_id, score),
           high_c + if(score == :high, do: 1, else: 0),
           middle_c + if(score == :middle, do: 1, else: 0)
         }
       end)
 
-    size = Enum.count(skill_scores)
+    size = Enum.count(skill_ids)
     high_skills_percentage = calc_percentage(high_skills_count, size)
     middle_skills_percentage = calc_percentage(middle_skills_count, size)
 

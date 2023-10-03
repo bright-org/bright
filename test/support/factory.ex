@@ -85,6 +85,10 @@ defmodule Bright.Factory do
   use Bright.HistoricalSkillScoreFactory
   use Bright.HistoricalSkillClassScoreFactory
 
+  # Teams context
+  use Bright.TeamFactory
+  use Bright.TeamMemberUsersFactory
+
   # NotificationsFactory context
   use Bright.NotificationOperationFactory
   use Bright.NotificationCommunityFactory

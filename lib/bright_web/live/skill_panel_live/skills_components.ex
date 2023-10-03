@@ -190,7 +190,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skills_table(assigns) do
     ~H"""
-    <div class="skills-table-field h-[70vh] w-full overflow-auto scroll-pt-[76px] mt-4 lg:h-[50vh]">
+    <div id="skills-table-field" class="h-[70vh] w-full overflow-auto scroll-pt-[76px] mt-4 lg:h-[50vh]">
       <table class="skill-panel-table min-w-full border-t border-l border-brightGray-200">
         <thead class="sticky top-0 bg-white">
           <tr>
@@ -243,14 +243,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </div>
               </div>
             </td>
-            <td :for={user <- @compared_users}>
+            <td id={"user-#{index}-percentages"} :for={{user, index} <- Enum.with_index(@compared_users, 1)}>
               <% user_data = Map.get(@compared_user_dict, user.name) %>
               <div class="flex justify-center gap-x-2">
                 <div class="min-w-[3em] flex items-center">
-                  <span class={[score_mark_class(:high, :amethyst), "inline-block mr-1"]}></span><%= user_data.high_skills_percentage %>％
+                  <span class={[score_mark_class(:high, :amethyst), "inline-block mr-1"]}></span>
+                  <span class="score-high-percentage"><%= user_data.high_skills_percentage %>％</span>
                 </div>
                 <div class="min-w-[3em] flex items-center">
-                  <span class={[score_mark_class(:middle, :amethyst), "inline-block mr-1"]}></span><%= user_data.middle_skills_percentage %>％
+                  <span class={[score_mark_class(:middle, :amethyst), "inline-block mr-1"]}></span>
+                  <span class="score-middle-percentage"><%= user_data.middle_skills_percentage %>％</span>
                 </div>
               </div>
             </td>
