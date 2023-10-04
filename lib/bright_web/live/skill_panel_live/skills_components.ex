@@ -545,7 +545,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div id="job_searching_message" class="flex fixed lg:absolute items-center right-4 top-12 lg:-top-16 w-fit px-5 lg:px-0 z-10">
       <div class="bg-designer-dazzle flex leading-normal px-4 py-2 rounded text-xs w-fit">
-        <p>上記の求職設定を行うと、スカウト検索であなたのスキルを必要とするプロジェクト（副業含む）から声がかかるようになります。</p>
+        <p>上記の求職設定を行うと、スキル検索であなたのスキルを必要とするプロジェクト（副業含む）から声がかかるようになります。</p>
       </div>
       <div id="arrow-to-job-searching" class="arrow ml-1"></div>
     </div>
