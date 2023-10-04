@@ -462,8 +462,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   def first_skills_edit_message(assigns) do
     ~H"""
     <p>
-      <span class="font-bold">まずは「スキル入力する」ボタンをクリック</span>してスキル入力を始めてください
+      <span class="font-bold">まずは「スキル入力する」ボタンをクリック</span>してスキル入力を始めてください。
     </p>
+    <p>スキル入力は、途中保存可能でいつでも変更できます。</p>
     <ul class="my-2">
       <li class="flex items-center">
         <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
@@ -480,7 +481,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     </ul>
     <div class="hidden lg:block">
       <p class="flex flex-wrap items-center">
-        スキル入力は、1キーを押すと
+        1キーを押すと
         <span class={[score_mark_class(:high, :green), "inline-block mx-1"]} />
         が付き、2キーを押すと
         <span class={[score_mark_class(:middle, :green), "inline-block mx-1"]} />
