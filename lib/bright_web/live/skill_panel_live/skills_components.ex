@@ -518,6 +518,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
+  @doc """
+  求職案内メッセージ
+  """
+  def prompt_job_searching_message(assigns) do
+    ~H"""
+    <div id="job_searching_message" class="flex fixed lg:absolute items-center right-4 top-12 lg:-top-16 w-fit px-5 lg:px-0 z-10">
+      <div class="bg-designer-dazzle flex leading-normal px-4 py-2 rounded text-xs w-fit">
+        <p>上記の求職設定を行うと、スカウト検索であなたのスキルを必要とするプロジェクト（副業含む）から声がかかるようになります。</p>
+      </div>
+      <div id="arrow-to-job-searching" class="arrow ml-1"></div>
+    </div>
+    """
+  end
+
   defp skill_reference_existing?(skill_reference) do
     skill_reference && skill_reference.url
   end
