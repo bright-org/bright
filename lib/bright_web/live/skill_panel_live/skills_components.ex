@@ -465,18 +465,27 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <span class="font-bold">まずは「スキル入力する」ボタンをクリック</span>してスキル入力を始めてください
     </p>
     <ul class="my-2">
-      <li class="flex items-center"><span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mr-1"></span> 実務経験がある、もしくは依頼されたら短期間で実行できる</li>
-      <li class="flex items-center"><span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-300 inline-block mr-1"></span> 知識はあるが、実務経験が浅く、自信が無い（調査が必要）</li>
-      <li class="flex items-center"><span class="h-1 w-4 bg-brightGray-200 inline-block mr-1"></span> 知識や実務経験が無い</li>
+      <li class="flex items-center">
+        <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
+        実務経験がある、もしくは依頼されたら短期間で実行できる
+      </li>
+      <li class="flex items-center">
+        <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
+        知識はあるが、実務経験が浅く、自信が無い（調査が必要）
+      </li>
+      <li class="flex items-center">
+        <span class={[score_mark_class(:low, :green), "inline-block mr-1"]} />
+        知識や実務経験が無い
+      </li>
     </ul>
     <div class="hidden lg:block">
       <p class="flex flex-wrap items-center">
         スキル入力は、1キーを押すと
-        <span class="h-4 w-4 rounded-full bg-brightGray-500 inline-block mx-1"></span>
+        <span class={[score_mark_class(:high, :green), "inline-block mx-1"]} />
         が付き、2キーを押すと
-        <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGray-300 inline-block mx-1"></span>
+        <span class={[score_mark_class(:middle, :green), "inline-block mx-1"]} />
         、3キーで
-        <span class="h-1 w-4 bg-brightGray-200 inline-block mx-1"></span>
+        <span class={[score_mark_class(:low, :green), "inline-block mx-1"]} />
         が付くので、
       </p>
       <p>マウス無しのキーボード操作だけで快適にスキル入力できます。</p>
@@ -514,6 +523,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     </div>
     <div class="mt-4 max-w-[400px]">
       <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
+    </div>
+    """
+  end
+
+  @doc """
+  求職案内メッセージ
+  """
+  def prompt_job_searching_message(assigns) do
+    ~H"""
+    <div id="job_searching_message" class="flex fixed lg:absolute items-center right-4 top-12 lg:-top-16 w-fit px-5 lg:px-0 z-10">
+      <div class="bg-designer-dazzle flex leading-normal px-4 py-2 rounded text-xs w-fit">
+        <p>上記の求職設定を行うと、スカウト検索であなたのスキルを必要とするプロジェクト（副業含む）から声がかかるようになります。</p>
+      </div>
+      <div id="arrow-to-job-searching" class="arrow ml-1"></div>
     </div>
     """
   end
