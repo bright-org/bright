@@ -503,11 +503,21 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div>
       <p>スキル入力完了おめでとうございます！</p>
-      <p class="mt-2">スキル入力後は「成長を見る・比較する」メニューで現在のスキルレベルを確認できます。<br>スキル合計の％が40％より下は「見習い」、40％以上で「平均」、60％以上で「ベテラン」となります。</p>
-      <p class="mt-2">また、3ヶ月区切りでスキルレベルを集計するので、スキルの成長も体感できます。</p>
-    </div>
-    <div class="mt-4 max-w-[400px]">
-      <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
+      <p class="mt-4">
+        <span class={[score_mark_class(:high, :green), "inline-block align-middle mr-1"]} /><span class="align-middle">が40％より下は「見習い」、40％以上で「平均」、60％以上で「ベテラン」となります。</span>
+      </p>
+      <p class="mt-2">
+        スキル入力後は「成長を見る・比較する」メニューで現在のスキルレベルを確認できます。
+      </p>
+      <p>
+        また、3ヶ月区切りでスキルレベルを集計するので、スキルの成長も体感できます。
+      </p>
+      <div class="mt-2 max-w-[400px]">
+        <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
+      </div>
+      <p class="mt-4">
+        なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br class="hidden lg:inline">できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
+      </p>
     </div>
     """
   end
