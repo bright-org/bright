@@ -51,6 +51,20 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
       |> follow_redirect(conn, ~p"/auth/google")
     end
 
+    test "clicks 「GitHubと連携する」", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/mypage")
+
+      lv |> element("a", "SNS連携") |> render_click()
+
+      lv
+      |> element(
+        "#user_settings_sns_unlinked_provider a",
+        "GitHubと連携する"
+      )
+      |> render_click()
+      |> follow_redirect(conn, ~p"/auth/github")
+    end
+
     test "shows sns page when linked only google", %{conn: conn, user: user} do
       insert(:user_social_auth_for_google, user: user, display_name: "dummy@example.com")
 

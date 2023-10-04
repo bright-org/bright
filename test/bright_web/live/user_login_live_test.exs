@@ -185,5 +185,17 @@ defmodule BrightWeb.UserLoginLiveTest do
       |> render_click()
       |> follow_redirect(conn, ~p"/auth/google")
     end
+
+    test "clicks 「GitHub」 button", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+
+      lv
+      |> element(
+        "a",
+        "GitHub"
+      )
+      |> render_click()
+      |> follow_redirect(conn, ~p"/auth/github")
+    end
   end
 end
