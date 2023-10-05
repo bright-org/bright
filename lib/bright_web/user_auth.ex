@@ -266,8 +266,16 @@ defmodule BrightWeb.UserAuth do
     else
       conn
       |> put_flash(:error, "ログインが必要です")
-      |> redirect(to: ~p"/users/log_in")
+      |> redirect(to: require_authenticated_user_redirect_path(conn))
       |> halt()
+    end
+  end
+
+  defp require_authenticated_user_redirect_path(conn) do
+    if conn.request_path == "/graphs" do
+      ~p"/users/register"
+    else
+      ~p"/users/log_in"
     end
   end
 

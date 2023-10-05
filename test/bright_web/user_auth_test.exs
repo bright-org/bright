@@ -356,6 +356,17 @@ defmodule BrightWeb.UserAuthTest do
                "ログインが必要です"
     end
 
+    test "redirects register page if user is not authenticated and request path is /graph", %{
+      conn: conn
+    } do
+      conn = conn |> get(~p"/graphs")
+
+      assert redirected_to(conn) == ~p"/users/register"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
+               "ログインが必要です"
+    end
+
     test "does not redirect if user is authenticated", %{conn: conn, user: user} do
       conn = conn |> assign(:current_user, user) |> UserAuth.require_authenticated_user([])
       refute conn.halted
