@@ -24,9 +24,32 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
 
         <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" variant="w-full" required/>
 
+        <div class="mx-auto mt-1 max-w-xs w-full">
+          <div phx-click="toggre_is_terms_of_service_checked" class="mt-1 w-full">
+            <input type="checkbox" id="terms_of_service" class="rounded" checked={@is_terms_of_service_checked?} />
+            <label for="terms_of_service" class="pl-1 text-xs">
+              <a href="https://bright-fun.org/terms/terms.pdf" class="text-link underline font-semibold" target="_blank">利用規約</a>に同意する
+            </label>
+          </div>
+
+          <div phx-click="toggre_is_privacy_policy_checked" class="mt-1 w-full">
+            <input type="checkbox" id="privacy_policy" class="rounded" checked={@is_privacy_policy_checked?} />
+            <label for="privacy_policy" class="pl-1 text-xs">
+              <a href="https://bright-fun.org/privacy/privacy.pdf" class="text-link underline font-semibold" target="_blank">プライバシーポリシー</a>に同意する
+            </label>
+          </div>
+
+          <div phx-click="toggre_is_law_checked" class="mt-1 w-full">
+            <input type="checkbox" id="law" class="rounded" checked={@is_law_checked?} />
+            <label for="law" class="pl-1 text-xs">
+              <a href="https://bright-fun.org/laws/laws.pdf" class="text-link underline font-semibold" target="_blank">法令に基づく表記</a>を確認した
+            </label>
+          </div>
+        </div>
+
         <UserAuthComponents.social_auth_banner variant={to_string(@provider)} />
 
-        <UserAuthComponents.button variant="mx-auto">ユーザーを新規作成する</UserAuthComponents.button>
+        <UserAuthComponents.button variant="mx-auto" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UserAuthComponents.button>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
 
@@ -53,6 +76,9 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
         socket
         |> assign(identifier: identifier, provider: provider, display_name: display_name)
         |> assign(check_errors: false)
+        |> assign(is_terms_of_service_checked?: false)
+        |> assign(is_privacy_policy_checked?: false)
+        |> assign(is_law_checked?: false)
         |> assign_form(changeset)
 
       {:ok, socket, temporary_assigns: [form: nil]}
@@ -62,6 +88,36 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
        |> put_flash(:error, "セッションの期限が切れました。再度やり直してください。")
        |> redirect(to: ~p"/users/register")}
     end
+  end
+
+  def handle_event(
+        "toggre_is_terms_of_service_checked",
+        _params,
+        %{assigns: %{is_terms_of_service_checked?: is_terms_of_service_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_terms_of_service_checked?: !is_terms_of_service_checked?)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "toggre_is_privacy_policy_checked",
+        _params,
+        %{assigns: %{is_privacy_policy_checked?: is_privacy_policy_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_privacy_policy_checked?: !is_privacy_policy_checked?)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "toggre_is_law_checked",
+        _params,
+        %{assigns: %{is_law_checked?: is_law_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_law_checked?: !is_law_checked?)
+    |> then(&{:noreply, &1})
   end
 
   def handle_event(

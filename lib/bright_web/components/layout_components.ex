@@ -49,6 +49,7 @@ defmodule BrightWeb.LayoutComponents do
         <script defer phx-track-static type="text/javascript" src={"/assets/app.js"}>
         </script>
         <link rel="icon" href={"/favicon.ico"} />
+        <link rel="apple-touch-icon" sizes="180x180" href={"/apple-touch-icon.png"} />
       </head>
       <%= render_slot(@inner_block) %>
     </html>
