@@ -44,7 +44,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
           </ul>
 
           <% # TODO ↓α版対応 %>
-          <ul :if={@card.selected_tab != "community"} class="flex content-between border-b border-brightGray-200 text-brightGray-500 w-[600px] lg:w-full">
+          <ul :if={@card.selected_tab != "community"} class="flex content-between  text-brightGray-500 w-[600px] lg:w-full">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
                 βリリース（10月予定）で利用可能になります
