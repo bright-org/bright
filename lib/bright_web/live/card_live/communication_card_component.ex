@@ -35,7 +35,7 @@ defmodule BrightWeb.CardLive.CommunicationCardComponent do
           <ul :if={@card.selected_tab == "community"} class="flex gap-y-2.5 flex-col">
             <li :if={Enum.count(@card.notifications) == 0} class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2" >
-              <%= Enum.into(@tabs, %{}) |> Map.get(@card.selected_tab) %>はまだありません
+              <%= Enum.into(@tabs, %{}) |> Map.get(@card.selected_tab) %>はありません
               </div>
             </li>
             <%= for notification <- @card.notifications do %>
