@@ -67,7 +67,7 @@ defmodule BrightWeb.ProfileComponents do
       <img class="bg-contain inline-block mr-5 h-16 w-16 rounded-full lg:h-20 lg:w-20" src={@icon_file_path} />
       <div class="flex-1">
         <div class="flex justify-between pb-4 lg:items-end lg:pb-2">
-          <div class="text-2xl font-bold"><%= @user_name %></div>
+          <div class="text-2xl font-bold max-w-[280px] break-words lg:max-w-full"><%= @user_name %></div>
           <div class="flex gap-x-3 mt-2 lg:mt-0">
            <.excellent_person_button :if={@display_excellent_person}/>
            <.anxious_person_button :if={@display_anxious_person} />
