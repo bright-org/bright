@@ -414,8 +414,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def no_skill_panel(assigns) do
     ~H"""
     <div class="h-screen w-full flex flex-col justify-center items-center gap-y-2">
-      <p class="text-4xl">スキルパネルがありません</p>
-      <p class="text-xl">スキルを選ぶからスキルパネルを取得しましょう</p>
+      <p class="text-2xl lg:text-4xl">スキルパネルがありません</p>
+      <p class="text-md lg:text-xl">スキルを選ぶからスキルパネルを取得しましょう</p>
       <a href={~p"/onboardings"} class="text-xl cursor-pointer bg-brightGray-900 !text-white font-bold px-6 py-4 rounded mt-10 hover:opacity-50">
       スキルを選ぶ
       </a>
