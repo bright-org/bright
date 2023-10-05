@@ -458,7 +458,14 @@ defmodule Bright.SkillScores do
         %{locked_date: ~D[2022-10-01], percentage: 15.555555555555555}
       ]
   """
+  # TODO: リファクタリング HistoricalSkillScoresコンテキストに移動
   def get_historical_skill_class_scores(skill_panel_id, class, user_id, from_date, to_date) do
+    # skill_classから引くため該当する日付に変更
+    # TODO: リファクタリング TimelineHelperを適当な場所に移動後に修正
+    alias BrightWeb.SkillPanelLive.TimelineHelper
+    locked_date_from = TimelineHelper.get_shift_date_from_date(from_date, -1)
+    locked_date_to = TimelineHelper.get_shift_date_from_date(to_date, -1)
+
     from(
       historical_skill_class in HistoricalSkillClass,
       join:
@@ -466,19 +473,22 @@ defmodule Bright.SkillScores do
           historical_skill_class,
           :historical_skill_class_scores
         ),
-      on:
-        historical_skill_class_scores.user_id == ^user_id and
-          historical_skill_class_scores.locked_date >= ^from_date and
-          historical_skill_class_scores.locked_date <= ^to_date,
+      on: historical_skill_class_scores.user_id == ^user_id,
       where:
         historical_skill_class.skill_panel_id == ^skill_panel_id and
-          historical_skill_class.class == ^class,
+          historical_skill_class.class == ^class and
+          historical_skill_class.locked_date >= ^locked_date_from and
+          historical_skill_class.locked_date <= ^locked_date_to,
       select: {
-        historical_skill_class_scores.locked_date,
+        historical_skill_class.locked_date,
         historical_skill_class_scores.percentage
       }
     )
     |> Repo.all()
+    |> Enum.map(fn {date, percentage} ->
+      # skill_class_scoreにあたる日付に戻す
+      {TimelineHelper.get_shift_date_from_date(date, 1), percentage}
+    end)
   end
 
   @doc """
