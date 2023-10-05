@@ -118,7 +118,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
-      <div class="text-left font-bold w-full lg:flex-1 lg:w-fit">
+      <div class="text-left font-bold w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
         <%= @skill_panel.name %>
       </div>
       <%= for skill_class <- @skill_classes do %>
@@ -148,7 +148,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   defp skill_gem(%{score: nil} = assigns) do
     ~H"""
-    <div class="w-36"></div>
+    <div class="w-28 lg:w-36"></div>
     """
   end
 
@@ -160,7 +160,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       |> assign(:level, level)
 
     ~H"""
-    <div class="w-36">
+    <div class="w-28 lg:w-36">
       <p
         phx-click="on_skill_class_click"
         phx-value-skill_panel_id={@skill_panel.id}
@@ -181,7 +181,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       |> assign(:level, level)
 
     ~H"""
-    <div class="w-36">
+    <div class="w-28 lg:w-36">
       <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
           <img src={@icon_path} class="mr-1" />
