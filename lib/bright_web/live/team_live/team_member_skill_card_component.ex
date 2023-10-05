@@ -11,7 +11,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
   @impl true
   def render(assigns) do
     ~H"""
-      <div class="flex w-[474px] h-[654px] shadow flex-col bg-white relative">
+      <div class="flex w-full lg:w-[474px] h-[514px] lg:h-[654px] shadow flex-col bg-white relative">
       <!-- メンバーデータ -->
         <div
           :if={is_nil(@display_skill_card.user_skill_class_score)}
@@ -27,19 +27,19 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           skill_class_tab_click_target={assigns.myself}
         />
 
-        <div class="flex justify-between px-6 pt-1 items-center">
-          <div class="text-2xl font-bold">
+        <div class="flex justify-between px-4 lg:px-6 pt-1 items-center">
+          <div class="text-xl w-56 truncate lg:w-full lg:text-2xl font-bold">
             <%= assigns.display_skill_card.user.name %>
           </div>
-            <div class="bg-test bg-contain h-20 w-20 mt-4 rounded-full"
+          <div
+            class="bg-test bg-contain bg-no-repeat h-12 w-12 mt-1 lg:h-20 lg:w-20 lg:mt-4 rounded-full"
             style={"background-image: url('#{icon_url(assigns.display_skill_card.user.user_profile.icon_file_path)}');"}
-            >
-            </div>
+          ></div>
         </div>
 
         <div
           :if={ is_nil(@display_skill_card.user_skill_class_score)}
-          class="w-[400px] h-[400px] flex justify-center mx-auto"
+          class="w-[400px] h-[240px] mt-12 lg:mt-0 lg:h-[400px] flex justify-center mx-auto"
           >
           <p
             class="font-bold inline-block align-middle my-auto mx-auto justify-center"
@@ -50,7 +50,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
         <div
           :if={ !is_nil(@display_skill_card.user_skill_class_score)}
-          class="w-[400px] flex justify-center mx-auto"
+          class="hidden lg:flex w-[400px] h-[400px] justify-center mx-auto"
           >
           <.live_component
             id={"skill-gem-#{@id}"}
@@ -67,7 +67,27 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           />
         </div>
 
-        <div class="p-6 pt-0 flex w-full justify-between ">
+        <div
+          :if={ !is_nil(@display_skill_card.user_skill_class_score)}
+          class="lg:hidden w-[400px] h-[200px] mt-20 flex justify-center mx-auto"
+          >
+          <.live_component
+            id={"skill-gem-sp-#{@id}"}
+            module={BrightWeb.ChartLive.SkillGemComponent}
+            display_user={@display_skill_card.user}
+            skill_panel={@display_skill_panel}
+            class={@display_skill_card.select_skill_class.class}
+            select_label={"now"}
+            me={:true}
+            anonymous={:false}
+            root={""}
+            size="sp"
+            display_link="false"
+          />
+        </div>
+
+
+        <div class="p-4 lg:p-6 pt-0 flex w-full gap-x-2 lg:justify-between ">
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             1on1に誘う
           </button>
