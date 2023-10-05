@@ -108,7 +108,7 @@ defmodule BrightWeb.ProfileComponents do
 
   def profile_small(assigns) do
     ~H"""
-    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
+    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-full lg:w-1/2">
       <.profile_small_link click_event={@click_event} click_target={@click_target} user_name={@user_name} encrypt_user_name={@encrypt_user_name}>
         <img class="inline-block h-10 w-10 rounded-full" src={@icon_file_path} />
         <div>
@@ -189,7 +189,7 @@ defmodule BrightWeb.ProfileComponents do
 
   def profile_stock_small_with_remove_button(assigns) do
     ~H"""
-    <li class="relative text-left flex items-center text-base p-1  bg-white w-1/2">
+    <li class="relative text-left flex items-center text-base p-1  bg-white w-full lg:w-1/2">
       <.profile_stock_small_link click_event={@click_event} click_target={@click_target} encrypt_user_name={@encrypt_user_name}>
         <img
           class="inline-block h-10 w-10 rounded-full"
@@ -204,7 +204,7 @@ defmodule BrightWeb.ProfileComponents do
       <button
         phx-click={JS.push("remove_user", value: %{stock_id: @stock_id})}
         phx-target={@remove_user_target}
-        class="absolute top-1 right-4"
+        class="absolute top-0 -right-4 lg:right-2"
       >
         <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
           close
