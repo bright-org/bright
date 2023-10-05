@@ -391,14 +391,22 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         </div>
 
         <div class="-mt-12 lg:mt-2 mr-3 flex flex-col gap-y-4">
-          <.link
-            :if={@display_skill_edit_button}
-            patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
-            id="link-skills-form"
-            class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-full lg:w-48 hover:opacity-50">
-            <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
-            スキル入力する
-          </.link>
+          <div class="flex justify-between items-center w-full lg:w-48 gap-x-2">
+            <.link
+              :if={@display_skill_edit_button}
+              patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+              id="link-skills-form"
+              class="flex-1 flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 hover:opacity-50">
+              <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
+              スキル入力する
+            </.link>
+            <div
+              id="btn-help-enter-skills-button"
+              class="flex-none cursor-pointer"
+              phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
+              <img class="w-8 h-8" src="/images/icon_help.svg" />
+            </div>
+          </div>
 
           <% # TODO: α版後にifを除去して表示 %>
           <button :if={false} class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-full lg:w-48 hover:opacity-50">

@@ -901,6 +901,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  # 案内メッセージ
   describe "Messages" do
     setup [:register_and_log_in_user, :setup_skills]
 
@@ -1046,6 +1047,35 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       submit_form(show_live)
       refute has_element?(show_live, "job_searching_message")
+    end
+
+    @tag score: :low
+    test "shows help message for entering skills on the button side", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      show_live
+      |> element("#btn-help-enter-skills-button")
+      |> render_click()
+
+      assert has_element?(show_live, "#btn-help-enter-skills-button-good")
+    end
+
+    @tag score: :low
+    test "shows help message for entering skills on the modal", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      start_edit(show_live)
+
+      show_live
+      |> element("#btn-help-enter-skills-modal")
+      |> render_click()
+
+      assert has_element?(show_live, "#btn-help-enter-skills-modal-good")
     end
   end
 
