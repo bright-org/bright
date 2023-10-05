@@ -231,7 +231,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
             <th class="bg-base text-white text-center">
               合計
             </th>
-            <td>
+            <td id="my-percentages">
               <div class="flex justify-center flex-wrap gap-x-2">
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
@@ -260,7 +260,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         </thead>
 
         <%= for {[col1, col2, col3], row} <- @table_structure |> Enum.with_index(1) do %>
-          <% skill_score = @skill_score_dict[col3.skill.id] || %{score: :low} %>
+          <% skill_score = @skill_score_dict[col3.skill.id] %>
           <% current_skill = Map.get(@current_skill_dict, col3.skill.trace_id, %{}) %>
           <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 

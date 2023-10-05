@@ -284,6 +284,18 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       |> HistoricalSkillScores.list_historical_skill_scores_from_historical_skill_class_score()
       |> Map.new(&{&1.historical_skill_id, &1})
 
+    skill_score_dict =
+      Map.new(socket.assigns.skills, fn skill ->
+        skill_score =
+          Map.get(skill_score_dict, skill.id)
+          |> Kernel.||(%HistoricalSkillScores.HistoricalSkillScore{
+            historical_skill_id: skill.id,
+            score: :low
+          })
+
+        {skill.id, skill_score}
+      end)
+
     socket
     |> assign(skill_class_score: skill_class_score)
     |> assign(skill_score_dict: skill_score_dict)
