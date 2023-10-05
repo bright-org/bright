@@ -112,7 +112,7 @@ defmodule BrightWeb.ProfileComponents do
       <.profile_small_link click_event={@click_event} click_target={@click_target} user_name={@user_name} encrypt_user_name={@encrypt_user_name}>
         <img class="inline-block h-10 w-10 rounded-full" src={@icon_file_path} />
         <div>
-          <p><%= @user_name %></p>
+          <p class="truncate max-w-[240px]"><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
       </.profile_small_link>
@@ -147,7 +147,7 @@ defmodule BrightWeb.ProfileComponents do
           src={UserProfiles.icon_url(@icon_file_path)}
         />
         <div class="flex-auto">
-          <p><%= @user_name %></p>
+          <p class="truncate max-w-[240px]"><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
         <div
@@ -196,7 +196,7 @@ defmodule BrightWeb.ProfileComponents do
           src="/images/avatar.png"
         />
         <div class="flex-auto gap-x-2">
-          <p>検索：<%= @skill_panel %></p>
+          <p class="truncate max-w-[240px]">検索：<%= @skill_panel %></p>
           <span class="text-brightGray-300">(<%= @stock_date %>)</span>
           <span class="text-brightGray-300">希望年収：<%= @desired_income %></span>
         </div>
