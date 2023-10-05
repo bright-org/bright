@@ -39,7 +39,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
         <div
           :if={ is_nil(@display_skill_card.user_skill_class_score)}
-          class="w-[400px] h-[240px] mt-12 lg:mt-0 lg:h-[400px] flex justify-center mx-auto"
+          class="w-full lg:w-[400px] h-[240px] mt-12 lg:mt-0 lg:h-[400px] flex justify-center mx-auto"
           >
           <p
             class="font-bold inline-block align-middle my-auto mx-auto justify-center"
@@ -69,7 +69,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
         <div
           :if={ !is_nil(@display_skill_card.user_skill_class_score)}
-          class="lg:hidden w-[400px] h-[200px] mt-20 flex justify-center mx-auto"
+          class="lg:hidden w-full h-[200px] mt-20 flex justify-center mx-auto"
           >
           <.live_component
             id={"skill-gem-sp-#{@id}"}
