@@ -50,7 +50,7 @@ defmodule BrightWeb.TeamComponents do
       <%= @team_member_user.team.name %>
       <span
         :if={@team_member_user.is_admin}
-        class="text-white text-sm font-bold ml-4 px-2 py-1 inline-block bg-lapislazuli-300 rounded"
+        class="text-white text-sm font-bold ml-4 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
       >
         管理者
       </span>
