@@ -16,7 +16,7 @@ defmodule BrightWeb.OnboardingLiveTest do
         index_live
         |> element("#skip_onboarding")
         |> render_click()
-        |> follow_redirect(conn, "/teams")
+        |> follow_redirect(conn, "/searches")
 
       assert conn.resp_body =~ "オンボーディングをスキップしました"
     end

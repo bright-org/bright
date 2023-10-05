@@ -5,20 +5,20 @@ defmodule BrightWeb.OnboardingLive.Welcome do
     ~H"""
     <section class="w-screen bg-white p-8 min-h-[720px] rounded-lg">
       <div class="flex place-content-center lg:place-content-start mb-12">
-          <img src={~p"/images/logo_bright.svg"} width="256" />
+          <img src={~p"/images/logo_tagline_skill.svg"} width="256" />
       </div>
 
       <h1 class="font-bold text-3xl my-8">
         Brightへようこそ
       </h1>
       <h1 class="text-xl my-4">
-        Brightはエンジニアのスキルを見える化するためのサービスです
+        Brightは今と過去、そして未来のスキルから “あなたの輝き” を見える化します
       </h1>
       <h1 class="text-xl my-4">
-        エンジニアだけでなく、インフラやデザイナー、マーケッターなど幅広い分野から
+        エンジニアやインフラ、デザイナー、マーケッターなど幅広い分野からスキルが選べます
       </h1>
       <h1 class="text-xl mt-4 mb-12">
-        自分に合ったスキルパネルを選び、ご自身のスキルを把握し、スキルアップにつなげていきましょう
+        自分に合ったスキルパネルを選び、スキル入力することで、あなたの輝きを体験してください
       </h1>
 
       <div class="my-4">
@@ -48,7 +48,7 @@ defmodule BrightWeb.OnboardingLive.Welcome do
       <button
         class="h-12 text-white bg-brightGreen-300 p-2 rounded-md text-lg lg:text-xl font-bold hover:opacity-70 disabled:bg-gray-400"
         disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}
-        phx-click={JS.navigate(~p"/onboardings")}
+        phx-click={JS.navigate(~p"/onboardings?open=want_todo_panel")}
       >
         自分に合ったスキルパネルを見つける
       </button>
