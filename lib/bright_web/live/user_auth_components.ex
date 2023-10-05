@@ -220,6 +220,7 @@ defmodule BrightWeb.UserAuthComponents do
   Button for auth form.
   """
   attr :variant, :string, default: "normal", values: ~w(normal mt-sm mt-xs mx-auto)
+  attr :disabled, :boolean, default: false
 
   slot :inner_block
 
@@ -227,12 +228,13 @@ defmodule BrightWeb.UserAuthComponents do
     ~H"""
     <button
       class={[
-        "bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs px-4 py-2 rounded select-none text-white w-full hover:opacity-50",
+        "bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs px-4 py-2 rounded select-none text-white w-full hover:opacity-50 disabled:bg-gray-400 disabled:border-gray-400",
         @variant == "normal" && "mt-12",
         @variant == "mx-auto" && "mt-12 mx-auto",
         @variant == "mt-sm" && "mt-8",
         @variant == "mt-xs" && "mt-7"
       ]}
+      disabled={@disabled}
     >
       <%= render_slot(@inner_block) %>
     </button>
