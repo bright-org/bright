@@ -66,9 +66,9 @@ defmodule BrightWeb.ProfileComponents do
     <div class="flex">
       <img class="bg-contain inline-block mr-5 h-16 w-16 rounded-full lg:h-20 lg:w-20" src={@icon_file_path} />
       <div class="flex-1">
-        <div class="flex justify-between pb-4 lg:items-end lg:pb-2">
-          <div class="text-2xl font-bold"><%= @user_name %></div>
-          <div class="flex gap-x-3 mt-2 lg:mt-0">
+        <div class="flex flex-col lg:flex-row lg:justify-between pb-4 lg:items-end lg:pb-2">
+          <div class="text-2xl font-bold max-w-[240px] break-words lg:max-w-full"><%= @user_name %></div>
+          <div class="flex gap-x-3 mt-4 lg:mt-0 -ml-20 lg:ml-0">
            <.excellent_person_button :if={@display_excellent_person}/>
            <.anxious_person_button :if={@display_anxious_person} />
            <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>
@@ -77,7 +77,7 @@ defmodule BrightWeb.ProfileComponents do
            <.profile_button :if={@display_recruitment_coordination}>採用の調整</.profile_button>
           </div>
         </div>
-        <div class="flex flex-col lg:flex-row lg:justify-between pt-3 border-brightGray-100 border-t">
+        <div class="flex flex-col -ml-20 lg:ml-0 lg:flex-row lg:justify-between pt-3 border-brightGray-100 border-t">
           <div class="text-xl mb-4 max-w-[600px] break-all"><%= @title %></div>
           <.sns :if={@display_sns} twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
         </div>
@@ -108,11 +108,11 @@ defmodule BrightWeb.ProfileComponents do
 
   def profile_small(assigns) do
     ~H"""
-    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2">
+    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-full lg:w-1/2">
       <.profile_small_link click_event={@click_event} click_target={@click_target} user_name={@user_name} encrypt_user_name={@encrypt_user_name}>
         <img class="inline-block h-10 w-10 rounded-full" src={@icon_file_path} />
         <div>
-          <p><%= @user_name %></p>
+          <p class="truncate max-w-[240px]"><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
       </.profile_small_link>
@@ -147,7 +147,7 @@ defmodule BrightWeb.ProfileComponents do
           src={UserProfiles.icon_url(@icon_file_path)}
         />
         <div class="flex-auto">
-          <p><%= @user_name %></p>
+          <p class="truncate max-w-[240px]"><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
         <div
@@ -189,14 +189,14 @@ defmodule BrightWeb.ProfileComponents do
 
   def profile_stock_small_with_remove_button(assigns) do
     ~H"""
-    <li class="relative text-left flex items-center text-base p-1  bg-white w-1/2">
+    <li class="relative text-left flex items-center text-base p-1  bg-white w-full lg:w-1/2">
       <.profile_stock_small_link click_event={@click_event} click_target={@click_target} encrypt_user_name={@encrypt_user_name}>
         <img
           class="inline-block h-10 w-10 rounded-full"
           src="/images/avatar.png"
         />
         <div class="flex-auto gap-x-2">
-          <p>検索：<%= @skill_panel %></p>
+          <p class="truncate max-w-[240px]">検索：<%= @skill_panel %></p>
           <span class="text-brightGray-300">(<%= @stock_date %>)</span>
           <span class="text-brightGray-300">希望年収：<%= @desired_income %></span>
         </div>
@@ -204,7 +204,7 @@ defmodule BrightWeb.ProfileComponents do
       <button
         phx-click={JS.push("remove_user", value: %{stock_id: @stock_id})}
         phx-target={@remove_user_target}
-        class="absolute top-1 right-4"
+        class="absolute top-0 -right-4 lg:right-2"
       >
         <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
           close

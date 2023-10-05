@@ -32,7 +32,28 @@ defmodule BrightWeb.UserRegistrationLive do
 
         <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required/>
 
-        <UserAuthComponents.button>ユーザーを新規作成する</UserAuthComponents.button>
+        <div phx-click="toggre_is_terms_of_service_checked" class="mt-1">
+          <input type="checkbox" id="terms_of_service" class="rounded" checked={@is_terms_of_service_checked?} />
+          <label for="terms_of_service" class="pl-1 text-xs">
+            <a href="https://bright-fun.org/terms/terms.pdf" class="text-link underline font-semibold" target="_blank">利用規約</a>に同意する
+          </label>
+        </div>
+
+        <div phx-click="toggre_is_privacy_policy_checked" class="mt-1">
+          <input type="checkbox" id="privacy_policy" class="rounded" checked={@is_privacy_policy_checked?} />
+          <label for="privacy_policy" class="pl-1 text-xs">
+            <a href="https://bright-fun.org/privacy/privacy.pdf" class="text-link underline font-semibold" target="_blank">プライバシーポリシー</a>に同意する
+          </label>
+        </div>
+
+        <div phx-click="toggre_is_law_checked" class="mt-1">
+          <input type="checkbox" id="law" class="rounded" checked={@is_law_checked?} />
+          <label for="law" class="pl-1 text-xs">
+            <a href="https://bright-fun.org/laws/laws.pdf" class="text-link underline font-semibold" target="_blank">法令に基づく表記</a>を確認した
+          </label>
+        </div>
+
+        <UserAuthComponents.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UserAuthComponents.button>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
 
@@ -46,9 +67,42 @@ defmodule BrightWeb.UserRegistrationLive do
     socket =
       socket
       |> assign(check_errors: false)
+      |> assign(is_terms_of_service_checked?: false)
+      |> assign(is_privacy_policy_checked?: false)
+      |> assign(is_law_checked?: false)
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}
+  end
+
+  def handle_event(
+        "toggre_is_terms_of_service_checked",
+        _params,
+        %{assigns: %{is_terms_of_service_checked?: is_terms_of_service_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_terms_of_service_checked?: !is_terms_of_service_checked?)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "toggre_is_privacy_policy_checked",
+        _params,
+        %{assigns: %{is_privacy_policy_checked?: is_privacy_policy_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_privacy_policy_checked?: !is_privacy_policy_checked?)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "toggre_is_law_checked",
+        _params,
+        %{assigns: %{is_law_checked?: is_law_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_law_checked?: !is_law_checked?)
+    |> then(&{:noreply, &1})
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do

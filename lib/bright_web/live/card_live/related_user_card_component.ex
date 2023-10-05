@@ -85,7 +85,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
               </div>
             </li>
           </ul>
-          <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-wrap gap-y-1">
+          <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-col lg:flex-row lg:flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
               <%= if @selected_tab == "team" do %>
                 <.profile_small
