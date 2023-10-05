@@ -773,6 +773,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       h_skill_x =
         insert(:historical_skill, historical_skill_category: h_skill_category, position: 2)
 
+      # スキルスコアがないスキルとして用意
+      insert(:historical_skill, historical_skill_category: h_skill_category, position: 3)
+
       # ユーザーのスコアの用意
       insert(:historical_skill_class_score,
         historical_skill_class: h_skill_class,
@@ -803,6 +806,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       assert has_element?(show_live, "#skill-1 .score-mark-middle")
+      assert has_element?(show_live, "#skill-2 .score-mark-high")
+      assert has_element?(show_live, "#skill-3 .score-mark-low")
+      assert has_element?(show_live, "#my-percentages .score-high-percentage", "33％")
+      assert has_element?(show_live, "#my-percentages .score-middle-percentage", "33％")
     end
 
     @tag score: nil
