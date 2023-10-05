@@ -21,37 +21,13 @@ defmodule BrightWeb.OnboardingLive.Welcome do
         自分に合ったスキルパネルを選び、スキル入力することで、あなたの輝きを体験してください
       </h1>
 
-      <div class="my-4">
-        <div phx-click="toggre_is_terms_of_service_checked" class="mt-1">
-          <input type="checkbox" id="terms_of_service" class="rounded" checked={@is_terms_of_service_checked?} />
-          <label for="terms_of_service" class="pl-1 text-xs">
-            <a href="https://bright-fun.org/terms/terms.pdf" class="text-link underline font-semibold" target="_blank">利用規約</a>に同意する
-          </label>
-        </div>
-
-        <div phx-click="toggre_is_privacy_policy_checked" class="mt-1">
-          <input type="checkbox" id="privacy_policy" class="rounded" checked={@is_privacy_policy_checked?} />
-          <label for="privacy_policy" class="pl-1 text-xs">
-            <a href="https://bright-fun.org/privacy/privacy.pdf" class="text-link underline font-semibold" target="_blank">プライバシーポリシー</a>に同意する
-          </label>
-        </div>
-
-        <div phx-click="toggre_is_law_checked" class="mt-1">
-          <input type="checkbox" id="law" class="rounded" checked={@is_law_checked?} />
-          <label for="law" class="pl-1 text-xs">
-            <a href="https://bright-fun.org/laws/laws.pdf" class="text-link underline font-semibold" target="_blank">法令に基づく表記</a>を確認した
-          </label>
-        </div>
-      </div>
-
       <div class="flex justify-center lg:justify-start w-full">
-      <button
-        class="h-12 text-white bg-brightGreen-300 p-2 rounded-md text-lg lg:text-xl font-bold hover:opacity-70 disabled:bg-gray-400"
-        disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}
-        phx-click={JS.navigate(~p"/onboardings?open=want_todo_panel")}
-      >
-        自分に合ったスキルパネルを見つける
-      </button>
+        <.link
+          class="h-12 text-white bg-brightGreen-300 p-2 rounded-md text-lg lg:text-xl font-bold hover:opacity-70"
+          navigate={~p"/onboardings?open=want_todo_panel"}
+        >
+          自分に合ったスキルパネルを見つける
+        </.link>
       </div>
     </section>
     """
@@ -60,39 +36,6 @@ defmodule BrightWeb.OnboardingLive.Welcome do
   def mount(_params, _session, socket) do
     socket
     |> assign(:page_title, "ようこそ")
-    |> assign(is_terms_of_service_checked?: false)
-    |> assign(is_privacy_policy_checked?: false)
-    |> assign(is_law_checked?: false)
     |> then(&{:ok, &1})
-  end
-
-  def handle_event(
-        "toggre_is_terms_of_service_checked",
-        _params,
-        %{assigns: %{is_terms_of_service_checked?: is_terms_of_service_checked?}} = socket
-      ) do
-    socket
-    |> assign(is_terms_of_service_checked?: !is_terms_of_service_checked?)
-    |> then(&{:noreply, &1})
-  end
-
-  def handle_event(
-        "toggre_is_privacy_policy_checked",
-        _params,
-        %{assigns: %{is_privacy_policy_checked?: is_privacy_policy_checked?}} = socket
-      ) do
-    socket
-    |> assign(is_privacy_policy_checked?: !is_privacy_policy_checked?)
-    |> then(&{:noreply, &1})
-  end
-
-  def handle_event(
-        "toggre_is_law_checked",
-        _params,
-        %{assigns: %{is_law_checked?: is_law_checked?}} = socket
-      ) do
-    socket
-    |> assign(is_law_checked?: !is_law_checked?)
-    |> then(&{:noreply, &1})
   end
 end
