@@ -62,21 +62,22 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_panel = insert(:skill_panel)
       insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
 
-      %{skill_panel: skill_panel, skill_class: skill_class}
+      %{skill_panel: skill_panel, skill_class: skill_class, skill_class_2: skill_class_2}
     end
 
     test "shows content", %{
       conn: conn,
       skill_panel: skill_panel,
-      skill_class: skill_class
+      skill_class: skill_class,
+      skill_class_2: skill_class_2
     } do
       {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}")
 
       assert html =~ "スキルパネル"
-
-      assert show_live
-             |> has_element?("#class_tab_1", skill_class.name)
+      assert has_element?(show_live, "#class_tab_1", skill_class.name)
+      assert has_element?(show_live, "#class_tab_2", skill_class_2.name)
     end
 
     test "shows content without parameters", %{
@@ -87,9 +88,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, html} = live(conn, ~p"/panels")
 
       assert html =~ skill_panel.name
-
-      assert show_live
-             |> has_element?("#class_tab_1", skill_class.name)
+      assert has_element?(show_live, "#class_tab_1", skill_class.name)
     end
 
     test "shows skills table", %{
@@ -175,15 +174,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "shows the skill class by query string parameter", %{
       conn: conn,
       user: user,
-      skill_panel: skill_panel
+      skill_panel: skill_panel,
+      skill_class_2: skill_class_2
     } do
-      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
       insert(:init_skill_class_score, user: user, skill_class: skill_class_2)
-
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=2")
 
-      assert show_live
-             |> has_element?("#class_tab_2", skill_class_2.name)
+      assert has_element?(show_live, "#class_tab_2", skill_class_2.name)
     end
   end
 
