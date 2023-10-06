@@ -33,18 +33,9 @@
 <!-- コンテンツ -->
 <div class="px-4 py-3 flex flex-col justify-between pb-20 lg:flex-row lg:pb-0 lg:px-10">
   <div class="flex flex-col gap-y-6 lg:w-[850px]">
-    <!-- 重要な連絡 -->
-    <div :if={@me}>
-      <h5>重要な連絡</h5>
-      <.live_component
-        id="contact_card"
-        module={BrightWeb.CardLive.ContactCardComponent}
-        current_user={@display_user}
-      />
-    </div>
     <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
     <div>
-      <h5>保有スキル<br class="lg:hidden">（ジェムをクリックすると成長グラフが見れます）</h5>
+      <h5>保有スキル（ジェムをクリック）</h5>
       <.live_component
         id="skill_card"
         module={BrightWeb.CardLive.SkillCardComponent}
@@ -56,15 +47,6 @@
     </div>
   </div>
   <div class="flex flex-col mt-6 gap-y-6 lg:w-[750px] lg:mt-0">
-    <!-- さまざまな人たちとの交流 -->
-    <div :if={@me}>
-      <h5>さまざまな人たちとの交流</h5>
-      <.live_component
-        id="contact_card"
-        module={BrightWeb.CardLive.CommunicationCardComponent}
-        current_user={@display_user}
-      />
-    </div>
     <!-- 関わっているチーム -->
     <div :if={@me}>
       <h5>関わっているチーム</h5>
