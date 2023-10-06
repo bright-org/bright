@@ -452,7 +452,34 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         id="help-next-class-opened">
         <.next_skill_class_opened_message />
       </.live_component>
+
+      <% # スキル入力するボタン 手動表示メッセージ %>
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        module={BrightWeb.HelpMessageComponent}
+        id="help-enter-skills-button"
+        open={false}>
+        <.enter_skills_help_message reference_from={"button"} />
+      </.live_component>
     </div>
+    """
+  end
+
+  @doc """
+  スキル入力解説メッセージ
+  """
+  def enter_skills_help_message(%{reference_from: "button"} = assigns) do
+    # 現状はスキル入力前メッセージと同様
+    ~H"""
+    <.first_skills_edit_message />
+    """
+  end
+
+  def enter_skills_help_message(%{reference_from: "modal"} = assigns) do
+    ~H"""
+    <p>スキル入力は、途中保存可能でいつでも変更できます。</p>
+    <.score_mark_description />
+    <.shortcut_key_description />
     """
   end
 
@@ -465,35 +492,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <span class="font-bold">まずは「スキル入力する」ボタンをクリック</span>してスキル入力を始めてください。
     </p>
     <p>スキル入力は、途中保存可能でいつでも変更できます。</p>
-    <ul class="my-2">
-      <li class="flex items-center">
-        <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
-        実務経験がある、もしくは依頼されたら短期間で実行できる
-      </li>
-      <li class="flex items-center">
-        <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
-        知識はあるが、実務経験が浅く、自信が無い（調査が必要）
-      </li>
-      <li class="flex items-center">
-        <span class={[score_mark_class(:low, :green), "inline-block mr-1"]} />
-        知識や実務経験が無い
-      </li>
-    </ul>
-    <div class="hidden lg:block">
-      <p class="flex flex-wrap items-center">
-        1キーを押すと
-        <span class={[score_mark_class(:high, :green), "inline-block mx-1"]} />
-        が付き、2キーを押すと
-        <span class={[score_mark_class(:middle, :green), "inline-block mx-1"]} />
-        、3キーで
-        <span class={[score_mark_class(:low, :green), "inline-block mx-1"]} />
-        が付くので、
-      </p>
-      <p>マウス無しのキーボード操作だけで快適にスキル入力できます。</p>
-    </div>
-    <div class="mt-2">
-      なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br class="hidden lg:inline">できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
-    </div>
+    <.score_mark_description />
+    <.shortcut_key_description />
+    <.evidence_introduction_description />
     """
   end
 
@@ -516,9 +517,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <div class="mt-2 max-w-[400px]">
         <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
       </div>
-      <p class="mt-4">
-        なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br class="hidden lg:inline">できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
-      </p>
+      <.evidence_introduction_description />
     </div>
     """
   end
@@ -549,6 +548,50 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       </div>
       <div id="arrow-to-job-searching" class="arrow ml-1"></div>
     </div>
+    """
+  end
+
+  defp score_mark_description(assigns) do
+    ~H"""
+    <ul class="my-2">
+      <li class="flex items-center">
+        <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
+        実務経験がある、もしくは依頼されたら短期間で実行できる
+      </li>
+      <li class="flex items-center">
+        <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
+        知識はあるが、実務経験が浅く、自信が無い（調査が必要）
+      </li>
+      <li class="flex items-center">
+        <span class={[score_mark_class(:low, :green), "inline-block mr-1"]} />
+        知識や実務経験が無い
+      </li>
+    </ul>
+    """
+  end
+
+  defp shortcut_key_description(assigns) do
+    ~H"""
+    <div class="hidden lg:block">
+      <p class="flex flex-wrap items-center">
+        1キーを押すと
+        <span class={[score_mark_class(:high, :green), "inline-block mx-1"]} />
+        が付き、2キーを押すと
+        <span class={[score_mark_class(:middle, :green), "inline-block mx-1"]} />
+        、3キーで
+        <span class={[score_mark_class(:low, :green), "inline-block mx-1"]} />
+        が付くので、
+      </p>
+      <p>マウス無しのキーボード操作だけで快適にスキル入力できます。</p>
+    </div>
+    """
+  end
+
+  defp evidence_introduction_description(assigns) do
+    ~H"""
+    <p class="mt-4">
+      なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br class="hidden lg:inline">できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
+    </p>
     """
   end
 

@@ -6,11 +6,6 @@ defmodule BrightWeb.HelpMessageComponent do
   use BrightWeb, :live_component
 
   @impl true
-  def mount(socket) do
-    {:ok, assign(socket, :open, true)}
-  end
-
-  @impl true
   def render(%{open: false} = assigns) do
     ~H"""
     <div id={@id} />
@@ -49,17 +44,24 @@ defmodule BrightWeb.HelpMessageComponent do
   end
 
   @impl true
+  def mount(socket) do
+    {:ok, assign(socket, :open, true)}
+  end
+
+  @impl true
+  def handle_event("open", _params, socket) do
+    {:noreply, assign(socket, :open, true)}
+  end
+
   def handle_event("close", _params, socket) do
     {:noreply, assign(socket, :open, false)}
   end
 
   def handle_event("good", _params, socket) do
-    # TODO: 所定の処理を追加
     {:noreply, assign(socket, :open, false)}
   end
 
   def handle_event("bad", _params, socket) do
-    # TODO: 所定の処理を追加
     {:noreply, assign(socket, :open, false)}
   end
 

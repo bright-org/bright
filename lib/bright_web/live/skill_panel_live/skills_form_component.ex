@@ -6,12 +6,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
     only: [profile_skill_class_level: 1, score_mark_class: 2, skill_score_percentages: 2]
 
+  import BrightWeb.SkillPanelLive.SkillsComponents,
+    only: [enter_skills_help_message: 1]
+
   import BrightWeb.SkillPanelLive.SkillPanelHelper,
-    only: [calc_percentage: 2]
+    only: [calc_percentage: 2, count_skill_scores: 1]
 
   alias Bright.SkillScores
   alias BrightWeb.CardLive.SkillCardComponent
-  alias BrightWeb.SkillPanelLive.SkillPanelHelper
 
   # キーボード入力 1,2,3 と対応するスコア
   @shortcut_key_score %{
@@ -35,14 +37,30 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     ~H"""
     <div id={@id} class="flex justify-center items-center">
       <section class="text-sm w-full lg:w-[390px]">
-        <h2 class="font-bold mt-4 mb-2 text-lg truncate">
+        <h2 class="flex items-center gap-x-4 font-bold mt-4 mb-2 text-lg truncate">
           <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
             <%= @skill_panel.name %>
           </span>
+
+          <div
+            id="btn-help-enter-skills-modal"
+            class="flex-none cursor-pointer"
+            phx-click={JS.push("open", target: "#help-enter-skills-modal") |> show("#help-enter-skills-modal")}>
+            <img class="w-8 h-8" src="/images/icon_help.svg" />
+          </div>
         </h2>
 
+        <% # スキル入力するモーダル 手動表示メッセージ %>
+        <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+        <.live_component
+          module={BrightWeb.HelpMessageComponent}
+          id="help-enter-skills-modal"
+          open={false}>
+          <.enter_skills_help_message reference_from={"modal"} />
+        </.live_component>
+
         <% # ドーナツグラフとレベル表記 %>
-        <div id="doughnut_area_in_skills_form" class="flex justify-center items-center mt-2 mb-4">
+        <div id="doughnut_area_in_skills_form" class="flex justify-center items-center my-4">
           <.doughnut_graph id="doughnut_graph_in_skills_form" data={skill_score_percentages(@counter, @num_skills)} />
           <div class="flex justify-center items-center ml-2">
             <div class="flex flex-wrap">
@@ -270,7 +288,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   end
 
   defp assign_counter(socket) do
-    counter = SkillPanelHelper.count_skill_scores(socket.assigns.skill_score_dict)
+    counter = count_skill_scores(socket.assigns.skill_score_dict)
     assign(socket, :counter, counter)
   end
 
