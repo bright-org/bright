@@ -100,7 +100,7 @@ defmodule BrightWeb.LayoutComponents do
           <.contact_customer_success_button />
         </div>
       </div>
-      <div class="flex gap-2 items-center lg:ml-1 lg:w-fit h-10">
+      <div class="flex gap-2 items-center lg:w-fit h-10">
         <.search_for_skill_holders_button />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
       </div>
@@ -157,7 +157,7 @@ defmodule BrightWeb.LayoutComponents do
       {"スキルを入力", "/panels", nil},
       {"チームのスキルを見る", "/teams", ~r/\/teams(?!\/new)/},
       {"Brightに招待する", "/teams/new", nil},
-      {"スキル検索する", "/searches", nil}
+      {"スキル検索する（β）", "/searches", nil}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
       # {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html", nil},

@@ -116,7 +116,7 @@ defmodule BrightWeb.BrightButtonComponents do
   def plan_upgrade_button(assigns) do
     ~H"""
     <.link
-      class="w-[calc(50%-6px)] lg:w-56"
+      class="w-[calc(45%-6px)] lg:w-56"
       href="https://bright-fun.org/plan"
       target="_blank"
       rel="noopener noreferrer"
@@ -126,7 +126,7 @@ defmodule BrightWeb.BrightButtonComponents do
         class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm"
       >
         <span class="bg-white material-icons mr-1 !text-sm !text-planUpgrade-600 rounded-full h-5 w-5 !font-bold material-icons-outlined lg:mr-2 lg:h-6 lg:w-6">upgrade</span>
-        プランのアップグレード
+        アップグレード
       </button>
     </.link>
     """
@@ -142,7 +142,7 @@ defmodule BrightWeb.BrightButtonComponents do
   def contact_customer_success_button(assigns) do
     ~H"""
     <.link
-      class="w-[calc(50%-6px)] lg:ml-2 lg:w-56"
+      class="w-[calc(55%-6px)] lg:ml-2 lg:w-56"
       href="https://docs.google.com/forms/d/e/1FAIpQLScKrQbJajiE18Abh7HloDcJYTSY-HbiX280XcoHDIsfJKhpAA/viewform"
       target="_blank"
       rel="noopener noreferrer"
