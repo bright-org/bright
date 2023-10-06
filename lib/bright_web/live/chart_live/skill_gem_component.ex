@@ -23,14 +23,20 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   def render(assigns) do
     ~H"""
     <div class="mx-auto w-full -mt-24 lg:mt-0 lg:w-[450px]">
-      <.skill_gem
-        data={@skill_gem_data}
-        id={@id}
-        labels={@skill_gem_labels}
-        links={@skill_gem_links}
-        display_link={@display_link}
-        size={@size}
-      />
+      <%= if length(@skill_gem_labels) < 3 do %>
+        <div class="bg-white w-[450px] h-[360px] flex items-center justify-center">
+          <p class="text-start font-bold">データが破損しています</p>
+        </div>
+      <% else %>
+        <.skill_gem
+          data={@skill_gem_data}
+          id={@id}
+          labels={@skill_gem_labels}
+          links={@skill_gem_links}
+          display_link={@display_link}
+          size={@size}
+        />
+      <% end %>
     </div>
     """
   end
