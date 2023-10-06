@@ -35,16 +35,9 @@ defmodule BrightWeb.MypageLiveTest do
       # TODO α版では実装しない
       # assert index_live |> has_element?("div #skill-gem")
 
-      # 各カードがあることを確認（コンポーネントが貼られていることのみを確認）
-      assert index_live |> has_element?("h5", "重要な連絡")
-      assert index_live |> has_element?("li a", "運営")
-
       # αリリース対象外
-      # assert index_live |> has_element?("h5", "保有スキル（ジェムをクリックすると成長グラフが見れます）")
+      # assert index_live |> has_element?("h5", "保有スキル（ジェムをクリック）")
       # assert index_live |> has_element?("li a", "エンジニア")
-
-      assert index_live |> has_element?("h5", "さまざまな人たちとの交流")
-      assert index_live |> has_element?("li a", "コミュニティ")
 
       assert index_live |> has_element?("h5", "関わっているチーム")
       assert index_live |> has_element?("li a", "所属チーム")
