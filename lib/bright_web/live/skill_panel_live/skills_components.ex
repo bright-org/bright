@@ -21,7 +21,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def compare_timeline(assigns) do
     ~H"""
-    <div class="max-w-[566px] w-full mb-8 lg:mb-0 lg:mr-8 lg:w-[566px]">
+    <div class="w-full mb-8 lg:mb-0 lg:mr-8 lg:max-w-[566px] lg:w-[566px]">
       <div class="flex flex-wrap justify-center lg:flex-nowrap lg:justify-start">
         <% # 過去方向ボタン %>
         <div class="order-2 flex justify-center items-center ml-1 mr-2 lg:order-1">

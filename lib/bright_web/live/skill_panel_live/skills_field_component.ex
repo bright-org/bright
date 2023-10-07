@@ -22,7 +22,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     ~H"""
     <div id={@id}>
       <BrightCoreComponents.flash_group flash={@inner_flash} />
-      <div class="px-6">
+      <div class="px-2 lg:px-6">
         <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
       </div>
       <div class="px-6 hidden lg:block">
