@@ -40,7 +40,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     ~H"""
     <div id={@id} class="flex justify-center items-center">
       <section class="text-sm w-full lg:w-[390px]">
-        <h2 class="flex items-center gap-x-4 font-bold mt-4 mb-2 text-lg truncate">
+        <h2 class="flex items-center gap-x-4 font-bold mt-6 mb-2 text-lg truncate">
           <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
             <%= @skill_panel.name %>
           </span>
@@ -85,7 +85,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
           <div class="basis-1/4 flex flex-col items-end mr-6">
             <p class="text-xs font-bold">スキル数</p>
             <p class="text-sm"><%= @num_skills %></p>
-            <p class="text-xs font-bold">スキル入力目安</p>
+            <p class="text-xs font-bold">入力目安</p>
             <p class="text-sm"><%= round(minute_per_skill() * @num_skills) %>分</p>
           </div>
         </div>
