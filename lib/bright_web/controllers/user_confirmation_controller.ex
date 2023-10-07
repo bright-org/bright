@@ -8,7 +8,6 @@ defmodule BrightWeb.UserConfirmationController do
     case Accounts.confirm_user(token) do
       {:ok, user} ->
         conn
-        |> put_flash(:info, "メールアドレスの確認に成功しました")
         |> UserAuth.log_in_user(user)
 
       :error ->
