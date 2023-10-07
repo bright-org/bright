@@ -33,12 +33,17 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
               <hr class="w-[1px] bg-brightGray-200 h-full mt-2" />
             </div>
 
-            <div class="w-[370px] flex justify-between gap-x-4 pb-4">
-              <div class="grow">
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
                 <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all first:mt-0 mt-3"] %>
               </div>
-              <div class="cursor-pointer flex-none" phx-click="delete" phx-target={@myself} phx-value-id={post.id}>
-                <.icon name="hero-x-mark-solid" />
+              <div
+                class="h-6 w-6 py-2 ml-auto cursor-pointer"
+                phx-click="delete"
+                phx-target={@myself}
+                phx-value-id={post.id}
+              >
+                <span class="material-symbols-outlined text-brightGray-500 font-xs hover:opacity-50">delete</span>
               </div>
             </div>
           </div>
