@@ -392,6 +392,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
               スキル入力する
             </.link>
             <div
+              :if={@display_skill_edit_button}
               id="btn-help-enter-skills-button"
               class="flex-none cursor-pointer"
               phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
