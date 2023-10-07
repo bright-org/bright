@@ -369,7 +369,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             is_anonymous={@anonymous}
           />
         </div>
-        <div class="flex h-[160px] ml-2 lg:ml-7">
+        <div class="flex h-[160px] lg:ml-7">
           <div class="w-20 lg:mt-5">
             <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
           </div>
@@ -429,11 +429,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   defp profile_score_stats(assigns) do
     ~H"""
-    <div id="profile_score_stats" class="h-20 ml-2 flex flex-wrap lg:mt-5">
-      <p class="text-brightGreen-300 font-bold w-full flex mt-2 mb-1">
+    <div id="profile_score_stats" class="h-20 lg:ml-2 flex flex-wrap lg:mt-5">
+      <p class="text-brightGreen-300 font-bold w-full flex ml-[7px] lg:ml-6 mt-2 mb-1">
         <.profile_skill_class_level level={@skill_class_score.level} />
       </p>
-      <div class="flex flex-col w-20 mr-2 pl-6">
+      <div class="flex flex-col mr-2 pl-2 lg:pl-6">
         <div class="min-w-[4em] flex items-center">
           <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
           <%= calc_percentage(@counter.high, @num_skills) %>％

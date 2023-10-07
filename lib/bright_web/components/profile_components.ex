@@ -66,9 +66,9 @@ defmodule BrightWeb.ProfileComponents do
     <div class="flex">
       <img class="bg-contain inline-block mr-5 h-16 w-16 rounded-full lg:h-20 lg:w-20" src={@icon_file_path} />
       <div class="flex-1">
-        <div class="flex flex-col lg:flex-row lg:justify-between pb-4 lg:items-end lg:pb-2">
-          <div class="text-2xl font-bold max-w-[240px] break-words lg:max-w-full"><%= @user_name %></div>
-          <div class="flex gap-x-3 mt-4 lg:mt-0 -ml-20 lg:ml-0">
+        <div class="flex justify-between pb-4 items-end pb-2">
+          <div class="text-xl lg:text-2xl font-bold max-w-[150px] truncate lg:max-w-full"><%= @user_name %></div>
+          <div class="flex gap-x-3">
            <.excellent_person_button :if={@display_excellent_person}/>
            <.anxious_person_button :if={@display_anxious_person} />
            <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>
@@ -77,8 +77,8 @@ defmodule BrightWeb.ProfileComponents do
            <.profile_button :if={@display_recruitment_coordination}>採用の調整</.profile_button>
           </div>
         </div>
-        <div class="flex flex-col -ml-20 lg:ml-0 lg:flex-row lg:justify-between pt-3 border-brightGray-100 border-t">
-          <div class="text-xl mb-4 max-w-[600px] break-all"><%= @title %></div>
+        <div class="flex flex-col lg:flex-row justify-between pt-3 border-brightGray-100 border-t">
+          <div class="text-base lg:text-xl mb-4 max-w-[600px] break-all"><%= @title %></div>
           <.sns :if={@display_sns} twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
         </div>
       </div>
