@@ -22,6 +22,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     "3" => :low
   }
 
+  # 入力時間目安表示のための１スキルあたりの時間(分): 約20秒
+  @minute_per_skill 0.33
+
   # スコアと対応するHTML class属性
   @score_mark_class %{
     "high" =>
@@ -60,28 +63,34 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
         </.live_component>
 
         <% # ドーナツグラフとレベル表記 %>
-        <div id="doughnut_area_in_skills_form" class="flex justify-center items-center my-4">
-          <.doughnut_graph id="doughnut_graph_in_skills_form" data={skill_score_percentages(@counter, @num_skills)} />
-          <div class="flex justify-center items-center ml-2">
-            <div class="flex flex-wrap">
-              <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
-                <.profile_skill_class_level level={get_level(@counter, @num_skills)} />
-              </p>
-              <div class="flex flex-col pl-6">
-                <div class="flex items-center">
+        <div id="doughnut_area_in_skills_form" class="flex items-center my-4">
+          <div class="basis-3/4 flex justify-center">
+            <.doughnut_graph id="doughnut_graph_in_skills_form" data={skill_score_percentages(@counter, @num_skills)} />
+            <div class="flex justify-center items-center ml-2">
+              <div class="flex flex-col">
+                <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
+                  <.profile_skill_class_level level={get_level(@counter, @num_skills)} />
+                </p>
+                <div class="flex items-center pl-6">
                   <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
                   <span class="score-high-percentage"><%= calc_percentage(@counter.high, @num_skills) %>％</span>
                 </div>
-                <div class="flex items-center mt-1">
+                <div class="flex items-center mt-1 pl-6">
                   <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
                   <span class="score-middle-percentage"><%= calc_percentage(@counter.middle, @num_skills) %>％</span>
                 </div>
               </div>
             </div>
           </div>
+          <div class="basis-1/4 flex flex-col items-end mr-6">
+            <p class="text-xs font-bold">スキル数</p>
+            <p class="text-sm"><%= @num_skills %></p>
+            <p class="text-xs font-bold">スキル入力目安</p>
+            <p class="text-sm"><%= round(minute_per_skill() * @num_skills) %>分</p>
+          </div>
         </div>
 
-        <div id={"#{@id}-scroll"} class="h-[400px] lg:h-[644px] overflow-y-auto" phx-hook="ScrollOccupancy">
+        <div id={"#{@id}-scroll"} class="h-[400px] lg:h-[600px] overflow-y-auto">
           <%= for skill_unit <- @skill_units do %>
             <b class="block font-bold mt-6 text-xl">
               <%= skill_unit.name %>
@@ -365,4 +374,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     percentage = calc_percentage(counter.high, num_skills)
     SkillScores.get_level(percentage)
   end
+
+  defp minute_per_skill, do: @minute_per_skill
 end
