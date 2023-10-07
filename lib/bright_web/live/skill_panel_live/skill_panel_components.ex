@@ -224,14 +224,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
-  def return_myself_button(assigns) do
-    ~H"""
-    <button phx-click="clear_display_user" class="text-brightGreen-300 border bg-white border-brightGreen-300 rounded px-3 font-bold">
-      自分に戻す
-    </button>
-    """
-  end
-
   def toggle_link(assigns) do
     ~H"""
       <div class="bg-white text-brightGray-500 rounded-full inline-flex text-sm font-bold h-10">
@@ -358,7 +350,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   end
 
   def profile_area(assigns) do
-    # TODO: 自分に戻す、に対応が必要
     ~H"""
       <div class="flex flex-col lg:justify-between lg:flex-row">
         <div class="pt-2 w-full lg:pt-6 lg:w-[850px]">
@@ -370,7 +361,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
             display_excellent_person={false}
             display_anxious_person={false}
-            display_return_to_yourself={true}
+            display_return_to_yourself={!@me}
             display_sns={true}
             twitter_url={@display_user.user_profile.twitter_url}
             github_url={@display_user.user_profile.github_url}

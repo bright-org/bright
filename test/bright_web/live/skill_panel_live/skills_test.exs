@@ -266,6 +266,95 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  # 対象者切り替え
+  describe "Megamenu related users" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    setup %{skill_panel: skill_panel, skill_class: skill_class} do
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+      insert(:init_skill_class_score, user: user_2, skill_class: skill_class)
+
+      %{user_2: user_2}
+    end
+
+    @tag score: :low
+    test "redirects team member page", %{
+      conn: conn,
+      user: user,
+      user_2: user_2,
+      skill_panel: skill_panel
+    } do
+      team = insert(:team)
+      insert(:team_member_users, user: user, team: team)
+      insert(:team_member_users, user: user_2, team: team)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      show_live
+      |> element(~s{#related-user-card-related_user a[phx-value-tab_name="team"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{a[phx-click="click_on_related_user_card_menu"]}, user_2.name)
+      |> render_click()
+
+      {path, _} = assert_redirect(show_live)
+      assert path == "/panels/#{skill_panel.id}/#{user_2.name}"
+    end
+
+    @tag score: :low
+    test "redirects candidated user page", %{
+      conn: conn,
+      user: user,
+      user_2: user_2,
+      skill_panel: skill_panel
+    } do
+      insert(:recruitment_stock_user, recruiter: user, user: user_2)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      show_live
+      |> element(
+        ~s{#related-user-card-related_user a[phx-value-tab_name="candidate_for_employment"]}
+      )
+      |> render_click()
+
+      show_live
+      |> element(~s{a[phx-click="click_on_related_user_card_menu"]})
+      |> render_click()
+
+      {path, _} = assert_redirect(show_live)
+
+      # 匿名用エンコードの時刻参照でずれが起きるため、パスを簡易的に確認
+      assert String.starts_with?(path, "/panels/#{skill_panel.id}/anon/")
+    end
+
+    @tag score: :low
+    test "shows clear_display_user button", %{
+      conn: conn,
+      user: user,
+      user_2: user_2,
+      skill_panel: skill_panel
+    } do
+      team = insert(:team)
+      insert(:team_member_users, user: user, team: team)
+      insert(:team_member_users, user: user_2, team: team)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      refute has_element?(show_live, ~s{button[phx-click="clear_display_user"]})
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}/#{user_2.name}")
+
+      show_live
+      |> element(~s{button[phx-click="clear_display_user"]})
+      |> render_click()
+
+      {path, _} = assert_redirect(show_live)
+      assert path == "/panels/#{skill_panel.id}"
+    end
+  end
+
   describe "Input skill score item score" do
     setup [:register_and_log_in_user, :setup_skills]
 
