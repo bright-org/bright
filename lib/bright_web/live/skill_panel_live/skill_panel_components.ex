@@ -325,7 +325,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
         <%= if skill_class_score do %>
           <% current = @skill_class.class == skill_class.class %>
-          <li id={"class_tab_#{skill_class.class}"} class={current && "bg-white text-base"}>
+          <li id={"class_tab_#{skill_class.class}"} class={[current && "bg-white text-base", "first:border-none last:border-none border-y-4 lg:border-y-0 lg:border-x-4"]}>
             <.link
               patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
               class="flex justify-start items-center p-4 pt-2 lg:inline-block lg:pt-3 text-xs lg:text-base"
@@ -337,7 +337,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             </.link>
           </li>
         <% else %>
-          <li id={"class_tab_#{skill_class.class}"} class="bg-pureGray-600 text-pureGray-100">
+          <li id={"class_tab_#{skill_class.class}"} class="bg-pureGray-600 text-pureGray-100 first:border-none last:border-none border-y-4 lg:border-y-0 lg:border-x-4">
             <span href="#" class="select-none inline-block p-4 pt-3 text-xs lg:text-base">
               クラス<%= skill_class.class %> <%= skill_class.name %>
               <span class="text-xl ml-4">0</span>％
