@@ -23,7 +23,7 @@ defmodule BrightWeb.OnboardingLive.Welcome do
 
       <div class="flex justify-center lg:justify-start w-full">
         <.link
-          class="h-12 text-white bg-brightGreen-300 p-2 rounded-md text-lg lg:text-xl font-bold hover:opacity-70"
+          class="text-white bg-brightGreen-300 p-3 rounded-md text-base lg:text-xl font-bold hover:opacity-70"
           navigate={~p"/onboardings?open=want_todo_panel"}
         >
           自分に合ったスキルパネルを見つける
