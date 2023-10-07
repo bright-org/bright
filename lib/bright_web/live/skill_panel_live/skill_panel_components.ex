@@ -352,7 +352,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def profile_area(assigns) do
     ~H"""
       <div class="flex flex-col lg:justify-between lg:flex-row">
-        <div class="pt-2 w-full lg:pt-6 lg:w-[850px]">
+        <div class="hidden pt-2 w-full lg:pt-6 lg:w-[850px]">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
           <.profile
             user_name={@display_user.name}
@@ -382,9 +382,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         </div>
 
         <div class="-mt-12 lg:mt-2 mr-3 flex flex-col gap-y-4">
-          <div class="flex justify-between items-center w-full lg:w-48 gap-x-2">
+          <div
+            class="flex justify-between items-center w-full lg:w-48 gap-x-2"
+            :if={@display_skill_edit_button}
+          >
             <.link
-              :if={@display_skill_edit_button}
               patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
               id="link-skills-form"
               class="flex-1 flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 hover:opacity-50">
