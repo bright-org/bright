@@ -9,97 +9,94 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id={@id} class="flex justify-center items-center">
-      <div class="w-full lg:w-[450px]">
-        <p class="pb-2 text-base font-bold">
-          <%= @skill.name %>
-        </p>
+    <div id={@id} class="max-h-[80vh] overflow-y-auto">
+      <div class="flex justify-center items-center">
+        <div class="w-full lg:w-[450px]">
+          <p class="pb-2 text-base font-bold">
+            <%= @skill.name %>
+          </p>
 
-        <div
-          id="skill_evidence_posts"
-          class="max-h-[356px] lg:max-h-[600px] overflow-y-auto"
-          phx-hook="ScrollOccupancy"
-          phx-update="stream"
-        >
-          <div
-            :for={{id, post} <- @streams.skill_evidence_posts}
-            id={id}
-            class="flex flex-wrap my-2"
-          >
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src={icon_file_path(post.user, @anonymous)} />
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2" />
-            </div>
-
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all first:mt-0 mt-3"] %>
-              </div>
-              <div
-                class="h-6 w-6 py-2 ml-auto cursor-pointer"
-                phx-click="delete"
-                phx-target={@myself}
-                phx-value-id={post.id}
-              >
-                <span class="material-symbols-outlined text-brightGray-500 font-xs hover:opacity-50">delete</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <.simple_form
-          for={@form}
-          id="skill_evidence_post-form"
-          phx-target={@myself}
-          phx-submit="save"
-        >
-          <div>
-            <% # コメント入力 %>
-            <div class="flex flex-wrap pb-2">
+          <div id="skill_evidence_posts" phx-update="stream">
+            <div
+              :for={{id, post} <- @streams.skill_evidence_posts}
+              id={id}
+              class="flex flex-wrap my-2"
+            >
               <div class="w-[50px] flex justify-center flex-col items-center">
-                <img class="inline-block h-10 w-10 rounded-full" src={icon_file_path(@user, @anonymous)} />
+                <div class="min-h-content">
+                  <img class="h-10 w-10 rounded-full" src={icon_file_path(post.user, @anonymous)} />
+                </div>
+                <hr class="w-[1px] bg-brightGray-200 h-full mt-2" />
               </div>
-              <div class="w-[370px]">
-                <.input_textarea field={@form[:content]} />
+
+              <div class="w-[370px] pb-4">
+                <div class="text-base">
+                  <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all first:mt-0 mt-3"] %>
+                </div>
+                <div
+                  class="h-6 w-6 py-2 ml-auto cursor-pointer"
+                  phx-click="delete"
+                  phx-target={@myself}
+                  phx-value-id={post.id}
+                >
+                  <span class="material-symbols-outlined text-brightGray-500 font-xs hover:opacity-50">delete</span>
+                </div>
               </div>
-            </div>
-            <hr class="pb-1 mt-0 border-brightGray-100" />
-            <% # TODO: α後に実装して有効化 %>
-            <div :if={false} class="flex justify-end py-2 items-center">
-              <label>
-                <input
-                  type="checkbox"
-                  value=""
-                  class="w-4 h-4 mr-3"
-                />学習を完了する
-              </label>
-            </div>
-            <div class="flex justify-end gap-x-4 py-2">
-              <% # TODO: α後に実装して有効化 %>
-              <button :if={false} class="mr-auto">
-                <span class="material-icons-outlined !text-4xl">
-                  add_photo_alternate
-                </span>
-              </button>
-              <button
-                class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
-                type="submit"
-                phx-disable-with="送信中..."
-              >
-                メモを書き込む
-              </button>
-              <% # TODO: α後に実装して有効化 %>
-              <button
-                :if={false}
-                class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
-              >
-                このメモでヘルプを出す
-              </button>
             </div>
           </div>
-        </.simple_form>
+
+          <.simple_form
+            for={@form}
+            id="skill_evidence_post-form"
+            phx-target={@myself}
+            phx-submit="save"
+          >
+            <div>
+              <% # コメント入力 %>
+              <div class="flex flex-wrap pb-2">
+                <div class="w-[50px] flex justify-center flex-col items-center">
+                  <img class="inline-block h-10 w-10 rounded-full" src={icon_file_path(@user, @anonymous)} />
+                </div>
+                <div class="w-[370px]">
+                  <.input_textarea field={@form[:content]} />
+                </div>
+              </div>
+              <hr class="pb-1 mt-0 border-brightGray-100" />
+              <% # TODO: α後に実装して有効化 %>
+              <div :if={false} class="flex justify-end py-2 items-center">
+                <label>
+                  <input
+                    type="checkbox"
+                    value=""
+                    class="w-4 h-4 mr-3"
+                  />学習を完了する
+                </label>
+              </div>
+              <div class="flex justify-end gap-x-4 py-2">
+                <% # TODO: α後に実装して有効化 %>
+                <button :if={false} class="mr-auto">
+                  <span class="material-icons-outlined !text-4xl">
+                    add_photo_alternate
+                  </span>
+                </button>
+                <button
+                  class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
+                  type="submit"
+                  phx-disable-with="送信中..."
+                >
+                  メモを書き込む
+                </button>
+                <% # TODO: α後に実装して有効化 %>
+                <button
+                  :if={false}
+                  class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
+                >
+                  このメモでヘルプを出す
+                </button>
+              </div>
+            </div>
+          </.simple_form>
+        </div>
       </div>
     </div>
     """
