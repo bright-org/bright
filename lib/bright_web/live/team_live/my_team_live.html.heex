@@ -116,39 +116,38 @@
 </div>
 
 <!-- card -->
-<div class="mb-20">
-  <div
-    :if={@display_team == nil}
-    class="m-10 bg-white shadow flex justify-center items-center flex-1 h-full"
-  >
-    <div class="flex flex-col items-center text-center">
-      <p class="font-bold">管理／所属しているチームはありません</p>
-    </div>
-  </div>
-  <div
-    :if={@display_team != nil}
-    class="lg:ml-24 p-6"
-    >
-    <!-- チームタイトルー -->
-    <!-- TODO チームがない場合の表示に対応  -->
-    <.team_header
-      team={@display_team}
-      team_type={:general_team}
-      current_users_team_member={@current_users_team_member}
-    />
 
-    <!-- チームメンバー -->
-    <div class="flex gap-8 pt-4 flex-wrap">
-      <%= for {display_skill_card, index} <- Enum.with_index(@display_skill_cards) do %>
-        <.live_component
-          module={BrightWeb.TeamMemberSkillCardComponent}
-          id={"skill_card_#{index}"}
-          display_skill_panel={@display_skill_panel}
-          display_skill_card={display_skill_card}
-          display_skill_classes={@display_skill_classes}
-          />
-      <% end %>
-    </div>
+<div
+  :if={@display_team == nil}
+  class="m-10 bg-white shadow flex justify-center items-center flex-1 h-full"
+>
+  <div class="flex flex-col items-center text-center">
+    <p class="font-bold">管理／所属しているチームはありません</p>
+  </div>
+</div>
+<div
+  :if={@display_team != nil}
+  class="mb-20 lg:mb-0 lg:ml-24 p-6"
+  >
+  <!-- チームタイトルー -->
+  <!-- TODO チームがない場合の表示に対応  -->
+  <.team_header
+    team={@display_team}
+    team_type={:general_team}
+    current_users_team_member={@current_users_team_member}
+  />
+
+  <!-- チームメンバー -->
+  <div class="flex gap-8 pt-4 flex-wrap">
+    <%= for {display_skill_card, index} <- Enum.with_index(@display_skill_cards) do %>
+      <.live_component
+        module={BrightWeb.TeamMemberSkillCardComponent}
+        id={"skill_card_#{index}"}
+        display_skill_panel={@display_skill_panel}
+        display_skill_card={display_skill_card}
+        display_skill_classes={@display_skill_classes}
+        />
+    <% end %>
   </div>
 </div>
 <!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
