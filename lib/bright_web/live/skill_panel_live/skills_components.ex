@@ -345,15 +345,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                       class={["border border-brightGray-200"]}
                     >
                       <th class="flex justify-between align-middle w-full mb-2 min-h-8 p-2 text-left">
-                        <%= skill.name %>
-                        <div class="flex justify-between items-center gap-x-2">
+                        <span class="break-words max-w-[172px]"><%= skill.name %></span>
+                        <div class="flex justify-end items-center gap-x-2 min-w-[80px]">
                           <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                           <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                           <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                         </div>
                       </th>
 
-                      <td class="align-middle border-l border-brightGray-200 p-2">
+                      <td class="align-middle border-l border-brightGray-200 p-2 w-12">
                         <div class="flex justify-center gap-x-1">
                           <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
                         </div>
