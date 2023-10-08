@@ -58,6 +58,7 @@ defmodule BrightWeb.TimelineBarComponents do
   attr :display_now, :boolean, default: false
   attr :target, :any, default: nil
   attr :scale, :string, default: "md"
+  attr :now_position, :string, default: ""
 
   def timeline_bar(assigns) do
     ~H"""
@@ -86,6 +87,7 @@ defmodule BrightWeb.TimelineBarComponents do
         target={@target}
         selected={"now" == @selected_date}
         scale={@scale}
+        now_position={@now_position}
       />
     </div>
     """
@@ -142,6 +144,7 @@ defmodule BrightWeb.TimelineBarComponents do
   attr :selected, :boolean
   attr :target, :any
   attr :scale, :string
+  attr :now_position, :string
 
   defp now_button(%{selected: true} = assigns) do
     assigns =
@@ -150,11 +153,11 @@ defmodule BrightWeb.TimelineBarComponents do
 
     ~H"""
     <div
-      class={["flex justify-center items-center absolute h-24 w-24 right-[20px]", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
+      class={["flex justify-center items-center absolute h-[52px] w-[52px] right-[40px]", button_outer_scale_class(@scale), button_now_position_class(@scale), @now_position]}>
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}
-        class={["rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold flex justify-center items-center flex-col h-12 w-12 text-sm", button_selected_scale_class(@scale), @font.whole]}
+        class={["rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold flex justify-center items-center flex-col h-[44px] w-[44px] text-sm", button_selected_scale_class(@scale), @font.whole]}
       >
         <span class={["-mb-1 lg:mb-0 material-icons !font-bold !text-xl lg:!text-4xl", @font.check]}>check</span>
         現在
@@ -166,11 +169,11 @@ defmodule BrightWeb.TimelineBarComponents do
   defp now_button(assigns) do
     ~H"""
     <div
-      class={["flex justify-center items-center absolute  h-24 w-24 right-[20px]", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
+      class={["flex justify-center items-center absolute  h-[52px] w-[52px] right-[40px]", button_outer_scale_class(@scale), button_now_position_class(@scale), @now_position]}>
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}
-        class={["rounded-full bg-white text-xs text-attention-900 flex justify-center items-center  h-12 w-12", button_now_scale_class(@scale), button_style_class(@scale)]}
+        class={["rounded-full bg-white text-xs text-attention-900 flex justify-center items-center h-[44px] w-[44px]", button_now_scale_class(@scale), button_style_class(@scale)]}
       >
         現在
       </button>
