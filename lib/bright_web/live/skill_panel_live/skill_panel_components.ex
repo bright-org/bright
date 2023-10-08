@@ -352,9 +352,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def profile_area(assigns) do
     ~H"""
       <div class="flex flex-col lg:justify-between lg:flex-row">
-        <div class="hidden pt-2 w-full lg:pt-6 lg:w-[850px]">
+        <div class="hidden pt-2 w-full lg:block lg:pt-6 lg:w-[850px]">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
-          <.profile
+          <.profile_inline
             user_name={@display_user.name}
             title={@display_user.user_profile.title}
             detail={@display_user.user_profile.detail}
@@ -369,7 +369,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             is_anonymous={@anonymous}
           />
         </div>
-        <div class="flex h-[160px] lg:ml-7">
+        <div class="flex h-[160px] lg:h-[80px] lg:ml-7">
           <div class="w-20 lg:mt-5">
             <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
           </div>
