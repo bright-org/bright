@@ -140,6 +140,22 @@ module "secret_google_client_secret" {
   data = var.google_client_secret
 }
 
+module "secret_github_client_id" {
+  source     = "../../modules/google/secret"
+  depends_on = [module.googleapis]
+
+  name = "bright-github-client-id"
+  data = var.google_client_id
+}
+
+module "secret_github_client_secret" {
+  source     = "../../modules/google/secret"
+  depends_on = [module.googleapis]
+
+  name = "bright-github-client-secret"
+  data = var.github_client_secret
+}
+
 module "service_account_cloud_run" {
   source     = "../../modules/google/service_account"
   depends_on = [module.googleapis]
