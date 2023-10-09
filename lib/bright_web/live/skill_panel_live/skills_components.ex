@@ -321,11 +321,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skills_table_sp(assigns) do
     ~H"""
-    <div class="flex justify-center items-center mb-20">
+    <div
+    id="skills-table-field-sp"
+    class="flex justify-center items-center mb-20"
+    phx-hook="SkillUnitScrolling">
       <section class="text-sm w-full">
         <div>
-          <%= for skill_unit <- @skill_units do %>
-            <b class="block font-bold mt-6 text-xl">
+          <%= for {skill_unit, position} <- Enum.with_index(@skill_units, 1) do %>
+            <b id={"unit-#{position}-sp"} class="block font-bold mt-6 text-xl">
               <%= skill_unit.name %>
             </b>
             <%= for skill_category <- get_children(skill_unit, "skill_categories") do %>
