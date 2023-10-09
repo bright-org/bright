@@ -62,6 +62,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
           <.enter_skills_help_message reference_from={"modal"} />
         </.live_component>
 
+        <p class="text-attention-900 p-2 text-sm">
+          セッション制限時間の1時間以内に「保存する」ボタンを押してください。
+        </p>
+
         <% # ドーナツグラフとレベル表記 %>
         <div id="doughnut_area_in_skills_form" class="flex items-center my-4">
           <div class="basis-3/4 flex justify-center">
@@ -89,10 +93,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
             <p class="text-sm"><%= round(minute_per_skill() * @num_skills) %>分</p>
           </div>
         </div>
-
-        <p class="bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900 p-2 text-sm">
-          セッション制限時間の1時間以内に「保存する」ボタンを押してください。
-        </p>
 
         <div id={"#{@id}-scroll"} class="h-[400px] lg:h-[600px] overflow-y-auto">
           <%= for skill_unit <- @skill_units do %>
