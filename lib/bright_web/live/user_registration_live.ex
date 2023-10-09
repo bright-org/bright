@@ -54,10 +54,10 @@ defmodule BrightWeb.UserRegistrationLive do
         </div>
 
         <UserAuthComponents.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UserAuthComponents.button>
+        <UserAuthComponents.link_text href={~p"/users/log_in"}>ログインはこちら</UserAuthComponents.link_text>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
 
-    <UserAuthComponents.link_text href={~p"/users/log_in"}>ログインはこちら</UserAuthComponents.link_text>
     """
   end
 

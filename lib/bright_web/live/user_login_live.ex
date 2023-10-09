@@ -37,10 +37,9 @@ defmodule BrightWeb.UserLoginLive do
         </UserAuthComponents.input_with_label>
 
         <UserAuthComponents.button variant="mt-xs">ログイン</UserAuthComponents.button>
+        <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
-
-    <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
     """
   end
 
