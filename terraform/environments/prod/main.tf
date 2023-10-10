@@ -145,7 +145,7 @@ module "secret_github_client_id" {
   depends_on = [module.googleapis]
 
   name = "bright-github-client-id"
-  data = var.google_client_id
+  data = var.github_client_id
 }
 
 module "secret_github_client_secret" {
