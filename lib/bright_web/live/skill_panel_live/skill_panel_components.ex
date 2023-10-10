@@ -34,7 +34,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div>
-      <section class="accordion flex my-2 max-w-[1236px] lg:hidden mt-2 px-4">
+      <!--- スキルセットジェムの実装まで使用しない --->
+      <section class="hidden accordion flex my-2 max-w-[1236px] lg:hidden mt-2 px-4">
         <div class="bg-brightGray-50 rounded w-full">
           <p
             id="close_navigation"
@@ -66,7 +67,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           </p>
         </div>
       </section>
-      <div id="switch" class="hidden lg:flex flex-col lg:flex-row gap-x-4 mt-2 px-4 pb-2 lg:mt-4 lg:px-10 lg:pb-3">
+      <div id="switch" class="flex gap-x-2 lg:gap-x-4 mt-2 px-4 pb-4 lg:mt-4 lg:px-10 lg:pb-3">
         <.target_switch current_user={@current_user} />
         <.skill_panel_switch
           display_user={@display_user}
@@ -87,22 +88,23 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def skill_panel_switch(assigns) do
     ~H"""
-    <p class="leading-tight my-2 lg:mt-0 lg:mb-0">対象スキルの<br class="hidden lg:inline">切り替え</p>
-    <.mega_menu_button
-      id="skill_panel_menu"
-      label="スキル"
-      dropdown_offset_skidding="307"
-    >
-      <.live_component
-        id="skill_card"
-        module={BrightWeb.CardLive.SkillCardComponent}
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        root={@root}
-      />
-    </.mega_menu_button>
-
+    <div class="flex flex-col lg:flex-row">
+      <p class="text-xs lg:text-sm leading-tight my-2 lg:mt-0 lg:mb-0 lg:m-4">対象スキルの<br class="hidden lg:inline">切り替</p>
+      <.mega_menu_button
+        id="skill_panel_menu"
+        label="スキル"
+        dropdown_offset_skidding="307"
+      >
+        <.live_component
+          id="skill_card"
+          module={BrightWeb.CardLive.SkillCardComponent}
+          display_user={@display_user}
+          me={@me}
+          anonymous={@anonymous}
+          root={@root}
+        />
+      </.mega_menu_button>
+    </div>
     <% # TODO: α版後にifを除去して表示 %>
     <.skill_set_menu :if={false} />
     """
@@ -169,10 +171,15 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def target_switch(assigns) do
     ~H"""
-    <p class="leading-tight mb-2 lg:ml-4 lg:mb-0">対象者の<br class="hidden lg:inline">切り替え</p>
-    <.related_user_menu current_user={@current_user} />
+    <div class="flex flex-col lg:flex-row">
+      <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象者の<br class="hidden lg:inline">切り替</p>
+      <.related_user_menu current_user={@current_user} />
+    </div>
     <% # TODO: α版後にifを除去して表示 %>
-    <.team_menu :if={false} current_user={@current_user} />
+    <div :if={false}>
+      <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象チームの<br class="hidden lg:inline">切り替</p>
+      <.team_menu current_user={@current_user} />
+    </div>
     """
   end
 
@@ -204,7 +211,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
       type="button"
     >
-      <span class="min-w-[6em]">チーム</span>
+      <span class="min-w-[4em] lg:min-w-[6em]">チーム</span>
       <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
         expand_more
       </span>
@@ -321,27 +328,29 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def class_tab(assigns) do
     ~H"""
-    <ul class="flex flex-col shadow relative z-1 text-base font-bold text-brightGray-500 bg-brightGreen-50 w-full lg:-bottom-1 lg:flex-row lg:text-center lg:text-md lg:w-fit">
+    <ul class="flex shadow relative z-1 text-base font-bold text-brightGray-500 bg-brightGreen-50 lg:-bottom-1 lg:text-center lg:text-md w-full lg:w-fit">
       <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
         <%= if skill_class_score do %>
           <% current = @skill_class.class == skill_class.class %>
-          <li id={"class_tab_#{skill_class.class}"} class={[current && "bg-white text-base", "first:border-none last:border-none border-y-4 lg:border-y-0 lg:border-x-4"]}>
+          <li id={"class_tab_#{skill_class.class}"} class={["grow", current && "bg-white text-base", "first:border-none last:border-none lg:border-x-4"]}>
             <.link
               patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
-              class="flex justify-start items-center p-4 pt-2 lg:inline-block lg:pt-3 text-xs lg:text-base"
+              class="flex lg:justify-start items-center px-2 lg:px-4 py-1 lg:py-3 lg:text-base"
               aria-current={current && "page"}
             >
-              クラス<%= skill_class.class %> <%= skill_class.name %>
-              <span class="text-xl ml-2 lg:ml-4"><%= floor skill_class_score.percentage %></span>％
-              <span class="material-symbols-outlined ml-auto lg:hidden">stat_minus_1</span>
+              <span class="text-sm lg:text-base" :if={current}>クラス<%= skill_class.class %></span>
+              <span class="text-xs lg:text-base" :if={!current}>クラス<%= skill_class.class %></span>
+              <span class="hidden lg:flex"><%= skill_class.name %></span>
+              <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4"><%= floor skill_class_score.percentage %></span>％
             </.link>
           </li>
         <% else %>
-          <li id={"class_tab_#{skill_class.class}"} class="bg-pureGray-600 text-pureGray-100 first:border-none last:border-none border-y-4 lg:border-y-0 lg:border-x-4">
-            <span href="#" class="select-none inline-block p-4 pt-3 text-xs lg:text-base">
-              クラス<%= skill_class.class %> <%= skill_class.name %>
-              <span class="text-xl ml-4">0</span>％
-            </span>
+          <li id={"class_tab_#{skill_class.class}"} class="grow lg:grow-0 bg-pureGray-600 text-pureGray-100 first:border-none last:border-none lg:border-x-4">
+            <a href="#" class="flex items-center lg:select-none px-2 lg:px-4 py-1 lg:py-3 text-xs lg:text-base">
+              <span class="text-xs lg:text-base">クラス<%= skill_class.class %></span>
+              <span class="hidden lg:block"><%= skill_class.name %></span>
+              <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0</span>％
+            </a>
           </li>
         <% end %>
       <% end %>
@@ -352,7 +361,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def profile_area(assigns) do
     ~H"""
       <div class="flex flex-col lg:justify-between lg:flex-row">
-        <div class="hidden pt-2 w-full lg:block lg:pt-6 lg:w-[850px]">
+        <div class="pt-2 w-full lg:pt-6 lg:w-[850px]">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
           <.profile_inline
             user_name={@display_user.name}
@@ -369,8 +378,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             is_anonymous={@anonymous}
           />
         </div>
-        <div class="flex h-[160px] lg:h-[80px] lg:ml-7">
-          <div class="w-20 lg:mt-5">
+        <div class="flex ml-8 h-[160px] lg:h-[80px] lg:ml-7">
+          <div class="w-20 mt-5">
             <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
           </div>
 
@@ -432,7 +441,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   defp profile_score_stats(assigns) do
     ~H"""
-    <div id="profile_score_stats" class="h-20 lg:ml-2 flex flex-wrap lg:mt-5">
+    <div id="profile_score_stats" class="h-20 mt-4 lg:ml-2 flex flex-wrap lg:mt-5">
       <p class="text-brightGreen-300 font-bold w-full flex ml-[7px] lg:ml-6 mt-2 mb-1">
         <.profile_skill_class_level level={@skill_class_score.level} />
       </p>

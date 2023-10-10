@@ -42,7 +42,7 @@ defmodule BrightWeb.MegaMenuComponents do
         class="dropdownTrigger text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
         type="button"
       >
-        <span class="min-w-[6em]">
+        <span class="min-w-[4em] lg:min-w-[6em]">
           <%= @label %>
         </span>
         <span
