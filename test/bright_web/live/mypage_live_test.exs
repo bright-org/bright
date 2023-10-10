@@ -17,19 +17,13 @@ defmodule BrightWeb.MypageLiveTest do
       assert index_live |> has_element?("div .pt-5", user.user_profile.detail)
       # SNSアイコン表示
       assert index_live
-             |> has_element?(
-               "div.flex.gap-x-6.mr-2 button:nth-child(1) img[src='/images/common/twitter.svg']"
-             )
+             |> has_element?("button:nth-child(1) img[src='/images/common/twitter.svg']")
 
       assert index_live
-             |> has_element?(
-               "div.flex.gap-x-6.mr-2 button:nth-child(2) img[src='/images/common/github.svg']"
-             )
+             |> has_element?("button:nth-child(2) img[src='/images/common/github.svg']")
 
       assert index_live
-             |> has_element?(
-               "div.flex.gap-x-6.mr-2 button:nth-child(3) img[src='/images/common/facebook.svg']"
-             )
+             |> has_element?("button:nth-child(3) img[src='/images/common/facebook.svg']")
 
       # スキルセットジェムのタグがあることを確認
       # TODO α版では実装しない
