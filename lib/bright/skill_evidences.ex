@@ -174,7 +174,7 @@ defmodule Bright.SkillEvidences do
 
   # image_names: 添付画像名リスト
   def create_skill_evidence_post(skill_evidence, user, attrs, image_names) do
-    image_paths = Enum.map(image_names, & build_image_path/1)
+    image_paths = Enum.map(image_names, &build_image_path/1)
     attrs = Map.put(attrs, "image_paths", image_paths)
     create_skill_evidence_post(skill_evidence, user, attrs)
   end
@@ -205,7 +205,7 @@ defmodule Bright.SkillEvidences do
     Ecto.Multi.new()
     |> Ecto.Multi.delete(:delete, skill_evidence_post)
     |> Ecto.Multi.run(:delete_images, fn _repo, _data ->
-      Enum.each(image_paths, & Storage.delete!/1)
+      Enum.each(image_paths, &Storage.delete!/1)
       {:ok, :deleted}
     end)
     |> Repo.transaction()

@@ -23,6 +23,6 @@ defmodule Bright.SkillEvidences.SkillEvidencePost do
   def changeset(skill_evidence, attrs) do
     skill_evidence
     |> cast(attrs, [:content, :image_paths])
-    |> validate_required([:content, :image_paths])
+    |> validate_required([:content])
   end
 end

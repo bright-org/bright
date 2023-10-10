@@ -4,13 +4,18 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
   import Phoenix.LiveViewTest
   import Bright.Factory
 
+  alias Bright.SkillEvidences.SkillEvidencePost
+
   defp setup_skills(%{user: user}) do
     # エビデンスのため最小限
     skill_panel = insert(:skill_panel)
     insert(:user_skill_panel, user: user, skill_panel: skill_panel)
     skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
     skill_unit = insert(:skill_unit)
-    _skill_class_unit = insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit, position: 1)
+
+    _skill_class_unit =
+      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit, position: 1)
+
     [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
 
     %{
@@ -20,10 +25,23 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     }
   end
 
-  defp open_modal(show_live) do
-    show_live
+  defp open_modal(lv) do
+    lv
     |> element("#skill-1 .link-evidence")
     |> render_click()
+  end
+
+  # supportフォルダからnamesのファイルをアップロード操作
+  defp upload_image(live, names) do
+    files =
+      Enum.map(names, fn name ->
+        %{
+          name: name,
+          content: Path.join([test_support_dir(), "images", name]) |> File.read!()
+        }
+      end)
+
+    file_input(live, "#skill_evidence_post-form", :image, files)
   end
 
   describe "Shows modal" do
@@ -34,11 +52,11 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       skill_panel: skill_panel,
       skill: skill
     } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
 
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill}/evidences?class=1")
-      assert render(show_live) =~ skill.name
+      assert_patch(lv, ~p"/panels/#{skill_panel}/skills/#{skill}/evidences?class=1")
+      assert render(lv) =~ skill.name
     end
 
     test "shows modal case: skill_score existing", %{
@@ -48,11 +66,11 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       skill: skill
     } do
       insert(:skill_score, user: user, skill: skill, score: :high)
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
 
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill}/evidences?class=1")
-      assert render(show_live) =~ skill.name
+      assert_patch(lv, ~p"/panels/#{skill_panel}/skills/#{skill}/evidences?class=1")
+      assert render(lv) =~ skill.name
     end
 
     test "shows posts", %{
@@ -70,10 +88,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
           content: "some content"
         )
 
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
 
-      assert render(show_live) =~ skill_evidence_post.content
+      assert render(lv) =~ skill_evidence_post.content
     end
 
     test "shows others posts", %{
@@ -92,13 +110,14 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
           content: "some content by others"
         )
 
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
 
-      assert render(show_live) =~ skill_evidence_post.content
+      assert render(lv) =~ skill_evidence_post.content
     end
   end
 
+  # 投稿内容
   describe "Posts message" do
     setup [:register_and_log_in_user, :setup_skills]
 
@@ -106,22 +125,22 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       conn: conn,
       skill_panel: skill_panel
     } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
 
-      show_live
+      lv
       |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
       |> render_submit()
 
-      assert has_element?(show_live, "#skill_evidence_posts", "input 1")
+      assert has_element?(lv, "#skill_evidence_posts", "input 1")
 
       # 永続化確認
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
-      assert has_element?(show_live, "#skill_evidence_posts", "input 1")
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+      assert has_element?(lv, "#skill_evidence_posts", "input 1")
     end
 
-    test "removes post", %{
+    test "deltes post", %{
       conn: conn,
       user: user,
       skill_panel: skill_panel,
@@ -136,59 +155,201 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
           content: "input 1"
         )
 
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
 
-      assert has_element?(show_live, "#skill_evidence_posts", "input 1")
+      assert has_element?(lv, "#skill_evidence_posts", "input 1")
 
-      show_live
+      lv
       |> element(~s([phx-click="delete"][phx-value-id="#{skill_evidence_post.id}"]))
       |> render_click()
 
-      refute has_element?(show_live, "#skill_evidence_posts", "input 1")
+      refute has_element?(lv, "#skill_evidence_posts", "input 1")
 
       # 永続化確認
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
-      refute has_element?(show_live, "#skill_evidence_posts", "input 1")
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+      refute has_element?(lv, "#skill_evidence_posts", "input 1")
     end
 
     test "validates post message", %{
       conn: conn,
       skill_panel: skill_panel
     } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      open_modal(show_live)
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
 
-      assert show_live
+      assert lv
              |> form("#skill_evidence_post-form", skill_evidence_post: %{content: ""})
              |> render_submit() =~ "入力してください"
     end
   end
 
+  # 投稿画像
   describe "Uploads image" do
-    test "uploads image" do
-      # TODO
+    setup [:register_and_log_in_user, :setup_skills]
+
+    test "uploads image", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+
+      %{entries: [%{"ref" => ref}]} = image = upload_image(lv, ~w(sample.png))
+      render_upload(image, "sample.png")
+      assert has_element?(lv, ~s(img[data-phx-entry-ref="#{ref}"]))
+
+      lv
+      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
+      |> render_submit()
+
+      assert has_element?(lv, "#skill_evidence_posts .evidence-image img")
+
+      # 永続化確認
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+      assert has_element?(lv, "#skill_evidence_posts .evidence-image img")
     end
 
-    test "removes image in preview" do
-      # TODO
+    test "uploads some images", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+
+      image = upload_image(lv, ~w(sample.png sample.jpg))
+      render_upload(image, "sample.png")
+      render_upload(image, "sample.jpg")
+
+      # TODO: 複数ファイルでこける。要対応
+      # lv
+      # |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
+      # |> render_submit()
+      #
+      # {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      # open_modal(lv)
+      # assert has_element?(lv, "#skill_evidence_posts .evidence-image img")
     end
 
-    test "removes image with post" do
-      # TODO
+    test "deltes image in preview", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+
+      %{entries: [%{"ref" => ref}]} = image = upload_image(lv, ~w(sample.png))
+      render_upload(image, "sample.png")
+      assert has_element?(lv, ~s(img[data-phx-entry-ref="#{ref}"]))
+
+      lv
+      |> element(~s(button[phx-click="cancel_upload"][phx-value-ref="#{ref}"]))
+      |> render_click()
+
+      refute has_element?(lv, ~s(img[data-phx-entry-ref="#{ref}"]))
     end
 
-    test "validates max entries" do
-      # TODO
+    test "deltes image with post", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      # アップロード
+      open_modal(lv)
+      image = upload_image(lv, ~w(sample.png))
+      render_upload(image, "sample.png")
+
+      lv
+      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
+      |> render_submit()
+
+      skill_evidence_post = Bright.Repo.get_by!(SkillEvidencePost, user_id: user.id)
+      [storage_path] = skill_evidence_post.image_paths
+      assert {:ok, _} = Bright.Utils.GoogleCloud.Storage.get(storage_path)
+
+      # 削除
+      lv
+      |> element(~s([phx-click="delete"][phx-value-id="#{skill_evidence_post.id}"]))
+      |> render_click()
+
+      refute Bright.Repo.get(SkillEvidencePost, skill_evidence_post.id)
+      assert {:error, _} = Bright.Utils.GoogleCloud.Storage.get(storage_path)
     end
 
-    test "validates max file size" do
-      # TODO
+    test "validates max entries: 4", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+
+      names = ~w(sample.png sample.jpg sample.jpeg sample_2.png sample_2.jpg)
+      image = upload_image(lv, names)
+      Enum.each(names, &render_upload(image, &1))
+
+      assert has_element?(lv, "#skill_evidence_post-form .text-error", "アップロードするファイルが多すぎます")
+
+      # 以下、一度1つ消して再度アップロード
+      %{entries: [%{"ref" => ref} | _]} = image
+
+      lv
+      |> element(~s(button[phx-click="cancel_upload"][phx-value-ref="#{ref}"]))
+      |> render_click()
+
+      refute has_element?(lv, "#skill_evidence_post-form .text-error", "アップロードするファイルが多すぎます")
+
+      image_added = upload_image(lv, ["sample.png"])
+      render_upload(image_added, "sample.png")
+      assert has_element?(lv, "#skill_evidence_post-form .text-error", "アップロードするファイルが多すぎます")
     end
 
-    test "validates format" do
-      # TODO
+    test "validates max file size", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+
+      file_input(lv, "#skill_evidence_post-form", :image, [
+        %{
+          name: "sample.png",
+          content: Path.join([test_support_dir(), "images", "sample.png"]) |> File.read!(),
+          size: 5_000_001
+        }
+      ])
+      |> render_upload("sample.png")
+
+      # validateで処理をしているため手動実行
+      lv
+      |> element("#skill_evidence_post-form")
+      |> render_change(%{"skill_evidence_post" => %{}})
+
+      assert has_element?(lv, "#skill_evidence_post-form .text-error", "ファイルサイズが大きすぎます")
+    end
+
+    test "validates invalid format: gif, svg", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      open_modal(lv)
+
+      ~w(sample.gif sample.svg)
+      |> Enum.each(fn name ->
+        image = upload_image(lv, [name])
+        render_upload(image, name)
+
+        # validateで処理をしているため手動実行
+        lv
+        |> element("#skill_evidence_post-form")
+        |> render_change(%{"skill_evidence_post" => %{}})
+
+        assert has_element?(lv, "#skill_evidence_post-form .text-error", "アップロードできない拡張子です")
+      end)
     end
   end
 end

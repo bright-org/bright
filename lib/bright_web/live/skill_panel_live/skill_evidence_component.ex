@@ -41,9 +41,11 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   <% nil -> %>
                   <% [] -> %>
                   <% [image_path] -> %>
-                    <img src={image_url(image_path)} class="w-full aspect-video object-cover mt-3" />
+                    <div class="evidence-image">
+                      <img src={image_url(image_path)} class="w-full aspect-video object-cover mt-3" />
+                    </div>
                   <% image_paths -> %>
-                    <div class="grid grid-cols-2 gap-2 mt-3">
+                    <div class="evidence-images grid grid-cols-2 gap-2 mt-3">
                       <%= for image_path <- image_paths do %>
                         <img src={image_url(image_path)} class="w-full aspect-video object-cover" />
                       <% end %>
@@ -159,9 +161,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   @impl true
   def mount(socket) do
     {:ok,
-      socket
-      |> allow_upload(:image, accept: ~w(.jpg .jpeg .png), max_file_size: 5_000_000, max_entries: 4)
-      |> assign(:entry_errors, [])}
+     socket
+     |> allow_upload(:image, accept: ~w(.jpg .jpeg .png), max_file_size: 5_000_000, max_entries: 4)
+     |> assign(:entry_errors, [])}
   end
 
   @impl true
@@ -185,9 +187,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       |> Map.put(:action, :validate)
 
     {:noreply,
-      socket
-      |> assign_form(changeset)
-      |> unassign_invalid_image_entries()}
+     socket
+     |> assign_form(changeset)
+     |> unassign_invalid_image_entries()}
   end
 
   def handle_event("save", %{"skill_evidence_post" => params}, socket) do
@@ -217,6 +219,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         {:noreply,
          socket
          |> stream_insert(:skill_evidence_posts, skill_evidence_post, at: -1)
+         |> assign(:entry_errors, [])
          |> assign_form()}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -258,7 +261,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   defp upload_files(socket, storage_paths) do
     [elem(uploaded_entries(socket, :image), 0), storage_paths]
     |> Enum.zip()
-    |> Enum.map(fn {entry, storage_path} ->
+    |> Enum.map(fn {%{valid?: true} = entry, storage_path} ->
       consume_uploaded_entry(socket, entry, fn %{path: path} ->
         Storage.upload!(path, storage_path)
         {:ok, :uploaded}
@@ -282,8 +285,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   defp unassign_invalid_image_entries(socket) do
     uploads = socket.assigns.uploads
-    invalids = Enum.filter(uploads.image.entries, & !&1.valid?)
-    errors = invalids |> Enum.flat_map(& upload_errors(uploads.image, &1)) |> Enum.uniq()
+    invalids = Enum.filter(uploads.image.entries, &(!&1.valid?))
+    errors = invalids |> Enum.flat_map(&upload_errors(uploads.image, &1)) |> Enum.uniq()
 
     invalids
     |> Enum.reduce(socket, fn invalid, acc ->
@@ -295,6 +298,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   # TODO: CoreComponentとの統合検討
   attr :id, :any, default: nil
   attr :field, Phoenix.HTML.FormField
+
   defp input_textarea(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns =
       assigns
