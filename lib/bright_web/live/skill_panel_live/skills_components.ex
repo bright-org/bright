@@ -315,6 +315,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           </tr>
         <% end %>
       </table>
+
+      <%= if @num_skills == 0 do %>
+        <div class="mt-28 w-full flex flex-col justify-center items-center gap-y-2">
+          <p class="text-2xl lg:text-4xl">データ未登録の区間です。</p>
+          <p class="text-md lg:text-xl">スキル入力された以降の区間を選択するとスキル一覧／習得状況が表示されます。</p>
+        </div>
+      <% end %>
     </div>
     """
   end
