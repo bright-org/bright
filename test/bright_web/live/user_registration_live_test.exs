@@ -142,7 +142,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
 
       assert lv
              |> has_element?(
-               ~s{a[href="#"]},
+               ~s{a[href="/auth/github"]},
                "GitHub"
              )
 
@@ -169,6 +169,18 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       )
       |> render_click()
       |> follow_redirect(conn, ~p"/auth/google")
+    end
+
+    test "clicks 「Github」 button", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      lv
+      |> element(
+        "a",
+        "GitHub"
+      )
+      |> render_click()
+      |> follow_redirect(conn, ~p"/auth/github")
     end
   end
 end

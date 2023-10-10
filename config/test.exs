@@ -48,9 +48,16 @@ config :ueberauth, Ueberauth,
   providers: [
     google:
       {Bright.Ueberauth.Strategy.Test,
-       [aliased_strategy: Ueberauth.Strategy.Google, default_scope: "email profile"]}
+       [aliased_strategy: Ueberauth.Strategy.Google, default_scope: "email profile"]},
+    github:
+      {Bright.Ueberauth.Strategy.Test,
+       [aliased_strategy: Ueberauth.Strategy.Github, default_scope: ""]}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: "dummy_client_id",
+  client_secret: "dummy_client_secret"
+
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: "dummy_client_id",
   client_secret: "dummy_client_secret"

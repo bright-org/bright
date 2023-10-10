@@ -41,7 +41,7 @@ defmodule BrightWeb.OAuthController do
            }
          } = conn
        ) do
-    case Accounts.get_user_by_provider_and_identifier(provider, identifier) do
+    case Accounts.get_user_by_provider_and_identifier(provider, to_string(identifier)) do
       %User{confirmed_at: nil} ->
         conn
         |> put_flash(:error, "メールアドレス未確認ユーザーです。メールを確認して確認済みにしてください。")
@@ -57,7 +57,7 @@ defmodule BrightWeb.OAuthController do
             name: name,
             email: email,
             provider: provider,
-            identifier: identifier,
+            identifier: to_string(identifier),
             display_name: display_name(ueberauth_auth)
           })
 
@@ -81,7 +81,7 @@ defmodule BrightWeb.OAuthController do
        ) do
     case Accounts.link_social_account(current_user, %{
            provider: provider,
-           identifier: identifier,
+           identifier: to_string(identifier),
            display_name: display_name(ueberauth_auth)
          }) do
       {:ok, _user_social_auth} ->
@@ -97,8 +97,16 @@ defmodule BrightWeb.OAuthController do
 
   # プロバイダ毎の連携アカウントに対する表示名
   # Google: メールアドレス
+  # Github: ユーザー名
   defp display_name(%Ueberauth.Auth{provider: :google, info: %Ueberauth.Auth.Info{email: email}}) do
     email
+  end
+
+  defp display_name(%Ueberauth.Auth{
+         provider: :github,
+         info: %Ueberauth.Auth.Info{nickname: nickname}
+       }) do
+    nickname
   end
 
   # NOTE: 取得できなくても表示されないだけなのでエラーにはせず nil とする
