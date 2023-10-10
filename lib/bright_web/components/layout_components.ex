@@ -37,8 +37,8 @@ defmodule BrightWeb.LayoutComponents do
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content={@csrf_token} />
-        <meta property="og:title" content="Bright｜エンジニアのスキルを見える化で採用・評価・育成の課題を全て解決">
-        <meta property="og:description" content="エンジニア/UX・UIデザイナー/PMの強み・弱みが把握できます。採用ミスマッチ解消や担当者がいなくてもキャリアパスや教材を提案するので、エンジニアの自己成長が進みます。">
+        <meta property="og:title" content="Bright｜過去と今、未来のスキルから、あなたの輝きを見える化します">
+        <meta property="og:description" content={"ITで世の中に価値をもたらすエンジニアやインフラ、デザイナー、マーケッターから、気になるスキルを選び、あなたがどのような\"輝き\"を放つかを体験してください。"}>
         <meta property="og:image" content="https://bright-fun.org/images/ogp_a.png">
         <meta property="og:type" content="article">
         <meta property="og:url" contetnt="https://bright-fun.org/">
