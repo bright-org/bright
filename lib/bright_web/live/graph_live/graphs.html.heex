@@ -15,7 +15,8 @@
     <div> </div>
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
-  <div class="bg-white shadow relative z-2 px-2 py-10 lg:pl-7 lg:pr-5 lg:py-0">
+  <div class="bg-white shadow relative z-2 px-2 py-1 lg:pl-7 lg:pr-5 lg:py-0">
+    <h3 class="text-sm lg:hidden"><%= "クラス#{@skill_class.class} : #{@skill_class.name}" %></h3>
     <.profile_area
       display_user={@display_user}
       anonymous={@anonymous}
@@ -25,7 +26,7 @@
       display_skill_edit_button={false}
       me={@me}
     />
-    <div class="mt-4 lg:mt-0 flex flex-col-reverse lg:flex-row">
+    <div class="mt-12 lg:mt-0 flex flex-col-reverse lg:flex-row">
       <.live_component
         id="rowth-graph"
         module={BrightWeb.ChartLive.GrowthGraphComponent}
