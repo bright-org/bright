@@ -102,6 +102,7 @@ defmodule BrightWeb.LayoutComponents do
       </div>
       <div class="flex gap-2 items-center lg:w-fit h-10">
         <.search_for_skill_holders_button />
+        <.notification_button />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
       </div>
     </div>
