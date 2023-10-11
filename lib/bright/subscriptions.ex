@@ -6,7 +6,6 @@ defmodule Bright.Subscriptions do
   import Ecto.Query, warn: false
   alias Bright.Repo
   alias Bright.Subscriptions.SubscriptionPlan
-  alias Bright.Accounts.User
 
   @doc """
   Returns the list of subscription_plans.
