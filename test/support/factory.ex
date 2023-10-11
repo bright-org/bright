@@ -98,4 +98,9 @@ defmodule Bright.Factory do
 
   # Bright.RecruitmentStockUserFactory
   use Bright.RecruitmentStockUserFactory
+
+  # Subscription context
+  use Bright.SubscriptionPlanFactory
+  use Bright.SubscriptionPlanServiceFactory
+  use Bright.SubscriptionUserPlanFactory
 end

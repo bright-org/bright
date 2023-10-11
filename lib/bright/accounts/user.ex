@@ -57,6 +57,8 @@ defmodule Bright.Accounts.User do
     has_one :user_profile, Bright.UserProfiles.UserProfile
     has_one :user_job_profile, Bright.UserJobProfiles.UserJobProfile
 
+    has_many :subscription_user_plans, Bright.Subscriptions.SubscriptionUserPlan
+
     timestamps()
   end
 
