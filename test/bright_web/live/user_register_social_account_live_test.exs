@@ -104,12 +104,12 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
         |> element("#registration_by_social_auth_form")
         |> render_change(
           user: %{
-            "name" => String.duplicate("a", 256),
+            "name" => String.duplicate("a", 31),
             "email" => "with spaces"
           }
         )
 
-      assert result =~ "255文字以内で入力してください"
+      assert result =~ "30文字以内で入力してください"
       assert result =~ "無効なフォーマットです"
     end
   end

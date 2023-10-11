@@ -159,7 +159,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
 
       lv |> element("a", "一般") |> render_click()
 
-      new_name = String.duplicate("a", 256)
+      new_name = String.duplicate("a", 31)
 
       user_profile_attrs = %{
         title: String.duplicate("a", 31),
@@ -178,7 +178,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       assert lv
              |> has_element?(
                ~s{#general_setting_form div[phx-feedback-for="user[name]"] .text-error},
-               "255文字以内で入力してください"
+               "30文字以内で入力してください"
              )
 
       assert lv

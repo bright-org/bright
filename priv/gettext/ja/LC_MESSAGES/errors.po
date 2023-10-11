@@ -107,9 +107,6 @@ msgstr "英字を1文字以上含めてください"
 msgid "at least one digit"
 msgstr "数字を1文字以上含めてください"
 
-msgid "only lower-case alphanumeric character and -_. is available"
-msgstr "小文字の半角英数字と「-_.」 のみ利用可能です"
-
 msgid "should start with https://twitter.com/"
 msgstr "https://twitter.com/ から始めてください"
 
