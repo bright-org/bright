@@ -5,7 +5,6 @@ defmodule Brignt.Seeds.SubscriptionPlanService do
 
   alias Bright.Subscriptions
   alias Bright.Subscriptions.SubscriptionPlan
-  alias Bright.Subscriptions.SubscriptionUserPlan
 
   @plan_services [
     %{plan_code: "personal_skill_up_plan", service_code: "skill_up"},
