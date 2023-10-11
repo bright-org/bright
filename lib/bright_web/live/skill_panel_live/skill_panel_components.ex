@@ -361,36 +361,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def profile_area(assigns) do
     ~H"""
       <div class="flex flex-col lg:justify-between lg:flex-row">
-        <div class="pt-2 w-full lg:pt-6 lg:w-[850px]">
-          <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
-          <.profile_inline
-            user_name={@display_user.name}
-            title={@display_user.user_profile.title}
-            detail={@display_user.user_profile.detail}
-            icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
-            display_excellent_person={false}
-            display_anxious_person={false}
-            display_return_to_yourself={!@me}
-            display_sns={true}
-            twitter_url={@display_user.user_profile.twitter_url}
-            github_url={@display_user.user_profile.github_url}
-            facebook_url={@display_user.user_profile.facebook_url}
-            is_anonymous={@anonymous}
-          />
-        </div>
-        <div class="flex ml-8 h-[160px] lg:h-[80px] lg:ml-7">
-          <div class="w-20 mt-5">
-            <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
-          </div>
-
-          <.profile_score_stats
-            skill_class_score={@skill_class_score}
-            counter={@counter}
-            num_skills={@num_skills}
-          />
-        </div>
-
-        <div class="-mt-12 lg:mt-2 mr-3 flex flex-col gap-y-4">
+        <div class="lg:order-last mb-8 lg:mt-2 mr-3 flex flex-col gap-y-4">
           <div
             class="flex justify-between items-center w-full lg:w-48 gap-x-2"
             :if={@display_skill_edit_button}
@@ -416,6 +387,35 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             <img src="/images/common/icons/up.svg" class="absolute left-4 top-1/2 -translate-y-1/2">
             スキルアップする
           </button>
+        </div>
+
+        <div class="pt-2 w-full lg:pt-6 lg:w-[850px]">
+          <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
+          <.profile_inline
+            user_name={@display_user.name}
+            title={@display_user.user_profile.title}
+            detail={@display_user.user_profile.detail}
+            icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
+            display_excellent_person={false}
+            display_anxious_person={false}
+            display_return_to_yourself={!@me}
+            display_sns={true}
+            twitter_url={@display_user.user_profile.twitter_url}
+            github_url={@display_user.user_profile.github_url}
+            facebook_url={@display_user.user_profile.facebook_url}
+            is_anonymous={@anonymous}
+          />
+        </div>
+        <div class="flex ml-8 mb-4 h-[80px] lg:ml-7">
+          <div class="w-20 mt-5">
+            <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
+          </div>
+
+          <.profile_score_stats
+            skill_class_score={@skill_class_score}
+            counter={@counter}
+            num_skills={@num_skills}
+          />
         </div>
       </div>
     """
