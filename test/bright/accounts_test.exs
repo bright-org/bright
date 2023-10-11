@@ -251,15 +251,16 @@ defmodule Bright.AccountsTest do
     end
 
     test "validates invalid name format" do
+      #        {"A", ["only lower-case alphanumeric character and -_. is available"]},
+      #        {"@", ["only lower-case alphanumeric character and -_. is available"]},
+      #        {"ａ", ["only lower-case alphanumeric character and -_. is available"]},
+      #        {"Ａ", ["only lower-case alphanumeric character and -_. is available"]},
+      #        {"ひらがな", ["only lower-case alphanumeric character and -_. is available"]},
+      #        {"漢字", ["only lower-case alphanumeric character and -_. is available"]}
+
       [
         {"", ["can't be blank"]},
         {String.duplicate("a", 31), ["should be at most 30 character(s)"]}
-        #        {"A", ["only lower-case alphanumeric character and -_. is available"]},
-        #        {"@", ["only lower-case alphanumeric character and -_. is available"]},
-        #        {"ａ", ["only lower-case alphanumeric character and -_. is available"]},
-        #        {"Ａ", ["only lower-case alphanumeric character and -_. is available"]},
-        #        {"ひらがな", ["only lower-case alphanumeric character and -_. is available"]},
-        #        {"漢字", ["only lower-case alphanumeric character and -_. is available"]}
       ]
       |> Enum.each(fn {invalid_name, reasons} ->
         changeset = setup_user_changeset(%{name: invalid_name})
