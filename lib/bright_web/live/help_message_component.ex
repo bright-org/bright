@@ -21,14 +21,14 @@ defmodule BrightWeb.HelpMessageComponent do
         <button
           id={good_button_id(@id)}
           type="button"
-          class="bg-brightGray-900 border border-brightGray-900 font-bold p-1 rounded text-white w-48"
+          class="btn-help-good bg-brightGray-900 border border-brightGray-900 font-bold p-1 rounded text-white w-48"
           phx-click={JS.push("good", target: @myself) |> hide("##{@id}")}>
           この説明は分かりやすい
         </button>
         <button
           id={bad_button_id(@id)}
           type="button"
-          class="bg-white border border-brightGray-900 font-bold p-1 rounded text-brightGray-900 w-24"
+          class="btn-help-bad bg-white border border-brightGray-900 font-bold p-1 rounded text-brightGray-900 w-24"
           phx-click={JS.push("bad", target: @myself) |> hide("##{@id}")}>
           わかりにくい
         </button>
