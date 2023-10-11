@@ -1927,8 +1927,7 @@ defmodule Bright.AccountsTest do
     end
 
     test "validates name length", %{user: user} do
-      changeset =
-        Accounts.change_user_with_user_profile(user, %{name: String.duplicate("a", 31)})
+      changeset = Accounts.change_user_with_user_profile(user, %{name: String.duplicate("a", 31)})
 
       assert %{name: ["should be at most 30 character(s)"]} = errors_on(changeset)
     end
