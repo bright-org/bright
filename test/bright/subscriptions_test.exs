@@ -176,7 +176,7 @@ defmodule Bright.SubscriptionsTest do
     end
   end
 
-  describe "enable_service?/2" do
+  describe "service_enabled?/2" do
     # サービス利用判定のパターン
     test "true case. subscribing plan and available service" do
       subscription_plan1 =
@@ -189,7 +189,7 @@ defmodule Bright.SubscriptionsTest do
 
       service_code = List.first(subscription_plan1.subscription_plan_services).service_code
 
-      assert true == Subscriptions.enable_service?(user.id, service_code)
+      assert true == Subscriptions.service_enabled?(user.id, service_code)
     end
 
     test "true case. free_trial plan and available service" do
@@ -203,7 +203,7 @@ defmodule Bright.SubscriptionsTest do
 
       service_code = List.first(subscription_plan1.subscription_plan_services).service_code
 
-      assert true == Subscriptions.enable_service?(user.id, service_code)
+      assert true == Subscriptions.service_enabled?(user.id, service_code)
     end
 
     test "false case. subscribing plan. but disable that service" do
@@ -218,7 +218,7 @@ defmodule Bright.SubscriptionsTest do
       service_code = List.first(subscription_plan1.subscription_plan_services).service_code
 
       # プランに紐づけられた内容とサービスコードが一致しない場合はfalse
-      assert false == Subscriptions.enable_service?(user.id, service_code <> "1")
+      assert false == Subscriptions.service_enabled?(user.id, service_code <> "1")
     end
 
     test "false case. subscription_end plan" do
@@ -235,7 +235,7 @@ defmodule Bright.SubscriptionsTest do
       subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan1)
 
       # 契約完了の場合はサービスコードが一致していても無効
-      assert false == Subscriptions.enable_service?(user.id, service_code)
+      assert false == Subscriptions.service_enabled?(user.id, service_code)
     end
 
     test "false case. not subscribed plan" do
@@ -252,7 +252,7 @@ defmodule Bright.SubscriptionsTest do
       subscription_user_plan_subscription_end_with_free_trial(other_user, subscription_plan1)
 
       # 契約完了の場合はサービスコードが一致していても無効
-      assert false == Subscriptions.enable_service?(user.id, service_code)
+      assert false == Subscriptions.service_enabled?(user.id, service_code)
     end
   end
 
@@ -331,7 +331,7 @@ defmodule Bright.SubscriptionsTest do
     end
   end
 
-  describe "available_free_trial?/1" do
+  describe "free_trial_available?/1" do
     test "no trial plan" do
       subscription_plan1 = insert(:subscription_plans)
 
@@ -343,7 +343,7 @@ defmodule Bright.SubscriptionsTest do
       # 他のユーザーの契約は無視される
       subscription_user_plan_subscribing_with_free_trial(other_user, subscription_plan1)
 
-      assert true == Subscriptions.available_free_trial?(user.id, subscription_plan1.plan_code)
+      assert true == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
     end
 
     test "exist subscription end with free trial plan" do
@@ -354,7 +354,7 @@ defmodule Bright.SubscriptionsTest do
       # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
       subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan1)
 
-      assert false == Subscriptions.available_free_trial?(user.id, subscription_plan1.plan_code)
+      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
     end
 
     test "exist subscribing with free trial plan" do
@@ -365,7 +365,7 @@ defmodule Bright.SubscriptionsTest do
       # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
       subscription_user_plan_subscribing_with_free_trial(user, subscription_plan1)
 
-      assert false == Subscriptions.available_free_trial?(user.id, subscription_plan1.plan_code)
+      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
     end
 
     test "exist on free trial plan" do
@@ -376,7 +376,7 @@ defmodule Bright.SubscriptionsTest do
       # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
       subscription_user_plan_free_trial(user, subscription_plan1)
 
-      assert false == Subscriptions.available_free_trial?(user.id, subscription_plan1.plan_code)
+      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
     end
   end
 end

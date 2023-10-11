@@ -318,7 +318,7 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  サービスコードを指定してサブスクリプションプランを削除する
+  サービスコードを指定してサブスクリプションプランサービスを削除する
 
   ## Examples
 
@@ -333,7 +333,7 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  プランコードを指定してサブスクリプションプラント、プランで有効なサービス一覧を取得する
+  プランコードを指定してサブスクリプションプランと、プランで有効なサービス一覧を取得する
 
   ## Examples
       iex> get_subscription_plan_with_enable_services_by_plan_code("personal_skill_up_plan")
@@ -415,12 +415,12 @@ defmodule Bright.Subscriptions do
   サービスコードをキーに該当サービスの利用有無を返す
 
   ## Examples
-      iex> enable_service?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
+      iex> service_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
       false
-      iex> enable_service?("01H7W3BZQY7CZVM5Q66T4EWEVC", "skill_up")
+      iex> service_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC", "skill_up")
       true
   """
-  def enable_service?(user_id, service_code) do
+  def service_enabled?(user_id, service_code) do
     subscription_user_plan = get_users_subscription_status(user_id, NaiveDateTime.utc_now())
 
     case subscription_user_plan do
@@ -473,16 +473,16 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  プランコードをキーに該当プランのフリートライアル利用有無を返す
+  プランコードをキーに該当プランのフリートライアル利用可否を返す
   過去に一度でも該当のプランでフリートライアルを開始した履歴がある場合、利用不可
 
   ## Examples
       iex> enable_free_trial?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
       true
-      iex> enable_service?("01H7W3BZQY7CZVM5Q66T4EWEVC", "personal_skill_up_plan")
+      iex> service_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC", "personal_skill_up_plan")
       false
   """
-  def available_free_trial?(user_id, plan_code) do
+  def free_trial_available?(user_id, plan_code) do
     get_users_trialed_plans(user_id)
     |> Enum.any?(fn subscription_user_plan ->
       subscription_user_plan.subscription_plan.plan_code == plan_code
