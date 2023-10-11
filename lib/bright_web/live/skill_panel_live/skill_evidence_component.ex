@@ -315,7 +315,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         name={@name}
         placeholder="コメントを入力"
         class="w-full min-h-1 outline-none border-none focus:ring-0 p-2"
-        phx-throttle="3000"
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
       <div>
         <.error :for={msg <- @errors}><%= msg %></.error>
