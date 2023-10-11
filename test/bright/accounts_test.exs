@@ -251,12 +251,12 @@ defmodule Bright.AccountsTest do
     end
 
     test "validates invalid name format" do
-      #        {"A", ["only lower-case alphanumeric character and -_. is available"]},
-      #        {"@", ["only lower-case alphanumeric character and -_. is available"]},
-      #        {"ａ", ["only lower-case alphanumeric character and -_. is available"]},
-      #        {"Ａ", ["only lower-case alphanumeric character and -_. is available"]},
-      #        {"ひらがな", ["only lower-case alphanumeric character and -_. is available"]},
-      #        {"漢字", ["only lower-case alphanumeric character and -_. is available"]}
+      # {"A", ["only lower-case alphanumeric character and -_. is available"]},
+      # {"@", ["only lower-case alphanumeric character and -_. is available"]},
+      # {"ａ", ["only lower-case alphanumeric character and -_. is available"]},
+      # {"Ａ", ["only lower-case alphanumeric character and -_. is available"]},
+      # {"ひらがな", ["only lower-case alphanumeric character and -_. is available"]},
+      # {"漢字", ["only lower-case alphanumeric character and -_. is available"]}
 
       [
         {"", ["can't be blank"]},
@@ -1940,12 +1940,13 @@ defmodule Bright.AccountsTest do
       assert %{name: ["should be at most 30 character(s)"]} = errors_on(changeset)
     end
 
-    #    test "validates name format", %{user: user} do
-    #      changeset = Accounts.change_user_with_user_profile(user, %{name: "Koyo"})
+    # test "validates name format", %{user: user} do
+    #   changeset = Accounts.change_user_with_user_profile(user, %{name: "Koyo"})
     #
-    #      assert %{name: ["only lower-case alphanumeric character and -_. is available"]} =
-    #               errors_on(changeset)
-    #    end
+    #   assert %{
+    #      name: ["only lower-case alphanumeric character and -_. is available"]
+    #   } = errors_on(changeset)
+    # end
   end
 
   describe "update_user_with_user_profile/3" do
