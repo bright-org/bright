@@ -102,12 +102,6 @@ defmodule Bright.Accounts.User do
     changeset
     |> validate_required([:name])
     |> validate_length(:name, max: 30)
-    # 全角を許容、運用上問題があった場合のためにコメントアウトに留める
-    #    |> validate_format(
-    #      :name,
-    #      ~r/^([0-9a-z-_.])*$/,
-    #      message: "only lower-case alphanumeric character and -_. is available"
-    #    )
     |> maybe_validate_unique_name(opts)
   end
 
