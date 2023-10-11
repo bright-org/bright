@@ -217,9 +217,12 @@ defmodule BrightWeb.BrightButtonComponents do
       <ul>
 
         <%= for link <- notification_list() do %>
-          <li class="flex justify-between w-44 text-base my-2">
+          <% num = Enum.random(0..10) %>
+          <li  class="flex justify-between w-44 text-base my-2">
             <span><%= link %></span>
-            <span class="bg-brightGreen-300 text-white inline-flex items-center justify-center w-6 h-6 ml-2 text-xs font-semibold rounded-full">10</span>
+            <span :if={num != 0} class="bg-brightGreen-300 text-white inline-flex items-center justify-center w-6 h-6 ml-2 text-xs font-semibold rounded-full">
+              <%= num %>
+            </span>
           </li>
         <% end %>
       </ul>
