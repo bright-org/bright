@@ -38,6 +38,7 @@ defmodule BrightWeb.SnsComponents do
         path="/graphs"
       />
   """
+  attr :id, :string, default: "share-button_area"
   attr :text, :string, default: ""
   attr :path, :string, required: true
 
@@ -45,7 +46,13 @@ defmodule BrightWeb.SnsComponents do
     assigns = Map.put(assigns, :url, "https://app.bright-fun.org#{assigns.path}")
 
     ~H"""
-      <div class="fixed gap-2 flex flex-col md:flex-row p-2 top-24 md:top-16 right-2 md:right-8">
+      <%!-- NOTE: 一瞬だけ画面左上に表示されてしまうのを回避するため、hiddenクラスを付けておきJSでhiddenクラスを消している --%>
+      <div
+        id={@id}
+        class="hidden fixed gap-2 flex flex-col lg:flex-row p-2 top-24 lg:top-16"
+        phx-hook="SnsFloatingShareButtons"
+        phx-update="ignore"
+      >
         <a
           href={"https://www.facebook.com/share.php?#{URI.encode_query(%{u: @url})}"}
           target="_blank"
