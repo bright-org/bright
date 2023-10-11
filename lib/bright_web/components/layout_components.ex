@@ -37,8 +37,9 @@ defmodule BrightWeb.LayoutComponents do
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content={@csrf_token} />
-        <meta property="og:title" content="Bright｜エンジニアのスキルを見える化で採用・評価・育成の課題を全て解決">
-        <meta property="og:description" content="エンジニア/UX・UIデザイナー/PMの強み・弱みが把握できます。採用ミスマッチ解消や担当者がいなくてもキャリアパスや教材を提案するので、エンジニアの自己成長が進みます。">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="og:title" content="Bright｜過去と今、未来のスキルから、あなたの輝きを見える化します">
+        <meta property="og:description" content={"ITで世の中に価値をもたらすエンジニアやインフラ、デザイナー、マーケッターから、気になるスキルを選び、あなたがどのような\"輝き\"を放つかを体験してください。"}>
         <meta property="og:image" content="https://bright-fun.org/images/ogp_a.png">
         <meta property="og:type" content="article">
         <meta property="og:url" contetnt="https://bright-fun.org/">
@@ -87,7 +88,7 @@ defmodule BrightWeb.LayoutComponents do
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
-    <div class="sticky top-0 z-10 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
+    <div id="user-header" class="sticky top-0 z-10 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
       <h4 class="lg:hidden font-bold mt-2 text-sm before:bg-bgGem before:bg-6 before:bg-left before:bg-no-repeat before:content-[''] before:h-6 before:inline-block before:align-[-5px] before:w-6">
         <%= @page_title %><%= @page_sub_title %>
       </h4>
@@ -102,6 +103,7 @@ defmodule BrightWeb.LayoutComponents do
       </div>
       <div class="flex gap-2 items-center lg:w-fit h-10">
         <.search_for_skill_holders_button />
+        <.notification_button />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
       </div>
     </div>
@@ -127,7 +129,7 @@ defmodule BrightWeb.LayoutComponents do
         <span class="absolute bg-brightGray-300 block cursor-pointer h-[3px] left-1 top-1.5 w-8 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8"></span>
       </label>
       <label id="sp_navi_close" for="sp_navi_input" class="cursor-pointer hidden h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
-      <div class="fixed bg-brightGray-900 pt-3 min-h-screen h-full hidden flex-col w-full z-40 lg:flex lg:static lg:w-[200px] peer-checked:flex">
+      <div class="fixed bg-brightGray-900 pt-3 h-full hidden flex-col w-full z-40 lg:flex lg:static lg:w-[200px] peer-checked:flex overflow-y-scroll">
         <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-2 lg:ml-4 mt-12 lg:mt-0" /></.link>
         <ul class="grid lg:pt-2">
           <%= for {title, path, regex} <- links() do %>
@@ -152,11 +154,12 @@ defmodule BrightWeb.LayoutComponents do
 
   def links() do
     [
-      {"スキルを選ぶ", "/more_skills", nil},
+      {"保有スキル／所属", "/mypage", nil},
+      {"スキルを選ぶ", "/more_skills?open=want_todo_panel", nil},
       {"成長を見る・比較する", "/graphs", nil},
       {"スキルを入力", "/panels", nil},
       {"チームのスキルを見る", "/teams", ~r/\/teams(?!\/new)/},
-      {"Brightに招待する", "/teams/new", nil},
+      {"チームを作る（β）", "/teams/new", nil},
       {"スキル検索する（β）", "/searches", nil}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},

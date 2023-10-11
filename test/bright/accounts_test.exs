@@ -82,13 +82,13 @@ defmodule Bright.AccountsTest do
     test "validates name and email and password when given" do
       {:error, changeset} =
         Accounts.register_user(%{
-          name: String.duplicate("a", 256),
+          name: String.duplicate("a", 31),
           email: "not valid",
           password: "invalid"
         })
 
       assert %{
-               name: ["should be at most 255 character(s)"],
+               name: ["should be at most 30 character(s)"],
                email: ["has invalid format"],
                password: ["at least one digit", "should be at least 8 character(s)"]
              } = errors_on(changeset)
@@ -241,7 +241,7 @@ defmodule Bright.AccountsTest do
       [
         "hoge",
         "h1-_.",
-        String.duplicate("a", 255)
+        String.duplicate("a", 30)
       ]
       |> Enum.each(fn valid_name ->
         changeset = setup_user_changeset(%{name: valid_name})
@@ -253,13 +253,7 @@ defmodule Bright.AccountsTest do
     test "validates invalid name format" do
       [
         {"", ["can't be blank"]},
-        {String.duplicate("a", 256), ["should be at most 255 character(s)"]},
-        {"A", ["only lower-case alphanumeric character and -_. is available"]},
-        {"@", ["only lower-case alphanumeric character and -_. is available"]},
-        {"ａ", ["only lower-case alphanumeric character and -_. is available"]},
-        {"Ａ", ["only lower-case alphanumeric character and -_. is available"]},
-        {"ひらがな", ["only lower-case alphanumeric character and -_. is available"]},
-        {"漢字", ["only lower-case alphanumeric character and -_. is available"]}
+        {String.duplicate("a", 31), ["should be at most 30 character(s)"]}
       ]
       |> Enum.each(fn {invalid_name, reasons} ->
         changeset = setup_user_changeset(%{name: invalid_name})
@@ -398,13 +392,13 @@ defmodule Bright.AccountsTest do
     } do
       {:error, changeset} =
         %{
-          "name" => String.duplicate("a", 256),
+          "name" => String.duplicate("a", 31),
           "email" => "not valid"
         }
         |> Accounts.register_user_by_social_auth(user_social_auth_params)
 
       assert %{
-               name: ["should be at most 255 character(s)"],
+               name: ["should be at most 30 character(s)"],
                email: ["has invalid format"]
              } == errors_on(changeset)
     end
@@ -1905,7 +1899,7 @@ defmodule Bright.AccountsTest do
                  detail: ["should be at most 255 character(s)"],
                  icon_file_path: ["should be at most 255 character(s)"],
                  twitter_url: [
-                   "should start with https://twitter.com/",
+                   "should start with https://twitter.com/ or https://x.com/",
                    "should be at most 255 character(s)"
                  ],
                  facebook_url: [
@@ -1933,17 +1927,9 @@ defmodule Bright.AccountsTest do
     end
 
     test "validates name length", %{user: user} do
-      changeset =
-        Accounts.change_user_with_user_profile(user, %{name: String.duplicate("a", 256)})
+      changeset = Accounts.change_user_with_user_profile(user, %{name: String.duplicate("a", 31)})
 
-      assert %{name: ["should be at most 255 character(s)"]} = errors_on(changeset)
-    end
-
-    test "validates name format", %{user: user} do
-      changeset = Accounts.change_user_with_user_profile(user, %{name: "Koyo"})
-
-      assert %{name: ["only lower-case alphanumeric character and -_. is available"]} =
-               errors_on(changeset)
+      assert %{name: ["should be at most 30 character(s)"]} = errors_on(changeset)
     end
   end
 

@@ -5,6 +5,8 @@ import IframeSizeFitting from './IframeSizeFitting.js'
 import TabSlideScroll from './TabSlideScroll.js'
 import Dropdown from './Dropdown.js'
 import ScrollOccupancy from './ScrollOccupancy.js'
+import SkillUnitScrolling from './SkillUnitScrolling.js'
+import { SnsFloatingShareButtons } from './SnsFloatingShareButtons.js'
 
 export const Hooks = {
   SkillGem: SkillGem,
@@ -13,5 +15,7 @@ export const Hooks = {
   IframeSizeFitting: IframeSizeFitting,
   TabSlideScroll: TabSlideScroll,
   Dropdown: Dropdown,
-  ScrollOccupancy: ScrollOccupancy
+  ScrollOccupancy: ScrollOccupancy,
+  SkillUnitScrolling: SkillUnitScrolling,
+  SnsFloatingShareButtons: SnsFloatingShareButtons
 }

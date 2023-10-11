@@ -80,7 +80,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           dates={@timeline.labels}
           selected_date={@timeline.selected_label}
           display_now={@timeline.display_now}
-          now_position="lg:right-[84px]"
         />
         <div class="flex justify-center items-center ml-2"></div>
       </div>

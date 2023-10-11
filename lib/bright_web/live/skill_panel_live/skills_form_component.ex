@@ -6,7 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
     only: [profile_skill_class_level: 1, score_mark_class: 2, skill_score_percentages: 2]
 
-  import BrightWeb.SkillPanelLive.SkillsComponents,
+  import BrightWeb.GuideMessageComponents,
     only: [enter_skills_help_message: 1]
 
   import BrightWeb.SkillPanelLive.SkillPanelHelper,
@@ -61,6 +61,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
           open={false}>
           <.enter_skills_help_message reference_from={"modal"} />
         </.live_component>
+
+        <p class="text-attention-900 p-2 text-sm">
+          セッション制限時間の1時間以内に「保存する」ボタンを押してください。
+        </p>
 
         <% # ドーナツグラフとレベル表記 %>
         <div id="doughnut_area_in_skills_form" class="flex items-center my-4">

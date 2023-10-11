@@ -18,7 +18,7 @@ defmodule BrightWeb.UserRegistrationLive do
     >
       <UserAuthComponents.form_section variant="left">
         <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">Google</UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href="#" variant="github">GitHub</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UserAuthComponents.social_auth_button>
         <UserAuthComponents.social_auth_button href="#" variant="facebook">Facebook</UserAuthComponents.social_auth_button>
         <UserAuthComponents.social_auth_button href="#" variant="twitter">Twitter</UserAuthComponents.social_auth_button>
       </UserAuthComponents.form_section>
@@ -54,10 +54,10 @@ defmodule BrightWeb.UserRegistrationLive do
         </div>
 
         <UserAuthComponents.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UserAuthComponents.button>
+        <UserAuthComponents.link_text href={~p"/users/log_in"}>ログインはこちら</UserAuthComponents.link_text>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
 
-    <UserAuthComponents.link_text href={~p"/users/log_in"}>ログインはこちら</UserAuthComponents.link_text>
     """
   end
 

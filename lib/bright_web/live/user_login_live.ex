@@ -15,7 +15,7 @@ defmodule BrightWeb.UserLoginLive do
     >
       <UserAuthComponents.form_section variant="left">
         <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">Google</UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href="#" variant="github">GitHub</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UserAuthComponents.social_auth_button>
         <UserAuthComponents.social_auth_button href="#" variant="facebook">Facebook</UserAuthComponents.social_auth_button>
         <UserAuthComponents.social_auth_button href="#" variant="twitter">Twitter</UserAuthComponents.social_auth_button>
       </UserAuthComponents.form_section>
@@ -37,10 +37,9 @@ defmodule BrightWeb.UserLoginLive do
         </UserAuthComponents.input_with_label>
 
         <UserAuthComponents.button variant="mt-xs">ログイン</UserAuthComponents.button>
+        <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
-
-    <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
     """
   end
 

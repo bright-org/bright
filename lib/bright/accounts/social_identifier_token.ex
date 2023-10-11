@@ -18,7 +18,7 @@ defmodule Bright.Accounts.SocialIdentifierToken do
   schema "social_identifier_tokens" do
     field :identifier, :string
     field :token, :binary
-    field :provider, Ecto.Enum, values: [:google]
+    field :provider, Ecto.Enum, values: [:google, :github, :facebook, :twitter]
     field :name, :string
     field :email, :string
     field :display_name, :string

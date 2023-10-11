@@ -37,3 +37,13 @@ variable "google_client_secret" {
   description = "Bright Google OAuth2 CLIENT SECRET"
   type        = string
 }
+
+variable "github_client_id" {
+  description = "Bright GitHub OAuth2 CLIENT ID"
+  type        = string
+}
+
+variable "github_client_secret" {
+  description = "Bright GitHub OAuth2 CLIENT SECRET"
+  type        = string
+}

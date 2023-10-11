@@ -20,7 +20,7 @@ defmodule BrightWeb.SnsComponents do
 
   def sns(assigns) do
     ~H"""
-    <div class="flex gap-x-6 mr-2 mt-1">
+    <div class="flex gap-x-4 lg:gap-x-6 mr-2 mt-1">
       <.icon_button sns_type="twitter" url={@twitter_url} />
       <.icon_button sns_type="github" url={@github_url} />
       <.icon_button sns_type="facebook" url={@facebook_url} />
@@ -38,6 +38,7 @@ defmodule BrightWeb.SnsComponents do
         path="/graphs"
       />
   """
+  attr :id, :string, default: "share-button_area"
   attr :text, :string, default: ""
   attr :path, :string, required: true
 
@@ -45,7 +46,12 @@ defmodule BrightWeb.SnsComponents do
     assigns = Map.put(assigns, :url, "https://app.bright-fun.org#{assigns.path}")
 
     ~H"""
-      <div class="fixed gap-2 flex flex-col md:flex-row p-2 top-24 md:top-16 right-2 md:right-8">
+      <%!-- NOTE: 一瞬だけ画面左上に表示されてしまうのを回避するため、hiddenクラスを付けておきJSでhiddenクラスを消している --%>
+      <div
+        id={@id}
+        class="hidden fixed gap-2 flex flex-col lg:flex-row p-2 top-24 lg:top-16"
+        phx-hook="SnsFloatingShareButtons"
+      >
         <a
           href={"https://www.facebook.com/share.php?#{URI.encode_query(%{u: @url})}"}
           target="_blank"
@@ -54,7 +60,7 @@ defmodule BrightWeb.SnsComponents do
           <img class="h-6" src="/images/share_button/share_facebook.png" />
         </a>
         <a
-          href={"https://twitter.com/share?#{URI.encode_query(%{text: @text, url: @url})}"}
+          href={"https://twitter.com/intent/tweet?#{URI.encode_query(%{text: @text, url: @url})}"}
           target="_blank"
           rel="nofollow noopener noreferrer"
         >
@@ -79,7 +85,7 @@ defmodule BrightWeb.SnsComponents do
       |> assign(:url, "window.open('#{assigns.url}')")
 
     ~H"""
-    <button type="button" onclick={@url} class="flex h-[26px]">
+    <button type="button" onclick={@url} class="flex h-[18px] lg:h-[26px]">
       <.icon sns_type={@sns_type} disable={false} />
     </button>
     """
@@ -94,7 +100,7 @@ defmodule BrightWeb.SnsComponents do
       |> assign(src: "/images/common/#{assigns.sns_type}#{disable_icon_suffix(assigns.disable)}")
 
     ~H"""
-    <img src={@src} class="w-[26px] h-[26px]" />
+    <img src={@src} class="w-[18px] h-[18px] lg:w-[26px] lg:h-[26px]" />
     """
   end
 

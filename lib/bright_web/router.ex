@@ -113,6 +113,10 @@ defmodule BrightWeb.Router do
       live "/subscription_user_plans/:id/edit", SubscriptionUserPlanLive.Index, :edit
       live "/subscription_user_plans/:id", SubscriptionUserPlanLive.Show, :show
       live "/subscription_user_plans/:id/show/edit", SubscriptionUserPlanLive.Show, :edit
+
+      if System.get_env("SERVER") == "dev" do
+        live "/user_tokens", UserTokenLive.Index, :index
+      end
     end
   end
 
@@ -141,6 +145,12 @@ defmodule BrightWeb.Router do
 
       live_dashboard "/dashboard", metrics: BrightWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+
+    scope "/dev" do
+      pipe_through [:browser, :admin]
+
+      live "/user_tokens", BrightWeb.Admin.UserTokenLive.Index, :index
     end
   end
 

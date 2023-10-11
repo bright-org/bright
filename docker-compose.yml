@@ -12,6 +12,8 @@ services:
       # NOTE: SNS ログインをローカルでデバッグしたいときは以下を記載
       GOOGLE_CLIENT_ID:
       GOOGLE_CLIENT_SECRET:
+      GITHUB_CLIENT_ID:
+      GITHUB_CLIENT_SECRET:
     links:
       - db
       - gcs

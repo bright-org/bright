@@ -6,7 +6,7 @@ defmodule BrightWeb.TimelineBarComponents do
   alias Phoenix.LiveView.JS
 
   @layout_size %{
-    "md" => %{height: "h-[70px]", width: "lg:w-[714px]"},
+    "md" => %{height: "h-[52px] lg:h-[70px]", width: "lg:w-[714px]"},
     "sm" => %{height: "h-[52px] lg:h-[44px]", width: "lg:w-[500px]"}
   }
 
@@ -36,7 +36,7 @@ defmodule BrightWeb.TimelineBarComponents do
   }
 
   @button_now_position %{
-    "md" => "right-[86px]",
+    "md" => "lg:right-[86px]",
     "sm" => "lg:right-[58px]"
   }
 
@@ -58,7 +58,6 @@ defmodule BrightWeb.TimelineBarComponents do
   attr :display_now, :boolean, default: false
   attr :target, :any, default: nil
   attr :scale, :string, default: "md"
-  attr :now_position, :string, default: ""
 
   def timeline_bar(assigns) do
     ~H"""
@@ -87,7 +86,6 @@ defmodule BrightWeb.TimelineBarComponents do
         target={@target}
         selected={"now" == @selected_date}
         scale={@scale}
-        now_position={@now_position}
       />
     </div>
     """
@@ -144,7 +142,6 @@ defmodule BrightWeb.TimelineBarComponents do
   attr :selected, :boolean
   attr :target, :any
   attr :scale, :string
-  attr :now_position, :string
 
   defp now_button(%{selected: true} = assigns) do
     assigns =
@@ -153,7 +150,7 @@ defmodule BrightWeb.TimelineBarComponents do
 
     ~H"""
     <div
-      class={["flex justify-center items-center absolute h-[52px] w-[52px] right-[40px]", button_outer_scale_class(@scale), button_now_position_class(@scale), @now_position]}>
+      class={["flex justify-center items-center absolute h-[52px] w-[52px] right-[38px]", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}
@@ -169,7 +166,7 @@ defmodule BrightWeb.TimelineBarComponents do
   defp now_button(assigns) do
     ~H"""
     <div
-      class={["flex justify-center items-center absolute  h-[52px] w-[52px] right-[40px]", button_outer_scale_class(@scale), button_now_position_class(@scale), @now_position]}>
+      class={["flex justify-center items-center absolute  h-[52px] w-[52px] right-[38px]", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
       <button
         phx-click={JS.push("timeline_bar_button_click", value: %{id: @id, date: "now"})}
         phx-target={@target}

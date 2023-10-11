@@ -66,9 +66,9 @@ defmodule BrightWeb.ProfileComponents do
     <div class="flex">
       <img class="bg-contain inline-block mr-5 h-16 w-16 rounded-full lg:h-20 lg:w-20" src={@icon_file_path} />
       <div class="flex-1">
-        <div class="flex justify-between pb-4 items-end pb-2">
-          <div class="text-xl lg:text-2xl font-bold max-w-[150px] truncate lg:max-w-full"><%= @user_name %></div>
-          <div class="flex gap-x-3">
+        <div class="flex pb-4 items-end pb-2">
+          <div class="text-base lg:text-2xl font-bold max-w-[190px] truncate lg:max-w-[280px]"><%= @user_name %></div>
+          <div class="flex gap-x-3 ml-1 lg:ml-4">
            <.excellent_person_button :if={@display_excellent_person}/>
            <.anxious_person_button :if={@display_anxious_person} />
            <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>
@@ -78,13 +78,69 @@ defmodule BrightWeb.ProfileComponents do
           </div>
         </div>
         <div class="flex flex-col lg:flex-row justify-between pt-3 border-brightGray-100 border-t w-64 lg:w-full">
-          <div class="text-base lg:text-xl mb-4 max-w-[600px] break-all"><%= @title %></div>
+          <div class="text-sm lg:text-xl mb-4 max-w-[600px] break-all"><%= @title %></div>
           <.sns :if={@display_sns} twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
         </div>
       </div>
     </div>
     <div :if={@display_detail} class="pt-5">
       <%= Phoenix.HTML.Format.text_to_html @detail || "", attributes: [class: "break-all"] %>
+    </div>
+    """
+  end
+
+  attr :is_anonymous, :boolean, default: false
+  attr :user_name, :string, default: ""
+  attr :title, :string, default: ""
+  attr :detail, :string, default: ""
+  attr :icon_file_path, :string, default: ""
+  attr :display_detail, :boolean, default: true
+  attr :display_excellent_person, :boolean, default: false
+  attr :display_anxious_person, :boolean, default: false
+  attr :display_return_to_yourself, :boolean, default: false
+  attr :display_stock_candidates_for_employment, :boolean, default: false
+  attr :display_adopt, :boolean, default: false
+  attr :display_recruitment_coordination, :boolean, default: false
+  attr :display_sns, :boolean, default: false
+  attr :twitter_url, :string, default: ""
+  attr :facebook_url, :string, default: ""
+  attr :github_url, :string, default: ""
+
+  def profile_inline(assigns) do
+    icon_file_path =
+      if assigns.is_anonymous, do: "/images/avatar.png", else: assigns.icon_file_path
+
+    user_name = if assigns.is_anonymous, do: "非表示", else: assigns.user_name
+    title = if assigns.is_anonymous, do: "非表示", else: assigns.title
+
+    assigns =
+      assigns
+      |> assign(
+        :icon_style,
+        "background-repeat: no-repeat; background-image: url('#{icon_file_path}');"
+      )
+      |> assign(:user_name, user_name)
+      |> assign(:title, title)
+
+    ~H"""
+    <div class="flex">
+      <img class="bg-contain inline-block mr-2 lg:mr-5 h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full" src={@icon_file_path} />
+      <div class="flex justify-between lg:justify-start mt-2 lg:mt-4 w-full">
+        <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+        <div class="flex flex-col lg:flex-row">
+          <div class="flex gap-x-3 h-6 lg:h-8 ml-7 lg:ml-9">
+            <.excellent_person_button :if={@display_excellent_person}/>
+            <.anxious_person_button :if={@display_anxious_person} />
+            <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>
+            <.profile_button :if={@display_stock_candidates_for_employment}>採用候補者としてストック</.profile_button>
+            <.profile_button :if={@display_adopt}>採用する</.profile_button>
+            <.profile_button :if={@display_recruitment_coordination}>採用の調整</.profile_button>
+          </div>
+          <div class="mt-1 lg:mt-0 lg:ml-4">
+            <.sns :if={@display_sns} twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
+          </div>
+        </div>
+      </div>
     </div>
     """
   end

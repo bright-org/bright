@@ -14,8 +14,9 @@
     <div> </div>
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
-  <div class="bg-white shadow relative z-2 pb-10 pt-10 lg:pt-3">
+  <div class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-3">
     <div class="px-2 lg:px-6">
+      <h3 class="text-xl my-4 lg:hidden"><%= "クラス#{@skill_class.class} : #{@skill_class.name}" %></h3>
       <.profile_area
         display_user={@display_user}
         anonymous={@anonymous}
@@ -26,6 +27,7 @@
         skill_panel={@skill_panel}
         query={@query}
         me={@me}
+        flash={@flash}
       />
 
       <.help_messages_area flash={@flash} />
@@ -53,7 +55,6 @@
 </div>
 
 <BrightWeb.SnsComponents.floating_share_buttons
-  :if={false}
   text="スキルパネル"
   path={@path}
 />
