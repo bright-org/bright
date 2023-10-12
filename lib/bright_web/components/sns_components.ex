@@ -51,7 +51,6 @@ defmodule BrightWeb.SnsComponents do
         id={@id}
         class="hidden fixed gap-2 flex flex-col lg:flex-row p-2 top-24 lg:top-16"
         phx-hook="SnsFloatingShareButtons"
-        phx-update="ignore"
       >
         <a
           href={"https://www.facebook.com/share.php?#{URI.encode_query(%{u: @url})}"}
