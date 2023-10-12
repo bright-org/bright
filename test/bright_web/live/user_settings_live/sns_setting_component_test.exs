@@ -14,25 +14,25 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
 
       assert lv
              |> has_element?(
-               ~s{#user_settings_sns_unlinked_provider a[href="/auth/google"]},
+               ~s{#user_settings_sns_unlinked_provider_1 a[href="/auth/google"]},
                "Googleと連携する"
              )
 
       assert lv
              |> has_element?(
-               ~s{#user_settings_sns_unlinked_provider a[href="/auth/github"]},
+               ~s{#user_settings_sns_unlinked_provider_2 a[href="/auth/github"]},
                "GitHubと連携する"
              )
 
       assert lv
              |> has_element?(
-               ~s{#user_settings_sns_unlinked_provider a[href="#"]},
+               ~s{#user_settings_sns_unlinked_provider_3 a[href="#"]},
                "Facebookと連携する"
              )
 
       assert lv
              |> has_element?(
-               ~s{#user_settings_sns_unlinked_provider a[href="#"]},
+               ~s{#user_settings_sns_unlinked_provider_4 a[href="#"]},
                "Twitterと連携する"
              )
     end
@@ -44,7 +44,7 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
 
       lv
       |> element(
-        "#user_settings_sns_unlinked_provider a",
+        "#user_settings_sns_unlinked_provider_1 a",
         "Googleと連携する"
       )
       |> render_click()
@@ -58,7 +58,7 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
 
       lv
       |> element(
-        "#user_settings_sns_unlinked_provider a",
+        "#user_settings_sns_unlinked_provider_2 a",
         "GitHubと連携する"
       )
       |> render_click()
@@ -74,18 +74,21 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
 
       assert lv
              |> has_element?(
-               ~s{#user_settings_sns_unlinked_provider a[href="/auth/github"]},
+               ~s{#user_settings_sns_unlinked_provider_2 a[href="/auth/github"]},
                "GitHubと連携する"
              )
 
       assert lv
              |> has_element?(
-               ~s{#user_settings_sns_unlinked_provider a[href="#"]},
+               ~s{#user_settings_sns_unlinked_provider_3 a[href="#"]},
                "Facebookと連携する"
              )
 
       assert lv
-             |> has_element?(~s{#user_settings_sns_unlinked_provider a[href="#"]}, "Twitterと連携する")
+             |> has_element?(
+               ~s{#user_settings_sns_unlinked_provider_4 a[href="#"]},
+               "Twitterと連携する"
+             )
 
       el =
         lv
