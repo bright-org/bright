@@ -10,8 +10,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <.compare_timeline myself={@myself} timeline={@timeline} />
       <div class="flex gap-x-4">
         <.compare_individual current_user={@current_user} myself={@myself} />
-        <% # TODO: α版後にifを除去して表示 %>
-        <.compare_team :if={false} current_user={@current_user} />
+        <.compare_team current_user={@current_user} myself={@myself} />
         <% # TODO: α版後にifを除去して表示 %>
         <.compare_custom_group :if={false} />
       </div>
@@ -111,6 +110,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div
       id="compare-team-dropdown"
+      class="mt-4 lg:mt-0 hidden lg:block"
       phx-hook="Dropdown"
       data-dropdown-offset-skidding="307"
       data-dropdown-placement="bottom"
@@ -128,10 +128,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         class="dropdownTarget bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden z-10"
       >
         <.live_component
-          id="related_team_card_compare"
+          id="related-team_card-compare"
           module={BrightWeb.CardLive.RelatedTeamCardComponent}
-          current_user={@current_user}
-          show_menu={false}
+          display_user={@current_user}
+          row_on_click_target={@myself}
+          display_tabs={~w(joined_teams)}
         />
       </div>
     </div>
