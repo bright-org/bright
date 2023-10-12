@@ -1,7 +1,10 @@
 export const SnsFloatingShareButtons = {
   mounted() {
-    this.adjustShareButtonPosition()
     window.addEventListener('resize', this.adjustShareButtonPosition.bind(this))
+    this.updated()
+  },
+  updated() {
+    this.adjustShareButtonPosition()
     this.el.classList.remove('hidden')
   },
   destroyed() {
