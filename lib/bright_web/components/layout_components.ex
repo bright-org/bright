@@ -153,7 +153,7 @@ defmodule BrightWeb.LayoutComponents do
 
   def links() do
     [
-      {"スキルを選ぶ", "/more_skills", nil},
+      {"スキルを選ぶ", "/more_skills?open=want_todo_panel", nil},
       {"成長を見る・比較する", "/graphs", nil},
       {"スキルを入力", "/panels", nil},
       {"チームのスキルを見る", "/teams", ~r/\/teams(?!\/new)/},
