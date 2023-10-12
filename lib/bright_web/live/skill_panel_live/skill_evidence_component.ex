@@ -41,13 +41,15 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   <% nil -> %>
                   <% [] -> %>
                   <% [image_path] -> %>
-                    <div class="evidence-image">
-                      <img src={image_url(image_path)} class="w-full aspect-video object-cover mt-3" />
+                    <div class="evidence-image object-cover relative mt-3">
+                      <img src={image_url(image_path)} />
                     </div>
                   <% image_paths -> %>
-                    <div class="evidence-images grid grid-cols-2 gap-2 mt-3">
+                    <div class="evidence-images gap-2 flex flex-wrap mt-3">
                       <%= for image_path <- image_paths do %>
-                        <img src={image_url(image_path)} class="w-full aspect-video object-cover" />
+                        <div class="object-cover relative w-[calc(50%-0.25rem)] box-border">
+                          <img src={image_url(image_path)} />
+                        </div>
                       <% end %>
                     </div>
                 <% end %>
@@ -89,13 +91,15 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 <.error :for={err <- @entry_errors}><%= upload_error_to_string(err) %></.error>
               </div>
               <%= if Enum.count(@uploads.image.entries) == 1 do %>
-                <div class="relative">
+                <div class="object-cover relative mt-1">
                   <.uploading_image myself={@myself} entry={hd(@uploads.image.entries)} />
                 </div>
               <% else %>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="gap-2 flex flex-wrap mt-1">
                   <%= for entry <- @uploads.image.entries do %>
-                    <.uploading_image myself={@myself} entry={entry} />
+                    <div class="object-cover relative w-[calc(50%-0.25rem)] box-border">
+                      <.uploading_image myself={@myself} entry={entry} />
+                    </div>
                   <% end %>
                 </div>
               <% end %>
@@ -144,17 +148,15 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   defp uploading_image(assigns) do
     ~H"""
-    <div class="relative">
-      <button
-        type="button"
-        class="absolute top-2 right-2 flex justify-center items-center"
-        phx-click="cancel_upload"
-        phx-target={@myself}
-        phx-value-ref={@entry.ref}>
-        <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5">close</span>
-      </button>
-      <.live_img_preview entry={@entry} class="w-full aspect-video object-cover" />
-    </div>
+    <button
+      type="button"
+      class="absolute top-2 right-2 flex justify-center items-center"
+      phx-click="cancel_upload"
+      phx-target={@myself}
+      phx-value-ref={@entry.ref}>
+      <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5">close</span>
+    </button>
+    <.live_img_preview entry={@entry} />
     """
   end
 

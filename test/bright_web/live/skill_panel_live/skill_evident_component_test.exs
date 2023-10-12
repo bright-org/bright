@@ -129,15 +129,15 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       open_modal(lv)
 
       lv
-      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
+      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input"})
       |> render_submit()
 
-      assert has_element?(lv, "#skill_evidence_posts", "input 1")
+      assert has_element?(lv, "#skill_evidence_posts", "input")
 
       # 永続化確認
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       open_modal(lv)
-      assert has_element?(lv, "#skill_evidence_posts", "input 1")
+      assert has_element?(lv, "#skill_evidence_posts", "input")
     end
 
     test "deltes post", %{
@@ -152,24 +152,24 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
         insert(:skill_evidence_post,
           user: user,
           skill_evidence: skill_evidence,
-          content: "input 1"
+          content: "input"
         )
 
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       open_modal(lv)
 
-      assert has_element?(lv, "#skill_evidence_posts", "input 1")
+      assert has_element?(lv, "#skill_evidence_posts", "input")
 
       lv
       |> element(~s([phx-click="delete"][phx-value-id="#{skill_evidence_post.id}"]))
       |> render_click()
 
-      refute has_element?(lv, "#skill_evidence_posts", "input 1")
+      refute has_element?(lv, "#skill_evidence_posts", "input")
 
       # 永続化確認
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       open_modal(lv)
-      refute has_element?(lv, "#skill_evidence_posts", "input 1")
+      refute has_element?(lv, "#skill_evidence_posts", "input")
     end
 
     test "validates post message", %{
@@ -201,7 +201,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       assert has_element?(lv, ~s(img[data-phx-entry-ref="#{ref}"]))
 
       lv
-      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
+      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input"})
       |> render_submit()
 
       assert has_element?(lv, "#skill_evidence_posts .evidence-image img")
@@ -223,9 +223,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       render_upload(image, "sample.png")
       render_upload(image, "sample.jpg")
 
-      # TODO: 複数ファイルでこける。要対応
+      # # TODO: 複数ファイルでこける。要対応
       # lv
-      # |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
+      # |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input"})
       # |> render_submit()
       #
       # {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
@@ -233,7 +233,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       # assert has_element?(lv, "#skill_evidence_posts .evidence-image img")
     end
 
-    test "deltes image in preview", %{
+    test "deletes image in preview", %{
       conn: conn,
       skill_panel: skill_panel
     } do
@@ -264,7 +264,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       render_upload(image, "sample.png")
 
       lv
-      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
+      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input"})
       |> render_submit()
 
       skill_evidence_post = Bright.Repo.get_by!(SkillEvidencePost, user_id: user.id)
