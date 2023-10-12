@@ -72,7 +72,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
                  href="/teams/new"
                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
                >
-                 チームを作る
+                チームを作る（β）
                </a>
             </li>
           </ul>
