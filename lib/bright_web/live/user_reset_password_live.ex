@@ -2,39 +2,28 @@ defmodule BrightWeb.UserResetPasswordLive do
   use BrightWeb, :live_view
 
   alias Bright.Accounts
+  alias BrightWeb.UserAuthComponents
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">Reset Password</.header>
+    <UserAuthComponents.header>パスワードリセット</UserAuthComponents.header>
 
-      <.simple_form
-        for={@form}
-        id="reset_password_form"
-        phx-submit="reset_password"
-        phx-change="validate"
-      >
-        <.error :if={@form.errors != []}>
-          Oops, something went wrong! Please check the errors below.
-        </.error>
+    <UserAuthComponents.description>新しいパスワードを入力してください。</UserAuthComponents.description>
 
-        <.input field={@form[:password]} type="password" label="New password" required />
-        <.input
-          field={@form[:password_confirmation]}
-          type="password"
-          label="Confirm new password"
-          required
-        />
-        <:actions>
-          <.button phx-disable-with="Resetting..." class="w-full">Reset Password</.button>
-        </:actions>
-      </.simple_form>
+    <UserAuthComponents.auth_form
+      for={@form}
+      id="reset_password_form"
+      phx-submit="reset_password"
+      phx-change="validate"
+    >
+      <UserAuthComponents.form_section variant="center">
+        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="新しいパスワード" required/>
 
-      <p class="text-center text-sm mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
-    </div>
+        <UserAuthComponents.input_with_label field={@form[:password_confirmation]} id="re_password" type="password" label_text="（確認）新しいパスワード" required/>
+
+        <UserAuthComponents.button>パスワードをリセットする</UserAuthComponents.button>
+      </UserAuthComponents.form_section>
+    </UserAuthComponents.auth_form>
     """
   end
 
@@ -60,7 +49,7 @@ defmodule BrightWeb.UserResetPasswordLive do
       {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Password reset successfully.")
+         |> put_flash(:info, "パスワードをリセットしました")
          |> redirect(to: ~p"/users/log_in")}
 
       {:error, changeset} ->
@@ -78,8 +67,8 @@ defmodule BrightWeb.UserResetPasswordLive do
       assign(socket, user: user, token: token)
     else
       socket
-      |> put_flash(:error, "Reset password link is invalid or it has expired.")
-      |> redirect(to: ~p"/")
+      |> put_flash(:error, "リンクが無効であるか期限が切れています")
+      |> redirect(to: ~p"/users/log_in")
     end
   end
 

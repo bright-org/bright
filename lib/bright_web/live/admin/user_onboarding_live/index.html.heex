@@ -1,0 +1,42 @@
+<.header>
+  Listing User onboardings
+  <:actions>
+    <.link patch={~p"/admin/user_onboardings/new"}>
+      <.button>New User onboarding</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="user_onboardings"
+  rows={@streams.user_onboardings}
+  row_click={fn {_id, user_onboarding} -> JS.navigate(~p"/admin/user_onboardings/#{user_onboarding}") end}
+>
+  <:col :let={{_id, user_onboarding}} label="Completed at"><%= user_onboarding.completed_at %></:col>
+   <:col :let={{_id, user_onboarding}} label="Skill Panel Id"><%= user_onboarding.skill_panel_id %></:col>
+  <:action :let={{_id, user_onboarding}}>
+    <div class="sr-only">
+      <.link navigate={~p"/admin/user_onboardings/#{user_onboarding}"}>Show</.link>
+    </div>
+    <.link patch={~p"/admin/user_onboardings/#{user_onboarding}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, user_onboarding}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: user_onboarding.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="user_onboarding-modal" show on_cancel={JS.patch(~p"/admin/user_onboardings")}>
+  <.live_component
+    module={BrightWeb.Admin.UserOnboardingLive.FormComponent}
+    id={@user_onboarding.id || :new}
+    title={@page_title}
+    action={@live_action}
+    user_onboarding={@user_onboarding}
+    patch={~p"/admin/user_onboardings"}
+  />
+</.modal>

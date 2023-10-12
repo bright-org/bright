@@ -7,7 +7,7 @@ Bright!!
 - Elixir: 1.14 系
 - Phoenix: 1.7 系
 - Erlang: OTP 26 系
-- PostgreSQL: 14 系
+- PostgreSQL: 15 系
 
 ## ローカル開発環境構築
 
@@ -37,7 +37,6 @@ $ docker compose up -d
 以下で Phoenix アプリケーションにつながります
 
 http://localhost:4000/
-
 
 Phoenix Storybook（コンポーネントの確認ができます）
 http://localhost:4000/storybook/welcome

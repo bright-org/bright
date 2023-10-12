@@ -3,41 +3,61 @@ defmodule BrightWeb.UserRegistrationLive do
 
   alias Bright.Accounts
   alias Bright.Accounts.User
+  alias BrightWeb.UserAuthComponents
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Register for an account
-        <:subtitle>
-          Already registered?
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Sign in
-          </.link>
-          to your account now.
-        </:subtitle>
-      </.header>
+    <UserAuthComponents.header>ユーザー新規作成</UserAuthComponents.header>
 
-      <.simple_form
-        for={@form}
-        id="registration_form"
-        phx-submit="save"
-        phx-change="validate"
-        method="post"
-      >
-        <.error :if={@check_errors}>
-          Oops, something went wrong! Please check the errors below.
-        </.error>
+    <UserAuthComponents.auth_form
+      :let={_f}
+      for={@form}
+      id="registration_form"
+      phx-submit="save"
+      phx-change="validate"
+    >
+      <UserAuthComponents.form_section variant="left">
+        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">Google</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="facebook">Facebook</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="twitter">Twitter</UserAuthComponents.social_auth_button>
+      </UserAuthComponents.form_section>
 
-        <.input field={@form[:name]} type="text" label="Name" required />
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+      <UserAuthComponents.or_text>または</UserAuthComponents.or_text>
 
-        <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
-        </:actions>
-      </.simple_form>
-    </div>
+      <UserAuthComponents.form_section variant="right">
+        <UserAuthComponents.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドル名" required/>
+
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+
+        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required/>
+
+        <div phx-click="toggre_is_terms_of_service_checked" class="mt-1">
+          <input type="checkbox" id="terms_of_service" class="rounded" checked={@is_terms_of_service_checked?} />
+          <label for="terms_of_service" class="pl-1 text-xs">
+            <a href="https://bright-fun.org/terms/terms.pdf" class="text-link underline font-semibold" target="_blank">利用規約</a>に同意する
+          </label>
+        </div>
+
+        <div phx-click="toggre_is_privacy_policy_checked" class="mt-1">
+          <input type="checkbox" id="privacy_policy" class="rounded" checked={@is_privacy_policy_checked?} />
+          <label for="privacy_policy" class="pl-1 text-xs">
+            <a href="https://bright-fun.org/privacy/privacy.pdf" class="text-link underline font-semibold" target="_blank">プライバシーポリシー</a>に同意する
+          </label>
+        </div>
+
+        <div phx-click="toggre_is_law_checked" class="mt-1">
+          <input type="checkbox" id="law" class="rounded" checked={@is_law_checked?} />
+          <label for="law" class="pl-1 text-xs">
+            <a href="https://bright-fun.org/laws/laws.pdf" class="text-link underline font-semibold" target="_blank">法令に基づく表記</a>を確認した
+          </label>
+        </div>
+
+        <UserAuthComponents.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UserAuthComponents.button>
+        <UserAuthComponents.link_text href={~p"/users/log_in"}>ログインはこちら</UserAuthComponents.link_text>
+      </UserAuthComponents.form_section>
+    </UserAuthComponents.auth_form>
+
     """
   end
 
@@ -47,9 +67,42 @@ defmodule BrightWeb.UserRegistrationLive do
     socket =
       socket
       |> assign(check_errors: false)
+      |> assign(is_terms_of_service_checked?: false)
+      |> assign(is_privacy_policy_checked?: false)
+      |> assign(is_law_checked?: false)
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}
+  end
+
+  def handle_event(
+        "toggre_is_terms_of_service_checked",
+        _params,
+        %{assigns: %{is_terms_of_service_checked?: is_terms_of_service_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_terms_of_service_checked?: !is_terms_of_service_checked?)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "toggre_is_privacy_policy_checked",
+        _params,
+        %{assigns: %{is_privacy_policy_checked?: is_privacy_policy_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_privacy_policy_checked?: !is_privacy_policy_checked?)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "toggre_is_law_checked",
+        _params,
+        %{assigns: %{is_law_checked?: is_law_checked?}} = socket
+      ) do
+    socket
+    |> assign(is_law_checked?: !is_law_checked?)
+    |> then(&{:noreply, &1})
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do

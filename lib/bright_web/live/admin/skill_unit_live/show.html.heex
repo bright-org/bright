@@ -13,7 +13,24 @@
   <:item title="Skill categories">
     <ul>
       <%= for skill_category <- @skill_unit.skill_categories do %>
-        <li><%= skill_category.name %></li>
+        <li>
+          <div class="flex justify-between m-1">
+            <p><%= skill_category.name %></p>
+            <.link navigate={~p"/admin/skill_categories/#{skill_category}/show/edit"}>
+              <.button class="text-xs ml-4 p-0.5">Edit skill_category</.button>
+            </.link>
+          </div>
+          <ul class="pl-4 list-disc">
+            <%= for skill <- skill_category.skills do %>
+              <li class="flex justify-between m-1">
+                <p> <%= skill.name %> </p>
+                <.link navigate={~p"/admin/skills/#{skill}/show/edit"}>
+                  <.button class="text-xs ml-4 p-0.5">Edit skill</.button>
+                </.link>
+              </li>
+            <% end %>
+          </ul>
+        </li>
       <% end %>
     </ul>
   </:item>

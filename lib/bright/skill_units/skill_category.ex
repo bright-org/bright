@@ -13,6 +13,9 @@ defmodule Bright.SkillUnits.SkillCategory do
   @foreign_key_type Ecto.ULID
 
   schema "skill_categories" do
+    # NOTE: 本来はスキルパネル更新バッチによってのみ生成されるデータのため自動生成は不要だが、現状では管理機能で作成することができてしまうため便宜上残している
+    field :trace_id, Ecto.ULID, autogenerate: {Ecto.ULID, :generate, []}
+
     field :name, :string
     field :position, :integer
 
@@ -26,7 +29,11 @@ defmodule Bright.SkillUnits.SkillCategory do
   def changeset(skill_category, attrs) do
     skill_category
     |> cast(attrs, [:name, :position])
-    |> cast_assoc(:skills)
+    |> cast_assoc(:skills,
+      with: &Skill.changeset/2,
+      sort_param: :skills_sort,
+      drop_param: :skills_drop
+    )
     |> validate_required([:name, :position])
   end
 end

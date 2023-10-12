@@ -5,8 +5,8 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
   import Bright.Factory
 
   @create_attrs params_for(:skill_panel)
-  @update_attrs params_for(:locked_skill_panel)
-  @invalid_attrs %{name: nil, locked_date: nil}
+  @update_attrs params_for(:skill_panel)
+  @invalid_attrs %{name: nil}
 
   defp create_skill_panel(_) do
     skill_panel = insert(:skill_panel, skill_classes: build_pair(:skill_class))
@@ -33,7 +33,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @create_attrs)
@@ -56,7 +56,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert index_live
              |> form("#skill_panel-form", skill_panel: @update_attrs)
@@ -100,7 +100,7 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
 
       assert show_live
              |> form("#skill_panel-form", skill_panel: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "入力してください"
 
       assert show_live
              |> form("#skill_panel-form", skill_panel: @update_attrs)

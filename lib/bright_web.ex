@@ -17,7 +17,7 @@ defmodule BrightWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+  def static_paths, do: ~w(assets fonts images favicon.ico apple-touch-icon.png robots.txt)
 
   def router do
     quote do
@@ -53,6 +53,14 @@ defmodule BrightWeb do
     quote do
       use Phoenix.LiveView,
         layout: {BrightWeb.Layouts, :app}
+
+      unquote(html_helpers())
+    end
+  end
+
+  def component do
+    quote do
+      use Phoenix.Component
 
       unquote(html_helpers())
     end

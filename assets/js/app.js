@@ -23,6 +23,8 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 import  {Hooks} from "./hooks"
 
+import "flowbite/dist/flowbite.phoenix.js"
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
 
@@ -40,3 +42,12 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+// scroll to parent element
+window.addEventListener("phx:scroll-to-parent", info => {
+  const element = document.getElementById(info.detail.target).closest(info.detail.parent_selector)
+  if(element){
+    element.scrollIntoView({
+      behavior: "smooth"
+    })
+  }
+})

@@ -6,7 +6,10 @@ defmodule Bright.UserTokenFactory do
   defmacro __using__(_opts) do
     quote do
       def user_token_factory do
-        %Bright.Accounts.UserToken{}
+        %Bright.Accounts.UserToken{
+          user: build(:user),
+          token: "token"
+        }
       end
 
       def extract_user_token(fun) do

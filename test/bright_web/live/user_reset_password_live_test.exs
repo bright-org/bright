@@ -21,15 +21,15 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
     test "renders reset password with valid token", %{conn: conn, token: token} do
       {:ok, _lv, html} = live(conn, ~p"/users/reset_password/#{token}")
 
-      assert html =~ "Reset Password"
+      assert html =~ "パスワードをリセットする"
     end
 
     test "does not render reset password with invalid token", %{conn: conn} do
       {:error, {:redirect, to}} = live(conn, ~p"/users/reset_password/invalid")
 
       assert to == %{
-               flash: %{"error" => "Reset password link is invalid or it has expired."},
-               to: ~p"/"
+               flash: %{"error" => "リンクが無効であるか期限が切れています"},
+               to: ~p"/users/log_in"
              }
     end
 
@@ -40,11 +40,11 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         lv
         |> element("#reset_password_form")
         |> render_change(
-          user: %{"password" => "secret12", "confirmation_password" => "secret123456"}
+          user: %{"password" => "short", "confirmation_password" => "secret123456"}
         )
 
-      assert result =~ "should be at least 12 character"
-      assert result =~ "does not match password"
+      assert result =~ "8文字以上で入力してください"
+      assert result =~ "パスワードが一致しません"
     end
   end
 
@@ -56,16 +56,15 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         lv
         |> form("#reset_password_form",
           user: %{
-            "password" => "new valid password",
-            "password_confirmation" => "new valid password"
+            "password" => "new valid password2",
+            "password_confirmation" => "new valid password2"
           }
         )
         |> render_submit()
         |> follow_redirect(conn, ~p"/users/log_in")
 
       refute get_session(conn, :user_token)
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Password reset successfully"
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password2")
     end
 
     test "does not reset password on invalid data", %{conn: conn, token: token} do
@@ -75,44 +74,15 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
         lv
         |> form("#reset_password_form",
           user: %{
-            "password" => "too short",
+            "password" => "short",
             "password_confirmation" => "does not match"
           }
         )
         |> render_submit()
 
-      assert result =~ "Reset Password"
-      assert result =~ "should be at least 12 character(s)"
-      assert result =~ "does not match password"
-    end
-  end
-
-  describe "Reset password navigation" do
-    test "redirects to login page when the Log in button is clicked", %{conn: conn, token: token} do
-      {:ok, lv, _html} = live(conn, ~p"/users/reset_password/#{token}")
-
-      {:ok, conn} =
-        lv
-        |> element("a", "Log in")
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/log_in")
-
-      assert conn.resp_body =~ "Log in"
-    end
-
-    test "redirects to password reset page when the Register button is clicked", %{
-      conn: conn,
-      token: token
-    } do
-      {:ok, lv, _html} = live(conn, ~p"/users/reset_password/#{token}")
-
-      {:ok, conn} =
-        lv
-        |> element("a", "Register")
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/register")
-
-      assert conn.resp_body =~ "Register"
+      assert result =~ "パスワードをリセットする"
+      assert result =~ "8文字以上で入力してください"
+      assert result =~ "パスワードが一致しません"
     end
   end
 end

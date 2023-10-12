@@ -1,136 +1,137 @@
-<div class="bg-white shadow flex p-6 relative z-2 flex-col">
-  <h2 class="text-3xl">スキルパネル ／ <%= @skill_panel.name %></h2>
-  <h3 class="text-xl">クラス：<%= @skill_class.name %></h3>
+<%= if @skill_panel do %>
+<.navigations
+  current_user={@current_user}
+  display_user={@display_user}
+  me={@me}
+  anonymous={@anonymous}
+  root="panels"
+/>
 
-  <div class="flex justify-between my-10">
-    <div></div>
-    <div>
-      <nav>仮リンク</nav>
-      <.link navigate={~p"/panels/#{@skill_panel}/graph?class=1"}>
-        成長パネル
-      </.link>
-    </div>
+<div class="mx-4 lg:mx-10 relative">
+  <div class="flex justify-between">
+    <% # TODO: α版後にifと仮divブロックを除去して表示 %>
+    <.toggle_link :if={false} skill_panel={@skill_panel} active="graph" />
+    <div> </div>
+    <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
+  <div class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-3">
+    <div class="px-2 lg:px-6">
+      <h3 class="text-xl my-4 lg:hidden"><%= "クラス#{@skill_class.class} : #{@skill_class.name}" %></h3>
+      <.profile_area
+        display_user={@display_user}
+        anonymous={@anonymous}
+        skill_class_score={@skill_class_score}
+        counter={@counter}
+        num_skills={@num_skills}
+        display_skill_edit_button={@me}
+        skill_panel={@skill_panel}
+        query={@query}
+        me={@me}
+      />
+
+      <.help_messages_area flash={@flash} />
+    </div>
+
+    <.live_component
+      id="skills-field"
+      module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
+      current_user={@current_user}
+      skill_panel={@skill_panel}
+      skill_class={@skill_class}
+      current_skill_score_dict={@skill_score_dict}
+      counter={@counter}
+      num_skills={@num_skills}
+      path={@path}
+      query={@query}
+      display_user={@display_user}
+      me={@me}
+      anonymous={@anonymous}
+    />
+  </div>
+
+  <% # 求職設定を促すメッセージ %>
+  <.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !user_job_searching?(@current_user)} />
+</div>
+
+<BrightWeb.SnsComponents.floating_share_buttons
+  text="スキルパネル"
+  path={@path}
+/>
+
+<% # スコア入力用モーダル %>
+<.bright_modal
+  :if={:edit == @live_action && @me}
+  id="skills-form-modal"
+  show
+  style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+  style_of_modal_flame="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-md bg-white px-4 py-8 lg:px-14 shadow-lg ring-1 transition"
+  style_of_cancel_button="-m-3 flex-none p-1 opacity-80"
+  cancel_button_confirm="入力画面を閉じますか？入力内容は保存されません。"
+  on_cancel={JS.patch(PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}")}>
+
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillsFormComponent}
+    id={"skills-form"}
+    user={@current_user}
+    skill_panel={@skill_panel}
+    skill_class={@skill_class}
+    skill_class_score={@skill_class_score}
+    skill_score_dict={@skill_score_dict}
+    patch={PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
+  />
+</.bright_modal>
+
+
+<% # エビデンス用モーダル %>
+<.bright_modal
+  :if={:show_evidences == @live_action}
+  id="skill-evidence-modal"
+  show
+  style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+  on_cancel={JS.patch(PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}")}>
+
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillEvidenceComponent}
+    id={"#{@skill.id}-evidence"}
+    skill={@skill}
+    skill_evidence={@skill_evidence}
+    user={@current_user}
+    anonymous={@anonymous}
+    patch={PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
+  />
+</.bright_modal>
+
+<% # 教材用モーダル %>
+<.bright_modal
+  :if={:show_reference == @live_action}
+  id="skill-reference-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}?class=#{@skill_class.class}")}>
+
+  <.header><%= @skill.name %></.header>
 
   <div class="mt-4">
-    <table class="table-fixed skill-panel-table border-t border-l border-brightGray-200">
-      <!-- 未実装：デザインまま START -->
-      <tr>
-        <td colspan="3" width="420px" class="!border-t !border-l-white !border-t-white !border-l">
-        </td>
-        <td class="!border-l !border-brightGray-200">
-          <div class="flex justify-center items-center">
-            <p class="inline-flex flex-1 justify-center">piacere</p>
-            <button
-              type="button"
-              class="text-black bg-brightGray-50 hover:bg-brightGray-100 rounded-full w-5 h-5 inline-flex items-center justify-center"
-            >
-              <span class="material-icons-outlined !text-sm">edit</span>
-            </button>
-          </div>
-        </td>
-      </tr>
-      <!-- 未実装：デザインまま END -->
-      <tr>
-        <th class="bg-base text-white text-center w-[200px]">
-          知識エリア
-        </th>
-        <th class="bg-base text-white text-center w-[200px]">
-          カテゴリ
-        </th>
-        <th class="bg-base text-white text-center w-[420px]">
-          スキル
-        </th>
-        <!-- 未実装：デザインまま START -->
-        <td>
-          <div class="flex justify-center gap-x-2">
-            <div class="min-w-[4em] flex items-center">
-              <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1">
-                68％
-              </span>
-            </div>
-            <div class="min-w-[4em] flex items-center">
-              <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1">
-                12％
-              </span>
-            </div>
-          </div>
-        </td>
-        <!-- 未実装：デザインまま END -->
-      </tr>
-
-      <%= for [col1, col2, col3] <- build_table_structure(@skill_units) do %>
-        <tr>
-          <td :if={col1} rowspan={col1.size} class="align-top"><%= col1.skill_unit.name %></td>
-          <td :if={col2} rowspan={col2.size} class="align-top">
-            <%= col2.skill_category.name %>
-          </td>
-          <td>
-            <div class="flex justify-between items-center">
-              <p><%= col3.skill.name %></p>
-              <!-- 未実装：デザインまま START -->
-              <div class="flex justify-between items-center gap-x-2">
-                <button>
-                  <img src="images/common/icons/addFile.svg" />
-                </button>
-                <button>
-                  <img src="images/common/icons/addFile.svg" />
-                </button>
-                <button>
-                  <img src="images/common/icons/addFile.svg" />
-                </button>
-              </div>
-              <!-- 未実装：デザインまま END -->
-            </div>
-          </td>
-          <!-- 未実装：デザインまま START -->
-          <td>
-            <div class="flex gap-x-4 px-4">
-              <div class="flex items-center">
-                <input
-                  id="radio-1"
-                  type="radio"
-                  value=""
-                  name="elixir-radio-1"
-                  class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  for="radio-1"
-                  class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block ml-1"
-                >
-                </label>
-              </div>
-              <div class="flex items-center">
-                <input
-                  checked
-                  id="radio-2"
-                  type="radio"
-                  value=""
-                  name="elixir-radio-1"
-                  class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  for="radio-2"
-                  class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block ml-1"
-                >
-                </label>
-              </div>
-              <div class="flex items-center">
-                <input
-                  checked
-                  id="radio-3"
-                  type="radio"
-                  value=""
-                  name="elixir-radio-1"
-                  class="w-2 h-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label for="radio-2" class="h-1 w-4 bg-brightGray-200 ml-1"></label>
-              </div>
-            </div>
-          </td>
-          <!-- 未実装：デザインまま END -->
-        </tr>
-      <% end %>
-    </table>
+    <iframe id="iframe-skill-reference" src={@skill_reference.url} phx-hook="IframeSizeFitting" />
   </div>
-</div>
+</.bright_modal>
+
+<% # 試験用モーダル %>
+<.bright_modal
+  :if={:show_exam == @live_action}
+  id="skill-exam-modal"
+  show
+  on_cancel={JS.patch(~p"/panels/#{@skill_panel}?class=#{@skill_class.class}")}>
+
+  <.header><%= @skill.name %></.header>
+
+  <div class="mt-4">
+    <iframe id="iframe-skill-exam" src={@skill_exam.url} phx-hook="IframeSizeFitting" />
+  </div>
+</.bright_modal>
+
+<% else %>
+
+<.no_skill_panel />
+
+<% end %>
+

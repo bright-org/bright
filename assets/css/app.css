@@ -3,3 +3,64 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Material+Icons%7CMaterial+Icons+Outlined%7CMaterial+Icons+Round%7CMaterial+Icons+Sharp%7CMaterial+Icons+Two+Tone%7CMaterial+Symbols+Outlined");
+
+/* Skill panels */
+
+#arrow-to-job-searching {
+  position: relative;
+  width: 38px;
+  margin: 0 auto;
+}
+
+#arrow-to-job-searching::before {
+  animation: arrow-to-job-searching 2.5s infinite;
+  border: solid #ff0000;
+  border-width: 4px 4px 0 0;
+  content: "";
+  margin: auto;
+  position: absolute;
+  top: 8px;
+  left: 25px;
+  transform: rotate(-45deg);
+  width: 20px;
+  height: 20px;
+}
+
+/* SP */
+
+#sp_navi_input:checked ~ label {
+  background-color: rgb(46, 58, 58) !important;
+}
+#sp_navi_input:checked ~ #sp_navi_open span {
+  background-color: rgb(46, 58, 58) !important;
+  transform: translateY(-3px);
+  transition: 0.2s ease-in-out;
+}
+#sp_navi_input:checked ~ #sp_navi_open span::before {
+  background: #ffffff !important;
+  transform: translateY(4px) rotate(-45deg);
+}
+#sp_navi_input:checked ~ #sp_navi_open span::after {
+  background: #ffffff !important;
+  transform: translateY(-8px) rotate(45deg);
+}
+
+@keyframes arrow-to-job-searching {
+  0% {
+    transform: rotate(-45deg) translate(0, 0);
+  }
+  60% {
+    transform: rotate(-45deg) translate(30px, -30px);
+  }
+  0%,
+  60%,
+  100% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+}

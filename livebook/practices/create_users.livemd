@@ -1,0 +1,28 @@
+# アカウント作成
+
+## 作成処理
+
+```elixir
+create_user = fn name, email, password ->
+  {:ok, user} = Bright.Accounts.register_user(%{name: name, email: email, password: password})
+
+  now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+  user
+  |> Ecto.Changeset.change(confirmed_at: now)
+  |> Bright.Repo.update!()
+end
+```
+
+## 作成例
+
+```elixir
+1..10
+|> Enum.each(fn number ->
+  name = "user#{number}"
+  email = "#{name}@example.com"
+  password = "P1asswordtest"
+
+  create_user.(name, email, password)
+end)
+```

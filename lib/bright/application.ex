@@ -7,6 +7,8 @@ defmodule Bright.Application do
 
   @impl true
   def start(_type, _args) do
+    Logger.add_backend(Sentry.LoggerBackend)
+
     children = [
       # Start the Telemetry supervisor
       BrightWeb.Telemetry,
@@ -21,6 +23,11 @@ defmodule Bright.Application do
       # Start a worker by calling: Bright.Worker.start_link(arg)
       # {Bright.Worker, arg}
     ]
+
+    children =
+      if Application.get_env(:goth, :disabled),
+        do: children,
+        else: children ++ [{Goth, name: Bright.Goth}]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

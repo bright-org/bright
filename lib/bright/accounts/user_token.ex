@@ -10,11 +10,12 @@ defmodule Bright.Accounts.UserToken do
   @hash_algorithm :sha256
   @rand_size 32
 
-  # It is very important to keep the reset password token expiry short,
-  # since someone with access to the email may take over the account.
-  @reset_password_validity_in_days 1
-  @confirm_validity_in_days 7
-  @change_email_validity_in_days 7
+  @two_factor_auth_session_validity %{"ago" => 1, "intervals" => "hour"}
+  @two_factor_auth_done_validity %{"ago" => 60, "intervals" => "day"}
+  @reset_password_validity %{"ago" => 1, "intervals" => "day"}
+  @confirm_validity %{"ago" => 1, "intervals" => "day"}
+  @change_email_validity %{"ago" => 1, "intervals" => "day"}
+  @confirm_sub_email_validity %{"ago" => 1, "intervals" => "day"}
   @session_validity_in_days 60
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
@@ -89,6 +90,17 @@ defmodule Bright.Accounts.UserToken do
     build_hashed_token(user, context, user.email)
   end
 
+  def build_email_token(user, context, sent_to) do
+    build_hashed_token(user, context, sent_to)
+  end
+
+  @doc """
+  Builds a token which is not related to specific email.
+  """
+  def build_user_token(user, context) do
+    build_hashed_token(user, context, nil)
+  end
+
   defp build_hashed_token(user, context, sent_to) do
     token = :crypto.strong_rand_bytes(@rand_size)
     hashed_token = :crypto.hash(@hash_algorithm, token)
@@ -119,12 +131,16 @@ defmodule Bright.Accounts.UserToken do
     case Base.url_decode64(token, padding: false) do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
-        days = days_for_context(context)
 
         query =
           from(token in token_and_context_query(hashed_token, context),
             join: user in assoc(token, :user),
-            where: token.inserted_at > ago(^days, "day") and token.sent_to == user.email,
+            where:
+              token.inserted_at >
+                ago(
+                  ^validity_ago(context),
+                  ^validity_intervals(context)
+                ) and token.sent_to == user.email,
             select: user
           )
 
@@ -134,9 +150,6 @@ defmodule Bright.Accounts.UserToken do
         :error
     end
   end
-
-  defp days_for_context("confirm"), do: @confirm_validity_in_days
-  defp days_for_context("reset_password"), do: @reset_password_validity_in_days
 
   @doc """
   Checks if the token is valid and returns its underlying lookup query.
@@ -149,7 +162,7 @@ defmodule Bright.Accounts.UserToken do
   the starting point by this function.
 
   The given token is valid if it matches its hashed counterpart in the
-  database and if it has not expired (after @change_email_validity_in_days).
+  database and if it has not expired (after @change_email_validity).
   The context must always start with "change:".
   """
   def verify_change_email_token_query(token, "change:" <> _ = context) do
@@ -159,7 +172,9 @@ defmodule Bright.Accounts.UserToken do
 
         query =
           from(token in token_and_context_query(hashed_token, context),
-            where: token.inserted_at > ago(@change_email_validity_in_days, "day")
+            where:
+              token.inserted_at >
+                ago(^@change_email_validity["ago"], ^@change_email_validity["intervals"])
           )
 
         {:ok, query}
@@ -168,6 +183,82 @@ defmodule Bright.Accounts.UserToken do
         :error
     end
   end
+
+  @doc """
+  Checks if the two factor auth token is valid and returns its underlying lookup query.
+  """
+  def verify_two_factor_auth_token_query(token, context) do
+    case Base.url_decode64(token, padding: false) do
+      {:ok, decoded_token} ->
+        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+
+        query =
+          from(token in token_and_context_query(hashed_token, context),
+            join: user in assoc(token, :user),
+            where:
+              token.inserted_at >
+                ago(
+                  ^validity_ago(context),
+                  ^validity_intervals(context)
+                ),
+            select: user
+          )
+
+        {:ok, query}
+
+      :error ->
+        :error
+    end
+  end
+
+  @doc """
+  Checks if the confirm sub email token is valid and returns its underlying lookup query.
+  """
+  def verify_confirm_sub_email_token_query(token, context) do
+    case Base.url_decode64(token, padding: false) do
+      {:ok, decoded_token} ->
+        hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+
+        query =
+          from(token in token_and_context_query(hashed_token, context),
+            where:
+              token.inserted_at >
+                ago(
+                  ^@confirm_sub_email_validity["ago"],
+                  ^@confirm_sub_email_validity["intervals"]
+                )
+          )
+
+        {:ok, query}
+
+      :error ->
+        :error
+    end
+  end
+
+  defp validity_ago("two_factor_auth_session"),
+    do: @two_factor_auth_session_validity["ago"]
+
+  defp validity_ago("two_factor_auth_done"),
+    do: @two_factor_auth_done_validity["ago"]
+
+  defp validity_ago("reset_password"),
+    do: @reset_password_validity["ago"]
+
+  defp validity_ago("confirm"),
+    do: @confirm_validity["ago"]
+
+  defp validity_intervals("two_factor_auth_session"),
+    do: @two_factor_auth_session_validity["intervals"]
+
+  defp validity_intervals("two_factor_auth_done"),
+    do: @two_factor_auth_done_validity["intervals"]
+
+  defp validity_intervals("reset_password"),
+    do: @reset_password_validity["intervals"]
+
+  defp validity_intervals("confirm"),
+    do: @confirm_validity["intervals"]
 
   @doc """
   Returns the token struct for the given token value and context.

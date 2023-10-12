@@ -2,13 +2,14 @@ name: CI for development
 
 # 起動タイミングは以下
 # 1. PR が open もしくは reopen した時、またはコミットなどにより head が更新された時
-# 2. main ブランチに push された時 (= main ブランチにマージされた時)
+# 2. main, develop ブランチに push された時 (= main, develop ブランチにマージされた時)
 on:
   pull_request:
     paths-ignore:
       - "docs/**"
       - "docker_dev/**"
       - "livebook/**"
+      - "terraform/**"
       - "Makefile"
       - ".dockerignore"
       - ".editorconfig"
@@ -17,10 +18,12 @@ on:
   push:
     branches:
       - "main"
+      - "develop"
     paths-ignore:
       - "docs/**"
       - "docker_dev/**"
       - "livebook/**"
+      - "terraform/**"
       - "Makefile"
       - ".dockerignore"
       - ".editorconfig"
@@ -40,7 +43,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:14.1-alpine
+        image: postgres:15.3-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres

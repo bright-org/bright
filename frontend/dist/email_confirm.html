@@ -13,21 +13,21 @@
 
 
 <main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
-    <section class="bg-white -mt-10 px-20 py-10 rounded-lg">
+    <section class="bg-white -mt-10 max-w-[800px] p-10 rounded-lg w-full">
       <h1 class="font-bold text-center text-3xl">
-        <span class="bg-bgGem bg-8 bg-left bg-no-repeat before:align-text-top before:content-[''] before:bg-contain before:h-8 before:inline-block before:mr-1 before:w-8">パスワードを忘れた方へ</span>
+        <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">パスワードを忘れた方へ</span>
       </h1>
 
-      <p class="mt-8">パスワードをリセットするリンクをメールに送ります。<br>登録しているユーザーのメールアドレスを入力してください。</p>
+      <p class="mt-8 mx-auto text-sm w-fit">パスワードをリセットするリンクをメールに送ります。<br>登録しているユーザーのメールアドレスを入力してください。</p>
 
-      <form class="flex mt-8">
+      <form class="flex mt-8 mx-auto relative">
         <section class="flex flex-col mx-auto">
-          <label for="email" class="mt-4">
-            <span class="block font-bold text-xs">メールアドレス</span>
-            <input id="email" type="email" placeholder="メールアドレス" class="border border-solid border-black px-4 py-2 rounded w-80">
+          <label for="email"class="mt-4">
+            <span class="block font-bold mb-2 text-xs">メールアドレス</span>
+            <input id="email" type="email" placeholder="" class="border border-solid border-black max-w-xs px-4 py-2 rounded w-full">
           </label>
 
-          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold mt-8 px-4 py-2 rounded select-none text-white w-80 hover:opacity-50">パスワードリセット用リンクを送信</button>
+          <button class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold mt-8 max-w-xs px-4 py-2 rounded select-none text-white w-full hover:opacity-50">パスワードリセット用リンクを送信</button>
 
           <button class="bg-white border border-solid border-black font-bold mt-16 mx-auto px-4 py-2 rounded select-none text-black w-40 hover:opacity-50">戻る</button>
         </section>

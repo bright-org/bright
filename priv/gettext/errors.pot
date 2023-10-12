@@ -7,7 +7,6 @@
 ## Run `mix gettext.extract` to bring this file up to
 ## date. Leave `msgstr`s empty as changing them here has no
 ## effect: edit them in PO (`.po`) files instead.
-
 ## From Ecto.Changeset.cast/4
 msgid "can't be blank"
 msgstr ""
@@ -107,4 +106,45 @@ msgid "must be greater than or equal to %{number}"
 msgstr ""
 
 msgid "must be equal to %{number}"
+msgstr ""
+
+## Custom error messages
+
+msgid "does not match password"
+msgstr ""
+
+msgid "does not match current password"
+msgstr ""
+
+msgid "did not change"
+msgstr ""
+
+msgid "at least one upper or lower case character"
+msgstr ""
+
+msgid "at least one digit"
+msgstr ""
+
+msgid "should start with https://twitter.com/"
+msgstr ""
+
+msgid "should start with https://www.facebook.com/"
+msgstr ""
+
+msgid "should start with https://github.com/"
+msgstr ""
+
+msgid "The file is too large"
+msgstr ""
+
+msgid "You have selected an unacceptable file type"
+msgstr ""
+
+msgid "Something went terribly wrong"
+msgstr ""
+
+msgid "Too many files are uploaded"
+msgstr ""
+
+msgid "already has max number of sub emails"
 msgstr ""

@@ -4,11 +4,16 @@ defmodule Bright.SkillPanels do
   """
 
   import Ecto.Query, warn: false
+
+  alias Bright.Jobs.Job
   alias Ecto.Multi
   alias Bright.Repo
 
   alias Bright.SkillPanels.SkillPanel
+  alias Bright.UserSkillPanels.UserSkillPanel
   alias Bright.SkillPanels.SkillClass
+  alias Bright.SkillScores.SkillClassScore
+  alias Bright.Teams.TeamMemberUsers
 
   @doc """
   Returns the list of skill_panels.
@@ -20,7 +25,136 @@ defmodule Bright.SkillPanels do
 
   """
   def list_skill_panels do
-    Repo.all(SkillPanel)
+    from(s in SkillPanel, order_by: s.updated_at)
+    |> Repo.all()
+  end
+
+  @doc """
+    Returns the list skill panes witin class and score by career_field name.
+
+  ## Examples
+
+      iex> list_users_skill_panels_by_career_field(user_id, career_field)
+      [%SkillPanel{}]
+
+  """
+
+  def list_users_skill_panels_by_career_field(
+        user_id,
+        career_field_name,
+        page \\ 1
+      ) do
+    career_field_query =
+      from(
+        j in Job,
+        join: cf in assoc(j, :career_fields),
+        on: cf.name_en == ^career_field_name,
+        join: s in assoc(j, :skill_panels),
+        select: s,
+        distinct: true
+      )
+
+    from(p in subquery(career_field_query),
+      join: u in assoc(p, :user_skill_panels),
+      on: u.user_id == ^user_id,
+      join: class in assoc(p, :skill_classes),
+      on: class.skill_panel_id == p.id,
+      join: score in assoc(class, :skill_class_scores),
+      on: class.id == score.skill_class_id,
+      preload: [skill_classes: [skill_class_scores: ^SkillClassScore.user_id_query(user_id)]],
+      order_by: p.updated_at,
+      distinct: true
+    )
+    |> Repo.paginate(page: page, page_size: 15)
+  end
+
+  @doc """
+    Returns the list skill panes witin class and score by career_field name.
+
+  ## Examples
+
+      iex> list_users_skill_panels_by_career_field(user_id, career_field)
+      [%SkillPanel{}]
+
+  """
+  def list_team_member_users_skill_panels_by_career_field(
+        team_id,
+        career_field_name,
+        page \\ 1
+      ) do
+    career_field_query =
+      from(
+        j in Job,
+        join: cf in assoc(j, :career_fields),
+        on: cf.name_en == ^career_field_name,
+        join: s in assoc(j, :skill_panels),
+        select: s,
+        distinct: true
+      )
+
+    team_member_users_query =
+      from(
+        tmu in TeamMemberUsers,
+        where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+        select: tmu.user_id
+      )
+
+    from(p in subquery(career_field_query),
+      join: u in assoc(p, :user_skill_panels),
+      on: u.skill_panel_id == p.id,
+      join: class in assoc(p, :skill_classes),
+      on: class.skill_panel_id == p.id,
+      join: score in assoc(class, :skill_class_scores),
+      on: score.skill_class_id == class.id and score.user_id == u.user_id,
+      where:
+        u.user_id in subquery(team_member_users_query) and
+          score.user_id in subquery(team_member_users_query),
+      preload: [
+        skill_classes: [
+          skill_class_scores: ^SkillClassScore.user_id_in_sub_query_query(team_member_users_query)
+        ]
+      ],
+      order_by: p.updated_at,
+      distinct: true
+    )
+    |> Repo.paginate(page: page, page_size: 15)
+  end
+
+  def list_team_member_users_skill_panels(
+        team_id,
+        page \\ 1
+      ) do
+    team_member_users_query =
+      from(
+        tmu in TeamMemberUsers,
+        where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
+        select: tmu.user_id
+      )
+
+    from(u in UserSkillPanel,
+      where: u.user_id in subquery(team_member_users_query),
+      join: s in assoc(u, :skill_panel),
+      on: s.id == u.skill_panel_id,
+      select: s,
+      order_by: s.updated_at,
+      distinct: true
+    )
+    |> Repo.paginate(page: page, page_size: 15)
+  end
+
+  @doc """
+  For Skill Search slecet input options
+  """
+  def list_skill_panel_with_career_field() do
+    from(
+      j in Job,
+      join: cf in assoc(j, :career_fields),
+      join: s in assoc(j, :skill_panels),
+      distinct: true,
+      order_by: s.id,
+      select: %{id: s.id, name: s.name, career_field: cf.name_en}
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -38,6 +172,28 @@ defmodule Bright.SkillPanels do
 
   """
   def get_skill_panel!(id), do: Repo.get!(SkillPanel, id)
+
+  def get_user_skill_panel!(user, skill_panel_id) do
+    user
+    |> Ecto.assoc(:skill_panels)
+    |> Bright.Repo.get_by!(id: skill_panel_id)
+  end
+
+  def get_user_skill_panel(user, skill_panel_id) do
+    user
+    |> Ecto.assoc(:skill_panels)
+    |> Bright.Repo.get_by(id: skill_panel_id)
+  end
+
+  def get_user_latest_skill_panel(user) do
+    from(q in SkillPanel,
+      join: u in assoc(q, :user_skill_panels),
+      where: u.user_id == ^user.id,
+      order_by: [desc: u.updated_at],
+      limit: 1
+    )
+    |> Repo.one()
+  end
 
   @doc """
   Creates a skill_panel.
@@ -116,7 +272,42 @@ defmodule Bright.SkillPanels do
       [%SkillClass{}, ...]
 
   """
-  def list_skill_classes do
-    Repo.all(SkillClass)
+  def list_skill_classes(query \\ SkillClass) do
+    Repo.all(query)
+  end
+
+  def get_skill_class_by(condition) do
+    Repo.get_by(SkillClass, condition)
+  end
+
+  @doc """
+  オンボーディング、スキルアップで選択したスキルパネルの詳細の表示に使用する
+  クラス１のユニットを一覧するためデフォルト値は１を指定
+
+  ## Examples
+
+      iex> get_skill_class_by_skill_panel_id()
+      %SkillClass{}
+  """
+
+  def get_skill_class_by_skill_panel_id(skill_panel_id, class_num \\ 1) do
+    query =
+      from sc in SkillClass,
+        where:
+          sc.skill_panel_id == ^skill_panel_id and
+            sc.class == ^class_num,
+        preload: :skill_units
+
+    Repo.one(query)
+  end
+
+  def get_all_skill_classes_by_skill_panel_id(skill_panel_id) do
+    query =
+      from sc in SkillClass,
+        where: sc.skill_panel_id == ^skill_panel_id,
+        order_by: [asc: sc.class],
+        preload: :skill_units
+
+    Repo.all(query)
   end
 end

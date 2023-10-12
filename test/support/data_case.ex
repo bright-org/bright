@@ -24,6 +24,7 @@ defmodule Bright.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Bright.DataCase
+      import Bright.TestHelper
     end
   end
 
@@ -31,8 +32,6 @@ defmodule Bright.DataCase do
     Bright.DataCase.setup_sandbox(tags)
     :ok
   end
-
-  @test_support_dir __DIR__
 
   @doc """
   Sets up the sandbox based on the test tags.
@@ -57,9 +56,4 @@ defmodule Bright.DataCase do
       end)
     end)
   end
-
-  @doc """
-  Returns support dir
-  """
-  def test_support_dir, do: @test_support_dir
 end

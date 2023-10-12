@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output0.css">
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+  <section class="absolute bg-white h-[460px] left-1/2 -ml-[750px] -mt-[225px] px-10 py-8 shadow text-sm top-1/2 w-[1500px]">
+    <h2 class="font-bold text-3xl">
+      <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">面談実施の確定</span>
+    </h2>
+
+    <div class="flex mt-8">
+     <!-- Start 面談候補 -->
+      <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[928px]">
+        <div>
+          <h3 class="font-bold text-base">採用候補者</h3>
+
+          <ul class="mt-4">
+            <!-- Start 検索結果 単体 -->
+            <li class="border border-brightGray-200 flex h-64 mb-2 overflow-hidden p-2 rounded">
+               <div class="bg-white w-[448px]">
+                  <div class="flex">
+                    <div class="overflow-hidden">
+                      <ul class="search_result_tab border-b border-brightGray-200 flex w-[99999px]">
+                        <li class="w-[200px] border-b-2 border-brightGreen-300 cursor-pointer min-w-fit overflow-hidden p-1.5 text-center whitespace-nowrap hover:bg-brightGray-50">Webアプリ開発 Elixir</li>
+                        <li class="w-[200px] cursor-pointer max-w-32 overflow-hidden p-1.5 select-none text-center text-ellipsis whitespace-nowrap hover:bg-brightGray-50">スマホアプリ開発 Elixir</li>
+                        <li class="w-[200px] cursor-pointer max-w-32 overflow-hidden p-1.5 select-none text-center text-ellipsis whitespace -nowrap hover:bg-brightGray-50">Webアプリ開発 Ruby</li>
+                        <li class="w-[200px] cursor-pointer max-w-32 overflow-hidden p-1.5 select-none text-center text-ellipsis whitespace-nowrap hover:bg-brightGray-50">Webアプリ開発 PHP</li>
+                      </ul>
+                    </div>
+
+                    <div class="border-b border-brightGray-200 flex">
+                      <button type="button" class="px-1 border-l border-brightGray-50">
+                        <span
+                          class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+                        ></span>
+                      </button>
+                      <button type="button" class="px-1 border-l border-brightGray-50">
+                        <span
+                          class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+                        ></span>
+                      </button>
+                    </div>
+                  </div>
+
+                <div id="search_result_contents">
+                  <!-- Start コンテンツ 1 -->
+                  <div class="relative">
+                    <p class="absolute left-0 ml-1 mt-1 top-0">クラス1</p>
+
+                    <div class="flex justify-between">
+                      <div class="-mt-4 ml-1 w-64">
+                        <canvas id="radarChart" width="200" height="200"></canvas>
+                      </div>
+
+                      <div class="flex flex-wrap items-start ml-2 mt-6 w-52">
+                        <div class="h-24 overflow-hidden w-20">
+                          <canvas id="doughnutChart" width="80" height="80"></canvas>
+                        </div>
+
+                        <div class="h-24 overflow-hidden w-28">
+                          <div class="h-20 ml-2 flex flex-wrap">
+                            <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
+                              <img src="./images/common/icons/crown.svg" class="mr-2">
+                              <span>ベテラン</span>
+                            </p>
+
+                            <div class="flex flex-col w-24 pl-6">
+                              <div class="min-w-[4em] flex items-center">
+                                <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
+                                <span>68％</span>
+                              </div>
+                              <div class="min-w-[4em] flex items-center mt-1">
+                                <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
+                                <span>11％</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <ul class="-mt-4 text-xs w-40">
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">エビデンスの登録率</span>
+                              <span>30%</span>
+                            </p>
+                          </li>
+
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">教材の学習率</span>
+                              <span>20%</span>
+                            </p>
+                          </li>
+
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">試験の合格率</span>
+                              <span>60%</span>
+                            </p>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div><!-- End コンテンツ 1 -->
+
+                  <!-- Start コンテンツ 2 -->
+                  <div class="hidden relative">
+                    <p class="absolute left-0 ml-1 mt-1 top-0">クラス2</p>
+
+                    <div class="flex justify-between">
+                      <div class="-mt-4 ml-1 w-64">
+                        <canvas id="radarChart1" width="200" height="200"></canvas>
+                      </div>
+
+                      <div class="flex flex-wrap items-start ml-2 mt-6 w-52">
+                        <div class="h-24 overflow-hidden w-20">
+                          <canvas id="doughnutChart1" width="80" height="80"></canvas>
+                        </div>
+
+                        <div class="h-24 overflow-hidden w-28">
+                          <div class="h-20 ml-2 flex flex-wrap">
+                            <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
+                              <img src="./images/common/icons/crown.svg" class="mr-2">
+                              <span>ベテラン</span>
+                            </p>
+
+                            <div class="flex flex-col w-24 pl-6">
+                              <div class="min-w-[4em] flex items-center">
+                                <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
+                                <span>68％</span>
+                              </div>
+                              <div class="min-w-[4em] flex items-center mt-1">
+                                <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
+                                <span>12％</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <ul class="-mt-4 text-xs w-40">
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">エビデンスの登録率</span>
+                              <span>30%</span>
+                            </p>
+                          </li>
+
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">教材の学習率</span>
+                              <span>20%</span>
+                            </p>
+                          </li>
+
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">試験の合格率</span>
+                              <span>60%</span>
+                            </p>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div><!-- End コンテンツ 2 -->
+
+                  <!-- Start コンテンツ 3 -->
+                  <div class="hidden relative">
+                    <p class="absolute left-0 ml-1 mt-1 top-0">クラス3</p>
+
+                    <div class="flex justify-between">
+                      <div class="-mt-4 ml-1 w-64">
+                        <canvas id="radarChart2" width="200" height="200"></canvas>
+                      </div>
+
+                      <div class="flex flex-wrap items-start ml-2 mt-6 w-52">
+                        <div class="h-24 overflow-hidden w-20">
+                          <canvas id="doughnutChart2" width="80" height="80"></canvas>
+                        </div>
+
+                        <div class="h-24 overflow-hidden w-28">
+                          <div class="h-20 ml-2 flex flex-wrap">
+                            <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
+                              <img src="./images/common/icons/crown.svg" class="mr-2">
+                              <span>ベテラン</span>
+                            </p>
+
+                            <div class="flex flex-col w-24 pl-6">
+                              <div class="min-w-[4em] flex items-center">
+                                <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
+                                <span>68％</span>
+                              </div>
+                              <div class="min-w-[4em] flex items-center mt-1">
+                                <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
+                                <span>13％</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <ul class="-mt-4 text-xs w-40">
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">エビデンスの登録率</span>
+                              <span>30%</span>
+                            </p>
+                          </li>
+
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">教材の学習率</span>
+                              <span>20%</span>
+                            </p>
+                          </li>
+
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">試験の合格率</span>
+                              <span>60%</span>
+                            </p>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div><!-- End コンテンツ 3 -->
+
+                  <!-- Start コンテンツ 4 -->
+                  <div class="hidden relative">
+                    <p class="absolute left-0 ml-1 mt-1 top-0">クラス4</p>
+
+                    <div class="flex justify-between">
+                      <div class="-mt-4 ml-1 w-64">
+                        <canvas id="radarChart3" width="200" height="200"></canvas>
+                      </div>
+
+                      <div class="flex flex-wrap items-start ml-2 mt-6 w-52">
+                        <div class="h-24 overflow-hidden w-20">
+                          <canvas id="doughnutChart3" width="80" height="80"></canvas>
+                        </div>
+
+                        <div class="h-24 overflow-hidden w-28">
+                          <div class="h-20 ml-2 flex flex-wrap">
+                            <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
+                              <img src="./images/common/icons/crown.svg" class="mr-2">
+                              <span>ベテラン</span>
+                            </p>
+
+                            <div class="flex flex-col w-24 pl-6">
+                              <div class="min-w-[4em] flex items-center">
+                                <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
+                                <span>68％</span>
+                              </div>
+                              <div class="min-w-[4em] flex items-center mt-1">
+                                <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
+                                <span>14％</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <ul class="-mt-4 text-xs w-40">
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">エビデンスの登録率</span>
+                              <span>30%</span>
+                            </p>
+                          </li>
+
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">教材の学習率</span>
+                              <span>20%</span>
+                            </p>
+                          </li>
+
+                          <li>
+                            <p>
+                              <span class="inline-block w-28">試験の合格率</span>
+                              <span>60%</span>
+                            </p>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div><!-- End コンテンツ 4 -->
+                </div>
+              </div>
+
+              <div class="border-l border-brightGray-200 border-dashed w-[422px] ml-4 px-4 overflow-hidden">
+                <div class="flex">
+                  <div class="w-full">
+                    <p class="mb-2">
+                      <span class="">出勤可：</span>
+                      <span>月160h以上</span>
+                      <span>土日祝日不可</span>
+                    </p>
+
+                    <p class="mb-2">
+                      <span>リモート可：</span>
+                      <span>月160h以上</span>
+                      <span>土日祝日不可</span>
+                    </p>
+
+                    <p class="mb-4">
+                      <span>希望年収：</span>
+                      <span>1,000万円</span>
+                    </p>
+
+                    <p class="border-t border-brightGray-200 mb-2 mt-2 pt-4">
+                      <span>スキルの最終更新日：</span>
+                      <span>2023/05/10</span>
+                    </p>
+
+                    <p class="mb-2">
+                      <span>担当者ステータス：</span>
+                      <span>－</span>
+                    </p>
+
+                    <div class="flex justify-between mt-8">
+                      <a class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-brightGreen-300 w-44 hover:opacity-50">成長グラフを開く</a>
+
+                      <a class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-brightGreen-300 w-44 hover:opacity-50">スキルパネルを開く</a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </li><!-- End 検索結果 -->
+          </ul>
+        </div>
+      </div><!-- End 面談候補者 -->
+
+    <!-- Start 面談調整内容 -->
+      <div class="w-[493px]">
+        <h3 class="font-bold text-xl">採用調整内容</h3>
+
+            <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
+              <dl class="flex flex-wrap w-full">
+                <dt
+                  class="font-bold w-[98px] flex"
+                >
+                  <label for="point" class="block pr-1">採用候補者の推しポイント・注意点</label>
+                </dt>
+                <dd class="w-[280px]">
+                  <p>エンジニア領域だけでなく、インフラやデザイン、マーケティングなど幅広い領域の知識を持っていて劇ヤバイです。</p>
+                </dd>
+
+                <dt
+                class="font-bold w-[98px] flex mt-8"
+              >
+                <label for="point" class="block pr-1">面談可否の<br>判断</label>
+              </dt>
+              <dd class="w-[280px] mt-8">
+                <label class="block"><input type="radio" name="interview" value="" class="mr-1" checked><span class="align-[2px]">面談決定</span></label>
+                <label class="block"><input type="radio" name="interview" value="" class="mr-1"><span class="align-[2px]">条件に合わないがエンジニアをキープ</span></label>
+                <label class="block"><input type="radio" name="interview" value="" class="mr-1"><span class="align-[2px]">面談しない</span></label>
+              </dd>
+              </dl>
+            </div>
+
+          <div class="flex justify-end gap-x-4 mt-4">
+            <button
+              class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+            >
+              確定する
+            </button>
+          </div>
+      </div><!-- End 面談調整内容 -->
+
+      <!-- close button -->
+      <button class="absolute right-5 top-5 z-10">
+        <span class="material-icons !text-3xl text-brightGray-900"
+          >close</span
+        >
+      </button>
+    </div>
+  </section>
+</main>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// レーダーチャート
+  const radar = document.getElementById("radarChart");
+  const radarData = {
+    labels: [
+      "Elixir本体",
+      "ライブラリ",
+      "環境構築",
+      "関連スキル",
+      "デバッグ",
+      "テスト",
+    ],
+    datasets: [
+      {
+        data: [80, 63, 50, 67, 40, 78],
+        fill: true,
+        backgroundColor: "rgba(82, 204, 181,0.6)",
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+    ],
+  };
+  new Chart(radar, {
+    type: "radar",
+    data: radarData,
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+      scales: {
+        r: {
+          //グラフの最小値・最大値
+          min: 0,
+          max: 100,
+          //背景色
+          backgroundColor: "#EBFEFC",
+          ticks: {
+            min: 0, // 最小値
+            max: 100, // 最大値
+            stepSize: 10, // 目盛の間隔
+            display: false,
+           },
+          fontSize: 10,
+          // グリッドライン
+          grid: {
+            color: "#ffffff",
+            lineWidth: 2,
+          },
+          // アングルライン
+          angleLines: {
+            color: "#ffffff",
+          },
+          pointLabels: {
+            font: {
+              size: 14,
+            },
+          },
+        },
+      },
+    },
+  });
+
+// レーダーチャート
+const radar1 = document.getElementById("radarChart1");
+  const radarData1 = {
+    labels: [
+      "Elixir本体",
+      "ライブラリ",
+      "環境構築",
+      "関連スキル",
+      "デバッグ",
+      "テスト",
+    ],
+    datasets: [
+      {
+        data: [80, 63, 50, 67, 40, 78],
+        fill: true,
+        backgroundColor: "rgba(82, 204, 181,0.6)",
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+    ],
+  };
+  new Chart(radar1, {
+    type: "radar",
+    data: radarData1,
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+      scales: {
+        r: {
+          //グラフの最小値・最大値
+          min: 0,
+          max: 100,
+          //背景色
+          backgroundColor: "#EBFEFC",
+          ticks: {
+            min: 0, // 最小値
+            max: 100, // 最大値
+            stepSize: 10, // 目盛の間隔
+            display: false,
+           },
+          fontSize: 10,
+          // グリッドライン
+          grid: {
+            color: "#ffffff",
+            lineWidth: 2,
+          },
+          // アングルライン
+          angleLines: {
+            color: "#ffffff",
+          },
+          pointLabels: {
+            font: {
+              size: 14,
+            },
+          },
+        },
+      },
+    },
+  });
+
+// レーダーチャート
+const radar2 = document.getElementById("radarChart2");
+  const radarData2 = {
+    labels: [
+      "Elixir本体",
+      "ライブラリ",
+      "環境構築",
+      "関連スキル",
+      "デバッグ",
+      "テスト",
+    ],
+    datasets: [
+      {
+        data: [80, 63, 50, 67, 40, 78],
+        fill: true,
+        backgroundColor: "rgba(82, 204, 181,0.6)",
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+    ],
+  };
+  new Chart(radar2, {
+    type: "radar",
+    data: radarData2,
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+      scales: {
+        r: {
+          //グラフの最小値・最大値
+          min: 0,
+          max: 100,
+          //背景色
+          backgroundColor: "#EBFEFC",
+          ticks: {
+            min: 0, // 最小値
+            max: 100, // 最大値
+            stepSize: 10, // 目盛の間隔
+            display: false,
+           },
+          fontSize: 10,
+          // グリッドライン
+          grid: {
+            color: "#ffffff",
+            lineWidth: 2,
+          },
+          // アングルライン
+          angleLines: {
+            color: "#ffffff",
+          },
+          pointLabels: {
+            font: {
+              size: 14,
+            },
+          },
+        },
+      },
+    },
+  });
+
+// レーダーチャート
+const radar3 = document.getElementById("radarChart3");
+  const radarData3 = {
+    labels: [
+      "Elixir本体",
+      "ライブラリ",
+      "環境構築",
+      "関連スキル",
+      "デバッグ",
+      "テスト",
+    ],
+    datasets: [
+      {
+        data: [80, 63, 50, 67, 40, 78],
+        fill: true,
+        backgroundColor: "rgba(82, 204, 181,0.6)",
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+    ],
+  };
+  new Chart(radar3, {
+    type: "radar",
+    data: radarData3,
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+      scales: {
+        r: {
+          //グラフの最小値・最大値
+          min: 0,
+          max: 100,
+          //背景色
+          backgroundColor: "#EBFEFC",
+          ticks: {
+            min: 0, // 最小値
+            max: 100, // 最大値
+            stepSize: 10, // 目盛の間隔
+            display: false,
+           },
+          fontSize: 10,
+          // グリッドライン
+          grid: {
+            color: "#ffffff",
+            lineWidth: 2,
+          },
+          // アングルライン
+          angleLines: {
+            color: "#ffffff",
+          },
+          pointLabels: {
+            font: {
+              size: 14,
+            },
+          },
+        },
+      },
+    },
+  });
+</script>
+<script>
+// ドーナツチャート
+const doughnutChart = document.getElementById("doughnutChart");
+const doughnutData = {
+  labels: ["Red", "Blue", "Yellow"],
+  datasets: [
+    {
+      label: "My First Dataset",
+      data: [300, 50, 100],
+      backgroundColor: [
+        "rgb(255, 99, 132)",
+        "rgb(54, 162, 235)",
+        "rgb(255, 205, 86)",
+      ],
+      hoverOffset: 4,
+    },
+  ],
+};
+new Chart(doughnutChart, {
+  type: "doughnut",
+  data: doughnutData,
+  options: {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  },
+});
+// ドーナツチャート
+const doughnutChart1 = document.getElementById("doughnutChart1");
+const doughnutData1 = {
+  labels: ["Red", "Blue", "Yellow"],
+  datasets: [
+    {
+      label: "My First Dataset",
+      data: [300, 50, 100],
+      backgroundColor: [
+        "rgb(255, 99, 132)",
+        "rgb(54, 162, 235)",
+        "rgb(255, 205, 86)",
+      ],
+      hoverOffset: 4,
+    },
+  ],
+};
+new Chart(doughnutChart1, {
+  type: "doughnut",
+  data: doughnutData1,
+  options: {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  },
+});
+// ドーナツチャート
+const doughnutChart2 = document.getElementById("doughnutChart2");
+const doughnutData2 = {
+  labels: ["Red", "Blue", "Yellow"],
+  datasets: [
+    {
+      label: "My First Dataset",
+      data: [300, 50, 100],
+      backgroundColor: [
+        "rgb(255, 99, 132)",
+        "rgb(54, 162, 235)",
+        "rgb(255, 205, 86)",
+      ],
+      hoverOffset: 4,
+    },
+  ],
+};
+new Chart(doughnutChart2, {
+  type: "doughnut",
+  data: doughnutData2,
+  options: {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  },
+});
+
+// ドーナツチャート
+const doughnutChart3 = document.getElementById("doughnutChart3");
+const doughnutData3 = {
+  labels: ["Red", "Blue", "Yellow"],
+  datasets: [
+    {
+      label: "My First Dataset",
+      data: [300, 50, 100],
+      backgroundColor: [
+        "rgb(255, 99, 132)",
+        "rgb(54, 162, 235)",
+        "rgb(255, 205, 86)",
+      ],
+      hoverOffset: 4,
+    },
+  ],
+};
+new Chart(doughnutChart3, {
+  type: "doughnut",
+  data: doughnutData3,
+  options: {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  },
+});
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script>
+// Tab
+$(function(){
+  let tab_menu = $(".search_result_tab");
+  tab_menu.children("li").on("click", function(){
+//    console.log("success");
+    let tab_menu_parent = $(this).parent();
+    tab_menu_parent.children("li").removeClass("min-w-fit");
+    tab_menu_parent.children("li").addClass("max-w-32");
+    tab_menu_parent.children("li").addClass("text-ellipsis");
+    let tab_menu_num = tab_menu_parent.children("li").index(this);
+    tab_menu_parent.children("li").removeClass("border-b-2");
+    tab_menu_parent.children("li").removeClass("border-brightGreen-300");
+    tab_menu_parent.children("li").eq(tab_menu_num).removeClass("max-w-32");
+    tab_menu_parent.children("li").eq(tab_menu_num).removeClass("text-ellipsis");
+    tab_menu_parent.children("li").eq(tab_menu_num).addClass("min-w-fit");
+    tab_menu_parent.children("li").eq(tab_menu_num).addClass("border-b-2");
+    tab_menu_parent.children("li").eq(tab_menu_num).addClass("border-brightGreen-300");
+
+    let tab_contents = tab_menu_parent.next("#search_result_contents").children("div");
+    tab_contents.hide();
+    tab_contents.eq(tab_menu_num).show();
+  });
+});
+//　add skills
+$(function(){
+  let first_skill = $("#search_skill_0");
+  $("#set_skill_conditions").on("click", function(){
+    console.log("success");
+    let search_skill_number = $("#skill_section").find("div[id^='search_skill_']").length;
+    console.log(search_skill_number);
+    if(search_skill_number < 3){
+      let skill_input  = first_skill.clone();
+      skill_input.appendTo($("#skill_section").children("div")).attr("id", "search_skill_" + search_skill_number);
+      if(search_skill_number > 0){
+        $("div[id^='search_skill_']").children("i").removeClass("invisible");
+        first_skill.children("i").addClass("invisible");
+      }
+      if(search_skill_number > 1){
+        $("#set_skill_conditions").addClass("invisible");
+      }
+    }
+
+    $(".delete_skill_conditions").on("click", function(){
+      $(this).parent().remove();
+      $("#set_skill_conditions").removeClass("invisible");
+      search_skill_number = search_skill_number - 1;
+      console.log(search_skill_number);
+    });
+  });
+});
+</script>
+</body>
+</html>

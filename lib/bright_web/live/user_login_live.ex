@@ -1,36 +1,45 @@
 defmodule BrightWeb.UserLoginLive do
   use BrightWeb, :live_view
 
+  alias BrightWeb.UserAuthComponents
+
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Sign in to account
-        <:subtitle>
-          Don't have an account?
-          <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
-            Sign up
-          </.link>
-          for an account now.
-        </:subtitle>
-      </.header>
+    <UserAuthComponents.header>ログイン</UserAuthComponents.header>
 
-      <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+    <UserAuthComponents.auth_form
+      for={@form}
+      id="login_form"
+      action={~p"/users/log_in"}
+      phx-update="ignore"
+    >
+      <UserAuthComponents.form_section variant="left">
+        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">Google</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="facebook">Facebook</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="twitter">Twitter</UserAuthComponents.social_auth_button>
+      </UserAuthComponents.form_section>
 
-        <:actions>
-          <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
-            Forgot your password?
-          </.link>
-        </:actions>
-        <:actions>
-          <.button phx-disable-with="Signing in..." class="w-full">
-            Sign in <span aria-hidden="true">→</span>
-          </.button>
-        </:actions>
-      </.simple_form>
-    </div>
+      <UserAuthComponents.or_text>または</UserAuthComponents.or_text>
+
+      <UserAuthComponents.form_section variant="right">
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+
+        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required>
+          <:under_block>
+            <UserAuthComponents.link_text_under_input href={~p"/users/reset_password"}>
+              パスワードを忘れた方はこちら
+            </UserAuthComponents.link_text_under_input>
+            <UserAuthComponents.link_text_under_input href={~p"/users/confirm"}>
+              確認メールの再送はこちら
+            </UserAuthComponents.link_text_under_input>
+          </:under_block>
+        </UserAuthComponents.input_with_label>
+
+        <UserAuthComponents.button variant="mt-xs">ログイン</UserAuthComponents.button>
+        <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
+      </UserAuthComponents.form_section>
+    </UserAuthComponents.auth_form>
     """
   end
 

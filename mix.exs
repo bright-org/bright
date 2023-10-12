@@ -39,7 +39,7 @@ defmodule Bright.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.19.0"},
+      {:phoenix_live_view, "~> 0.19"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.0"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
@@ -53,12 +53,22 @@ defmodule Bright.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:mix_test_observer, "~> 0.1", only: [:dev, :test], runtime: false},
       {:ex_machina, "~> 2.7", only: :test},
       {:faker, "~> 0.17", only: :test},
       {:ecto_ulid_next, "~> 1.0"},
       {:phoenix_storybook, "~> 0.5.0"},
       {:google_api_storage, "~> 0.34"},
-      {:goth, "~> 1.3"}
+      {:goth, "~> 1.3"},
+      {:hackney, "~> 1.18"},
+      {:scrivener_ecto, "~> 2.0"},
+      {:ueberauth_google, "~> 0.10"},
+      {:timex, "~> 3.7"},
+      {:tzdata, "~> 1.1"},
+      {:sentry, "~> 8.0"},
+      {:mock, "~> 0.3.8", only: :test},
+      {:ex_parameterized, "~> 1.3", only: :test},
+      {:ueberauth_github, "~> 0.8"}
     ]
   end
 
@@ -73,10 +83,17 @@ defmodule Bright.MixProject do
       setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "ecto.seed": ["run priv/repo/seeds.exs"],
+      "ecto.seed.dummy": ["run priv/repo/seed_dummy_data.exs"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.setup": [
+        "tailwind.install --if-missing",
+        "esbuild.install --if-missing",
+        "cmd --cd assets npm install"
+      ],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": [
+        "assets.setup",
         "tailwind default --minify",
         "esbuild default --minify",
         "tailwind storybook --minify",

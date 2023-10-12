@@ -113,9 +113,9 @@ defmodule BrightWeb.CoreComponents do
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
       class={[
-        "fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
+        "fixed top-2 right-2 w-80 sm:w-96 z-[60] rounded-lg p-3 ring-1",
+        @kind == :info && "bg-brightGreen-50 text-brightGreen-900 ring-brightGreen-600 fill-brightGreen-900",
+        @kind == :error && "bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900"
       ]}
       {@rest}
     >
@@ -390,8 +390,7 @@ defmodule BrightWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600 phx-no-feedback:hidden">
-      <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
+    <p class="text-error text-xs phx-no-feedback:hidden">
       <%= render_slot(@inner_block) %>
     </p>
     """
@@ -650,4 +649,15 @@ defmodule BrightWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  def upload_error_to_string(:too_large), do: translate_error({"The file is too large", []})
+
+  def upload_error_to_string(:not_accepted),
+    do: translate_error({"You have selected an unacceptable file type", []})
+
+  def upload_error_to_string(:external_client_failure),
+    do: translate_error({"Something went terribly wrong", []})
+
+  def upload_error_to_string(:too_many_files),
+    do: translate_error({"Too many files are uploaded", []})
 end

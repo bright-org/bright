@@ -1,0 +1,31 @@
+# メッセージを作るサンプル
+
+## Section
+
+```elixir
+alias Bright.Notifications
+alias Bright.Accounts
+alias Bright.Notifications.NotificationOperation
+```
+
+```elixir
+defmodule Test do
+  alias Bright.Repo
+
+  def insert(attrs) do
+    %NotificationOperation{}
+    |> NotificationOperation.changeset(attrs)
+    |> Repo.insert()
+  end
+end
+
+user = Accounts.get_user_by_name_or_email("ymn")
+
+attrs = %{
+  from_user_id: user.id,
+  message: "運営テスト",
+  detail: "運営のメッセージのテストです"
+}
+
+Test.insert(attrs)
+```

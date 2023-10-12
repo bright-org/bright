@@ -9,11 +9,17 @@ defmodule Bright.Teams.TeamMemberUsers do
   @foreign_key_type Ecto.ULID
   schema "team_member_users" do
     field :is_admin, :boolean, default: false
-    field :is_primary, :boolean, default: false
+    field :is_star, :boolean, default: false
+    field :invitation_token, :binary
+    field :invitation_sent_to, :string
+    field :invitation_confirmed_at, :naive_datetime
 
     belongs_to :team, Bright.Teams.Team
+    belongs_to :user, Bright.Accounts.User, references: :id
 
-    field :user_id, Ecto.ULID
+    # has_many :user_skill_panels, Bright.SkillPanels.UserSkillPanel, join_through: "user_skill_panels", references: :user_id
+
+    # field :user_id, Ecto.ULID
 
     timestamps()
   end
@@ -21,7 +27,34 @@ defmodule Bright.Teams.TeamMemberUsers do
   @doc false
   def changeset(team_member_users, attrs) do
     team_member_users
-    |> cast(attrs, [:user_id, :team_id, :is_admin, :is_primary])
+    |> cast(attrs, [
+      :user_id,
+      :team_id,
+      :is_admin,
+      :is_star,
+      :invitation_token,
+      :invitation_sent_to,
+      :invitation_confirmed_at
+    ])
     |> validate_required([:user_id])
+  end
+
+  @doc false
+  def team_member_invitation_changeset(team_member_users, attrs) do
+    team_member_users
+    |> cast(attrs, [
+      :invitation_confirmed_at
+    ])
+    |> validate_required([:invitation_confirmed_at])
+  end
+
+  def is_star_changeset(team_member_users, attrs) do
+    team_member_users
+    |> cast(attrs, [:is_star])
+    |> validate_required([:is_star])
+  end
+
+  def now_for_confirmed_at() do
+    NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
   end
 end

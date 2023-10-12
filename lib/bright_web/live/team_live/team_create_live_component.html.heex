@@ -1,0 +1,105 @@
+<div class="relative w-[1280px] max-h-full">
+  <div id="create-team-modal" class="relative rounded-sm px-16 py-8">
+    <!-- Modal header -->
+    <h3>チームを作る</h3>
+    <!-- Modal body -->
+    <div class="flex pt-8">
+      <!-- modal left -->
+      <div class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed">
+      <!-- TODO α対象外
+        <p>
+          <span class="font-bold">気になる</span>からメンバーとして追加
+        </p>
+
+        <p>
+          <span class="font-bold">関わっているチーム</span>からサブチームとして追加
+        </p>
+      -->
+        <div class="flex items-center">
+          <form
+            id="add_user_form"
+            phx-target={@myself}
+            phx-submit="add_user"
+          >
+            <p class="pb-2 text-base">
+              <span class="font-bold">Brightハンドル名</span>からメンバーとして追加
+            </p>
+            <input
+              id="search_word"
+              name="search_word"
+              type="autocomplete"
+              placeholder="ハンドル名を入力してください"
+              class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
+              phx-change="change_add_user"
+              value={@search_word}
+            />
+            <button
+              phx-target={@myself}
+              class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5"
+            >
+              追加
+            </button>
+          </form>
+        </div>
+        <div :if={@search_word_error != nil}>
+          <p class= "text-error text-xs"><%= @search_word_error %></p>
+        </div>
+      </div>
+      <!-- modal-right -->
+      <div class="w-[580px] pl-10 flex flex-col justify-between">
+        <.team_form
+          for={@team_form}
+          id="team_form"
+          phx-target={@myself}
+          phx-submit="create_team"
+          phx-change="validate_team"
+          class="flex"
+        >
+          <div>
+            <h5>新しいチーム</h5>
+            <div class="bg-brightGray-10 rounded-sm px-10 pt-6 min-h-[360px]">
+              <dl class="flex flex-wrap">
+                <dt class="font-bold w-[100px] flex items-center mb-10 text-base">
+                  チーム名
+                </dt>
+                <dd class="w-[340px] mb-10">
+                  <.input
+                    id="name"
+                    name="name"
+                    field={@team_form[:name]}
+                    type="text"
+                    value={@name}
+                    required
+                    placeholder="新しいチーム名を入力してください"
+                    class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+                  />
+                </dd>
+                <dt class="font-bold w-[100px] mb-10 text-base">
+                  メンバー
+                </dt>
+                <dd class="w-[340px] mb-6">
+                  <ul class="flex flex-wrap gap-y-1">
+                    <%= for user <- @users do %>
+                      <.profile_small_with_remove_button
+                        remove_user_target={@myself}
+                        user_id={user.id} user_name={user.name}
+                        title={user.user_profile.title}
+                        icon_file_path={user.user_profile.icon_file_path}
+                        />
+                    <% end %>
+                  </ul>
+                </dd>
+                <!-- TODO αリリース対象外 サブチーム -->
+              </dl>
+            </div>
+          </div>
+          <div class="flex justify-end gap-x-4">
+            <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
+              チームを作成し、上記メンバーに招待を送る
+            </button>
+          </div>
+        </.team_form>
+      </div>
+    </div>
+  </div>
+</div>

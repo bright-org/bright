@@ -7,6 +7,8 @@ defmodule Bright.SkillUnits do
   alias Bright.Repo
 
   alias Bright.SkillUnits.SkillUnit
+  alias Bright.SkillUnits.SkillCategory
+  alias Bright.SkillUnits.Skill
 
   @doc """
   Returns the list of skill_units.
@@ -100,5 +102,103 @@ defmodule Bright.SkillUnits do
   """
   def change_skill_unit(%SkillUnit{} = skill_unit, attrs \\ %{}) do
     SkillUnit.changeset(skill_unit, attrs)
+  end
+
+  @doc """
+  Gets a single skill_category.
+
+  Raises `Ecto.NoResultsError` if the Skill unit does not exist.
+
+  ## Examples
+
+      iex> get_skill_category!(123)
+      %SkillCategory{}
+
+      iex> get_skill_category!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_skill_category!(id), do: Repo.get!(SkillCategory, id)
+
+  @doc """
+  Updates a skill_category.
+
+  ## Examples
+
+      iex> update_skill_category(skill_category, %{field: new_value})
+      {:ok, %SkillCategory{}}
+
+      iex> update_skill_category(skill_category, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_skill_category(%SkillCategory{} = skill_category, attrs) do
+    skill_category
+    |> SkillCategory.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking skill_category changes.
+
+  ## Examples
+
+      iex> change_skill_category(skill_category)
+      %Ecto.Changeset{data: %SkillCategory{}}
+
+  """
+  def change_skill_category(%SkillCategory{} = skill_category, attrs \\ %{}) do
+    SkillCategory.changeset(skill_category, attrs)
+  end
+
+  @doc """
+  Gets skills
+  """
+  def list_skills(query \\ Skill) do
+    Repo.all(query)
+  end
+
+  @doc """
+  Gets skills on skill_class
+  """
+  def list_skills_on_skill_class(skill_class) do
+    Skill.skill_class_query(skill_class.id)
+    |> list_skills()
+  end
+
+  @doc """
+  Gets a single skill
+  """
+  def get_skill!(id), do: Repo.get!(Skill, id)
+
+  @doc """
+  Updates a skill.
+
+  ## Examples
+
+      iex> update_skill(skill, %{field: new_value})
+      {:ok, %Skill{}}
+
+      iex> update_skill(skill, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_skill(%Skill{} = skill, attrs) do
+    skill
+    |> Skill.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking skill changes.
+
+  ## Examples
+
+      iex> change_skill(skill)
+      %Ecto.Changeset{data: %Skill{}}
+
+  """
+  def change_skill(%Skill{} = skill, attrs \\ %{}) do
+    Skill.changeset(skill, attrs)
   end
 end

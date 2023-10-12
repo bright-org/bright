@@ -5,11 +5,12 @@
 // import * as Hooks from "./hooks";
 // import * as Params from "./params";
 // import * as Uploaders from "./uploaders";
+import "flowbite/dist/flowbite.phoenix.js"
+
 import  * as hooks from "./hooks"
 (function () {
-  window.storybook = hooks;
-})();
-
+  window.storybook = hooks
+})()
 
 // If your components require alpinejs, you'll need to start
 // alpine after the DOM is loaded and pass in an onBeforeElUpdated

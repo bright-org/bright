@@ -19,7 +19,6 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:locked_date]} type="date" label="Locked date" />
         <.input field={@form[:name]} type="text" label="Name" />
         <.label>Skill classes</.label>
         <.inputs_for :let={scf} field={@form[:skill_classes]}>

@@ -21,19 +21,23 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
-  database_url =
-    System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
-
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
+
+  repo_timeout =
+    case System.get_env("REPO_TIMEOUT") do
+      "infinity" -> :infinity
+      nil -> 15_000
+      string -> Integer.parse(string) |> Tuple.to_list() |> hd()
+    end
 
   config :bright, Bright.Repo,
     # ssl: true,
-    url: database_url,
+    username: System.get_env("DATABASE_USERNAME"),
+    password: System.get_env("DATABASE_PASSWORD"),
+    database: "bright",
+    socket_dir: System.get_env("DATABASE_SOCKET_DIR"),
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    timeout: repo_timeout,
     socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
@@ -112,4 +116,17 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+  config :bright, Bright.Mailer,
+    adapter: Swoosh.Adapters.Sendgrid,
+    api_key: System.get_env("SENDGRID_API_KEY")
+
+  # Sentry
+  config :sentry,
+    dsn: System.get_env("SENTRY_DSN"),
+    environment_name: System.get_env("SENTRY_ENVIRONMENT_NAME"),
+    included_environments: [System.get_env("SENTRY_ENVIRONMENT_NAME")]
+
+  config :bright, :google_api_storage,
+    bucket_name: System.get_env("BUCKET_NAME"),
+    public_base_url: "https://storage.googleapis.com"
 end

@@ -1,10 +1,12 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
 module.exports = {
   mode: "jit",
   purge: ["./dist/**/*.html", "./src/**/*.{js,jsx,ts,tsx,vue}"],
-  content: [],
+  content: ["./*.{html,js}"],
   theme: {
     colors: {
+      current: "currentColor",
       base: "#333333",
       transparent: "transparent",
       brightGreen: {
@@ -53,19 +55,20 @@ module.exports = {
       },
       linePlaceholder: "#97ACAC",
       line: "#D4DBDB",
-      background: "#F9FAFA",
+      background: "#EFF0F0",
       error: "#E5323F",
       white: "#ffffff",
       link: "#001AAC",
       sns: {
         facebook: "#1877F2",
         twitter: "#1DA1F2",
+        newTwitter: "#000000",
         github: "#0D1117",
       },
       infra: {
         dark: "#51971A",
         light: "#8CEB14",
-        dazzle: "#8CEB14",
+        dazzle: "#F2FFE1",
       },
       enginner: {
         dark: "#165BC8",
@@ -87,14 +90,34 @@ module.exports = {
         light: "#FD5B87",
         dazzle: "#FFE9EF",
       },
+      skillPanel: {
+        brightGreen600: "#0EA895",
+        brightGreen300: "#14D6BE",
+        amethyst600: "#C04CD0",
+        amethyst300: "#DD6DED",
+      },
+      planUpgrade: {
+        600: "#f57f3e",
+      },
+      pureGray: {
+        100: "#e0e0e0",
+        600: "#acacac",
+      },
     },
     extend: {
       backgroundImage: (theme) => ({
         bgGem: "url('./images/bg_gem_title.png')",
+        bgGemEnginner: "url('./images/bg_gem_enginner.png')",
+        bgGemInfra: "url('./images/bg_gem_infra.png')",
+        bgGemDesigner: "url('./images/bg_gem_designer.png')",
+        bgGemMarketer: "url('./images/bg_gem_marketer.png')",
+        bgGemSales: "url('./images/bg_gem_sales.png')",
         bgGoogle: "url('./images/bg_google.png')",
         bgGithub: "url('./images/bg_github.png')",
         bgFacebook: "url('./images/bg_facebook.png')",
         bgTwitter: "url('./images/bg_twitter.png')",
+        bgNewTwitter: "url('./images/bg_new_twitter.png')",
+        bgAddAvatar: "url('./images/bg_add_avatar.png')",
       }),
       backgroundPosition: (theme) => ({
         "left-2.5": "10px center",
@@ -104,12 +127,137 @@ module.exports = {
         6: "auto 24px",
         7: "auto 28px",
         8: "auto 32px",
+        9: "auto 34px",
+        20: "auto 80px",
       }),
-      fontFamily: {
+      fontFamily: (theme) => ({
         notosans: ["Noto Sans JP"],
-      },
+        sans: ["Noto Sans JP"],
+      }),
+      rotate: (theme) => ({
+        225: "225deg",
+      }),
     },
   },
 
-  plugins: [],
+  plugins: [
+    plugin(function ({ addBase, addComponents, addUtilities, theme }) {
+      addBase({
+        body: {
+          fontSize: theme("fontSize.sm"),
+          letterSpacing: theme("letterSpacing.tight"),
+          color: "#333333",
+        },
+        h1: {
+          fontSize: theme("fontSize.5xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h2: {
+          fontSize: theme("fontSize.4xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h3: {
+          fontSize: "28px",
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h4: {
+          fontSize: theme("fontSize.xl"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        h5: {
+          fontSize: theme("fontSize.lg"),
+          fontWeight: theme("fontWeight.bold"),
+          letterSpacing: theme("letterSpacing.tight"),
+          alignSelf: "center",
+        },
+        td: {
+          textAlign: "left",
+          fontSize: theme("fontSize.sm"),
+          padding: theme("padding.2"),
+        },
+        th: {
+          textAlign: "left",
+          fontSize: theme("fontSize.sm"),
+          padding: theme("padding.2"),
+        },
+      });
+      addComponents({
+        ".skill-table td": {
+          width: "110px",
+        },
+        ".skill-table th": {
+          width: "140px",
+        },
+        ".skill-panel-table td": {
+          height: theme("height:10"),
+          borderRight: "1px",
+          borderColor: "#97ACAC",
+          borderBottom: "1px",
+          borderStyle: "solid",
+        },
+        ".skill-panel-table th": {
+          height: theme("height:10"),
+          borderRight: "1px",
+          borderColor: "#97ACAC",
+          borderBottom: "1px",
+          borderStyle: "solid",
+        },
+        "input.coustom-checkbox": {
+          cursor: "pointer",
+          paddingLeft: 30,
+          verticalAlign: "middle",
+          position: "relative",
+          "&:before": {
+            content: "''",
+            display: "block",
+            position: "absolute",
+            backgroundColor: "#ffffff",
+            borderRadius: "0%",
+            border: "2px solid #2E3A3A",
+            width: "20px",
+            height: "20px",
+            transform: "translateY(-50%)",
+            top: "50%",
+            left: "0px",
+            borderRadius: "3px",
+          },
+          "&:after": {
+            content: "''",
+            display: "block",
+            position: "absolute",
+            borderBottom: "3px solid #2E3A3A",
+            borderLeft: "3px solid #2E3A3A",
+            opacity: "0",
+            height: "6px",
+            width: "12px",
+            transform: "rotate(-45deg)",
+            top: "4px",
+            left: "4px",
+          },
+          "&:checked:after": {
+            opacity: "1",
+          },
+        },
+      });
+      addUtilities({
+        ".button-toggle-active": {
+          backgroundColor: "#2E3A3A",
+          color: "#ffffff",
+          borderRadius: "999999px",
+        },
+        ".skill-panel-outline": {
+          outline: "1px solid #97acac",
+          outlineOffset: "1",
+        },
+      });
+    }),
+  ],
 };

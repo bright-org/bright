@@ -1,0 +1,171 @@
+<div class="px-4 lg:px-10 pt-4 pb-8 bg-white">
+  <!-- スキルと対象の切り替え -->
+  <div class="flex flex-col lg:flex-row gap-y-4 lg:gap-x-4">
+    <section class="accordion flex max-w-[1236px] lg:hidden mt-2">
+      <div class="bg-brightGray-50 rounded w-full">
+        <p
+          id="close_navigation"
+          class={
+            "hidden bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
+            open()
+          }
+          phx-click={
+            JS.hide(to: "#switch")
+            |> JS.hide(to: "#close_navigation")
+            |> JS.show(to: "#open_navigation")
+          }
+        >
+          表示するチーム／スキルを切り替える
+        </p>
+        <p
+          id="open_navigation"
+          class={
+            "bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
+            close()
+          }
+          phx-click={
+            JS.show(to: "#switch")
+            |> JS.show(to: "#close_navigation")
+            |> JS.hide(to: "#open_navigation")
+          }
+        >
+          表示するチーム／スキルを切り替える
+        </p>
+        </div>
+    </section>
+    <div id="switch" class="hidden lg:flex lg:gap-x-4">
+      <p class="leading-tight mb-2 lg:mb-0 lg:ml-4">対象者の<br class="hidden lg:block" />切り替え</p>
+      <!-- チーム menu -->
+      <.mega_menu_button
+        id="mega_menu_team"
+        label="チーム"
+        dropdown_offset_skidding="307"
+      >
+        <.live_component
+          id="team_card"
+          module={BrightWeb.CardLive.RelatedTeamCardComponent}
+          display_user={@current_user}
+          over_ride_on_card_row_click_target={:true}
+        />
+      </.mega_menu_button>
+
+      <p class="leading-tight my-2 lg:my-0">対象スキルの<br class="hidden lg:block"/>切り替え</p>
+      <!-- スキルパネル menu -->
+      <.mega_menu_button
+        :if={is_nil(@display_team)}
+        id="mega_menu_skill_panel"
+        label="スキル"
+        dropdown_offset_skidding="156"
+        menu_width="lg:w-[450px]"
+      >
+        <div
+          class="w-[440px] flex items-center text-base rounded"
+          >
+          <div class="text-left flex items-center text-base px-1 py-1 flex-1 m-2">所属しているチームはありません</div>
+            <a href="/teams/new" class="text-sm font-bold px-5 py-3 rounded text-white bg-base m-2">
+              チームを作る
+            </a>
+        </div>
+      </.mega_menu_button>
+      <.mega_menu_button
+        :if={!is_nil(@display_team)}
+        id="mega_menu_skill_panel"
+        label="スキル"
+        dropdown_offset_skidding="307"
+      >
+        <.live_component
+          id="skill_card"
+          module={BrightWeb.CardLive.SkillCardComponent}
+          display_user={@current_user}
+          display_team={@display_team}
+          me={true}
+          anonymous={false}
+          root={""}
+          over_ride_on_card_row_click_target={:true}
+        />
+      </.mega_menu_button>
+    </div>
+    <!-- TODO αリリースではスキルセットは対応しない -->
+    <!-- スキルセット menu -->
+
+    <button
+      data-modal-target="defaultModal"
+      data-modal-toggle="defaultModal"
+      class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-32"
+      phx-click={show_modal("create-team-modal")}
+    >
+      チームを作る
+    </button>
+  </div>
+
+  <!-- プロフィール -->
+  <div class="flex justify-between py-6 px-2 lg:px-10 bg-white">
+    <div class="w-full lg:w-[850px] pt-4">
+      <.profile
+        user_name={@current_user.name}
+        title={@current_user.user_profile.title}
+        detail={@current_user.user_profile.detail}
+        icon_file_path={UserProfiles.icon_url(@current_user.user_profile.icon_file_path)}
+        display_sns
+        twitter_url={@current_user.user_profile.twitter_url}
+        github_url={@current_user.user_profile.github_url}
+        facebook_url={@current_user.user_profile.facebook_url}
+      />
+    </div>
+  </div>
+</div>
+
+<!-- card -->
+
+<div
+  :if={@display_team == nil}
+  class="m-10 bg-white shadow flex justify-center items-center flex-1 h-full"
+>
+  <div class="flex flex-col items-center text-center">
+    <p class="font-bold">管理／所属しているチームはありません</p>
+  </div>
+</div>
+<div
+  :if={@display_team != nil}
+  class="mb-20 lg:mb-0 lg:ml-24 p-6"
+  >
+  <!-- チームタイトルー -->
+  <!-- TODO チームがない場合の表示に対応  -->
+  <.team_header
+    team={@display_team}
+    team_type={:general_team}
+    current_users_team_member={@current_users_team_member}
+  />
+
+  <!-- チームメンバー -->
+  <div class="flex gap-8 pt-4 flex-wrap">
+    <%= for {display_skill_card, index} <- Enum.with_index(@display_skill_cards) do %>
+      <.live_component
+        module={BrightWeb.TeamMemberSkillCardComponent}
+        id={"skill_card_#{index}"}
+        display_skill_panel={@display_skill_panel}
+        display_skill_card={display_skill_card}
+        display_skill_classes={@display_skill_classes}
+        />
+    <% end %>
+  </div>
+</div>
+<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
+<!-- :if={@live_action in [:new, :edit]} -->
+  <.bright_modal
+    id="create-team-modal"
+    show={if @live_action in [:new, :edit] do true else false end}
+    on_cancel={JS.push("cancel_team_create")}
+  >
+    <.live_component
+      module={BrightWeb.TeamCreateLiveComponent}
+      id="create-team-component"
+      action={@live_action}
+      current_user={@current_user}
+      users={[]}
+      patch={~p"/teams"}
+    />
+  </.bright_modal>
+
+
+

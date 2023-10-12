@@ -1,0 +1,19 @@
+name: Deploy to stg
+
+on:
+  push:
+    tags:
+      - stg-*
+
+jobs:
+  call:
+    uses: ./.github/workflows/reusable_deploy.yml
+    with:
+      workload_identity_provider: projects/744413947362/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+      service_account: github-actions@bright-stg.iam.gserviceaccount.com
+      image_name: asia-northeast1-docker.pkg.dev/bright-stg/bright-org/bright
+      cloud_sql_instance: bright-stg:asia-northeast1:instance
+      cloud_run_service_account: cloud-run@bright-stg.iam.gserviceaccount.com
+    permissions:
+      id-token: write
+      contents: read

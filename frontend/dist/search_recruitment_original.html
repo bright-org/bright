@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+   <meta name="image" content="assets/images/ogp.png">
+  <title>Bright</title>
+  <link rel="stylesheet" href="./output.css">
+  <link rel="shortcut icon" href="favicon.ico">
+</head>
+<body class="bg-background font-notosans">
+
+
+
+<main class="flex h-screen items-center justify-center p-10 w-screen" role="main">
+  <section class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[1000px]">
+<!-- Start タブメニュー -->
+    <ul id="account_settings_tab" class="border-b border-brightGray-200 flex">
+      <li class="border-b-2 border-brightGreen-300 cursor-pointer py-3.5 text-center w-40 hover:bg-brightGray-50">ユーザー検索</li>
+      <li class="cursor-pointer py-3.5 select-none text-center w-40 hover:bg-brightGray-50">チーム検索</li>
+    </ul><!-- End タブメニュー -->
+
+    <form>
+      <ul id="account_settings_content">
+<!-- Start ユーザー検索 -->
+        <li class="block">
+          <div class="border-b border-brightGray-200 flex flex-wrap items-center">
+            <div class="flex items-center w-fit">
+              <label class="flex items-center py-4">
+                <span class="w-24">PJ期間</span>
+                <input type="date" size="20" name="pj_start" class="border border-brightGray-200 px-2 py-1  rounded w-30">
+                <span class="mx-1">～</span>
+                <input type="date" size="20" name="pj_end" class="border border-brightGray-200 px-2 py-1  rounded w-30">
+              </label>
+
+              <label class="flex items-center ml-2">
+                <input type="checkbox" name="pj_end_undecided" class="border border-brightGray-200 rounded">
+                <span class="ml-1 text-xs">終了日未定</span>
+              </label>
+            </div>
+
+            <div class="ml-auto w-fit">
+              <label class="flex items-center py-4">
+                <span class="w-24">月予算<span class="block text-xs">（一人当たり）</span></span>
+                <input type="text" size="20" name="budget" class="border border-brightGray-200 px-2 py-1 rounded w-40">
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <div class="border-b border-brightGray-200 flex flex-wrap py-4">
+              <span class="py-1 w-24">勤務体系</span>
+              <div>
+                <p class="flex items-center">
+                  <label class="flex items-center"><input type="checkbox" name="work_schedule"><span class="ml-1 w-16">出勤</span></label> 
+                  <select name="work_location" class="border border-brightGray-200 ml-4 px-2 py-1 rounded">
+                    <option value="">希望勤務地</option>
+                    <option value="1">北海道</option>
+                    <option value="2">青森県</option>
+                    <option value="3">岩手県</option>
+                    <option value="4">宮城県</option>
+                    <option value="5">秋田県</option>
+                    <option value="6">山形県</option>
+                    <option value="7">福島県</option>
+                    <option value="8">茨木県</option>
+                    <option value="9">栃木県</option>
+                    <option value="10">群馬県</option>
+                    <option value="11">埼玉県</option>
+                    <option value="12">千葉県</option>
+                    <option value="13">東京都</option>
+                    <option value="14">神奈川県</option>
+                    <option value="15">新潟県</option>
+                    <option value="16">富山県</option>
+                    <option value="17">石川県</option>
+                    <option value="18">福井県</option>
+                    <option value="19">山梨県</option>
+                    <option value="20">長野県</option>
+                    <option value="21">岐阜県</option>
+                    <option value="22">静岡県</option>
+                    <option value="23">愛知県</option>
+                    <option value="24">三重県</option>
+                    <option value="25">滋賀県</option>
+                    <option value="26">京都府</option>
+                    <option value="27">大阪府</option>
+                    <option value="28">兵庫県</option>
+                    <option value="29">奈良県</option>
+                    <option value="30">和歌山県</option>
+                    <option value="31">鳥取県</option>
+                    <option value="32">島根県</option>
+                    <option value="33">岡山県</option>
+                    <option value="34">広島県</option>
+                    <option value="35">山口県</option>
+                    <option value="36">徳島県</option>
+                    <option value="37">香川県</option>
+                    <option value="38">愛媛県</option>
+                    <option value="39">高知県</option>
+                    <option value="40">福岡県</option>
+                    <option value="41">佐賀県</option>
+                    <option value="42">長崎県</option>
+                    <option value="43">熊本県</option>
+                    <option value="44">大分県</option>
+                    <option value="45">宮崎県</option>
+                    <option value="46">鹿児島県</option>
+                    <option value="47">沖縄県</option>
+                    <option value="48">海外</option>
+                  </select>
+  
+                  <select name="working_hours" class="border border-brightGray-200 ml-4 px-2 py-1 rounded">
+                    <option value="">希望勤務時間</option>
+                    <option value="160">月160h以上</option>
+                    <option value="140">月140h～159h</option>
+                    <option value="120">月120h～139h</option>
+                    <option value="100">月100h～119h</option>
+                    <option value="80">月80h～99h</option>
+                    <option value="79">月79h以下</option>
+                  </select>
+  
+                  <label class="flex items-center ml-4"><input type="checkbox" name="day_off"><span class="ml-1">土日の稼働も含む</span></label>
+                </p>
+  
+                <p class="border-t border-dotted flex items-center mt-4 pt-4">
+                  <label class="flex items-center"><input type="checkbox" name="remote"><span class="ml-1 w-16">リモート</span></label>
+  
+                  <select name="remote_working_hours" class="border border-brightGray-200 ml-4 px-2 py-1 rounded">
+                    <option value="">希望勤務時間</option>
+                    <option value="160">月160h以上</option>
+                    <option value="140">月140h～159h</option>
+                    <option value="120">月120h～139h</option>
+                    <option value="100">月100h～119h</option>
+                    <option value="80">月80h～99h</option>
+                    <option value="79">月79h以下</option>
+                  </select>
+                  <label class="flex items-center ml-4"><input type="checkbox" name="remote_day_off"><span class="ml-1">土日の稼働も含む</span></label>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex mt-4" id="skill_section">
+            <span class="mt-2 w-24">スキル</span>
+            <div>
+            <!-- Start スキル入力 -->
+              <div id="search_skill_0" class="flex items-center mb-4">
+                <i class="delete_skill_conditions bg-attention-600 block border border-attention-600 cursor-pointer h-4 indent-40 invisible -ml-5 mr-1 overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white hover:opacity-50">スキル削除</i>
+
+                <select name="skill" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                  <option value="">キャリアフィールド</option>
+                  <option value="">エンジニア</option>
+                  <option value="">インフラ</option>
+                  <option value="">デザイナー</option>
+                  <option value="">マーケッター</option>
+                </select>
+
+                <select name="skillset" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                  <option value="">ジョブ</option>
+                  <option value="">（すべてのジョブが選択肢で表示されます）</option>
+                  <option value="">選択肢</option>
+                  <option value="">選択肢</option>
+                </select>
+
+                <select name="class" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-24">
+                  <option value="">クラス</option>
+                  <option value="">選択肢</option>
+                  <option value="">選択肢</option>
+                  <option value="">選択肢</option>
+                </select>
+
+                <select name="lebel" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-24">
+                  <option value="">レベル</option>
+                  <option value="">選択肢</option>
+                  <option value="">選択肢</option>
+                  <option value="">選択肢</option>
+                </select>
+
+                <label class="bg-white border border-solid border-brightGray-900 cursor-pointer font-bold ml-8 px-2 py-1 relative rounded select-none text-center text-brightGray-900 w-44">スキル詳細も設定
+                  <input type="checkbox" class="hidden peer" id="skill_detail">
+                  <div class="absolute bg-white border border-brightGray-200 hidden mt-1 right-0 top-8 w-[368px] peer-checked:block">
+                    <ul class="flex flex-wrap gap-y-1 p-4">
+<!-- 設定項目 Start -->
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_1" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li><!-- 設定項目 End 以降繰り返し -->
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_2" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_3" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_4" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_5" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_6" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+
+                      <li class="flex items-center justify-between w-full">
+                        <span class="text-left pr-2">Elixir 基礎</span>
+                        <select name="skill_detail_7" class="border border-brightGray-200 mr-2 px-2 py-1 rounded w-44">
+                          <option value="">指定なし</option>
+                          <option value="">選択肢</option>
+                          <option value="">選択肢</option>
+                        </select>
+                      </li>
+                    </ul>
+
+                    <div class="flex justify-between p-4">
+                      <label for="skill_detail" class="bg-brightGray-900 border border-brightGray-900 font-bold p-2 rounded select-none text-white w-48 hover:opacity-50">設定する</label>
+
+                      <button type="button" class="bg-white border border-brightGray-900 font-bold p-2 rounded select-none text-brightGray-900 w-32 hover:opacity-50">条件クリア</button>
+                    </div>
+                  </div>
+                </label>
+              </div><!-- End スキル入力 -->
+            </div>
+          </div>
+
+          <i id="set_skill_conditions" class="bg-brightGreen-900 block border border-brightGreen-900 cursor-pointer h-4 indent-40 mx-auto overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white after:top-1/2 after:left-1/2 after:-ml-1 after:-mt-px after:content-[''] after:block after:absolute after:w-2 after:h-0.5 after:bg-white after:rotate-90 hover:opacity-50">追加</i>
+
+          <div class="flex mt-16 mx-auto w-fit">
+            <a class="bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">検索する</a>
+          </div>
+        </li><!-- End ユーザー検索 -->
+
+<!-- Start チーム検索 -->
+        <li class="hidden">
+
+        </li><!-- End チーム検索 -->
+      </ul>
+    </form>
+  </section>
+</main>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script>
+// Tab
+$(function(){
+  let tab_menu = $("#account_settings_tab");
+  tab_menu.children("li").on("click", function(){
+    console.log("success");
+    let tab_menu_num = tab_menu.children("li").index(this);
+    tab_menu.children("li").removeClass("border-b-2");
+    tab_menu.children("li").removeClass("border-brightGreen-300");
+    tab_menu.children("li").eq(tab_menu_num).addClass("border-b-2");
+    tab_menu.children("li").eq(tab_menu_num).addClass("border-brightGreen-300");
+
+    let tab_contents = $("#account_settings_content").children("li");
+    tab_contents.hide();
+    tab_contents.eq(tab_menu_num).show();
+  });
+});
+//　add skills
+$(function(){
+  let first_skill = $("#search_skill_0");
+  $("#set_skill_conditions").on("click", function(){
+    console.log("success");
+    let search_skill_number = $("#skill_section").find("div[id^='search_skill_']").length;
+    console.log(search_skill_number);
+    if(search_skill_number < 3){
+      let skill_input  = first_skill.clone();
+      skill_input.appendTo($("#skill_section").children("div")).attr("id", "search_skill_" + search_skill_number);
+      if(search_skill_number > 0){
+        $("div[id^='search_skill_']").children("i").removeClass("invisible");
+        first_skill.children("i").addClass("invisible");
+      }
+      if(search_skill_number > 1){
+        $("#set_skill_conditions").addClass("invisible");
+      }
+    }
+
+    $(".delete_skill_conditions").on("click", function(){
+      $(this).parent().remove();
+      $("#set_skill_conditions").removeClass("invisible");
+      search_skill_number = search_skill_number - 1;
+      console.log(search_skill_number);
+    });
+  });
+});
+</script>
+</body>
+</html>

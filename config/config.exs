@@ -32,6 +32,11 @@ config :bright, BrightWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :bright, Bright.Mailer, adapter: Swoosh.Adapters.Local
 
+config :bright, BrightWeb.Gettext, default_locale: "ja"
+
+# aes128_secret_keyは16文字の文字列を指定すること
+config :bright, aes128_secret_key: "26McE/V0iwb8DWy5"
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
@@ -44,7 +49,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.2.7",
+  version: "3.3.2",
   default: [
     args: ~w(
       --config=tailwind.config.js
@@ -69,6 +74,21 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+# ueberauth
+config :ueberauth, Ueberauth,
+  providers: [
+    google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]},
+    github: {Ueberauth.Strategy.Github, []}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: {System, :get_env, ["GOOGLE_CLIENT_ID"]},
+  client_secret: {System, :get_env, ["GOOGLE_CLIENT_SECRET"]}
+
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+  client_id: {:system, "GITHUB_CLIENT_ID"},
+  client_secret: {:system, "GITHUB_CLIENT_SECRET"}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

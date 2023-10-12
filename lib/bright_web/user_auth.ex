@@ -7,6 +7,7 @@ defmodule BrightWeb.UserAuth do
   import Phoenix.Controller
 
   alias Bright.Accounts
+  alias Bright.Repo
 
   # Make the cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -14,6 +15,31 @@ defmodule BrightWeb.UserAuth do
   @max_age 60 * 60 * 24 * 60
   @cookie_key "_bright_web_user"
   @cookie_options [sign: true, max_age: @max_age, same_site: "Lax"]
+
+  # Two factor auth cookie
+  @user_2fa_max_age 60 * 60 * 24 * 60
+  @user_2fa_cookie_key "_bright_web_user_2fa_done"
+  @user_2fa_cookie_options [sign: true, max_age: @user_2fa_max_age, same_site: "Lax"]
+
+  @doc """
+  Write two factor auth done cookie.
+  """
+  def write_2fa_auth_done_cookie(conn, token) do
+    put_resp_cookie(conn, @user_2fa_cookie_key, token, @user_2fa_cookie_options)
+  end
+
+  def valid_2fa_auth_done_cookie_exists?(conn, user) do
+    conn = fetch_cookies(conn, signed: [@user_2fa_cookie_key])
+
+    token = conn.cookies[@user_2fa_cookie_key]
+
+    if is_nil(token) do
+      false
+    else
+      user_by_token = Accounts.get_user_by_2fa_done_token(token)
+      !is_nil(user_by_token) && user_by_token.id == user.id
+    end
+  end
 
   @doc """
   Logs the user in.
@@ -27,15 +53,22 @@ defmodule BrightWeb.UserAuth do
   disconnected on log out. The line can be safely removed
   if you are not using LiveView.
   """
-  def log_in_user(conn, user) do
+  def log_in_user(conn, user, user_return_to \\ nil) do
     token = Accounts.generate_user_session_token(user)
-    user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> renew_session()
     |> put_token_in_session(token)
     |> write_cookie(token)
-    |> redirect(to: user_return_to || signed_in_path(conn))
+    |> redirect(to: user_return_to || log_in_redirect_path(user))
+  end
+
+  def log_in_redirect_path(user) do
+    if Accounts.onboarding_finished?(user) do
+      ~p"/mypage"
+    else
+      ~p"/onboardings/welcome"
+    end
   end
 
   defp write_cookie(conn, token) do
@@ -79,7 +112,7 @@ defmodule BrightWeb.UserAuth do
     conn
     |> renew_session()
     |> delete_resp_cookie(@cookie_key)
-    |> redirect(to: ~p"/")
+    |> redirect(to: ~p"/users/log_in")
   end
 
   @doc """
@@ -88,7 +121,11 @@ defmodule BrightWeb.UserAuth do
   """
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
-    user = user_token && Accounts.get_user_by_session_token(user_token)
+
+    user =
+      (user_token && Accounts.get_user_by_session_token(user_token))
+      |> Repo.preload([:user_profile, :user_onboardings])
+
     assign(conn, :current_user, user)
   end
 
@@ -153,7 +190,7 @@ defmodule BrightWeb.UserAuth do
     else
       socket =
         socket
-        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
+        |> Phoenix.LiveView.put_flash(:error, "ログインが必要です")
         |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
 
       {:halt, socket}
@@ -162,9 +199,31 @@ defmodule BrightWeb.UserAuth do
 
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
+    current_user = socket.assigns.current_user
 
-    if socket.assigns.current_user do
-      {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
+    if current_user do
+      {:halt, Phoenix.LiveView.redirect(socket, to: log_in_redirect_path(current_user))}
+    else
+      {:cont, socket}
+    end
+  end
+
+  def on_mount(:ensure_onboarding, _params, _session, socket) do
+    if socket.assigns.current_user.user_onboardings do
+      {:cont, socket}
+    else
+      socket
+      |> Phoenix.LiveView.put_flash(:error, "オンボーディングが完了していません")
+      |> Phoenix.LiveView.redirect(to: ~p"/onboardings/welcome")
+      |> then(&{:halt, &1})
+    end
+  end
+
+  def on_mount(:redirect_if_onboarding_finished, _params, _session, socket) do
+    if socket.assigns.current_user.user_onboardings do
+      socket
+      |> Phoenix.LiveView.redirect(to: ~p"/more_skills")
+      |> then(&{:halt, &1})
     else
       {:cont, socket}
     end
@@ -174,6 +233,7 @@ defmodule BrightWeb.UserAuth do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
         Accounts.get_user_by_session_token(user_token)
+        |> Repo.preload([:user_profile, :user_onboardings])
       end
     end)
   end
@@ -182,9 +242,12 @@ defmodule BrightWeb.UserAuth do
   Used for routes that require the user to not be authenticated.
   """
   def redirect_if_user_is_authenticated(conn, _opts) do
-    if conn.assigns[:current_user] do
+    current_user = conn.assigns[:current_user]
+
+    if current_user do
       conn
-      |> redirect(to: signed_in_path(conn))
+      |> put_flash(:error, "ログイン中はアクセスできません")
+      |> redirect(to: log_in_redirect_path(current_user))
       |> halt()
     else
       conn
@@ -202,10 +265,38 @@ defmodule BrightWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "You must log in to access this page.")
-      |> maybe_store_return_to()
-      |> redirect(to: ~p"/users/log_in")
+      |> put_flash(:error, "ログインが必要です")
+      |> redirect(to: require_authenticated_user_redirect_path(conn))
       |> halt()
+    end
+  end
+
+  defp require_authenticated_user_redirect_path(conn) do
+    if conn.request_path == "/graphs" do
+      ~p"/users/register"
+    else
+      ~p"/users/log_in"
+    end
+  end
+
+  def require_onboarding(conn, _ops) do
+    if Accounts.onboarding_finished?(conn.assigns[:current_user]) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "オンボーディングが完了していません")
+      |> redirect(to: ~p"/onboardings/welcome")
+      |> halt()
+    end
+  end
+
+  def redirect_if_onboarding_finished(conn, _ops) do
+    if Accounts.onboarding_finished?(conn.assigns[:current_user]) do
+      conn
+      |> redirect(to: ~p"/more_skills")
+      |> halt()
+    else
+      conn
     end
   end
 
@@ -214,12 +305,4 @@ defmodule BrightWeb.UserAuth do
     |> put_session(:user_token, token)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
   end
-
-  defp maybe_store_return_to(%{method: "GET"} = conn) do
-    put_session(conn, :user_return_to, current_path(conn))
-  end
-
-  defp maybe_store_return_to(conn), do: conn
-
-  defp signed_in_path(_conn), do: ~p"/mypage"
 end
