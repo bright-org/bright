@@ -1,7 +1,7 @@
-<div class="px-4 lg:px-10 pt-4 pb-8 bg-white">
+<div class="px-4 lg:px-10 pt-2 pb-4 lg:pt-4 lg:pb-8 bg-white">
   <!-- スキルと対象の切り替え -->
   <div class="flex flex-col lg:flex-row gap-y-4 lg:gap-x-4">
-    <section class="accordion flex max-w-[1236px] lg:hidden mt-2">
+    <section class="hidden accordion flex max-w-[1236px] lg:hidden mt-2">
       <div class="bg-brightGray-50 rounded w-full">
         <p
           id="close_navigation"
@@ -33,8 +33,9 @@
         </p>
         </div>
     </section>
-    <div id="switch" class="hidden lg:flex lg:gap-x-4">
-      <p class="leading-tight mb-2 lg:mb-0 lg:ml-4">対象者の<br class="hidden lg:block" />切り替え</p>
+    <div id="switch" class="flex gap-x-2 lg:gap-x-4 ">
+      <div class="flex flex-col lg:flex-row">
+      <p class="leading-tight my-2 lg:mb-0 lg:ml-4">対象者の<br class="hidden lg:block" />切替</p>
       <!-- チーム menu -->
       <.mega_menu_button
         id="mega_menu_team"
@@ -48,8 +49,9 @@
           over_ride_on_card_row_click_target={:true}
         />
       </.mega_menu_button>
-
-      <p class="leading-tight my-2 lg:my-0">対象スキルの<br class="hidden lg:block"/>切り替え</p>
+      </div>
+      <div class="flex flex-col lg:flex-row">
+      <p class="leading-tight my-2 lg:my-0">対象スキルの<br class="hidden lg:block"/>切替</p>
       <!-- スキルパネル menu -->
       <.mega_menu_button
         :if={is_nil(@display_team)}
@@ -63,7 +65,7 @@
           >
           <div class="text-left flex items-center text-base px-1 py-1 flex-1 m-2">所属しているチームはありません</div>
             <a href="/teams/new" class="text-sm font-bold px-5 py-3 rounded text-white bg-base m-2">
-              チームを作る
+              チームを作る（β）
             </a>
         </div>
       </.mega_menu_button>
@@ -84,6 +86,7 @@
           over_ride_on_card_row_click_target={:true}
         />
       </.mega_menu_button>
+      </div>
     </div>
     <!-- TODO αリリースではスキルセットは対応しない -->
     <!-- スキルセット menu -->
@@ -91,10 +94,10 @@
     <button
       data-modal-target="defaultModal"
       data-modal-toggle="defaultModal"
-      class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-32"
+      class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-44"
       phx-click={show_modal("create-team-modal")}
     >
-      チームを作る
+      チームを作る（β）
     </button>
   </div>
 

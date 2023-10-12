@@ -37,6 +37,7 @@ defmodule BrightWeb.LayoutComponents do
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content={@csrf_token} />
+        <meta name="twitter:card" content="summary_large_image">
         <meta property="og:title" content="Bright｜過去と今、未来のスキルから、あなたの輝きを見える化します">
         <meta property="og:description" content={"ITで世の中に価値をもたらすエンジニアやインフラ、デザイナー、マーケッターから、気になるスキルを選び、あなたがどのような\"輝き\"を放つかを体験してください。"}>
         <meta property="og:image" content="https://bright-fun.org/images/ogp_a.png">
@@ -153,7 +154,7 @@ defmodule BrightWeb.LayoutComponents do
 
   def links() do
     [
-      {"スキルを選ぶ", "/more_skills", nil},
+      {"スキルを選ぶ", "/more_skills?open=want_todo_panel", nil},
       {"成長を見る・比較する", "/graphs", nil},
       {"スキルを入力", "/panels", nil},
       {"チームのスキルを見る", "/teams", ~r/\/teams(?!\/new)/},

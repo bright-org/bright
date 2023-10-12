@@ -86,10 +86,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   defp open(),
     do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 
+  @spec skill_panel_switch(any()) :: Phoenix.LiveView.Rendered.t()
   def skill_panel_switch(assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
-      <p class="text-xs lg:text-sm leading-tight my-2 lg:mt-0 lg:mb-0 lg:m-4">対象スキルの<br class="hidden lg:inline">切り替</p>
+      <p class="text-xs lg:text-sm leading-tight my-2 lg:mt-0 lg:mb-0 lg:m-4">対象スキルの<br class="hidden lg:inline">切替</p>
       <.mega_menu_button
         id="skill_panel_menu"
         label="スキル"
@@ -172,12 +173,12 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def target_switch(assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
-      <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象者の<br class="hidden lg:inline">切り替</p>
+      <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象者の<br class="hidden lg:inline">切替</p>
       <.related_user_menu current_user={@current_user} />
     </div>
     <% # TODO: α版後にifを除去して表示 %>
     <div :if={false}>
-      <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象チームの<br class="hidden lg:inline">切り替</p>
+      <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象チームの<br class="hidden lg:inline">切替</p>
       <.team_menu current_user={@current_user} />
     </div>
     """
