@@ -61,7 +61,7 @@ defmodule BrightWeb.SnsComponents do
           <img class="h-6" src="/images/share_button/share_facebook.png" />
         </a>
         <a
-          href={"https://twitter.com/share?#{URI.encode_query(%{text: @text, url: @url})}"}
+          href={"https://twitter.com/intent/tweet?#{URI.encode_query(%{text: @text, url: @url})}"}
           target="_blank"
           rel="nofollow noopener noreferrer"
         >
