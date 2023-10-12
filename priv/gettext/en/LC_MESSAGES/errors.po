@@ -126,7 +126,7 @@ msgstr ""
 msgid "at least one digit"
 msgstr ""
 
-msgid "should start with https://twitter.com/"
+msgid "should start with https://twitter.com/ or https://x.com/"
 msgstr ""
 
 msgid "should start with https://www.facebook.com/"

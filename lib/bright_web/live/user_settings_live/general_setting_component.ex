@@ -34,7 +34,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
             <label class="flex items-center py-2">
               <span class="w-32">Twitter</span>
               <.inputs_for :let={ff} field={f[:user_profile]}>
-                <BrightCore.input field={ff[:twitter_url]} type="text" size="20" input_class="px-2 py-1 rounded w-60 placeholder-brightGray-100" placeholder="https://twitter.com/" />
+                <BrightCore.input field={ff[:twitter_url]} type="text" size="20" error_class="w-60 break-words" input_class="px-2 py-1 rounded w-60 placeholder-brightGray-100" placeholder="https://twitter.com/" />
               </.inputs_for>
             </label>
 

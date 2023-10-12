@@ -208,7 +208,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       assert lv
              |> has_element?(
                ~s{#general_setting_form div[phx-feedback-for="user[user_profile][twitter_url]"] .text-error},
-               "https://twitter.com/ から始めてください"
+               "https://twitter.com/ または https://x.com/ から始めてください"
              )
 
       assert lv

@@ -1899,7 +1899,7 @@ defmodule Bright.AccountsTest do
                  detail: ["should be at most 255 character(s)"],
                  icon_file_path: ["should be at most 255 character(s)"],
                  twitter_url: [
-                   "should start with https://twitter.com/",
+                   "should start with https://twitter.com/ or https://x.com/",
                    "should be at most 255 character(s)"
                  ],
                  facebook_url: [

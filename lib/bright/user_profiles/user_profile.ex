@@ -55,8 +55,8 @@ defmodule Bright.UserProfiles.UserProfile do
     |> validate_length(:twitter_url, max: 255)
     |> validate_length(:facebook_url, max: 255)
     |> validate_length(:github_url, max: 255)
-    |> validate_format(:twitter_url, ~r{^https://twitter.com/},
-      message: "should start with https://twitter.com/"
+    |> validate_format(:twitter_url, ~r{^(https://twitter.com/|https://x.com/)},
+      message: "should start with https://twitter.com/ or https://x.com/"
     )
     |> validate_format(:facebook_url, ~r{^https://www.facebook.com/},
       message: "should start with https://www.facebook.com/"
