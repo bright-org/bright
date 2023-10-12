@@ -3,6 +3,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
   import BrightWeb.MegaMenuComponents
+  import BrightWeb.GuideMessageComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
 
   # スコア（〇 △ー） 各スタイルと色の定義
@@ -362,7 +363,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def profile_area(assigns) do
     ~H"""
       <div class="flex flex-col lg:justify-between lg:flex-row">
-        <div class="lg:order-last mb-8 lg:mt-2 mr-3 flex flex-col gap-y-4">
+        <div class="lg:order-last mb-8 lg:mt-2 lg:mr-3 flex flex-col gap-y-2 lg:gap-y-4">
           <div
             class="flex justify-between items-center w-full lg:w-48 gap-x-2"
             :if={@display_skill_edit_button}
@@ -374,6 +375,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
               <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
               スキル入力する
             </.link>
+
             <div
               :if={@display_skill_edit_button}
               id="btn-help-enter-skills-button"
@@ -381,6 +383,26 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
               phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
               <img class="w-8 h-8" src="/images/icon_help.svg" />
             </div>
+          </div>
+
+          <div class="lg:absolute lg:right-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col">
+            <% # スキル入力前メッセージ %>
+            <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+            <.live_component
+              :if={Map.get(@flash, "first_skills_edit")}
+              module={BrightWeb.HelpMessageComponent}
+              id="help-enter-skills">
+              <.first_skills_edit_message />
+            </.live_component>
+
+            <% # スキル入力するボタン 手動表示メッセージ %>
+            <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+            <.live_component
+              module={BrightWeb.HelpMessageComponent}
+              id="help-enter-skills-button"
+              open={false}>
+              <.enter_skills_help_message reference_from={"button"} />
+            </.live_component>
           </div>
 
           <% # TODO: α版後にifを除去して表示 %>

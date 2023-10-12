@@ -6,7 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
     only: [profile_skill_class_level: 1, score_mark_class: 2, skill_score_percentages: 2]
 
-  import BrightWeb.SkillPanelLive.SkillsComponents,
+  import BrightWeb.GuideMessageComponents,
     only: [enter_skills_help_message: 1]
 
   import BrightWeb.SkillPanelLive.SkillPanelHelper,
