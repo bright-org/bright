@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   import BrightWeb.SkillPanelLive.SkillsComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
+  import BrightWeb.GuideMessageComponents
 
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
