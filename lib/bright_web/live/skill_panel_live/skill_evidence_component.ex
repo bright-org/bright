@@ -118,7 +118,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 <label for={@uploads.image.ref} class="block cursor-pointer mr-auto">
                   <.live_file_input upload={@uploads.image} class="hidden" />
                   <span class="material-icons-outlined !text-4xl">
-                      add_photo_alternate
+                    add_photo_alternate
                   </span>
                 </label>
 
@@ -321,7 +321,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
     ~H"""
     <div phx-feedback-for={@name}>
-      <% # throttle: validateは不要のため長めに設定 %>
       <textarea
         id={@id}
         name={@name}
