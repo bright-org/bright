@@ -93,7 +93,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
       <ul class="text-xs w-40 text-start">
         <li>
           <p>
-            <span class="inline-block w-28">エビデンスの登録率</span>
+            <span class="inline-block w-28">学習メモの登録率</span>
             <span><%= calc_percentage(@counter.evidence_filled, @num_skills) %>%</span>
           </p>
         </li>

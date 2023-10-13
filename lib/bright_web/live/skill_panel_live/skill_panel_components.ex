@@ -479,7 +479,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         </div>
       </div>
       <div class="text-right text-xs">
-        エビデンスの登録率 <span class="evidence_percentage"><%= calc_percentage(@counter.evidence_filled, @num_skills) %>%</span><br />
+        学習メモの登録率 <span class="evidence_percentage"><%= calc_percentage(@counter.evidence_filled, @num_skills) %>%</span><br />
         教材の学習率 <span class="reference_percentage"><%= calc_percentage(@counter.reference_read, @num_skills) %>%</span><br />
         試験の受験率 <span class="exam_percentage"><%= calc_percentage(@counter.exam_touch, @num_skills) %>%</span>
       </div>
