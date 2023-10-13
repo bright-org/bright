@@ -584,4 +584,16 @@ defmodule Bright.Teams do
       group_by: tmu.user_id
     )
   end
+
+  @doc """
+  チームメンバーを並び替えて返す
+  """
+  def sort_team_member_users(team_member_users) do
+    {stars, not_stars} = Enum.split_with(team_member_users, & &1.is_star)
+
+    [stars, not_stars]
+    |> Enum.flat_map(fn team_member_users ->
+      Enum.sort_by(team_member_users, & &1.invitation_confirmed_at, {:asc, NaiveDateTime})
+    end)
+  end
 end

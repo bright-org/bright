@@ -123,6 +123,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     team = Teams.get_team_with_member_users!(team_id)
 
     team.member_users
+    |> Teams.sort_team_member_users()
     |> Enum.map(&Map.put(&1.user, :anonymous, false))
     |> Enum.reject(&(&1.id == display_user_id || &1.id in existing_user_ids))
     |> case do
