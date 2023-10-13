@@ -11,9 +11,9 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponent do
     <li class="block">
       <div class="flex flex-col mt-8">
         <div
-          id={if provider in linked_providers(@linked_user_social_auths), do: "user_settings_sns_linked_provider", else: "user_settings_sns_unlinked_provider"}
+          id={if provider in linked_providers(@linked_user_social_auths), do: "user_settings_sns_linked_provider", else: "user_settings_sns_unlinked_provider_#{index}"}
           class="flex items-center mb-4 text-left"
-          :for={provider <- UserSocialAuth.providers()}
+          :for={{provider, index} <- Enum.with_index(UserSocialAuth.providers(), 1)}
         >
           <%= if provider in linked_providers(@linked_user_social_auths) do %>
             <div class="w-full">

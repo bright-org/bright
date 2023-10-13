@@ -158,5 +158,6 @@ defmodule Bright.CareerWants do
     )
     |> Repo.all()
     |> Enum.group_by(fn {cf, _sk} -> cf end, fn {_cf, sk} -> sk end)
+    |> Enum.sort_by(fn {cf, _sks} -> cf.position end)
   end
 end
