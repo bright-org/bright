@@ -7,6 +7,7 @@ import Dropdown from './Dropdown.js'
 import ScrollOccupancy from './ScrollOccupancy.js'
 import SkillUnitScrolling from './SkillUnitScrolling.js'
 import { SnsFloatingShareButtons } from './SnsFloatingShareButtons.js'
+import Imagebox from './Imagebox.js'
 
 export const Hooks = {
   SkillGem: SkillGem,
@@ -17,5 +18,6 @@ export const Hooks = {
   Dropdown: Dropdown,
   ScrollOccupancy: ScrollOccupancy,
   SkillUnitScrolling: SkillUnitScrolling,
-  SnsFloatingShareButtons: SnsFloatingShareButtons
+  SnsFloatingShareButtons: SnsFloatingShareButtons,
+  Imagebox: Imagebox
 }

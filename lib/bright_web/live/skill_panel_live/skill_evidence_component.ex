@@ -42,13 +42,13 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   <% [] -> %>
                   <% [image_path] -> %>
                     <div class="evidence-image object-cover relative mt-3">
-                      <img src={image_url(image_path)} />
+                      <img class="imagebox" src={image_url(image_path)} />
                     </div>
                   <% image_paths -> %>
                     <div class="evidence-images gap-2 flex flex-wrap mt-3">
                       <%= for image_path <- image_paths do %>
                         <div class="object-cover relative w-[calc(50%-0.25rem)] box-border">
-                          <img src={image_url(image_path)} />
+                          <img class="imagebox" src={image_url(image_path)} />
                         </div>
                       <% end %>
                     </div>
@@ -142,6 +142,16 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
           </.simple_form>
         </div>
       </div>
+
+      <div
+        id="imageboxContainer"
+        class="hidden fixed top-0 left-0 z-50 w-screen h-screen bg-black/70 flex justify-center items-center"
+        phx-hook="Imagebox"
+        data-imagebox-container={@id}
+        data-imagebox-img-target-class="imagebox">
+        <img class="object-cover" />
+        <a class="btn-close-imagebox absolute z-50 top-6 right-8 text-white text-5xl font-bold">&times;</a>
+      </div>
     </div>
     """
   end
@@ -156,7 +166,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       phx-value-ref={@entry.ref}>
       <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5">close</span>
     </button>
-    <.live_img_preview entry={@entry} />
+    <.live_img_preview entry={@entry} class="imagebox" />
     """
   end
 
