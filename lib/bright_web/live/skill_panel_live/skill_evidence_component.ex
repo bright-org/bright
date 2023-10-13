@@ -271,7 +271,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   end
 
   defp upload_files(socket, storage_paths) do
-    [elem(uploaded_entries(socket, :image), 0), storage_paths]
+    [socket.assigns.uploads.image.entries, storage_paths]
     |> Enum.zip()
     |> Enum.map(fn {%{valid?: true} = entry, storage_path} ->
       consume_uploaded_entry(socket, entry, fn %{path: path} ->
