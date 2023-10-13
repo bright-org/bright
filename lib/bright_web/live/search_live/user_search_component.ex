@@ -200,7 +200,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     assign(socket, :form, to_form(changeset))
   end
 
-  defp assign_result(socket, %{entries: []} = result) do
+  defp assign_result(socket, %{entries: []}) do
     socket
     |> assign(:search_results, [])
     |> assign(:skill_params, [])
