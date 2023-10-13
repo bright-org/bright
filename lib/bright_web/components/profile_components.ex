@@ -125,17 +125,22 @@ defmodule BrightWeb.ProfileComponents do
     ~H"""
     <div class="flex">
       <img class="bg-contain inline-block mr-2 lg:mr-5 h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full" src={@icon_file_path} />
-      <div class="mt-2 lg:mt-4 flex gap-x-2 lg:gap-x-4">
-        <div class="text-md w-[120px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
-        <div class="flex gap-x-3 h-6 lg:h-8">
-          <.excellent_person_button :if={@display_excellent_person}/>
-          <.anxious_person_button :if={@display_anxious_person} />
-          <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>
-          <.profile_button :if={@display_stock_candidates_for_employment}>採用候補者としてストック</.profile_button>
-          <.profile_button :if={@display_adopt}>採用する</.profile_button>
-          <.profile_button :if={@display_recruitment_coordination}>採用の調整</.profile_button>
+      <div class="flex justify-between lg:justify-start mt-2 lg:mt-4 w-full">
+        <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+        <div class="flex flex-col lg:flex-row">
+          <div class="flex gap-x-3 h-6 lg:h-8 ml-7 lg:ml-9">
+            <.excellent_person_button :if={@display_excellent_person}/>
+            <.anxious_person_button :if={@display_anxious_person} />
+            <!---<.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>--->
+            <.profile_button :if={true} phx-click="clear_display_user">自分に戻す</.profile_button>
+            <.profile_button :if={@display_stock_candidates_for_employment}>採用候補者としてストック</.profile_button>
+            <.profile_button :if={@display_adopt}>採用する</.profile_button>
+            <.profile_button :if={@display_recruitment_coordination}>採用の調整</.profile_button>
+          </div>
+          <div class="mt-1 lg:mt-0 lg:ml-4">
+            <.sns :if={@display_sns} twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
+          </div>
         </div>
-        <.sns :if={@display_sns} twitter_url={@twitter_url} github_url={@github_url} facebook_url={@facebook_url} />
       </div>
     </div>
     """

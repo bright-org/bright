@@ -412,7 +412,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           </button>
         </div>
 
-        <div class="pt-2 w-full lg:pt-6 lg:w-[850px]">
+        <div class="pt-2 w-full lg:pt-6 lg:max-w-[650px]">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
           <.profile_inline
             user_name={@display_user.name}
