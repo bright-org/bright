@@ -95,6 +95,8 @@ defmodule BrightWeb.Router do
       live "/job_skill_panels/:id/edit", JobSkillPanelLive.Index, :edit
       live "/job_skill_panels/:id", JobSkillPanelLive.Show, :show
       live "/job_skill_panels/:id/show/edit", JobSkillPanelLive.Show, :edit
+
+      live "/user_tokens", UserTokenLive.Index, :index
     end
   end
 
