@@ -95,6 +95,10 @@ defmodule BrightWeb.Router do
       live "/job_skill_panels/:id/edit", JobSkillPanelLive.Index, :edit
       live "/job_skill_panels/:id", JobSkillPanelLive.Show, :show
       live "/job_skill_panels/:id/show/edit", JobSkillPanelLive.Show, :edit
+
+      if System.get_env("SERVER") == "dev" do
+        live "/user_tokens", UserTokenLive.Index, :index
+      end
     end
   end
 
@@ -123,6 +127,12 @@ defmodule BrightWeb.Router do
 
       live_dashboard "/dashboard", metrics: BrightWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+
+    scope "/dev" do
+      pipe_through [:browser, :admin]
+
+      live "/user_tokens", BrightWeb.Admin.UserTokenLive.Index, :index
     end
   end
 

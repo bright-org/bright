@@ -1,0 +1,20 @@
+<.header>
+  Listing User tokens
+</.header>
+
+<table>
+  <tr>
+    <th>context</th>
+    <th>email</th>
+    <th>name</th>
+    <th>URL</th>
+  </tr>
+  <tr>
+    <%= for {context, email, name, url} <- @user_tokens do %>
+      <td><%= context %></td>
+      <td><%= email %></td>
+      <td><%= name %></td>
+      <td><a class="underline text-blue-700" href={url}><%= url %></a></td>
+    <% end %>
+  </tr>
+</table>

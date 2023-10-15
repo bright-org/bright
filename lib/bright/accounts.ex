@@ -473,6 +473,14 @@ defmodule Bright.Accounts do
     else
       {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
       {:ok, _} = create_confirm_token(user, user_token)
+
+      if System.get_env("SERVER") == "dev" or Application.get_env(:bright, :dev_routes) do
+        :ets.insert(
+          :token,
+          {"confirm", user.email, user.name, confirmation_url_fun.(encoded_token)}
+        )
+      end
+
       UserNotifier.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
     end
   end
