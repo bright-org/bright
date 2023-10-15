@@ -3,6 +3,10 @@ defmodule BrightWeb.Admin.UserTokenLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :user_tokens, :ets.lookup(:token, "confirm"))}
+    socket
+    |> assign(:render_header?, false)
+    |> assign(:current_user, nil)
+    |> assign(:user_tokens, :ets.lookup(:token, "confirm"))
+    |> then(&{:ok, &1})
   end
 end
