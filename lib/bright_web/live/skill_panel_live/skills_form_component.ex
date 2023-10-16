@@ -293,7 +293,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     {:noreply, socket}
   end
 
-  def handle_event("reconnet_and_backup_existing", %{"local_data" => data}, socket) do
+  def handle_event("reconnect_and_backup_existing", %{"local_data" => data}, socket) do
     {:noreply,
      socket
      |> restore_from_local_storage(data)

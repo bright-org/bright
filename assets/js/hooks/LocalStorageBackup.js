@@ -6,9 +6,9 @@ const LocalStorageBackup = {
     const data = sessionStorage.getItem(this.key)
     if(data) {
       if(this.target) {
-        this.pushEventTo(this.target, 'reconnet_and_backup_existing', {local_data:  data})
+        this.pushEventTo(this.target, 'reconnect_and_backup_existing', {local_data:  data})
       } else {
-        this.pushEvent('reconnet_and_backup_existing', {local_data: data})
+        this.pushEvent('reconnect_and_backup_existing', {local_data: data})
       }
     }
   },
