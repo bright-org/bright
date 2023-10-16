@@ -91,7 +91,6 @@ defmodule Bright.HistoricalSkillScores do
       ]
     )
     |> Repo.all()
-    |> Enum.uniq_by(& &1.trace_id)
     |> Enum.map(fn historical_skill_unit ->
       historical_skill_unit_score = List.first(historical_skill_unit.historical_skill_unit_scores)
       historical_skill_class_unit = List.first(historical_skill_unit.historical_skill_class_units)
