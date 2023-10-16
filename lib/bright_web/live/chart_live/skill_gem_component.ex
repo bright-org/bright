@@ -5,7 +5,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   use BrightWeb, :live_component
   import BrightWeb.ChartComponents
   alias Bright.SkillScores
-  alias Bright.HistoricalSkillUnitScore
+  alias Bright.HistoricalSkillScore
   alias BrightWeb.PathHelper
 
   # SkillGemComponentの引数
@@ -80,7 +80,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
 
   def get_skill_gem(user_id, skill_panel_id, class, select_label) do
     skill_gem =
-      HistoricalSkillUnitScore.get_historical_skill_gem(
+      HistoricalSkillScore.get_historical_skill_gem(
         user_id,
         skill_panel_id,
         class,
