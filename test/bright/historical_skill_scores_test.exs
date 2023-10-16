@@ -7,6 +7,9 @@ defmodule Bright.HistoricalSkillScoresTest do
   @current_tl ~D[2023-10-01]
   @back_tl_1 ~D[2023-07-01]
   @back_tl_2 ~D[2023-04-01]
+  @back_tl_3 ~D[2023-01-01]
+  @back_tl_4 ~D[2022-10-01]
+  @back_tl_5 ~D[2022-07-01]
 
   describe "historical_skill_scores" do
     setup do
@@ -144,7 +147,8 @@ defmodule Bright.HistoricalSkillScoresTest do
         {historical_skill_unit_1, 1},
         {historical_skill_unit_2, 2},
         {historical_skill_unit_3, 3}
-      ] |> Enum.each(fn {historical_skill_unit, position} ->
+      ]
+      |> Enum.each(fn {historical_skill_unit, position} ->
         insert(:historical_skill_class_unit,
           historical_skill_class_id: historical_skill_class.id,
           historical_skill_unit_id: historical_skill_unit.id,
@@ -156,7 +160,8 @@ defmodule Bright.HistoricalSkillScoresTest do
         {historical_skill_unit_1, 0.1},
         {historical_skill_unit_2, 0.2},
         {historical_skill_unit_3, 0.3}
-      ] |> Enum.each(fn {historical_skill_unit, percentage} ->
+      ]
+      |> Enum.each(fn {historical_skill_unit, percentage} ->
         insert(:historical_skill_unit_score,
           user: user,
           historical_skill_unit: historical_skill_unit,
@@ -179,7 +184,7 @@ defmodule Bright.HistoricalSkillScoresTest do
       skill_panel: skill_panel,
       gem_data: gem_data
     } do
-      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_1)
+      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_2)
       assert ret == gem_data
     end
 
@@ -189,8 +194,8 @@ defmodule Bright.HistoricalSkillScoresTest do
       gem_data: gem_data
     } do
       user = insert(:user)
-      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_1)
-      assert ret == Enum.map(gem_data, & Map.put(&1, :percentage, 0.0))
+      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_2)
+      assert ret == Enum.map(gem_data, &Map.put(&1, :percentage, 0.0))
     end
 
     test "gets empty, case incorrect skill_panel", %{
@@ -198,7 +203,7 @@ defmodule Bright.HistoricalSkillScoresTest do
       skill_panel: _skill_panel
     } do
       skill_panel = insert(:historical_skill_panel)
-      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_1)
+      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_2)
       assert ret == []
     end
 
@@ -206,7 +211,7 @@ defmodule Bright.HistoricalSkillScoresTest do
       user: user,
       skill_panel: skill_panel
     } do
-      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 2, @back_tl_1)
+      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 2, @back_tl_2)
       assert ret == []
     end
 
@@ -214,7 +219,142 @@ defmodule Bright.HistoricalSkillScoresTest do
       user: user,
       skill_panel: skill_panel
     } do
-      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_2)
+      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_1)
+      assert ret == []
+    end
+  end
+
+  describe "list_historical_skill_class_score_percentages" do
+    setup do
+      user = insert(:user)
+      skill_panel = insert(:historical_skill_panel)
+
+      [
+        {@back_tl_1, 0.5},
+        {@back_tl_2, 0.4},
+        {@back_tl_3, 0.3},
+        {@back_tl_4, 0.2},
+        {@back_tl_5, 0.1}
+      ]
+      |> Enum.each(fn {locked_date, percentage} ->
+        historical_skill_class =
+          insert(:historical_skill_class,
+            skill_panel: skill_panel,
+            class: 1,
+            locked_date: locked_date
+          )
+
+        insert(:historical_skill_class_score,
+          user: user,
+          historical_skill_class: historical_skill_class,
+          locked_date: Timex.shift(locked_date, months: 3),
+          percentage: percentage
+        )
+      end)
+
+      %{user: user, skill_panel: skill_panel}
+    end
+
+    test "returns percentages as given dates", %{
+      user: user,
+      skill_panel: skill_panel
+    } do
+      ret =
+        HistoricalSkillScores.list_historical_skill_class_score_percentages(
+          skill_panel.id,
+          1,
+          user.id,
+          @back_tl_1,
+          @back_tl_1
+        )
+
+      assert ret == [
+               {Timex.shift(@back_tl_1, months: 3), 0.5}
+             ]
+
+      ret =
+        HistoricalSkillScores.list_historical_skill_class_score_percentages(
+          skill_panel.id,
+          1,
+          user.id,
+          @back_tl_5,
+          @back_tl_1
+        )
+
+      assert ret == [
+               {Timex.shift(@back_tl_5, months: 3), 0.1},
+               {Timex.shift(@back_tl_4, months: 3), 0.2},
+               {Timex.shift(@back_tl_3, months: 3), 0.3},
+               {Timex.shift(@back_tl_2, months: 3), 0.4},
+               {Timex.shift(@back_tl_1, months: 3), 0.5}
+             ]
+    end
+
+    test "returns empty, case incorrect user", %{
+      user: _user,
+      skill_panel: skill_panel
+    } do
+      user = insert(:user)
+
+      ret =
+        HistoricalSkillScores.list_historical_skill_class_score_percentages(
+          skill_panel.id,
+          1,
+          user.id,
+          @back_tl_1,
+          @back_tl_1
+        )
+
+      assert ret == []
+    end
+
+    test "returns empty, case incorrect skill_panel", %{
+      user: user,
+      skill_panel: _skill_panel
+    } do
+      skill_panel = insert(:historical_skill_panel)
+
+      ret =
+        HistoricalSkillScores.list_historical_skill_class_score_percentages(
+          skill_panel.id,
+          1,
+          user.id,
+          @back_tl_1,
+          @back_tl_1
+        )
+
+      assert ret == []
+    end
+
+    test "returns empty, case incorrect skill_classes.class", %{
+      user: user,
+      skill_panel: skill_panel
+    } do
+      ret =
+        HistoricalSkillScores.list_historical_skill_class_score_percentages(
+          skill_panel.id,
+          2,
+          user.id,
+          @back_tl_1,
+          @back_tl_1
+        )
+
+      assert ret == []
+    end
+
+    test "returns empty, case incorrect locked_date", %{
+      user: user,
+      skill_panel: skill_panel
+    } do
+      ret =
+        HistoricalSkillScores.list_historical_skill_class_score_percentages(
+          skill_panel.id,
+          1,
+          user.id,
+          @back_tl_1,
+          @back_tl_2
+        )
+
       assert ret == []
     end
   end

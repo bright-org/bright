@@ -798,7 +798,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
   # タイムライン切り替え
   describe "Timeline bar" do
-    alias BrightWeb.SkillPanelLive.TimelineHelper
+    alias BrightWeb.TimelineHelper
     setup [:register_and_log_in_user, :setup_skills]
 
     setup do

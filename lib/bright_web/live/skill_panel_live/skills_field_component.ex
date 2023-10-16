@@ -14,7 +14,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias Bright.HistoricalSkillUnits
   alias Bright.HistoricalSkillPanels
   alias Bright.HistoricalSkillScores
-  alias BrightWeb.SkillPanelLive.TimelineHelper
+  alias BrightWeb.TimelineHelper
   alias BrightWeb.BrightCoreComponents
   alias BrightWeb.DisplayUserHelper
 

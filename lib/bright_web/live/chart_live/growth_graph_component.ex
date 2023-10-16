@@ -7,7 +7,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
   alias Bright.SkillScores
-  alias BrightWeb.SkillPanelLive.TimelineHelper
+  alias Bright.HistoricalSkillScores
+  alias BrightWeb.TimelineHelper
 
   @impl true
   def render(assigns) do
@@ -214,12 +215,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       |> Enum.map(fn x -> {:"#{label_to_key_date(x)}", 0} end)
 
     myself =
-      SkillScores.get_historical_skill_class_scores(
+      HistoricalSkillScores.list_historical_skill_class_score_percentages(
         skill_panel_id,
         class,
         user_id,
-        from_date,
-        to_date
+        TimelineHelper.get_shift_date_from_date(from_date, -1),
+        TimelineHelper.get_shift_date_from_date(to_date, -1)
       )
       |> Enum.reduce(myself_init_data, fn {key, val}, acc ->
         Keyword.put(acc, label_to_key_date(date_to_label(key)) |> String.to_atom(), val)

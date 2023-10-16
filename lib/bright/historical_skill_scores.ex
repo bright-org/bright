@@ -8,6 +8,7 @@ defmodule Bright.HistoricalSkillScores do
 
   alias Bright.HistoricalSkillUnits
   alias Bright.HistoricalSkillUnits.HistoricalSkillUnit
+  alias Bright.HistoricalSkillPanels.HistoricalSkillClass
   alias Bright.HistoricalSkillScores.HistoricalSkillScore
   alias Bright.HistoricalSkillScores.HistoricalSkillUnitScore
 
@@ -53,6 +54,8 @@ defmodule Bright.HistoricalSkillScores do
   @doc """
   Returns the list of historical_skill_unit_score.
 
+  `locked_date` is historical_skill_units.locked_date not historical_skill_unit_scores
+
   ## Examples
 
       iex> get_historical_skill_gem(user_id, skill_panel_id, class, locked_date)
@@ -66,13 +69,6 @@ defmodule Bright.HistoricalSkillScores do
 
   """
   def get_historical_skill_gem(user_id, skill_panel_id, class, locked_date) do
-    # TODO: スキル構造側から取得しているため-3か月している。決まり事とはいえハードコーディングのため解消する。ここかあるいは呼び出しもとでlocked_dateを適切につくる。過去参照の別タスクで対応
-    locked_date =
-      {locked_date.year, locked_date.month, 1}
-      |> Date.from_erl!()
-      |> Timex.shift(months: -3)
-
-    # TODO 現在は重複したデータ（該当月に２回以上実施）に未対応
     from(historical_skill_unit in HistoricalSkillUnit,
       join: historical_skill_classes in assoc(historical_skill_unit, :historical_skill_classes),
       join:
@@ -101,5 +97,46 @@ defmodule Bright.HistoricalSkillScores do
         position: Map.get(historical_skill_class_unit, :position)
       }
     end)
+  end
+
+  @doc """
+  List historical_skill_class_scores.percentage with locked_date
+
+  Given `from_date` and `to_date` is historical_skill_classes.locked_date not historical_skill_class_socres
+
+  ## Examples
+
+      iex> get_historical_skill_class_scores(locked_date, skill_panel_id, class, user_id,from_date, to_date)
+      [
+        %{locked_date: ~D[2022-10-01], percentage: 15.555555555555555}
+      ]
+  """
+  def list_historical_skill_class_score_percentages(
+        skill_panel_id,
+        class,
+        user_id,
+        from_date,
+        to_date
+      ) do
+    from(
+      historical_skill_class in HistoricalSkillClass,
+      join:
+        historical_skill_class_scores in assoc(
+          historical_skill_class,
+          :historical_skill_class_scores
+        ),
+      on: historical_skill_class_scores.user_id == ^user_id,
+      where:
+        historical_skill_class.skill_panel_id == ^skill_panel_id and
+          historical_skill_class.class == ^class and
+          historical_skill_class.locked_date >= ^from_date and
+          historical_skill_class.locked_date <= ^to_date,
+      select: {
+        historical_skill_class_scores.locked_date,
+        historical_skill_class_scores.percentage
+      }
+    )
+    |> Repo.all()
+    |> Enum.sort_by(&elem(&1, 0), {:asc, Date})
   end
 end
