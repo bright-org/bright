@@ -1,3 +1,4 @@
+import LocalStorageBackup from './LocalStorageBackup.js'
 import {SkillGem} from './SkillGem.js'
 import {GrowthGraph} from './GrowthGraph.js'
 import {DoughnutGraph} from './DoughnutGraph.js'
@@ -9,6 +10,7 @@ import SkillUnitScrolling from './SkillUnitScrolling.js'
 import { SnsFloatingShareButtons } from './SnsFloatingShareButtons.js'
 
 export const Hooks = {
+  LocalStorageBackup: LocalStorageBackup,
   SkillGem: SkillGem,
   GrowthGraph: GrowthGraph,
   DoughnutGraph: DoughnutGraph,
