@@ -5,7 +5,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   use BrightWeb, :live_component
   import BrightWeb.ChartComponents
   alias Bright.SkillScores
-  alias Bright.HistoricalSkillScore
+  alias Bright.HistoricalSkillScores
   alias BrightWeb.PathHelper
   alias BrightWeb.TimelineHelper
 
@@ -83,7 +83,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     locked_date = label_to_date(select_label)
 
     skill_gem =
-      HistoricalSkillScore.get_historical_skill_gem(
+      HistoricalSkillScores.get_historical_skill_gem(
         user_id,
         skill_panel_id,
         class,
