@@ -119,6 +119,7 @@ defmodule BrightWeb.Router do
       if System.get_env("SERVER") == "dev" do
         live "/user_tokens", UserTokenLive.Index, :index
       end
+
       live "/user_tokens", UserTokenLive.Index, :index
     end
   end
