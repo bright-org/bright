@@ -477,9 +477,9 @@ defmodule Bright.Subscriptions do
   過去に一度でも該当のプランでフリートライアルを開始した履歴がある場合、利用不可
 
   ## Examples
-      iex> enable_free_trial?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
+      iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
       true
-      iex> service_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC", "personal_skill_up_plan")
+      iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "personal_skill_up_plan")
       false
   """
   def free_trial_available?(user_id, plan_code) do

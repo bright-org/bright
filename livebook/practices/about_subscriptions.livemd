@@ -108,7 +108,7 @@ Subscriptions.get_most_priority_free_trial_subscription_plan(service_code)
 
 ```elixir
 # プランコードをキーに該当プランのフリートライアル利用可否を返す
-#  過去に一度でも該当のプランでフリートライアルを開始した履歴がある場合、利用不可
+#  ある場合、利用不可
 Subscriptions.free_trial_available?(user_id, plan_code)
 ```
 
