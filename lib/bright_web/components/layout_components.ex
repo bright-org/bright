@@ -129,7 +129,7 @@ defmodule BrightWeb.LayoutComponents do
         <span class="absolute bg-brightGray-300 block cursor-pointer h-[3px] left-1 top-1.5 w-8 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8"></span>
       </label>
       <label id="sp_navi_close" for="sp_navi_input" class="cursor-pointer hidden h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
-      <div class="fixed bg-brightGray-900 pt-3 h-full hidden flex-col w-full z-40 lg:flex lg:static lg:w-[200px] peer-checked:flex overflow-y-scroll">
+      <div class="fixed bg-brightGray-900 pt-3 h-full hidden flex-col w-full z-40 lg:flex lg:static lg:w-[200px] peer-checked:flex overflow-y-scroll lg:overflow-y-hidden">
         <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-2 lg:ml-4 mt-12 lg:mt-0" /></.link>
         <ul class="grid lg:pt-2">
           <%= for {title, path, regex} <- links() do %>

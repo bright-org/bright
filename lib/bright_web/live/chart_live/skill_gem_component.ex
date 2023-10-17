@@ -5,8 +5,9 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   use BrightWeb, :live_component
   import BrightWeb.ChartComponents
   alias Bright.SkillScores
-  alias Bright.HistoricalSkillUnitScore
+  alias Bright.HistoricalSkillScores
   alias BrightWeb.PathHelper
+  alias BrightWeb.TimelineHelper
 
   # SkillGemComponentの引数
   # id: 一意になるid
@@ -79,12 +80,14 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     do: SkillScores.get_skill_gem(user_id, skill_panel_id, class)
 
   def get_skill_gem(user_id, skill_panel_id, class, select_label) do
+    locked_date = label_to_date(select_label)
+
     skill_gem =
-      HistoricalSkillUnitScore.get_historical_skill_gem(
+      HistoricalSkillScores.get_historical_skill_gem(
         user_id,
         skill_panel_id,
         class,
-        label_to_date(select_label)
+        TimelineHelper.get_shift_date_from_date(locked_date, -1)
       )
 
     if skill_gem == [] do

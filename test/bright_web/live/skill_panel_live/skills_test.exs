@@ -595,86 +595,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   end
 
   # エビデンス登録
-  describe "Skill evidence area" do
-    setup [:register_and_log_in_user, :setup_skills]
-
-    @tag score: nil
-    test "shows modal case: skill_score NOT existing", %{
-      conn: conn,
-      skill_panel: skill_panel,
-      skill_1: skill_1
-    } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#skill-1 .link-evidence")
-      |> render_click()
-
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences?class=1")
-      assert render(show_live) =~ skill_1.name
-    end
-
-    @tag score: :low
-    test "shows modal case: skill_score existing", %{
-      conn: conn,
-      skill_panel: skill_panel,
-      skill_1: skill_1
-    } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#skill-1 .link-evidence")
-      |> render_click()
-
-      assert_patch(show_live, ~p"/panels/#{skill_panel}/skills/#{skill_1}/evidences?class=1")
-      assert render(show_live) =~ skill_1.name
-    end
-
-    @tag score: nil
-    test "creates and deletes post", %{
-      conn: conn,
-      skill_panel: skill_panel,
-      skill_1: skill,
-      user: user
-    } do
-      # ここからのエビデンス登録系テストは別ファイルにする検討
-      # 別LiveViewからコンポーネントを使う可能性もある
-
-      skill_evidence = insert(:skill_evidence, user: user, skill: skill, progress: :wip)
-
-      skill_evidence_post =
-        insert(:skill_evidence_post,
-          user: user,
-          skill_evidence: skill_evidence,
-          content: "some content"
-        )
-
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#skill-1 .link-evidence")
-      |> render_click()
-
-      assert render(show_live) =~ skill_evidence_post.content
-
-      assert show_live
-             |> form("#skill_evidence_post-form", skill_evidence_post: %{content: ""})
-             |> render_submit() =~ "入力してください"
-
-      show_live
-      |> form("#skill_evidence_post-form", skill_evidence_post: %{content: "input 1"})
-      |> render_submit()
-
-      assert has_element?(show_live, "#skill_evidence_posts", "input 1")
-      refute has_element?(show_live, "#skill_evidence_post-form", "input 1")
-
-      show_live
-      |> element(~s([phx-click="delete"][phx-value-id="#{skill_evidence_post.id}"]))
-      |> render_click()
-
-      refute has_element?(show_live, "#skill_evidence_posts", "some content")
-    end
-  end
+  # see: ./skill_evident_component_test.ex
 
   # 教材
   describe "Skill reference area" do
@@ -798,7 +719,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
   # タイムライン切り替え
   describe "Timeline bar" do
-    alias BrightWeb.SkillPanelLive.TimelineHelper
+    alias BrightWeb.TimelineHelper
     setup [:register_and_log_in_user, :setup_skills]
 
     setup do
@@ -987,6 +908,68 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, "#skills-table-field", user_2.name)
       assert has_element?(show_live, "#user-1-percentages .score-middle-percentage", "0％")
       assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
+    end
+  end
+
+  # チーム全員との比較
+  describe "Compared team" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    # 他者用意
+    setup %{
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_1: skill_1
+    } do
+      [user_2, user_3] =
+        1..2
+        |> Enum.map(fn _ ->
+          user = insert(:user) |> with_user_profile()
+          insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+          insert(:skill_score, user: user, skill: skill_1, score: :high)
+          insert(:init_skill_class_score, user: user, skill_class: skill_class)
+          user
+        end)
+
+      %{user_2: user_2, user_3: user_3}
+    end
+
+    # 他者とのチーム関連付け
+    setup %{user: user, user_2: user_2, user_3: user_3} do
+      team = insert(:team)
+      insert(:team_member_users, user: user, team: team)
+      insert(:team_member_users, user: user_2, team: team)
+      insert(:team_member_users, user: user_3, team: team)
+
+      %{team: team}
+    end
+
+    @tag score: :low
+    test "shows compared team member skills percentage", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      team: team,
+      user_2: user_2,
+      user_3: user_3
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      # 「チーム全員と比較」 チームタブ選択
+      show_live
+      |> element(
+        ~s{#related-team-card-tabrelated-team_card-compare a[phx-value-tab_name="joined_teams"]}
+      )
+      |> render_click()
+
+      # 対象チーム選択
+      show_live
+      |> element(~s{li[phx-click="on_card_row_click"]}, team.name)
+      |> render_click()
+
+      assert has_element?(show_live, "#skills-table-field", user_2.name)
+      assert has_element?(show_live, "#skills-table-field", user_3.name)
+      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
+      assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "33％")
     end
   end
 
