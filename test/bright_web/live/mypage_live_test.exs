@@ -12,8 +12,8 @@ defmodule BrightWeb.MypageLiveTest do
       assert html =~ "マイページ"
 
       # プロフィールの検証
-      assert index_live |> has_element?("div .text-xl.font-bold", user.name)
-      assert index_live |> has_element?("div .text-base", user.user_profile.title)
+      assert index_live |> has_element?("div .font-bold", user.name)
+      assert index_live |> has_element?("div .break-all", user.user_profile.title)
       assert index_live |> has_element?("div .pt-5", user.user_profile.detail)
       # SNSアイコン表示
       assert index_live

@@ -462,4 +462,35 @@ defmodule Bright.TeamsTest do
       assert enable_functions.enable_hr_functions == false
     end
   end
+
+  describe "sort_team_member_users/1" do
+    test "sorts list" do
+      admin = insert(:user)
+      member1 = insert(:user)
+      member2 = insert(:user)
+      member_users = [member1, member2]
+      {:ok, team, _} = Teams.create_team_multi("test", admin, member_users)
+
+      [admin_member_user, team_member_user_1, team_member_user_2] = team.member_users
+      {:ok, admin_member_user} = Teams.toggle_is_star(admin_member_user)
+
+      {:ok, team_member_user_2} =
+        Teams.update_team_member_users_invitation_confirmed_at(team_member_user_2, %{
+          invitation_confirmed_at: NaiveDateTime.utc_now()
+        })
+
+      {:ok, team_member_user_1} =
+        Teams.update_team_member_users_invitation_confirmed_at(team_member_user_1, %{
+          invitation_confirmed_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(1)
+        })
+
+      args = [team_member_user_1, team_member_user_2, admin_member_user]
+      actual_ids = Enum.map(Teams.sort_team_member_users(args), & &1.id)
+
+      expected_ids =
+        Enum.map([admin_member_user, team_member_user_2, team_member_user_1], & &1.id)
+
+      assert expected_ids == actual_ids
+    end
+  end
 end

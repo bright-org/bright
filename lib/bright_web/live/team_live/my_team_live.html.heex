@@ -35,7 +35,7 @@
     </section>
     <div id="switch" class="flex gap-x-2 lg:gap-x-4 ">
       <div class="flex flex-col lg:flex-row">
-      <p class="leading-tight my-2 lg:mb-0 lg:ml-4">対象者の<br class="hidden lg:block" />切替</p>
+      <p class="leading-tight my-2 lg:my-0 lg:m-4">対象者の<br class="hidden lg:block" />切替</p>
       <!-- チーム menu -->
       <.mega_menu_button
         id="mega_menu_team"
@@ -51,7 +51,7 @@
       </.mega_menu_button>
       </div>
       <div class="flex flex-col lg:flex-row">
-      <p class="leading-tight my-2 lg:my-0">対象スキルの<br class="hidden lg:block"/>切替</p>
+      <p class="leading-tight my-2 lg:my-0 lg:m-4">対象スキルの<br class="hidden lg:block"/>切替</p>
       <!-- スキルパネル menu -->
       <.mega_menu_button
         :if={is_nil(@display_team)}
@@ -104,7 +104,7 @@
   <!-- プロフィール -->
   <div class="flex justify-between py-6 px-2 lg:px-10 bg-white">
     <div class="w-full lg:w-[850px] pt-4">
-      <.profile
+      <.profile_inline
         user_name={@current_user.name}
         title={@current_user.user_profile.title}
         detail={@current_user.user_profile.detail}
