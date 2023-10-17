@@ -151,7 +151,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
                :github_url
              ]) == user_profile_attrs
 
-      assert {:ok, _} = Bright.TestStorage.get(user_profile.icon_file_path)
+      assert {:ok, _} = Bright.Utils.GoogleCloud.Storage.get(user_profile.icon_file_path)
     end
 
     test "validates general setting form without icon", %{conn: conn} do

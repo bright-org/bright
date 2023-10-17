@@ -4,6 +4,17 @@ defmodule Bright.Utils.GoogleCloud.Storage do
   """
 
   @doc """
+  Gets a object.
+  """
+  def get(storage_path) do
+    GoogleApi.Storage.V1.Api.Objects.storage_objects_get(
+      get_connection!(),
+      get_bucket_name!(),
+      storage_path
+    )
+  end
+
+  @doc """
   Upload a local object to specified path.
 
   ## Examples
