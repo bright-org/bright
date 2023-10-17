@@ -990,6 +990,68 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
+  # チーム全員との比較
+  describe "Compared team" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    # 他者用意
+    setup %{
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_1: skill_1
+    } do
+      [user_2, user_3] =
+        1..2
+        |> Enum.map(fn _ ->
+          user = insert(:user) |> with_user_profile()
+          insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+          insert(:skill_score, user: user, skill: skill_1, score: :high)
+          insert(:init_skill_class_score, user: user, skill_class: skill_class)
+          user
+        end)
+
+      %{user_2: user_2, user_3: user_3}
+    end
+
+    # 他者とのチーム関連付け
+    setup %{user: user, user_2: user_2, user_3: user_3} do
+      team = insert(:team)
+      insert(:team_member_users, user: user, team: team)
+      insert(:team_member_users, user: user_2, team: team)
+      insert(:team_member_users, user: user_3, team: team)
+
+      %{team: team}
+    end
+
+    @tag score: :low
+    test "shows compared team member skills percentage", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      team: team,
+      user_2: user_2,
+      user_3: user_3
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      # 「チーム全員と比較」 チームタブ選択
+      show_live
+      |> element(
+        ~s{#related-team-card-tabrelated-team_card-compare a[phx-value-tab_name="joined_teams"]}
+      )
+      |> render_click()
+
+      # 対象チーム選択
+      show_live
+      |> element(~s{li[phx-click="on_card_row_click"]}, team.name)
+      |> render_click()
+
+      assert has_element?(show_live, "#skills-table-field", user_2.name)
+      assert has_element?(show_live, "#skills-table-field", user_3.name)
+      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
+      assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "33％")
+    end
+  end
+
   # 案内メッセージ
   describe "Messages" do
     setup [:register_and_log_in_user, :setup_skills]
