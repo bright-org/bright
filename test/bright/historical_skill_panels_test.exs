@@ -38,7 +38,7 @@ defmodule Bright.HistoricalSkillPanelsTest do
         HistoricalSkillPanels.get_historical_skill_class_on_date(
           skill_panel_id: skill_panel.id,
           class: 1,
-          date: ~D[2023-10-01]
+          locked_date: ~D[2023-07-01]
         )
 
       assert historical_skill_class.id == historical_skill_class_month_7.id
@@ -47,7 +47,7 @@ defmodule Bright.HistoricalSkillPanelsTest do
         HistoricalSkillPanels.get_historical_skill_class_on_date(
           skill_panel_id: skill_panel.id,
           class: 1,
-          date: ~D[2023-07-01]
+          locked_date: ~D[2023-04-01]
         )
 
       assert ret.id == historical_skill_class_month_4.id
@@ -75,7 +75,7 @@ defmodule Bright.HistoricalSkillPanelsTest do
         HistoricalSkillPanels.get_historical_skill_class_on_date(
           skill_panel_id: skill_panel_2.id,
           class: 1,
-          date: ~D[2023-10-01]
+          locked_date: ~D[2023-07-01]
         )
 
       assert ret.id == historical_skill_class_2.id
@@ -102,7 +102,7 @@ defmodule Bright.HistoricalSkillPanelsTest do
         HistoricalSkillPanels.get_historical_skill_class_on_date(
           skill_panel_id: skill_panel.id,
           class: 2,
-          date: ~D[2023-10-01]
+          locked_date: ~D[2023-07-01]
         )
 
       assert ret.id == historical_skill_class_2.id
