@@ -23,3 +23,10 @@
   current_user={@current_user}
   :if={@current_user}
 />
+
+<.live_component
+  id="adoption_modal"
+  module={BrightWeb.AdoptionLive.AdoptionComponent}
+  current_user={@current_user}
+  :if={@current_user}
+/>
