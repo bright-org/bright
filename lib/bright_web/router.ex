@@ -2,6 +2,7 @@ defmodule BrightWeb.Router do
   use BrightWeb, :router
 
   import BrightWeb.UserAuth
+  import BrightWeb.InitAssigns, only: [fetch_current_request_path: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -11,6 +12,7 @@ defmodule BrightWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug :fetch_current_request_path
   end
 
   pipeline :admin do
