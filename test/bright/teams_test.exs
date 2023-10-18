@@ -956,7 +956,7 @@ defmodule Bright.TeamsTest do
           supporter_team_admin_user.id
         )
 
-        # 支援依頼を承諾する
+      # 支援依頼を承諾する
       {:ok, %TeamSupporterTeam{} = _accept_team_supporter_team} =
         Teams.accept_support_by_supporter_team(request_team_supporter_team, supporter_team.id)
 
