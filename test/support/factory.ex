@@ -99,4 +99,8 @@ defmodule Bright.Factory do
 
   # Bright.RecruitmentStockUserFactory
   use Bright.RecruitmentStockUserFactory
+
+  # CustomGroups context
+  use Bright.CustomGroupFactory
+  use Bright.CustomGroupMemberUserFactory
 end
