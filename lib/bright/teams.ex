@@ -236,6 +236,190 @@ defmodule Bright.Teams do
     TeamMemberUsers.changeset(team_member_users, attrs)
   end
 
+  alias Bright.Teams.TeamSupporterTeam
+
+  @doc """
+  Creates a team_supporter_team.
+
+  ## Examples
+
+      iex> create_team_supporter_team(%{field: value})
+      {:ok, %TeamSupporterTeam{}}
+
+      iex> create_team_supporter_team(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_team_supporter_team(attrs \\ %{}) do
+    %TeamSupporterTeam{}
+    |> TeamSupporterTeam.create_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a team_supporter_team.
+
+  ## Examples
+
+      iex> update_team_supporter_team(team_supporter_team, %{field: new_value})
+      {:ok, %TeamMemberUsers{}}
+
+      iex> update_team_supporter_team(team_supporter_team, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_team_supporter_team(%TeamSupporterTeam{} = team_supporter_team, attrs) do
+    team_supporter_team
+    |> TeamSupporterTeam.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  支援するチームの担当ユーザーIDをキーに自身に対する支援依頼の一覧を取得する
+  支援依頼日時降順
+  Scrivenerのページングに対応
+  リクエスト時点ではsupporter_teamは未決定の為preloadしていない
+
+  ## Examples
+
+      iex> list_support_request_by_supporter_user_id(supporter_user_id, %{page: 1, page_size: 1})
+      %Scrivener.Page{ page_number: 1, page_size: 1, total_entries: 2, total_pages: 2,
+        entries: [
+          %Bright.Teams.TeamSupporterTeam{
+            supportee_team: %Bright.Teams.Team{},
+            request_from_user: #Bright.Accounts.User{},
+            request_to_user: #Bright.Accounts.User{},
+          },
+          ...
+        ]
+      }
+  """
+  def list_support_request_by_supporter_user_id(
+        supporter_user_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(tst in TeamSupporterTeam,
+      where:
+        tst.request_to_user_id == ^supporter_user_id and
+          tst.status == :requesting,
+      order_by: [
+        desc: tst.request_datetime
+      ]
+    )
+    |> preload(:request_from_user)
+    |> preload(:request_to_user)
+    |> preload(:supportee_team)
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  支援するチームの担当ユーザーIDをキーに自身が参加するチームの支援先チームの一覧を取得する
+  支援開始日降順
+  Scrivenerのページングに対応
+
+  ## Examples
+
+      iex> list_supportee_teams_by_supporter_user_id(supporter_user_id, %{page: 1, page_size: 1})
+      %Scrivener.Page{page_number: 1, page_size: 1, total_entries: 0, total_pages: 1, entries: [%Bright.Teams.Team{}, ...]}
+
+  """
+  def list_supportee_teams_by_supporter_user_id(
+        supporter_user_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(tmu in TeamMemberUsers,
+      left_join: tst in TeamSupporterTeam,
+      on: tmu.team_id == tst.supporter_team_id,
+      left_join: supporter_team in Team,
+      on: tst.supporter_team_id == supporter_team.id,
+      left_join: supportee_team in Team,
+      on: tst.supportee_team_id == supportee_team.id,
+      where:
+        tmu.user_id == ^supporter_user_id and not is_nil(tmu.invitation_confirmed_at) and
+          tst.status == :supporting,
+      select: supportee_team,
+      order_by: [
+        desc: tst.start_datetime
+      ]
+    )
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  支援されるチームから支援するチームへの支援依頼データを作成する
+
+  ## Examples
+
+      iex> request_support_from_suportee_team(supportee_team_id, supportee_user_id, supporter_user_id)
+      {:ok, %Bright.Teams.TeamSupporterTeam{}}
+      iex> request_support_from_suportee_team(invalid_supportee_team_id, invalid_supportee_user_id, invalid_supporter_user_id)
+      {:error, %Ecto.Changeset{}}
+  """
+  def request_support_from_suportee_team(
+        supportee_team_id,
+        request_from_user_id,
+        request_to_user_id
+      ) do
+    %{
+      supportee_team_id: supportee_team_id,
+      request_from_user_id: request_from_user_id,
+      request_to_user_id: request_to_user_id,
+      status: :requesting,
+      request_datetime: NaiveDateTime.utc_now()
+    }
+    |> create_team_supporter_team()
+  end
+
+  @doc """
+  支援するチームが支援依頼を承諾ステータスに更新する
+
+  ## Examples
+
+      iex> accept_support_by_supporter_team(teamSupporterTeam, supporter_team_id)
+      {:ok, %Bright.Teams.TeamSupporterTeam{}}
+      iex> accept_support_by_supporter_team(teamSupporterTeam, supporter_team_id)
+      {:error, %Ecto.Changeset{}}
+  """
+  def accept_support_by_supporter_team(
+        %Bright.Teams.TeamSupporterTeam{} = team_support_team,
+        supporter_team_id
+      ) do
+    attrs = %{
+      supporter_team_id: supporter_team_id,
+      status: :supporting,
+      start_datetime: NaiveDateTime.utc_now(),
+      end_datetime: nil
+    }
+
+    team_support_team
+    |> update_team_supporter_team(attrs)
+  end
+
+  @doc """
+  支援するチームが支援依頼を拒否ステータスに更新する
+  """
+  def reject_support_by_supporter_team(%Bright.Teams.TeamSupporterTeam{} = team_support_team) do
+    attrs = %{
+      status: :reject
+    }
+
+    team_support_team
+    |> update_team_supporter_team(attrs)
+  end
+
+  @doc """
+  支援するチームが支援依頼を終了ステータスに更新する
+  """
+  def end_support_by_supporter_team(%Bright.Teams.TeamSupporterTeam{} = team_support_team) do
+    attrs = %{
+      status: :support_ended,
+      end_datetime: NaiveDateTime.utc_now()
+    }
+
+    team_support_team
+    |> update_team_supporter_team(attrs)
+  end
+
   @doc """
   ユーザーが所属するチームの一覧取得
   招待へ承認済のチームのみ対象
