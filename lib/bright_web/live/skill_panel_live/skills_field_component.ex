@@ -15,6 +15,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias Bright.HistoricalSkillPanels
   alias Bright.HistoricalSkillScores
   alias Bright.Teams
+  alias Bright.CustomGroups
   alias BrightWeb.TimelineHelper
   alias BrightWeb.BrightCoreComponents
   alias BrightWeb.DisplayUserHelper
@@ -24,7 +25,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     <div id={@id}>
       <BrightCoreComponents.flash_group flash={@inner_flash} />
       <div class="hidden lg:block px-6">
-        <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
+        <.compares
+          current_user={@current_user}
+          myself={@myself}
+          timeline={@timeline}
+          custom_group={@custom_group}
+          custom_group_form={@custom_group_form}
+        />
       </div>
       <div class="px-6 hidden lg:block">
         <.skills_table
@@ -69,6 +76,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> assign(skill_class: nil)
      |> assign(compared_users: [], compared_user_dict: %{})
      |> assign(timeline: TimelineHelper.get_current())
+     |> assign(custom_group: nil)
+     |> assign_custom_group_form(CustomGroups.change_custom_group(%CustomGroups.CustomGroup{}))
      |> assign(inner_flash: %{})}
   end
 
@@ -165,6 +174,30 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       |> TimelineHelper.shift_for_future()
 
     {:noreply, socket |> assign(timeline: timeline)}
+  end
+
+  # カスタムグループ 追加
+  def handle_event("add_custom_group", %{"custom_group" => params}, socket) do
+    %{current_user: current_user, compared_users: compared_users} = socket.assigns
+    member_users_params = build_custom_group_member_users_params(compared_users)
+
+    params = Map.merge(params, %{
+      "user_id" => current_user.id,
+      "member_users" => member_users_params
+    })
+
+    CustomGroups.create_custom_group(params)
+    |> case do
+      {:ok, custom_group} ->
+        {:noreply, assign(socket, :custom_group, custom_group)}
+      {:error, changeset} ->
+        # dropdown内のためflashでメッセージを表示
+        message =
+          BrightCoreComponents.list_errors(changeset, [:name])
+          |> Enum.join("\n")
+
+        {:noreply, assign(socket, :inner_flash, %{error: message})}
+    end
   end
 
   defp assign_assigns_with_current_if_updated(socket, assigns) do
@@ -395,6 +428,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign(compared_users_stats: compared_users_stats)
   end
 
+  defp assign_custom_group_form(socket, changeset) do
+    assign(socket, :custom_group_form, to_form(changeset))
+  end
+
   defp assign_table_structure(socket) do
     table_structure = build_table_structure(socket.assigns.skill_units)
     max_row = Enum.count(table_structure)
@@ -498,5 +535,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          %HistoricalSkillScores.HistoricalSkillScore{} = historical_skill_score
        ) do
     historical_skill_score.historical_skill_id
+  end
+
+  defp build_custom_group_member_users_params(compared_users) do
+    compared_users
+    |> Enum.reject(& &1.anonymous)
+    |> Enum.with_index(1)
+    |> Enum.map(fn {user, position} ->
+      %{user_id: user.id, position: position}
+    end)
   end
 end

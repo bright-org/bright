@@ -5,6 +5,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
   import BrightWeb.GuideMessageComponents
 
+  alias BrightWeb.BrightCoreComponents
+
   def compares(assigns) do
     ~H"""
     <div class="flex flex-wrap mt-4 items-center lg:flex-nowrap">
@@ -12,8 +14,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <div class="flex gap-x-4">
         <.compare_individual current_user={@current_user} myself={@myself} />
         <.compare_team current_user={@current_user} myself={@myself} />
-        <% # TODO: α版後にifを除去して表示 %>
-        <.compare_custom_group :if={false} />
+        <.compare_custom_group custom_group={@custom_group} form={@custom_group_form} myself={@myself} />
       </div>
     </div>
     """
@@ -113,7 +114,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       id="compare-team-dropdown"
       class="mt-4 lg:mt-0 hidden lg:block"
       phx-hook="Dropdown"
-      data-dropdown-offset-skidding="307"
+      data-dropdown-offset-skidding="290"
       data-dropdown-placement="bottom"
     >
       <button
@@ -141,51 +142,90 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   end
 
   def compare_custom_group(assigns) do
-    # TODO: 実装時、dropdownにHookを使うこと
     ~H"""
-    <button
-      id="addCustomGroupDropwonButton"
-      data-dropdown-toggle="addCustomGroupDropwon"
-      data-dropdown-offset-skidding="230"
-      data-dropdown-placement="bottom"
-      type="button"
-      class="text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-    >
-      カスタムグループ
-    </button>
-    <!-- カスタムグループDropdown -->
     <div
-      id="addCustomGroupDropwon"
-      class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
+      id="custom-group-dropdown"
+      class="mt-4 lg:mt-0 hidden lg:block"
+      phx-hook="Dropdown"
+      data-dropdown-offset-skidding="110"
+      data-dropdown-placement="bottom"
     >
-      <ul
-        class="p-2 text-left text-base"
-        aria-labelledby="dropmenu04"
+      <button
+        class="dropdownTrigger text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+        type="button"
       >
-        <li>
-          <a
-            data-modal-target="defaultModal"
-            data-modal-toggle="defaultModal"
-            class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
-          >
-            下記をカスタムグループとして追加する
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
-            >下記で現在のカスタムグループを更新する</a>
-        </li>
-      </ul>
+        <span>カスタムグループ</span>
+      </button>
+      <div
+        class="dropdownTarget z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
+      >
+        <ul class="p-2 text-left text-base">
+          <li>
+            <a class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer">
+              下記の人たちでカスタムグループを更新する
+            </a>
+          </li>
+          <li>
+            <.compare_custom_groups_list />
+          </li>
+          <li>
+            <.form
+              for={@form}
+              class="flex items-center space-x-2 py-2"
+              phx-submit="add_custom_group"
+              phx-target={@myself}
+            >
+              <div class="grow">
+                <BrightCoreComponents.input type="text" input_class="w-full" field={@form[:name]} placeholder="下記の人たちでカスタムグループを追加する" />
+              </div>
+              <button class="grow-0 text-sm font-bold px-3 py-2 rounded border bg-base text-white">追加</button>
+            </.form>
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <!-- カスタムグループ福岡Elixir -->
     <div class="text-left flex items-center text-base">
       <span
         class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-1 !items-center !justify-center"
         >group</span>
       カスタムグループ福岡Elixir
+    </div>
+    """
+  end
+
+  defp compare_custom_groups_list(assigns) do
+    ~H"""
+    <div
+      id="custom-groups-list-dropdown"
+      class="mt-4 lg:mt-0 hidden lg:block"
+      phx-hook="Dropdown"
+      data-dropdown-placement="right-start"
+    >
+      <button
+        class="dropdownTrigger w-full flex items-center justify-between block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
+        type="button"
+      >
+        別のカスタムグループに切り替える
+        <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
+      </button>
+      <div
+        class="dropdownTarget bg-white rounded-md mt-1 border border-brightGray-100 shadow-md hidden z-10"
+      >
+        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="doubleDropdownButton">
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Overview</a>
+          </li>
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My downloads</a>
+          </li>
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Billing</a>
+          </li>
+        </ul>
+      </div>
     </div>
     """
   end
