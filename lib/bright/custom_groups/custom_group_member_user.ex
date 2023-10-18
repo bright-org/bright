@@ -9,6 +9,8 @@ defmodule Bright.CustomGroups.CustomGroupMemberUser do
   @foreign_key_type Ecto.ULID
 
   schema "custom_group_member_users" do
+    field :position, :integer
+
     belongs_to :custom_group, Bright.CustomGroups.CustomGroup
     belongs_to :user, Bright.Accounts.User, references: :id
 
