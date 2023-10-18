@@ -11,7 +11,9 @@ defmodule BrightWeb.AdoptionLive.AdoptionComponent do
         <main class="flex h-screen items-center justify-center w-screen" role="main">
           <section class="absolute bg-white px-10 py-8 shadow text-sm top-0 w-[1500px]">
             <h2 class="font-bold text-3xl">
-              <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">採用依頼</span>
+              <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
+                面談調整
+              </span>
             </h2>
 
             <div class="flex mt-8">
@@ -197,62 +199,145 @@ defmodule BrightWeb.AdoptionLive.AdoptionComponent do
                 </div>
               </div><!-- End 採用候補者と依頼先 -->
 
-            <!-- Start 採用調整内容 -->
-              <div class="w-[493px]">
-                <h3 class="font-bold text-xl">採用調整内容</h3>
+    <!-- Start 面談調整内容 -->
+      <div class="w-[493px]">
+        <h3 class="font-bold text-xl">採用調整内容</h3>
 
-                    <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
-                      <dl class="flex flex-wrap w-full">
-                        <dt
-                          class="font-bold w-[98px] flex items-center mb-10"
-                        >
-                          採用担当者
-                        </dt>
-                        <dd class="w-[280px] mb-10">
-                          <div class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full">
-                            <a
-                              class="inline-flex items-center gap-x-6 w-full"
-                            >
-                              <img
-                                class="inline-block h-10 w-10 rounded-full"
-                                src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                              />
-                              <div class="flex-auto">
-                                <p>nokichi</p>
-                                <p class="text-brightGray-300">
-                                  アプリエンジニア
-                                </p>
-                              </div>
-                              <button class="mx-4">
-                                <span
-                                  class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                >
-                                  close
-                                </span>
-                              </button>
-                            </a>
-                          </div>
-                        </dd>
-
-                        <dt
-                          class="font-bold w-[98px] flex mt-16"
-                        >
-                          <label for="point" class="block pr-1">採用候補者の推しポイント・注意点</label>
-                        </dt>
-                        <dd class="w-[280px] mt-16">
-                          <p>エンジニア領域だけでなく、インフラやデザイン、マーケティングなど幅広い領域の知識を持っていて劇ヤバイです。</p>
-                        </dd>
-                      </dl>
-                    </div>
-
-                  <div class="flex justify-end gap-x-4 mt-16">
-                    <button
-                      class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+            <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
+              <dl class="flex flex-wrap w-full">
+                <dt
+                  class="font-bold w-[98px] flex items-center mb-10"
+                >
+                  依頼者
+                </dt>
+                <dd class="w-[280px] mb-10">
+                  <div
+                  class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                  >
+                    <a
+                      class="inline-flex items-center gap-x-6 w-full"
                     >
-                      採用を依頼する
-                    </button>
+                      <img
+                        class="inline-block h-10 w-10 rounded-full"
+                        src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                      />
+                      <div class="flex-auto">
+                        <p>nokichi</p>
+                        <p class="text-brightGray-300">
+                          アプリエンジニア
+                        </p>
+                      </div>
+                      <button class="mx-4">
+                        <span
+                          class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                          >close</span>
+                      </button>
+                    </a>
                   </div>
-              </div><!-- End 採用調整内容 -->
+                </dd>
+
+                <dt class="font-bold w-[98px] mb-10">面談参加<br>候補</dt>
+                <dd class="w-[280px]">
+                  <ul class="flex flex-wrap gap-y-1">
+                    <li
+                      class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                    >
+                      <a
+                        class="inline-flex items-center gap-x-6 w-full"
+                      >
+                        <img
+                          class="inline-block h-10 w-10 rounded-full"
+                          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                        />
+                        <div class="flex-auto">
+                          <p>nokichi</p>
+                          <p class="text-brightGray-300">
+                            アプリエンジニア
+                          </p>
+                        </div>
+                        <button class="mx-4">
+                          <span
+                            class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                            >close</span>
+                        </button>
+                      </a>
+                    </li>
+                    <li
+                      class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                    >
+                      <a
+                        class="inline-flex items-center gap-x-6 w-full"
+                      >
+                        <img
+                          class="inline-block h-10 w-10 rounded-full"
+                          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                        />
+                        <div class="flex-auto">
+                          <p>nokichi</p>
+                          <p class="text-brightGray-300">
+                            アプリエンジニア
+                          </p>
+                        </div>
+                        <button class="mx-4">
+                          <span
+                            class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                            >close</span>
+                        </button>
+                      </a>
+                    </li>
+                    <li
+                      class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
+                    >
+                      <a
+                        class="inline-flex items-center gap-x-6 w-full"
+                      >
+                        <img
+                          class="inline-block h-10 w-10 rounded-full"
+                          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
+                        />
+                        <div class="flex-auto">
+                          <p>nokichi</p>
+                          <p class="text-brightGray-300">
+                            アプリエンジニア
+                          </p>
+                        </div>
+                        <button class="mx-4">
+                          <span
+                            class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                            >close</span>
+                        </button>
+                      </a>
+                    </li>
+                  </ul>
+                </dd>
+
+                <dt
+                  class="font-bold w-[98px] flex mt-16"
+                >
+                  <label for="point" class="block pr-1">採用候補者の推しポイント・注意点</label>
+                </dt>
+                <dd class="w-[280px] mt-16">
+                  <textarea
+                    id="point"
+                    name="point"
+                    placeholder="新しいチーム名を入力してください"
+                    rows="5"
+                    cols="30"
+                    class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+                  >エンジニア領域だけでなく、インフラやデザイン、マーケティングなど幅広い領域の知識を持っていて劇ヤバイです。</textarea>
+                </dd>
+              </dl>
+            </div>
+
+          <div class="flex justify-end gap-x-4 mt-16">
+            <button
+              phx-click={JS.hide(to: "#adoption_modal")}
+              class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+            >
+              面談調整を依頼する
+            </button>
+          </div>
+      </div><!-- End 面談調整内容 -->
 
               <!-- close button -->
               <button
