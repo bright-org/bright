@@ -15,7 +15,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias Bright.HistoricalSkillPanels
   alias Bright.HistoricalSkillScores
   alias Bright.Teams
-  alias BrightWeb.SkillPanelLive.TimelineHelper
+  alias BrightWeb.TimelineHelper
   alias BrightWeb.BrightCoreComponents
   alias BrightWeb.DisplayUserHelper
 
@@ -214,11 +214,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   defp assign_skill_units(socket, :past, label) do
     display_user = socket.assigns.display_user
 
+    locked_date =
+      TimelineHelper.label_to_date(label)
+      |> TimelineHelper.get_shift_date_from_date(-1)
+
     historical_skill_class =
       HistoricalSkillPanels.get_historical_skill_class_on_date(
         skill_panel_id: socket.assigns.skill_panel.id,
         class: socket.assigns.skill_class.class,
-        date: TimelineHelper.label_to_date(label)
+        locked_date: locked_date
       )
       |> Bright.Repo.preload(
         historical_skill_class_scores: Ecto.assoc(display_user, :historical_skill_class_scores)
