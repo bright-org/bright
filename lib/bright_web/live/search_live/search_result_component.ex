@@ -5,7 +5,9 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
 
   import BrightWeb.TabComponents
   import BrightWeb.ChartComponents, only: [skill_gem: 1]
+  import BrightWeb.DisplayUserHelper, only: [encrypt_user_name: 1]
   import BrightWeb.SearchLive.ResultComponents
+  import BrightWeb.PathHelper
 
   import BrightWeb.SkillPanelLive.SkillPanelHelper,
     only: [assign_skill_score_dict: 1, assign_counter: 1]
@@ -21,7 +23,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       <% else %>
       <div class="bg-white w-[450px]">
         <.tab
-          id={"skill_search_result_tab_#{@index}"}
+          id={"#{@prefix}_skill_search_result_tab_#{@index}"}
           tabs={@tabs}
           hidden_footer={true}
           selected_tab={@selected_tab}
@@ -37,13 +39,13 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             <div class="mt-4 w-64">
                 <.skill_gem
                   data={@skill_gem_data}
-                  id={"skill-gem-#{@index}"}
+                  id={"#{@prefix}-skill-gem-#{@index}"}
                   labels={@skill_gem_labels}
                   size="sm"
                 />
             </div>
             <.doughnut_area
-              index={@index}
+              index={"#{@prefix}_#{@index}"}
               counter={@counter}
               num_skills={@num_skills}
               skill_class_score={@skill_class_score}
@@ -55,22 +57,49 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       <div class="border-l border-brightGray-200 border-dashed w-[512px] ml-2 px-2">
         <div class="flex">
           <.job_area job={@user.user_job_profile} last_updated={@user.last_updated} />
+          <div :if={@search}>
           <.action_area
             user={@user}
             skill_panel={@selected_skill_panel}
             stock_user_ids={@stock_user_ids}
           />
+          </div>
         </div>
-        <div class="flex justify-between mt-8">
+        <div :if={@search} class="flex justify-between mt-8">
           <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
           <a
+            phx-click={
+              JS.show(to: "#adoption_modal") |> JS.push("open", value: %{user: @user.id, skill_params: @skill_params}, target: "#adoption_modal")
+            }
             class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50"
           >
-          採用面談調整<br />βリリース（10月予定）から
+          採用面談調整<br />
           </a>
           <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
           採用・育成チームに採用依頼 <br />βリリース（10月予定）から
           </a>
+        </div>
+        <div :if={!@search} class="flex justify-between mt-8">
+          <.link
+            class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-40 hover:opacity-50"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={
+              skill_panel_path("graphs",%{id: @selected_skill_panel.skill_panel}, %{name_encrypted: encrypt_user_name(@user)},false,true)
+              <> "?class=#{@selected_skill_panel.class}"
+            }
+          >
+            成長グラフの確認
+          </.link>
+          <.link
+            class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-40 hover:opacity-50"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={"/mypage/anon/#{encrypt_user_name(@user)}"}
+          >
+          保有スキルの確認
+          </.link>
+
         </div>
       </div>
     </div>
