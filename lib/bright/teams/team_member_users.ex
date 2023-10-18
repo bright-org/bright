@@ -13,6 +13,7 @@ defmodule Bright.Teams.TeamMemberUsers do
     field :invitation_token, :binary
     field :invitation_sent_to, :string
     field :invitation_confirmed_at, :naive_datetime
+    field :base64_encoded_token, :string, virtual: true
 
     belongs_to :team, Bright.Teams.Team
     belongs_to :user, Bright.Accounts.User, references: :id

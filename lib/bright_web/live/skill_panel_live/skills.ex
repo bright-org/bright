@@ -71,8 +71,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, push_redirect(socket, to: move_to)}
   end
 
-  defp apply_action(socket, :show, _params) do
-    put_flash_first_skills_edit(socket)
+  defp apply_action(socket, :show, params) do
+    socket
+    |> assign(:init_team_id, params["team"])
+    |> put_flash_first_skills_edit()
   end
 
   defp apply_action(socket, :edit, _params), do: socket

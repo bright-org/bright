@@ -11,7 +11,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
   @impl true
   def render(assigns) do
     ~H"""
-      <div class="flex w-full lg:w-[474px] h-[514px] lg:h-[654px] shadow flex-col bg-white relative">
+      <div class="flex w-full lg:w-[474px] h-[544px] lg:h-[654px] shadow flex-col bg-white relative">
       <!-- メンバーデータ -->
         <div
           :if={is_nil(@display_skill_card.user_skill_class_score)}
@@ -29,12 +29,17 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
         <div class="flex justify-between px-4 lg:px-6 pt-1 items-center">
           <div class="text-xl w-56 truncate lg:w-full lg:text-2xl font-bold">
-            <%= assigns.display_skill_card.user.name %>
+            <.link navigate={~p"/mypage/#{assigns.display_skill_card.user.name}"}><%= assigns.display_skill_card.user.name %></.link>
           </div>
-          <div
-            class="bg-test bg-contain bg-no-repeat h-12 w-12 mt-1 lg:h-20 lg:w-20 lg:mt-4 rounded-full"
-            style={"background-image: url('#{icon_url(assigns.display_skill_card.user.user_profile.icon_file_path)}');"}
-          ></div>
+          <div class="mt-4">
+            <img
+              class="object-cover inline-block mr-2 lg:mr-5 h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
+              src={icon_url(assigns.display_skill_card.user.user_profile.icon_file_path)}
+            />
+          </div>
+        </div>
+        <div class="ml-4 lg:ml-6 mt-1 text-base h-[12px]">
+          <%= assigns.display_skill_card.user.user_profile.title %>
         </div>
 
         <div
@@ -91,15 +96,20 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             1on1に誘う
           </button>
+          <%= if @display_skill_card.user.id == @current_user.id do %>
+          <.link navigate={~p"/panels/#{@display_skill_panel}"}>
+          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
+            スキルを入力
+          </button>
+          </.link>
+          <% else %>
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             この人と比較
           </button>
-          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
+          <% end %>
+          <button class="min-w-[124px] text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             スキルアップ確認
           </button>
-        </div>
-        <div class="w-full text-center absolute bottom-1">
-        βリリース（10月予定）で利用可能になります
         </div>
       </div>
     """

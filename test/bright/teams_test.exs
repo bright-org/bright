@@ -92,6 +92,76 @@ defmodule Bright.TeamsTest do
     end
   end
 
+  describe "update_team_multi/3" do
+    test "update team and member users." do
+      create_name = Faker.Lorem.word()
+      update_name = Faker.Lorem.word()
+      admin_user = insert(:user)
+      member1 = insert(:user)
+      member2 = insert(:user)
+      member3 = insert(:user)
+      create_member_users = [member1, member2]
+      update_member_users = [member1, member3]
+
+      assert {:ok, team, _team_member_attrs} =
+               Teams.create_team_multi(create_name, admin_user, create_member_users)
+
+      assert {:ok, team, team_member_attrs} =
+               Teams.update_team_multi(
+                 team,
+                 %{name: update_name},
+                 admin_user,
+                 [member3],
+                 update_member_users
+               )
+
+      # チームの属性確認
+      assert team.name == update_name
+      # 更新に含まれていないメンバーは削除される
+      assert Enum.count(team.member_users) == 3
+
+      # チームメンバー(非作成者)の属性確認
+      member_result = Enum.find(team.member_users, fn x -> x.user_id == member3.id end)
+      # 非管理者
+      assert member_result.is_admin == false
+      # ジョイン承認するまではかならず非プライマリチーム
+      assert member_result.is_star == false
+
+      # 招待メールの送信先は対象ユーザーのプライマリメールアドレス
+      assert member_result.invitation_sent_to == member3.email
+      # 招待メール送信直後は承認日時はnil
+      assert member_result.invitation_confirmed_at == nil
+
+      # team_member_attrs内のbase64_encoded_tokenを認証にかけることで、invitation_confirmed_atが更新され承認状態となる
+      team_member_attr =
+        team_member_attrs
+        |> Enum.find(fn team_member_attr ->
+          team_member_attr.user_id == member_result.user_id
+        end)
+
+      # 間違った認証コードでは認証エラーとなる
+      assert :error = Teams.get_invitation_token(team_member_attr.base64_encoded_token <> "1")
+
+      # 正しい認証コードではtokenが取得できる
+      assert {:ok, team_member_user} =
+               Teams.get_invitation_token(team_member_attr.base64_encoded_token)
+
+      # 認証することでinvitation_confirmed_atが更新される
+      assert {:ok, confirmed_team_member_user} = Teams.confirm_invitation(team_member_user)
+
+      assert confirmed_team_member_user.invitation_confirmed_at != nil
+
+      assert confirmed_team_member_user.invitation_confirmed_at <=
+               TeamMemberUsers.now_for_confirmed_at()
+
+      # ２度目認証にかけても無視して正常終了扱いとなる
+      assert {:ok, re_confirmed_team_member_user} = Teams.confirm_invitation(team_member_user)
+
+      assert re_confirmed_team_member_user.invitation_confirmed_at ==
+               confirmed_team_member_user.invitation_confirmed_at
+    end
+  end
+
   describe "list_joined_teams_by_user_id/3" do
     test "create team and member users. with no page params" do
       admin_team_name = Faker.Lorem.word()
