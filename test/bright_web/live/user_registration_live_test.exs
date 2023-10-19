@@ -183,4 +183,31 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       |> follow_redirect(conn, ~p"/auth/github")
     end
   end
+
+  describe "register button and terms" do
+    test "enables register button when all check is clicked", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/users/register")
+
+      assert lv
+             |> has_element?("button[disabled]", "ユーザーを新規作成する")
+
+      lv
+      |> element(~s{div[phx-click="toggre_is_terms_of_service_checked"]})
+      |> render_click()
+
+      lv
+      |> element(~s{div[phx-click="toggre_is_privacy_policy_checked"]})
+      |> render_click()
+
+      lv
+      |> element(~s{div[phx-click="toggre_is_law_checked"]})
+      |> render_click()
+
+      refute lv
+             |> has_element?("button[disabled]", "ユーザーを新規作成する")
+
+      assert lv
+             |> has_element?("button", "ユーザーを新規作成する")
+    end
+  end
 end
