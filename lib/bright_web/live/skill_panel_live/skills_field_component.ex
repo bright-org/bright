@@ -82,7 +82,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   def update(%{custom_group_created: custom_group}, socket) do
-    # カスタムグループ追加時
     {:ok, assign(socket, :custom_group, custom_group)}
   end
 
@@ -103,8 +102,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   def update(%{custom_group_assigned: custom_group}, socket) do
-    # カスタムグループのメンバー更新時
     {:ok, assign(socket, :custom_group, custom_group)}
+  end
+
+  def update(%{custom_group_updated: custom_group}, socket) do
+    {:ok, assign(socket, :custom_group, custom_group)}
+  end
+
+  def update(%{custom_group_deleted: _custom_group}, socket) do
+    {:ok, assign(socket, :custom_group, nil)}
   end
 
   def update(assigns, socket) do
