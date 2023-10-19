@@ -15,9 +15,13 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
     ~H"""
     <ul class="w-96 p-2 text-left text-base">
       <li :if={@custom_group}>
-        <a class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer">
+        <div
+          class="px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
+          phx-click="assign"
+          phx-target={@myself}
+        >
           下記の人たちでカスタムグループを更新する
-        </a>
+        </div>
       </li>
       <li>
         <div
@@ -42,10 +46,10 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
           <div
             class="dropdownTarget bg-white rounded-md mt-1 border border-brightGray-100 shadow-md hidden z-10"
           >
-            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+            <ul class="py-2 text-sm text-base">
               <li :for={custom_group <- @custom_groups}>
                 <div
-                  class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                  class="px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
                   phx-click="select"
                   phx-target={@myself}
                   phx-value-name={custom_group.name}
@@ -112,13 +116,25 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
   end
 
   def handle_event("select", %{"name" => name}, socket) do
-    %{
-      custom_groups: custom_groups,
-      on_select: on_select
-    } = socket.assigns
-
+    %{custom_groups: custom_groups, on_select: on_select} = socket.assigns
     custom_group = Enum.find(custom_groups, & &1.name == name)
     on_select.(custom_group)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("assign", _params, socket) do
+    %{
+      compared_users: compared_users,
+      custom_group: custom_group,
+      on_assign: on_assign
+    } = socket.assigns
+
+    member_users_params = build_member_users_params(compared_users)
+    custom_group = Bright.Repo.preload(custom_group, :member_users)
+    params = %{"member_users" => member_users_params}
+    {:ok, _} = CustomGroups.update_custom_group(custom_group, params)
+    on_assign.(custom_group)
 
     {:noreply, socket}
   end

@@ -102,6 +102,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       |> assign_compared_users_info()}
   end
 
+  def update(%{custom_group_assigned: custom_group}, socket) do
+    # カスタムグループのメンバー更新時
+    {:ok, assign(socket, :custom_group, custom_group)}
+  end
+
   def update(assigns, socket) do
     {:ok,
      socket
