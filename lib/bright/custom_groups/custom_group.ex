@@ -27,8 +27,9 @@ defmodule Bright.CustomGroups.CustomGroup do
   @doc false
   def changeset(custom_group, attrs) do
     custom_group
-    |> cast(attrs, [:name, :user_id])
+    |> cast(attrs, [:user_id, :name])
     |> cast_assoc(:member_users, with: &CustomGroupMemberUser.changeset/2)
-    |> validate_required([:name, :user_id])
+    |> validate_required([:user_id, :name])
+    |> unique_constraint([:user_id, :name], error_key: :name)
   end
 end

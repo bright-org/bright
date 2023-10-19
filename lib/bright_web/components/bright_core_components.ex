@@ -12,7 +12,6 @@ defmodule BrightWeb.BrightCoreComponents do
       icon: 1,
       hide: 2,
       translate_error: 1,
-      translate_errors: 2,
       error: 1
     ]
 
@@ -304,14 +303,5 @@ defmodule BrightWeb.BrightCoreComponents do
       <%= render_slot(@inner_block) %>
     </label>
     """
-  end
-
-  @doc """
-  Returns the list translated error messages.
-  """
-  def list_errors(changeset, fields) do
-    Enum.flat_map(fields, fn field ->
-      translate_errors(changeset.errors, field)
-    end)
   end
 end
