@@ -13,8 +13,8 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
 
   def render(assigns) do
     ~H"""
-    <ul class="p-2 text-left text-base">
-      <li>
+    <ul class="w-96 p-2 text-left text-base">
+      <li :if={@custom_group}>
         <a class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer">
           下記の人たちでカスタムグループを更新する
         </a>
@@ -22,7 +22,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
       <li>
         <div
           id="custom-groups-list-dropdown"
-          class="mt-4 lg:mt-0 hidden lg:block"
+          class="mt-2"
           phx-hook="Dropdown"
           data-dropdown-placement="right-start"
         >
@@ -30,7 +30,11 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
             class="dropdownTrigger w-full flex items-center justify-between block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
             type="button"
           >
-            別のカスタムグループに切り替える
+            <%= if @custom_group do %>
+              別のカスタムグループに切り替える
+            <% else %>
+              カスタムグループを表示する
+            <% end %>
             <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
             </svg>
@@ -38,15 +42,16 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
           <div
             class="dropdownTarget bg-white rounded-md mt-1 border border-brightGray-100 shadow-md hidden z-10"
           >
-            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="doubleDropdownButton">
-              <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Overview</a>
-              </li>
-              <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My downloads</a>
-              </li>
-              <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Billing</a>
+            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+              <li :for={custom_group <- @custom_groups}>
+                <div
+                  class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                  phx-click="select"
+                  phx-target={@myself}
+                  phx-value-name={custom_group.name}
+                >
+                  <%= custom_group.name %>
+                </div>
               </li>
             </ul>
           </div>
@@ -76,6 +81,13 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
      |> assign_form(CustomGroups.change_custom_group(%CustomGroups.CustomGroup{}))}
   end
 
+  def update(assigns, socket) do
+    {:ok,
+      socket
+      |> assign(assigns)
+      |> assign(:custom_groups, list_custom_groups(assigns.current_user))}
+  end
+
   def handle_event("create", %{"custom_group" => params}, socket) do
     %{
       current_user: current_user,
@@ -99,6 +111,18 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
     end
   end
 
+  def handle_event("select", %{"name" => name}, socket) do
+    %{
+      custom_groups: custom_groups,
+      on_select: on_select
+    } = socket.assigns
+
+    custom_group = Enum.find(custom_groups, & &1.name == name)
+    on_select.(custom_group)
+
+    {:noreply, socket}
+  end
+
   defp assign_form(socket, changeset) do
     assign(socket, :form, to_form(changeset))
   end
@@ -110,5 +134,9 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
     |> Enum.map(fn {user, position} ->
       %{user_id: user.id, position: position}
     end)
+  end
+
+  defp list_custom_groups(user) do
+    CustomGroups.list_user_custom_groups(user.id)
   end
 end

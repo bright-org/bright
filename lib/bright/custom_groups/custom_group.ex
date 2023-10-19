@@ -31,5 +31,6 @@ defmodule Bright.CustomGroups.CustomGroup do
     |> cast_assoc(:member_users, with: &CustomGroupMemberUser.changeset/2)
     |> validate_required([:user_id, :name])
     |> unique_constraint([:user_id, :name], error_key: :name)
+    |> validate_length(:name, min: 1, max: 30)
   end
 end

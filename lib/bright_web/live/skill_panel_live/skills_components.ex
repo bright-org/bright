@@ -170,7 +170,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           current_user={@current_user}
           compared_users={@compared_users}
           on_create={&Phoenix.LiveView.send_update(BrightWeb.SkillPanelLive.SkillsFieldComponent, id: @skills_field_id, custom_group_created: &1)}
-          on_create2={&Phoenix.LiveView.send_update(@myself, custom_group_created: &1)}
+          on_select={&Phoenix.LiveView.send_update(BrightWeb.SkillPanelLive.SkillsFieldComponent, id: @skills_field_id, custom_group_selected: &1)}
         />
       </div>
     </div>
