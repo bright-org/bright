@@ -102,6 +102,10 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
   end
 
   @impl true
+  def handle_event("add_user", %{"user_id" => id}, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event(
         "tab_click",
         %{"id" => _id, "tab_name" => "team"},
