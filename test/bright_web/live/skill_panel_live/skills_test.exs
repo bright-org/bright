@@ -941,6 +941,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:team_member_users, user: user_2, team: team)
       insert(:team_member_users, user: user_3, team: team)
 
+      # 招待が終わっていないメンバーをダミーとして追加
+      user_dummy = insert(:user)
+      insert(:team_member_users, user: user_dummy, team: team, invitation_confirmed_at: nil)
+
       %{team: team}
     end
 
@@ -970,6 +974,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, "#skills-table-field", user_3.name)
       assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
       assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "33％")
+
+      # 招待済みでない3人目がいないこと
+      refute has_element?(show_live, "#user-3-percentages .score-high-percentage")
     end
   end
 

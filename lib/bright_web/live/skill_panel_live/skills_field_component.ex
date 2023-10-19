@@ -69,7 +69,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> assign(skill_class: nil)
      |> assign(compared_users: [], compared_user_dict: %{})
      |> assign(timeline: TimelineHelper.get_current())
-     |> assign(inner_flash: %{})}
+     |> clear_inner_flash()}
   end
 
   def update(assigns, socket) do
@@ -99,7 +99,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          socket
          |> update(:compared_users, &(&1 ++ [user]))
          |> assign_compared_user_dict(user)
-         |> assign_compared_users_info()}
+         |> assign_compared_users_info()
+         |> clear_inner_flash()}
 
       true ->
         {:noreply, assign(socket, :inner_flash, %{error: "既に一覧に表示されています"})}
@@ -122,20 +123,31 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     # TODO: 本当に参照可能なチームかどうかの確認
     team = Teams.get_team_with_member_users!(team_id)
 
-    team.member_users
+    team_member_users =
+      team.member_users
+      |> Enum.filter(& &1.invitation_confirmed_at)
+      |> Enum.reject(&(&1.user_id == display_user_id))
+
+    team_member_users
     |> Teams.sort_team_member_users()
     |> Enum.map(&Map.put(&1.user, :anonymous, false))
-    |> Enum.reject(&(&1.id == display_user_id || &1.id in existing_user_ids))
+    |> Enum.reject(&(&1.id in existing_user_ids))
     |> case do
       [] ->
-        {:noreply, assign(socket, :inner_flash, %{error: "既に一覧に表示されています"})}
+        (team_member_users == [])
+        |> if do
+          {:noreply, assign(socket, :inner_flash, %{error: "#{team.name} チームメンバーがいません"})}
+        else
+          {:noreply, assign(socket, :inner_flash, %{error: "#{team.name} 既に一覧にメンバーが表示されています"})}
+        end
 
       users ->
         {:noreply,
          socket
          |> update(:compared_users, &(&1 ++ users))
          |> assign_compared_users_dict(users)
-         |> assign_compared_users_info()}
+         |> assign_compared_users_info()
+         |> clear_inner_flash()}
     end
   end
 
@@ -498,5 +510,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          %HistoricalSkillScores.HistoricalSkillScore{} = historical_skill_score
        ) do
     historical_skill_score.historical_skill_id
+  end
+
+  defp clear_inner_flash(socket) do
+    assign(socket, :inner_flash, %{})
   end
 end
