@@ -1,0 +1,125 @@
+<!-- livebook:{"autosave_interval_s":null} -->
+
+# Subscriptionsについて
+
+```elixir
+alias Bright.Accounts
+alias Bright.Subscriptions
+```
+
+## Brightにおける有料サービスの概念
+
+有料サービスに関する概念については[概念ER図](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/service.md)を参照
+
+## Subscriptionsコンテキストのデータモデル
+
+SubscriptionsコンテキストはBrightにおける定額契約プランおよびプラン事に利用可能となる機能群(Service)から構成される。
+
+```mermaid
+erDiagram
+  "SubscriptionPlan"||--|{"SubscriptionService" : "利用可能なサービス群"
+  "SubscriptionPlan"||--o{"SubscriptionUserPlan" : ""
+  "SubscriptionUserPlan"}o--o{"User" : "契約したプラン(過去分を含む)"
+```
+
+ユーザー毎の契約履歴はSubscriptionUserPlanとして登録される。
+
+```mermaid
+erDiagram
+
+  subscription_user_plans {
+    id user_id FK
+    id subscription_plan FK
+    string subscription_status "enum（free_trial: 無料トライアル中, subscribing: 契約中, subscription_ended: 契約終了）"
+    datetime subscription_start_datetime "契約の開始日時"
+    datetime subscription_end_datetime "契約の終了日時 (未完了の場合はnil)"
+    datetime trial_start_datetime "無料トライアルの開始日時 (トライアル未利用の場合はnil)"
+    datetime trial_end_datetime "無料トライアルの終了日時 (トライアル未利用または未完了の場合はnil)"
+  }
+```
+
+一人のユーザーにつき契約可能なプランは１つ(アプリ実装による制約)だが、過去の契約履歴を含むため複数のsubscription_user_plansレコードが存在しうる。
+
+## プラン・サービス・機能の要件
+
+Brightのサービス・機能と利用可能なプランのマッピングについては[サービス／機能／課金プラン／権限チェック（個人、チーム）](https://docs.google.com/spreadsheets/d/15kET7RX6EWv4DbDoSsG0NHIw2zW2hY0xeBD5L0yr-oA/edit#gid=1972527741)を参照
+
+表中のサービス分類と対応する初期データのservice_codeは下表参照
+
+| サービス分類    | service_code   |
+| --------------------- | -------------- |
+| スキルアップ    | skill_up       |
+| チームアップ    | team_up        |
+| 採用・育成共通 | hr_basic       |
+| 採用                | hr_recruitment |
+| 育成                | hr_training    |
+
+## サブスクリプションプランとサービスの初期データ登録
+
+priv/repo/seed_dummy_data.exsに収録すみの下記関数で[サービスタリフ](https://bright-fun.org/plan/)に即した初期データを登録できる。
+収録データについては[Seedsファイル参照](lib/seeds)
+
+```elixir
+Brignt.Seeds.SubscriptionPlanService.delete()
+Brignt.Seeds.SubscriptionPlan.delete()
+Brignt.Seeds.SubscriptionPlan.insert()
+Brignt.Seeds.SubscriptionPlanService.insert()
+```
+
+## Subscriptions関数
+
+#### 前提情報の取得
+
+```elixir
+# ユーザーID
+Accounts.get_user_by_name_or_email("takuto4devops@gmail.com")
+```
+
+```elixir
+# プラン情報
+Subscriptions.get_subscription_plan_with_enable_services_by_plan_code("team_up_plan")
+```
+
+### 登録系
+
+※ 現状用意している関数では契約の重複チェックなど業務よりのバリデーションは未実装
+
+```elixir
+# 無料トライアルの開始
+Subscriptions.start_free_trial(user_id, subscription_plan_id)
+```
+
+```elixir
+# 即時有料プランの開始
+Subscriptions.start_subscription(user_id, subscription_plan_id)
+```
+
+### 判定系
+
+```elixir
+# サービスコードをキーに該当サービスの利用有無を返す
+Subscriptions.service_enabled?(user_id, service_code)
+```
+
+```elixir
+#  サービスコードをキーに該当サービスが利用可能な最も優先度の高いサブスクリプションプランを返す
+Subscriptions.get_most_priority_free_trial_subscription_plan(service_code)
+```
+
+```elixir
+# プランコードをキーに該当プランのフリートライアル利用可否を返す
+#  ある場合、利用不可
+Subscriptions.free_trial_available?(user_id, plan_code)
+```
+
+### 取得系
+
+```elixir
+# ユーザーIDと基準時刻をキーに有効な契約内容を取得する
+Subscriptions.get_users_subscription_status(user_id, NaiveDateTime.utc_now())
+```
+
+```elixir
+# フリートライアル済のプラン一覧を返す
+Subscriptions.get_users_trialed_plans(user_id)
+```
