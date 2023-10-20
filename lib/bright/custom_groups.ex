@@ -53,7 +53,6 @@ defmodule Bright.CustomGroups do
 
         # 返す前に現状においても参照可能かどうかを確認している
         {valid_users, invalid_users} = Enum.split_with(members, & custom_group_assignable?(user, &1))
-        |> then(fn item -> IO.inspect(item, label: "DEBUG"); item end)
         delete_custom_group_member_users_from_user_ids(custom_group, Enum.map(invalid_users, & &1.id))
         valid_users
     end
@@ -142,6 +141,9 @@ defmodule Bright.CustomGroups do
 
   defp custom_group_assignable?(user, member) do
     Teams.joined_teams_by_user_id!(user.id, member.id)
+    true
+  rescue
+    Ecto.NoResultsError -> false
   end
 
   defp preload_custom_group_user(custom_group) do

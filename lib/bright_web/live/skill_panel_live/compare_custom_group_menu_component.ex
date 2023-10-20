@@ -24,6 +24,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
 
         <div :if={is_nil(@form_update)}>
           <button
+            id="btn-custom-group-update"
             class="grow-0 text-sm font-bold px-3 py-2 rounded border bg-base text-white"
             phx-click="mode_update"
             phx-target={@myself}
@@ -31,6 +32,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
             更新
           </button>
           <button
+            id="btn-custom-group-delete"
             class="grow-0 text-sm font-bold px-3 py-2 rounded border bg-base text-white"
             phx-click="delete"
             phx-target={@myself}
@@ -42,6 +44,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
         <div :if={@form_update} class="w-full flex items-center">
           <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-1 !items-center !justify-center">group</span>
           <.form
+            id="form-custom-group-update"
             for={@form_update}
             class="flex items-center space-x-2 py-2"
             phx-submit="update"
@@ -110,6 +113,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
       <li>
         <.form
           for={@form}
+          id="form-custom-group-create"
           class="flex items-center space-x-2 py-2"
           phx-submit="create"
           phx-target={@myself}
