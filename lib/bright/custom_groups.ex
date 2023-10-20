@@ -47,13 +47,21 @@ defmodule Bright.CustomGroups do
   def list_and_filter_valid_users(user, custom_group) do
     preload_custom_group_user(custom_group)
     |> case do
-      nil -> []
+      nil ->
+        []
+
       custom_group ->
         members = Enum.map(custom_group.member_users, & &1.user)
 
         # 返す前に現状においても参照可能かどうかを確認している
-        {valid_users, invalid_users} = Enum.split_with(members, & custom_group_assignable?(user, &1))
-        delete_custom_group_member_users_from_user_ids(custom_group, Enum.map(invalid_users, & &1.id))
+        {valid_users, invalid_users} =
+          Enum.split_with(members, &custom_group_assignable?(user, &1))
+
+        delete_custom_group_member_users_from_user_ids(
+          custom_group,
+          Enum.map(invalid_users, & &1.id)
+        )
+
         valid_users
     end
   end

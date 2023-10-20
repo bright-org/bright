@@ -16,10 +16,10 @@ defmodule Bright.CustomGroups.CustomGroup do
     belongs_to :user, Bright.Accounts.User, references: :id
 
     has_many :member_users,
-      Bright.CustomGroups.CustomGroupMemberUser,
-      preload_order: [asc: :position],
-      on_replace: :delete,
-      on_delete: :delete_all
+             Bright.CustomGroups.CustomGroupMemberUser,
+             preload_order: [asc: :position],
+             on_replace: :delete,
+             on_delete: :delete_all
 
     timestamps()
   end

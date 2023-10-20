@@ -55,14 +55,15 @@ defmodule Bright.CustomGroupsTest do
     test "update_custom_group/2 with valid data updates the custom_group", %{user: user} do
       [user_1, user_2, user_3] = insert_list(3, :user)
 
-      custom_group = insert(
-        :custom_group,
-        user_id: user.id,
-        member_users: [
-          build(:custom_group_member_user, user_id: user_1.id, position: 1),
-          build(:custom_group_member_user, user_id: user_2.id, position: 2)
-        ]
-      )
+      custom_group =
+        insert(
+          :custom_group,
+          user_id: user.id,
+          member_users: [
+            build(:custom_group_member_user, user_id: user_1.id, position: 1),
+            build(:custom_group_member_user, user_id: user_2.id, position: 2)
+          ]
+        )
 
       update_attrs = %{
         name: "some updated name",
@@ -96,13 +97,14 @@ defmodule Bright.CustomGroupsTest do
     end
 
     test "delete_custom_group/1 deletes the custom_group", %{user: user} do
-      custom_group = insert(
-        :custom_group,
-        user_id: user.id,
-        member_users: [
-          build(:custom_group_member_user, user_id: insert(:user).id, position: 1),
-        ]
-      )
+      custom_group =
+        insert(
+          :custom_group,
+          user_id: user.id,
+          member_users: [
+            build(:custom_group_member_user, user_id: insert(:user).id, position: 1)
+          ]
+        )
 
       assert {:ok, %CustomGroup{}} = CustomGroups.delete_custom_group(custom_group)
       assert_raise Ecto.NoResultsError, fn -> CustomGroups.get_custom_group!(custom_group.id) end

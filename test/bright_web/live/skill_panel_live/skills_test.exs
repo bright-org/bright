@@ -981,7 +981,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     # 他者とのチーム関連付け
     setup %{user: user} do
-      [user_2, user_3] = users = insert_pair(:user) |> Enum.map(& with_user_profile/1)
+      [user_2, user_3] = users = insert_pair(:user) |> Enum.map(&with_user_profile/1)
       team = insert(:team)
       insert(:team_member_users, user: user, team: team)
       insert(:team_member_users, user: user_2, team: team)
@@ -1016,7 +1016,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert has_element?(show_live, "#selected-custom-group-name", "テスト")
 
-      %{custom_groups: [custom_group]} = Bright.Repo.preload(user, [custom_groups: [:member_users]])
+      %{custom_groups: [custom_group]} = Bright.Repo.preload(user, custom_groups: [:member_users])
       [member_user] = custom_group.member_users
       assert custom_group.name == "テスト"
       assert member_user.user_id == user_2.id
@@ -1035,18 +1035,22 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element(~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="candidate_for_employment"]})
+      |> element(
+        ~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="candidate_for_employment"]}
+      )
       |> render_click()
 
       show_live
-      |> element(~s{#related-user-card-related-user-card-compare a[phx-click="click_on_related_user_card_compare"]})
+      |> element(
+        ~s{#related-user-card-related-user-card-compare a[phx-click="click_on_related_user_card_compare"]}
+      )
       |> render_click()
 
       show_live
       |> form("#form-custom-group-create", %{custom_group: %{name: "テスト"}})
       |> render_submit()
 
-      %{custom_groups: [custom_group]} = Bright.Repo.preload(user, [custom_groups: [:member_users]])
+      %{custom_groups: [custom_group]} = Bright.Repo.preload(user, custom_groups: [:member_users])
       assert [] == custom_group.member_users
       assert custom_group.name == "テスト"
     end
@@ -1058,13 +1062,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_panel: skill_panel,
       users: [user_2, user_3]
     } do
-      custom_group = insert(:custom_group, user: user, member_users: [build(:custom_group_member_user, user: user_2)])
+      custom_group =
+        insert(:custom_group,
+          user: user,
+          member_users: [build(:custom_group_member_user, user: user_2)]
+        )
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       add_user_to_list(show_live, user_3)
 
       show_live
-      |> element(~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"]))
+      |> element(
+        ~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"])
+      )
       |> render_click()
 
       assert has_element?(show_live, "#skills-table-field", user_2.name)
@@ -1080,18 +1090,29 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       team: team
     } do
       # チームメンバーからuser_2を削除して、関係を解消している
-      custom_group = insert(:custom_group, user: user, member_users: [build(:custom_group_member_user, user: user_2)])
+      custom_group =
+        insert(:custom_group,
+          user: user,
+          member_users: [build(:custom_group_member_user, user: user_2)]
+        )
+
       member_user = Bright.Repo.get_by!(TeamMemberUsers, team_id: team.id, user_id: user_2.id)
       Bright.Repo.delete(member_user)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element(~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"]))
+      |> element(
+        ~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"])
+      )
       |> render_click()
 
       refute has_element?(show_live, "#skills-table-field", user_2.name)
-      refute Bright.Repo.get_by(CustomGroupMemberUser, custom_group_id: custom_group.id, user_id: user_2.id)
+
+      refute Bright.Repo.get_by(CustomGroupMemberUser,
+               custom_group_id: custom_group.id,
+               user_id: user_2.id
+             )
     end
 
     @tag score: nil
@@ -1105,7 +1126,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element(~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"]))
+      |> element(
+        ~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"])
+      )
       |> render_click()
 
       show_live
@@ -1129,12 +1152,18 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_panel: skill_panel,
       users: [user_2, _user_3]
     } do
-      custom_group = insert(:custom_group, user: user, member_users: [build(:custom_group_member_user, user: user_2)])
+      custom_group =
+        insert(:custom_group,
+          user: user,
+          member_users: [build(:custom_group_member_user, user: user_2)]
+        )
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element(~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"]))
+      |> element(
+        ~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"])
+      )
       |> render_click()
 
       show_live

@@ -138,9 +138,9 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
 
   def update(assigns, socket) do
     {:ok,
-      socket
-      |> assign(assigns)
-      |> assign(:custom_groups, list_custom_groups(assigns.current_user))}
+     socket
+     |> assign(assigns)
+     |> assign(:custom_groups, list_custom_groups(assigns.current_user))}
   end
 
   def handle_event("create", %{"custom_group" => params}, socket) do
@@ -149,21 +149,25 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
       compared_users: compared_users,
       on_create: on_create
     } = socket.assigns
+
     member_users_params = build_member_users_params(compared_users)
 
-    params = Map.merge(params, %{
-      "user_id" => current_user.id,
-      "member_users" => member_users_params
-    })
+    params =
+      Map.merge(params, %{
+        "user_id" => current_user.id,
+        "member_users" => member_users_params
+      })
 
     CustomGroups.create_custom_group(params)
     |> case do
       {:ok, custom_group} ->
         on_create.(custom_group)
+
         {:noreply,
-          socket
-          |> assign(:custom_group, custom_group)
-          |> assign_form()}
+         socket
+         |> assign(:custom_group, custom_group)
+         |> assign_form()}
+
       {:error, changeset} ->
         {:noreply, assign_form(socket, changeset)}
     end
@@ -176,10 +180,12 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
     |> case do
       {:ok, custom_group} ->
         on_update.(custom_group)
+
         {:noreply,
-          socket
-          |> assign(:custom_group, custom_group)
-          |> assign(:form_update, nil)}
+         socket
+         |> assign(:custom_group, custom_group)
+         |> assign(:form_update, nil)}
+
       {:error, changeset} ->
         {:noreply, assign_form_update(socket, changeset)}
     end
@@ -194,7 +200,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
 
   def handle_event("select", %{"name" => name}, socket) do
     %{custom_groups: custom_groups, on_select: on_select} = socket.assigns
-    custom_group = Enum.find(custom_groups, & &1.name == name)
+    custom_group = Enum.find(custom_groups, &(&1.name == name))
     on_select.(custom_group)
 
     {:noreply, socket}
@@ -228,7 +234,6 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
   defp assign_form(socket, changeset) do
     assign(socket, :form, to_form(changeset))
   end
-
 
   defp assign_form_update(socket, changeset) do
     assign(socket, :form_update, to_form(changeset))

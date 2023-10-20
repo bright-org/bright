@@ -88,17 +88,18 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   def update(%{custom_group_selected: custom_group}, socket) do
     # カスタムグループ選択時
     %{current_user: current_user, display_user: display_user} = socket.assigns
+
     users =
       CustomGroups.list_and_filter_valid_users(current_user, custom_group)
       |> Enum.map(&Map.put(&1, :anonymous, false))
       |> Enum.reject(&(&1.id == display_user.id))
 
     {:ok,
-      socket
-      |> assign(:custom_group, custom_group)
-      |> assign(compared_users: users, compared_user_dict: %{})
-      |> assign_compared_users_dict(users)
-      |> assign_compared_users_info()}
+     socket
+     |> assign(:custom_group, custom_group)
+     |> assign(compared_users: users, compared_user_dict: %{})
+     |> assign_compared_users_dict(users)
+     |> assign_compared_users_info()}
   end
 
   def update(%{custom_group_assigned: custom_group}, socket) do
