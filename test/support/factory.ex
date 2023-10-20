@@ -104,4 +104,8 @@ defmodule Bright.Factory do
   use Bright.SubscriptionPlanFactory
   use Bright.SubscriptionPlanServiceFactory
   use Bright.SubscriptionUserPlanFactory
+
+  # CustomGroups context
+  use Bright.CustomGroupFactory
+  use Bright.CustomGroupMemberUserFactory
 end
