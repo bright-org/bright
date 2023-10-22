@@ -160,7 +160,6 @@ defmodule Bright.Teams do
       [%TeamMemberUsers{}, ...]
 
   """
-
   def list_team_member_users_by_user_id(team_id, user_ids) do
     TeamMemberUsers
     |> where([m], m.team_id == ^team_id)
@@ -502,8 +501,7 @@ defmodule Bright.Teams do
       [admin_user | new_member_users -- newcomer]
       |> Enum.map(& &1.id)
 
-    exists_members =
-      list_team_member_users_by_user_id(team.id, exists_member_ids)
+    exists_members = list_team_member_users_by_user_id(team.id, exists_member_ids)
 
     team_member_user_changesets =
       [exists_members, member_attr]
