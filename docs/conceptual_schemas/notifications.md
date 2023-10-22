@@ -1,9 +1,12 @@
 ## 通知テーブル
+
 前提事項
+
 - 通知はどの種類でも共通仕様項目を実装する
- - 取得時に共通のルールでデータを取得する為
+- 取得時に共通のルールでデータを取得する為
 
 ### 共通項目
+
 ```mermaid
 erDiagram
   common {
@@ -14,8 +17,8 @@ erDiagram
   }
 ```
 
+## 重要な連絡　 ER 図
 
-## 重要な連絡　ER図
 ```mermaid
 erDiagram
   "Brightユーザー" ||--o{ "通知_チーム招待" : ""
@@ -28,9 +31,10 @@ erDiagram
 
   "Brightユーザー" ||--o{ "通知_運営" : ""
 
-``````
+```
 
 ### 重要な連絡 テーブル
+
 ```mermaid
 erDiagram
   "users" ||--o{ "notification_team_invitations" : ""
@@ -50,7 +54,7 @@ erDiagram
     text detail	"詳細"
     string status "ステータス： enum（participation:参加する, abstention:参加しない）"
   }
-  
+
   notification_looking_backs {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
@@ -70,10 +74,10 @@ erDiagram
     string message	"メッセージ内容"
     text detail	"詳細"
   }
-  
+
 ```
 
-## さまざまな人たちとの交流 ER図
+## さまざまな人たちとの交流 ER 図
 
 ```mermaid
 erDiagram
@@ -120,7 +124,7 @@ erDiagram
   "users" ||--o{ "notification_watches" : ""
   "notification_watches" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_communities" : "" 
+  "users" ||--o{ "notification_communities" : ""
   "notification_communities" ||--|| "communities" : ""
 
   "communities" ||--|| "user_communities" : ""
@@ -183,7 +187,6 @@ erDiagram
   }
 
 ```
-
 
 ## 通知と同時に行われる処理
 
