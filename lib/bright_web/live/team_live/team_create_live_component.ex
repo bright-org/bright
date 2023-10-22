@@ -49,6 +49,8 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   def update(%{action: :edit, team: team} = assigns, socket) do
     socket
     |> assign(assigns)
+    |> assign(:modal_title, "チームを編集する（β）")
+    |> assign(:submit, "チームを更新し、新規メンバーに招待メールを送る")
     |> assign_team_form(Teams.change_team(team))
     |> then(&{:ok, &1})
   end
@@ -58,6 +60,8 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
     socket
     |> assign(assigns)
+    |> assign(:modal_title, "チームを作る（β）")
+    |> assign(:submit, "チームを作成し、上記メンバーに招待を送る")
     |> assign_team_form(team_changeset)
     |> then(&{:ok, &1})
   end

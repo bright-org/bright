@@ -1,7 +1,7 @@
 <div class="relative w-[1280px] max-h-full">
   <div id="create-team-modal" class="relative rounded-sm px-16 py-8">
     <!-- Modal header -->
-    <h3>チームを作る（β）</h3>
+    <h3><%= @modal_title %></h3>
     <!-- Modal body -->
     <div class="flex pt-8">
       <!-- modal left -->
@@ -58,7 +58,7 @@
           </div>
           <div class="flex justify-end gap-x-4">
             <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
-              チームを作成し、上記メンバーに招待を送る
+              <%= @submit %>
             </button>
           </div>
         </.team_form>
