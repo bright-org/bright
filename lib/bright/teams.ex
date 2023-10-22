@@ -163,7 +163,7 @@ defmodule Bright.Teams do
 
   def list_team_member_users_by_user_id(team_id, user_ids) do
     TeamMemberUsers
-    |> where([m], m.team_id == ^id)
+    |> where([m], m.team_id == ^team_id)
     |> where([m], m.user_id in ^user_ids)
     |> Repo.all()
   end
@@ -495,7 +495,6 @@ defmodule Bright.Teams do
           base64_encoded_token: base64_encoded_token
         }
       end)
-      |> IO.inspect()
 
     team_changeset = Team.registration_changeset(team, update_params)
 
