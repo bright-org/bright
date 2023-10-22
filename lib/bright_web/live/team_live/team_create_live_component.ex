@@ -63,7 +63,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   @impl true
-  def handle_event("validate_team", %{"team" => team_params} = params, socket) do
+  def handle_event("validate_team", %{"team" => team_params}, socket) do
     changeset =
       socket.assigns.team
       |> Team.registration_changeset(team_params)
@@ -76,32 +76,6 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     # メンバーユーザー一時リストから削除
     removed_users = Enum.reject(socket.assigns.users, fn x -> x.id == id end)
     {:noreply, assign(socket, :users, removed_users)}
-  end
-
-  def handle_event("create_team", %{"name" => team_name}, socket) do
-    member_users = socket.assigns.users
-    admin_user = socket.assigns.current_user
-
-    case Teams.create_team_multi(team_name, admin_user, member_users) do
-      {:ok, team, member_user_attrs} ->
-        # 全メンバーのuserを一気にpreloadしたいのでteamを再取得
-        preloaded_team = Teams.get_team_with_member_users!(team.id)
-
-        # 招待したメンバー全員に招待メールを送信する。
-        send_invitation_mails(preloaded_team, admin_user, member_user_attrs)
-
-        # メール送信の成否に関わらず正常終了とする
-        # TODO メール送信エラーを運用上検知する必要がないか?
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "チームを登録しました")
-         # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
-         |> redirect(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset)}
-    end
   end
 
   def handle_event("create_team", %{"team" => team_params}, socket) do
@@ -135,15 +109,15 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   def save_team(%{assigns: assigns} = socket, :edit, team_params) do
-    # 差分がほしい
-    exists_users = assigns.team.users
-    new_member_users = assigns.users
+    current_member = assigns.team.users
+    new_member = assigns.users
+    newcomer = new_member -- current_member
     admin_user = assigns.current_user
 
-    case Teams.save_team_multi(team_params, admin_user, new_member_users) do
+    case Teams.update_team_multi(assigns.team, team_params, admin_user, newcomer, new_member) do
       {:ok, team, member_user_attrs} ->
         # 新規招待したメンバー全員に招待メールを送信する。
-        send_invitation_mails(team, admin_user, member_user_attrs)
+        send_invitation_mails_to_newcomer(team, admin_user, newcomer, member_user_attrs)
 
         # メール送信の成否に関わらず正常終了とする
         # TODO メール送信エラーを運用上検知する必要がないか?
@@ -152,7 +126,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
          socket
          |> put_flash(:info, "チームを更新しました")
          # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
-         |> redirect(to: socket.assigns.patch)}
+         |> redirect(to: assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
@@ -165,6 +139,14 @@ defmodule BrightWeb.TeamCreateLiveComponent do
       if !member_user.is_admin do
         send_invitation_mail(team, admin_user, member_user, member_user_attrs)
       end
+    end)
+  end
+
+  def send_invitation_mails_to_newcomer(team, admin_user, newcomer, member_user_attrs) do
+    newcomer
+    |> Enum.map(&%{user_id: &1.id, user: &1})
+    |> Enum.each(fn member_user ->
+      send_invitation_mail(team, admin_user, member_user, member_user_attrs)
     end)
   end
 
