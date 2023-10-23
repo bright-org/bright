@@ -31,10 +31,12 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <div class="text-xl w-56 truncate lg:w-full lg:text-2xl font-bold">
             <%= assigns.display_skill_card.user.name %>
           </div>
-          <div
-            class="bg-test bg-contain bg-no-repeat h-12 w-12 mt-1 lg:h-20 lg:w-20 lg:mt-4 rounded-full"
-            style={"background-image: url('#{icon_url(assigns.display_skill_card.user.user_profile.icon_file_path)}');"}
-          ></div>
+          <div class="mt-4">
+            <img
+              class="object-cover inline-block mr-2 lg:mr-5 h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
+              src={icon_url(assigns.display_skill_card.user.user_profile.icon_file_path)}
+            />
+          </div>
         </div>
 
         <div

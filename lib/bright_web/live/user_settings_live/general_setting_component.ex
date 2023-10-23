@@ -61,10 +61,10 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
                 <img
                   src={UserProfiles.icon_url(Phoenix.HTML.Form.input_value(ff, :icon_file_path))}
                   :if={(!uploaded?(@uploads) || upload_error?(@uploads)) && has_icon?(ff)}
-                  class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full"
+                  class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 rounded-full"
                 />
                 <%= for entry <- @uploads.icon.entries do %>
-                  <.live_img_preview :if={!upload_error?(@uploads, entry)} entry={entry} class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full" />
+                  <.live_img_preview :if={!upload_error?(@uploads, entry)} entry={entry} class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 rounded-full" />
                 <% end %>
               </label>
             </.inputs_for>
