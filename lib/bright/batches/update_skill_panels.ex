@@ -2,7 +2,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
   @moduledoc """
   スキルパネルを更新するバッチ。
 
-  https://github.com/bright-org/bright/blob/develop/docs/logics/update_skill_panels.md
+  https://github.com/bright-org/bright/blob/main/docs/logics/update_skill_panels.md
   """
 
   require Logger
