@@ -18,7 +18,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
               <BrightCore.input field={f[:name]} type="text" size="20" input_class="px-2 py-1 rounded w-60" />
             </label>
             <label class="border-b border-brightGray-200 flex items-center py-4">
-              <span class="w-32">称号</span>
+              <span class="w-32">役割・自称</span>
               <.inputs_for :let={ff} field={f[:user_profile]}>
                 <BrightCore.input field={ff[:title]} type="text" size="20" input_class="px-2 py-1 rounded w-60" />
               </.inputs_for>
