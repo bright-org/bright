@@ -1899,7 +1899,7 @@ defmodule Bright.AccountsTest do
                  detail: ["should be at most 255 character(s)"],
                  icon_file_path: ["should be at most 255 character(s)"],
                  twitter_url: [
-                   "should start with https://twitter.com/",
+                   "should start with https://twitter.com/ or https://x.com/",
                    "should be at most 255 character(s)"
                  ],
                  facebook_url: [
@@ -1954,7 +1954,8 @@ defmodule Bright.AccountsTest do
           nil
         )
 
-      assert {:error, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
+      assert {:error, _} =
+               Bright.Utils.GoogleCloud.Storage.get(user_profile_attrs["icon_file_path"])
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
 
@@ -1988,7 +1989,7 @@ defmodule Bright.AccountsTest do
           local_file_path
         )
 
-      assert {:ok, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
+      assert {:ok, _} = Bright.Utils.GoogleCloud.Storage.get(user_profile_attrs["icon_file_path"])
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
 
@@ -2024,7 +2025,8 @@ defmodule Bright.AccountsTest do
           local_file_path
         )
 
-      assert {:error, _} = Bright.TestStorage.get(user_profile_attrs["icon_file_path"])
+      assert {:error, _} =
+               Bright.Utils.GoogleCloud.Storage.get(user_profile_attrs["icon_file_path"])
 
       assert %{name: ["has already been taken"]} = errors_on(changeset)
 

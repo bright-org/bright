@@ -6,7 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
     only: [profile_skill_class_level: 1, score_mark_class: 2, skill_score_percentages: 2]
 
-  import BrightWeb.SkillPanelLive.SkillsComponents,
+  import BrightWeb.GuideMessageComponents,
     only: [enter_skills_help_message: 1]
 
   import BrightWeb.SkillPanelLive.SkillPanelHelper,
@@ -35,10 +35,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
       "bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:block before:w-4 before:h-1 before:bg-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white hover:opacity-50"
   }
 
+  @local_storage_backup_key "skills"
+
   @impl true
   def render(assigns) do
+    assigns = assign(assigns, :local_storage_backup_key, @local_storage_backup_key)
+
     ~H"""
-    <div id={@id} class="flex justify-center items-center">
+    <div
+      id={@id}
+      class="flex justify-center items-center"
+      phx-hook="LocalStorageBackup"
+      data-backup-key={@local_storage_backup_key}
+      data-backup-phx-target={"##{@id}"}
+    >
       <section class="text-sm w-full lg:w-[390px]">
         <h2 class="flex items-center gap-x-4 font-bold mt-6 mb-2 text-lg truncate">
           <span class="before:bg-bgGem before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:relative before:top-[2px] before:w-5">
@@ -61,6 +71,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
           open={false}>
           <.enter_skills_help_message reference_from={"modal"} />
         </.live_component>
+
+        <p :if={@restore} class="bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900 p-2 text-sm">
+          入力の途中で接続が切れたため、入力中のデータを復元しました。必ず「保存する」ボタンを押して入力を完了してください。
+        </p>
 
         <p class="text-attention-900 p-2 text-sm">
           セッション制限時間の1時間以内に「保存する」ボタンを押してください。
@@ -200,7 +214,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, :focus_row, 1)}
+    {:ok, assign(socket, focus_row: 1, restore: false)}
   end
 
   @impl true
@@ -244,6 +258,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     {:noreply,
      socket
      |> update_by_score_change(skill_score, score)
+     |> backup_to_local_storage()
      |> assign(:focus_row, row)}
   end
 
@@ -256,6 +271,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
      socket
      |> update_by_score_change(skill_score, score)
      |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))
+     |> backup_to_local_storage()
      |> push_scroll_to()}
   end
 
@@ -275,6 +291,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
   def handle_event("shortcut", _params, socket) do
     {:noreply, socket}
+  end
+
+  def handle_event("reconnect_and_backup_existing", %{"local_data" => data}, socket) do
+    {:noreply,
+     socket
+     |> restore_from_local_storage(data)
+     |> assign(:restore, true)}
   end
 
   defp assign_skill_units(socket) do
@@ -372,6 +395,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     })
   end
 
+  defp backup_to_local_storage(socket) do
+    data = encode_to_local_storage_format(socket.assigns.skill_score_dict)
+    push_event(socket, "backup_#{@local_storage_backup_key}", %{data: data})
+  end
+
+  defp restore_from_local_storage(socket, data) do
+    skill_score_dict = decode_from_local_storage_format(socket.assigns.skill_score_dict, data)
+
+    socket
+    |> assign(:skill_score_dict, skill_score_dict)
+    |> assign_counter()
+  end
+
   defp score_mark_class, do: @score_mark_class
 
   defp get_level(counter, num_skills) do
@@ -380,4 +416,27 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   end
 
   defp minute_per_skill, do: @minute_per_skill
+
+  defp encode_to_local_storage_format(skill_score_dict) do
+    skill_score_dict
+    |> Map.new(fn {skill_id, skill_score} ->
+      {skill_id, Map.take(skill_score, ~w(changed score)a)}
+    end)
+    |> Jason.encode!()
+  end
+
+  defp decode_from_local_storage_format(skill_score_dict, data) do
+    data
+    |> Jason.decode!()
+    |> Enum.reduce(skill_score_dict, fn {skill_id, skill_score}, dict ->
+      Map.update!(
+        dict,
+        skill_id,
+        &Map.merge(&1, %{
+          changed: skill_score["changed"],
+          score: String.to_atom(skill_score["score"])
+        })
+      )
+    end)
+  end
 end

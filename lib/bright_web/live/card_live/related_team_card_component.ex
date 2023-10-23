@@ -30,15 +30,12 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   @impl true
   def render(assigns) do
     assigns =
-      if Map.has_key?(assigns, :over_ride_on_card_row_click_target) &&
-           assigns.over_ride_on_card_row_click_target == true do
+      if assigns.over_ride_on_card_row_click_target == true do
         # オーバーライド指定されている場合は、target指定しない（呼び出し元のハンドラへ返す）
-        assigns
-        |> assign(:low_on_click_target, nil)
+        assign(assigns, :row_on_click_target, nil)
       else
-        # オーバーライド指定されていいない場合、target指定する(本実装のハンドラを実行する)
-        assigns
-        |> assign(:low_on_click_target, assigns.myself)
+        # オーバーライド指定されていない場合、target指定する(指定がなければ本モジュールのハンドラを実行する)
+        assign_new(assigns, :row_on_click_target, fn -> assigns.myself end)
       end
 
     ~H"""
@@ -72,7 +69,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
                  href="/teams/new"
                  class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
                >
-                 チームを作る
+                チームを作る（β）
                </a>
             </li>
           </ul>
@@ -84,7 +81,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
                 id={team_member_user.team.id}
                 team_member_user={team_member_user}
                 team_type={:general_team}
-                low_on_click_target={assigns.low_on_click_target}
+                row_on_click_target={assigns.row_on_click_target}
               />
             <% end %>
           </ul>
@@ -97,12 +94,22 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
   @impl true
   def update(assigns, socket) do
+    tabs = filter_tabs(@tabs, Map.get(assigns, :display_tabs))
+    first_tab = tabs |> Enum.at(0) |> elem(0)
+
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:tabs, @tabs)
-     |> assign(:card, create_card_param("joined_teams"))
-     |> assign_card("joined_teams")}
+     |> assign(:tabs, tabs)
+     |> assign(:card, create_card_param(first_tab))
+     |> assign_card(first_tab)
+     |> assign(:over_ride_on_card_row_click_target, false)}
+  end
+
+  defp filter_tabs(tabs, nil), do: tabs
+
+  defp filter_tabs(tabs, display_tabs) do
+    Enum.filter(tabs, fn {key, _} -> key in display_tabs end)
   end
 
   defp assign_card(socket, "joined_teams") do
@@ -185,7 +192,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   end
 
   @doc """
-  パラメータにlow_on_click_targetを指定されなかった場合のチーム行クリック時のデフォルトイベント
+  パラメータにrow_on_click_targetを指定されなかった場合のチーム行クリック時のデフォルトイベント
   クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
   """
   def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do

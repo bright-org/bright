@@ -84,6 +84,7 @@ defmodule Bright.Factory do
   # HistoricalSkillScores context
   use Bright.HistoricalSkillScoreFactory
   use Bright.HistoricalSkillClassScoreFactory
+  use Bright.HistoricalSkillUnitScoreFactory
 
   # Teams context
   use Bright.TeamFactory
@@ -98,4 +99,13 @@ defmodule Bright.Factory do
 
   # Bright.RecruitmentStockUserFactory
   use Bright.RecruitmentStockUserFactory
+
+  # Subscription context
+  use Bright.SubscriptionPlanFactory
+  use Bright.SubscriptionPlanServiceFactory
+  use Bright.SubscriptionUserPlanFactory
+
+  # CustomGroups context
+  use Bright.CustomGroupFactory
+  use Bright.CustomGroupMemberUserFactory
 end

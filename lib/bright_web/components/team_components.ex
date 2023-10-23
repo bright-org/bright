@@ -9,28 +9,28 @@ defmodule BrightWeb.TeamComponents do
 
   - team 表示対象のチーム
   - team_type チームの種類（アイコン表示出しわけに使用する)
-  - low_on_click_target チームの表示をクリックした際に発火するon_card_row_clickイベントハンドラのターゲット。指定されない場合nilがデフォルト指定される為、大本のliveviewがターゲットとなる。
+  - row_on_click_target チームの表示をクリックした際に発火するon_card_row_clickイベントハンドラのターゲット。指定されない場合nilがデフォルト指定される為、大本のliveviewがターゲットとなる。
 
   ## Examples
       <.team_small
         id="123"
         team=%{Brignt.Team}
         team_type={:general_team}
-        low_on_click_target=@myself
+        row_on_click_target=@myself
       />
   """
 
   attr :id, :string, required: true
   attr :team_member_user, Bright.Teams.TeamMemberUsers, required: true
   attr :team_type, :atom, default: :general_team
-  attr :low_on_click_target, :any, required: false, default: nil
+  attr :row_on_click_target, :any, required: false, default: nil
 
   def team_small(assigns) do
     ~H"""
     <li
       id={@id}
       phx-click="on_card_row_click"
-      phx-target={@low_on_click_target}
+      phx-target={@row_on_click_target}
       phx-value-team_id={@team_member_user.team.id}
       class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >

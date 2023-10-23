@@ -34,7 +34,7 @@ erDiagram
 
 ### 補足
 
-- エビデンス投稿への添付画像をテーブルとして独立させるかは実装依存
+- エビデンス投稿への添付画像はエビデンスと作成・削除を同一で行うため共通テーブル
 - [スキル、スキルスコア系は別ファイルにあります](./skills.md)
 
 
@@ -91,6 +91,7 @@ erDiagram
     id skill_id FK
     id user_id FK
     string content
+    list image_paths
   }
 ```
 

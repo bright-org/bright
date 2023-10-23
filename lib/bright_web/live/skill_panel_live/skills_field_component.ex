@@ -14,7 +14,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias Bright.HistoricalSkillUnits
   alias Bright.HistoricalSkillPanels
   alias Bright.HistoricalSkillScores
-  alias BrightWeb.SkillPanelLive.TimelineHelper
+  alias Bright.Teams
+  alias BrightWeb.TimelineHelper
   alias BrightWeb.BrightCoreComponents
   alias BrightWeb.DisplayUserHelper
 
@@ -68,7 +69,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> assign(skill_class: nil)
      |> assign(compared_users: [], compared_user_dict: %{})
      |> assign(timeline: TimelineHelper.get_current())
-     |> assign(inner_flash: %{})}
+     |> clear_inner_flash()}
   end
 
   def update(assigns, socket) do
@@ -88,9 +89,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       )
 
     user = Map.put(user, :anonymous, anonymous)
-
     display_user_id = socket.assigns.display_user.id
-    existing_user_ids = socket.assigns.compared_users |> Enum.map(& &1.id)
+    existing_user_ids = Enum.map(socket.assigns.compared_users, & &1.id)
 
     (user.id == display_user_id or user.id in existing_user_ids)
     |> case do
@@ -99,7 +99,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          socket
          |> update(:compared_users, &(&1 ++ [user]))
          |> assign_compared_user_dict(user)
-         |> assign_compared_users_info()}
+         |> assign_compared_users_info()
+         |> clear_inner_flash()}
 
       true ->
         {:noreply, assign(socket, :inner_flash, %{error: "既に一覧に表示されています"})}
@@ -112,6 +113,42 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> update(:compared_users, fn users -> Enum.reject(users, &(&1.name == name)) end)
      |> update(:compared_user_dict, &Map.delete(&1, name))
      |> assign_compared_users_info()}
+  end
+
+  # 「個人と比較」チーム選択時のイベント
+  def handle_event("on_card_row_click", %{"team_id" => team_id}, socket) do
+    display_user_id = socket.assigns.display_user.id
+    existing_user_ids = Enum.map(socket.assigns.compared_users, & &1.id)
+
+    # TODO: 本当に参照可能なチームかどうかの確認
+    team = Teams.get_team_with_member_users!(team_id)
+
+    team_member_users =
+      team.member_users
+      |> Enum.filter(& &1.invitation_confirmed_at)
+      |> Enum.reject(&(&1.user_id == display_user_id))
+
+    team_member_users
+    |> Teams.sort_team_member_users()
+    |> Enum.map(&Map.put(&1.user, :anonymous, false))
+    |> Enum.reject(&(&1.id in existing_user_ids))
+    |> case do
+      [] ->
+        (team_member_users == [])
+        |> if do
+          {:noreply, assign(socket, :inner_flash, %{error: "#{team.name} チームメンバーがいません"})}
+        else
+          {:noreply, assign(socket, :inner_flash, %{error: "#{team.name} 既に一覧にメンバーが表示されています"})}
+        end
+
+      users ->
+        {:noreply,
+         socket
+         |> update(:compared_users, &(&1 ++ users))
+         |> assign_compared_users_dict(users)
+         |> assign_compared_users_info()
+         |> clear_inner_flash()}
+    end
   end
 
   def handle_event("timeline_bar_button_click", %{"date" => date}, socket) do
@@ -189,11 +226,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   defp assign_skill_units(socket, :past, label) do
     display_user = socket.assigns.display_user
 
+    locked_date =
+      TimelineHelper.label_to_date(label)
+      |> TimelineHelper.get_shift_date_from_date(-1)
+
     historical_skill_class =
       HistoricalSkillPanels.get_historical_skill_class_on_date(
         skill_panel_id: socket.assigns.skill_panel.id,
         class: socket.assigns.skill_class.class,
-        date: TimelineHelper.label_to_date(label)
+        locked_date: locked_date
       )
       |> Bright.Repo.preload(
         historical_skill_class_scores: Ecto.assoc(display_user, :historical_skill_class_scores)
@@ -302,10 +343,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   defp assign_compared_user_dict_from_users(socket) do
-    socket.assigns.compared_users
+    assign_compared_users_dict(socket, socket.assigns.compared_users)
+  end
+
+  defp assign_compared_users_dict(socket, users) do
+    users
     |> Enum.reduce(socket, fn user, acc ->
-      acc
-      |> assign_compared_user_dict(user)
+      assign_compared_user_dict(acc, user)
     end)
   end
 
@@ -466,5 +510,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          %HistoricalSkillScores.HistoricalSkillScore{} = historical_skill_score
        ) do
     historical_skill_score.historical_skill_id
+  end
+
+  defp clear_inner_flash(socket) do
+    assign(socket, :inner_flash, %{})
   end
 end

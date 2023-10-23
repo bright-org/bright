@@ -112,28 +112,17 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       ) do
     {skills, search_params} = convert_changes_to_search_params(changes)
 
-    case UserSearches.search_users_by_job_profile_and_skill_score(
-           search_params,
-           exclude_user_ids: [user.id],
-           sort: sort
-         ) do
-      %{entries: []} ->
-        socket
-        |> assign(:search_results, [])
-        |> assign(:skill_params, [])
-        |> assign(:no_result, true)
-        |> then(&{:noreply, &1})
+    result =
+      UserSearches.search_users_by_job_profile_and_skill_score(
+        search_params,
+        exclude_user_ids: [user.id],
+        sort: sort
+      )
 
-      result ->
-        socket
-        |> assign(:search_results, result.entries)
-        |> assign(:total_pages, result.total_pages)
-        |> assign(:page, result.page_number)
-        |> assign(:total_entries, result.total_entries)
-        |> assign(:skill_params, skills)
-        |> assign(:no_result, false)
-        |> then(&{:noreply, &1})
-    end
+    socket
+    |> assign_result(result)
+    |> assign(:skill_params, skills)
+    |> then(&{:noreply, &1})
   end
 
   def handle_event(
@@ -145,7 +134,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     page = if page < 1, do: 1, else: page
     {_, search_params} = convert_changes_to_search_params(changeset.changes)
 
-    %{entries: users} =
+    result =
       UserSearches.search_users_by_job_profile_and_skill_score(search_params,
         exclude_user_ids: [user.id],
         page: page,
@@ -153,8 +142,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       )
 
     socket
-    |> assign(:search_results, users)
-    |> assign(:page, page)
+    |> assign_result(result)
     |> then(&{:noreply, &1})
   end
 
@@ -176,7 +164,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
     {_, search_params} = convert_changes_to_search_params(changeset.changes)
 
-    %{entries: users} =
+    result =
       UserSearches.search_users_by_job_profile_and_skill_score(search_params,
         exclude_user_ids: [user.id],
         page: page,
@@ -184,8 +172,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       )
 
     socket
-    |> assign(:search_results, users)
-    |> assign(:page, page)
+    |> assign_result(result)
     |> then(&{:noreply, &1})
   end
 
@@ -211,6 +198,22 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  defp assign_result(socket, %{entries: []}) do
+    socket
+    |> assign(:search_results, [])
+    |> assign(:skill_params, [])
+    |> assign(:no_result, true)
+  end
+
+  defp assign_result(socket, result) do
+    socket
+    |> assign(:search_results, result.entries)
+    |> assign(:total_entries, result.total_entries)
+    |> assign(:total_pages, result.total_pages)
+    |> assign(:page, result.page_number)
+    |> assign(:no_result, false)
   end
 
   defp disabled?(bool_or_string), do: to_string(bool_or_string) == "false"

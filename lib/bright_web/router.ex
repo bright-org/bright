@@ -2,6 +2,7 @@ defmodule BrightWeb.Router do
   use BrightWeb, :router
 
   import BrightWeb.UserAuth
+  import BrightWeb.InitAssigns, only: [fetch_current_request_path: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -11,6 +12,7 @@ defmodule BrightWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug :fetch_current_request_path
   end
 
   pipeline :admin do
@@ -95,6 +97,30 @@ defmodule BrightWeb.Router do
       live "/job_skill_panels/:id/edit", JobSkillPanelLive.Index, :edit
       live "/job_skill_panels/:id", JobSkillPanelLive.Show, :show
       live "/job_skill_panels/:id/show/edit", JobSkillPanelLive.Show, :edit
+
+      live "/subscription_plans", SubscriptionPlanLive.Index, :index
+      live "/subscription_plans/new", SubscriptionPlanLive.Index, :new
+      live "/subscription_plans/:id/edit", SubscriptionPlanLive.Index, :edit
+      live "/subscription_plans/:id", SubscriptionPlanLive.Show, :show
+      live "/subscription_plans/:id/show/edit", SubscriptionPlanLive.Show, :edit
+
+      live "/subscription_plan_services", SubscriptionPlanServiceLive.Index, :index
+      live "/subscription_plan_services/new", SubscriptionPlanServiceLive.Index, :new
+      live "/subscription_plan_services/:id/edit", SubscriptionPlanServiceLive.Index, :edit
+      live "/subscription_plan_services/:id", SubscriptionPlanServiceLive.Show, :show
+      live "/subscription_plan_services/:id/show/edit", SubscriptionPlanServiceLive.Show, :edit
+
+      live "/subscription_user_plans", SubscriptionUserPlanLive.Index, :index
+      live "/subscription_user_plans/new", SubscriptionUserPlanLive.Index, :new
+      live "/subscription_user_plans/:id/edit", SubscriptionUserPlanLive.Index, :edit
+      live "/subscription_user_plans/:id", SubscriptionUserPlanLive.Show, :show
+      live "/subscription_user_plans/:id/show/edit", SubscriptionUserPlanLive.Show, :edit
+
+      if System.get_env("SERVER") == "dev" do
+        live "/user_tokens", UserTokenLive.Index, :index
+      end
+
+      live "/user_tokens", UserTokenLive.Index, :index
     end
   end
 
@@ -123,6 +149,12 @@ defmodule BrightWeb.Router do
 
       live_dashboard "/dashboard", metrics: BrightWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+
+    scope "/dev" do
+      pipe_through [:browser, :admin]
+
+      live "/user_tokens", BrightWeb.Admin.UserTokenLive.Index, :index
     end
   end
 

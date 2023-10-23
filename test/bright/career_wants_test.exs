@@ -72,7 +72,7 @@ defmodule Bright.CareerWantsTest do
       insert(:career_want_job, career_want_id: career_want.id, job_id: job.id)
       insert(:job_skill_panel, job_id: job.id, skill_panel_id: skill_panel.id)
 
-      assert %{career_field => [skill_panel]} ==
+      assert [{career_field, [skill_panel]}] ==
                CareerWants.list_skill_panels_group_by_career_field(career_want.id)
     end
   end

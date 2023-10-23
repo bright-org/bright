@@ -93,9 +93,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       )
       |> render_submit()
 
-      # NOTE: フラッシュメッセージが出るまで 600ms 程度待つ
-      Process.sleep(600)
-      assert lv |> has_element?("#modal_flash", "保存しました")
+      flash = assert_redirected(lv, ~p"/mypage")
+      assert flash["info"] == "保存しました"
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
 
@@ -134,9 +133,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       )
       |> render_submit()
 
-      # NOTE: フラッシュメッセージが出るまで 600ms 程度待つ
-      Process.sleep(600)
-      assert lv |> has_element?("#modal_flash", "保存しました")
+      flash = assert_redirected(lv, ~p"/mypage")
+      assert flash["info"] == "保存しました"
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
 
@@ -151,7 +149,29 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
                :github_url
              ]) == user_profile_attrs
 
-      assert {:ok, _} = Bright.TestStorage.get(user_profile.icon_file_path)
+      assert {:ok, _} = Bright.Utils.GoogleCloud.Storage.get(user_profile.icon_file_path)
+    end
+
+    test "submits general setting from not /mypage and not redirect", %{conn: conn, user: user} do
+      {:ok, lv, _html} = live(conn, ~p"/graphs")
+
+      lv |> element("a", "一般") |> render_click()
+
+      %{name: new_name} = params_for(:user)
+
+      lv
+      |> form("#general_setting_form",
+        user: %{name: new_name}
+      )
+      |> render_submit()
+
+      # NOTE: フラッシュメッセージが出るまで 600ms 程度待つ
+      Process.sleep(600)
+      assert lv |> has_element?("#modal_flash", "保存しました")
+
+      :ok = refute_redirected(lv, ~p"/mypage")
+
+      assert %User{name: ^new_name} = Repo.get(User, user.id)
     end
 
     test "validates general setting form without icon", %{conn: conn} do
@@ -208,7 +228,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       assert lv
              |> has_element?(
                ~s{#general_setting_form div[phx-feedback-for="user[user_profile][twitter_url]"] .text-error},
-               "https://twitter.com/ から始めてください"
+               "https://twitter.com/ または https://x.com/ から始めてください"
              )
 
       assert lv
