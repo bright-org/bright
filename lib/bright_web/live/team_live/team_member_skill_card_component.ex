@@ -11,7 +11,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
   @impl true
   def render(assigns) do
     ~H"""
-      <div class="flex w-full lg:w-[474px] h-[554px] lg:h-[654px] shadow flex-col bg-white relative">
+      <div class="flex w-full lg:w-[474px] h-[544px] lg:h-[654px] shadow flex-col bg-white relative">
       <!-- メンバーデータ -->
         <div
           :if={is_nil(@display_skill_card.user_skill_class_score)}
@@ -38,7 +38,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             />
           </div>
         </div>
-        <div class="ml-4 lg:ml-6 mt-1 text-base h-[28px]">
+        <div class="ml-4 lg:ml-6 mt-1 text-base h-[12px]">
           <%= assigns.display_skill_card.user.user_profile.title %>
         </div>
 
