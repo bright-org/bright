@@ -38,6 +38,9 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             />
           </div>
         </div>
+        <div class="ml-4 lg:ml-6 mt-1 text-base">
+          <%= assigns.display_skill_card.user.user_profile.title %>
+        </div>
 
         <div
           :if={ is_nil(@display_skill_card.user_skill_class_score)}
@@ -93,10 +96,18 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             1on1に誘う
           </button>
+          <%= if @display_skill_card.user.id == @current_user.id do %>
+          <.link navigate={~p"/panels/#{@display_skill_panel}"}>
+          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
+            スキルを入力
+          </button>
+          </.link>
+          <% else %>
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             この人と比較
           </button>
-          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
+          <% end %>
+          <button class="min-w-[124px] text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             スキルアップ確認
           </button>
         </div>
