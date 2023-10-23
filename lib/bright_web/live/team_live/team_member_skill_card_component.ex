@@ -29,7 +29,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
         <div class="flex justify-between px-4 lg:px-6 pt-1 items-center">
           <div class="text-xl w-56 truncate lg:w-full lg:text-2xl font-bold">
-            <%= assigns.display_skill_card.user.name %>
+            <.link navigate={~p"/mypage/#{assigns.display_skill_card.user.name}"}><%= assigns.display_skill_card.user.name %></.link>
           </div>
           <div class="mt-4">
             <img
