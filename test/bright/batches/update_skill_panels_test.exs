@@ -160,8 +160,8 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       skill_unit_scores =
         Enum.flat_map(skill_units, fn skill_unit ->
           [
-            insert(:skill_unit_score, skill_unit: skill_unit, user: user1),
-            insert(:skill_unit_score, skill_unit: skill_unit, user: user2)
+            insert(:skill_unit_score, skill_unit: skill_unit, user: user1, percentage: 1.0),
+            insert(:skill_unit_score, skill_unit: skill_unit, user: user2, percentage: 1.0)
           ]
         end)
 
@@ -180,8 +180,8 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       skill_class_scores =
         Enum.flat_map(skill_classes, fn skill_class ->
           [
-            insert(:skill_class_score, skill_class: skill_class, user: user1),
-            insert(:skill_class_score, skill_class: skill_class, user: user2)
+            insert(:skill_class_score, skill_class: skill_class, user: user1, percentage: 1.0),
+            insert(:skill_class_score, skill_class: skill_class, user: user2, percentage: 1.0)
           ]
         end)
 
