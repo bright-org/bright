@@ -23,7 +23,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
                ~s{#general_setting_form input[name="user[name]"][value="#{user.name}"]}
              )
 
-      assert lv |> has_element?("#general_setting_form", "称号")
+      assert lv |> has_element?("#general_setting_form", "役割・自称")
 
       assert lv
              |> has_element?(

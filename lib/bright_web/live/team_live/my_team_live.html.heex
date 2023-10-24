@@ -1,6 +1,7 @@
 <div class="px-4 lg:px-10 pt-2 pb-4 lg:pt-4 lg:pb-8 bg-white">
   <!-- スキルと対象の切り替え -->
-  <div class="flex flex-col lg:flex-row gap-y-4 lg:gap-x-4">
+  <div class="flex flex-col lg:flex-row lg:justify-between gap-y-4 lg:gap-x-4">
+    <div class="flex flex flex-col lg:flex-row">
     <section class="hidden accordion flex max-w-[1236px] lg:hidden mt-2">
       <div class="bg-brightGray-50 rounded w-full">
         <p
@@ -88,17 +89,26 @@
       </.mega_menu_button>
       </div>
     </div>
+    </div>
     <!-- TODO αリリースではスキルセットは対応しない -->
     <!-- スキルセット menu -->
 
-    <button
-      data-modal-target="defaultModal"
-      data-modal-toggle="defaultModal"
-      class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-44"
-      phx-click={show_modal("create-team-modal")}
-    >
-      チームを作る（β）
-    </button>
+    <div class="flex flex-col lg:flex-row gap-4">
+      <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-44">
+       <.link navigate={~p"/teams/new"}>
+        チームを作る（β）
+        </.link>
+      </button>
+
+      <button
+        :if={is_admin?(@display_team, @current_user)}
+        class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-52"
+      >
+        <.link navigate={~p"/teams/#{@display_team}/edit"}>
+          チームを編集する（β）
+        </.link>
+      </button>
+    </div>
   </div>
 
   <!-- プロフィール -->
@@ -146,6 +156,7 @@
       <.live_component
         module={BrightWeb.TeamMemberSkillCardComponent}
         id={"skill_card_#{index}"}
+        current_user={@current_user}
         display_skill_panel={@display_skill_panel}
         display_skill_card={display_skill_card}
         display_skill_classes={@display_skill_classes}
@@ -165,7 +176,8 @@
       id="create-team-component"
       action={@live_action}
       current_user={@current_user}
-      users={[]}
+      team={@team}
+      users={@users}
       patch={~p"/teams"}
     />
   </.bright_modal>

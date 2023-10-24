@@ -18,6 +18,15 @@ defmodule Bright.Batches do
     Bright.Batches.UpdateSkillPanels.call(today, dry_run)
   end
 
+  @doc """
+  キャリアフィールドスコアの更新バッチを実行する。
+  """
+  def update_career_field_scores do
+    load_app()
+
+    Bright.Batches.UpdateCareerFieldScores.call()
+  end
+
   defp load_app do
     Application.load(@app)
     Application.ensure_all_started(@app)

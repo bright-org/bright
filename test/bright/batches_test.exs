@@ -41,4 +41,19 @@ defmodule Bright.BatchesTest do
       ]
     end
   end
+
+  describe "update_career_field_scores/0" do
+    # see ./batches/update_career_field_scores_test.exs
+
+    alias Bright.Batches.UpdateCareerFieldScores
+
+    test "call" do
+      with_mocks([
+        {UpdateCareerFieldScores, [:passthrough], [call: fn -> nil end]}
+      ]) do
+        Batches.update_career_field_scores()
+        assert_called(UpdateCareerFieldScores.call())
+      end
+    end
+  end
 end

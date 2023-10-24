@@ -170,8 +170,8 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
           Enum.flat_map(skill_unit.skill_categories, fn skill_category ->
             Enum.flat_map(skill_category.skills, fn skill ->
               [
-                insert(:skill_score, skill: skill, user: user1),
-                insert(:skill_score, skill: skill, user: user2)
+                insert(:skill_score, skill: skill, user: user1, score: :middle),
+                insert(:skill_score, skill: skill, user: user2, score: :middle)
               ]
             end)
           end)

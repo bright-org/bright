@@ -197,7 +197,7 @@ defmodule BrightWeb.BrightButtonComponents do
       phx-click={JS.toggle(to: "#personal_setting_modal")}
     >
       <img
-        class="inline-block h-10 w-10 rounded-full"
+        class="object-cover inline-block h-10 w-10 rounded-full"
         src={@icon_file_path}
       />
     </button>
