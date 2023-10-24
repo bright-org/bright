@@ -5,6 +5,8 @@ defmodule Bright.CareerFields.CareerField do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Bright.CareerFields.CareerFieldJob
+
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
 
@@ -13,7 +15,8 @@ defmodule Bright.CareerFields.CareerField do
     field :name_ja, :string
     field :position, :integer
 
-    has_many :jobs, Bright.Jobs.Job
+    has_many :career_field_jobs, CareerFieldJob
+    has_many :jobs, through: [:career_field_jobs, :job]
     has_many :career_field_scores, Bright.SkillScores.CareerFieldScore
 
     has_many :historical_career_field_scores,
