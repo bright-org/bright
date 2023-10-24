@@ -187,7 +187,7 @@ defmodule Bright.SkillEvidencesTest do
     } do
       skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
 
-      assert {:ok, %SkillEvidencePost{}} =
+      assert {:ok, %{delete: %SkillEvidencePost{}}} =
                SkillEvidences.delete_skill_evidence_post(skill_evidence_post)
 
       assert_raise Ecto.NoResultsError, fn ->

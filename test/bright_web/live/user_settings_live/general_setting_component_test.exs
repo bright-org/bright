@@ -23,7 +23,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
                ~s{#general_setting_form input[name="user[name]"][value="#{user.name}"]}
              )
 
-      assert lv |> has_element?("#general_setting_form", "称号")
+      assert lv |> has_element?("#general_setting_form", "役割・自称")
 
       assert lv
              |> has_element?(
@@ -93,9 +93,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       )
       |> render_submit()
 
-      # NOTE: フラッシュメッセージが出るまで 600ms 程度待つ
-      Process.sleep(600)
-      assert lv |> has_element?("#modal_flash", "保存しました")
+      flash = assert_redirected(lv, ~p"/mypage")
+      assert flash["info"] == "保存しました"
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
 
@@ -134,9 +133,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       )
       |> render_submit()
 
-      # NOTE: フラッシュメッセージが出るまで 600ms 程度待つ
-      Process.sleep(600)
-      assert lv |> has_element?("#modal_flash", "保存しました")
+      flash = assert_redirected(lv, ~p"/mypage")
+      assert flash["info"] == "保存しました"
 
       assert %User{name: ^new_name} = Repo.get(User, user.id)
 
@@ -151,7 +149,29 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
                :github_url
              ]) == user_profile_attrs
 
-      assert {:ok, _} = Bright.TestStorage.get(user_profile.icon_file_path)
+      assert {:ok, _} = Bright.Utils.GoogleCloud.Storage.get(user_profile.icon_file_path)
+    end
+
+    test "submits general setting from not /mypage and not redirect", %{conn: conn, user: user} do
+      {:ok, lv, _html} = live(conn, ~p"/graphs")
+
+      lv |> element("a", "一般") |> render_click()
+
+      %{name: new_name} = params_for(:user)
+
+      lv
+      |> form("#general_setting_form",
+        user: %{name: new_name}
+      )
+      |> render_submit()
+
+      # NOTE: フラッシュメッセージが出るまで 600ms 程度待つ
+      Process.sleep(600)
+      assert lv |> has_element?("#modal_flash", "保存しました")
+
+      :ok = refute_redirected(lv, ~p"/mypage")
+
+      assert %User{name: ^new_name} = Repo.get(User, user.id)
     end
 
     test "validates general setting form without icon", %{conn: conn} do

@@ -51,6 +51,27 @@ defmodule Bright.Teams do
   end
 
   @doc """
+  Gets a single team with users and user_profile.
+
+  Raises `Ecto.NoResultsError` if the Team does not exist.
+
+  ## Examples
+
+      iex> get_team_with_member!(123)
+      %Team{}
+
+      iex> get_team_with_member!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+
+  def get_team_with_member!(id) do
+    Team
+    |> preload(users: :user_profile)
+    |> Repo.get!(id)
+  end
+
+  @doc """
   Creates a team.
 
   ## Examples
@@ -128,6 +149,22 @@ defmodule Bright.Teams do
   """
   def list_team_member_users do
     Repo.all(TeamMemberUsers)
+  end
+
+  @doc """
+  Returns the list of team_member_users find by team id and user id list.
+
+  ## Examples
+
+      iex> list_team_member_users_by_user_id(1, [1,2,3])
+      [%TeamMemberUsers{}, ...]
+
+  """
+  def list_team_member_users_by_user_id(team_id, user_ids) do
+    TeamMemberUsers
+    |> where([m], m.team_id == ^team_id)
+    |> where([m], m.user_id in ^user_ids)
+    |> Repo.all()
   end
 
   @doc """
@@ -416,6 +453,76 @@ defmodule Bright.Teams do
   end
 
   @doc """
+  チームおよびメンバーの一括更新
+
+  iex> update_team_multi(
+    team,
+    update_params,
+    admin_user,
+    new_commer
+    new_member_users,
+      %{
+          enable_team_up_functions: true,
+          enable_hr_functions: false
+      }
+    )
+  {:ok, team, team_member_user_attrs}
+
+  """
+
+  def update_team_multi(
+        team,
+        update_params,
+        admin_user,
+        newcomer,
+        new_member_users,
+        _enable_functions \\ %{enable_team_up_functions: false, enable_hr_functions: false}
+      ) do
+    member_attr =
+      newcomer
+      |> Enum.map(fn member_user ->
+        # 招待メール用のtokenを作成
+        {base64_encoded_token, hashed_token} = build_invitation_token()
+
+        %TeamMemberUsers{
+          user_id: member_user.id,
+          is_admin: false,
+          # メンバーのプライマリ判定は承認後に実施する為一旦falseとする
+          is_star: false,
+          invitation_token: hashed_token,
+          invitation_sent_to: member_user.email,
+          base64_encoded_token: base64_encoded_token
+        }
+      end)
+
+    team_changeset = Team.registration_changeset(team, update_params)
+
+    exists_member_ids =
+      [admin_user | new_member_users -- newcomer]
+      |> Enum.map(& &1.id)
+
+    exists_members = list_team_member_users_by_user_id(team.id, exists_member_ids)
+
+    team_member_user_changesets =
+      [exists_members, member_attr]
+      |> Enum.concat()
+      |> Enum.map(fn attrs ->
+        change_team_member_users(attrs)
+      end)
+
+    team_and_members_changeset =
+      team_changeset
+      |> Ecto.Changeset.put_assoc(:member_users, team_member_user_changesets)
+
+    {:ok, result} =
+      Ecto.Multi.new()
+      |> Ecto.Multi.update(:team, team_and_members_changeset)
+      |> Repo.transaction()
+
+    {:ok, Map.get(result, :team), member_attr}
+  end
+
+  @doc """
   チーム招待メール送信
   """
   def deliver_invitation_email_instructions(
@@ -583,5 +690,17 @@ defmodule Bright.Teams do
       select: %{user_id: tmu.user_id, count: count(tmu.user_id)},
       group_by: tmu.user_id
     )
+  end
+
+  @doc """
+  チームメンバーを並び替えて返す
+  """
+  def sort_team_member_users(team_member_users) do
+    {stars, not_stars} = Enum.split_with(team_member_users, & &1.is_star)
+
+    [stars, not_stars]
+    |> Enum.flat_map(fn team_member_users ->
+      Enum.sort_by(team_member_users, & &1.invitation_confirmed_at, {:asc, NaiveDateTime})
+    end)
   end
 end

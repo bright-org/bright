@@ -115,16 +115,18 @@ defmodule BrightWeb.ProfileComponents do
 
     assigns =
       assigns
-      |> assign(
-        :icon_style,
-        "background-repeat: no-repeat; background-image: url('#{icon_file_path}');"
-      )
+      |> assign(:icon_file_path, icon_file_path)
       |> assign(:user_name, user_name)
       |> assign(:title, title)
 
     ~H"""
     <div class="flex">
-      <img class="bg-contain inline-block mr-2 lg:mr-5 h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full" src={@icon_file_path} />
+      <div class="mr-2 lg:mr-5">
+        <img
+          class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
+          src={@icon_file_path}
+        />
+      </div>
       <div class="flex justify-between lg:justify-start mt-2 lg:mt-4 w-full">
         <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
         <div class="flex flex-col lg:flex-row">

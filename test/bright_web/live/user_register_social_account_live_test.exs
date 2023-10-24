@@ -215,4 +215,36 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
       assert login_html =~ "ログイン"
     end
   end
+
+  describe "register button and terms" do
+    setup [:generate_google_session_token]
+
+    test "enables register button when all check is clicked", %{
+      conn: conn,
+      session_token: session_token
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/users/register_social_account/#{session_token}")
+
+      assert lv
+             |> has_element?("button[disabled]", "ユーザーを新規作成する")
+
+      lv
+      |> element(~s{div[phx-click="toggre_is_terms_of_service_checked"]})
+      |> render_click()
+
+      lv
+      |> element(~s{div[phx-click="toggre_is_privacy_policy_checked"]})
+      |> render_click()
+
+      lv
+      |> element(~s{div[phx-click="toggre_is_law_checked"]})
+      |> render_click()
+
+      refute lv
+             |> has_element?("button[disabled]", "ユーザーを新規作成する")
+
+      assert lv
+             |> has_element?("button", "ユーザーを新規作成する")
+    end
+  end
 end

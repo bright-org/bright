@@ -18,7 +18,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
               <BrightCore.input field={f[:name]} type="text" size="20" input_class="px-2 py-1 rounded w-60" />
             </label>
             <label class="border-b border-brightGray-200 flex items-center py-4">
-              <span class="w-32">称号</span>
+              <span class="w-32">役割・自称</span>
               <.inputs_for :let={ff} field={f[:user_profile]}>
                 <BrightCore.input field={ff[:title]} type="text" size="20" input_class="px-2 py-1 rounded w-60" />
               </.inputs_for>
@@ -61,10 +61,10 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
                 <img
                   src={UserProfiles.icon_url(Phoenix.HTML.Form.input_value(ff, :icon_file_path))}
                   :if={(!uploaded?(@uploads) || upload_error?(@uploads)) && has_icon?(ff)}
-                  class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full"
+                  class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 rounded-full"
                 />
                 <%= for entry <- @uploads.icon.entries do %>
-                  <.live_img_preview :if={!upload_error?(@uploads, entry)} entry={entry} class="cursor-pointer hover:opacity-70 h-20 w-20 rounded-full" />
+                  <.live_img_preview :if={!upload_error?(@uploads, entry)} entry={entry} class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 rounded-full" />
                 <% end %>
               </label>
             </.inputs_for>
@@ -121,12 +121,21 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
     |> handle_uploaded_entries(user_params, uploaded_entries(socket, :icon))
     |> case do
       {:ok, user} ->
-        send_update_after_save(user)
-        {:noreply, socket |> assign_form(Accounts.change_user_with_user_profile(user))}
+        handle_after_save(socket, user)
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
     end
+  end
+
+  # NOTE: マイページからの保存の時のみ、保存後にマイページに遷移する
+  defp handle_after_save(%{assigns: %{current_request_path: "/mypage"}} = socket, _user) do
+    {:noreply, socket |> put_flash(:info, "保存しました") |> push_navigate(to: "/mypage")}
+  end
+
+  defp handle_after_save(socket, user) do
+    send_update_after_save(user)
+    {:noreply, socket |> assign_form(Accounts.change_user_with_user_profile(user))}
   end
 
   # NOTE: ファイルアップロードあり

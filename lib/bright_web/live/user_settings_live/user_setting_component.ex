@@ -52,6 +52,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
               id={"user_settings"}
               user={@current_user}
               action={:edit}
+              current_request_path={@current_request_path}
             />
           </.tab>
         </section>

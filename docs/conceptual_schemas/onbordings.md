@@ -11,7 +11,7 @@
   - `career_wants`、`career_want_jobs`、`career_fields`、`career_field_jobs`, `jobs`、`job_skill_panels`、`user_onboardings` の6テーブル
 - 既に定義案があるテーブル
   - `skill_panels`、`user_skill_panels`、`skill_panels`、`skill_classes`、`skill_class_units`
-  - [概念データモデル スキル体系](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/skills.md) にて定義済み
+  - [概念データモデル スキル体系](https://github.com/bright-org/bright/blob/main/docs/conceptual_schemas/skills.md) にて定義済み
 
 - `career_want_jobs` は、jobsからcareer_fieldsを逆引きするために使う。複数同じcareer_fieldが引けた場合はユニーク化する。
 - `job_skill_panels` はjobsかskill_panelを逆引きするために使う。複数同じskill_panelが引けた場合はユニーク化する。

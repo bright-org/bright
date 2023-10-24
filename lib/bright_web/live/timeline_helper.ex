@@ -1,4 +1,4 @@
-defmodule BrightWeb.SkillPanelLive.TimelineHelper do
+defmodule BrightWeb.TimelineHelper do
   @moduledoc """
   タイムラインバー表示のためのデータ作成用の共通処理
   表示用データは以下の通り。
