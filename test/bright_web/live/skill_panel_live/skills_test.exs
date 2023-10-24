@@ -943,6 +943,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:team_member_users, user: user_2, team: team)
       insert(:team_member_users, user: user_3, team: team)
 
+      # 招待が終わっていないメンバーをダミーとして追加
+      user_dummy = insert(:user)
+      insert(:team_member_users, user: user_dummy, team: team, invitation_confirmed_at: nil)
+
       %{team: team}
     end
 
@@ -972,6 +976,41 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, "#skills-table-field", user_3.name)
       assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
       assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "33％")
+
+      # 招待済みでない3人目がいないこと
+      refute has_element?(show_live, "#user-3-percentages")
+    end
+
+    @tag score: :low
+    test "shows by query parameter", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      team: team,
+      user: user,
+      user_2: user_2,
+      user_3: user_3
+    } do
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+      insert(:skill_class_score, user: user, skill_class: skill_class_2)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1&team=#{team.id}")
+
+      assert has_element?(show_live, "#skills-table-field", user_2.name)
+      assert has_element?(show_live, "#skills-table-field", user_3.name)
+      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
+      assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "33％")
+      refute has_element?(show_live, "#user-3-percentages")
+
+      # 比較対象を変更してクラス切り替えで再初期化されないこと
+      show_live
+      |> element(~s(button[phx-click="reject_compared_user"][phx-value-name="#{user_3.name}"]))
+      |> render_click()
+
+      show_live
+      |> element("#class_tab_2 a")
+      |> render_click()
+
+      refute has_element?(show_live, "#user-2-percentages")
     end
   end
 

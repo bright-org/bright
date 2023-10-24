@@ -1,0 +1,27 @@
+<.header>
+  Subscription plan service <%= @subscription_plan_service.id %>
+  <:subtitle>This is a subscription_plan_service record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/admin/subscription_plan_services/#{@subscription_plan_service}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit subscription_plan_service</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Service code"><%= @subscription_plan_service.service_code %></:item>
+  <:item title="Plan"><%= @subscription_plan_service.subscription_plan_id %></:item>
+</.list>
+
+<.back navigate={~p"/admin/subscription_plan_services"}>Back to subscription_plan_services</.back>
+
+<.modal :if={@live_action == :edit} id="subscription_plan_service-modal" show on_cancel={JS.patch(~p"/admin/subscription_plan_services/#{@subscription_plan_service}")}>
+  <.live_component
+    module={BrightWeb.Admin.SubscriptionPlanServiceLive.FormComponent}
+    id={@subscription_plan_service.id}
+    title={@page_title}
+    action={@live_action}
+    subscription_plan_service={@subscription_plan_service}
+    patch={~p"/admin/subscription_plan_services/#{@subscription_plan_service}"}
+  />
+</.modal>

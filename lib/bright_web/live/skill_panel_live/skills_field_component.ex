@@ -78,7 +78,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> assign(compared_users: [], compared_user_dict: %{})
      |> assign(timeline: TimelineHelper.get_current())
      |> assign(custom_group: nil)
-     |> assign(inner_flash: %{})}
+     |> clear_inner_flash()}
   end
 
   def update(%{custom_group_created: custom_group}, socket) do
@@ -119,6 +119,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      socket
      |> assign_assigns_with_current_if_updated(assigns)
      |> assign_on_timeline(TimelineHelper.get_selected_tense(socket.assigns.timeline))
+     |> assign_compared_users_from_team(assigns.init_team_id)
      |> assign_compared_users_info()}
   end
 
@@ -141,7 +142,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          socket
          |> update(:compared_users, &(&1 ++ [user]))
          |> assign_compared_user_dict(user)
-         |> assign_compared_users_info()}
+         |> assign_compared_users_info()
+         |> clear_inner_flash()}
 
       true ->
         {:noreply, assign(socket, :inner_flash, %{error: "既に一覧に表示されています"})}
@@ -161,23 +163,27 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     display_user_id = socket.assigns.display_user.id
     existing_user_ids = Enum.map(socket.assigns.compared_users, & &1.id)
 
-    # TODO: 本当に参照可能なチームかどうかの確認
-    team = Teams.get_team_with_member_users!(team_id)
+    {team, users} = list_users_in_team(team_id)
+    users = Enum.reject(users, &(&1.id == display_user_id))
 
-    team.member_users
-    |> Teams.sort_team_member_users()
-    |> Enum.map(&Map.put(&1.user, :anonymous, false))
-    |> Enum.reject(&(&1.id == display_user_id || &1.id in existing_user_ids))
+    users
+    |> Enum.reject(&(&1.id in existing_user_ids))
     |> case do
       [] ->
-        {:noreply, assign(socket, :inner_flash, %{error: "既に一覧に表示されています"})}
+        (users == [])
+        |> if do
+          {:noreply, assign(socket, :inner_flash, %{error: "#{team.name} チームメンバーがいません"})}
+        else
+          {:noreply, assign(socket, :inner_flash, %{error: "#{team.name} 既に一覧にメンバーが表示されています"})}
+        end
 
       users ->
         {:noreply,
          socket
          |> update(:compared_users, &(&1 ++ users))
          |> assign_compared_users_dict(users)
-         |> assign_compared_users_info()}
+         |> assign_compared_users_info()
+         |> clear_inner_flash()}
     end
   end
 
@@ -437,6 +443,34 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign(compared_users_stats: compared_users_stats)
   end
 
+  defp list_users_in_team(team_id) do
+    # TODO: 本当に参照可能なチームかどうかの確認
+    team = Teams.get_team_with_member_users!(team_id)
+
+    users =
+      team.member_users
+      |> Enum.filter(& &1.invitation_confirmed_at)
+      |> Teams.sort_team_member_users()
+      |> Enum.map(&Map.put(&1.user, :anonymous, false))
+
+    {team, users}
+  end
+
+  defp assign_compared_users_from_team(socket, nil), do: socket
+
+  defp assign_compared_users_from_team(socket, team_id) do
+    display_user_id = socket.assigns.display_user.id
+    existing_user_ids = Enum.map(socket.assigns.compared_users, & &1.id)
+
+    {_team, users} = list_users_in_team(team_id)
+    users = Enum.reject(users, &(&1.id == display_user_id or &1.id in existing_user_ids))
+
+    socket
+    |> update(:compared_users, &(&1 ++ users))
+    |> assign_compared_users_dict(users)
+    |> assign_compared_users_info()
+  end
+
   defp assign_table_structure(socket) do
     table_structure = build_table_structure(socket.assigns.skill_units)
     max_row = Enum.count(table_structure)
@@ -540,5 +574,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
          %HistoricalSkillScores.HistoricalSkillScore{} = historical_skill_score
        ) do
     historical_skill_score.historical_skill_id
+  end
+
+  defp clear_inner_flash(socket) do
+    assign(socket, :inner_flash, %{})
   end
 end

@@ -121,12 +121,21 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
     |> handle_uploaded_entries(user_params, uploaded_entries(socket, :icon))
     |> case do
       {:ok, user} ->
-        send_update_after_save(user)
-        {:noreply, socket |> assign_form(Accounts.change_user_with_user_profile(user))}
+        handle_after_save(socket, user)
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
     end
+  end
+
+  # NOTE: マイページからの保存の時のみ、保存後にマイページに遷移する
+  defp handle_after_save(%{assigns: %{current_request_path: "/mypage"}} = socket, _user) do
+    {:noreply, socket |> put_flash(:info, "保存しました") |> push_navigate(to: "/mypage")}
+  end
+
+  defp handle_after_save(socket, user) do
+    send_update_after_save(user)
+    {:noreply, socket |> assign_form(Accounts.change_user_with_user_profile(user))}
   end
 
   # NOTE: ファイルアップロードあり

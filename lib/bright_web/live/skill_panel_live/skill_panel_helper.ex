@@ -17,6 +17,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     evidence_filled: 0
   }
 
+  # queries: patch遷移時に保持するパラメータ
+  # NOTE:
+  #   初期状態を指定するteamなどのパラメータは含めないこと。
+  #   含めるとその状態で初期化される。
   @queries ~w(class)
 
   def assign_path(socket, url) do
