@@ -5,9 +5,9 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.ProfileComponents
-  alias Bright.Accounts
   alias Bright.Teams
   alias Bright.Teams.Team
+  alias BrightWeb.TeamLive.TeamAddUserComponent
 
   @doc """
   Renders a simple form for tema create.
@@ -46,85 +46,57 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   @impl true
+  def update(%{action: :edit, team: team} = assigns, socket) do
+    socket
+    |> assign(assigns)
+    |> assign(:modal_title, "チームを編集する（β）")
+    |> assign(:submit, "チームを更新し、新規メンバーに招待メールを送る")
+    |> assign_team_form(Teams.change_team(team))
+    |> then(&{:ok, &1})
+  end
+
   def update(assigns, socket) do
     team_changeset = Team.changeset(%Team{}, %{})
 
-    socket =
-      socket
-      |> assign(:search_word, nil)
-      |> assign(:search_word_error, nil)
-      |> assign_team_form(team_changeset)
-
-    socket =
-      if !Map.has_key?(assigns, :team) do
-        socket
-        |> assign(assigns)
-        |> assign(:team, %Team{})
-        |> assign(:name, nil)
-      end
-
-    {:ok, socket}
+    socket
+    |> assign(assigns)
+    |> assign(:modal_title, "チームを作る（β）")
+    |> assign(:submit, "チームを作成し、上記メンバーに招待を送る")
+    |> assign_team_form(team_changeset)
+    |> then(&{:ok, &1})
   end
 
   @impl true
-  def handle_event("change_add_user", %{"search_word" => search_word}, socket) do
-    socket =
-      socket
-      |> assign(:search_word, search_word)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("add_user", _params, socket) do
-    search_word = socket.assigns.search_word
-
-    socket =
-      socket
-      |> validate_search_word(search_word)
-      |> search_and_add_user(search_word)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("validate_team", %{"name" => name}, socket) do
+  def handle_event("validate_team", %{"team" => team_params}, socket) do
     changeset =
       socket.assigns.team
-      |> Team.registration_changeset(%{name: name})
+      |> Team.registration_changeset(team_params)
       |> Map.put(:action, :validate)
 
-    socket =
-      socket
-      |> assign_team_form(changeset)
-      |> assign(:name, name)
-
-    {:noreply, socket}
+    {:noreply, assign_team_form(socket, changeset)}
   end
 
   def handle_event("remove_user", %{"id" => id}, socket) do
-    current_users = socket.assigns.users
-
     # メンバーユーザー一時リストから削除
-    removed_users =
-      current_users
-      |> Enum.reject(fn x -> x.id == id end)
-
+    removed_users = Enum.reject(socket.assigns.users, fn x -> x.id == id end)
     {:noreply, assign(socket, :users, removed_users)}
   end
 
-  @impl true
-  def handle_event("create_team", %{"name" => team_name}, socket) do
+  def handle_event("create_team", %{"team" => team_params}, socket) do
+    save_team(socket, socket.assigns.action, team_params)
+  end
+
+  def save_team(socket, :new, team_params) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
 
-    case Teams.create_team_multi(team_name, admin_user, member_users) do
+    case Teams.create_team_multi(team_params["name"], admin_user, member_users) do
       {:ok, team, member_user_attrs} ->
         # 全メンバーのuserを一気にpreloadしたいのでteamを再取得
         preloaded_team = Teams.get_team_with_member_users!(team.id)
 
         # 招待したメンバー全員に招待メールを送信する。
-        send_invitation_mail(preloaded_team, admin_user, member_user_attrs)
+        send_invitation_mails(preloaded_team, admin_user, member_user_attrs)
 
         # メール送信の成否に関わらず正常終了とする
         # TODO メール送信エラーを運用上検知する必要がないか?
@@ -140,103 +112,68 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     end
   end
 
-  defp validate_search_word(socket, search_word) do
-    if is_nil(search_word) || search_word == "" do
-      socket =
-        socket
-        # TODO Gettext未対応
-        |> assign(search_word_error: "検索条件を入力してください")
+  def save_team(%{assigns: assigns} = socket, :edit, team_params) do
+    current_member = assigns.team.users
+    new_member = assigns.users
+    newcomer = new_member -- current_member
+    admin_user = assigns.current_user
 
-      {:error, socket}
-    else
-      {:ok, socket}
+    case Teams.update_team_multi(assigns.team, team_params, admin_user, newcomer, new_member) do
+      {:ok, team, member_user_attrs} ->
+        # 新規招待したメンバー全員に招待メールを送信する。
+        send_invitation_mails_to_newcomer(team, admin_user, newcomer, member_user_attrs)
+
+        # メール送信の成否に関わらず正常終了とする
+        # TODO メール送信エラーを運用上検知する必要がないか?
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "チームを更新しました")
+         # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
+         |> redirect(to: assigns.patch)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, changeset)}
     end
   end
 
-  defp search_and_add_user({:ok, socket}, search_word) do
-    selected_users = socket.assigns.users
-
-    user =
-      search_word
-      |> Accounts.get_user_by_name_or_email()
-
-    cond do
-      user == nil ->
-        socket
-        # TODO Gettext未対応
-        |> assign(search_word_error: "該当のユーザーが見つかりませんでした")
-
-      user.id == socket.assigns.current_user.id ->
-        socket
-        # TODO Gettext未対応
-        |> assign(search_word_error: "チーム作成者は自動的に管理者として追加されます")
-
-      true ->
-        if id_duplidated_user?(user, selected_users) do
-          socket
-          # TODO Gettext未対応
-          |> assign(search_word_error: "対象のユーザーは既に追加されています")
-        else
-          # メンバーユーザー一時リストに追加
-          added_users = [user | selected_users]
-
-          socket
-          |> assign(:users, added_users)
-          |> assign(:search_word, nil)
-          |> assign(:search_word_error, nil)
-        end
-    end
+  defp send_invitation_mails(team, admin_user, member_user_attrs) do
+    team.member_users
+    |> Enum.each(fn member_user ->
+      if !member_user.is_admin do
+        send_invitation_mail(team, admin_user, member_user, member_user_attrs)
+      end
+    end)
   end
 
-  defp search_and_add_user({:error, socket}, _search_word) do
-    socket
+  def send_invitation_mails_to_newcomer(team, admin_user, newcomer, member_user_attrs) do
+    newcomer
+    |> Enum.map(&%{user_id: &1.id, user: &1})
+    |> Enum.each(fn member_user ->
+      send_invitation_mail(team, admin_user, member_user, member_user_attrs)
+    end)
   end
 
-  defp send_invitation_mail(preloaded_team, admin_user, member_user_attrs) do
-    _results =
-      preloaded_team.member_users
-      |> Enum.map(fn member_user ->
-        if !member_user.is_admin do
-          # 管理者以外に招待メールを送信する
-          # member_attrのリストから該当ユーザーのbase64_encode済tokenを取得してメールに添付
-          member_user_attr =
-            member_user_attrs
-            |> Enum.find(fn member_user_attr ->
-              member_user_attr.user_id == member_user.user_id
-            end)
-
-          Teams.deliver_invitation_email_instructions(
-            admin_user,
-            member_user.user,
-            preloaded_team,
-            member_user_attr.base64_encoded_token,
-            &url(~p"/teams/invitation_confirm/#{&1}")
-          )
-        end
+  defp send_invitation_mail(team, admin_user, member_user, member_user_attrs) do
+    member_user_attr =
+      member_user_attrs
+      |> Enum.find(fn member_user_attr ->
+        member_user_attr.user_id == member_user.user_id
       end)
+
+    # 管理者以外に招待メールを送信する
+    # member_attrのリストから該当ユーザーのbase64_encode済tokenを取得してメールに添付
+
+    Teams.deliver_invitation_email_instructions(
+      admin_user,
+      member_user.user,
+      team,
+      member_user_attr.base64_encoded_token,
+      &url(~p"/teams/invitation_confirm/#{&1}")
+    )
   end
 
   defp assign_team_form(socket, %Ecto.Changeset{} = changeset) do
-    team_form = to_form(changeset)
-
-    socket =
-      socket
-      |> assign(:team_form, team_form)
-
-    socket
-  end
-
-  defp id_duplidated_user?(user, users) do
-    duplidate_user =
-      users
-      |> Enum.find(fn u ->
-        user.id == u.id
-      end)
-
-    if duplidate_user == nil do
-      false
-    else
-      true
-    end
+    assign(socket, :team_form, to_form(changeset))
   end
 end
