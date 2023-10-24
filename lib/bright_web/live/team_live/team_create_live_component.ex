@@ -83,10 +83,21 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   def handle_event("create_team", %{"team" => team_params}, socket) do
-    save_team(socket, socket.assigns.action, team_params)
+    admin_count = Teams.count_admin_team(socket.assigns.current_user.id)
+    save_team(socket, socket.assigns.action, team_params, admin_count)
   end
 
-  def save_team(socket, :new, team_params) do
+  def save_team(socket, :new, team_params, count) when count > 0 do
+    changeset =
+      socket.assigns.team
+      |> Team.registration_changeset(team_params)
+      |> Ecto.Changeset.add_error(:name, "チーム作成上限です")
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign_team_form(socket, changeset)}
+  end
+
+  def save_team(socket, :new, team_params, _count) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
 
@@ -112,7 +123,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     end
   end
 
-  def save_team(%{assigns: assigns} = socket, :edit, team_params) do
+  def save_team(%{assigns: assigns} = socket, :edit, team_params, _count) do
     current_member = assigns.team.users
     new_member = assigns.users
     newcomer = new_member -- current_member
