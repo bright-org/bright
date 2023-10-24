@@ -98,7 +98,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           </button>
           <%= if @display_skill_card.user.id == @current_user.id do %>
           <.link navigate={~p"/panels/#{@display_skill_panel}"}>
-          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
+          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
             スキルを入力
           </button>
           </.link>
@@ -110,9 +110,6 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <button class="min-w-[124px] text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             スキルアップ確認
           </button>
-        </div>
-        <div class="w-full text-center absolute bottom-1">
-        βリリース（10月予定）で利用可能になります
         </div>
       </div>
     """
