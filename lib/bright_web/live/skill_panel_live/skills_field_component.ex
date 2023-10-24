@@ -15,6 +15,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias Bright.HistoricalSkillPanels
   alias Bright.HistoricalSkillScores
   alias Bright.Teams
+  alias Bright.CustomGroups
   alias BrightWeb.TimelineHelper
   alias BrightWeb.BrightCoreComponents
   alias BrightWeb.DisplayUserHelper
@@ -24,7 +25,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     <div id={@id}>
       <BrightCoreComponents.flash_group flash={@inner_flash} />
       <div class="hidden lg:block px-6">
-        <.compares current_user={@current_user} myself={@myself} timeline={@timeline} />
+        <.compares
+          current_user={@current_user}
+          myself={@myself}
+          timeline={@timeline}
+          custom_group={@custom_group}
+          compared_users={@compared_users}
+          skills_field_id={@id}
+        />
       </div>
       <div class="px-6 hidden lg:block">
         <.skills_table
@@ -69,7 +77,41 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> assign(skill_class: nil)
      |> assign(compared_users: [], compared_user_dict: %{})
      |> assign(timeline: TimelineHelper.get_current())
+     |> assign(custom_group: nil)
      |> clear_inner_flash()}
+  end
+
+  def update(%{custom_group_created: custom_group}, socket) do
+    {:ok, assign(socket, :custom_group, custom_group)}
+  end
+
+  def update(%{custom_group_selected: custom_group}, socket) do
+    # カスタムグループ選択時
+    %{current_user: current_user, display_user: display_user} = socket.assigns
+
+    users =
+      CustomGroups.list_and_filter_valid_users(custom_group, current_user)
+      |> Enum.map(&Map.put(&1, :anonymous, false))
+      |> Enum.reject(&(&1.id == display_user.id))
+
+    {:ok,
+     socket
+     |> assign(:custom_group, custom_group)
+     |> assign(compared_users: users, compared_user_dict: %{})
+     |> assign_compared_users_dict(users)
+     |> assign_compared_users_info()}
+  end
+
+  def update(%{custom_group_assigned: custom_group}, socket) do
+    {:ok, assign(socket, :custom_group, custom_group)}
+  end
+
+  def update(%{custom_group_updated: custom_group}, socket) do
+    {:ok, assign(socket, :custom_group, custom_group)}
+  end
+
+  def update(%{custom_group_deleted: _custom_group}, socket) do
+    {:ok, assign(socket, :custom_group, nil)}
   end
 
   def update(assigns, socket) do

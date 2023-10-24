@@ -2,6 +2,7 @@ defmodule Bright.CustomGroupsTest do
   use Bright.DataCase
 
   alias Bright.CustomGroups
+  alias Bright.CustomGroups.CustomGroupMemberUser
 
   import Bright.Factory
 
@@ -20,16 +21,70 @@ defmodule Bright.CustomGroupsTest do
       assert CustomGroups.list_custom_groups() == [custom_group]
     end
 
+    test "list_user_custom_groups/1 returns user's custom_groups", %{user: user} do
+      user_2 = insert(:user)
+      custom_group_1 = insert(:custom_group, user_id: user.id)
+      custom_group_2 = insert(:custom_group, user_id: user_2.id)
+
+      assert CustomGroups.list_user_custom_groups(user.id) == [custom_group_1]
+      assert CustomGroups.list_user_custom_groups(user_2.id) == [custom_group_2]
+    end
+
+    test "list_and_filter_valid_users/2", %{user: user} do
+      user_2 = insert(:user)
+      user_3 = insert(:user)
+
+      custom_group =
+        insert(:custom_group,
+          user_id: user.id,
+          member_users: [
+            build(:custom_group_member_user, user_id: user_2.id),
+            build(:custom_group_member_user, user_id: user_3.id)
+          ]
+        )
+
+      # user_2 チームメンバー
+      # user_3 チームメンバー外
+      insert(:team,
+        member_users: [
+          build(:team_member_users, user_id: user.id),
+          build(:team_member_users, user_id: user_2.id)
+        ]
+      )
+
+      assert [user_2] == CustomGroups.list_and_filter_valid_users(custom_group, user)
+
+      refute Repo.get_by(CustomGroupMemberUser,
+               custom_group_id: custom_group.id,
+               user_id: user_3.id
+             )
+    end
+
     test "get_custom_group!/1 returns the custom_group with given id", %{user: user} do
       custom_group = insert(:custom_group, user_id: user.id)
       assert CustomGroups.get_custom_group!(custom_group.id) == custom_group
     end
 
     test "create_custom_group/1 with valid data creates a custom_group", %{user: user} do
-      valid_attrs = %{name: "some name", user_id: user.id}
+      [user_1, user_2] = insert_pair(:user)
+
+      valid_attrs = %{
+        name: "some name",
+        user_id: user.id,
+        member_users: [
+          %{user_id: user_1.id, position: 2},
+          %{user_id: user_2.id, position: 1}
+        ]
+      }
 
       assert {:ok, %CustomGroup{} = custom_group} = CustomGroups.create_custom_group(valid_attrs)
       assert custom_group.name == "some name"
+
+      %{member_users: [member_user_1, member_user_2]} =
+        Repo.preload(custom_group, [:member_users], force: true)
+
+      assert %{position: 1, user_id: user_2.id} == Map.take(member_user_1, ~w(position user_id)a)
+      assert %{position: 2, user_id: user_1.id} == Map.take(member_user_2, ~w(position user_id)a)
     end
 
     test "create_custom_group/1 with invalid data returns error changeset" do
@@ -37,13 +92,38 @@ defmodule Bright.CustomGroupsTest do
     end
 
     test "update_custom_group/2 with valid data updates the custom_group", %{user: user} do
-      custom_group = insert(:custom_group, user_id: user.id)
-      update_attrs = %{name: "some updated name"}
+      [user_1, user_2, user_3] = insert_list(3, :user)
+
+      custom_group =
+        insert(
+          :custom_group,
+          user_id: user.id,
+          member_users: [
+            build(:custom_group_member_user, user_id: user_1.id, position: 1),
+            build(:custom_group_member_user, user_id: user_2.id, position: 2)
+          ]
+        )
+
+      update_attrs = %{
+        name: "some updated name",
+        member_users: [
+          %{user_id: user_3.id, position: 1},
+          %{user_id: user_1.id, position: 2}
+        ]
+      }
 
       assert {:ok, %CustomGroup{} = custom_group} =
                CustomGroups.update_custom_group(custom_group, update_attrs)
 
       assert custom_group.name == "some updated name"
+
+      %{member_users: [member_user_1, member_user_2]} =
+        Repo.preload(custom_group, [:member_users], force: true)
+
+      assert %{position: 1, user_id: user_3.id} == Map.take(member_user_1, ~w(position user_id)a)
+      assert %{position: 2, user_id: user_1.id} == Map.take(member_user_2, ~w(position user_id)a)
+
+      assert 2 == Repo.aggregate(CustomGroupMemberUser, :count)
     end
 
     test "update_custom_group/2 with invalid data returns error changeset", %{user: user} do
@@ -56,7 +136,15 @@ defmodule Bright.CustomGroupsTest do
     end
 
     test "delete_custom_group/1 deletes the custom_group", %{user: user} do
-      custom_group = insert(:custom_group, user_id: user.id)
+      custom_group =
+        insert(
+          :custom_group,
+          user_id: user.id,
+          member_users: [
+            build(:custom_group_member_user, user_id: insert(:user).id, position: 1)
+          ]
+        )
+
       assert {:ok, %CustomGroup{}} = CustomGroups.delete_custom_group(custom_group)
       assert_raise Ecto.NoResultsError, fn -> CustomGroups.get_custom_group!(custom_group.id) end
     end
