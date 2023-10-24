@@ -90,7 +90,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     %{current_user: current_user, display_user: display_user} = socket.assigns
 
     users =
-      CustomGroups.list_and_filter_valid_users(current_user, custom_group)
+      CustomGroups.list_and_filter_valid_users(custom_group, current_user)
       |> Enum.map(&Map.put(&1, :anonymous, false))
       |> Enum.reject(&(&1.id == display_user.id))
 

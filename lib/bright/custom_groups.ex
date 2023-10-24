@@ -40,11 +40,11 @@ defmodule Bright.CustomGroups do
 
   ## Examples
 
-      iex> list_and_filter_valid_users(custom_group)
+      iex> list_and_filter_valid_users(custom_group, user)
       [%User{}, ...]
 
   """
-  def list_and_filter_valid_users(user, custom_group) do
+  def list_and_filter_valid_users(custom_group, user) do
     preload_custom_group_user(custom_group)
     |> case do
       nil ->

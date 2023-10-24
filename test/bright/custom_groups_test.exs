@@ -21,6 +21,45 @@ defmodule Bright.CustomGroupsTest do
       assert CustomGroups.list_custom_groups() == [custom_group]
     end
 
+    test "list_user_custom_groups/1 returns user's custom_groups", %{user: user} do
+      user_2 = insert(:user)
+      custom_group_1 = insert(:custom_group, user_id: user.id)
+      custom_group_2 = insert(:custom_group, user_id: user_2.id)
+
+      assert CustomGroups.list_user_custom_groups(user.id) == [custom_group_1]
+      assert CustomGroups.list_user_custom_groups(user_2.id) == [custom_group_2]
+    end
+
+    test "list_and_filter_valid_users/2", %{user: user} do
+      user_2 = insert(:user)
+      user_3 = insert(:user)
+
+      custom_group =
+        insert(:custom_group,
+          user_id: user.id,
+          member_users: [
+            build(:custom_group_member_user, user_id: user_2.id),
+            build(:custom_group_member_user, user_id: user_3.id)
+          ]
+        )
+
+      # user_2 チームメンバー
+      # user_3 チームメンバー外
+      insert(:team,
+        member_users: [
+          build(:team_member_users, user_id: user.id),
+          build(:team_member_users, user_id: user_2.id)
+        ]
+      )
+
+      assert [user_2] == CustomGroups.list_and_filter_valid_users(custom_group, user)
+
+      refute Repo.get_by(CustomGroupMemberUser,
+               custom_group_id: custom_group.id,
+               user_id: user_3.id
+             )
+    end
+
     test "get_custom_group!/1 returns the custom_group with given id", %{user: user} do
       custom_group = insert(:custom_group, user_id: user.id)
       assert CustomGroups.get_custom_group!(custom_group.id) == custom_group
