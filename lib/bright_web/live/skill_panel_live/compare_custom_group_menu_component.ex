@@ -1,9 +1,34 @@
 defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
   @moduledoc """
-  カスタムグループの追加、選択用のLiveComponent
+  カスタムグループの追加／選択等部分のLiveComponent
 
-  NOTE:
-  dropdown内で追加を行う必要があり、処理によってdropdownが閉じる点と検証メッセージを出す点の相性が悪いため、LiveComponentとして切り出している。また処理も切り離すことで肥大化を避けている。
+  カスタムグループの操作に対してアサインされた関数が実行される。
+  実行される操作と関数の対応は下記の通り。
+
+  カスタムグループ作成時: `on_create`
+  カスタムグループ更新時: `on_update`
+  カスタムグループ削除時: `on_delete`
+  カスタムグループ選択時: `on_select`
+  カスタムグループ メンバー更新時: `on_assign`
+
+  それぞれの関数には、各処理後のcustom_groupが渡される。
+
+  ## Example
+
+  下記では各操作時に指定コンポーネントのupdateを実行している(`send_update`)。
+
+  ```
+  <.live_component
+    ...
+    on_create={&send_update(MyComponent, id: "my-id", created: &1)}
+    on_update={&send_update(MyComponent, id: "my-id", updated: &1)}
+    on_delete={&send_update(MyComponent, id: "my-id", deleted: &1)}
+    on_select={&send_update(MyComponent, id: "my-id", selected: &1)}
+    on_assign={&send_update(MyComponent, id: "my-id", assigned: &1)}
+  />
+  ```
+
+  NOTE: dropdown内で追加を行う必要があり、処理によってdropdownが閉じる点と検証メッセージを出す点の相性が悪いため、LiveComponentとして切り出している。また処理も切り離すことで肥大化を避けている。
   """
 
   use BrightWeb, :live_component
