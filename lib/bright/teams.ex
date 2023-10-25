@@ -478,7 +478,7 @@ defmodule Bright.Teams do
       where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at),
       order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
     )
-    |> preload(:team)
+    |> preload(team: :member_users)
     |> Repo.paginate(page_param)
   end
 
@@ -874,6 +874,12 @@ defmodule Bright.Teams do
       select: %{user_id: tmu.user_id, count: count(tmu.user_id)},
       group_by: tmu.user_id
     )
+  end
+
+  def count_admin_team(user_id) do
+    TeamMemberUsers
+    |> where([t], t.user_id == ^user_id and t.is_admin)
+    |> Repo.aggregate(:count)
   end
 
   @doc """
