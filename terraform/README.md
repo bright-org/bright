@@ -73,5 +73,5 @@ dev環境を例とする。
 2. Terraform Cloud上で、手動でApplyする
     ![](./images/apply.png)
 3. Phoenixアプリケーションをデプロイする（アプリに何も変更がなくても必要）
-    - `release-` というprefixのGitタグをPushするとデプロイされる
+    - `prod-` というprefixのGitタグをPushするとデプロイされる
     - [GitHub Releaseを作成](https://github.com/bright-org/bright/releases/tag/release-sample) してデプロイすることも可能

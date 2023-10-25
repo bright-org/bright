@@ -3,7 +3,7 @@ name: Deploy to prod
 on:
   push:
     tags:
-      - release-*
+      - prod-*
 
 jobs:
   call:
