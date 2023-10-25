@@ -68,7 +68,15 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
       |> assign(:skill_gem_labels, get_skill_gem_labels(skill_gem))
       |> assign(
         :skill_gem_links,
-        get_skill_gem_links(skill_gem, skill_panel, class, display_user, me, anonymous)
+        get_skill_gem_links(
+          skill_gem,
+          skill_panel,
+          class,
+          select_label,
+          display_user,
+          me,
+          anonymous
+        )
       )
       |> assign(:display_link, display_link)
       |> assign(:size, size)
@@ -109,12 +117,22 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   defp get_skill_gem_data(skill_gem), do: [skill_gem |> Enum.map(fn x -> x.percentage end)]
   defp get_skill_gem_labels(skill_gem), do: skill_gem |> Enum.map(fn x -> x.name end)
 
-  defp get_skill_gem_links(skill_gem, skill_panel, class, display_user, me, anonymous) do
-    base_path =
-      PathHelper.skill_panel_path("panels", skill_panel, display_user, me, anonymous) <>
-        "?class=#{class}"
+  defp get_skill_gem_links(
+         skill_gem,
+         skill_panel,
+         class,
+         select_label,
+         display_user,
+         me,
+         anonymous
+       ) do
+    base_path = PathHelper.skill_panel_path("panels", skill_panel, display_user, me, anonymous)
+    class = if class, do: "class=#{class}", else: ""
+    timeline = if select_label != "now", do: "timeline=#{select_label}", else: ""
+    query = Enum.join([class, timeline], "&")
+    path = base_path <> "?#{query}"
 
     skill_gem
-    |> Enum.map(fn x -> "#{base_path}#unit-#{x.position}" end)
+    |> Enum.map(fn x -> "#{path}#unit-#{x.position}" end)
   end
 end
