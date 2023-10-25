@@ -22,5 +22,5 @@ GitHub Actionsで自動デプロイ（`.github/workflows/deploy_to_***.yml`）�
 
 ## バッチ処理の設定・デプロイ
 
-「いつ実行するか」はTerraformで設定する。
+「いつ実行するか」はTerraformで設定する（プロビジョニングすると即時、バッチの実施日時が変わる）。
 「何を実行するか」はCloud Buildでデプロイする。
