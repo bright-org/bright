@@ -8,6 +8,7 @@
 | Cloud SQL | RDB（PostgreSQL）にデータを保存する |
 | Cloud Storage | アップロードされたファイルを保存する |
 | SendGrid | メールを送信する |
+| Sentry | Phoenixアプリケーションのエラーを監視する |
 
 ## 構成管理
 
