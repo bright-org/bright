@@ -36,6 +36,14 @@ module "cloud_run_batch_update_skill_panels" {
   schedule = "0 0 * * *"
 }
 
+module "cloud_run_batch_update_career_field_scores" {
+  source     = "../../modules/google/cloud_run_batch"
+  depends_on = [module.googleapis]
+
+  name     = "bright-batch-update-career-field-scores"
+  schedule = "0 6 * * *"
+}
+
 module "secret_db_username" {
   source     = "../../modules/google/secret"
   depends_on = [module.googleapis]
