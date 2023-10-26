@@ -48,7 +48,6 @@ defmodule Bright.Notifications do
   def list_notification_by_type(_to_user_id, "operation", page_param) do
     from(notification_operation in NotificationOperation,
       order_by: [
-        desc: notification_operation.inserted_at,
         desc: notification_operation.id
       ]
     )
@@ -58,7 +57,6 @@ defmodule Bright.Notifications do
   def list_notification_by_type(_to_user_id, "community", page_param) do
     from(notification_community in NotificationCommunity,
       order_by: [
-        desc: notification_community.inserted_at,
         desc: notification_community.id
       ]
     )

@@ -11,8 +11,6 @@ defmodule Bright.Repo.Migrations.NotificationConfirmedAt do
     end
 
     create index(:notification_operations, [:confirmed_at])
-    create index(:notification_operations, [:inserted_at, :id])
     create index(:notification_communities, [:confirmed_at])
-    create index(:notification_communities, [:inserted_at, :id])
   end
 end
