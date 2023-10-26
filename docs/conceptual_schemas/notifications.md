@@ -14,7 +14,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index:（必須ではない）"
     string message	"メッセージ内容"
     text detail	"詳細"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 ```
 
@@ -54,7 +54,7 @@ erDiagram
     string message	"メッセージ内容"
     text detail	"詳細"
     string status "ステータス： enum（participation:参加する, abstention:参加しない）"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   notification_looking_backs {
@@ -62,21 +62,21 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   notification_recruitment_coordinations {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string url	"採用の回答するモーダルのURL"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   notification_operations {
     id from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
 ```
@@ -142,7 +142,7 @@ erDiagram
     string message	"メッセージ内容"
     string url 	"ジェムのリンクと同じ"
     boolean congratulate　"祝福する"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   notification_blesses {
@@ -150,7 +150,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   notification_1on1_invitations {
@@ -159,7 +159,7 @@ erDiagram
     string message	"メッセージ内容"
     text detail	"詳細"
     string accept_status "受入ステータス： enum（acceptance、rejection）"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   notification_faves {
@@ -167,7 +167,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string url	"エビデンスのURL"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   notification_watches {
@@ -175,7 +175,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string url	"相手のmypageのURL"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   notification_communities {
@@ -183,7 +183,7 @@ erDiagram
     id community_id	FK "対象コミュニティ"
     string message	"メッセージ内容"
     text detail	"詳細"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
   communities {
@@ -194,7 +194,7 @@ erDiagram
     id user_id FK "ユーザーid index"
     id community_id FK "コミュニティid"
     boolean participation_status "参加状況"
-    confirmed_at "既読日時"
+    datetime confirmed_at "既読日時"
   }
 
 ```
