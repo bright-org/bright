@@ -37,6 +37,26 @@ defmodule Bright.Teams do
 
   ## Examples
 
+      iex> get_team!(123)
+      %Team{}
+
+      iex> get_team!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_team!(id) do
+    Team
+    |> where([t], is_nil(t.deleted_at))
+    |> Repo.get!(id)
+  end
+
+  @doc """
+  Gets a single team.
+
+  Raises `Ecto.NoResultsError` if the Team does not exist.
+
+  ## Examples
+
       iex> get_team_with_member_users!(123)
       %Team{}
 
@@ -46,6 +66,7 @@ defmodule Bright.Teams do
   """
   def get_team_with_member_users!(id) do
     Team
+    |> where([t], is_nil(t.deleted_at))
     |> preload(member_users: :user)
     |> Repo.get!(id)
   end
@@ -67,6 +88,7 @@ defmodule Bright.Teams do
 
   def get_team_with_member!(id) do
     Team
+    |> where([t], is_nil(t.deleted_at))
     |> preload(users: :user_profile)
     |> Repo.get!(id)
   end
@@ -475,23 +497,13 @@ defmodule Bright.Teams do
   """
   def list_joined_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
     from(tmbu in TeamMemberUsers,
-      where: tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at),
+      left_join: t in assoc(tmbu, :team),
+      where:
+        tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at) and
+          is_nil(t.deleted_at),
       order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
     )
     |> preload(team: :member_users)
-    |> Repo.paginate(page_param)
-  end
-
-  # TODO: 使用されていなければ削除
-  def list_jined_users_and_skill_unit_scores_by_team_id(
-        team_id,
-        page_param \\ %{page: 1, page_size: 1}
-      ) do
-    from(tmbu in TeamMemberUsers,
-      where: tmbu.team_id == ^team_id and not is_nil(tmbu.invitation_confirmed_at)
-    )
-    |> preload(user: [skill_class_scores: :skill_class])
-    |> preload(user: [skill_unit_scores: :skill_unit])
     |> Repo.paginate(page_param)
   end
 
@@ -877,8 +889,11 @@ defmodule Bright.Teams do
   end
 
   def count_admin_team(user_id) do
-    TeamMemberUsers
-    |> where([t], t.user_id == ^user_id and t.is_admin)
+    from(
+      tmu in TeamMemberUsers,
+      left_join: t in assoc(tmu, :team),
+      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.deleted_at)
+    )
     |> Repo.aggregate(:count)
   end
 
