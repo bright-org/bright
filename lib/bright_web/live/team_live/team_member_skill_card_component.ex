@@ -97,11 +97,17 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             1on1に誘う
           </button>
           <%= if @display_skill_panel && @display_skill_card.user.id == @current_user.id do %>
-          <.link navigate={~p"/panels/#{@display_skill_panel}"}>
-          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
-            スキルを入力
-          </button>
-          </.link>
+            <%= if is_nil(@display_skill_card.user_skill_class_score) do %>
+              <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200" disabled>
+                スキルを入力
+              </button>
+            <% else %>
+              <.link navigate={~p"/panels/#{@display_skill_panel}"}>
+                <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
+                  スキルを入力
+                </button>
+              </.link>
+            <% end %>
           <% else %>
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             この人と比較
