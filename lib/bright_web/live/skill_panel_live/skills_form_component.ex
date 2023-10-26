@@ -76,10 +76,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
           入力の途中で接続が切れたため、入力中のデータを復元しました。必ず「保存する」ボタンを押して入力を完了してください。
         </p>
 
-        <p class="text-attention-900 p-2 text-sm">
-          セッション制限時間の1時間以内に「保存する」ボタンを押してください。
-        </p>
-
         <% # ドーナツグラフとレベル表記 %>
         <div id="doughnut_area_in_skills_form" class="flex items-center my-4">
           <div class="basis-3/4 flex justify-center">
