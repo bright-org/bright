@@ -57,6 +57,11 @@
             </div>
           </div>
           <div class="flex justify-end gap-x-4">
+            <.link :if={@action == :edit} phx-click={JS.push("delete_team", value: %{id: @team.id}, target: @myself)} data-confirm="Are you sure?">
+              <button class="text-sm font-bold px-5 py-3 rounded text-white bg-attention-600">
+                チームを削除する
+              </button>
+            </.link>
             <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
               <%= @submit %>
             </button>
