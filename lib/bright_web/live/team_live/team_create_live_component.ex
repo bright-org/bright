@@ -119,7 +119,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
          socket
          |> put_flash(:info, "チームを登録しました")
          # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
-         |> redirect(to: socket.assigns.patch)}
+         |> redirect(to: ~p"/teams/#{team}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
@@ -144,7 +144,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
          socket
          |> put_flash(:info, "チームを更新しました")
          # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
-         |> redirect(to: assigns.patch)}
+         |> redirect(to: ~p"/teams/#{team}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
