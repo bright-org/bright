@@ -14,7 +14,7 @@ defmodule Bright.HistoricalSkillScores.HistoricalCareerFieldScore do
     field :high_skills_count, :integer, default: 0
 
     belongs_to(:user, Bright.Accounts.User)
-    belongs_to(:career_field, Bright.Jobs.CareerField)
+    belongs_to(:career_field, Bright.CareerFields.CareerField)
 
     timestamps()
   end

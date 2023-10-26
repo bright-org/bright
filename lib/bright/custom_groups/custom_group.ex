@@ -5,6 +5,8 @@ defmodule Bright.CustomGroups.CustomGroup do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Bright.CustomGroups.CustomGroupMemberUser
+
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
 
@@ -12,7 +14,12 @@ defmodule Bright.CustomGroups.CustomGroup do
     field :name, :string
 
     belongs_to :user, Bright.Accounts.User, references: :id
-    has_many :member_users, Bright.CustomGroups.CustomGroupMemberUser
+
+    has_many :member_users,
+             Bright.CustomGroups.CustomGroupMemberUser,
+             preload_order: [asc: :position],
+             on_replace: :delete,
+             on_delete: :delete_all
 
     timestamps()
   end
@@ -20,7 +27,10 @@ defmodule Bright.CustomGroups.CustomGroup do
   @doc false
   def changeset(custom_group, attrs) do
     custom_group
-    |> cast(attrs, [:name, :user_id])
-    |> validate_required([:name, :user_id])
+    |> cast(attrs, [:user_id, :name])
+    |> cast_assoc(:member_users, with: &CustomGroupMemberUser.changeset/2)
+    |> validate_required([:user_id, :name])
+    |> unique_constraint([:user_id, :name], error_key: :name)
+    |> validate_length(:name, min: 1, max: 30)
   end
 end

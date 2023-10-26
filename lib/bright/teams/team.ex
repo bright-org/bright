@@ -12,7 +12,8 @@ defmodule Bright.Teams.Team do
     field :enable_hr_functions, :boolean, default: false
     field :enable_team_up_functions, :boolean, default: false
 
-    has_many :member_users, Bright.Teams.TeamMemberUsers
+    has_many :member_users, Bright.Teams.TeamMemberUsers, on_replace: :delete
+    has_many :users, through: [:member_users, :user]
 
     timestamps()
   end

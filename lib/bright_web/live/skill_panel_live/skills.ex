@@ -24,6 +24,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"], "panels")
      |> assign(:page_title, "スキルパネル")
+     |> assign(init_team_id: nil, init_timeline: nil)
      |> assign_page_sub_title()}
   end
 
@@ -74,6 +75,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp apply_action(socket, :show, params) do
     socket
     |> assign(:init_team_id, params["team"])
+    |> assign(:init_timeline, params["timeline"])
     |> put_flash_first_skills_edit()
   end
 

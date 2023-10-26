@@ -3,6 +3,7 @@ defmodule Bright.TeamsTest do
 
   alias Bright.Teams
   alias Bright.Teams.TeamMemberUsers
+  alias Bright.Teams.TeamSupporterTeam
   alias Bright.TeamTestHelper
 
   import Bright.Factory
@@ -88,6 +89,76 @@ defmodule Bright.TeamsTest do
       assert admin_result2.is_admin == true
       # ２つ目以降のチームは非プライマリチーム
       assert admin_result2.is_star == false
+    end
+  end
+
+  describe "update_team_multi/3" do
+    test "update team and member users." do
+      create_name = Faker.Lorem.word()
+      update_name = Faker.Lorem.word()
+      admin_user = insert(:user)
+      member1 = insert(:user)
+      member2 = insert(:user)
+      member3 = insert(:user)
+      create_member_users = [member1, member2]
+      update_member_users = [member1, member3]
+
+      assert {:ok, team, _team_member_attrs} =
+               Teams.create_team_multi(create_name, admin_user, create_member_users)
+
+      assert {:ok, team, team_member_attrs} =
+               Teams.update_team_multi(
+                 team,
+                 %{name: update_name},
+                 admin_user,
+                 [member3],
+                 update_member_users
+               )
+
+      # チームの属性確認
+      assert team.name == update_name
+      # 更新に含まれていないメンバーは削除される
+      assert Enum.count(team.member_users) == 3
+
+      # チームメンバー(非作成者)の属性確認
+      member_result = Enum.find(team.member_users, fn x -> x.user_id == member3.id end)
+      # 非管理者
+      assert member_result.is_admin == false
+      # ジョイン承認するまではかならず非プライマリチーム
+      assert member_result.is_star == false
+
+      # 招待メールの送信先は対象ユーザーのプライマリメールアドレス
+      assert member_result.invitation_sent_to == member3.email
+      # 招待メール送信直後は承認日時はnil
+      assert member_result.invitation_confirmed_at == nil
+
+      # team_member_attrs内のbase64_encoded_tokenを認証にかけることで、invitation_confirmed_atが更新され承認状態となる
+      team_member_attr =
+        team_member_attrs
+        |> Enum.find(fn team_member_attr ->
+          team_member_attr.user_id == member_result.user_id
+        end)
+
+      # 間違った認証コードでは認証エラーとなる
+      assert :error = Teams.get_invitation_token(team_member_attr.base64_encoded_token <> "1")
+
+      # 正しい認証コードではtokenが取得できる
+      assert {:ok, team_member_user} =
+               Teams.get_invitation_token(team_member_attr.base64_encoded_token)
+
+      # 認証することでinvitation_confirmed_atが更新される
+      assert {:ok, confirmed_team_member_user} = Teams.confirm_invitation(team_member_user)
+
+      assert confirmed_team_member_user.invitation_confirmed_at != nil
+
+      assert confirmed_team_member_user.invitation_confirmed_at <=
+               TeamMemberUsers.now_for_confirmed_at()
+
+      # ２度目認証にかけても無視して正常終了扱いとなる
+      assert {:ok, re_confirmed_team_member_user} = Teams.confirm_invitation(team_member_user)
+
+      assert re_confirmed_team_member_user.invitation_confirmed_at ==
+               confirmed_team_member_user.invitation_confirmed_at
     end
   end
 
@@ -196,7 +267,7 @@ defmodule Bright.TeamsTest do
       assert Enum.count(page2.entries) == 1
     end
 
-    test "" do
+    test "change order of list_joined_teams_by_user_id" do
       team_name = Faker.Lorem.word()
       team_name2 = Faker.Lorem.word()
       user = insert(:user)
@@ -491,6 +562,477 @@ defmodule Bright.TeamsTest do
         Enum.map([admin_member_user, team_member_user_2, team_member_user_1], & &1.id)
 
       assert expected_ids == actual_ids
+    end
+  end
+
+  describe "team_supporter_teams life cycle" do
+    test "normal life cycle" do
+      # 支援する側のチーム
+      supporter_team_name = Faker.Lorem.word()
+      supporter_team_admin_user = insert(:user)
+      supporter_team_member_user = insert(:user)
+
+      {:ok, supporter_team, supporter_team_member_attrs} =
+        Teams.create_team_multi(
+          supporter_team_name,
+          supporter_team_admin_user,
+          [supporter_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: true
+          }
+        )
+
+      # 全員チーム招待に承認する
+      TeamTestHelper.cofirm_invitation(supporter_team_member_attrs)
+
+      # 支援される側のチーム
+      supportee_team_name = Faker.Lorem.word()
+      supportee_team_admin_user = insert(:user)
+      supportee_team_member_user = insert(:user)
+
+      {:ok, supportee_team, _supportee_team_member_attrs} =
+        Teams.create_team_multi(
+          supportee_team_name,
+          supportee_team_admin_user,
+          [supportee_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: false
+          }
+        )
+
+      # 全員チーム招待に承認する
+      TeamTestHelper.cofirm_invitation(supporter_team_member_attrs)
+
+      # 支援されるチームの管理者から支援するチームのメンバーへ支援依頼
+      {:ok, %TeamSupporterTeam{} = request_team_supporter_team} =
+        Teams.request_support_from_suportee_team(
+          supportee_team.id,
+          supportee_team_admin_user.id,
+          supporter_team_member_user.id
+        )
+
+      assert request_team_supporter_team.supportee_team_id == supportee_team.id
+      assert request_team_supporter_team.supporter_team_id == nil
+      assert request_team_supporter_team.request_from_user_id == supportee_team_admin_user.id
+      assert request_team_supporter_team.request_to_user_id == supporter_team_member_user.id
+      assert request_team_supporter_team.status == :requesting
+      assert request_team_supporter_team.request_datetime <= NaiveDateTime.utc_now()
+      assert request_team_supporter_team.start_datetime == nil
+      assert request_team_supporter_team.end_datetime == nil
+
+      # 支援依頼はユーザー個人に対してなので管理者でも参照できない
+      assert %{total_entries: 0} =
+               Teams.list_support_request_by_supporter_user_id(supporter_team_admin_user.id)
+
+      # 支援チームのメンバー向けなので支援依頼をした本人も参照できない
+      assert %{total_entries: 0} =
+               Teams.list_support_request_by_supporter_user_id(supporter_team_admin_user.id)
+
+      # リクエスト中の支援依頼一覧を取得
+      page_list_support_request =
+        Teams.list_support_request_by_supporter_user_id(supporter_team_member_user.id)
+
+      assert page_list_support_request.total_entries == 1
+      support_request = List.first(page_list_support_request.entries)
+      assert support_request.status == :requesting
+      assert support_request.request_datetime <= NaiveDateTime.utc_now()
+      assert support_request.start_datetime == nil
+      assert support_request.end_datetime == nil
+      assert support_request.supportee_team.name == supportee_team.name
+      assert support_request.request_from_user.name == supportee_team_admin_user.name
+      assert support_request.request_to_user.name == supporter_team_member_user.name
+
+      # 支援依頼を承諾する
+      {:ok, %TeamSupporterTeam{} = accept_team_supporter_team} =
+        Teams.accept_support_by_supporter_team(request_team_supporter_team, supporter_team.id)
+
+      assert accept_team_supporter_team.supportee_team_id == supportee_team.id
+      assert accept_team_supporter_team.supporter_team_id == supporter_team.id
+      assert accept_team_supporter_team.request_from_user_id == supportee_team_admin_user.id
+      assert accept_team_supporter_team.request_to_user_id == supporter_team_member_user.id
+      assert accept_team_supporter_team.status == :supporting
+
+      assert accept_team_supporter_team.request_datetime ==
+               request_team_supporter_team.request_datetime
+
+      assert accept_team_supporter_team.start_datetime <= NaiveDateTime.utc_now()
+      assert accept_team_supporter_team.end_datetime == nil
+
+      # 支援依頼の一覧に表示されなくなる
+      assert %{total_entries: 0} =
+               Teams.list_support_request_by_supporter_user_id(supporter_team_member_user.id)
+
+      # 支援中の一覧のチーム一覧に表示される
+      page_list_supporting_teams =
+        Teams.list_supportee_teams_by_supporter_user_id(supporter_team_member_user.id)
+
+      assert page_list_supporting_teams.total_entries == 1
+      assert supporting_team = List.first(page_list_supporting_teams.entries)
+      assert supporting_team.name == supportee_team.name
+
+      # 支援を終了する
+      {:ok, %TeamSupporterTeam{} = support_ended_team_supporter_team} =
+        Teams.end_support_by_supporter_team(accept_team_supporter_team)
+
+      assert support_ended_team_supporter_team.supportee_team_id == supportee_team.id
+      assert support_ended_team_supporter_team.supporter_team_id == supporter_team.id
+
+      assert support_ended_team_supporter_team.request_from_user_id ==
+               supportee_team_admin_user.id
+
+      assert support_ended_team_supporter_team.request_to_user_id == supporter_team_member_user.id
+      assert support_ended_team_supporter_team.status == :support_ended
+
+      assert support_ended_team_supporter_team.request_datetime ==
+               request_team_supporter_team.request_datetime
+
+      assert support_ended_team_supporter_team.start_datetime ==
+               accept_team_supporter_team.start_datetime
+
+      assert support_ended_team_supporter_team.end_datetime <= NaiveDateTime.utc_now()
+
+      # 支援中の一覧に表示されなくなる
+      assert %{total_entries: 0} =
+               Teams.list_supportee_teams_by_supporter_user_id(supporter_team_member_user.id)
+    end
+
+    test "reject support request" do
+      # 支援する側のチーム
+      supporter_team_name = Faker.Lorem.word()
+      supporter_team_admin_user = insert(:user)
+      supporter_team_member_user = insert(:user)
+
+      {:ok, _supporter_team, supporter_team_member_attrs} =
+        Teams.create_team_multi(
+          supporter_team_name,
+          supporter_team_admin_user,
+          [supporter_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: true
+          }
+        )
+
+      # 全員チーム招待に承認する
+      TeamTestHelper.cofirm_invitation(supporter_team_member_attrs)
+
+      # 支援される側のチーム
+      supportee_team_name = Faker.Lorem.word()
+      supportee_team_admin_user = insert(:user)
+      supportee_team_member_user = insert(:user)
+
+      {:ok, supportee_team, _supportee_team_member_attrs} =
+        Teams.create_team_multi(
+          supportee_team_name,
+          supportee_team_admin_user,
+          [supportee_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: false
+          }
+        )
+
+      # 全員チーム招待に承認する
+      TeamTestHelper.cofirm_invitation(supporter_team_member_attrs)
+
+      # 支援されるチームの管理者から支援するチームのメンバーへ支援依頼
+      {:ok, %TeamSupporterTeam{} = request_team_supporter_team} =
+        Teams.request_support_from_suportee_team(
+          supportee_team.id,
+          supportee_team_admin_user.id,
+          supporter_team_member_user.id
+        )
+
+      # リクエスト中の支援依頼一覧を取得
+      page_list_support_request =
+        Teams.list_support_request_by_supporter_user_id(supporter_team_member_user.id)
+
+      assert page_list_support_request.total_entries == 1
+      support_request = List.first(page_list_support_request.entries)
+      assert support_request.status == :requesting
+
+      # 支援依頼を拒否する
+
+      {:ok, %TeamSupporterTeam{} = regect_team_supporter_team} =
+        Teams.reject_support_by_supporter_team(support_request)
+
+      assert regect_team_supporter_team.supportee_team_id == supportee_team.id
+      assert regect_team_supporter_team.supporter_team_id == nil
+      assert regect_team_supporter_team.request_from_user_id == supportee_team_admin_user.id
+      assert regect_team_supporter_team.request_to_user_id == supporter_team_member_user.id
+      assert regect_team_supporter_team.status == :reject
+
+      assert regect_team_supporter_team.request_datetime ==
+               request_team_supporter_team.request_datetime
+
+      assert regect_team_supporter_team.start_datetime == nil
+      assert regect_team_supporter_team.end_datetime == nil
+
+      # リクエスト中の支援依頼に表示されない
+      assert %{total_entries: 0} =
+               Teams.list_support_request_by_supporter_user_id(supporter_team_member_user.id)
+
+      # 支援中のチーム一覧に表示されない
+      assert %{total_entries: 0} =
+               Teams.list_supportee_teams_by_supporter_user_id(supporter_team_member_user.id)
+    end
+  end
+
+  describe "list_support_request_by_supporter_user_id/2" do
+    test "result 0 entry" do
+      user = insert(:user)
+      assert %{total_entries: 0} = Teams.list_support_request_by_supporter_user_id(user.id)
+    end
+
+    test "result multi entries with sort order" do
+      # 支援する側のチーム
+      supporter_team_admin_user = insert(:user)
+
+      # 支援される側のチーム
+      supportee_team_name = Faker.Lorem.word()
+      supportee_team_admin_user = insert(:user)
+      supportee_team_member_user = insert(:user)
+
+      {:ok, supportee_team, _supportee_team_member_attrs} =
+        Teams.create_team_multi(
+          supportee_team_name,
+          supportee_team_admin_user,
+          [supportee_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: false
+          }
+        )
+
+      # 支援される側のチーム2
+      supportee_team_name2 = Faker.Lorem.word()
+      supportee_team_admin_user2 = insert(:user)
+      supportee_team_member_user2 = insert(:user)
+
+      {:ok, supportee_team2, _supportee_team_member_attrs2} =
+        Teams.create_team_multi(
+          supportee_team_name2,
+          supportee_team_admin_user2,
+          [supportee_team_member_user2],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: false
+          }
+        )
+
+      utc_now = NaiveDateTime.utc_now()
+      # 支援依頼日時が古い方が下
+      {:ok, %TeamSupporterTeam{} = _team_support_team1} =
+        Teams.create_team_supporter_team(%{
+          supportee_team_id: supportee_team.id,
+          request_from_user_id: supportee_team_admin_user.id,
+          request_to_user_id: supporter_team_admin_user.id,
+          status: :requesting,
+          request_datetime: NaiveDateTime.add(utc_now, -1, :second)
+        })
+
+      # ステータスがrequesting以外は表示対象外
+      {:ok, %TeamSupporterTeam{} = _team_support_team1} =
+        Teams.create_team_supporter_team(%{
+          supportee_team_id: supportee_team.id,
+          request_from_user_id: supportee_team_admin_user.id,
+          request_to_user_id: supporter_team_admin_user.id,
+          status: :supporting,
+          request_datetime: utc_now,
+          start_datetime: utc_now
+        })
+
+      # request_to_user_idが異なるレコードは表示対象外
+      {:ok, %TeamSupporterTeam{} = _team_support_team1} =
+        Teams.create_team_supporter_team(%{
+          supportee_team_id: supportee_team.id,
+          request_from_user_id: supporter_team_admin_user.id,
+          request_to_user_id: supportee_team_admin_user.id,
+          status: :supporting,
+          request_datetime: utc_now,
+          start_datetime: utc_now
+        })
+
+      # 支援依頼日時が新しい方が上
+      {:ok, %TeamSupporterTeam{} = _team_support_team2} =
+        Teams.create_team_supporter_team(%{
+          supportee_team_id: supportee_team2.id,
+          request_from_user_id: supportee_team_admin_user2.id,
+          request_to_user_id: supporter_team_admin_user.id,
+          status: :requesting,
+          request_datetime: utc_now
+        })
+
+      page_list_support_request =
+        Teams.list_support_request_by_supporter_user_id(supporter_team_admin_user.id, %{
+          page: 1,
+          page_size: 2
+        })
+
+      assert page_list_support_request.total_entries == 2
+      support_request_1 = Enum.at(page_list_support_request.entries, 0)
+      assert support_request_1.status == :requesting
+      assert support_request_1.request_from_user_id == supportee_team_admin_user2.id
+      assert support_request_1.supportee_team_id == supportee_team2.id
+      support_request_2 = Enum.at(page_list_support_request.entries, 1)
+      assert support_request_2.status == :requesting
+      assert support_request_2.request_from_user_id == supportee_team_admin_user.id
+      assert support_request_2.supportee_team_id == supportee_team.id
+    end
+  end
+
+  describe "list_supportee_teams_by_supporter_user_id/2" do
+    test "result 0 entry" do
+      user = insert(:user)
+      assert %{total_entries: 0} = Teams.list_supportee_teams_by_supporter_user_id(user.id)
+    end
+
+    test "result multi entries with sort order" do
+      # 支援する側のチーム
+      supporter_team_name = Faker.Lorem.word()
+      supporter_team_admin_user = insert(:user)
+      supporter_team_member_user = insert(:user)
+
+      {:ok, supporter_team, supporter_team_member_attrs} =
+        Teams.create_team_multi(
+          supporter_team_name,
+          supporter_team_admin_user,
+          [supporter_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: true
+          }
+        )
+
+      # 全員チーム招待に承認する
+      TeamTestHelper.cofirm_invitation(supporter_team_member_attrs)
+
+      # 支援される側のチーム
+      supportee_team_name = Faker.Lorem.word()
+      supportee_team_admin_user = insert(:user)
+      supportee_team_member_user = insert(:user)
+
+      {:ok, supportee_team, _supportee_team_member_attrs} =
+        Teams.create_team_multi(
+          supportee_team_name,
+          supportee_team_admin_user,
+          [supportee_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: false
+          }
+        )
+
+      # 支援される側のチーム2
+      supportee_team_name2 = Faker.Lorem.word()
+      supportee_team_admin_user2 = insert(:user)
+      supportee_team_member_user2 = insert(:user)
+
+      {:ok, supportee_team2, _supportee_team_member_attrs2} =
+        Teams.create_team_multi(
+          supportee_team_name2,
+          supportee_team_admin_user2,
+          [supportee_team_member_user2],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: false
+          }
+        )
+
+      utc_now = NaiveDateTime.utc_now()
+      # 支援開始日が新しい方が上
+      {:ok, %TeamSupporterTeam{} = _team_support_team1} =
+        Teams.create_team_supporter_team(%{
+          supportee_team_id: supportee_team.id,
+          supporter_team_id: supporter_team.id,
+          request_from_user_id: supportee_team_admin_user.id,
+          request_to_user_id: supporter_team_admin_user.id,
+          status: :supporting,
+          request_datetime: utc_now,
+          start_datetime: utc_now
+        })
+
+      # ステータスが異なるレコードは対象外
+      {:ok, %TeamSupporterTeam{} = _team_support_team3} =
+        Teams.create_team_supporter_team(%{
+          supportee_team_id: supportee_team2.id,
+          request_from_user_id: supportee_team_admin_user2.id,
+          request_to_user_id: supporter_team_admin_user.id,
+          status: :requesting,
+          request_datetime: utc_now
+        })
+
+      # 支援開始日が古い方が下
+      {:ok, %TeamSupporterTeam{} = _team_support_team2} =
+        Teams.create_team_supporter_team(%{
+          supportee_team_id: supportee_team2.id,
+          supporter_team_id: supporter_team.id,
+          request_from_user_id: supportee_team_admin_user2.id,
+          request_to_user_id: supporter_team_admin_user.id,
+          status: :supporting,
+          request_datetime: utc_now,
+          start_datetime: NaiveDateTime.add(utc_now, -1, :second)
+        })
+
+      page_list_supportee_teams =
+        Teams.list_supportee_teams_by_supporter_user_id(supporter_team_admin_user.id, %{
+          page: 1,
+          page_size: 2
+        })
+
+      assert page_list_supportee_teams.total_entries == 2
+      supportee_team_1 = Enum.at(page_list_supportee_teams.entries, 0)
+      assert supportee_team_1.name == supportee_team.name
+      supportee_team_2 = Enum.at(page_list_supportee_teams.entries, 1)
+      assert supportee_team_2.name == supportee_team2.name
+    end
+
+    test "not confirm invitation team" do
+      # 支援する側のチーム
+      supporter_team_name = Faker.Lorem.word()
+      supporter_team_admin_user = insert(:user)
+      supporter_team_member_user = insert(:user)
+
+      {:ok, supporter_team, _supporter_team_member_attrs} =
+        Teams.create_team_multi(
+          supporter_team_name,
+          supporter_team_admin_user,
+          [supporter_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: true
+          }
+        )
+
+      # チーム招待に承認しない
+
+      # 支援される側のチーム
+      supportee_team_name = Faker.Lorem.word()
+      supportee_team_admin_user = insert(:user)
+
+      {:ok, supportee_team, _supportee_team_member_attrs} =
+        Teams.create_team_multi(supportee_team_name, supportee_team_admin_user, [], %{
+          enable_team_up_functions: true,
+          enable_hr_functions: false
+        })
+
+      # 支援されるチームの管理者から支援するチームのメンバーへ支援依頼
+      {:ok, %TeamSupporterTeam{} = request_team_supporter_team} =
+        Teams.request_support_from_suportee_team(
+          supportee_team.id,
+          supportee_team_admin_user.id,
+          supporter_team_admin_user.id
+        )
+
+      # 支援依頼を承諾する
+      {:ok, %TeamSupporterTeam{} = _accept_team_supporter_team} =
+        Teams.accept_support_by_supporter_team(request_team_supporter_team, supporter_team.id)
+
+      # 人材チームに招待されていてもチームへの参加を承認していないメンバーは確認できない
+      assert %{total_entries: 0} =
+               Teams.list_support_request_by_supporter_user_id(supporter_team_member_user.id)
     end
   end
 end

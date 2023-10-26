@@ -1,50 +1,16 @@
 <div class="relative w-[1280px] max-h-full">
   <div id="create-team-modal" class="relative rounded-sm px-16 py-8">
     <!-- Modal header -->
-    <h3>チームを作る（β）</h3>
+    <h3><%= @modal_title %></h3>
     <!-- Modal body -->
     <div class="flex pt-8">
       <!-- modal left -->
-      <div class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed">
-      <!-- TODO α対象外
-        <p>
-          <span class="font-bold">気になる</span>からメンバーとして追加
-        </p>
-
-        <p>
-          <span class="font-bold">関わっているチーム</span>からサブチームとして追加
-        </p>
-      -->
-        <div class="flex items-center">
-          <form
-            id="add_user_form"
-            phx-target={@myself}
-            phx-submit="add_user"
-          >
-            <p class="pb-2 text-base">
-              <span class="font-bold">Brightハンドル名</span>からメンバーとして追加
-            </p>
-            <input
-              id="search_word"
-              name="search_word"
-              type="autocomplete"
-              placeholder="ハンドル名を入力してください"
-              class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
-              phx-change="change_add_user"
-              value={@search_word}
-            />
-            <button
-              phx-target={@myself}
-              class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5"
-            >
-              追加
-            </button>
-          </form>
-        </div>
-        <div :if={@search_word_error != nil}>
-          <p class= "text-error text-xs"><%= @search_word_error %></p>
-        </div>
-      </div>
+      <.live_component
+        id="add_user_form"
+        module={TeamAddUserComponent}
+        users={@users}
+        current_user={@current_user}
+      />
       <!-- modal-right -->
       <div class="w-[580px] pl-10 flex flex-col justify-between">
         <.team_form
@@ -64,14 +30,12 @@
                 </dt>
                 <dd class="w-[340px] mb-10">
                   <.input
-                    id="name"
-                    name="name"
                     field={@team_form[:name]}
                     type="text"
-                    value={@name}
                     required
                     placeholder="新しいチーム名を入力してください"
-                    class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+                    class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full h-12"
+                    error_absolute={true}
                   />
                 </dd>
                 <dt class="font-bold w-[100px] mb-10 text-base">
@@ -95,7 +59,7 @@
           </div>
           <div class="flex justify-end gap-x-4">
             <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
-              チームを作成し、上記メンバーに招待を送る
+              <%= @submit %>
             </button>
           </div>
         </.team_form>

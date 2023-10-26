@@ -4,6 +4,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [score_mark_class: 2]
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
   import BrightWeb.GuideMessageComponents
+  import Phoenix.LiveView, only: [send_update: 2]
+
+  alias BrightWeb.SkillPanelLive.SkillsFieldComponent
 
   def compares(assigns) do
     ~H"""
@@ -12,8 +15,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <div class="flex gap-x-4">
         <.compare_individual current_user={@current_user} myself={@myself} />
         <.compare_team current_user={@current_user} myself={@myself} />
-        <% # TODO: α版後にifを除去して表示 %>
-        <.compare_custom_group :if={false} />
+        <.compare_custom_group
+          current_user={@current_user}
+          custom_group={@custom_group}
+          compared_users={@compared_users}
+          myself={@myself}
+          skills_field_id={@skills_field_id}
+        />
       </div>
     </div>
     """
@@ -113,7 +121,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       id="compare-team-dropdown"
       class="mt-4 lg:mt-0 hidden lg:block"
       phx-hook="Dropdown"
-      data-dropdown-offset-skidding="307"
+      data-dropdown-offset-skidding="290"
       data-dropdown-placement="bottom"
     >
       <button
@@ -141,51 +149,43 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   end
 
   def compare_custom_group(assigns) do
-    # TODO: 実装時、dropdownにHookを使うこと
     ~H"""
-    <button
-      id="addCustomGroupDropwonButton"
-      data-dropdown-toggle="addCustomGroupDropwon"
-      data-dropdown-offset-skidding="230"
-      data-dropdown-placement="bottom"
-      type="button"
-      class="text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-    >
-      カスタムグループ
-    </button>
-    <!-- カスタムグループDropdown -->
     <div
-      id="addCustomGroupDropwon"
-      class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
+      id="custom-group-dropdown"
+      class="mt-4 lg:mt-0 hidden lg:block"
+      phx-hook="Dropdown"
+      data-dropdown-offset-skidding="110"
+      data-dropdown-placement="bottom"
     >
-      <ul
-        class="p-2 text-left text-base"
-        aria-labelledby="dropmenu04"
+      <button
+        class="dropdownTrigger text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
+        type="button"
       >
-        <li>
-          <a
-            data-modal-target="defaultModal"
-            data-modal-toggle="defaultModal"
-            class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
-          >
-            下記をカスタムグループとして追加する
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="block px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
-            >下記で現在のカスタムグループを更新する</a>
-        </li>
-      </ul>
+        <span>カスタムグループ</span>
+      </button>
+      <div
+        class="dropdownTarget z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
+      >
+        <.live_component
+          id="compare-custom-group-menu"
+          module={BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent}
+          custom_group={@custom_group}
+          current_user={@current_user}
+          compared_users={@compared_users}
+          on_create={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_created: &1)}
+          on_select={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_selected: &1)}
+          on_assign={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_assigned: &1)}
+          on_update={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_updated: &1)}
+          on_delete={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_deleted: &1)}
+        />
+      </div>
     </div>
 
-    <!-- カスタムグループ福岡Elixir -->
-    <div class="text-left flex items-center text-base">
+    <div :if={@custom_group} id="selected-custom-group-name" class="text-left flex items-center text-base">
       <span
         class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-1 !items-center !justify-center"
         >group</span>
-      カスタムグループ福岡Elixir
+      <%= @custom_group.name %>
     </div>
     """
   end
