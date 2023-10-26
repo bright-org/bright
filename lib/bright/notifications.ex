@@ -83,9 +83,7 @@ defmodule Bright.Notifications do
       ** (Ecto.NoResultsError)
 
   """
-  def confirm_notification!(
-        %NotificationOperation{confirmed_at: nil} = notification
-      ) do
+  def confirm_notification!(%NotificationOperation{confirmed_at: nil} = notification) do
     Ecto.Changeset.change(notification,
       confirmed_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     )
@@ -106,7 +104,6 @@ defmodule Bright.Notifications do
         "operation" => 1
       }
   """
-  # TODO: テスト
   def list_unconfirmed_notification_count(%User{} = _user) do
     %{
       "operation" => not_confirmed_notification_operation_count()
