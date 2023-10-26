@@ -48,7 +48,7 @@ defmodule BrightWeb.NotificationLive.Operation do
       <.header class="break-words"><%= @shown_notification_operation.message %></.header>
 
       <div class="mt-4">
-        <%= Phoenix.HTML.Format.text_to_html(@shown_notification_operation.detail) %>
+        <%= Phoenix.HTML.Format.text_to_html(@shown_notification_operation.detail, attributes: [class: "break-all"]) %>
       </div>
     </.bright_modal>
     """
