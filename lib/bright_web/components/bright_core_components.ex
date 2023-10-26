@@ -285,7 +285,7 @@ defmodule BrightWeb.BrightCoreComponents do
         <span class={@after_label_class}><%= @after_label %></span>
       </label>
       <div class={@error_class}>
-        <.error :for={msg <- @errors}><%= msg %></.error>
+        <.error :for={msg <- @errors}><%= Phoenix.HTML.raw(msg) %></.error>
       </div>
     </div>
     """

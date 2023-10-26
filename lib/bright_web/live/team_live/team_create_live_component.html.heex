@@ -25,19 +25,18 @@
             <h5>新しいチーム</h5>
             <div class="bg-brightGray-10 rounded-sm px-10 pt-6 min-h-[360px]">
               <dl class="flex flex-wrap">
-                <dt class="font-bold w-[100px] flex items-center mb-10 text-base">
-                  チーム名
-                </dt>
-                <dd class="w-[340px] mb-10">
-                  <.input
+                <dt class="mb-10">
+                  <BrightCore.input
+                    label_class="w-[100px] text-base font-bold"
+                    input_class="border border-brightGray-100 rounded-sm flex-1 h-12 w-[340px]"
+                    error_class="ml-[100px] mt-2"
+                    label="チーム名"
                     field={@team_form[:name]}
                     type="text"
                     required
                     placeholder="新しいチーム名を入力してください"
-                    class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full h-12"
-                    error_absolute={true}
                   />
-                </dd>
+                </dt>
                 <dt class="font-bold w-[100px] mb-10 text-base">
                   メンバー
                 </dt>
