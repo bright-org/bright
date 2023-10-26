@@ -76,7 +76,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      socket
      |> assign(skill_class: nil)
      |> assign(compared_users: [], compared_user_dict: %{})
-     |> assign(timeline: TimelineHelper.get_current())
      |> assign(custom_group: nil)
      |> clear_inner_flash()}
   end
@@ -115,10 +114,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   def update(assigns, socket) do
+    timeline = get_init_timeline(assigns.init_timeline)
+
     {:ok,
      socket
      |> assign_assigns_with_current_if_updated(assigns)
-     |> assign_on_timeline(TimelineHelper.get_selected_tense(socket.assigns.timeline))
+     |> assign(:timeline, timeline)
+     |> assign_on_timeline(TimelineHelper.get_selected_tense(timeline))
      |> assign_compared_users_from_team(assigns.init_team_id)
      |> assign_compared_users_info()}
   end
@@ -578,5 +580,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
 
   defp clear_inner_flash(socket) do
     assign(socket, :inner_flash, %{})
+  end
+
+  defp get_init_timeline(nil) do
+    TimelineHelper.get_current()
+  end
+
+  defp get_init_timeline(init_timeline_label) do
+    TimelineHelper.get_by_label(init_timeline_label)
   end
 end

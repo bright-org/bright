@@ -15,23 +15,27 @@ defmodule BrightWeb.TimelineHelper do
   @start_month 10
   @monthly_interval 3
   @num_labels 5
+  # month_range_size: タイムラインに表示される月幅
+  @month_range_size @monthly_interval * (@num_labels - 1)
+  @valid_months [1, 4, 7, 10]
 
   def get_current do
-    future_date = get_future_month()
-    start_date = future_date |> Timex.shift(months: -1 * @monthly_interval * (@num_labels - 1))
-    {_, labels} = create_months(start_date, 0)
-    future_enabled = future_enabled?(labels, future_date)
-    past_enabled = past_enabled?(labels)
+    get_by_date("now")
+  end
 
-    %{
-      future_date: future_date,
-      start_date: start_date,
-      labels: labels,
-      selected_label: "now",
-      future_enabled: future_enabled,
-      past_enabled: past_enabled,
-      display_now: !future_enabled
-    }
+  @doc """
+  label(例: `2023.10`)からtimelineを構築して返す。
+  ただし、labelはユーザー入力として受けるため不適切な場合は現在時刻で返す。
+  """
+  def get_by_label(label) do
+    with date when not is_nil(date) <- label_to_date(label),
+         true <- Date.compare(date, label_to_date(@start_label)) in [:gt, :eq],
+         true <- Date.compare(date, Date.utc_today()) in [:lt, :eq],
+         true <- date.month in @valid_months do
+      get_by_date(label, date)
+    else
+      v when v in [nil, false] -> get_current()
+    end
   end
 
   def select_label(timeline, label) do
@@ -90,10 +94,19 @@ defmodule BrightWeb.TimelineHelper do
     end
   end
 
-  def label_to_date(label) do
-    [year, month] = label |> String.split(".") |> Enum.map(&String.to_integer/1)
-    Date.new!(year, month, 1)
+  def label_to_date(label) when not is_bitstring(label), do: nil
+
+  def label_to_date(<<year::bytes-size(4)>> <> "." <> <<month::binary>>) do
+    with {year, ""} <- Integer.parse(year),
+         {month, ""} <- Integer.parse(month),
+         {:ok, date} <- Date.new(year, month, 1) do
+      date
+    else
+      _ -> nil
+    end
   end
+
+  def label_to_date(_label), do: nil
 
   defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
 
@@ -106,6 +119,37 @@ defmodule BrightWeb.TimelineHelper do
     |> Enum.map(fn x -> Date.from_erl!(x) end)
     |> Enum.filter(fn x -> Timex.compare(x, now) > 0 end)
     |> List.first()
+  end
+
+  defp get_by_date(selected_label, date \\ nil) do
+    future_date = get_future_month()
+
+    # タイムラインの表示開始日付(start_date)を決定している
+    # 未来は表示しないため取りうる最も新しいstart_dateはbase_start_dateになる
+    base_start_date = Timex.shift(future_date, months: -1 * @month_range_size)
+
+    start_date =
+      if(
+        date,
+        do: Timex.shift(date, months: -2 * @monthly_interval),
+        else: base_start_date
+      )
+
+    start_date = Enum.min([start_date, base_start_date], Date)
+
+    {_, labels} = create_months(start_date, 0)
+    future_enabled = future_enabled?(labels, future_date)
+    past_enabled = past_enabled?(labels)
+
+    %{
+      future_date: future_date,
+      start_date: start_date,
+      labels: labels,
+      selected_label: selected_label,
+      future_enabled: future_enabled,
+      past_enabled: past_enabled,
+      display_now: !future_enabled
+    }
   end
 
   defp create_months(current_start_date, shift_month) do
