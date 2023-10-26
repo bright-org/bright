@@ -177,7 +177,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
   attr :inserted_at, :any
 
-  defp elapsed_time(assigns) do
+  def elapsed_time(assigns) do
     {:ok, inserted_at} = DateTime.from_naive(assigns.inserted_at, "Etc/UTC")
 
     minutes =

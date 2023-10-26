@@ -1,9 +1,12 @@
 ## 通知テーブル
+
 前提事項
+
 - 通知はどの種類でも共通仕様項目を実装する
- - 取得時に共通のルールでデータを取得する為
+- 取得時に共通のルールでデータを取得する為
 
 ### 共通項目
+
 ```mermaid
 erDiagram
   common {
@@ -11,11 +14,12 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index:（必須ではない）"
     string message	"メッセージ内容"
     text detail	"詳細"
+    datetime confirmed_at "既読日時"
   }
 ```
 
+## 重要な連絡　 ER 図
 
-## 重要な連絡　ER図
 ```mermaid
 erDiagram
   "Brightユーザー" ||--o{ "通知_チーム招待" : ""
@@ -28,9 +32,10 @@ erDiagram
 
   "Brightユーザー" ||--o{ "通知_運営" : ""
 
-``````
+```
 
 ### 重要な連絡 テーブル
+
 ```mermaid
 erDiagram
   "users" ||--o{ "notification_team_invitations" : ""
@@ -49,31 +54,34 @@ erDiagram
     string message	"メッセージ内容"
     text detail	"詳細"
     string status "ステータス： enum（participation:参加する, abstention:参加しない）"
+    datetime confirmed_at "既読日時"
   }
-  
+
   notification_looking_backs {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
+    datetime confirmed_at "既読日時"
   }
-
 
   notification_recruitment_coordinations {
     id from_user_id	FK "送信元ユーザー"
     id to_user_id	FK "送信先ユーザー index"
     string url	"採用の回答するモーダルのURL"
+    datetime confirmed_at "既読日時"
   }
 
   notification_operations {
     id from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
+    datetime confirmed_at "既読日時"
   }
-  
+
 ```
 
-## さまざまな人たちとの交流 ER図
+## さまざまな人たちとの交流 ER 図
 
 ```mermaid
 erDiagram
@@ -120,7 +128,7 @@ erDiagram
   "users" ||--o{ "notification_watches" : ""
   "notification_watches" ||--|| "users" : ""
 
-  "users" ||--o{ "notification_communities" : "" 
+  "users" ||--o{ "notification_communities" : ""
   "notification_communities" ||--|| "communities" : ""
 
   "communities" ||--|| "user_communities" : ""
@@ -134,6 +142,7 @@ erDiagram
     string message	"メッセージ内容"
     string url 	"ジェムのリンクと同じ"
     boolean congratulate　"祝福する"
+    datetime confirmed_at "既読日時"
   }
 
   notification_blesses {
@@ -141,6 +150,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     text detail	"詳細"
+    datetime confirmed_at "既読日時"
   }
 
   notification_1on1_invitations {
@@ -149,6 +159,7 @@ erDiagram
     string message	"メッセージ内容"
     text detail	"詳細"
     string accept_status "受入ステータス： enum（acceptance、rejection）"
+    datetime confirmed_at "既読日時"
   }
 
   notification_faves {
@@ -156,6 +167,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string url	"エビデンスのURL"
+    datetime confirmed_at "既読日時"
   }
 
   notification_watches {
@@ -163,6 +175,7 @@ erDiagram
     id to_user_id	FK "送信先ユーザー index"
     string message	"メッセージ内容"
     string url	"相手のmypageのURL"
+    datetime confirmed_at "既読日時"
   }
 
   notification_communities {
@@ -170,6 +183,7 @@ erDiagram
     id community_id	FK "対象コミュニティ"
     string message	"メッセージ内容"
     text detail	"詳細"
+    datetime confirmed_at "既読日時"
   }
 
   communities {
@@ -180,10 +194,10 @@ erDiagram
     id user_id FK "ユーザーid index"
     id community_id FK "コミュニティid"
     boolean participation_status "参加状況"
+    datetime confirmed_at "既読日時"
   }
 
 ```
-
 
 ## 通知と同時に行われる処理
 

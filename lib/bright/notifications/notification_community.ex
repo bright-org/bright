@@ -13,6 +13,7 @@ defmodule Bright.Notifications.NotificationCommunity do
     field :message, :string
     belongs_to :from_user, User
     field :detail, :string
+    field :confirmed_at, :naive_datetime
 
     timestamps()
   end
