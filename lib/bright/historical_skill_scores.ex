@@ -106,9 +106,11 @@ defmodule Bright.HistoricalSkillScores do
 
   ## Examples
 
-      iex> get_historical_skill_class_scores(locked_date, skill_panel_id, class, user_id,from_date, to_date)
+      iex> get_historical_skill_class_scores(locked_date, skill_panel_id, class, user_id, from_date, to_date)
       [
-        %{locked_date: ~D[2022-10-01], percentage: 15.555555555555555}
+        {~D[2022-10-01], 15.555555555555555},
+        {~D[2023-01-01], 25.0},
+        ...
       ]
   """
   def list_historical_skill_class_score_percentages(

@@ -54,9 +54,10 @@ defmodule BrightWeb.ChartComponents do
           role: [20, 20, 50, 60, 75, 100],
           now: 55,
           futureEnabled: true,
-          labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+          labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2021.12"],
           myselfSelected: "2021.9",
-          otherSelected: "2020.12"
+          otherSelected: "2020.12",
+          otherLabels: ["2020.09", "2020.12", "2021.3", "2021.6", "2021.9"]
         }
 
   ## Examples
