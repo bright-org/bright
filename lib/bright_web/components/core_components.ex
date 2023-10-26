@@ -272,8 +272,6 @@ defmodule BrightWeb.CoreComponents do
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
 
-  attr :error_absolute, :boolean, default: false, doc: "setting layout absolute at error message"
-
   slot :inner_block
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
@@ -366,9 +364,7 @@ defmodule BrightWeb.CoreComponents do
         ]}
         {@rest}
       />
-      <div class={if @error_absolute, do: "absolute", else: ""}>
-      <.error :for={msg <- @errors}><%= Phoenix.HTML.raw(msg) %></.error>
-      </div>
+      <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
   end

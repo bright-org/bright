@@ -8,6 +8,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias BrightWeb.TeamLive.TeamAddUserComponent
+  alias BrightWeb.BrightCoreComponents, as: BrightCore
 
   @doc """
   Renders a simple form for tema create.
@@ -89,7 +90,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   def save_team(socket, :new, team_params, count) when count > 0 do
     msg =
-      "フリープランで作成できるチーム数は、1チームまでになります<br /><br />より多くのチームを作成したい場合は、「アップグレード」ボタンから<br />「チームアッププラン」の無料トライアルもしくはご購入をお願いします"
+      "フリープランで作成できるチーム数は、1チームまでになります<br /><br />より多くのチームを作成したい場合は、「アップグレード」ボタンからチームアッププラン」の無料トライアルもしくはご購入をお願いします"
 
     changeset =
       socket.assigns.team
@@ -119,7 +120,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
          socket
          |> put_flash(:info, "チームを登録しました")
          # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
-         |> redirect(to: socket.assigns.patch)}
+         |> redirect(to: ~p"/teams/#{team}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
@@ -144,7 +145,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
          socket
          |> put_flash(:info, "チームを更新しました")
          # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
-         |> redirect(to: assigns.patch)}
+         |> redirect(to: ~p"/teams/#{team}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
