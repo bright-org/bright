@@ -63,18 +63,24 @@ defmodule BrightWeb.TimelineHelperTest do
 
     test "returns current timeline if given label is invalid" do
       with_mocks([date_mock()]) do
-        assert %{selected_label: "now"} = TimelineHelper.get_by_label("2000.x")
+        assert %{selected_label: "now"} = TimelineHelper.get_by_label("2022.9")
+        assert %{selected_label: "now"} = TimelineHelper.get_by_label("2022.x")
+        assert %{selected_label: "now"} = TimelineHelper.get_by_label("2022.10.1")
+        assert %{selected_label: "now"} = TimelineHelper.get_by_label("202210")
+        assert %{selected_label: "now"} = TimelineHelper.get_by_label("dummy")
       end
     end
 
-    test "returns current timeline if given label is over" do
+    test "returns current timeline if given label is older than service start date" do
       with_mocks([date_mock()]) do
-        assert %{selected_label: "now"} = TimelineHelper.get_by_label("2000.10")
+        assert %{selected_label: "2021.10"} = TimelineHelper.get_by_label("2021.10")
+        assert %{selected_label: "now"} = TimelineHelper.get_by_label("2021.7")
       end
     end
 
     test "returns current timeline if given label is future" do
       with_mocks([date_mock()]) do
+        assert %{selected_label: "2023.10"} = TimelineHelper.get_by_label("2023.10")
         assert %{selected_label: "now"} = TimelineHelper.get_by_label("2024.01")
       end
     end

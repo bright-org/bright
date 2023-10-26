@@ -88,7 +88,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     do: SkillScores.get_skill_gem(user_id, skill_panel_id, class)
 
   def get_skill_gem(user_id, skill_panel_id, class, select_label) do
-    locked_date = label_to_date(select_label)
+    locked_date = TimelineHelper.label_to_date(select_label)
 
     skill_gem =
       HistoricalSkillScores.get_historical_skill_gem(
@@ -104,14 +104,6 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     else
       skill_gem
     end
-  end
-
-  defp label_to_date(date) do
-    "#{date}.1"
-    |> String.split(".")
-    |> Enum.map(&String.to_integer/1)
-    |> List.to_tuple()
-    |> Date.from_erl!()
   end
 
   defp get_skill_gem_data(skill_gem), do: [skill_gem |> Enum.map(fn x -> x.percentage end)]
