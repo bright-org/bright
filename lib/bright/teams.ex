@@ -46,7 +46,7 @@ defmodule Bright.Teams do
   """
   def get_team!(id) do
     Team
-    |> where([t], is_nil(t.deleted_at))
+    |> where([t], is_nil(t.disabled_at))
     |> Repo.get!(id)
   end
 
@@ -66,7 +66,7 @@ defmodule Bright.Teams do
   """
   def get_team_with_member_users!(id) do
     Team
-    |> where([t], is_nil(t.deleted_at))
+    |> where([t], is_nil(t.disabled_at))
     |> preload(member_users: :user)
     |> Repo.get!(id)
   end
@@ -88,7 +88,7 @@ defmodule Bright.Teams do
 
   def get_team_with_member!(id) do
     Team
-    |> where([t], is_nil(t.deleted_at))
+    |> where([t], is_nil(t.disabled_at))
     |> preload(users: :user_profile)
     |> Repo.get!(id)
   end
@@ -500,7 +500,7 @@ defmodule Bright.Teams do
       left_join: t in assoc(tmbu, :team),
       where:
         tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at) and
-          is_nil(t.deleted_at),
+          is_nil(t.disabled_at),
       order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
     )
     |> preload(team: :member_users)
@@ -892,7 +892,7 @@ defmodule Bright.Teams do
     from(
       tmu in TeamMemberUsers,
       left_join: t in assoc(tmu, :team),
-      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.deleted_at)
+      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.disabled_at)
     )
     |> Repo.aggregate(:count)
   end

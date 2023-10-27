@@ -96,8 +96,8 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             1on1に誘う
           </button>
-          <%= if @display_skill_panel && @display_skill_card.user.id == @current_user.id do %>
-            <%= if is_nil(@display_skill_card.user_skill_class_score) do %>
+          <%= if @display_skill_card.user.id == @current_user.id do %>
+            <%= if is_nil(@display_skill_panel) || is_nil(@display_skill_card.user_skill_class_score) do %>
               <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200" disabled>
                 スキルを入力
               </button>

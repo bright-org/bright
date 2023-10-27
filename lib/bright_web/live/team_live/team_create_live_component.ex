@@ -86,7 +86,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   def handle_event("delete_team", %{"id" => id}, socket) do
     {:ok, _} =
       Teams.get_team!(id)
-      |> Teams.update_team(%{deleted_at: NaiveDateTime.utc_now()})
+      |> Teams.update_team(%{disabled_at: NaiveDateTime.utc_now()})
 
     socket
     |> put_flash(:info, "チームを削除しました")

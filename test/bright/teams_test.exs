@@ -319,7 +319,7 @@ defmodule Bright.TeamsTest do
 
       {:ok, team2, _team2_member_user_attrs} = Teams.create_team_multi(team_name2, user, [])
 
-      Teams.update_team(team2, %{deleted_at: NaiveDateTime.utc_now()})
+      Teams.update_team(team2, %{disabled_at: NaiveDateTime.utc_now()})
 
       assert %Scrivener.Page{total_entries: 1} = Teams.list_joined_teams_by_user_id(user.id)
     end
