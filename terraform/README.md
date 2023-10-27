@@ -56,6 +56,8 @@ dev環境を例とする。
 3. `terraform plan` を実行し、各種リソースが意図した通りに変更されるか確認する
 4. `main` ブランチに反映すると、自動でプロビジョニングされる
 
+**※Cloud Runサービスが再構築されると自動生成のドメイン名が変わるため要注意**
+
 ## 秘匿情報の変更と反映
 
 秘匿情報の管理にはTerraform Cloudの [Variable sets](https://app.terraform.io/app/bright-org/settings/varsets) を使用しており、環境ごとに `bright-***` という名前のVariable setを登録している。
@@ -73,5 +75,5 @@ dev環境を例とする。
 2. Terraform Cloud上で、手動でApplyする
     ![](./images/apply.png)
 3. Phoenixアプリケーションをデプロイする（アプリに何も変更がなくても必要）
-    - `release-` というprefixのGitタグをPushするとデプロイされる
+    - `prod-` というprefixのGitタグをPushするとデプロイされる
     - [GitHub Releaseを作成](https://github.com/bright-org/bright/releases/tag/release-sample) してデプロイすることも可能
