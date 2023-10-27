@@ -29,16 +29,15 @@ defmodule Bright.Notifications do
   def get_notification!("operation", id),
     do: Repo.get!(NotificationOperation, id)
 
-  def get_notification!(_type, id),
-    do: Repo.get!(Notification, id) |> Repo.preload([:from_user, :to_user])
-
   @doc """
-  Returns the list of notifications by type.
+  Returns the list of notifications by type order by id.
 
   Notice:
 
-  This function returns in the order by inserted_at first, and id second.
-  Without this rule, when inserted_at has same value, the order is not guaranteed.
+  This function returns in the order by id DESC.
+
+  We use ULID as id, so id sort is same as inserted_at sort.
+  https://github.com/woylie/ecto_ulid/blob/v1.0.1/README.md
 
    ## Examples
 
@@ -76,9 +75,6 @@ defmodule Bright.Notifications do
 
       iex> confirm_notification!(%NotificationCommunity{})
       %NotificationCommunity{}
-
-      iex> confirm_notification!(%NotificationCommunity{})
-      ** (Ecto.NoResultsError)
 
   """
   def confirm_notification!(%NotificationOperation{confirmed_at: nil} = notification) do
