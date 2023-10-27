@@ -309,6 +309,20 @@ defmodule Bright.TeamsTest do
       assert page.total_entries == 0
       assert page.total_pages == 1
     end
+
+    test "exclude deleted_team" do
+      user = insert(:user)
+      team_name1 = Faker.Lorem.word()
+      team_name2 = Faker.Lorem.word()
+
+      {:ok, _team, _team_member_user_attrs} = Teams.create_team_multi(team_name1, user, [])
+
+      {:ok, team2, _team2_member_user_attrs} = Teams.create_team_multi(team_name2, user, [])
+
+      Teams.update_team(team2, %{disabled_at: NaiveDateTime.utc_now()})
+
+      assert %Scrivener.Page{total_entries: 1} = Teams.list_joined_teams_by_user_id(user.id)
+    end
   end
 
   describe "toggle_is_star/1" do

@@ -57,10 +57,16 @@
             </div>
           </div>
           <div class="flex justify-end gap-x-4">
+            <.link :if={@action == :edit} phx-click={JS.push("delete_team", value: %{id: @team.id}, target: @myself)} data-confirm="削除してよろしいでしょうか？">
+              <button class="text-sm font-bold px-5 py-3 rounded text-white bg-attention-600">
+                チームを削除する
+              </button>
+            </.link>
             <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
               <%= @submit %>
             </button>
           </div>
+          <span class="text-attention-600">※「チームアッププラン」以上をご購入いただくと、削除したチームを復旧できます</span>
         </.team_form>
       </div>
     </div>
