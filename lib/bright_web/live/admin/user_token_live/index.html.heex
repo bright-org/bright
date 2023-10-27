@@ -1,20 +1,56 @@
 <.header>
-  Listing User tokens
+  Registration Confirm URL
 </.header>
 
-<table>
+<table class="mb-8">
   <tr>
-    <th>context</th>
     <th>email</th>
     <th>name</th>
     <th>URL</th>
   </tr>
+  <%= for {_context, email, name, url} <- @user_tokens do %>
   <tr>
-    <%= for {context, email, name, url} <- @user_tokens do %>
-      <td><%= context %></td>
       <td><%= email %></td>
       <td><%= name %></td>
-      <td><a class="underline text-blue-700" href={url}><%= url %></a></td>
+      <td><a class="underline text-blue-700" href={url} target="_blank" rel="noopener noreferrer"><%= url %></a></td>
+  </tr>
+  <% end %>
+</table>
+
+<.header>
+  Team Invite URL
+</.header>
+
+<table class="mb-8">
+  <tr>
+    <th>email</th>
+    <th>name</th>
+    <th>URL</th>
+  </tr>
+  <%= for {_context,email, name, url} <- @team_invite do %>
+  <tr>
+    <td><%= email %></td>
+    <td><%= name %></td>
+    <td><a class="underline text-blue-700" href={url} target="_blank" rel="noopener noreferrer"><%= url %></a></td>
+  </tr>
+  <% end %>
+</table>
+
+
+<.header>
+  2FA Codes
+</.header>
+
+<table>
+  <tr>
+    <th>email</th>
+    <th>code</th>
+  </tr>
+  <tr>
+    <%= for code <- @user_2fa_codes do %>
+      <td><%= code.sent_to %></td>
+      <td><%= code.code %></td>
     <% end %>
   </tr>
 </table>
+

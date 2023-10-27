@@ -717,6 +717,13 @@ defmodule Bright.Teams do
         invite_team_url_fun
       )
       when is_function(invite_team_url_fun, 1) do
+    if !Bright.Utils.Env.prod?() or Application.get_env(:bright, :dev_routes) do
+      :ets.insert(
+        :token,
+        {"invite", to_user.email, to_user.name, invite_team_url_fun.(encoded_token)}
+      )
+    end
+
     UserNotifier.deliver_invitation_team_instructions(
       from_user,
       to_user,

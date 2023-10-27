@@ -24,7 +24,7 @@ defmodule Bright.Application do
       # {Bright.Worker, arg}
     ]
 
-    :token = :ets.new(:token, [:named_table, :public])
+    :token = :ets.new(:token, [:duplicate_bag, :named_table, :public])
 
     children =
       if Application.get_env(:goth, :disabled),
