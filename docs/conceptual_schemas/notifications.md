@@ -136,4 +136,4 @@ erDiagram
     - `Bright.Notifications.list_notification_by_type/3` に追加した通知のパターンを実装する
     - `Bright.NotificationsTest` を修正する
   - コンポーネントのテストを追加する
-    - `BrightWeb.NotificationLive.OperationTest` を修正する
+    - 例: `BrightWeb.NotificationLive.OperationTest` を修正する
