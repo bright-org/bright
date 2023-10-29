@@ -106,7 +106,7 @@ defmodule BrightWeb.LayoutComponents do
         <.search_for_skill_holders_button />
         <.live_component
           id="notification_header"
-          module={BrightWeb.MypageLive.NotificationHeaderComponent}
+          module={BrightWeb.NotificationLive.NotificationHeaderComponent}
           current_user={Map.get(assigns, :current_user)}
         />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>

@@ -1,4 +1,4 @@
-defmodule BrightWeb.MypageLive.NotificationHeaderComponent do
+defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
   @moduledoc """
   Notification Header Components
   """
