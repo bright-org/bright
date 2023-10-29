@@ -4,7 +4,6 @@ defmodule BrightWeb.BrightButtonComponents do
   """
   use Phoenix.Component
   alias Phoenix.LiveView.JS
-  import BrightWeb.CoreComponents, only: [icon: 1]
 
   @doc """
   Renders a Profile Button
