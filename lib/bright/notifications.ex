@@ -41,7 +41,7 @@ defmodule Bright.Notifications do
 
    ## Examples
 
-      iex> list_notification_by_type(user.id, "recruitment_coordination")
+      iex> list_notification_by_type(user.id, "recruitment_coordination", [page: 1, page_size: 10])
       %Notification{}
   """
   def list_notification_by_type(_to_user_id, "operation", page_param) do
