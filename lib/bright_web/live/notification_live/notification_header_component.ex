@@ -52,6 +52,7 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
     {:ok, socket}
   end
 
+  @impl true
   def handle_event("toggle_notifications", _params, socket) do
     new_open? = !socket.assigns.open?
 
