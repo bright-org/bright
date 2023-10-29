@@ -239,6 +239,7 @@ defmodule BrightWeb.Router do
       live "/teams/:team_id/skill_panels/:skill_panel_id", MyTeamLive, :index
 
       live "/notifications/operations", NotificationLive.Operation, :index
+      live "/notifications/communities", NotificationLive.Community, :index
     end
 
     ## OAuth
