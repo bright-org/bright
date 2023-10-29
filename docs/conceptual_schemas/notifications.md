@@ -127,11 +127,13 @@ erDiagram
 - テーブルをマイグレーションする
   - インデックスを貼るのを忘れずに
 - `BrightWeb.NotificationLive.NotificationHeaderComponent` を修正する
-  - 主に `notification_list/2` あたり
+  - 主に `notification_list/2`
     - `Bright.Notifications.list_unconfirmed_notification_count/1` に追加した通知のパターンを実装する
-    - コンポーネントのテストを追加する
+      - `Bright.NotificationsTest` を修正する
+  - `BrightWeb.NotificationLive.NotificationHeaderComponentTest` を修正する
 - コンポーネントを実装する
   - 例: `BrightWeb.NotificationLive.Operation`
     - `Bright.Notifications.list_notification_by_type/3` に追加した通知のパターンを実装する
-    - テストを追加する
+    - `Bright.NotificationsTest` を修正する
   - コンポーネントのテストを追加する
+    - `BrightWeb.NotificationLive.OperationTest` を修正する
