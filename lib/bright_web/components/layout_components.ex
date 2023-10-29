@@ -104,7 +104,11 @@ defmodule BrightWeb.LayoutComponents do
       </div>
       <div class="flex gap-2 items-center lg:w-fit h-10">
         <.search_for_skill_holders_button />
-        <.notification_button current_user={Map.get(assigns, :current_user)} />
+        <.live_component
+          id="notification_header"
+          module={BrightWeb.MypageLive.NotificationHeaderComponent}
+          current_user={Map.get(assigns, :current_user)}
+        />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
       </div>
     </div>
