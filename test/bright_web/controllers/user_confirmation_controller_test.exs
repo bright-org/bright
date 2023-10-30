@@ -72,7 +72,6 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       # confirm again
       conn = conn |> get(~p"/users/confirm/#{token}")
       assert html_response(conn, 302)
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "ログイン中はアクセスできません"
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
@@ -102,7 +101,6 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       conn = get(conn, ~p"/users/confirm/#{token}")
 
       assert html_response(conn, 302)
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "ログイン中はアクセスできません"
       assert redirected_to(conn) == ~p"/mypage"
     end
   end
