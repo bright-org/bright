@@ -63,21 +63,6 @@ defmodule BrightWeb.GuideMessageComponents do
   end
 
   @doc """
-  クラス開放メッセージ
-  """
-  def next_skill_class_opened_message(assigns) do
-    ~H"""
-    <div>
-      <p>クラス開放おめでとうございます！</p>
-      <p class="mt-2">クラス開放後は「成長を見る・比較する」メニューでスキルレベルを確認できます。</p>
-    </div>
-    <div class="mt-4 max-w-[400px]">
-      <img src="/images/sample_groth_graph.png" alt="成長グラフ" />
-    </div>
-    """
-  end
-
-  @doc """
   求職案内メッセージ
   """
   def prompt_job_searching_message(assigns) do

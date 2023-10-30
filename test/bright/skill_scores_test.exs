@@ -107,62 +107,6 @@ defmodule Bright.SkillScoresTest do
       assert skill_class_score.percentage == 50.0
     end
 
-    test "update_skill_class_score_stats case skill up to next skill score", %{
-      user: user,
-      skill_panel: skill_panel,
-      skill_class: skill_class
-    } do
-      # 次のスキルクラスが開放されることの確認
-      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
-      skill_unit = insert(:skill_unit)
-
-      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
-      [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
-      insert(:skill_score, user: user, skill: skill_1, score: :low)
-      insert(:skill_score, user: user, skill: skill_2, score: :high)
-
-      # # クラス2のスキルクラス用意
-      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
-
-      {:ok, _} = SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
-
-      skill_class_score_2 =
-        SkillScores.get_skill_class_score_by!(user_id: user.id, skill_class_id: skill_class_2.id)
-
-      assert skill_class_score_2.level == :beginner
-      assert skill_class_score_2.percentage == 0.0
-    end
-
-    test "update_skill_class_score_stats case skill up chain", %{
-      user: user,
-      skill_panel: skill_panel,
-      skill_class: skill_class
-    } do
-      # 次のスキルクラスが開放されることの確認
-      # ただし、次のスキルクラスがもつスキルユニットは習得済みと想定し、さらに次のスキルクラスが開放されること
-      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
-      skill_unit = insert(:skill_unit)
-
-      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
-      [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
-      insert(:skill_score, user: user, skill: skill_1, score: :low)
-      insert(:skill_score, user: user, skill: skill_2, score: :high)
-
-      # # クラス2のスキルクラス用意
-      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
-      insert(:skill_class_unit, skill_class: skill_class_2, skill_unit: skill_unit)
-      # # クラス3のスキルクラス用意
-      skill_class_3 = insert(:skill_class, skill_panel: skill_panel, class: 3)
-
-      {:ok, _} = SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
-
-      skill_class_score_3 =
-        SkillScores.get_skill_class_score_by!(user_id: user.id, skill_class_id: skill_class_3.id)
-
-      assert skill_class_score_3.level == :beginner
-      assert skill_class_score_3.percentage == 0.0
-    end
-
     test "update_skill_class_score_stats without items ", %{
       user: user,
       skill_class: skill_class
@@ -402,7 +346,6 @@ defmodule Bright.SkillScoresTest do
     # - skill_unit_scores.pecentage
     # - skill_class_scores.pecentage
     # - skill_class_scores.level
-    # - skill_class_scores の新規作成（クラス開放）
     #
     # 主なテストケース
     # - skillの追加
@@ -641,32 +584,13 @@ defmodule Bright.SkillScoresTest do
       skill_class_2: skill_class_2
     } do
       SkillScores.re_aggregate_scores([skill_class_1, skill_class_2])
-      [skill_class_1_score, skill_class_2_score, _] = get_skill_class_scores(skill_panel)
+      [skill_class_1_score, skill_class_2_score] = get_skill_class_scores(skill_panel)
 
       # (4 - 1) / (8 - 1)
       assert 42.9 == Float.round(skill_class_1_score.percentage, 1)
 
       # (0 + 1) / (1 + 1)
       assert %{percentage: 50.0, level: :normal} = skill_class_2_score
-    end
-
-    @tag batch: "skill_moved_to_class2"
-    test "creates skill_class_scores class:3 case skill moved to class2", %{
-      user: user,
-      skill_panel: skill_panel,
-      skill_class_2: skill_class_2,
-      skill_class_3: skill_class_3
-    } do
-      SkillScores.re_aggregate_scores([skill_class_2])
-
-      skill_class_scores = get_skill_class_scores(skill_panel)
-      assert 3 == length(skill_class_scores)
-
-      skill_class_3_score = List.last(skill_class_scores)
-      assert user.id == skill_class_3_score.user_id
-      assert skill_class_3.id == skill_class_3_score.skill_class_id
-      assert 0.0 == skill_class_3_score.percentage
-      assert :beginner == skill_class_3_score.level
     end
 
     @tag batch: "skill_unit_added", skill_unit_size: [4]
@@ -689,31 +613,13 @@ defmodule Bright.SkillScoresTest do
       skill_class_2: skill_class_2
     } do
       SkillScores.re_aggregate_scores([skill_class_1, skill_class_2])
-      [skill_class_1_score, skill_class_2_score, _] = get_skill_class_scores(skill_panel)
+      [skill_class_1_score, skill_class_2_score] = get_skill_class_scores(skill_panel)
 
       # (4 - 4) / (8 - 4)
       assert %{percentage: 0.0, level: :beginner} = skill_class_1_score
 
       # (0 + 4) / (1 + 4)
       assert %{percentage: 80.0, level: :skilled} = skill_class_2_score
-    end
-
-    @tag batch: "skill_unit_moved_to_class2"
-    test "creates skill_class_scores class:3 case skill_unit moved to class2", %{
-      user: user,
-      skill_panel: skill_panel,
-      skill_class_2: skill_class_2,
-      skill_class_3: skill_class_3
-    } do
-      SkillScores.re_aggregate_scores([skill_class_2])
-
-      skill_class_scores = get_skill_class_scores(skill_panel)
-      assert 3 == length(skill_class_scores)
-      skill_class_3_score = List.last(skill_class_scores)
-      assert user.id == skill_class_3_score.user_id
-      assert skill_class_3.id == skill_class_3_score.skill_class_id
-      assert 0.0 == skill_class_3_score.percentage
-      assert :beginner == skill_class_3_score.level
     end
 
     @tag batch: "skill_unit_moved_to_class2"
@@ -729,7 +635,7 @@ defmodule Bright.SkillScoresTest do
 
       # skill_class_2を指定、更新される
       SkillScores.re_aggregate_scores([skill_class_2])
-      [_, skill_class_2_score, _] = get_skill_class_scores(skill_panel)
+      [_, skill_class_2_score] = get_skill_class_scores(skill_panel)
       assert %{percentage: 80.0} = skill_class_2_score
     end
   end

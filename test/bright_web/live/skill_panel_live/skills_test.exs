@@ -5,6 +5,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   import Bright.Factory
 
   alias Bright.UserJobProfiles
+  alias Bright.SkillScores.SkillClassScore
   alias Bright.Teams.TeamMemberUsers
   alias Bright.CustomGroups.CustomGroupMemberUser
 
@@ -175,14 +176,35 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     test "shows the skill class by query string parameter", %{
       conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=2")
+      assert has_element?(show_live, ~s(#class_tab_2 a[aria-current="page"]))
+    end
+
+    test "switches skill class and creates the score on access", %{
+      conn: conn,
       user: user,
       skill_panel: skill_panel,
       skill_class_2: skill_class_2
     } do
-      insert(:init_skill_class_score, user: user, skill_class: skill_class_2)
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=2")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
 
-      assert has_element?(show_live, "#class_tab_2", skill_class_2.name)
+      refute Bright.Repo.get_by(SkillClassScore,
+               user_id: user.id,
+               skill_class_id: skill_class_2.id
+             )
+
+      show_live
+      |> element("#class_tab_2 a")
+      |> render_click()
+
+      assert has_element?(show_live, ~s(#class_tab_2 a[aria-current="page"]))
+
+      assert Bright.Repo.get_by(SkillClassScore,
+               user_id: user.id,
+               skill_class_id: skill_class_2.id
+             )
     end
   end
 
@@ -1266,43 +1288,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       refute has_element?(show_live, "#help-first-skill-submit-in-overall")
     end
 
-    @tag score: :low
-    test "shows next skill class opened message", %{conn: conn, skill_panel: skill_panel} do
-      insert(:skill_class, skill_panel: skill_panel, class: 2)
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      start_edit(show_live)
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="high"]})
-      |> render_click()
-
-      show_live
-      |> element(~s{#skill-2-form label[phx-value-score="high"]})
-      |> render_click()
-
-      submit_form(show_live)
-      assert has_element?(show_live, "#help-next-class-opened")
-    end
-
-    @tag score: :low
-    test "not shows next skill class opened message when not opened", %{
-      conn: conn,
-      skill_panel: skill_panel
-    } do
-      insert(:skill_class, skill_panel: skill_panel, class: 2)
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      start_edit(show_live)
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="middle"]})
-      |> render_click()
-
-      submit_form(show_live)
-      refute has_element?(show_live, "#help-next-class-opened")
-    end
-
     @tag score: nil
     test "shows job searching message", %{conn: conn, user: user, skill_panel: skill_panel} do
       # job_searching: false に設定
@@ -1419,17 +1404,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       conn: conn,
       skill_panel: skill_panel
     } do
-      assert_raise Ecto.NoResultsError, fn ->
-        live(conn, ~p"/panels/#{skill_panel}?class=2")
-      end
-    end
-
-    test "shows 404 if class not allowed", %{
-      conn: conn,
-      skill_panel: skill_panel
-    } do
-      insert(:skill_class, skill_panel: skill_panel, class: 2)
-
       assert_raise Ecto.NoResultsError, fn ->
         live(conn, ~p"/panels/#{skill_panel}?class=2")
       end

@@ -233,14 +233,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     } = socket.assigns
 
     target_skill_scores = skill_score_dict |> Map.values() |> Enum.filter(& &1.changed)
-    {:ok, updated_result} = SkillScores.insert_or_update_skill_scores(target_skill_scores, user)
+    {:ok, _updated_result} = SkillScores.insert_or_update_skill_scores(target_skill_scores, user)
 
     # スキルクラスのレベル変更時に保有スキルカードの表示変更を通知
     maybe_update_skill_card_component(skill_class_score)
 
     {:noreply,
      socket
-     |> put_flash_next_skill_class_opened(updated_result, skill_class_score.id)
      |> put_flash_first_submit_in_overall()
      |> put_flash_first_submit_in_skill_panel()
      |> push_patch(to: socket.assigns.patch)}
@@ -358,16 +357,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     if prev_level != new_level do
       send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
     end
-  end
-
-  # スキルクラス解放時のメッセージ表示のためflashを設定
-  defp put_flash_next_skill_class_opened(socket, updated_result, skill_class_score_id) do
-    get_in(updated_result, [
-      :skill_class_scores,
-      :"skill_class_score_#{skill_class_score_id}",
-      :next_skill_class_score
-    ])
-    |> if(do: put_flash(socket, :next_skill_class_opened, true), else: socket)
   end
 
   # スキル初回入力（全体初）後に表示するメッセージのためのflashを設定
