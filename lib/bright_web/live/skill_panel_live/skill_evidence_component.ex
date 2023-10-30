@@ -324,7 +324,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       <textarea
         id={@id}
         name={@name}
-        placeholder="コメントを入力"
+        placeholder="学習メモを入力"
         class="w-full min-h-1 outline-none border-none focus:ring-0 p-2"
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
       <div>
