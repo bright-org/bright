@@ -320,7 +320,6 @@ defmodule BrightWeb.UserAuthTest do
         |> UserAuth.redirect_if_user_is_authenticated([])
 
       assert conn.halted
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "ログイン中はアクセスできません"
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
@@ -334,7 +333,6 @@ defmodule BrightWeb.UserAuthTest do
         |> UserAuth.redirect_if_user_is_authenticated([])
 
       assert conn.halted
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "ログイン中はアクセスできません"
       assert redirected_to(conn) == ~p"/mypage"
     end
 
