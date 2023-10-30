@@ -89,12 +89,14 @@ defmodule Bright.Batches.UpdateCareerFieldScores do
     career_fields
     |> Map.new(fn career_field ->
       jobs = career_field.jobs
-      skill_panels = Enum.flat_map(jobs, &Map.get(dict_skill_panels_job, &1.id))
-      skill_units = Enum.flat_map(skill_panels, &Map.get(dict_skill_units_skill_panel, &1.id))
+      skill_panels = Enum.flat_map(jobs, &(Map.get(dict_skill_panels_job, &1.id) || []))
+
+      skill_units =
+        Enum.flat_map(skill_panels, &(Map.get(dict_skill_units_skill_panel, &1.id) || []))
 
       skills =
         skill_units
-        |> Enum.flat_map(&Map.get(dict_skills_skill_unit, &1.id))
+        |> Enum.flat_map(&(Map.get(dict_skills_skill_unit, &1.id) || []))
         |> Enum.uniq()
 
       {career_field.id, Enum.map(skills, & &1.id)}
