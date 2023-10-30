@@ -6,7 +6,12 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :subscription_user_plans, Subscriptions.list_subscription_user_plans())}
+    {:ok,
+     stream(
+       socket,
+       :subscription_user_plans,
+       Subscriptions.list_subscription_user_plans_with_plan()
+     )}
   end
 
   @impl true

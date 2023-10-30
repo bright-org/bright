@@ -2,6 +2,7 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.FormComponent do
   use BrightWeb, :live_component
 
   alias Bright.Subscriptions
+  alias Bright.Subscriptions.SubscriptionUserPlan
 
   @impl true
   def render(assigns) do
@@ -19,9 +20,19 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:user_id]} type="text" label="User" />
-        <.input field={@form[:subscription_plan_id]} type="text" label="Plan" />
-        <.input field={@form[:subscription_status]} type="text" label="Subscription status" />
+        <.input field={@form[:user_id]} type="text" label="User ID" />
+        <.input
+            field={@form[:subscription_plan_id]}
+            type="select"
+            label="Plan"
+            options={@subscription_plans}
+          />
+        <.input
+          field={@form[:subscription_status]}
+          type="select"
+          label="Subscription status"
+          options={Ecto.Enum.mappings(SubscriptionUserPlan, :subscription_status)}
+        />
         <.input field={@form[:subscription_start_datetime]} type="datetime-local" label="Subscription start datetime" />
         <.input field={@form[:subscription_end_datetime]} type="datetime-local" label="Subscription end datetime" />
         <.input field={@form[:trial_start_datetime]} type="datetime-local" label="Trial start datetime" />
@@ -38,9 +49,14 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.FormComponent do
   def update(%{subscription_user_plan: subscription_user_plan} = assigns, socket) do
     changeset = Subscriptions.change_subscription_user_plan(subscription_user_plan)
 
+    plans =
+      Subscriptions.list_subscription_plans()
+      |> Enum.map(&[key: &1.name_jp, value: &1.id])
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:subscription_plans, plans)
      |> assign_form(changeset)}
   end
 
