@@ -43,7 +43,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
         </form>
       </div>
       <div :if={@search_word_error != nil}>
-        <p class= "text-error text-xs"><%= @search_word_error %></p>
+        <p class= "text-error text-xs"><%= Phoenix.HTML.raw(@search_word_error) %></p>
       </div>
     </div>
     """
@@ -72,10 +72,13 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
 
     socket
     |> validate_search_word(search_word)
-    |> search_and_add_user(search_word)
+    |> validate_search_user(search_word)
+    |> validate_add_user()
+    |> add_user()
     |> then(&{:noreply, &1})
   end
 
+  # 検索ワードのバリデーション
   defp validate_search_word(socket, search_word) do
     if is_nil(search_word) || search_word == "" do
       {:error, assign(socket, search_word_error: "検索条件を入力してください")}
@@ -84,38 +87,67 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
     end
   end
 
-  defp search_and_add_user({:error, socket}, _search_word), do: socket
+  # 検索結果のバリデーション
+  defp validate_search_user({:error, socket}, _search_word), do: {:error, socket}
 
-  defp search_and_add_user({:ok, socket}, search_word) do
-    search_and_add_user(socket, Accounts.get_user_by_name_or_email(search_word))
+  defp validate_search_user({:ok, socket}, search_word) do
+    user = Accounts.get_user_by_name_or_email(search_word)
+
+    cond do
+      is_nil(user) ->
+        {:error, assign(socket, :search_word_error, "該当のユーザーが見つかりませんでした")}
+
+      user.id == socket.assigns.current_user.id ->
+        assign(socket, search_word_error: "チーム作成者は自動的に管理者として追加されます")
+
+      true ->
+        {:ok, socket, user}
+    end
   end
 
-  defp search_and_add_user(socket, nil),
-    do: assign(socket, search_word_error: "該当のユーザーが見つかりませんでした")
+  # 検索結果を追加する時のバリデーション
+  defp validate_add_user({:error, socket}), do: {:error, socket}
 
-  defp search_and_add_user(socket, user) when user.id == socket.assigns.current_user.id,
-    do: assign(socket, search_word_error: "チーム作成者は自動的に管理者として追加されます")
-
-  defp search_and_add_user(socket, user) do
+  defp validate_add_user({:ok, socket, user}) do
     selected_users = socket.assigns.users
 
-    if id_duplidated_user?(user, selected_users) do
-      socket
-      # TODO Gettext未対応
-      |> assign(search_word_error: "対象のユーザーは既に追加されています")
-    else
-      # メンバーユーザー一時リストに追加
-      notify_parent({:add, selected_users ++ [user]})
+    cond do
+      id_duplidated_user?(selected_users, user) ->
+        {:error, assign(socket, :search_word_error, "対象のユーザーは既に追加されています")}
 
-      socket
-      |> assign(:search_word, nil)
-      |> assign(:search_word_error, nil)
+      member_limit?(selected_users, socket) ->
+        {:error,
+         assign(
+           socket,
+           :search_word_error,
+           "フリープランでは、管理者以外のメンバーの上限が4名までになります<br /><br />より多くのメンバーを追加したい場合は、<br />「アップグレード」ボタンから「チームアッププラン」の無料トライアルもしくはご購入をお願いします"
+         )}
+
+      true ->
+        {:ok, socket, user}
     end
+  end
+
+  defp add_user({:error, socket}), do: socket
+
+  defp add_user({:ok, socket, user}) do
+    # メンバーユーザー一時リストに追加
+    notify_parent({:add, socket.assigns.users ++ [user]})
+
+    socket
+    |> assign(:search_word, nil)
+    |> assign(:search_word_error, nil)
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 
-  defp id_duplidated_user?(user, users) do
+  defp id_duplidated_user?(users, user) do
     users |> Enum.find(fn u -> user.id == u.id end) |> is_nil() |> then(&(!&1))
+  end
+
+  defp member_limit?(users, _socket) do
+    # プランによる変動があるため単純だが関数化している
+    # フリープラン 管理者 + 4名
+    Enum.count(users) >= 4
   end
 end
