@@ -1,19 +1,19 @@
 defmodule BrightWeb.Api.NotificationCommunityController do
   use BrightWeb, :controller
 
-  alias Bright.NotificationCommunities
+  alias Bright.Notifications
   alias Bright.Notifications.NotificationCommunity
 
   action_fallback BrightWeb.FallbackController
 
   def index(conn, _params) do
-    notification_communities = NotificationCommunities.list_notification_communities()
+    notification_communities = Notifications.list_all_notifications("community")
     render(conn, :index, notification_communities: notification_communities)
   end
 
   def create(conn, %{"notification_community" => notification_community_params}) do
     with {:ok, %NotificationCommunity{} = notification_community} <-
-           NotificationCommunities.create_notification_community(notification_community_params) do
+           Notifications.create_notification("community", notification_community_params) do
       conn
       |> put_status(:created)
       |> put_resp_header(
@@ -25,15 +25,15 @@ defmodule BrightWeb.Api.NotificationCommunityController do
   end
 
   def show(conn, %{"id" => id}) do
-    notification_community = NotificationCommunities.get_notification_community!(id)
+    notification_community = Notifications.get_notification!("community", id)
     render(conn, :show, notification_community: notification_community)
   end
 
   def update(conn, %{"id" => id, "notification_community" => notification_community_params}) do
-    notification_community = NotificationCommunities.get_notification_community!(id)
+    notification_community = Notifications.get_notification!("community", id)
 
     with {:ok, %NotificationCommunity{} = notification_community} <-
-           NotificationCommunities.update_notification_community(
+           Notifications.update_notification(
              notification_community,
              notification_community_params
            ) do
@@ -42,10 +42,10 @@ defmodule BrightWeb.Api.NotificationCommunityController do
   end
 
   def delete(conn, %{"id" => id}) do
-    notification_community = NotificationCommunities.get_notification_community!(id)
+    notification_community = Notifications.get_notification!("community", id)
 
     with {:ok, %NotificationCommunity{}} <-
-           NotificationCommunities.delete_notification_community(notification_community) do
+           Notifications.delete_notification(notification_community) do
       send_resp(conn, :no_content, "")
     end
   end
