@@ -140,7 +140,7 @@ defmodule BrightWeb.NotificationLive.Operation do
       user_id,
       "operation",
       page: page,
-      per: per
+      page_size: per
     )
   end
 
