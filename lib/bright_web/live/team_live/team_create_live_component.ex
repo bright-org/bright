@@ -8,6 +8,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias BrightWeb.TeamLive.TeamAddUserComponent
+  alias BrightWeb.BrightCoreComponents, as: BrightCore
 
   @doc """
   Renders a simple form for tema create.
@@ -82,11 +83,36 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     {:noreply, assign(socket, :users, removed_users)}
   end
 
-  def handle_event("create_team", %{"team" => team_params}, socket) do
-    save_team(socket, socket.assigns.action, team_params)
+  def handle_event("delete_team", %{"id" => id}, socket) do
+    {:ok, _} =
+      Teams.get_team!(id)
+      |> Teams.update_team(%{disabled_at: NaiveDateTime.utc_now()})
+
+    socket
+    |> put_flash(:info, "チームを削除しました")
+    |> push_navigate(to: ~p"/teams")
+    |> then(&{:noreply, &1})
   end
 
-  def save_team(socket, :new, team_params) do
+  def handle_event("create_team", %{"team" => team_params}, socket) do
+    admin_count = Teams.count_admin_team(socket.assigns.current_user.id)
+    save_team(socket, socket.assigns.action, team_params, admin_count)
+  end
+
+  def save_team(socket, :new, team_params, count) when count > 0 do
+    msg =
+      "フリープランで作成できるチーム数は、1チームまでになります<br /><br />より多くのチームを作成したい場合は、「アップグレード」ボタンから「チームアッププラン」の無料トライアルもしくはご購入をお願いします"
+
+    changeset =
+      socket.assigns.team
+      |> Team.registration_changeset(team_params)
+      |> Ecto.Changeset.add_error(:name, msg)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign_team_form(socket, changeset)}
+  end
+
+  def save_team(socket, :new, team_params, _count) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
 
@@ -105,14 +131,14 @@ defmodule BrightWeb.TeamCreateLiveComponent do
          socket
          |> put_flash(:info, "チームを登録しました")
          # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
-         |> redirect(to: socket.assigns.patch)}
+         |> redirect(to: ~p"/teams/#{team}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
     end
   end
 
-  def save_team(%{assigns: assigns} = socket, :edit, team_params) do
+  def save_team(%{assigns: assigns} = socket, :edit, team_params, _count) do
     current_member = assigns.team.users
     new_member = assigns.users
     newcomer = new_member -- current_member
@@ -130,7 +156,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
          socket
          |> put_flash(:info, "チームを更新しました")
          # TODO チーム作成後は、作成したチームのチームスキル分析に遷移した方がよいか？
-         |> redirect(to: assigns.patch)}
+         |> redirect(to: ~p"/teams/#{team}")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}

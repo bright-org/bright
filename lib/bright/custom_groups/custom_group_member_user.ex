@@ -20,7 +20,7 @@ defmodule Bright.CustomGroups.CustomGroupMemberUser do
   @doc false
   def changeset(custom_group_member_users, attrs) do
     custom_group_member_users
-    |> cast(attrs, [:user_id, :custom_group_id])
-    |> validate_required([:custom_group_id, :user_id])
+    |> cast(attrs, [:user_id, :position])
+    |> validate_required([:user_id])
   end
 end

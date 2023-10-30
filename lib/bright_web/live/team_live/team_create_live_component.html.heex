@@ -25,18 +25,18 @@
             <h5>新しいチーム</h5>
             <div class="bg-brightGray-10 rounded-sm px-10 pt-6 min-h-[360px]">
               <dl class="flex flex-wrap">
-                <dt class="font-bold w-[100px] flex items-center mb-10 text-base">
-                  チーム名
-                </dt>
-                <dd class="w-[340px] mb-10">
-                  <.input
+                <dt class="mb-10">
+                  <BrightCore.input
+                    label_class="w-[100px] text-base font-bold"
+                    input_class="border border-brightGray-100 rounded-sm flex-1 h-12 w-[340px]"
+                    error_class="ml-[100px] mt-2"
+                    label="チーム名"
                     field={@team_form[:name]}
                     type="text"
                     required
                     placeholder="新しいチーム名を入力してください"
-                    class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
                   />
-                </dd>
+                </dt>
                 <dt class="font-bold w-[100px] mb-10 text-base">
                   メンバー
                 </dt>
@@ -57,10 +57,16 @@
             </div>
           </div>
           <div class="flex justify-end gap-x-4">
+            <.link :if={@action == :edit} phx-click={JS.push("delete_team", value: %{id: @team.id}, target: @myself)} data-confirm="削除してよろしいでしょうか？">
+              <button class="text-sm font-bold px-5 py-3 rounded text-white bg-attention-600">
+                チームを削除する
+              </button>
+            </.link>
             <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
               <%= @submit %>
             </button>
           </div>
+          <span class="text-attention-600">※「チームアッププラン」以上をご購入いただくと、削除したチームを復旧できます</span>
         </.team_form>
       </div>
     </div>

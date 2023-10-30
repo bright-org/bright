@@ -199,7 +199,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     from_date =
       data.labels
       |> List.first()
-      |> label_to_date()
+      |> TimelineHelper.label_to_date()
       |> Timex.shift(months: -TimelineHelper.get_monthly_interval())
 
     # 未来データは別のテーブから取得するため、過去の範囲の日付にする
@@ -208,7 +208,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     to_date =
       data.labels
       |> Enum.at(to_date_label_index)
-      |> label_to_date()
+      |> TimelineHelper.label_to_date()
 
     myself_init_data =
       [date_to_label(from_date) | data.labels]
@@ -252,11 +252,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         else: data |> Map.delete(:now)
 
     assign(socket, data: data)
-  end
-
-  defp label_to_date(label) do
-    [year, month] = String.split(label, ".") |> Enum.map(&String.to_integer/1)
-    {year, month, 1} |> Date.from_erl!()
   end
 
   defp label_to_key_date(label) do

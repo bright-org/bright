@@ -77,6 +77,7 @@ defmodule BrightWeb.LayoutComponents do
   attr :profile, :map
   attr :page_title, :string
   attr :page_sub_title, :string
+  attr :current_user, :map
 
   def user_header(assigns) do
     page_sub_title =
@@ -97,13 +98,17 @@ defmodule BrightWeb.LayoutComponents do
       </h4>
       <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
         <div class="flex justify-between">
-          <.plan_upgrade_button  />
+          <.plan_upgrade_button />
           <.contact_customer_success_button />
         </div>
       </div>
       <div class="flex gap-2 items-center lg:w-fit h-10">
         <.search_for_skill_holders_button />
-        <.notification_button />
+        <.live_component
+          id="notification_header"
+          module={BrightWeb.NotificationLive.NotificationHeaderComponent}
+          current_user={Map.get(assigns, :current_user)}
+        />
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
       </div>
     </div>

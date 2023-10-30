@@ -107,6 +107,16 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   end
 
   @impl true
+  def handle_params(%{"team_id" => team_id, "id" => id}, uri, socket) do
+    path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+
+    socket
+    |> assign(:current_path, path)
+    |> assign(:return_to, ~p"/teams/#{team_id}/skill_panels/#{id}")
+    |> then(&{:noreply, &1})
+  end
+
+  @impl true
   def handle_event(
         "select_skill_panel",
         %{"id" => skill_panel_id, "name" => name},

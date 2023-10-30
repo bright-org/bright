@@ -97,11 +97,19 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             1on1に誘う
           </button>
           <%= if @display_skill_card.user.id == @current_user.id do %>
-          <.link navigate={~p"/panels/#{@display_skill_panel}"}>
-          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
-            スキルを入力
-          </button>
-          </.link>
+            <%= if is_nil(@display_skill_panel) || is_nil(@display_skill_card.user_skill_class_score) do %>
+              <.link navigate={~p"/more_skills/teams/#{@team_id}/skill_panels/#{@display_skill_panel}"}>
+              <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
+                スキルを取得
+              </button>
+              </.link>
+            <% else %>
+              <.link navigate={~p"/panels/#{@display_skill_panel}"}>
+                <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
+                  スキルを入力
+                </button>
+              </.link>
+            <% end %>
           <% else %>
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             この人と比較
@@ -111,20 +119,13 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             スキルアップ確認
           </button>
         </div>
-        <div class="w-full text-center absolute bottom-1">
-        βリリース（10月予定）で利用可能になります
-        </div>
       </div>
     """
   end
 
   @impl true
   def update(assigns, socket) do
-    socket =
-      socket
-      |> assign(assigns)
-
-    {:ok, socket}
+    {:ok, assign(socket, assigns)}
   end
 
   @impl true
@@ -151,9 +152,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
       socket.assigns.display_skill_card
       |> Map.put(:select_skill_class, clicked_skill_class)
 
-    socket =
-      socket
-      |> assign(:display_skill_card, display_skill_card)
+    socket = assign(socket, :display_skill_card, display_skill_card)
 
     {:noreply, socket}
   end
