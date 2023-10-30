@@ -92,6 +92,14 @@ defmodule Bright.NotificationsTest do
       assert Repo.get!(Notifications.NotificationOperation, notification.id).confirmed_at
     end
 
+    test "for type community" do
+      notification = insert(:notification_community, confirmed_at: nil)
+
+      Notifications.confirm_notification!(notification)
+
+      assert Repo.get!(Notifications.NotificationCommunity, notification.id).confirmed_at
+    end
+
     test "does not update confirmed_at when already confirmed" do
       previous_confirmed_at =
         NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 3600) |> NaiveDateTime.truncate(:second)
@@ -112,8 +120,11 @@ defmodule Bright.NotificationsTest do
 
       insert_pair(:notification_operation, from_user: from_user, confirmed_at: nil)
       insert(:notification_operation, from_user: from_user, confirmed_at: NaiveDateTime.utc_now())
+      insert_pair(:notification_community, from_user: from_user, confirmed_at: nil)
+      insert(:notification_community, from_user: from_user, confirmed_at: NaiveDateTime.utc_now())
 
-      assert %{"operation" => 2} == Notifications.list_unconfirmed_notification_count(to_user)
+      assert %{"operation" => 2, "community" => 2} ==
+               Notifications.list_unconfirmed_notification_count(to_user)
     end
   end
 

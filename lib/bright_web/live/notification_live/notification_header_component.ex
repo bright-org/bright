@@ -67,7 +67,7 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
     notification_count = Notifications.list_unconfirmed_notification_count(current_user)
 
     [
-      ["コミュニティ", "#", 0],
+      ["コミュニティ", ~p"/notifications/communities", notification_count["community"] || 0],
       ["1on1のお誘い", "#", 0],
       ["推し活", "#", 0],
       ["いただいた祝福", "#", 0],

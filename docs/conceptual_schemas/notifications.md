@@ -134,6 +134,7 @@ erDiagram
 - コンポーネントを実装する
   - 例: `BrightWeb.NotificationLive.Operation`
     - `Bright.Notifications.list_notification_by_type/3` に追加した通知のパターンを実装する
+    - `Bright.Notifications.confirm_notification!/1` に追加した通知のパターンを実装する
     - `Bright.NotificationsTest` を修正する
   - コンポーネントのテストを追加する
     - 例: `BrightWeb.NotificationLive.OperationTest` を修正する
