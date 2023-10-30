@@ -38,8 +38,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     # TODO チームスキルカードのページング処理
     display_team_members = get_display_team_members(display_team)
 
-    current_users_team_member =
-      get_current_users_team_member(user, display_team_members)
+    current_users_team_member = get_current_users_team_member(user, display_team_members)
 
     display_skill_panel = get_display_skill_panel(params, display_team)
     display_skill_classes = list_display_skill_classes(display_skill_panel)

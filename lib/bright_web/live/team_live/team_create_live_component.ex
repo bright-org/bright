@@ -114,8 +114,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   def save_team(socket, :new, team_params, count, true) when count > 5 do
-    msg =
-      "現在のプランでは、チームは5つまでが上限です"
+    msg = "現在のプランでは、チームは5つまでが上限です"
 
     changeset =
       socket.assigns.team
