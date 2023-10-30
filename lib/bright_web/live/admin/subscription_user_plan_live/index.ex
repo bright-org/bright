@@ -43,7 +43,8 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.Index do
          {:saved, subscription_user_plan}},
         socket
       ) do
-    {:noreply, stream_insert(socket, :subscription_user_plans, subscription_user_plan)}
+    plan = Subscriptions.get_subscription_user_plan_with_plan!(subscription_user_plan.id)
+    {:noreply, stream_insert(socket, :subscription_user_plans, plan)}
   end
 
   @impl true
