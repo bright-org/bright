@@ -218,6 +218,12 @@ defmodule Bright.Subscriptions do
     Repo.all(SubscriptionUserPlan)
   end
 
+  def list_subscription_user_plans_with_plan do
+    SubscriptionUserPlan
+    |> preload(:subscription_plan)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single subscription_user_plan.
 
@@ -233,6 +239,12 @@ defmodule Bright.Subscriptions do
 
   """
   def get_subscription_user_plan!(id), do: Repo.get!(SubscriptionUserPlan, id)
+
+  def get_subscription_user_plan_with_plan!(id) do
+    SubscriptionUserPlan
+    |> preload(:subscription_plan)
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a subscription_user_plan.
