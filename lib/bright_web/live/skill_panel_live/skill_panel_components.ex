@@ -235,8 +235,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def toggle_link(assigns) do
     ~H"""
-      <div class="bg-white text-brightGray-500 rounded-full inline-flex text-sm font-bold h-10">
-      <.link href="#">
+      <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
+      <.link navigate={~p"/graphs/#{@skill_panel.id}"}>
         <button
           id="grid"
           class={
@@ -247,7 +247,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           成長パネル
         </button>
         </.link>
-        <.link href="#">
+        <.link navigate={~p"/panels/#{@skill_panel.id}"}>
           <button
             id="list"
             class={
