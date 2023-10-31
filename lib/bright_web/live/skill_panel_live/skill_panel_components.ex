@@ -236,7 +236,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def toggle_link(assigns) do
     ~H"""
       <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
-      <.link navigate={~p"/graphs/#{@skill_panel.id}"}>
+      <.link navigate={~p"/graphs/#{@skill_panel.id}?class=#{@skill_class}"}>
         <button
           id="grid"
           class={
