@@ -247,7 +247,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           成長パネル
         </button>
         </.link>
-        <.link navigate={~p"/panels/#{@skill_panel.id}"}>
+        <.link navigate={~p"/panels/#{@skill_panel.id}?class=#{@skill_class}"}>
           <button
             id="list"
             class={
