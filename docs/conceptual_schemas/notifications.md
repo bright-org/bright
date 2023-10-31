@@ -1,249 +1,140 @@
-## 通知テーブル
+# 通知
 
-前提事項
+Bright にはユーザーへの通知機能がある。
+本資料では通知の概要と ER 図を記載する。
 
-- 通知はどの種類でも共通仕様項目を実装する
-- 取得時に共通のルールでデータを取得する為
+## 概要
 
-### 共通項目
+システムから何らかのトリガーがあると通知が送信される。
+
+ユーザーはヘッダーにあるベルマークを確認すると通知の種類と未読数を確認できる。
+
+ヘッダーからリンクを飛ぶと通知一覧から通知を確認できる。
+
+通知を確認したらその通知は既読状態になる。
+
+通知ごとに固有のアクション（MA ツール側の API を叩くなど）がある場合がある。
+
+## 通知固有アクション
+
+- 運営からの通知
+  - 特になし
+- コミュニティからの通知
+  - MA ツール側の API を叩いてユーザーがコミュニティへの参加を行う
+
+## API
+
+以下の通知は運用で使用したいので CRUD API を作成
+
+- 運営からの通知
+- コミュニティからの通知
+
+## DB 設計
+
+### 設計方針
+
+各通知種別（運営・コミュニティ...etc）ごとにテーブルを持つ。
+
+１テーブルに集約しない理由は以下。
+
+- 基本的には各通知種別ごとに出すため
+  - テーブルが分かれていた方が検索効率が良い
+- 各通知種別ごとに必要な要件が微妙に違うので共通化に向いていない
+  - 例: 運営からの通知は通知対象ユーザーが全ユーザーであるので to_user_id が不要
+  - 各通知種別ごとに固有のアクション（MA ツール側の API を叩くなど）がある場合がある
+- 全通知を網羅する機能を現時点で予定していない
+  - 仮に必要になっても全テーブルを検索すれば最悪出せる
+
+ただしデータは分割するが、ロジックはなるべく集約する。
+
+具体的には `Bright.Notifications` にロジックを集約し、パターンマッチでロジックの分岐を表現する。
+
+### 全テーブルで共通の内容
 
 ```mermaid
 erDiagram
   common {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index:（必須ではない）"
+    uuid id PK "id"
+    uuid from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
     datetime confirmed_at "既読日時"
+    datetime inserted_at "作成日時"
+    datetime updated_at "更新日時"
   }
 ```
 
-## 重要な連絡　 ER 図
+なお送信対象ユーザーの指定が必要な通知の場合は上記に加えて to_user_id を含める。
 
 ```mermaid
 erDiagram
-  "Brightユーザー" ||--o{ "通知_チーム招待" : ""
-  "通知_チーム招待" ||--|| "Brightユーザー" : ""
-
-  "Brightユーザー" ||--o{ "通知_振り返り" : ""
-
-  "Brightユーザー" ||--o{ "通知_採用の調整" : ""
-  "通知_採用の調整" ||--|| "Brightユーザー" : ""
-
-  "Brightユーザー" ||--o{ "通知_運営" : ""
-
+  common {
+    id to_user_id	FK "送信先ユーザー"
+  }
 ```
 
-### 重要な連絡 テーブル
+### インデックス設計
+
+- to_user_id, confirmed_at の複合インデックスをつける（この順序で指定）
+  - 通知ヘッダーで未読数をバッチつけるため
+  - to_user_id を先に指定することで to_user_id 単体にもインデックス効かせる
+    - 通知対象ユーザーに絞り込んで通知を出すため
+  - ※ to_user_id がないテーブルの場合は confirmed_at 単体にインデックスをつける
+
+## 通知概念図
 
 ```mermaid
 erDiagram
-  "users" ||--o{ "notification_team_invitations" : ""
-  "notification_team_invitations" ||--|| "users" : ""
+  "Bright送信元ユーザー" ||--o{ "通知_コミュニティ" : ""
+  "Bright送信先ユーザー" }o--o{ "通知_コミュニティ" : "※DB 上は関連がないが、概念上はある"
 
-  "users" ||--o{ "notification_looking_backs" : ""
+  "Bright送信元ユーザー" ||--o{ "通知_運営" : ""
+  "Bright送信先ユーザー" }o--o{ "通知_運営" : "※DB 上は関連がないが、概念上はある"
+```
 
-  "users" ||--o{ "notification_recruitment_coordinations" : ""
-  "notification_recruitment_coordinations" ||--|| "users" : ""
-
-  "users" ||--o{ "notification_operations" : ""
-
-  notification_team_invitations {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
-    string status "ステータス： enum（participation:参加する, abstention:参加しない）"
-    datetime confirmed_at "既読日時"
-  }
-
-  notification_looking_backs {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
-    datetime confirmed_at "既読日時"
-  }
-
-  notification_recruitment_coordinations {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string url	"採用の回答するモーダルのURL"
-    datetime confirmed_at "既読日時"
-  }
+```mermaid
+erDiagram
+  "users" ||--o{ "notification_operations" : "from_user_id"
 
   notification_operations {
-    id from_user_id	FK "送信元ユーザー"
+    uuid id PK "id"
+    uuid from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
     datetime confirmed_at "既読日時"
+    datetime inserted_at "作成日時"
+    datetime updated_at "更新日時"
   }
 
-```
-
-## さまざまな人たちとの交流 ER 図
-
-```mermaid
-erDiagram
-  "Brightユーザー" ||--o{ "通知_スキルアップ" : ""
-  "通知_スキルアップ" ||--|| "Brightユーザー" : ""
-
-  "Brightユーザー" ||--o{ "通知_祝福された" : ""
-  "通知_祝福された" ||--|| "Brightユーザー" : ""
-
-  "Brightユーザー" ||--o{ "通知_1on1のお誘い" : ""
-  "通知_1on1のお誘い" ||--|| "Brightユーザー" : ""
-
-  "Brightユーザー" ||--o{ "通知_推し活" : ""
-  "通知_推し活" ||--|| "Brightユーザー" : ""
-
-  "Brightユーザー" ||--o{ "通知_気になる" : ""
-  "通知_気になる" ||--|| "Brightユーザー" : ""
-
-  "Brightユーザー" ||--o{ "通知_コミュニティ" : ""
-  "通知_コミュニティ" ||--|| "コミュニティ" : ""
-
-  "コミュニティ" ||--|| "ユーザーコミュニティ" : ""
-
-  "ユーザーコミュニティ" ||--o{ "Brightユーザー" : ""
-
-```
-
-## さまざまな人たちとの交流 テーブル
-
-```mermaid
-erDiagram
-  "users" ||--o{ "notification_improve_skills" : ""
-  "notification_improve_skills" ||--|| "users" : ""
-
-  "users" ||--o{ "notification_blesses" : ""
-  "notification_blesses" ||--|| "users" : ""
-
-  "users" ||--o{ "notification_1on1_invitations" : ""
-  "notification_1on1_invitations" ||--|| "users" : ""
-
-  "users" ||--o{ "notification_faves" : ""
-  "notification_faves" ||--|| "users" : ""
-
-  "users" ||--o{ "notification_watches" : ""
-  "notification_watches" ||--|| "users" : ""
-
-  "users" ||--o{ "notification_communities" : ""
-  "notification_communities" ||--|| "communities" : ""
-
-  "communities" ||--|| "user_communities" : ""
-
-  "user_communities" ||--o{ "users" : ""
-
-
-  notification_improve_skills {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    string url 	"ジェムのリンクと同じ"
-    boolean congratulate　"祝福する"
-    datetime confirmed_at "既読日時"
-  }
-
-  notification_blesses {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
-    datetime confirmed_at "既読日時"
-  }
-
-  notification_1on1_invitations {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    text detail	"詳細"
-    string accept_status "受入ステータス： enum（acceptance、rejection）"
-    datetime confirmed_at "既読日時"
-  }
-
-  notification_faves {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    string url	"エビデンスのURL"
-    datetime confirmed_at "既読日時"
-  }
-
-  notification_watches {
-    id from_user_id	FK "送信元ユーザー"
-    id to_user_id	FK "送信先ユーザー index"
-    string message	"メッセージ内容"
-    string url	"相手のmypageのURL"
-    datetime confirmed_at "既読日時"
-  }
+  "users" ||--o{ "notification_communities" : "from_user_id"
 
   notification_communities {
-    id from_user_id	FK "送信元ユーザー"
-    id community_id	FK "対象コミュニティ"
+    uuid id PK "id"
+    uuid from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
     datetime confirmed_at "既読日時"
+    datetime inserted_at "作成日時"
+    datetime updated_at "更新日時"
   }
-
-  communities {
-    string name "コミュニティ名"
-  }
-
-  user_communities {
-    id user_id FK "ユーザーid index"
-    id community_id FK "コミュニティid"
-    boolean participation_status "参加状況"
-    datetime confirmed_at "既読日時"
-  }
-
 ```
 
-## 通知と同時に行われる処理
+## 新規通知実装の流れ
 
-```
-重要な連絡
-　・チーム招待
-　　「参加する」「参加しない」
-　　　（チーム招待側の処理でメールを送信しているため制御外）
-　・採用の調整　※面談調整の方で別枠化する可能性があるため今は暫定
-　　「確認する」
-　　　└通知（DB）追加時にメールも送信する
-　　　└専用のモーダル（回答するモーダル）
-　　　　└詳細は不要
-　　　└URL
-　・スキルパネル更新
-　　「内容を見る」
-　　　└通知（DB）追加時にメールも送信する（「成長グラフを見る」をナビゲーションを案内）
-　・運営　※CRUD API
-　　「内容を見る」
-　　　└通知（DB）追加時にメールも送信する
-　　　※「デイリー」「ウイークリー」もこのタブに含む
-
-さまざまな人たちとの交流
-　・スキルアップ ※スキルアップの方で別枠化する可能性があるため今は暫定
-　　「スキルを確認」「祝福する」
-        ｜　　　　　　　└　相手の祝福されたテーブルに追加
-　　　　└ジェムのリンクと同じ
-　・祝福された
-　　「内容を見る」（テーブルを作る　共通と同じ）
-　・1on1のお誘い
-　　「受ける」「断る」
-　　　└通知（DB）追加時にメールも送信する
-　・推し活
-　　「確認する」
-　　　└エビデンスに飛ぶ
-　　　└URL
-　・気になる
-　　「相手を見る」
-　　　└URL（詳細不要）
-　・コミュニティ　※CRUD API
-　　「内容を見る」　ラベル：「参加中」「未参加」
-　　　　└「参加する」「脱退する」のトグル
-          └該当ユーザーのuser_communitiesがない場合は 「未参加」扱い
-          └「参加する」をクリック時にuser_communitiesがない場合はレコードを作成
-          └「脱退」をクリック時にuser_communitiesの参加状況はfalseに変更
-　　　　└通知（DB）追加時にメールも送信する
-　　　　└運営側のチームのDBにも追加
-　　　　
-```
+- 本ドキュメントを修正する
+- `router.ex` にルーティングを追加する
+  - 例: `live "/notifications/operations", NotificationLive.Operation, :index`
+- テーブルをマイグレーションする
+  - インデックスを貼るのを忘れずに
+- `BrightWeb.NotificationLive.NotificationHeaderComponent` を修正する
+  - 主に `notification_list/2`
+    - `Bright.Notifications.list_unconfirmed_notification_count/1` に追加した通知のパターンを実装する
+      - `Bright.NotificationsTest` を修正する
+  - `BrightWeb.NotificationLive.NotificationHeaderComponentTest` を修正する
+- コンポーネントを実装する
+  - 例: `BrightWeb.NotificationLive.Operation`
+    - `Bright.Notifications.list_notification_by_type/3` に追加した通知のパターンを実装する
+    - `Bright.Notifications.confirm_notification!/1` に追加した通知のパターンを実装する
+    - `Bright.NotificationsTest` を修正する
+  - コンポーネントのテストを追加する
+    - 例: `BrightWeb.NotificationLive.OperationTest` を修正する

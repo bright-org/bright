@@ -9,10 +9,13 @@
 />
 
 <div class="mx-4 pb-20 lg:mx-10 lg:pb-0">
+  <div class="lg:hidden mb-4">
+    <.toggle_link skill_panel={@skill_panel} active="graph" />
+  </div>
   <div class="flex justify-between">
-    <% # TODO: α版後にifと仮divブロックを除去して表示 %>
-    <.toggle_link :if={false} skill_panel={@skill_panel} active="graph" />
-    <div> </div>
+    <div class="hidden lg:flex">
+      <.toggle_link skill_panel={@skill_panel} active="graph" />
+    </div>
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
   <div class="bg-white shadow relative z-2 px-2 py-1 lg:pl-7 lg:pr-5 lg:py-0">

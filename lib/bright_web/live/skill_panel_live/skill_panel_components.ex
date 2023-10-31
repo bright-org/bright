@@ -235,8 +235,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def toggle_link(assigns) do
     ~H"""
-      <div class="bg-white text-brightGray-500 rounded-full inline-flex text-sm font-bold h-10">
-      <.link href="#">
+      <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
+      <.link navigate={~p"/graphs/#{@skill_panel.id}"}>
         <button
           id="grid"
           class={
@@ -247,7 +247,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           成長パネル
         </button>
         </.link>
-        <.link href="#">
+        <.link navigate={~p"/panels/#{@skill_panel.id}"}>
           <button
             id="list"
             class={
@@ -332,29 +332,26 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
     <ul class="flex shadow relative z-1 text-base font-bold text-brightGray-500 bg-brightGreen-50 lg:-bottom-1 lg:text-center lg:text-md w-full lg:w-fit">
       <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
-        <%= if skill_class_score do %>
-          <% current = @skill_class.class == skill_class.class %>
-          <li id={"class_tab_#{skill_class.class}"} class={["grow", current && "bg-white text-base", "first:border-none last:border-none lg:border-x-4"]}>
-            <.link
-              patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
-              class="flex lg:justify-start items-center px-2 lg:px-4 py-1 lg:py-3 lg:text-base"
-              aria-current={current && "page"}
-            >
-              <span class="text-sm lg:text-base" :if={current}>クラス<%= skill_class.class %></span>
-              <span class="text-xs lg:text-base" :if={!current}>クラス<%= skill_class.class %></span>
-              <span class="hidden lg:flex"><%= skill_class.name %></span>
-              <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4"><%= floor skill_class_score.percentage %></span>％
-            </.link>
-          </li>
-        <% else %>
-          <li id={"class_tab_#{skill_class.class}"} class="grow lg:grow-0 bg-pureGray-600 text-pureGray-100 first:border-none last:border-none lg:border-x-4">
-            <a href="#" class="flex items-center lg:select-none px-2 lg:px-4 py-1 lg:py-3 text-xs lg:text-base">
-              <span class="text-xs lg:text-base">クラス<%= skill_class.class %></span>
-              <span class="hidden lg:block"><%= skill_class.name %></span>
-              <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0</span>％
-            </a>
-          </li>
-        <% end %>
+        <% current = @skill_class.class == skill_class.class %>
+        <li id={"class_tab_#{skill_class.class}"} class={["grow", current && "bg-white text-base", "first:border-none last:border-none lg:border-x-4"]}>
+          <.link
+            patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
+            class="flex lg:justify-start items-center px-2 lg:px-4 py-1 lg:py-3 lg:text-base"
+            aria-current={current && "page"}
+          >
+            <span class="text-sm lg:text-base" :if={current}>クラス<%= skill_class.class %></span>
+            <span class="text-xs lg:text-base" :if={!current}>クラス<%= skill_class.class %></span>
+            <span class="hidden lg:flex"><%= skill_class.name %></span>
+            <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
+              <%= if skill_class_score do %>
+                <%= floor skill_class_score.percentage %>
+              <% else %>
+                0
+              <% end %>
+              ％
+            </span>
+          </.link>
+        </li>
       <% end %>
     </ul>
     """

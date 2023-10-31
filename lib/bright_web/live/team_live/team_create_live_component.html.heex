@@ -10,6 +10,7 @@
         module={TeamAddUserComponent}
         users={@users}
         current_user={@current_user}
+        team_up_enable={@team_up_enable}
       />
       <!-- modal-right -->
       <div class="w-[580px] pl-10 flex flex-col justify-between">
@@ -66,7 +67,7 @@
               <%= @submit %>
             </button>
           </div>
-          <span class="text-attention-600">※「チームアッププラン」以上をご購入いただくと、削除したチームを復旧できます</span>
+          <span :if={@action == :edit} class="text-attention-600">※「チームアッププラン」以上をご購入いただくと、削除したチームを復旧できます</span>
         </.team_form>
       </div>
     </div>

@@ -127,17 +127,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def create_skill_class_score_if_not_existing(
-        %{
-          assigns: %{
-            me: true,
-            skill_class_score: nil,
-            skill_class: %{class: 1}
-          }
-        } = socket
+        %{assigns: %{me: true, skill_class_score: nil}} = socket
       ) do
-    # NOTE: skill_class_scoreが存在しないときの生成処理について
-    # 管理側でスキルクラスを増やすなどの操作も想定し、
-    # アクセスしたタイミングで生成するようにしています。
+    # 始めてスキルクラスにアクセスした際にスキルクラススコアを生成
     user = socket.assigns.current_user
     skill_class = socket.assigns.skill_class
 

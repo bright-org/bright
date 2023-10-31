@@ -4,6 +4,7 @@ defmodule Bright.Notifications.NotificationCommunity do
   """
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query, warn: false
   alias Bright.Accounts.User
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
@@ -23,5 +24,14 @@ defmodule Bright.Notifications.NotificationCommunity do
     notification_community
     |> cast(attrs, [:from_user_id, :message, :detail])
     |> validate_required([:from_user_id, :message, :detail])
+  end
+
+  @doc """
+  Returns the query for not confirmed notifications.
+  """
+  def not_confirmed_query do
+    from(notification_community in Bright.Notifications.NotificationCommunity,
+      where: is_nil(notification_community.confirmed_at)
+    )
   end
 end

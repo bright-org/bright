@@ -6,15 +6,12 @@ defmodule Bright.SkillScores do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.SkillScores.{SkillClassScore, SkillUnitScore, SkillScore}
 
   # レベルの判定値
   @normal_level 40
   @skilled_level 60
-  # 次のスキルクラスの開放値
-  @next_skill_class_level 40
 
   @doc """
   Returns the list of skill_class_scores.
@@ -71,7 +68,6 @@ defmodule Bright.SkillScores do
   Updates a skill_class_score aggregation columns.
   """
   def update_skill_class_score_stats(skill_class_score, skill_class) do
-    prev_percentage = skill_class_score.percentage
     skills = SkillUnits.list_skills_on_skill_class(skill_class)
 
     skill_scores =
@@ -85,20 +81,9 @@ defmodule Bright.SkillScores do
     percentage = calc_percentage(high_scores_count, size)
     level = get_level(percentage)
 
-    changeset =
-      SkillClassScore.changeset(skill_class_score, %{percentage: percentage, level: level})
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:update_skill_class_score, changeset)
-    |> Ecto.Multi.run(:next_skill_class_score, fn _repo, _ ->
-      maybe_skill_up_to_next_skill_class(
-        prev_percentage,
-        percentage,
-        skill_class_score.user_id,
-        skill_class
-      )
-    end)
-    |> Repo.transaction()
+    skill_class_score
+    |> SkillClassScore.changeset(%{percentage: percentage, level: level})
+    |> Repo.update()
   end
 
   @doc """
@@ -119,28 +104,6 @@ defmodule Bright.SkillScores do
     |> Repo.transaction()
   end
 
-  defp create_next_skill_class_score(skill_class, user_id) do
-    # 上位クラスのスキルクラススコアを作成
-    next_skill_class =
-      SkillPanels.get_skill_class_by(
-        skill_panel_id: skill_class.skill_panel_id,
-        class: skill_class.class + 1
-      )
-
-    next_skill_class_score =
-      next_skill_class &&
-        get_skill_class_score_by(
-          user_id: user_id,
-          skill_class_id: next_skill_class.id
-        )
-
-    # 未作成時のみ作成
-    if next_skill_class && is_nil(next_skill_class_score) do
-      {:ok, result} = create_skill_class_score(next_skill_class, user_id)
-      result
-    end
-  end
-
   @doc """
   Returns the level determined by percentage.
   """
@@ -151,10 +114,6 @@ defmodule Bright.SkillScores do
       v when v >= @normal_level -> :normal
       _ -> :beginner
     end
-  end
-
-  defp skill_up_to_next_skill_class?(prev_percentage, percentage) do
-    prev_percentage < @next_skill_class_level && percentage >= @next_skill_class_level
   end
 
   @doc """
@@ -503,7 +462,6 @@ defmodule Bright.SkillScores do
 
     skill_class.skill_class_scores
     |> Enum.reduce(Ecto.Multi.new(), fn skill_class_score, multi ->
-      prev_percentage = skill_class_score.percentage
       user_id = skill_class_score.user_id
       high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
       percentage = calc_percentage(high_scores_count, skills_count)
@@ -514,22 +472,8 @@ defmodule Bright.SkillScores do
 
       multi
       |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
-      |> Ecto.Multi.run(:"next_skill_class_score_#{user_id}", fn _repo, _ ->
-        maybe_skill_up_to_next_skill_class(prev_percentage, percentage, user_id, skill_class)
-      end)
     end)
     |> Repo.transaction()
-  end
-
-  defp maybe_skill_up_to_next_skill_class(prev_percentage, percentage, user_id, skill_class) do
-    skill_up_to_next_skill_class?(prev_percentage, percentage)
-    |> if do
-      result = create_next_skill_class_score(skill_class, user_id)
-      {:ok, result}
-    else
-      # 次スキルクラスを開放しないケース
-      {:ok, nil}
-    end
   end
 
   defp count_skill_scores_each_user(skills) do

@@ -196,5 +196,10 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
                  career_field_id: career_field_2.id
                )
     end
+
+    test "no error occured if jobsskill_panels is empty", %{jobs: [job | _]} do
+      Repo.delete_all(Ecto.assoc(job, :job_skill_panels))
+      UpdateCareerFieldScores.call()
+    end
   end
 end

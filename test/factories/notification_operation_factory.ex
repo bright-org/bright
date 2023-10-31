@@ -8,8 +8,8 @@ defmodule Bright.NotificationOperationFactory do
       def notification_operation_factory do
         %Bright.Notifications.NotificationOperation{
           from_user: build(:user),
-          message: Faker.Lorem.word(),
-          detail: Faker.Lorem.word()
+          message: Faker.Lorem.word() <> "_#{System.unique_integer()}",
+          detail: Faker.Lorem.word() <> "_#{System.unique_integer()}"
         }
       end
     end

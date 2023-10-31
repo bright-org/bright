@@ -4,6 +4,7 @@ defmodule BrightWeb.MypageLive.Index do
   # import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
   alias BrightWeb.DisplayUserHelper
+  alias Bright.Subscriptions
 
   @impl true
   def mount(params, _session, socket) do
