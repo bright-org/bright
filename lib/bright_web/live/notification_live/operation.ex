@@ -47,6 +47,7 @@ defmodule BrightWeb.NotificationLive.Operation do
 
       <.header class="break-words"><%= @shown_notification_operation.message %></.header>
 
+      <%!-- 運営からのお知らせは運営が入力するため XSS のリスクはないとして raw を許容する --%>
       <div class="mt-4 break-all [&_a]:text-brightGreen-300 [&_a]:underline [&_a]:outline-none">
         <%= Earmark.as_html!(@shown_notification_operation.detail) |> Phoenix.HTML.raw() %>
       </div>
