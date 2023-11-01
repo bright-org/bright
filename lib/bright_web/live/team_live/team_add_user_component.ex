@@ -108,17 +108,17 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   # 検索結果を追加する時のバリデーション
   defp validate_add_user({:error, socket}), do: {:error, socket}
 
-  defp validate_add_user({:ok, socket, user}) do
-    selected_users = socket.assigns.users
-
+  defp validate_add_user({:ok, %{assigns: %{users: selected_users, plan: plan}} = socket, user}) do
     cond do
       id_duplidated_user?(selected_users, user) ->
         {:error, assign(socket, :search_word_error, "対象のユーザーは既に追加されています")}
 
-      member_limit?(selected_users, socket.assigns.team_up_enable) ->
+      member_limit?(selected_users, plan) ->
+        IO.inspect(plan)
+
         message =
-          if socket.assigns.team_up_enable,
-            do: "現在のプランでは、メンバーは15名まで（管理者含む）が上限です",
+          if plan.plan_code in ["hr_plan", "team_up_plan"],
+            do: "現在のプランでは、メンバーは#{plan.team_members_limit}名まで（管理者含む）が上限です",
             else:
               "現在のプランでは、メンバーは5名まで（管理者含む）が上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上をご購入いただくと、メンバー数を増やせます"
 
@@ -151,13 +151,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
     users |> Enum.find(fn u -> user.id == u.id end) |> is_nil() |> then(&(!&1))
   end
 
-  defp member_limit?(users, true) do
-    # チームアッププラン以上 管理者 + 14名
-    Enum.count(users) >= 14
-  end
-
-  defp member_limit?(users, false) do
-    # フリープラン 管理者 + 4名
-    Enum.count(users) >= 4
+  defp member_limit?(users, %{team_members_limit: limit}) do
+    Enum.count(users) >= limit - 1
   end
 end
