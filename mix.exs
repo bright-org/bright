@@ -68,7 +68,8 @@ defmodule Bright.MixProject do
       {:sentry, "~> 8.0"},
       {:mock, "~> 0.3.8", only: :test},
       {:ex_parameterized, "~> 1.3", only: :test},
-      {:ueberauth_github, "~> 0.8"}
+      {:ueberauth_github, "~> 0.8"},
+      {:earmark, "~> 1.4"}
     ]
   end
 

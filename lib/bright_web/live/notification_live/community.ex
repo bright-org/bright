@@ -47,8 +47,8 @@ defmodule BrightWeb.NotificationLive.Community do
 
       <.header class="break-words"><%= @shown_notification_community.message %></.header>
 
-      <div class="mt-4">
-        <%= Phoenix.HTML.Format.text_to_html(@shown_notification_community.detail, attributes: [class: "break-all"]) %>
+      <div class="mt-4 break-all [&_a]:text-brightGreen-300 [&_a]:underline [&_a]:outline-none">
+        <%= Earmark.as_html!(@shown_notification_community.detail) |> Phoenix.HTML.raw() %>
       </div>
     </.bright_modal>
     """
