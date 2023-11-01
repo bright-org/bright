@@ -3,7 +3,6 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
   Notification Header Components
   """
   use BrightWeb, :live_component
-  alias Bright.Notifications
 
   @impl true
   def render(assigns) do
