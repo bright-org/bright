@@ -4,9 +4,6 @@ defmodule BrightWeb.NotificationLive.OperationTest do
   import Phoenix.LiveViewTest
   import Bright.Factory
 
-  alias Bright.Repo
-  alias Bright.Notifications.NotificationOperation
-
   setup [:register_and_log_in_user]
 
   describe "render page" do
@@ -49,13 +46,12 @@ defmodule BrightWeb.NotificationLive.OperationTest do
     end
   end
 
-  describe "notification modal and updating confirmed_at" do
-    test "shows modal and updates confirmed_at", %{conn: conn} do
+  describe "notification modal" do
+    test "shows modal", %{conn: conn} do
       notification_operation = insert(:notification_operation)
 
       {:ok, lv, _html} = live(conn, ~p"/notifications/operations")
 
-      refute Repo.get(NotificationOperation, notification_operation.id).confirmed_at
       refute lv |> has_element?("#notification_operation_modal")
       refute lv |> has_element?("#notification_operation_modal", notification_operation.detail)
 
@@ -63,34 +59,8 @@ defmodule BrightWeb.NotificationLive.OperationTest do
       |> element(~s{div[phx-click="confirm_notification"]}, notification_operation.message)
       |> render_click()
 
-      assert Repo.get(NotificationOperation, notification_operation.id).confirmed_at
       assert lv |> has_element?("#notification_operation_modal")
       assert lv |> has_element?("#notification_operation_modal", notification_operation.detail)
-    end
-
-    test "makes style font-bold to unconfirmed message", %{conn: conn} do
-      notification_operation = insert(:notification_operation)
-
-      {:ok, lv, _html} = live(conn, ~p"/notifications/operations")
-
-      assert lv
-             |> has_element?(
-               "#notification_operation_container span.font-bold",
-               notification_operation.message
-             )
-    end
-
-    test "does not make style font-bold to confirmed message", %{conn: conn} do
-      notification_operation =
-        insert(:notification_operation, confirmed_at: NaiveDateTime.utc_now())
-
-      {:ok, lv, _html} = live(conn, ~p"/notifications/operations")
-
-      refute lv
-             |> has_element?(
-               "#notification_operation_container span.font-bold",
-               notification_operation.message
-             )
     end
   end
 end

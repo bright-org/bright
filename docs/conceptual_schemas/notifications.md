@@ -7,11 +7,9 @@ Bright にはユーザーへの通知機能がある。
 
 システムから何らかのトリガーがあると通知が送信される。
 
-ユーザーはヘッダーにあるベルマークを確認すると通知の種類と未読数を確認できる。
+ユーザーはヘッダーにあるベルマークを確認すると通知の種類を確認できる。
 
 ヘッダーからリンクを飛ぶと通知一覧から通知を確認できる。
-
-通知を確認したらその通知は既読状態になる。
 
 通知ごとに固有のアクション（MA ツール側の API を叩くなど）がある場合がある。
 
@@ -58,7 +56,6 @@ erDiagram
     uuid from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
-    datetime confirmed_at "既読日時"
     datetime inserted_at "作成日時"
     datetime updated_at "更新日時"
   }
@@ -75,11 +72,8 @@ erDiagram
 
 ### インデックス設計
 
-- to_user_id, confirmed_at の複合インデックスをつける（この順序で指定）
-  - 通知ヘッダーで未読数をバッチつけるため
-  - to_user_id を先に指定することで to_user_id 単体にもインデックス効かせる
-    - 通知対象ユーザーに絞り込んで通知を出すため
-  - ※ to_user_id がないテーブルの場合は confirmed_at 単体にインデックスをつける
+- to_user_id にインデックスをつける（この順序で指定）
+  - 通知対象ユーザーに絞り込んで通知を出すため
 
 ## 通知概念図
 
@@ -101,7 +95,6 @@ erDiagram
     uuid from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
-    datetime confirmed_at "既読日時"
     datetime inserted_at "作成日時"
     datetime updated_at "更新日時"
   }
@@ -113,7 +106,6 @@ erDiagram
     uuid from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
-    datetime confirmed_at "既読日時"
     datetime inserted_at "作成日時"
     datetime updated_at "更新日時"
   }
@@ -128,13 +120,10 @@ erDiagram
   - インデックスを貼るのを忘れずに
 - `BrightWeb.NotificationLive.NotificationHeaderComponent` を修正する
   - 主に `notification_list/2`
-    - `Bright.Notifications.list_unconfirmed_notification_count/1` に追加した通知のパターンを実装する
-      - `Bright.NotificationsTest` を修正する
   - `BrightWeb.NotificationLive.NotificationHeaderComponentTest` を修正する
 - コンポーネントを実装する
   - 例: `BrightWeb.NotificationLive.Operation`
     - `Bright.Notifications.list_notification_by_type/3` に追加した通知のパターンを実装する
-    - `Bright.Notifications.confirm_notification!/1` に追加した通知のパターンを実装する
     - `Bright.NotificationsTest` を修正する
   - コンポーネントのテストを追加する
     - 例: `BrightWeb.NotificationLive.OperationTest` を修正する
