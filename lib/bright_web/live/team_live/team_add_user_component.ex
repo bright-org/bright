@@ -114,8 +114,6 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
         {:error, assign(socket, :search_word_error, "対象のユーザーは既に追加されています")}
 
       member_limit?(selected_users, plan) ->
-        IO.inspect(plan)
-
         message =
           if plan.plan_code in ["hr_plan", "team_up_plan"],
             do: "現在のプランでは、メンバーは#{plan.team_members_limit}名まで（管理者含む）が上限です",
