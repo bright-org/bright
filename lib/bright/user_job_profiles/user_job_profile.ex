@@ -19,7 +19,7 @@ defmodule Bright.UserJobProfiles.UserJobProfile do
 
   schema "user_job_profiles" do
     field :desired_income, :integer
-    field :job_searching, :boolean, default: false
+    field :job_searching, :boolean, default: true
     field :office_working_hours, Ecto.Enum, values: @working_hours
     field :office_pref, Ecto.Enum, values: @pref
     field :office_work, :boolean, default: false
