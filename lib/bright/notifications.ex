@@ -10,7 +10,6 @@ defmodule Bright.Notifications do
 
   alias Bright.Notifications.NotificationOperation
   alias Bright.Notifications.NotificationCommunity
-  alias Bright.Accounts.User
 
   @doc """
   Returns the list of all notifications by type.
