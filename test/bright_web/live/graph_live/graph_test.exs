@@ -71,6 +71,68 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     end
   end
 
+  # スキルジェム
+  # スキルジェムはJSでの描画のため渡しているdata属性を主な対象として確認している
+  describe "Skill Gem" do
+    setup [:register_and_log_in_user]
+
+    setup %{user: user} do
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+
+      %{skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    # スキルユニット用意
+    setup %{skill_class: skill_class} do
+      # positionは並びでindexするため確認のため適当な数値をいれている
+      skill_units =
+        [
+          {"ユニット１", 90},
+          {"ユニット２", 10},
+          {"ユニット３", 40}
+        ]
+        |> Enum.map(fn {name, position} ->
+          skill_unit = insert(:skill_unit, name: name)
+
+          insert(:skill_class_unit,
+            skill_class: skill_class,
+            skill_unit: skill_unit,
+            position: position
+          )
+        end)
+
+      %{skill_units: skill_units}
+    end
+
+    test "shows gem links", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+
+      data_links =
+        [
+          "/panels/#{skill_panel.id}?class=1&#unit-1",
+          "/panels/#{skill_panel.id}?class=1&#unit-2",
+          "/panels/#{skill_panel.id}?class=1&#unit-3"
+        ]
+        |> Jason.encode!()
+
+      data_labels =
+        [
+          "ユニット２",
+          "ユニット３",
+          "ユニット１"
+        ]
+        |> Jason.encode!()
+
+      assert has_element?(show_live, ~s(#skill-gem[data-links='#{data_links}']))
+      assert has_element?(show_live, ~s(#skill-gem[data-labels='#{data_labels}']))
+    end
+  end
+
   # 成長グラフ
   # 成長グラフはJSでの描画のため渡しているdata属性を主な対象として確認している
   describe "Growth grapth" do
