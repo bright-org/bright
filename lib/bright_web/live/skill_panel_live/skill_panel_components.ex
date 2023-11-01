@@ -1,5 +1,6 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use BrightWeb, :component
+  alias BrightWeb.PathHelper
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
   import BrightWeb.MegaMenuComponents
@@ -236,7 +237,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def toggle_link(assigns) do
     ~H"""
       <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
-      <.link navigate={~p"/graphs/#{@skill_panel.id}?class=#{@skill_class}"}>
+      <.link navigate={"#{PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
           id="grid"
           class={
@@ -247,7 +248,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           成長パネル
         </button>
         </.link>
-        <.link navigate={~p"/panels/#{@skill_panel.id}?class=#{@skill_class}"}>
+        <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
           <button
             id="list"
             class={
