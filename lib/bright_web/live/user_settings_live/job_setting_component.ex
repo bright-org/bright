@@ -18,14 +18,14 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
       >
         <div class="border-b border-brightGray-200 flex flex-wrap">
           <div class="flex py-4">
-            <span class="w-24 text-start">求職</span>
+            <span class="w-24 text-start">働く際の希望</span>
             <BrightCore.input
               id="user_job_profile_job_searching_on"
               type="radio"
               name={@form[:job_searching].name}
               value="true"
               checked={to_string(@form[:job_searching].value)}
-              label="する"
+              label="記入する"
             />
             <BrightCore.input
               id="user_job_profile_job_searching_off"
@@ -34,7 +34,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               name={@form[:job_searching].name}
               value="false"
               checked={to_string(@form[:job_searching].value) == "false"}
-              label="しない"
+              label="記入しない"
             />
           </div>
         </div>
@@ -47,6 +47,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               label_class="py-1 w-24 text-start"
               after_label_class="ml-1"
               type="number"
+              min={0}
               label="希望年収"
               after_label="万円以上"
             />
@@ -54,45 +55,40 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
           <div class="border-b border-brightGray-200 flex flex-wrap">
             <div class="flex pt-4">
               <div class="flex flex-col mt-2 text-start">
-                <span class="pt-1 w-24">希望する</span>
-                <span class="pb-1 w-24">形態</span>
+                <span class="pt-1 w-24">業務可否</span>
               </div>
               <div class="py-4 flex flex-col gap-y-2 lg:flex-row">
               <BrightCore.input
                 field={@form[:wish_employed]}
                 container_class="ml-4 lg:ml-0"
                 type="checkbox"
-                label="就職"
+                label="要OJT"
               />
               <BrightCore.input
                 field={@form[:wish_change_job]}
                 container_class="ml-4"
                 type="checkbox"
-                label="転職"
+                label="現業以外も可"
               />
               <BrightCore.input
                 field={@form[:wish_side_job]}
                 container_class="ml-4"
                 type="checkbox"
-                label="副業"
+                label="副業も可"
               />
               <BrightCore.input
                 field={@form[:wish_freelance]}
                 container_class="ml-4"
                 type="checkbox"
-                label="フリーランス"
+                label="業務委託も可"
               />
               </div>
-            </div>
-            <div class="pl-24 pb-4">
-              <span class="">※求職優先の方は、すべて選択するとスカウト検索がヒットしやすくなります</span>
             </div>
           </div>
 
           <div class="flex flex-wrap py-4 w-full">
             <div class="flex flex-col text-start">
-              <span class="pt-1 w-24">希望する</span>
-              <span class="pb-1 w-24">勤務体系</span>
+              <span class="pt-1 w-24">勤務可否</span>
             </div>
             <div>
               <div class="flex flex-col lg:flex-row lg:items-center">
