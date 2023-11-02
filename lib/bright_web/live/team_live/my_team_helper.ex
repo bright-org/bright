@@ -13,9 +13,10 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   alias BrightWeb.SkillPanelLive.SkillPanelHelper
 
   def init_assign(params, %{assigns: %{live_action: :new, current_user: user}} = socket) do
+    subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
     # 直接チーム作成モーダルを起動した場合、データの取得は行わない
     socket
-    |> assign(:team_up_enable, Subscriptions.service_enabled?(user.id, "team_up"))
+    |> assign(:plan, subscription.subscription_plan)
     |> assign_page_title(nil)
     |> assign_display_skill_panel(nil)
     |> assign_display_skill_classes([])
@@ -44,10 +45,10 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
     member_skill_classes = list_skill_classes(display_team, display_skill_panel)
-
+    subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
     # スキルとチームの取得結果に応じて各種assign
     socket
-    |> assign(:team_up_enable, Subscriptions.service_enabled?(user.id, "team_up"))
+    |> assign(:plan, subscription.subscription_plan)
     |> assign_page_title(display_skill_panel)
     |> assign_display_skill_panel(display_skill_panel)
     |> assign_display_skill_classes(display_skill_classes)

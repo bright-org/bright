@@ -96,7 +96,7 @@
     current_user={@display_user}
     users={[]}
     patch={~p"/mypage"}
-    team_up_enable={Subscriptions.service_enabled?(@current_user.id, "team_up")}
+    plan={Subscriptions.get_users_subscription_status(@current_user.id, NaiveDateTime.utc_now())}
   />
 </.bright_modal>
 <div phx-mounted={if @search, do: JS.show(to: "#skill_search_modal")}></div>
