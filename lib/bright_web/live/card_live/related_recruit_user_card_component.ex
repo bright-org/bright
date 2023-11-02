@@ -56,8 +56,8 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
                   title={user_profile.title}
                   icon_file_path={user_profile.icon_file_path}
                   encrypt_user_name={user_profile.encrypt_user_name}
+                  click_target="#adoption_modal"
                   click_event={"add_user"}
-                  click_target={@myself}
                 />
             <% end %>
           </ul>
@@ -102,10 +102,6 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
   end
 
   @impl true
-  def handle_event("add_user", %{"user_id" => id}, socket) do
-    {:noreply, socket}
-  end
-
   def handle_event(
         "tab_click",
         %{"id" => _id, "tab_name" => "team"},
