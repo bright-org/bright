@@ -17,5 +17,14 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
       # TODO 表示のみ確認
       assert html =~ "チームスキル分析"
     end
+
+    test "show my team without plan", %{
+      conn: conn
+    } do
+      assert {:ok, _my_team_live, html} = live(conn, ~p"/teams")
+
+      # TODO 表示のみ確認
+      assert html =~ "チームスキル分析"
+    end
   end
 end
