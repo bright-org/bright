@@ -23,13 +23,13 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
           phx-submit="add_user"
         >
           <p class="pb-2 text-base">
-            <span class="font-bold">Brightハンドル名</span>からメンバーとして追加
+            <span class="font-bold">Brightハンドル名もしくはメールアドレス</span>からメンバーとして追加
           </p>
           <input
             id="search_word"
             name="search_word"
             type="autocomplete"
-            placeholder="ハンドル名を入力してください"
+            placeholder="ハンドル名もしくはメールアドレスを入力してください"
             class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
             phx-change="change_add_user"
             value={@search_word}
