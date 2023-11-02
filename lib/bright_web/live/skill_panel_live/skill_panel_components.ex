@@ -369,7 +369,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             <.link
               patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
               id="link-skills-form"
-              class="flex-1 flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 hover:opacity-50">
+              class={[Map.get(@flash, "first_skills_edit") && "z-20", "flex-1 flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 hover:opacity-50"]}>
               <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
               スキル入力する
             </.link>
@@ -386,6 +386,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <div class="lg:absolute lg:right-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col">
             <% # スキル入力前メッセージ %>
             <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+
+            <div :if={Map.get(@flash, "first_skills_edit")} class="bg-pureGray-600/90 fixed inset-0 transition-opacity"></div>
             <.live_component
               :if={Map.get(@flash, "first_skills_edit")}
               module={BrightWeb.HelpMessageComponent}

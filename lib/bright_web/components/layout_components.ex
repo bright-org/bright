@@ -89,7 +89,7 @@ defmodule BrightWeb.LayoutComponents do
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
-    <div id="user-header" class="sticky top-0 z-10 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
+    <div id="user-header" class="sticky top-0 z-10 lg:z-20 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
       <h4 class="lg:hidden font-bold mt-2 text-sm before:bg-bgGem before:bg-6 before:bg-left before:bg-no-repeat before:content-[''] before:h-6 before:inline-block before:align-[-5px] before:w-6">
         <%= @page_title %><%= @page_sub_title %>
       </h4>
@@ -128,7 +128,7 @@ defmodule BrightWeb.LayoutComponents do
 
   def side_menu(assigns) do
     ~H"""
-    <aside class="relative">
+    <aside class="relative lg:z-20">
       <input id="sp_navi_input" class="hidden peer" type="checkbox">
       <label id="sp_navi_open" class="bg-white block cursor-pointer fixed h-10 ml-4 left-0 rounded top-2 w-10 z-50 lg:hidden" for="sp_navi_input">
         <span class="absolute bg-brightGray-300 block cursor-pointer h-[3px] left-1 top-1.5 w-8 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8"></span>
