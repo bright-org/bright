@@ -25,6 +25,8 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
   end
 
   def update(%{skill_params: skill_params} = assigns, socket) do
+    IO.inspect(assigns)
+
     socket
     |> assign(assigns)
     |> assign(:skill_params, put_skill_panel_name(skill_params))

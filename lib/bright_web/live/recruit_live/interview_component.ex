@@ -25,7 +25,7 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
                   <h3 class="font-bold text-base">採用候補者</h3>
                   <.live_component
                     id="user_params"
-                    prefix="adoption"
+                    prefix="interview"
                     search={false}
                     module={BrightWeb.SearchLive.SearchResultsComponent}
                     current_user={@current_user}
