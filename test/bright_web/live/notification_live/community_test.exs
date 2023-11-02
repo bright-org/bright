@@ -4,9 +4,6 @@ defmodule BrightWeb.NotificationLive.CommunityTest do
   import Phoenix.LiveViewTest
   import Bright.Factory
 
-  alias Bright.Repo
-  alias Bright.Notifications.NotificationCommunity
-
   setup [:register_and_log_in_user]
 
   describe "render page" do
@@ -49,13 +46,12 @@ defmodule BrightWeb.NotificationLive.CommunityTest do
     end
   end
 
-  describe "notification modal and updating confirmed_at" do
-    test "shows modal and updates confirmed_at", %{conn: conn} do
+  describe "notification modal" do
+    test "shows modal", %{conn: conn} do
       notification_community = insert(:notification_community)
 
       {:ok, lv, _html} = live(conn, ~p"/notifications/communities")
 
-      refute Repo.get(NotificationCommunity, notification_community.id).confirmed_at
       refute lv |> has_element?("#notification_community_modal")
       refute lv |> has_element?("#notification_community_modal", notification_community.detail)
 
@@ -63,34 +59,8 @@ defmodule BrightWeb.NotificationLive.CommunityTest do
       |> element(~s{div[phx-click="confirm_notification"]}, notification_community.message)
       |> render_click()
 
-      assert Repo.get(NotificationCommunity, notification_community.id).confirmed_at
       assert lv |> has_element?("#notification_community_modal")
       assert lv |> has_element?("#notification_community_modal", notification_community.detail)
-    end
-
-    test "makes style font-bold to unconfirmed message", %{conn: conn} do
-      notification_community = insert(:notification_community)
-
-      {:ok, lv, _html} = live(conn, ~p"/notifications/communities")
-
-      assert lv
-             |> has_element?(
-               "#notification_community_container span.font-bold",
-               notification_community.message
-             )
-    end
-
-    test "does not make style font-bold to confirmed message", %{conn: conn} do
-      notification_community =
-        insert(:notification_community, confirmed_at: NaiveDateTime.utc_now())
-
-      {:ok, lv, _html} = live(conn, ~p"/notifications/communities")
-
-      refute lv
-             |> has_element?(
-               "#notification_community_container span.font-bold",
-               notification_community.message
-             )
     end
   end
 end

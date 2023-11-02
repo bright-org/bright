@@ -9,11 +9,26 @@
 
 <div class="mx-4 lg:mx-10 relative">
   <div class="lg:hidden mb-4">
-    <.toggle_link skill_panel={@skill_panel} active="panel" />
+    <.toggle_link
+      skill_panel={@skill_panel}
+      display_user={@display_user}
+      me={@me}
+      anonymous={@anonymous}
+      skill_class={@skill_class.class}
+      active="panel"
+    />
   </div>
   <div class="flex justify-between">
     <div class="hidden lg:flex">
-      <.toggle_link skill_panel={@skill_panel} active="panel" />
+          <.toggle_link
+      skill_panel={@skill_panel}
+      display_user={@display_user}
+      me={@me}
+      anonymous={@anonymous}
+      skill_class={@skill_class.class}
+      active="panel"
+    />
+
     </div>
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>

@@ -184,7 +184,8 @@ defmodule BrightWeb.TimelineBarComponents do
   defp close_button(assigns) do
     ~H"""
     <button
-      phx-click={JS.push("timeline_bar_close_button_click", value: %{id: @id})}
+      phx-click="timeline_bar_close_button_click"
+      phx-value-id={@id}
       phx-target={@target}
       class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200"
     >

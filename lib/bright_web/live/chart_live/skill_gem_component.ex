@@ -125,6 +125,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     path = base_path <> "?#{query}"
 
     skill_gem
-    |> Enum.map(fn x -> "#{path}#unit-#{x.position}" end)
+    |> Enum.with_index(1)
+    |> Enum.map(fn {_x, index} -> "#{path}#unit-#{index}" end)
   end
 end

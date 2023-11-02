@@ -24,7 +24,7 @@ defmodule BrightWeb.NotificationLive.Community do
               <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
                 person
               </span>
-              <span class={["order-3 lg:order-2 flex-1 mr-2 truncate", is_nil(notification.confirmed_at) && "font-bold"]}><%= notification.message %></span>
+              <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}><%= notification.message %></span>
               <CardListComponents.elapsed_time inserted_at={notification.inserted_at} />
             </div>
             <div class="flex gap-x-2 w-full justify-end lg:justify-start lg:w-auto">
@@ -110,7 +110,7 @@ defmodule BrightWeb.NotificationLive.Community do
 
   @impl true
   def handle_event("confirm_notification", %{"notification_community_id" => id} = _params, socket) do
-    notification = confirm_notification!(socket.assigns.notifications, id)
+    notification = find_notification(socket.assigns.notifications, id)
 
     socket
     |> assign(:shown_notification_community, notification)
@@ -142,14 +142,6 @@ defmodule BrightWeb.NotificationLive.Community do
       page: page,
       page_size: per
     )
-  end
-
-  defp confirm_notification!(notifications, id) do
-    notification = find_notification(notifications, id)
-
-    Notifications.confirm_notification!(notification)
-
-    notification
   end
 
   defp find_notification(notifications, notification_community_id) do

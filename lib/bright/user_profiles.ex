@@ -171,4 +171,14 @@ defmodule Bright.UserProfiles do
   def build_icon_path(file_name) do
     "users/profile_icon_#{Ecto.UUID.generate()}" <> Path.extname(file_name)
   end
+
+  @doc """
+  匿名表示相当のUserProfileを返す
+  """
+  def get_anonymous_user_profile do
+    %UserProfile{
+      title: "非表示",
+      detail: "非表示"
+    }
+  end
 end

@@ -10,7 +10,6 @@ defmodule Bright.Notifications do
 
   alias Bright.Notifications.NotificationOperation
   alias Bright.Notifications.NotificationCommunity
-  alias Bright.Accounts.User
 
   @doc """
   Returns the list of all notifications by type.
@@ -80,66 +79,6 @@ defmodule Bright.Notifications do
       ]
     )
     |> Repo.paginate(page_param)
-  end
-
-  @doc """
-  Confirm a notification.
-
-  ## Examples
-
-      iex> confirm_notification!(%NotificationOperation{})
-      %NotificationOperation{}
-
-      iex> confirm_notification!(%NotificationOperation{})
-      nil
-
-      iex> confirm_notification!(%NotificationCommunity{})
-      %NotificationCommunity{}
-
-  """
-  def confirm_notification!(%NotificationOperation{confirmed_at: nil} = notification) do
-    Ecto.Changeset.change(notification,
-      confirmed_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    )
-    |> Repo.update!()
-  end
-
-  def confirm_notification!(%NotificationCommunity{confirmed_at: nil} = notification) do
-    Ecto.Changeset.change(notification,
-      confirmed_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    )
-    |> Repo.update!()
-  end
-
-  def confirm_notification!(_notification) do
-    nil
-  end
-
-  @doc """
-  Returns the number of unconfirmed notifications by user.
-
-  ## Examples
-
-      iex> list_unconfirmed_notification_count(user)
-      %{
-        "operation" => 1
-      }
-  """
-  def list_unconfirmed_notification_count(%User{} = _to_user) do
-    %{
-      "operation" => not_confirmed_notification_operation_count(),
-      "community" => not_confirmed_notification_community_count()
-    }
-  end
-
-  # NOTE: 運営からの通知は to_user_id がないので、引数に user 不要
-  defp not_confirmed_notification_operation_count do
-    NotificationOperation.not_confirmed_query() |> Repo.aggregate(:count)
-  end
-
-  # NOTE: コミュニティからの通知は to_user_id がないので、引数に user 不要
-  defp not_confirmed_notification_community_count do
-    NotificationCommunity.not_confirmed_query() |> Repo.aggregate(:count)
   end
 
   @doc """

@@ -39,8 +39,7 @@ defmodule BrightWeb.TimelineHelper do
   end
 
   def select_label(timeline, label) do
-    timeline
-    |> Map.put(:selected_label, label)
+    Map.put(timeline, :selected_label, label)
   end
 
   def shift_for_future(timeline) do
@@ -73,6 +72,13 @@ defmodule BrightWeb.TimelineHelper do
     })
   end
 
+  def select_past_if_label_is_now(%{selected_label: "now"} = timeline) do
+    past_label = Enum.at(timeline.labels, -2)
+    select_label(timeline, past_label)
+  end
+
+  def select_past_if_label_is_now(timeline), do: timeline
+
   def get_monthly_interval, do: @monthly_interval
 
   @doc """
@@ -92,6 +98,15 @@ defmodule BrightWeb.TimelineHelper do
       {selected_label, false, latest_label} when selected_label == latest_label -> :future
       _ -> :past
     end
+  end
+
+  @doc """
+  指定されたindexの日付を返す
+  """
+  def get_date_at(timeline, index) do
+    timeline.labels
+    |> Enum.at(index)
+    |> label_to_date()
   end
 
   def label_to_date(label) when not is_bitstring(label), do: nil

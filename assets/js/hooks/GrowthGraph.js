@@ -43,14 +43,13 @@ const createDataset = (
 };
 
 const createData = (data) => {
-  const futureEnabled =
-    data["future_enabled"] === undefined ? true : data["future_enabled"];
-  const [myselfData, myselfFuture] = dataDivision(
-    data["myself"],
-    futureEnabled
-  );
-  const [otherData, otherFuture] = dataDivision(data["other"], futureEnabled);
-  const [roleData, roleFuture] = dataDivision(data["role"], futureEnabled);
+  const futureEnabled = data["futureEnabled"] === undefined ? true : data["futureEnabled"]
+  const otherFutureEnabled = data["otherFutureEnabled"] === undefined ? true : data["otherFutureEnabled"]
+  const roleFutureEnabled = data["roleFutureEnabled"] === undefined ? true : data["roleFutureEnabled"]
+
+  const [myselfData, myselfFuture] = dataDivision(data["myself"], futureEnabled);
+  const [otherData, otherFuture] = dataDivision(data["other"], otherFutureEnabled);
+  const [roleData, roleFuture] = dataDivision(data["role"], roleFutureEnabled);
   const datasets = [];
   datasets.push(
     createDataset(
@@ -364,7 +363,7 @@ const beforeDatasetsDraw = (chart, ease) => {
   const myselfSelectedIndex = data.labels.findIndex(myselfSelected);
 
   const otherSelected = (element) => element == data["otherSelected"];
-  const otherSelectedIndex = data.labels.findIndex(otherSelected);
+  const otherSelectedIndex = (data["otherLabels"] || []).findIndex(otherSelected);
 
   drawvVrticalLine(context, scales);
   drawHorizonLine(context, scales);
@@ -399,7 +398,7 @@ const afterDatasetsDraw = (chart, ease) => {
   const myselfSelectedIndex = data.labels.findIndex(myselfSelected);
 
   const otherSelected = (element) => element == data["otherSelected"];
-  const otherSelectedIndex = data.labels.findIndex(otherSelected);
+  const otherSelectedIndex = (data["otherLabels"] || []).findIndex(otherSelected);
 
   drawSelectedPoint(
     chart,
