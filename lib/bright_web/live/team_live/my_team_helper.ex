@@ -46,8 +46,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
     member_skill_classes = list_skill_classes(display_team, display_skill_panel)
 
-    subscription =
-      Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+    subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
 
     # スキルとチームの取得結果に応じて各種assign
     socket
