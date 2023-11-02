@@ -3,6 +3,8 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
 
   alias Bright.Accounts
   alias Bright.UserSearches
+  alias Bright.Recruits
+  alias Bright.Recruits.Interview
   alias BrightWeb.BrightCoreComponents, as: BrightCore
   import BrightWeb.ProfileComponents, only: [profile_small_with_remove_button: 1]
 
