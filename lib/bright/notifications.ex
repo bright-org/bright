@@ -8,8 +8,11 @@ defmodule Bright.Notifications do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.Notifications.NotificationOperation
-  alias Bright.Notifications.NotificationCommunity
+  alias Bright.Notifications.{
+    NotificationOperation,
+    NotificationCommunity,
+    NotificationEvidence
+  }
 
   @doc """
   Returns the list of all notifications by type.
@@ -105,6 +108,19 @@ defmodule Bright.Notifications do
     %NotificationCommunity{}
     |> NotificationCommunity.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_notification("evidence", attrs) do
+    %NotificationEvidence{}
+    |> NotificationEvidence.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Creates a notifications by type.
+  """
+  def create_notifications("evidence", attrs_list) do
+    Repo.insert_all(NotificationEvidence, attrs_list)
   end
 
   @doc """

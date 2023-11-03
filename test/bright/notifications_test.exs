@@ -3,8 +3,12 @@ defmodule Bright.NotificationsTest do
 
   alias Bright.Repo
   alias Bright.Notifications
-  alias Bright.Notifications.NotificationOperation
-  alias Bright.Notifications.NotificationCommunity
+
+  alias Bright.Notifications.{
+    NotificationOperation,
+    NotificationCommunity,
+    NotificationEvidence
+  }
 
   import Bright.Factory
 
@@ -126,6 +130,53 @@ defmodule Bright.NotificationsTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Notifications.create_notification("community", invalid_attrs)
+    end
+
+    test "with valid data for type evidence" do
+      from_user = insert(:user)
+      to_user = insert(:user)
+
+      valid_attrs = %{
+        message: "some message",
+        from_user_id: from_user.id,
+        to_user_id: to_user.id,
+        url: "/"
+      }
+
+      assert {:ok, %NotificationEvidence{} = notification_evidence} =
+               Notifications.create_notification("evidence", valid_attrs)
+
+      assert notification_evidence.message == "some message"
+      assert notification_evidence.from_user_id == from_user.id
+      assert notification_evidence.to_user_id == to_user.id
+      assert notification_evidence.url == "/"
+    end
+
+    test "with invalid data for type evidence" do
+      invalid_attrs = %{message: nil}
+
+      assert {:error, %Ecto.Changeset{}} =
+               Notifications.create_notification("evidence", invalid_attrs)
+    end
+  end
+
+  describe "create_notifications/2" do
+    test "with valid data for type evidence" do
+      from_user = insert(:user)
+      to_user = insert(:user)
+      timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+      valid_attrs = %{
+        id: Ecto.ULID.generate(),
+        message: "some message",
+        from_user_id: from_user.id,
+        to_user_id: to_user.id,
+        url: "/",
+        inserted_at: timestamp,
+        updated_at: timestamp
+      }
+
+      assert {1, _} = Notifications.create_notifications("evidence", [valid_attrs])
     end
   end
 

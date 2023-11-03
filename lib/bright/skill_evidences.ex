@@ -7,6 +7,9 @@ defmodule Bright.SkillEvidences do
   alias Bright.Repo
 
   alias Bright.SkillEvidences.{SkillEvidence, SkillEvidencePost}
+  alias Bright.Teams
+  alias Bright.Notifications
+  alias Bright.SkillUnits
   alias Bright.Utils.GoogleCloud.Storage
 
   @doc """
@@ -227,5 +230,62 @@ defmodule Bright.SkillEvidences do
   # Build image_path by file_name.
   defp build_image_path(file_name) do
     "skill_evidence_posts/image_#{Ecto.UUID.generate()}" <> Path.extname(file_name)
+  end
+
+  @doc """
+  ヘルプ処理
+  チームの全メンバーにヘルプを伝える通知を生成
+  """
+  def help(skill_evidence, user) do
+    skill_breadcrumb = get_skill_breadcrumb(%{id: skill_evidence.skill_id})
+
+    base_attrs = %{
+      from_user_id: user.id,
+      message: "#{user.name}から「#{skill_breadcrumb}」のヘルプが届きました",
+      url: "/TODO/#{skill_evidence.id}/TODO"
+    }
+
+    timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+    Teams.list_user_ids_related_team_by_user(user)
+    |> Enum.map(fn user_id ->
+      Map.merge(base_attrs, %{
+        id: Ecto.ULID.generate(),
+        to_user_id: user_id,
+        inserted_at: timestamp,
+        updated_at: timestamp
+      })
+    end)
+    |> then(&Notifications.create_notifications("evidence", &1))
+  end
+
+  @doc """
+  返信受け取り処理
+  エビデンスの所有者に対する通知を生成
+  """
+  def receive_post(skill_evidence, user) do
+    skill_breadcrumb = get_skill_breadcrumb(%{id: skill_evidence.skill_id})
+
+    Notifications.create_notification("evidence", %{
+      from_user_id: user.id,
+      to_user_id: skill_evidence.user_id,
+      message: "#{user.name}から「#{skill_breadcrumb}」にメッセージが届きました",
+      url: "/TODO/#{skill_evidence.id}/TODO"
+    })
+  end
+
+  defp get_skill_breadcrumb(%{id: skill_id}) do
+    # スキル階層名を返す
+    # "スキルユニット名 > スキルカテゴリ名 > スキル名"
+    from(
+      s in SkillUnits.Skill,
+      where: s.id == ^skill_id,
+      join: sc in assoc(s, :skill_category),
+      join: su in assoc(sc, :skill_unit),
+      select: {su.name, sc.name, s.name}
+    )
+    |> Repo.one()
+    |> Tuple.to_list()
+    |> Enum.join(" > ")
   end
 end

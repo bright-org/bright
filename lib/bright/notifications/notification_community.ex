@@ -4,7 +4,6 @@ defmodule Bright.Notifications.NotificationCommunity do
   """
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query, warn: false
   alias Bright.Accounts.User
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
@@ -12,8 +11,9 @@ defmodule Bright.Notifications.NotificationCommunity do
 
   schema "notification_communities" do
     field :message, :string
-    belongs_to :from_user, User
     field :detail, :string
+
+    belongs_to :from_user, User
 
     timestamps()
   end
