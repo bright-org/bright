@@ -115,7 +115,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
 
       member_limit?(selected_users, plan) ->
         message =
-          if plan.plan_code in ["hr_plan", "team_up_plan"],
+          if !is_nil(plan) && plan.plan_code in ["hr_plan", "team_up_plan"],
             do: "現在のプランでは、メンバーは#{plan.team_members_limit}名まで（管理者含む）が上限です",
             else:
               "現在のプランでは、メンバーは5名まで（管理者含む）が上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上をご購入いただくと、メンバー数を増やせます"
@@ -147,6 +147,10 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
 
   defp id_duplidated_user?(users, user) do
     users |> Enum.find(fn u -> user.id == u.id end) |> is_nil() |> then(&(!&1))
+  end
+
+  defp member_limit?(users, nil) do
+    Enum.count(users) >= 5
   end
 
   defp member_limit?(users, %{team_members_limit: limit}) do
