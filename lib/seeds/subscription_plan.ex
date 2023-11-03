@@ -8,14 +8,6 @@ defmodule Brignt.Seeds.SubscriptionPlan do
 
   @plans [
     %{
-      plan_code: "free_plan",
-      name_jp: "フリー",
-      create_teams_limit: 1,
-      create_enable_hr_functions_teams_limit: 0,
-      team_members_limit: 5,
-      free_trial_priority: 1
-    },
-    %{
       plan_code: "personal_skill_up_plan",
       name_jp: "個人スキルアップ",
       create_teams_limit: 1,

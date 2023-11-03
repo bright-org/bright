@@ -22,37 +22,37 @@
   </div>
 
   <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
-    <span class="w-36 text-start">形態で絞り込む</span>
+    <span class="w-36 text-start">業務可否で絞り込む</span>
     <div class="flex items-center">
       <BrightCore.input
         field={@form[:wish_employed]}
-        label_class="w-16 text-left"
+        label_class="w-12 text-left"
         type="checkbox"
-        label="就職"
+        label="要OJT"
       />
       <BrightCore.input
         field={@form[:wish_change_job]}
-        label_class="w-16 text-left"
+        label_class="w-24 text-left"
         type="checkbox"
-        label="転職"
+        label="現業以外も可"
       />
       <BrightCore.input
         field={@form[:wish_side_job]}
         label_class="w-16 text-left"
         type="checkbox"
-        label="副業"
+        label="副業も可"
       />
       <BrightCore.input
         field={@form[:wish_freelance]}
         label_class="w-24 text-left"
         type="checkbox"
-        label="フリーランス"
+        label="業務委託も可"
       />
     </div>
   </div>
 
   <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
-    <span class="py-1 w-36 text-start">勤務体系で絞り込む</span>
+    <span class="py-1 w-36 text-start">勤務可否で絞り込む</span>
     <div>
       <div class="flex items-center">
         <BrightCore.input

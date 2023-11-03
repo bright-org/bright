@@ -16,7 +16,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     {"general", "一般"},
     {"auth", "メール・パスワード"},
     {"sns", "SNS連携"},
-    {"job", "求職"}
+    {"job", "働く際の希望"}
     # NOTE: α版では通知機能はなし
     # {"notification", "通知"}
   ]
