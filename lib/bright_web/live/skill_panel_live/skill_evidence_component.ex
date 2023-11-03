@@ -134,6 +134,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   メモを書き込む
                 </button>
 
+                <% # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化 %>
+                <%= if false do %>
                 <button
                   :if={@me}
                   class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
@@ -145,6 +147,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 </button>
                 <% # ヘルプを出す/出さない制御用checkbox %>
                 <input type="checkbox" id="checkbox-help" class="hidden" name="help" checked={true} value="on" phx-update="ignore" />
+                <% end %>
               </div>
             </div>
           </.simple_form>
@@ -212,7 +215,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
      |> unassign_invalid_image_entries()}
   end
 
-  def handle_event("save", %{"skill_evidence_post" => params, "help" => help}, socket) do
+  # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
+  # def handle_event("save", %{"skill_evidence_post" => params, "help" => help}, socket) do
+  def handle_event("save", %{"skill_evidence_post" => params}, socket) do
     %{
       uploads: uploads,
       me: me,
@@ -222,7 +227,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     } = socket.assigns
 
     image_names = Enum.map(uploads.image.entries, & &1.client_name)
-    help? = help == "on" && me
+    # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
+    # help? = help == "on" && me
+    help? = false
     params = Map.update!(params, "content", &maybe_append_help(&1, help?))
 
     # NOTE: 保存処理
