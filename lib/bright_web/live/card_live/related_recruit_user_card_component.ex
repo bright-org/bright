@@ -6,7 +6,6 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
   use BrightWeb, :live_component
   import BrightWeb.ProfileComponents
   import BrightWeb.TabComponents
-  import BrightWeb.DisplayUserHelper, only: [encrypt_user_name: 1]
 
   alias Bright.Teams
   alias Bright.UserProfiles
