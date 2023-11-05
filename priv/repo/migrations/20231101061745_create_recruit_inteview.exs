@@ -1,18 +1,18 @@
-defmodule Bright.Repo.Migrations.CreateRecruitInteview do
+defmodule Bright.Repo.Migrations.CreateRecruitInterview do
   use Ecto.Migration
 
   def change do
-    create table(:recruit_inteview) do
+    create table(:recruit_interviews) do
       add :skill_params, :text
       add :comment, :string
       add :status, :string
-      add :interview_user_id, references(:users, on_delete: :nothing)
+      add :recruitment_candidates_user_id, references(:users, on_delete: :nothing)
       add :recruiter_id, references(:users, on_delete: :nothing)
+      add :requester_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end
 
-    create index(:recruit_inteview, [:interview_user_id])
-    create index(:recruit_inteview, [:recruiter_id])
+    create index(:recruit_interviews, [:recruiter_id])
   end
 end
