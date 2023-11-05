@@ -1049,4 +1049,224 @@ defmodule Bright.TeamsTest do
                Teams.list_support_request_by_supporter_user_id(supporter_team_member_user.id)
     end
   end
+
+  describe "is_my_supportee_team_or_supporter_team?/2" do
+    test "check supputer relation on support life cycle" do
+      # 支援元先両方のチームに所属する特異な人
+      both_team_member_user = insert(:user)
+      # 支援する側のチーム
+      supporter_team_name = Faker.Lorem.word()
+      supporter_team_admin_user = insert(:user)
+      supporter_team_member_user = insert(:user)
+
+      {:ok, supporter_team, supporter_team_member_attrs} =
+        Teams.create_team_multi(
+          supporter_team_name,
+          supporter_team_admin_user,
+          [supporter_team_member_user, both_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: true
+          }
+        )
+
+      # 全体はチーム招待に承諾しない=管理者は自動承認済、メンバーは未承認のまま
+      # 両方に所属する人のみ承認する
+      supporter_team_member_attrs
+      |> Enum.filter(fn supporter_team_member_attr ->
+        supporter_team_member_attr.user_id == both_team_member_user.id
+      end)
+      |> TeamTestHelper.cofirm_invitation()
+
+      # 支援される側のチーム
+      supportee_team_name = Faker.Lorem.word()
+      supportee_team_admin_user = insert(:user)
+      supportee_team_member_user = insert(:user)
+
+      {:ok, supportee_team, supportee_team_member_attrs} =
+        Teams.create_team_multi(
+          supportee_team_name,
+          supportee_team_admin_user,
+          [supportee_team_member_user, both_team_member_user],
+          %{
+            enable_team_up_functions: true,
+            enable_hr_functions: false
+          }
+        )
+
+      # チーム招待に承諾しない=管理者は自動承認済、メンバーは未承認のまま
+      # 両方に所属する人のみ承認する
+      supportee_team_member_attrs
+      |> Enum.filter(fn supportee_team_member_attr ->
+        supportee_team_member_attr.user_id == both_team_member_user.id
+      end)
+      |> TeamTestHelper.cofirm_invitation()
+
+      # 支援依頼がない段階ではいずれも支援関係判定されない
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supportee_team_admin_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supporter_team_admin_user.id,
+                 supportee_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 both_team_member_user.id,
+                 supportee_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 both_team_member_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supportee_team_member_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supporter_team_member_user.id,
+                 supportee_team.id
+               )
+
+      # 支援されるチームの管理者から支援するチームのメンバーへ支援依頼
+      {:ok, %TeamSupporterTeam{} = request_team_supporter_team} =
+        Teams.request_support_from_suportee_team(
+          supportee_team.id,
+          supportee_team_admin_user.id,
+          supporter_team_member_user.id
+        )
+
+      # 支援依頼の段階ではいずれも支援関係判定されない
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supportee_team_admin_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supporter_team_admin_user.id,
+                 supportee_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 both_team_member_user.id,
+                 supportee_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 both_team_member_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supportee_team_member_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supporter_team_member_user.id,
+                 supportee_team.id
+               )
+
+      # 支援依頼を承諾する
+      {:ok, %TeamSupporterTeam{} = accept_team_supporter_team} =
+        Teams.accept_support_by_supporter_team(request_team_supporter_team, supporter_team.id)
+
+      # 支援依頼承認済の場合、
+      # チーム招待承認済の場合は支援関係判定true
+      assert true ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supportee_team_admin_user.id,
+                 supporter_team.id
+               )
+
+      assert true ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supporter_team_admin_user.id,
+                 supportee_team.id
+               )
+
+      assert true ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 both_team_member_user.id,
+                 supportee_team.id
+               )
+
+      assert true ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 both_team_member_user.id,
+                 supporter_team.id
+               )
+
+      # チーム招待未承認の場合は支援関係判定false
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supportee_team_member_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supporter_team_member_user.id,
+                 supportee_team.id
+               )
+
+      # 支援を終了する
+      {:ok, %TeamSupporterTeam{} = _support_ended_team_supporter_team} =
+        Teams.end_support_by_supporter_team(accept_team_supporter_team)
+
+      # 支援終了の段階ではいずれも支援関係判定されない
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supportee_team_admin_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supporter_team_admin_user.id,
+                 supportee_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 both_team_member_user.id,
+                 supportee_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 both_team_member_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supportee_team_member_user.id,
+                 supporter_team.id
+               )
+
+      assert false ==
+               Teams.is_my_supportee_team_or_supporter_team?(
+                 supporter_team_member_user.id,
+                 supportee_team.id
+               )
+    end
+  end
 end

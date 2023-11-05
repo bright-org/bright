@@ -21,8 +21,7 @@ defmodule BrightWeb.TeamComponents do
   """
 
   attr :id, :string, required: true
-  attr :team_member_user, Bright.Teams.TeamMemberUsers, required: true
-  attr :team_type, :atom, default: :general_team
+  attr :team_params, :map, required: true
   attr :row_on_click_target, :any, required: false, default: nil
 
   def team_small(assigns) do
@@ -31,25 +30,30 @@ defmodule BrightWeb.TeamComponents do
       id={@id}
       phx-click="on_card_row_click"
       phx-target={@row_on_click_target}
-      phx-value-team_id={@team_member_user.team.id}
+      phx-value-team_id={@team_params.team_id}
       class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
+
+    <span
+    :if={@team_params.is_star == nil}
+    >
+    </span>
       <span
-        :if={@team_member_user.is_star}
+        :if={@team_params.is_star == true}
         class="material-icons text-brightGreen-300"
       >
         star
       </span>
       <span
-        :if={!@team_member_user.is_star}
+        :if={@team_params.is_star == false}
         class="material-icons text-brightGray-100"
       >
         star
       </span>
-      <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2"/>
-      <%= @team_member_user.team.name %>
+      <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
+      <%= @team_params.name %>
       <span
-        :if={@team_member_user.is_admin}
+        :if={@team_params.is_admin}
         class="text-white text-sm font-bold ml-4 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
       >
         管理者
@@ -60,7 +64,7 @@ defmodule BrightWeb.TeamComponents do
 
   attr :team, Bright.Teams.Team, required: true
   attr :team_type, :atom, default: :general_team
-  attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: true
+  attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: false, default: nil
 
   def team_header(assigns) do
     ~H"""
@@ -73,6 +77,7 @@ defmodule BrightWeb.TeamComponents do
         <%= @team.name %>
       </h3>
       <button
+        :if={@current_users_team_member != nil}
         class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
         phx-click="click_star_button"
       >
@@ -88,11 +93,14 @@ defmodule BrightWeb.TeamComponents do
 
   defp get_team_icon_path(team_type) do
     # TODO 全チーム種別のアイコンの追加、関数の実装場所の相談
-    icons = [
+    icons = get_team_types()
+    icons[team_type]
+  end
+
+  def get_team_types() do
+    [
       {:general_team, "/images/common/icons/team.svg"}
     ]
-
-    icons[team_type]
   end
 
   defp get_star_style(team_member_user) do

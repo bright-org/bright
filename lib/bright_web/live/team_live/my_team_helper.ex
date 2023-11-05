@@ -99,22 +99,36 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     []
   end
 
+  defp iam_team_member?(team, user_id) do
+    team.member_users
+    |> Enum.any?(fn member_user ->
+      member_user.user_id == user_id
+    end)
+  end
+
   defp get_display_team(%{"team_id" => team_id}, user_id) do
     try do
       Teams.raise_if_not_ulid(team_id)
 
       team = Teams.get_team_with_member_users!(team_id)
       # チームがHITしても自分が所属していない場合は無視する
-      iam_member_user =
-        team.member_users
-        |> Enum.find(fn member_user ->
-          member_user.user_id == user_id
-        end)
-
-      if iam_member_user == nil do
-        nil
-      else
+      #iam_member_user =
+      #  team.member_users
+      #  |> Enum.find(fn member_user ->
+      #    member_user.user_id == user_id
+      #  end)
+#
+      #if iam_member_user == nil do
+      #  IO.puts("### iam_member_user == nil")
+      #  nil
+      #else
+      #  team
+      #end
+      # 対象チームのチームメンバーの場合、または支援関係のあるチームメンバーの場合のみ参照可能
+      if iam_team_member?(team, user_id) || Teams.is_my_supportee_team_or_supporter_team?(user_id, team.id) do
         team
+      else
+        nil
       end
     rescue
       _e in Ecto.NoResultsError ->
@@ -327,6 +341,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   end
 
   defp get_display_team_members(%Team{} = team) do
+    IO.puts("### get_display_team_members")
     %Scrivener.Page{
       page_number: _page_number,
       page_size: _page_size,
@@ -334,7 +349,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       total_pages: _total_pages,
       entries: member_users
     } = Teams.list_joined_users_and_profiles_by_team_id(team.id, %{page: 1, page_size: 999})
-
+    IO.inspect(member_users)
     member_users
   end
 

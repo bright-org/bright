@@ -98,11 +98,14 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           </button>
           <%= if @display_skill_card.user.id == @current_user.id do %>
             <%= if is_nil(@display_skill_panel) || is_nil(@display_skill_card.user_skill_class_score) do %>
-              <.link navigate={~p"/more_skills/teams/#{@team_id}/skill_panels/#{@display_skill_panel}"}>
+            <%= inspect @team_id %>
+            <%= inspect @display_skill_panel %>
+              <!-- <.link navigate={~p"/more_skills/teams/#{@team_id}/skill_panels/#{@display_skill_panel}"}>
               <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
                 スキルを取得
               </button>
               </.link>
+              -->
             <% else %>
               <.link navigate={~p"/panels/#{@display_skill_panel}"}>
                 <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
