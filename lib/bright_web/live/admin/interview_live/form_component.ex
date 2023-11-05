@@ -1,4 +1,4 @@
-defmodule BrightWeb.InterviewLive.FormComponent do
+defmodule BrightWeb.Admin.InterviewLive.FormComponent do
   use BrightWeb, :live_component
 
   alias Bright.Recruits

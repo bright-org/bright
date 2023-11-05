@@ -1,25 +1,24 @@
 <.header>
   Listing Recruit inteview
   <:actions>
-    <.link patch={~p"/recruit_inteview/new"}>
+    <.link patch={~p"/recruit_interview/new"}>
       <.button>New Interview</.button>
     </.link>
   </:actions>
 </.header>
 
 <.table
-  id="recruit_inteview"
-  rows={@streams.recruit_inteview}
-  row_click={fn {_id, interview} -> JS.navigate(~p"/recruit_inteview/#{interview}") end}
+  id="recruit_interview"
+  rows={@streams.recruit_interview}
+  row_click={fn {_id, interview} -> JS.navigate(~p"/admin/recruit_interviews/#{interview}") end}
 >
-  <:col :let={{_id, interview}} label="Skill params"><%= interview.skill_params %></:col>
   <:col :let={{_id, interview}} label="Skill params"><%= interview.comment %></:col>
   <:col :let={{_id, interview}} label="Status"><%= interview.status %></:col>
   <:action :let={{_id, interview}}>
     <div class="sr-only">
-      <.link navigate={~p"/recruit_inteview/#{interview}"}>Show</.link>
+      <.link navigate={~p"/admin/recruit_interviews/#{interview}"}>Show</.link>
     </div>
-    <.link patch={~p"/recruit_inteview/#{interview}/edit"}>Edit</.link>
+    <.link patch={~p"/admin/recruit_interviews/#{interview}/edit"}>Edit</.link>
   </:action>
   <:action :let={{id, interview}}>
     <.link
@@ -31,13 +30,13 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="interview-modal" show on_cancel={JS.patch(~p"/recruit_inteview")}>
+<.modal :if={@live_action in [:new, :edit]} id="interview-modal" show on_cancel={JS.patch(~p"/recruit_interview")}>
   <.live_component
     module={BrightWeb.InterviewLive.FormComponent}
     id={@interview.id || :new}
     title={@page_title}
     action={@live_action}
     interview={@interview}
-    patch={~p"/recruit_inteview"}
+    patch={~p"/admin/recruit_interviews"}
   />
 </.modal>
