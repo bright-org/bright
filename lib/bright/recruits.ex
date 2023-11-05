@@ -9,15 +9,15 @@ defmodule Bright.Recruits do
   alias Bright.Recruits.Interview
 
   @doc """
-  Returns the list of recruit_inteview.
+  Returns the list of recruit_interview.
 
   ## Examples
 
-      iex> list_recruit_inteview()
+      iex> list_recruit_interview()
       [%Interview{}, ...]
 
   """
-  def list_recruit_inteview do
+  def list_recruit_interview do
     Repo.all(Interview)
   end
 
@@ -36,6 +36,12 @@ defmodule Bright.Recruits do
 
   """
   def get_interview!(id), do: Repo.get!(Interview, id)
+
+  def get_interview_with_member_users!(id) do
+    Interview
+    |> preload(interview_members: :user)
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a interview.
