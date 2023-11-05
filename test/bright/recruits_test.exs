@@ -3,16 +3,16 @@ defmodule Bright.RecruitsTest do
 
   alias Bright.Recruits
 
-  describe "recruit_inteview" do
+  describe "recruit_interview" do
     alias Bright.Recruits.Interview
 
     import Bright.RecruitsFixtures
 
     @invalid_attrs %{skill_params: nil, status: nil}
 
-    test "list_recruit_inteview/0 returns all recruit_inteview" do
+    test "list_recruit_interview/0 returns all recruit_interview" do
       interview = interview_fixture()
-      assert Recruits.list_recruit_inteview() == [interview]
+      assert Recruits.list_recruit_interview() == [interview]
     end
 
     test "get_interview!/1 returns the interview with given id" do
