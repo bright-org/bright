@@ -15,6 +15,7 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             now: 55,
             futureEnabled: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+            otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "2021.9",
             otherSelected: "2020.12"
           }
@@ -30,6 +31,7 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             now: 55,
             futureEnabled: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+            otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "2021.6",
             otherSelected: "2020.12"
           }
@@ -45,6 +47,7 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             now: 55,
             futureEnabled: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+            otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "now",
             otherSelected: "2020.12"
           }
@@ -58,7 +61,8 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             other: [10, 10, 10, 10, 45, 80],
             role: [20, 20, 50, 60, 75, 100],
             futureEnabled: false,
-            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
+            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+            otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
           }
         }
       },
@@ -87,7 +91,9 @@ defmodule Storybook.ChartComponents.GrowthGraph do
           data: %{
             myself: [10, 10, 35, 45, 55, 60],
             other: [10, 10, 10, 10, 45, 80],
+            futureEnabled: false,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+            otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "2021.9",
             otherSelected: "2011.12"
           }

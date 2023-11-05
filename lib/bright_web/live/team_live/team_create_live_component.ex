@@ -96,10 +96,28 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   def handle_event("create_team", %{"team" => team_params}, socket) do
     admin_count = Teams.count_admin_team(socket.assigns.current_user.id)
-    save_team(socket, socket.assigns.action, team_params, admin_count)
+    save_team(socket, socket.assigns.action, team_params, admin_count, socket.assigns.plan)
   end
 
-  def save_team(socket, :new, team_params, count) when count > 0 do
+  def save_team(socket, :new, team_params, count, %{create_teams_limit: limit})
+      when count >= limit do
+    msg =
+      if limit == 1,
+        do:
+          "現在のプランでは、チームは1つまでが上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上を<br />ご購入いただくと、作成できるチーム数を増やせます",
+        else: "現在のプランでは、チームは#{limit}つまでが上限です"
+
+    changeset =
+      socket.assigns.team
+      |> Team.registration_changeset(team_params)
+      |> Ecto.Changeset.add_error(:name, msg)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign_team_form(socket, changeset)}
+  end
+
+  def save_team(socket, :new, team_params, count, nil)
+      when count >= 1 do
     msg =
       "現在のプランでは、チームは1つまでが上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上を<br />ご購入いただくと、作成できるチーム数を増やせます"
 
@@ -112,7 +130,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     {:noreply, assign_team_form(socket, changeset)}
   end
 
-  def save_team(socket, :new, team_params, _count) do
+  def save_team(socket, :new, team_params, _count, _plan) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
 
@@ -138,7 +156,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     end
   end
 
-  def save_team(%{assigns: assigns} = socket, :edit, team_params, _count) do
+  def save_team(%{assigns: assigns} = socket, :edit, team_params, _count, _plan) do
     current_member = assigns.team.users
     new_member = assigns.users
     newcomer = new_member -- current_member

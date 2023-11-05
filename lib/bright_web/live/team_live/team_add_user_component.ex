@@ -23,13 +23,13 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
           phx-submit="add_user"
         >
           <p class="pb-2 text-base">
-            <span class="font-bold">Brightハンドル名</span>からメンバーとして追加
+            <span class="font-bold">Brightハンドル名もしくはメールアドレス</span>からメンバーとして追加
           </p>
           <input
             id="search_word"
             name="search_word"
             type="autocomplete"
-            placeholder="ハンドル名を入力してください"
+            placeholder="ハンドル名もしくはメールアドレスを入力してください"
             class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
             phx-change="change_add_user"
             value={@search_word}
@@ -108,19 +108,23 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   # 検索結果を追加する時のバリデーション
   defp validate_add_user({:error, socket}), do: {:error, socket}
 
-  defp validate_add_user({:ok, socket, user}) do
-    selected_users = socket.assigns.users
-
+  defp validate_add_user({:ok, %{assigns: %{users: selected_users, plan: plan}} = socket, user}) do
     cond do
       id_duplidated_user?(selected_users, user) ->
         {:error, assign(socket, :search_word_error, "対象のユーザーは既に追加されています")}
 
-      member_limit?(selected_users, socket) ->
+      member_limit?(selected_users, plan) ->
+        message =
+          if !is_nil(plan) && plan.plan_code in ["hr_plan", "team_up_plan"],
+            do: "現在のプランでは、メンバーは#{plan.team_members_limit}名まで（管理者含む）が上限です",
+            else:
+              "現在のプランでは、メンバーは5名まで（管理者含む）が上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上をご購入いただくと、メンバー数を増やせます"
+
         {:error,
          assign(
            socket,
            :search_word_error,
-           "現在のプランでは、メンバーは5名まで（管理者含む）が上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上をご購入いただくと、メンバー数を増やせます"
+           message
          )}
 
       true ->
@@ -145,9 +149,11 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
     users |> Enum.find(fn u -> user.id == u.id end) |> is_nil() |> then(&(!&1))
   end
 
-  defp member_limit?(users, _socket) do
-    # プランによる変動があるため単純だが関数化している
-    # フリープラン 管理者 + 4名
-    Enum.count(users) >= 4
+  defp member_limit?(users, nil) do
+    Enum.count(users) >= 5
+  end
+
+  defp member_limit?(users, %{team_members_limit: limit}) do
+    Enum.count(users) >= limit - 1
   end
 end

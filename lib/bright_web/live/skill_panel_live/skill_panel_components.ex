@@ -1,5 +1,6 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use BrightWeb, :component
+  alias BrightWeb.PathHelper
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
   import BrightWeb.MegaMenuComponents
@@ -235,10 +236,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def toggle_link(assigns) do
     ~H"""
-      <div class="bg-white text-brightGray-500 rounded-full inline-flex text-sm font-bold h-10">
-      <.link href="#">
+    <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
+      <.link navigate={"#{PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
-          id="grid"
           class={
             "inline-flex items-center font-bold rounded-l-full px-6 py-2 " <>
             if @active == "graph", do: "button-toggle-active", else: ""
@@ -246,19 +246,18 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         >
           成長パネル
         </button>
-        </.link>
-        <.link href="#">
-          <button
-            id="list"
-            class={
-              "inline-flex items-center font-bold rounded-r-full px-4 py-2 " <>
-              if @active == "panel", do: "button-toggle-active", else: ""
-            }
-          >
-            スキルパネル
-          </button>
-        </.link>
-      </div>
+      </.link>
+      <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
+        <button
+          class={
+            "inline-flex items-center font-bold rounded-r-full px-4 py-2 " <>
+            if @active == "panel", do: "button-toggle-active", else: ""
+          }
+        >
+          スキルパネル
+        </button>
+      </.link>
+    </div>
     """
   end
 
@@ -333,25 +332,35 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <ul class="flex shadow relative z-1 text-base font-bold text-brightGray-500 bg-brightGreen-50 lg:-bottom-1 lg:text-center lg:text-md w-full lg:w-fit">
       <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
         <% current = @skill_class.class == skill_class.class %>
-        <li id={"class_tab_#{skill_class.class}"} class={["grow", current && "bg-white text-base", "first:border-none last:border-none lg:border-x-4"]}>
-          <.link
-            patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
-            class="flex lg:justify-start items-center px-2 lg:px-4 py-1 lg:py-3 lg:text-base"
-            aria-current={current && "page"}
-          >
-            <span class="text-sm lg:text-base" :if={current}>クラス<%= skill_class.class %></span>
-            <span class="text-xs lg:text-base" :if={!current}>クラス<%= skill_class.class %></span>
-            <span class="hidden lg:flex"><%= skill_class.name %></span>
-            <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
-              <%= if skill_class_score do %>
-                <%= floor skill_class_score.percentage %>
-              <% else %>
-                0
-              <% end %>
-              ％
-            </span>
-          </.link>
-        </li>
+        <%= if !@me && is_nil(skill_class_score) do %>
+          <li id={"class_tab_#{skill_class.class}"} class="grow lg:grow-0 bg-pureGray-600 text-pureGray-100 first:border-none last:border none lg:border-x-4">
+            <a href="#" class="flex items-center lg:select-none px-2 lg:px-4 py-1 lg:py-3 text-xs lg:text-base">
+              <span class="text-xs lg:text-base">クラス<%= skill_class.class %></span>
+              <span class="hidden lg:block"><%= skill_class.name %></span>
+              <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0</span>％
+            </a>
+          </li>
+        <% else %>
+          <li id={"class_tab_#{skill_class.class}"} class={["grow", current && "bg-white text-base", "first:border-none last:border-none lg:border-x-4"]}>
+            <.link
+              patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
+              class="flex lg:justify-start items-center px-2 lg:px-4 py-1 lg:py-3 lg:text-base"
+              aria-current={current && "page"}
+            >
+              <span class="text-sm lg:text-base" :if={current}>クラス<%= skill_class.class %></span>
+              <span class="text-xs lg:text-base" :if={!current}>クラス<%= skill_class.class %></span>
+              <span class="hidden lg:flex"><%= skill_class.name %></span>
+              <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
+                <%= if skill_class_score do %>
+                  <%= floor skill_class_score.percentage %>
+                <% else %>
+                  0
+                <% end %>
+                ％
+              </span>
+            </.link>
+          </li>
+        <% end %>
       <% end %>
     </ul>
     """
@@ -368,7 +377,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             <.link
               patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
               id="link-skills-form"
-              class="flex-1 flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 hover:opacity-50">
+              class={[Map.get(@flash, "first_skills_edit") && "z-20", "flex-1 flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 hover:opacity-50"]}>
               <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
               スキル入力する
             </.link>
@@ -382,13 +391,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             </div>
           </div>
 
-          <div class="lg:absolute lg:right-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col">
+          <div class="lg:absolute lg:right-0 lg:top-16 z-10 flex items-center lg:items-end flex-col">
             <% # スキル入力前メッセージ %>
             <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
             <.live_component
               :if={Map.get(@flash, "first_skills_edit")}
               module={BrightWeb.HelpMessageComponent}
-              id="help-enter-skills">
+              id="help-enter-skills"
+              overlay={true}>
               <.first_skills_edit_message />
             </.live_component>
 

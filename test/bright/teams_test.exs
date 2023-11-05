@@ -1050,6 +1050,19 @@ defmodule Bright.TeamsTest do
     end
   end
 
+  describe "list_user_ids_related_team_by_user/1" do
+    test "returns user_ids" do
+      [user, user_2, user_3] = insert_list(3, :user)
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: user_2)
+
+      assert [user_2.id] == Teams.list_user_ids_related_team_by_user(user)
+      assert [user.id] == Teams.list_user_ids_related_team_by_user(user_2)
+      assert [] == Teams.list_user_ids_related_team_by_user(user_3)
+    end
+  end
+
   describe "is_my_supportee_team_or_supporter_team?/2" do
     test "check supputer relation on support life cycle" do
       # 支援元先両方のチームに所属する特異な人

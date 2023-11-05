@@ -8,12 +8,15 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.SkillPanels
+  alias Bright.Subscriptions
   alias Bright.SkillPanels.SkillPanel
   alias BrightWeb.SkillPanelLive.SkillPanelHelper
 
-  def init_assign(params, %{assigns: %{live_action: :new}} = socket) do
+  def init_assign(params, %{assigns: %{live_action: :new, current_user: user}} = socket) do
+    subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
     # 直接チーム作成モーダルを起動した場合、データの取得は行わない
     socket
+    |> assign_plan(subscription)
     |> assign_page_title(nil)
     |> assign_display_skill_panel(nil)
     |> assign_display_skill_classes([])
@@ -30,22 +33,24 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign_push_redirect(params, nil, nil)
   end
 
-  def init_assign(params, socket) do
+  def init_assign(params, %{assigns: %{current_user: user}} = socket) do
     # パラメータ指定がある場合それぞれの対象データを取得、ない場合はnil
-    display_team = get_display_team(params, socket.assigns.current_user.id)
+    display_team = get_display_team(params, user.id)
     # TODO チームスキルカードのページング処理
     display_team_members = get_display_team_members(display_team)
 
-    current_users_team_member =
-      get_current_users_team_member(socket.assigns.current_user, display_team_members)
+    current_users_team_member = get_current_users_team_member(user, display_team_members)
 
     display_skill_panel = get_display_skill_panel(params, display_team)
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
     member_skill_classes = list_skill_classes(display_team, display_skill_panel)
 
+    subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+
     # スキルとチームの取得結果に応じて各種assign
     socket
+    |> assign_plan(subscription)
     |> assign_page_title(display_skill_panel)
     |> assign_display_skill_panel(display_skill_panel)
     |> assign_display_skill_classes(display_skill_classes)
@@ -148,6 +153,12 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     else
       nil
     end
+  end
+
+  defp assign_plan(socket, nil), do: assign(socket, :plan, nil)
+
+  defp assign_plan(socket, subscription) do
+    assign(socket, :plan, subscription.subscription_plan)
   end
 
   defp assign_page_title(socket, %SkillPanel{} = display_skill_panel) do

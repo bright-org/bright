@@ -171,17 +171,19 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   # 初回入力時のみメッセージを表示
   # 初回入力: スキルクラスがclass: 1でスキルスコアがない状態とする
   # メッセージ表示にはflashを利用している
-  defp put_flash_first_skills_edit(socket) do
+  defp put_flash_first_skills_edit(%{assigns: %{me: true}} = socket) do
     %{skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
     skill_scores = Map.values(skill_score_dict)
 
-    (skill_class.class == 1 && Enum.all?(skill_scores, &(&1.score == :low)))
+    (skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil)))
     |> if do
       update(socket, :flash, &Map.put(&1, "first_skills_edit", true))
     else
       socket
     end
   end
+
+  defp put_flash_first_skills_edit(socket), do: socket
 
   defp user_job_searching?(user) do
     user.id

@@ -161,7 +161,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         class="dropdownTrigger text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
         type="button"
       >
-        <span>カスタムグループ</span>
+        <span>カスタムグループと比較</span>
       </button>
       <div
         class="dropdownTarget z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"

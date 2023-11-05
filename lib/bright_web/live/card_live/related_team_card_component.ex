@@ -125,11 +125,11 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
     {:ok,
      socket
+     |> assign(:over_ride_on_card_row_click_target, false)
      |> assign(assigns)
      |> assign(:tabs, tabs)
      |> assign(:card, create_card_param(first_tab))
-     |> assign_card(first_tab)
-     |> assign(:over_ride_on_card_row_click_target, false)}
+     |> assign_card(first_tab)}
   end
 
   defp filter_tabs(tabs, nil), do: tabs

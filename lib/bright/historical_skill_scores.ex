@@ -94,7 +94,8 @@ defmodule Bright.HistoricalSkillScores do
       %{
         name: historical_skill_unit.name,
         percentage: Map.get(historical_skill_unit_score || %{}, :percentage, 0.0),
-        position: Map.get(historical_skill_class_unit, :position)
+        position: Map.get(historical_skill_class_unit, :position),
+        trace_id: historical_skill_unit.trace_id
       }
     end)
   end
@@ -106,9 +107,11 @@ defmodule Bright.HistoricalSkillScores do
 
   ## Examples
 
-      iex> get_historical_skill_class_scores(locked_date, skill_panel_id, class, user_id,from_date, to_date)
+      iex> get_historical_skill_class_scores(locked_date, skill_panel_id, class, user_id, from_date, to_date)
       [
-        %{locked_date: ~D[2022-10-01], percentage: 15.555555555555555}
+        {~D[2022-10-01], 15.555555555555555},
+        {~D[2023-01-01], 25.0},
+        ...
       ]
   """
   def list_historical_skill_class_score_percentages(

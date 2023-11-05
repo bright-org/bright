@@ -5,13 +5,8 @@ defmodule Storybook.Card_list.CardListComponents do
   @hour 60
   @day @hour * 24
   @row_types [
-    "operation",
-    "skill_up",
-    "1on1_invitation",
-    "promotion",
     "your_team",
-    "intriguing",
-    "official_team"
+    "intriguing"
   ]
 
   def doc do

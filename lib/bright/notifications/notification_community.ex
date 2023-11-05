@@ -11,9 +11,9 @@ defmodule Bright.Notifications.NotificationCommunity do
 
   schema "notification_communities" do
     field :message, :string
-    belongs_to :from_user, User
     field :detail, :string
-    field :confirmed_at, :naive_datetime
+
+    belongs_to :from_user, User
 
     timestamps()
   end

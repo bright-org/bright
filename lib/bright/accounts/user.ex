@@ -53,6 +53,10 @@ defmodule Bright.Accounts.User do
 
     has_many :skill_panels, through: [:user_skill_panels, :skill_panel]
 
+    has_many :team_member_users, Bright.Teams.TeamMemberUsers
+
+    has_many :teams, through: [:team_member_users, :team]
+
     has_many :custom_groups, Bright.CustomGroups.CustomGroup
 
     has_one :user_onboardings, Bright.Onboardings.UserOnboarding

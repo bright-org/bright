@@ -8,12 +8,31 @@ defmodule Bright.Notifications do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.Notifications.NotificationOperation
-  alias Bright.Notifications.NotificationCommunity
-  alias Bright.Accounts.User
+  alias Bright.Notifications.{
+    NotificationOperation,
+    NotificationCommunity,
+    NotificationEvidence
+  }
 
   @doc """
-  Gets a single notification.
+  Returns the list of all notifications by type.
+
+  ## Examples
+
+      iex> list_all_notifications("operation")
+      [%NotificationOperation{}, ...]
+
+  """
+  def list_all_notifications("operation") do
+    Repo.all(NotificationOperation)
+  end
+
+  def list_all_notifications("community") do
+    Repo.all(NotificationCommunity)
+  end
+
+  @doc """
+  Gets a single notification by type.
 
   Raises `Ecto.NoResultsError` if the Notification does not exist.
 
@@ -29,6 +48,9 @@ defmodule Bright.Notifications do
   def get_notification!("operation", id),
     do: Repo.get!(NotificationOperation, id)
 
+  def get_notification!("community", id),
+    do: Repo.get!(NotificationCommunity, id)
+
   @doc """
   Returns the list of notifications by type order by id.
 
@@ -41,7 +63,7 @@ defmodule Bright.Notifications do
 
    ## Examples
 
-      iex> list_notification_by_type(user.id, "recruitment_coordination")
+      iex> list_notification_by_type(user.id, "recruitment_coordination", [page: 1, page_size: 10])
       %Notification{}
   """
   def list_notification_by_type(_to_user_id, "operation", page_param) do
@@ -63,49 +85,110 @@ defmodule Bright.Notifications do
   end
 
   @doc """
-  Confirm a notification.
+  Creates a notification by type.
 
   ## Examples
 
-      iex> confirm_notification!(%NotificationOperation{})
-      %NotificationOperation{}
+      iex> create_notification("operation", %{field: value})
+      {:ok, %NotificationOperation{}}
 
-      iex> confirm_notification!(%NotificationOperation{})
-      nil
-
-      iex> confirm_notification!(%NotificationCommunity{})
-      %NotificationCommunity{}
+      iex> create_notification("operation", %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
 
   """
-  def confirm_notification!(%NotificationOperation{confirmed_at: nil} = notification) do
-    Ecto.Changeset.change(notification,
-      confirmed_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    )
-    |> Repo.update!()
+  def create_notification(notification_type, attrs \\ %{})
+
+  def create_notification("operation", attrs) do
+    %NotificationOperation{}
+    |> NotificationOperation.changeset(attrs)
+    |> Repo.insert()
   end
 
-  def confirm_notification!(_notification) do
-    nil
+  def create_notification("community", attrs) do
+    %NotificationCommunity{}
+    |> NotificationCommunity.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_notification("evidence", attrs) do
+    %NotificationEvidence{}
+    |> NotificationEvidence.changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """
-  Returns the number of unconfirmed notifications by user.
+  Creates a notifications by type.
+  """
+  def create_notifications("evidence", attrs_list) do
+    Repo.insert_all(NotificationEvidence, attrs_list)
+  end
+
+  @doc """
+  Updates a notification by type.
 
   ## Examples
 
-      iex> list_unconfirmed_notification_count(user)
-      %{
-        "operation" => 1
-      }
+      iex> update_notification(notification_operation, %{field: new_value})
+      {:ok, %NotificationOperation{}}
+
+      iex> update_notification(notification_operation, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
   """
-  def list_unconfirmed_notification_count(%User{} = _user) do
-    %{
-      "operation" => not_confirmed_notification_operation_count()
-    }
+  def update_notification(%NotificationOperation{} = notification_operation, attrs) do
+    notification_operation
+    |> NotificationOperation.changeset(attrs)
+    |> Repo.update()
   end
 
-  # NOTE: 運営からの通知は to_user_id がないので、引数に user 不要
-  defp not_confirmed_notification_operation_count do
-    NotificationOperation.not_confirmed_query() |> Repo.aggregate(:count)
+  def update_notification(%NotificationCommunity{} = notification_community, attrs) do
+    notification_community
+    |> NotificationCommunity.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a notification by type.
+
+  ## Examples
+
+      iex> delete_notification(notification_operation)
+      {:ok, %NotificationOperation{}}
+
+      iex> delete_notification(notification_operation)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_notification(%NotificationOperation{} = notification_operation) do
+    Repo.delete(notification_operation)
+  end
+
+  def delete_notification(%NotificationCommunity{} = notification_community) do
+    Repo.delete(notification_community)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking notification changes by type.
+
+  ## Examples
+
+      iex> change_notification(notification_operation)
+      %Ecto.Changeset{data: %NotificationOperation{}}
+
+  """
+  def change_notification(notification_type, attrs \\ %{})
+
+  def change_notification(
+        %NotificationOperation{} = notification_operation,
+        attrs
+      ) do
+    NotificationOperation.changeset(notification_operation, attrs)
+  end
+
+  def change_notification(
+        %NotificationCommunity{} = notification_community,
+        attrs
+      ) do
+    NotificationCommunity.changeset(notification_community, attrs)
   end
 end

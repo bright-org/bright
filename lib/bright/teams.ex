@@ -592,6 +592,19 @@ defmodule Bright.Teams do
     |> Repo.paginate(page_param)
   end
 
+  @doc """
+  ユーザーとチームメンバーになっているusers.idの一覧を返す
+  （自分自身は含まない）
+  """
+  def list_user_ids_related_team_by_user(user) do
+    Ecto.assoc(user, :teams)
+    |> preload(:member_users)
+    |> Repo.all()
+    |> Enum.flat_map(fn team -> Enum.map(team.member_users, & &1.user_id) end)
+    |> Enum.uniq()
+    |> List.delete(user.id)
+  end
+
   def list_skill_scores_by_team_id(
         team_id,
         skill_panel_id,
