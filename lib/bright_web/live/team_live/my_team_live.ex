@@ -13,7 +13,6 @@ defmodule BrightWeb.MyTeamLive do
   alias BrightWeb.TeamLive.MyTeamHelper
 
   def mount(params, _session, socket) do
-    IO.puts("### mount")
     # スキルとチームの取得結果に応じて各種assign
     {:ok, MyTeamHelper.init_assign(params, socket)}
   end
@@ -113,22 +112,16 @@ defmodule BrightWeb.MyTeamLive do
   end
 
   defp deside_redirect(socket, %Team{} = display_team, nil, nil) do
-    IO.puts("### deside_redirect 1")
-
     socket
     |> redirect(to: "/teams/#{display_team.id}")
   end
 
   defp deside_redirect(socket, %Team{} = display_team, skill_panel_id, nil) do
-    IO.puts("### deside_redirect 2")
-
     socket
     |> redirect(to: "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}")
   end
 
   defp deside_redirect(socket, %Team{} = display_team, skill_panel_id, skill_class_id) do
-    IO.puts("### deside_redirect 3")
-
     socket
     |> redirect(
       to:
