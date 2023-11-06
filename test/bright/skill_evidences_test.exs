@@ -160,6 +160,19 @@ defmodule Bright.SkillEvidencesTest do
                skill_evidence_post
     end
 
+    test "get_skill_evidence_post_by!/1 returns the skill_evidence_post with given condition", %{
+      valid_attrs: valid_attrs
+    } do
+      skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
+
+      assert SkillEvidences.get_skill_evidence_post_by!(id: skill_evidence_post.id) ==
+               skill_evidence_post
+
+      assert_raise Ecto.NoResultsError, fn ->
+        SkillEvidences.get_skill_evidence_post_by!(id: skill_evidence_post.id, content: "hoge")
+      end
+    end
+
     test "create_skill_evidence_post/1 with valid data creates a skill_evidence_post", %{
       user: user,
       skill_evidence: skill_evidence
@@ -200,6 +213,95 @@ defmodule Bright.SkillEvidencesTest do
     } do
       skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
       assert %Ecto.Changeset{} = SkillEvidences.change_skill_evidence_post(skill_evidence_post)
+    end
+  end
+
+  describe "help/2" do
+    alias Bright.Notifications.NotificationEvidence
+
+    setup do
+      skill_unit = insert(:skill_unit, name: "ユニット")
+      skill_category = insert(:skill_category, skill_unit: skill_unit, name: "カテゴリ")
+      skill = insert(:skill, skill_category: skill_category, name: "スキル")
+      breadcrumb = "ユニット > カテゴリ > スキル"
+
+      %{breadcrumb: breadcrumb, skill: skill}
+    end
+
+    setup %{skill: skill} do
+      user = insert(:user)
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
+
+      %{user: user, skill_evidence: skill_evidence}
+    end
+
+    defp join_team(user, team_mate) do
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: team_mate)
+    end
+
+    test "creates notification_evidences to team members", %{
+      user: user,
+      skill_evidence: skill_evidence,
+      breadcrumb: breadcrumb
+    } do
+      [user_2, user_3, user_4] = insert_list(3, :user)
+      join_team(user, user_2)
+      join_team(user, user_3)
+
+      {2, _} = SkillEvidences.help(skill_evidence, user)
+
+      assert Repo.get_by(
+               NotificationEvidence,
+               from_user_id: user.id,
+               to_user_id: user_2.id,
+               message: "#{user.name}から「#{breadcrumb}」のヘルプが届きました"
+             )
+
+      assert Repo.get_by(
+               NotificationEvidence,
+               from_user_id: user.id,
+               to_user_id: user_3.id,
+               message: "#{user.name}から「#{breadcrumb}」のヘルプが届きました"
+             )
+
+      # チーム外ユーザーへ作成されていない確認
+      refute Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_4.id)
+    end
+  end
+
+  describe "receive_post/2" do
+    alias Bright.Notifications.NotificationEvidence
+
+    setup do
+      skill_unit = insert(:skill_unit, name: "ユニット")
+      skill_category = insert(:skill_category, skill_unit: skill_unit, name: "カテゴリ")
+      skill = insert(:skill, skill_category: skill_category, name: "スキル")
+      breadcrumb = "ユニット > カテゴリ > スキル"
+
+      %{breadcrumb: breadcrumb, skill: skill}
+    end
+
+    setup %{skill: skill} do
+      user = insert(:user)
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
+
+      %{user: user, skill_evidence: skill_evidence}
+    end
+
+    test "creates notification_evidences to owner use of skill_evidence", %{
+      user: user,
+      skill_evidence: skill_evidence,
+      breadcrumb: breadcrumb
+    } do
+      user_2 = insert(:user)
+
+      {:ok, notification} = SkillEvidences.receive_post(skill_evidence, user_2)
+
+      assert notification.from_user_id == user_2.id
+      assert notification.to_user_id == user.id
+      assert notification.message == "#{user_2.name}から「#{breadcrumb}」にメッセージが届きました"
     end
   end
 end

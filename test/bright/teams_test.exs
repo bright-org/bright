@@ -1049,4 +1049,17 @@ defmodule Bright.TeamsTest do
                Teams.list_support_request_by_supporter_user_id(supporter_team_member_user.id)
     end
   end
+
+  describe "list_user_ids_related_team_by_user/1" do
+    test "returns user_ids" do
+      [user, user_2, user_3] = insert_list(3, :user)
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: user_2)
+
+      assert [user_2.id] == Teams.list_user_ids_related_team_by_user(user)
+      assert [user.id] == Teams.list_user_ids_related_team_by_user(user_2)
+      assert [] == Teams.list_user_ids_related_team_by_user(user_3)
+    end
+  end
 end

@@ -113,7 +113,16 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       open_modal(lv)
 
-      assert render(lv) =~ skill_evidence_post.content
+      assert has_element?(
+               lv,
+               ~s(#skill_evidence_posts-#{skill_evidence_post.id}),
+               "some content by others"
+             )
+
+      refute has_element?(
+               lv,
+               ~s(#skill_evidence_posts-#{skill_evidence_post.id} [phx-click="delete"])
+             )
     end
   end
 
@@ -352,4 +361,52 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       end)
     end
   end
+
+  # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
+  # # ヘルプ
+  # describe "Help" do
+  #   alias Bright.Notifications.NotificationEvidence
+  #
+  #   setup [:register_and_log_in_user, :setup_skills]
+  #
+  #   test "submit with help", %{
+  #     conn: conn,
+  #     skill_panel: skill_panel
+  #   } do
+  #     {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+  #     open_modal(lv)
+  #
+  #     lv
+  #     |> form("#skill_evidence_post-form",
+  #       skill_evidence_post: %{content: "input with help"},
+  #       help: "on"
+  #     )
+  #     |> render_submit()
+  #
+  #     assert has_element?(lv, "#skill_evidence_posts", "このメモでヘルプを出しました")
+  #   end
+  #
+  #   test "creates help notification", %{
+  #     conn: conn,
+  #     user: user,
+  #     skill_panel: skill_panel
+  #   } do
+  #     team = insert(:team)
+  #     user_2 = insert(:user) |> with_user_profile()
+  #     insert(:team_member_users, team: team, user: user)
+  #     insert(:team_member_users, team: team, user: user_2)
+  #
+  #     {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+  #     open_modal(lv)
+  #
+  #     lv
+  #     |> form("#skill_evidence_post-form",
+  #       skill_evidence_post: %{content: "input with help"},
+  #       help: "on"
+  #     )
+  #     |> render_submit()
+  #
+  #     assert Bright.Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_2.id)
+  #   end
+  # end
 end

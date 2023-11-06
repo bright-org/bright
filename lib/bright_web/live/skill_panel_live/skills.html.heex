@@ -20,15 +20,14 @@
   </div>
   <div class="flex justify-between">
     <div class="hidden lg:flex">
-          <.toggle_link
-      skill_panel={@skill_panel}
-      display_user={@display_user}
-      me={@me}
-      anonymous={@anonymous}
-      skill_class={@skill_class.class}
-      active="panel"
-    />
-
+      <.toggle_link
+        skill_panel={@skill_panel}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        skill_class={@skill_class.class}
+        active="panel"
+      />
     </div>
     <.class_tab skill_classes={@skill_classes} skill_class={@skill_class} path={@path} query={@query} />
   </div>
@@ -118,6 +117,7 @@
     skill_evidence={@skill_evidence}
     user={@current_user}
     anonymous={@anonymous}
+    me={@me}
     patch={PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
   />
 </.bright_modal>

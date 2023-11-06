@@ -236,10 +236,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def toggle_link(assigns) do
     ~H"""
-      <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
+    <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
       <.link navigate={"#{PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
-          id="grid"
           class={
             "inline-flex items-center font-bold rounded-l-full px-6 py-2 " <>
             if @active == "graph", do: "button-toggle-active", else: ""
@@ -247,19 +246,18 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         >
           成長パネル
         </button>
-        </.link>
-        <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
-          <button
-            id="list"
-            class={
-              "inline-flex items-center font-bold rounded-r-full px-4 py-2 " <>
-              if @active == "panel", do: "button-toggle-active", else: ""
-            }
-          >
-            スキルパネル
-          </button>
-        </.link>
-      </div>
+      </.link>
+      <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
+        <button
+          class={
+            "inline-flex items-center font-bold rounded-r-full px-4 py-2 " <>
+            if @active == "panel", do: "button-toggle-active", else: ""
+          }
+        >
+          スキルパネル
+        </button>
+      </.link>
+    </div>
     """
   end
 
@@ -383,15 +381,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             </div>
           </div>
 
-          <div class="lg:absolute lg:right-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col">
+          <div class="lg:absolute lg:right-0 lg:top-16 z-10 flex items-center lg:items-end flex-col">
             <% # スキル入力前メッセージ %>
             <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
-
-            <div :if={Map.get(@flash, "first_skills_edit")} class="bg-pureGray-600/90 fixed inset-0 transition-opacity"></div>
             <.live_component
               :if={Map.get(@flash, "first_skills_edit")}
               module={BrightWeb.HelpMessageComponent}
-              id="help-enter-skills">
+              id="help-enter-skills"
+              overlay={true}>
               <.first_skills_edit_message />
             </.live_component>
 
