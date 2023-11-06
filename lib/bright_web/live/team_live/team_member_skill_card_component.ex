@@ -6,6 +6,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
+  import BrightWeb.PathHelper
   alias Bright.UserProfiles
 
   @impl true
@@ -24,12 +25,25 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           user={@display_skill_card.user}
           user_skill_class_score={@display_skill_card.user_skill_class_score}
           select_skill_class={@display_skill_card.select_skill_class}
-          skill_class_tab_click_target={assigns.myself}
+          skill_class_tab_click_target={@myself}
         />
 
-        <div class="flex justify-between px-4 lg:px-6 pt-1 items-center">
-          <div class="text-xl w-56 truncate lg:w-full lg:text-2xl font-bold">
-            <.link navigate={~p"/mypage/#{assigns.display_skill_card.user.name}"}><%= assigns.display_skill_card.user.name %></.link>
+        <div class="flex px-4 lg:px-6 pt-1 items-center">
+          <div class="flex flex-col w-56 lg:w-full lg:flex-row text-xl">
+            <span class="text-xl w-56 truncate lg:text-2xl font-bold">
+              <%= assigns.display_skill_card.user.name %>
+            </span>
+
+            <.link
+                :if={ !is_nil(@display_skill_card.user_skill_class_score)}
+                class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:opacity-50"
+                href={
+                  skill_panel_path("panels",@display_skill_panel, @display_skill_card.user, @display_skill_card.user.id == @current_user.id,false)
+                  <> "?class=#{@display_skill_card.select_skill_class.class}"
+                }
+            >
+              スキルパネル
+            </.link>
           </div>
           <div class="mt-4">
             <img
@@ -92,7 +106,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
         </div>
 
 
-        <div class="p-4 lg:p-6 pt-0 flex w-full gap-x-2 lg:justify-between ">
+        <div class="p-4 lg:p-6 pt-0 flex w-full gap-x-2 ">
           <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             1on1に誘う
           </button>
@@ -102,12 +116,6 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
               <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
                 スキルを取得
               </button>
-              </.link>
-            <% else %>
-              <.link navigate={~p"/panels/#{@display_skill_panel}"}>
-                <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
-                  スキルを入力
-                </button>
               </.link>
             <% end %>
           <% else %>
