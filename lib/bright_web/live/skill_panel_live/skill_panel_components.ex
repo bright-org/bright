@@ -236,10 +236,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def toggle_link(assigns) do
     ~H"""
-      <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
+    <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
       <.link navigate={"#{PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
-          id="grid"
           class={
             "inline-flex items-center font-bold rounded-l-full px-6 py-2 " <>
             if @active == "graph", do: "button-toggle-active", else: ""
@@ -247,19 +246,18 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         >
           成長パネル
         </button>
-        </.link>
-        <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
-          <button
-            id="list"
-            class={
-              "inline-flex items-center font-bold rounded-r-full px-4 py-2 " <>
-              if @active == "panel", do: "button-toggle-active", else: ""
-            }
-          >
-            スキルパネル
-          </button>
-        </.link>
-      </div>
+      </.link>
+      <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
+        <button
+          class={
+            "inline-flex items-center font-bold rounded-r-full px-4 py-2 " <>
+            if @active == "panel", do: "button-toggle-active", else: ""
+          }
+        >
+          スキルパネル
+        </button>
+      </.link>
+    </div>
     """
   end
 
