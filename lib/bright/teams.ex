@@ -528,7 +528,8 @@ defmodule Bright.Teams do
   end
 
   @doc """
-  ユーザーとチームメンバーになっているuser_idの一覧取得
+  ユーザーとチームメンバーになっているusers.idの一覧を返す
+  （自分自身は含まない）
   """
   def list_user_ids_related_team_by_user(user) do
     Ecto.assoc(user, :teams)
