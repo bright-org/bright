@@ -160,6 +160,19 @@ defmodule Bright.SkillEvidencesTest do
                skill_evidence_post
     end
 
+    test "get_skill_evidence_post_by!/1 returns the skill_evidence_post with given condition", %{
+      valid_attrs: valid_attrs
+    } do
+      skill_evidence_post = insert(:skill_evidence_post, valid_attrs)
+
+      assert SkillEvidences.get_skill_evidence_post_by!(id: skill_evidence_post.id) ==
+               skill_evidence_post
+
+      assert_raise Ecto.NoResultsError, fn ->
+        SkillEvidences.get_skill_evidence_post_by!(id: skill_evidence_post.id, content: "hoge")
+      end
+    end
+
     test "create_skill_evidence_post/1 with valid data creates a skill_evidence_post", %{
       user: user,
       skill_evidence: skill_evidence
