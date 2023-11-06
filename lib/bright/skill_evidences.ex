@@ -154,6 +154,10 @@ defmodule Bright.SkillEvidences do
   """
   def get_skill_evidence_post!(id), do: Repo.get!(SkillEvidencePost, id)
 
+  def get_skill_evidence_post_by!(condition) do
+    Repo.get_by!(SkillEvidencePost, condition)
+  end
+
   @doc """
   Creates a skill_evidence_post.
 

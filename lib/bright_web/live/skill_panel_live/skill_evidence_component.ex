@@ -44,13 +44,13 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   <% nil -> %>
                   <% [] -> %>
                   <% [image_path] -> %>
-                    <div class="evidence-image object-cover relative mt-3">
+                    <div class="evidence-image object-cover relative mt-3 cursor-pointer">
                       <img class="imagebox" src={image_url(image_path)} />
                     </div>
                   <% image_paths -> %>
                     <div class="evidence-images gap-2 flex flex-wrap mt-3">
                       <%= for image_path <- image_paths do %>
-                        <div class="object-cover relative w-[calc(50%-0.25rem)] box-border">
+                        <div class="object-cover relative w-[calc(50%-0.25rem)] box-border cursor-pointer">
                           <img class="imagebox" src={image_url(image_path)} />
                         </div>
                       <% end %>
@@ -59,6 +59,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
                 <% # 削除ボタン %>
                 <div
+                  :if={post_by_myself?(post, @user)}
                   class="h-6 w-6 py-2 ml-auto cursor-pointer"
                   phx-click="delete"
                   phx-target={@myself}
@@ -94,13 +95,13 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 <.error :for={err <- @entry_errors}><%= upload_error_to_string(err) %></.error>
               </div>
               <%= if Enum.count(@uploads.image.entries) == 1 do %>
-                <div class="object-cover relative mt-1">
+                <div class="object-cover relative mt-1 cursor-pointer">
                   <.uploading_image myself={@myself} entry={hd(@uploads.image.entries)} />
                 </div>
               <% else %>
                 <div class="gap-2 flex flex-wrap mt-1">
                   <%= for entry <- @uploads.image.entries do %>
-                    <div class="object-cover relative w-[calc(50%-0.25rem)] box-border">
+                    <div class="object-cover relative w-[calc(50%-0.25rem)] box-border cursor-pointer">
                       <.uploading_image myself={@myself} entry={entry} />
                     </div>
                   <% end %>
@@ -160,7 +161,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         phx-hook="Imagebox"
         data-imagebox-container={@id}
         data-imagebox-img-target-class="imagebox">
-        <img class="object-cover" />
+        <img class="object-cover cursor-pointer" />
         <a class="btn-close-imagebox absolute z-50 top-6 right-8 text-white text-5xl font-bold">&times;</a>
       </div>
     </div>
@@ -257,7 +258,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   end
 
   def handle_event("delete", %{"id" => skill_evidence_post_id}, socket) do
-    SkillEvidences.get_skill_evidence_post!(skill_evidence_post_id)
+    SkillEvidences.get_skill_evidence_post_by!(
+      id: skill_evidence_post_id,
+      user_id: socket.assigns.user.id
+    )
     |> SkillEvidences.delete_skill_evidence_post()
     |> case do
       {:ok, %{delete: skill_evidence_post}} ->
@@ -340,6 +344,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   defp image_url(image_path) do
     Storage.public_url(image_path)
+  end
+
+  defp post_by_myself?(evidence_post, user) do
+    evidence_post.user_id == user.id
   end
 
   defp unassign_invalid_image_entries(socket) do

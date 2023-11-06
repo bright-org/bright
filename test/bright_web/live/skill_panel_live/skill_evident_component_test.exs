@@ -113,7 +113,16 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       open_modal(lv)
 
-      assert render(lv) =~ skill_evidence_post.content
+      assert has_element?(
+               lv,
+               ~s(#skill_evidence_posts-#{skill_evidence_post.id}),
+               "some content by others"
+             )
+
+      refute has_element?(
+               lv,
+               ~s(#skill_evidence_posts-#{skill_evidence_post.id} [phx-click="delete"])
+             )
     end
   end
 
