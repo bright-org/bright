@@ -381,15 +381,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             </div>
           </div>
 
-          <div class="lg:absolute lg:right-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col">
+          <div class="lg:absolute lg:right-0 lg:top-16 z-10 flex items-center lg:items-end flex-col">
             <% # スキル入力前メッセージ %>
             <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
-
-            <div :if={Map.get(@flash, "first_skills_edit")} class="bg-pureGray-600/90 fixed inset-0 transition-opacity"></div>
             <.live_component
               :if={Map.get(@flash, "first_skills_edit")}
               module={BrightWeb.HelpMessageComponent}
-              id="help-enter-skills">
+              id="help-enter-skills"
+              overlay={true}>
               <.first_skills_edit_message />
             </.live_component>
 
