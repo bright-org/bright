@@ -5,11 +5,11 @@ defmodule Bright.Recruits.InterviewMember do
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
 
-  schema "recruit_interview_members" do
+  schema "interview_members" do
     field :decision, :string
 
     belongs_to :user, Bright.Accounts.User, references: :id
-    belongs_to :recruit_interview, Bright.Recruits.Interview
+    belongs_to :interview, Bright.Recruits.Interview
 
     timestamps()
   end
@@ -17,7 +17,7 @@ defmodule Bright.Recruits.InterviewMember do
   @doc false
   def changeset(interview_member, attrs) do
     interview_member
-    |> cast(attrs, [:decision, :user_id, :recruit_interview_id])
+    |> cast(attrs, [:decision, :user_id, :interview_id])
     |> validate_required([:user_id])
   end
 end
