@@ -19,6 +19,9 @@ Bright にはユーザーへの通知機能がある。
   - 特になし
 - コミュニティからの通知
   - MA ツール側の API を叩いてユーザーがコミュニティへの参加を行う
+- 学習メモからの通知
+  - ヘルプ対象の学習メモに誘導する
+
 
 ## API
 
@@ -55,36 +58,47 @@ erDiagram
     uuid id PK "id"
     uuid from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
-    text detail	"詳細"
     datetime inserted_at "作成日時"
     datetime updated_at "更新日時"
   }
 ```
 
-なお送信対象ユーザーの指定が必要な通知の場合は上記に加えて to_user_id を含める。
+以下は、通知によって必要な場合に加える。原則として同じ命名とすること。
 
 ```mermaid
 erDiagram
   common {
     id to_user_id	FK "送信先ユーザー"
+    text detail	"詳細"
+    string url "遷移先URL"
   }
 ```
 
 ### インデックス設計
 
-- to_user_id にインデックスをつける（この順序で指定）
+- to_user_id にインデックスをつける
   - 通知対象ユーザーに絞り込んで通知を出すため
 
 ## 通知概念図
 
+- 運営
+- コミュニティ
+
 ```mermaid
 erDiagram
-  "Bright送信元ユーザー" ||--o{ "通知_コミュニティ" : ""
-  "Bright送信先ユーザー" }o--o{ "通知_コミュニティ" : "※DB 上は関連がないが、概念上はある"
-
-  "Bright送信元ユーザー" ||--o{ "通知_運営" : ""
-  "Bright送信先ユーザー" }o--o{ "通知_運営" : "※DB 上は関連がないが、概念上はある"
+  "Bright送信元ユーザー" ||--o{ "通知" : ""
+  "Bright送信先ユーザー" }o--o{ "通知" : "※DB 上は関連がないが、概念上はある"
 ```
+
+- 学習メモ
+
+```mermaid
+erDiagram
+  "Bright送信元ユーザー" ||--o{ "通知" : ""
+  "Bright送信先ユーザー" ||--o{ "通知" : ""
+```
+
+## スキーマ
 
 ```mermaid
 erDiagram
@@ -106,6 +120,19 @@ erDiagram
     uuid from_user_id	FK "送信元ユーザー"
     string message	"メッセージ内容"
     text detail	"詳細"
+    datetime inserted_at "作成日時"
+    datetime updated_at "更新日時"
+  }
+
+  "users" ||--o{ "notification_evidences" : "from_user_id"
+  "users" ||--o{ "notification_evidences" : "to_user_id"
+
+  notification_evidences {
+    uuid id PK "id"
+    uuid from_user_id	FK "送信元ユーザー"
+    uuid to_user_id	FK "送信先ユーザー"
+    string message	"メッセージ内容"
+    string url	"遷移先URL"
     datetime inserted_at "作成日時"
     datetime updated_at "更新日時"
   }

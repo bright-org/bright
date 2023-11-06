@@ -3,9 +3,12 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   alias Bright.SkillEvidences
   alias Bright.SkillScores
+  alias Bright.UserProfiles
   alias Bright.Utils.GoogleCloud.Storage
 
-  @unkown_icon "/images/avatar.png"
+  @help_message """
+  （このメモでヘルプを出しました）
+  """
 
   @impl true
   def render(assigns) do
@@ -126,17 +129,25 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
                   type="submit"
                   phx-disable-with="送信中..."
+                  phx-click={JS.set_attribute({"value", "off"}, to: "#checkbox-help")}
                 >
                   メモを書き込む
                 </button>
 
-                <% # TODO: α後に実装して有効化 %>
+                <% # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化 %>
+                <%= if false do %>
                 <button
-                  :if={false}
+                  :if={@me}
                   class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
+                  type="submit"
+                  phx-disable-with="送信中..."
+                  phx-click={JS.set_attribute({"value", "on"}, to: "#checkbox-help")}
                 >
                   このメモでヘルプを出す
                 </button>
+                <% # ヘルプを出す/出さない制御用checkbox %>
+                <input type="checkbox" id="checkbox-help" class="hidden" name="help" checked={true} value="on" phx-update="ignore" />
+                <% end %>
               </div>
             </div>
           </.simple_form>
@@ -204,29 +215,35 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
      |> unassign_invalid_image_entries()}
   end
 
+  # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
+  # def handle_event("save", %{"skill_evidence_post" => params, "help" => help}, socket) do
   def handle_event("save", %{"skill_evidence_post" => params}, socket) do
-    image_names = Enum.map(socket.assigns.uploads.image.entries, & &1.client_name)
+    %{
+      uploads: uploads,
+      me: me,
+      skill_evidence: skill_evidence,
+      user: user,
+      skill: skill
+    } = socket.assigns
+
+    image_names = Enum.map(uploads.image.entries, & &1.client_name)
+    # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
+    # help? = help == "on" && me
+    help? = false
+    params = Map.update!(params, "content", &maybe_append_help(&1, help?))
 
     # NOTE: 保存処理
     #   複数ファイルアップロードで意図的にMultiを使用していない。
     #   部分的に失敗した場合に元レコードまでなかったことにすると成功済みファイル有無も不明になるため。
-    SkillEvidences.create_skill_evidence_post(
-      socket.assigns.skill_evidence,
-      socket.assigns.user,
-      params,
-      image_names
-    )
+    SkillEvidences.create_skill_evidence_post(skill_evidence, user, params, image_names)
     |> case do
       {:ok, skill_evidence_post} ->
         upload_files(socket, skill_evidence_post.image_paths)
         skill_evidence_post = Bright.Repo.preload(skill_evidence_post, user: [:user_profile])
 
-        if post_by_myself(socket.assigns.user, socket.assigns.skill_evidence) do
-          SkillScores.make_skill_score_evidence_filled(
-            socket.assigns.user,
-            socket.assigns.skill
-          )
-        end
+        maybe_make_filled(user, skill, me)
+        maybe_make_notification_evidence_by_help(user, skill_evidence, help?)
+        maybe_make_notification_evidence_by_other_post(user, skill_evidence, me)
 
         {:noreply,
          socket
@@ -281,14 +298,44 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     end)
   end
 
-  defp post_by_myself(user, skill_evidence) do
-    user.id == skill_evidence.user_id
+  defp maybe_append_help(content, help)
+
+  defp maybe_append_help("", _help), do: ""
+
+  defp maybe_append_help(content, false), do: content
+
+  defp maybe_append_help(content, true) do
+    Enum.join([content, @help_message], "\n")
   end
 
-  defp icon_file_path(_user, true), do: @unkown_icon
+  defp maybe_make_filled(user, skill, me)
+
+  defp maybe_make_filled(_user, _skill, false), do: nil
+
+  defp maybe_make_filled(user, skill, true) do
+    SkillScores.make_skill_score_evidence_filled(user, skill)
+  end
+
+  defp maybe_make_notification_evidence_by_help(user, skill_evidence, help)
+
+  defp maybe_make_notification_evidence_by_help(_user, _skill_evidence, false), do: nil
+
+  defp maybe_make_notification_evidence_by_help(user, skill_evidence, true) do
+    SkillEvidences.help(skill_evidence, user)
+  end
+
+  defp maybe_make_notification_evidence_by_other_post(user, skill_evidence, me)
+
+  defp maybe_make_notification_evidence_by_other_post(_user, _skill_evidence, true), do: nil
+
+  defp maybe_make_notification_evidence_by_other_post(user, skill_evidence, false) do
+    SkillEvidences.receive_post(skill_evidence, user)
+  end
+
+  defp icon_file_path(_user, true), do: UserProfiles.icon_url(nil)
 
   defp icon_file_path(user, _anonymous) do
-    Bright.UserProfiles.icon_url(user.user_profile.icon_file_path)
+    UserProfiles.icon_url(user.user_profile.icon_file_path)
   end
 
   defp image_url(image_path) do
