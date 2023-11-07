@@ -159,13 +159,11 @@ defmodule BrightWeb.LayoutComponents do
 
   def links() do
     [
-      {"保有スキル／所属", "/mypage", nil},
+      {"マイページ", "/mypage", nil},
       {"スキルを選ぶ", "/more_skills?open=want_todo_panel", nil},
-      {"成長を見る・比較する", "/graphs", nil},
-      {"スキルを入力", "/panels", nil},
-      {"チームのスキルを見る", "/teams", ~r/\/teams(?!\/new)/},
-      {"チームを作る（β）", "/teams/new", nil},
-      {"スキル検索する（β）", "/searches", nil}
+      {"成長グラフ", "/graphs", nil},
+      {"スキルパネル", "/panels", nil},
+      {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
       # {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html", nil},

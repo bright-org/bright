@@ -173,7 +173,7 @@ defmodule BrightWeb.BrightButtonComponents do
     >
       <span
           class="bg-white material-icons mr-2 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold">search</span>
-      スキル保有者を検索
+      スキル検索
     </button>
 
     """
