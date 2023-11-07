@@ -31,7 +31,7 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
                     search={false}
                     module={BrightWeb.SearchLive.SearchResultsComponent}
                     current_user={@current_user}
-                    result={@recruitment_candidates_user}
+                    result={@candidates_user}
                     skill_params={@skill_params}
                     stock_user_ids={[]}
                   />
@@ -51,7 +51,7 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
             <div class="w-[493px]">
               <h3 class="font-bold text-xl">採用調整内容</h3>
               <.form
-                for={@recruit_form}
+                for={@interview_form}
                 id="interview_form"
                 phx-target={@myself}
                 phx-submit="create_interview"
@@ -87,7 +87,7 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
                     <dd class="w-[280px] mt-16">
                     <BrightCore.input
                       error_class="ml-[100px] mt-2"
-                      field={@recruit_form[:comment]}
+                      field={@interview_form[:comment]}
                       type="textarea"
                       required
                       rows="5"
@@ -127,7 +127,7 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
   def mount(socket) do
     socket
     |> assign(:search_results, [])
-    |> assign(:recruitment_candidates_user, [])
+    |> assign(:candidates_user, [])
     |> assign(:skill_params, %{})
     |> assign(:users, [])
     |> assign(:candidate_error, "")
@@ -136,12 +136,12 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
 
   def update(assigns, socket) do
     interview = %Interview{}
-    changeset = Recruits.change_interview(interview, %{recruiter_id: assigns.current_user.id})
+    changeset = Recruits.change_interview(interview)
 
     socket
     |> assign(assigns)
     |> assign(:interview, interview)
-    |> assign_recruit_form(changeset)
+    |> assign_interview_form(changeset)
     |> then(&{:ok, &1})
   end
 
@@ -151,7 +151,7 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
       |> Interview.changeset(interview_params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign_recruit_form(socket, changeset)}
+    {:noreply, assign_interview_form(socket, changeset)}
   end
 
   def handle_event("open", %{"user" => user_id, "skill_params" => skill_params}, socket) do
@@ -163,7 +163,7 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
       |> Enum.map(&(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end) |> Enum.into(%{})))
 
     socket
-    |> assign(:recruitment_candidates_user, user)
+    |> assign(:candidates_user, user)
     |> assign(:skill_params, skill_params)
     |> then(&{:noreply, &1})
   end
@@ -189,15 +189,15 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
 
   def handle_event("create_interview", %{"interview" => interview_params}, socket) do
     recruiter = socket.assigns.current_user
-    recruitment_candidates_user = socket.assigns.recruitment_candidates_user |> List.first()
+    candidates_user = socket.assigns.candidates_user |> List.first()
 
     interview_params =
       Map.merge(interview_params, %{
         "skill_params" => Jason.encode!(socket.assigns.skill_params),
         "interview_members" => Enum.map(socket.assigns.users, &%{"user_id" => &1.id}),
-        "recruiter_id" => recruiter.id,
+        "recruiter_user_id" => recruiter.id,
         "status" => "interview_adjustment_start",
-        "recruitment_candidates_user_id" => recruitment_candidates_user.id
+        "candidates_user_id" => candidates_user.id
       })
 
     case Recruits.create_interview(interview_params) do
@@ -236,7 +236,7 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
     users |> Enum.find(fn u -> user.id == u.id end) |> is_nil() |> then(&(!&1))
   end
 
-  defp assign_recruit_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :recruit_form, to_form(changeset))
+  defp assign_interview_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :interview_form, to_form(changeset))
   end
 end
