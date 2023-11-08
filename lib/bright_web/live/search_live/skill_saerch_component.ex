@@ -6,7 +6,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
   import BrightWeb.TabComponents
 
   @tabs [
-    {"user", "ユーザー検索"}
+    {"user", "スキル検索"}
     # αでは落とす
     # {"team", "チーム検索"}
   ]

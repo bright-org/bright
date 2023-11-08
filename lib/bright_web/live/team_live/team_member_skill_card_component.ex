@@ -27,18 +27,20 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           select_skill_class={@display_skill_card.select_skill_class}
           skill_class_tab_click_target={@myself}
         />
-
+        <% me = @display_skill_card.user.id == @current_user.id %>
         <div class="flex px-4 lg:px-6 pt-1 items-center">
           <div class="flex flex-col w-56 lg:w-full lg:flex-row text-xl">
-            <span class="text-xl w-56 truncate lg:text-2xl font-bold">
-              <%= assigns.display_skill_card.user.name %>
-            </span>
-
+            <.link
+              class="text-xl w-56 truncate lg:text-2xl font-bold"
+              navigate={~p"/mypage/#{if me, do: "", else: @display_skill_card.user.name}"}
+            >
+              <%= @display_skill_card.user.name %>
+            </.link>
             <.link
                 :if={ !is_nil(@display_skill_card.user_skill_class_score)}
                 class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:opacity-50"
                 href={
-                  skill_panel_path("panels",@display_skill_panel, @display_skill_card.user, @display_skill_card.user.id == @current_user.id,false)
+                  skill_panel_path("panels",@display_skill_panel, @display_skill_card.user, me, false)
                   <> "?class=#{@display_skill_card.select_skill_class.class}"
                 }
             >
