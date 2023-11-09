@@ -292,4 +292,12 @@ defmodule Bright.SkillEvidences do
     |> Tuple.to_list()
     |> Enum.join(" > ")
   end
+
+  @doc """
+  学習メモに書き込めるかどうかを返す
+  """
+  def can_write_skill_evidence?(skill_evidence, user) do
+    skill_evidence.user_id == user.id ||
+      user.id in Teams.list_user_ids_related_team_by_user(skill_evidence.user)
+  end
 end
