@@ -23,3 +23,15 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr ""
+
+msgid "waiting_deceision"
+msgstr "面談決定待ち"
+
+msgid "consume_interview"
+msgstr "面談決定"
+
+msgid "dismiss_interview"
+msgstr "面談却下"
+
+msgid "complete_interview"
+msgstr "面談完了"

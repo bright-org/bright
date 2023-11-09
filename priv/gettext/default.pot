@@ -23,3 +23,16 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr ""
+
+
+msgid "waiting_deceision"
+msgstr ""
+
+msgid "consume_interview"
+msgstr ""
+
+msgid "dismiss_interview"
+msgstr ""
+
+msgid "complete_interview"
+msgstr ""
