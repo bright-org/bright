@@ -109,6 +109,12 @@ defmodule BrightWeb.LayoutComponents do
           module={BrightWeb.NotificationLive.NotificationHeaderComponent}
           current_user={Map.get(assigns, :current_user)}
         />
+        <.live_component
+          id="recruit_notification_header"
+          module={BrightWeb.RecruitLive.NotificationHeaderComponent}
+          current_user={Map.get(assigns, :current_user)}
+        />
+
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
       </div>
     </div>
