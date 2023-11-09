@@ -81,6 +81,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
       _ -> [get_skill_gem_data(skill_gem)]
     end)
     |> assign(:skill_gem_labels, get_skill_gem_labels(skill_gem))
+    |> assign(:skill_gem_trace_ids, get_skill_gem_trace_ids(skill_gem))
     |> assign(
       :skill_gem_links,
       get_skill_gem_links(
@@ -117,14 +118,14 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
       select_label_compared_user: select_label,
       skill_panel: skill_panel,
       class: class,
-      skill_gem_labels: skill_gem_labels
+      skill_gem_trace_ids: skill_gem_trace_ids
     } = socket.assigns
 
-    # データ取得後に現ジェムの表示名一致をみてデータを決定している。
-    # 背景: 指定タイムラインが異なる場合にスキルユニット一致の保証がない
+    # データ取得後に自身ジェムとスキルユニットが一致するデータを取得している。
+    # 参照している過去時点がずれている場合に一致しない。
     skill_gem = get_skill_gem(compared_user.id, skill_panel.id, class, select_label)
-    value_by_label = Map.new(skill_gem, &{&1.name, &1.percentage})
-    skill_gem_data = Enum.map(skill_gem_labels, &Map.get(value_by_label, &1, 0))
+    value_by_trace_id = Map.new(skill_gem, &{&1.trace_id, &1.percentage})
+    skill_gem_data = Enum.map(skill_gem_trace_ids, &Map.get(value_by_trace_id, &1, 0))
 
     update(socket, :skill_gem_data, fn
       [myself, _] when is_list(myself) -> [myself, skill_gem_data]
@@ -151,6 +152,8 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   defp get_skill_gem_data(skill_gem), do: Enum.map(skill_gem, fn x -> x.percentage end)
 
   defp get_skill_gem_labels(skill_gem), do: Enum.map(skill_gem, fn x -> x.name end)
+
+  defp get_skill_gem_trace_ids(skill_gem), do: Enum.map(skill_gem, fn x -> x.trace_id end)
 
   defp get_skill_gem_links(
          skill_gem,
@@ -181,7 +184,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   defp skill_gem_compared_user_update_required?(prev_assigns, new_assigns) do
     data_changed?(prev_assigns, new_assigns, :compared_user) ||
       data_changed?(prev_assigns, new_assigns, :select_label_compared_user) ||
-      data_changed?(prev_assigns, new_assigns, :class)
+      (Map.get(new_assigns, :compared_user) && data_changed?(prev_assigns, new_assigns, :class))
   end
 
   defp first_time?(prev_assigns) do

@@ -40,7 +40,6 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       Enum.map(skill_units, fn skill_unit ->
         insert(
           :historical_skill_unit,
-          name: skill_unit.name,
           trace_id: skill_unit.trace_id,
           locked_date: locked_date
         )
