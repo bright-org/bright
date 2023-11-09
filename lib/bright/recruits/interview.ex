@@ -12,15 +12,13 @@ defmodule Bright.Recruits.Interview do
     field :skill_params, :string
 
     field :status, Ecto.Enum,
-      values: [:interview_adjustment_start, :wainting_deceision, :consume, :dismiss, :completed]
+      values: [:waiting_deceision, :consume_interview, :dismiss_interview, :completed_interview]
 
     belongs_to :candidates_user, User
     belongs_to :recruiter_user, User
     belongs_to :requestor_user, User
 
-    has_many :interview_members, InterviewMember,
-      on_replace: :delete,
-      foreign_key: :interview_id
+    has_many :interview_members, InterviewMember, on_replace: :delete
 
     timestamps()
   end
