@@ -237,6 +237,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       |> assign(assigns)
       |> assign(timeline: timeline)
       |> create_user_data()
+      |> create_compared_user_data()
 
     {:ok, socket}
   end
@@ -247,11 +248,16 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         %{"id" => "myself", "date" => label} = params,
         socket
       ) do
-    Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
+    notify_parent_timeline_clicked(params)
     {:noreply, select_data(socket, "myself", label)}
   end
 
-  def handle_event("timeline_bar_button_click", %{"id" => "other", "date" => label}, socket) do
+  def handle_event(
+        "timeline_bar_button_click",
+        %{"id" => "other", "date" => label} = params,
+        socket
+      ) do
+    notify_parent_timeline_clicked(params)
     {:noreply, select_data(socket, "other", label)}
   end
 
@@ -292,12 +298,15 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   end
 
   def handle_event("compare_myself", _params, socket) do
-    compared_timeline = TimelineHelper.select_past_if_label_is_now(socket.assigns.timeline)
+    %{current_user: user, timeline: timeline} = socket.assigns
+
+    compared_timeline = TimelineHelper.select_past_if_label_is_now(timeline)
+    notify_parent_compared_user_added(user, compared_timeline)
 
     {:noreply,
      socket
      |> assign(compared_timeline: compared_timeline)
-     |> assign(compared_user: socket.assigns.current_user)
+     |> assign(compared_user: user)
      |> create_compared_user_data()}
   end
 
@@ -311,10 +320,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         params["encrypt_user_name"]
       )
 
-    user =
-      user
-      |> Map.put(:anonymous, anonymous)
-      |> put_profile()
+    user = user |> Map.put(:anonymous, anonymous) |> put_profile()
+    notify_parent_compared_user_added(user, compared_timeline)
 
     {:noreply,
      socket
@@ -324,10 +331,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   end
 
   def handle_event("timeline_bar_close_button_click", _params, socket) do
+    notify_parent_compared_user_deleted()
+
     {:noreply,
      socket
      |> assign(compared_timeline: nil)
-     |> assign(compared_user: nil)}
+     |> assign(compared_user: nil)
+     |> create_compared_user_data()}
   end
 
   defp create_user_data(socket) do
@@ -361,6 +371,17 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     data = if now_value, do: Map.put(data, :now, now_value), else: Map.delete(data, :now)
 
     assign(socket, data: data)
+  end
+
+  defp create_compared_user_data(%{assigns: %{compared_user: nil}} = socket) do
+    update(socket, :data, fn data ->
+      Map.merge(data, %{
+        other: [],
+        otherSelected: nil,
+        otherLabels: [],
+        otherFutureEnabled: nil
+      })
+    end)
   end
 
   defp create_compared_user_data(socket) do
@@ -450,4 +471,26 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   defp compared_user_name(%{anonymous: true}), do: "非表示"
 
   defp compared_user_name(%{anonymous: false, name: name}), do: name
+
+  defp notify_parent_timeline_clicked(params) do
+    Process.send(self(), %{event_name: "timeline_bar_button_click", params: params}, [])
+  end
+
+  defp notify_parent_compared_user_added(user, timeline) do
+    Process.send(
+      self(),
+      %{
+        event_name: "compared_user_added",
+        params: %{
+          "compared_user" => user,
+          "select_label" => timeline.selected_label
+        }
+      },
+      []
+    )
+  end
+
+  defp notify_parent_compared_user_deleted do
+    Process.send(self(), %{event_name: "compared_user_deleted", params: %{}}, [])
+  end
 end

@@ -171,9 +171,24 @@ defmodule Bright.HistoricalSkillScoresTest do
       end)
 
       gem_data = [
-        %{name: historical_skill_unit_1.name, position: 1, percentage: 0.1},
-        %{name: historical_skill_unit_2.name, position: 2, percentage: 0.2},
-        %{name: historical_skill_unit_3.name, position: 3, percentage: 0.3}
+        %{
+          name: historical_skill_unit_1.name,
+          trace_id: historical_skill_unit_1.trace_id,
+          position: 1,
+          percentage: 0.1
+        },
+        %{
+          name: historical_skill_unit_2.name,
+          trace_id: historical_skill_unit_2.trace_id,
+          position: 2,
+          percentage: 0.2
+        },
+        %{
+          name: historical_skill_unit_3.name,
+          trace_id: historical_skill_unit_3.trace_id,
+          position: 3,
+          percentage: 0.3
+        }
       ]
 
       %{user: user, skill_panel: skill_panel, gem_data: gem_data}
