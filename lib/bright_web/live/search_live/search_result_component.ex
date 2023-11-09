@@ -71,11 +71,11 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             phx-click={
               JS.show(to: "#adoption_modal") |> JS.push("open", value: %{user: @user.id, skill_params: @skill_params}, target: "#adoption_modal")
             }
-            class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50"
+            class="bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56"
           >
           採用面談調整<br />
           </a>
-          <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
+          <a class="bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56">
           採用・育成チームに採用依頼 <br />βリリース（10月予定）から
           </a>
         </div>
