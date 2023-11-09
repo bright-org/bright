@@ -247,7 +247,8 @@ defmodule BrightWeb.Router do
       live "/notifications/operations", NotificationLive.Operation, :index
       live "/notifications/communities", NotificationLive.Community, :index
 
-      live "/recruits/interview", RecruitLive.Interview, :index
+      live "/recruits/interviews", RecruitLive.Interview, :index
+      live "/recruits/interviews/:id", RecruitLive.Interview, :show
     end
 
     ## OAuth
