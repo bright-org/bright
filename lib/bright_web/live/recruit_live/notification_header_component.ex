@@ -11,9 +11,10 @@ defmodule BrightWeb.RecruitLive.NotificationHeaderComponent do
       <button
         class="fixed top-3 right-16 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:right-0 lg:mr-0 lg:relative"
         phx-click="toggle_notifications"
+        phx-click-away="close_notifications"
         phx-target={@myself}
       >
-        <.icon name="hero-bell" class="h-8 w-8" />
+        <.icon name="hero-inbox-stack" class="h-8 w-8" />
       </button>
       <div :if={@open?} class="absolute p-2 bg-brightGray-10 top-12 right-20 lg:right-24 shadow-lg">
         <ul>
@@ -56,9 +57,15 @@ defmodule BrightWeb.RecruitLive.NotificationHeaderComponent do
     |> then(&{:noreply, &1})
   end
 
+  def handle_event("close_notifications", _params, socket) do
+    socket
+    |> assign(:open?, false)
+    |> then(&{:noreply, &1})
+  end
+
   defp notification_list do
     [
-      ["面談調整", ~p"/recuits/interview"]
+      ["面談調整", ~p"/recruits/interviews"]
     ]
   end
 end
