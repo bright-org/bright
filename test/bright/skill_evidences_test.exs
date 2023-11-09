@@ -339,4 +339,55 @@ defmodule Bright.SkillEvidencesTest do
       assert false == SkillEvidences.can_write_skill_evidence?(skill_evidence, user_2)
     end
   end
+
+  describe "can_delete_skill_evidence_post?/3" do
+    setup do
+      skill_unit = insert(:skill_unit)
+      skill_category = insert(:skill_category, skill_unit: skill_unit)
+      skill = insert(:skill, skill_category: skill_category)
+
+      %{skill: skill}
+    end
+
+    test "returns true if the user is same as skill_evidence owner or post owner", %{skill: skill} do
+      user = insert(:user)
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
+
+      user_2 = insert(:user)
+
+      skill_evidence_post =
+        insert(:skill_evidence_post, user: user_2, skill_evidence: skill_evidence)
+
+      assert true ==
+               SkillEvidences.can_delete_skill_evidence_post?(
+                 skill_evidence_post,
+                 skill_evidence,
+                 user
+               )
+
+      assert true ==
+               SkillEvidences.can_delete_skill_evidence_post?(
+                 skill_evidence_post,
+                 skill_evidence,
+                 user_2
+               )
+    end
+
+    test "returns false if the user is viewer", %{skill: skill} do
+      user = insert(:user)
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
+
+      skill_evidence_post =
+        insert(:skill_evidence_post, user: user, skill_evidence: skill_evidence)
+
+      user_2 = insert(:user)
+
+      assert false ==
+               SkillEvidences.can_delete_skill_evidence_post?(
+                 skill_evidence_post,
+                 skill_evidence,
+                 user_2
+               )
+    end
+  end
 end

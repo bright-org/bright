@@ -300,4 +300,12 @@ defmodule Bright.SkillEvidences do
     skill_evidence.user_id == user.id ||
       user.id in Teams.list_user_ids_related_team_by_user(skill_evidence.user)
   end
+
+  @doc """
+  学習メモ投稿を削除できるかどうかを返す
+  """
+  def can_delete_skill_evidence_post?(skill_evidence_post, skill_evidence, user) do
+    skill_evidence_post.user_id == user.id ||
+      skill_evidence.user_id == user.id
+  end
 end

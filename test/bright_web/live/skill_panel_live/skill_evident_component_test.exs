@@ -119,7 +119,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
                "some content by others"
              )
 
-      refute has_element?(
+      # 所有者は削除可能
+      assert has_element?(
                lv,
                ~s(#skill_evidence_posts-#{skill_evidence_post.id} [phx-click="delete"])
              )
@@ -421,16 +422,46 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       skill: skill
     } do
       user_2 = insert(:user)
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
       insert(:skill_class_score, user: user_2, skill_class: skill_class)
       insert(:skill_evidence, user: user_2, skill: skill)
-      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
 
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}/anon/#{encrypted_name}")
       open_modal(lv)
 
       assert has_element?(lv, "#skill-evidence-modal-content")
       refute has_element?(lv, "#skill_evidence_post-form")
+    end
+
+    test "cannot delete other users post", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill: skill
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class)
+      skill_evidence = insert(:skill_evidence, user: user_2, skill: skill)
+
+      skill_evidence_post =
+        insert(:skill_evidence_post, user: user_2, skill_evidence: skill_evidence)
+
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}/anon/#{encrypted_name}")
+      open_modal(lv)
+
+      assert has_element?(
+               lv,
+               "#skill_evidence_posts-#{skill_evidence_post.id}",
+               skill_evidence_post.content
+             )
+
+      refute has_element?(
+               lv,
+               ~s(#skill_evidence_posts-#{skill_evidence_post.id} [phx-click="delete"])
+             )
     end
   end
 end
