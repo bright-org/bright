@@ -10,11 +10,13 @@ defmodule Bright.Recruits.Interview do
   schema "interviews" do
     field :comment, :string
     field :skill_params, :string
-    field :status, :string
+
+    field :status, Ecto.Enum,
+      values: [:interview_adjustment_start, :wainting_deceision, :consume, :dismiss, :completed]
 
     belongs_to :candidates_user, User
     belongs_to :recruiter_user, User
-    belongs_to :requester_user, User
+    belongs_to :requestor_user, User
 
     has_many :interview_members, InterviewMember,
       on_replace: :delete,
@@ -32,7 +34,7 @@ defmodule Bright.Recruits.Interview do
       :comment,
       :candidates_user_id,
       :recruiter_user_id,
-      :requester_user_id
+      :requestor_user_id
     ])
     |> cast_assoc(:interview_members,
       with: &InterviewMember.changeset/2

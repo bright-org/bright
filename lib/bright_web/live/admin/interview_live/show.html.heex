@@ -2,7 +2,7 @@
   Interview <%= @interview.id %>
   <:subtitle>This is a interview record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/admin/recruit_interviews/#{@interview}/show/edit"} phx-click={JS.push_focus()}>
+    <.link patch={~p"/admin/recruits/interviews/#{@interview}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit interview</.button>
     </.link>
   </:actions>
@@ -19,15 +19,15 @@
     <p><%= member.user.name %>:<%= if member.decision == nil, do: "none", else: member.decision %></p>
   <% end %>
 
-<.back navigate={~p"/admin/recruit_interviews"}>Back to recruit_interview</.back>
+<.back navigate={~p"/admin/recruits/interviews"}>Back to recruit_interview</.back>
 
-<.modal :if={@live_action == :edit} id="interview-modal" show on_cancel={JS.patch(~p"/admin/recruit_interviews/#{@interview}")}>
+<.modal :if={@live_action == :edit} id="interview-modal" show on_cancel={JS.patch(~p"/admin/recruits/interviews/#{@interview}")}>
   <.live_component
     module={BrightWeb.InterviewLive.FormComponent}
     id={@interview.id}
     title={@page_title}
     action={@live_action}
     interview={@interview}
-    patch={~p"/admin/recruit_interviews/#{@interview}"}
+    patch={~p"/admin/recruits/interviews/#{@interview}"}
   />
 </.modal>

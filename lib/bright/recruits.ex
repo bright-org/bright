@@ -13,11 +13,11 @@ defmodule Bright.Recruits do
 
   ## Examples
 
-      iex> list_recruit_interview()
+      iex> list_interview()
       [%Interview{}, ...]
 
   """
-  def list_recruit_interview do
+  def list_interview do
     Repo.all(Interview)
   end
 

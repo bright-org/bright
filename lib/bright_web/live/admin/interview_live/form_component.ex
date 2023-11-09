@@ -21,7 +21,11 @@ defmodule BrightWeb.Admin.InterviewLive.FormComponent do
       >
         <.input field={@form[:skill_params]} type="text" label="Skill params" />
         <.input field={@form[:comment]} type="text" label="Comment" />
-        <.input field={@form[:status]} type="text" label="Status" />
+        <.input field={@form[:status]}
+          type="select"
+          label="Status"
+          options={Ecto.Enum.mappings(Recruits.Interview, :status)}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Interview</.button>
         </:actions>

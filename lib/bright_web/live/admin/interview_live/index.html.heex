@@ -1,7 +1,7 @@
 <.header>
   Listing Recruit inteview
   <:actions>
-    <.link patch={~p"/recruit_interview/new"}>
+    <.link patch={~p"/recruits/interview/new"}>
       <.button>New Interview</.button>
     </.link>
   </:actions>
@@ -9,16 +9,16 @@
 
 <.table
   id="recruit_interview"
-  rows={@streams.recruit_interview}
-  row_click={fn {_id, interview} -> JS.navigate(~p"/admin/recruit_interviews/#{interview}") end}
+  rows={@streams.interviews}
+  row_click={fn {_id, interview} -> JS.navigate(~p"/admin/recruits/interviews/#{interview}") end}
 >
   <:col :let={{_id, interview}} label="Skill params"><%= interview.comment %></:col>
   <:col :let={{_id, interview}} label="Status"><%= interview.status %></:col>
   <:action :let={{_id, interview}}>
     <div class="sr-only">
-      <.link navigate={~p"/admin/recruit_interviews/#{interview}"}>Show</.link>
+      <.link navigate={~p"/admin/recruits/interviews/#{interview}"}>Show</.link>
     </div>
-    <.link patch={~p"/admin/recruit_interviews/#{interview}/edit"}>Edit</.link>
+    <.link patch={~p"/admin/recruits/interviews/#{interview}/edit"}>Edit</.link>
   </:action>
   <:action :let={{id, interview}}>
     <.link
@@ -30,13 +30,13 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="interview-modal" show on_cancel={JS.patch(~p"/recruit_interview")}>
+<.modal :if={@live_action in [:new, :edit]} id="interview-modal" show on_cancel={JS.patch(~p"/recruits/interview")}>
   <.live_component
-    module={BrightWeb.InterviewLive.FormComponent}
+    module={BrightWeb.Admin.InterviewLive.FormComponent}
     id={@interview.id || :new}
     title={@page_title}
     action={@live_action}
     interview={@interview}
-    patch={~p"/admin/recruit_interviews"}
+    patch={~p"/admin/recruits/interviews"}
   />
 </.modal>
