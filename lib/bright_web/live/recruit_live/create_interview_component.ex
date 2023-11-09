@@ -1,4 +1,4 @@
-defmodule BrightWeb.RecruitLive.InterviewComponent do
+defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
   use BrightWeb, :live_component
 
   alias Bright.Accounts
@@ -213,7 +213,6 @@ defmodule BrightWeb.RecruitLive.InterviewComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "面談調整を開始しました")
          |> redirect(to: ~p"/mypage")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
