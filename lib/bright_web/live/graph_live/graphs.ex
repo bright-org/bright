@@ -14,6 +14,8 @@ defmodule BrightWeb.GraphLive.Graphs do
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"], "graphs")
      |> assign(:select_label, "now")
+     |> assign(:compared_user, nil)
+     |> assign(:select_label_compared_user, nil)
      |> assign(:page_title, "成長グラフ")
      |> assign_page_sub_title()}
   end
@@ -62,11 +64,33 @@ defmodule BrightWeb.GraphLive.Graphs do
   end
 
   @impl true
-  def handle_info(%{event_name: "timeline_bar_button_click", params: %{"date" => date}}, socket) do
-    socket =
-      socket
-      |> assign(:select_label, date)
+  def handle_info(
+        %{event_name: "timeline_bar_button_click", params: %{"id" => "myself", "date" => date}},
+        socket
+      ) do
+    {:noreply, assign(socket, :select_label, date)}
+  end
 
-    {:noreply, socket}
+  def handle_info(
+        %{event_name: "timeline_bar_button_click", params: %{"id" => "other", "date" => date}},
+        socket
+      ) do
+    {:noreply, assign(socket, :select_label_compared_user, date)}
+  end
+
+  def handle_info(%{event_name: "compared_user_added", params: params}, socket) do
+    %{"compared_user" => compared_user, "select_label" => select_label} = params
+
+    {:noreply,
+     socket
+     |> assign(:compared_user, compared_user)
+     |> assign(:select_label_compared_user, select_label)}
+  end
+
+  def handle_info(%{event_name: "compared_user_deleted"}, socket) do
+    {:noreply,
+     socket
+     |> assign(:compared_user, nil)
+     |> assign(:select_label_compared_user, nil)}
   end
 end

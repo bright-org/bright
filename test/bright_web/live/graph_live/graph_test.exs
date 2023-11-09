@@ -33,6 +33,43 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     )
   end
 
+  defp create_historical_skill_units(skill_panel, skill_units, locked_date) do
+    h_skill_class = create_historical_skill_class(skill_panel, locked_date)
+
+    h_skill_units =
+      Enum.map(skill_units, fn skill_unit ->
+        insert(
+          :historical_skill_unit,
+          name: skill_unit.name,
+          trace_id: skill_unit.trace_id,
+          locked_date: locked_date
+        )
+      end)
+
+    Enum.each(
+      h_skill_units,
+      &insert(
+        :historical_skill_class_unit,
+        historical_skill_class: h_skill_class,
+        historical_skill_unit: &1
+      )
+    )
+
+    h_skill_units
+  end
+
+  defp create_historical_skill_unit_scores(historical_skill_units, percentages, user, locked_date) do
+    Enum.zip(historical_skill_units, percentages)
+    |> Enum.map(fn {h_skill_unit, percentage} ->
+      insert(:historical_skill_unit_score,
+        user: user,
+        historical_skill_unit: h_skill_unit,
+        locked_date: locked_date,
+        percentage: percentage
+      )
+    end)
+  end
+
   describe "Show" do
     setup [:register_and_log_in_user]
 
@@ -103,7 +140,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
     # スキルユニット用意
     setup %{skill_class: skill_class} do
-      # positionは並びでindexするため確認のため適当な数値をいれている
+      # 並びでindexにする確認としてpositionに適当な数値をいれている
       skill_units =
         [
           {"ユニット１", 90},
@@ -119,6 +156,8 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             position: position
           )
         end)
+        |> Enum.sort_by(& &1.position, :asc)
+        |> Enum.map(& &1.skill_unit)
 
       %{skill_units: skill_units}
     end
@@ -148,6 +187,127 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       assert has_element?(show_live, ~s(#skill-gem[data-links='#{data_links}']))
       assert has_element?(show_live, ~s(#skill-gem[data-labels='#{data_labels}']))
     end
+
+    test "shows compared my data", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel,
+      skill_units: skill_units
+    } do
+      percentages_202307 = [10, 11, 12]
+      percentages_202310 = [20, 21, 22]
+
+      [
+        {~D[2023-07-01], percentages_202307},
+        {~D[2023-10-01], percentages_202310}
+      ]
+      |> Enum.each(fn {locked_date, percentages} ->
+        locked_date_master = Timex.shift(locked_date, months: -3)
+
+        h_skill_units =
+          create_historical_skill_units(skill_panel, skill_units, locked_date_master)
+
+        create_historical_skill_unit_scores(h_skill_units, percentages, user, locked_date)
+      end)
+
+      with_mocks([date_mock()]) do
+        {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+
+        # 「自分と比較」を選択
+        show_live
+        |> element(~s(button[phx-click="compare_myself"]))
+        |> render_click()
+
+        # NOTE: 「現在」スコアはないため0.0となる
+        data = [[0.0, 0.0, 0.0], [20.0, 21.0, 22.0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+
+        # 比較対象を閉じる
+        show_live
+        |> element(~s(button[phx-click="timeline_bar_close_button_click"]))
+        |> render_click()
+
+        data = [[0.0, 0.0, 0.0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+      end
+    end
+
+    test "shows compared user data", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel,
+      skill_units: skill_units
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: user_2)
+
+      percentages_202307 = [10, 11, 12]
+      percentages_202310 = [20, 21, 22]
+
+      [
+        {~D[2023-07-01], percentages_202307},
+        {~D[2023-10-01], percentages_202310}
+      ]
+      |> Enum.each(fn {locked_date, percentages} ->
+        locked_date_master = Timex.shift(locked_date, months: -3)
+
+        h_skill_units =
+          create_historical_skill_units(skill_panel, skill_units, locked_date_master)
+
+        create_historical_skill_unit_scores(h_skill_units, percentages, user, locked_date)
+        create_historical_skill_unit_scores(h_skill_units, percentages, user_2, locked_date)
+      end)
+
+      with_mocks([date_mock()]) do
+        {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+
+        # 以下、他者と比較とタイムライン操作による更新、解除まで一覧の期待値を確認
+
+        # 1. 「他者と比較」を選択
+        show_live
+        |> element(~s(#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]))
+        |> render_click()
+
+        show_live
+        |> element(~s(a[phx-click="click_on_related_user_card_compare"]), user_2.name)
+        |> render_click()
+
+        # NOTE: 「現在」スコアはないため0.0となる
+        data = [[0.0, 0.0, 0.0], [20.0, 21.0, 22.0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+
+        # 2. 自身のタイムラインを2023.10に変更
+        show_live
+        |> element(
+          ~s(button[phx-click="timeline_bar_button_click"][phx-value-id="myself"][phx-value-date="2023.10"])
+        )
+        |> render_click()
+
+        data = [[20.0, 21.0, 22.0], [20.0, 21.0, 22.0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+
+        # 3. 比較対象のタイムラインを2023.7に変更
+        show_live
+        |> element(
+          ~s(button[phx-click="timeline_bar_button_click"][phx-value-id="other"][phx-value-date="2023.7"])
+        )
+        |> render_click()
+
+        data = [[20.0, 21.0, 22.0], [10.0, 11.0, 12.0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+
+        # 4. 比較対象を閉じる
+        show_live
+        |> element(~s(button[phx-click="timeline_bar_close_button_click"]))
+        |> render_click()
+
+        data = [[20.0, 21.0, 22.0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+      end
+    end
   end
 
   # 成長グラフ
@@ -168,7 +328,11 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       labels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
       myself: [0, 0, 0, 0, 0, 0],
       futureEnabled: true,
-      myselfSelected: "now"
+      myselfSelected: "now",
+      other: [],
+      otherLabels: [],
+      otherFutureEnabled: nil,
+      otherSelected: nil
     }
 
     test "shows growth graph", %{
@@ -239,7 +403,6 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       skill_panel: skill_panel
     } do
       h_skill_class_1 = create_historical_skill_class(skill_panel, ~D[2023-07-01])
-
       h_skill_class_2 = create_historical_skill_class(skill_panel, ~D[2023-04-01])
 
       create_historical_skill_class_score(
@@ -310,7 +473,6 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       skill_panel: skill_panel
     } do
       h_skill_class_1 = create_historical_skill_class(skill_panel, ~D[2023-07-01])
-
       h_skill_class_2 = create_historical_skill_class(skill_panel, ~D[2023-04-01])
 
       user_2 = insert(:user) |> with_user_profile()
