@@ -55,8 +55,8 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
                   title={user_profile.title}
                   icon_file_path={user_profile.icon_file_path}
                   encrypt_user_name={user_profile.encrypt_user_name}
-                  click_target="#adoption_modal"
-                  click_event={"add_user"}
+                  click_target={@target}
+                  click_event={@event}
                 />
             <% end %>
           </ul>

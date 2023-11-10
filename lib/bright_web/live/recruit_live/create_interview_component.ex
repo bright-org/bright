@@ -43,6 +43,8 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
                     id="recruit_card"
                     module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
                     current_user={@current_user}
+                    target="#create_interview_modal"
+                    event="add_user"
                   />
                   <span class="text-attention-600"><%= @candidate_error %></span>
                 </div>
@@ -201,7 +203,8 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
     case Recruits.create_interview(interview_params) do
       {:ok, interview} ->
         # 全メンバーのuserを一気にpreloadしたいのでteamを再取得
-        preloaded_interview = Recruits.get_interview_with_member_users!(interview.id, recruiter.id)
+        preloaded_interview =
+          Recruits.get_interview_with_member_users!(interview.id, recruiter.id)
 
         # 追加したメンバー全員に可否メールを送信する。
         send_acceptance_mails(preloaded_interview, recruiter)
@@ -209,9 +212,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
         # メール送信の成否に関わらず正常終了とする
         # TODO メール送信エラーを運用上検知する必要がないか?
 
-        {:noreply,
-         socket
-         |> redirect(to: ~p"/mypage")}
+        {:noreply, redirect(socket, to: ~p"/recruits/interviews")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset)}
