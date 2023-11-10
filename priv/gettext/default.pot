@@ -36,3 +36,15 @@ msgstr ""
 
 msgid "complete_interview"
 msgstr ""
+
+msgid "not_answered"
+msgstr ""
+
+msgid "wants"
+msgstr ""
+
+msgid "not_wants"
+msgstr ""
+
+msgid  "keep"
+msgstr ""
