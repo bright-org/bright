@@ -90,11 +90,11 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
           phx-click="assign"
           phx-target={@myself}
         >
-          下記の人たちでカスタムグループを更新する
+          表示メンバーでカスタムグループ更新
         </div>
       </li>
 
-      <% # カスタムグループの切り替え %>
+      <% # カスタムグループの選択 %>
       <li>
         <div
           id="custom-groups-list-dropdown"
@@ -106,11 +106,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
             class="dropdownTrigger w-full flex items-center justify-between block px-1 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
             type="button"
           >
-            <%= if @custom_group do %>
-              別のカスタムグループに切り替える
-            <% else %>
-              カスタムグループに切り替える
-            <% end %>
+            比較するカスタムグループの選択
             <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
             </svg>
@@ -144,7 +140,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
           phx-target={@myself}
         >
           <div class="grow">
-            <BrightCoreComponents.input type="text" input_class="w-full" field={@form[:name]} placeholder="下記の人たちでカスタムグループを追加する" />
+            <BrightCoreComponents.input type="text" input_class="w-full" field={@form[:name]} placeholder="表示メンバーでカスタムグループ追加" />
           </div>
           <button class="grow-0 text-sm font-bold px-3 py-2 rounded border bg-base text-white">追加</button>
         </.form>
