@@ -6,9 +6,11 @@ defmodule Bright.Recruits.InterviewMember do
   @foreign_key_type Ecto.ULID
 
   schema "interview_members" do
-    field :decision, :string
+    field :decision, Ecto.Enum,
+      values: [:not_answered, :wants, :keep, :not_wants],
+      default: :not_answered
 
-    belongs_to :user, Bright.Accounts.User, references: :id
+    belongs_to :user, Bright.Accounts.User
     belongs_to :interview, Bright.Recruits.Interview
 
     timestamps()
