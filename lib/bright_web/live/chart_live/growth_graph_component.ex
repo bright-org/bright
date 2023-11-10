@@ -111,7 +111,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       <% # 比較対象 表示 %>
       <div :if={compared_user_display?(@compared_user, @user_id)} id="compared-user-display" class="py-2 lg:py-4">
         <div class="w-14"></div>
-        <div class="w-[725px] flex justify-between items-center">
+        <div class="w-full lg:w-[725px] flex justify-between items-center">
           <div class="text-left flex items-center text-base border border-brightGray-200 px-3 py-1 rounded">
             <img class="inline-block h-10 w-10 rounded-full" src={UserProfiles.icon_url(@compared_user.user_profile.icon_file_path)} />
             <div class="ml-2">
