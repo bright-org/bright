@@ -14,10 +14,17 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
     status: :consume_interview,
     comment: "some updated comment"
   }
-  @invalid_attrs %{skill_params: nil, comment: nil, recruiter_user_id: nil, candidates_user_id: nil}
+  @invalid_attrs %{
+    skill_params: nil,
+    comment: nil,
+    recruiter_user_id: nil,
+    candidates_user_id: nil
+  }
 
   defp create_interview(_) do
-    interview = insert(:interview, recruiter_user_id: insert(:user).id, candidates_user_id: insert(:user).id)
+    interview =
+      insert(:interview, recruiter_user_id: insert(:user).id, candidates_user_id: insert(:user).id)
+
     %{interview: interview}
   end
 
@@ -32,7 +39,12 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
     end
 
     test "saves new interview", %{conn: conn} do
-      create_attrs = Map.merge(@create_attrs, %{recruiter_user_id: insert(:user).id, candidates_user_id: insert(:user).id})
+      create_attrs =
+        Map.merge(@create_attrs, %{
+          recruiter_user_id: insert(:user).id,
+          candidates_user_id: insert(:user).id
+        })
+
       {:ok, index_live, _html} = live(conn, ~p"/admin/recruits/interviews")
 
       assert index_live |> element("a", "New Interview") |> render_click() =~
@@ -43,7 +55,6 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
       assert index_live
              |> form("#interview-form", interview: @invalid_attrs)
              |> render_change() =~ "入力してください"
-
 
       assert index_live
              |> form("#interview-form", interview: create_attrs)
@@ -66,11 +77,9 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
 
       assert_patch(index_live, ~p"/admin/recruits/interviews/#{interview}/edit")
 
-
       assert index_live
              |> form("#interview-form", interview: @update_attrs)
              |> render_submit()
-
 
       assert_patch(index_live, ~p"/admin/recruits/interviews")
 
@@ -107,7 +116,6 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
                "Edit Interview"
 
       assert_patch(show_live, ~p"/admin/recruits/interviews/#{interview}/show/edit")
-
 
       assert show_live
              |> form("#interview-form", interview: @update_attrs)

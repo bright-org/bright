@@ -39,8 +39,13 @@ defmodule Bright.RecruitsTest do
     end
 
     test "update_interview/2 with valid data updates the interview" do
-      interview = insert(:interview, recruiter_user_id: insert(:user).id, candidates_user_id: insert(:user).id)
-      update_attrs = %{skill_params: "some updated skill_params", status: :consume_interview,}
+      interview =
+        insert(:interview,
+          recruiter_user_id: insert(:user).id,
+          candidates_user_id: insert(:user).id
+        )
+
+      update_attrs = %{skill_params: "some updated skill_params", status: :consume_interview}
 
       assert {:ok, %Interview{} = interview} = Recruits.update_interview(interview, update_attrs)
       assert interview.skill_params == "some updated skill_params"
