@@ -92,7 +92,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
                 >add</span>
             </button>
             <div
-              class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
+              class="dropdownTarget bg-white rounded-md mt-1 w-full lg:w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
             >
               <.live_component
                 id="related-user-card-compare"
@@ -131,8 +131,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       </div>
 
       <% # タイムライン比較対象用 %>
-      <div :if={@compared_user} id="timeline-bar-compared" class="flex justify-start items-center">
-        <div class="w-14">
+      <div :if={@compared_user} id="timeline-bar-compared" class="lg:flex lg:items-center">
+        <div class="w-14 hidden lg:block">
           <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself} />
         </div>
 
@@ -146,7 +146,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           display_now={false}
         />
 
-        <div class="w-14 flex justify-end items-center">
+        <div class="w-14 hidden lg:flex justify-end">
+          <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
+        </div>
+
+        <div class="flex justify-between lg:hidden">
+          <% # スマホ版タイムライン移動ボタン %>
+          <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself} />
           <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
         </div>
       </div>
