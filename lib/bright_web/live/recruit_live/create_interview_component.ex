@@ -10,7 +10,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
 
   def render(assigns) do
     ~H"""
-    <div id="adoption_modal" class="hidden">
+    <div id="create_interview_modal" class="hidden">
       <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
       <div class="fixed inset-0 overflow-y-auto z-[60]">
         <main class="flex h-screen items-center justify-center w-screen" role="main">
@@ -111,7 +111,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
             <div>
               <button
                 class="absolute right-5 top-5 z-10"
-                phx-click={JS.hide(to: "#adoption_modal")}
+                phx-click={JS.hide(to: "#create_interview_modal")}
               >
                 <span class="material-icons !text-3xl text-brightGray-900"
                   >close</span>
@@ -155,8 +155,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
   end
 
   def handle_event("open", %{"user" => user_id, "skill_params" => skill_params}, socket) do
-    user =
-      UserSearches.get_user_by_id_with_job_profile_and_skill_score(user_id, skill_params)
+    user = UserSearches.get_user_by_id_with_job_profile_and_skill_score(user_id, skill_params)
 
     skill_params =
       skill_params

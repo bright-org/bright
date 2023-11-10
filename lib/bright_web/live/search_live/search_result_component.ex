@@ -69,7 +69,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
           <a
             phx-click={
-              JS.show(to: "#adoption_modal") |> JS.push("open", value: %{user: @user.id, skill_params: @skill_params}, target: "#adoption_modal")
+              JS.show(to: "#create_interview_modal") |> JS.push("open", value: %{user: @user.id, skill_params: @skill_params}, target: "#adoption_modal")
             }
             class="bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56"
           >
