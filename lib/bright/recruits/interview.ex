@@ -39,4 +39,13 @@ defmodule Bright.Recruits.Interview do
     )
     |> validate_required([:skill_params, :status, :candidates_user_id, :recruiter_user_id])
   end
+
+  def career_fields(interview, career_fields) do
+    interview.skill_params
+    |> Jason.decode!()
+    |> Enum.map(&Map.get(&1, "career_field"))
+    |> Enum.map(&Enum.find(career_fields, fn ca -> ca.name_en == &1 end))
+    |> Enum.map(& &1.name_ja)
+    |> Enum.join(",")
+  end
 end
