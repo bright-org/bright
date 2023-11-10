@@ -1,4 +1,8 @@
 defmodule Bright.Recruits.InterviewMember do
+  @moduledoc """
+  面談調整参加者候補
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
