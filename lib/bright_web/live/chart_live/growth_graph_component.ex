@@ -132,7 +132,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
       <% # タイムライン比較対象用 %>
       <div :if={@compared_user} id="timeline-bar-compared" class="lg:flex lg:items-center">
-        <div class="w-14 hidden lg:block">
+        <div class="w-14 hidden lg:block" data-size="pc">
           <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself} />
         </div>
 
@@ -146,11 +146,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           display_now={false}
         />
 
-        <div class="w-14 hidden lg:flex justify-end">
+        <div class="w-14 hidden lg:flex justify-end" data-size="pc">
           <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
         </div>
 
-        <div class="flex justify-between lg:hidden">
+        <div class="flex justify-between lg:hidden" data-size="sp">
           <% # スマホ版タイムライン移動ボタン %>
           <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself} />
           <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
@@ -162,6 +162,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   defp btn_timeline_shift_past(%{enabled: true} = assigns) do
     assigns = Map.put_new(assigns, :class, "")
+
     ~H"""
     <button
       :if={@enabled}
@@ -178,6 +179,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   defp btn_timeline_shift_past(%{enabled: false} = assigns) do
     assigns = Map.put_new(assigns, :class, "")
+
     ~H"""
     <button
       :if={!@enabled}
@@ -191,6 +193,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   defp btn_timeline_shift_future(%{enabled: true} = assigns) do
     assigns = Map.put_new(assigns, :class, "")
+
     ~H"""
     <button
       :if={@enabled}
@@ -207,6 +210,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   defp btn_timeline_shift_future(%{enabled: false} = assigns) do
     assigns = Map.put_new(assigns, :class, "")
+
     ~H"""
     <button
       :if={!@enabled}

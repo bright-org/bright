@@ -442,7 +442,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
         # 比較側を１月ずらす確認
         show_live
-        |> element(~s(button[phx-click="shift_timeline_past"][phx-value-id="other"]))
+        |> element(
+          ~s(div[data-size="pc"] button[phx-click="shift_timeline_past"][phx-value-id="other"])
+        )
         |> render_click()
 
         data =
@@ -514,7 +516,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
         # 比較側を１月ずらす確認
         show_live
-        |> element(~s(button[phx-click="shift_timeline_past"][phx-value-id="other"]))
+        |> element(
+          ~s(div[data-size="pc"] button[phx-click="shift_timeline_past"][phx-value-id="other"])
+        )
         |> render_click()
 
         data =
