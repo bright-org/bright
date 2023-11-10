@@ -4,6 +4,7 @@ defmodule Bright.Recruits do
   """
 
   import Ecto.Query, warn: false
+  alias Bright.Recruits.InterviewMember
   alias Bright.Repo
 
   alias Bright.Recruits.Interview
@@ -19,6 +20,12 @@ defmodule Bright.Recruits do
   """
   def list_interview do
     Repo.all(Interview)
+  end
+
+  def list_interview(user_id) do
+    Interview
+    |> where([i], i.recruiter_user_id == ^user_id)
+    |> Repo.all()
   end
 
   @doc """
@@ -39,7 +46,7 @@ defmodule Bright.Recruits do
 
   def get_interview_with_member_users!(id) do
     Interview
-    |> preload(interview_members: :user)
+    |> preload(interview_members: [user: :user_profile])
     |> Repo.get!(id)
   end
 
@@ -106,5 +113,18 @@ defmodule Bright.Recruits do
   """
   def change_interview(%Interview{} = interview, attrs \\ %{}) do
     Interview.changeset(interview, attrs)
+  end
+
+  def list_interview_members(user_id) do
+    InterviewMember
+    |> where([m], m.user_id == ^user_id)
+    |> preload(:interview)
+    |> Repo.all()
+  end
+
+  def get_interview_member!(id) do
+    InterviewMember
+    |> preload(:interview)
+    |> Repo.get(id)
   end
 end
