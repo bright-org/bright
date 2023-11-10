@@ -12,7 +12,8 @@ defmodule Bright.Recruits.Interview do
     field :skill_params, :string
 
     field :status, Ecto.Enum,
-      values: [:waiting_deceision, :consume_interview, :dismiss_interview, :completed_interview]
+      values: [:waiting_decision, :consume_interview, :dismiss_interview, :completed_interview],
+      default: :waiting_decision
 
     belongs_to :candidates_user, User
     belongs_to :recruiter_user, User

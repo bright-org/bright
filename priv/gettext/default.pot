@@ -25,7 +25,7 @@ msgid "close"
 msgstr ""
 
 
-msgid "waiting_deceision"
+msgid "waiting_decision"
 msgstr ""
 
 msgid "consume_interview"
