@@ -298,6 +298,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   def handle_event("compare_myself", _params, socket) do
     %{current_user: user, timeline: timeline} = socket.assigns
 
+    user = Map.put(user, :anonymous, false)
     compared_timeline = TimelineHelper.select_past_if_label_is_now(timeline)
     notify_parent_compared_user_added(user, compared_timeline)
 
