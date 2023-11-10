@@ -44,8 +44,9 @@ defmodule Bright.Recruits do
   """
   def get_interview!(id), do: Repo.get!(Interview, id)
 
-  def get_interview_with_member_users!(id) do
+  def get_interview_with_member_users!(id, user_id) do
     Interview
+    |> where([i], i.recruiter_user_id == ^user_id)
     |> preload(interview_members: [user: :user_profile])
     |> Repo.get!(id)
   end
@@ -122,9 +123,33 @@ defmodule Bright.Recruits do
     |> Repo.all()
   end
 
-  def get_interview_member!(id) do
+  def get_interview_member!(id, user_id) do
     InterviewMember
+    |> where([m], m.user_id == ^user_id)
     |> preload(:interview)
     |> Repo.get(id)
   end
+
+  def deliver_acceptance_email_instructions(
+    from_user,
+    to_user,
+    interview_member,
+    acceptance_interview_url_fun
+    ) when is_function(acceptance_interview_url_fun, 1) do
+    if !Bright.Utils.Env.prod?() or Application.get_env(:bright, :dev_routes) do
+      :ets.insert(
+        :token,
+        {"acceptance", to_user.email, to_user.name, acceptance_interview_url_fun.(interview_member.id)}
+      )
+    end
+
+    UserNotifier.deliver_acceptance_interview_email_instructions(
+      from_user,
+      to_user,
+      acceptance_interview_url_fun.(interview_member.id)
+
+    )
+
+  end
+
 end

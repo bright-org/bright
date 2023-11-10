@@ -118,13 +118,15 @@ defmodule BrightWeb.RecruitLive.Interview do
   end
 
   defp apply_action(socket, :show_interview, %{"id" => id}) do
+    user_id = socket.assigns.current_user.id
     socket
-    |> assign(:interview, Recruits.get_interview_with_member_users!(id))
+    |> assign(:interview, Recruits.get_interview_with_member_users!(id, user_id))
   end
 
   defp apply_action(socket, :show_member, %{"id" => id}) do
+    user_id = socket.assigns.current_user.id
     socket
-    |> assign(:interview_member, Recruits.get_interview_member!(id))
+    |> assign(:interview_member, Recruits.get_interview_member!(id, user_id))
   end
 
   defp apply_action(socket, :index, _params) do

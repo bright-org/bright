@@ -195,17 +195,16 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
         "skill_params" => Jason.encode!(socket.assigns.skill_params),
         "interview_members" => Enum.map(socket.assigns.users, &%{"user_id" => &1.id}),
         "recruiter_user_id" => recruiter.id,
-        "status" => "interview_adjustment_start",
         "candidates_user_id" => candidates_user.id
       })
 
     case Recruits.create_interview(interview_params) do
-      {:ok, _interview} ->
+      {:ok, interview} ->
         # 全メンバーのuserを一気にpreloadしたいのでteamを再取得
-        # preloaded_interview = Recruits.get_interview_with_member_users!(interview.id)
+        preloaded_interview = Recruits.get_interview_with_member_users!(interview.id, recruiter.id)
 
-        # 招待したメンバー全員に可否メールを送信する。
-        # send_acceptance_mails(preloaded_interview, recruiter)
+        # 追加したメンバー全員に可否メールを送信する。
+        send_acceptance_mails(preloaded_interview, recruiter)
 
         # メール送信の成否に関わらず正常終了とする
         # TODO メール送信エラーを運用上検知する必要がないか?
@@ -225,7 +224,8 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
       Recruits.deliver_acceptance_email_instructions(
         recruiter,
         member.user,
-        interview
+        member,
+        &url(~p"/recruits/interviews/member/#{&1}")
       )
     end)
   end
