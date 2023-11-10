@@ -105,4 +105,8 @@ defmodule Bright.Factory do
   # CustomGroups context
   use Bright.CustomGroupFactory
   use Bright.CustomGroupMemberUserFactory
+
+  # Recruit context
+  use Bright.InterviewFactory
+  use Bright.InterviewMemberFactory
 end

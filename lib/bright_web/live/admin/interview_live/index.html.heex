@@ -8,7 +8,7 @@
 </.header>
 
 <.table
-  id="recruit_interview"
+  id="interviews"
   rows={@streams.interviews}
   row_click={fn {_id, interview} -> JS.navigate(~p"/admin/recruits/interviews/#{interview}") end}
 >

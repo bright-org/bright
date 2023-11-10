@@ -10,8 +10,8 @@ defmodule BrightWeb.RecruitLive.NotificationHeaderComponent do
     <div>
       <button
         class="fixed top-3 right-16 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:right-0 lg:mr-0 lg:relative"
-        phx-click="toggle_notifications"
-        phx-click-away="close_notifications"
+        phx-click="toggle_recruit_notifications"
+        phx-click-away="close_recruit_notifications"
         phx-target={@myself}
       >
         <.icon name="hero-inbox-stack" class="h-8 w-8" />
@@ -49,7 +49,7 @@ defmodule BrightWeb.RecruitLive.NotificationHeaderComponent do
   end
 
   @impl true
-  def handle_event("toggle_notifications", _params, socket) do
+  def handle_event("toggle_recruit_notifications", _params, socket) do
     new_open? = !socket.assigns.open?
 
     socket
@@ -57,7 +57,7 @@ defmodule BrightWeb.RecruitLive.NotificationHeaderComponent do
     |> then(&{:noreply, &1})
   end
 
-  def handle_event("close_notifications", _params, socket) do
+  def handle_event("close_recruit_notifications", _params, socket) do
     socket
     |> assign(:open?, false)
     |> then(&{:noreply, &1})

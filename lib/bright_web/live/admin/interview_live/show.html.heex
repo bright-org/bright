@@ -14,16 +14,11 @@
   <:item title="Status"><%= @interview.status %></:item>
 </.list>
 
-
-  <%= for member <- @interview.interview_members do %>
-    <p><%= member.user.name %>:<%= if member.decision == nil, do: "none", else: member.decision %></p>
-  <% end %>
-
 <.back navigate={~p"/admin/recruits/interviews"}>Back to recruit_interview</.back>
 
 <.modal :if={@live_action == :edit} id="interview-modal" show on_cancel={JS.patch(~p"/admin/recruits/interviews/#{@interview}")}>
   <.live_component
-    module={BrightWeb.InterviewLive.FormComponent}
+    module={BrightWeb.Admin.InterviewLive.FormComponent}
     id={@interview.id}
     title={@page_title}
     action={@live_action}

@@ -13,7 +13,7 @@ defmodule BrightWeb.Admin.InterviewLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:interview, Recruits.get_interview_with_member_users!(id))}
+     |> assign(:interview, Recruits.get_interview!(id))}
   end
 
   defp page_title(:show), do: "Show Interview"
