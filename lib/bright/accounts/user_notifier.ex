@@ -214,4 +214,31 @@ defmodule Bright.Accounts.UserNotifier do
     #{@signature}
     """)
   end
+
+  @doc """
+  Deliver interview acceptance .
+  """
+  def deliver_acceptance_interview_instructions(from_user, to_user, url) do
+    deliver(to_user.email, "【Bright】面談調整依頼が届いています", """
+    #{to_user.name}さん
+    Brightカスタマーサクセスです。
+
+    いつも Bright をご利用いただき、ありがとうございます。
+
+    #{from_user.name} さんから、面談の調整依頼が届いています。
+
+    面談調整を行う場合は、下記URLから面談可否を入力してください。
+    #{url}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
 end
