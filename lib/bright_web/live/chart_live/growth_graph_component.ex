@@ -33,24 +33,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       <% # 成長グラフ %>
       <div class="flex">
         <div class="w-14 relative">
-          <button
-            :if={@timeline.past_enabled}
-            phx-click="shift_timeline_past"
-            phx-value-id="myself"
-            phx-target={@myself}
-            class="w-8 h-6 bg-brightGray-900 flex justify-center items-center rounded absolute -bottom-1 lg:bottom-1 lg:w-11 lg:h-9"
-            disabled={false}
-          >
-            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
-          </button>
-          <button
-            :if={!@timeline.past_enabled}
-            phx-target={@myself}
-            class="w-8 h-6 bg-brightGray-300 flex justify-center items-center rounded absolute -bottom-1 lg:bottom-1 lg:w-11 lg:h-9"
-            disabled={true}
-          >
-            <span class="material-icons text-white !text-4xl">arrow_left</span>
-          </button>
+          <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself} class="absolute -bottom-1 lg:bottom-1" />
         </div>
         <div class="hidden lg:block">
           <.growth_graph data={@data} id="growth-graph"/>
@@ -62,23 +45,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           <p class="py-4 lg:py-5">ベテラン</p>
           <p class="py-3 lg:py-20">平均</p>
           <p class="py-2 lg:py-6">見習い</p>
-          <button
-            :if={@timeline.future_enabled}
-            phx-click="shift_timeline_future"
-            phx-value-id="myself"
-            phx-target={@myself}
-            class="w-8 h-6 bg-brightGray-900 flex justify-center items-center rounded absolute -bottom-1 lg:bottom-1 lg:w-11 lg:h-9"
-            disabled={false}
-          >
-            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
-          </button>
-          <button
-            :if={!@timeline.future_enabled}
-            class="w-8 h-6 bg-brightGray-300 flex justify-center items-center rounded absolute -bottom-1 lg:bottom-1 lg:w-11 lg:h-9"
-            disabled={true}
-          >
-            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
-          </button>
+
+          <.btn_timeline_shift_future enabled={@timeline.future_enabled} id="myself" myself={@myself} class="absolute -bottom-1 lg:bottom-1" />
         </div>
       </div>
 
@@ -96,8 +64,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         <div class="flex justify-center items-center ml-2"></div>
       </div>
 
-      <% # 比較対象 選択 PCのみ %>
-      <div :if={is_nil @compared_user} class="hidden lg:flex py-4">
+      <% # 比較対象 選択 %>
+      <div :if={is_nil @compared_user} class="py-2 lg:py-4">
         <div class="w-7 lg:w-14"> </div>
         <div class="flex gap-x-4">
           <button
@@ -110,7 +78,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           </button>
           <div
             id="compare-indivividual-dropdown"
-            class="mt-4 lg:mt-0 hidden lg:block"
             phx-hook="Dropdown"
             data-dropdown-offset-skidding="307"
             data-dropdown-placement="bottom"
@@ -141,8 +108,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         <div class="flex justify-center items-center ml-2"></div>
       </div>
 
-      <% # 比較対象 表示 PCのみ %>
-      <div :if={compared_user_display?(@compared_user, @user_id)} id="compared-user-display" class="hidden lg:flex py-4">
+      <% # 比較対象 表示 %>
+      <div :if={compared_user_display?(@compared_user, @user_id)} id="compared-user-display" class="py-2 lg:py-4">
         <div class="w-14"></div>
         <div class="w-[725px] flex justify-between items-center">
           <div class="text-left flex items-center text-base border border-brightGray-200 px-3 py-1 rounded">
@@ -163,27 +130,10 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         <div></div>
       </div>
 
-      <% # タイムライン比較対象用 PCのみ %>
-      <div :if={@compared_user} id="timeline-bar-compared" class="flex">
-        <div class="w-14 flex justify-start items-center">
-          <button
-            :if={@compared_timeline.past_enabled}
-            phx-click="shift_timeline_past"
-            phx-value-id="other"
-            phx-target={@myself}
-            class="w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded"
-            disabled={false}
-          >
-            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
-          </button>
-          <button
-            :if={!@compared_timeline.past_enabled}
-            phx-target={@myself}
-            class="w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-300 flex justify-center items-center rounded"
-            disabled={true}
-          >
-            <span class="material-icons text-white !text-4xl">arrow_left</span>
-          </button>
+      <% # タイムライン比較対象用 %>
+      <div :if={@compared_user} id="timeline-bar-compared" class="flex justify-start items-center">
+        <div class="w-14">
+          <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself} />
         </div>
 
         <.timeline_bar
@@ -197,26 +147,68 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         />
 
         <div class="w-14 flex justify-end items-center">
-          <button
-            :if={@compared_timeline.future_enabled}
-            phx-click="shift_timeline_future"
-            phx-value-id="other"
-            phx-target={@myself}
-            class="w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded"
-            disabled={false}
-          >
-            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
-          </button>
-          <button
-            :if={!@compared_timeline.future_enabled}
-            class="w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-300 flex justify-center items-center rounded"
-            disabled={true}
-          >
-            <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
-          </button>
+          <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
         </div>
       </div>
     </div>
+    """
+  end
+
+  defp btn_timeline_shift_past(%{enabled: true} = assigns) do
+    assigns = Map.put_new(assigns, :class, "")
+    ~H"""
+    <button
+      :if={@enabled}
+      phx-click="shift_timeline_past"
+      phx-value-id={@id}
+      phx-target={@myself}
+      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded", @class]}
+      disabled={false}
+    >
+      <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
+    </button>
+    """
+  end
+
+  defp btn_timeline_shift_past(%{enabled: false} = assigns) do
+    assigns = Map.put_new(assigns, :class, "")
+    ~H"""
+    <button
+      :if={!@enabled}
+      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-300 flex justify-center items-center rounded", @class]}
+      disabled={true}
+    >
+      <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
+    </button>
+    """
+  end
+
+  defp btn_timeline_shift_future(%{enabled: true} = assigns) do
+    assigns = Map.put_new(assigns, :class, "")
+    ~H"""
+    <button
+      :if={@enabled}
+      phx-click="shift_timeline_future"
+      phx-value-id={@id}
+      phx-target={@myself}
+      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded", @class]}
+      disabled={false}
+    >
+      <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
+    </button>
+    """
+  end
+
+  defp btn_timeline_shift_future(%{enabled: false} = assigns) do
+    assigns = Map.put_new(assigns, :class, "")
+    ~H"""
+    <button
+      :if={!@enabled}
+      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-300 flex justify-center items-center rounded", @class]}
+      disabled={true}
+    >
+      <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
+    </button>
     """
   end
 
