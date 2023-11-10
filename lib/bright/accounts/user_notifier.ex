@@ -240,5 +240,4 @@ defmodule Bright.Accounts.UserNotifier do
     #{@signature}
     """)
   end
-
 end

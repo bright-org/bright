@@ -4,10 +4,10 @@ defmodule Bright.Recruits do
   """
 
   import Ecto.Query, warn: false
-  alias Bright.Recruits.InterviewMember
   alias Bright.Repo
-
+  alias Bright.Recruits.InterviewMember
   alias Bright.Recruits.Interview
+  alias Bright.Accounts.UserNotifier
 
   @doc """
   Returns the list of recruit_interview.
@@ -131,25 +131,24 @@ defmodule Bright.Recruits do
   end
 
   def deliver_acceptance_email_instructions(
-    from_user,
-    to_user,
-    interview_member,
-    acceptance_interview_url_fun
-    ) when is_function(acceptance_interview_url_fun, 1) do
+        from_user,
+        to_user,
+        interview_member,
+        acceptance_interview_url_fun
+      )
+      when is_function(acceptance_interview_url_fun, 1) do
     if !Bright.Utils.Env.prod?() or Application.get_env(:bright, :dev_routes) do
       :ets.insert(
         :token,
-        {"acceptance", to_user.email, to_user.name, acceptance_interview_url_fun.(interview_member.id)}
+        {"acceptance", to_user.email, to_user.name,
+         acceptance_interview_url_fun.(interview_member.id)}
       )
     end
 
-    UserNotifier.deliver_acceptance_interview_email_instructions(
+    UserNotifier.deliver_acceptance_interview_instructions(
       from_user,
       to_user,
       acceptance_interview_url_fun.(interview_member.id)
-
     )
-
   end
-
 end

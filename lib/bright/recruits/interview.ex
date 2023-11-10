@@ -1,4 +1,8 @@
 defmodule Bright.Recruits.Interview do
+  @moduledoc """
+  面談調整
+  """
+
   use Ecto.Schema
   alias Bright.Accounts.User
   alias Bright.Recruits.InterviewMember
