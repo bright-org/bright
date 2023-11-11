@@ -73,10 +73,10 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             }
             class="bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56"
           >
-          採用面談調整<br />
+          採用面談調整<br />βリリース（11月予定）から
           </a>
-          <a class="bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56">
-          採用・育成チームに採用依頼 <br />βリリース（10月予定）から
+          <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
+          採用・育成チームに採用依頼 <br />βリリース（11月予定）から
           </a>
         </div>
         <div :if={!@search} class="flex justify-between mt-8">

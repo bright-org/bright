@@ -384,7 +384,8 @@ defmodule Bright.SkillScores do
       %{
         name: skill_unit.name,
         percentage: Map.get(skill_unit_score || %{}, :percentage, 0.0),
-        position: Map.get(skill_class_unit, :position)
+        position: Map.get(skill_class_unit, :position),
+        trace_id: skill_unit.trace_id
       }
     end)
   end

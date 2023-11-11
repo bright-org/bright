@@ -94,7 +94,8 @@ defmodule Bright.HistoricalSkillScores do
       %{
         name: historical_skill_unit.name,
         percentage: Map.get(historical_skill_unit_score || %{}, :percentage, 0.0),
-        position: Map.get(historical_skill_class_unit, :position)
+        position: Map.get(historical_skill_class_unit, :position),
+        trace_id: historical_skill_unit.trace_id
       }
     end)
   end
