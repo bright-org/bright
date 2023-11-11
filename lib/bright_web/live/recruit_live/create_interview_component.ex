@@ -194,7 +194,6 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
     {:noreply, assign(socket, :users, removed_users)}
   end
 
-
   def handle_event("create_interview", %{"interview" => interview_params}, socket) do
     recruiter = socket.assigns.current_user
     candidates_user = socket.assigns.candidates_user |> List.first()
