@@ -1,4 +1,3 @@
-# TODO 「bfa3829b2692f756ab89e228d923ca1516edf31b」　「feat: さまざまな人たちとの交流 にボタン追加」　までデザイン更新
 defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
   @moduledoc """
   Related Users Card Components
@@ -140,20 +139,6 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
     else
       {:noreply, socket}
     end
-  end
-
-  def handle_event(
-        "tab_click",
-        %{"id" => _id, "tab_name" => tab_name},
-        socket
-      ) do
-    # TODO これは雛形です処理を記述すること
-
-    socket =
-      socket
-      |> assign(:selected_tab, tab_name)
-
-    {:noreply, socket}
   end
 
   def handle_event(
