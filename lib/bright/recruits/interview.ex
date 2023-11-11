@@ -23,7 +23,7 @@ defmodule Bright.Recruits.Interview do
     belongs_to :recruiter_user, User
     belongs_to :requestor_user, User
 
-    has_many :interview_members, InterviewMember, on_replace: :delete
+    has_many :interview_members, InterviewMember, on_replace: :delete, on_delete: :delete_all
 
     timestamps()
   end
