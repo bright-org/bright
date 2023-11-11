@@ -41,7 +41,7 @@ defmodule BrightWeb.RecruitLive.Interview do
       </div>
     </div>
 
-    <div id="interview_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
+    <div id="interview_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
 
     <h4 class="text-start">面談調整依頼</h4>
