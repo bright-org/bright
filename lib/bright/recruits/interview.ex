@@ -50,7 +50,6 @@ defmodule Bright.Recruits.Interview do
     |> Jason.decode!()
     |> Enum.map(&Map.get(&1, "career_field"))
     |> Enum.map(&Enum.find(career_fields, fn ca -> ca.name_en == &1 end))
-    |> Enum.map(& &1.name_ja)
-    |> Enum.join(",")
+    |> Enum.map_join(",", & &1.name_ja)
   end
 end
