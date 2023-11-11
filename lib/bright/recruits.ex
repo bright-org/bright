@@ -127,7 +127,7 @@ defmodule Bright.Recruits do
     InterviewMember
     |> where([m], m.user_id == ^user_id)
     |> preload(:interview)
-    |> Repo.get(id)
+    |> Repo.get!(id)
   end
 
   def deliver_acceptance_email_instructions(
