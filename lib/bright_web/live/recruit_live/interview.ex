@@ -14,7 +14,7 @@ defmodule BrightWeb.RecruitLive.Interview do
       <div class="text-sm font-medium text-center">
         <h4 class="text-start">面談調整</h4>
         <li :if={Enum.count(@interviews) == 0} class="flex">
-          <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+          <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
             調整中の面談はありません
           </div>
         </li>
