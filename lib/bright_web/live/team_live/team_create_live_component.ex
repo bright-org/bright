@@ -47,6 +47,11 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   @impl true
+  # add user eventでmy_team_liveからupdateが入ったときに実行されformの変更を保持する
+  def update(assigns, %{assigns: %{team_form: %Phoenix.HTML.Form{}}} = socket) do
+    {:ok, assign(socket, users: assigns.users)}
+  end
+
   def update(%{action: :edit, team: team} = assigns, socket) do
     socket
     |> assign(assigns)
