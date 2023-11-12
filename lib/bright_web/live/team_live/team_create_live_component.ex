@@ -46,10 +46,9 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     """
   end
 
-
   @impl true
   # add user eventでmy_team_liveからupdateが入ったときに実行されformの変更を保持する
-  def update(assigns, %{assigns: %{team_form: %Phoenix.HTML.Form{}}}=socket) do
+  def update(assigns, %{assigns: %{team_form: %Phoenix.HTML.Form{}}} = socket) do
     {:ok, assign(socket, users: assigns.users)}
   end
 
@@ -64,6 +63,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   def update(assigns, socket) do
     team_changeset = Team.changeset(%Team{}, %{})
+
     socket
     |> assign(assigns)
     |> assign(:modal_title, "チームを作る（β）")
@@ -108,7 +108,6 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     IO.inspect("info")
     {:noreply, assign(socket, :users, added_users)}
   end
-
 
   def save_team(socket, :new, team_params, count, %{create_teams_limit: limit})
       when count >= limit do
