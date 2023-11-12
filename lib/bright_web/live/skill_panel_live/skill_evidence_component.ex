@@ -17,7 +17,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       <div class="flex justify-center items-center">
         <div class="w-full lg:w-[450px]">
           <p class="pb-2 text-base font-bold">
-            <%= @skill.name %>
+            <%= @title %>
           </p>
 
           <div id="skill_evidence_posts" phx-update="stream">
@@ -195,9 +195,12 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     skill_evidence_posts =
       SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
 
+    title = SkillEvidences.get_skill_breadcrumb(assigns.skill)
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:title, title)
      |> assign(:skill_evidence, skill_evidence)
      |> stream(:skill_evidence_posts, skill_evidence_posts)
      |> update(:user, &Bright.Repo.preload(&1, :user_profile))
