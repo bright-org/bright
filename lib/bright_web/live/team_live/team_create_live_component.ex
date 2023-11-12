@@ -104,11 +104,6 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     save_team(socket, socket.assigns.action, team_params, admin_count, socket.assigns.plan)
   end
 
-  def handle_info({BrightWeb.TeamLive.TeamAddUserComponent, {:add, added_users}}, socket) do
-    IO.inspect("info")
-    {:noreply, assign(socket, :users, added_users)}
-  end
-
   def save_team(socket, :new, team_params, count, %{create_teams_limit: limit})
       when count >= limit do
     msg =
