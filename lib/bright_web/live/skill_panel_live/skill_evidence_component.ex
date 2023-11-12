@@ -59,7 +59,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
                 <% # 削除ボタン %>
                 <div
-                  :if={post_by_myself?(post, @user)}
+                  :if={deletable_user?(post, @skill_evidence, @user)}
                   class="h-6 w-6 py-2 ml-auto cursor-pointer"
                   phx-click="delete"
                   phx-target={@myself}
@@ -72,6 +72,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
           </div>
 
           <.simple_form
+            :if={postable_user?(@skill_evidence, @user)}
             for={@form}
             id="skill_evidence_post-form"
             phx-target={@myself}
@@ -192,12 +193,15 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   @impl true
   def update(assigns, socket) do
+    skill_evidence = Bright.Repo.preload(assigns.skill_evidence, :user)
+
     skill_evidence_posts =
-      SkillEvidences.list_skill_evidence_posts_from_skill_evidence(assigns.skill_evidence)
+      SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
 
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:skill_evidence, skill_evidence)
      |> stream(:skill_evidence_posts, skill_evidence_posts)
      |> update(:user, &Bright.Repo.preload(&1, :user_profile))
      |> assign_form()}
@@ -226,6 +230,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       user: user,
       skill: skill
     } = socket.assigns
+
+    # TODO: 画面からはフォームを消しているがサーバ側として権限確認が必要
 
     image_names = Enum.map(uploads.image.entries, & &1.client_name)
     # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
@@ -258,10 +264,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   end
 
   def handle_event("delete", %{"id" => skill_evidence_post_id}, socket) do
-    SkillEvidences.get_skill_evidence_post_by!(
-      id: skill_evidence_post_id,
-      user_id: socket.assigns.user.id
-    )
+    # TODO: 画面からはボタンを消しているがサーバ側として権限確認が必要
+    SkillEvidences.get_skill_evidence_post!(skill_evidence_post_id)
     |> SkillEvidences.delete_skill_evidence_post()
     |> case do
       {:ok, %{delete: skill_evidence_post}} ->
@@ -346,8 +350,12 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     Storage.public_url(image_path)
   end
 
-  defp post_by_myself?(evidence_post, user) do
-    evidence_post.user_id == user.id
+  defp deletable_user?(skill_evidence_post, skill_evidence, user) do
+    SkillEvidences.can_delete_skill_evidence_post?(skill_evidence_post, skill_evidence, user)
+  end
+
+  defp postable_user?(skill_evidence, user) do
+    SkillEvidences.can_write_skill_evidence?(skill_evidence, user)
   end
 
   defp unassign_invalid_image_entries(socket) do

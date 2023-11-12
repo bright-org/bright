@@ -119,7 +119,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
                "some content by others"
              )
 
-      refute has_element?(
+      # 所有者は削除可能
+      assert has_element?(
                lv,
                ~s(#skill_evidence_posts-#{skill_evidence_post.id} [phx-click="delete"])
              )
@@ -149,7 +150,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       assert has_element?(lv, "#skill_evidence_posts", "input")
     end
 
-    test "deltes post", %{
+    test "deletes post", %{
       conn: conn,
       user: user,
       skill_panel: skill_panel,
@@ -260,7 +261,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       refute has_element?(lv, ~s(img[data-phx-entry-ref="#{ref}"]))
     end
 
-    test "deltes image with post", %{
+    test "deletes image with post", %{
       conn: conn,
       user: user,
       skill_panel: skill_panel
@@ -409,4 +410,58 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
   #     assert Bright.Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_2.id)
   #   end
   # end
+
+  # アクセス制限など
+  describe "Access" do
+    setup [:register_and_log_in_user, :setup_skills]
+
+    test "cannot post to anonymous user's evidence", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill: skill
+    } do
+      user_2 = insert(:user)
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class)
+      insert(:skill_evidence, user: user_2, skill: skill)
+
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}/anon/#{encrypted_name}")
+      open_modal(lv)
+
+      assert has_element?(lv, "#skill-evidence-modal-content")
+      refute has_element?(lv, "#skill_evidence_post-form")
+    end
+
+    test "cannot delete other users post", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill: skill
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+      insert(:skill_class_score, user: user_2, skill_class: skill_class)
+      skill_evidence = insert(:skill_evidence, user: user_2, skill: skill)
+
+      skill_evidence_post =
+        insert(:skill_evidence_post, user: user_2, skill_evidence: skill_evidence)
+
+      {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}/anon/#{encrypted_name}")
+      open_modal(lv)
+
+      assert has_element?(
+               lv,
+               "#skill_evidence_posts-#{skill_evidence_post.id}",
+               skill_evidence_post.content
+             )
+
+      refute has_element?(
+               lv,
+               ~s(#skill_evidence_posts-#{skill_evidence_post.id} [phx-click="delete"])
+             )
+    end
+  end
 end
