@@ -98,7 +98,7 @@ supporter_team_id = "supporter_team_id"
 {:ok, reject_support_team} = Teams.reject_support_by_supporter_team(team_support_team)
 ```
 
-### 取得系
+### 取得、チェック系
 
 ```elixir
 # ユーザーIDをキーにリクエストを受けた支援依頼一覧を取得する
@@ -108,4 +108,12 @@ Teams.list_support_request_by_supporter_user_id(supporter_user.id)
 ```elixir
 # ユーザーIDをキーに支援先のチーム一覧を取得する
 Teams.list_supportee_teams_by_supporter_user_id(supporter_user.id)
+```
+
+```elixir
+# 自身の所属チームの支援元、支援先のチームに所属しているかを確認
+Teams.joined_teams_or_supportee_teams_or_supporter_teams_by_user_id!(
+  supporter_user.id,
+  supporter_user.id
+)
 ```

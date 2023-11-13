@@ -16,8 +16,8 @@ defmodule BrightWeb.DisplayUserHelper do
       Accounts.get_user_by_name!(user_name)
       |> Repo.preload(:user_profile)
 
-    # チームに所属していない人を指定した場合はEcto.NoResultsErrorで404を表示する
-    Teams.joined_teams_by_user_id!(current_user.id, user.id)
+    # チームに所属している、または支援関係にあるチームに所属している人以外を指定した場合はBright.Exceptions.ForbiddenResourceErrorで404を表示する
+    Teams.joined_teams_or_supportee_teams_or_supporter_teams_by_user_id!(current_user.id, user.id)
 
     socket
     |> assign(:me, false)

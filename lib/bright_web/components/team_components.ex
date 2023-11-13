@@ -14,7 +14,7 @@ defmodule BrightWeb.TeamComponents do
   ## Examples
       <.team_small
         id="123"
-        team=%{Brignt.Team}
+        team=%{Bright.Team}
         team_type={:general_team}
         row_on_click_target=@myself
       />
