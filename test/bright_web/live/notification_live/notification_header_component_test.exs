@@ -2,7 +2,6 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponentTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   describe "render" do
     setup [:register_and_log_in_user]
@@ -12,14 +11,13 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponentTest do
 
       refute lv |> has_element?(~s{a[href="/notifications/operations"]})
       refute lv |> has_element?(~s{a[href="/notifications/communities"]})
-
-      insert_list(1, :notification_operation)
-      insert_list(1, :notification_community)
+      refute lv |> has_element?(~s{a[href="/notifications/evidences"]})
 
       assert lv |> element(~s{button[phx-click="toggle_notifications"]}) |> render_click()
 
       assert lv |> has_element?(~s{a[href="/notifications/operations"]})
       assert lv |> has_element?(~s{a[href="/notifications/communities"]})
+      assert lv |> has_element?(~s{a[href="/notifications/evidences"]})
     end
   end
 end
