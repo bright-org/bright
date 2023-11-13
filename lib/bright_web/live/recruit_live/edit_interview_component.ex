@@ -78,9 +78,9 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
                   <button
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+                    class="text-sm font-bold py-3 rounded border border-base w-72"
                   >
-                    面談却下
+                    面談キャンセル
                   </button>
 
                   <button
