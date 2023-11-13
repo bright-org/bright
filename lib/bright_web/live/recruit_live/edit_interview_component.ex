@@ -1,12 +1,14 @@
 defmodule BrightWeb.RecruitLive.EditInterviewComponent do
-  alias Bright.Recruits.Interview
   use BrightWeb, :live_component
 
+  alias Bright.Recruits
+  alias Bright.Recruits.Interview
   alias Bright.UserSearches
 
   import BrightWeb.ProfileComponents, only: [profile_small: 1]
   import Bright.UserProfiles, only: [icon_url: 1]
 
+  @impl true
   def render(assigns) do
     ~H"""
     <div id="interview_edit_modal">
@@ -78,12 +80,14 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
                   <button
+                    phx-click={JS.push("decision", target: @myself, value: %{decision: :dismiss_interview})}
                     class="text-sm font-bold py-3 rounded border border-base w-72"
                   >
                     面談キャンセル
                   </button>
 
                   <button
+                    phx-click={JS.push("decision", target: @myself, value: %{decision: :consume_interview})}
                     class="text-sm font-bold py-3 rounded text-white bg-base w-72"
                   >
                     面談決定
@@ -98,6 +102,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
     """
   end
 
+  @impl true
   def mount(socket) do
     socket
     |> assign(:search_results, [])
@@ -109,6 +114,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
     |> then(&{:ok, &1})
   end
 
+  @impl true
   def update(%{interview: %Interview{}} = assigns, socket) do
     skill_params =
       assigns.interview.skill_params
@@ -136,5 +142,12 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
     socket
     |> assign(assigns)
     |> then(&{:ok, &1})
+  end
+
+  @impl true
+  def handle_event("decision", %{"decision" => decision}, socket) do
+    Recruits.update_interview(socket.assigns.interview, %{status: decision})
+
+    {:noreply, push_navigate(socket, to: ~p"/recruits/interviews")}
   end
 end

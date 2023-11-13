@@ -1,9 +1,11 @@
 defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
+  alias Bright.Recruits
   use BrightWeb, :live_component
 
   alias Bright.UserSearches
   alias Bright.Recruits.InterviewMember
 
+  @impl true
   def render(assigns) do
     ~H"""
     <div id="interview_member_edit_modal">
@@ -33,45 +35,55 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                   />
                 </div>
               </div>
-          <!-- Start 面談調整内容 -->
-            <div class="w-[493px]">
-              <h3 class="font-bold text-xl">面談調整内容</h3>
+              <!-- Start 面談調整内容 -->
+              <div class="w-[493px]">
+                <h3 class="font-bold text-xl">面談調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
-                    <dt
-                      class="font-bold w-[98px] flex items-center mb-10"
-                    >
-                      依頼者
-                    </dt>
-                    <dd class="w-[280px] mb-10">
-                      なし
-                    </dd>
-
-                    <dt class="font-bold w-[98px] flex mt-16">
+                    <dt class="font-bold w-[98px] flex">
                       <label for="point" class="block pr-1">採用候補者の推しポイント<br />注意点</label>
                     </dt>
-                    <dd class="w-[280px] mt-16">
-                    <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full">
-                      <%= @interview_member.interview.comment %>
-                    </div>
+                    <dd class="w-[280px]">
+                    <%= @interview_member.interview.comment %>
+                    </dd>
+                    <dt class="font-bold w-[98px] flex mt-8" >
+                      <label for="point" class="block pr-1">面談可否の<br>判断</label>
+                    </dt>
+                    <dd class="w-[280px] mt-8">
+                      <label class="block">
+                        <input
+                          type="radio" name="interview" class="mr-1"
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :wants})}
+                        >
+                        <span class="align-[2px]">面談決定</span>
+                      </label>
+                      <label class="block">
+                        <input
+                          type="radio" name="interview" class="mr-1"
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :keep})}
+                        >
+                        <span class="align-[2px]">条件に合わないがエンジニアをキープ</span>
+                      </label>
+                      <label class="block">
+                        <input
+                          type="radio" name="interview" class="mr-1"
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :not_wants})}
+                        >
+                        <span class="align-[2px]">面談しない</span>
+                      </label>
                     </dd>
                   </dl>
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
                   <button
                     class="text-sm font-bold py-3 rounded text-white bg-base w-72"
-                  >
-                    面談却下
-                  </button>
-
-                  <button
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+                    phx-click={JS.push("submit", target: @myself)}
                   >
                     面談決定
                   </button>
                 </div>
-            </div><!-- End 面談調整内容 -->
-          </div>
+              </div><!-- End 面談調整内容 -->
+            </div>
           </section>
         </main>
       </div>
@@ -79,17 +91,15 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
     """
   end
 
+  @impl true
   def mount(socket) do
     socket
-    |> assign(:search_results, [])
     |> assign(:candidates_user, [])
     |> assign(:skill_params, %{})
-    |> assign(:members, [])
-    |> assign(:interview_member, nil)
-    |> assign(:candidate_error, "")
     |> then(&{:ok, &1})
   end
 
+  @impl true
   def update(%{interview_member: %InterviewMember{}} = assigns, socket) do
     skill_params =
       assigns.interview_member.interview.skill_params
@@ -110,6 +120,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
     |> assign(assigns)
     |> assign(:skill_params, skill_params)
     |> assign(:candidates_user, user)
+    |> assign(:decision, assigns.interview_member.decision)
     |> then(&{:ok, &1})
   end
 
@@ -117,5 +128,15 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
     socket
     |> assign(assigns)
     |> then(&{:ok, &1})
+  end
+
+  @impl true
+  def handle_event("checked", %{"decision" => decision}, socket) do
+    {:noreply, assign(socket, :decision, decision)}
+  end
+
+  def handle_event("submit", _params, %{assigns: assigns} = socket) do
+    Recruits.update_interview_member(assigns.interview_member, %{decision: assigns.decision})
+    {:noreply, push_navigate(socket, to: ~p"/recruits/interviews")}
   end
 end
