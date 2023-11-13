@@ -246,7 +246,7 @@ defmodule Bright.SkillEvidences do
     base_attrs = %{
       from_user_id: user.id,
       message: "#{user.name}から「#{skill_breadcrumb}」のヘルプが届きました",
-      url: "/TODO/#{skill_evidence.id}/TODO"
+      url: "/notifications/evidences/#{skill_evidence.id}"
     }
 
     timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
@@ -274,13 +274,15 @@ defmodule Bright.SkillEvidences do
       from_user_id: user.id,
       to_user_id: skill_evidence.user_id,
       message: "#{user.name}から「#{skill_breadcrumb}」にメッセージが届きました",
-      url: "/TODO/#{skill_evidence.id}/TODO"
+      url: "/notifications/evidences/#{skill_evidence.id}"
     })
   end
 
-  defp get_skill_breadcrumb(%{id: skill_id}) do
-    # スキル階層名を返す
-    # "スキルユニット名 > スキルカテゴリ名 > スキル名"
+  @doc """
+  スキル階層名を返す
+  スキルユニット名 > スキルカテゴリ名 > スキル名
+  """
+  def get_skill_breadcrumb(%{id: skill_id}) do
     from(
       s in SkillUnits.Skill,
       where: s.id == ^skill_id,
@@ -294,7 +296,16 @@ defmodule Bright.SkillEvidences do
   end
 
   @doc """
+  学習メモを閲覧できるかどうかを返す
+  """
+  def can_read_skill_evidence?(skill_evidence, user) do
+    skill_evidence.user_id == user.id ||
+      user.id in Teams.list_user_ids_related_team_by_user(skill_evidence.user)
+  end
+
+  @doc """
   学習メモに書き込めるかどうかを返す
+  NOTE: 現在は匿名書き込み不可。匿名書き込みを許可に変更するときは、通知メッセージ内のnameに注意
   """
   def can_write_skill_evidence?(skill_evidence, user) do
     skill_evidence.user_id == user.id ||

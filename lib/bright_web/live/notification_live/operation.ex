@@ -57,55 +57,24 @@ defmodule BrightWeb.NotificationLive.Operation do
 
   @impl true
   def mount(_params, _session, socket) do
-    %{entries: notifications, total_pages: total_pages} =
-      get_notifications(
-        socket.assigns.current_user.id,
-        @default_page,
-        @page_per
-      )
-
     socket
     |> assign(:page_title, "運営からの通知")
-    |> assign(:page, @default_page)
-    |> assign(:total_pages, total_pages)
-    |> assign(:notifications, notifications)
+    |> assign_on_page(@default_page)
     |> assign(:shown_notification_operation, nil)
     |> then(&{:ok, &1})
   end
 
   @impl true
   def handle_event("previous_button_click", _params, socket) do
-    new_page = socket.assigns.page - 1
-
-    %{entries: new_notifications, total_pages: new_total_pages} =
-      get_notifications(
-        socket.assigns.current_user.id,
-        new_page,
-        @page_per
-      )
-
     socket
-    |> assign(:page, new_page)
-    |> assign(:total_pages, new_total_pages)
-    |> assign(:notifications, new_notifications)
+    |> assign_on_page(socket.assigns.page - 1)
     |> then(&{:noreply, &1})
   end
 
   @impl true
   def handle_event("next_button_click", _params, socket) do
-    new_page = socket.assigns.page + 1
-
-    %{entries: new_notifications, total_pages: new_total_pages} =
-      get_notifications(
-        socket.assigns.current_user.id,
-        new_page,
-        @page_per
-      )
-
     socket
-    |> assign(:page, new_page)
-    |> assign(:total_pages, new_total_pages)
-    |> assign(:notifications, new_notifications)
+    |> assign_on_page(socket.assigns.page + 1)
     |> then(&{:noreply, &1})
   end
 
@@ -120,17 +89,9 @@ defmodule BrightWeb.NotificationLive.Operation do
 
   @impl true
   def handle_event("close_modal", _params, socket) do
-    %{entries: new_notifications, total_pages: new_total_pages} =
-      get_notifications(
-        socket.assigns.current_user.id,
-        socket.assigns.page,
-        @page_per
-      )
-
     socket
+    |> assign_on_page(socket.assigns.page)
     |> assign(:shown_notification_operation, nil)
-    |> assign(:total_pages, new_total_pages)
-    |> assign(:notifications, new_notifications)
     |> then(&{:noreply, &1})
   end
 
@@ -147,5 +108,15 @@ defmodule BrightWeb.NotificationLive.Operation do
 
   defp find_notification(notifications, notification_operation_id) do
     Enum.find(notifications, &(&1.id == notification_operation_id))
+  end
+
+  defp assign_on_page(socket, page) do
+    %{entries: notifications, total_pages: total_pages} =
+      get_notifications(socket.assigns.current_user.id, page, @page_per)
+
+    socket
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
+    |> assign(:notifications, notifications)
   end
 end

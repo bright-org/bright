@@ -17,7 +17,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       <div class="flex justify-center items-center">
         <div class="w-full lg:w-[450px]">
           <p class="pb-2 text-base font-bold">
-            <%= @skill.name %>
+            <%= @title %>
           </p>
 
           <div id="skill_evidence_posts" phx-update="stream">
@@ -136,8 +136,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   メモを書き込む
                 </button>
 
-                <% # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化 %>
-                <%= if false do %>
                 <button
                   :if={@me}
                   class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
@@ -149,7 +147,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 </button>
                 <% # ヘルプを出す/出さない制御用checkbox %>
                 <input type="checkbox" id="checkbox-help" class="hidden" name="help" checked={true} value="on" phx-update="ignore" />
-                <% end %>
               </div>
             </div>
           </.simple_form>
@@ -198,9 +195,12 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     skill_evidence_posts =
       SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
 
+    title = SkillEvidences.get_skill_breadcrumb(assigns.skill)
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:title, title)
      |> assign(:skill_evidence, skill_evidence)
      |> stream(:skill_evidence_posts, skill_evidence_posts)
      |> update(:user, &Bright.Repo.preload(&1, :user_profile))
@@ -220,9 +220,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
      |> unassign_invalid_image_entries()}
   end
 
-  # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
-  # def handle_event("save", %{"skill_evidence_post" => params, "help" => help}, socket) do
-  def handle_event("save", %{"skill_evidence_post" => params}, socket) do
+  def handle_event("save", %{"skill_evidence_post" => params, "help" => help}, socket) do
     %{
       uploads: uploads,
       me: me,
@@ -234,9 +232,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     # TODO: 画面からはフォームを消しているがサーバ側として権限確認が必要
 
     image_names = Enum.map(uploads.image.entries, & &1.client_name)
-    # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
-    # help? = help == "on" && me
-    help? = false
+    help? = help == "on" && me
     params = Map.update!(params, "content", &maybe_append_help(&1, help?))
 
     # NOTE: 保存処理

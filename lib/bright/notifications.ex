@@ -61,10 +61,10 @@ defmodule Bright.Notifications do
   We use ULID as id, so id sort is same as inserted_at sort.
   https://github.com/woylie/ecto_ulid/blob/v1.0.1/README.md
 
-   ## Examples
+  ## Examples
 
       iex> list_notification_by_type(user.id, "recruitment_coordination", [page: 1, page_size: 10])
-      %Notification{}
+      %Scrivener.Page{}
   """
   def list_notification_by_type(_to_user_id, "operation", page_param) do
     from(notification_operation in NotificationOperation,
@@ -79,6 +79,16 @@ defmodule Bright.Notifications do
     from(notification_community in NotificationCommunity,
       order_by: [
         desc: notification_community.id
+      ]
+    )
+    |> Repo.paginate(page_param)
+  end
+
+  def list_notification_by_type(to_user_id, "evidence", page_param) do
+    from(notification_evidence in NotificationEvidence,
+      where: notification_evidence.to_user_id == ^to_user_id,
+      order_by: [
+        desc: notification_evidence.id
       ]
     )
     |> Repo.paginate(page_param)
