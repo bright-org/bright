@@ -5,6 +5,7 @@ defmodule Bright.Subscriptions do
 
   import Ecto.Query, warn: false
   alias Bright.Repo
+  alias Bright.Accounts.UserNotifier
   alias Bright.Subscriptions.SubscriptionPlan
 
   @doc """
@@ -500,5 +501,13 @@ defmodule Bright.Subscriptions do
       subscription_user_plan.subscription_plan.plan_code == plan_code
     end)
     |> Kernel.not()
+  end
+
+  def deliver_free_trial_apply_instructions(from_user, application_detail) do
+    UserNotifier.deliver_free_trial_apply_instructions(
+      from_user,
+      %{email: "customer-success@bright-fun.org"},
+      application_detail
+    )
   end
 end

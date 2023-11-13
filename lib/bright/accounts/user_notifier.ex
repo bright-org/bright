@@ -219,15 +219,12 @@ defmodule Bright.Accounts.UserNotifier do
   Deliver interview acceptance .
   """
   def deliver_acceptance_interview_instructions(from_user, to_user, url) do
-    deliver(to_user.email, "【Bright】面談調整依頼が届いています", """
+    deliver(to_user.email, "【Bright】面談参加依頼が届いています", """
     #{to_user.name}さん
-    Brightカスタマーサクセスです。
 
-    いつも Bright をご利用いただき、ありがとうございます。
+    #{from_user.name} さんから、面談の参加依頼が届いています。
 
-    #{from_user.name} さんから、面談の調整依頼が届いています。
-
-    面談調整を行う場合は、下記URLから面談可否を入力してください。
+    下記URLで面談内容を確認し、面談参加可否を選択してください。
     #{url}
 
     ---------------------------------------------------------------------
@@ -238,6 +235,27 @@ defmodule Bright.Accounts.UserNotifier do
     customer-success@bright-fun.org
 
     #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver free trial apply .
+  """
+  def deliver_free_trial_apply_instructions(from_user, to_user, detail) do
+    deliver(to_user.email, "【Bright】無料トライアルの申し込みがありました", """
+    以下の内容で無料トライアルが申し込まれました
+
+    ハンドル名: #{from_user.name}
+    ユーザーID: #{detail["user_id"]}
+    サービス名: #{detail["plan_name"]}
+    会社名: #{detail["company_name"]}
+    電話番号: #{detail["phone_number"]}
+    メールアドレス: #{detail["email"]}
+    担当者（本名） #{detail["pic_name"]}
+    申込日(JST) #{NaiveDateTime.local_now() |> NaiveDateTime.to_iso8601()}
+    申込日(UTC) #{NaiveDateTime.utc_now() |> NaiveDateTime.to_iso8601()}
+
+    お得意様であればフォローアップをお願いします
     """)
   end
 end
