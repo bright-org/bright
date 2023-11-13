@@ -28,6 +28,15 @@ defmodule Bright.Recruits do
     |> Repo.all()
   end
 
+  def list_interview(user_id, :not_complete) do
+    Interview
+    |> where(
+      [i],
+      i.recruiter_user_id == ^user_id and i.status in [:waiting_decision, :consume_interview]
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single interview.
 
@@ -123,11 +132,24 @@ defmodule Bright.Recruits do
     |> Repo.all()
   end
 
+  def list_interview_members(user_id, decision) do
+    InterviewMember
+    |> where([m], m.user_id == ^user_id and m.decision == ^decision)
+    |> preload(:interview)
+    |> Repo.all()
+  end
+
   def get_interview_member!(id, user_id) do
     InterviewMember
     |> where([m], m.user_id == ^user_id)
     |> preload(:interview)
     |> Repo.get!(id)
+  end
+
+  def update_interview_member(%InterviewMember{} = interview_member, attrs) do
+    interview_member
+    |> InterviewMember.changeset(attrs)
+    |> Repo.update()
   end
 
   def deliver_acceptance_email_instructions(

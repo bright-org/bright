@@ -105,8 +105,8 @@ defmodule BrightWeb.RecruitLive.Interview do
     socket
     |> assign(:page_title, "面談調整")
     |> assign(:career_fields, CareerFields.list_career_fields())
-    |> assign(:interviews, Recruits.list_interview(user_id))
-    |> assign(:interview_members, Recruits.list_interview_members(user_id))
+    |> assign(:interviews, Recruits.list_interview(user_id, :not_complete))
+    |> assign(:interview_members, Recruits.list_interview_members(user_id, :not_answered))
     |> assign(:interview, nil)
     |> assign(:interview_member, nil)
     |> then(&{:ok, &1})
