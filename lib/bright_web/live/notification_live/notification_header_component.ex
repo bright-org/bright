@@ -59,7 +59,8 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
   defp notification_list do
     [
       ["コミュニティ", ~p"/notifications/communities"],
-      ["運営", ~p"/notifications/operations"]
+      ["運営", ~p"/notifications/operations"],
+      ["学習メモのヘルプ", ~p"/notifications/evidences"]
     ]
   end
 end

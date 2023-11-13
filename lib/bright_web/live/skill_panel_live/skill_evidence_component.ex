@@ -17,7 +17,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       <div class="flex justify-center items-center">
         <div class="w-full lg:w-[450px]">
           <p class="pb-2 text-base font-bold">
-            <%= @skill.name %>
+            <%= @title %>
           </p>
 
           <div id="skill_evidence_posts" phx-update="stream">
@@ -59,7 +59,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
                 <% # 削除ボタン %>
                 <div
-                  :if={post_by_myself?(post, @user)}
+                  :if={deletable_user?(post, @skill_evidence, @user)}
                   class="h-6 w-6 py-2 ml-auto cursor-pointer"
                   phx-click="delete"
                   phx-target={@myself}
@@ -72,6 +72,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
           </div>
 
           <.simple_form
+            :if={postable_user?(@skill_evidence, @user)}
             for={@form}
             id="skill_evidence_post-form"
             phx-target={@myself}
@@ -135,8 +136,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   メモを書き込む
                 </button>
 
-                <% # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化 %>
-                <%= if false do %>
                 <button
                   :if={@me}
                   class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
@@ -148,7 +147,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 </button>
                 <% # ヘルプを出す/出さない制御用checkbox %>
                 <input type="checkbox" id="checkbox-help" class="hidden" name="help" checked={true} value="on" phx-update="ignore" />
-                <% end %>
               </div>
             </div>
           </.simple_form>
@@ -192,12 +190,18 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   @impl true
   def update(assigns, socket) do
+    skill_evidence = Bright.Repo.preload(assigns.skill_evidence, :user)
+
     skill_evidence_posts =
-      SkillEvidences.list_skill_evidence_posts_from_skill_evidence(assigns.skill_evidence)
+      SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
+
+    title = SkillEvidences.get_skill_breadcrumb(assigns.skill)
 
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:title, title)
+     |> assign(:skill_evidence, skill_evidence)
      |> stream(:skill_evidence_posts, skill_evidence_posts)
      |> update(:user, &Bright.Repo.preload(&1, :user_profile))
      |> assign_form()}
@@ -216,9 +220,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
      |> unassign_invalid_image_entries()}
   end
 
-  # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
-  # def handle_event("save", %{"skill_evidence_post" => params, "help" => help}, socket) do
-  def handle_event("save", %{"skill_evidence_post" => params}, socket) do
+  def handle_event("save", %{"skill_evidence_post" => params, "help" => help}, socket) do
     %{
       uploads: uploads,
       me: me,
@@ -227,10 +229,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       skill: skill
     } = socket.assigns
 
+    # TODO: 画面からはフォームを消しているがサーバ側として権限確認が必要
+
     image_names = Enum.map(uploads.image.entries, & &1.client_name)
-    # TODO: 一時コメントアウト/ 通知側ヘルプを実装後に有効化
-    # help? = help == "on" && me
-    help? = false
+    help? = help == "on" && me
     params = Map.update!(params, "content", &maybe_append_help(&1, help?))
 
     # NOTE: 保存処理
@@ -258,10 +260,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   end
 
   def handle_event("delete", %{"id" => skill_evidence_post_id}, socket) do
-    SkillEvidences.get_skill_evidence_post_by!(
-      id: skill_evidence_post_id,
-      user_id: socket.assigns.user.id
-    )
+    # TODO: 画面からはボタンを消しているがサーバ側として権限確認が必要
+    SkillEvidences.get_skill_evidence_post!(skill_evidence_post_id)
     |> SkillEvidences.delete_skill_evidence_post()
     |> case do
       {:ok, %{delete: skill_evidence_post}} ->
@@ -346,8 +346,12 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     Storage.public_url(image_path)
   end
 
-  defp post_by_myself?(evidence_post, user) do
-    evidence_post.user_id == user.id
+  defp deletable_user?(skill_evidence_post, skill_evidence, user) do
+    SkillEvidences.can_delete_skill_evidence_post?(skill_evidence_post, skill_evidence, user)
+  end
+
+  defp postable_user?(skill_evidence, user) do
+    SkillEvidences.can_write_skill_evidence?(skill_evidence, user)
   end
 
   defp unassign_invalid_image_entries(socket) do

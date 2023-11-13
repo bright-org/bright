@@ -45,22 +45,40 @@ defmodule Bright.NotificationsTest do
   end
 
   describe "list_notification_by_type/3" do
-    setup do
+    setup %{type: type} do
       from_user = insert(:user)
+      to_user = insert(:user)
 
       {:ok,
        from_user: from_user,
-       notification_operations:
-         insert_list(3, :notification_operation, from_user: from_user)
-         |> Enum.sort_by(& &1.id)
-         |> Enum.reverse(),
-       notification_communities:
-         insert_list(3, :notification_community, from_user: from_user)
-         |> Enum.sort_by(& &1.id)
-         |> Enum.reverse()}
+       to_user: to_user,
+       notifications: setup_notifications(type, from_user, to_user)}
     end
 
-    test "for type operation", %{notification_operations: notification_operations} do
+    defp setup_notifications("operation", from_user, _to_user) do
+      insert_list(3, :notification_operation, from_user: from_user)
+      |> Enum.sort_by(& &1.id, :desc)
+    end
+
+    defp setup_notifications("community", from_user, _to_user) do
+      insert_list(3, :notification_community, from_user: from_user)
+      |> Enum.sort_by(& &1.id, :desc)
+    end
+
+    defp setup_notifications("evidence", from_user, to_user) do
+      insert_list(3, :notification_evidence, from_user: from_user, to_user: to_user)
+      |> Enum.sort_by(& &1.id, :desc)
+    end
+
+    defp setup_notifications("something", from_user, _to_user) do
+      [
+        insert(:notification_community, from_user: from_user),
+        insert(:notification_operation, from_user: from_user)
+      ]
+    end
+
+    @tag type: "operation"
+    test "for type operation", %{notifications: notifications} do
       assert %{
                entries: entries,
                page_number: 1,
@@ -70,10 +88,11 @@ defmodule Bright.NotificationsTest do
              } = Notifications.list_notification_by_type("", "operation", page: 1, page_size: 2)
 
       assert entries |> Enum.map(& &1.id) ==
-               notification_operations |> Enum.take(2) |> Enum.map(& &1.id)
+               notifications |> Enum.take(2) |> Enum.map(& &1.id)
     end
 
-    test "for type community", %{notification_communities: notification_communities} do
+    @tag type: "community"
+    test "for type community", %{notifications: notifications} do
       assert %{
                entries: entries,
                page_number: 1,
@@ -83,7 +102,54 @@ defmodule Bright.NotificationsTest do
              } = Notifications.list_notification_by_type("", "community", page: 1, page_size: 2)
 
       assert entries |> Enum.map(& &1.id) ==
-               notification_communities |> Enum.take(2) |> Enum.map(& &1.id)
+               notifications |> Enum.take(2) |> Enum.map(& &1.id)
+    end
+
+    @tag type: "evidence"
+    test "for type evidence", %{
+      notifications: notifications,
+      to_user: to_user
+    } do
+      assert %{
+               entries: entries,
+               page_number: 1,
+               page_size: 2,
+               total_entries: 3,
+               total_pages: 2
+             } =
+               Notifications.list_notification_by_type(to_user.id, "evidence",
+                 page: 1,
+                 page_size: 2
+               )
+
+      assert entries |> Enum.map(& &1.id) ==
+               notifications |> Enum.take(2) |> Enum.map(& &1.id)
+    end
+
+    @tag type: "evidence"
+    test "for type evidence, returns the notifications of given to_user_id", %{
+      to_user: to_user
+    } do
+      no_related_user = insert(:user)
+
+      assert %{total_entries: 3} =
+               Notifications.list_notification_by_type(to_user.id, "evidence", page: 1)
+
+      assert %{total_entries: 0} =
+               Notifications.list_notification_by_type(no_related_user.id, "evidence", page: 1)
+    end
+
+    @tag type: "something"
+    test "returns the notifications of given type" do
+      %{entries: [entry]} =
+        Notifications.list_notification_by_type("", "operation", page: 1, page_size: 1)
+
+      assert %NotificationOperation{} = entry
+
+      %{entries: [entry]} =
+        Notifications.list_notification_by_type("", "community", page: 1, page_size: 1)
+
+      assert %NotificationCommunity{} = entry
     end
   end
 
