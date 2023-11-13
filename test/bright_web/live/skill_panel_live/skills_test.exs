@@ -1400,6 +1400,26 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       end
     end
 
+    test "shows 404 if skill_panel not exists, case related user", %{conn: conn, user: user} do
+      user_2 = insert(:user) |> with_user_profile()
+      team = insert(:team)
+      insert(:team_member_users, user: user, team: team)
+      insert(:team_member_users, user: user_2, team: team)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/#{Ecto.ULID.generate()}/#{user_2.name}")
+      end
+    end
+
+    test "shows 404 if skill_panel not exists, case anonymous user", %{conn: conn} do
+      user_2 = insert(:user) |> with_user_profile()
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        live(conn, ~p"/panels/#{Ecto.ULID.generate()}/anon/#{encrypted_name}")
+      end
+    end
+
     test "shows 404 if class not existing", %{
       conn: conn,
       skill_panel: skill_panel

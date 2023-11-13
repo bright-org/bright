@@ -12,7 +12,7 @@ defmodule BrightWeb.GraphLive.Graphs do
     {:ok,
      socket
      |> assign_display_user(params)
-     |> assign_skill_panel(params["skill_panel_id"], "graphs")
+     |> assign_skill_panel(params["skill_panel_id"])
      |> assign(:select_label, "now")
      |> assign(:compared_user, nil)
      |> assign(:select_label_compared_user, nil)

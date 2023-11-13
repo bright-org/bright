@@ -1,6 +1,5 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   import Phoenix.Component, only: [assign: 2, assign: 3]
-  import Phoenix.LiveView, only: [push_redirect: 2]
 
   alias Bright.SkillPanels
   alias Bright.SkillUnits
@@ -35,38 +34,20 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> assign(query: query)
   end
 
-  def assign_skill_panel(socket, nil, _root) do
+  def assign_skill_panel(socket, nil) do
     display_user = socket.assigns.display_user
     skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
-
-    socket
-    |> assign(:skill_panel, skill_panel)
+    assign(socket, :skill_panel, skill_panel)
   end
 
-  def assign_skill_panel(socket, skill_panel_id, root) do
+  def assign_skill_panel(socket, skill_panel_id) do
     raise_if_not_ulid(skill_panel_id)
-    display_user = socket.assigns.display_user
-    skill_panel = SkillPanels.get_user_skill_panel(display_user, skill_panel_id)
 
-    raise_if_not_exists_my_skill_panel(skill_panel, socket.assigns.me)
+    skill_panel = SkillPanels.get_user_skill_panel(socket.assigns.display_user, skill_panel_id)
 
-    if skill_panel do
-      socket
-      |> assign(:skill_panel, skill_panel)
-    else
-      # TODO: この正規の導線はなくなった見込み。自動テストを補充後に削除して、`raise_if_not_exists_my_skill_panel`と統合し、404を返すこと
-      # 指定されているスキルパネルがない場合は、
-      # 直近のスキルパネルを取得して、
-      # URLと矛盾した表示にならないようにリダイレクト
-      skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
+    raise_if_not_exists_skill_panel(skill_panel)
 
-      path =
-        build_path(root, skill_panel, display_user, socket.assigns.me, socket.assigns.anonymous)
-
-      socket
-      |> assign(:skill_panel, nil)
-      |> push_redirect(to: path)
-    end
+    assign(socket, :skill_panel, skill_panel)
   end
 
   def assign_skill_classes(socket) do
@@ -286,12 +267,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     end
   end
 
-  defp raise_if_not_exists_my_skill_panel(nil, true) do
-    # 自身のスキルパネルが存在しない場合は404で返す。
+  defp raise_if_not_exists_skill_panel(nil) do
+    # 指定のスキルパネルが存在しない場合は404で返す。
     # 導線はなく、URLで指定される可能性がある。
-    # なお、他者(me: false)では、他者への切り替え時に存在しないスキルパネルを指定される可能性がある。
     raise Ecto.NoResultsError, queryable: "Bright.SkillPanels.SkillPanel"
   end
 
-  defp raise_if_not_exists_my_skill_panel(_skill_panel, _me), do: nil
+  defp raise_if_not_exists_skill_panel(_skill_panel), do: nil
 end
