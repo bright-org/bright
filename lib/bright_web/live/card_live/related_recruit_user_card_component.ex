@@ -141,6 +141,14 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
     end
   end
 
+  def handle_event("tab_click", %{"id" => _id, "tab_name" => "hr_teams"}, socket) do
+    socket
+    |> assign(:user_profiles, [])
+    |> assign(:inner_tab, [])
+    |> assign(:selected_tab, "hr_teams")
+    |> then(&{:noreply, &1})
+  end
+
   def handle_event(
         "inner_tab_click",
         %{
