@@ -20,7 +20,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
       <div class="fixed inset-0 overflow-y-auto z-50">
         <section
           id="user_search" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[1024px]"
-          phx-click-away={JS.hide(to: "#skill_search_modal")}
+          phx-click-away={if !@click_away_disable, do: JS.hide(to: "#skill_search_modal")}
         >
           <div class="w-full mb-4">
           <button class="absolute top-4 right-8">
@@ -56,9 +56,13 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
     |> assign(assigns)
     |> assign(:tabs, @tabs)
     |> assign(:selected_tab, @default_tab)
+    |> assign(:click_away_disable, false)
     |> assign(:stock_user_ids, RecruitmentStockUsers.list_stock_user_ids(user.id))
     |> then(&{:ok, &1})
   end
+
+  def update(%{click_away_disable: flag}, socket),
+    do: {:ok, assign(socket, click_away_disable: flag)}
 
   @impl true
   def handle_event("tab_click", %{"tab_name" => tab_name}, socket) do

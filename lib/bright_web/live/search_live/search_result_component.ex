@@ -69,11 +69,13 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
           <a
             phx-click={
-              JS.show(to: "#create_interview_modal") |> JS.push("open", value: %{user: @user.id, skill_params: @skill_params}, target: "#create_interview_modal")
+              if @hr_enabled,
+              do: JS.show(to: "#create_interview_modal") |> JS.push("open", value: %{user: @user.id, skill_params: @skill_params}, target: "#create_interview_modal"),
+              else: JS.push("open_free_trial",target: @myself)
             }
-            class="bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56"
+            class="bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:opacity-50"
           >
-          採用面談調整<br />βリリース（11月予定）から
+          採用面談調整
           </a>
           <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
           採用・育成チームに採用依頼 <br />βリリース（11月予定）から
@@ -147,6 +149,20 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
   end
 
   @impl true
+  def handle_event("open_free_trial", _params, socket) do
+    send_update(BrightWeb.SearchLive.SkillSearchComponent,
+      id: "skill_search_modal",
+      click_away_disable: true
+    )
+
+    send_update(BrightWeb.SubscriptionLive.CreateFreeTrialComponent,
+      id: "free_trial_modal",
+      open: true
+    )
+
+    {:noreply, socket}
+  end
+
   def handle_event(
         "tab_click",
         %{"tab_name" => tab_name},
