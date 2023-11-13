@@ -13,6 +13,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
       <main
         id="free_trial_modal"
         class={"flex h-screen items-center justify-center p-10 w-screen #{if !@open, do: "hidden"}"}
+        :if={@plan}
       >
         <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
         <section
@@ -117,6 +118,11 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
       </main>
     </div>
     """
+  end
+
+  @impl true
+  def mount(socket) do
+    {:ok, assign(socket, :plan, nil)}
   end
 
   @impl true
