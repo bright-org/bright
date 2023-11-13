@@ -3,6 +3,8 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
 
   alias Bright.Accounts
 
+  import BrightWeb.BrightCoreComponents, only: [action_button: 1]
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -34,12 +36,9 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
             phx-change="change_add_user"
             value={@search_word}
           />
-          <button
-            phx-target={@myself}
-            class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5"
-          >
+          <.action_button type="submit" class="ml-2.5">
             追加
-          </button>
+          </.action_button>
         </form>
       </div>
       <div :if={@search_word_error != nil}>
