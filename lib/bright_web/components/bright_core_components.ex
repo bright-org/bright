@@ -105,6 +105,39 @@ defmodule BrightWeb.BrightCoreComponents do
   end
 
   @doc """
+  Renders a action button
+  """
+  attr :type, :string, default: "button"
+  attr :icon, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
+
+  slot :inner_block, required: true
+
+  def action_button(%{icon: nil} = assigns) do
+    ~H"""
+    <button type={@type} class={["text-sm font-bold px-5 py-2 rounded border border-base", @class]} {@rest}>
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
+  def action_button(assigns) do
+    ~H"""
+    <button
+      type={@type}
+      class={["text-sm font-bold border border-base rounded py-1.5 pl-3 flex items-center", @class]}
+      @rest
+    >
+      <%= render_slot(@inner_block) %>
+      <span
+        class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
+        ><%= @icon %></span>
+    </button>
+    """
+  end
+
+  @doc """
   Renders an input with label and error messages.
 
   A `Phoenix.HTML.FormField` may be passed as argument,

@@ -4,6 +4,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [score_mark_class: 2]
   import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
   import BrightWeb.GuideMessageComponents
+  import BrightWeb.BrightCoreComponents, only: [action_button: 1]
   import Phoenix.LiveView, only: [send_update: 2]
 
   alias BrightWeb.SkillPanelLive.SkillsFieldComponent
@@ -12,7 +13,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     ~H"""
     <div class="flex flex-wrap mt-4 items-center lg:flex-nowrap">
       <.compare_timeline myself={@myself} timeline={@timeline} />
-      <div class="flex gap-x-4">
+      <div class="flex gap-x-4 ml-20">
         <.compare_individual current_user={@current_user} myself={@myself} />
         <.compare_team current_user={@current_user} myself={@myself} />
         <.compare_custom_group
@@ -90,15 +91,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-offset-skidding="307"
       data-dropdown-placement="bottom"
     >
-      <button
-        class="dropdownTrigger border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-        type="button"
-      >
+      <.action_button icon="add" class="dropdownTrigger">
         <span class="min-w-[6em]">個人と比較</span>
-        <span
-          class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-          >add</span>
-      </button>
+      </.action_button>
       <div
         class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
       >
@@ -124,15 +119,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-offset-skidding="290"
       data-dropdown-placement="bottom"
     >
-      <button
-        class="dropdownTrigger border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-        type="button"
-      >
+      <.action_button icon="add" class="dropdownTrigger">
         <span class="min-w-[6em]">チーム全員と比較</span>
-        <span
-          class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-          >add</span>
-      </button>
+      </.action_button>
       <div
         class="dropdownTarget bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden z-10"
       >
@@ -157,12 +146,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-offset-skidding="110"
       data-dropdown-placement="bottom"
     >
-      <button
-        class="dropdownTrigger text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-        type="button"
-      >
+      <.action_button class="dropdownTrigger">
         <span>カスタムグループと比較</span>
-      </button>
+      </.action_button>
       <div
         class="dropdownTarget z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
       >
