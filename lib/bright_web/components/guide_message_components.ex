@@ -49,7 +49,7 @@ defmodule BrightWeb.GuideMessageComponents do
         <span class={[score_mark_class(:high, :green), "inline-block align-middle mr-1"]} /><span class="align-middle">が40％より下は「見習い」、40％以上で「平均」、60％以上で「ベテラン」となります。</span>
       </p>
       <p class="mt-2">
-        スキル入力後は「成長を見る・比較する」メニューで現在のスキルレベルを確認できます。
+        スキル入力後は「成長グラフ」メニューで現在のスキルレベルを確認できます。
       </p>
       <p>
         また、3ヶ月区切りでスキルレベルを集計するので、スキルの成長も体感できます。
