@@ -4,7 +4,7 @@
 
 ## 採用・人材支援チームによる一般のチームへの人材支援の概念
 
-採用・人材支援チームによるチーム支援の概念については[概念ER図 ユーザーとチーム](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/users.md)参照
+採用・人材支援チームによるチーム支援の概念については[概念ER図 ユーザーとチーム](https://github.com/bright-org/bright/blob/main/docs/conceptual_schemas/users.md)参照
 
 人材支援のリレーションは支援を受ける側から支援する側への支援依頼により発生する。
 発生後のステータス遷移を以下に示す。
@@ -18,7 +18,7 @@ stateDiagram-v2
 ```
 
 人材支援関係のリレーションかつ、状態管理スキーマであるteam_supporter_teamsは
-[支援終了後も履歴参照可能とする要件により](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/users.md#%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E4%B8%80%E8%88%AC%E3%83%81%E3%83%BC%E3%83%A0%E3%81%A8%E4%BA%BA%E6%9D%90%E3%83%81%E3%83%BC%E3%83%A0%E3%81%AE%E9%96%A2%E4%BF%82)ステータスの他に支援の開始終了日を持つ履歴テーブルとし、支援終了後も削除は行わない。
+[支援終了後も履歴参照可能とする要件により](https://github.com/bright-org/bright/blob/main/docs/conceptual_schemas/users.md#%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E4%B8%80%E8%88%AC%E3%83%81%E3%83%BC%E3%83%A0%E3%81%A8%E4%BA%BA%E6%9D%90%E3%83%81%E3%83%BC%E3%83%A0%E3%81%AE%E9%96%A2%E4%BF%82)ステータスの他に支援の開始終了日を持つ履歴テーブルとし、支援終了後も削除は行わない。
 
 ```mermaid
 erDiagram
