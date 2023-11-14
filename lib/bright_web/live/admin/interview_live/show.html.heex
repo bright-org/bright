@@ -1,0 +1,28 @@
+<.header>
+  Interview <%= @interview.id %>
+  <:subtitle>This is a interview record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/admin/recruits/interviews/#{@interview}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit interview</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Skill params"><%= @interview.skill_params %></:item>
+  <:item title="Skill params"><%= @interview.comment %></:item>
+  <:item title="Status"><%= @interview.status %></:item>
+</.list>
+
+<.back navigate={~p"/admin/recruits/interviews"}>Back to recruit_interview</.back>
+
+<.modal :if={@live_action == :edit} id="interview-modal" show on_cancel={JS.patch(~p"/admin/recruits/interviews/#{@interview}")}>
+  <.live_component
+    module={BrightWeb.Admin.InterviewLive.FormComponent}
+    id={@interview.id}
+    title={@page_title}
+    action={@live_action}
+    interview={@interview}
+    patch={~p"/admin/recruits/interviews/#{@interview}"}
+  />
+</.modal>

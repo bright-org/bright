@@ -23,3 +23,27 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr ""
+
+msgid "waiting_decision"
+msgstr "面談決定待ち"
+
+msgid "consume_interview"
+msgstr "面談決定"
+
+msgid "dismiss_interview"
+msgstr "面談却下"
+
+msgid "complete_interview"
+msgstr "面談完了"
+
+msgid "not_answered"
+msgstr "未回答"
+
+msgid "wants"
+msgstr "面談したい"
+
+msgid "not_wants"
+msgstr "面談しない"
+
+msgid  "keep"
+msgstr "条件に合わないがエンジニアをキープ"

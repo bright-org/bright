@@ -116,6 +116,12 @@ defmodule BrightWeb.Router do
       live "/subscription_user_plans/:id", SubscriptionUserPlanLive.Show, :show
       live "/subscription_user_plans/:id/show/edit", SubscriptionUserPlanLive.Show, :edit
 
+      live "/recruits/interviews", InterviewLive.Index, :index
+      live "/recruits/interviews/new", InterviewLive.Index, :new
+      live "/recruits/interviews/:id/edit", InterviewLive.Index, :edit
+      live "/recruits/interviews/:id", InterviewLive.Show, :show
+      live "/recruits/interviews/:id/show/edit", InterviewLive.Show, :edit
+
       if System.get_env("SERVER") == "dev" do
         live "/user_tokens", UserTokenLive.Index, :index
       end
@@ -242,6 +248,10 @@ defmodule BrightWeb.Router do
       live "/notifications/communities", NotificationLive.Community, :index
       live "/notifications/evidences", NotificationLive.Evidence, :index
       live "/notifications/evidences/:skill_evidence_id", NotificationLive.Evidence, :show
+
+      live "/recruits/interviews", RecruitLive.Interview, :index
+      live "/recruits/interviews/:id", RecruitLive.Interview, :show_interview
+      live "/recruits/interviews/member/:id", RecruitLive.Interview, :show_member
     end
 
     ## OAuth

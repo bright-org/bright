@@ -1,7 +1,9 @@
 defmodule BrightWeb.SearchLive.SearchResultsComponent do
   use BrightWeb, :live_component
 
-  alias Bright.{SkillPanels, Repo}
+  alias Bright.Repo
+  alias Bright.SkillPanels
+  alias Bright.Subscriptions
 
   def render(assigns) do
     ~H"""
@@ -9,12 +11,15 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
       <%= for {user, index} <- Enum.with_index(@result) do %>
       <li class="border border-brightGray-200 min-h-64 max-h-76 mb-2 overflow-hidden p-2 rounded">
         <.live_component
-          id={"user_search_result_#{index}"}
+          id={"#{@prefix}_search_result_#{index}"}
+          search={@search}
+          prefix={@prefix}
           module={BrightWeb.SearchLive.SearchResultComponent}
           user={user}
           index={index}
           skill_params={@skill_params}
           stock_user_ids={@stock_user_ids}
+          hr_enabled={@hr_enabled}
         />
       </li>
       <% end %>
@@ -22,12 +27,15 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
     """
   end
 
-  def update(%{skill_params: skill_params} = assigns, socket) do
+  def update(%{skill_params: skill_params, current_user: user} = assigns, socket) do
     socket
     |> assign(assigns)
+    |> assign(:hr_enabled, Subscriptions.service_enabled?(user.id, "hr_basic"))
     |> assign(:skill_params, put_skill_panel_name(skill_params))
     |> then(&{:ok, &1})
   end
+
+  def update(%{hr_enabled: true}, socket), do: {:ok, assign(socket, :hr_enabled, true)}
 
   def put_skill_panel_name(skill_params) do
     Enum.map(skill_params, fn params ->

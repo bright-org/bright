@@ -92,6 +92,40 @@ defmodule Bright.UserSearches do
     |> Repo.paginate(page: page, page_size: 5)
   end
 
+  def get_user_by_id_with_job_profile_and_skill_score(
+        user_id,
+        skill_params
+      ) do
+    # user_job_profileとskill_paramsのskill_panel_idで絞り込んだ skill_scoreの一覧
+    skill_scores =
+      skill_score_query([], [job_searching: true], %{})
+      |> skill_query(skill_params)
+      |> Repo.all()
+
+    # ソート用の1つ目のskill_paramsのskill_classのidを取得
+    skill_class_id =
+      get_first_skill_query_params_skill_class_id(skill_scores, List.first(skill_params))
+
+    from(
+      u in User,
+      where: u.id == ^user_id,
+      left_join: s_score in assoc(u, :skill_scores),
+      join: job in assoc(u, :user_job_profile),
+      left_join: sc_score in assoc(u, :skill_class_scores),
+      on: sc_score.skill_class_id in ^skill_class_id,
+      group_by: [u.id, job.id],
+      preload: [:skill_class_scores, :user_job_profile],
+      # 匿名リンク生成のためUserを保ったまま、ソート用カラムを追加している
+      select: %{
+        u
+        | last_updated: fragment("MAX(?) AS last_updated", s_score.updated_at),
+          desired_income: fragment("? AS desired_income", job.desired_income),
+          skill_score: fragment("MAX(?) AS skill_score", sc_score.percentage)
+      }
+    )
+    |> Repo.all()
+  end
+
   # joinしたデータで動的なorderを設定する場合は fragment asでschemaのvirtual fieldのカラム名を指定する
   defp set_order(query, :last_updated_desc),
     do: order_by(query, [{:desc, fragment("last_updated")}])
