@@ -1,4 +1,4 @@
-defmodule Brignt.Seeds.SubscriptionPlan do
+defmodule Bright.Seeds.SubscriptionPlan do
   @moduledoc """
   開発用のプランSeedデータ
   """

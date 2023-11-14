@@ -60,10 +60,10 @@ priv/repo/seed_dummy_data.exsに収録すみの下記関数で[サービスタ�
 収録データについては[Seedsファイル参照](lib/seeds)
 
 ```elixir
-Brignt.Seeds.SubscriptionPlanService.delete()
-Brignt.Seeds.SubscriptionPlan.delete()
-Brignt.Seeds.SubscriptionPlan.insert()
-Brignt.Seeds.SubscriptionPlanService.insert()
+Bright.Seeds.SubscriptionPlanService.delete()
+Bright.Seeds.SubscriptionPlan.delete()
+Bright.Seeds.SubscriptionPlan.insert()
+Bright.Seeds.SubscriptionPlanService.insert()
 ```
 
 ## Subscriptions関数

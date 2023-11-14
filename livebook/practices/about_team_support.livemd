@@ -63,14 +63,14 @@ Teams.list_joined_teams_by_user_id(supportee_user.id)
 ```elixir
 # 支援するチームのチームID(支援するユーザーが所属しているチーム一覧の取得)
 # 実際にはそのうちenable_hr_functions ==  true のチームが対象となる
-Teams.list_joined_teams_by_user_id(supportee_user.id)
+Teams.list_joined_teams_by_user_id(supporter_user.id)
 ```
 
 ## 登録、ステータス更新系
 
 ```elixir
 # 人材支援を受けるチームをキーに支援依頼を作成する
-supportee_team_id = "team_id"
+supportee_team_id = "supportee_team_id"
 
 {:ok, team_support_team} =
   Teams.request_support_from_suportee_team(
@@ -82,8 +82,10 @@ supportee_team_id = "team_id"
 
 ```elixir
 # 人材支援依頼を承諾ステータスに更新する
+supporter_team_id = "supporter_team_id"
+
 {:ok, accept_team_support_team} =
-  Teams.accept_support_by_supporter_team(team_support_team, supportee_team_id)
+  Teams.accept_support_by_supporter_team(team_support_team, supporter_team_id)
 ```
 
 ```elixir
@@ -96,7 +98,7 @@ supportee_team_id = "team_id"
 {:ok, reject_support_team} = Teams.reject_support_by_supporter_team(team_support_team)
 ```
 
-### 取得系
+### 取得、チェック系
 
 ```elixir
 # ユーザーIDをキーにリクエストを受けた支援依頼一覧を取得する
@@ -106,4 +108,12 @@ Teams.list_support_request_by_supporter_user_id(supporter_user.id)
 ```elixir
 # ユーザーIDをキーに支援先のチーム一覧を取得する
 Teams.list_supportee_teams_by_supporter_user_id(supporter_user.id)
+```
+
+```elixir
+# 自身の所属チームの支援元、支援先のチームに所属しているかを確認
+Teams.joined_teams_or_supportee_teams_or_supporter_teams_by_user_id!(
+  supporter_user.id,
+  supporter_user.id
+)
 ```

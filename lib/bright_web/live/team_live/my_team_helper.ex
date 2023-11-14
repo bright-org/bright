@@ -104,22 +104,25 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     []
   end
 
+  defp iam_team_member?(team, user_id) do
+    team.member_users
+    |> Enum.any?(fn member_user ->
+      member_user.user_id == user_id
+    end)
+  end
+
   defp get_display_team(%{"team_id" => team_id}, user_id) do
     try do
       Teams.raise_if_not_ulid(team_id)
 
       team = Teams.get_team_with_member_users!(team_id)
-      # チームがHITしても自分が所属していない場合は無視する
-      iam_member_user =
-        team.member_users
-        |> Enum.find(fn member_user ->
-          member_user.user_id == user_id
-        end)
 
-      if iam_member_user == nil do
-        nil
-      else
+      # 対象チームのチームメンバーの場合、または支援関係のあるチームメンバーの場合のみ参照可能
+      if iam_team_member?(team, user_id) ||
+           Teams.is_my_supportee_team_or_supporter_team?(user_id, team.id) do
         team
+      else
+        nil
       end
     rescue
       _e in Ecto.NoResultsError ->

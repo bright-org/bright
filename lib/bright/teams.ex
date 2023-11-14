@@ -405,6 +405,70 @@ defmodule Bright.Teams do
   end
 
   @doc """
+  支援されるチームの担当ユーザーIDをキーに自チームを支援する人材・育成支援チームの一覧を取得する
+  支援開始日降順
+  Scrivenerのページングに対応
+
+  ## Examples
+
+      iex> list_supporter_teams_by_supportee_user_id(supportee_user_id, %{page: 1, page_size: 1})
+      %Scrivener.Page{page_number: 1, page_size: 1, total_entries: 0, total_pages: 1, entries: [%Bright.Teams.Team{}, ...]}
+
+  """
+  def list_supporter_teams_by_supportee_user_id(
+        supportee_user_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(tmu in TeamMemberUsers,
+      left_join: tst in TeamSupporterTeam,
+      on: tmu.team_id == tst.supportee_team_id,
+      left_join: supportee_team in Team,
+      on: tst.supportee_team_id == supportee_team.id,
+      left_join: supporter_team in Team,
+      on: tst.supporter_team_id == supporter_team.id,
+      where:
+        tmu.user_id == ^supportee_user_id and not is_nil(tmu.invitation_confirmed_at) and
+          tst.status == :supporting,
+      select: supporter_team,
+      order_by: [
+        desc: tst.start_datetime
+      ]
+    )
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  ユーザーIDとチームIDを元に指定されたチームが支援中の支援チームまたは支援先チームであるかを判定する
+
+  ## Examples
+
+      iex> is_my_supportee_team_or_supporter_team(user_id, team_id)
+      true
+
+  """
+  def is_my_supportee_team_or_supporter_team?(user_id, team_id) do
+    # 自身の所属チームから関係するTeamSupporterTeamの取得して、支援先チーム、もしくは支援元チームのチームIDが指定されたチームIDを一致する件数が1件以上あれば支援関係ありと判断する
+    [count] =
+      from(tmu in TeamMemberUsers,
+        left_join: supoutee_teams in TeamSupporterTeam,
+        on:
+          tmu.team_id == supoutee_teams.supportee_team_id and supoutee_teams.status == :supporting,
+        left_join: supouter_teams in TeamSupporterTeam,
+        on:
+          tmu.team_id == supouter_teams.supporter_team_id and supouter_teams.status == :supporting,
+        where:
+          tmu.user_id ==
+            ^user_id and not is_nil(tmu.invitation_confirmed_at) and
+            (supoutee_teams.supporter_team_id == ^team_id or
+               supouter_teams.supportee_team_id == ^team_id),
+        select: count(tmu)
+      )
+      |> Repo.all()
+
+    count > 0
+  end
+
+  @doc """
   支援されるチームから支援するチームへの支援依頼データを作成する
 
   ## Examples
@@ -815,6 +879,7 @@ defmodule Bright.Teams do
 
   @doc """
   チームに所属しているかを確認
+  所属していない場合Ecto.NoResultsErrorをraise
   """
   def joined_teams_by_user_id!(current_user_id, other_user_id) do
     query =
@@ -823,7 +888,7 @@ defmodule Bright.Teams do
         join: m in assoc(t, :member_users),
         where:
           tmbu.user_id == ^current_user_id and not is_nil(tmbu.invitation_confirmed_at) and
-            m.user_id == ^other_user_id,
+            m.user_id == ^other_user_id and not is_nil(m.invitation_confirmed_at),
         select: m.user_id,
         distinct: true
       )
@@ -831,7 +896,76 @@ defmodule Bright.Teams do
     if Repo.exists?(query), do: true, else: raise(Ecto.NoResultsError, queryable: query)
   end
 
+  @doc """
+  チームに所属しているかを確認
+  所属していない場合falseを返す
+  """
+  def joined_teams_by_user_id?(current_user_id, other_user_id) do
+    joined_teams_by_user_id!(current_user_id, other_user_id)
+    true
+  rescue
+    Ecto.NoResultsError -> false
+  end
+
+  @doc """
+  指定されたcurrent_user_idに対して、other_user_idで指定されたユーザーがおなじチームに所属している、または支援先チーム、もしくは支援元チームに所属しているか確認
+  所属している場合true
+  所属していない場合Bright.Exceptions.ForbiddenResourceError(404扱い)をraise
+  """
+  def joined_teams_or_supportee_teams_or_supporter_teams_by_user_id!(
+        current_user_id,
+        other_user_id
+      ) do
+    if joined_teams_by_user_id?(current_user_id, other_user_id) ||
+         joined_supportee_teams_or_supporter_teams_by_user_id?(current_user_id, other_user_id) do
+      true
+    else
+      raise(Bright.Exceptions.ForbiddenResourceError)
+    end
+  end
+
+  @doc """
+  　自身の所属チームの支援元、支援先のチームに所属しているかを確認
+  所属していない場合Ecto.NoResultsErrorをraise
+  """
+  def joined_supportee_teams_or_supporter_teams_by_user_id?(current_user_id, other_user_id) do
+    query =
+      from(tmu in TeamMemberUsers,
+        left_join: supoutee_teams in TeamSupporterTeam,
+        on:
+          tmu.team_id == supoutee_teams.supporter_team_id and supoutee_teams.status == :supporting,
+        left_join: supoutee_team in Team,
+        on: supoutee_team.id == supoutee_teams.supportee_team_id,
+        left_join: supoutee_team_members in TeamMemberUsers,
+        on:
+          supoutee_team_members.team_id == supoutee_team.id and
+            not is_nil(supoutee_team_members.invitation_confirmed_at),
+        left_join: supouter_teams in TeamSupporterTeam,
+        on:
+          tmu.team_id == supouter_teams.supportee_team_id and supouter_teams.status == :supporting,
+        left_join: supouter_team in Team,
+        on: supouter_team.id == supouter_teams.supporter_team_id,
+        left_join: supouter_team_members in TeamMemberUsers,
+        on:
+          supouter_team_members.team_id == supouter_team.id and
+            not is_nil(supouter_team_members.invitation_confirmed_at),
+        where:
+          tmu.user_id ==
+            ^current_user_id and not is_nil(tmu.invitation_confirmed_at) and
+            (supoutee_team_members.user_id == ^other_user_id or
+               supouter_team_members.user_id == ^other_user_id),
+        select: count(tmu)
+      )
+
+    [count] =
+      query
+      |> Repo.all()
+
+    count > 0
+  end
+
   def raise_if_not_ulid(team_id) do
+    # チームIDの指定が不正だった場合は404で返す。
     Ecto.ULID.cast(team_id)
     |> case do
       {:ok, _} -> nil
@@ -927,5 +1061,13 @@ defmodule Bright.Teams do
     |> Enum.flat_map(fn team_member_users ->
       Enum.sort_by(team_member_users, & &1.invitation_confirmed_at, {:asc, NaiveDateTime})
     end)
+  end
+
+  @doc """
+  teamsテーブルのenable_xx_functionsの状態に応じてチームのタイプを判定する
+  """
+  def get_team_type_by_team(%Bright.Teams.Team{} = _team) do
+    # TODO チームアイコン判定の追加時に対応
+    :general_team
   end
 end
