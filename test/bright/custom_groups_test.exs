@@ -60,9 +60,47 @@ defmodule Bright.CustomGroupsTest do
              )
     end
 
+    test "filter_valid_users", %{user: user} do
+      user_2 = insert(:user)
+      user_3 = insert(:user)
+
+      custom_group =
+        insert(:custom_group,
+          user: user,
+          user_id: user.id,
+          member_users: [
+            build(:custom_group_member_user, user_id: user_2.id, user: user_2),
+            build(:custom_group_member_user, user_id: user_3.id, user: user_3)
+          ]
+        )
+
+      # user_2 チームメンバー
+      # user_3 チームメンバー外
+      insert(:team,
+        member_users: [
+          build(:team_member_users, user_id: user.id),
+          build(:team_member_users, user_id: user_2.id)
+        ]
+      )
+
+      assert {[user_2], [user_3]} == CustomGroups.filter_valid_users(custom_group)
+
+      refute Repo.get_by(CustomGroupMemberUser,
+               custom_group_id: custom_group.id,
+               user_id: user_3.id
+             )
+    end
+
     test "get_custom_group!/1 returns the custom_group with given id", %{user: user} do
       custom_group = insert(:custom_group, user_id: user.id)
       assert CustomGroups.get_custom_group!(custom_group.id) == custom_group
+    end
+
+    test "get_custom_group_by!/1 returns the custom_group with given condition", %{user: user} do
+      custom_group = insert(:custom_group, user_id: user.id)
+
+      assert CustomGroups.get_custom_group_by!(id: custom_group.id, user_id: user.id) ==
+               custom_group
     end
 
     test "create_custom_group/1 with valid data creates a custom_group", %{user: user} do

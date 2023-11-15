@@ -12,7 +12,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
   @impl true
   def render(assigns) do
     ~H"""
-      <div class="flex w-full lg:w-[474px] h-[544px] lg:h-[654px] shadow flex-col bg-white relative">
+      <div id={@id} class="flex w-full lg:w-[474px] h-[544px] lg:h-[654px] shadow flex-col bg-white relative">
       <!-- メンバーデータ -->
         <div
           :if={is_nil(@display_skill_card.user_skill_class_score)}
