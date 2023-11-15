@@ -1389,7 +1389,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
 
     test "shows 404 if skill_panel_id is invalid ULID", %{conn: conn} do
-      assert_raise Ecto.NoResultsError, fn ->
+      assert_raise Ecto.Query.CastError, fn ->
         live(conn, ~p"/panels/abcd")
       end
     end
