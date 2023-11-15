@@ -252,6 +252,7 @@ defmodule BrightWeb.Router do
       live "/recruits/interviews", RecruitLive.Interview, :index
       live "/recruits/interviews/:id", RecruitLive.Interview, :show_interview
       live "/recruits/interviews/member/:id", RecruitLive.Interview, :show_member
+      live "/recruits/messages", RecruitLive.Messages, :index
     end
 
     ## OAuth
