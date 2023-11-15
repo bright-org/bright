@@ -149,7 +149,6 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
       socket.assigns.free_trial
       |> FreeTrial.changeset(params)
       |> Map.put(:action, :validte)
-      |> IO.inspect()
 
     socket
     |> assign(:changeset, changeset)
