@@ -149,11 +149,21 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
       socket.assigns.free_trial
       |> FreeTrial.changeset(params)
       |> Map.put(:action, :validte)
+      |> IO.inspect()
 
     socket
     |> assign(:changeset, changeset)
     |> assign_form(changeset)
     |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "submit",
+        _params,
+        %{assigns: %{changeset: %{valid?: false} = changeset}} = socket
+      ) do
+    changeset = Map.put(changeset, :action, :validte)
+    {:noreply, assign_form(socket, changeset)}
   end
 
   def handle_event(

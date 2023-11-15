@@ -26,5 +26,6 @@ defmodule Bright.Subscriptions.FreeTrialForm do
       :email,
       :pic_name
     ])
+    |> validate_required([:company_name, :phone_number, :email, :pic_name])
   end
 end
