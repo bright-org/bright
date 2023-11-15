@@ -10,6 +10,12 @@ defmodule Bright.TeamMemberUsersFactory do
           invitation_confirmed_at: NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
         }
       end
+
+      def team_member_users_unconfirmed_factory do
+        %Bright.Teams.TeamMemberUsers{
+          invitation_confirmed_at: nil
+        }
+      end
     end
   end
 end
