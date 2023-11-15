@@ -73,7 +73,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
               do: JS.show(to: "#create_interview_modal") |> JS.push("open", value: %{user: @user.id, skill_params: @skill_params}, target: "#create_interview_modal"),
               else: JS.push("open_free_trial",target: @myself)
             }
-            class="bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:opacity-50"
+            class="self-center bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:opacity-50"
           >
           採用面談調整
           </a>
