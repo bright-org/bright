@@ -23,9 +23,9 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
   @tabs [
     {"joined_teams", "所属チーム"},
+    {"custom_groups", "カスタムグループ"},
     {"supporter_teams", "採用・育成チーム"},
-    {"supportee_teams", "採用・育成支援先"},
-    {"custom_groups", "カスタムグループ"}
+    {"supportee_teams", "採用・育成支援先"}
   ]
 
   @menu_items []

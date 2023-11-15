@@ -102,7 +102,8 @@ defmodule BrightWeb.TeamComponents do
 
   def get_team_types() do
     [
-      {:general_team, "/images/common/icons/team.svg"}
+      {:general_team, "/images/common/icons/team.svg"},
+      {:custom_group, "/images/common/icons/team.svg"}
     ]
   end
 
