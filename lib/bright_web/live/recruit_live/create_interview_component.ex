@@ -51,7 +51,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
               </div>
           <!-- Start 面談調整内容 -->
             <div class="w-[493px]">
-              <h3 class="font-bold text-xl">採用調整内容</h3>
+              <h3 class="font-bold text-xl">面談調整内容</h3>
               <.form
                 for={@interview_form}
                 id="interview_form"
@@ -95,7 +95,6 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
                       rows="5"
                       cols="30"
                       input_class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
-                      placeholder="新しいチーム名を入力してください"
                     />
                     </dd>
                   </dl>

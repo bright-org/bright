@@ -27,7 +27,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
             </span>
           </h2>
           <p class="mt-2">
-            (お試し期間以降ももご利用される場合はプランのアップグレードが必要です)
+            (お試し期間以降もご利用される場合はプランのアップグレードが必要です)
           </p>
           <div class="mt-8">
             <h3 class="font-bold text-xl">
