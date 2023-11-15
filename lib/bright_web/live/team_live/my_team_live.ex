@@ -93,18 +93,16 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, socket}
   end
 
-  def handle_event(
-        "cancel_team_create",
-        _params,
-        socket
-      ) do
+  def handle_event("cancel_team_create", _params, socket) do
     # チーム作成モーダルキャンセル時の挙動
     # /teamsへリダイレクト
-    socket =
-      socket
-      |> redirect(to: "/teams")
+    case socket.assigns.display_team do
+      nil ->
+        {:noreply, redirect(socket, to: "/teams")}
 
-    {:noreply, socket}
+      team ->
+        {:noreply, deside_redirect(socket, team, nil, nil)}
+    end
   end
 
   def handle_info({BrightWeb.TeamLive.TeamAddUserComponent, {:add, added_users}}, socket) do
