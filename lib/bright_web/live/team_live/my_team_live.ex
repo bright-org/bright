@@ -133,39 +133,21 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, assign(socket, :users, added_users)}
   end
 
-  defp deside_redirect(socket, %Team{} = display_team, nil, nil) do
+  defp deside_redirect(socket, display_team, nil, nil) do
     socket
     |> redirect(to: "/teams/#{display_team.id}")
   end
 
-  defp deside_redirect(socket, %Team{} = display_team, skill_panel_id, nil) do
+  defp deside_redirect(socket, display_team, skill_panel_id, nil) do
     socket
     |> redirect(to: "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}")
   end
 
-  defp deside_redirect(socket, %Team{} = display_team, skill_panel_id, skill_class_id) do
+  defp deside_redirect(socket, display_team, skill_panel_id, skill_class_id) do
     socket
     |> redirect(
       to:
         "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
-    )
-  end
-
-  defp deside_redirect(socket, %CustomGroup{} = display_team, nil, nil) do
-    socket
-    |> redirect(to: "/teams/#{display_team.id}?type=custom_group")
-  end
-
-  defp deside_redirect(socket, %CustomGroup{} = display_team, skill_panel_id, nil) do
-    socket
-    |> redirect(to: "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?type=custom_group")
-  end
-
-  defp deside_redirect(socket, %CustomGroup{} = display_team, skill_panel_id, skill_class_id) do
-    socket
-    |> redirect(
-      to:
-        "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}&type=custom_group"
     )
   end
 

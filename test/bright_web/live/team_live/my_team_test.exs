@@ -62,7 +62,7 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
       users: [user, user_2],
       skill_class_scores: [skill_class_score_1, skill_class_score_2]
     } do
-      {:ok, lv, _html} = live(conn, ~p"/teams/#{custom_group}?type=custom_group")
+      {:ok, lv, _html} = live(conn, ~p"/teams/#{custom_group}")
 
       assert has_element?(lv, "h3", custom_group.name)
       assert has_element?(lv, "#skill_card_0", user.name)

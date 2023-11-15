@@ -118,16 +118,6 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     end)
   end
 
-  defp get_display_team(%{"team_id" => custom_group_id, "type" => "custom_group"}, user_id) do
-    try do
-      CustomGroups.get_custom_group_by!(id: custom_group_id, user_id: user_id)
-    rescue
-      _e in Ecto.NoResultsError ->
-        # 結果が取得できない場合握りつぶしてnilを返す
-        nil
-    end
-  end
-
   defp get_display_team(%{"team_id" => team_id}, user_id) do
     try do
       Teams.raise_if_not_ulid(team_id)
@@ -143,8 +133,8 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       end
     rescue
       _e in Ecto.NoResultsError ->
-        # 結果が取得できない場合握りつぶしてnilを返す
-        nil
+        # 結果が取得できない場合、カスタムグループ判定に移動
+        get_display_team_as_custom_group(team_id, user_id)
     end
   end
 
@@ -158,6 +148,16 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       team_member_user.team
     else
       nil
+    end
+  end
+
+  defp get_display_team_as_custom_group(custom_group_id, user_id) do
+    try do
+      CustomGroups.get_custom_group_by!(id: custom_group_id, user_id: user_id)
+    rescue
+      _e in Ecto.NoResultsError ->
+        # 結果が取得できない場合握りつぶしてnilを返す
+        nil
     end
   end
 

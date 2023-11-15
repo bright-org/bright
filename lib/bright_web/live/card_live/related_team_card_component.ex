@@ -254,10 +254,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   パラメータにrow_on_click_targetを指定されなかった場合のチーム行クリック時のデフォルトイベント
   クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
   """
-  def handle_event("on_card_row_click", %{"team_type" => "custom_group"} = params, socket) do
-    {:noreply, redirect(socket, to: "/teams/#{params["team_id"]}?type=custom_group")}
-  end
-
   def handle_event("on_card_row_click", params, socket) do
     {:noreply, redirect(socket, to: "/teams/#{params["team_id"]}")}
   end
