@@ -28,6 +28,78 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
     end
   end
 
+  # スキルカード「この人と比較」
+  describe "Skill card link to compare on graphs" do
+    setup [:register_and_log_in_user]
+
+    setup do
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel)
+
+      %{skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    setup %{user: user} do
+      user_2 = insert(:user) |> with_user_profile()
+
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user, is_admin: true)
+      insert(:team_member_users, team: team, user: user_2)
+
+      %{team: team, user_2: user_2}
+    end
+
+    test "displays on other user card and links to /graphs", %{
+      conn: conn,
+      team: team,
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      user: user,
+      user_2: user_2
+    } do
+      insert(:user_skill_panel, skill_panel: skill_panel, user: user)
+      insert(:user_skill_panel, skill_panel: skill_panel, user: user_2)
+      insert(:skill_class_score, skill_class: skill_class, user: user_2)
+
+      assert {:ok, lv, _html} = live(conn, ~p"/teams/#{team}/skill_panels/#{skill_panel}")
+
+      # 自分自身に表示しない
+      refute has_element?(lv, "#skill_card_0", "この人と比較")
+      # 他者に表示する
+      assert has_element?(lv, "#skill_card_1", "この人と比較")
+    end
+
+    test "not displays when user(me) has not skill panel", %{
+      conn: conn,
+      team: team,
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      user_2: user_2
+    } do
+      # 自分自身が未取得のスキルパネルならリンクを表示しない
+      insert(:user_skill_panel, skill_panel: skill_panel, user: user_2)
+      insert(:skill_class_score, skill_class: skill_class, user: user_2)
+
+      assert {:ok, lv, _html} = live(conn, ~p"/teams/#{team}/skill_panels/#{skill_panel}")
+      refute has_element?(lv, "#skill_card_0", "この人と比較")
+      refute has_element?(lv, "#skill_card_1", "この人と比較")
+    end
+
+    test "not displays when other user has not skill score", %{
+      conn: conn,
+      team: team,
+      skill_panel: skill_panel,
+      user: user
+    } do
+      # 他者が未取得のスキルパネルならリンクを表示しない
+      insert(:user_skill_panel, skill_panel: skill_panel, user: user)
+
+      assert {:ok, lv, _html} = live(conn, ~p"/teams/#{team}/skill_panels/#{skill_panel}")
+      refute has_element?(lv, "#skill_card_0", "この人と比較")
+      refute has_element?(lv, "#skill_card_1", "この人と比較")
+    end
+  end
+
   # カスタムグループ指定時表示
   describe "Custom Group" do
     setup [:register_and_log_in_user]

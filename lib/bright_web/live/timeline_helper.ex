@@ -123,6 +123,15 @@ defmodule BrightWeb.TimelineHelper do
 
   def label_to_date(_label), do: nil
 
+  @doc """
+  nowを除く最新日付（ラベル）を返す
+  """
+  def get_latest_date_label do
+    get_by_date("now")
+    |> select_past_if_label_is_now()
+    |> Map.get(:selected_label)
+  end
+
   defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
 
   defp get_future_month(start_month, now) do

@@ -2,6 +2,9 @@ defmodule BrightWeb.GraphLive.Graphs do
   use BrightWeb, :live_view
 
   alias Bright.SkillPanels.SkillPanel
+  alias Bright.Teams
+  alias Bright.Accounts
+  alias BrightWeb.TimelineHelper
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
@@ -31,6 +34,7 @@ defmodule BrightWeb.GraphLive.Graphs do
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_score_dict()
      |> assign_counter()
+     |> assign_compared_user(params["compare"])
      |> touch_user_skill_panel()}
   end
 
@@ -92,5 +96,23 @@ defmodule BrightWeb.GraphLive.Graphs do
      socket
      |> assign(:compared_user, nil)
      |> assign(:select_label_compared_user, nil)}
+  end
+
+  def assign_compared_user(socket, nil), do: socket
+
+  def assign_compared_user(socket, user_name) do
+    compared_user = Accounts.get_user_by_name!(user_name) |> Map.put(:anonymous, false)
+
+    Teams.joined_teams_or_supportee_teams_or_supporter_teams_by_user_id!(
+      socket.assigns.current_user.id,
+      compared_user.id
+    )
+
+    # 比較対象のnowはないため1つ前の時点を取得
+    select_label = TimelineHelper.get_latest_date_label()
+
+    socket
+    |> assign(:compared_user, compared_user)
+    |> assign(:select_label_compared_user, select_label)
   end
 end
