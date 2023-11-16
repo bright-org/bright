@@ -24,7 +24,7 @@ defmodule Bright.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Brightカスタマーサクセス", "customer-success@bright-fun.org"})
+      |> from({"Brightカスタマーサクセス", "agent@bright-fun.org"})
       |> subject(subject)
       |> text_body(body)
 
