@@ -192,4 +192,29 @@ defmodule Bright.CustomGroupsTest do
       assert %Ecto.Changeset{} = CustomGroups.change_custom_group(custom_group)
     end
   end
+
+  describe "custom_group_member_users" do
+    setup %{user: user} do
+      custom_group = insert(:custom_group, user: user)
+      %{custom_group: custom_group}
+    end
+
+    test "list_member_users with page params", %{
+      custom_group: custom_group,
+      user: user
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:custom_group_member_user, custom_group: custom_group, user: user_2)
+
+      %{entries: [entry]} = CustomGroups.list_member_users(custom_group, %{page: 1, page_size: 6})
+      assert entry.user_id == user_2.id
+      assert entry.user.id
+      assert entry.user.user_profile.id
+
+      custom_group_2 = insert(:custom_group, user: user)
+
+      assert %{entries: []} =
+               CustomGroups.list_member_users(custom_group_2, %{page: 1, page_size: 6})
+    end
+  end
 end
