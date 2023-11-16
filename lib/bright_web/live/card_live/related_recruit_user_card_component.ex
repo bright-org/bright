@@ -10,7 +10,7 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
   alias Bright.UserProfiles
 
   @tabs [
-    {"team", "チーム"},
+    {"team", "所属チーム"},
     {"hr_teams", "採用・育成チーム"}
   ]
 

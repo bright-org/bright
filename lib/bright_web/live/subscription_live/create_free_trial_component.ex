@@ -27,7 +27,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
             </span>
           </h2>
           <p class="mt-2">
-            (お試し期間以降ももご利用される場合はプランのアップグレードが必要です)
+            (お試し期間以降もご利用される場合はプランのアップグレードが必要です)
           </p>
           <div class="mt-8">
             <h3 class="font-bold text-xl">
@@ -154,6 +154,15 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
     |> assign(:changeset, changeset)
     |> assign_form(changeset)
     |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "submit",
+        _params,
+        %{assigns: %{changeset: %{valid?: false} = changeset}} = socket
+      ) do
+    changeset = Map.put(changeset, :action, :validte)
+    {:noreply, assign_form(socket, changeset)}
   end
 
   def handle_event(
