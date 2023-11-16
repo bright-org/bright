@@ -92,7 +92,7 @@ defmodule Bright.TestHelper do
 
   def assert_confirmation_mail_sent(user_email) do
     assert_email_sent(fn email ->
-      assert email.from == {"Brightカスタマーサクセス", "sender@bright-fun.org"}
+      assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】ユーザー本登録を完了させ、Bright をお楽しみください（24 時間以内有効）"
       assert email.to == [{"", user_email}]
     end)
@@ -100,7 +100,7 @@ defmodule Bright.TestHelper do
 
   def assert_reset_password_mail_sent(user) do
     assert_email_sent(fn email ->
-      assert email.from == {"Brightカスタマーサクセス", "sender@bright-fun.org"}
+      assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】パスワードリセットを行ってください（24 時間以内有効）"
       assert email.to == [{"", user.email}]
     end)
@@ -108,7 +108,7 @@ defmodule Bright.TestHelper do
 
   def assert_two_factor_auth_mail_sent(user) do
     assert_email_sent(fn email ->
-      assert email.from == {"Brightカスタマーサクセス", "sender@bright-fun.org"}
+      assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】2段階認証コード"
       assert email.to == [{"", user.email}]
     end)
@@ -116,7 +116,7 @@ defmodule Bright.TestHelper do
 
   def assert_two_factor_auth_mail_sent(user, code) do
     assert_email_sent(fn email ->
-      assert email.from == {"Brightカスタマーサクセス", "sender@bright-fun.org"}
+      assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】2段階認証コード"
       assert email.to == [{"", user.email}]
       assert email.text_body =~ code
@@ -125,7 +125,7 @@ defmodule Bright.TestHelper do
 
   def assert_update_email_mail_sent(new_email) do
     assert_email_sent(fn email ->
-      assert email.from == {"Brightカスタマーサクセス", "sender@bright-fun.org"}
+      assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】メールアドレス変更を完了させてください（24 時間以内有効）"
       assert email.to == [{"", new_email}]
     end)
@@ -133,7 +133,7 @@ defmodule Bright.TestHelper do
 
   def assert_add_sub_email_mail_sent(new_email) do
     assert_email_sent(fn email ->
-      assert email.from == {"Brightカスタマーサクセス", "sender@bright-fun.org"}
+      assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】サブメールアドレス追加を完了させてください（24 時間以内有効）"
       assert email.to == [{"", new_email}]
     end)
