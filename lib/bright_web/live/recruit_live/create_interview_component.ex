@@ -103,7 +103,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
                   <button
                     class="text-sm font-bold py-3 rounded text-white bg-base w-72"
                   >
-                    面談調整を依頼する
+                    面談調整する
                   </button>
                 </div>
               </.form>
