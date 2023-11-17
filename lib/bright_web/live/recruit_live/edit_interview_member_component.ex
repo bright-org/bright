@@ -47,7 +47,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                     <%= @interview_member.interview.comment %>
                     </dd>
                     <dt class="font-bold w-[98px] flex mt-8" >
-                      <label for="point" class="block pr-1">面談可否の<br>判断</label>
+                      <label for="point" class="block pr-1">面談参加の<br />意思確認</label>
                     </dt>
                     <dd class="w-[280px] mt-8">
                       <label class="block">
@@ -55,21 +55,21 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :wants})}
                         >
-                        <span class="align-[2px]">面談したい</span>
+                        <span class="align-[2px]">参加する</span>
                       </label>
                       <label class="block">
                         <input
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :keep})}
                         >
-                        <span class="align-[2px]">条件に合わないがエンジニアをキープ</span>
+                        <span class="align-[2px]">日程次第</span>
                       </label>
                       <label class="block">
                         <input
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :not_wants})}
                         >
-                        <span class="align-[2px]">面談しない</span>
+                        <span class="align-[2px]">参加しない</span>
                       </label>
                     </dd>
                   </dl>
