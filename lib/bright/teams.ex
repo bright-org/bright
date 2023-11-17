@@ -1066,8 +1066,16 @@ defmodule Bright.Teams do
   @doc """
   teamsテーブルのenable_xx_functionsの状態に応じてチームのタイプを判定する
   """
-  def get_team_type_by_team(%Bright.Teams.Team{} = _team) do
-    # TODO チームアイコン判定の追加時に対応
-    :general_team
+  def get_team_type_by_team(%Bright.Teams.Team{} = team) do
+    cond do
+      team.enable_hr_functions == true ->
+        :hr_support_team
+
+      team.enable_hr_functions == false and team.enable_team_up_functions == true ->
+        :teamup_team
+
+      true ->
+        :general_team
+    end
   end
 end
