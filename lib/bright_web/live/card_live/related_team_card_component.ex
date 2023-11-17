@@ -17,10 +17,13 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
   import BrightWeb.TabComponents
   import BrightWeb.TeamComponents
+
   alias Bright.Teams
+  alias Bright.CustomGroups
 
   @tabs [
     {"joined_teams", "所属チーム"},
+    {"custom_groups", "カスタムグループ"},
     {"supporter_teams", "採用・育成チーム"},
     {"supportee_teams", "採用・育成支援先"}
   ]
@@ -190,6 +193,28 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     |> assign(:card, card)
   end
 
+  defp assign_card(socket, "custom_groups") do
+    page =
+      CustomGroups.list_user_custom_groups(
+        socket.assigns.display_user.id,
+        socket.assigns.card.page_params
+      )
+
+    team_params =
+      page.entries
+      |> convert_team_params_from_custom_groups()
+
+    card = %{
+      socket.assigns.card
+      | entries: team_params,
+        total_entries: page.total_entries,
+        total_pages: page.total_pages
+    }
+
+    socket
+    |> assign(:card, card)
+  end
+
   @impl true
   def handle_event(
         "tab_click",
@@ -229,18 +254,8 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   パラメータにrow_on_click_targetを指定されなかった場合のチーム行クリック時のデフォルトイベント
   クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
   """
-  def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
-    display_team =
-      team_id
-      |> Teams.get_team_with_member_users!()
-
-    socket =
-      socket
-      |> assign(:display_team, display_team)
-      |> assign(:display_user, socket.assigns.display_user)
-      |> redirect(to: "/teams/#{display_team.id}")
-
-    {:noreply, socket}
+  def handle_event("on_card_row_click", params, socket) do
+    {:noreply, redirect(socket, to: "/teams/#{params["team_id"]}")}
   end
 
   defp card_view(socket, tab_name, page) do
@@ -293,6 +308,19 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         is_star: nil,
         is_admin: nil,
         team_type: Teams.get_team_type_by_team(team)
+      }
+    end)
+  end
+
+  defp convert_team_params_from_custom_groups(custom_groups) do
+    custom_groups
+    |> Enum.map(fn custom_group ->
+      %{
+        team_id: custom_group.id,
+        name: custom_group.name,
+        is_star: nil,
+        is_admin: nil,
+        team_type: :custom_group
       }
     end)
   end

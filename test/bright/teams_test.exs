@@ -579,6 +579,25 @@ defmodule Bright.TeamsTest do
     end
   end
 
+  describe "list_confirmed_team_member_users_by_team" do
+    test "returns list" do
+      team = insert(:team)
+      user_1 = insert(:user)
+      user_2 = insert(:user)
+      user_3 = insert(:user)
+
+      # user_1/2 は招待確認済み, user_3は未確認
+      Enum.each([user_1, user_2], &insert(:team_member_users, team: team, user: &1))
+      insert(:team_member_users_unconfirmed, team: team, user: user_3)
+
+      member_users = Teams.list_confirmed_team_member_users_by_team(team)
+      user_ids = Enum.map([user_1, user_2], & &1.id) |> Enum.sort()
+      ret_user_ids = Enum.map(member_users, & &1.user_id) |> Enum.sort()
+
+      assert user_ids == ret_user_ids
+    end
+  end
+
   describe "team_supporter_teams life cycle" do
     test "normal life cycle" do
       # 支援する側のチーム

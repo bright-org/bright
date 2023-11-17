@@ -85,18 +85,4 @@
   />
 </.bright_modal>
 
-<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
-<.bright_modal
-  id="create-team-modal"
->
-  <.live_component
-    module={BrightWeb.TeamCreateLiveComponent}
-    id={@current_user.id || :new}
-    action={@live_action}
-    current_user={@display_user}
-    users={[]}
-    patch={~p"/mypage"}
-    plan={Subscriptions.get_users_subscription_status(@current_user.id, NaiveDateTime.utc_now())}
-  />
-</.bright_modal>
 <div phx-mounted={if @search, do: JS.show(to: "#skill_search_modal")}></div>

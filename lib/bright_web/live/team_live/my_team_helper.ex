@@ -7,17 +7,22 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   alias Bright.Teams
   alias Bright.Teams.Team
+  alias Bright.CustomGroups
+  alias Bright.CustomGroups.CustomGroup
   alias Bright.SkillPanels
+  alias Bright.SkillScores
   alias Bright.Subscriptions
   alias Bright.SkillPanels.SkillPanel
   alias BrightWeb.SkillPanelLive.SkillPanelHelper
 
   def init_assign(params, %{assigns: %{live_action: :new, current_user: user}} = socket) do
     subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+
     # 直接チーム作成モーダルを起動した場合、データの取得は行わない
     socket
     |> assign_plan(subscription)
     |> assign_page_title(nil)
+    |> assign_display_type(params["type"])
     |> assign_display_skill_panel(nil)
     |> assign_display_skill_classes([])
     |> assign_display_team(nil)
@@ -37,14 +42,14 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     # パラメータ指定がある場合それぞれの対象データを取得、ない場合はnil
     display_team = get_display_team(params, user.id)
     # TODO チームスキルカードのページング処理
-    display_team_members = get_display_team_members(display_team)
+    display_team_members = get_display_team_members(display_team, user)
 
     current_users_team_member = get_current_users_team_member(user, display_team_members)
 
-    display_skill_panel = get_display_skill_panel(params, display_team)
+    display_skill_panel = get_display_skill_panel(params, display_team_members)
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
-    member_skill_classes = list_skill_classes(display_team, display_skill_panel)
+    member_skill_class_scores = list_skill_class_scores(display_team_members, display_skill_panel)
 
     subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
 
@@ -52,6 +57,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     socket
     |> assign_plan(subscription)
     |> assign_page_title(display_skill_panel)
+    |> assign_display_type(params["type"])
     |> assign_display_skill_panel(display_skill_panel)
     |> assign_display_skill_classes(display_skill_classes)
     |> assign_display_team(display_team)
@@ -61,13 +67,13 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       display_team_members,
       display_skill_classes,
       selected_skill_class,
-      member_skill_classes
+      member_skill_class_scores
     )
     # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
     |> assign_push_redirect(params, display_team, display_skill_panel)
   end
 
-  defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team) do
+  defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team_members) do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
 
     try do
@@ -80,19 +86,20 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     end
   end
 
-  defp get_display_skill_panel(_params, %Team{} = display_team) do
+  defp get_display_skill_panel(_params, []) do
+    # TODO スキルパネルIDが指定されていない場合、チームも取得できない場合はnil
+    nil
+  end
+
+  defp get_display_skill_panel(_params, display_team_members) do
     # TODO スキルパネルIDが指定されていない場合、チームが取得できていれば第一優先のスキルパネルを取得する
+    user_ids = Enum.map(display_team_members, & &1.user_id)
 
     # キャリアフィールドを問わずチーム内の設定スキルのうち最も新しいスキルパネルを取得
     %{page_number: _page, total_pages: _total_pages, entries: skill_panels} =
-      SkillPanels.list_team_member_users_skill_panels(display_team.id, 1)
+      SkillPanels.list_users_skill_panels(user_ids, 1)
 
     List.first(skill_panels)
-  end
-
-  defp get_display_skill_panel(_params, _display_team) do
-    # TODO スキルパネルIDが指定されていない場合、チームも取得できない場合はnil
-    nil
   end
 
   defp list_display_skill_classes(%SkillPanel{} = skill_panel) do
@@ -126,8 +133,8 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       end
     rescue
       _e in Ecto.NoResultsError ->
-        # 結果が取得できない場合握りつぶしてnilを返す
-        nil
+        # 結果が取得できない場合、カスタムグループ判定に移動
+        get_display_team_as_custom_group(team_id, user_id)
     end
   end
 
@@ -141,6 +148,16 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       team_member_user.team
     else
       nil
+    end
+  end
+
+  defp get_display_team_as_custom_group(custom_group_id, user_id) do
+    try do
+      CustomGroups.get_custom_group_by!(id: custom_group_id, user_id: user_id)
+    rescue
+      _e in Ecto.NoResultsError ->
+        # 結果が取得できない場合握りつぶしてnilを返す
+        nil
     end
   end
 
@@ -160,6 +177,14 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     socket
     |> assign(:page_title, "チームスキル分析")
     |> assign(:page_sub_title, nil)
+  end
+
+  defp assign_display_type(socket, "custom_group") do
+    assign(socket, :display_type, "custom_group")
+  end
+
+  defp assign_display_type(socket, _type) do
+    assign(socket, :display_type, "team")
   end
 
   defp assign_display_team(socket, display_team) do
@@ -206,20 +231,20 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
          team_member_users,
          display_skill_classes,
          first_skill_class,
-         member_skill_classes
+         member_skill_class_scores
        ) do
     display_member_for_skill_card =
       team_member_users
       |> Enum.map(fn member ->
         # ユーザー毎に該当ユーザーのスキルクラススコアが取得出来ているか検索
-        filterd_member_skill_classes =
-          member_skill_classes
+        filterd_member_skill_class_scores =
+          member_skill_class_scores
           |> Enum.filter(fn member_skill_class ->
             member_skill_class.user_id == member.user.id
           end)
 
         %{user: member.user}
-        |> add_user_skill_class_score(display_skill_classes, filterd_member_skill_classes)
+        |> add_user_skill_class_score(display_skill_classes, filterd_member_skill_class_scores)
         |> add_select_skill_class(first_skill_class)
       end)
 
@@ -238,16 +263,16 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> Map.put(:user_skill_class_score, nil)
   end
 
-  defp add_user_skill_class_score(map, display_skill_classes, filterd_member_skill_classes) do
+  defp add_user_skill_class_score(map, display_skill_classes, filterd_member_skill_class_scores) do
     # display_skill_classesに対応する該当ユーザーのスキルクラススコアが存在するかチェック
     # 存在しない場合はnilを設定する
     user_skill_class_score =
       display_skill_classes
       |> Enum.map(fn display_skill_class ->
         skill_class_score =
-          filterd_member_skill_classes
-          |> Enum.find(fn filterd_member_skill_class ->
-            filterd_member_skill_class.skill_class_id == display_skill_class.id
+          filterd_member_skill_class_scores
+          |> Enum.find(fn filterd_member_skill_class_score ->
+            filterd_member_skill_class_score.skill_class_id == display_skill_class.id
           end)
 
         %{
@@ -312,18 +337,20 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     socket
   end
 
-  defp list_skill_classes(nil, _display_skill_panel) do
-    # チームが取得できていない場合、スキルクラスとスコアを取得しない
+  defp list_skill_class_scores([], _display_skill_panel) do
+    # チームメンバーが取得できていない場合、スキルクラスとスコアを取得しない
     []
   end
 
-  defp list_skill_classes(_display_team, nil) do
+  defp list_skill_class_scores(_display_team_members, nil) do
     # スキルパネルが取得できていない場合、スキルクラスとスコアを取得しない
     []
   end
 
-  defp list_skill_classes(%Team{} = display_team, display_skill_panel) do
+  defp list_skill_class_scores(display_team_members, display_skill_panel) do
     # TODO 　チームメンバーのページング処理現状は上限が30名程度を想定して最大999件固定で取得
+    user_ids = Enum.map(display_team_members, & &1.user_id)
+
     %Scrivener.Page{
       page_number: _page_number,
       page_size: _page_size,
@@ -331,8 +358,8 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       total_pages: _total_pages,
       entries: skill_classes
     } =
-      Teams.list_skill_scores_by_team_id(
-        display_team.id,
+      SkillScores.list_users_skill_class_scores_by_skill_panel_id(
+        user_ids,
         display_skill_panel.id,
         %{page: 1, page_size: 999}
       )
@@ -340,7 +367,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     skill_classes
   end
 
-  defp get_display_team_members(%Team{} = team) do
+  defp get_display_team_members(%Team{} = team, _user) do
     %Scrivener.Page{
       page_number: _page_number,
       page_size: _page_size,
@@ -352,7 +379,20 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     member_users
   end
 
-  defp get_display_team_members(nil) do
+  defp get_display_team_members(%CustomGroup{} = custom_group, user) do
+    custom_group = Bright.Repo.preload(custom_group, member_users: [user: [:user_profile]])
+
+    # 前処理として参照時点で無効になっているメンバー除去
+    {_, invalid_users} = CustomGroups.filter_valid_users(custom_group)
+    invalid_user_ids = Enum.map(invalid_users, & &1.id)
+
+    # メンバーと自分自身を一覧に加える
+    custom_group.member_users
+    |> Enum.reject(&(&1.user_id in invalid_user_ids))
+    |> then(&([%{user_id: user.id, user: user}] ++ &1))
+  end
+
+  defp get_display_team_members(nil, _user) do
     # チームが取得できていない場合、チームメンバーも取得しない
     []
   end
