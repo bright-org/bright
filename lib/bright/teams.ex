@@ -1050,18 +1050,26 @@ defmodule Bright.Teams do
   end
 
   @doc """
-  teamsテーブルのenable_xx_functionsの状態に応じてチームのタイプを判定する
+  第一引数に応じてチームのタイプを判定する
+  Bright.Teams.Teamの場合、teamsテーブルのenable_xx_functionsの状態に応じてタイプ判定
+  Bright.CustomGroups.CustomGroupの場合、custom_groupとして判定
   """
   def get_team_type_by_team(%Bright.Teams.Team{} = team) do
     cond do
       team.enable_hr_functions == true ->
+        # 現プラン仕様ではhr_support機能が使える最上位プランが採用・人材支援チームを作成可能という位置づけなので、enable_hr_functionsがtrueの場合は問答無用でhr_support_team判定する
         :hr_support_team
 
       team.enable_hr_functions == false and team.enable_team_up_functions == true ->
+        # 上記条件に背反する条件として、hr_support_teamが使えなず、team_up_functionsだけが使えるのがteamup_teamという判定
         :teamup_team
 
       true ->
         :general_team
     end
+  end
+
+  def get_team_type_by_team(%Bright.CustomGroups.CustomGroup{}) do
+    :custom_group
   end
 end
