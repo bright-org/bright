@@ -11,7 +11,7 @@ defmodule BrightWeb.RecruitLive.NotificationHeaderComponent do
       <button
         class="fixed top-3 right-16 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:right-0 lg:mr-0 lg:relative"
         phx-click="toggle_recruit_notifications"
-        phx-click-away="close_recruit_notifications"
+        phx-click-away={@open? && "close_recruit_notifications"}
         phx-target={@myself}
       >
         <.icon name="hero-inbox-stack" class="h-8 w-8" />
