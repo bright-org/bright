@@ -9,14 +9,23 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   import BrightWeb.DisplayUserHelper, only: [encrypt_user_name: 1]
 
   alias Bright.Teams
+  alias Bright.CustomGroups
   alias Bright.UserProfiles
   alias Bright.RecruitmentStockUsers
 
   @tabs [
-    {"intriguing", "気になる人"},
+    # 気になる人はβリリース対象外のため非表示
+    # {"intriguing", "気になる人"},
     {"team", "チーム"},
+    {"custom_group", "カスタムグループ"},
     {"candidate_for_employment", "採用候補者"}
   ]
+
+  @nobody_exists_message %{
+    "team" => "所属しているチームはありません",
+    "custom_group" => "カスタムグループはありません",
+    "candidate_for_employment" => "採用候補者はいません"
+  }
 
   @menu_items [
     # αリリース対象外 %{text: "カスタムグループを作る", href: "/"}, %{text: "カスタムグループの編集", href: "/"}
@@ -81,13 +90,13 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           <ul :if={@selected_tab != "intriguing" && Enum.count(@user_profiles) == 0} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はいません
+                <%= Map.get(nobody_exists_message(), @selected_tab) %>
               </div>
             </li>
           </ul>
           <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-col lg:flex-row lg:flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
-              <%= if @selected_tab == "team" do %>
+              <%= if @selected_tab in ["team", "custom_group"] do %>
                 <.profile_small
                   user_name={user_profile.user_name}
                   title={user_profile.title}
@@ -118,120 +127,21 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   @impl true
   def update(assigns, socket) do
-    socket = socket |> assign(assigns)
-
-    # 初期表示データの取得 mount時に設定したselected_tabの選択処理を実行
-    {:noreply, socket} =
-      handle_event(
-        "tab_click",
-        %{"id" => assigns.id, "tab_name" => socket.assigns.selected_tab},
-        socket
-      )
+    socket =
+      socket
+      |> assign(assigns)
+      # 初期表示データの取得 mount時に設定したselected_tabの選択処理を実行
+      |> assign_with_seleted_tab()
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_event(
-        "tab_click",
-        %{"id" => _id, "tab_name" => "intriguing"},
-        socket
-      ) do
+  def handle_event("tab_click", %{"tab_name" => selected_tab}, socket) do
     socket =
       socket
-      |> assign(:selected_tab, "intriguing")
-      |> assign(:inner_tab, [])
-      |> assign(:user_profiles, [])
-      |> assign(:total_pages, 1)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event(
-        "tab_click",
-        %{"id" => _id, "tab_name" => "team"},
-        socket
-      ) do
-    # inner_tab用に所属チームの一覧を取得
-    page =
-      Teams.list_joined_teams_by_user_id(
-        socket.assigns.current_user.id,
-        # TODO inner_tab内のチーム一覧のページング実装
-        %{page: 1, page_size: 999}
-      )
-
-    inner_tabs =
-      page.entries
-      |> Enum.map(fn member_user ->
-        {member_user.team.id, member_user.team.name}
-      end)
-
-    socket =
-      socket
-      |> assign(:selected_tab, "team")
-      |> assign(:inner_tab, inner_tabs)
-
-    # チームが１以上あるなら最初のinner_tabを自動選択してcartの中身更新する
-    socket =
-      if length(inner_tabs) >= 1 do
-        first_member_users =
-          page.entries
-          |> List.first()
-
-        first_member_users.team.id
-
-        {:noreply, socket} =
-          handle_event(
-            "inner_tab_click",
-            %{
-              "tab_name" => "team",
-              "inner_tab_name" => first_member_users.team.id
-            },
-            socket
-          )
-
-        socket
-      else
-        socket
-      end
-
-    {:noreply, socket}
-  end
-
-  def handle_event(
-        "tab_click",
-        %{"id" => _id, "tab_name" => "candidate_for_employment"},
-        socket
-      ) do
-    socket =
-      socket
-      |> assign(:selected_tab, "candidate_for_employment")
-      |> assign(:inner_tab, [])
-      |> assign_selected_card("candidate_for_employment")
-
-    {:noreply, socket}
-  end
-
-  def handle_event("remove_user", %{"stock_id" => id}, socket) do
-    RecruitmentStockUsers.get_recruitment_stock_user!(id)
-    |> RecruitmentStockUsers.delete_recruitment_stock_user()
-
-    socket
-    |> assign_selected_card("candidate_for_employment")
-    |> then(&{:noreply, &1})
-  end
-
-  def handle_event(
-        "tab_click",
-        %{"id" => _id, "tab_name" => tab_name},
-        socket
-      ) do
-    # TODO これは雛形です処理を記述すること
-
-    socket =
-      socket
-      |> assign(:selected_tab, tab_name)
+      |> assign(:selected_tab, selected_tab)
+      |> assign_with_seleted_tab()
 
     {:noreply, socket}
   end
@@ -239,19 +149,18 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   def handle_event(
         "inner_tab_click",
         %{
-          "tab_name" => "team",
-          "inner_tab_name" => team_id
+          "tab_name" => selected_tab_name,
+          "inner_tab_name" => inner_tab_id
         },
         socket
       ) do
+    # 内部タブを選択されたタブに設定し、1ページ目のデータをアサイン
+    # チームやカスタムグループなどが対象
     socket =
       socket
-      # 選択中のinnserタブを変更
-      |> assign(:inner_selected_tab, team_id)
-      # １ページ目にリセット
+      |> assign(:inner_selected_tab, inner_tab_id)
       |> assign(:page, 1)
-      # 選択中のタブ名に応じたassign_selected_cardを実行
-      |> assign_selected_card(socket.assigns.selected_tab)
+      |> assign_selected_card(selected_tab_name)
 
     {:noreply, socket}
   end
@@ -287,12 +196,30 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     {:noreply, socket}
   end
 
-  def set_menu_items(false), do: []
-  def set_menu_items(_), do: @menu_items
+  def handle_event("remove_user", %{"stock_id" => id}, socket) do
+    RecruitmentStockUsers.get_recruitment_stock_user!(id)
+    |> RecruitmentStockUsers.delete_recruitment_stock_user()
+
+    socket
+    |> assign_selected_card("candidate_for_employment")
+    |> then(&{:noreply, &1})
+  end
+
+  defp assign_with_seleted_tab(socket) do
+    %{selected_tab: selected_tab} = socket.assigns
+
+    socket
+    |> assign_inner_tab(selected_tab)
+    |> assign_first_inner_tab()
+    |> assign_selected_card(selected_tab)
+  end
+
+  defp set_menu_items(false), do: []
+  defp set_menu_items(_), do: @menu_items
 
   defp inner_tab(assigns) do
     ~H"""
-    <div id={@id} class="flex border-b border-brightGray-50" phx-hook="TabSlideScroll">
+    <div id={"#{@id}-#{@selected_tab}"} class="flex border-b border-brightGray-50" phx-hook="TabSlideScroll">
       <div class="overflow-hidden">
         <ul class="inner_tab_list overflow-hidden flex text-base !text-sm w-[99999px]">
           <%= for {key, value} <- @inner_tab do %>
@@ -324,6 +251,37 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     """
   end
 
+  defp assign_inner_tab(socket, "team") do
+    # 所属チームの一覧を取得
+    page =
+      Teams.list_joined_teams_by_user_id(
+        socket.assigns.current_user.id,
+        # TODO inner_tab内のチーム一覧のページング実装
+        %{page: 1, page_size: 999}
+      )
+
+    inner_tab =
+      page.entries
+      |> Enum.map(fn member_user ->
+        {member_user.team.id, member_user.team.name}
+      end)
+
+    assign(socket, :inner_tab, inner_tab)
+  end
+
+  defp assign_inner_tab(socket, "custom_group") do
+    # カスタムグループの一覧を取得
+    inner_tab =
+      CustomGroups.list_user_custom_groups(socket.assigns.current_user.id)
+      |> Enum.map(&{&1.id, &1.name})
+
+    assign(socket, :inner_tab, inner_tab)
+  end
+
+  defp assign_inner_tab(socket, _) do
+    assign(socket, :inner_tab, [])
+  end
+
   defp assign_selected_card(socket, "team") do
     member_and_users =
       get_team_member_user_profiles(
@@ -338,6 +296,39 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     socket
     |> assign(:user_profiles, member_and_users.user_smalls)
     |> assign(:total_pages, member_and_users.total_pages)
+  end
+
+  defp assign_selected_card(socket, "custom_group") do
+    %{inner_selected_tab: custom_group_id, current_user: current_user} = socket.assigns
+
+    custom_group =
+      CustomGroups.get_custom_group_by(
+        id: custom_group_id,
+        user_id: current_user.id
+      )
+
+    if custom_group do
+      member_users_page =
+        CustomGroups.list_member_users(
+          custom_group,
+          %{
+            page: socket.assigns.page,
+            page_size: socket.assigns.page_size
+          }
+        )
+
+      user_profiles =
+        member_users_page.entries
+        |> Enum.map(&build_user_profile(&1.user))
+
+      socket
+      |> assign(:user_profiles, user_profiles)
+      |> assign(:total_pages, member_users_page.total_pages)
+    else
+      socket
+      |> assign(:user_profiles, [])
+      |> assign(:total_pages, 0)
+    end
   end
 
   defp assign_selected_card(socket, "candidate_for_employment") do
@@ -355,6 +346,29 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     |> assign(:total_pages, list_recruitment_stock_users.total_pages)
   end
 
+  defp assign_selected_card(socket, _) do
+    socket
+    |> assign(:user_profiles, [])
+    |> assign(:total_pages, 1)
+  end
+
+  defp assign_first_inner_tab(socket) do
+    # 内部タブがあるなら最初の1つを自動選択する
+    socket.assigns.inner_tab
+    |> List.first()
+    |> case do
+      nil ->
+        socket
+
+      {first_inner_tab_id, _first_tab_name} ->
+        assign(socket, :inner_selected_tab, first_inner_tab_id)
+    end
+  end
+
+  defp get_team_member_user_profiles(_user_id, nil, _page_params) do
+    %{user_smalls: [], total_pages: 0}
+  end
+
   defp get_team_member_user_profiles(user_id, team_id, page_params) do
     page =
       Teams.list_joined_users_and_profiles_by_team_id_without_myself(
@@ -363,23 +377,23 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
         page_params
       )
 
-    member_and_users =
-      page.entries
-      |> Enum.map(fn member_users ->
-        member_users.user.user_profile
-
-        %{
-          user_name: member_users.user.name,
-          title: member_users.user.user_profile.title,
-          icon_file_path: UserProfiles.icon_url(member_users.user.user_profile.icon_file_path),
-          encrypt_user_name: ""
-        }
-      end)
+    member_and_users = Enum.map(page.entries, &build_user_profile(&1.user))
 
     %{user_smalls: member_and_users, total_pages: page.total_pages}
+  end
+
+  defp build_user_profile(user) do
+    %{
+      user_name: user.name,
+      title: user.user_profile.title,
+      icon_file_path: UserProfiles.icon_url(user.user_profile.icon_file_path),
+      encrypt_user_name: ""
+    }
   end
 
   defp click_event(nil), do: nil
 
   defp click_event(purpose), do: "click_on_related_user_card_#{purpose}"
+
+  defp nobody_exists_message, do: @nobody_exists_message
 end

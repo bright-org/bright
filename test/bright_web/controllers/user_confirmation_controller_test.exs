@@ -33,7 +33,7 @@ defmodule BrightWeb.UserConfirmationControllerTest do
         Repo.update_all(
           UserToken,
           set: [
-            inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+            inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-4 * 60 * 60 * 24)
           ]
         )
 

@@ -309,9 +309,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     end
   end
 
-  # 成長グラフ
-  # 成長グラフはJSでの描画のため渡しているdata属性を主な対象として確認している
-  describe "Growth grapth" do
+  # 成長パネル
+  # 成長パネルはJSでの描画のため渡しているdata属性を主な対象として確認している
+  describe "Growth panel" do
     setup [:register_and_log_in_user]
 
     setup %{user: user} do

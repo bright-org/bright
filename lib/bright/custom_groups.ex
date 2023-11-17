@@ -26,11 +26,34 @@ defmodule Bright.CustomGroups do
   Returns the list of custom_groups of given user_id.
   """
   def list_user_custom_groups(user_id) do
+    query_user_custom_groups(user_id)
+    |> Repo.all()
+  end
+
+  def list_user_custom_groups(user_id, page_params) do
+    query_user_custom_groups(user_id)
+    |> Repo.paginate(page_params)
+  end
+
+  defp query_user_custom_groups(user_id) do
     from(c in CustomGroup,
       where: c.user_id == ^user_id,
       order_by: {:asc, :inserted_at}
     )
-    |> Repo.all()
+  end
+
+  @doc """
+  Returns the list of custom_group member user.
+  Because of with page, not check referencing privileges.
+  """
+  def list_member_users(custom_group, page_param) do
+    from(mu in Ecto.assoc(custom_group, :member_users),
+      order_by: {:asc, :position},
+      join: u in assoc(mu, :user),
+      join: up in assoc(u, :user_profile),
+      preload: [user: {u, [user_profile: up]}]
+    )
+    |> Repo.paginate(page_param)
   end
 
   @doc """
@@ -51,19 +74,31 @@ defmodule Bright.CustomGroups do
         []
 
       custom_group ->
-        members = Enum.map(custom_group.member_users, & &1.user)
-
-        # 返す前に現状においても参照可能かどうかを確認している
-        {valid_users, invalid_users} =
-          Enum.split_with(members, &custom_group_assignable?(user, &1))
-
-        delete_custom_group_member_users_from_user_ids(
-          custom_group,
-          Enum.map(invalid_users, & &1.id)
-        )
-
+        {valid_users, _invalid_users} = filter_valid_users(custom_group, user)
         valid_users
     end
+  end
+
+  @doc """
+  カスタムグループのメンバーを現在も参照可能か判定して可能なユーザーを返す。不可の場合は削除をメンバー削除を実行
+  """
+  def filter_valid_users(custom_group) do
+    user = Repo.preload(custom_group, :user).user
+    filter_valid_users(custom_group, user)
+  end
+
+  def filter_valid_users(custom_group, user) do
+    members = Enum.map(custom_group.member_users, & &1.user)
+
+    # 参照可能かどうかを確認している
+    {valid_users, invalid_users} = Enum.split_with(members, &custom_group_assignable?(user, &1))
+
+    delete_custom_group_member_users_from_user_ids(
+      custom_group,
+      Enum.map(invalid_users, & &1.id)
+    )
+
+    {valid_users, invalid_users}
   end
 
   @doc """
@@ -81,6 +116,15 @@ defmodule Bright.CustomGroups do
 
   """
   def get_custom_group!(id), do: Repo.get!(CustomGroup, id)
+
+  @doc """
+  Gets a single custom_group by given condition.
+
+  Raises `Ecto.NoResultsError` if the Custom group does not exist.
+  """
+  def get_custom_group_by!(condition), do: Repo.get_by!(CustomGroup, condition)
+
+  def get_custom_group_by(condition), do: Repo.get_by(CustomGroup, condition)
 
   @doc """
   Creates a custom_group.

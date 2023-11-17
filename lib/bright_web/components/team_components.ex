@@ -4,6 +4,8 @@ defmodule BrightWeb.TeamComponents do
   """
   use Phoenix.Component
 
+  alias Bright.Teams.TeamMemberUsers
+
   @doc """
   アイコン付きのチームコンポーネント
 
@@ -31,6 +33,7 @@ defmodule BrightWeb.TeamComponents do
       phx-click="on_card_row_click"
       phx-target={@row_on_click_target}
       phx-value-team_id={@team_params.team_id}
+      phx-value-team_type={@team_params.team_type}
       class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
 
@@ -62,7 +65,7 @@ defmodule BrightWeb.TeamComponents do
     """
   end
 
-  attr :team, Bright.Teams.Team, required: true
+  attr :team_name, :string, required: true
   attr :team_type, :atom, default: :general_team
   attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: false, default: nil
 
@@ -70,12 +73,14 @@ defmodule BrightWeb.TeamComponents do
     ~H"""
     <div class="flex gap-x-4">
       <h3>
-          <img src={get_team_icon_path(@team_type)} class="!inline-flex w-8 h-8 mr-2.5 !items-center !justify-center"/>
-
-        <%= @team.name %>
+        <span
+          class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center">
+          group
+        </span>
+        <%= @team_name %>
       </h3>
       <button
-        :if={@current_users_team_member != nil}
+        :if={show_star_button?(@current_users_team_member)}
         class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
         phx-click="click_star_button"
       >
@@ -99,10 +104,18 @@ defmodule BrightWeb.TeamComponents do
     [
       # 一般のチームと人材・支援チームのアイコンはおなじ
       {:general_team, "/images/common/icons/team.svg"},
+      {:custom_group, "/images/common/icons/team.svg"},
       {:hr_support_team, "/images/common/icons/team_hr_support.svg"},
       {:teamup_team, "/images/common/icons/team_teamup.svg"}
     ]
   end
+
+  defp show_star_button?(%TeamMemberUsers{}) do
+    # チームメンバーの場合はスターのon/off可能
+    true
+  end
+
+  defp show_star_button?(_), do: false
 
   defp get_star_style(team_member_user) do
     if team_member_user.is_star do

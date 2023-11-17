@@ -282,7 +282,7 @@ defmodule BrightWeb.ProfileComponents do
     assigns = assign(assigns, :user_name, user_name)
 
     ~H"""
-    <a class="cursor-pointer inline-flex items-center gap-x-6" href={"/mypage/#{@user_name}"}>
+    <a class="cursor-pointer w-full inline-flex items-center gap-x-6" href={"/mypage/#{@user_name}"}>
       <span class="inline-flex items-center gap-x-6">
         <%= render_slot(@inner_block) %>
       </span>
@@ -293,7 +293,7 @@ defmodule BrightWeb.ProfileComponents do
   # 基本プロフィール root LiveView用イベント
   defp profile_small_link(%{click_event: _, click_target: nil} = assigns) do
     ~H"""
-    <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-value-name={@user_name} phx-value-encrypt_user_name={@encrypt_user_name}>
+    <a class="cursor-pointer w-full inline-flex items-center gap-x-6" phx-click={@click_event} phx-value-name={@user_name} phx-value-encrypt_user_name={@encrypt_user_name}>
       <%= render_slot(@inner_block) %>
     </a>
     """
@@ -302,7 +302,7 @@ defmodule BrightWeb.ProfileComponents do
   # 基本プロフィール LiveComponent用イベント
   defp profile_small_link(assigns) do
     ~H"""
-    <a class="cursor-pointer inline-flex items-center gap-x-6" phx-click={@click_event} phx-target={@click_target} phx-value-name={@user_name} phx-value-encrypt_user_name={@encrypt_user_name}>
+    <a class="cursor-pointer w-full inline-flex items-center gap-x-6" phx-click={@click_event} phx-target={@click_target} phx-value-name={@user_name} phx-value-encrypt_user_name={@encrypt_user_name}>
       <%= render_slot(@inner_block) %>
     </a>
     """
@@ -321,7 +321,7 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   # 採用候補者 root LiveView用イベント
-  # 成長グラフ／スキルパネルのメガメニューで利用
+  # 成長パネル／スキルパネルのメガメニューで利用
   defp profile_stock_small_link(%{click_event: _, click_target: nil} = assigns) do
     ~H"""
     <.link

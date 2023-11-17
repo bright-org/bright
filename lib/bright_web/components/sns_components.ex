@@ -34,7 +34,7 @@ defmodule BrightWeb.SnsComponents do
 
   ## Examples
       <.floating_share_buttons
-        text="成長グラフ"
+        text="成長パネル"
         path="/graphs"
       />
   """

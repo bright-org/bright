@@ -33,7 +33,7 @@
 <!-- コンテンツ -->
 <div class="px-4 py-3 flex flex-col justify-between pb-20 lg:flex-row lg:pb-0 lg:px-10">
   <div class="flex flex-col gap-y-6 lg:w-[850px]">
-    <!-- 保有スキル（ジェムをクリックすると成長グラフが見れます） -->
+    <!-- 保有スキル（ジェムをクリックすると成長パネルが見れます） -->
     <div>
       <h5>保有スキル（ジェムをクリック）</h5>
       <.live_component
@@ -85,18 +85,4 @@
   />
 </.bright_modal>
 
-<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
-<.bright_modal
-  id="create-team-modal"
->
-  <.live_component
-    module={BrightWeb.TeamCreateLiveComponent}
-    id={@current_user.id || :new}
-    action={@live_action}
-    current_user={@display_user}
-    users={[]}
-    patch={~p"/mypage"}
-    plan={Subscriptions.get_users_subscription_status(@current_user.id, NaiveDateTime.utc_now())}
-  />
-</.bright_modal>
 <div phx-mounted={if @search, do: JS.show(to: "#skill_search_modal")}></div>

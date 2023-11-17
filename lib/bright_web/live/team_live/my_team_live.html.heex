@@ -145,8 +145,8 @@
   <!-- チームタイトルー -->
   <!-- TODO チームがない場合の表示に対応  -->
   <.team_header
-    team={@display_team}
-    team_type={Teams.get_team_type_by_team(@display_team)}
+    team_name={@display_team.name}
+    team_type={:general_team}
     current_users_team_member={@current_users_team_member}
   />
 
@@ -165,23 +165,20 @@
     <% end %>
   </div>
 </div>
-<!-- ハードコードされたスタイル変更の為CoreComponents.modalではなくBrightWeb.BrightModalComponentsのbright_modalを使用 -->
-<!-- :if={@live_action in [:new, :edit]} -->
-  <.bright_modal
-    id="create-team-modal"
-    show={if @live_action in [:new, :edit] do true else false end}
-    on_cancel={JS.push("cancel_team_create")}
-  >
-    <.live_component
-      module={BrightWeb.TeamCreateLiveComponent}
-      id="create-team-component"
-      action={@live_action}
-      current_user={@current_user}
-      team={@team}
-      users={@users}
-      plan={@plan}
-    />
-  </.bright_modal>
 
-
-
+<.bright_modal
+  :if={@live_action in [:new, :edit]}
+  id="create-team-modal"
+  show
+  on_cancel={JS.push("cancel_team_create")}
+>
+  <.live_component
+    module={BrightWeb.TeamCreateLiveComponent}
+    id="create-team-component"
+    action={@live_action}
+    current_user={@current_user}
+    team={@team}
+    users={@users}
+    plan={@plan}
+  />
+</.bright_modal>

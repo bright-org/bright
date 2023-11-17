@@ -8,7 +8,6 @@ defmodule Bright.Teams do
 
   alias Bright.Teams.Team
   alias Bright.Accounts.UserNotifier
-  alias Bright.SkillScores.SkillClassScore
   alias Bright.Accounts.User
 
   # 招待メール関連定数
@@ -171,6 +170,16 @@ defmodule Bright.Teams do
   """
   def list_team_member_users do
     Repo.all(TeamMemberUsers)
+  end
+
+  @doc """
+  Returns the list of team_member_users invitated with given team
+  """
+  def list_confirmed_team_member_users_by_team(team) do
+    TeamMemberUsers
+    |> where([m], m.team_id == ^team.id)
+    |> where([m], not is_nil(m.invitation_confirmed_at))
+    |> Repo.all()
   end
 
   @doc """
@@ -602,29 +611,6 @@ defmodule Bright.Teams do
     |> Enum.flat_map(fn team -> Enum.map(team.member_users, & &1.user_id) end)
     |> Enum.uniq()
     |> List.delete(user.id)
-  end
-
-  def list_skill_scores_by_team_id(
-        team_id,
-        skill_panel_id,
-        page_param \\ %{page: 1, page_size: 1}
-      ) do
-    team_member_users_query =
-      from(
-        tmu in TeamMemberUsers,
-        where: tmu.team_id == ^team_id and not is_nil(tmu.invitation_confirmed_at),
-        select: tmu.user_id
-      )
-
-    from(
-      scs in SkillClassScore,
-      join: sc in assoc(scs, :skill_class),
-      on: scs.skill_class_id == sc.id,
-      where:
-        sc.skill_panel_id == ^skill_panel_id and scs.user_id in subquery(team_member_users_query)
-    )
-    |> preload(:skill_class)
-    |> Repo.paginate(page_param)
   end
 
   @doc """
