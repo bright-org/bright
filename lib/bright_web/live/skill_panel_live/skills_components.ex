@@ -168,9 +168,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     </div>
 
     <div :if={@custom_group} id="selected-custom-group-name" class="text-left flex items-center text-base">
-      <span
-        class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-1 !items-center !justify-center"
-        >group</span>
+      <img
+        src="/images/common/icons/coustom_group.svg"
+        class="!flex w-6 h-6 mr-1 !items-center !justify-center"
+        />
       <%= @custom_group.name %>
     </div>
     """
