@@ -3,9 +3,8 @@ defmodule Bright.Chats.ChatUser do
   import Ecto.Changeset
 
   schema "chat_users" do
-
-    field :chat_id, :id
-    field :user_id, :id
+    belongs_to :chat, Bright.Chats.Chat
+    belongs_to :user, Bright.Accounts.User
 
     timestamps()
   end
@@ -13,7 +12,7 @@ defmodule Bright.Chats.ChatUser do
   @doc false
   def changeset(chat_user, attrs) do
     chat_user
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:chat_id, :user_id])
+    |> validate_required([:chat_id, :user_id])
   end
 end

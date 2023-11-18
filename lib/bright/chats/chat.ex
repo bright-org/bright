@@ -5,7 +5,7 @@ defmodule Bright.Chats.Chat do
   schema "chats" do
     field :relation_type, :string
     field :relation_id, :string
-    field :owner_user_id, :id
+    belongs_to :user, Bright.Accounts.User, foreign_key: :owner_user_id
 
     timestamps()
   end
@@ -13,7 +13,7 @@ defmodule Bright.Chats.Chat do
   @doc false
   def changeset(chat, attrs) do
     chat
-    |> cast(attrs, [:relation_type, :relation_id])
-    |> validate_required([:relation_type, :relation_id])
+    |> cast(attrs, [:relation_type, :relation_id, :owner_user_id])
+    |> validate_required([:relation_type, :relation_id, :owner_user_id])
   end
 end

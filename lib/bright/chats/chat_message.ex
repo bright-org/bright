@@ -4,8 +4,9 @@ defmodule Bright.Chats.ChatMessage do
 
   schema "chat_messages" do
     field :text, :string
-    field :sender_user_id, :id
-    field :chat_id, :id
+
+    belongs_to :chat, Bright.Chats.Chat
+    belongs_to :user, Bright.Accounts.User, foreign_key: :sender_user_id
 
     timestamps()
   end
@@ -13,7 +14,7 @@ defmodule Bright.Chats.ChatMessage do
   @doc false
   def changeset(chat_message, attrs) do
     chat_message
-    |> cast(attrs, [:text])
-    |> validate_required([:text])
+    |> cast(attrs, [:text, :sender_user_id, :chat_id])
+    |> validate_required([:text, :sender_user_id, :chat_id])
   end
 end
