@@ -65,7 +65,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           />
           </div>
         </div>
-        <div :if={false} class="flex justify-between mt-8">
+        <div :if={@search} class="flex justify-between mt-8">
           <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
           <a
             phx-click={
