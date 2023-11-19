@@ -44,6 +44,20 @@ defmodule Bright.CustomGroups do
 
   @doc """
   Returns the list of custom_group member user.
+  Because of with page, not check referencing privileges.
+  """
+  def list_member_users(custom_group, page_param) do
+    from(mu in Ecto.assoc(custom_group, :member_users),
+      order_by: {:asc, :position},
+      join: u in assoc(mu, :user),
+      join: up in assoc(u, :user_profile),
+      preload: [user: {u, [user_profile: up]}]
+    )
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  Returns the list of custom_group member user.
 
   At the same time, check referencing privileges and delete.
 
@@ -109,6 +123,8 @@ defmodule Bright.CustomGroups do
   Raises `Ecto.NoResultsError` if the Custom group does not exist.
   """
   def get_custom_group_by!(condition), do: Repo.get_by!(CustomGroup, condition)
+
+  def get_custom_group_by(condition), do: Repo.get_by(CustomGroup, condition)
 
   @doc """
   Creates a custom_group.
