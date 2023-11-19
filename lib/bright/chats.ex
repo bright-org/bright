@@ -4,6 +4,9 @@ defmodule Bright.Chats do
   """
 
   import Ecto.Query, warn: false
+  alias Bright.Chats.ChatUser
+  alias Bright.Recruits.Interview
+  alias Bright.Chats.ChatMessage
   alias Bright.Repo
 
   alias Bright.Chats.Chat
@@ -21,6 +24,20 @@ defmodule Bright.Chats do
     Repo.all(Chat)
   end
 
+  def list_chats(user_id, :recruit) do
+    from(
+      c in Chat,
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
+      join: i in Interview,
+      on: i.id == c.relation_id,
+      where: c.relation_type == "recruit",
+      order_by: [desc: :updated_at],
+      select: %{c | interview: i}
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single chat.
 
@@ -36,6 +53,46 @@ defmodule Bright.Chats do
 
   """
   def get_chat!(id), do: Repo.get!(Chat, id)
+
+  def get_chat_with_messages_and_interview!(id) do
+    from(c in Chat,
+      where: c.id == ^id and c.relation_type == "recruit",
+      preload: [:messages],
+      join: i in Interview,
+      on: i.id == c.relation_id,
+      select: %{c | interview: i}
+    )
+    |> Repo.one!()
+  end
+
+  def get_or_create_chat(owner_user_id, relation_id, relation_type, chat_users \\ []) do
+    query =
+      from(
+        c in Chat,
+        where:
+          c.owner_user_id == ^owner_user_id and
+            c.relation_type == ^relation_type and
+            c.relation_id == ^relation_id
+      )
+
+    case Repo.exists?(query) do
+      true ->
+        query
+        |> preload(:messages)
+        |> Repo.one()
+
+      false ->
+        {:ok, chat} =
+          create_chat(%{
+            owner_user_id: owner_user_id,
+            relation_type: relation_type,
+            relation_id: relation_id,
+            chat_users: chat_users
+          })
+
+        Map.put(chat, :messages, [])
+    end
+  end
 
   @doc """
   Creates a chat.
@@ -100,5 +157,26 @@ defmodule Bright.Chats do
   """
   def change_chat(%Chat{} = chat, attrs \\ %{}) do
     Chat.changeset(chat, attrs)
+  end
+
+  def change_message(%ChatMessage{} = message, attrs \\ %{}) do
+    ChatMessage.changeset(message, attrs)
+  end
+
+  def create_message(attrs \\ %{}) do
+    %ChatMessage{}
+    |> ChatMessage.changeset(attrs)
+    |> Repo.insert()
+    |> broadcast(:send_message)
+  end
+
+  def broadcast({:ok, message}, :send_message) do
+    Phoenix.PubSub.broadcast(
+      Bright.PubSub,
+      "chat:#{message.chat_id}",
+      {:send_message, message}
+    )
+
+    {:ok, message}
   end
 end
