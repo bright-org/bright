@@ -2,11 +2,14 @@ defmodule Bright.Chats.ChatMessage do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
+
   schema "chat_messages" do
     field :text, :string
 
     belongs_to :chat, Bright.Chats.Chat
-    belongs_to :user, Bright.Accounts.User, foreign_key: :sender_user_id
+    belongs_to :sender_user, Bright.Accounts.User
 
     timestamps()
   end
