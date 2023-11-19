@@ -37,13 +37,13 @@ defmodule Bright.Accounts.UserNotifier do
   Deliver instructions to confirm account.
   """
   def deliver_confirmation_instructions(user, url) do
-    deliver(user.email, "【Bright】ユーザー本登録を完了させ、Bright をお楽しみください（24 時間以内有効）", """
+    deliver(user.email, "【Bright】ユーザー本登録を完了させ、Bright をお楽しみください（4 日以内有効）", """
     #{user.name}さん
     Brightカスタマーサクセスです。
 
     Bright ユーザーの仮登録が完了しました。
     下記 URL をクリックいただき、Bright ユーザー本登録を完了させてください。
-    URL は、本メール到着から 24 時間以内まで有効です。
+    URL は、本メール到着から 4 日以内まで有効です。
     #{url}
 
     Bright ユーザー本登録後は、下記がご利用可能となります。
