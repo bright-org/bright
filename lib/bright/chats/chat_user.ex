@@ -1,4 +1,8 @@
 defmodule Bright.Chats.ChatUser do
+  @moduledoc """
+  Bright チャット参加者を扱うスキーマ
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

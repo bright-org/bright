@@ -1,4 +1,8 @@
 defmodule Bright.Chats.Chat do
+  @moduledoc """
+  Bright チャットを扱うスキーマ
+  """
+
   alias Bright.Chats.ChatUser
   use Ecto.Schema
   import Ecto.Changeset

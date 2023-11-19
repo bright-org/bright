@@ -1,4 +1,8 @@
 defmodule Bright.Chats.ChatMessage do
+  @moduledoc """
+  Bright チャットメッセージを扱うスキーマ
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
