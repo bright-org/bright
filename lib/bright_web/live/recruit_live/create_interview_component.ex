@@ -207,7 +207,6 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
 
     case Recruits.create_interview(interview_params) do
       {:ok, interview} ->
-        # 全メンバーのuserを一気にpreloadしたいのでteamを再取得
         preloaded_interview =
           Recruits.get_interview_with_member_users!(interview.id, recruiter.id)
 
