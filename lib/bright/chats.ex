@@ -54,9 +54,11 @@ defmodule Bright.Chats do
   """
   def get_chat!(id), do: Repo.get!(Chat, id)
 
-  def get_chat_with_messages_and_interview!(id) do
+  def get_chat_with_messages_and_interview!(id, user_id) do
     from(c in Chat,
       where: c.id == ^id and c.relation_type == "recruit",
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
       preload: [:messages, :users],
       join: i in Interview,
       on: i.id == c.relation_id,
