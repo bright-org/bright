@@ -43,6 +43,12 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
               <h3 class="font-bold text-xl">面談調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
+                    <dt class="font-bold w-[98px] flex items-center mb-10">
+                      面談名
+                    </dt>
+                    <dd class="w-[280px] mb-10">
+                      <%= @interview.name %>
+                    </dd>
                     <dt
                       class="font-bold w-[98px] flex items-center mb-10"
                     >

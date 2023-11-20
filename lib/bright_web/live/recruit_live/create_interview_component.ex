@@ -1,4 +1,5 @@
 defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
+  alias Bright.CareerFields
   use BrightWeb, :live_component
 
   alias Bright.Accounts
@@ -61,6 +62,19 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
               >
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
+                    <dt class="font-bold w-[98px] flex items-center mb-10">
+                      面談名
+                    </dt>
+                    <dd class="w-[280px] mb-10">
+                      <BrightCore.input
+                        error_class="ml-[100px] mt-2"
+                        field={@interview_form[:name]}
+                        type="text"
+                        required
+                        input_class="px-5 py-3 border border-brightGray-100 rounded-sm flex-1 w-full"
+                      />
+                    </dd>
+
                     <dt
                       class="font-bold w-[98px] flex items-center mb-10"
                     >
@@ -151,6 +165,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
       socket.assigns.interview
       |> Interview.changeset(interview_params)
       |> Map.put(:action, :validate)
+      |> IO.inspect()
 
     {:noreply, assign_interview_form(socket, changeset)}
   end
@@ -161,6 +176,21 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
     skill_params =
       skill_params
       |> Enum.map(&(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end) |> Enum.into(%{})))
+
+    date = NaiveDateTime.local_now() |> NaiveDateTime.to_string() |> String.slice(0..-4)
+
+    career_field =
+      skill_params
+      |> Enum.map(&Map.get(&1, :career_field))
+      |> Enum.map(&Enum.find(CareerFields.list_career_fields(), fn ca -> ca.name_en == &1 end))
+      |> Enum.map_join(",", & &1.name_ja)
+
+    {:noreply, socket} =
+      handle_event(
+        "validate_interview",
+        %{"interview" => %{"name" => "#{date} #{career_field}"}},
+        socket
+      )
 
     socket
     |> assign(:candidates_user, user)
