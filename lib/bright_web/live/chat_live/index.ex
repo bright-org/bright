@@ -79,7 +79,7 @@ defmodule BrightWeb.ChatLive.Index do
           class="py-5 sticky bottom-0 bg-white"
           :if={@chat}
         >
-          <form  phx-submit="send">
+          <form phx-submit="send">
             <div class="flex pb-2">
               <div class="w-[50px] flex justify-center flex-col items-center">
                 <img
@@ -116,7 +116,10 @@ defmodule BrightWeb.ChatLive.Index do
                 メッセージを送る
               </button>
             </div>
-            <div class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full">
+            <div
+              :if={@chat.owner_user_id == @current_user.id}
+              class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full"
+            >
               <button class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56">
                 採用確定でチャット終了
               </button>
@@ -153,7 +156,7 @@ defmodule BrightWeb.ChatLive.Index do
 
   defp apply_action(socket, :recruit, %{"id" => chat_id}) do
     user = socket.assigns.current_user
-    chat = Chats.get_chat_with_messages_and_interview!(chat_id)
+    chat = Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
     Phoenix.PubSub.subscribe(Bright.PubSub, "chat:#{chat.id}")
 
     socket
@@ -178,6 +181,10 @@ defmodule BrightWeb.ChatLive.Index do
   end
 
   @impl true
+  def handle_event("send", %{"message" => ""}, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event(
         "send",
         %{"message" => text},
