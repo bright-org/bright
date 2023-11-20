@@ -165,7 +165,6 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
       socket.assigns.interview
       |> Interview.changeset(interview_params)
       |> Map.put(:action, :validate)
-      |> IO.inspect()
 
     {:noreply, assign_interview_form(socket, changeset)}
   end
@@ -250,7 +249,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
         {:noreply, redirect(socket, to: ~p"/recruits/interviews")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset)}
+        {:noreply, assign_interview_form(socket, changeset)}
     end
   end
 
