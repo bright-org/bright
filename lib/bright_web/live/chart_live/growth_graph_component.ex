@@ -30,7 +30,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </button>
       </div>
 
-      <% # 成長グラフ %>
+      <% # 成長パネル %>
       <div class="flex">
         <div class="w-14 relative">
           <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself} class="absolute -bottom-1 lg:bottom-1" />

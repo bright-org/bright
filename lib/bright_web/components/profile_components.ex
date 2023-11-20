@@ -321,7 +321,7 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   # 採用候補者 root LiveView用イベント
-  # 成長グラフ／スキルパネルのメガメニューで利用
+  # 成長パネル／スキルパネルのメガメニューで利用
   defp profile_stock_small_link(%{click_event: _, click_target: nil} = assigns) do
     ~H"""
     <.link
