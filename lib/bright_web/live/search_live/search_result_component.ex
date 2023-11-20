@@ -91,7 +91,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
               <> "?class=#{@selected_skill_panel.class}"
             }
           >
-            成長グラフの確認
+            成長パネルの確認
           </.link>
           <.link
             class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-40 hover:opacity-50"

@@ -16,7 +16,7 @@ defmodule BrightWeb.GraphLive.Graphs do
      |> assign(:select_label, "now")
      |> assign(:compared_user, nil)
      |> assign(:select_label_compared_user, nil)
-     |> assign(:page_title, "成長グラフ")
+     |> assign(:page_title, "成長パネル")
      |> assign_page_sub_title()}
   end
 

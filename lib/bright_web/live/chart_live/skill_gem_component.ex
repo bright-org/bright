@@ -17,7 +17,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   # select_label 表示する時間　"now" or 例 "2023.10"
   # me: 自分自身の場合はtrue
   # anonymous: 匿名はfalse
-  # size: base: 成長グラフ md:チーム分析 sm:マイページ
+  # size: base: 成長パネル md:チーム分析 sm:マイページ
   # display_link:　falseでスキルジェムのリンクを非表示にする
 
   @impl true

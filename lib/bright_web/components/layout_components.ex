@@ -167,7 +167,7 @@ defmodule BrightWeb.LayoutComponents do
     [
       {"マイページ", "/mypage", nil},
       {"スキルを選ぶ", "/more_skills?open=want_todo_panel", nil},
-      {"成長グラフ", "/graphs", nil},
+      {"成長パネル", "/graphs", nil},
       {"スキルパネル", "/panels", nil},
       {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/},
       {"チームを作る（β）", "/teams/new", nil}
