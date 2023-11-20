@@ -17,10 +17,13 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
 
   import BrightWeb.TabComponents
   import BrightWeb.TeamComponents
+
   alias Bright.Teams
+  alias Bright.CustomGroups
 
   @tabs [
     {"joined_teams", "所属チーム"},
+    {"custom_groups", "カスタムグループ"},
     {"supporter_teams", "採用・育成チーム"},
     {"supportee_teams", "採用・育成支援先"}
   ]
@@ -50,54 +53,61 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         target={@myself}
       >
         <div class="pt-3 pb-1 px-6 lg:h-[226px]">
-          <% # TODO ↓α版対応 %>
-          <ul :if={@card.selected_tab == "supporter_teams" and @card.total_entries == 0}
-            class="flex gap-y-2 flex-col">
-            <li class="flex items-center text-base p-1 rounded">
-              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">支援を受けている採用・育成チームはありません</div>
-              <a class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
-                採用・育成チームに支援してもらう（β）
-              </a>
-            </li>
-            βリリース（11月予定）で利用可能になります
-          </ul>
-          <ul :if={@card.selected_tab == "supportee_teams" and @card.total_entries == 0}
-            class="flex gap-y-2 flex-col">
-            <li class="flex items-center text-base p-1 rounded">
-              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">支援中の採用・育成先チームはありません</div>
+          <%= if @card.total_entries > 0 do %>
+            <ul class="flex gap-y-2 flex-col">
+              <%= for team_params <- @card.entries do %>
+                <.team_small
+                  id={team_params.team_id}
+                  team_params={team_params}
+                  row_on_click_target={assigns.row_on_click_target}
+                />
+              <% end %>
+            </ul>
+          <% else %>
+            <% # 表示内容がないときの表示 %>
+            <ul class="flex gap-y-2 flex-col">
+              <li :if={@card.selected_tab == "joined_teams"} class="flex items-center text-base p-1 rounded">
+                <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">所属しているチームはありません</div>
+                <a
+                   href="/teams/new"
+                   class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                 >
+                  チームを作る（β）
+                 </a>
+              </li>
+
+              <li :if={@card.selected_tab == "custom_groups"} class="flex items-center text-base p-1 rounded">
+                <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">カスタムグループはありません</div>
+                <a
+                   href="/panels"
+                   class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                 >
+                   カスタムグループを作る
+                 </a>
+              </li>
+
+              <% # TODO ↓α版対応 %>
+              <li :if={@card.selected_tab == "supporter_teams"} class="flex items-center text-base p-1 rounded">
+                <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">支援を受けている採用・育成チームはありません</div>
+                <a class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
+                  採用・育成チームに支援してもらう（β）
+                </a>
+              </li>
+              <p :if={@card.selected_tab == "supporter_teams"}>
+                βリリース（11月予定）で利用可能になります
+              </p>
+
+              <li :if={@card.selected_tab == "supportee_teams"} class="flex items-center text-base p-1 rounded">
+                <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">支援中の採用・育成先チームはありません</div>
                 <a href="https://bright-fun.org/plan" class="w-[calc(45%-6px)] lg:w-56" rel="noopener noreferrer" target="_blank">
                   <button type="button" class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm">
                     <span class="bg-white material-icons mr-1 !text-sm !text-planUpgrade-600 rounded-full h-5 w-5 !font-bold material-icons-outlined lg:mr-2 lg:h-6 lg:w-6">upgrade</span>
                     アップグレード
                   </button>
                 </a>
-            </li>
-          </ul>
-          <%= if @card.selected_tab == "joined_teams" && @card.total_entries <= 0 do %>
-          <ul class="flex gap-y-2 flex-col">
-            <li
-            class="flex items-center text-base p-1 rounded">
-              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">所属しているチームはありません</div>
-              <a
-                 href="/teams/new"
-                 class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-               >
-                チームを作る（β）
-               </a>
-            </li>
-          </ul>
-        <% end %>
-        <%= if @card.total_entries > 0 do %>
-          <ul class="flex gap-y-2 flex-col">
-            <%= for team_params <- @card.entries do %>
-              <.team_small
-                id={team_params.team_id}
-                team_params={team_params}
-                row_on_click_target={assigns.row_on_click_target}
-              />
-            <% end %>
-          </ul>
-        <% end %>
+              </li>
+            </ul>
+          <% end %>
         </div>
       </.tab>
     </div>
@@ -190,6 +200,28 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     |> assign(:card, card)
   end
 
+  defp assign_card(socket, "custom_groups") do
+    page =
+      CustomGroups.list_user_custom_groups(
+        socket.assigns.display_user.id,
+        socket.assigns.card.page_params
+      )
+
+    team_params =
+      page.entries
+      |> convert_team_params_from_custom_groups()
+
+    card = %{
+      socket.assigns.card
+      | entries: team_params,
+        total_entries: page.total_entries,
+        total_pages: page.total_pages
+    }
+
+    socket
+    |> assign(:card, card)
+  end
+
   @impl true
   def handle_event(
         "tab_click",
@@ -229,18 +261,8 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   パラメータにrow_on_click_targetを指定されなかった場合のチーム行クリック時のデフォルトイベント
   クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
   """
-  def handle_event("on_card_row_click", %{"team_id" => team_id, "value" => 0}, socket) do
-    display_team =
-      team_id
-      |> Teams.get_team_with_member_users!()
-
-    socket =
-      socket
-      |> assign(:display_team, display_team)
-      |> assign(:display_user, socket.assigns.display_user)
-      |> redirect(to: "/teams/#{display_team.id}")
-
-    {:noreply, socket}
+  def handle_event("on_card_row_click", params, socket) do
+    {:noreply, redirect(socket, to: "/teams/#{params["team_id"]}")}
   end
 
   defp card_view(socket, tab_name, page) do
@@ -293,6 +315,19 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         is_star: nil,
         is_admin: nil,
         team_type: Teams.get_team_type_by_team(team)
+      }
+    end)
+  end
+
+  defp convert_team_params_from_custom_groups(custom_groups) do
+    custom_groups
+    |> Enum.map(fn custom_group ->
+      %{
+        team_id: custom_group.id,
+        name: custom_group.name,
+        is_star: nil,
+        is_admin: nil,
+        team_type: :custom_group
       }
     end)
   end

@@ -328,6 +328,34 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
 
     @tag score: :low
+    test "redirects custom_group member page", %{
+      conn: conn,
+      user: user,
+      user_2: user_2,
+      skill_panel: skill_panel
+    } do
+      team = insert(:team)
+      insert(:team_member_users, user: user, team: team)
+      insert(:team_member_users, user: user_2, team: team)
+
+      custom_group = insert(:custom_group, user: user)
+      insert(:custom_group_member_user, user: user_2, custom_group: custom_group)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      show_live
+      |> element(~s{#related-user-card-related_user a[phx-value-tab_name="custom_group"]})
+      |> render_click()
+
+      show_live
+      |> element(~s{a[phx-click="click_on_related_user_card_menu"]}, user_2.name)
+      |> render_click()
+
+      {path, _} = assert_redirect(show_live)
+      assert path == "/panels/#{skill_panel.id}/#{user_2.name}"
+    end
+
+    @tag score: :low
     test "redirects candidated user page", %{
       conn: conn,
       user: user,

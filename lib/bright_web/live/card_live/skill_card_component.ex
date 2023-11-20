@@ -7,7 +7,9 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   import BrightWeb.TabComponents
   alias Bright.{CareerFields, SkillPanels}
   alias BrightWeb.PathHelper
+  alias Bright.Teams
   alias Bright.Teams.Team
+  alias Bright.CustomGroups.CustomGroup
 
   @impl true
   def render(assigns) do
@@ -254,8 +256,28 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   def assign_paginate_team(socket, team, user, career_field, page \\ 1)
 
   def assign_paginate_team(socket, %Team{} = team, _user, career_field, page) do
+    user_ids =
+      Teams.list_confirmed_team_member_users_by_team(team)
+      |> Enum.map(& &1.user_id)
+
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      SkillPanels.list_team_member_users_skill_panels_by_career_field(team.id, career_field, page)
+      SkillPanels.list_users_skill_panels_by_career_field(user_ids, career_field, page)
+
+    socket
+    |> assign(:skill_panels, skill_panels)
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
+  end
+
+  def assign_paginate_team(socket, %CustomGroup{} = custom_group, user, career_field, page) do
+    user_ids =
+      Bright.Repo.preload(custom_group, :member_users)
+      |> Map.get(:member_users)
+      |> Enum.map(& &1.user_id)
+      |> Kernel.++([user.id])
+
+    %{page_number: page, total_pages: total_pages, entries: skill_panels} =
+      SkillPanels.list_users_skill_panels_by_career_field(user_ids, career_field, page)
 
     socket
     |> assign(:skill_panels, skill_panels)
@@ -270,7 +292,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   def assign_paginate(socket, user_id, career_field, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      SkillPanels.list_users_skill_panels_by_career_field(user_id, career_field, page)
+      SkillPanels.list_users_skill_panels_by_career_field([user_id], career_field, page)
 
     socket
     |> assign(:skill_panels, skill_panels)

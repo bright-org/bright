@@ -1314,7 +1314,7 @@ defmodule Bright.AccountsTest do
           set: [
             inserted_at:
               NaiveDateTime.utc_now()
-              |> NaiveDateTime.add(-1 * 60 * 60 * 24)
+              |> NaiveDateTime.add(-4 * 60 * 60 * 24)
               |> NaiveDateTime.add(1 * 60)
           ]
         )
@@ -1338,7 +1338,7 @@ defmodule Bright.AccountsTest do
     } do
       {1, nil} =
         Repo.update_all(UserToken,
-          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1 * 60 * 60 * 24)]
+          set: [inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-4 * 60 * 60 * 24)]
         )
 
       assert Accounts.confirm_user(token) == :error

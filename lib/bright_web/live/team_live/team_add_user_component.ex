@@ -149,7 +149,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   end
 
   defp member_limit?(users, nil) do
-    Enum.count(users) >= 5
+    Enum.count(users) >= 4
   end
 
   defp member_limit?(users, %{team_members_limit: limit}) do

@@ -26,6 +26,21 @@ defmodule Bright.SkillScores do
     Repo.all(SkillClassScore)
   end
 
+  def list_users_skill_class_scores_by_skill_panel_id(
+        user_ids,
+        skill_panel_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(
+      scs in SkillClassScore,
+      join: sc in assoc(scs, :skill_class),
+      on: scs.skill_class_id == sc.id,
+      where: sc.skill_panel_id == ^skill_panel_id and scs.user_id in ^user_ids
+    )
+    |> preload(:skill_class)
+    |> Repo.paginate(page_param)
+  end
+
   @doc """
   Gets a single skill_class_score.
 
