@@ -4,6 +4,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   import Phoenix.LiveViewTest
   import Bright.Factory
 
+  alias Bright.Repo
   alias Bright.UserJobProfiles
   alias Bright.SkillScores.SkillClassScore
   alias Bright.Teams.TeamMemberUsers
@@ -190,7 +191,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
 
-      refute Bright.Repo.get_by(SkillClassScore,
+      refute Repo.get_by(SkillClassScore,
                user_id: user.id,
                skill_class_id: skill_class_2.id
              )
@@ -201,7 +202,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert has_element?(show_live, ~s(#class_tab_2 a[aria-current="page"]))
 
-      assert Bright.Repo.get_by(SkillClassScore,
+      assert Repo.get_by(SkillClassScore,
                user_id: user.id,
                skill_class_id: skill_class_2.id
              )
@@ -936,7 +937,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       team = insert(:team)
       insert(:team_member_users, user: user, team: team)
       insert(:team_member_users, user: user_2, team: team)
-      :ok
+      %{team: team}
     end
 
     @tag score: :low
@@ -960,6 +961,32 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, "#skills-table-field", user_2.name)
       assert has_element?(show_live, "#user-1-percentages .score-middle-percentage", "0％")
       assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
+    end
+
+    @tag score: :low
+    test "access control, not shows unauthorized user", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      team: team,
+      user_2: user_2
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      # 「個人と比較」 チームタブ選択
+      show_live
+      |> element(~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]})
+      |> render_click()
+
+      # user_2をチームから除外して参照不可状況をつくっている
+      # テスト便宜上、画面を出してから削除している
+      Repo.get_by(TeamMemberUsers, team_id: team.id, user_id: user_2.id) |> Repo.delete!()
+
+      # 対象ユーザー選択
+      show_live
+      |> element(~s{a[phx-click="click_on_related_user_card_compare"]}, user_2.name)
+      |> render_click()
+
+      refute has_element?(show_live, "#skills-table-field", user_2.name)
     end
   end
 
@@ -1062,6 +1089,50 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       refute has_element?(show_live, "#user-2-percentages")
     end
+
+    @tag score: :low
+    test "access control, not shows unauthorized team", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      team: team,
+      user: user,
+      user_2: user_2
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+
+      # 「チーム全員と比較」 チームタブ選択
+      show_live
+      |> element(
+        ~s{#related-team-card-tabrelated-team_card-compare a[phx-value-tab_name="joined_teams"]}
+      )
+      |> render_click()
+
+      # 自身をteamから除外して参照不可状況をつくっている
+      # テスト便宜上、画面を出してから削除している
+      Repo.get_by(TeamMemberUsers, team_id: team.id, user_id: user.id) |> Repo.delete!()
+
+      # 対象チーム選択
+      show_live
+      |> element(~s{li[phx-click="on_card_row_click"]}, team.name)
+      |> render_click()
+
+      refute has_element?(show_live, "#skills-table-field", user_2.name)
+    end
+
+    @tag score: :low
+    test "access control, not shows unauthorized team by query parameter", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      team: team,
+      user: user,
+      user_2: user_2
+    } do
+      # 自身をteamから除外して参照不可状況をつくっている
+      Repo.get_by(TeamMemberUsers, team_id: team.id, user_id: user.id) |> Repo.delete!()
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1&team=#{team.id}")
+
+      refute has_element?(show_live, "#skills-table-field", user_2.name)
+    end
   end
 
   # カスタムグループ
@@ -1105,7 +1176,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert has_element?(show_live, "#selected-custom-group-name", "テスト")
 
-      %{custom_groups: [custom_group]} = Bright.Repo.preload(user, custom_groups: [:member_users])
+      %{custom_groups: [custom_group]} = Repo.preload(user, custom_groups: [:member_users])
       [member_user] = custom_group.member_users
       assert custom_group.name == "テスト"
       assert member_user.user_id == user_2.id
@@ -1139,7 +1210,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> form("#form-custom-group-create", %{custom_group: %{name: "テスト"}})
       |> render_submit()
 
-      %{custom_groups: [custom_group]} = Bright.Repo.preload(user, custom_groups: [:member_users])
+      %{custom_groups: [custom_group]} = Repo.preload(user, custom_groups: [:member_users])
       assert [] == custom_group.member_users
       assert custom_group.name == "テスト"
     end
@@ -1185,8 +1256,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
           member_users: [build(:custom_group_member_user, user: user_2)]
         )
 
-      member_user = Bright.Repo.get_by!(TeamMemberUsers, team_id: team.id, user_id: user_2.id)
-      Bright.Repo.delete(member_user)
+      member_user = Repo.get_by!(TeamMemberUsers, team_id: team.id, user_id: user_2.id)
+      Repo.delete(member_user)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
@@ -1198,7 +1269,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       refute has_element?(show_live, "#skills-table-field", user_2.name)
 
-      refute Bright.Repo.get_by(CustomGroupMemberUser,
+      refute Repo.get_by(CustomGroupMemberUser,
                custom_group_id: custom_group.id,
                user_id: user_2.id
              )
@@ -1230,7 +1301,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert has_element?(show_live, "#selected-custom-group-name", "更新後")
 
-      %{custom_groups: [custom_group]} = Bright.Repo.preload(user, :custom_groups)
+      %{custom_groups: [custom_group]} = Repo.preload(user, :custom_groups)
       assert custom_group.name == "更新後"
     end
 
@@ -1260,7 +1331,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       refute has_element?(show_live, "#selected-custom-group-name")
-      assert %{custom_groups: []} = Bright.Repo.preload(user, :custom_groups)
+      assert %{custom_groups: []} = Repo.preload(user, :custom_groups)
     end
   end
 
@@ -1491,9 +1562,5 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert has_element?(show_live, ".score-mark-low")
     end
-
-    # # TODO: 画面にアクセスできるようになったらテストを実装する。
-    # test "別のユーザーで編集モードに入れないこと" do
-    # end
   end
 end

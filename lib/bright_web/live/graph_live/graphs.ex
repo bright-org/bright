@@ -40,7 +40,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   @impl true
   def handle_event("click_on_related_user_card_menu", params, socket) do
     skill_panel = socket.assigns.skill_panel
-    # TODO: 参照可能なユーザーかどうかの判定を行うこと
+
     {user, anonymous} =
       get_user_from_name_or_name_encrypted(params["name"], params["encrypt_user_name"])
 

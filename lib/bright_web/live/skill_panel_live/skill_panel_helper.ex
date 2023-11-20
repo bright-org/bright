@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   alias Bright.SkillScores
   alias BrightWeb.DisplayUserHelper
   alias Bright.UserSkillPanels
+  alias Bright.Teams
 
   @counter %{
     low: 0,
@@ -247,8 +248,47 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
         :error
 
       _ ->
+        # TODO: リファクタリング PathHelperを使えるか確認・対応
         {:ok, build_path(root, display_user_skill_panel, user, false, anonymous)}
     end
+  end
+
+  def comparable_user?(target_user, assigns) do
+    %{
+      current_user: current_user,
+      compared_users: compared_users,
+      display_user: display_user
+    } = assigns
+
+    !already_compared?(target_user, compared_users, display_user) &&
+      viewable_user?(target_user, current_user)
+  end
+
+  defp already_compared?(target_user, compared_users, nil) do
+    target_user.id in Enum.map(compared_users, & &1.id)
+  end
+
+  defp already_compared?(target_user, compared_users, display_user) do
+    target_user.id == display_user.id ||
+      target_user.id in Enum.map(compared_users, & &1.id)
+  end
+
+  defp viewable_user?(%{anonymous: true} = _target_user, _current_user) do
+    # 匿名の場合は表示も匿名なのでチェック無しで表示可能
+    true
+  end
+
+  defp viewable_user?(target_user, current_user) do
+    # チームに所属している、
+    # または支援関係にあるチームに所属している人のみ実名表示可能
+    Teams.joined_teams_or_supportee_teams_or_supporter_teams_by_user_id!(
+      current_user.id,
+      target_user.id
+    )
+
+    true
+  rescue
+    Bright.Exceptions.ForbiddenResourceError -> false
   end
 
   defp raise_invalid_skill_class do
