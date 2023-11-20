@@ -65,7 +65,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           />
           </div>
         </div>
-        <div :if={@search} class="flex justify-between mt-8">
+        <div :if={false} class="flex justify-between mt-8">
           <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
           <a
             phx-click={
@@ -83,7 +83,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
         </div>
         <div :if={!@search} class="flex justify-between mt-8">
           <.link
-            class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-40 hover:opacity-50"
+            class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-40 hover:opacity-50"
             target="_blank"
             rel="noopener noreferrer"
             href={
@@ -91,10 +91,10 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
               <> "?class=#{@selected_skill_panel.class}"
             }
           >
-            成長グラフの確認
+            成長パネルの確認
           </.link>
           <.link
-            class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-40 hover:opacity-50"
+            class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-40 hover:opacity-50"
             target="_blank"
             rel="noopener noreferrer"
             href={"/mypage/anon/#{encrypt_user_name(@user)}"}
