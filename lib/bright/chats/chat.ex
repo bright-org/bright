@@ -18,6 +18,7 @@ defmodule Bright.Chats.Chat do
     belongs_to :owner_user, Bright.Accounts.User
 
     has_many :chat_users, Bright.Chats.ChatUser, on_delete: :delete_all
+    has_many :users, through: [:chat_users, :user]
 
     has_many :messages,
              Bright.Chats.ChatMessage,

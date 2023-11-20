@@ -241,6 +241,29 @@ defmodule Bright.Accounts.UserNotifier do
   @doc """
   Deliver free trial apply .
   """
+  def deliver_new_message_notification_instructions(to_user, url) do
+    deliver(to_user.email, "【Bright】新着メッセージが届いています", """
+    #{to_user.name}さん
+
+    採用チャットにメッセージが届いています。
+
+    下記URLからご確認ください
+    #{url}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver free trial apply .
+  """
   def deliver_free_trial_apply_instructions(from_user, to_user, detail) do
     deliver(to_user.email, "【Bright】無料トライアルの申し込みがありました", """
     以下の内容で無料トライアルが申し込まれました

@@ -4,12 +4,12 @@ defmodule Bright.Chats do
   """
 
   import Ecto.Query, warn: false
-  alias Bright.Chats.ChatUser
-  alias Bright.Recruits.Interview
-  alias Bright.Chats.ChatMessage
   alias Bright.Repo
-
+  alias Bright.Accounts.UserNotifier
   alias Bright.Chats.Chat
+  alias Bright.Chats.ChatUser
+  alias Bright.Chats.ChatMessage
+  alias Bright.Recruits.Interview
 
   @doc """
   Returns the list of chats.
@@ -57,7 +57,7 @@ defmodule Bright.Chats do
   def get_chat_with_messages_and_interview!(id) do
     from(c in Chat,
       where: c.id == ^id and c.relation_type == "recruit",
-      preload: [:messages],
+      preload: [:messages, :users],
       join: i in Interview,
       on: i.id == c.relation_id,
       select: %{c | interview: i}
@@ -178,5 +178,24 @@ defmodule Bright.Chats do
     )
 
     {:ok, message}
+  end
+
+  def deliver_new_message_notification_email_instructions(
+        to_user,
+        chat,
+        chat_url_fun
+      )
+      when is_function(chat_url_fun, 1) do
+    if !Bright.Utils.Env.prod?() or Application.get_env(:bright, :dev_routes) do
+      :ets.insert(
+        :token,
+        {"new_message", to_user.email, to_user.name, chat_url_fun.(chat.id)}
+      )
+    end
+
+    UserNotifier.deliver_new_message_notification_instructions(
+      to_user,
+      chat_url_fun.(chat.id)
+    )
   end
 end

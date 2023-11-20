@@ -33,13 +33,16 @@ defmodule BrightWeb.ChatLive.Index do
       </div>
       <!-- message -->
       <div
-        class="w-full px-5 flex flex-col justify-between"
+        class="w-full px-5 flex flex-col justify-between overflow-y-auto"
         :if={@chat}
       >
         <div class="flex flex-col mt-5">
-          <div class="ml-12 text-xl mb-8">
+          <p class="ml-12 text-xl mb-2">
+          ※メールアドレスや電話番号等の個人情報は送らないでください
+          </p>
+          <p class="ml-12 text-xl mb-8">
           ※面談日時の重複は管理対象外ですので、別途管理を行ってください
-          </div>
+          </p>
           <%= if Enum.count(@messages) == 0 do %>
           <div class="ml-12 text-xl font-bold">
             下記にメッセージを入力し、「メッセージを送る」ボタンを押すと採用候補者にメッセージが届きます
@@ -73,7 +76,7 @@ defmodule BrightWeb.ChatLive.Index do
           <% end %>
         </div>
         <div
-          class="py-5 sticky bottom-0"
+          class="py-5 sticky bottom-0 bg-white"
           :if={@chat}
         >
           <form  phx-submit="send">
@@ -98,10 +101,10 @@ defmodule BrightWeb.ChatLive.Index do
             <hr class="pb-1 border-brightGray-100">
             <div class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full">
               <button class="mr-auto">
-                <span class="material-icons-outlined !text-4xl">
+                <span class="material-icons-outlined !text-4xl opacity-50">
                   add_photo_alternate
                 </span>
-                <span class="material-symbols-outlined !text-4xl">
+                <span class="material-symbols-outlined !text-4xl opacity-50">
                   add_box
                 </span>
               </button>
@@ -183,6 +186,7 @@ defmodule BrightWeb.ChatLive.Index do
     case Chats.create_message(%{text: text, chat_id: chat.id, sender_user_id: user.id}) do
       {:ok, _message} ->
         Chats.update_chat(chat, %{updated_at: NaiveDateTime.utc_now()})
+        send_new_message_notification_mails(chat, user)
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{}} ->
@@ -202,4 +206,17 @@ defmodule BrightWeb.ChatLive.Index do
   end
 
   defp nl_to_br(str), do: str |> String.replace(~r/\n/, "<br />") |> Phoenix.HTML.raw()
+
+  defp send_new_message_notification_mails(chat, sender) do
+    chat.users
+    |> Enum.each(fn chat_user ->
+      if chat_user.id != sender.id do
+        Chats.deliver_new_message_notification_email_instructions(
+          chat_user,
+          chat,
+          &url(~p"/recruits/chats/#{&1}")
+        )
+      end
+    end)
+  end
 end
