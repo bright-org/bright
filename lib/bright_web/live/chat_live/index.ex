@@ -14,7 +14,7 @@ defmodule BrightWeb.ChatLive.Index do
       <div class="flex flex-col min-w-[420px] border-r-2 overflow-y-auto">
         <%= for chat <- @chats do %>
           <.link
-            class={"flex flex-row py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
+            class={"flex flex-row py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
             patch={~p"/recruits/chats/#{chat.id}"}
           >
             <div class="w-16">
