@@ -36,7 +36,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
               <div class="w-[370px] pb-4">
                 <% # 投稿内容表示 %>
                 <div class="text-base">
-                  <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all first:mt-0 mt-3"] %>
+                  <%= raw text_to_html post.content, [class: "break-all first:mt-0 mt-3"] %>
                 </div>
 
                 <% # 画像表示 %>
@@ -390,6 +390,20 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         <.error :for={msg <- @errors}><%= msg %></.error>
       </div>
     </div>
+    """
+  end
+
+  defp text_to_html(text, attributes) do
+    text
+    |> Phoenix.HTML.Format.text_to_html(attributes: attributes)
+    |> Phoenix.HTML.safe_to_string()
+    # 改行は既にpタグになっており、下記replaceは改行考慮不要
+    |> String.replace(~r/https?[^ 　'|`^"<>]+/u, link_tag("\\0"), global: true)
+  end
+
+  defp link_tag(link) do
+    """
+    <a class="text-blue-600 hover:underline" href="#{link}" target="_blank">#{link}</a>
     """
   end
 end
