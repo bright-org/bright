@@ -134,10 +134,13 @@ defmodule Bright.Recruits do
   end
 
   def list_interview_members(user_id, decision) do
-    InterviewMember
-    |> where([m], m.user_id == ^user_id and m.decision == ^decision)
-    |> order_by(desc: :updated_at)
-    |> preload(:interview)
+    from(m in InterviewMember,
+      join: i in Interview,
+      on: i.id == m.interview_id and i.status in [:waiting_decision, :consume_interview],
+      where: m.user_id == ^user_id and m.decision == ^decision,
+      order_by: [desc: :updated_at],
+      preload: :interview
+    )
     |> Repo.all()
   end
 
