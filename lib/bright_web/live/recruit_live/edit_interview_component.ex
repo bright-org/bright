@@ -59,14 +59,16 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                     </dd>
 
                     <dt class="font-bold w-[98px] mb-10">面談参加者</dt>
-                    <dd class="w-[280px]">
+                    <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
                       <%= for member <- @interview.interview_members do %>
                         <div class="flex">
+                          <div class="w-[200px] truncate mr-4">
                           <.profile_small
                             user_name={member.user.name}
                             icon_file_path={icon_url(member.user.user_profile.icon_file_path)}
                           />
+                          </div>
                           <div class="mt-4">
                             <span><%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %></span>
                           </div>
