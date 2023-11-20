@@ -14,7 +14,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
   def job_area(assigns) do
     ~H"""
-    <div class="w-[280px] text-start">
+    <div class="w-[380px] text-start">
       <p class="mb-2">
         <span>　希望年収：</span>
         <span><%= if @job.desired_income, do: "#{@job.desired_income} 万円以上", else: "-" %></span>
@@ -118,13 +118,13 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
   def action_area(assigns) do
     ~H"""
-    <div class="border-l border-brightGray-200 border-dashed ml-2 pl-2 w-52">
+    <div class="border-l border-brightGray-200 border-dashed ml-2 pl-2 w-28">
       <%= if @user.id in @stock_user_ids do %>
-        <p class="mb-2 justify-center text-gray-300 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-gray-300 w-52 cursor-default">
+        <p class="mb-2 justify-center text-gray-300 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-gray-300 w-28 cursor-default">
           <span
-            class="material-symbols-outlined md-18 mr-1 text-brightGreen-300"
+            class="material-symbols-outlined md-18 mr-1 text-gray-300"
           >inventory</span>
-          候補者をストック
+          ストック
         </p>
       <% else %>
       <button
@@ -132,16 +132,16 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         phx-click={JS.push("stock", value: %{
           params: %{user_id: @user.id, skill_panel: @skill_panel.skill_panel_name, desired_income: @user.user_job_profile.desired_income}
         }, target: "#skill_search_modal")}
-        class="mb-2 justify-center text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 group w-52"
+        class="mb-2 justify-center text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 group w-28"
       >
         <span
           class="material-symbols-outlined md-18 mr-1 text-brightGray-600"
         >inventory</span>
-        候補者をストック
+        ストック
       </button>
       <% end %>
       <.link
-        class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
+        class="bg-white block border border-solid border-brightGreen-300 cursor-pointer mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 font-bold w-28 hover:opacity-50"
         target="_blank"
         rel="noopener noreferrer"
         href={
@@ -149,15 +149,15 @@ defmodule BrightWeb.SearchLive.ResultComponents do
           <> "?class=#{@skill_panel.class}"
         }
       >
-        成長パネルの確認
+        成長パネル
       </.link>
       <.link
-        class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold px-4 py-1 rounded select-none text-center text-brightGreen-300 w-52 hover:opacity-50"
+        class="bg-white block border border-solid border-brightGreen-300 cursor-pointer px-4 py-1 rounded select-none text-center text-brightGreen-300 font-bold w-28 hover:opacity-50"
         target="_blank"
         rel="noopener noreferrer"
         href={"/mypage/anon/#{encrypt_user_name(@user)}"}
       >
-      保有スキルの確認
+        保有スキル
       </.link>
     </div>
     """
