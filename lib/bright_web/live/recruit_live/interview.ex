@@ -54,7 +54,7 @@ defmodule BrightWeb.RecruitLive.Interview do
           </div>
         </li>
         <%= for member <- @interview_members do %>
-          <li class="flex flex-wrap my-5">
+          <li class="flex my-5">
             <.link
                patch={~p"/recruits/interviews/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
@@ -64,14 +64,16 @@ defmodule BrightWeb.RecruitLive.Interview do
                 class="object-cover h-8 w-8 rounded-full mr-2"
                 alt=""
               />
-              <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
+              <span class="flex-1">
                 <%= member.interview.name %>
               </span>
 
-              <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
+              <span class="flex-1">
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %>
               </span>
-              <CardListComponents.elapsed_time inserted_at={member.updated_at} />
+              <span class="w-24">
+                <CardListComponents.elapsed_time inserted_at={member.updated_at} />
+              </span>
             </.link>
           </li>
         <% end %>

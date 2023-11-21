@@ -40,10 +40,16 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                 <h3 class="font-bold text-xl">面談調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
+                    <dt class="font-bold w-[98px] flex items-center mb-10">
+                        面談名
+                      </dt>
+                      <dd class="w-[280px] mb-10 break-words">
+                        <%= @interview_member.interview.name %>
+                      </dd>
                     <dt class="font-bold w-[98px] flex">
                       <label for="point" class="block pr-1">採用候補者の推しポイント<br />注意点</label>
                     </dt>
-                    <dd class="w-[280px]">
+                    <dd class="w-[280px] break-words">
                     <%= @interview_member.interview.comment %>
                     </dd>
                     <dt class="font-bold w-[98px] flex mt-8" >
