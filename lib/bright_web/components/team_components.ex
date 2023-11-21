@@ -73,10 +73,7 @@ defmodule BrightWeb.TeamComponents do
     ~H"""
     <div class="flex gap-x-4">
       <h3>
-        <span
-          class="material-icons !text-xl text-white bg-brightGreen-300 rounded-full !inline-flex w-8 h-8 mr-2.5 !items-center !justify-center">
-          group
-        </span>
+        <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2 !inline-flex w-8 h-8 !items-center !justify-center"/>
         <%= @team_name %>
       </h3>
       <button
@@ -100,10 +97,13 @@ defmodule BrightWeb.TeamComponents do
     icons[team_type]
   end
 
-  def get_team_types() do
+  defp get_team_types() do
     [
+      # 一般のチームと人材・支援チームのアイコンはおなじ
       {:general_team, "/images/common/icons/team.svg"},
-      {:custom_group, "/images/common/icons/team.svg"}
+      {:custom_group, "/images/common/icons/coustom_group.svg"},
+      {:hr_support_team, "/images/common/icons/team_hr_support.svg"},
+      {:teamup_team, "/images/common/icons/team_teamup.svg"}
     ]
   end
 

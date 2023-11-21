@@ -43,7 +43,10 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
       <% # カスタムグループ名表示および変更と削除 %>
       <li :if={@custom_group} class="flex items-center justify-between">
         <div :if={is_nil(@form_update)} class="text-left flex items-center text-base py-3">
-          <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-1 !items-center !justify-center">group</span>
+          <img
+            src="/images/common/icons/coustom_group.svg"
+            class="!flex w-6 h-6 mr-1 !items-center !justify-center"
+          />
           <%= @custom_group.name %>
         </div>
 
@@ -67,7 +70,10 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
         </div>
 
         <div :if={@form_update} class="w-full flex items-center">
-          <span class="material-icons !text-lg text-white bg-brightGreen-300 rounded-full !flex w-6 h-6 mr-1 !items-center !justify-center">group</span>
+          <img
+            src="/images/common/icons/coustom_group.svg"
+            class="!flex w-6 h-6 mr-1 !items-center !justify-center"
+          />
           <.form
             id="form-custom-group-update"
             for={@form_update}

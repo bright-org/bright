@@ -146,7 +146,7 @@
   <!-- TODO チームがない場合の表示に対応  -->
   <.team_header
     team_name={@display_team.name}
-    team_type={:general_team}
+    team_type={Teams.get_team_type_by_team(@display_team)}
     current_users_team_member={@current_users_team_member}
   />
 
