@@ -167,6 +167,18 @@ defmodule Bright.Recruits do
     |> Repo.update()
   end
 
+  def interview_no_answer?(interview_id) do
+    ans =
+      InterviewMember
+      |> where([m], m.interview_id == ^interview_id)
+      |> Repo.all()
+
+    case ans do
+      [] -> false
+      _ -> Enum.all?(ans, &(&1.decision == :not_answered))
+    end
+  end
+
   def deliver_acceptance_email_instructions(
         from_user,
         to_user,

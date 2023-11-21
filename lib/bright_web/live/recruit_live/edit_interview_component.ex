@@ -77,6 +77,9 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                       <% end %>
                       </ul>
                     </dd>
+                    <p class="text-attention-600">
+                    <%= @no_answer_error %>
+                    </p>
                     <dt class="font-bold w-[98px] flex mt-16">
                       <label for="point" class="block pr-1">採用候補者の推しポイント<br />注意点</label>
                     </dt>
@@ -88,18 +91,23 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                   </dl>
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
+                  <.link navigate={~p"/recruits/interviews"}>
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44">
+                  閉じる
+                  </button>
+                  </.link>
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :dismiss_interview})}
-                    class="text-sm font-bold py-3 rounded border border-base w-72"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
                     面談キャンセル
                   </button>
 
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :consume_interview})}
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
-                    面談決定
+                    面談チャット開始
                   </button>
                 </div>
             </div><!-- End 面談調整内容 -->
@@ -144,32 +152,41 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
     |> assign(assigns)
     |> assign(:skill_params, skill_params)
     |> assign(:candidates_user, user)
+    |> assign(:no_answer_error, "")
     |> then(&{:ok, &1})
   end
 
   def update(assigns, socket) do
     socket
     |> assign(assigns)
+    |> assign(:no_answer_error, "")
     |> then(&{:ok, &1})
   end
 
   @impl true
   def handle_event("decision", %{"decision" => "consume_interview"}, socket) do
     interview = socket.assigns.interview
-    Recruits.update_interview(interview, %{status: "consume_interview"})
 
-    chat =
-      Chats.get_or_create_chat(
-        interview.recruiter_user_id,
-        interview.id,
-        "recruit",
-        [
-          %{user_id: interview.recruiter_user_id},
-          %{user_id: interview.candidates_user_id}
-        ]
-      )
+    case Recruits.interview_no_answer?(interview.id) do
+      true ->
+        {:noreply, assign(socket, :no_answer_error, "面談決定を最低1名、回答していただく必要があります")}
 
-    {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+      false ->
+        Recruits.update_interview(interview, %{status: "consume_interview"})
+
+        chat =
+          Chats.get_or_create_chat(
+            interview.recruiter_user_id,
+            interview.id,
+            "recruit",
+            [
+              %{user_id: interview.recruiter_user_id},
+              %{user_id: interview.candidates_user_id}
+            ]
+          )
+
+        {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+    end
   end
 
   def handle_event("decision", %{"decision" => decision}, socket) do
