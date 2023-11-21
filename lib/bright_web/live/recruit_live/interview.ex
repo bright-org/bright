@@ -3,6 +3,7 @@ defmodule BrightWeb.RecruitLive.Interview do
 
   alias Bright.Recruits
   alias BrightWeb.CardLive.CardListComponents
+  alias Bright.UserProfiles
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @impl true
@@ -22,9 +23,11 @@ defmodule BrightWeb.RecruitLive.Interview do
                patch={~p"/recruits/interviews/#{interview.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
-                person
-              </span>
+              <img
+                src={UserProfiles.icon_url(nil)}
+                class="object-cover h-8 w-8 rounded-full mr-2"
+                alt=""
+              />
               <span class="flex-1">
                 <%= interview.name %>
               </span>
@@ -56,9 +59,11 @@ defmodule BrightWeb.RecruitLive.Interview do
                patch={~p"/recruits/interviews/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
-                person
-              </span>
+              <img
+                src={UserProfiles.icon_url(nil)}
+                class="object-cover h-8 w-8 rounded-full mr-2"
+                alt=""
+              />
               <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
                 <%= member.interview.name %>
               </span>
