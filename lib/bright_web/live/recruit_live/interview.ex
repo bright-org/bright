@@ -1,9 +1,7 @@
 defmodule BrightWeb.RecruitLive.Interview do
-  alias Bright.CareerFields
   use BrightWeb, :live_view
 
   alias Bright.Recruits
-  alias Bright.Recruits.Interview
   alias BrightWeb.CardLive.CardListComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
@@ -62,7 +60,7 @@ defmodule BrightWeb.RecruitLive.Interview do
                 person
               </span>
               <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
-                <%= Interview.career_fields(member.interview, @career_fields) %>
+                <%= member.interview.name %>
               </span>
 
               <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
@@ -106,7 +104,6 @@ defmodule BrightWeb.RecruitLive.Interview do
 
     socket
     |> assign(:page_title, "面談調整")
-    |> assign(:career_fields, CareerFields.list_career_fields())
     |> assign(:interviews, Recruits.list_interview(user_id, :not_complete))
     |> assign(:interview_members, Recruits.list_interview_members(user_id, :not_answered))
     |> assign(:interview, nil)
