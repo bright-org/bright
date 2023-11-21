@@ -7,6 +7,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   import BrightWeb.ChartComponents
   import BrightWeb.TimelineBarComponents
+  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [comparable_user?: 2]
 
   alias Bright.SkillScores
   alias Bright.HistoricalSkillScores
@@ -314,9 +315,14 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   end
 
   def handle_event("click_on_related_user_card_compare", params, socket) do
-    compared_timeline = TimelineHelper.select_past_if_label_is_now(socket.assigns.timeline)
+    %{
+      timeline: timeline,
+      current_user: current_user,
+      compared_user: compared_user
+    } = socket.assigns
 
-    # TODO: 本当に参照可能かのチェックをいれること
+    compared_timeline = TimelineHelper.select_past_if_label_is_now(timeline)
+
     {user, anonymous} =
       DisplayUserHelper.get_user_from_name_or_name_encrypted(
         params["name"],
@@ -324,13 +330,24 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       )
 
     user = user |> Map.put(:anonymous, anonymous) |> put_profile()
-    notify_parent_compared_user_added(user, compared_timeline)
 
-    {:noreply,
-     socket
-     |> assign(compared_timeline: compared_timeline)
-     |> assign(compared_user: user)
-     |> create_compared_user_data()}
+    comparable_user?(user, %{
+      current_user: current_user,
+      compared_users: List.wrap(compared_user),
+      display_user: nil
+    })
+    |> if do
+      notify_parent_compared_user_added(user, compared_timeline)
+
+      {:noreply,
+       socket
+       |> assign(compared_timeline: compared_timeline)
+       |> assign(compared_user: user)
+       |> create_compared_user_data()}
+    else
+      # 変更なしかあるいは権限なし
+      {:noreply, socket}
+    end
   end
 
   def handle_event("timeline_bar_close_button_click", _params, socket) do

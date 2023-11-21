@@ -864,7 +864,7 @@ defmodule Bright.Teams do
   end
 
   @doc """
-  チームに所属しているかを確認
+  お互いがチームに所属しているかを確認
   所属していない場合Ecto.NoResultsErrorをraise
   """
   def joined_teams_by_user_id!(current_user_id, other_user_id) do
@@ -883,7 +883,7 @@ defmodule Bright.Teams do
   end
 
   @doc """
-  チームに所属しているかを確認
+  お互いがチームに所属しているかを確認
   所属していない場合falseを返す
   """
   def joined_teams_by_user_id?(current_user_id, other_user_id) do
