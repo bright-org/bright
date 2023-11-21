@@ -1,10 +1,8 @@
 defmodule BrightWeb.ChatLive.Index do
-  alias Bright.Chats
   use BrightWeb, :live_view
 
+  alias Bright.Chats
   alias Bright.UserProfiles
-  alias Bright.CareerFields
-  alias Bright.Recruits.Interview
   alias BrightWeb.CardLive.CardListComponents
 
   @impl true
@@ -12,23 +10,32 @@ defmodule BrightWeb.ChatLive.Index do
     ~H"""
     <div class="flex flex flex-row justify-between bg-white ml-1 h-[calc(100vh-56px)]">
       <div class="flex flex-col min-w-[420px] border-r-2 overflow-y-auto">
-        <%= for chat <- @chats do %>
-          <.link
-            class={"flex flex-row py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
-            patch={~p"/recruits/chats/#{chat.id}"}
-          >
-            <div class="w-16">
-              <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-8 h-8 mr-2.5 items-center justify-center">
-                person
-              </span>
-            </div>
-            <div class="w-full flex">
-              <div class="flex-1 mr-2 truncate text-xl">
-                <%= Interview.career_fields(chat.interview, @career_fields) %>
+        <%= if Enum.count(@chats) == 0 do %>
+          <p class="text-xl p-4">
+            チャット対象者がいません<br />
+            「スキル検索」の「面談調整」や<br />
+            「チームスキル分析」の「1on1に誘う」<br/>
+            からチャット開始してください
+          </p>
+        <% else %>
+          <%= for chat <- @chats do %>
+            <.link
+              class={"flex flex-row py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
+              patch={~p"/recruits/chats/#{chat.id}"}
+            >
+              <img
+                src={UserProfiles.icon_url(nil)}
+                class="object-cover h-10 w-10 rounded-full mr-2"
+                alt=""
+              />
+              <div class="w-full flex">
+                <div class="flex-1 mr-2 truncate text-xl">
+                  <%= chat.interview.name %>
+                </div>
+                <CardListComponents.elapsed_time inserted_at={chat.updated_at} />
               </div>
-              <CardListComponents.elapsed_time inserted_at={chat.updated_at} />
-            </div>
-          </.link>
+            </.link>
+          <% end %>
         <% end %>
       </div>
       <!-- message -->
@@ -54,12 +61,16 @@ defmodule BrightWeb.ChatLive.Index do
                 <div class="text-xl mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
                   <%= nl_to_br(message.text) %>
                 </div>
+                <div>
                 <img
                   src={@sender_icon_path}
                   class="object-cover h-10 w-10 rounded-full mt-4"
                   alt=""
                 />
+                <span><%= @current_user.name %></span>
+                </div>
               </div>
+
               <% else %>
               <div class="flex justify-start mb-4">
                 <img
@@ -121,7 +132,7 @@ defmodule BrightWeb.ChatLive.Index do
               class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full"
             >
               <button class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56">
-                採用確定でチャット終了
+                採用調整
               </button>
 
               <button
@@ -129,7 +140,7 @@ defmodule BrightWeb.ChatLive.Index do
                 class="text-sm font-bold px-2 py-2 rounded border bg-white  w-56"
                 type="button"
               >
-                採用却下でチャット終了
+                検討中断<br />（チャットに通知されません）
               </button>
               <!-- 面談を辞退する Donwdrop -->
             </div>
@@ -160,8 +171,7 @@ defmodule BrightWeb.ChatLive.Index do
     Phoenix.PubSub.subscribe(Bright.PubSub, "chat:#{chat.id}")
 
     socket
-    |> assign(:page_title, "採用チャット")
-    |> assign(:career_fields, CareerFields.list_career_fields())
+    |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
@@ -173,7 +183,6 @@ defmodule BrightWeb.ChatLive.Index do
 
     socket
     |> assign(:page_title, "採用チャット")
-    |> assign(:career_fields, CareerFields.list_career_fields())
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
     |> assign(:chat, nil)
     |> assign(:messages, [])
