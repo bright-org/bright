@@ -17,15 +17,18 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
       >
         <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
         <section
-          class="absolute bg-white h-[600px] left-1/2 -ml-[340px] -mt-[230px] px-10 py-8 shadow text-sm top-1/2 w-[680px] z-[60]"
+          class="absolute bg-white h-[700px] left-1/2 -ml-[340px] -mt-[230px] px-10 py-8 shadow text-sm top-1/2 w-[680px] z-[60]"
           phx-click-away="close"
           phx-target={@myself}
         >
           <h2 class="font-bold text-3xl">
             <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-              本日から２週間お試しいただけます
+              β期間終了までお試しいただけます
             </span>
           </h2>
+          <p class="mt-2">
+            ※現在、面談調整とチャットまでお試しいただけます
+          </p>
           <p class="mt-2">
             (お試し期間以降もご利用される場合はプランのアップグレードが必要です)
           </p>

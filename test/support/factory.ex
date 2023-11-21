@@ -110,4 +110,8 @@ defmodule Bright.Factory do
   # Recruit context
   use Bright.InterviewFactory
   use Bright.InterviewMemberFactory
+
+  # Chat context
+  use Bright.ChatFactory
+  use Bright.ChatMessageFactory
 end

@@ -3,6 +3,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
 
   alias Bright.Recruits
   alias Bright.Recruits.Interview
+  alias Bright.Chats
   alias Bright.UserSearches
 
   import BrightWeb.ProfileComponents, only: [profile_small: 1]
@@ -145,6 +146,24 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
   end
 
   @impl true
+  def handle_event("decision", %{"decision" => "consume_interview"}, socket) do
+    interview = socket.assigns.interview
+    Recruits.update_interview(interview, %{status: "consume_interview"})
+
+    chat =
+      Chats.get_or_create_chat(
+        interview.recruiter_user_id,
+        interview.id,
+        "recruit",
+        [
+          %{user_id: interview.recruiter_user_id},
+          %{user_id: interview.candidates_user_id}
+        ]
+      )
+
+    {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+  end
+
   def handle_event("decision", %{"decision" => decision}, socket) do
     Recruits.update_interview(socket.assigns.interview, %{status: decision})
 

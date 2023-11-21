@@ -38,6 +38,16 @@ defmodule Bright.Recruits do
     |> Repo.all()
   end
 
+  def list_interview(user_id, status) do
+    Interview
+    |> where(
+      [i],
+      i.recruiter_user_id == ^user_id and i.status == ^status
+    )
+    |> order_by(desc: :updated_at)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single interview.
 
