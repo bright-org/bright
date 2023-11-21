@@ -9,7 +9,7 @@ defmodule BrightWeb.ChatLive.Index do
   def render(assigns) do
     ~H"""
     <div class="flex flex flex-row justify-between bg-white ml-1 h-[calc(100vh-56px)]">
-      <div class={"flex flex-col lg:min-w-[420px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
+      <div class={"flex flex-col w-screen lg:w-[640px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
             チャット対象者がいません<br />
@@ -20,7 +20,7 @@ defmodule BrightWeb.ChatLive.Index do
         <% else %>
           <%= for chat <- @chats do %>
             <.link
-              class={"flex flex-row py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
+              class={"flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
               patch={~p"/recruits/chats/#{chat.id}"}
             >
               <img
@@ -28,11 +28,13 @@ defmodule BrightWeb.ChatLive.Index do
                 class="object-cover h-10 w-10 rounded-full mr-2"
                 alt=""
               />
-              <div class="w-full flex">
-                <div class="flex-1 mr-2 truncate text-xl">
+              <div class="w-full flex justify-between p-1">
+                <div class="flex-1 mr-2 lg:truncate lg:text-xl">
                   <%= chat.interview.name %>
                 </div>
-                <CardListComponents.elapsed_time inserted_at={chat.updated_at} />
+                <div>
+                  <CardListComponents.elapsed_time inserted_at={chat.updated_at} />
+                </div>
               </div>
             </.link>
           <% end %>
