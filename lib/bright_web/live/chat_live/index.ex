@@ -9,9 +9,9 @@ defmodule BrightWeb.ChatLive.Index do
   def render(assigns) do
     ~H"""
     <div class="flex flex flex-row justify-between bg-white ml-1 h-[calc(100vh-56px)]">
-      <div class="flex flex-col min-w-[420px] border-r-2 overflow-y-auto">
+      <div class={"flex flex-col lg:min-w-[420px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
         <%= if Enum.count(@chats) == 0 do %>
-          <p class="text-xl p-4">
+          <p class="text-xl lg:p-4">
             チャット対象者がいません<br />
             「スキル検索」の「面談調整」や<br />
             「チームスキル分析」の「1on1に誘う」<br/>
@@ -44,14 +44,14 @@ defmodule BrightWeb.ChatLive.Index do
         :if={@chat}
       >
         <div class="flex flex-col mt-5">
-          <p class="ml-12 text-xl mb-2">
+          <p class="lg:ml-12 text-xl mb-2">
           ※メールアドレスや電話番号等の個人情報は送らないでください
           </p>
-          <p class="ml-12 text-xl mb-8">
+          <p class="lg:ml-12 text-xl mb-8">
           ※面談日時の重複は管理対象外ですので、別途管理を行ってください
           </p>
           <%= if Enum.count(@messages) == 0 do %>
-          <div class="ml-12 text-xl font-bold">
+          <div class="lg:ml-12 text-xl font-bold">
             下記にメッセージを入力し、「メッセージを送る」ボタンを押すと採用候補者にメッセージが届きます
           </div>
           <% else %>
@@ -87,7 +87,7 @@ defmodule BrightWeb.ChatLive.Index do
           <% end %>
         </div>
         <div
-          class="py-5 sticky bottom-0 bg-white"
+          class="py-5 sticky bottom-0 bg-white mb-12 lg:mb-0"
           :if={@chat}
         >
           <form phx-submit="send">
@@ -119,10 +119,18 @@ defmodule BrightWeb.ChatLive.Index do
                   add_box
                 </span>
               </button>
+              <.link navigate={~p"/recruits/chats"}>
+              <button
+                type="button"
+                class="text-sm font-bold ml-auto px-2 py-[10px] rounded border bg-white w-24 lg:hidden"
+              >
+                一覧に戻る
+              </button>
 
+              </.link>
               <button
                 type="submit"
-                class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
+                class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-36 lg:w-56"
               >
                 メッセージを送る
               </button>
@@ -182,7 +190,7 @@ defmodule BrightWeb.ChatLive.Index do
     user = socket.assigns.current_user
 
     socket
-    |> assign(:page_title, "採用チャット")
+    |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
     |> assign(:chat, nil)
     |> assign(:messages, [])
