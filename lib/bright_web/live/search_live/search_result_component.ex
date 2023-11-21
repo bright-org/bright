@@ -75,15 +75,15 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             }
             class="self-center bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:opacity-50"
           >
-          採用面談調整
+          面談調整
           </a>
           <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
           採用・育成チームに採用依頼 <br />βリリース（11月予定）から
           </a>
         </div>
-        <div :if={!@search} class="flex justify-between mt-8">
+        <div :if={!@search} class="flex justify-start mt-8">
           <.link
-            class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-40 hover:opacity-50"
+            class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:opacity-50"
             target="_blank"
             rel="noopener noreferrer"
             href={
@@ -91,15 +91,15 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
               <> "?class=#{@selected_skill_panel.class}"
             }
           >
-            成長パネルの確認
+            成長パネル
           </.link>
           <.link
-            class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-40 hover:opacity-50"
+            class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:opacity-50"
             target="_blank"
             rel="noopener noreferrer"
             href={"/mypage/anon/#{encrypt_user_name(@user)}"}
           >
-          保有スキルの確認
+            保有スキル
           </.link>
 
         </div>

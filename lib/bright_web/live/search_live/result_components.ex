@@ -44,7 +44,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
       <p class="mb-4">
         <span>　業務可否：<%= UserJobProfile.wish_job_type(@job) %></span>
       </p>
-      <p class="border-t border-brightGray-200 mb-2 mt-2 pt-2">
+      <p class="border-t border-brightGray-200 mb-2 mt-2 pt-2 pl-2">
         <span>スキルの最終更新日：</span>
         <span><%=
           if @last_updated,
@@ -53,7 +53,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         %></span>
       </p>
 
-      <p class="mb-2">
+      <p class="mb-2 pl-2">
         <span>担当者ステータス：</span>
         <span>-</span>
       </p>

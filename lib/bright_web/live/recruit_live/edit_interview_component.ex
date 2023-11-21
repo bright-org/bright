@@ -44,6 +44,12 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
               <h3 class="font-bold text-xl">面談調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
+                    <dt class="font-bold w-[98px] flex items-center mb-10">
+                      面談名
+                    </dt>
+                    <dd class="w-[280px] mb-10 break-words">
+                      <%= @interview.name %>
+                    </dd>
                     <dt
                       class="font-bold w-[98px] flex items-center mb-10"
                     >
@@ -54,14 +60,16 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                     </dd>
 
                     <dt class="font-bold w-[98px] mb-10">面談参加者</dt>
-                    <dd class="w-[280px]">
+                    <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
                       <%= for member <- @interview.interview_members do %>
                         <div class="flex">
+                          <div class="w-[200px] truncate mr-4">
                           <.profile_small
                             user_name={member.user.name}
                             icon_file_path={icon_url(member.user.user_profile.icon_file_path)}
                           />
+                          </div>
                           <div class="mt-4">
                             <span><%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %></span>
                           </div>
@@ -69,29 +77,37 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                       <% end %>
                       </ul>
                     </dd>
+                    <p class="text-attention-600">
+                    <%= @no_answer_error %>
+                    </p>
                     <dt class="font-bold w-[98px] flex mt-16">
                       <label for="point" class="block pr-1">採用候補者の推しポイント<br />注意点</label>
                     </dt>
                     <dd class="w-[280px] mt-16">
-                    <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full">
+                    <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full break-words">
                       <%= @interview.comment %>
                     </div>
                     </dd>
                   </dl>
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
+                  <.link navigate={~p"/recruits/interviews"}>
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44">
+                  閉じる
+                  </button>
+                  </.link>
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :dismiss_interview})}
-                    class="text-sm font-bold py-3 rounded border border-base w-72"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
                     面談キャンセル
                   </button>
 
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :consume_interview})}
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
-                    面談決定
+                    面談チャット開始
                   </button>
                 </div>
             </div><!-- End 面談調整内容 -->
@@ -136,32 +152,41 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
     |> assign(assigns)
     |> assign(:skill_params, skill_params)
     |> assign(:candidates_user, user)
+    |> assign(:no_answer_error, "")
     |> then(&{:ok, &1})
   end
 
   def update(assigns, socket) do
     socket
     |> assign(assigns)
+    |> assign(:no_answer_error, "")
     |> then(&{:ok, &1})
   end
 
   @impl true
   def handle_event("decision", %{"decision" => "consume_interview"}, socket) do
     interview = socket.assigns.interview
-    Recruits.update_interview(interview, %{status: "consume_interview"})
 
-    chat =
-      Chats.get_or_create_chat(
-        interview.recruiter_user_id,
-        interview.id,
-        "recruit",
-        [
-          %{user_id: interview.recruiter_user_id},
-          %{user_id: interview.candidates_user_id}
-        ]
-      )
+    case Recruits.interview_no_answer?(interview.id) do
+      true ->
+        {:noreply, assign(socket, :no_answer_error, "面談決定を最低1名、回答していただく必要があります")}
 
-    {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+      false ->
+        Recruits.update_interview(interview, %{status: "consume_interview"})
+
+        chat =
+          Chats.get_or_create_chat(
+            interview.recruiter_user_id,
+            interview.id,
+            "recruit",
+            [
+              %{user_id: interview.recruiter_user_id},
+              %{user_id: interview.candidates_user_id}
+            ]
+          )
+
+        {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+    end
   end
 
   def handle_event("decision", %{"decision" => decision}, socket) do

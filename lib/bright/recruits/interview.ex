@@ -12,6 +12,7 @@ defmodule Bright.Recruits.Interview do
   @foreign_key_type Ecto.ULID
 
   schema "interviews" do
+    field :name, :string, default: ""
     field :comment, :string
     field :skill_params, :string
 
@@ -32,6 +33,7 @@ defmodule Bright.Recruits.Interview do
   def changeset(interview, attrs) do
     interview
     |> cast(attrs, [
+      :name,
       :skill_params,
       :status,
       :comment,
@@ -43,6 +45,8 @@ defmodule Bright.Recruits.Interview do
       with: &InterviewMember.changeset/2
     )
     |> validate_required([:skill_params, :status, :candidates_user_id, :recruiter_user_id])
+    |> validate_length(:name, max: 255)
+    |> validate_length(:comment, max: 255)
   end
 
   def career_fields(interview, career_fields) do

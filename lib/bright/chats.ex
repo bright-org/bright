@@ -30,7 +30,7 @@ defmodule Bright.Chats do
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
       join: i in Interview,
-      on: i.id == c.relation_id,
+      on: i.id == c.relation_id and i.status in [:consume_interview],
       where: c.relation_type == "recruit",
       order_by: [desc: :updated_at],
       select: %{c | interview: i}
@@ -61,7 +61,7 @@ defmodule Bright.Chats do
       on: m.user_id == ^user_id and m.chat_id == c.id,
       preload: [:messages, :users],
       join: i in Interview,
-      on: i.id == c.relation_id,
+      on: i.id == c.relation_id and i.status in [:consume_interview],
       select: %{c | interview: i}
     )
     |> Repo.one!()

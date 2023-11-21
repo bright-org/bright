@@ -170,7 +170,8 @@ defmodule BrightWeb.LayoutComponents do
       {"成長パネル", "/graphs", nil},
       {"スキルパネル", "/panels", nil},
       {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/},
-      {"チームを作る（β）", "/teams/new", nil}
+      {"チームを作る（β）", "/teams/new", nil},
+      {"面談チャット", "/recruits/chats", nil}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
       # {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html", nil},

@@ -15,7 +15,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-                面談調整依頼
+                面談確定
               </span>
             </h2>
 
@@ -40,14 +40,20 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                 <h3 class="font-bold text-xl">面談調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
+                    <dt class="font-bold w-[98px] flex items-center mb-10">
+                        面談名
+                      </dt>
+                      <dd class="w-[280px] mb-10 break-words">
+                        <%= @interview_member.interview.name %>
+                      </dd>
                     <dt class="font-bold w-[98px] flex">
                       <label for="point" class="block pr-1">採用候補者の推しポイント<br />注意点</label>
                     </dt>
-                    <dd class="w-[280px]">
+                    <dd class="w-[280px] break-words">
                     <%= @interview_member.interview.comment %>
                     </dd>
                     <dt class="font-bold w-[98px] flex mt-8" >
-                      <label for="point" class="block pr-1">面談可否の<br>判断</label>
+                      <label for="point" class="block pr-1">面談参加の<br />意思確認</label>
                     </dt>
                     <dd class="w-[280px] mt-8">
                       <label class="block">
@@ -55,21 +61,21 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :wants})}
                         >
-                        <span class="align-[2px]">面談決定</span>
+                        <span class="align-[2px]">参加する</span>
                       </label>
                       <label class="block">
                         <input
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :keep})}
                         >
-                        <span class="align-[2px]">条件に合わないがエンジニアをキープ</span>
+                        <span class="align-[2px]">日程次第</span>
                       </label>
                       <label class="block">
                         <input
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :not_wants})}
                         >
-                        <span class="align-[2px]">面談しない</span>
+                        <span class="align-[2px]">参加しない</span>
                       </label>
                     </dd>
                   </dl>
@@ -79,7 +85,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                     class="text-sm font-bold py-3 rounded text-white bg-base w-72"
                     phx-click={JS.push("submit", target: @myself)}
                   >
-                    面談決定
+                    確定する
                   </button>
                 </div>
               </div><!-- End 面談調整内容 -->

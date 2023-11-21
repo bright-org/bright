@@ -40,10 +40,10 @@ msgid "not_answered"
 msgstr "未回答"
 
 msgid "wants"
-msgstr "面談したい"
+msgstr "参加する"
 
 msgid "not_wants"
-msgstr "面談しない"
+msgstr "参加しない"
 
 msgid  "keep"
-msgstr "条件に合わないがエンジニアをキープ"
+msgstr "日程次第"
