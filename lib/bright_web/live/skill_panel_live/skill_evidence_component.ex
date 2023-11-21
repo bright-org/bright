@@ -82,7 +82,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
           </div>
 
           <.simple_form
-            :if={postable_user?(@skill_evidence, @user)}
+            :if={@postable?}
             for={@form}
             id="skill_evidence_post-form"
             phx-target={@myself}
@@ -214,6 +214,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
      |> assign(:skill_evidence, skill_evidence)
      |> stream(:skill_evidence_posts, skill_evidence_posts)
      |> update(:user, &Bright.Repo.preload(&1, :user_profile))
+     |> assign(:postable?, postable_user?(skill_evidence, assigns.user))
      |> assign_form()}
   end
 
@@ -230,6 +231,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
      |> unassign_invalid_image_entries()}
   end
 
+  def handle_event("save", _, %{assigns: %{postable?: false}} = socket), do: {:noreply, socket}
+
   def handle_event("save", %{"skill_evidence_post" => params, "help" => help}, socket) do
     %{
       uploads: uploads,
@@ -238,8 +241,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       user: user,
       skill: skill
     } = socket.assigns
-
-    # TODO: 画面からはフォームを消しているがサーバ側として権限確認が必要
 
     image_names = Enum.map(uploads.image.entries, & &1.client_name)
     help? = help == "on" && me
