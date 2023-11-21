@@ -9,7 +9,7 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
     ~H"""
     <div>
       <button
-        class="fixed top-3 right-16 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:right-0 lg:mr-0 lg:relative"
+        class="fixed top-3 right-28 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:right-0 lg:mr-0 lg:relative"
         phx-click="toggle_notifications"
         phx-target={@myself}
       >
