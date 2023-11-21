@@ -1,0 +1,48 @@
+<.header>
+  Listing Team supporter teams
+  <:actions>
+    <.link patch={~p"/admin/team_supporter_teams/new"}>
+      <.button>New Team supporter team</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="team_supporter_teams"
+  rows={@streams.team_supporter_teams}
+  row_click={fn {_id, team_supporter_team} -> JS.navigate(~p"/admin/team_supporter_teams/#{team_supporter_team}") end}
+>
+  <:col :let={{_id, team_supporter_team}} label="supportee_team"><%= team_supporter_team.supportee_team_id %></:col>
+  <:col :let={{_id, team_supporter_team}} label="supporter_team"><%= team_supporter_team.supporter_team_id %></:col>
+  <:col :let={{_id, team_supporter_team}} label="request_from_user"><%= team_supporter_team.request_from_user_id %></:col>
+  <:col :let={{_id, team_supporter_team}} label="request_to_user"><%= team_supporter_team.request_to_user_id %></:col>
+  <:col :let={{_id, team_supporter_team}} label="status"><%= team_supporter_team.status %></:col>
+  <:col :let={{_id, team_supporter_team}} label="start datetime"><%= team_supporter_team.start_datetime %></:col>
+  <:col :let={{_id, team_supporter_team}} label="end datetime"><%= team_supporter_team.end_datetime %></:col>
+  <:col :let={{_id, team_supporter_team}} label="request datetime"><%= team_supporter_team.request_datetime %></:col>
+  <:action :let={{_id, team_supporter_team}}>
+    <div class="sr-only">
+      <.link navigate={~p"/admin/team_supporter_teams/#{team_supporter_team}"}>Show</.link>
+    </div>
+    <.link patch={~p"/admin/team_supporter_teams/#{team_supporter_team}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, team_supporter_team}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: team_supporter_team.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="team_supporter_team-modal" show on_cancel={JS.patch(~p"/admin/team_supporter_teams")}>
+  <.live_component
+    module={BrightWeb.Admin.TeamSupporterTeamLive.FormComponent}
+    id={@team_supporter_team.id || :new}
+    title={@page_title}
+    action={@live_action}
+    team_supporter_team={@team_supporter_team}
+    patch={~p"/admin/team_supporter_teams"}
+  />
+</.modal>

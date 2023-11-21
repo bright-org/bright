@@ -122,6 +122,12 @@ defmodule BrightWeb.Router do
       live "/recruits/interviews/:id", InterviewLive.Show, :show
       live "/recruits/interviews/:id/show/edit", InterviewLive.Show, :edit
 
+      live "/team_supporter_teams", TeamSupporterTeamLive.Index, :index
+      live "/team_supporter_teams/new", TeamSupporterTeamLive.Index, :new
+      live "/team_supporter_teams/:id/edit", TeamSupporterTeamLive.Index, :edit
+      live "/team_supporter_teams/:id", TeamSupporterTeamLive.Show, :show
+      live "/team_supporter_teams/:id/show/edit", TeamSupporterTeamLive.Show, :edit
+
       if System.get_env("SERVER") == "dev" do
         live "/user_tokens", UserTokenLive.Index, :index
       end
