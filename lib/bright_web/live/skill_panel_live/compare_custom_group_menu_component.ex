@@ -54,7 +54,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
             phx-click="mode_update"
             phx-target={@myself}
           >
-            更新
+            名前変更
           </button>
           <button
             id="btn-custom-group-delete"
