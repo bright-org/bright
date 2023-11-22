@@ -36,6 +36,15 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
               <div class="w-[370px] pb-4">
                 <% # 投稿内容表示 %>
                 <div class="text-base">
+                  <div
+                    id={"timestamp-#{id}"}
+                    class="flex justify-end"
+                    phx-hook="LocalTime"
+                    phx-update="ignore"
+                    data-iso={NaiveDateTime.to_iso8601(post.inserted_at)}
+                   >
+                    <p class="text-sm" data-local-time="%x %H:%M"></p>
+                  </div>
                   <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all first:mt-0 mt-3"] %>
                 </div>
 
