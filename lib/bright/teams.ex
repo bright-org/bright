@@ -306,6 +306,22 @@ defmodule Bright.Teams do
 
   alias Bright.Teams.TeamSupporterTeam
 
+  def list_team_supporter_team() do
+    Repo.all(TeamSupporterTeam)
+  end
+
+  def get_team_supporter_team!(id) do
+    Repo.get!(TeamSupporterTeam, id)
+  end
+
+  def delete_team_supporter_team(%TeamSupporterTeam{} = team) do
+    Repo.delete(team)
+  end
+
+  def change_team_supporter_team(%TeamSupporterTeam{} = team, attrs \\ %{}) do
+    TeamSupporterTeam.create_changeset(team, attrs)
+  end
+
   @doc """
   Creates a team_supporter_team.
 
