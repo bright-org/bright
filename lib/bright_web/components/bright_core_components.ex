@@ -352,7 +352,7 @@ defmodule BrightWeb.BrightCoreComponents do
 
   defp _text_to_html_with_link(text, attributes) do
     Regex.split(@regex_link, text, include_captures: true)
-    |> Enum.map(fn part ->
+    |> Enum.map_join(fn part ->
       URI.new(part)
       |> case do
         {:ok, %{scheme: scheme}} when scheme in ["http", "https"] ->
@@ -366,7 +366,6 @@ defmodule BrightWeb.BrightCoreComponents do
           safe_to_string(part)
       end
     end)
-    |> Enum.join()
     # 全体をhtmlにする際は個別にエスケープしているのでエスケープしない
     |> Phoenix.HTML.Format.text_to_html(attributes: attributes, escape: false)
     |> Phoenix.HTML.safe_to_string()
