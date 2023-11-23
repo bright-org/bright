@@ -25,12 +25,17 @@ defmodule BrightWeb.RecruitLive.Interview do
             >
               <img
                 src={UserProfiles.icon_url(nil)}
-                class="object-cover h-8 w-8 rounded-full mr-2"
+                class="object-cover h-12 w-12 rounded-full mr-2"
                 alt=""
               />
-              <span class="flex-1">
-                <%= interview.name %>
-              </span>
+              <div class="flex-1">
+                <span><%= if interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: interview.skill_panel_name %></span>
+                <br />
+                <span class="text-brightGray-300">
+                <%= NaiveDateTime.to_date(interview.inserted_at) %>
+                希望年収:<%= interview.desired_income %>
+                </span>
+              </div>
 
               <span class="flex-1">
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(interview.status)) %>
@@ -61,12 +66,17 @@ defmodule BrightWeb.RecruitLive.Interview do
             >
               <img
                 src={UserProfiles.icon_url(nil)}
-                class="object-cover h-8 w-8 rounded-full mr-2"
+                class="object-cover h-12 w-12 rounded-full mr-2"
                 alt=""
               />
-              <span class="flex-1">
-                <%= member.interview.name %>
-              </span>
+              <div class="flex-1">
+                <span><%= if member.interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: member.interview.skill_panel_name %></span>
+                <br />
+                <span class="text-brightGray-300">
+                  <%= NaiveDateTime.to_date(member.inserted_at) %>
+                  希望年収:<%= member.interview.desired_income %>
+                </span>
+              </div>
 
               <span class="flex-1">
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %>

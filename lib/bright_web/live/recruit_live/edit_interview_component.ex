@@ -48,7 +48,13 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                       面談名
                     </dt>
                     <dd class="w-[280px] mb-10 break-words">
-                      <%= @interview.name %>
+                    <span><%= if @interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: @interview.skill_panel_name %></span>
+                <br />
+                <span class="text-brightGray-300">
+                  <%= NaiveDateTime.to_date(@interview.inserted_at) %>
+                  希望年収:<%= @interview.desired_income %>
+                </span>
+
                     </dd>
                     <dt
                       class="font-bold w-[98px] flex items-center mb-10"

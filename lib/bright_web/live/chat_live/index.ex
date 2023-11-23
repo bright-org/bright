@@ -30,7 +30,13 @@ defmodule BrightWeb.ChatLive.Index do
               />
               <div class="w-full flex">
                 <div class="flex-1 mr-2 truncate text-xl">
-                  <%= chat.interview.name %>
+                <span><%= if chat.interview.skill_panel_name == nil , do: "スキルパネルデータなし", else: chat.interview.skill_panel_name %></span>
+                <br />
+                <span class="text-brightGray-300">
+                <%= NaiveDateTime.to_date(chat.interview.inserted_at) %>
+                希望年収:<%= chat.interview.desired_income %>
+                </span>
+
                 </div>
                 <CardListComponents.elapsed_time inserted_at={chat.updated_at} />
               </div>
