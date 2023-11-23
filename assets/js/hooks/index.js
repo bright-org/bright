@@ -9,6 +9,7 @@ import ScrollOccupancy from './ScrollOccupancy.js'
 import SkillUnitScrolling from './SkillUnitScrolling.js'
 import { SnsFloatingShareButtons } from './SnsFloatingShareButtons.js'
 import Imagebox from './Imagebox.js'
+import LocalTime from './LocalTime.js'
 
 export const Hooks = {
   LocalStorageBackup: LocalStorageBackup,
@@ -21,5 +22,6 @@ export const Hooks = {
   ScrollOccupancy: ScrollOccupancy,
   SkillUnitScrolling: SkillUnitScrolling,
   SnsFloatingShareButtons: SnsFloatingShareButtons,
-  Imagebox: Imagebox
+  Imagebox: Imagebox,
+  LocalTime: LocalTime
 }
