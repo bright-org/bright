@@ -121,7 +121,7 @@ defmodule BrightWeb.ProfileComponents do
 
     ~H"""
     <div class="flex">
-      <div class="mr-2 lg:mr-5">
+      <div class="mr-2 lg:mr-5 w-12 lg:w-20">
         <img
           class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
           src={@icon_file_path}

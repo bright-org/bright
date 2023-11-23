@@ -306,6 +306,22 @@ defmodule Bright.Teams do
 
   alias Bright.Teams.TeamSupporterTeam
 
+  def list_team_supporter_team() do
+    Repo.all(TeamSupporterTeam)
+  end
+
+  def get_team_supporter_team!(id) do
+    Repo.get!(TeamSupporterTeam, id)
+  end
+
+  def delete_team_supporter_team(%TeamSupporterTeam{} = team) do
+    Repo.delete(team)
+  end
+
+  def change_team_supporter_team(%TeamSupporterTeam{} = team, attrs \\ %{}) do
+    TeamSupporterTeam.create_changeset(team, attrs)
+  end
+
   @doc """
   Creates a team_supporter_team.
 
@@ -864,7 +880,7 @@ defmodule Bright.Teams do
   end
 
   @doc """
-  チームに所属しているかを確認
+  お互いがチームに所属しているかを確認
   所属していない場合Ecto.NoResultsErrorをraise
   """
   def joined_teams_by_user_id!(current_user_id, other_user_id) do
@@ -883,7 +899,7 @@ defmodule Bright.Teams do
   end
 
   @doc """
-  チームに所属しているかを確認
+  お互いがチームに所属しているかを確認
   所属していない場合falseを返す
   """
   def joined_teams_by_user_id?(current_user_id, other_user_id) do

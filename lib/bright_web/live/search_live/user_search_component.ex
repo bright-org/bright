@@ -47,7 +47,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     |> assign(:no_result, false)
     |> assign(:total_pages, 0)
     |> assign(:page, 1)
-    |> assign(:sort, :last_updated_desc)
+    |> assign(:sort, :score_desc)
     |> assign(:changeset, changeset)
     |> assign_form(changeset)
     |> then(&{:ok, &1})

@@ -9,9 +9,9 @@ defmodule BrightWeb.ChatLive.Index do
   def render(assigns) do
     ~H"""
     <div class="flex flex flex-row justify-between bg-white ml-1 h-[calc(100vh-56px)]">
-      <div class="flex flex-col min-w-[420px] border-r-2 overflow-y-auto">
+      <div class={"flex flex-col w-screen lg:w-[640px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
         <%= if Enum.count(@chats) == 0 do %>
-          <p class="text-xl p-4">
+          <p class="text-xl lg:p-4">
             チャット対象者がいません<br />
             「スキル検索」の「面談調整」や<br />
             「チームスキル分析」の「1on1に誘う」<br/>
@@ -20,7 +20,7 @@ defmodule BrightWeb.ChatLive.Index do
         <% else %>
           <%= for chat <- @chats do %>
             <.link
-              class={"flex flex-row py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
+              class={"flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
               patch={~p"/recruits/chats/#{chat.id}"}
             >
               <img
@@ -28,17 +28,18 @@ defmodule BrightWeb.ChatLive.Index do
                 class="object-cover h-10 w-10 rounded-full mr-2"
                 alt=""
               />
-              <div class="w-full flex">
-                <div class="flex-1 mr-2 truncate text-xl">
+              <div class="w-full flex justify-between p-1">
+                <div class="flex-1 mr-2 lg:truncate lg:text-xl">
                 <span><%= if chat.interview.skill_panel_name == nil , do: "スキルパネルデータなし", else: chat.interview.skill_panel_name %></span>
                 <br />
                 <span class="text-brightGray-300">
                 <%= NaiveDateTime.to_date(chat.interview.inserted_at) %>
                 希望年収:<%= chat.interview.desired_income %>
                 </span>
-
                 </div>
-                <CardListComponents.elapsed_time inserted_at={chat.updated_at} />
+                <div>
+                  <CardListComponents.elapsed_time inserted_at={chat.updated_at} />
+                </div>
               </div>
             </.link>
           <% end %>
@@ -50,15 +51,15 @@ defmodule BrightWeb.ChatLive.Index do
         :if={@chat}
       >
         <div class="flex flex-col mt-5">
-          <p class="ml-12 text-xl mb-2">
+          <p class="lg:ml-12 text-xl mb-2">
           ※メールアドレスや電話番号等の個人情報は送らないでください
           </p>
-          <p class="ml-12 text-xl mb-8">
+          <p class="lg:ml-12 text-xl mb-8">
           ※面談日時の重複は管理対象外ですので、別途管理を行ってください
           </p>
           <%= if Enum.count(@messages) == 0 do %>
           <div
-            class="ml-12 text-xl font-bold"
+            class="lg:ml-12 text-xl font-bold"
             :if={@current_user.id == @chat.owner_user_id}
           >
             下記にメッセージを入力し、「メッセージを送る」ボタンを押すと面談候補者にメッセージが届きます
@@ -96,7 +97,7 @@ defmodule BrightWeb.ChatLive.Index do
           <% end %>
         </div>
         <div
-          class="py-5 sticky bottom-0 bg-white"
+          class="py-5 sticky bottom-0 bg-white mb-12 lg:mb-0"
           :if={@chat}
         >
           <form phx-submit="send">
@@ -128,10 +129,18 @@ defmodule BrightWeb.ChatLive.Index do
                   add_box
                 </span>
               </button>
+              <.link navigate={~p"/recruits/chats"}>
+              <button
+                type="button"
+                class="text-sm font-bold ml-auto px-2 py-[10px] rounded border bg-white w-24 lg:hidden"
+              >
+                一覧に戻る
+              </button>
 
+              </.link>
               <button
                 type="submit"
-                class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
+                class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-36 lg:w-56"
               >
                 メッセージを送る
               </button>
@@ -191,7 +200,7 @@ defmodule BrightWeb.ChatLive.Index do
     user = socket.assigns.current_user
 
     socket
-    |> assign(:page_title, "採用チャット")
+    |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
     |> assign(:chat, nil)
     |> assign(:messages, [])

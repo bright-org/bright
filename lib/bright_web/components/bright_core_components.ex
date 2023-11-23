@@ -337,4 +337,45 @@ defmodule BrightWeb.BrightCoreComponents do
     </label>
     """
   end
+
+  @doc """
+  Render a content with anchor link.
+  """
+  @regex_link ~r{https?://[a-zA-Z0-9.\-_@:/~?%&;=+#',()*!]+}
+
+  attr :text, :string, required: true
+  attr :attributes, :list, default: []
+
+  def text_to_html_with_link(assigns) do
+    ~H"<%= Phoenix.HTML.raw _text_to_html_with_link(@text, @attributes) %>"
+  end
+
+  defp _text_to_html_with_link(text, attributes) do
+    Regex.split(@regex_link, text, include_captures: true)
+    |> Enum.map_join(fn part ->
+      URI.new(part)
+      |> case do
+        {:ok, %{scheme: scheme}} when scheme in ["http", "https"] ->
+          # 完全な形のURIのみリンクに変換
+          link_tag(part)
+
+        {:ok, %{scheme: nil}} ->
+          safe_to_string(part)
+
+        {:error, _} ->
+          safe_to_string(part)
+      end
+    end)
+    # 全体をhtmlにする際は個別にエスケープしているのでエスケープしない
+    |> Phoenix.HTML.Format.text_to_html(attributes: attributes, escape: false)
+    |> Phoenix.HTML.safe_to_string()
+  end
+
+  defp link_tag(url) do
+    ~s(<a class="text-blue-600 hover:underline" target="_blank" href="#{url}">#{safe_to_string(url)}</a>)
+  end
+
+  defp safe_to_string(text) do
+    text |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
+  end
 end
