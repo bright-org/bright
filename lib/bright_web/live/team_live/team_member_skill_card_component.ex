@@ -7,7 +7,10 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.PathHelper
+  import BrightWeb.BrightCoreComponents, only: [action_button: 1]
+
   alias Bright.UserProfiles
+  alias Bright.SkillPanels
 
   @impl true
   def render(assigns) do
@@ -134,9 +137,17 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
               </.link>
             <% end %>
           <% else %>
-          <button class="text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
-            この人と比較
-          </button>
+            <.link
+              :if={comparable_skill_panel?(@display_skill_panel, @display_skill_card, @current_user)}
+              href={
+                skill_panel_path("graphs", @display_skill_panel, @current_user, true, false)
+                <> "?class=#{@display_skill_card.select_skill_class.class}&compare=#{@display_skill_card.user.name}"
+              }
+            >
+              <.action_button class="px-5 py-3">
+                この人と比較
+              </.action_button>
+            </.link>
           <% end %>
           <button class="min-w-[124px] text-sm font-bold px-5 py-3 rounded text-white bg-brightGray-200">
             スキルアップ確認
@@ -182,5 +193,13 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
   defp icon_url(icon_file_path) do
     UserProfiles.icon_url(icon_file_path)
+  end
+
+  defp comparable_skill_panel?(skill_panel, skill_card, current_user) do
+    # 「この人と比較」押下可能かどうか
+    # - 「この人」にスキルスコアがあり、
+    # - 自身が取得済みのスキルパネルであること
+    skill_card.user_skill_class_score &&
+      SkillPanels.get_user_skill_panel(current_user, skill_panel.id)
   end
 end

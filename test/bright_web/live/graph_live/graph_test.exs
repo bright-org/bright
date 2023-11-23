@@ -313,6 +313,25 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       end
     end
 
+    test "shows compared user with parameter", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: user_2)
+
+      with_mocks([date_mock()]) do
+        {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}?compare=#{user_2.name}")
+        data = [[0.0, 0.0, 0.0], [0, 0, 0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+      end
+    end
+
     test "access control, not shows unauthorized user", %{
       conn: conn,
       user: user,
@@ -342,6 +361,21 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         # 比較対象に追加されていないこと
         data = [[0.0, 0.0, 0.0]] |> Jason.encode!()
         assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+      end
+    end
+
+    test "access control, not shows unauthorized user with parameter ", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+
+      with_mocks([date_mock()]) do
+        # URL指定なので404相当エラーで返す
+        assert_raise Bright.Exceptions.ForbiddenResourceError, fn ->
+          live(conn, ~p"/graphs/#{skill_panel}?compare=#{user_2.name}")
+        end
       end
     end
   end
@@ -577,6 +611,38 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
         refute has_element?(show_live, ~s(#timeline-bar-compared))
         refute has_element?(show_live, ~s(#compared-user-display))
+      end
+    end
+
+    test "shows compared user with parameter", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: user_2)
+
+      with_mocks([date_mock()]) do
+        {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}?compare=#{user_2.name}")
+
+        assert has_element?(show_live, ~s(#timeline-bar-compared))
+        assert has_element?(show_live, ~s(#compared-user-display), user_2.name)
+
+        data =
+          Map.merge(@base_data, %{
+            myself: [0, 0, 0, 0, 0, 0],
+            other: [0, 0, 0, 0, 0, 0],
+            otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
+            otherFutureEnabled: true,
+            otherSelected: "2023.10"
+          })
+          |> Jason.encode!()
+
+        assert has_element?(show_live, ~s(#growth-graph[data-data='#{data}']))
       end
     end
   end

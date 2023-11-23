@@ -228,12 +228,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:ok,
      socket
      |> assign(data: %{})
-     |> assign(compared_user: nil)}
+     |> assign(compared_user: nil, compared_timeline: nil)}
   end
 
   @impl true
   def update(assigns, socket) do
     timeline = TimelineHelper.get_current()
+    assigns = Map.update(assigns, :compared_user, nil, &put_profile/1)
 
     socket =
       socket
@@ -409,13 +410,20 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       compared_user: compared_user,
       skill_panel_id: skill_panel_id,
       class: class,
-      compared_timeline: compared_timeline
+      compared_timeline: compared_timeline,
+      timeline: timeline
     } = socket.assigns
+
+    compared_timeline =
+      compared_timeline ||
+        TimelineHelper.select_past_if_label_is_now(timeline)
 
     past_values =
       get_past_score_values(compared_timeline, compared_user.id, skill_panel_id, class)
 
-    update(socket, :data, fn data ->
+    socket
+    |> assign(:compared_timeline, compared_timeline)
+    |> update(:data, fn data ->
       Map.merge(data, %{
         other: past_values,
         otherSelected: compared_timeline.selected_label,
