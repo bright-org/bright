@@ -51,8 +51,11 @@ defmodule BrightWeb.ChatLive.Index do
           ※面談日時の重複は管理対象外ですので、別途管理を行ってください
           </p>
           <%= if Enum.count(@messages) == 0 do %>
-          <div class="ml-12 text-xl font-bold">
-            下記にメッセージを入力し、「メッセージを送る」ボタンを押すと採用候補者にメッセージが届きます
+          <div
+            class="ml-12 text-xl font-bold"
+            :if={@current_user.id == @chat.owner_user_id}
+          >
+            下記にメッセージを入力し、「メッセージを送る」ボタンを押すと面談候補者にメッセージが届きます
           </div>
           <% else %>
             <%= for message <- @messages do %>

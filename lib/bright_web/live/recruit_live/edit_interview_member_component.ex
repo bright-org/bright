@@ -15,7 +15,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-                面談確定
+                面談検討
               </span>
             </h2>
 
