@@ -5,6 +5,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
   import Bright.Factory
   import Mock
 
+  alias Bright.Repo
+  alias Bright.Teams.TeamMemberUsers
+
   defp date_mock do
     {
       Date,
@@ -237,6 +240,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       skill_panel: skill_panel,
       skill_units: skill_units
     } do
+      # 他者のテストデータ準備
       user_2 = insert(:user) |> with_user_profile()
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
       team = insert(:team)
@@ -260,6 +264,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         create_historical_skill_unit_scores(h_skill_units, percentages, user_2, locked_date)
       end)
 
+      # テスト
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
 
@@ -304,6 +309,38 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         |> render_click()
 
         data = [[20.0, 21.0, 22.0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+      end
+    end
+
+    test "access control, not shows unauthorized user", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: user_2)
+
+      with_mocks([date_mock()]) do
+        {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+        # 「他者と比較」を選択
+        show_live
+        |> element(~s(#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]))
+        |> render_click()
+
+        # user_2をチームから除外して参照不可状況をつくっている
+        # テスト便宜上、画面を出してから削除している
+        Repo.get_by(TeamMemberUsers, team_id: team.id, user_id: user_2.id) |> Repo.delete!()
+
+        show_live
+        |> element(~s(a[phx-click="click_on_related_user_card_compare"]), user_2.name)
+        |> render_click()
+
+        # 比較対象に追加されていないこと
+        data = [[0.0, 0.0, 0.0]] |> Jason.encode!()
         assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
       end
     end

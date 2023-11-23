@@ -1,4 +1,5 @@
 defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
+  alias Bright.CareerFields
   use BrightWeb, :live_component
 
   alias Bright.Accounts
@@ -61,6 +62,19 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
               >
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
+                    <dt class="font-bold w-[98px] flex items-center mb-10">
+                      面談名
+                    </dt>
+                    <dd class="w-[280px] mb-10">
+                      <BrightCore.input
+                        error_class="ml-[100px] mt-2"
+                        field={@interview_form[:name]}
+                        type="text"
+                        required
+                        input_class="px-5 py-3 border border-brightGray-100 rounded-sm flex-1 w-full"
+                      />
+                    </dd>
+
                     <dt
                       class="font-bold w-[98px] flex items-center mb-10"
                     >
@@ -103,7 +117,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
                   <button
                     class="text-sm font-bold py-3 rounded text-white bg-base w-72"
                   >
-                    面談調整を依頼する
+                    面談調整する
                   </button>
                 </div>
               </.form>
@@ -162,6 +176,21 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
       skill_params
       |> Enum.map(&(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end) |> Enum.into(%{})))
 
+    date = NaiveDateTime.local_now() |> NaiveDateTime.to_string() |> String.slice(0..-4)
+
+    career_field =
+      skill_params
+      |> Enum.map(&Map.get(&1, :career_field))
+      |> Enum.map(&Enum.find(CareerFields.list_career_fields(), fn ca -> ca.name_en == &1 end))
+      |> Enum.map_join(",", & &1.name_ja)
+
+    {:noreply, socket} =
+      handle_event(
+        "validate_interview",
+        %{"interview" => %{"name" => "#{date} #{career_field}"}},
+        socket
+      )
+
     socket
     |> assign(:candidates_user, user)
     |> assign(:skill_params, skill_params)
@@ -219,7 +248,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
         {:noreply, redirect(socket, to: ~p"/recruits/interviews")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset)}
+        {:noreply, assign_interview_form(socket, changeset)}
     end
   end
 

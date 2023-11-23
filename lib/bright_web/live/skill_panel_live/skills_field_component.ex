@@ -7,7 +7,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.SkillPanelLive.SkillsComponents
-  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2, assign_counter: 1]
+
+  import BrightWeb.SkillPanelLive.SkillPanelHelper,
+    only: [calc_percentage: 2, assign_counter: 1, comparable_user?: 2]
 
   alias Bright.SkillUnits
   alias Bright.SkillScores
@@ -126,7 +128,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   def handle_event("click_on_related_user_card_compare", params, socket) do
-    # TODO: 本当に参照可能かのチェックをいれること
     {user, anonymous} =
       DisplayUserHelper.get_user_from_name_or_name_encrypted(
         params["name"],
@@ -134,21 +135,22 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       )
 
     user = Map.put(user, :anonymous, anonymous)
+
     display_user_id = socket.assigns.display_user.id
     existing_user_ids = Enum.map(socket.assigns.compared_users, & &1.id)
 
-    (user.id == display_user_id or user.id in existing_user_ids)
-    |> case do
-      false ->
-        {:noreply,
-         socket
-         |> update(:compared_users, &(&1 ++ [user]))
-         |> assign_compared_user_dict(user)
-         |> assign_compared_users_info()
-         |> clear_inner_flash()}
+    user.id == display_user_id or user.id in existing_user_ids
 
-      true ->
-        {:noreply, assign(socket, :inner_flash, %{error: "既に一覧に表示されています"})}
+    comparable_user?(user, socket.assigns)
+    |> if do
+      {:noreply,
+       socket
+       |> update(:compared_users, &(&1 ++ [user]))
+       |> assign_compared_user_dict(user)
+       |> assign_compared_users_info()
+       |> clear_inner_flash()}
+    else
+      {:noreply, assign(socket, :inner_flash, %{error: "既に一覧に表示されています"})}
     end
   end
 
@@ -162,11 +164,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
 
   # 「個人と比較」チーム選択時のイベント
   def handle_event("on_card_row_click", %{"team_id" => team_id}, socket) do
-    display_user_id = socket.assigns.display_user.id
-    existing_user_ids = Enum.map(socket.assigns.compared_users, & &1.id)
+    %{
+      current_user: current_user,
+      display_user: display_user,
+      compared_users: compared_users
+    } = socket.assigns
 
-    {team, users} = list_users_in_team(team_id)
-    users = Enum.reject(users, &(&1.id == display_user_id))
+    existing_user_ids = Enum.map(compared_users, & &1.id)
+    {team, users} = list_users_in_team(team_id, display_user.id, current_user)
 
     users
     |> Enum.reject(&(&1.id in existing_user_ids))
@@ -445,27 +450,40 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
     |> assign(compared_users_stats: compared_users_stats)
   end
 
-  defp list_users_in_team(team_id) do
-    # TODO: 本当に参照可能なチームかどうかの確認
+  defp list_users_in_team(team_id, display_user_id, current_user) do
     team = Teams.get_team_with_member_users!(team_id)
 
-    users =
+    member_users =
       team.member_users
       |> Enum.filter(& &1.invitation_confirmed_at)
       |> Teams.sort_team_member_users()
-      |> Enum.map(&Map.put(&1.user, :anonymous, false))
 
-    {team, users}
+    (current_user.id in Enum.map(member_users, & &1.user_id))
+    |> if do
+      users =
+        member_users
+        |> Enum.map(&Map.put(&1.user, :anonymous, false))
+        |> Enum.reject(&(&1.id == display_user_id))
+
+      {team, users}
+    else
+      {team, []}
+    end
   end
 
   defp assign_compared_users_from_team(socket, nil), do: socket
 
   defp assign_compared_users_from_team(socket, team_id) do
-    display_user_id = socket.assigns.display_user.id
-    existing_user_ids = Enum.map(socket.assigns.compared_users, & &1.id)
+    %{
+      current_user: current_user,
+      display_user: display_user,
+      compared_users: compared_users
+    } = socket.assigns
 
-    {_team, users} = list_users_in_team(team_id)
-    users = Enum.reject(users, &(&1.id == display_user_id or &1.id in existing_user_ids))
+    existing_user_ids = Enum.map(compared_users, & &1.id)
+
+    {_team, users} = list_users_in_team(team_id, display_user.id, current_user)
+    users = Enum.reject(users, &(&1.id in existing_user_ids))
 
     socket
     |> update(:compared_users, &(&1 ++ users))

@@ -1,10 +1,9 @@
 defmodule BrightWeb.RecruitLive.Interview do
-  alias Bright.CareerFields
   use BrightWeb, :live_view
 
   alias Bright.Recruits
-  alias Bright.Recruits.Interview
   alias BrightWeb.CardLive.CardListComponents
+  alias Bright.UserProfiles
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @impl true
@@ -19,22 +18,26 @@ defmodule BrightWeb.RecruitLive.Interview do
           </div>
         </li>
         <%= for interview <- @interviews do %>
-          <li class="flex flex-wrap my-5">
+          <li class="flex my-5">
             <.link
                patch={~p"/recruits/interviews/#{interview.id}"}
-              class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
+              class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
-                person
-              </span>
-              <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
-                <%= Interview.career_fields(interview, @career_fields) %>
+              <img
+                src={UserProfiles.icon_url(nil)}
+                class="object-cover h-8 w-8 rounded-full mr-2"
+                alt=""
+              />
+              <span class="flex-1">
+                <%= interview.name %>
               </span>
 
-              <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
+              <span class="flex-1">
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(interview.status)) %>
               </span>
-              <CardListComponents.elapsed_time inserted_at={interview.updated_at} />
+              <span class="w-24">
+                <CardListComponents.elapsed_time inserted_at={interview.updated_at} />
+              </span>
             </.link>
           </li>
         <% end %>
@@ -51,22 +54,26 @@ defmodule BrightWeb.RecruitLive.Interview do
           </div>
         </li>
         <%= for member <- @interview_members do %>
-          <li class="flex flex-wrap my-5">
+          <li class="flex my-5">
             <.link
                patch={~p"/recruits/interviews/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
-                person
-              </span>
-              <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
-                <%= Interview.career_fields(member.interview, @career_fields) %>
+              <img
+                src={UserProfiles.icon_url(nil)}
+                class="object-cover h-8 w-8 rounded-full mr-2"
+                alt=""
+              />
+              <span class="flex-1">
+                <%= member.interview.name %>
               </span>
 
-              <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}>
+              <span class="flex-1">
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %>
               </span>
-              <CardListComponents.elapsed_time inserted_at={member.updated_at} />
+              <span class="w-24">
+                <CardListComponents.elapsed_time inserted_at={member.updated_at} />
+              </span>
             </.link>
           </li>
         <% end %>
@@ -104,7 +111,6 @@ defmodule BrightWeb.RecruitLive.Interview do
 
     socket
     |> assign(:page_title, "面談調整")
-    |> assign(:career_fields, CareerFields.list_career_fields())
     |> assign(:interviews, Recruits.list_interview(user_id, :not_complete))
     |> assign(:interview_members, Recruits.list_interview_members(user_id, :not_answered))
     |> assign(:interview, nil)

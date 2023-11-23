@@ -5,6 +5,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   alias Bright.SkillScores
   alias Bright.UserProfiles
   alias Bright.Utils.GoogleCloud.Storage
+  alias BrightWeb.BrightCoreComponents
 
   @help_message """
   （このメモでヘルプを出しました）
@@ -45,7 +46,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                    >
                     <p class="text-sm" data-local-time="%x %H:%M"></p>
                   </div>
-                  <%= Phoenix.HTML.Format.text_to_html post.content, attributes: [class: "break-all first:mt-0 mt-3"] %>
+                  <BrightCoreComponents.text_to_html_with_link text={post.content} attributes={[class: "break-all first:mt-0 mt-3"]} />
                 </div>
 
                 <% # 画像表示 %>

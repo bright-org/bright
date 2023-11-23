@@ -1430,4 +1430,33 @@ defmodule Bright.TeamsTest do
       # 支援を終了、支援拒否のケースは!= :supporting のケースなので割愛
     end
   end
+
+  describe "get_team_type_by_team/1" do
+    test "hr_support_team case" do
+      team = insert(:hr_support_team)
+      assert :hr_support_team == Teams.get_team_type_by_team(team)
+    end
+
+    test "teamup_team case" do
+      team = insert(:teamup_team)
+      assert :teamup_team == Teams.get_team_type_by_team(team)
+    end
+
+    test "gerenal_team case" do
+      team = insert(:team)
+      assert :general_team == Teams.get_team_type_by_team(team)
+    end
+
+    test "undefined_team case" do
+      # 現プランでは存在しないが、HR機能だけ使える場合も人材支援チーム扱いとする
+      team = insert(:undefined_team)
+      assert :hr_support_team == Teams.get_team_type_by_team(team)
+    end
+
+    test "custom_group case" do
+      user = insert(:user)
+      custom_group = insert(:custom_group, user_id: user.id)
+      assert :custom_group == Teams.get_team_type_by_team(custom_group)
+    end
+  end
 end
