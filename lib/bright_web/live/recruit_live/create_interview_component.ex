@@ -1,9 +1,9 @@
 defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
-  alias Bright.CareerFields
   use BrightWeb, :live_component
 
   alias Bright.Accounts
   alias Bright.UserSearches
+  alias Bright.SkillPanels
   alias Bright.Recruits
   alias Bright.Recruits.Interview
   alias BrightWeb.BrightCoreComponents, as: BrightCore
@@ -62,19 +62,6 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
               >
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
-                    <dt class="font-bold w-[98px] flex items-center mb-10">
-                      面談名
-                    </dt>
-                    <dd class="w-[280px] mb-10">
-                      <BrightCore.input
-                        error_class="ml-[100px] mt-2"
-                        field={@interview_form[:name]}
-                        type="text"
-                        required
-                        input_class="px-5 py-3 border border-brightGray-100 rounded-sm flex-1 w-full"
-                      />
-                    </dd>
-
                     <dt
                       class="font-bold w-[98px] flex items-center mb-10"
                     >
@@ -176,21 +163,6 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
       skill_params
       |> Enum.map(&(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end) |> Enum.into(%{})))
 
-    date = NaiveDateTime.local_now() |> NaiveDateTime.to_string() |> String.slice(0..-4)
-
-    career_field =
-      skill_params
-      |> Enum.map(&Map.get(&1, :career_field))
-      |> Enum.map(&Enum.find(CareerFields.list_career_fields(), fn ca -> ca.name_en == &1 end))
-      |> Enum.map_join(",", & &1.name_ja)
-
-    {:noreply, socket} =
-      handle_event(
-        "validate_interview",
-        %{"interview" => %{"name" => "#{date} #{career_field}"}},
-        socket
-      )
-
     socket
     |> assign(:candidates_user, user)
     |> assign(:skill_params, skill_params)
@@ -222,14 +194,19 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
     {:noreply, assign(socket, :users, removed_users)}
   end
 
-  def handle_event("create_interview", %{"interview" => interview_params}, socket) do
-    recruiter = socket.assigns.current_user
+  def handle_event(
+        "create_interview",
+        %{"interview" => interview_params},
+        %{assigns: %{skill_params: skill_params, users: users, current_user: recruiter}} = socket
+      ) do
     candidates_user = socket.assigns.candidates_user |> List.first()
 
     interview_params =
       Map.merge(interview_params, %{
-        "skill_params" => Jason.encode!(socket.assigns.skill_params),
-        "interview_members" => Enum.map(socket.assigns.users, &%{"user_id" => &1.id}),
+        "skill_panel_name" => gen_interview_name(skill_params),
+        "desired_income" => candidates_user.desired_income,
+        "skill_params" => Jason.encode!(skill_params),
+        "interview_members" => Enum.map(users, &%{"user_id" => &1.id}),
         "recruiter_user_id" => recruiter.id,
         "candidates_user_id" => candidates_user.id
       })
@@ -270,5 +247,13 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
 
   defp assign_interview_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :interview_form, to_form(changeset))
+  end
+
+  defp gen_interview_name(skill_params) do
+    skill_params
+    |> List.first()
+    |> Map.get(:skill_panel)
+    |> SkillPanels.get_skill_panel!()
+    |> Map.get(:name)
   end
 end

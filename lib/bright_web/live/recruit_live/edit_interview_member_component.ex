@@ -15,7 +15,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-                面談確定
+                面談検討
               </span>
             </h2>
 
@@ -44,7 +44,12 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                         面談名
                       </dt>
                       <dd class="w-[280px] mb-10 break-words">
-                        <%= @interview_member.interview.name %>
+                        <span><%= if @interview_member.interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: @interview_member.interview.skill_panel_name %></span>
+                        <br />
+                        <span class="text-brightGray-300">
+                        <%= NaiveDateTime.to_date(@interview_member.inserted_at) %>
+                        希望年収:<%= @interview_member.interview.desired_income %>
+                        </span>
                       </dd>
                     <dt class="font-bold w-[98px] flex">
                       <label for="point" class="block pr-1">採用候補者の推しポイント<br />注意点</label>

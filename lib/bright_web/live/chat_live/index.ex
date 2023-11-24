@@ -30,7 +30,12 @@ defmodule BrightWeb.ChatLive.Index do
               />
               <div class="w-full flex justify-between p-1">
                 <div class="flex-1 mr-2 lg:truncate lg:text-xl">
-                  <%= chat.interview.name %>
+                <span><%= if chat.interview.skill_panel_name == nil , do: "スキルパネルデータなし", else: chat.interview.skill_panel_name %></span>
+                <br />
+                <span class="text-brightGray-300">
+                <%= NaiveDateTime.to_date(chat.interview.inserted_at) %>
+                希望年収:<%= chat.interview.desired_income %>
+                </span>
                 </div>
                 <div>
                   <CardListComponents.elapsed_time inserted_at={chat.updated_at} />
@@ -53,8 +58,11 @@ defmodule BrightWeb.ChatLive.Index do
           ※面談日時の重複は管理対象外ですので、別途管理を行ってください
           </p>
           <%= if Enum.count(@messages) == 0 do %>
-          <div class="lg:ml-12 text-xl font-bold">
-            下記にメッセージを入力し、「メッセージを送る」ボタンを押すと採用候補者にメッセージが届きます
+          <div
+            class="lg:ml-12 text-xl font-bold"
+            :if={@current_user.id == @chat.owner_user_id}
+          >
+            下記にメッセージを入力し、「メッセージを送る」ボタンを押すと面談候補者にメッセージが届きます
           </div>
           <% else %>
             <%= for message <- @messages do %>
