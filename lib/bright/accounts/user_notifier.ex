@@ -192,7 +192,7 @@ defmodule Bright.Accounts.UserNotifier do
   Deliver invitation to team.
   """
   def deliver_invitation_team_instructions(from_user, to_user, team, url) do
-    deliver(to_user.email, "【Bright】チームに招待されました（承認URLは24 時間以内有効）", """
+    deliver(to_user.email, "【Bright】チームに招待されました（承認URLは 4 日以内有効）", """
     #{to_user.name}さん
     Brightカスタマーサクセスです。
 
@@ -201,7 +201,7 @@ defmodule Bright.Accounts.UserNotifier do
     #{from_user.name} さんから、チーム #{team.name} へ招待されました。
 
     チームへの招待へ応じる場合は、下記URLをクリックすることで承認してください。
-    URL は、本メール到着から 24 時間以内まで有効です。
+    URL は、本メール到着から 4 日以内まで有効です。
     #{url}
 
     ---------------------------------------------------------------------
