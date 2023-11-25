@@ -1,6 +1,7 @@
 defmodule BrightWeb.ErrorHTML do
   use BrightWeb, :html
   import BrightWeb.LayoutComponents
+  import BrightWeb.BrightButtonComponents, only: [contact_customer_success_button: 1]
   import BrightWeb.Layouts, only: [get_user_id: 1]
 
   # If you want to customize your error pages,
