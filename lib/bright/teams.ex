@@ -13,8 +13,7 @@ defmodule Bright.Teams do
   # 招待メール関連定数
   @hash_algorithm :sha256
   @rand_size 32
-  # TODO 要件調整 招待メールの期限1日
-  @invitation_validity_ago 1
+  @invitation_validity_ago 4
 
   @doc """
   Returns the list of teams.
