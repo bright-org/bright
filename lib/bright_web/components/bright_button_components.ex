@@ -139,7 +139,6 @@ defmodule BrightWeb.BrightButtonComponents do
 
       <.contact_customer_success_button />
   """
-
   def contact_customer_success_button(assigns) do
     ~H"""
     <.link
