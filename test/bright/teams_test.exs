@@ -325,6 +325,62 @@ defmodule Bright.TeamsTest do
     end
   end
 
+  describe "get_invitation_token/1" do
+    setup do
+      {base64_encoded_token, hashed_token} = Teams.build_invitation_token()
+
+      %{
+        base64_encoded_token: base64_encoded_token,
+        team_member_user: insert(:team_member_users, invitation_token: hashed_token)
+      }
+    end
+
+    test "returns team_member_user by invitation_token", %{
+      base64_encoded_token: base64_encoded_token,
+      team_member_user: team_member_user
+    } do
+      assert {:ok, team_member_user_by_token} = Teams.get_invitation_token(base64_encoded_token)
+      assert team_member_user_by_token.id == team_member_user.id
+    end
+
+    test "returns :error with invalid token", %{base64_encoded_token: base64_encoded_token} do
+      assert :error = Teams.get_invitation_token(base64_encoded_token <> "1")
+    end
+
+    test "returns team_member_user with not expired token", %{
+      base64_encoded_token: base64_encoded_token,
+      team_member_user: team_member_user
+    } do
+      {1, nil} =
+        Repo.update_all(TeamMemberUsers,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-4 * 60 * 60 * 24)
+              |> NaiveDateTime.add(1 * 60)
+          ]
+        )
+
+      assert {:ok, team_member_user_by_token} = Teams.get_invitation_token(base64_encoded_token)
+      assert team_member_user_by_token.id == team_member_user.id
+    end
+
+    test "returns team_member_user with expired token", %{
+      base64_encoded_token: base64_encoded_token
+    } do
+      {1, nil} =
+        Repo.update_all(TeamMemberUsers,
+          set: [
+            inserted_at:
+              NaiveDateTime.utc_now()
+              |> NaiveDateTime.add(-4 * 60 * 60 * 24)
+          ]
+        )
+
+      assert :error = Teams.get_invitation_token(base64_encoded_token)
+    end
+  end
+
   describe "toggle_is_star/1" do
     test "toggle_star" do
       team_name = Faker.Lorem.word()
