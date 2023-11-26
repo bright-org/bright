@@ -965,15 +965,6 @@ defmodule Bright.Teams do
     count > 0
   end
 
-  def raise_if_not_ulid(team_id) do
-    # チームIDの指定が不正だった場合は404で返す。
-    Ecto.ULID.cast(team_id)
-    |> case do
-      {:ok, _} -> nil
-      _ -> raise Ecto.NoResultsError, queryable: "Bright.Teams.Team"
-    end
-  end
-
   @doc """
     所属チームによる各種機能の利用可否判定を取得する
     - enable_team_up_functions チームスキル分析などチームアップ系機能の利用可否

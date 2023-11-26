@@ -13,7 +13,6 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   alias Bright.SkillScores
   alias Bright.Subscriptions
   alias Bright.SkillPanels.SkillPanel
-  alias BrightWeb.SkillPanelLive.SkillPanelHelper
 
   def init_assign(params, %{assigns: %{live_action: :new, current_user: user}} = socket) do
     subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
@@ -75,14 +74,12 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team_members) do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
-
     try do
-      SkillPanelHelper.raise_if_not_ulid(skill_panel_id)
       SkillPanels.get_skill_panel!(skill_panel_id)
     rescue
-      _e in Ecto.NoResultsError ->
-        # 結果が取得できない場合握りつぶしてnilを返す
-        nil
+      # 結果が取得できない場合握りつぶしてnilを返す
+      Ecto.NoResultsError -> nil
+      Ecto.Query.CastError -> nil
     end
   end
 
@@ -120,8 +117,6 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   defp get_display_team(%{"team_id" => team_id}, user_id) do
     try do
-      Teams.raise_if_not_ulid(team_id)
-
       team = Teams.get_team_with_member_users!(team_id)
 
       # 対象チームのチームメンバーの場合、または支援関係のあるチームメンバーの場合のみ参照可能
@@ -132,9 +127,9 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
         nil
       end
     rescue
-      _e in Ecto.NoResultsError ->
-        # 結果が取得できない場合、カスタムグループ判定に移動
-        get_display_team_as_custom_group(team_id, user_id)
+      # 結果が取得できない場合、カスタムグループ判定に移動
+      Ecto.NoResultsError -> get_display_team_as_custom_group(team_id, user_id)
+      Ecto.Query.CastError -> get_display_team_as_custom_group(team_id, user_id)
     end
   end
 
@@ -302,21 +297,12 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   defp assign_push_redirect(
          %{assigns: %{live_action: :index}} = socket,
-         %{"team_id" => team_id, "skill_panel_id" => skill_panel_id},
+         %{"team_id" => _team_id, "skill_panel_id" => _skill_panel_id},
          _display_team,
          _display_skill_panel
        ) do
-    # パラメータが完全に指定されていた場合、指定されたULIDの妥当性チェック
-    try do
-      Teams.raise_if_not_ulid(team_id)
-      SkillPanelHelper.raise_if_not_ulid(skill_panel_id)
-      socket
-    rescue
-      _e in Ecto.NoResultsError ->
-        # パラメータ指定が不正な場合デフォルトでリダイレクト
-        socket
-        |> push_navigate(to: "/teams")
-    end
+    # パラメータが完全に指定されていた場合、処理を続行
+    socket
   end
 
   defp assign_push_redirect(

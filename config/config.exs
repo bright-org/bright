@@ -75,6 +75,10 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Configure ecto exceptions to change response status code
+config :phoenix_ecto,
+  exclude_ecto_exceptions_from_plug: [Ecto.Query.CastError]
+
 # ueberauth
 config :ueberauth, Ueberauth,
   providers: [
