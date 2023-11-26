@@ -7,12 +7,14 @@ defmodule Bright.TeamMemberUsersFactory do
     quote do
       def team_member_users_factory do
         %Bright.Teams.TeamMemberUsers{
+          user: build(:user),
           invitation_confirmed_at: NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
         }
       end
 
       def team_member_users_unconfirmed_factory do
         %Bright.Teams.TeamMemberUsers{
+          user: build(:user),
           invitation_confirmed_at: nil
         }
       end
