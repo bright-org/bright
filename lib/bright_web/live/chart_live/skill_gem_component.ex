@@ -30,7 +30,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
         </div>
       <% else %>
         <.skill_gem
-          data={@skill_gem_data}
+          data={complement_skill_gem_data(@skill_gem_data, @compared_other?)}
           id={@id}
           labels={@skill_gem_labels}
           links={@skill_gem_links}
@@ -46,9 +46,9 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   @impl true
   def mount(socket) do
     {:ok,
-      socket
-      |> assign(:skill_gem_data, nil)
-      |> assign(:color_theme, "myself")}
+     socket
+     |> assign(:skill_gem_data, nil)
+     |> assign(color_theme: "myself", compared_other?: nil)}
   end
 
   @impl true
@@ -114,7 +114,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
       [myself, _] when is_list(myself) -> [myself]
       data -> data
     end)
-    |> assign(:color_theme, "myself")
+    |> assign(color_theme: "myself", compared_other?: nil)
   end
 
   defp maybe_update_skill_gem_data_compared_user(socket, true) do
@@ -129,7 +129,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     } = socket.assigns
 
     # 自分自身と比較と、他者との比較で色などが異なるため判定準備
-    compared_other? = (compared_user.id != display_user.id)
+    compared_other? = compared_user.id != display_user.id
 
     # データ取得後に自身ジェムとスキルユニットが一致するデータを取得している。
     # 参照している過去時点がずれている場合に一致しない。
@@ -143,19 +143,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
       [myself, _] when is_list(myself) -> [myself, skill_gem_data]
       [myself] -> [myself, skill_gem_data]
     end)
-    |> update(:skill_gem_data, fn skill_gem_data ->
-      compared_other?
-      |> if do
-        skill_gem_data
-      else
-        # 自分自身と比較時の補完
-        # - スキルジェム上の色合いの関係上、常に大きい方を先に置く。
-        # - スキルジェム上の色合いの関係上、同値であれば１つだけ表示する
-        skill_gem_data
-        |> Enum.sort_by(& Enum.sum/1, :desc)
-        |> Enum.uniq()
-      end
-    end)
+    |> assign(:compared_other?, compared_other?)
     |> assign(:color_theme, color_theme)
   end
 
@@ -208,14 +196,13 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   end
 
   defp skill_gem_compared_user_update_required?(prev_assigns, new_assigns) do
-    # 比較対象変更
+    # データ取得タイミング
+    # - 比較対象変更
+    # - 比較対象ラベル変更
+    # - 比較対象ありの状態でのクラス変更
     data_changed?(prev_assigns, new_assigns, :compared_user) ||
-      # 比較対象ラベル変更
       data_changed?(prev_assigns, new_assigns, :select_label_compared_user) ||
-      # 比較対象ありの状態でのクラス変更
-      (Map.get(new_assigns, :compared_user) && data_changed?(prev_assigns, new_assigns, :class)) ||
-      # 自分自身との比較時
-      ((Map.get(new_assigns, :compared_user) || %{id: nil}).id == new_assigns.display_user.id)
+      (Map.get(new_assigns, :compared_user) && data_changed?(prev_assigns, new_assigns, :class))
   end
 
   defp first_time?(prev_assigns) do
@@ -226,5 +213,18 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     prev = Map.get(prev_assigns, attr_name)
     new = Map.get(new_assigns, attr_name)
     prev != new
+  end
+
+  defp complement_skill_gem_data(skill_gem_data, compared_other?)
+       when compared_other? in [true, nil],
+       do: skill_gem_data
+
+  defp complement_skill_gem_data(skill_gem_data, false) do
+    # 自分自身と比較時のスキルジェムに渡すデータ補完
+    # - スキルジェム上の色合いの関係上、常に大きい方を先に置く。
+    # - スキルジェム上の色合いの関係上、同値であれば１つだけ表示する
+    skill_gem_data
+    |> Enum.sort_by(&Enum.sum/1, :desc)
+    |> Enum.uniq()
   end
 end
