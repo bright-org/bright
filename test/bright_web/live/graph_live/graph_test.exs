@@ -220,8 +220,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         |> element(~s(button[phx-click="compare_myself"]))
         |> render_click()
 
-        # NOTE: 「現在」スコアはないため0.0となる
-        data = [[0.0, 0.0, 0.0], [20.0, 21.0, 22.0]] |> Jason.encode!()
+        # NOTE
+        # - 「現在」スコアはないため0.0となる
+        data = [[20.0, 21.0, 22.0], [0.0, 0.0, 0.0]] |> Jason.encode!()
         assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
 
         # 比較対象を閉じる
@@ -402,7 +403,8 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       other: [],
       otherLabels: [],
       otherFutureEnabled: nil,
-      otherSelected: nil
+      otherSelected: nil,
+      comparedOther: nil
     }
 
     test "shows growth graph", %{
@@ -437,7 +439,6 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       skill_panel: skill_panel
     } do
       h_skill_class_1 = create_historical_skill_class(skill_panel, ~D[2023-07-01])
-
       h_skill_class_2 = create_historical_skill_class(skill_panel, ~D[2023-04-01])
 
       create_historical_skill_class_score(
@@ -505,7 +506,8 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 10.0, 20.0, 0],
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
-            otherSelected: "2023.10"
+            otherSelected: "2023.10",
+            comparedOther: false
           })
           |> Jason.encode!()
 
@@ -524,7 +526,8 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 0, 10.0, 20.0],
             otherLabels: ["2022.10", "2023.1", "2023.4", "2023.7", "2023.10"],
             otherFutureEnabled: false,
-            otherSelected: "2023.10"
+            otherSelected: "2023.10",
+            comparedOther: false
           })
           |> Jason.encode!()
 
@@ -579,7 +582,8 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 10.0, 20.0, 0],
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
-            otherSelected: "2023.10"
+            otherSelected: "2023.10",
+            comparedOther: true
           })
           |> Jason.encode!()
 
@@ -598,7 +602,8 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 0, 10.0, 20.0],
             otherLabels: ["2022.10", "2023.1", "2023.4", "2023.7", "2023.10"],
             otherFutureEnabled: false,
-            otherSelected: "2023.10"
+            otherSelected: "2023.10",
+            comparedOther: true
           })
           |> Jason.encode!()
 
@@ -638,7 +643,8 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 0, 0, 0],
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
-            otherSelected: "2023.10"
+            otherSelected: "2023.10",
+            comparedOther: true
           })
           |> Jason.encode!()
 

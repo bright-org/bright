@@ -110,7 +110,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       </div>
 
       <% # 比較対象 表示 %>
-      <div :if={compared_user_display?(@compared_user, @user_id)} id="compared-user-display" class="py-2 lg:py-4">
+      <div :if={compared_other?(@compared_user, @user_id)} id="compared-user-display" class="py-2 lg:py-4">
         <div class="w-14"></div>
         <div class="w-full lg:w-[725px] flex justify-between items-center">
           <div class="text-left flex items-center text-base border border-brightGray-200 px-3 py-1 rounded">
@@ -141,10 +141,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           :if={@compared_timeline}
           id="other"
           target={@myself}
-          type="other"
+          type={if compared_other?(@compared_user, @user_id), do: "other", else: "myself"}
           dates={@compared_timeline.labels}
           selected_date={@compared_timeline.selected_label}
           display_now={false}
+          display_close={true}
         />
 
         <div class="w-14 hidden lg:flex justify-end" data-size="pc">
@@ -225,21 +226,22 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   @impl true
   def mount(socket) do
+    timeline = TimelineHelper.get_current()
+
     {:ok,
      socket
      |> assign(data: %{})
+     |> assign(timeline: timeline)
      |> assign(compared_user: nil, compared_timeline: nil)}
   end
 
   @impl true
   def update(assigns, socket) do
-    timeline = TimelineHelper.get_current()
     assigns = Map.update(assigns, :compared_user, nil, &put_profile/1)
 
     socket =
       socket
       |> assign(assigns)
-      |> assign(timeline: timeline)
       |> create_user_data()
       |> create_compared_user_data()
 
@@ -399,6 +401,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       Map.merge(data, %{
         other: [],
         otherSelected: nil,
+        comparedOther: nil,
         otherLabels: [],
         otherFutureEnabled: nil
       })
@@ -408,6 +411,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   defp create_compared_user_data(socket) do
     %{
       compared_user: compared_user,
+      user_id: user_id,
       skill_panel_id: skill_panel_id,
       class: class,
       compared_timeline: compared_timeline,
@@ -427,6 +431,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       Map.merge(data, %{
         other: past_values,
         otherSelected: compared_timeline.selected_label,
+        comparedOther: compared_other?(compared_user, user_id),
         otherLabels: compared_timeline.labels,
         # TODO: ここ`!`は意味が反転しているので未来対応時に要確認。timelineのfuture_enabled（未来選択可能)とグラフデータ上のfuture_enabled(未来が表示されている?)というようにそれぞれで意味が違うのかもしれない。
         otherFutureEnabled: !compared_timeline.future_enabled
@@ -492,7 +497,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     Bright.Repo.preload(user, :user_profile)
   end
 
-  defp compared_user_display?(compared_user, user_id) do
+  defp compared_other?(compared_user, user_id) do
     compared_user && !(compared_user.id == user_id)
   end
 

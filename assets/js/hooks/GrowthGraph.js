@@ -67,9 +67,9 @@ const createData = (data) => {
   datasets.push(
     createDataset(
       otherData,
-      otherBorderColor,
-      otherPointColor,
-      otherPointColor,
+      getOtherBorderColor(data),
+      getOtherPointColor(data),
+      getOtherPointColor(data),
       false
     )
   );
@@ -380,7 +380,7 @@ const beforeDatasetsDraw = (chart, ease) => {
     chart,
     scales,
     "other",
-    otherSelectedColor,
+    getOtherSelectedColor(data),
     otherSelectedIndex
   );
   drawfastDataLine(chart, scales, "role", roleBorderColor);
@@ -411,7 +411,7 @@ const afterDatasetsDraw = (chart, ease) => {
     chart,
     scales,
     "other",
-    otherSelectedColor,
+    getOtherSelectedColor(data),
     otherSelectedIndex
   );
 };
@@ -468,6 +468,30 @@ const createChartFromJSON = (data, size) => {
     ],
   };
 };
+
+const getOtherBorderColor = (data) => {
+  if(data["comparedOther"]) {
+    return otherBorderColor
+  } else {
+    return myselfBorderColor
+  }
+}
+
+const getOtherPointColor = (data) => {
+  if(data["comparedOther"]) {
+    return otherPointColor
+  } else {
+    return myselfPointColor
+  }
+}
+
+const getOtherSelectedColor = (data) => {
+  if(data["comparedOther"]) {
+    return otherSelectedColor
+  } else {
+    return myselfSelectedColor
+  }
+}
 
 export const GrowthGraph = {
   drawGrowthGraph(element) {
