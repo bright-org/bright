@@ -147,25 +147,51 @@ const drawHorizonLine = (context, scales) => {
   context.stroke();
 };
 
-const drawNow = (chart, scales) => {
-  const context = chart.ctx;
+const drawMyselfNow = (chart, scales) => {
   const dataset = chart.canvas.parentNode.dataset;
-  // 現在のスコア
-  const data = JSON.parse(dataset.data);
-  const now = data["now"];
+  const data = JSON.parse(dataset.data)
+  const now = data["myselfNow"]
 
-  if (now === undefined) return;
+  if (now === undefined || now === null) return;
+
+  const pastData = data["myself"]
+  drawNow(chart, scales, {
+    nowValue: now,
+    prevValue: pastData[4],
+    selected: (data["myselfSelected"] === "now"),
+    axisColor: (data["myselfSelected"] === "now") ? nowSelectColor : nowColor,
+    borderColor: myselfBorderColor
+  })
+}
+
+const drawOtherNow = (chart, scales) => {
+  const dataset = chart.canvas.parentNode.dataset;
+  const data = JSON.parse(dataset.data)
+  const now = data["otherNow"]
+
+  if (now === undefined || now === null) return;
+
+  const pastData = data["other"]
+  drawNow(chart, scales, {
+    nowValue: now,
+    prevValue: pastData[4],
+    selected: (data["otherSelected"] === "now"),
+    axisColor: (data["otherSelected"] === "now") ? nowSelectColor : nowColor,
+    borderColor: otherBorderColor
+  })
+}
+
+const drawNow = (chart, scales, state) => {
+  const context = chart.ctx;
   const y = scales.y;
   const x = scales.x;
-  const pastData = data["myself"];
-  const drawNowColor =
-    data["myselfSelected"] === "now" ? nowSelectColor : nowColor;
+  const drawNowColor = state.selected ? nowSelectColor : nowColor;
 
   context.setLineDash([2, 0]);
-  context.strokeStyle = drawNowColor;
+  context.strokeStyle = state.axisColor;
   const nowDown = y.getPixelForValue(0);
-  const nowY = y.getPixelForValue(now);
-  const pastY = y.getPixelForValue(pastData[4]);
+  const nowY = y.getPixelForValue(state.nowValue);
+  const pastY = y.getPixelForValue(state.prevValue);
 
   // 直近の過去から未来の真ん中を求める
   const futureX = x.getPixelForValue(4);
@@ -174,7 +200,7 @@ const drawNow = (chart, scales) => {
   const nowX = pastX + diffX / 2;
 
   // 「現在」縦線
-  context.lineWidth = data["myselfSelected"] === "now" ? 4 : 2;
+  context.lineWidth = state.selected ? 4 : 2;
   context.beginPath();
   context.moveTo(nowX, nowDown);
   context.lineTo(nowX, nowY);
@@ -182,7 +208,7 @@ const drawNow = (chart, scales) => {
 
   // 直近の過去から現在までの線
   context.lineWidth = 3;
-  context.strokeStyle = myselfBorderColor;
+  context.strokeStyle = state.borderColor;
   context.beginPath();
   context.moveTo(pastX, pastY);
   context.lineTo(nowX, nowY);
@@ -368,7 +394,8 @@ const beforeDatasetsDraw = (chart, ease) => {
   drawvVrticalLine(context, scales);
   drawHorizonLine(context, scales);
   fillMyselfData(chart, scales);
-  drawNow(chart, scales);
+  drawMyselfNow(chart, scales);
+  drawOtherNow(chart, scales);
   drawSelectedLine(
     chart,
     scales,

@@ -395,15 +395,16 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     end
 
     @base_data %{
-      now: 0.0,
       labels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
       myself: [0, 0, 0, 0, 0, 0],
+      myselfNow: 0.0,
       futureEnabled: true,
       myselfSelected: "now",
       other: [],
       otherLabels: [],
       otherFutureEnabled: nil,
       otherSelected: nil,
+      otherNow: nil,
       comparedOther: nil
     }
 
@@ -428,7 +429,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
-        data = Map.merge(@base_data, %{now: 50.0}) |> Jason.encode!()
+        data = Map.merge(@base_data, %{myselfNow: 50.0}) |> Jason.encode!()
         assert has_element?(show_live, ~s(#growth-graph[data-data='#{data}']))
       end
     end
@@ -504,6 +505,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
           Map.merge(@base_data, %{
             myself: [0, 0, 0, 10.0, 20.0, 0],
             other: [0, 0, 0, 10.0, 20.0, 0],
+            otherNow: 0.0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
             otherSelected: "2023.10",
@@ -524,6 +526,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
           Map.merge(@base_data, %{
             myself: [0, 0, 0, 10.0, 20.0, 0],
             other: [0, 0, 0, 0, 10.0, 20.0],
+            otherNow: nil,
             otherLabels: ["2022.10", "2023.1", "2023.4", "2023.7", "2023.10"],
             otherFutureEnabled: false,
             otherSelected: "2023.10",
@@ -579,7 +582,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         data =
           Map.merge(@base_data, %{
             myself: [0, 0, 0, 0, 0, 0],
+            myselfNow: 0.0,
             other: [0, 0, 0, 10.0, 20.0, 0],
+            otherNow: 0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
             otherSelected: "2023.10",
@@ -599,7 +604,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         data =
           Map.merge(@base_data, %{
             myself: [0, 0, 0, 0, 0, 0],
+            myselfNow: 0.0,
             other: [0, 0, 0, 0, 10.0, 20.0],
+            otherNow: nil,
             otherLabels: ["2022.10", "2023.1", "2023.4", "2023.7", "2023.10"],
             otherFutureEnabled: false,
             otherSelected: "2023.10",
@@ -640,7 +647,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         data =
           Map.merge(@base_data, %{
             myself: [0, 0, 0, 0, 0, 0],
+            myselfNow: 0.0,
             other: [0, 0, 0, 0, 0, 0],
+            otherNow: 0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
             otherSelected: "2023.10",
