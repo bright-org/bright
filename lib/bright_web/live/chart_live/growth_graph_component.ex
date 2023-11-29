@@ -307,7 +307,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     %{current_user: user, timeline: timeline} = socket.assigns
 
     user = Map.put(user, :anonymous, false)
-    compared_timeline = TimelineHelper.select_past_if_label_is_now(timeline)
+    compared_timeline = timeline
     notify_parent_compared_user_added(user, compared_timeline)
 
     {:noreply,
@@ -324,7 +324,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       compared_user: compared_user
     } = socket.assigns
 
-    compared_timeline = TimelineHelper.select_past_if_label_is_now(timeline)
+    compared_timeline = timeline
 
     {user, anonymous} =
       DisplayUserHelper.get_user_from_name_or_name_encrypted(
@@ -413,9 +413,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       timeline: timeline
     } = socket.assigns
 
-    compared_timeline =
-      compared_timeline ||
-        TimelineHelper.select_past_if_label_is_now(timeline)
+    compared_timeline = compared_timeline || timeline
 
     past_values =
       get_past_score_values(compared_timeline, compared_user.id, skill_panel_id, class)

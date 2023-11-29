@@ -220,8 +220,18 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         |> element(~s(button[phx-click="compare_myself"]))
         |> render_click()
 
-        # NOTE
+        # 「現在」表示のため一致で1データ表示のみ
         # - 「現在」スコアはないため0.0となる
+        data = [[0.0, 0.0, 0.0]] |> Jason.encode!()
+        assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
+
+        # 比較対象側 2023.10を選択
+        show_live
+        |> element(
+          ~s(button[phx-click="timeline_bar_button_click"][phx-value-id="other"][phx-value-date="2023.10"])
+        )
+        |> render_click()
+
         data = [[20.0, 21.0, 22.0], [0.0, 0.0, 0.0]] |> Jason.encode!()
         assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
 
@@ -281,7 +291,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         |> render_click()
 
         # NOTE: 「現在」スコアはないため0.0となる
-        data = [[0.0, 0.0, 0.0], [20.0, 21.0, 22.0]] |> Jason.encode!()
+        data = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]] |> Jason.encode!()
         assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
 
         # 2. 自身のタイムラインを2023.10に変更
@@ -291,7 +301,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         )
         |> render_click()
 
-        data = [[20.0, 21.0, 22.0], [20.0, 21.0, 22.0]] |> Jason.encode!()
+        data = [[20.0, 21.0, 22.0], [0.0, 0.0, 0.0]] |> Jason.encode!()
         assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
 
         # 3. 比較対象のタイムラインを2023.7に変更
@@ -328,7 +338,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}?compare=#{user_2.name}")
-        data = [[0.0, 0.0, 0.0], [0, 0, 0]] |> Jason.encode!()
+        data = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]] |> Jason.encode!()
         assert has_element?(show_live, ~s(#skill-gem[data-data='#{data}']))
       end
     end
@@ -508,7 +518,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             otherNow: 0.0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
-            otherSelected: "2023.10",
+            otherSelected: "now",
             comparedOther: false
           })
           |> Jason.encode!()
@@ -529,7 +539,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             otherNow: nil,
             otherLabels: ["2022.10", "2023.1", "2023.4", "2023.7", "2023.10"],
             otherFutureEnabled: false,
-            otherSelected: "2023.10",
+            otherSelected: "now",
             comparedOther: false
           })
           |> Jason.encode!()
@@ -587,7 +597,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             otherNow: 0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
-            otherSelected: "2023.10",
+            otherSelected: "now",
             comparedOther: true
           })
           |> Jason.encode!()
@@ -609,7 +619,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             otherNow: nil,
             otherLabels: ["2022.10", "2023.1", "2023.4", "2023.7", "2023.10"],
             otherFutureEnabled: false,
-            otherSelected: "2023.10",
+            otherSelected: "now",
             comparedOther: true
           })
           |> Jason.encode!()
@@ -652,7 +662,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             otherNow: 0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
             otherFutureEnabled: true,
-            otherSelected: "2023.10",
+            otherSelected: "now",
             comparedOther: true
           })
           |> Jason.encode!()

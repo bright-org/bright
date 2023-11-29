@@ -72,13 +72,6 @@ defmodule BrightWeb.TimelineHelper do
     })
   end
 
-  def select_past_if_label_is_now(%{selected_label: "now"} = timeline) do
-    past_label = Enum.at(timeline.labels, -2)
-    select_label(timeline, past_label)
-  end
-
-  def select_past_if_label_is_now(timeline), do: timeline
-
   def get_monthly_interval, do: @monthly_interval
 
   @doc """
@@ -122,15 +115,6 @@ defmodule BrightWeb.TimelineHelper do
   end
 
   def label_to_date(_label), do: nil
-
-  @doc """
-  nowを除く最新日付（ラベル）を返す
-  """
-  def get_latest_date_label do
-    get_by_date("now")
-    |> select_past_if_label_is_now()
-    |> Map.get(:selected_label)
-  end
 
   defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
 
