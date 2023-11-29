@@ -177,7 +177,7 @@ const drawOtherNow = (chart, scales) => {
     prevValue: pastData[4],
     selected: (data["otherSelected"] === "now"),
     axisColor: (data["otherSelected"] === "now") ? nowSelectColor : nowColor,
-    borderColor: otherBorderColor
+    borderColor: getOtherBorderColor(data)
   })
 }
 
