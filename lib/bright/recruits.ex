@@ -32,8 +32,10 @@ defmodule Bright.Recruits do
     Interview
     |> where(
       [i],
-      i.recruiter_user_id == ^user_id and i.status in [:waiting_decision, :consume_interview]
+      i.recruiter_user_id == ^user_id and
+        i.status in [:waiting_decision, :consume_interview, :ongoing_interview]
     )
+    |> preload(candidates_user: :user_profile)
     |> order_by(desc: :updated_at)
     |> Repo.all()
   end
