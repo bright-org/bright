@@ -4,7 +4,6 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias Bright.SkillPanels.SkillPanel
   alias Bright.Teams
   alias Bright.Accounts
-  alias BrightWeb.TimelineHelper
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
@@ -108,11 +107,8 @@ defmodule BrightWeb.GraphLive.Graphs do
       compared_user.id
     )
 
-    # 比較対象のnowはないため1つ前の時点を取得
-    select_label = TimelineHelper.get_latest_date_label()
-
     socket
     |> assign(:compared_user, compared_user)
-    |> assign(:select_label_compared_user, select_label)
+    |> assign(:select_label_compared_user, "now")
   end
 end

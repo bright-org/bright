@@ -144,7 +144,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           type={if compared_other?(@compared_user, @user_id), do: "other", else: "myself"}
           dates={@compared_timeline.labels}
           selected_date={@compared_timeline.selected_label}
-          display_now={false}
+          display_now={@compared_timeline.display_now}
           display_close={true}
         />
 
@@ -307,7 +307,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     %{current_user: user, timeline: timeline} = socket.assigns
 
     user = Map.put(user, :anonymous, false)
-    compared_timeline = TimelineHelper.select_past_if_label_is_now(timeline)
+    compared_timeline = timeline
     notify_parent_compared_user_added(user, compared_timeline)
 
     {:noreply,
@@ -324,7 +324,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       compared_user: compared_user
     } = socket.assigns
 
-    compared_timeline = TimelineHelper.select_past_if_label_is_now(timeline)
+    compared_timeline = timeline
 
     {user, anonymous} =
       DisplayUserHelper.get_user_from_name_or_name_encrypted(
@@ -379,19 +379,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         myself: past_values,
         myselfSelected: timeline.selected_label,
         labels: timeline.labels,
-        # TODO: ここ`!`は意味が反転しているので未来対応時に要確認。timelineのfuture_enabled（未来選択可能)とグラフデータ上のfuture_enabled(未来が表示されている?)というようにそれぞれで意味が違うのかもしれない。
+        # TODO: ここ`!`は意味が反転しているので未来対応時に要確認。timelineのfuture_enabled（未来へのシフト操作可能)とグラフデータ上のfuture_enabled(未来が表示されている?)というようにそれぞれで意味が違うのかもしれない。名前変更すること
         futureEnabled: !timeline.future_enabled
       })
 
-    # 「現在」表示が存在するならばいれる。そうでないならばキー自体を除去
     # TODO: ここもfuture_enabledの意味が反転している?ので要確認
-    now_value =
-      if data.futureEnabled do
-        (SkillScores.get_class_score(user_id, skill_panel_id, class) || %{})
-        |> Map.get(:percentage, 0)
-      end
-
-    data = if now_value, do: Map.put(data, :now, now_value), else: Map.delete(data, :now)
+    now_value = create_user_now_value(user_id, skill_panel_id, class, data.futureEnabled)
+    data = Map.put(data, :myselfNow, now_value)
 
     assign(socket, data: data)
   end
@@ -403,7 +397,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         otherSelected: nil,
         comparedOther: nil,
         otherLabels: [],
-        otherFutureEnabled: nil
+        otherFutureEnabled: nil,
+        otherNow: nil
       })
     end)
   end
@@ -418,12 +413,19 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       timeline: timeline
     } = socket.assigns
 
-    compared_timeline =
-      compared_timeline ||
-        TimelineHelper.select_past_if_label_is_now(timeline)
+    compared_timeline = compared_timeline || timeline
 
     past_values =
       get_past_score_values(compared_timeline, compared_user.id, skill_panel_id, class)
+
+    # TODO: ここもfuture_enabledの意味が反転している?ので要確認
+    now_value =
+      create_user_now_value(
+        compared_user.id,
+        skill_panel_id,
+        class,
+        !compared_timeline.future_enabled
+      )
 
     socket
     |> assign(:compared_timeline, compared_timeline)
@@ -433,11 +435,21 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         otherSelected: compared_timeline.selected_label,
         comparedOther: compared_other?(compared_user, user_id),
         otherLabels: compared_timeline.labels,
-        # TODO: ここ`!`は意味が反転しているので未来対応時に要確認。timelineのfuture_enabled（未来選択可能)とグラフデータ上のfuture_enabled(未来が表示されている?)というようにそれぞれで意味が違うのかもしれない。
-        otherFutureEnabled: !compared_timeline.future_enabled
+        # TODO: ここ`!`は意味が反転しているので未来対応時に要確認。timelineのfuture_enabled（未来へのシフト操作可能)とグラフデータ上のfuture_enabled(未来が表示されている?)というようにそれぞれで意味が違うのかもしれない。名前変更すること
+        otherFutureEnabled: !compared_timeline.future_enabled,
+        otherNow: now_value
       })
     end)
   end
+
+  defp create_user_now_value(user_id, skill_panel_id, class, required)
+
+  defp create_user_now_value(user_id, skill_panel_id, class, true) do
+    (SkillScores.get_class_score(user_id, skill_panel_id, class) || %{})
+    |> Map.get(:percentage, 0)
+  end
+
+  defp create_user_now_value(_user_id, _skill_panel_id, _class, false), do: nil
 
   defp get_past_score_values(timeline, user_id, skill_panel_id, class) do
     # タイムラインに表示されている範囲の過去履歴を取得する
