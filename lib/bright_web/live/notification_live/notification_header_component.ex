@@ -11,6 +11,7 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
       <button
         class="fixed top-3 right-28 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:right-0 lg:mr-0 lg:relative"
         phx-click="toggle_notifications"
+        phx-click-away={@open? && "close_notifications"}
         phx-target={@myself}
       >
         <.icon name="hero-bell" class="h-8 w-8" />
@@ -53,6 +54,12 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
 
     socket
     |> assign(:open?, new_open?)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("close_notifications", _params, socket) do
+    socket
+    |> assign(:open?, false)
     |> then(&{:noreply, &1})
   end
 
