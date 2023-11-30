@@ -16,7 +16,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   @tabs [
     # 気になる人はβリリース対象外のため非表示
     # {"intriguing", "気になる人"},
-    {"team", "チーム"},
+    {"team", "所属チーム"},
     {"custom_group", "カスタムグループ"},
     {"candidate_for_employment", "採用候補者"}
   ]
