@@ -36,7 +36,6 @@ msgstr "面談却下"
 msgid "ongoing_interview"
 msgstr "面談中"
 
-
 msgid "complete_interview"
 msgstr "面談完了"
 
