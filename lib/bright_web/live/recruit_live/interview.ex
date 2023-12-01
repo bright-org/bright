@@ -102,6 +102,19 @@ defmodule BrightWeb.RecruitLive.Interview do
       />
     </.bright_modal>
 
+    <.bright_modal :if={@live_action in [:confirm_interview]} id="interview-confirm-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
+      <.live_component
+        module={BrightWeb.RecruitLive.ConfirmInterviewComponent}
+        id="interview_member_modal"
+        title={@page_title}
+        action={@live_action}
+        interview_id={@interview.id}
+        current_user={@current_user}
+        patch={~p"/recruits/interviews"}
+      />
+    </.bright_modal>
+
+
     <.bright_modal :if={@live_action in [:show_member]} id="interview-member-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
         module={BrightWeb.RecruitLive.EditInterviewMemberComponent}
@@ -113,6 +126,7 @@ defmodule BrightWeb.RecruitLive.Interview do
         patch={~p"/recruits/interviews"}
       />
     </.bright_modal>
+
     """
   end
 
@@ -134,13 +148,6 @@ defmodule BrightWeb.RecruitLive.Interview do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :show_interview, %{"id" => id}) do
-    user_id = socket.assigns.current_user.id
-
-    socket
-    |> assign(:interview, Recruits.get_interview_with_member_users!(id, user_id))
-  end
-
   defp apply_action(socket, :show_member, %{"id" => id}) do
     user_id = socket.assigns.current_user.id
 
@@ -152,5 +159,21 @@ defmodule BrightWeb.RecruitLive.Interview do
     socket
     |> assign(:interview, nil)
     |> assign(:interview_member, nil)
+  end
+
+  defp apply_action(socket, _action, %{"id" => id}) do
+    user_id = socket.assigns.current_user.id
+    interview = Recruits.get_interview_with_member_users!(id, user_id)
+
+    action =
+      case interview.status do
+        :waiting_decision -> :show_interview
+        :consume_interview -> :confirm_interview
+        :ongoing_interview -> :show_interview
+      end
+
+    socket
+    |> assign(:interview, interview)
+    |> assign(:live_action, action)
   end
 end
