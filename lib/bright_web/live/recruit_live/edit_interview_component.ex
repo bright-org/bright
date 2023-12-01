@@ -26,7 +26,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
             <div :if={@interview} class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">採用候補者</h3>
+                  <h3 class="font-bold text-base">候補者</h3>
                   <.live_component
                     id="user_params_for_interview"
                     prefix="interview"
@@ -42,7 +42,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
               </div>
           <!-- Start 面談調整内容 -->
             <div class="w-[493px]">
-              <h3 class="font-bold text-xl">面談調整内容</h3>
+              <h3 class="font-bold text-xl">調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">
@@ -57,12 +57,12 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                       </span>
                     </dd>
                     <dt class="font-bold w-[98px] flex items-center mb-10">
-                      依頼者
+                      面談依頼者
                     </dt>
                     <dd class="w-[280px] mb-10">
                       なし
                     </dd>
-                    <dt class="font-bold w-[98px] mb-10">面談参加者</dt>
+                    <dt class="font-bold w-[98px] mb-10">同席候補者</dt>
                     <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
                       <%= for member <- @interview.interview_members do %>
@@ -84,7 +84,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                     <%= @no_answer_error %>
                     </p>
                     <dt class="font-bold w-[98px] flex mt-16">
-                      <label for="point" class="block pr-1">採用候補者の推しポイント<br />注意点</label>
+                      <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
                     <dd class="w-[280px] mt-16">
                     <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full break-words">
@@ -103,14 +103,14 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :dismiss_interview})}
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
-                    面談キャンセル
+                    面談をキャンセル
                   </button>
 
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :consume_interview})}
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
-                    面談チャット開始
+                    候補者とチャット
                   </button>
                 </div>
             </div><!-- End 面談調整内容 -->

@@ -25,11 +25,12 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
             <div class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">採用候補者</h3>
+                  <h3 class="font-bold text-base">候補者</h3>
                   <.live_component
                     id="user_params"
                     prefix="interview"
                     search={false}
+                    anon={true}
                     module={BrightWeb.SearchLive.SearchResultsComponent}
                     current_user={@current_user}
                     result={@candidates_user}
@@ -39,7 +40,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
                 </div>
 
                 <div class="mt-8">
-                  <h3 class="font-bold text-base">面談調整依頼先<span class="font-normal">を追加</span></h3>
+                  <h3 class="font-bold text-base">同席候補者<span class="font-normal">を追加</span></h3>
                   <.live_component
                     id="recruit_card"
                     module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
@@ -52,7 +53,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
               </div>
           <!-- Start 面談調整内容 -->
             <div class="w-[493px]">
-              <h3 class="font-bold text-xl">面談調整内容</h3>
+              <h3 class="font-bold text-xl">調整内容</h3>
               <.form
                 for={@interview_form}
                 id="interview_form"
@@ -65,13 +66,13 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
                     <dt
                       class="font-bold w-[98px] flex items-center mb-10"
                     >
-                      依頼者
+                      面談依頼者
                     </dt>
                     <dd class="w-[280px] mb-10">
                       なし
                     </dd>
 
-                    <dt class="font-bold w-[98px] mb-10">面談参加<br>候補</dt>
+                    <dt class="font-bold w-[98px] mb-10">同席候補者</dt>
                     <dd class="w-[280px]">
                       <ul class="flex flex-wrap gap-y-1">
                       <%= for user <- @users do %>
@@ -85,7 +86,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewComponent do
                       </ul>
                     </dd>
                     <dt class="font-bold w-[98px] flex mt-16">
-                      <label for="point" class="block pr-1">採用候補者の推しポイント・注意点</label>
+                      <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
                     <dd class="w-[280px] mt-16">
                     <BrightCore.input

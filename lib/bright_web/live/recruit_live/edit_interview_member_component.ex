@@ -22,10 +22,11 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
             <div :if={@interview_member} class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">採用候補者</h3>
+                  <h3 class="font-bold text-base">候補者</h3>
                   <.live_component
                     id="user_params_for_interview"
                     prefix="interview"
+                    anon={true}
                     search={false}
                     module={BrightWeb.SearchLive.SearchResultsComponent}
                     current_user={@current_user}
@@ -37,13 +38,13 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
               </div>
               <!-- Start 面談調整内容 -->
               <div class="w-[493px]">
-                <h3 class="font-bold text-xl">面談調整内容</h3>
+                <h3 class="font-bold text-xl">調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">
-                        面談名
-                      </dt>
-                      <dd class="w-[280px] mb-10 break-words">
+                      面談名
+                    </dt>
+                    <dd class="w-[280px] mb-10 break-words">
                         <span><%= if @interview_member.interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: @interview_member.interview.skill_panel_name %></span>
                         <br />
                         <span class="text-brightGray-300">
@@ -51,14 +52,21 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                         希望年収:<%= @interview_member.interview.desired_income %>
                         </span>
                       </dd>
+                    <dt class="font-bold w-[98px] flex items-center mb-10">
+                      面談依頼者
+                    </dt>
+                    <dd class="w-[280px] mb-10">
+                      なし
+                    </dd>
+
                     <dt class="font-bold w-[98px] flex">
-                      <label for="point" class="block pr-1">採用候補者の推しポイント<br />注意点</label>
+                      <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
                     <dd class="w-[280px] break-words">
                     <%= @interview_member.interview.comment %>
                     </dd>
                     <dt class="font-bold w-[98px] flex mt-8" >
-                      <label for="point" class="block pr-1">面談参加の<br />意思確認</label>
+                      <label for="point" class="block pr-1">参加の<br />意思確認</label>
                     </dt>
                     <dd class="w-[280px] mt-8">
                       <label class="block">
@@ -66,21 +74,22 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :wants})}
                         >
-                        <span class="align-[2px]">参加する</span>
+                        <span class="align-[2px]">同席したい</span>
                       </label>
                       <label class="block">
                         <input
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :keep})}
                         >
-                        <span class="align-[2px]">日程次第</span>
+                        <% "todo 採用候補者についか" %>
+                        <span class="align-[2px]">今は同席しないが候補者をストック</span>
                       </label>
                       <label class="block">
                         <input
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :not_wants})}
                         >
-                        <span class="align-[2px]">参加しない</span>
+                        <span class="align-[2px]">同席を希望しない</span>
                       </label>
                     </dd>
                   </dl>

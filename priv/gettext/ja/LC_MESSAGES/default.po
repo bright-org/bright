@@ -25,16 +25,16 @@ msgid "close"
 msgstr ""
 
 msgid "waiting_decision"
-msgstr "面談決定待ち"
+msgstr "面談調整中"
 
 msgid "consume_interview"
-msgstr "面談決定"
+msgstr "面談確定待ち"
 
 msgid "dismiss_interview"
 msgstr "面談却下"
 
 msgid "ongoing_interview"
-msgstr "面談中"
+msgstr "面談確定"
 
 msgid "complete_interview"
 msgstr "面談完了"

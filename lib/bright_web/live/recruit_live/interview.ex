@@ -11,7 +11,7 @@ defmodule BrightWeb.RecruitLive.Interview do
     ~H"""
     <div id="interview_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-        <h4 class="text-start">面談調整</h4>
+        <h4 class="text-start">面談調整の状況</h4>
         <li :if={Enum.count(@interviews) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
             調整中の面談はありません
@@ -53,10 +53,10 @@ defmodule BrightWeb.RecruitLive.Interview do
     <div id="interview_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
 
-    <h4 class="text-start">面談調整依頼</h4>
+    <h4 class="text-start">面談同席依頼</h4>
         <li :if={Enum.count(@interview_members) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
-            面談調整の依頼はありません
+            面談同席の依頼はありません
           </div>
         </li>
         <%= for member <- @interview_members do %>
