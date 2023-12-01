@@ -147,7 +147,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-placement="bottom"
     >
       <.action_button class="dropdownTrigger">
-        <span>カスタムグループと比較</span>
+        <span>カスタムグループ追加・比較</span>
       </.action_button>
       <div
         class="dropdownTarget z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
