@@ -5,7 +5,8 @@ defmodule Bright.Chats do
 
   import Ecto.Query, warn: false
   alias Bright.Repo
-  alias Bright.Accounts.UserNotifier
+  alias Bright.Accounts.{UserNotifier, User}
+  alias Bright.UserProfiles.UserProfile
   alias Bright.Chats.Chat
   alias Bright.Chats.ChatUser
   alias Bright.Chats.ChatMessage
@@ -31,9 +32,11 @@ defmodule Bright.Chats do
       on: m.user_id == ^user_id and m.chat_id == c.id,
       join: i in Interview,
       on: i.id == c.relation_id and i.status in [:consume_interview, :ongoing_interview],
+      join: p in UserProfile,
+      on: p.user_id == i.candidates_user_id,
       where: c.relation_type == "recruit",
       order_by: [desc: :updated_at],
-      select: %{c | interview: i}
+      select: %{c | interview: %{i | candidates_user_icon: p.icon_file_path}}
     )
     |> Repo.all()
   end
@@ -62,7 +65,14 @@ defmodule Bright.Chats do
       preload: [:messages, :users],
       join: i in Interview,
       on: i.id == c.relation_id and i.status in [:consume_interview, :ongoing_interview],
-      select: %{c | interview: i}
+      join: u in User,
+      on: u.id == i.candidates_user_id,
+      join: p in UserProfile,
+      on: p.user_id == i.candidates_user_id,
+      select: %{
+        c
+        | interview: %{i | candidates_user_name: u.name, candidates_user_icon: p.icon_file_path}
+      }
     )
     |> Repo.one!()
   end
