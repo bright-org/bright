@@ -116,6 +116,12 @@ defmodule Bright.Chats do
     end
   end
 
+  def get_chat_by_interview_id(interview_id) do
+    Chat
+    |> where([c], c.relation_type == "recruit" and c.relation_id == ^interview_id)
+    |> Repo.one()
+  end
+
   @doc """
   Creates a chat.
 
