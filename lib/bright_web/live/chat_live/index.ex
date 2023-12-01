@@ -85,26 +85,39 @@ defmodule BrightWeb.ChatLive.Index do
 
               <% else %>
               <div class="flex justify-start mb-4">
-                <%= if @chat.interview.status == :ongoing_interview do %>
-                  <div class="flex flex-col justify-end">
+                <%= if @chat.owner_user_id == @current_user.id do %>
+                  <%= if @chat.interview.status == :ongoing_interview do %>
+                    <div class="flex flex-col justify-end">
+                      <img
+                        src={UserProfiles.icon_url(@chat.interview.candidates_user_icon)}
+                        class="object-cover h-10 w-10 rounded-full mt-4"
+                        alt=""
+                      />
+                      <p class="w-24 break-words"><%= @chat.interview.candidates_user_name %></p>
+                    </div>
+                  <% else %>
                     <img
-                      src={UserProfiles.icon_url(@chat.interview.candidates_user_icon)}
+                      src={UserProfiles.icon_url(nil)}
                       class="object-cover h-10 w-10 rounded-full mt-4"
                       alt=""
                     />
-                    <p class="w-24 break-words"><%= @chat.interview.candidates_user_name %></p>
-                  </div>
+                  <% end %>
+
                 <% else %>
-                  <img
-                    src={UserProfiles.icon_url(nil)}
-                    class="object-cover h-10 w-10 rounded-full mt-4"
-                    alt=""
-                  />
-                <% end %>
-                  <div class="text-xl ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
-                  <%= nl_to_br(message.text) %>
+                  <div class="flex flex-col justify-end">
+                    <img
+                      src={UserProfiles.icon_url(@chat.interview.recruiter_user_icon)}
+                      class="object-cover h-10 w-10 rounded-full mt-4"
+                      alt=""
+                    />
+                    <p class="w-24 break-words"><%= @chat.interview.recruiter_user_name %></p>
                   </div>
+                <% end %>
+
+                <div class="text-xl ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
+                <%= nl_to_br(message.text) %>
                 </div>
+              </div>
               <% end %>
             <% end %>
           <% end %>
@@ -163,10 +176,12 @@ defmodule BrightWeb.ChatLive.Index do
               class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full"
             >
               <%= if @chat.interview.status == :consume_interview do %>
+
                 <button
                   class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
                   type="button"
                   phx-click={JS.push("decide_interview", value: %{id: @chat.relation_id})}
+                  data-confirm="面談を決定し、匿名を解除しますか？"
                 >
                   面談決定
                 </button>
@@ -259,8 +274,14 @@ defmodule BrightWeb.ChatLive.Index do
     Recruits.get_interview!(interview_id)
     |> Recruits.update_interview(%{status: :ongoing_interview})
 
+    Recruits.send_interview_start_notification_mails(interview_id)
+
     chat = Chats.get_chat_with_messages_and_interview!(chat.id, user.id)
-    {:noreply, assign(socket, :chat, chat)}
+
+    socket
+    |> assign(:chat, chat)
+    |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> then(&{:noreply, &1})
   end
 
   def handle_event("cancel_interview", %{"id" => interview_id}, socket) do

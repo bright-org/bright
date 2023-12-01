@@ -202,4 +202,21 @@ defmodule Bright.Recruits do
       acceptance_interview_url_fun.(interview_member.id)
     )
   end
+
+  def send_interview_start_notification_mails(interview_id) do
+    interview =
+      Interview
+      |> preload([:candidates_user, :recruiter_user])
+      |> Repo.get!(interview_id)
+
+    UserNotifier.deliver_start_interview_to_candidates_user(
+      interview.recruiter_user,
+      interview.candidates_user
+    )
+
+    UserNotifier.deliver_start_interview_to_recruiter(
+      interview.recruiter_user,
+      interview.candidates_user
+    )
+  end
 end
