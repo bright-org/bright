@@ -6,6 +6,8 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Recruits
   alias BrightWeb.CardLive.CardListComponents
 
+  import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -176,12 +178,10 @@ defmodule BrightWeb.ChatLive.Index do
               class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full"
             >
               <%= if @chat.interview.status == :consume_interview do %>
-
                 <button
                   class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
                   type="button"
-                  phx-click={JS.push("decide_interview", value: %{id: @chat.relation_id})}
-                  data-confirm="面談を決定し、匿名を解除しますか？"
+                  phx-click="open_confirm_interview"
                 >
                   面談決定
                 </button>
@@ -205,6 +205,19 @@ defmodule BrightWeb.ChatLive.Index do
           </form>
         </div>
       </div>
+
+      <.bright_modal :if={@chat && @open_confirm_interview} id="interview-confirm-modal" show on_cancel={JS.patch(~p"/recruits/chats/#{@chat.id}")}>
+      <.live_component
+        module={BrightWeb.RecruitLive.ConfirmInterviewComponent}
+        id="interview_member_modal"
+        title={@page_title}
+        action={@live_action}
+        interview_id={@chat.relation_id}
+        current_user={@current_user}
+        patch={~p"/recruits/chats/#{@chat.id}"}
+      />
+    </.bright_modal>
+
     </div>
     """
   end
@@ -212,6 +225,7 @@ defmodule BrightWeb.ChatLive.Index do
   @impl true
   def mount(_params, _session, %{assigns: %{current_user: user}} = socket) do
     socket
+    |> assign(:open_confirm_interview, false)
     |> assign(:sender_icon_path, UserProfiles.icon_url(user.user_profile.icon_file_path))
     |> then(&{:ok, &1})
   end
@@ -266,22 +280,8 @@ defmodule BrightWeb.ChatLive.Index do
     end
   end
 
-  def handle_event(
-        "decide_interview",
-        %{"id" => interview_id},
-        %{assigns: %{chat: chat, current_user: user}} = socket
-      ) do
-    Recruits.get_interview!(interview_id)
-    |> Recruits.update_interview(%{status: :ongoing_interview})
-
-    Recruits.send_interview_start_notification_mails(interview_id)
-
-    chat = Chats.get_chat_with_messages_and_interview!(chat.id, user.id)
-
-    socket
-    |> assign(:chat, chat)
-    |> assign(:chats, Chats.list_chats(user.id, :recruit))
-    |> then(&{:noreply, &1})
+  def handle_event("open_confirm_interview", _params, socket) do
+    {:noreply, assign(socket, :open_confirm_interview, true)}
   end
 
   def handle_event("cancel_interview", %{"id" => interview_id}, socket) do
