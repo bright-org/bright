@@ -3,6 +3,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
   use BrightWeb, :live_component
 
   alias Bright.UserSearches
+  alias Bright.RecruitmentStockUsers
   alias Bright.Recruits.InterviewMember
 
   @impl true
@@ -81,7 +82,6 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
                           type="radio" name="interview" class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :keep})}
                         >
-                        <% "todo 採用候補者についか" %>
                         <span class="align-[2px]">今は同席しないが候補者をストック</span>
                       </label>
                       <label class="block">
@@ -153,6 +153,21 @@ defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
   @impl true
   def handle_event("checked", %{"decision" => decision}, socket) do
     {:noreply, assign(socket, :decision, decision)}
+  end
+
+  def handle_event("submit", _params, %{assigns: %{decision: "keep"} = assigns} = socket) do
+    interview = assigns.interview_member.interview
+
+    %{
+      recruiter_id: assigns.interview_member.user_id,
+      user_id: interview.candidates_user_id,
+      skill_panel: interview.skill_panel_name,
+      desired_income: interview.desired_income
+    }
+    |> RecruitmentStockUsers.create_recruitment_stock_user()
+
+    Recruits.update_interview_member(assigns.interview_member, %{decision: :keep})
+    {:noreply, push_navigate(socket, to: ~p"/recruits/interviews")}
   end
 
   def handle_event("submit", _params, %{assigns: assigns} = socket) do

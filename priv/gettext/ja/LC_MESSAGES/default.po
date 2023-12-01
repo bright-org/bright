@@ -49,4 +49,4 @@ msgid "not_wants"
 msgstr "参加しない"
 
 msgid  "keep"
-msgstr "日程次第"
+msgstr "今は同席しない"
