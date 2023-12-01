@@ -327,8 +327,22 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   def handle_event(
         "previous_button_click",
         _params,
-        %{assigns: %{page: page, selected_tab: tab_name, display_user: user}} = socket
+        %{assigns: %{display_team: team, display_user: user}} = socket
       ) do
+    %{page: page, selected_tab: tab_name} = socket.assigns
+    page = if page - 1 < 1, do: 1, else: page - 1
+
+    socket
+    |> assign_paginate_team(team, user, tab_name, page)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "previous_button_click",
+        _params,
+        %{assigns: %{display_user: user}} = socket
+      ) do
+    %{page: page, selected_tab: tab_name} = socket.assigns
     page = if page - 1 < 1, do: 1, else: page - 1
 
     socket
@@ -339,15 +353,22 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   def handle_event(
         "next_button_click",
         _params,
-        %{
-          assigns: %{
-            page: page,
-            total_pages: total_pages,
-            selected_tab: tab_name,
-            display_user: user
-          }
-        } = socket
+        %{assigns: %{display_team: team, display_user: user}} = socket
       ) do
+    %{page: page, total_pages: total_pages, selected_tab: tab_name} = socket.assigns
+    page = if page + 1 > total_pages, do: total_pages, else: page + 1
+
+    socket
+    |> assign_paginate_team(team, user, tab_name, page)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event(
+        "next_button_click",
+        _params,
+        %{assigns: %{display_user: user}} = socket
+      ) do
+    %{page: page, total_pages: total_pages, selected_tab: tab_name} = socket.assigns
     page = if page + 1 > total_pages, do: total_pages, else: page + 1
 
     socket
