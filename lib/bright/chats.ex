@@ -65,13 +65,23 @@ defmodule Bright.Chats do
       preload: [:messages, :users],
       join: i in Interview,
       on: i.id == c.relation_id and i.status in [:consume_interview, :ongoing_interview],
-      join: u in User,
-      on: u.id == i.candidates_user_id,
-      join: p in UserProfile,
-      on: p.user_id == i.candidates_user_id,
+      join: cu in User,
+      on: cu.id == i.candidates_user_id,
+      join: cp in UserProfile,
+      on: cp.user_id == i.candidates_user_id,
+      join: ru in User,
+      on: ru.id == i.recruiter_user_id,
+      join: rp in UserProfile,
+      on: rp.user_id == i.recruiter_user_id,
       select: %{
         c
-        | interview: %{i | candidates_user_name: u.name, candidates_user_icon: p.icon_file_path}
+        | interview: %{
+            i
+            | candidates_user_name: cu.name,
+              candidates_user_icon: cp.icon_file_path,
+              recruiter_user_name: ru.name,
+              recruiter_user_icon: rp.icon_file_path
+          }
       }
     )
     |> Repo.one!()

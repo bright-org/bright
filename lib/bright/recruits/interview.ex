@@ -27,6 +27,8 @@ defmodule Bright.Recruits.Interview do
       ],
       default: :waiting_decision
 
+    field :recruiter_user_name, :string, virtual: true
+    field :recruiter_user_icon, :string, virtual: true
     field :candidates_user_name, :string, virtual: true
     field :candidates_user_icon, :string, virtual: true
 
