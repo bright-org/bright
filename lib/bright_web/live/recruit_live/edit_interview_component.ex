@@ -31,6 +31,7 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                     id="user_params_for_interview"
                     prefix="interview"
                     search={false}
+                    anon={!(@interview.status == :ongoing_interview)}
                     module={BrightWeb.SearchLive.SearchResultsComponent}
                     current_user={@current_user}
                     result={@candidates_user}
@@ -48,23 +49,19 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
                       面談名
                     </dt>
                     <dd class="w-[280px] mb-10 break-words">
-                    <span><%= if @interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: @interview.skill_panel_name %></span>
-                <br />
-                <span class="text-brightGray-300">
-                  <%= NaiveDateTime.to_date(@interview.inserted_at) %>
-                  希望年収:<%= @interview.desired_income %>
-                </span>
-
+                      <span><%= if @interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: @interview.skill_panel_name %></span>
+                      <br />
+                      <span class="text-brightGray-300">
+                        <%= NaiveDateTime.to_date(@interview.inserted_at) %>
+                        希望年収:<%= @interview.desired_income %>
+                      </span>
                     </dd>
-                    <dt
-                      class="font-bold w-[98px] flex items-center mb-10"
-                    >
+                    <dt class="font-bold w-[98px] flex items-center mb-10">
                       依頼者
                     </dt>
                     <dd class="w-[280px] mb-10">
                       なし
                     </dd>
-
                     <dt class="font-bold w-[98px] mb-10">面談参加者</dt>
                     <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
