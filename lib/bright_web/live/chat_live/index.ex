@@ -3,13 +3,14 @@ defmodule BrightWeb.ChatLive.Index do
 
   alias Bright.Chats
   alias Bright.UserProfiles
+  alias Bright.Recruits
   alias BrightWeb.CardLive.CardListComponents
 
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex flex flex-row justify-between bg-white ml-1 h-[calc(100vh-56px)]">
-      <div class={"flex flex-col w-screen lg:w-[640px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
+    <div class="flex bg-white ml-1 h-[calc(100vh-56px)]">
+      <div class={"flex flex-col w-screen lg:w-[560px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
             チャット対象者がいません<br />
@@ -23,8 +24,9 @@ defmodule BrightWeb.ChatLive.Index do
               class={"flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
               patch={~p"/recruits/chats/#{chat.id}"}
             >
+              <% path = if chat.interview.status == :ongoing_interview, do: chat.interview.candidates_user_icon, else: nil %>
               <img
-                src={UserProfiles.icon_url(nil)}
+                src={UserProfiles.icon_url(path)}
                 class="object-cover h-10 w-10 rounded-full mr-2"
                 alt=""
               />
@@ -46,11 +48,11 @@ defmodule BrightWeb.ChatLive.Index do
         <% end %>
       </div>
       <!-- message -->
-      <div
-        class="w-full px-5 flex flex-col justify-between overflow-y-auto"
-        :if={@chat}
-      >
-        <div class="flex flex-col mt-5">
+      <div class="w-full px-5 flex flex-col justify-between overflow-y-auto">
+        <div
+          class="flex flex-col mt-5"
+          :if={@chat}
+        >
           <p class="lg:ml-12 text-xl mb-2">
           ※メールアドレスや電話番号等の個人情報は送らないでください
           </p>
@@ -72,22 +74,33 @@ defmodule BrightWeb.ChatLive.Index do
                   <%= nl_to_br(message.text) %>
                 </div>
                 <div>
-                <img
-                  src={@sender_icon_path}
-                  class="object-cover h-10 w-10 rounded-full mt-4"
-                  alt=""
-                />
-                <span><%= @current_user.name %></span>
+                  <img
+                    src={@sender_icon_path}
+                    class="object-cover h-10 w-10 rounded-full mt-4"
+                    alt=""
+                  />
+                  <span><%= @current_user.name %></span>
                 </div>
               </div>
 
               <% else %>
               <div class="flex justify-start mb-4">
-                <img
-                    src={@member_icon_path}
+                <%= if @chat.interview.status == :ongoing_interview do %>
+                  <div class="flex flex-col justify-end">
+                    <img
+                      src={UserProfiles.icon_url(@chat.interview.candidates_user_icon)}
+                      class="object-cover h-10 w-10 rounded-full mt-4"
+                      alt=""
+                    />
+                    <p class="w-24 break-words"><%= @chat.interview.candidates_user_name %></p>
+                  </div>
+                <% else %>
+                  <img
+                    src={UserProfiles.icon_url(nil)}
                     class="object-cover h-10 w-10 rounded-full mt-4"
                     alt=""
                   />
+                <% end %>
                   <div class="text-xl ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
                   <%= nl_to_br(message.text) %>
                   </div>
@@ -149,14 +162,25 @@ defmodule BrightWeb.ChatLive.Index do
               :if={@chat.owner_user_id == @current_user.id}
               class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full"
             >
-              <button class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56">
-                採用調整
-              </button>
+              <%= if @chat.interview.status == :consume_interview do %>
+                <button
+                  class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
+                  type="button"
+                  phx-click={JS.push("decide_interview", value: %{id: @chat.relation_id})}
+                >
+                  面談決定
+                </button>
+              <% else %>
+                <button class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56">
+                  採用調整
+                </button>
+              <% end %>
 
               <button
                 id="interviewDropdownButton"
-                class="text-sm font-bold px-2 py-2 rounded border bg-white  w-56"
+                class="text-sm font-bold px-2 py-2 rounded border bg-white w-56"
                 type="button"
+                phx-click={JS.push("cancel_interview", value: %{id: @chat.relation_id})}
               >
                 検討中断<br />（チャットに通知されません）
               </button>
@@ -174,7 +198,6 @@ defmodule BrightWeb.ChatLive.Index do
   def mount(_params, _session, %{assigns: %{current_user: user}} = socket) do
     socket
     |> assign(:sender_icon_path, UserProfiles.icon_url(user.user_profile.icon_file_path))
-    |> assign(:member_icon_path, UserProfiles.icon_url(nil))
     |> then(&{:ok, &1})
   end
 
@@ -226,6 +249,25 @@ defmodule BrightWeb.ChatLive.Index do
       {:error, %Ecto.Changeset{}} ->
         {:noreply, socket}
     end
+  end
+
+  def handle_event(
+        "decide_interview",
+        %{"id" => interview_id},
+        %{assigns: %{chat: chat, current_user: user}} = socket
+      ) do
+    Recruits.get_interview!(interview_id)
+    |> Recruits.update_interview(%{status: :ongoing_interview})
+
+    chat = Chats.get_chat_with_messages_and_interview!(chat.id, user.id)
+    {:noreply, assign(socket, :chat, chat)}
+  end
+
+  def handle_event("cancel_interview", %{"id" => interview_id}, socket) do
+    Recruits.get_interview!(interview_id)
+    |> Recruits.update_interview(%{status: :completed_interview})
+
+    {:noreply, push_navigate(socket, to: ~p"/recruits/chats")}
   end
 
   @impl true
