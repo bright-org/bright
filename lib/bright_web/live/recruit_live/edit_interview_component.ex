@@ -175,7 +175,9 @@ defmodule BrightWeb.RecruitLive.EditInterviewComponent do
         {:noreply, assign(socket, :no_answer_error, "面談決定を最低1名、回答していただく必要があります")}
 
       false ->
-        Recruits.update_interview(interview, %{status: "consume_interview"})
+        if interview.status != :ongoing_interview do
+          Recruits.update_interview(interview, %{status: "consume_interview"})
+        end
 
         chat =
           Chats.get_or_create_chat(
