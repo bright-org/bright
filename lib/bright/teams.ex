@@ -13,8 +13,7 @@ defmodule Bright.Teams do
   # 招待メール関連定数
   @hash_algorithm :sha256
   @rand_size 32
-  # TODO 要件調整 招待メールの期限1日
-  @invitation_validity_ago 1
+  @invitation_validity_ago 4
 
   @doc """
   Returns the list of teams.
@@ -1062,15 +1061,6 @@ defmodule Bright.Teams do
       |> Repo.all()
 
     count > 0
-  end
-
-  def raise_if_not_ulid(team_id) do
-    # チームIDの指定が不正だった場合は404で返す。
-    Ecto.ULID.cast(team_id)
-    |> case do
-      {:ok, _} -> nil
-      _ -> raise Ecto.NoResultsError, queryable: "Bright.Teams.Team"
-    end
   end
 
   @doc """

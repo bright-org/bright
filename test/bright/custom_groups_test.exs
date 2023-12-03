@@ -47,8 +47,8 @@ defmodule Bright.CustomGroupsTest do
       # user_3 チームメンバー外
       insert(:team,
         member_users: [
-          build(:team_member_users, user_id: user.id),
-          build(:team_member_users, user_id: user_2.id)
+          build(:team_member_users, user: user),
+          build(:team_member_users, user: user_2)
         ]
       )
 
@@ -78,8 +78,8 @@ defmodule Bright.CustomGroupsTest do
       # user_3 チームメンバー外
       insert(:team,
         member_users: [
-          build(:team_member_users, user_id: user.id),
-          build(:team_member_users, user_id: user_2.id)
+          build(:team_member_users, user: user),
+          build(:team_member_users, user: user_2)
         ]
       )
 

@@ -92,11 +92,11 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
       <% # カスタムグループメンバーの更新 %>
       <li :if={@custom_group}>
         <div
-          class="px-4 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
+          class="px-1 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
           phx-click="assign"
           phx-target={@myself}
         >
-          表示メンバーでカスタムグループ更新
+          現在のカスタムグループを表示メンバーで更新
         </div>
       </li>
 
@@ -112,7 +112,11 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
             class="dropdownTrigger w-full flex items-center justify-between block px-1 py-3 hover:bg-brightGray-50 text-base hover:cursor-pointer"
             type="button"
           >
-            比較するカスタムグループの選択
+            <%= if @custom_group do %>
+              現在のカスタムグループを切り替え
+            <% else %>
+              比較するカスタムグループの選択
+            <% end %>
             <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
             </svg>

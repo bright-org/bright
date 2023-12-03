@@ -16,7 +16,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   @tabs [
     # 気になる人はβリリース対象外のため非表示
     # {"intriguing", "気になる人"},
-    {"team", "チーム"},
+    {"team", "所属チーム"},
     {"custom_group", "カスタムグループ"},
     {"candidate_for_employment", "採用候補者"}
   ]
@@ -302,10 +302,11 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     %{inner_selected_tab: custom_group_id, current_user: current_user} = socket.assigns
 
     custom_group =
-      CustomGroups.get_custom_group_by(
-        id: custom_group_id,
-        user_id: current_user.id
-      )
+      custom_group_id &&
+        CustomGroups.get_custom_group_by(
+          id: custom_group_id,
+          user_id: current_user.id
+        )
 
     if custom_group do
       member_users_page =

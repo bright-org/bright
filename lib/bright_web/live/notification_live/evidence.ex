@@ -92,8 +92,8 @@ defmodule BrightWeb.NotificationLive.Evidence do
       SkillEvidences.get_skill_evidence!(skill_evidence_id)
       |> Bright.Repo.preload(:user)
 
-    # 現在も閲覧可能な学習メモか確認
-    SkillEvidences.can_read_skill_evidence?(skill_evidence, socket.assigns.current_user)
+    # 現在も対応可能な学習メモか確認
+    SkillEvidences.can_write_skill_evidence?(skill_evidence, socket.assigns.current_user)
     |> if do
       skill = SkillUnits.get_skill!(skill_evidence.skill_id)
 

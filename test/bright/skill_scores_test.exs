@@ -432,7 +432,7 @@ defmodule Bright.SkillScoresTest do
       [skill_class_1, skill_class_2, skill_class_3] =
         Enum.map(1..3, &insert(:skill_class, skill_panel: skill_panel, class: &1))
 
-      # スキル1: スキルユニットから2x2x2で構造定義
+      # クラス1: スキルユニットから2x2x2で構造定義
       [skill_unit_1, skill_unit_2] =
         Enum.map(1..2, fn position ->
           skill_unit =
@@ -445,7 +445,7 @@ defmodule Bright.SkillScoresTest do
           Map.put(skill_unit, :skill_categories, skill_categories)
         end)
 
-      # スキル2: スキルユニットから1x1x1で構造定義
+      # クラス2: スキルユニットから1x1x1で構造定義
       skill_unit_c2 =
         insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_2.id, position: 1}])
         |> then(fn skill_unit ->
@@ -565,17 +565,16 @@ defmodule Bright.SkillScoresTest do
       assert %{percentage: 80.0} = skill_unit_1_score
     end
 
-    # # TODO: #619対応後に実施予定
-    # @tag batch: "skill_moved_to_class2"
-    # test "updates skill_unit_scores.percentage case skill moved to class2", %{
-    #   skill_class_2: skill_class_2
-    # } do
-    #   SkillScores.re_aggregate_scores([skill_class_2])
-    #
-    #   # (0 + 1) / (1 + 2)
-    #   [skill_unit_score] = list_skill_unit_scores(skill_class_2)
-    #   assert 33.3 == Float.round(skill_unit_score.percentage, 1)
-    # end
+    @tag batch: "skill_moved_to_class2"
+    test "updates skill_unit_scores.percentage case skill moved to class2", %{
+      skill_class_2: skill_class_2
+    } do
+      SkillScores.re_aggregate_scores([skill_class_2])
+
+      # (0 + 1) / (1 + 1)
+      [skill_unit_score] = list_skill_unit_scores(skill_class_2)
+      assert 50.0 == Float.round(skill_unit_score.percentage, 1)
+    end
 
     @tag batch: "skill_moved_to_class2"
     test "updates skill_class_scores.percentage/level case skill moved to class2", %{

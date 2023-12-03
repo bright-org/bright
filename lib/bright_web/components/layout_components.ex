@@ -97,7 +97,7 @@ defmodule BrightWeb.LayoutComponents do
         <%= @page_title %><%= @page_sub_title %>
       </h4>
       <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
-        <div class="flex justify-between">
+        <div class="flex justify-between gap-2">
           <.plan_upgrade_button />
           <.contact_customer_success_button />
         </div>

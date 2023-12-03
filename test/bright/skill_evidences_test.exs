@@ -246,6 +246,7 @@ defmodule Bright.SkillEvidencesTest do
       skill_evidence: skill_evidence,
       breadcrumb: breadcrumb
     } do
+      # user_2, user_3はチームで、user_4のみ部外者を想定
       [user_2, user_3, user_4] = insert_list(3, :user)
       join_team(user, user_2)
       join_team(user, user_3)
@@ -268,6 +269,28 @@ defmodule Bright.SkillEvidencesTest do
 
       # チーム外ユーザーへ作成されていない確認
       refute Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_4.id)
+    end
+
+    test "creates notification_evidences to supporter members", %{
+      user: user,
+      skill_evidence: skill_evidence
+    } do
+      user_2 = insert(:user)
+      relate_user_and_supporter(user, user_2)
+
+      {1, _} = SkillEvidences.help(skill_evidence, user)
+      assert Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_2.id)
+    end
+
+    test "creates notification_evidences to supportee members", %{
+      user: user,
+      skill_evidence: skill_evidence
+    } do
+      user_2 = insert(:user)
+      relate_user_and_supporter(user_2, user)
+
+      {1, _} = SkillEvidences.help(skill_evidence, user)
+      assert Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_2.id)
     end
   end
 
@@ -305,41 +328,6 @@ defmodule Bright.SkillEvidencesTest do
     end
   end
 
-  describe "can_read_skill_evidence?/2" do
-    setup do
-      skill_unit = insert(:skill_unit)
-      skill_category = insert(:skill_category, skill_unit: skill_unit)
-      skill = insert(:skill, skill_category: skill_category)
-
-      %{skill: skill}
-    end
-
-    test "returns true if the user is same as skill_evidence owner", %{skill: skill} do
-      user = insert(:user)
-      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
-      assert true == SkillEvidences.can_read_skill_evidence?(skill_evidence, user)
-    end
-
-    test "returns true if the user is in team members", %{skill: skill} do
-      user = insert(:user)
-      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
-      user_2 = insert(:user)
-      team = insert(:team)
-      insert(:team_member_users, team: team, user: user)
-      insert(:team_member_users, team: team, user: user_2)
-
-      assert true == SkillEvidences.can_read_skill_evidence?(skill_evidence, user_2)
-    end
-
-    test "returns false if the user is unknown", %{skill: skill} do
-      user = insert(:user)
-      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
-      user_2 = insert(:user)
-
-      assert false == SkillEvidences.can_read_skill_evidence?(skill_evidence, user_2)
-    end
-  end
-
   describe "can_write_skill_evidence?/2" do
     setup do
       skill_unit = insert(:skill_unit)
@@ -362,6 +350,28 @@ defmodule Bright.SkillEvidencesTest do
       team = insert(:team)
       insert(:team_member_users, team: team, user: user)
       insert(:team_member_users, team: team, user: user_2)
+
+      assert true == SkillEvidences.can_write_skill_evidence?(skill_evidence, user_2)
+    end
+
+    test "returns true if the user is in supportee members", %{skill: skill} do
+      user = insert(:user)
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
+
+      # userを支援するuser_2を生成
+      user_2 = insert(:user)
+      relate_user_and_supporter(user, user_2)
+
+      assert true == SkillEvidences.can_write_skill_evidence?(skill_evidence, user_2)
+    end
+
+    test "returns true if the user is in supporter members", %{skill: skill} do
+      user = insert(:user)
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
+
+      # userに支援されるuser_2を生成
+      user_2 = insert(:user)
+      relate_user_and_supporter(user_2, user)
 
       assert true == SkillEvidences.can_write_skill_evidence?(skill_evidence, user_2)
     end

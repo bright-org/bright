@@ -55,6 +55,7 @@ defmodule BrightWeb.TimelineBarComponents do
   attr :selected_date, :string, default: ""
   attr :type, :string, default: "myself", values: ["myself", "other"]
   attr :display_now, :boolean, default: false
+  attr :display_close, :boolean, default: false
   attr :target, :any, default: nil
   attr :scale, :string, default: "md"
 
@@ -63,7 +64,7 @@ defmodule BrightWeb.TimelineBarComponents do
     <div
       class={["bg-brightGray-50 rounded-full my-5 flex justify-around items-center relative w-full", layout_scale_class(@scale)]}>
       <.close_button
-       :if={@type == "other"}
+       :if={@display_close}
        id={@id}
        target={@target}
       />

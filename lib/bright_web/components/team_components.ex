@@ -41,7 +41,7 @@ defmodule BrightWeb.TeamComponents do
       phx-target={@row_on_click_target}
       phx-value-team_id={@team_params.team_id}
       phx-value-team_type={@team_params.team_type}
-      class={"text-left flex items-center text-base p-1 rounded" <> @on_hover_style}
+      class={"h-[35px] text-left flex items-center text-base p-1 rounded" <> @on_hover_style}
     >
 
     <span

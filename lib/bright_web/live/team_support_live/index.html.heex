@@ -16,7 +16,7 @@
   </div>
 </div>
 <div id="team_supporter_team__container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
-      <div class="text-sm font-medium text-center">
+      <div class="text-sm font-medium text-center w-full">
         <.tab
           id="team_supporter_team_tabs"
           tabs={@tabs}
@@ -44,7 +44,7 @@
           <%= end %>
           <%= if @card.total_entries > 0 do %>
             <%= for team_supporter_team <- @card.entries do %>
-            <ul class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full my-0.5">
+            <ul class="text-left flex relative items-center text-base hover:bg-brightGray-50 p-1 w-full my-0.5">
 
               <span>
                 <.profile_mini
@@ -57,6 +57,8 @@
                 <.team_small
                   id={team_supporter_team.supportee_team.id}
                   team_params={convert_team_params_from_team(team_supporter_team.supportee_team)}
+                  row_on_click=""
+                  on_hover_style=""
                 />
               </span>
               に対する支援依頼
@@ -77,8 +79,11 @@
                 />
                 に支援開始
               </li>
-              <li :if={@card.selected_tab == "requesting"}>
+              <li
+                :if={@card.selected_tab == "requesting"}
+              >
                 <.button class="ml-2"
+                  class="ml-2 absolute inset-y-0 right-1"
                   type="submit"
                   phx-click="show_hr_support_modal"
                   phx-value-team_supporter_team_id={team_supporter_team.id}
@@ -88,7 +93,8 @@
                 </.button>
               </li>
               <li :if={@card.selected_tab == "supporting"}>
-                <.button class="ml-2"
+                <.button
+                  class="ml-2 absolute inset-y-0 right-1"
                   type="submit"
                   phx-click="show_hr_support_modal"
                   phx-value-team_supporter_team_id={team_supporter_team.id}

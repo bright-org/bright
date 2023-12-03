@@ -142,7 +142,7 @@ defmodule BrightWeb.BrightButtonComponents do
   def contact_customer_success_button(assigns) do
     ~H"""
     <.link
-      class="w-[calc(55%-6px)] lg:ml-2 lg:w-56"
+      class="w-[calc(55%-6px)] lg:w-56"
       href="https://docs.google.com/forms/d/e/1FAIpQLScKrQbJajiE18Abh7HloDcJYTSY-HbiX280XcoHDIsfJKhpAA/viewform"
       target="_blank"
       rel="noopener noreferrer"

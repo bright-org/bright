@@ -16,6 +16,15 @@ defmodule Bright.Teams.Team do
     has_many :member_users, Bright.Teams.TeamMemberUsers, on_replace: :delete
     has_many :users, through: [:member_users, :user]
 
+    has_many :team_supporter_teams_on_supporter, Bright.Teams.TeamSupporterTeam,
+      foreign_key: :supporter_team_id
+
+    has_many :team_supporter_teams_on_supportee, Bright.Teams.TeamSupporterTeam,
+      foreign_key: :supportee_team_id
+
+    has_many :supportee_teams, through: [:team_supporter_teams_on_supporter, :supportee_team]
+    has_many :supporter_teams, through: [:team_supporter_teams_on_supportee, :supporter_team]
+
     timestamps()
   end
 

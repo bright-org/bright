@@ -235,19 +235,14 @@ defmodule BrightWeb.ProfileComponents do
   """
   attr :user_name, :string, default: ""
   attr :icon_file_path, :string, default: ""
-  attr :encrypt_user_name, :string, default: ""
-  attr :click_event, :string, default: ""
-  attr :click_target, :string, default: nil
 
   def profile_mini(assigns) do
     ~H"""
-    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-full lg:w-1/4">
-      <.profile_small_link click_event={@click_event} click_target={@click_target} user_name={@user_name} encrypt_user_name={@encrypt_user_name}>
-        <img class="inline-block h-6 w-6 rounded-full" src={@icon_file_path} />
-        <div>
-          <p class="truncate max-w-[240px]"><%= @user_name %></p>
-        </div>
-      </.profile_small_link>
+    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-full">
+      <img class="inline-block h-6 w-6 rounded-full" src={@icon_file_path} />
+      <div>
+        <p class="truncate max-w-[240px]"><%= @user_name %></p>
+      </div>
     </li>
     """
   end
