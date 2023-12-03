@@ -7,6 +7,8 @@ defmodule BrightWeb.MyTeamLive do
   import BrightWeb.TeamComponents
   import BrightWeb.MegaMenuComponents
   import BrightWeb.BrightModalComponents
+  import BrightWeb.BrightCoreComponents, only: [action_button: 1]
+
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.CustomGroups
@@ -127,26 +129,17 @@ defmodule BrightWeb.MyTeamLive do
     end
   end
 
+  def handle_event("toggle_show_hr_support_modal", _params, socket) do
+    {:noreply, assign(socket, :show_hr_support_modal, !socket.assigns.show_hr_support_modal)}
+  end
+
   def handle_info({BrightWeb.TeamLive.TeamAddUserComponent, {:add, added_users}}, socket) do
     {:noreply, assign(socket, :users, added_users)}
   end
 
-  defp deside_redirect(socket, display_team, nil, nil) do
-    socket
-    |> redirect(to: "/teams/#{display_team.id}")
-  end
-
-  defp deside_redirect(socket, display_team, skill_panel_id, nil) do
-    socket
-    |> redirect(to: "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}")
-  end
-
   defp deside_redirect(socket, display_team, skill_panel_id, skill_class_id) do
     socket
-    |> redirect(
-      to:
-        "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
-    )
+    |> redirect(to: MyTeamHelper.get_my_team_path(display_team, skill_panel_id, skill_class_id))
   end
 
   defp close(),

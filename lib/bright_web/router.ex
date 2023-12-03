@@ -250,6 +250,9 @@ defmodule BrightWeb.Router do
       live "/teams/:team_id/edit", MyTeamLive, :edit
       live "/teams/:team_id/skill_panels/:skill_panel_id", MyTeamLive, :index
 
+      live "/team_supports", TeamSupportLive.Index, :index
+      live "/team_supports/:team_supporter_team_id", TeamSupportLive.Index, :edit
+
       live "/notifications/operations", NotificationLive.Operation, :index
       live "/notifications/communities", NotificationLive.Community, :index
       live "/notifications/evidences", NotificationLive.Evidence, :index

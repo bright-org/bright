@@ -176,6 +176,15 @@ defmodule BrightWeb.CardLive.CardListComponents do
   end
 
   attr :inserted_at, :any
+  attr :nil_placeholder_word, :string, required: false
+
+  def elapsed_time(%{inserted_at: nil} = assigns) do
+    ~H"""
+    <span class="text-brightGray-300 font-bold pl-0 inline-block w-full text-sm order-1 lg:pl-4 lg:order-3 lg:w-auto">
+      <%= @nil_placeholder_word %>
+    </span>
+    """
+  end
 
   def elapsed_time(assigns) do
     {:ok, inserted_at} = DateTime.from_naive(assigns.inserted_at, "Etc/UTC")

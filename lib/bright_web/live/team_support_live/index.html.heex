@@ -1,0 +1,123 @@
+<div class="px-4 lg:px-10 pt-2 pb-4 lg:pt-4 lg:pb-8 bg-white">
+  <!-- プロフィール -->
+  <div class="flex justify-between py-6 px-2 lg:px-10 bg-white">
+    <div class="w-full lg:w-[850px] pt-4">
+      <.profile_inline
+        user_name={@current_user.name}
+        title={@current_user.user_profile.title}
+        detail={@current_user.user_profile.detail}
+        icon_file_path={UserProfiles.icon_url(@current_user.user_profile.icon_file_path)}
+        display_sns
+        twitter_url={@current_user.user_profile.twitter_url}
+        github_url={@current_user.user_profile.github_url}
+        facebook_url={@current_user.user_profile.facebook_url}
+      />
+    </div>
+  </div>
+</div>
+<div id="team_supporter_team__container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
+      <div class="text-sm font-medium text-center">
+        <.tab
+          id="team_supporter_team_tabs"
+          tabs={@tabs}
+          selected_tab={@card.selected_tab}
+          page={@card.page_params.page}
+          total_pages={@card.total_pages}
+          >
+          <%= if @card.total_entries == 0 && @card.selected_tab == "requesting" do %>
+            <ul class="flex gap-y-2.5 flex-col">
+              <li class="flex">
+                <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+                 承認待ちの支援依頼はありません
+                </div>
+              </li>
+            </ul>
+          <%= end %>
+          <%= if @card.total_entries == 0 && @card.selected_tab == "supporting" do %>
+             <ul class="flex gap-y-2.5 flex-col">
+              <li class="flex">
+                <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+                 現在支援中の支援依頼はありません
+                </div>
+              </li>
+            </ul>
+          <%= end %>
+          <%= if @card.total_entries > 0 do %>
+            <%= for team_supporter_team <- @card.entries do %>
+            <ul class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full my-0.5">
+
+              <span>
+                <.profile_mini
+                  user_name={team_supporter_team.request_from_user.name}
+                  icon_file_path={UserProfiles.icon_url(team_supporter_team.request_from_user.user_profile.icon_file_path)}
+                />
+              </span>
+              から
+              <span>
+                <.team_small
+                  id={team_supporter_team.supportee_team.id}
+                  team_params={convert_team_params_from_team(team_supporter_team.supportee_team)}
+                />
+              </span>
+              に対する支援依頼
+              <li
+                :if={@card.selected_tab == "requesting"}
+              >
+                <CardListComponents.elapsed_time
+                  inserted_at={team_supporter_team.request_datetime}
+                  nil_placeholder_word="----"
+                />
+              </li>
+              <li
+                :if={@card.selected_tab == "supporting"}
+              >
+                <CardListComponents.elapsed_time
+                  inserted_at={team_supporter_team.start_datetime}
+                  nil_placeholder_word="----"
+                />
+                に支援開始
+              </li>
+              <li :if={@card.selected_tab == "requesting"}>
+                <.button class="ml-2"
+                  type="submit"
+                  phx-click="show_hr_support_modal"
+                  phx-value-team_supporter_team_id={team_supporter_team.id}
+                  phx-value-hr_support_modal_mode="requesting"
+                >
+                  支援依頼を確認する
+                </.button>
+              </li>
+              <li :if={@card.selected_tab == "supporting"}>
+                <.button class="ml-2"
+                  type="submit"
+                  phx-click="show_hr_support_modal"
+                  phx-value-team_supporter_team_id={team_supporter_team.id}
+                  phx-value-hr_support_modal_mode="supporting"
+                >
+                  支援依頼を確認する
+                </.button>
+              </li>
+            </ul>
+            <% end %>
+          <% else %>
+            <% # 表示内容がないときの表示 %>
+          <% end %>
+        </.tab>
+      </div>
+</div>
+
+<.bright_modal
+  :if={@shown_hr_support_modal}
+  id="hr_support_request-modal"
+  show
+  on_cancel={JS.push("close_hr_support_modal")}
+>
+  <.live_component
+    module={BrightWeb.TeamSupportLiveComponent}
+    modal_mode={@hr_support_modal_mode}
+    display_team_supporter_team={@display_team_supporter_team}
+    display_user={@current_user}
+    id="hr_support_request-component"
+    redirect_path="/team_supports"
+  />
+</.bright_modal>

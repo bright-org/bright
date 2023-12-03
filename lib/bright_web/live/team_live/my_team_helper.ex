@@ -13,6 +13,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   alias Bright.SkillScores
   alias Bright.Subscriptions
   alias Bright.SkillPanels.SkillPanel
+  alias Bright.SkillPanels.SkillClass
   alias BrightWeb.SkillPanelLive.SkillPanelHelper
 
   def init_assign(params, %{assigns: %{live_action: :new, current_user: user}} = socket) do
@@ -20,11 +21,13 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
     # 直接チーム作成モーダルを起動した場合、データの取得は行わない
     socket
+    |> assign(:show_hr_support_modal, false)
     |> assign_plan(subscription)
     |> assign_page_title(nil)
     |> assign_display_type(params["type"])
     |> assign_display_skill_panel(nil)
     |> assign_display_skill_classes([])
+    |> assign_display_skill_class(nil)
     |> assign_display_team(nil)
     |> assign_current_users_team_member(nil)
     # ユーザー事に表示するスキルカードのmap作成とassign
@@ -55,11 +58,13 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
     # スキルとチームの取得結果に応じて各種assign
     socket
+    |> assign(:show_hr_support_modal, false)
     |> assign_plan(subscription)
     |> assign_page_title(display_skill_panel)
     |> assign_display_type(params["type"])
     |> assign_display_skill_panel(display_skill_panel)
     |> assign_display_skill_classes(display_skill_classes)
+    |> assign_display_skill_class(selected_skill_class)
     |> assign_display_team(display_team)
     |> assign_current_users_team_member(current_users_team_member)
     # ユーザー事に表示するスキルカードのmap作成とassign
@@ -192,6 +197,11 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign(:display_team, display_team)
   end
 
+  defp assign_display_skill_class(socket, display_skill_class) do
+    socket
+    |> assign(:display_skill_class, display_skill_class)
+  end
+
   defp assign_display_skill_cards(
          socket,
          [],
@@ -202,7 +212,6 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     # チームメンバーが取得できていない場合、スキルカードは空表示
     socket
     |> assign(:display_skill_cards, [])
-    |> assign(:select_skill_class, nil)
   end
 
   defp assign_display_skill_cards(
@@ -441,5 +450,29 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       end)
 
     List.first(sorted_skill_classes)
+  end
+
+  def get_my_team_path(nil, nil, nil) do
+    "/teams"
+  end
+
+  def get_my_team_path(display_team, %SkillPanel{} = skill_panel, %SkillClass{} = skill_class) do
+    get_my_team_path(display_team, skill_panel.id, skill_class.id)
+  end
+
+  def get_my_team_path(display_team, %SkillPanel{} = skill_panel, nil) do
+    get_my_team_path(display_team, skill_panel.id, nil)
+  end
+
+  def get_my_team_path(display_team, nil, nil) do
+    "/teams/#{display_team.id}"
+  end
+
+  def get_my_team_path(display_team, skill_panel_id, nil) do
+    "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}"
+  end
+
+  def get_my_team_path(display_team, skill_panel_id, skill_class_id) do
+    "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
   end
 end
