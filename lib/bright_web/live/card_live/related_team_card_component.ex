@@ -293,32 +293,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     end
   end
 
-  defp convert_team_params_from_team_member_users(team_member_users) do
-    team_member_users
-    |> Enum.map(fn team_member_user ->
-      %{
-        team_id: team_member_user.team.id,
-        name: team_member_user.team.name,
-        is_star: team_member_user.is_star,
-        is_admin: team_member_user.is_admin,
-        team_type: Teams.get_team_type_by_team(team_member_user.team)
-      }
-    end)
-  end
-
-  defp convert_team_params_from_teams(teams) do
-    teams
-    |> Enum.map(fn team ->
-      %{
-        team_id: team.id,
-        name: team.name,
-        is_star: nil,
-        is_admin: nil,
-        team_type: Teams.get_team_type_by_team(team)
-      }
-    end)
-  end
-
   defp convert_team_params_from_custom_groups(custom_groups) do
     custom_groups
     |> Enum.map(fn custom_group ->

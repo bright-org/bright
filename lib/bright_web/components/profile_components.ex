@@ -225,6 +225,29 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   @doc """
+  Renders a Profile mini
+
+  ## Examples
+      <.profile_mini
+        user_name="piacere"
+        icon_file_path="/images/sample/sample-image.png"
+      />
+  """
+  attr :user_name, :string, default: ""
+  attr :icon_file_path, :string, default: ""
+
+  def profile_mini(assigns) do
+    ~H"""
+    <li class="text-left flex items-center text-base p-1 rounded w-full">
+      <img class="inline-block h-6 w-6 rounded-full" src={@icon_file_path} />
+      <div>
+        <p class="pl-1 truncate max-w-[240px]"><%= @user_name %></p>
+      </div>
+    </li>
+    """
+  end
+
+  @doc """
   Renders a Profile for stock small with remove button
 
   ## Examples

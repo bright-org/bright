@@ -59,7 +59,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(assigns)
     |> assign(:modal_title, "チームを編集する（β）")
     |> assign(:submit, "チームを更新し、新規メンバーに招待メールを送る")
-    |> assign(:selected_team_type, nil)
+    |> assign(:selected_team_type, Teams.get_team_type_by_team(team))
     |> assign_team_form(Teams.change_team(team))
     |> then(&{:ok, &1})
   end
@@ -184,6 +184,10 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     admin_user = assigns.current_user
     enable_functions = Teams.build_enable_functions(socket.assigns.selected_team_type)
 
+    team_params =
+      team_params
+      |> Map.merge(enable_functions)
+
     case Teams.update_team_multi(assigns.team, team_params, admin_user, newcomer, new_member) do
       {:ok, team, member_user_attrs} ->
         # 新規招待したメンバー全員に招待メールを送信する。
@@ -242,4 +246,5 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   defp assign_team_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :team_form, to_form(changeset))
   end
+
 end

@@ -396,8 +396,50 @@ defmodule Bright.Teams do
         desc: tst.request_datetime
       ]
     )
-    |> preload(:request_from_user)
-    |> preload(:request_to_user)
+    |> preload(request_from_user: :user_profile)
+    |> preload(request_to_user: :user_profile)
+    |> preload(:supportee_team)
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  支援するチームの担当ユーザーIDをキーに自身が所属するチームに対する支援依頼の一覧を取得する
+  支援開始日時降順
+  Scrivenerのページングに対応
+
+  ## Examples
+
+      iex> list_supporting_request_by_supporter_user_id(supporter_user_id, %{page: 1, page_size: 1})
+      %Scrivener.Page{ page_number: 1, page_size: 1, total_entries: 2, total_pages: 2,
+        entries: [
+          %Bright.Teams.TeamSupporterTeam{
+            supportee_team: %Bright.Teams.Team{},
+            supporter_team: %Bright.Teams.Team{},
+            request_from_user: #Bright.Accounts.User{},
+            request_to_user: #Bright.Accounts.User{},
+          },
+          ...
+        ]
+      }
+  """
+  def list_supporting_request_by_supporter_user_id(
+        supporter_user_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(tst in TeamSupporterTeam,
+      join: tmu in TeamMemberUsers,
+      on: tmu.team_id == tst.supporter_team_id,
+      left_join: t in assoc(tmu, :team),
+      where:
+        tst.status == :supporting and tmu.user_id == ^supporter_user_id and
+          not is_nil(tmu.invitation_confirmed_at) and
+          is_nil(t.disabled_at),
+      order_by: [
+        desc: tst.start_datetime
+      ]
+    )
+    |> preload(request_from_user: :user_profile)
+    |> preload(request_to_user: :user_profile)
     |> preload(:supportee_team)
     |> Repo.paginate(page_param)
   end
@@ -493,6 +535,29 @@ defmodule Bright.Teams do
             (supoutee_teams.supporter_team_id == ^team_id or
                supouter_teams.supportee_team_id == ^team_id),
         select: count(tmu)
+      )
+      |> Repo.all()
+
+    count > 0
+  end
+
+  @doc """
+  チームIDを元に既に同じチームでの支援関係があるかを判定する
+
+  ## Examples
+
+      iex> is_supporting_same_team?(supportee_team_id, supporter_team_id)
+      true
+
+  """
+  def is_supporting_same_team?(supportee_team_id, supporter_team_id) do
+    [count] =
+      from(tst in TeamSupporterTeam,
+        where:
+          tst.supporter_team_id == ^supporter_team_id and
+            tst.supportee_team_id == ^supportee_team_id and
+            tst.status == :supporting,
+        select: count(tst)
       )
       |> Repo.all()
 
@@ -597,6 +662,40 @@ defmodule Bright.Teams do
         tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at) and
           is_nil(t.disabled_at),
       order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
+    )
+    |> preload(team: :member_users)
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  ユーザーが所属する採用・育成チームの一覧取得
+  招待へ承認済のチームのみ対象
+  exclude_team_idに指定したチームIDを除外する
+  Scrivenerのページングに対応
+
+    iex> list_joined_supporter_teams_by_user_id(user_id, exclude_team_id, %{page: 1, page_size: 5})
+      %Scrivener.Page{
+        page_number: 1,
+        page_size: 5,
+        total_entries: 2,
+        total_pages: 1,
+        entries: [
+          %Bright.Teams.TeamMemberUsers{},
+        ]
+      }
+  """
+  def list_joined_supporter_teams_by_user_id(
+        user_id,
+        exclude_team_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(tmu in TeamMemberUsers,
+      left_join: t in assoc(tmu, :team),
+      where:
+        tmu.user_id == ^user_id and not is_nil(tmu.invitation_confirmed_at) and
+          is_nil(t.disabled_at) and t.enable_hr_functions == true and
+          tmu.team_id != ^exclude_team_id,
+      order_by: [desc: tmu.is_star, desc: tmu.invitation_confirmed_at]
     )
     |> preload(team: :member_users)
     |> Repo.paginate(page_param)
@@ -756,8 +855,7 @@ defmodule Bright.Teams do
         update_params,
         admin_user,
         newcomer,
-        new_member_users,
-        enable_functions \\ %{enable_team_up_functions: false, enable_hr_functions: false}
+        new_member_users
       ) do
     member_attr =
       newcomer
@@ -999,6 +1097,11 @@ defmodule Bright.Teams do
     }
   end
 
+  def enable_hr_functions?(user_id) do
+    enable_functions = get_enable_functions_by_joined_teams!(user_id)
+    enable_functions.enable_hr_functions
+  end
+
   # Ectoのcountを使うと0件の場合のnilが返るのでnil=0件=権限なしと判定
   defp is_enable_by_count?(nil) do
     false
@@ -1097,5 +1200,13 @@ defmodule Bright.Teams do
       enable_team_up_functions: target_team_type.enable_team_up_functions,
       enable_hr_functions: target_team_type.enable_hr_functions
     }
+  end
+
+  def always_true?(_param) do
+    true
+  end
+
+  def always_false?(_param) do
+    false
   end
 end
