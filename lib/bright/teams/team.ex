@@ -22,8 +22,17 @@ defmodule Bright.Teams.Team do
     has_many :team_supporter_teams_on_supportee, Bright.Teams.TeamSupporterTeam,
       foreign_key: :supportee_team_id
 
-    has_many :supportee_teams, through: [:team_supporter_teams_on_supporter, :supportee_team]
-    has_many :supporter_teams, through: [:team_supporter_teams_on_supportee, :supporter_team]
+    many_to_many :supportee_teams_supporting,
+                 Bright.Teams.Team,
+                 join_through: Bright.Teams.TeamSupporterTeam,
+                 join_keys: [supporter_team_id: :id, supportee_team_id: :id],
+                 join_where: [status: :supporting]
+
+    many_to_many :supporter_teams_supporting,
+                 Bright.Teams.Team,
+                 join_through: Bright.Teams.TeamSupporterTeam,
+                 join_keys: [supportee_team_id: :id, supporter_team_id: :id],
+                 join_where: [status: :supporting]
 
     timestamps()
   end
