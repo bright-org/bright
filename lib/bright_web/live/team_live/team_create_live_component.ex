@@ -5,6 +5,8 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.ProfileComponents
+  import BrightWeb.TeamComponents, only: [team_type_select_dropdown_menue: 1]
+
   alias Bright.Teams
   alias Bright.Teams.Team
   alias BrightWeb.TeamLive.TeamAddUserComponent
@@ -57,6 +59,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(assigns)
     |> assign(:modal_title, "チームを編集する（β）")
     |> assign(:submit, "チームを更新し、新規メンバーに招待メールを送る")
+    |> assign(:selected_team_type, nil)
     |> assign_team_form(Teams.change_team(team))
     |> then(&{:ok, &1})
   end
@@ -68,6 +71,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(assigns)
     |> assign(:modal_title, "チームを作る（β）")
     |> assign(:submit, "チームを作成し、上記メンバーに招待を送る")
+    |> assign(:selected_team_type, :general_team)
     |> assign_team_form(team_changeset)
     |> then(&{:ok, &1})
   end
@@ -104,6 +108,17 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     save_team(socket, socket.assigns.action, team_params, admin_count, socket.assigns.plan)
   end
 
+  def handle_event("select_team_type", %{"team_type" => team_type}, socket) do
+    IO.puts(team_type)
+
+    {
+      :noreply,
+      socket
+      |> assign(:selected_team_type, String.to_atom(team_type))
+      # |> push_patch()
+    }
+  end
+
   def save_team(socket, :new, team_params, count, %{create_teams_limit: limit})
       when count >= limit do
     msg =
@@ -138,8 +153,9 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   def save_team(socket, :new, team_params, _count, _plan) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
+    enable_functions = Teams.build_enable_functions(socket.assigns.selected_team_type)
 
-    case Teams.create_team_multi(team_params["name"], admin_user, member_users) do
+    case Teams.create_team_multi(team_params["name"], admin_user, member_users, enable_functions) do
       {:ok, team, member_user_attrs} ->
         # 全メンバーのuserを一気にpreloadしたいのでteamを再取得
         preloaded_team = Teams.get_team_with_member_users!(team.id)
@@ -166,6 +182,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     new_member = assigns.users
     newcomer = new_member -- current_member
     admin_user = assigns.current_user
+    enable_functions = Teams.build_enable_functions(socket.assigns.selected_team_type)
 
     case Teams.update_team_multi(assigns.team, team_params, admin_user, newcomer, new_member) do
       {:ok, team, member_user_attrs} ->
