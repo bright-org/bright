@@ -109,13 +109,10 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   def handle_event("select_team_type", %{"team_type" => team_type}, socket) do
-    IO.puts(team_type)
-
     {
       :noreply,
       socket
       |> assign(:selected_team_type, String.to_atom(team_type))
-      # |> push_patch()
     }
   end
 
@@ -182,18 +179,15 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     new_member = assigns.users
     newcomer = new_member -- current_member
     admin_user = assigns.current_user
-    enable_functions = socket.assigns.selected_team_type
-    |> Teams.build_enable_functions()
-    |> Map.new(fn {k, v} -> {to_string(k), to_string(v)} end)
 
-    IO.inspect(team_params)
+    enable_functions =
+      socket.assigns.selected_team_type
+      |> Teams.build_enable_functions()
+      |> Map.new(fn {k, v} -> {to_string(k), to_string(v)} end)
 
     team_params =
       team_params
-    #  |> Map.merge(enable_functions)
-
-    IO.puts("###################################")
-    IO.inspect(team_params)
+      |> Map.merge(enable_functions)
 
     case Teams.update_team_multi(assigns.team, team_params, admin_user, newcomer, new_member) do
       {:ok, team, member_user_attrs} ->
