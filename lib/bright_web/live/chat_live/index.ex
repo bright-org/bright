@@ -59,7 +59,7 @@ defmodule BrightWeb.ChatLive.Index do
           ※メールアドレスや電話番号等の個人情報は送らないでください
           </p>
           <p class="lg:ml-12 text-xl mb-8">
-          ※面談日時の重複は管理対象外ですので、別途管理を行ってください
+          ※面談日時およびその重複は管理対象外ですので、別途管理を行ってください
           </p>
           <%= if Enum.count(@messages) == 0 do %>
           <div
@@ -183,7 +183,7 @@ defmodule BrightWeb.ChatLive.Index do
                   type="button"
                   phx-click="open_confirm_interview"
                 >
-                  面談決定
+                  面談確定の確認
                 </button>
               <% else %>
                 <button class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56">
@@ -197,7 +197,7 @@ defmodule BrightWeb.ChatLive.Index do
                 type="button"
                 phx-click={JS.push("cancel_interview", value: %{id: @chat.relation_id})}
               >
-                検討中断<br />（チャットに通知されません）
+                検討キャンセルの確認
               </button>
               <!-- 面談を辞退する Donwdrop -->
             </div>
