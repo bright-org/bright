@@ -150,13 +150,24 @@ defmodule BrightWeb.TeamComponents do
 
     ~H"""
     <div
+      :if={!assigns.is_clickable? || length(filter_team_type_select_list_by_user_id(@user_id)) <= 1}
+    >
+      <div
+        class={"text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full"}
+        type="button"
+      >
+        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2"/>
+        <%= get_display_name(@selected_team_type) %>
+      </div>
+    </div>
+    <div
+      :if={assigns.is_clickable? && length(filter_team_type_select_list_by_user_id(@user_id)) >= 2}
       id={"{@id}"}
       phx-hook="Dropdown"
       data-dropdown-offset-skidding="0"
       data-dropdown-placement="bottom"
     >
       <bottun
-          :if={assigns.is_clickable? && length(filter_team_type_select_list_by_user_id(@user_id)) >= 2}
           class={"text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full  hover:bg-brightGray-50 dropdownTrigger"}
           type="button"
         >
@@ -164,18 +175,9 @@ defmodule BrightWeb.TeamComponents do
         <%= get_display_name(@selected_team_type) %>
       </bottun>
       <p
-        :if={assigns.is_clickable? && length(filter_team_type_select_list_by_user_id(@user_id)) >= 2}
       >
         チームタイプを選択してください
       </p>
-      <div
-          :if={!assigns.is_clickable?}
-          class={"text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full"}
-          type="button"
-        >
-        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2"/>
-        <%= get_display_name(@selected_team_type) %>
-      </div>
       <!-- menue list-->
       <div
           :if={@is_clickable?}
