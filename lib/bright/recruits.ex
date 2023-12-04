@@ -219,4 +219,16 @@ defmodule Bright.Recruits do
       interview.candidates_user
     )
   end
+
+  def send_interview_cancel_notification_mails(interview_id) do
+    interview =
+      Interview
+      |> preload([:candidates_user, :recruiter_user])
+      |> Repo.get!(interview_id)
+
+    UserNotifier.deliver_cancel_interview_to_candidates_user(
+      interview.recruiter_user,
+      interview.candidates_user
+    )
+  end
 end

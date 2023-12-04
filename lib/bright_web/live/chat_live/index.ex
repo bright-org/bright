@@ -3,7 +3,6 @@ defmodule BrightWeb.ChatLive.Index do
 
   alias Bright.Chats
   alias Bright.UserProfiles
-  alias Bright.Recruits
   alias BrightWeb.CardLive.CardListComponents
 
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
@@ -218,6 +217,19 @@ defmodule BrightWeb.ChatLive.Index do
       />
     </.bright_modal>
 
+    <.bright_modal :if={@chat && @open_cancel_interview}  id="interview-cancel-modal" show on_cancel={JS.patch(~p"/recruits/chats/#{@chat.id}")}>
+      <.live_component
+        module={BrightWeb.RecruitLive.CancelInterviewComponent}
+        id="interview_member_modal"
+        title={@page_title}
+        action={@live_action}
+        interview_id={@chat.relation_id}
+        current_user={@current_user}
+        patch={~p"/recruits/chats"}
+        return_to={~p"/recruits/chats/#{@chat.id}"}
+      />
+    </.bright_modal>
+
     </div>
     """
   end
@@ -226,6 +238,7 @@ defmodule BrightWeb.ChatLive.Index do
   def mount(_params, _session, %{assigns: %{current_user: user}} = socket) do
     socket
     |> assign(:open_confirm_interview, false)
+    |> assign(:open_cancel_interview, false)
     |> assign(:sender_icon_path, UserProfiles.icon_url(user.user_profile.icon_file_path))
     |> then(&{:ok, &1})
   end
@@ -284,11 +297,8 @@ defmodule BrightWeb.ChatLive.Index do
     {:noreply, assign(socket, :open_confirm_interview, true)}
   end
 
-  def handle_event("cancel_interview", %{"id" => interview_id}, socket) do
-    Recruits.get_interview!(interview_id)
-    |> Recruits.update_interview(%{status: :completed_interview})
-
-    {:noreply, push_navigate(socket, to: ~p"/recruits/chats")}
+  def handle_event("cancel_interview", _params, socket) do
+    {:noreply, assign(socket, :open_cancel_interview, true)}
   end
 
   @impl true

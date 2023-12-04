@@ -23,7 +23,8 @@ defmodule Bright.Recruits.Interview do
         :consume_interview,
         :dismiss_interview,
         :ongoing_interview,
-        :completed_interview
+        :completed_interview,
+        :cancel_interview
       ],
       default: :waiting_decision
 

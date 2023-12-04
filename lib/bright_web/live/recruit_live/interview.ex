@@ -115,6 +115,20 @@ defmodule BrightWeb.RecruitLive.Interview do
     </.bright_modal>
 
 
+    <.bright_modal :if={@live_action in [:cancel_interview]} id="interview-cancel-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
+      <.live_component
+        module={BrightWeb.RecruitLive.CancelInterviewComponent}
+        id="interview_member_modal"
+        title={@page_title}
+        action={@live_action}
+        interview_id={@interview.id}
+        current_user={@current_user}
+        patch={~p"/recruits/interviews"}
+        return_to={~p"/recruits/interviews"}
+      />
+    </.bright_modal>
+
+
     <.bright_modal :if={@live_action in [:show_member]} id="interview-member-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
         module={BrightWeb.RecruitLive.EditInterviewMemberComponent}
@@ -169,7 +183,7 @@ defmodule BrightWeb.RecruitLive.Interview do
       case interview.status do
         :waiting_decision -> :show_interview
         :consume_interview -> :confirm_interview
-        :ongoing_interview -> :show_interview
+        :ongoing_interview -> :cancel_interview
       end
 
     socket

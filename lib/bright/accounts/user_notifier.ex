@@ -293,6 +293,27 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
+  Deliver interview cancel mail to candidates_user .
+  """
+  def deliver_cancel_interview_to_candidates_user(from_user, to_user) do
+    deliver(to_user.email, "【Bright】面談がキャンセルされました", """
+    #{to_user.name}さん
+
+    #{from_user.name}から、面談がキャンセルされました。
+
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
   Deliver free trial apply .
   """
   def deliver_new_message_notification_instructions(to_user, url) do
