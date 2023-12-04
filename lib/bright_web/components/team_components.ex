@@ -5,6 +5,8 @@ defmodule BrightWeb.TeamComponents do
   use Phoenix.Component
 
   alias Bright.Teams.TeamMemberUsers
+  alias Bright.Teams
+  alias Bright.Teams.Team
 
   @doc """
   アイコン付きのチームコンポーネント
@@ -12,29 +14,34 @@ defmodule BrightWeb.TeamComponents do
   - team 表示対象のチーム
   - team_type チームの種類（アイコン表示出しわけに使用する)
   - row_on_click_target チームの表示をクリックした際に発火するon_card_row_clickイベントハンドラのターゲット。指定されない場合nilがデフォルト指定される為、大本のliveviewがターゲットとなる。
+  - on_hover_style ホバー時のカーソル変更要スタイル 変更させたくない場合はブランクで上書き
 
   ## Examples
       <.team_small
         id="123"
-        team=%{Bright.Team}
-        team_type={:general_team}
+        team_params=@team_params
         row_on_click_target=@myself
       />
   """
 
   attr :id, :string, required: true
   attr :team_params, :map, required: true
+  attr :row_on_click, :string, required: false, default: "on_card_row_click"
   attr :row_on_click_target, :any, required: false, default: nil
+
+  attr :on_hover_style, :string,
+    required: false,
+    default: " hover:bg-brightGray-50 cursor-pointer"
 
   def team_small(assigns) do
     ~H"""
     <li
       id={@id}
-      phx-click="on_card_row_click"
+      phx-click={@row_on_click}
       phx-target={@row_on_click_target}
       phx-value-team_id={@team_params.team_id}
       phx-value-team_type={@team_params.team_type}
-      class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
+      class={"h-[35px] text-left flex items-center text-base p-1 rounded" <> @on_hover_style}
     >
 
     <span
@@ -89,6 +96,36 @@ defmodule BrightWeb.TeamComponents do
       </button>
     </div>
     """
+  end
+
+  def convert_team_params_from_teams(teams) do
+    teams
+    |> Enum.map(fn team ->
+      convert_team_params_from_team(team)
+    end)
+  end
+
+  def convert_team_params_from_team(%Team{} = team) do
+    %{
+      team_id: team.id,
+      name: team.name,
+      is_star: nil,
+      is_admin: nil,
+      team_type: Teams.get_team_type_by_team(team)
+    }
+  end
+
+  def convert_team_params_from_team_member_users(team_member_users) do
+    team_member_users
+    |> Enum.map(fn team_member_user ->
+      %{
+        team_id: team_member_user.team.id,
+        name: team_member_user.team.name,
+        is_star: team_member_user.is_star,
+        is_admin: team_member_user.is_admin,
+        team_type: Teams.get_team_type_by_team(team_member_user.team)
+      }
+    end)
   end
 
   defp get_team_icon_path(team_type) do

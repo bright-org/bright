@@ -216,6 +216,78 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
+  Deliver request team support.
+  """
+  def deliver_notify_team_support_request(from_user, to_user, team, url) do
+    deliver(to_user.email, "【Bright】新しいチーム支援依頼が承認待ちです", """
+    #{to_user.name}さん
+    Brightカスタマーサクセスです。
+
+    いつも Bright をご利用いただき、ありがとうございます。
+
+    #{from_user.name} さんにからチーム #{team.name} に対する支援依頼が届いています。
+
+    URL から承認待ちの支援依頼をご確認ください。
+    #{url}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver accept team support.
+  """
+  def deliver_accept_team_support_request(from_user, to_user, team) do
+    deliver(to_user.email, "【Bright】チーム支援依頼が承認されました", """
+    #{to_user.name}さん
+    Brightカスタマーサクセスです。
+
+    いつも Bright をご利用いただき、ありがとうございます。
+
+    チーム #{team.name} に対する支援依頼が#{from_user.name} さんにより承認されました。
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver reject team support.
+  """
+  def deliver_reject_team_support_request(from_user, to_user, team) do
+    deliver(to_user.email, "【Bright】チーム支援依頼が非承認となりました", """
+    #{to_user.name}さん
+    Brightカスタマーサクセスです。
+
+    いつも Bright をご利用いただき、ありがとうございます。
+
+    チーム #{team.name} に対する支援依頼が#{from_user.name} さんにより非承認とされました。
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
   Deliver interview acceptance .
   """
   def deliver_acceptance_interview_instructions(from_user, to_user, url) do
