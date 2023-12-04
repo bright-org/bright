@@ -180,7 +180,7 @@ defmodule BrightWeb.ChatLive.Index do
                 <button
                   class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
                   type="button"
-                  phx-click="open_confirm_interview"
+                  phx-click={JS.push("open_confirm_interview") |> JS.show(to: "interview-confirm-modal")}
                 >
                   面談確定の確認
                 </button>
@@ -194,7 +194,7 @@ defmodule BrightWeb.ChatLive.Index do
                 id="interviewDropdownButton"
                 class="text-sm font-bold px-2 py-2 rounded border bg-white w-56"
                 type="button"
-                phx-click={JS.push("cancel_interview", value: %{id: @chat.relation_id})}
+                phx-click={JS.push("cancel_interview") |> JS.show(to: "interview-cancel-modal")}
               >
                 検討キャンセルの確認
               </button>
@@ -205,10 +205,10 @@ defmodule BrightWeb.ChatLive.Index do
         </div>
       </div>
 
-      <.bright_modal :if={@chat && @open_confirm_interview} id="interview-confirm-modal" show on_cancel={JS.patch(~p"/recruits/chats/#{@chat.id}")}>
+      <.bright_modal :if={@chat && @open_confirm_interview} id="interview-confirm-modal" show on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}>
       <.live_component
         module={BrightWeb.RecruitLive.ConfirmInterviewComponent}
-        id="interview_member_modal"
+        id="interview_confirm_modal"
         title={@page_title}
         action={@live_action}
         interview_id={@chat.relation_id}
@@ -217,10 +217,10 @@ defmodule BrightWeb.ChatLive.Index do
       />
     </.bright_modal>
 
-    <.bright_modal :if={@chat && @open_cancel_interview}  id="interview-cancel-modal" show on_cancel={JS.patch(~p"/recruits/chats/#{@chat.id}")}>
+    <.bright_modal :if={@chat && @open_cancel_interview}  id="interview-cancel-modal" show on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}>
       <.live_component
         module={BrightWeb.RecruitLive.CancelInterviewComponent}
-        id="interview_member_modal"
+        id="interview_cancel_modal"
         title={@page_title}
         action={@live_action}
         interview_id={@chat.relation_id}
