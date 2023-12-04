@@ -238,10 +238,10 @@ defmodule BrightWeb.ProfileComponents do
 
   def profile_mini(assigns) do
     ~H"""
-    <li class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-full">
+    <li class="text-left flex items-center text-base p-1 rounded w-full">
       <img class="inline-block h-6 w-6 rounded-full" src={@icon_file_path} />
       <div>
-        <p class="truncate max-w-[240px]"><%= @user_name %></p>
+        <p class="pl-1 truncate max-w-[240px]"><%= @user_name %></p>
       </div>
     </li>
     """

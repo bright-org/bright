@@ -14,7 +14,6 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   alias Bright.Subscriptions
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillPanels.SkillClass
-  alias BrightWeb.SkillPanelLive.SkillPanelHelper
 
   def init_assign(params, %{assigns: %{live_action: :new, current_user: user}} = socket) do
     subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())

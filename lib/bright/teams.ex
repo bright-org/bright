@@ -663,9 +663,10 @@ defmodule Bright.Teams do
   @doc """
   ユーザーが所属する採用・育成チームの一覧取得
   招待へ承認済のチームのみ対象
+  exclude_team_idに指定したチームIDを除外する
   Scrivenerのページングに対応
 
-    iex> list_joined_supporter_teams_by_user_id(user_id, %{page: 1, page_size: 5})
+    iex> list_joined_supporter_teams_by_user_id(user_id, exclude_team_id, %{page: 1, page_size: 5})
       %Scrivener.Page{
         page_number: 1,
         page_size: 5,

@@ -22,6 +22,9 @@ defmodule BrightWeb.TeamSupportLive.Index do
   @list_contailnet_page_size 10
 
   def mount(params, _session, socket) do
+    # HR機能が利用できないユーザーは404表示
+    validate_enable_hr_functions?(params, socket)
+
     tabs = @tabs
     first_tab = tabs |> Enum.at(0) |> elem(0)
 
@@ -36,7 +39,6 @@ defmodule BrightWeb.TeamSupportLive.Index do
      |> assign_card(first_tab)}
   end
 
-  @impl true
   def handle_event(
         "tab_click",
         %{"id" => _id, "tab_name" => tab_name},
@@ -151,5 +153,13 @@ defmodule BrightWeb.TeamSupportLive.Index do
 
     socket
     |> assign(:card, card)
+  end
+
+  defp validate_enable_hr_functions?(_params, socket) do
+    if Teams.enable_hr_functions?(socket.assigns.current_user.id) do
+      true
+    else
+      raise(Bright.Exceptions.ForbiddenResourceError)
+    end
   end
 end

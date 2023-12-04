@@ -194,7 +194,7 @@
 <.bright_modal
   :if={@live_action in [:index] && @show_hr_support_modal}
   id="request-hr-support"
-  show="{@show_hr_support_modal}"
+  show={@show_hr_support_modal}
   on_cancel={JS.push("toggle_show_hr_support_modal")}
 >
 <.live_component

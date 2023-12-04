@@ -7,7 +7,6 @@ defmodule BrightWeb.MyTeamLive do
   import BrightWeb.TeamComponents
   import BrightWeb.MegaMenuComponents
   import BrightWeb.BrightModalComponents
-  import BrightWeb.BrightCoreComponents, only: [action_button: 1]
 
   alias Bright.Teams
   alias Bright.Teams.Team

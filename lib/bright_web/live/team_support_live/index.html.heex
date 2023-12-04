@@ -32,7 +32,7 @@
                 </div>
               </li>
             </ul>
-          <%= end %>
+          <% end %>
           <%= if @card.total_entries == 0 && @card.selected_tab == "supporting" do %>
              <ul class="flex gap-y-2.5 flex-col">
               <li class="flex">
@@ -41,7 +41,7 @@
                 </div>
               </li>
             </ul>
-          <%= end %>
+          <% end %>
           <%= if @card.total_entries > 0 do %>
             <%= for team_supporter_team <- @card.entries do %>
             <ul class="text-left flex relative items-center text-base hover:bg-brightGray-50 p-1 w-full my-0.5">
@@ -55,7 +55,7 @@
               から
               <span>
                 <.team_small
-                  id={team_supporter_team.supportee_team.id}
+                  id={"team_small_" <> team_supporter_team.supportee_team.id}
                   team_params={convert_team_params_from_team(team_supporter_team.supportee_team)}
                   row_on_click=""
                   on_hover_style=""
@@ -67,7 +67,6 @@
               >
                 <CardListComponents.elapsed_time
                   inserted_at={team_supporter_team.request_datetime}
-                  nil_placeholder_word="----"
                 />
               </li>
               <li
@@ -75,14 +74,13 @@
               >
                 <CardListComponents.elapsed_time
                   inserted_at={team_supporter_team.start_datetime}
-                  nil_placeholder_word="----"
                 />
                 に支援開始
               </li>
               <li
                 :if={@card.selected_tab == "requesting"}
               >
-                <.button class="ml-2"
+                <.button
                   class="ml-2 absolute inset-y-0 right-1"
                   type="submit"
                   phx-click="show_hr_support_modal"

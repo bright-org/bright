@@ -11,6 +11,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   import BrightWeb.ProfileComponents
   import BrightWeb.TeamComponents
   import BrightWeb.TabComponents
+  import BrightWeb.CardLive.CardListComponents
 
   alias Bright.UserProfiles
   alias alias Bright.Teams
@@ -115,7 +116,9 @@ defmodule BrightWeb.TeamSupportLiveComponent do
       <label for="supportee_team_name" class="flex items-center ">
         <span class="w-[200px] text-base font-bold">支援依頼日時</span>
         <div>
-          <%= @team_supporter_team.request_datetime %>
+          <.date_time_text
+            naive_date_time={@team_supporter_team.request_datetime}
+          />
         </div>
       </label>
     </div>
@@ -123,7 +126,9 @@ defmodule BrightWeb.TeamSupportLiveComponent do
       <label for="supportee_team_name" class="flex items-center ">
         <span class="w-[200px] text-base font-bold">支援開始日時</span>
         <div>
-          <%= @team_supporter_team.start_datetime %>
+          <.date_time_text
+            naive_date_time={@team_supporter_team.start_datetime}
+          />
         </div>
       </label>
     </div>
@@ -131,7 +136,9 @@ defmodule BrightWeb.TeamSupportLiveComponent do
       <label for="supportee_team_name" class="flex items-center ">
         <span class="w-[200px] text-base font-bold">支援終了日時</span>
         <div>
-          <%= @team_supporter_team.end_datetime %>
+          <.date_time_text
+            naive_date_time={@team_supporter_team.end_datetime}
+          />
         </div>
       </label>
     </div>
@@ -260,7 +267,6 @@ defmodule BrightWeb.TeamSupportLiveComponent do
         >
         <.profile_mini
             user_name={@request_from_user.name}
-            title={@request_from_user.user_profile.title}
             icon_file_path={UserProfiles.icon_url(@request_from_user.user_profile.icon_file_path)}
           />
         </div>
@@ -281,7 +287,6 @@ defmodule BrightWeb.TeamSupportLiveComponent do
         >
         <.profile_mini
             user_name={@request_to_user.name}
-            title={@request_to_user.user_profile.title}
             icon_file_path={UserProfiles.icon_url(@request_to_user.user_profile.icon_file_path)}
           />
         </div>
