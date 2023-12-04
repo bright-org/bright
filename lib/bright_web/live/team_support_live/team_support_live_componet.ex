@@ -601,7 +601,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     %{
       selected_tab: selected_tab,
       entries: [],
-      page_params: %{page: page, page_size: 15},
+      page_params: %{page: page, page_size: 5},
       total_entries: 0,
       total_pages: 0,
       menu_items: @menu_items
@@ -609,7 +609,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   end
 
   defp card_view(socket, tab_name, page) do
-    card = create_card_param(page)
+    card = create_card_param(tab_name, page)
 
     socket
     |> assign(:card, card)
