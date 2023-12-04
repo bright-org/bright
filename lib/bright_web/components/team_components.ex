@@ -17,10 +17,18 @@ defmodule BrightWeb.TeamComponents do
   ]
 
   @team_type_select_list [
-    %{display_name: "一般チーム", team_type: :general_team, visiblily_check_function: &Teams.always_true?/1 },
+    %{
+      display_name: "一般チーム",
+      team_type: :general_team,
+      visiblily_check_function: &Teams.always_true?/1
+    },
     # TODO チームアップチームの対応までは選択肢を封印
     # %{display_name: "チームアップチーム", team_type: :teamup_team, visiblily_check_function: &Teams.always_false?/1},
-    %{display_name: "採用・育成チーム", team_type: :hr_support_team, visiblily_check_function: &Teams.enable_hr_functions?/1}
+    %{
+      display_name: "採用・育成チーム",
+      team_type: :hr_support_team,
+      visiblily_check_function: &Teams.enable_hr_functions?/1
+    }
   ]
 
   @doc """
@@ -242,5 +250,4 @@ defmodule BrightWeb.TeamComponents do
       team_type_item.visiblily_check_function.(user_id)
     end)
   end
-
 end

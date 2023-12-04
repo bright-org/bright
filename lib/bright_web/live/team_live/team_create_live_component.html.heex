@@ -45,7 +45,7 @@
                   <.team_type_select_dropdown_menue
                     selected_team_type={@selected_team_type}
                     phx_target={@myself}
-                    is_clickable?={!@action == :edit}
+                    is_clickable?={@action != :edit}
                     user_id={@current_user.id}
                   />
                 </dd>

@@ -246,5 +246,4 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   defp assign_team_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :team_form, to_form(changeset))
   end
-
 end
