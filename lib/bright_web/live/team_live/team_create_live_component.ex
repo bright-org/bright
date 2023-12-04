@@ -182,11 +182,18 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     new_member = assigns.users
     newcomer = new_member -- current_member
     admin_user = assigns.current_user
-    enable_functions = Teams.build_enable_functions(socket.assigns.selected_team_type)
+    enable_functions = socket.assigns.selected_team_type
+    |> Teams.build_enable_functions()
+    |> Map.new(fn {k, v} -> {to_string(k), to_string(v)} end)
+
+    IO.inspect(team_params)
 
     team_params =
       team_params
-      |> Map.merge(enable_functions)
+    #  |> Map.merge(enable_functions)
+
+    IO.puts("###################################")
+    IO.inspect(team_params)
 
     case Teams.update_team_multi(assigns.team, team_params, admin_user, newcomer, new_member) do
       {:ok, team, member_user_attrs} ->

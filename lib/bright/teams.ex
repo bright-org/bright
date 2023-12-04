@@ -876,6 +876,8 @@ defmodule Bright.Teams do
 
     team_changeset = Team.registration_changeset(team, update_params)
 
+    IO.inspect(team_changeset)
+
     exists_member_ids =
       [admin_user | new_member_users -- newcomer]
       |> Enum.map(& &1.id)
