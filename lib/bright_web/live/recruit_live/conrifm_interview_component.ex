@@ -150,8 +150,7 @@ defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
 
   @impl true
   def handle_event("decision", %{"decision" => status}, socket) do
-    {:ok, interview} =
-      Recruits.update_interview(socket.assigns.interview, %{status: status})
+    {:ok, interview} = Recruits.update_interview(socket.assigns.interview, %{status: status})
 
     Recruits.send_interview_start_notification_mails(interview.id)
     chat = Chats.get_chat_by_interview_id(interview.id)
