@@ -54,6 +54,25 @@ defmodule BrightWeb.OnboardingLive.Index do
     |> then(&{:noreply, &1})
   end
 
+  def toggle(js \\ %JS{}, id) do
+    js
+    |> JS.push("toggle_panel", value: %{panel: id})
+    |> JS.toggle(to: "##{id}")
+    |> JS.hide(to: "##{hide_panel(id)}")
+  end
+
+  def hide_panel(id) do
+    Map.keys(@panels)
+    |> Enum.reject(&(&1 == id))
+    |> List.first()
+  end
+
+  def close(),
+    do: "before:-mt-2 before:rotate-225"
+
+  def open(),
+    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
+
   defp skip_onboarding(nil, user_id) do
     {:ok, _onboarding} =
       Onboardings.create_user_onboarding(%{
@@ -63,25 +82,6 @@ defmodule BrightWeb.OnboardingLive.Index do
   end
 
   defp skip_onboarding(%UserOnboarding{}, _), do: false
-
-  defp toggle(js \\ %JS{}, id) do
-    js
-    |> JS.push("toggle_panel", value: %{panel: id})
-    |> JS.toggle(to: "##{id}")
-    |> JS.hide(to: "##{hide_panel(id)}")
-  end
-
-  defp hide_panel(id) do
-    Map.keys(@panels)
-    |> Enum.reject(&(&1 == id))
-    |> List.first()
-  end
-
-  defp close(),
-    do: "before:-mt-2 before:rotate-225"
-
-  defp open(),
-    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 
   defp page_title(<<"/onboardings", _rest::binary>>), do: "オンボーディング"
   defp page_title(<<"/more_skills", _rest::binary>>), do: "スキルを選ぶ"

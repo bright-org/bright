@@ -4,41 +4,11 @@
       スキルを選ぶ
     </span>
   </h1>
-  <div class="mt-4">気になるスキルを下記から開いて選んでください</div>
+  <div class="mt-4 text-base">なりたいジョブからスキルを選んでください</div>
 
-  <div phx-mounted={if @open, do: toggle(@open)} class="flex flex-col mt-2 relative">
-    <section class="accordion mt-5 max-w-[1236px]">
+  <div class="flex flex-col mt-2 relative">
+    <section class="accordion flex mt-4 max-w-[1236px]">
       <div class="bg-brightGray-50 rounded w-full">
-        <p
-          class={
-            "bg-brightGray-900 cursor-pointer font-bold pl-2 pr-12 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
-            if @open_want_todo, do: open(), else: close()
-          }
-          phx-click={toggle("want_todo_panel")}
-        >
-          やりたいことからスキルを選ぶ
-        </p>
-
-        <.live_component
-          id="want_to_do"
-          current_path={@current_path}
-          module={BrightWeb.OnboardingLive.WantToDoComponents}
-        />
-      </div>
-    </section>
-
-    <section class="accordion flex mt-8 max-w-[1236px]">
-      <div class="bg-brightGray-50 rounded w-full">
-        <p
-          class={
-            "bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
-            if @open_wants_job, do: open(), else: close()
-          }
-          phx-click={toggle("wants_job_panel")}
-        >
-          なりたいジョブからスキルを選ぶ
-        </p>
-
         <.live_component
           id="wants_job"
           current_path={@current_path}
