@@ -24,11 +24,11 @@ defmodule BrightWeb.NotificationLive.Evidence do
         </li>
         <%= for notification <- @notifications do %>
           <li class="flex flex-wrap my-5">
-            <div phx-click="click" phx-value-notification_evidence_id={notification.id} class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate">
+            <div phx-click="click" phx-value-notification_evidence_id={notification.id} class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap">
               <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
                 person
               </span>
-              <span class={["order-3 lg:order-2 flex-1 mr-2 truncate"]}><%= notification.message %></span>
+              <span class={["order-3 lg:order-2 flex-1 mr-2"]}><%= notification.message %></span>
               <CardListComponents.elapsed_time inserted_at={notification.inserted_at} />
             </div>
             <div class="flex gap-x-2 w-full justify-end lg:justify-start lg:w-auto">
