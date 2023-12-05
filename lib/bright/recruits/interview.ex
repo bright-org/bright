@@ -16,6 +16,7 @@ defmodule Bright.Recruits.Interview do
     field :desired_income, :integer
     field :comment, :string
     field :skill_params, :string
+    field :cancel_reason, :string
 
     field :status, Ecto.Enum,
       values: [
@@ -53,7 +54,8 @@ defmodule Bright.Recruits.Interview do
       :comment,
       :candidates_user_id,
       :recruiter_user_id,
-      :requestor_user_id
+      :requestor_user_id,
+      :cancel_reason
     ])
     |> cast_assoc(:interview_members,
       with: &InterviewMember.changeset/2

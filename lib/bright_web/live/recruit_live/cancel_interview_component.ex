@@ -165,7 +165,7 @@ defmodule BrightWeb.RecruitLive.CancelInterviewComponent do
   @impl true
   def handle_event("decision", %{"decision" => status, "reason" => reason}, socket) do
     {:ok, interview} =
-      Recruits.update_interview(socket.assigns.interview, %{status: status, reason: reason})
+      Recruits.update_interview(socket.assigns.interview, %{status: status, cancel_reason: reason})
 
     Recruits.send_interview_cancel_notification_mails(interview.id)
 
