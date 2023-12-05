@@ -282,6 +282,19 @@ defmodule Bright.SkillEvidencesTest do
       assert Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_2.id)
     end
 
+    test "do not send supporter members if not in supporting status", %{
+      user: user,
+      skill_evidence: skill_evidence
+    } do
+      user_2 = insert(:user)
+      not_supporting_statuses = ~w(requesting support_ended reject)a
+
+      Enum.each(not_supporting_statuses, fn status ->
+        relate_user_and_supporter(user, user_2, status)
+        assert {0, _} = SkillEvidences.help(skill_evidence, user)
+      end)
+    end
+
     test "creates notification_evidences to supportee members", %{
       user: user,
       skill_evidence: skill_evidence
@@ -291,6 +304,19 @@ defmodule Bright.SkillEvidencesTest do
 
       {1, _} = SkillEvidences.help(skill_evidence, user)
       assert Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_2.id)
+    end
+
+    test "do not send supportee members if not in supporting status", %{
+      user: user,
+      skill_evidence: skill_evidence
+    } do
+      user_2 = insert(:user)
+      not_supporting_statuses = ~w(requesting support_ended reject)a
+
+      Enum.each(not_supporting_statuses, fn status ->
+        relate_user_and_supporter(user_2, user, status)
+        assert {0, _} = SkillEvidences.help(skill_evidence, user)
+      end)
     end
   end
 

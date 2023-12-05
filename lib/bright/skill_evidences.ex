@@ -253,13 +253,13 @@ defmodule Bright.SkillEvidences do
     }
 
     # ユーザー所属チームとその関連チーム取得
-    # NOTE: 今後設定によって通知要否（粒度未定）できるようになる想定です
+    # NOTE: 今後設定によって通知要否（粒度未定）できるようになる想定です。そのため個別ロードしています。
     teams =
       Ecto.assoc(user, :teams)
       |> preload([
         :member_users,
-        supporter_teams: [:member_users],
-        supportee_teams: [:member_users]
+        supporter_teams_supporting: [:member_users],
+        supportee_teams_supporting: [:member_users]
       ])
       |> Repo.all()
 
@@ -269,13 +269,13 @@ defmodule Bright.SkillEvidences do
     # 支援元メンバー
     supporter_related_ids =
       teams
-      |> Enum.flat_map(& &1.supporter_teams)
+      |> Enum.flat_map(& &1.supporter_teams_supporting)
       |> collect_team_user_ids()
 
     # 支援先メンバー
     supportee_related_ids =
       teams
-      |> Enum.flat_map(& &1.supportee_teams)
+      |> Enum.flat_map(& &1.supportee_teams_supporting)
       |> collect_team_user_ids()
 
     (team_related_ids ++ supporter_related_ids ++ supportee_related_ids)
