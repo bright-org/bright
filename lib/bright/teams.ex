@@ -15,6 +15,13 @@ defmodule Bright.Teams do
   @rand_size 32
   @invitation_validity_ago 4
 
+  # チームタイプによる利用可能機能の定義
+  @team_types [
+    %{team_type: :general_team, enable_team_up_functions: false, enable_hr_functions: false},
+    %{team_type: :teamup_team, enable_team_up_functions: true, enable_hr_functions: false},
+    %{team_type: :hr_support_team, enable_team_up_functions: true, enable_hr_functions: true}
+  ]
+
   @doc """
   Returns the list of teams.
 
@@ -848,8 +855,7 @@ defmodule Bright.Teams do
         update_params,
         admin_user,
         newcomer,
-        new_member_users,
-        _enable_functions \\ %{enable_team_up_functions: false, enable_hr_functions: false}
+        new_member_users
       ) do
     member_attr =
       newcomer
@@ -1181,5 +1187,26 @@ defmodule Bright.Teams do
 
   def get_team_type_by_team(%Bright.CustomGroups.CustomGroup{}) do
     :custom_group
+  end
+
+  def build_enable_functions(team_type) do
+    target_team_type =
+      @team_types
+      |> Enum.find(fn team_type_map ->
+        team_type_map.team_type == team_type
+      end)
+
+    %{
+      enable_team_up_functions: target_team_type.enable_team_up_functions,
+      enable_hr_functions: target_team_type.enable_hr_functions
+    }
+  end
+
+  def always_true?(_param) do
+    true
+  end
+
+  def always_false?(_param) do
+    false
   end
 end

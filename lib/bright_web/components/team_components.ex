@@ -8,6 +8,29 @@ defmodule BrightWeb.TeamComponents do
   alias Bright.Teams
   alias Bright.Teams.Team
 
+  # チームタイプ事の定義(UI向け) Teamsの方のリストと異なりカスタムグループもチーム扱い
+  @team_types [
+    {:general_team, "/images/common/icons/team.svg"},
+    {:custom_group, "/images/common/icons/coustom_group.svg"},
+    {:hr_support_team, "/images/common/icons/team_hr_support.svg"},
+    {:teamup_team, "/images/common/icons/team_teamup.svg"}
+  ]
+
+  @team_type_select_list [
+    %{
+      display_name: "一般チーム",
+      team_type: :general_team,
+      visiblily_check_function: &Teams.always_true?/1
+    },
+    # TODO チームアップチームの対応までは選択肢を封印
+    # %{display_name: "チームアップチーム", team_type: :teamup_team, visiblily_check_function: &Teams.always_false?/1},
+    %{
+      display_name: "採用・育成チーム",
+      team_type: :hr_support_team,
+      visiblily_check_function: &Teams.enable_hr_functions?/1
+    }
+  ]
+
   @doc """
   アイコン付きのチームコンポーネント
 
@@ -41,7 +64,7 @@ defmodule BrightWeb.TeamComponents do
       phx-target={@row_on_click_target}
       phx-value-team_id={@team_params.team_id}
       phx-value-team_type={@team_params.team_type}
-      class={"h-[35px] text-left flex items-center text-base p-1 rounded" <> @on_hover_style}
+      class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
 
     <span
@@ -98,13 +121,6 @@ defmodule BrightWeb.TeamComponents do
     """
   end
 
-  def convert_team_params_from_teams(teams) do
-    teams
-    |> Enum.map(fn team ->
-      convert_team_params_from_team(team)
-    end)
-  end
-
   def convert_team_params_from_team(%Team{} = team) do
     %{
       team_id: team.id,
@@ -113,6 +129,84 @@ defmodule BrightWeb.TeamComponents do
       is_admin: nil,
       team_type: Teams.get_team_type_by_team(team)
     }
+  end
+
+  def convert_team_params_from_teams(teams) do
+    teams
+    |> Enum.map(fn team ->
+      convert_team_params_from_team(team)
+    end)
+  end
+
+  attr :selected_team_type, :any, required: true
+  attr :phx_target, :any, default: ""
+  attr :is_clickable?, :boolean, default: false
+  attr :user_id, :any, required: true
+
+  def team_type_select_dropdown_menue(assigns) do
+    assigns =
+      assigns
+      |> Map.put(:team_type_select_list, @team_type_select_list)
+
+    ~H"""
+    <div
+      id={"{@id}"}
+      phx-hook="Dropdown"
+      data-dropdown-offset-skidding="0"
+      data-dropdown-placement="bottom"
+    >
+      <bottun
+          :if={assigns.is_clickable? && length(filter_team_type_select_list_by_user_id(@user_id)) >= 2}
+          class={"text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full  hover:bg-brightGray-50 dropdownTrigger"}
+          type="button"
+        >
+        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2"/>
+        <%= get_display_name(@selected_team_type) %>
+      </bottun>
+      <p
+        :if={assigns.is_clickable? && length(filter_team_type_select_list_by_user_id(@user_id)) >= 2}
+      >
+        チームタイプを選択してください
+      </p>
+      <div
+          :if={!assigns.is_clickable?}
+          class={"text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full"}
+          type="button"
+        >
+        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2"/>
+        <%= get_display_name(@selected_team_type) %>
+      </div>
+      <!-- menue list-->
+      <div
+          :if={@is_clickable?}
+          class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-full lg:w-[340px]"
+        >
+        <ul>
+          <%= for team_type_item <- filter_team_type_select_list_by_user_id(@user_id) do %>
+            <li
+              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 bg-white w-full"
+              phx-click="select_team_type"
+              phx-value-team_type={team_type_item.team_type}
+              phx-target={@phx_target}
+            >
+              <img src={get_team_icon_path(team_type_item.team_type)} class="ml-2 mr-2"/>
+              <%= team_type_item.display_name %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    """
+  end
+
+  defp get_display_name(team_type) do
+    team_type =
+      @team_type_select_list
+      |> Enum.find(fn team_types ->
+        team_types.team_type == team_type
+      end)
+
+    team_type.display_name
   end
 
   def convert_team_params_from_team_member_users(team_member_users) do
@@ -130,18 +224,8 @@ defmodule BrightWeb.TeamComponents do
 
   defp get_team_icon_path(team_type) do
     # TODO 全チーム種別のアイコンの追加、関数の実装場所の相談
-    icons = get_team_types()
+    icons = @team_types
     icons[team_type]
-  end
-
-  defp get_team_types() do
-    [
-      # 一般のチームと人材・支援チームのアイコンはおなじ
-      {:general_team, "/images/common/icons/team.svg"},
-      {:custom_group, "/images/common/icons/coustom_group.svg"},
-      {:hr_support_team, "/images/common/icons/team_hr_support.svg"},
-      {:teamup_team, "/images/common/icons/team_teamup.svg"}
-    ]
   end
 
   defp show_star_button?(%TeamMemberUsers{}) do
@@ -158,5 +242,12 @@ defmodule BrightWeb.TeamComponents do
       # TODO スターのOFFの時の色指定確認
       "brightGray-500"
     end
+  end
+
+  defp filter_team_type_select_list_by_user_id(user_id) do
+    @team_type_select_list
+    |> Enum.filter(fn team_type_item ->
+      team_type_item.visiblily_check_function.(user_id)
+    end)
   end
 end
