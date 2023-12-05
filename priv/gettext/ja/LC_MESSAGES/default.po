@@ -43,10 +43,10 @@ msgid "not_answered"
 msgstr "未回答"
 
 msgid "wants"
-msgstr "参加する"
+msgstr "同席する"
 
 msgid "not_wants"
-msgstr "参加しない"
+msgstr "同席しない"
 
 msgid  "keep"
 msgstr "今は同席しない"
