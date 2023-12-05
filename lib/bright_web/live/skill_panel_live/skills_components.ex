@@ -295,7 +295,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               </div>
             </td>
             <td>
-              <div class="flex justify-center gap-x-4 px-4 min-w-[150px]">
+              <div class="flex justify-center gap-x-4 px-4 h-[21px] items-center">
                 <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
               </div>
             </td>
