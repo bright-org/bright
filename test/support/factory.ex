@@ -89,6 +89,7 @@ defmodule Bright.Factory do
   # Teams context
   use Bright.TeamFactory
   use Bright.TeamMemberUsersFactory
+  use Bright.TeamSupporterTeamFactory
 
   # NotificationsFactory context
   use Bright.NotificationOperationFactory

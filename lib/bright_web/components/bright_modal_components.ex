@@ -49,15 +49,18 @@ defmodule BrightWeb.BrightModalComponents do
 
   attr :id, :string, required: true
   attr :show, :boolean, default: false
-  attr :style_of_modal_flame_out, :string, default: "p-4 sm:p-6 lg:py-8"
+  attr :style_of_modal_flame_out, :string, default: "p-2 lg:py-8"
 
   attr :style_of_modal_flame, :string,
     default:
-      "shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-md bg-white p-14 shadow-lg ring-1 transition"
+      "shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-md bg-white p-8 lg:p-14 shadow-lg ring-1 transition"
 
   attr :enable_cancel_button, :boolean, default: true
   attr :cancel_button_confirm, :string, default: nil
-  attr :style_of_cancel_button_rayout, :string, default: "absolute top-6 right-5"
+
+  attr :style_of_cancel_button_rayout, :string,
+    default: "absolute top-2 right-2 lg:top-6 lg:right-5"
+
   attr :style_of_cancel_button, :string, default: "-m-3 flex-none p-3 opacity-80"
   attr :style_of_cancel_button_x_mark, :string, default: "h-8 w-8"
   attr :on_cancel, JS, default: %JS{}

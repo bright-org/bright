@@ -449,15 +449,29 @@ defmodule Bright.SkillScores do
     skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
     {skills_count, score_count_user_dict} = count_skill_scores_each_user(skills)
 
-    skill_unit.skill_unit_scores
+    # スキルユニットスコアの下記ケースを対応している。
+    # - 作成済み => 更新
+    # - 未作成 => 作成。未入力のスキルユニットに、他所の入力済みスキルが移動した場合に生じる
+    skill_unit_scores = skill_unit.skill_unit_scores
+    user_ids_already_created = Enum.map(skill_unit_scores, & &1.user_id)
+    user_ids_to_create = Map.keys(score_count_user_dict) -- user_ids_already_created
+
+    skill_unit_scores_new =
+      Enum.map(user_ids_to_create, &%SkillUnitScore{user_id: &1, skill_unit_id: skill_unit.id})
+
+    (skill_unit_scores ++ skill_unit_scores_new)
     |> Enum.reduce(Ecto.Multi.new(), fn skill_unit_score, multi ->
       user_id = skill_unit_score.user_id
       high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
       percentage = calc_percentage(high_scores_count, skills_count)
       changeset = SkillUnitScore.changeset(skill_unit_score, %{percentage: percentage})
 
-      multi
-      |> Ecto.Multi.update(:"update_skill_unit_score_#{user_id}", changeset)
+      skill_unit_score.id
+      |> if do
+        Ecto.Multi.update(multi, :"update_skill_unit_score_#{user_id}", changeset)
+      else
+        Ecto.Multi.insert(multi, :"create_skill_unit_score_#{user_id}", changeset)
+      end
     end)
     |> Repo.transaction()
   end
@@ -499,12 +513,12 @@ defmodule Bright.SkillScores do
     score_count_user_dict =
       Enum.reduce(skills, %{}, fn skill, acc ->
         Enum.reduce(skill.skill_scores, acc, fn skill_score, dict ->
-          user_dict =
+          skill_dict =
             dict
             |> Map.get(skill_score.user_id, init_count)
             |> Map.update(skill_score.score, 1, &(&1 + 1))
 
-          Map.put(dict, skill_score.user_id, user_dict)
+          Map.put(dict, skill_score.user_id, skill_dict)
         end)
       end)
 

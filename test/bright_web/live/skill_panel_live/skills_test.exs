@@ -335,10 +335,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       user_2: user_2,
       skill_panel: skill_panel
     } do
-      team = insert(:team)
-      insert(:team_member_users, user: user, team: team)
-      insert(:team_member_users, user: user_2, team: team)
-
       custom_group = insert(:custom_group, user: user)
       insert(:custom_group_member_user, user: user_2, custom_group: custom_group)
 
@@ -1488,7 +1484,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
 
     test "shows 404 if skill_panel_id is invalid ULID", %{conn: conn} do
-      assert_raise Ecto.NoResultsError, fn ->
+      assert_raise Ecto.Query.CastError, fn ->
         live(conn, ~p"/panels/abcd")
       end
     end

@@ -13,18 +13,20 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   alias Bright.SkillScores
   alias Bright.Subscriptions
   alias Bright.SkillPanels.SkillPanel
-  alias BrightWeb.SkillPanelLive.SkillPanelHelper
+  alias Bright.SkillPanels.SkillClass
 
   def init_assign(params, %{assigns: %{live_action: :new, current_user: user}} = socket) do
     subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
 
     # 直接チーム作成モーダルを起動した場合、データの取得は行わない
     socket
+    |> assign(:show_hr_support_modal, false)
     |> assign_plan(subscription)
     |> assign_page_title(nil)
     |> assign_display_type(params["type"])
     |> assign_display_skill_panel(nil)
     |> assign_display_skill_classes([])
+    |> assign_display_skill_class(nil)
     |> assign_display_team(nil)
     |> assign_current_users_team_member(nil)
     # ユーザー事に表示するスキルカードのmap作成とassign
@@ -55,11 +57,13 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
     # スキルとチームの取得結果に応じて各種assign
     socket
+    |> assign(:show_hr_support_modal, false)
     |> assign_plan(subscription)
     |> assign_page_title(display_skill_panel)
     |> assign_display_type(params["type"])
     |> assign_display_skill_panel(display_skill_panel)
     |> assign_display_skill_classes(display_skill_classes)
+    |> assign_display_skill_class(selected_skill_class)
     |> assign_display_team(display_team)
     |> assign_current_users_team_member(current_users_team_member)
     # ユーザー事に表示するスキルカードのmap作成とassign
@@ -75,14 +79,12 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team_members) do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
-
     try do
-      SkillPanelHelper.raise_if_not_ulid(skill_panel_id)
       SkillPanels.get_skill_panel!(skill_panel_id)
     rescue
-      _e in Ecto.NoResultsError ->
-        # 結果が取得できない場合握りつぶしてnilを返す
-        nil
+      # 結果が取得できない場合握りつぶしてnilを返す
+      Ecto.NoResultsError -> nil
+      Ecto.Query.CastError -> nil
     end
   end
 
@@ -120,8 +122,6 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   defp get_display_team(%{"team_id" => team_id}, user_id) do
     try do
-      Teams.raise_if_not_ulid(team_id)
-
       team = Teams.get_team_with_member_users!(team_id)
 
       # 対象チームのチームメンバーの場合、または支援関係のあるチームメンバーの場合のみ参照可能
@@ -132,9 +132,9 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
         nil
       end
     rescue
-      _e in Ecto.NoResultsError ->
-        # 結果が取得できない場合、カスタムグループ判定に移動
-        get_display_team_as_custom_group(team_id, user_id)
+      # 結果が取得できない場合、カスタムグループ判定に移動
+      Ecto.NoResultsError -> get_display_team_as_custom_group(team_id, user_id)
+      Ecto.Query.CastError -> get_display_team_as_custom_group(team_id, user_id)
     end
   end
 
@@ -192,6 +192,11 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign(:display_team, display_team)
   end
 
+  defp assign_display_skill_class(socket, display_skill_class) do
+    socket
+    |> assign(:display_skill_class, display_skill_class)
+  end
+
   defp assign_display_skill_cards(
          socket,
          [],
@@ -202,7 +207,6 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     # チームメンバーが取得できていない場合、スキルカードは空表示
     socket
     |> assign(:display_skill_cards, [])
-    |> assign(:select_skill_class, nil)
   end
 
   defp assign_display_skill_cards(
@@ -302,21 +306,12 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   defp assign_push_redirect(
          %{assigns: %{live_action: :index}} = socket,
-         %{"team_id" => team_id, "skill_panel_id" => skill_panel_id},
+         %{"team_id" => _team_id, "skill_panel_id" => _skill_panel_id},
          _display_team,
          _display_skill_panel
        ) do
-    # パラメータが完全に指定されていた場合、指定されたULIDの妥当性チェック
-    try do
-      Teams.raise_if_not_ulid(team_id)
-      SkillPanelHelper.raise_if_not_ulid(skill_panel_id)
-      socket
-    rescue
-      _e in Ecto.NoResultsError ->
-        # パラメータ指定が不正な場合デフォルトでリダイレクト
-        socket
-        |> push_navigate(to: "/teams")
-    end
+    # パラメータが完全に指定されていた場合、処理を続行
+    socket
   end
 
   defp assign_push_redirect(
@@ -441,5 +436,29 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       end)
 
     List.first(sorted_skill_classes)
+  end
+
+  def get_my_team_path(nil, nil, nil) do
+    "/teams"
+  end
+
+  def get_my_team_path(display_team, %SkillPanel{} = skill_panel, %SkillClass{} = skill_class) do
+    get_my_team_path(display_team, skill_panel.id, skill_class.id)
+  end
+
+  def get_my_team_path(display_team, %SkillPanel{} = skill_panel, nil) do
+    get_my_team_path(display_team, skill_panel.id, nil)
+  end
+
+  def get_my_team_path(display_team, nil, nil) do
+    "/teams/#{display_team.id}"
+  end
+
+  def get_my_team_path(display_team, skill_panel_id, nil) do
+    "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}"
+  end
+
+  def get_my_team_path(display_team, skill_panel_id, skill_class_id) do
+    "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
   end
 end

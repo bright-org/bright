@@ -3,6 +3,7 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
   Notification Header Components
   """
   use BrightWeb, :live_component
+  alias Bright.Teams
 
   @impl true
   def render(assigns) do
@@ -11,6 +12,7 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
       <button
         class="fixed top-3 right-28 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:right-0 lg:mr-0 lg:relative"
         phx-click="toggle_notifications"
+        phx-click-away={@open? && "close_notifications"}
         phx-target={@myself}
       >
         <.icon name="hero-bell" class="h-8 w-8" />
@@ -25,6 +27,16 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
             </.link>
           <% end %>
         </ul>
+        <!-- チーム支援依頼一覧への固定導線 -->
+        <a
+          :if={Teams.enable_hr_functions?(@current_user.id)}
+          href="/team_supports"
+          class="hover:opacity-70"
+        >
+          <li class="flex justify-between w-44 text-base my-2">
+            <span>チーム支援依頼</span>
+          </li>
+        </a>
       </div>
     </div>
     """
@@ -53,6 +65,12 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
 
     socket
     |> assign(:open?, new_open?)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("close_notifications", _params, socket) do
+    socket
+    |> assign(:open?, false)
     |> then(&{:noreply, &1})
   end
 

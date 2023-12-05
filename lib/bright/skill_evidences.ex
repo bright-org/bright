@@ -238,29 +238,62 @@ defmodule Bright.SkillEvidences do
 
   @doc """
   ヘルプ処理
-  チームの全メンバーにヘルプを伝える通知を生成
+  通知対象は、チームメンバー、支援元チームメンバー、支援先チームメンバー
   """
   def help(skill_evidence, user) do
     skill_breadcrumb = get_skill_breadcrumb(%{id: skill_evidence.skill_id})
+    timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
     base_attrs = %{
       from_user_id: user.id,
       message: "#{user.name}から「#{skill_breadcrumb}」のヘルプが届きました",
-      url: "/notifications/evidences/#{skill_evidence.id}"
+      url: "/notifications/evidences/#{skill_evidence.id}",
+      inserted_at: timestamp,
+      updated_at: timestamp
     }
 
-    timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    # ユーザー所属チームとその関連チーム取得
+    # NOTE: 今後設定によって通知要否（粒度未定）できるようになる想定です。そのため個別ロードしています。
+    teams =
+      Ecto.assoc(user, :teams)
+      |> preload([
+        :member_users,
+        supporter_teams_supporting: [:member_users],
+        supportee_teams_supporting: [:member_users]
+      ])
+      |> Repo.all()
 
-    Teams.list_user_ids_related_team_by_user(user)
+    # チームメンバー
+    team_related_ids = collect_team_user_ids(teams)
+
+    # 支援元メンバー
+    supporter_related_ids =
+      teams
+      |> Enum.flat_map(& &1.supporter_teams_supporting)
+      |> collect_team_user_ids()
+
+    # 支援先メンバー
+    supportee_related_ids =
+      teams
+      |> Enum.flat_map(& &1.supportee_teams_supporting)
+      |> collect_team_user_ids()
+
+    (team_related_ids ++ supporter_related_ids ++ supportee_related_ids)
+    |> Enum.uniq()
+    |> List.delete(user.id)
     |> Enum.map(fn user_id ->
       Map.merge(base_attrs, %{
         id: Ecto.ULID.generate(),
-        to_user_id: user_id,
-        inserted_at: timestamp,
-        updated_at: timestamp
+        to_user_id: user_id
       })
     end)
     |> then(&Notifications.create_notifications("evidence", &1))
+  end
+
+  defp collect_team_user_ids(teams) do
+    Enum.flat_map(teams, fn team ->
+      Enum.map(team.member_users, & &1.user_id)
+    end)
   end
 
   @doc """
@@ -296,20 +329,17 @@ defmodule Bright.SkillEvidences do
   end
 
   @doc """
-  学習メモを閲覧できるかどうかを返す
-  """
-  def can_read_skill_evidence?(skill_evidence, user) do
-    skill_evidence.user_id == user.id ||
-      user.id in Teams.list_user_ids_related_team_by_user(skill_evidence.user)
-  end
-
-  @doc """
   学習メモに書き込めるかどうかを返す
   NOTE: 現在は匿名書き込み不可。匿名書き込みを許可に変更するときは、通知メッセージ内のnameに注意
   """
   def can_write_skill_evidence?(skill_evidence, user) do
     skill_evidence.user_id == user.id ||
-      user.id in Teams.list_user_ids_related_team_by_user(skill_evidence.user)
+      Teams.joined_teams_or_supportee_teams_or_supporter_teams_by_user_id!(
+        skill_evidence.user_id,
+        user.id
+      )
+  rescue
+    Bright.Exceptions.ForbiddenResourceError -> false
   end
 
   @doc """

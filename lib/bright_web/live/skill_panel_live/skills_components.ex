@@ -147,7 +147,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-placement="bottom"
     >
       <.action_button class="dropdownTrigger">
-        <span>カスタムグループと比較</span>
+        <span>カスタムグループ追加・比較</span>
       </.action_button>
       <div
         class="dropdownTarget z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
@@ -179,20 +179,20 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skills_table(assigns) do
     ~H"""
-    <div id="skills-table-field" class="h-[70vh] w-full overflow-auto scroll-pt-[76px] mt-4 lg:h-[50vh]">
-      <table class="skill-panel-table min-w-full border-t border-l border-brightGray-200">
-        <thead class="sticky top-0 bg-white">
+    <div id="skills-table-field" class="h-[70vh] overflow-auto scroll-pt-[76px] mt-4 h-[50vh]">
+      <table class="skill-panel-table">
+        <% # z-[1]: table内のsticky優先表示で使用 %>
+        <thead>
           <tr>
-            <td colspan="4" class="!border-t !border-l-white !border-t-white !border-l">
-            </td>
-            <td class="!border-l !border-brightGray-200">
-              <div class="flex justify-center items-center min-w-[80px] lg:min-w-[150px]">
+            <td colspan="4" class="sticky z-[1] left-0 top-0 min-w-[900px] bg-white sticky-border"> </td>
+            <td class="sticky top-0 bg-white sticky-border sticky-border-plus-top">
+              <div class="flex justify-center items-center min-w-[80px] min-w-[150px]">
                 <p class="inline-flex flex-1 justify-center">
                   <%= if(@anonymous, do: "非表示", else: @display_user.name) %>
                 </p>
               </div>
             </td>
-            <td :for={user <- @compared_users} class="!border-l !border-brightGray-200">
+            <td :for={user <- @compared_users} class="sticky top-0 bg-white sticky-border sticky-border-plus-top">
               <div class="flex justify-center items-center">
                 <p class="inline-flex flex-1 justify-center"><%= if user.anonymous, do: "非表示", else: user.name %></p>
                 <button
@@ -208,19 +208,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
             </td>
           </tr>
           <tr>
-            <th class="bg-base text-white text-center lg:min-w-[200px]">
+            <th class="bg-base text-white text-center min-w-[200px] sticky z-[1] left-0 top-[37px] sticky-border sticky-border-plus-left">
               知識エリア
             </th>
-            <th class="bg-base text-white text-center lg:min-w-[200px]">
+            <th class="bg-base text-white text-center min-w-[200px] sticky z-[1] left-[200px] top-[37px] sticky-border">
               カテゴリー
             </th>
-            <th class="bg-base text-white text-center lg:min-w-[420px]">
+            <th class="bg-base text-white text-center min-w-[420px] sticky z-[1] left-[400px] top-[37px] sticky-border">
               スキル
             </th>
-            <th class="bg-base text-white text-center">
+            <th class="bg-base text-white text-center min-w-[80px] sticky z-[1] left-[820px] top-[37px] sticky-border">
               合計
             </th>
-            <td id="my-percentages">
+            <td id="my-percentages" class="bg-white sticky top-[37px] sticky-border">
               <div class="flex justify-center flex-wrap gap-x-2">
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
@@ -232,7 +232,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </div>
               </div>
             </td>
-            <td id={"user-#{index}-percentages"} :for={{user, index} <- Enum.with_index(@compared_users, 1)}>
+            <td
+              :for={{user, index} <- Enum.with_index(@compared_users, 1)}
+              id={"user-#{index}-percentages"}
+              class="bg-white sticky top-[37px] sticky-border"
+            >
               <% user_data = Map.get(@compared_user_dict, user.name) %>
               <div class="flex justify-center gap-x-2">
                 <div class="min-w-[3em] flex items-center">
@@ -254,13 +258,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
           <tr id={"skill-#{row}"}>
-            <td :if={col1} rowspan={col1.size} id={"unit-#{col1.position}"} class="align-top">
+            <td :if={col1} rowspan={col1.size} id={"unit-#{col1.position}"} class="align-top sticky left-0 bg-white sticky-border sticky-border-plus-left">
               <%= col1.skill_unit.name %>
             </td>
-            <td :if={col2} rowspan={col2.size} class="align-top">
+            <td :if={col2} rowspan={col2.size} class="align-top sticky left-[200px] bg-white sticky-border">
               <%= col2.skill_category.name %>
             </td>
-            <td>
+            <td class="sticky left-[400px] bg-white sticky-border">
               <div class="flex justify-between items-center">
                 <p><%= col3.skill.name %></p>
                 <div class="flex justify-between items-center gap-x-2">
@@ -270,7 +274,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </div>
               </div>
             </td>
-            <td>
+            <td class="sticky left-[820px] bg-white sticky-border">
               <div class="num-high-users flex justify-center gap-x-1">
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:high, :gray), "inline-block mr-1"]}></span>
@@ -291,7 +295,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               </div>
             </td>
             <td>
-              <div class="flex justify-center gap-x-4 px-4 min-w-[150px]">
+              <div class="flex justify-center gap-x-4 px-4 h-[21px] items-center">
                 <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
               </div>
             </td>

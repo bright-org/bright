@@ -13,6 +13,8 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
     ~H"""
     <UserAuthComponents.header>ユーザー新規作成</UserAuthComponents.header>
 
+    <UserAuthComponents.social_auth_banner variant={to_string(@provider)} />
+
     <UserAuthComponents.auth_form
       for={@form}
       id="registration_by_social_auth_form"
@@ -46,8 +48,6 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
             </label>
           </div>
         </div>
-
-        <UserAuthComponents.social_auth_banner variant={to_string(@provider)} />
 
         <UserAuthComponents.button variant="mx-auto" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UserAuthComponents.button>
       </UserAuthComponents.form_section>

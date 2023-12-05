@@ -98,9 +98,16 @@ defmodule Storybook.ChartComponents.SkillGem do
         }
       },
       %Variation{
-        id: :skill6_2_1,
+        id: :skill6_2_1_a,
         attributes: %{
           data: [[90, 80, 75, 60, 90, 45], [80, 70, 65, 50, 80, 100]],
+          labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]
+        }
+      },
+      %Variation{
+        id: :skill6_2_1_b,
+        attributes: %{
+          data: [[80, 70, 65, 50, 80, 100], [90, 80, 75, 60, 90, 45]],
           labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]
         }
       },
@@ -115,6 +122,13 @@ defmodule Storybook.ChartComponents.SkillGem do
         id: :skill6_2_3,
         attributes: %{
           data: [[50, 50, 50, 80, 80, 80], [80, 80, 80, 50, 50, 50]],
+          labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]
+        }
+      },
+      %Variation{
+        id: :skill6_3,
+        attributes: %{
+          data: [[0, 0, 0, 0, 0, 0], [80, 80, 80, 50, 50, 50]],
           labels: ["Elixir本体", "ライブラリ", "環境構築", "関連スキル", "デバッグ", "テスト"]
         }
       },

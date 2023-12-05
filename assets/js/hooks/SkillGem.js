@@ -1,8 +1,8 @@
 import { Chart } from "chart.js/auto";
 const scalesBackgroundColor = "#D4F9F7";
 const gridColor = "#FFFFFF44";
-const myselfColorPattern = ["#72EAD9C0", "#3CC0A8C0", "#1DA091C0"];
-const otherColorPattern = ["#E4BDE9AA", "#C063CDAA", "#9510B1AA"];
+const myselfColorPattern = ["#72EAD9C0", "#1DA091C0", "#3CC0A8C0"];
+const otherColorPattern = ["#D659F0AA", "#7B0D92AA", "#BC14E0AA"];
 const pastColorPattern = ["#FFFFFF55", "#FFFFFF55", "#FFFFFF55"];
 const linkColor = "#0000FF";
 const minValue = -5;
@@ -11,7 +11,7 @@ const getColorPattern = (length, colors) => {
   const pattern = [];
   if (length < 3) return;
 
-  // lengthが4の時は先頭から2色の交互
+  // lengthが4の時は先頭から2色（薄い、濃い）の交互
   if (length === 4) {
     for (let i = 0; i < length; i++) {
       pattern.push(colors[i % 2]);

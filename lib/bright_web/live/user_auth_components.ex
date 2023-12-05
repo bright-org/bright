@@ -284,7 +284,7 @@ defmodule BrightWeb.UserAuthComponents do
       <span class="block font-bold mb-2 text-xs max-w-xs mx-auto w-full">認証</span>
       <span
         class={[
-          "block bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs mx-auto px-4 py-2 rounded select-none text-center w-full",
+          "block bg-no-repeat border-solid bg-5 bg-left-2.5 border-b font-bold max-w-xs mx-auto px-4 py-2 select-none text-center w-full",
           @variant == "google" && "bg-bgGoogle border-black text-black",
           @variant == "github" && "bg-bgGithub bg-sns-github border-github text-white",
           @variant == "facebook" && "bg-bgFacebook bg-sns-facebook border-facebook text-white",

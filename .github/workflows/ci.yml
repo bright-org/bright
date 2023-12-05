@@ -82,6 +82,8 @@ jobs:
       - name: Run Test
         run: |
           mix deps.compile
+          # phoenix_ecto: exclude_ecto_exceptions_from_plug 反映のためコンパイル明示
+          mix deps.compile phoenix_ecto --force
           mix compile --warnings-as-errors
           mix test --warnings-as-errors
         env:
