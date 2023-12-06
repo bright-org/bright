@@ -34,6 +34,9 @@ msgstr ""
 msgid "dismiss_interview"
 msgstr ""
 
+msgid "ongoing_interview"
+msgstr ""
+
 msgid "complete_interview"
 msgstr ""
 

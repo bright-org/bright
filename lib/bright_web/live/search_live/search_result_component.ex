@@ -87,7 +87,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             target="_blank"
             rel="noopener noreferrer"
             href={
-              skill_panel_path("graphs",%{id: @selected_skill_panel.skill_panel}, %{name_encrypted: encrypt_user_name(@user)},false,true)
+              skill_panel_path("graphs",%{id: @selected_skill_panel.skill_panel}, %{name_encrypted: encrypt_user_name(@user), name: @user.name},false,@anon)
               <> "?class=#{@selected_skill_panel.class}"
             }
           >
@@ -97,7 +97,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:opacity-50"
             target="_blank"
             rel="noopener noreferrer"
-            href={"/mypage/anon/#{encrypt_user_name(@user)}"}
+            href={if @anon, do: "/mypage/anon/#{encrypt_user_name(@user)}", else: "/mypage/#{@user.name}"}
           >
             保有スキル
           </.link>

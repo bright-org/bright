@@ -16,10 +16,23 @@ defmodule Bright.Recruits.Interview do
     field :desired_income, :integer
     field :comment, :string
     field :skill_params, :string
+    field :cancel_reason, :string
 
     field :status, Ecto.Enum,
-      values: [:waiting_decision, :consume_interview, :dismiss_interview, :completed_interview],
+      values: [
+        :waiting_decision,
+        :consume_interview,
+        :dismiss_interview,
+        :ongoing_interview,
+        :completed_interview,
+        :cancel_interview
+      ],
       default: :waiting_decision
+
+    field :recruiter_user_name, :string, virtual: true
+    field :recruiter_user_icon, :string, virtual: true
+    field :candidates_user_name, :string, virtual: true
+    field :candidates_user_icon, :string, virtual: true
 
     belongs_to :candidates_user, User
     belongs_to :recruiter_user, User
@@ -41,7 +54,8 @@ defmodule Bright.Recruits.Interview do
       :comment,
       :candidates_user_id,
       :recruiter_user_id,
-      :requestor_user_id
+      :requestor_user_id,
+      :cancel_reason
     ])
     |> cast_assoc(:interview_members,
       with: &InterviewMember.changeset/2

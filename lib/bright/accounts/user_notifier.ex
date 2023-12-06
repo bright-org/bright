@@ -311,6 +311,81 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
+  Deliver interview start mail to candidates_user .
+  """
+  def deliver_start_interview_to_candidates_user(from_user, to_user) do
+    deliver(to_user.email, "【Bright】面談が確定されました", """
+    #{to_user.name}さん
+
+    #{from_user.name}から、面談が確定されました。
+
+    面談日・ツール・場所は、#{from_user.name}から別途、連絡いたします。
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver interview start mail to recruitor .
+  """
+  def deliver_start_interview_to_recruiter(from_user, to_user) do
+    deliver(from_user.email, "【Bright】面談確定を候補者に連絡しました（調整を行ってください）", """
+    #{from_user.name}さん
+
+    以下の文面を#{to_user.name}(#{to_user.email})さんへ送りました。
+    別途、日程などをメールで調整してください（Bright内では日程調整は行いません）。
+
+    面談終了後、下記URLで採用調整、選考通知およびチーム招待を行ってください。
+    https://採用調整モーダル
+
+    ====================================================================
+
+    #{from_user.name}から、面談が確定されました。
+
+    面談日・ツール・場所は、#{from_user.name}から別途、連絡いたします。
+
+    ====================================================================
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver interview cancel mail to candidates_user .
+  """
+  def deliver_cancel_interview_to_candidates_user(from_user, to_user) do
+    deliver(to_user.email, "【Bright】面談がキャンセルされました", """
+    #{to_user.name}さん
+
+    #{from_user.name}から、面談がキャンセルされました。
+
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
   Deliver free trial apply .
   """
   def deliver_new_message_notification_instructions(to_user, url) do

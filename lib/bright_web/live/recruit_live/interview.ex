@@ -11,20 +11,21 @@ defmodule BrightWeb.RecruitLive.Interview do
     ~H"""
     <div id="interview_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-        <h4 class="text-start">面談調整</h4>
+        <h4 class="text-start">面談調整の状況</h4>
         <li :if={Enum.count(@interviews) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
             調整中の面談はありません
           </div>
         </li>
         <%= for interview <- @interviews do %>
+          <% icon_path = if interview.status == :ongoing_interview, do: interview.candidates_user.user_profile.icon_file_path, else: nil %>
           <li class="flex my-5">
             <.link
                patch={~p"/recruits/interviews/#{interview.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <img
-                src={UserProfiles.icon_url(nil)}
+                src={UserProfiles.icon_url(icon_path)}
                 class="object-cover h-12 w-12 rounded-full mr-2"
                 alt=""
               />
@@ -52,10 +53,10 @@ defmodule BrightWeb.RecruitLive.Interview do
     <div id="interview_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
 
-    <h4 class="text-start">面談調整依頼</h4>
+    <h4 class="text-start">面談同席依頼</h4>
         <li :if={Enum.count(@interview_members) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
-            面談調整の依頼はありません
+            面談同席の依頼はありません
           </div>
         </li>
         <%= for member <- @interview_members do %>
@@ -101,6 +102,33 @@ defmodule BrightWeb.RecruitLive.Interview do
       />
     </.bright_modal>
 
+    <.bright_modal :if={@live_action in [:confirm_interview]} id="interview-confirm-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
+      <.live_component
+        module={BrightWeb.RecruitLive.ConfirmInterviewComponent}
+        id="interview_member_modal"
+        title={@page_title}
+        action={@live_action}
+        interview_id={@interview.id}
+        current_user={@current_user}
+        patch={~p"/recruits/interviews"}
+      />
+    </.bright_modal>
+
+
+    <.bright_modal :if={@live_action in [:cancel_interview]} id="interview-cancel-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
+      <.live_component
+        module={BrightWeb.RecruitLive.CancelInterviewComponent}
+        id="interview_member_modal"
+        title={@page_title}
+        action={@live_action}
+        interview_id={@interview.id}
+        current_user={@current_user}
+        patch={~p"/recruits/interviews"}
+        return_to={~p"/recruits/interviews"}
+      />
+    </.bright_modal>
+
+
     <.bright_modal :if={@live_action in [:show_member]} id="interview-member-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
         module={BrightWeb.RecruitLive.EditInterviewMemberComponent}
@@ -112,6 +140,7 @@ defmodule BrightWeb.RecruitLive.Interview do
         patch={~p"/recruits/interviews"}
       />
     </.bright_modal>
+
     """
   end
 
@@ -133,13 +162,6 @@ defmodule BrightWeb.RecruitLive.Interview do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :show_interview, %{"id" => id}) do
-    user_id = socket.assigns.current_user.id
-
-    socket
-    |> assign(:interview, Recruits.get_interview_with_member_users!(id, user_id))
-  end
-
   defp apply_action(socket, :show_member, %{"id" => id}) do
     user_id = socket.assigns.current_user.id
 
@@ -151,5 +173,21 @@ defmodule BrightWeb.RecruitLive.Interview do
     socket
     |> assign(:interview, nil)
     |> assign(:interview_member, nil)
+  end
+
+  defp apply_action(socket, _action, %{"id" => id}) do
+    user_id = socket.assigns.current_user.id
+    interview = Recruits.get_interview_with_member_users!(id, user_id)
+
+    action =
+      case interview.status do
+        :waiting_decision -> :show_interview
+        :consume_interview -> :confirm_interview
+        :ongoing_interview -> :cancel_interview
+      end
+
+    socket
+    |> assign(:interview, interview)
+    |> assign(:live_action, action)
   end
 end

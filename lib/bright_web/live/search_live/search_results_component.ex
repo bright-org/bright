@@ -15,6 +15,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
           search={@search}
           prefix={@prefix}
           module={BrightWeb.SearchLive.SearchResultComponent}
+          anon={@anon}
           user={user}
           index={index}
           skill_params={@skill_params}
