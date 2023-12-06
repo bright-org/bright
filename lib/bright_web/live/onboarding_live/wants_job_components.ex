@@ -9,7 +9,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id="wants_job_panel" class="hidden px-4 py-4">
+    <div id="wants_job_panel" class="p-4 lg:p-8">
       <!-- タブここから -->
       <aside id="select_job">
         <ul class="flex relative text-xs">
