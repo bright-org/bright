@@ -1,4 +1,4 @@
-defmodule BrightWeb.RecruitLive.NotificationHeaderComponent do
+defmodule BrightWeb.RecruitNotificationHeaderComponent do
   @moduledoc """
   Notification Header Components for Recruit
   """

@@ -207,7 +207,7 @@ defmodule BrightWeb.ChatLive.Index do
 
       <.bright_modal :if={@chat && @open_confirm_interview} id="interview-confirm-modal" show on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}>
       <.live_component
-        module={BrightWeb.RecruitLive.ConfirmInterviewComponent}
+        module={BrightWeb.RecruitInterviewLive.ConfirmComponent}
         id="interview_confirm_modal"
         title={@page_title}
         action={@live_action}
@@ -219,7 +219,7 @@ defmodule BrightWeb.ChatLive.Index do
 
     <.bright_modal :if={@chat && @open_cancel_interview}  id="interview-cancel-modal" show on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}>
       <.live_component
-        module={BrightWeb.RecruitLive.CancelInterviewComponent}
+        module={BrightWeb.RecruitInterviewLive.CancelComponent}
         id="interview_cancel_modal"
         title={@page_title}
         action={@live_action}

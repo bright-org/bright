@@ -1,4 +1,4 @@
-defmodule BrightWeb.RecruitLive.EditInterviewMemberComponent do
+defmodule BrightWeb.RecruitInterviewLive.EditMemberComponent do
   alias Bright.Recruits
   use BrightWeb, :live_component
 

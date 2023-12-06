@@ -1,4 +1,4 @@
-defmodule BrightWeb.RecruitLive.Interview do
+defmodule BrightWeb.RecruitInterviewLive.Index do
   use BrightWeb, :live_view
 
   alias Bright.Recruits
@@ -92,7 +92,7 @@ defmodule BrightWeb.RecruitLive.Interview do
     </div>
     <.bright_modal :if={@live_action in [:show_interview]} id="interview-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
-        module={BrightWeb.RecruitLive.EditInterviewComponent}
+        module={BrightWeb.RecruitInterviewLive.EditComponent}
         id="interview_modal"
         title={@page_title}
         action={@live_action}
@@ -104,7 +104,7 @@ defmodule BrightWeb.RecruitLive.Interview do
 
     <.bright_modal :if={@live_action in [:confirm_interview]} id="interview-confirm-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
-        module={BrightWeb.RecruitLive.ConfirmInterviewComponent}
+        module={BrightWeb.RecruitInterviewLive.ConfirmComponent}
         id="interview_member_modal"
         title={@page_title}
         action={@live_action}
@@ -117,7 +117,7 @@ defmodule BrightWeb.RecruitLive.Interview do
 
     <.bright_modal :if={@live_action in [:cancel_interview]} id="interview-cancel-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
-        module={BrightWeb.RecruitLive.CancelInterviewComponent}
+        module={BrightWeb.RecruitInterviewLive.CancelComponent}
         id="interview_member_modal"
         title={@page_title}
         action={@live_action}
@@ -131,7 +131,7 @@ defmodule BrightWeb.RecruitLive.Interview do
 
     <.bright_modal :if={@live_action in [:show_member]} id="interview-member-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
-        module={BrightWeb.RecruitLive.EditInterviewMemberComponent}
+        module={BrightWeb.RecruitInterviewLive.EditMemberComponent}
         id="interview_member_modal"
         title={@page_title}
         action={@live_action}
