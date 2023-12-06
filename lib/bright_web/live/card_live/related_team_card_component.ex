@@ -80,7 +80,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
                 <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">カスタムグループはありません</div>
                 <a
                    href="/panels"
-                   class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
+                   class="hidden lg:inline text-sm font-bold px-5 py-3 rounded text-white bg-base"
                  >
                    カスタムグループを作る
                  </a>
