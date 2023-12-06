@@ -115,7 +115,7 @@ defmodule BrightWeb.GuideMessageComponents do
   defp evidence_introduction_description(assigns) do
     ~H"""
     <p class="mt-4">
-      なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br class="hidden lg:inline">できます。（βリリースでは他のチームメンバーにヘルプを出したりできます）
+      なお、各スキルを学んだ記録やメモを残したい場合は、<span class="text-brightGreen-600"><img src="/images/common/icons/skillEvidence.svg" class="inline-block"></span>から、メモを入力することが<br class="hidden lg:inline">できます。
     </p>
     """
   end
