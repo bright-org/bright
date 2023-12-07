@@ -27,14 +27,14 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
             </.link>
           <% end %>
         </ul>
-        <!-- チーム支援依頼一覧への固定導線 -->
+        <!-- 採用・育成支援への固定導線 -->
         <a
           :if={Teams.enable_hr_functions?(@current_user.id)}
           href="/team_supports"
           class="hover:opacity-70"
         >
           <li class="flex justify-between w-44 text-base my-2">
-            <span>チーム支援依頼</span>
+            <span>採用・育成支援</span>
           </li>
         </a>
       </div>

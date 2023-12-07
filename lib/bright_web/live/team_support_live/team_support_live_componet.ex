@@ -62,7 +62,8 @@ defmodule BrightWeb.TeamSupportLiveComponent do
           </div>
           <div id="supportee_area_right" class="w-[580px] pl-10 flex flex-col justify-between">
             <div class="item-left mb-5">
-              <h5>採用・育成支援先チーム（支援してもらうチーム）</h5>
+              <h5 :if={@modal_mode == "request"}>支援対象チーム</h5>
+              <h5 :if={@modal_mode != "request"}>支援対象チーム／依頼ユーザー</h5>
               <div class="bg-brightGray-10 rounded-sm mt-2">
                 <.render_supportee_team
                   modal_mode={@modal_mode}
@@ -77,7 +78,8 @@ defmodule BrightWeb.TeamSupportLiveComponent do
             </div>
 
             <div class="item-left mb-5">
-              <h5>採用・育成支援チーム（支援するチーム）</h5>
+              <h5 :if={@modal_mode == "request"}>支援依頼先ユーザー</h5>
+              <h5 :if={@modal_mode != "request"}>支援担当チーム／確認ユーザー</h5>
               <div class="bg-brightGray-10 rounded-sm mt-2">
                 <.render_supporter_team
                   :if={@modal_mode != "request"}
@@ -87,19 +89,10 @@ defmodule BrightWeb.TeamSupportLiveComponent do
                   request_to_user={@request_to_user}
                 />
               </div>
-              <h5 :if={@modal_mode != "request"}>詳細情報</h5>
-              <div
-                :if={@modal_mode != "request"}
-                class="bg-brightGray-10 rounded-sm mt-2"
-              >
-                <.render_request_details
-                  team_supporter_team={@display_team_supporter_team}
-                />
-              </div>
             </div>
           </div>
         </div>
-        <div id="bottom_area" class="flex justify-end gap-x-4">
+        <div id="bottom_area" class="flex justify-end gap-x-4 pt-3">
           <.render_botton
             modal_mode={@modal_mode}
             phx_target={@myself}
@@ -113,7 +106,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   defp render_request_details(assigns) do
     ~H"""
     <div class="flex px-3 py-3">
-      <label for="supportee_team_name" class="flex items-center ">
+      <label for="supportee_team_name" class="flex items-center min-h-[35px]">
         <span class="w-[200px] text-base font-bold">支援依頼日時</span>
         <div>
           <.date_time_text
@@ -153,7 +146,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
       phx-click="request_team_support"
       phx-target={@phx_target}
     >
-      採用・育成チームに支援してもらう
+      支援依頼する
     </button>
     """
   end
@@ -195,7 +188,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   defp render_title(%{modal_mode: "request"} = assigns) do
     ~H"""
     <h3>
-      採用・育成チームに支援してもらう（β）
+      採用・育成の支援依頼（β）
     </h3>
     """
   end
@@ -203,7 +196,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   defp render_title(%{modal_mode: "requesting"} = assigns) do
     ~H"""
     <h3>
-      チームを支援する（β）
+      支援依頼を確認する（β）
     </h3>
     """
   end
@@ -211,7 +204,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   defp render_title(%{modal_mode: "supporting"} = assigns) do
     ~H"""
     <h3>
-      チームの支援の詳細
+      支援を終了する
     </h3>
     """
   end
@@ -220,7 +213,6 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     ~H"""
     <div class="bg-brightGray-10 rounded-sm px-3 py-3">
       <label for="supportee_team_name" class="flex items-center ">
-        <span class="w-[200px] text-base font-bold">採用・育成支援先チーム</span>
         <div>
           <.team_small
             id="team_small_{@supportee_team.id}"
@@ -237,10 +229,9 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   defp render_supporter_team(assigns) do
     ~H"""
     <div class="bg-brightGray-10 rounded-sm px-3 py-3">
-      <label for="supportee_team_name" class="flex items-center ">
-        <span class="w-[200px] text-base font-bold">採用・育成支援チーム</span>
+      <label for="supportee_team_name" class="flex items-center min-h-[35px]">
         <div :if={is_nil(@supporter_team)}>
-          採用・育成支援チームを選択してください
+          採用・育成を担当するチームを選択してください
         </div>
         <div :if={!is_nil(@supporter_team)}>
           <.team_small
@@ -260,7 +251,6 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     ~H"""
     <div class="bg-brightGray-10 rounded-sm px-3 py-3">
       <label for="team_name" class="flex items-center ">
-        <span class="w-[200px] text-base font-bold">支援依頼元ユーザー</span>
         <div
           :if={!is_nil(@request_from_user)}
           class="w-[300px] text-left flex items-center text-base p-2 rounded border border-brightGray-100 bg-white"
@@ -279,8 +269,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     # @request_to_user
     ~H"""
     <div class="bg-brightGray-10 rounded-sm px-3 py-3">
-      <label for="team_name" class="flex items-center ">
-        <span class="w-[200px] text-base font-bold">支援依頼先ユーザー</span>
+      <label for="team_name" class="flex items-center min-h-[50px]">
         <div
           :if={!is_nil(@request_to_user)}
           class="w-[300px] text-left flex items-center text-base p-2 rounded border border-brightGray-100 bg-white"
@@ -308,7 +297,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
             phx-submit="search_user"
           >
             <p class="pb-2 text-base">
-              <span class="font-bold">Brightハンドル名もしくはメールアドレス</span>から支援依頼するユーザーを検索
+              支援依頼先ユーザーの<span class="font-bold">Brightハンドル名もしくはメールアドレス</span>を検索
             </p>
             <input
               id="search_word"
@@ -333,7 +322,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   defp render_supporter_team_card(assigns) do
     ~H"""
     <p class="pb-2 text-base">
-      <span class="font-bold">採用・育成チーム</span>からチームを選択
+      <span class="font-bold">採用・育成を担当する</span>チームを選択
     </p>
     <div class="rounded border border-brightGray-100 bg-white">
       <.tab
@@ -482,7 +471,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     if is_nil(socket.assigns.supporter_team) do
       {:noreply,
        socket
-       |> assign(:select_supporter_team_error, "採用・育成支援チームを選択してください")}
+       |> assign(:select_supporter_team_error, "採用・育成を担当するチームを選択してください")}
     else
       {:ok, _team_supporter_team} =
         Teams.accept_support_by_supporter_team(

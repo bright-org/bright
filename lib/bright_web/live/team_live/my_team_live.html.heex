@@ -110,11 +110,11 @@
       </button>
       <button
         :if={!is_nil(@display_team) && is_admin?(@display_team, @current_user)}
-        class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-52"
+        class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-56"
         phx-click="toggle_show_hr_support_modal"
         phx-value-team_id={@display_team.id}
       >
-        採用・育成支援チームに支援してもらう
+        採用・育成の支援依頼（β）
       </button>
     </div>
   </div>
