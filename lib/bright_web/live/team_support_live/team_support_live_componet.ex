@@ -103,41 +103,6 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     """
   end
 
-  defp render_request_details(assigns) do
-    ~H"""
-    <div class="flex px-3 py-3">
-      <label for="supportee_team_name" class="flex items-center min-h-[35px]">
-        <span class="w-[200px] text-base font-bold">支援依頼日時</span>
-        <div>
-          <.date_time_text
-            naive_date_time={@team_supporter_team.request_datetime}
-          />
-        </div>
-      </label>
-    </div>
-    <div class="flex px-3 py-3">
-      <label for="supportee_team_name" class="flex items-center ">
-        <span class="w-[200px] text-base font-bold">支援開始日時</span>
-        <div>
-          <.date_time_text
-            naive_date_time={@team_supporter_team.start_datetime}
-          />
-        </div>
-      </label>
-    </div>
-    <div class="flex px-3 py-3">
-      <label for="supportee_team_name" class="flex items-center ">
-        <span class="w-[200px] text-base font-bold">支援終了日時</span>
-        <div>
-          <.date_time_text
-            naive_date_time={@team_supporter_team.end_datetime}
-          />
-        </div>
-      </label>
-    </div>
-    """
-  end
-
   defp render_botton(%{modal_mode: "request"} = assigns) do
     ~H"""
     <button

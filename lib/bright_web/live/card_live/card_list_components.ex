@@ -198,18 +198,6 @@ defmodule BrightWeb.CardLive.CardListComponents do
     """
   end
 
-  attr :naive_date_time, :any, required: true
-
-  def date_time_text(assigns) do
-    ~H"""
-    <span
-      class="font-bold pl-0 inline-block w-full text-sm order-1 lg:pl-4 lg:order-3 lg:w-auto"
-    >
-      <%= convert_date_time_to_text(@naive_date_time) %>
-    </span>
-    """
-  end
-
   defp convert_date_time_to_text(naive_date_time) do
     if is_nil(naive_date_time) do
       "- - - - / - - / - -  - - : - - : - -"
