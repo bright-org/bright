@@ -11,7 +11,6 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   import BrightWeb.ProfileComponents
   import BrightWeb.TeamComponents
   import BrightWeb.TabComponents
-  import BrightWeb.CardLive.CardListComponents
 
   alias Bright.UserProfiles
   alias alias Bright.Teams
