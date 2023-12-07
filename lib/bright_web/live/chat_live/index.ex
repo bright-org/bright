@@ -185,7 +185,11 @@ defmodule BrightWeb.ChatLive.Index do
                   面談確定の確認
                 </button>
               <% else %>
-                <button class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56">
+                <button
+                  class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
+                  type="button"
+                  phx-click={JS.push("open_create_coordination") |> JS.show(to: "coordination-create-modal")}
+                >
                   採用調整
                 </button>
               <% end %>
@@ -230,6 +234,15 @@ defmodule BrightWeb.ChatLive.Index do
       />
     </.bright_modal>
 
+    <.bright_modal :if={@chat && @open_create_coordination}  id="coordination-create-modal" show on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}>
+      <.live_component
+        id="coordination_modal"
+        module={BrightWeb.RecruitCoordinationLive.CreateComponent}
+        current_user={@current_user}
+        interview_id={@chat.relation_id}
+        :if={@current_user}
+      />
+    </.bright_modal>
     </div>
     """
   end
@@ -239,6 +252,7 @@ defmodule BrightWeb.ChatLive.Index do
     socket
     |> assign(:open_confirm_interview, false)
     |> assign(:open_cancel_interview, false)
+    |> assign(:open_create_coordination, false)
     |> assign(:sender_icon_path, UserProfiles.icon_url(user.user_profile.icon_file_path))
     |> then(&{:ok, &1})
   end
@@ -299,6 +313,10 @@ defmodule BrightWeb.ChatLive.Index do
 
   def handle_event("cancel_interview", _params, socket) do
     {:noreply, assign(socket, :open_cancel_interview, true)}
+  end
+
+  def handle_event("open_create_coordination", _params, socket) do
+    {:noreply, assign(socket, :open_create_coordination, true)}
   end
 
   @impl true

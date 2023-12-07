@@ -11,7 +11,7 @@ defmodule Bright.Recruits.Coordination do
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
 
-  schema "recruit_coordinations" do
+  schema "coordinations" do
     field :skill_panel_name, :string
     field :desired_income, :integer
     field :comment, :string
@@ -20,14 +20,14 @@ defmodule Bright.Recruits.Coordination do
 
     field :status, Ecto.Enum,
       values: [
-        :waiting_decision,
-        :consume_interview,
-        :dismiss_interview,
-        :ongoing_interview,
-        :completed_interview,
-        :cancel_interview
+        :waiting_recruit_decision,
+        :consume_coordination,
+        :dismiss_coordination,
+        :ongoing_coordination,
+        :completed_coordination,
+        :cancel_coordination
       ],
-      default: :waiting_decision
+      default: :waiting_recruit_decision
 
     field :recruiter_user_name, :string, virtual: true
     field :recruiter_user_icon, :string, virtual: true

@@ -37,6 +37,22 @@ msgstr ""
 msgid "complete_interview"
 msgstr ""
 
+msgid "waiting_recruit_decision"
+msgstr ""
+
+msgid "consume_coordination"
+msgstr ""
+
+msgid "dismiss_coordination"
+msgstr ""
+
+msgid "ongoing_coordination"
+msgstr ""
+
+msgid "complete_coordination"
+msgstr ""
+
+
 msgid "not_answered"
 msgstr ""
 
