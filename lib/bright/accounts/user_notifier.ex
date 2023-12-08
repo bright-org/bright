@@ -445,8 +445,8 @@ defmodule Bright.Accounts.UserNotifier do
     電話番号: #{detail["phone_number"]}
     メールアドレス: #{detail["email"]}
     担当者（本名） #{detail["pic_name"]}
-    申込日(JST) #{NaiveDateTime.local_now() |> NaiveDateTime.to_iso8601()}
-    申込日(UTC) #{NaiveDateTime.utc_now() |> NaiveDateTime.to_iso8601()}
+    申込日(JST) #{DateTime.now!("Japan") |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..18)}
+    申込日(UTC) #{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..-2)}
 
     お得意様であればフォローアップをお願いします
     """)
