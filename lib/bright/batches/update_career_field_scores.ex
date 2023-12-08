@@ -18,22 +18,37 @@ defmodule Bright.Batches.UpdateCareerFieldScores do
   def call do
     users = list_users()
     dict_skill_ids = map_skill_ids_career_field()
-    dict_count = map_values_count(dict_skill_ids)
     career_fields = Repo.all(CareerField)
 
-    users
-    |> Enum.each(&upsert_career_field_scores(&1, career_fields, dict_skill_ids, dict_count))
+    Enum.each(users, &run_each_user(&1, career_fields, dict_skill_ids))
   end
 
   # ユーザー単位のキャリアフィールドスコア更新処理
-  defp upsert_career_field_scores(user, career_fields, dict_skill_ids, dict_count) do
+  # - スキルスコアを取得していないユーザー（登録後未操作）は処理対象から除外している
+  defp run_each_user(user, career_fields, dict_skill_ids) do
+    dict_counts =
+      Map.new(career_fields, fn career_field ->
+        skill_ids = Map.get(dict_skill_ids, career_field.id) || []
+        high_skills_count = count_high_skills(user, skill_ids)
+        {career_field, high_skills_count}
+      end)
+
+    sum_counts = dict_counts |> Map.values() |> Enum.sum()
+
+    # 更新対象判定
+    # NOTE: スキルスコア取得後に「全て」未取得に戻すケースも厳密には更新対象だが運用上起こりにくくチェックを省いている
+    upsert_required? = sum_counts != 0
+
+    upsert_required? &&
+      upsert_career_field_scores(user, career_fields, dict_counts, sum_counts)
+  end
+
+  def upsert_career_field_scores(user, career_fields, dict_counts, sum_counts) do
     scores =
       career_fields
       |> Enum.map(fn career_field ->
-        skill_ids = Map.get(dict_skill_ids, career_field.id) || []
-        count = Map.get(dict_count, career_field.id) || 0
-        high_skills_count = count_high_skills(user, skill_ids)
-        percentage = if count == 0, do: 0.0, else: high_skills_count / count
+        high_skills_count = Map.get(dict_counts, career_field) || 0
+        percentage = if sum_counts == 0, do: 0.0, else: 100 * (high_skills_count / sum_counts)
 
         %{
           id: Ecto.ULID.generate(),
@@ -148,9 +163,5 @@ defmodule Bright.Batches.UpdateCareerFieldScores do
       skills = Enum.flat_map(skill_unit.skill_categories, & &1.skills)
       {skill_unit.id, skills}
     end)
-  end
-
-  defp map_values_count(map) do
-    Map.new(map, fn {key, values} -> {key, Enum.count(values)} end)
   end
 end

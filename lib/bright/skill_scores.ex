@@ -7,7 +7,8 @@ defmodule Bright.SkillScores do
   alias Bright.Repo
 
   alias Bright.SkillUnits
-  alias Bright.SkillScores.{SkillClassScore, SkillUnitScore, SkillScore}
+  alias Bright.CareerFields
+  alias Bright.SkillScores.{SkillClassScore, SkillUnitScore, SkillScore, CareerFieldScore}
 
   # レベルの判定値
   @normal_level 40
@@ -401,6 +402,27 @@ defmodule Bright.SkillScores do
         percentage: Map.get(skill_unit_score || %{}, :percentage, 0.0),
         position: Map.get(skill_class_unit, :position),
         trace_id: skill_unit.trace_id
+      }
+    end)
+  end
+
+  @doc """
+  Get Gem data for SkillSet
+  """
+  def get_skillset_gem(user_id) do
+    career_fields = CareerFields.list_career_fields()
+
+    career_field_ids_scores =
+      from(q in CareerFieldScore, where: q.user_id == ^user_id)
+      |> Repo.all()
+      |> Map.new(&{&1.career_field_id, &1.percentage || 0.0})
+
+    career_fields
+    |> Enum.map(fn career_field ->
+      %{
+        position: career_field.position,
+        name: career_field.name_ja,
+        percentage: Map.get(career_field_ids_scores, career_field.id, 0.0)
       }
     end)
   end

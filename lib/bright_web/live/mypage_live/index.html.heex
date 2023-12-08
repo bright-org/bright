@@ -1,6 +1,6 @@
 <!-- TODO 「2d7935494782ecf710e81339abd5d27750493843」　「feat:新規ファイルfix: package.json」　までマイページのみ画面を更新　各部品ごと更新すること-->
 <!-- プロフィール -->
-<div class="flex justify-between px-4 py-2 bg-white lg:px-10 lg:py-6">
+<div class="flex flex-col lg:flex-row justify-between px-4 py-2 bg-white lg:px-10 lg:py-6">
   <div class="pt-4 lg:w-[850px]">
     <.profile
       user_name={@display_user.name}
@@ -14,20 +14,20 @@
       is_anonymous={@anonymous}
     />
   </div>
-  <div>
-    <!-- TODO α版では実装しない
+
+  <% # TODO: データ更新後にif: falseを外す %>
+  <div :if={false && @skillset_gem} class="chart-container flex flex-col justify-center items-center my-2 lg:my-0">
+    <% # TODO: クリックは成長パネル側の対応後に開放 %>
     <p class="text-base !font-bold">
-      スキルセットジェム<span class="font-normal text-xs ml-2">※クリックすると詳細</span>
+      スキルセットジェム<span :if={false} class="font-normal text-xs ml-2">※クリックすると詳細</span>
     </p>
-    <div class="chart-container flex justify-center">
-      <.skill_gem
-        data={[[50, 60, 40, 30]]}
-        id="skill-gem"
-        labels={["エンジニア", "マーケター", "デザイナー", "インフラ"]}
-        size="sm"
-      />
-    </div>
-    -->
+    <.skill_gem
+      id="skillset-gem"
+      labels={@skillset_gem.labels}
+      data={[@skillset_gem.data]}
+      size="sm"
+      display_link="false"
+    />
   </div>
 </div>
 <!-- コンテンツ -->

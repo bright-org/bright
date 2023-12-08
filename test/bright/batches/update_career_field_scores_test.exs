@@ -74,14 +74,9 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
       %{user: user}
     end
 
-    test "creates career_field_scores, case skill_scores are empty", %{user: user} do
+    test "not creates career_field_scores, case skill_scores are empty", %{user: user} do
       UpdateCareerFieldScores.call()
-
-      [career_field_score_1, career_field_score_2] =
-        Repo.preload(user, :career_field_scores).career_field_scores
-
-      assert career_field_score_1.percentage == 0.0
-      assert career_field_score_2.percentage == 0.0
+      assert [] = Repo.preload(user, :career_field_scores).career_field_scores
     end
 
     test "creates career_field_scores", %{
@@ -102,6 +97,9 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
         insert(:skill_score, user: user, skill: skill, score: score)
       end)
 
+      # キャリアフィールドのpercentage（相対的な取得割合）の母数
+      sum_high_skills_count = 3
+
       UpdateCareerFieldScores.call()
 
       career_field_score_1 =
@@ -111,10 +109,10 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
         Repo.get_by(CareerFieldScore, user_id: user.id, career_field_id: career_field_2.id)
 
       assert career_field_score_1.high_skills_count == 2
-      assert career_field_score_1.percentage == 2 / 32
+      assert career_field_score_1.percentage == 100 * (2 / sum_high_skills_count)
 
       assert career_field_score_2.high_skills_count == 1
-      assert career_field_score_2.percentage == 1 / 32
+      assert career_field_score_2.percentage == 100 * (1 / sum_high_skills_count)
     end
 
     test "updates career_field_scores", %{
@@ -122,6 +120,7 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
       career_fields: [career_field, _],
       skills: [skill | _]
     } do
+      # でたらめなデータを作成し、更新で是正されるかを確認
       career_field_score =
         insert(:career_field_score,
           user: user,
@@ -130,13 +129,14 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
           high_skills_count: 100
         )
 
+      # スキルスコア用意
       insert(:skill_score, user: user, skill: skill, score: :high)
 
       UpdateCareerFieldScores.call()
 
       career_field_score = Repo.get(CareerFieldScore, career_field_score.id)
       assert career_field_score.high_skills_count == 1
-      assert career_field_score.percentage == 1 / 32
+      assert career_field_score.percentage == 100 * (1 / 1)
     end
 
     test "multiple users must be covered", %{
@@ -145,8 +145,8 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
       skills: skills
     } do
       # キャリアフィールドスコア [1, 2] に対して、
-      # user_1 [1/32, 0]
-      # user_2 [0, 1/32]
+      # user_1 [1/1, 0]
+      # user_2 [0, 1/1]
       # がupsertにより期待結果となるようなデータを準備
       user_2 = insert(:user)
       skill_1 = Enum.at(skills, 0)
@@ -170,7 +170,7 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
 
       UpdateCareerFieldScores.call()
 
-      percentage = 1 / 32
+      percentage = 100 * (1 / 1)
 
       assert %{high_skills_count: 1, percentage: ^percentage} =
                Repo.get_by(CareerFieldScore,

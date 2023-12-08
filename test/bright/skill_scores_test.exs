@@ -341,6 +341,32 @@ defmodule Bright.SkillScoresTest do
     end
   end
 
+  describe "get_skillset_gem" do
+    setup [:setup_career_fields]
+
+    test "returns career_fields data and scores", %{career_fields: career_fields} do
+      user = insert(:user)
+      percentages = [10.0, 20.0, 30.0, 40.0]
+      names = Enum.map(career_fields, & &1.name_ja)
+
+      career_fields
+      |> Enum.zip(percentages)
+      |> Enum.each(fn {career_field, percentage} ->
+        insert(:career_field_score, career_field: career_field, user: user, percentage: percentage)
+      end)
+
+      ret = SkillScores.get_skillset_gem(user.id)
+      assert ^names = Enum.map(ret, & &1.name)
+      assert ^percentages = Enum.map(ret, & &1.percentage)
+
+      # ユーザー条件確認
+      user_2 = insert(:user)
+      ret = SkillScores.get_skillset_gem(user_2.id)
+      assert ^names = Enum.map(ret, & &1.name)
+      assert [0.0, 0.0, 0.0, 0.0] = Enum.map(ret, & &1.percentage)
+    end
+  end
+
   describe "re_aggregate_scores" do
     # 主なテスト対象
     # - skill_unit_scores.pecentage
