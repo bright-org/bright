@@ -94,20 +94,20 @@
     <!-- スキルセット menu -->
 
     <div class="flex flex-col lg:flex-row gap-4">
-      <button class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-44">
-       <.link navigate={~p"/teams/new"}>
-        チームを作る（β）
-        </.link>
-      </button>
-
-      <button
-        :if={Teams.is_admin?(@display_team, @current_user)}
-        class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-52"
+      <a 
+        href="/teams/new"
+        class="text-sm text-center font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-44"
       >
-        <.link navigate={~p"/teams/#{@display_team}/edit"}>
-          チームを編集する（β）
-        </.link>
-      </button>
+        チームを作る（β）
+      </a>
+
+      <a 
+        :if={Teams.is_admin?(@display_team, @current_user)}
+        href={"/teams/#{@display_team.id}/edit"}
+        class="text-sm text-center font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-52"
+      >
+        チームを編集する（β）
+      </a>
       <button
         :if={!is_nil(@display_team) && Teams.is_admin?(@display_team, @current_user)}
         class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-56"
