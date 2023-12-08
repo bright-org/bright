@@ -101,7 +101,7 @@
       </button>
 
       <button
-        :if={is_admin?(@display_team, @current_user)}
+        :if={Teams.is_admin?(@display_team, @current_user)}
         class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-52"
       >
         <.link navigate={~p"/teams/#{@display_team}/edit"}>
