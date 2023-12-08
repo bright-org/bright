@@ -146,5 +146,4 @@ defmodule BrightWeb.MyTeamLive do
 
   defp open(),
     do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
-
 end
