@@ -260,7 +260,7 @@ defmodule Bright.Recruits do
     |> where(
       [i],
       i.recruiter_user_id == ^user_id and
-        i.status in [:waiting_recruit_decision, :consume_coordination, :ongoing_coordination]
+        i.status in [:waiting_recruit_decision, :hiring_decision]
     )
     |> preload(candidates_user: :user_profile)
     |> order_by(desc: :updated_at)
@@ -368,7 +368,7 @@ defmodule Bright.Recruits do
   def list_coordination_members(user_id) do
     CoordinationMember
     |> where([m], m.user_id == ^user_id)
-    |> preload(:coordination)
+    |> preload(coordination: [candidates_user: :user_profile])
     |> Repo.all()
   end
 
@@ -377,10 +377,10 @@ defmodule Bright.Recruits do
       join: i in Coordination,
       on:
         i.id == m.coordination_id and
-          i.status in [:waiting_recruit_decision, :consume_coordination],
+          i.status in [:waiting_recruit_decision, :hiring_decision, :completed_coordination],
       where: m.user_id == ^user_id and m.decision == ^decision,
       order_by: [desc: :updated_at],
-      preload: :coordination
+      preload: [coordination: [candidates_user: :user_profile]]
     )
     |> Repo.all()
   end

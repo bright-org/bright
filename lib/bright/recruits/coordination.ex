@@ -21,9 +21,7 @@ defmodule Bright.Recruits.Coordination do
     field :status, Ecto.Enum,
       values: [
         :waiting_recruit_decision,
-        :consume_coordination,
-        :dismiss_coordination,
-        :ongoing_coordination,
+        :hiring_decision,
         :completed_coordination,
         :cancel_coordination
       ],

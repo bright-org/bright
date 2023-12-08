@@ -2,8 +2,6 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
   use BrightWeb, :live_component
 
   alias Bright.Recruits
-  alias Bright.Recruits.Coordination
-  alias Bright.Chats
   alias Bright.UserSearches
 
   import BrightWeb.ProfileComponents, only: [profile_small: 1]
@@ -12,7 +10,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id="corodination_edit_modal">
+    <div id="coordination_edit_modal">
       <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
       <div class="overflow-y-auto z-[60]">
         <main class="flex items-center justify-center" role="main">
@@ -39,11 +37,12 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                     stock_user_ids={[]}
                   />
                 </div>
+
               </div>
-          <!-- Start 面談調整内容 -->
+
             <div class="w-[493px]">
-              <h3 class="font-bold text-xl">調整内容</h3>
-                <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
+              <h3 class="font-bold text-xl">面談内容</h3>
+              <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">
                       面談名
@@ -93,27 +92,61 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                     </dd>
                   </dl>
                 </div>
-                <div class="flex justify-end gap-x-4 mt-16">
-                  <.link navigate={~p"/recruits/coordinations"}>
-                  <button class="text-sm font-bold py-3 rounded border border-base w-44">
-                  閉じる
+                <div class="flex justify-start gap-x-4 mt-4">
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
+                    <.link navigate={@return_to}>閉じる</.link>
                   </button>
-                  </.link>
-                  <button
-                    phx-click={JS.push("decision", target: @myself, value: %{decision: :dismiss_coordination})}
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
-                  >
-                    面談をキャンセル
-                  </button>
+                  <div>
+                    <button
+                      phx-click={JS.show(to: "#menu01")}
+                      type="button"
+                      class="text-sm font-bold py-3 pl-3 rounded border border-base w-40 flex items-center"
+                    >
+                      <span class="min-w-[6em]">採用キャンセル</span>
+                      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
+                    </button>
 
+                    <div
+                      id="menu01"
+                      phx-click-away={JS.hide(to: "#menu01")}
+                      class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
+                    >
+                      <ul class="p-2 text-left text-base">
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "条件が合わない"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          条件が合わない
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "状況が変わった"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          状況が変わった
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "スカウト時と状況が異なる"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          スカウト時と状況が異なる
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "相性が悪い"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          相性が悪い
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                   <button
-                    phx-click={JS.push("decision", target: @myself, value: %{decision: :consume_coordination})}
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
+                    phx-click={JS.push("decision", target: @myself, value: %{decision: :hiring_decision})}
                   >
-                    候補者とチャット
+                    採用決定
                   </button>
                 </div>
-            </div><!-- End 面談調整内容 -->
+              </div>
           </div>
           </section>
         </main>
@@ -128,16 +161,17 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
     |> assign(:search_results, [])
     |> assign(:candidates_user, [])
     |> assign(:skill_params, %{})
-    |> assign(:members, [])
     |> assign(:coordination, nil)
-    |> assign(:candidate_error, "")
+    |> assign(:no_answer_error, "")
     |> then(&{:ok, &1})
   end
 
   @impl true
-  def update(%{coordination: %Coordination{}} = assigns, socket) do
+  def update(%{coordination_id: coordination_id, current_user: current_user} = assigns, socket) do
+    coordination = Recruits.get_coordination_with_member_users!(coordination_id, current_user.id)
+
     skill_params =
-      assigns.coordination.skill_params
+      coordination.skill_params
       |> Jason.decode!()
       |> Enum.map(fn s ->
         s
@@ -147,56 +181,50 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
 
     user =
       UserSearches.get_user_by_id_with_job_profile_and_skill_score(
-        assigns.coordination.candidates_user_id,
+        coordination.candidates_user_id,
         skill_params
       )
 
     socket
     |> assign(assigns)
+    |> assign(:coordination, coordination)
     |> assign(:skill_params, skill_params)
     |> assign(:candidates_user, user)
-    |> assign(:no_answer_error, "")
-    |> then(&{:ok, &1})
-  end
-
-  def update(assigns, socket) do
-    socket
-    |> assign(assigns)
-    |> assign(:no_answer_error, "")
     |> then(&{:ok, &1})
   end
 
   @impl true
-  def handle_event("decision", %{"decision" => "consume_coordination"}, socket) do
+  def handle_event("decision", %{"decision" => "cancel_coordination", "reason" => reason}, socket) do
     coordination = socket.assigns.coordination
 
     case Recruits.coordination_no_answer?(coordination.id) do
       true ->
-        {:noreply, assign(socket, :no_answer_error, "面談決定を最低1名、回答していただく必要があります")}
+        {:noreply, assign(socket, :no_answer_error, "採用決定を最低1名、回答していただく必要があります")}
 
       false ->
-        if coordination.status != :ongoing_coordination do
-          Recruits.update_coordination(coordination, %{status: "consume_interview"})
-        end
+        {:ok, _coordination} =
+          Recruits.update_coordination(socket.assigns.coordination, %{
+            status: :cancel_coordination,
+            cancel_reason: reason
+          })
 
-        chat =
-          Chats.get_or_create_chat(
-            coordination.recruiter_user_id,
-            coordination.id,
-            "recruit",
-            [
-              %{user_id: coordination.recruiter_user_id},
-              %{user_id: coordination.candidates_user_id}
-            ]
-          )
-
-        {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+        # Recruits.send_coordination_cancel_notification_mails(coordination.id)
+        {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
     end
   end
 
-  def handle_event("decision", %{"decision" => decision}, socket) do
-    Recruits.update_coordination(socket.assigns.coordination, %{status: decision})
+  def handle_event("decision", %{"decision" => "hiring_decision"}, socket) do
+    coordination = socket.assigns.coordination
 
-    {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
+    case Recruits.coordination_no_answer?(coordination.id) do
+      true ->
+        {:noreply, assign(socket, :no_answer_error, "採用決定を最低1名、回答していただく必要があります")}
+
+      false ->
+        {:ok, _coordination} =
+          Recruits.update_coordination(coordination, %{status: :hiring_decision})
+
+        {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
+    end
   end
 end

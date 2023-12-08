@@ -18,7 +18,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
           </div>
         </li>
         <%= for coordination <- @coordinations do %>
-          <% icon_path = if coordination.status == :ongoing_interview, do: coordination.candidates_user.user_profile.icon_file_path, else: nil %>
+          <% icon_path = coordination.candidates_user.user_profile.icon_file_path %>
           <li class="flex my-5">
             <.link
                patch={~p"/recruits/coordinations/#{coordination.id}"}
@@ -60,13 +60,14 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
           </div>
         </li>
         <%= for member <- @coordination_members do %>
+        <% icon_path = member.coordination.candidates_user.user_profile.icon_file_path %>
           <li class="flex my-5">
             <.link
                patch={~p"/recruits/coordinations/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <img
-                src={UserProfiles.icon_url(nil)}
+                src={UserProfiles.icon_url(icon_path)}
                 class="object-cover h-12 w-12 rounded-full mr-2"
                 alt=""
               />
@@ -90,35 +91,11 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         <% end %>
     </div>
     </div>
-    <.bright_modal :if={@live_action in [:show_interview]} id="coordination-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
+
+    <.bright_modal :if={@live_action in [:show_coordination]} id="coordination-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
       <.live_component
         module={BrightWeb.RecruitCoordinationLive.EditComponent}
         id="coordination_modal"
-        title={@page_title}
-        action={@live_action}
-        coordination={@coordination}
-        current_user={@current_user}
-        patch={~p"/recruits/coordinations"}
-      />
-    </.bright_modal>
-
-    <.bright_modal :if={@live_action in [:confirm_interview]} id="coordination-confirm-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
-      <.live_component
-        module={BrightWeb.RecruitCoordinationLive.ConfirmComponent}
-        id="coordination_member_modal"
-        title={@page_title}
-        action={@live_action}
-        coordination_id={@coordination.id}
-        current_user={@current_user}
-        patch={~p"/recruits/coordinations"}
-      />
-    </.bright_modal>
-
-
-    <.bright_modal :if={@live_action in [:cancel_interview]} id="coordination-cancel-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
-      <.live_component
-        module={BrightWeb.RecruitCoordinationLive.CancelComponent}
-        id="coordination_member_modal"
         title={@page_title}
         action={@live_action}
         coordination_id={@coordination.id}
@@ -127,7 +104,6 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         return_to={~p"/recruits/coordinations"}
       />
     </.bright_modal>
-
 
     <.bright_modal :if={@live_action in [:show_member]} id="coordination-member-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
       <.live_component
@@ -140,7 +116,6 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         patch={~p"/recruits/coordinations"}
       />
     </.bright_modal>
-
     """
   end
 
@@ -181,9 +156,8 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
 
     action =
       case coordination.status do
-        :waiting_recruit_decision -> :cancel_interview
-        :consume_coordination -> :confirm_interview
-        :ongoing_coordination -> :cancel_interview
+        :waiting_recruit_decision -> :show_coordination
+        :hiting_decision -> :show_coordination
       end
 
     socket

@@ -37,7 +37,6 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
                   />
                 </div>
               </div>
-              <!-- Start 面談調整内容 -->
               <div class="w-[493px]">
                 <h3 class="font-bold text-xl">調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
@@ -73,23 +72,23 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
                       <label class="block">
                         <input
                           type="radio" name="coordination" class="mr-1"
-                          phx-click={JS.push("checked", target: @myself, value: %{decision: :wants})}
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :recruit_wants})}
                         >
-                        <span class="align-[2px]">同席したい</span>
+                        <span class="align-[2px]">採用したい</span>
                       </label>
                       <label class="block">
                         <input
                           type="radio" name="coordination" class="mr-1"
-                          phx-click={JS.push("checked", target: @myself, value: %{decision: :keep})}
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :recruit_keep})}
                         >
-                        <span class="align-[2px]">今は同席しないが候補者をストック</span>
+                        <span class="align-[2px]">採用しないが候補者をストック</span>
                       </label>
                       <label class="block">
                         <input
                           type="radio" name="coordination" class="mr-1"
-                          phx-click={JS.push("checked", target: @myself, value: %{decision: :not_wants})}
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :recruit_not_wants})}
                         >
-                        <span class="align-[2px]">同席を希望しない</span>
+                        <span class="align-[2px]">採用しない</span>
                       </label>
                     </dd>
                   </dl>
@@ -102,7 +101,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
                     確定する
                   </button>
                 </div>
-              </div><!-- End 面談調整内容 -->
+              </div>
             </div>
           </section>
         </main>
@@ -155,7 +154,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
     {:noreply, assign(socket, :decision, decision)}
   end
 
-  def handle_event("submit", _params, %{assigns: %{decision: "keep"} = assigns} = socket) do
+  def handle_event("submit", _params, %{assigns: %{decision: "recruit_keep"} = assigns} = socket) do
     coordination = assigns.coordination_member.coordination
 
     %{
@@ -166,7 +165,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
     }
     |> RecruitmentStockUsers.create_recruitment_stock_user()
 
-    Recruits.update_coordination_member(assigns.coordination_member, %{decision: :keep})
+    Recruits.update_coordination_member(assigns.coordination_member, %{decision: :recruit_keep})
     {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
   end
 

@@ -195,7 +195,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
         {:noreply, assign(socket, :candidate_error, "対象のユーザーは既に追加されています")}
 
       Enum.count(users) >= 4 ->
-        {:noreply, assign(socket, :candidate_error, "面談調整候補者の上限は４名です")}
+        {:noreply, assign(socket, :candidate_error, "採用調整候補者の上限は４名です")}
 
       true ->
         socket
@@ -214,7 +214,14 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
   def handle_event(
         "create_coordination",
         %{"coordination" => coordination_params},
-        %{assigns: %{skill_params: skill_params, users: users, current_user: recruiter}} = socket
+        %{
+          assigns: %{
+            skill_params: skill_params,
+            users: users,
+            current_user: recruiter,
+            interview_id: intervie_id
+          }
+        } = socket
       ) do
     candidates_user = socket.assigns.candidates_user |> List.first()
 
@@ -230,14 +237,14 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
 
     case Recruits.create_coordination(coordination_params) do
       {:ok, coordination} ->
+        Recruits.get_interview!(intervie_id)
+        |> Recruits.update_interview(%{status: :completed_interview})
+
         preloaded_coordination =
           Recruits.get_coordination_with_member_users!(coordination.id, recruiter.id)
 
         # 追加したメンバー全員に可否メールを送信する。
         send_acceptance_mails(preloaded_coordination, recruiter)
-
-        # メール送信の成否に関わらず正常終了とする
-        # TODO メール送信エラーを運用上検知する必要がないか?
 
         {:noreply, redirect(socket, to: ~p"/recruits/coordinations")}
 
@@ -249,7 +256,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
   defp send_acceptance_mails(coordination, recruiter) do
     coordination.coordination_members
     |> Enum.each(fn member ->
-      Recruits.deliver_acceptance_email_instructions(
+      Recruits.deliver_acceptance_coordination_email_instructions(
         recruiter,
         member.user,
         member,

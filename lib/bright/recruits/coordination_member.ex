@@ -11,7 +11,7 @@ defmodule Bright.Recruits.CoordinationMember do
 
   schema "coordination_members" do
     field :decision, Ecto.Enum,
-      values: [:not_answered, :wants, :keep, :not_wants],
+      values: [:not_answered, :recruit_wants, :recruit_keep, :recruit_not_wants],
       default: :not_answered
 
     belongs_to :user, Bright.Accounts.User

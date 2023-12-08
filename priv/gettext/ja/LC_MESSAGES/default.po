@@ -42,18 +42,15 @@ msgstr "面談完了"
 msgid "waiting_recruit_decision"
 msgstr "採用調整中"
 
-msgid "consume_coordination"
-msgstr "採用確定待ち"
+msgid "hiring_decision"
+msgstr "採用確定"
 
 msgid "dismiss_coordination"
 msgstr "採用却下"
 
-msgid "ongoing_coordination"
-msgstr "採用確定"
 
 msgid "complete_coordination"
 msgstr "採用完了"
-
 
 msgid "not_answered"
 msgstr "未回答"
@@ -66,3 +63,12 @@ msgstr "同席しない"
 
 msgid  "keep"
 msgstr "今は同席しない"
+
+msgid "recruit_wants"
+msgstr "採用したい"
+
+msgid "recruit_not_wants"
+msgstr "採用しない"
+
+msgid  "recruit_keep"
+msgstr "今は採用しない"
