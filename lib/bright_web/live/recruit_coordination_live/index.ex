@@ -11,10 +11,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
     ~H"""
     <div id="coordination_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-        <h4 class="text-start">採用調整の状況</h4>
+        <h4 class="text-start">採用検討の状況</h4>
         <li :if={Enum.count(@coordinations) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
-            調整中の採用はありません
+            検討中の採用はありません
           </div>
         </li>
         <%= for coordination <- @coordinations do %>
@@ -53,10 +53,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
     <div id="coordination_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
 
-    <h4 class="text-start">採用調整依頼</h4>
+    <h4 class="text-start">採用検討依頼</h4>
         <li :if={Enum.count(@coordination_members) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
-            採用調整の依頼はありません
+            採用検討の依頼はありません
           </div>
         </li>
         <%= for member <- @coordination_members do %>

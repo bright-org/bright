@@ -40,7 +40,7 @@ msgid "complete_interview"
 msgstr "面談完了"
 
 msgid "waiting_recruit_decision"
-msgstr "採用調整中"
+msgstr "採用検討中"
 
 msgid "hiring_decision"
 msgstr "採用確定"

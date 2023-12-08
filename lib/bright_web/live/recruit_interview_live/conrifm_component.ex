@@ -96,6 +96,13 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
                   </button>
                   </.link>
                   <button
+                    phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview})}
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
+                  >
+                    面談をキャンセル
+                  </button>
+
+                  <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :ongoing_interview})}
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
@@ -149,6 +156,13 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
   end
 
   @impl true
+  def handle_event("decision", %{"decision" => "cancel_interview"}, socket) do
+    {:ok, _interview} =
+      Recruits.update_interview(socket.assigns.interview, %{status: :cancel_interview})
+
+    {:noreply, push_navigate(socket, to: ~p"/recruits/interviews")}
+  end
+
   def handle_event("decision", %{"decision" => status}, socket) do
     {:ok, interview} = Recruits.update_interview(socket.assigns.interview, %{status: status})
 
