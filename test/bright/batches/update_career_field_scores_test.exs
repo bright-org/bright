@@ -136,7 +136,7 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
 
       career_field_score = Repo.get(CareerFieldScore, career_field_score.id)
       assert career_field_score.high_skills_count == 1
-      assert career_field_score.percentage == 100 * 1 / 1
+      assert career_field_score.percentage == 100 * (1 / 1)
     end
 
     test "multiple users must be covered", %{
