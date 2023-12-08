@@ -258,9 +258,12 @@ defmodule BrightWeb.Router do
       live "/notifications/evidences", NotificationLive.Evidence, :index
       live "/notifications/evidences/:skill_evidence_id", NotificationLive.Evidence, :show
 
-      live "/recruits/interviews", RecruitLive.Interview, :index
-      live "/recruits/interviews/:id", RecruitLive.Interview, :show_interview
-      live "/recruits/interviews/member/:id", RecruitLive.Interview, :show_member
+      live "/recruits/interviews", RecruitInterviewLive.Index, :index
+      live "/recruits/interviews/:id", RecruitInterviewLive.Index, :show_interview
+      live "/recruits/interviews/member/:id", RecruitInterviewLive.Index, :show_member
+      live "/recruits/coordinations", RecruitCoordinationLive.Index, :index
+      live "/recruits/coordinations/:id", RecruitCoordinationLive.Index, :show_interview
+      live "/recruits/coordinations/member/:id", RecruitCoordinationLive.Index, :show_member
       live "/recruits/chats", ChatLive.Index, :recruit
       live "/recruits/chats/:id", ChatLive.Index, :recruit
     end

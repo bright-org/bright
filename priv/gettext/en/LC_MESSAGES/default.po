@@ -37,7 +37,23 @@ msgstr ""
 msgid "ongoing_interview"
 msgstr ""
 
+msgid "cancel_interview"
+msgstr ""
+
 msgid "complete_interview"
+msgstr ""
+
+msgid "waiting_recruit_decision"
+msgstr ""
+
+msgid "hiring_decision"
+msgstr ""
+
+
+msgid "complete_coordination"
+msgstr ""
+
+msgid "cancel_coordination"
 msgstr ""
 
 msgid "not_answered"
@@ -50,4 +66,13 @@ msgid "not_wants"
 msgstr ""
 
 msgid  "keep"
+msgstr ""
+
+msgid "recruit_wants"
+msgstr ""
+
+msgid "recruit_not_wants"
+msgstr ""
+
+msgid  "recruit_keep"
 msgstr ""

@@ -1,8 +1,12 @@
-defmodule BrightWeb.RecruitLive.CancelInterviewComponent do
+defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
   use BrightWeb, :live_component
 
   alias Bright.Recruits
   alias Bright.UserSearches
+  alias Bright.Chats
+
+  import BrightWeb.ProfileComponents, only: [profile_small: 1]
+  import Bright.UserProfiles, only: [icon_url: 1]
 
   @impl true
   def render(assigns) do
@@ -14,7 +18,7 @@ defmodule BrightWeb.RecruitLive.CancelInterviewComponent do
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-                検討キャンセル
+                面談確定
               </span>
             </h2>
 
@@ -57,66 +61,48 @@ defmodule BrightWeb.RecruitLive.CancelInterviewComponent do
                     <dd class="w-[280px] mb-10">
                       なし
                     </dd>
-                    <dt class="font-bold w-[98px] flex mt-4">
+                    <dt class="font-bold w-[98px] mb-10">同席候補者</dt>
+                    <dd class="min-w-[280px]">
+                      <ul class="flex flex-col gap-y-1">
+                      <%= for member <- @interview.interview_members do %>
+                        <div class="flex">
+                          <div class="w-[200px] truncate mr-4">
+                          <.profile_small
+                            user_name={member.user.name}
+                            icon_file_path={icon_url(member.user.user_profile.icon_file_path)}
+                          />
+                          </div>
+                          <div class="mt-4">
+                            <span><%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %></span>
+                          </div>
+                        </div>
+                      <% end %>
+                      </ul>
+                    </dd>
+                    <dt class="font-bold w-[98px] flex mt-16">
                       <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
-                    <dd class="w-[280px] mt-4">
+                    <dd class="w-[280px] mt-16">
                     <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full break-words">
                       <%= @interview.comment %>
                     </div>
                     </dd>
                   </dl>
                 </div>
-                <div class="flex justify-start gap-x-4 mt-4 h-[300px]">
-                  <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
-                    <.link navigate={@return_to}>閉じる</.link>
+                <div class="flex justify-end gap-x-4 mt-16">
+                  <.link navigate={@patch}>
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44">
+                  閉じる
                   </button>
-
-                  <div>
-                    <button
-                      phx-click={JS.show(to: "#menu01")}
-                      type="button"
-                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
-                    >
-                      <span class="min-w-[6em]">検討キャンセル</span>
-                      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
-                    </button>
-
-                    <div
-                      id="menu01"
-                      phx-click-away={JS.hide(to: "#menu01")}
-                      class="hidden sticky bg-white rounded-lg shadow-md min-w-[286px]"
-                    >
-                      <ul class="p-2 text-left text-base">
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "条件が合わない"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          条件が合わない
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "状況が変わった"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          状況が変わった
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "スカウト時と状況が異なる"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          スカウト時と状況が異なる
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "相性が悪い"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          相性が悪い
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                  </.link>
+                  <button
+                    phx-click={JS.push("decision", target: @myself, value: %{decision: :ongoing_interview})}
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
+                  >
+                    面談確定
+                  </button>
                 </div>
-              </div>
+            </div><!-- End 面談調整内容 -->
           </div>
           </section>
         </main>
@@ -163,12 +149,12 @@ defmodule BrightWeb.RecruitLive.CancelInterviewComponent do
   end
 
   @impl true
-  def handle_event("decision", %{"decision" => status, "reason" => reason}, socket) do
-    {:ok, interview} =
-      Recruits.update_interview(socket.assigns.interview, %{status: status, cancel_reason: reason})
+  def handle_event("decision", %{"decision" => status}, socket) do
+    {:ok, interview} = Recruits.update_interview(socket.assigns.interview, %{status: status})
 
-    Recruits.send_interview_cancel_notification_mails(interview.id)
+    Recruits.send_interview_start_notification_mails(interview.id)
+    chat = Chats.get_chat_by_interview_id(interview.id)
 
-    {:noreply, push_navigate(socket, to: ~p"/recruits/interviews")}
+    {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
   end
 end

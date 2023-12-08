@@ -1,9 +1,10 @@
-defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
+defmodule BrightWeb.RecruitInterviewLive.EditComponent do
   use BrightWeb, :live_component
 
   alias Bright.Recruits
-  alias Bright.UserSearches
+  alias Bright.Recruits.Interview
   alias Bright.Chats
+  alias Bright.UserSearches
 
   import BrightWeb.ProfileComponents, only: [profile_small: 1]
   import Bright.UserProfiles, only: [icon_url: 1]
@@ -18,7 +19,7 @@ defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-                面談確定
+                面談調整
               </span>
             </h2>
 
@@ -30,7 +31,7 @@ defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
                     id="user_params_for_interview"
                     prefix="interview"
                     search={false}
-                    anon={true}
+                    anon={!(@interview.status == :ongoing_interview)}
                     module={BrightWeb.SearchLive.SearchResultsComponent}
                     current_user={@current_user}
                     result={@candidates_user}
@@ -41,7 +42,7 @@ defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
               </div>
           <!-- Start 面談調整内容 -->
             <div class="w-[493px]">
-              <h3 class="font-bold text-xl">面談内容</h3>
+              <h3 class="font-bold text-xl">調整内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">
@@ -79,6 +80,9 @@ defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
                       <% end %>
                       </ul>
                     </dd>
+                    <p class="text-attention-600">
+                    <%= @no_answer_error %>
+                    </p>
                     <dt class="font-bold w-[98px] flex mt-16">
                       <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
@@ -90,16 +94,23 @@ defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
                   </dl>
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
-                  <.link navigate={@patch}>
+                  <.link navigate={~p"/recruits/interviews"}>
                   <button class="text-sm font-bold py-3 rounded border border-base w-44">
                   閉じる
                   </button>
                   </.link>
                   <button
-                    phx-click={JS.push("decision", target: @myself, value: %{decision: :ongoing_interview})}
+                    phx-click={JS.push("decision", target: @myself, value: %{decision: :dismiss_interview})}
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
-                    面談確定
+                    面談をキャンセル
+                  </button>
+
+                  <button
+                    phx-click={JS.push("decision", target: @myself, value: %{decision: :consume_interview})}
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
+                  >
+                    候補者とチャット
                   </button>
                 </div>
             </div><!-- End 面談調整内容 -->
@@ -117,16 +128,16 @@ defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
     |> assign(:search_results, [])
     |> assign(:candidates_user, [])
     |> assign(:skill_params, %{})
+    |> assign(:members, [])
     |> assign(:interview, nil)
+    |> assign(:candidate_error, "")
     |> then(&{:ok, &1})
   end
 
   @impl true
-  def update(%{interview_id: interview_id, current_user: current_user} = assigns, socket) do
-    interview = Recruits.get_interview_with_member_users!(interview_id, current_user.id)
-
+  def update(%{interview: %Interview{}} = assigns, socket) do
     skill_params =
-      interview.skill_params
+      assigns.interview.skill_params
       |> Jason.decode!()
       |> Enum.map(fn s ->
         s
@@ -136,25 +147,56 @@ defmodule BrightWeb.RecruitLive.ConfirmInterviewComponent do
 
     user =
       UserSearches.get_user_by_id_with_job_profile_and_skill_score(
-        interview.candidates_user_id,
+        assigns.interview.candidates_user_id,
         skill_params
       )
 
     socket
     |> assign(assigns)
-    |> assign(:interview, interview)
     |> assign(:skill_params, skill_params)
     |> assign(:candidates_user, user)
+    |> assign(:no_answer_error, "")
+    |> then(&{:ok, &1})
+  end
+
+  def update(assigns, socket) do
+    socket
+    |> assign(assigns)
+    |> assign(:no_answer_error, "")
     |> then(&{:ok, &1})
   end
 
   @impl true
-  def handle_event("decision", %{"decision" => status}, socket) do
-    {:ok, interview} = Recruits.update_interview(socket.assigns.interview, %{status: status})
+  def handle_event("decision", %{"decision" => "consume_interview"}, socket) do
+    interview = socket.assigns.interview
 
-    Recruits.send_interview_start_notification_mails(interview.id)
-    chat = Chats.get_chat_by_interview_id(interview.id)
+    case Recruits.interview_no_answer?(interview.id) do
+      true ->
+        {:noreply, assign(socket, :no_answer_error, "面談決定を最低1名、回答していただく必要があります")}
 
-    {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+      false ->
+        if interview.status != :ongoing_interview do
+          Recruits.update_interview(interview, %{status: "consume_interview"})
+        end
+
+        chat =
+          Chats.get_or_create_chat(
+            interview.recruiter_user_id,
+            interview.id,
+            "recruit",
+            [
+              %{user_id: interview.recruiter_user_id},
+              %{user_id: interview.candidates_user_id}
+            ]
+          )
+
+        {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+    end
+  end
+
+  def handle_event("decision", %{"decision" => decision}, socket) do
+    Recruits.update_interview(socket.assigns.interview, %{status: decision})
+
+    {:noreply, push_navigate(socket, to: ~p"/recruits/interviews")}
   end
 end

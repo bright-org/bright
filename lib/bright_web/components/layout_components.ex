@@ -111,7 +111,7 @@ defmodule BrightWeb.LayoutComponents do
         />
         <.live_component
           id="recruit_notification_header"
-          module={BrightWeb.RecruitLive.NotificationHeaderComponent}
+          module={BrightWeb.RecruitNotificationHeaderComponent}
           current_user={Map.get(assigns, :current_user)}
         />
 
