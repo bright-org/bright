@@ -11,7 +11,6 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.CustomGroups
-  alias Bright.CustomGroups.CustomGroup
   alias Bright.UserProfiles
   alias BrightWeb.TeamLive.MyTeamHelper
 
