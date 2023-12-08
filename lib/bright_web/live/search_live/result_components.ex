@@ -52,11 +52,6 @@ defmodule BrightWeb.SearchLive.ResultComponents do
           else: "-"
         %></span>
       </p>
-
-      <p class="mb-2 pl-2">
-        <span>担当者ステータス：</span>
-        <span>-</span>
-      </p>
     </div>
     """
   end

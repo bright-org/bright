@@ -65,7 +65,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           />
           </div>
         </div>
-        <div :if={@search} class="flex justify-between mt-8">
+        <div :if={@search} class="flex justify-end mt-8">
           <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
           <a
             phx-click={
@@ -77,7 +77,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           >
           面談調整
           </a>
-          <a class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
+          <a :if={false} class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
           採用・育成チームに採用依頼 <br />βリリース（11月予定）から
           </a>
         </div>
