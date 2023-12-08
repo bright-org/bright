@@ -256,7 +256,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     if Teams.is_admin?(team, current_user) do
       socket
     else
-      raise (Bright.Exceptions.ForbiddenResourceError)
+      raise Bright.Exceptions.ForbiddenResourceError
     end
   end
 end
