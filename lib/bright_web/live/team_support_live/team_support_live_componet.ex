@@ -539,7 +539,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     if Teams.is_supporting_same_team?(socket.assigns.supportee_team.id, team_id) do
       {:noreply,
        socket
-       |> assign(:select_supporter_team_error, "選択した採用・育成チームは既に同じチームを支援中です")}
+       |> assign(:select_supporter_team_error, "選択した採用・育成チームは該当チーム支援済です")}
     else
       team = Teams.get_team!(team_id)
 
