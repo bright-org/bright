@@ -109,10 +109,10 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
         Repo.get_by(CareerFieldScore, user_id: user.id, career_field_id: career_field_2.id)
 
       assert career_field_score_1.high_skills_count == 2
-      assert career_field_score_1.percentage == 2 / sum_high_skills_count
+      assert career_field_score_1.percentage == 100 * (2 / sum_high_skills_count)
 
       assert career_field_score_2.high_skills_count == 1
-      assert career_field_score_2.percentage == 1 / sum_high_skills_count
+      assert career_field_score_2.percentage == 100 * (1 / sum_high_skills_count)
     end
 
     test "updates career_field_scores", %{
@@ -136,7 +136,7 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
 
       career_field_score = Repo.get(CareerFieldScore, career_field_score.id)
       assert career_field_score.high_skills_count == 1
-      assert career_field_score.percentage == 1 / 1
+      assert career_field_score.percentage == 100 * 1 / 1
     end
 
     test "multiple users must be covered", %{
@@ -170,7 +170,7 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
 
       UpdateCareerFieldScores.call()
 
-      percentage = 1 / 1
+      percentage = 100 * (1 / 1)
 
       assert %{high_skills_count: 1, percentage: ^percentage} =
                Repo.get_by(CareerFieldScore,

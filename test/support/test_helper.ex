@@ -54,6 +54,11 @@ defmodule Bright.TestHelper do
     user
   end
 
+  def setup_career_fields(_context) do
+    career_fields = Bright.Seeds.CareerField.insert()
+    %{career_fields: career_fields}
+  end
+
   @doc """
   Logs the given `user` into the `conn`.
 

@@ -1,8 +1,11 @@
 defmodule BrightWeb.MypageLive.Index do
   use BrightWeb, :live_view
+
   import BrightWeb.ProfileComponents
-  # import BrightWeb.ChartComponents
+  import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
+
+  alias Bright.SkillScores
   alias BrightWeb.DisplayUserHelper
 
   @impl true
@@ -21,6 +24,7 @@ defmodule BrightWeb.MypageLive.Index do
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "マイページ")
+    |> assign_skillset_gem()
     |> assign(:notification_detail, false)
     |> assign(:search, false)
   end
@@ -42,5 +46,19 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:page_title, "スキル検索／スカウト")
     |> assign(:notification_detail, false)
     |> assign(:search, true)
+  end
+
+  defp assign_skillset_gem(socket) do
+    skillset_gem =
+      SkillScores.get_skillset_gem(socket.assigns.current_user.id)
+      |> Enum.sort_by(& &1.position, :asc)
+      |> Enum.map(&[&1.name, floor(&1.percentage)])
+      |> Enum.zip_reduce([], &(&2 ++ [&1]))
+      |> then(fn
+        [] -> nil
+        [names, percentags] -> %{labels: names, data: percentags}
+      end)
+
+    assign(socket, :skillset_gem, skillset_gem)
   end
 end

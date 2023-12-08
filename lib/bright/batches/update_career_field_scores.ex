@@ -48,7 +48,7 @@ defmodule Bright.Batches.UpdateCareerFieldScores do
       career_fields
       |> Enum.map(fn career_field ->
         high_skills_count = Map.get(dict_counts, career_field) || 0
-        percentage = if sum_counts == 0, do: 0.0, else: high_skills_count / sum_counts
+        percentage = if sum_counts == 0, do: 0.0, else: 100 * (high_skills_count / sum_counts)
 
         %{
           id: Ecto.ULID.generate(),

@@ -19,8 +19,9 @@ defmodule Bright.Seeds.CareerField do
   end
 
   def insert() do
-    Enum.each(@data, fn c ->
-      CareerFields.create_career_field(c)
+    Enum.map(@data, fn c ->
+      {:ok, career_field} = CareerFields.create_career_field(c)
+      career_field
     end)
   end
 end
