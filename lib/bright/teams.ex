@@ -441,6 +441,7 @@ defmodule Bright.Teams do
     |> preload(request_from_user: :user_profile)
     |> preload(request_to_user: :user_profile)
     |> preload(:supportee_team)
+    |> preload(:supporter_team)
     |> Repo.paginate(page_param)
   end
 
