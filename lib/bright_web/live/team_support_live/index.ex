@@ -15,7 +15,7 @@ defmodule BrightWeb.TeamSupportLive.Index do
   alias Bright.Teams
 
   @tabs [
-    {"requesting", "支援依頼承認待ち"},
+    {"requesting", "支援依頼"},
     {"supporting", "支援中"}
   ]
 
@@ -30,7 +30,7 @@ defmodule BrightWeb.TeamSupportLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "採用・育成支援一覧")
+     |> assign(:page_title, "採用・育成支援")
      |> assign(:shown_hr_support_modal, false)
      |> assign(:hr_support_modal_mode, nil)
      |> assign(:display_team_supporter_team, nil)

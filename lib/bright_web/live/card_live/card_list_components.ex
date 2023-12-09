@@ -198,32 +198,6 @@ defmodule BrightWeb.CardLive.CardListComponents do
     """
   end
 
-  attr :naive_date_time, :any, required: true
-
-  def date_time_text(assigns) do
-    ~H"""
-    <span
-      class="font-bold pl-0 inline-block w-full text-sm order-1 lg:pl-4 lg:order-3 lg:w-auto"
-    >
-      <%= convert_date_time_to_text(@naive_date_time) %>
-    </span>
-    """
-  end
-
-  defp convert_date_time_to_text(naive_date_time) do
-    if is_nil(naive_date_time) do
-      "- - - - / - - / - -  - - : - - : - -"
-    else
-      {:ok, string_date_time} =
-        naive_date_time
-        |> Timex.to_datetime("UTC")
-        |> Timex.Timezone.convert("Asia/Tokyo")
-        |> Timex.format("{YYYY}/{0M}/{0D} {h24}:{m}:{s}")
-
-      string_date_time
-    end
-  end
-
   defp time_text(minutes) when minutes < @hour, do: "#{minutes}分前"
   defp time_text(minutes) when minutes < @day, do: "#{trunc(minutes / @hour)}時間前"
   defp time_text(minutes), do: "#{trunc(minutes / @day)}日前"
