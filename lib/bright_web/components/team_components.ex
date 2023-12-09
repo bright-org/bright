@@ -7,6 +7,7 @@ defmodule BrightWeb.TeamComponents do
   alias Bright.Teams.TeamMemberUsers
   alias Bright.Teams
   alias Bright.Teams.Team
+  alias Bright.Subscriptions
 
   # チームタイプ事の定義(UI向け) Teamsの方のリストと異なりカスタムグループもチーム扱い
   @team_types [
@@ -22,12 +23,15 @@ defmodule BrightWeb.TeamComponents do
       team_type: :general_team,
       visiblily_check_function: &Teams.always_true?/1
     },
-    # TODO チームアップチームの対応までは選択肢を封印
-    # %{display_name: "チームアップチーム", team_type: :teamup_team, visiblily_check_function: &Teams.always_false?/1},
+    %{
+      display_name: "チームアップチーム",
+      team_type: :teamup_team,
+      visiblily_check_function: &Subscriptions.service_team_up_enabled?/1
+    },
     %{
       display_name: "採用・育成チーム",
       team_type: :hr_support_team,
-      visiblily_check_function: &Teams.enable_hr_functions?/1
+      visiblily_check_function: &Subscriptions.service_hr_basic_enabled?/1
     }
   ]
 

@@ -425,7 +425,7 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  サービスコードをキーに該当サービスの利用有無を返す
+  サービスコードをキーに該当サービスの利用可否を返す
 
   ## Examples
       iex> service_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
@@ -446,6 +446,28 @@ defmodule Bright.Subscriptions do
       _ ->
         false
     end
+  end
+
+  @doc """
+  ユーザーIDをキーに採用、育成の基本サービスの利用可否を返す
+
+  ## Examples
+      iex> service_hr_basic_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC")
+      true
+  """
+  def service_hr_basic_enabled?(user_id) do
+    service_enabled?(user_id, "hr_basic")
+  end
+
+  @doc """
+  ユーザーIDをキーにチームアップサービスの利用可否を返す
+
+  ## Examples
+      iex> service_team_up_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC")
+      true
+  """
+  def service_team_up_enabled?(user_id) do
+    service_enabled?(user_id, "team_up")
   end
 
   @doc """
