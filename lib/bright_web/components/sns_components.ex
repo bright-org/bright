@@ -43,7 +43,7 @@ defmodule BrightWeb.SnsComponents do
   attr :path, :string, required: true
 
   def floating_share_buttons(assigns) do
-    assigns = Map.put(assigns, :url, "https://app.bright-fun.org#{assigns.path}")
+    assigns = Map.put(assigns, :url, "https://bright-fun.org")
 
     ~H"""
       <%!-- NOTE: 一瞬だけ画面左上に表示されてしまうのを回避するため、hiddenクラスを付けておきJSでhiddenクラスを消している --%>
