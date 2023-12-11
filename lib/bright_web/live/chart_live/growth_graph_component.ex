@@ -22,7 +22,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
       <% # ロールモデル解除 %>
       <div class="ml-auto mr-28 mt-6 mb-1">
-        <%# TODO 他者選択できるまで非表示 %>
+        <%# TODO ロールモデル選択できるまで非表示 %>
         <button :if={false}
           type="button"
           class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
