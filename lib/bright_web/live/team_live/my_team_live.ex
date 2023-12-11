@@ -11,7 +11,6 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.CustomGroups
-  alias Bright.CustomGroups.CustomGroup
   alias Bright.UserProfiles
   alias BrightWeb.TeamLive.MyTeamHelper
 
@@ -146,13 +145,4 @@ defmodule BrightWeb.MyTeamLive do
 
   defp open(),
     do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
-
-  defp is_admin?(nil, _), do: false
-
-  defp is_admin?(%CustomGroup{}, _), do: false
-
-  defp is_admin?(team, user) do
-    admin = Enum.find(team.member_users, & &1.is_admin)
-    admin.user_id == user.id
-  end
 end
