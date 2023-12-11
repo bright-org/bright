@@ -14,9 +14,8 @@
     />
   </div>
 
-  <% # TODO: データ更新後にif: falseを外す %>
-  <div :if={false && @skillset_gem} class="chart-container flex flex-col justify-center items-center my-2 lg:my-0">
-    <% # TODO: クリックは成長パネル側の対応後に開放 %>
+  <div :if={@skillset_gem} class="chart-container flex flex-col justify-center items-center my-2 lg:my-0">
+    <% # TODO: リンクは成長パネル側の対応後に開放 %>
     <p class="text-base !font-bold">
       スキルセットジェム<span :if={false} class="font-normal text-xs ml-2">※クリックすると詳細</span>
     </p>

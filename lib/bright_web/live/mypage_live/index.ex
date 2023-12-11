@@ -44,6 +44,7 @@ defmodule BrightWeb.MypageLive.Index do
   defp apply_action(socket, :search, _params) do
     socket
     |> assign(:page_title, "スキル検索／スカウト")
+    |> assign_skillset_gem()
     |> assign(:notification_detail, false)
     |> assign(:search, true)
   end
