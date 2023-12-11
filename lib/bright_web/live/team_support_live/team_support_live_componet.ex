@@ -193,7 +193,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   defp render_supporter_team(assigns) do
     ~H"""
     <div class="bg-brightGray-10 rounded-sm px-3 py-3">
-      <label for="supportee_team_name" class="flex items-center min-h-[35px]">
+      <label for="supporter_team_name" class="flex items-center min-h-[35px]">
         <div :if={is_nil(@supporter_team)}>
           採用・育成を担当するチームを選択してください
         </div>
@@ -384,7 +384,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
      |> assign(:request_to_user, assigns.display_team_supporter_team.request_to_user)
      |> assign(:request_from_user, assigns.display_team_supporter_team.request_from_user)
      |> assign(:supportee_team, assigns.display_team_supporter_team.supportee_team)
-     |> assign(:supporter_team, assigns.display_team_supporter_team.supportee_team)
+     |> assign(:supporter_team, assigns.display_team_supporter_team.supporter_team)
      |> assign(:tabs, @tabs)
      |> assign(:card, create_card_param(@tab))
      |> assign_card(@tab)}
