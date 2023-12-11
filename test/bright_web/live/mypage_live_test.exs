@@ -2,7 +2,7 @@ defmodule BrightWeb.MypageLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  # import Bright.Factory
+  import Bright.Factory
 
   describe "Index" do
     setup [:register_and_log_in_user, :setup_career_fields]
@@ -34,37 +34,36 @@ defmodule BrightWeb.MypageLiveTest do
     end
   end
 
-  # # スキルセットジェム確認
-  # # # TODO: 表示開始時にコメントを外す
-  # describe "Skillset gem" do
-  #   setup [:register_and_log_in_user, :setup_career_fields]
-  #
-  #   test "shows gem with data", %{
-  #     conn: conn,
-  #     user: user,
-  #     career_fields: career_fields
-  #   } do
-  #     [career_field | _] = career_fields
-  #     insert(:career_field_score, user: user, career_field: career_field, percentage: 10)
-  #
-  #     {:ok, index_live, _html} = live(conn, ~p"/mypage")
-  #
-  #     data = [[10, 0, 0, 0]] |> Jason.encode!()
-  #     assert has_element?(index_live, ~s(#skillset-gem[data-data='#{data}']))
-  #
-  #     data_labels = Enum.map(career_fields, & &1.name_ja) |> Jason.encode!()
-  #     assert has_element?(index_live, ~s(#skillset-gem[data-labels='#{data_labels}']))
-  #
-  #     # 未実装
-  #     # assert index_live |> has_element?("h5", "保有スキル（ジェムをクリック）")
-  #     # assert index_live |> has_element?("li a", "エンジニア")
-  #   end
-  #
-  #   test "shows gem without data", %{conn: conn} do
-  #     {:ok, index_live, _html} = live(conn, ~p"/mypage")
-  #
-  #     data = [[0, 0, 0, 0]] |> Jason.encode!()
-  #     assert has_element?(index_live, ~s(#skillset-gem[data-data='#{data}']))
-  #   end
-  # end
+  # スキルセットジェム確認
+  describe "Skillset gem" do
+    setup [:register_and_log_in_user, :setup_career_fields]
+
+    test "shows gem with data", %{
+      conn: conn,
+      user: user,
+      career_fields: career_fields
+    } do
+      [career_field | _] = career_fields
+      insert(:career_field_score, user: user, career_field: career_field, percentage: 10)
+
+      {:ok, index_live, _html} = live(conn, ~p"/mypage")
+
+      data = [[10, 0, 0, 0]] |> Jason.encode!()
+      assert has_element?(index_live, ~s(#skillset-gem[data-data='#{data}']))
+
+      data_labels = Enum.map(career_fields, & &1.name_ja) |> Jason.encode!()
+      assert has_element?(index_live, ~s(#skillset-gem[data-labels='#{data_labels}']))
+
+      # 未実装
+      # assert index_live |> has_element?("h5", "保有スキル（ジェムをクリック）")
+      # assert index_live |> has_element?("li a", "エンジニア")
+    end
+
+    test "shows gem without data", %{conn: conn} do
+      {:ok, index_live, _html} = live(conn, ~p"/mypage")
+
+      data = [[0, 0, 0, 0]] |> Jason.encode!()
+      assert has_element?(index_live, ~s(#skillset-gem[data-data='#{data}']))
+    end
+  end
 end
