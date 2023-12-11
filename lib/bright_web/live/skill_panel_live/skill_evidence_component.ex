@@ -119,7 +119,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 </div>
               <% end %>
 
-              <% # TODO: α後に実装して有効化 %>
+              <% # TODO: 実装して有効化 %>
               <div :if={false} class="flex justify-end py-2 items-center">
                 <label>
                   <input

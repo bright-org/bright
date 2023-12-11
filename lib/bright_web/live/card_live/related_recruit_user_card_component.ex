@@ -39,7 +39,6 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
           inner_selected_tab={@inner_selected_tab}
         />
         <div class="pt-3 pb-1 px-6 lg:min-h-[192px]">
-          <% # TODO ↓α版対応 @selected_tab == "joined_teams" && の条件を削除 %>
           <ul :if={Enum.count(@user_profiles) == 0} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">

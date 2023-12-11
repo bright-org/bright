@@ -69,8 +69,6 @@ defmodule BrightWeb.LayoutComponents do
   @doc """
   Renders a User Header
 
-  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までユーザーヘッダーのみデザイン更新
-
   ## Examples
       <.user_header />
   """
@@ -123,8 +121,6 @@ defmodule BrightWeb.LayoutComponents do
 
   @doc """
   Renders a Side Menu
-
-  # TODO 「4211a9a3ea766724d890e7e385b9057b4ddffc52」　「feat: フォームエラー、モーダル追加」　までメニューのみデザイン更新
 
   ## Examples
       <.side_menu />

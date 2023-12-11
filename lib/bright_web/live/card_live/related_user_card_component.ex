@@ -1,4 +1,3 @@
-# TODO 「bfa3829b2692f756ab89e228d923ca1516edf31b」　「feat: さまざまな人たちとの交流 にボタン追加」　までデザイン更新
 defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   @moduledoc """
   Related Users Card Components

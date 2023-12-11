@@ -25,7 +25,6 @@ module.exports = {
       colors: {
         current: "currentColor",
         base: "#333333",
-        brand: "#FD4F00", //TODO: Phoenix Frameworkでもともとある定義　不要になった時点で削除又はこのコメントを削除
         transparent: "transparent",
         brightGreen: {
           50: "#DCF2F0",
