@@ -76,7 +76,7 @@
     />
   </div>
 
-  <% # 求職設定を促すメッセージ %>
+  <% # 働く際の希望の入力を促すメッセージ %>
   <.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !user_job_searching?(@current_user)} />
 </div>
 
