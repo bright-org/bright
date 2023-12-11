@@ -41,7 +41,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                 </div>
 
                 <div class="mt-8">
-                  <h3 class="font-bold text-base">調整候補者<span class="font-normal">を追加</span></h3>
+                  <h3 class="font-bold text-base">採用検討者<span class="font-normal">を追加</span></h3>
                   <.live_component
                     id="recruit_card"
                     module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
@@ -73,7 +73,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                       なし
                     </dd>
 
-                    <dt class="font-bold w-[98px] mb-10">同席候補者</dt>
+                    <dt class="font-bold w-[98px] mb-10">採用検討者</dt>
                     <dd class="w-[280px]">
                       <ul class="flex flex-wrap gap-y-1">
                       <%= for user <- @users do %>

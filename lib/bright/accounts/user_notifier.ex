@@ -388,12 +388,12 @@ defmodule Bright.Accounts.UserNotifier do
   Deliver coordination acceptance .
   """
   def deliver_acceptance_coordination_instructions(from_user, to_user, url) do
-    deliver(to_user.email, "【Bright】採用調整依頼が届いています", """
+    deliver(to_user.email, "【Bright】採用検討依頼が届いています", """
     #{to_user.name}さん
 
-    #{from_user.name} さんから、採用調整の依頼が届いています。
+    #{from_user.name} さんから、採用検討の依頼が届いています。
 
-    下記URLで採用内容を確認し、採用可否を選択してください。
+    下記URLで検討内容を確認し、採用可否を選択してください。
     #{url}
 
     ---------------------------------------------------------------------

@@ -17,7 +17,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-                採用調整
+                採用検討
               </span>
             </h2>
 
@@ -41,7 +41,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
               </div>
 
             <div class="w-[493px]">
-              <h3 class="font-bold text-xl">面談内容</h3>
+              <h3 class="font-bold text-xl">検討内容</h3>
               <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">
@@ -61,7 +61,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                     <dd class="w-[280px] mb-10">
                       なし
                     </dd>
-                    <dt class="font-bold w-[98px] mb-10">同席候補者</dt>
+                    <dt class="font-bold w-[98px] mb-10">採用検討者</dt>
                     <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
                       <%= for member <- @coordination.coordination_members do %>
@@ -100,7 +100,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                     <button
                       phx-click={JS.show(to: "#menu01")}
                       type="button"
-                      class="text-sm font-bold py-3 pl-3 rounded border border-base w-40 flex items-center"
+                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
                     >
                       <span class="min-w-[6em]">採用キャンセル</span>
                       <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
@@ -116,25 +116,25 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                           phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "条件が合わない"})}
                           class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
                         >
-                          条件が合わない
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "状況が変わった"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          状況が変わった
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "スカウト時と状況が異なる"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          スカウト時と状況が異なる
+                          候補者の希望条件に添えない
                         </li>
                         <li
                           phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "相性が悪い"})}
                           class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
                         >
-                          相性が悪い
+                          候補者のスキルが案件とマッチしない
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "スカウト時と状況が異なる"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者のスキルが登録内容より不足
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "状況が変わった"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          当方の状況が変わって中断
                         </li>
                       </ul>
                     </div>

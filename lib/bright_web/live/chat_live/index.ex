@@ -165,14 +165,7 @@ defmodule BrightWeb.ChatLive.Index do
               </button>
 
               </.link>
-              <button
-                type="submit"
-                class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-36 lg:w-56"
-              >
-                メッセージを送る
-              </button>
-            </div>
-            <div
+              <div
               :if={@chat.owner_user_id == @current_user.id}
               class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full"
             >
@@ -193,16 +186,14 @@ defmodule BrightWeb.ChatLive.Index do
                   採用調整
                 </button>
               <% end %>
+            </div>
 
               <button
-                id="interviewDropdownButton"
-                class="text-sm font-bold px-2 py-2 rounded border bg-white w-56"
-                type="button"
-                phx-click={JS.push("cancel_interview") |> JS.show(to: "interview-cancel-modal")}
+                type="submit"
+                class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-36 lg:w-56"
               >
-                検討キャンセルの確認
+                メッセージを送る
               </button>
-              <!-- 面談を辞退する Donwdrop -->
             </div>
             <!-- end message -->
           </form>
