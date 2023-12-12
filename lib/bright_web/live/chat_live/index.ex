@@ -157,43 +157,43 @@ defmodule BrightWeb.ChatLive.Index do
                 </span>
               </button>
               <.link navigate={~p"/recruits/chats"}>
-              <button
-                type="button"
-                class="text-sm font-bold ml-auto px-2 py-[10px] rounded border bg-white w-24 lg:hidden"
-              >
-                一覧に戻る
-              </button>
-
+                <button
+                  type="button"
+                  class="text-sm font-bold ml-auto px-2 py-[10px] rounded border bg-white w-24 lg:hidden"
+                >
+                  一覧に戻る
+                </button>
               </.link>
-              <div
-              :if={@chat.owner_user_id == @current_user.id}
-              class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full"
-            >
-              <%= if @chat.interview.status == :consume_interview do %>
-                <button
-                  class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
-                  type="button"
-                  phx-click={JS.push("open_confirm_interview") |> JS.show(to: "interview-confirm-modal")}
+              <div class="flex">
+                <div
+                  :if={@chat.owner_user_id == @current_user.id}
                 >
-                  面談確定の確認
-                </button>
-              <% else %>
-                <button
-                  class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-56"
-                  type="button"
-                  phx-click={JS.push("open_create_coordination") |> JS.show(to: "coordination-create-modal")}
-                >
-                  採用調整
-                </button>
-              <% end %>
-            </div>
+                  <%= if @chat.interview.status == :consume_interview do %>
+                    <button
+                      class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
+                      type="button"
+                      phx-click={JS.push("open_confirm_interview") |> JS.show(to: "interview-confirm-modal")}
+                    >
+                      面談確定の確認
+                    </button>
+                  <% else %>
+                    <button
+                      class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
+                      type="button"
+                      phx-click={JS.push("open_create_coordination") |> JS.show(to: "coordination-create-modal")}
+                    >
+                      採用調整
+                    </button>
+                  <% end %>
+                </div>
 
-              <button
-                type="submit"
-                class="text-sm font-bold ml-auto px-2 py-2 rounded border bg-base text-white w-36 lg:w-56"
-              >
-                メッセージを送る
-              </button>
+                <button
+                  type="submit"
+                  class="text-sm font-bold ml-2 px-2 py-3 rounded border bg-base text-white w-36 lg:w-56"
+                >
+                  メッセージを送る
+                </button>
+              </div>
             </div>
             <!-- end message -->
           </form>
