@@ -232,6 +232,7 @@ defmodule BrightWeb.ChatLive.Index do
         current_user={@current_user}
         interview_id={@chat.relation_id}
         :if={@current_user}
+        patch={~p"/recruits/chats/#{@chat.id}"}
       />
     </.bright_modal>
     </div>
