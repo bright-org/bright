@@ -52,8 +52,7 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
 
     <div id="interview_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-
-    <h4 class="text-start">面談同席依頼</h4>
+        <h4 class="text-start">面談同席依頼</h4>
         <li :if={Enum.count(@interview_members) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
             面談同席の依頼はありません
@@ -62,7 +61,7 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
         <%= for member <- @interview_members do %>
           <li class="flex my-5">
             <.link
-               patch={~p"/recruits/interviews/member/#{member.id}"}
+              patch={~p"/recruits/interviews/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <img
@@ -88,8 +87,9 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
             </.link>
           </li>
         <% end %>
+      </div>
     </div>
-    </div>
+
     <.bright_modal :if={@live_action in [:show_interview]} id="interview-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
         module={BrightWeb.RecruitInterviewLive.EditComponent}
@@ -114,20 +114,16 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
       />
     </.bright_modal>
 
-
-    <.bright_modal :if={@live_action in [:cancel_interview]} id="interview-cancel-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
+    <.bright_modal :if={@live_action in [:create_coordination]} id="corrdination-create-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
-        module={BrightWeb.RecruitInterviewLive.CancelComponent}
-        id="interview_member_modal"
-        title={@page_title}
-        action={@live_action}
-        interview_id={@interview.id}
+        id="coordination_modal"
+        module={BrightWeb.RecruitCoordinationLive.CreateComponent}
         current_user={@current_user}
+        interview_id={@interview.id}
+        :if={@current_user}
         patch={~p"/recruits/interviews"}
-        return_to={~p"/recruits/interviews"}
       />
     </.bright_modal>
-
 
     <.bright_modal :if={@live_action in [:show_member]} id="interview-member-modal" show on_cancel={JS.patch(~p"/recruits/interviews")}>
       <.live_component
@@ -140,7 +136,6 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
         patch={~p"/recruits/interviews"}
       />
     </.bright_modal>
-
     """
   end
 
@@ -183,7 +178,7 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
       case interview.status do
         :waiting_decision -> :show_interview
         :consume_interview -> :confirm_interview
-        :ongoing_interview -> :cancel_interview
+        :ongoing_interview -> :create_coordination
       end
 
     socket

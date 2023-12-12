@@ -431,4 +431,16 @@ defmodule Bright.Recruits do
       acceptance_coordination_url_fun.(coordination_member.id)
     )
   end
+
+  def send_coordination_cancel_notification_mails(coordination_id) do
+    coordination =
+      Coordination
+      |> preload([:candidates_user, :recruiter_user])
+      |> Repo.get!(coordination_id)
+
+    UserNotifier.deliver_cancel_coordination_to_candidates_user(
+      coordination.recruiter_user,
+      coordination.candidates_user
+    )
+  end
 end

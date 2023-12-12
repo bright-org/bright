@@ -18,7 +18,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
         <main class="flex items-center justify-center " role="main">
         <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
-              <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
+              <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">
                 採用調整
               </span>
             </h2>
@@ -41,7 +41,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                 </div>
 
                 <div class="mt-8">
-                  <h3 class="font-bold text-base">調整候補者<span class="font-normal">を追加</span></h3>
+                  <h3 class="font-bold text-base">採用検討者<span class="font-normal">を追加</span></h3>
                   <.live_component
                     id="recruit_card"
                     module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
@@ -73,7 +73,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                       なし
                     </dd>
 
-                    <dt class="font-bold w-[98px] mb-10">同席候補者</dt>
+                    <dt class="font-bold w-[98px] mb-10">採用検討者</dt>
                     <dd class="w-[280px]">
                       <ul class="flex flex-wrap gap-y-1">
                       <%= for user <- @users do %>
@@ -102,11 +102,58 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                     </dd>
                   </dl>
                 </div>
-                <div class="flex justify-end gap-x-4 mt-16">
+                <div class="flex justify-start gap-x-4 mt-4">
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
+                    <.link navigate={@patch}>閉じる</.link>
+                  </button>
+                  <div>
+                    <button
+                      phx-click={JS.show(to: "#menu01")}
+                      type="button"
+                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
+                    >
+                      <span class="min-w-[6em]">検討キャンセル</span>
+                      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
+                    </button>
+
+                    <div
+                      id="menu01"
+                      phx-click-away={JS.hide(to: "#menu01")}
+                      class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
+                    >
+                      <ul class="p-2 text-left text-base">
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "候補者の希望条件に添えない"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者の希望条件に添えない
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "候補者のスキルが案件とマッチしない"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者のスキルが案件とマッチしない
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "候補者のスキルが登録内容より不足"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者のスキルが登録内容より不足
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "当方の状況が変わって中断"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          当方の状況が変わって中断
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                   <button
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
+                    phx-click={JS.push("decision", target: @myself, value: %{decision: :hiring_decision})}
                   >
-                    採用調整する
+                    採用決定
                   </button>
                 </div>
               </.form>
@@ -209,6 +256,18 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
     # メンバーユーザー一時リストから削除
     removed_users = Enum.reject(socket.assigns.users, fn x -> x.id == id end)
     {:noreply, assign(socket, :users, removed_users)}
+  end
+
+  def handle_event("decision", %{"decision" => "cancel_interview", "reason" => reason}, socket) do
+    {:ok, _coordination} =
+      Recruits.update_interview(socket.assigns.interview, %{
+        status: :cancel_interview,
+        cancel_reason: reason
+      })
+
+    Recruits.send_interview_cancel_notification_mails(socket.assings.interview)
+
+    {:noreply, push_navigate(socket, to: socket.assigns.patch)}
   end
 
   def handle_event(

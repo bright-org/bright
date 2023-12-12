@@ -38,7 +38,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
                 </div>
               </div>
               <div class="w-[493px]">
-                <h3 class="font-bold text-xl">調整内容</h3>
+                <h3 class="font-bold text-xl">検討内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">
@@ -66,7 +66,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
                     <%= @coordination_member.coordination.comment %>
                     </dd>
                     <dt class="font-bold w-[98px] flex mt-8" >
-                      <label for="point" class="block pr-1">参加の<br />意思確認</label>
+                      <label for="point" class="block pr-1">採用の<br />意思確認</label>
                     </dt>
                     <dd class="w-[280px] mt-8">
                       <label class="block">
