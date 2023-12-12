@@ -9,6 +9,7 @@ defmodule Bright.Teams do
   alias Bright.Teams.Team
   alias Bright.Accounts.UserNotifier
   alias Bright.Accounts.User
+  alias Bright.CustomGroups.CustomGroup
 
   # 招待メール関連定数
   @hash_algorithm :sha256
@@ -441,6 +442,7 @@ defmodule Bright.Teams do
     |> preload(request_from_user: :user_profile)
     |> preload(request_to_user: :user_profile)
     |> preload(:supportee_team)
+    |> preload(:supporter_team)
     |> Repo.paginate(page_param)
   end
 
@@ -1208,5 +1210,19 @@ defmodule Bright.Teams do
 
   def always_false?(_param) do
     false
+  end
+
+  @doc """
+    ユーザーが対象チームの管理者が否かをチェックする
+      iex > is_admin?(team, user)
+      true
+  """
+  def is_admin?(nil, _), do: false
+
+  def is_admin?(%CustomGroup{}, _), do: false
+
+  def is_admin?(team, user) do
+    admin = Enum.find(team.member_users, & &1.is_admin)
+    admin.user_id == user.id
   end
 end

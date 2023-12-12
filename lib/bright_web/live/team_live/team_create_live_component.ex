@@ -57,6 +57,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   def update(%{action: :edit, team: team} = assigns, socket) do
     socket
     |> assign(assigns)
+    |> validate_user_grant()
     |> assign(:modal_title, "チームを編集する（β）")
     |> assign(:submit, "チームを更新し、新規メンバーに招待メールを送る")
     |> assign(:selected_team_type, Teams.get_team_type_by_team(team))
@@ -246,5 +247,16 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   defp assign_team_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :team_form, to_form(changeset))
+  end
+
+  defp validate_user_grant(socket) do
+    current_user = socket.assigns.current_user
+    team = socket.assigns.team
+
+    if Teams.is_admin?(team, current_user) do
+      socket
+    else
+      raise Bright.Exceptions.ForbiddenResourceError
+    end
   end
 end
