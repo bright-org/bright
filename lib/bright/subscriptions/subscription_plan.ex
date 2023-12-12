@@ -13,6 +13,7 @@ defmodule Bright.Subscriptions.SubscriptionPlan do
     field :create_enable_hr_functions_teams_limit, :integer
     field :create_teams_limit, :integer
     field :free_trial_priority, :integer
+    field :authorization_priority, :integer
     field :name_jp, :string
     field :plan_code, :string
     field :team_members_limit, :integer
