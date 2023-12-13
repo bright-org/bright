@@ -116,7 +116,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   defp iam_team_member?(team, user_id) do
     team.member_users
     |> Enum.any?(fn member_user ->
-      member_user.user_id == user_id
+      member_user.user_id == user_id && !is_nil(member_user.invitation_confirmed_at)
     end)
   end
 
@@ -129,7 +129,8 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
            Teams.is_my_supportee_team_or_supporter_team?(user_id, team.id) do
         team
       else
-        nil
+        # 所属関係による権限がない場合ユーザーには404表示
+        raise(Bright.Exceptions.ForbiddenResourceError)
       end
     rescue
       # 結果が取得できない場合、カスタムグループ判定に移動
