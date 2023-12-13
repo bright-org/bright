@@ -151,7 +151,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                   </div>
                   <button
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
-                    phx-click={JS.push("decision", target: @myself, value: %{decision: :hiring_decision})}
+                    type="submit"
                   >
                     採用決定
                   </button>
