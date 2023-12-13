@@ -157,7 +157,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
     action =
       case coordination.status do
         :waiting_recruit_decision -> :show_coordination
-        :hiting_decision -> :show_coordination
+        :hiring_decision -> :show_coordination
       end
 
     socket

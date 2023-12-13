@@ -15,7 +15,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
         <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
-              <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
+              <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
                 採用検討
               </span>
             </h2>
