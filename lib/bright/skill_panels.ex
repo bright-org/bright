@@ -65,7 +65,7 @@ defmodule Bright.SkillPanels do
       order_by: p.updated_at,
       distinct: true
     )
-    |> Repo.paginate(page: page, page_size: 15)
+    |> Repo.paginate(page: page, page_size: 10)
   end
 
   def list_users_skill_panels(user_ids, page \\ 1) do
@@ -77,7 +77,7 @@ defmodule Bright.SkillPanels do
       order_by: s.updated_at,
       distinct: true
     )
-    |> Repo.paginate(page: page, page_size: 15)
+    |> Repo.paginate(page: page, page_size: 10)
   end
 
   @doc """
