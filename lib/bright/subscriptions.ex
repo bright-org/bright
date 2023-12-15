@@ -420,7 +420,7 @@ defmodule Bright.Subscriptions do
     from(sup in SubscriptionUserPlan,
       where:
         sup.user_id == ^user_id and sup.subscription_start_datetime <= ^base_datetime and
-      is_nil(sup.subscription_end_datetime),
+          is_nil(sup.subscription_end_datetime),
       join: sp in assoc(sup, :subscription_plan),
       order_by: {:desc, sp.authorization_priority},
       preload: [subscription_plan: {sp, [:subscription_plan_services]}],

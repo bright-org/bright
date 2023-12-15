@@ -174,6 +174,23 @@ defmodule Bright.SubscriptionsTest do
       assert result.subscription_start_datetime <= NaiveDateTime.utc_now()
       assert result.subscription_end_datetime == nil
     end
+
+    test "get high authorization_priority user_plan if user has two plans" do
+      # 契約中およびフリートライアル中で２プランがある場合に、より上位のプランを返す確認
+      subscription_plan1 = insert(:subscription_plans, authorization_priority: 1)
+      subscription_plan2 = insert(:subscription_plans, authorization_priority: 2)
+      user = insert(:user)
+
+      # 契約中のプラン
+      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan1)
+
+      # 契約中(フリートライアル中)のプラン
+      subscription_user_plan_free_trial(user, subscription_plan2)
+
+      # authorization_priorityに従って取得される
+      result = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+      assert result.subscription_plan_id == subscription_plan2.id
+    end
   end
 
   describe "service_enabled?/2" do

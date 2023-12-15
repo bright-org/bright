@@ -13,7 +13,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_teams_limit: 1,
       create_enable_hr_functions_teams_limit: 0,
       team_members_limit: 5,
-      free_trial_priority: 2
+      free_trial_priority: 2,
+      authorization_priority: 2
     },
     %{
       plan_code: "team_up_plan",
@@ -21,7 +22,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_teams_limit: 5,
       create_enable_hr_functions_teams_limit: 0,
       team_members_limit: 15,
-      free_trial_priority: 3
+      free_trial_priority: 3,
+      authorization_priority: 3
     },
     %{
       plan_code: "hr_plan",
@@ -29,7 +31,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_teams_limit: 5,
       create_enable_hr_functions_teams_limit: 2,
       team_members_limit: 15,
-      free_trial_priority: 4
+      free_trial_priority: 4,
+      authorization_priority: 4
     }
   ]
 
