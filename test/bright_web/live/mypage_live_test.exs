@@ -65,5 +65,26 @@ defmodule BrightWeb.MypageLiveTest do
       data = [[0, 0, 0, 0]] |> Jason.encode!()
       assert has_element?(index_live, ~s(#skillset-gem[data-data='#{data}']))
     end
+
+    test "shows gem when display others", %{
+      conn: conn,
+      user: user,
+      career_fields: career_fields
+    } do
+      user_2 = insert(:user) |> with_user_profile()
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: user_2)
+
+      [career_field | _] = career_fields
+      insert(:career_field_score, user: user, career_field: career_field, percentage: 10)
+      insert(:career_field_score, user: user_2, career_field: career_field, percentage: 50)
+
+      {:ok, index_live, _html} = live(conn, ~p"/mypage/#{user_2.name}")
+
+      # dataが切り替えている対象者のものであること
+      data = [[50, 0, 0, 0]] |> Jason.encode!()
+      assert has_element?(index_live, ~s(#skillset-gem[data-data='#{data}']))
+    end
   end
 end
