@@ -86,7 +86,7 @@ steps:
            '--service-account=${_SERVICE_ACCOUNT}',
            '--region=asia-northeast1']
 
-  # バッチ処理のデプロイ（スキルセットジェム更新用）
+  # バッチ処理のデプロイ（スキルバランス更新用）
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args: ['run', 'jobs', 'deploy', 'bright-batch-update-career-field-scores',
