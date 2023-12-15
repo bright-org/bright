@@ -415,12 +415,17 @@ defmodule Bright.Subscriptions do
   """
   def get_users_subscription_status(user_id, base_datetime) do
     # free_trialの有無に関わらず、契約終了日がnilの契約を有効とみなす
+    # 複数プランが対象になるとき（例: 契約中かつ無料トライアル中）は、
+    # authorization_priorityに基づいて権限が広範な契約内容を返す
     from(sup in SubscriptionUserPlan,
       where:
         sup.user_id == ^user_id and sup.subscription_start_datetime <= ^base_datetime and
-          is_nil(sup.subscription_end_datetime)
+          is_nil(sup.subscription_end_datetime),
+      join: sp in assoc(sup, :subscription_plan),
+      order_by: {:desc, sp.authorization_priority},
+      preload: [subscription_plan: {sp, [:subscription_plan_services]}],
+      limit: 1
     )
-    |> preload(subscription_plan: :subscription_plan_services)
     |> Repo.one()
   end
 

@@ -5,25 +5,15 @@ defmodule Bright.SubscriptionPlanFactory do
 
   defmacro __using__(_opts) do
     quote do
-      def subscription_plans_factory(%{:free_trial_priority => free_trial_priority} = attr) do
+      def subscription_plans_factory do
         %Bright.Subscriptions.SubscriptionPlan{
           plan_code: sequence(:plan_code, &"plan_code_#{&1}"),
           name_jp: sequence(:name_jp, &"plan_name_#{&1}"),
           create_teams_limit: Enum.random(0..15),
           create_enable_hr_functions_teams_limit: Enum.random(0..2),
           team_members_limit: Enum.random(0..15),
-          free_trial_priority: free_trial_priority
-        }
-      end
-
-      def subscription_plans_factory(attr) do
-        %Bright.Subscriptions.SubscriptionPlan{
-          plan_code: sequence(:plan_code, &"plan_code_#{&1}"),
-          name_jp: sequence(:name_jp, &"plan_name_#{&1}"),
-          create_teams_limit: Enum.random(0..15),
-          create_enable_hr_functions_teams_limit: Enum.random(0..2),
-          team_members_limit: Enum.random(0..15),
-          free_trial_priority: Enum.random(0..15)
+          free_trial_priority: Enum.random(0..15),
+          authorization_priority: Enum.random(0..15)
         }
       end
 
