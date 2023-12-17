@@ -103,7 +103,7 @@ erDiagram
 
 ```mermaid
 erDiagram
-  user_norifications {
+  user_notifications {
     id uuid PK
     user_id uuid FK
     last_viewed_at timestamp "最終通知確認時刻"
@@ -184,9 +184,9 @@ erDiagram
     datetime updated_at "更新日時"
   }
 
-  "users" ||--|| "user_norifications" : "user_id"
+  "users" ||--|| "user_notifications" : "user_id"
 
-  user_norifications {
+  user_notifications {
     id uuid PK
     user_id uuid FK
     last_viewed_at timestamp "最終通知確認時刻"
