@@ -106,9 +106,9 @@ erDiagram
   user_notifications {
     uuid id PK
     uuid user_id FK
-    timestamp last_viewed_at "最終通知確認時刻"
-    timestamp inserted_at
-    timestamp updated_at
+    datetime last_viewed_at "最終通知確認時刻"
+    datetime inserted_at
+    datetime updated_at
   }
 ```
 
@@ -189,9 +189,9 @@ erDiagram
   user_notifications {
     uuid id PK
     uuid user_id FK
-    timestamp last_viewed_at "最終通知確認時刻"
-    timestamp inserted_at
-    timestamp updated_at
+    datetime last_viewed_at "最終通知確認時刻"
+    datetime inserted_at
+    datetime updated_at
   }
 ```
 
