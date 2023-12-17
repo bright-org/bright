@@ -85,7 +85,7 @@ erDiagram
 ```mermaid
 erDiagram
   common {
-    id to_user_id	FK "送信先ユーザー"
+    uuid to_user_id	FK "送信先ユーザー"
     text detail	"詳細"
     string url "遷移先URL"
   }
@@ -104,11 +104,11 @@ erDiagram
 ```mermaid
 erDiagram
   user_notifications {
-    id uuid PK
-    user_id uuid FK
-    last_viewed_at timestamp "最終通知確認時刻"
-    inserted_at timestamp
-    updated_at timestamp
+    uuid id PK
+    uuid user_id FK
+    timestamp last_viewed_at "最終通知確認時刻"
+    timestamp inserted_at
+    timestamp updated_at
   }
 ```
 
@@ -187,11 +187,11 @@ erDiagram
   "users" ||--|| "user_notifications" : "user_id"
 
   user_notifications {
-    id uuid PK
-    user_id uuid FK
-    last_viewed_at timestamp "最終通知確認時刻"
-    inserted_at timestamp
-    updated_at timestamp
+    uuid id PK
+    uuid user_id FK
+    timestamp last_viewed_at "最終通知確認時刻"
+    timestamp inserted_at
+    timestamp updated_at
   }
 ```
 
