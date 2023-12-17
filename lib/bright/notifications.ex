@@ -7,11 +7,13 @@ defmodule Bright.Notifications do
 
   import Ecto.Query, warn: false
   alias Bright.Repo
+  alias Bright.Accounts.User
 
   alias Bright.Notifications.{
     NotificationOperation,
     NotificationCommunity,
-    NotificationEvidence
+    NotificationEvidence,
+    UserNotification
   }
 
   @doc """
@@ -200,5 +202,58 @@ defmodule Bright.Notifications do
         attrs
       ) do
     NotificationCommunity.changeset(notification_community, attrs)
+  end
+
+  @doc """
+  Returns whether the user has new notification or not.
+
+  ## Examples
+
+      iex> has_unread_notification?(user)
+      true
+
+  """
+  def has_unread_notification?(%User{} = user) do
+    user
+    |> Repo.preload(:user_notification)
+    |> Map.get(:user_notification)
+    |> unread_notification_exists?()
+  end
+
+  defp unread_notification_exists?(nil), do: true
+
+  defp unread_notification_exists?(
+         %UserNotification{user_id: user_id, last_viewed_at: last_viewed_at} = _user_notification
+       ) do
+    NotificationOperation.new_notifications_query(last_viewed_at) |> Repo.exists?() ||
+      NotificationCommunity.new_notifications_query(last_viewed_at) |> Repo.exists?() ||
+      NotificationEvidence.new_notifications_query(user_id, last_viewed_at) |> Repo.exists?()
+  end
+
+  @doc """
+  Create a user notification or Update last_viewed_at.
+
+  ## Examples
+
+      iex> view_notification(user)
+      %UserNotification{}
+  """
+  def view_notification(%User{} = user) do
+    user
+    |> Repo.preload(:user_notification)
+    |> Map.get(:user_notification)
+    |> create_or_update_user_notification(user)
+  end
+
+  defp create_or_update_user_notification(nil, user) do
+    %UserNotification{}
+    |> UserNotification.changeset(%{user_id: user.id, last_viewed_at: DateTime.utc_now()})
+    |> Repo.insert()
+  end
+
+  defp create_or_update_user_notification(user_notification, _user) do
+    user_notification
+    |> UserNotification.changeset(%{last_viewed_at: DateTime.utc_now()})
+    |> Repo.update()
   end
 end

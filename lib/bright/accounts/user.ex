@@ -65,6 +65,8 @@ defmodule Bright.Accounts.User do
 
     has_many :subscription_user_plans, Bright.Subscriptions.SubscriptionUserPlan
 
+    has_one :user_notification, Bright.Notifications.UserNotification
+
     timestamps()
   end
 
