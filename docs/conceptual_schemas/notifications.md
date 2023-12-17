@@ -7,7 +7,9 @@ Bright にはユーザーへの通知機能がある。
 
 システムから何らかのトリガーがあると通知が送信される。
 
-ユーザーはヘッダーにあるベルマークを確認すると通知の種類を確認できる。
+ユーザーはヘッダーにあるベルアイコンを確認すると通知の種類を確認できる。
+
+未読の通知がある場合は新着通知バッチがベルアイコンの上部に表示され、ベルアイコンをクリックすると既読になりバッチが消える。
 
 ヘッダーからリンクを飛ぶと通知一覧から通知を確認できる。
 
@@ -22,7 +24,6 @@ Bright にはユーザーへの通知機能がある。
 - 学習メモからの通知
   - ヘルプ対象の学習メモに誘導する
 
-
 ## API
 
 以下の通知は運用で使用したいので CRUD API を作成
@@ -32,7 +33,7 @@ Bright にはユーザーへの通知機能がある。
 
 ## DB 設計
 
-### 設計方針
+### 各通知種別の設計方針
 
 各通知種別（運営・コミュニティ...etc）ごとにテーブルを持つ。
 
@@ -50,7 +51,23 @@ Bright にはユーザーへの通知機能がある。
 
 具体的には `Bright.Notifications` にロジックを集約し、パターンマッチでロジックの分岐を表現する。
 
-### 全テーブルで共通の内容
+### 通知既読管理の設計方針
+
+通知の既読管理用のテーブルを用意する。なお、通知種別ごとに既読管理はせず、ユーザーに対する全通知に対して一括で既読管理する。
+
+まず、通知を作成するときに既読ステータスを更新する設計（いわゆる Push 型）にはしない。
+
+ユーザー数が増加すると、運営やコミュニティ通知のような「全ユーザー一斉通知」時に大量の insert or update が発生し、将来的に性能課題を抱えるおそれがあるため。
+
+そのため、各ユーザーが既読ステータスを更新する設計（いわゆる Pull 型）とする。
+
+具体的にはユーザーごとに、最終通知確認時刻を管理する。
+
+各通知種別に対して、最終通知時刻以降に更新された通知があれば未読と判定する。
+
+未読時に通知を確認したタイミングで最終通知時刻を更新する。
+
+### 各通知種別ごとのテーブルの共通カラム
 
 ```mermaid
 erDiagram
@@ -74,12 +91,35 @@ erDiagram
   }
 ```
 
-### インデックス設計
+### 各通知種別ごとのインデックス設計
 
 - to_user_id にインデックスをつける
   - 通知対象ユーザーに絞り込んで通知を出すため
+- updated_at にインデックスをつける
+  - 通知の新着管理で特定日付以降の通知レコードを取得するため
+  - to_user_id がある場合には [to_user_id, updated_at] の複合インデックスをつける
+
+### 通知既読管理のテーブル設計
+
+```mermaid
+erDiagram
+  user_norifications {
+    id uuid PK
+    user_id uuid FK
+    last_viewed_at timestamp "最終通知確認時刻"
+    inserted_at timestamp
+    updated_at timestamp
+  }
+```
+
+### 通知既読管理のインデックス設計
+
+- user_id にインデックスをつける
+  - ユーザーごとに既読管理するため
 
 ## 通知概念図
+
+### 各通知種別
 
 - 運営
 - コミュニティ
@@ -96,6 +136,13 @@ erDiagram
 erDiagram
   "Bright送信元ユーザー" ||--o{ "通知" : ""
   "Bright送信先ユーザー" ||--o{ "通知" : ""
+```
+
+### 通知既読管理
+
+```mermaid
+erDiagram
+  "ユーザー" ||--|| "通知既読管理" : "各通知種別ごとには管理しない"
 ```
 
 ## スキーマ
@@ -136,6 +183,16 @@ erDiagram
     datetime inserted_at "作成日時"
     datetime updated_at "更新日時"
   }
+
+  "users" ||--|| "user_norifications" : "user_id"
+
+  user_norifications {
+    id uuid PK
+    user_id uuid FK
+    last_viewed_at timestamp "最終通知確認時刻"
+    inserted_at timestamp
+    updated_at timestamp
+  }
 ```
 
 ## 新規通知実装の流れ
@@ -151,6 +208,7 @@ erDiagram
 - コンポーネントを実装する
   - 例: `BrightWeb.NotificationLive.Operation`
     - `Bright.Notifications.list_notification_by_type/3` に追加した通知のパターンを実装する
+    - `Bright.Notifications.has_unread_notification?/1` に追加した通知のパターンを実装する
     - `Bright.NotificationsTest` を修正する
   - コンポーネントのテストを追加する
     - 例: `BrightWeb.NotificationLive.OperationTest` を修正する
