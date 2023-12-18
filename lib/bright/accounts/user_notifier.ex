@@ -429,6 +429,29 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
+  Deliver employment acceptance .
+  """
+  def deliver_acceptance_employment_instructions(from_user, to_user, url) do
+    deliver(to_user.email, "【Bright】選考結果が届いています", """
+    #{to_user.name}さん
+
+    #{from_user.name} さんから、選考結果が届いています。
+
+    下記URLで雇用内容を確認し、受諾可否を選択してください。
+    #{url}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
   Deliver free trial apply .
   """
   def deliver_new_message_notification_instructions(to_user, url) do

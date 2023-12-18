@@ -116,6 +116,18 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         patch={~p"/recruits/coordinations"}
       />
     </.bright_modal>
+
+    <.bright_modal :if={@live_action in [:employment_notification]} id="employment-notification-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
+      <.live_component
+        module={BrightWeb.RecruitEmploymentLive.CreateComponent}
+        id="employment_notification_modal"
+        title={@page_title}
+        action={@live_action}
+        coordination_id={@coordination.id}
+        current_user={@current_user}
+        patch={~p"/recruits/coordinations"}
+      />
+    </.bright_modal>
     """
   end
 
@@ -157,7 +169,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
     action =
       case coordination.status do
         :waiting_recruit_decision -> :show_coordination
-        :hiring_decision -> :show_coordination
+        :hiring_decision -> :employment_notification
       end
 
     socket
