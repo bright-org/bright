@@ -236,7 +236,7 @@ defmodule Bright.Notifications do
   ## Examples
 
       iex> view_notification(user)
-      %UserNotification{}
+      {:ok, %UserNotification{}}
   """
   def view_notification(%User{} = user) do
     user
