@@ -2,8 +2,11 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
   @moduledoc """
   Notification Header Components
   """
+  alias Bright.Notifications
   use BrightWeb, :live_component
   alias Bright.Teams
+  alias Bright.Notifications
+  alias Bright.Repo
 
   @impl true
   def render(assigns) do
@@ -16,6 +19,9 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
         phx-target={@myself}
       >
         <.icon name="hero-bell" class="h-8 w-8" />
+
+        <span id="notification_unread_batch" :if={@has_new_notification?} class="absolute top-0 right-0 h-3 w-3 bg-attention-300 rounded-full" />
+
       </button>
       <div :if={@open?} class="absolute p-2 bg-brightGray-10 top-12 right-20 lg:right-24 shadow-lg">
         <ul>
@@ -54,7 +60,8 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
   def update(assigns, socket) do
     socket =
       socket
-      |> assign(:current_user, assigns.current_user)
+      |> assign(:current_user, assigns.current_user |> Repo.preload(:user_notification))
+      |> assign_has_new_norification()
 
     {:ok, socket}
   end
@@ -65,6 +72,7 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
 
     socket
     |> assign(:open?, new_open?)
+    |> try_update_has_new_notification()
     |> then(&{:noreply, &1})
   end
 
@@ -80,5 +88,27 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
       ["運営", ~p"/notifications/operations"],
       ["学習メモのヘルプ", ~p"/notifications/evidences"]
     ]
+  end
+
+  defp assign_has_new_norification(socket) do
+    socket.assigns.current_user
+    |> Notifications.has_unread_notification?()
+    |> then(fn has_new_notification? ->
+      socket
+      |> assign(:has_new_notification?, has_new_notification?)
+    end)
+  end
+
+  defp try_update_has_new_notification(
+         %{assigns: %{has_new_notification?: true, current_user: user}} = socket
+       ) do
+    Notifications.view_notification(user)
+
+    socket
+    |> assign(:has_new_notification?, false)
+  end
+
+  defp try_update_has_new_notification(socket) do
+    socket
   end
 end

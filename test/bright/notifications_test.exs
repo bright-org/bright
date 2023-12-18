@@ -358,4 +358,103 @@ defmodule Bright.NotificationsTest do
       assert %Ecto.Changeset{} = Notifications.change_notification(notification_community)
     end
   end
+
+  describe "has_unread_notification?/1" do
+    test "returns true if the user does not have user_notifications record" do
+      user = insert(:user)
+
+      assert Notifications.has_unread_notification?(user)
+    end
+
+    test "returns true if the user has unread notification_operation" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+
+      insert(:notification_operation,
+        from_user: from_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(1)
+      )
+
+      assert Notifications.has_unread_notification?(to_user)
+    end
+
+    test "returns true if the user has unread notification_community" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+
+      insert(:notification_community,
+        from_user: from_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(1)
+      )
+
+      assert Notifications.has_unread_notification?(to_user)
+    end
+
+    test "returns true if the user has unread notification_evidence" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+
+      insert(:notification_evidence,
+        from_user: from_user,
+        to_user: to_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(1)
+      )
+
+      assert Notifications.has_unread_notification?(to_user)
+    end
+
+    test "returns false if the user does not have unread notification" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: last_viewed_at)
+
+      insert(:notification_operation,
+        from_user: from_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(-1)
+      )
+
+      insert(:notification_community,
+        from_user: from_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(-1)
+      )
+
+      insert(:notification_evidence,
+        from_user: from_user,
+        to_user: to_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(-1)
+      )
+
+      refute Notifications.has_unread_notification?(to_user)
+    end
+  end
+
+  describe "view_notification/1" do
+    test "creates user_notifications record when user does not have" do
+      user = insert(:user)
+
+      Notifications.view_notification(user)
+
+      assert user |> Repo.preload(:user_notification) |> Map.get(:user_notification)
+    end
+
+    test "updated user_notification.last_viewed_at when user has" do
+      before_last_viewed_at = NaiveDateTime.utc_now() |> NaiveDateTime.add(-1)
+
+      user = insert(:user)
+
+      user_notification =
+        insert(:user_notification, user: user, last_viewed_at: before_last_viewed_at)
+
+      Notifications.view_notification(user)
+
+      assert user_notification.last_viewed_at <
+               user
+               |> Repo.preload(:user_notification)
+               |> Map.get(:user_notification)
+               |> Map.get(:last_viewed_at)
+    end
+  end
 end
