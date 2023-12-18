@@ -300,6 +300,13 @@ defmodule Bright.Recruits do
     |> Repo.get!(id)
   end
 
+  def get_coordination_with_profile!(id, user_id) do
+    Coordination
+    |> where([i], i.recruiter_user_id == ^user_id)
+    |> preload(candidates_user: :user_profile)
+    |> Repo.get!(id)
+  end
+
   @doc """
   Creates a Coordination.
 
@@ -441,6 +448,152 @@ defmodule Bright.Recruits do
     UserNotifier.deliver_cancel_coordination_to_candidates_user(
       coordination.recruiter_user,
       coordination.candidates_user
+    )
+  end
+
+  alias Bright.Recruits.Employment
+
+  @doc """
+  Returns the list of Employment.
+
+  ## Examples
+
+      iex> list_employment()
+      [%Employment{}, ...]
+
+  """
+
+  def list_employment do
+    Repo.all(Employment)
+  end
+
+  def list_employment(user_id) do
+    Employment
+    |> where(
+      [i],
+      i.recruiter_user_id == ^user_id and i.status in [:waiting_response, :acceptance_emplyoment]
+    )
+    |> preload(candidates_user: :user_profile)
+    |> Repo.all()
+  end
+
+  def list_acceptance_employment(user_id) do
+    Employment
+    |> where(
+      [i],
+      i.candidates_user_id == ^user_id and i.status == :waiting_response
+    )
+    |> preload(recruiter_user: :user_profile)
+    |> order_by(desc: :updated_at)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single Employment.
+
+  Raises `Ecto.NoResultsError` if the Employment does not exist.
+
+  ## Examples
+
+      iex> get_employment!(123)
+      %Employment{}
+
+      iex> get_employment!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_employment!(id), do: Repo.get!(Employment, id)
+
+  def get_employment_acceptance!(id, user_id) do
+    Employment
+    |> where([i], i.candidates_user_id == ^user_id)
+    |> preload(recruiter_user: :user_profile)
+    |> Repo.get!(id)
+  end
+
+  def get_employment_with_profile!(id, user_id) do
+    Employment
+    |> where([i], i.recruiter_user_id == ^user_id)
+    |> preload(candidates_user: :user_profile)
+    |> Repo.get!(id)
+  end
+
+  @doc """
+  Creates a Employment.
+
+  ## Examples
+
+      iex> create_employment(%{field: value})
+      {:ok, %Employment{}}
+
+      iex> create_Employment(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_employment(attrs \\ %{}) do
+    %Employment{}
+    |> Employment.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a employment.
+
+  ## Examples
+
+      iex> update_Employment(employment, %{field: new_value})
+      {:ok, %Employment{}}
+
+      iex> update_employment(employment, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_employment(%Employment{} = employment, attrs) do
+    employment
+    |> Employment.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a employment.
+
+  ## Examples
+
+      iex> delete_employment(employment)
+      {:ok, %Employment{}}
+
+      iex> delete_cemployment(employment)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_employment(%Employment{} = employment) do
+    Repo.delete(employment)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking employment changes.
+
+  ## Examples
+
+      iex> change_oordination(employment)
+      %Ecto.Changeset{data: %Employment{}}
+
+  """
+  def change_employment(%Employment{} = employment, attrs \\ %{}) do
+    Employment.changeset(employment, attrs)
+  end
+
+  def deliver_acceptance_employment_email_instructions(
+        from_user,
+        to_user,
+        employment,
+        acceptance_employment_url_fun
+      )
+      when is_function(acceptance_employment_url_fun, 1) do
+    UserNotifier.deliver_acceptance_employment_instructions(
+      from_user,
+      to_user,
+      acceptance_employment_url_fun.(employment.id)
     )
   end
 end
