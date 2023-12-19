@@ -1,10 +1,10 @@
 defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   use BrightWeb, :live_component
 
-  import BrightWeb.ChartComponents, only: [doughnut_graph: 1]
+  import BrightWeb.ChartComponents, only: [skill_gem: 1]
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
-    only: [profile_skill_class_level: 1, score_mark_class: 2, skill_score_percentages: 2]
+    only: [profile_skill_class_level: 1, score_mark_class: 2]
 
   import BrightWeb.GuideMessageComponents,
     only: [enter_skills_help_message: 1]
@@ -76,31 +76,36 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
           入力の途中で接続が切れたため、入力中のデータを復元しました。必ず「保存する」ボタンを押して入力を完了してください。
         </p>
 
-        <% # ドーナツグラフとレベル表記 %>
-        <div id="doughnut_area_in_skills_form" class="flex items-center my-4">
+        <div id="skill_gem_in_skills_form" class="flex items-center my-4">
           <div class="basis-3/4 flex justify-center">
-            <.doughnut_graph id="doughnut_graph_in_skills_form" data={skill_score_percentages(@counter, @num_skills)} />
-            <div class="flex justify-center items-center ml-2">
-              <div class="flex flex-col">
-                <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
-                  <.profile_skill_class_level level={get_level(@counter, @num_skills)} />
-                </p>
-                <div class="flex items-center pl-6">
-                  <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-                  <span class="score-high-percentage"><%= calc_percentage(@counter.high, @num_skills) %>％</span>
-                </div>
-                <div class="flex items-center mt-1 pl-6">
-                  <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-                  <span class="score-middle-percentage"><%= calc_percentage(@counter.middle, @num_skills) %>％</span>
-                </div>
+            <.skill_gem
+              id={"#{@id}-gem"}
+              labels={@gem_labels}
+              data={[@gem_values]}
+              size="sm"
+              display_link="false"
+            />
+          </div>
+          <div class="basis-1/4 flex flex-col mr-2 gap-y-1">
+            <div class="flex flex-col">
+              <p class="text-xs font-bold">スキル数</p>
+              <p class="text-sm text-right"><%= @num_skills %></p>
+              <p class="text-xs font-bold">入力目安</p>
+              <p class="text-sm text-right"><%= round(minute_per_skill() * @num_skills) %>分</p>
+            </div>
+            <div class="flex flex-col gap-y-1">
+              <p class="text-brightGreen-300 font-bold w-full flex">
+                <.profile_skill_class_level level={get_level(@counter, @num_skills)} />
+              </p>
+              <div class="flex items-center justify-center">
+                <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
+                <span class="score-high-percentage"><%= calc_percentage(@counter.high, @num_skills) %>％</span>
+              </div>
+              <div class="flex items-center justify-center">
+                <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
+                <span class="score-middle-percentage"><%= calc_percentage(@counter.middle, @num_skills) %>％</span>
               </div>
             </div>
-          </div>
-          <div class="basis-1/4 flex flex-col items-end mr-6">
-            <p class="text-xs font-bold">スキル数</p>
-            <p class="text-sm"><%= @num_skills %></p>
-            <p class="text-xs font-bold">入力目安</p>
-            <p class="text-sm"><%= round(minute_per_skill() * @num_skills) %>分</p>
           </div>
         </div>
 
@@ -210,7 +215,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, focus_row: 1, restore: false)}
+    {:ok, assign(socket, focus_row: 1, restore: false, gem_labels: [], gem_values: [])}
   end
 
   @impl true
@@ -221,6 +226,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
      |> assign_skill_units()
      |> assign_row_dict()
      |> assign_counter()
+     |> assign_gem_data()
      |> assign_first_time()}
   end
 
@@ -253,6 +259,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     {:noreply,
      socket
      |> update_by_score_change(skill_score, score)
+     |> assign_gem_data()
      |> backup_to_local_storage()
      |> assign(:focus_row, row)}
   end
@@ -265,6 +272,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     {:noreply,
      socket
      |> update_by_score_change(skill_score, score)
+     |> assign_gem_data()
      |> update(:focus_row, &Enum.min([&1 + 1, socket.assigns.num_skills]))
      |> backup_to_local_storage()
      |> push_scroll_to()}
@@ -333,6 +341,30 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     socket
     |> assign(:skill_score_dict, skill_score_dict)
     |> assign_counter()
+  end
+
+  defp assign_gem_data(socket) do
+    %{skill_units: skill_units, skill_score_dict: skill_score_dict} = socket.assigns
+
+    {gem_labels, gem_values} =
+      Enum.reduce(skill_units, {[], []}, fn skill_unit, {labels, values} ->
+        percentage = get_percentage_in_skill_unit(skill_unit, skill_score_dict)
+        {labels ++ [skill_unit.name], values ++ [percentage]}
+      end)
+
+    assign(socket, gem_labels: gem_labels, gem_values: gem_values)
+  end
+
+  defp get_percentage_in_skill_unit(skill_unit, skill_score_dict) do
+    skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
+    size = Enum.count(skills)
+
+    if size == 0 do
+      0
+    else
+      num_high_skills = Enum.count(skills, &(Map.get(skill_score_dict, &1.id).score == :high))
+      floor(num_high_skills / size * 100)
+    end
   end
 
   defp assign_first_time(socket) do
