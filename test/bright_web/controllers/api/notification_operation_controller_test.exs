@@ -29,7 +29,31 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
+  describe "without basic auth" do
+    test "index", %{conn: conn} do
+      conn = get(conn, ~p"/api/v1/notification_operations")
+      assert response(conn, 401)
+    end
+
+    test "create", %{conn: conn} do
+      conn = post(conn, ~p"/api/v1/notification_operations", notification_operation: %{})
+      assert response(conn, 401)
+    end
+
+    test "update", %{conn: conn} do
+      conn = put(conn, ~p"/api/v1/notification_operations/1", notification_operation: %{})
+      assert response(conn, 401)
+    end
+
+    test "delete", %{conn: conn} do
+      conn = delete(conn, ~p"/api/v1/notification_operations/1")
+      assert response(conn, 401)
+    end
+  end
+
   describe "index" do
+    setup [:setup_api_basic_auth]
+
     test "lists all notification_operations", %{conn: conn} do
       conn = get(conn, ~p"/api/v1/notification_operations")
       assert json_response(conn, 200)["data"] == []
@@ -37,6 +61,8 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
   end
 
   describe "create notification_operation" do
+    setup [:setup_api_basic_auth]
+
     test "renders notification_operation when data is valid", %{conn: conn} do
       attrs = create_attrs()
       from_user_id = attrs.from_user_id
@@ -62,7 +88,7 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
   end
 
   describe "update notification_operation" do
-    setup [:create_notification_operation]
+    setup [:create_notification_operation, :setup_api_basic_auth]
 
     test "renders notification_operation when data is valid", %{
       conn: conn,
@@ -103,7 +129,7 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
   end
 
   describe "delete notification_operation" do
-    setup [:create_notification_operation]
+    setup [:create_notification_operation, :setup_api_basic_auth]
 
     test "deletes chosen notification_operation", %{
       conn: conn,

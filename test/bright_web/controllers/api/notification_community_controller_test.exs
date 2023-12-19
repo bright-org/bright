@@ -29,7 +29,31 @@ defmodule BrightWeb.Api.NotificationCommunityControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
+  describe "without basic auth" do
+    test "index", %{conn: conn} do
+      conn = get(conn, ~p"/api/v1/notification_communities")
+      assert response(conn, 401)
+    end
+
+    test "create", %{conn: conn} do
+      conn = post(conn, ~p"/api/v1/notification_communities", notification_community: %{})
+      assert response(conn, 401)
+    end
+
+    test "update", %{conn: conn} do
+      conn = put(conn, ~p"/api/v1/notification_communities/1", notification_community: %{})
+      assert response(conn, 401)
+    end
+
+    test "delete", %{conn: conn} do
+      conn = delete(conn, ~p"/api/v1/notification_communities/1")
+      assert response(conn, 401)
+    end
+  end
+
   describe "index" do
+    setup [:setup_api_basic_auth]
+
     test "lists all notification_communities", %{conn: conn} do
       conn = get(conn, ~p"/api/v1/notification_communities")
       assert json_response(conn, 200)["data"] == []
@@ -37,6 +61,8 @@ defmodule BrightWeb.Api.NotificationCommunityControllerTest do
   end
 
   describe "create notification_community" do
+    setup [:setup_api_basic_auth]
+
     test "renders notification_community when data is valid", %{conn: conn} do
       attrs = create_attrs()
       from_user_id = attrs.from_user_id
@@ -63,7 +89,7 @@ defmodule BrightWeb.Api.NotificationCommunityControllerTest do
   end
 
   describe "update notification_community" do
-    setup [:create_notification_community]
+    setup [:create_notification_community, :setup_api_basic_auth]
 
     test "renders notification_community when data is valid", %{
       conn: conn,
@@ -103,7 +129,7 @@ defmodule BrightWeb.Api.NotificationCommunityControllerTest do
   end
 
   describe "delete notification_community" do
-    setup [:create_notification_community]
+    setup [:create_notification_community, :setup_api_basic_auth]
 
     test "deletes chosen notification_community", %{
       conn: conn,
