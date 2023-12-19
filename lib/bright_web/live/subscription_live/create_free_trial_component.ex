@@ -134,6 +134,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
   def update(assigns, socket) do
     # TODO: plan_codeではなく厳密にはservice_codeをもとに適切なプランを取ること
     # `Subscriptions.get_most_priority_free_trial_subscription_plan(service_code)`を用いること
+    # 現契約プランと比較してチーム作成数などの制限数が落ちないプランを取ること
     plan = Subscriptions.get_plan_by_plan_code(assigns.plan_code)
     free_trial = %FreeTrial{}
     changeset = FreeTrial.changeset(free_trial, %{})
