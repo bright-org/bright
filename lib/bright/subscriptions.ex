@@ -478,6 +478,8 @@ defmodule Bright.Subscriptions do
   @doc """
   サービスコードをキーに該当サービスが利用可能な最も優先度の高いサブスクリプションプランを返す
 
+  TODO: 現契約プランと比較してチーム作成数などの制限数が落ちないプランを返すこと（service_code以外の条件考慮が必要）
+
   ## Examples
     iex> get_most_priority_free_trial_subscription_plan("team_up")
     %SubscriptionPlan{}
