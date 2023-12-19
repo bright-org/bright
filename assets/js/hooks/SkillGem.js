@@ -6,6 +6,22 @@ const otherColorPattern = ["#D659F0AA", "#7B0D92AA", "#BC14E0AA"];
 const pastColorPattern = ["#FFFFFF55", "#FFFFFF55", "#FFFFFF55"];
 const linkColor = "#0000FF";
 const minValue = -5;
+const gemSizeSet = {
+  // サイズと主な使用箇所
+  // sm: スキル検索(スキルジェム), マイページ(スキルバランス)
+  // sp: スマートホン用途 スキルジェム
+  // md: チームスキル分析
+  "default": {width: "535px", height: "450px"},
+  "sm": {width: "250px", height: "165px"},
+  "sp": {width: "350px", height: "300px"},
+  "md": {width: "450px", height: "400px"}
+}
+const labelFontSet = {
+  "default": {size: 12},
+  "sm": {size: 10},
+  "sp": {size: 12},
+  "md": {size: 12}
+}
 
 const getColorPattern = (length, colors) => {
   const pattern = [];
@@ -146,7 +162,7 @@ const beforeDatasetsDraw = (chart) => {
   }
 };
 
-const createChartFromJSON = (labels, datasets, isLink) => {
+const createChartFromJSON = (labels, datasets, isLink, labelFont) => {
   const color = isLink ? linkColor : "#000000";
   const rightPadding = isLink ? 22 : 0;
   const pointLabelsPadding = isLink ? 25 : 5;
@@ -191,10 +207,13 @@ const createChartFromJSON = (labels, datasets, isLink) => {
             stepSize: 20,
             display: false,
           },
+          // see: https://www.chartjs.org/docs/latest/axes/radial/linear.html#point-label-options
+          // font 指定なしでデフォルト12とあるが画面をみるともっと小さく10あたりにみえる
           pointLabels: {
             color: color,
             backdropPadding: 5,
             padding: pointLabelsPadding,
+            font: labelFont
           },
         },
       },
@@ -209,7 +228,8 @@ export const SkillGem = {
     const dataset = element.dataset;
     const labels = JSON.parse(dataset.labels);
     const data = JSON.parse(dataset.data);
-    const gemSize = this.getGemSize(dataset.size);
+    const gemSize = gemSizeSet[dataset.size] || gemSizeSet["default"]
+    const labelFont = labelFontSet[dataset.size] || labelFontSet["default"]
     const isLink = JSON.parse(dataset.displayLink);
     const datasets = [];
 
@@ -224,27 +244,12 @@ export const SkillGem = {
     this.ctx = document.querySelector("#" + element.id + " canvas");
     window.myRadar[element.id] = new Chart(
       this.ctx,
-      createChartFromJSON(labels, datasets, isLink)
+      createChartFromJSON(labels, datasets, isLink, labelFont)
     );
     window.myRadar[element.id].canvas.parentNode.style.width = gemSize.width;
     window.myRadar[element.id].canvas.parentNode.style.height = gemSize.height;
 
     this.ctx.addEventListener("click", this.clickEvent);
-  },
-  getGemSize(size) {
-    let gemSize = { width: "535px", height: "450px" };
-    switch (size) {
-      case "sm":
-        gemSize = { width: "250px", height: "165px" };
-        break;
-      case "sp":
-        gemSize = { width: "350px", height: "300px" };
-        break;
-      case "md":
-        gemSize = { width: "450px", height: "400px" };
-        break;
-    }
-    return gemSize;
   },
   clickEvent(event) {
     const element = event.target.parentElement;
