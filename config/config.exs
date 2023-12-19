@@ -37,6 +37,9 @@ config :bright, BrightWeb.Gettext, default_locale: "ja"
 # aes128_secret_keyは16文字の文字列を指定すること
 config :bright, aes128_secret_key: "26McE/V0iwb8DWy5"
 
+# API Basic 認証情報
+config :bright, api_basic_auth_username: "uT-8EPWS5cT3", api_basic_auth_password: "m_Kk2ixnf7-j"
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",

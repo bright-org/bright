@@ -48,6 +48,15 @@ defmodule Bright.TestHelper do
     %{conn: log_in_user(conn, user), user: user}
   end
 
+  def setup_api_basic_auth(%{conn: conn}) do
+    username = Application.get_env(:bright, :api_basic_auth_username)
+    password = Application.get_env(:bright, :api_basic_auth_password)
+
+    {:ok,
+     conn:
+       put_req_header(conn, "authorization", "Basic " <> Base.encode64("#{username}:#{password}"))}
+  end
+
   def insert_user_relations(user) do
     insert(:user_profile, user: user)
     insert(:user_job_profile, user: user)
