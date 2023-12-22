@@ -22,7 +22,7 @@ Bright にはユーザーへの通知機能がある。
 - コミュニティからの通知
   - MA ツール側の API を叩いてユーザーがコミュニティへの参加を行う
 - 学習メモからの通知
-  - ヘルプ対象の学習メモに誘導する
+  - ヘルプ対象の学習メモを開く
 
 ## API
 
@@ -177,6 +177,19 @@ erDiagram
   "users" ||--o{ "notification_evidences" : "to_user_id"
 
   notification_evidences {
+    uuid id PK "id"
+    uuid from_user_id	FK "送信元ユーザー"
+    uuid to_user_id	FK "送信先ユーザー"
+    string message	"メッセージ内容"
+    string url	"遷移先URL"
+    datetime inserted_at "作成日時"
+    datetime updated_at "更新日時"
+  }
+
+  "users" ||--o{ "notification_skill_updates" : "from_user_id"
+  "users" ||--o{ "notification_skill_updates" : "to_user_id"
+
+  notification_skill_updates {
     uuid id PK "id"
     uuid from_user_id	FK "送信元ユーザー"
     uuid to_user_id	FK "送信先ユーザー"
