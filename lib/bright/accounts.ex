@@ -19,6 +19,11 @@ defmodule Bright.Accounts do
   ## Database getters
 
   @doc """
+  Gets a single user.
+  """
+  def get_user!(id), do: Repo.get!(User, id)
+
+  @doc """
   Gets a confirmed user by email.
 
   When `:including_not_confirmed` option is given and true, gets a user including not confirmed.

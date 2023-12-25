@@ -28,7 +28,7 @@ defmodule Bright.SkillScores.SkillClassScore do
   @doc false
   def changeset(skill_class_score, attrs) do
     skill_class_score
-    |> cast(attrs, [:level, :percentage])
+    |> cast(attrs, [:level, :percentage, :became_normal_at, :became_skilled_at])
     |> validate_required([:level, :percentage])
   end
 
