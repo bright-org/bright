@@ -6,6 +6,8 @@ defmodule Bright.SkillScores do
   import Ecto.Query, warn: false
 
   alias Bright.Repo
+  alias Bright.Accounts
+  alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.CareerFields
   alias Bright.SkillScores.{SkillClassScore, SkillUnitScore, SkillScore, CareerFieldScore}
@@ -194,35 +196,30 @@ defmodule Bright.SkillScores do
     end
   end
 
-  # TODO: 有効化のタイミングで削除
-  defp build_notification_attrs(_skill_class_score, _level) do
-    []
-  end
+  defp build_notification_attrs(skill_class_score, level) do
+    user = Accounts.get_user!(skill_class_score.user_id)
+    skill_class = SkillPanels.get_skill_class!(skill_class_score.skill_class_id)
+    skill_panel = SkillPanels.get_skill_panel!(skill_class.skill_panel_id)
 
-  # # TODO: 有効化のタイミングでコメント消し
-  # defp build_notification_attrs(skill_class_score, level) do
-  #   user = Accounts.get_user!(skill_class_score.user_id)
-  #   skill_class = SkillPanels.get_skill_class!(skill_class_score.skill_class_id)
-  #   skill_panel = SkillPanels.get_skill_panel!(skill_class.skill_panel_id)
-  #
-  #   timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-  #
-  #   base_attrs = %{
-  #     from_user_id: user.id,
-  #     message: "#{user.name}が#{skill_panel.name} #{skill_class.name}のスキルを習得し「#{Gettext.gettext(BrightWeb.Gettext, "level_#{level}")}」レベルになりました！",
-  #     url: "/panels/#{skill_panel.id}/#{user.name}?class=#{skill_class.class}",
-  #     inserted_at: timestamp,
-  #     updated_at: timestamp
-  #   }
-  #
-  #   Notifications.list_related_user_ids(user)
-  #   |> Enum.map(fn user_id ->
-  #     Map.merge(base_attrs, %{
-  #       id: Ecto.ULID.generate(),
-  #       to_user_id: user_id
-  #     })
-  #   end)
-  # end
+    timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+    base_attrs = %{
+      from_user_id: user.id,
+      message:
+        "#{user.name}が#{skill_panel.name} #{skill_class.name}のスキルを習得し「#{Gettext.gettext(BrightWeb.Gettext, "level_#{level}")}」レベルになりました！",
+      url: "/panels/#{skill_panel.id}/#{user.name}?class=#{skill_class.class}",
+      inserted_at: timestamp,
+      updated_at: timestamp
+    }
+
+    Notifications.list_related_user_ids(user)
+    |> Enum.map(fn user_id ->
+      Map.merge(base_attrs, %{
+        id: Ecto.ULID.generate(),
+        to_user_id: user_id
+      })
+    end)
+  end
 
   @doc """
   Returns the list of skill_scores.
@@ -611,11 +608,23 @@ defmodule Bright.SkillScores do
       percentage = calc_percentage(high_scores_count, skills_count)
       level = get_level(percentage)
 
-      changeset =
-        SkillClassScore.changeset(skill_class_score, %{percentage: percentage, level: level})
+      skill_class_score
+      |> change_skill_class_score(%{percentage: percentage, level: level})
+      |> maybe_skill_class_score_change_with_notifications()
+      |> then(fn
+        {changeset, x} when x in [nil, []] ->
+          multi
+          |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
 
-      multi
-      |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
+        {changeset, attrs_list} ->
+          multi
+          |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
+          |> Ecto.Multi.insert_all(
+            :"insert_all_notifications_#{user_id}",
+            Notifications.NotificationSkillUpdate,
+            attrs_list
+          )
+      end)
     end)
     |> Repo.transaction()
   end

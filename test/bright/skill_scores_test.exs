@@ -3,6 +3,7 @@ defmodule Bright.SkillScoresTest do
   import Bright.Factory
 
   alias Bright.SkillScores
+  alias Bright.Notifications
 
   describe "skill_class_scores" do
     alias Bright.SkillScores.SkillClassScore
@@ -119,32 +120,36 @@ defmodule Bright.SkillScoresTest do
       assert skill_class_score.percentage == 0.0
     end
 
-    # # TODO: 有効化のタイミングでコメント消し
-    # test "update_skill_class_score_stats with notification", %{
-    #   user: user,
-    #   skill_panel: skill_panel,
-    #   skill_class: skill_class
-    # } do
-    #   skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
-    #   skill_unit = insert(:skill_unit)
-    #   insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
-    #   [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
-    #   insert(:skill_score, user: user, skill: skill_1, score: :low)
-    #   insert(:skill_score, user: user, skill: skill_2, score: :high)
-    #
-    #   # 通知先となるユーザー（チームメンバー）生成
-    #   user_2 = insert(:user)
-    #   team = insert(:team)
-    #   insert(:team_member_users, team: team, user: user)
-    #   insert(:team_member_users, team: team, user: user_2)
-    #
-    #   # level: normal になる
-    #   {:ok, _} = SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
-    #
-    #   %{entries: [notification]} = Notifications.list_notification_by_type(user_2.id, "skill_update", %{page: 1, page_size: 1})
-    #   assert notification.message == "HogeがElixir基本 零細Web開発のスキルを習得し「平均」レベルになりました！"
-    #   assert notification.url == "/panels/#{skill_panel.id}/#{user.name}?class=1"
-    # end
+    test "update_skill_class_score_stats with notification", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
+      skill_unit = insert(:skill_unit)
+      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
+      [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
+      insert(:skill_score, user: user, skill: skill_1, score: :low)
+      insert(:skill_score, user: user, skill: skill_2, score: :high)
+
+      # 通知先となるユーザー（チームメンバー）生成
+      user_2 = insert(:user)
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+      insert(:team_member_users, team: team, user: user_2)
+
+      # level: normal になる
+      {:ok, _} = SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
+
+      %{entries: [notification]} =
+        Notifications.list_notification_by_type(user_2.id, "skill_update", %{
+          page: 1,
+          page_size: 1
+        })
+
+      assert notification.message == "HogeがElixir基本 零細Web開発のスキルを習得し「平均」レベルになりました！"
+      assert notification.url == "/panels/#{skill_panel.id}/#{user.name}?class=1"
+    end
 
     test "get_level" do
       [
@@ -689,6 +694,24 @@ defmodule Bright.SkillScoresTest do
       SkillScores.re_aggregate_scores([skill_class_2])
       [_, skill_class_2_score] = get_skill_class_scores(skill_panel)
       assert %{percentage: 80.0} = skill_class_2_score
+    end
+
+    @tag batch: "skill_unit_moved_to_class2"
+    test "creates notification_skill_updates", %{
+      user: user,
+      skill_class_1: skill_class_1,
+      skill_class_2: skill_class_2
+    } do
+      user_2 = insert(:user)
+      relate_user_and_supporter(user, user_2)
+
+      # 再集計によってskill_class_2がskilledとなる
+      SkillScores.re_aggregate_scores([skill_class_1, skill_class_2])
+
+      assert Repo.get_by!(Notifications.NotificationSkillUpdate, %{
+               from_user_id: user.id,
+               to_user_id: user_2.id
+             })
     end
   end
 end

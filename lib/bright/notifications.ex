@@ -239,7 +239,8 @@ defmodule Bright.Notifications do
        ) do
     NotificationOperation.new_notifications_query(last_viewed_at) |> Repo.exists?() ||
       NotificationCommunity.new_notifications_query(last_viewed_at) |> Repo.exists?() ||
-      NotificationEvidence.new_notifications_query(user_id, last_viewed_at) |> Repo.exists?()
+      NotificationEvidence.new_notifications_query(user_id, last_viewed_at) |> Repo.exists?() ||
+      NotificationSkillUpdate.new_notifications_query(user_id, last_viewed_at) |> Repo.exists?()
   end
 
   @doc """
