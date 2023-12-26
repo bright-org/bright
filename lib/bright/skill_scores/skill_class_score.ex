@@ -16,6 +16,8 @@ defmodule Bright.SkillScores.SkillClassScore do
     # 役職系の単語は誤解を招くため避けて命名しています。NG例: junior, middle, senior
     field :level, Ecto.Enum, values: [:beginner, :normal, :skilled], default: :beginner
     field :percentage, :float, default: 0.0
+    field :became_normal_at, :naive_datetime
+    field :became_skilled_at, :naive_datetime
 
     belongs_to(:user, Bright.Accounts.User)
     belongs_to(:skill_class, Bright.SkillPanels.SkillClass)
@@ -26,7 +28,7 @@ defmodule Bright.SkillScores.SkillClassScore do
   @doc false
   def changeset(skill_class_score, attrs) do
     skill_class_score
-    |> cast(attrs, [:level, :percentage])
+    |> cast(attrs, [:level, :percentage, :became_normal_at, :became_skilled_at])
     |> validate_required([:level, :percentage])
   end
 

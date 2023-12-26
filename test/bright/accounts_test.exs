@@ -14,6 +14,19 @@ defmodule Bright.AccountsTest do
   import Bright.Factory
   alias Bright.Accounts.{User, UserToken}
 
+  describe "get_user!/1" do
+    test "raises if id is invalid" do
+      assert_raise Ecto.NoResultsError, fn ->
+        Accounts.get_user!(Ecto.ULID.generate())
+      end
+    end
+
+    test "returns the user with the given id" do
+      %{id: id} = user = insert(:user)
+      assert %User{id: ^id} = Accounts.get_user!(user.id)
+    end
+  end
+
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
       refute Accounts.get_user_by_email("unknown@example.com")

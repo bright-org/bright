@@ -6,6 +6,7 @@ defmodule Bright.Notifications do
   """
 
   import Ecto.Query, warn: false
+
   alias Bright.Repo
   alias Bright.Accounts.User
 
@@ -13,6 +14,7 @@ defmodule Bright.Notifications do
     NotificationOperation,
     NotificationCommunity,
     NotificationEvidence,
+    NotificationSkillUpdate,
     UserNotification
   }
 
@@ -91,6 +93,16 @@ defmodule Bright.Notifications do
       where: notification_evidence.to_user_id == ^to_user_id,
       order_by: [
         desc: notification_evidence.id
+      ]
+    )
+    |> Repo.paginate(page_param)
+  end
+
+  def list_notification_by_type(to_user_id, "skill_update", page_param) do
+    from(notification_skill_update in NotificationSkillUpdate,
+      where: notification_skill_update.to_user_id == ^to_user_id,
+      order_by: [
+        desc: notification_skill_update.id
       ]
     )
     |> Repo.paginate(page_param)
@@ -255,5 +267,46 @@ defmodule Bright.Notifications do
     user_notification
     |> UserNotification.changeset(%{last_viewed_at: DateTime.utc_now()})
     |> Repo.update()
+  end
+
+  @doc """
+  Returns related user_ids from user.
+  """
+  def list_related_user_ids(user) do
+    # ユーザー所属チームとその関連チームに属するuser_idを取得
+    # NOTE: 今後設定によって通知要否（粒度未定）できるようになる想定です。そのため個別ロードしています。
+    teams =
+      Ecto.assoc(user, :teams)
+      |> preload([
+        :member_users,
+        supporter_teams_supporting: [:member_users],
+        supportee_teams_supporting: [:member_users]
+      ])
+      |> Repo.all()
+
+    # チームメンバー
+    team_related_ids = collect_team_user_ids(teams)
+
+    # 支援元メンバー
+    supporter_related_ids =
+      teams
+      |> Enum.flat_map(& &1.supporter_teams_supporting)
+      |> collect_team_user_ids()
+
+    # 支援先メンバー
+    supportee_related_ids =
+      teams
+      |> Enum.flat_map(& &1.supportee_teams_supporting)
+      |> collect_team_user_ids()
+
+    (team_related_ids ++ supporter_related_ids ++ supportee_related_ids)
+    |> Enum.uniq()
+    |> List.delete(user.id)
+  end
+
+  defp collect_team_user_ids(teams) do
+    Enum.flat_map(teams, fn team ->
+      Enum.map(team.member_users, & &1.user_id)
+    end)
   end
 end
