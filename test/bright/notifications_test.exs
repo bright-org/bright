@@ -445,6 +445,20 @@ defmodule Bright.NotificationsTest do
       assert Notifications.has_unread_notification?(to_user)
     end
 
+    test "returns true if the user has unread notification_skill_update" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+
+      insert(:notification_skill_update,
+        from_user: from_user,
+        to_user: to_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(1)
+      )
+
+      assert Notifications.has_unread_notification?(to_user)
+    end
+
     test "returns false if the user does not have unread notification" do
       last_viewed_at = NaiveDateTime.utc_now()
       [from_user, to_user] = insert_pair(:user)

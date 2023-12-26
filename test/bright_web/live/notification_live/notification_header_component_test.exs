@@ -16,12 +16,14 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponentTest do
       refute lv |> has_element?(~s{a[href="/notifications/operations"]})
       refute lv |> has_element?(~s{a[href="/notifications/communities"]})
       refute lv |> has_element?(~s{a[href="/notifications/evidences"]})
+      refute lv |> has_element?(~s{a[href="/notifications/skill_updates"]})
 
       assert lv |> element(~s{button[phx-click="toggle_notifications"]}) |> render_click()
 
       assert lv |> has_element?(~s{a[href="/notifications/operations"]})
       assert lv |> has_element?(~s{a[href="/notifications/communities"]})
       assert lv |> has_element?(~s{a[href="/notifications/evidences"]})
+      assert lv |> has_element?(~s{a[href="/notifications/skill_updates"]})
     end
 
     test "renders notification unread batch when user does not have user_notification", %{
