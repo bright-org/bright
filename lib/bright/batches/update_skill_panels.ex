@@ -37,6 +37,9 @@ defmodule Bright.Batches.UpdateSkillPanels do
   alias Bright.SkillExams.SkillExam
   alias Bright.SkillReferences.SkillReference
 
+  # postgresql limit of parameters
+  @max_insert_size 65_535
+
   def call(locked_date, dry_run \\ false) do
     skill_panels = Repo.all(SkillPanel)
     now = NaiveDateTime.local_now()
@@ -154,7 +157,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(HistoricalSkillUnit, entries)
+    insert_all_with_chunk(HistoricalSkillUnit, entries)
 
     skill_units
     |> Enum.with_index()
@@ -177,7 +180,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(HistoricalSkillCategory, entries)
+    insert_all_with_chunk(HistoricalSkillCategory, entries)
 
     skill_categories
     |> Enum.with_index()
@@ -200,7 +203,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(HistoricalSkill, entries)
+    insert_all_with_chunk(HistoricalSkill, entries)
 
     skills
     |> Enum.with_index()
@@ -231,7 +234,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(HistoricalSkillClass, entries)
+    insert_all_with_chunk(HistoricalSkillClass, entries)
 
     skill_classes
     |> Enum.with_index()
@@ -261,7 +264,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         end)
       end)
 
-    Repo.insert_all(HistoricalSkillClassUnit, entries)
+    insert_all_with_chunk(HistoricalSkillClassUnit, entries)
   end
 
   defp create_historical_skill_unit_scores(skill_unit_pairs, now, locked_date) do
@@ -280,7 +283,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         end)
       end)
 
-    Repo.insert_all(HistoricalSkillUnitScore, entries)
+    insert_all_with_chunk(HistoricalSkillUnitScore, entries)
   end
 
   defp create_historical_skill_scores(skill_pairs, now) do
@@ -301,7 +304,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         end)
       end)
 
-    Repo.insert_all(HistoricalSkillScore, entries)
+    insert_all_with_chunk(HistoricalSkillScore, entries)
   end
 
   defp create_historical_skill_class_scores(skill_class_pairs, now, locked_date) do
@@ -321,7 +324,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         end)
       end)
 
-    Repo.insert_all(HistoricalSkillClassScore, entries)
+    insert_all_with_chunk(HistoricalSkillClassScore, entries)
   end
 
   defp create_historical_career_field_scores(now, locked_date) do
@@ -341,7 +344,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(HistoricalCareerFieldScore, entries)
+    insert_all_with_chunk(HistoricalCareerFieldScore, entries)
   end
 
   defp create_skill_units(now, locked_date) do
@@ -360,7 +363,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(SkillUnit, entries)
+    insert_all_with_chunk(SkillUnit, entries)
 
     draft_skill_units
     |> Enum.with_index()
@@ -383,7 +386,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(SkillCategory, entries)
+    insert_all_with_chunk(SkillCategory, entries)
 
     draft_skill_categories
     |> Enum.with_index()
@@ -406,7 +409,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(Skill, entries)
+    insert_all_with_chunk(Skill, entries)
 
     draft_skills
     |> Enum.with_index()
@@ -437,7 +440,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         }
       end)
 
-    Repo.insert_all(SkillClass, entries)
+    insert_all_with_chunk(SkillClass, entries)
 
     draft_skill_classes
     |> Enum.with_index()
@@ -467,7 +470,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
         end)
       end)
 
-    Repo.insert_all(SkillClassUnit, entries)
+    insert_all_with_chunk(SkillClassUnit, entries)
   end
 
   defp create_skill_unit_scores(draft_skill_unit_pairs, now) do
@@ -496,7 +499,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       |> Enum.reject(&is_nil/1)
 
     Repo.delete_all(SkillUnitScore)
-    Repo.insert_all(SkillUnitScore, entries)
+    insert_all_with_chunk(SkillUnitScore, entries)
   end
 
   defp create_skill_scores(draft_skill_pairs, now) do
@@ -528,7 +531,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       |> Enum.reject(&is_nil/1)
 
     Repo.delete_all(SkillScore)
-    Repo.insert_all(SkillScore, entries)
+    insert_all_with_chunk(SkillScore, entries)
   end
 
   defp create_skill_class_scores(draft_skill_class_pairs, now) do
@@ -558,7 +561,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       |> Enum.reject(&is_nil/1)
 
     Repo.delete_all(SkillClassScore)
-    Repo.insert_all(SkillClassScore, entries)
+    insert_all_with_chunk(SkillClassScore, entries)
   end
 
   defp create_career_field_scores(now) do
@@ -578,7 +581,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
     Repo.delete_all(CareerFieldScore)
-    Repo.insert_all(CareerFieldScore, entries)
+    insert_all_with_chunk(CareerFieldScore, entries)
   end
 
   def update_skill_evidences(draft_skill_pairs, now) do
@@ -668,6 +671,12 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
     from(su in SkillUnit, where: su.locked_date != ^locked_date)
     |> Repo.delete_all()
+  end
+
+  defp insert_all_with_chunk(scheme_module, entries) do
+    entries
+    |> Enum.chunk_every(@max_insert_size)
+    |> Enum.each(&Repo.insert_all(scheme_module, &1))
   end
 
   defp re_aggregate_scores do
