@@ -37,8 +37,10 @@ defmodule Bright.Batches.UpdateSkillPanels do
   alias Bright.SkillExams.SkillExam
   alias Bright.SkillReferences.SkillReference
 
-  # postgresql limit of parameters
-  @max_insert_size 65_535
+  # max_insert_size:
+  #   Postgresql の最大パラメータ(65_535)を考慮したサイズ
+  #   2_000件として1レコードに30カラム程度を許容している
+  @max_insert_size 2_000
 
   def call(locked_date, dry_run \\ false) do
     skill_panels = Repo.all(SkillPanel)
