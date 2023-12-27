@@ -29,7 +29,7 @@ defmodule BrightWeb.NotificationLive.SkillUpdate do
             </div>
             <div class="flex gap-x-2 w-full justify-end lg:justify-start lg:w-auto">
               <button phx-click="click" phx-value-notification_skill_update_id={notification.id} class="hidden hover:opacity-70 font-bold lg:inline-block bg-brightGray-900 text-white min-w-[76px] rounded p-2 text-sm">
-                内容を見る
+                詳細を見る
               </button>
             </div>
           </li>

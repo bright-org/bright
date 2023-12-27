@@ -257,14 +257,14 @@ defmodule Bright.SkillEvidencesTest do
                NotificationEvidence,
                from_user_id: user.id,
                to_user_id: user_2.id,
-               message: "#{user.name}から「#{breadcrumb}」のヘルプが届きました"
+               message: "#{user.name}さんから「#{breadcrumb}」のヘルプが届きました"
              )
 
       assert Repo.get_by(
                NotificationEvidence,
                from_user_id: user.id,
                to_user_id: user_3.id,
-               message: "#{user.name}から「#{breadcrumb}」のヘルプが届きました"
+               message: "#{user.name}さんから「#{breadcrumb}」のヘルプが届きました"
              )
 
       # チーム外ユーザーへ作成されていない確認
@@ -350,7 +350,7 @@ defmodule Bright.SkillEvidencesTest do
 
       assert notification.from_user_id == user_2.id
       assert notification.to_user_id == user.id
-      assert notification.message == "#{user_2.name}から「#{breadcrumb}」にメッセージが届きました"
+      assert notification.message == "#{user_2.name}さんから「#{breadcrumb}」にメッセージが届きました"
     end
   end
 
