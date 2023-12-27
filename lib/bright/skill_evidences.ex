@@ -246,7 +246,7 @@ defmodule Bright.SkillEvidences do
 
     base_attrs = %{
       from_user_id: user.id,
-      message: "#{user.name}から「#{skill_breadcrumb}」のヘルプが届きました",
+      message: "#{user.name}さんから「#{skill_breadcrumb}」のヘルプが届きました",
       url: "/notifications/evidences/#{skill_evidence.id}",
       inserted_at: timestamp,
       updated_at: timestamp
@@ -272,7 +272,7 @@ defmodule Bright.SkillEvidences do
     Notifications.create_notification("evidence", %{
       from_user_id: user.id,
       to_user_id: skill_evidence.user_id,
-      message: "#{user.name}から「#{skill_breadcrumb}」にメッセージが届きました",
+      message: "#{user.name}さんから「#{skill_breadcrumb}」にメッセージが届きました",
       url: "/notifications/evidences/#{skill_evidence.id}"
     })
   end
