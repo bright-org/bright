@@ -7,6 +7,7 @@ defmodule Bright.SkillExams do
   alias Bright.Repo
 
   alias Bright.SkillExams.SkillExam
+  alias Bright.Utils.Percentage
 
   @doc """
   Returns the list of skill_exams.
@@ -113,11 +114,7 @@ defmodule Bright.SkillExams do
   試験受験率(%)を返す。
   完全達成時に100%と表示し99.5%などでは99%と表示するため切り捨てている。
   """
-  def calc_touch_percentage(_value, 0), do: 0
-
   def calc_touch_percentage(value, size) do
-    (value / size)
-    |> Kernel.*(100)
-    |> floor()
+    Percentage.calc_floor_percentage(value, size)
   end
 end

@@ -12,6 +12,7 @@ defmodule Bright.SkillScores do
   alias Bright.CareerFields
   alias Bright.SkillScores.{SkillClassScore, SkillUnitScore, SkillScore, CareerFieldScore}
   alias Bright.Notifications
+  alias Bright.Utils.Percentage
 
   # レベルの判定値
   @normal_level 40
@@ -97,7 +98,7 @@ defmodule Bright.SkillScores do
 
     size = Enum.count(skills)
     high_scores_count = Enum.count(skill_scores, &(&1.score == :high))
-    percentage = calc_percentage(high_scores_count, size)
+    percentage = Percentage.calc_percentage(high_scores_count, size)
     level = get_level(percentage)
 
     skill_class_score
@@ -429,7 +430,7 @@ defmodule Bright.SkillScores do
       skill_scores = skills |> Enum.map(&List.first(&1.skill_scores)) |> Enum.filter(& &1)
       size = Enum.count(skills)
       high_scores_count = Enum.count(skill_scores, &(&1.score == :high))
-      percentage = calc_percentage(high_scores_count, size)
+      percentage = Percentage.calc_percentage(high_scores_count, size)
 
       skill_unit_score
       |> if do
@@ -455,8 +456,7 @@ defmodule Bright.SkillScores do
   highは完全習得時に100%と表示し99.5%などでは99%と表示する。
   """
   def calc_high_skills_percentage(value, size) do
-    calc_percentage(value, size)
-    |> floor()
+    Percentage.calc_floor_percentage(value, size)
   end
 
   @doc """
@@ -466,14 +466,7 @@ defmodule Bright.SkillScores do
   そうすることで半端な習得状況(33.3:66.6など)で、highの習得率(切り捨て)との合計を100にしている。
   """
   def calc_middle_skills_percentage(value, size) do
-    calc_percentage(value, size)
-    |> ceil()
-  end
-
-  defp calc_percentage(_value, 0), do: 0.0
-
-  defp calc_percentage(value, size) do
-    100 * (value / size)
+    Percentage.calc_ceil_percentage(value, size)
   end
 
   @doc """
@@ -596,7 +589,7 @@ defmodule Bright.SkillScores do
     |> Enum.reduce(Ecto.Multi.new(), fn skill_unit_score, multi ->
       user_id = skill_unit_score.user_id
       high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
-      percentage = calc_percentage(high_scores_count, skills_count)
+      percentage = Percentage.calc_percentage(high_scores_count, skills_count)
       changeset = SkillUnitScore.changeset(skill_unit_score, %{percentage: percentage})
 
       skill_unit_score.id
@@ -627,7 +620,7 @@ defmodule Bright.SkillScores do
     |> Enum.reduce(Ecto.Multi.new(), fn skill_class_score, multi ->
       user_id = skill_class_score.user_id
       high_scores_count = get_in(score_count_user_dict, [user_id, :high]) || 0
-      percentage = calc_percentage(high_scores_count, skills_count)
+      percentage = Percentage.calc_percentage(high_scores_count, skills_count)
       level = get_level(percentage)
 
       skill_class_score

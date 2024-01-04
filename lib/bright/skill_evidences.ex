@@ -10,6 +10,7 @@ defmodule Bright.SkillEvidences do
   alias Bright.Teams
   alias Bright.Notifications
   alias Bright.SkillUnits
+  alias Bright.Utils.Percentage
   alias Bright.Utils.GoogleCloud.Storage
 
   @doc """
@@ -320,11 +321,7 @@ defmodule Bright.SkillEvidences do
   学習メモ登録率(%)を返す。
   完全達成時に100%と表示し99.5%などでは99%と表示するため切り捨てている。
   """
-  def calc_filled_percentage(_value, 0), do: 0
-
   def calc_filled_percentage(value, size) do
-    (value / size)
-    |> Kernel.*(100)
-    |> floor()
+    Percentage.calc_floor_percentage(value, size)
   end
 end
