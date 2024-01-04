@@ -40,7 +40,7 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
                 </div>
 
                 <div class="mt-8">
-                  <h3 class="font-bold text-base">同席候補者<span class="font-normal">を追加</span></h3>
+                  <h3 class="font-bold text-base">面談への同席を依頼したい人<span class="font-normal">を選んでください</span></h3>
                   <.live_component
                     id="recruit_card"
                     module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
@@ -63,16 +63,7 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
               >
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
-                    <dt
-                      class="font-bold w-[98px] flex items-center mb-10"
-                    >
-                      面談依頼者
-                    </dt>
-                    <dd class="w-[280px] mb-10">
-                      なし
-                    </dd>
-
-                    <dt class="font-bold w-[98px] mb-10">同席候補者</dt>
+                    <dt class="font-bold w-[98px] mb-10">同席依頼先</dt>
                     <dd class="w-[280px]">
                       <ul class="flex flex-wrap gap-y-1">
                       <%= for user <- @users do %>
@@ -179,7 +170,7 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
         {:noreply, assign(socket, :candidate_error, "対象のユーザーは既に追加されています")}
 
       Enum.count(users) >= 4 ->
-        {:noreply, assign(socket, :candidate_error, "面談調整候補者の上限は４名です")}
+        {:noreply, assign(socket, :candidate_error, "同席依頼先の上限は４名です")}
 
       true ->
         socket

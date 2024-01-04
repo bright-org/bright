@@ -119,7 +119,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
     user_id = socket.assigns.current_user.id
 
     socket
-    |> assign(:page_title, "採用調整")
+    |> assign(:page_title, "採用決定者チームジョイン")
     |> assign(:employments, Recruits.list_employment(user_id))
     |> assign(:employment_acceptances, Recruits.list_acceptance_employment(user_id))
     |> assign(:employment, nil)

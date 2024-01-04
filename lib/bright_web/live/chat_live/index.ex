@@ -65,7 +65,7 @@ defmodule BrightWeb.ChatLive.Index do
             class="lg:ml-12 text-xl font-bold"
             :if={@current_user.id == @chat.owner_user_id}
           >
-            下記にメッセージを入力し、「メッセージを送る」ボタンを押すと面談候補者にメッセージが届きます
+            本チャットで面談候補者と面談の調整を行い、「面談確定の確認」ボタンを押してください
           </div>
           <% else %>
             <%= for message <- @messages do %>
@@ -166,9 +166,9 @@ defmodule BrightWeb.ChatLive.Index do
               </.link>
               <div class="flex">
                 <div
-                  :if={@chat.owner_user_id == @current_user.id}
+                  :if={@chat.owner_user_id == @current_user.id and  @chat.interview.status != :cancel_interview}
                 >
-                  <%= if @chat.interview.status == :consume_interview do %>
+                  <%= if @chat.interview.status in [:consume_interview ]do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -182,7 +182,7 @@ defmodule BrightWeb.ChatLive.Index do
                       type="button"
                       phx-click={JS.push("open_create_coordination") |> JS.show(to: "coordination-create-modal")}
                     >
-                      採用調整
+                      採用選考の確認
                     </button>
                   <% end %>
                 </div>

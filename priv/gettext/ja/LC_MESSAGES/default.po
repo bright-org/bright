@@ -40,13 +40,13 @@ msgid "complete_interview"
 msgstr "面談完了"
 
 msgid "waiting_recruit_decision"
-msgstr "採用検討中"
+msgstr "採用選考中"
 
 msgid "hiring_decision"
 msgstr "採用確定"
 
 msgid "dismiss_coordination"
-msgstr "採用却下"
+msgstr "不採用"
 
 
 msgid "complete_coordination"
@@ -56,7 +56,7 @@ msgid "not_answered"
 msgstr "未回答"
 
 msgid "wants"
-msgstr "同席する"
+msgstr "同席したい"
 
 msgid "not_wants"
 msgstr "同席しない"
