@@ -25,7 +25,7 @@ defmodule Bright.UserSkillPanelsTest do
       skill_panel = insert(:skill_panel)
       valid_attrs = %{user_id: user.id, skill_panel_id: skill_panel.id}
 
-      assert {:ok, %UserSkillPanel{} = user_skill_panel} =
+      assert {:ok, %{user_skill_panel: user_skill_panel}} =
                UserSkillPanels.create_user_skill_panel(valid_attrs)
 
       assert user_skill_panel.user_id == user.id
@@ -33,7 +33,52 @@ defmodule Bright.UserSkillPanelsTest do
     end
 
     test "create_user_skill_panel/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = UserSkillPanels.create_user_skill_panel(@invalid_attrs)
+      assert {:error, :user_skill_panel, %Ecto.Changeset{}, %{}} =
+               UserSkillPanels.create_user_skill_panel(@invalid_attrs)
+    end
+
+    test "create_user_skill_panel/1 creates skill_class_scores" do
+      user = insert(:user)
+      skill_panel = insert(:skill_panel)
+      skill_class_1 = insert(:skill_class, skill_panel: skill_panel, class: 1)
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      valid_attrs = %{user_id: user.id, skill_panel_id: skill_panel.id}
+      {:ok, %{skill_class_scores: results}} = UserSkillPanels.create_user_skill_panel(valid_attrs)
+
+      [
+        %{skill_class_score_init: skill_class_score_1},
+        %{skill_class_score_init: skill_class_score_2}
+      ] = results
+
+      assert skill_class_score_1.user_id == user.id
+      assert skill_class_score_1.skill_class_id == skill_class_1.id
+      assert skill_class_score_1.percentage == 0.0
+      assert skill_class_score_1.level == :beginner
+
+      assert skill_class_score_2.user_id == user.id
+      assert skill_class_score_2.skill_class_id == skill_class_2.id
+      assert skill_class_score_2.percentage == 0.0
+      assert skill_class_score_2.level == :beginner
+    end
+
+    test "create_user_skill_panel/1 creates skill_class_scores when skill_scores are already existing" do
+      user = insert(:user)
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+      skill_unit = insert(:skill_unit)
+      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
+      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
+
+      # 事前にスキルスコア用意（別のスキルパネルで習得済みという扱い）
+      insert(:skill_score, user: user, skill: skill, score: :high)
+
+      valid_attrs = %{user_id: user.id, skill_panel_id: skill_panel.id}
+      {:ok, %{skill_class_scores: results}} = UserSkillPanels.create_user_skill_panel(valid_attrs)
+
+      [%{skill_class_score: %{update_skill_class_score: skill_class_score}}] = results
+      assert skill_class_score.percentage == 100.0
+      assert skill_class_score.level == :skilled
     end
 
     test "update_user_skill_panel/2 with valid data updates the user_skill_panel" do

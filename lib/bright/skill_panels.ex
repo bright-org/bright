@@ -214,6 +214,14 @@ defmodule Bright.SkillPanels do
     Repo.all(query)
   end
 
+  def list_skill_classes_by_skill_panel_id(skill_panel_id) do
+    from(
+      sc in SkillClass,
+      where: sc.skill_panel_id == ^skill_panel_id
+    )
+    |> list_skill_classes()
+  end
+
   def get_skill_class!(id), do: Repo.get!(SkillClass, id)
 
   def get_skill_class_by(condition) do
