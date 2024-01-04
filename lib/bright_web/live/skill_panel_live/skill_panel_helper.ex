@@ -200,14 +200,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> assign(:page_sub_title, socket.assigns.skill_panel.name)
   end
 
-  def calc_percentage(_count, 0), do: 0
-
-  def calc_percentage(count, num_skills) do
-    (count / num_skills)
-    |> Kernel.*(100)
-    |> floor()
-  end
-
   def build_path(root, skill_panel, display_user, me, anonymous)
 
   def build_path(root, skill_panel, _display_user, true, _anonymous) do

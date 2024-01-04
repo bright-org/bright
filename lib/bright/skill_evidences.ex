@@ -315,4 +315,16 @@ defmodule Bright.SkillEvidences do
     skill_evidence_post.user_id == user.id ||
       skill_evidence.user_id == user.id
   end
+
+  @doc """
+  学習メモ登録率(%)を返す。
+  完全達成時に100%と表示し99.5%などでは99%と表示するため切り捨てている。
+  """
+  def calc_filled_percentage(_value, 0), do: 0
+
+  def calc_filled_percentage(value, size) do
+    (value / size)
+    |> Kernel.*(100)
+    |> floor()
+  end
 end

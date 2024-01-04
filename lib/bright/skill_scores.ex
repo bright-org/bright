@@ -448,6 +448,28 @@ defmodule Bright.SkillScores do
     |> Repo.transaction()
   end
 
+  @doc """
+  スキルのskill_scores.score: highの習得率(%)を返す。
+
+  highの計算では切り捨てた数値を返す。
+  highは完全習得時に100%と表示し99.5%などでは99%と表示する。
+  """
+  def calc_high_skills_percentage(value, size) do
+    calc_percentage(value, size)
+    |> floor()
+  end
+
+  @doc """
+  スキルのskill_scores.score: middleの習得率(%)を返す。
+
+  middleの計算では切り上げた数値を返す。
+  そうすることで半端な習得状況(33.3:66.6など)で、highの習得率(切り捨て)との合計を100にしている。
+  """
+  def calc_middle_skills_percentage(value, size) do
+    calc_percentage(value, size)
+    |> ceil()
+  end
+
   defp calc_percentage(_value, 0), do: 0.0
 
   defp calc_percentage(value, size) do

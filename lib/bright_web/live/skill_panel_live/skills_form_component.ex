@@ -9,8 +9,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   import BrightWeb.GuideMessageComponents,
     only: [enter_skills_help_message: 1]
 
-  import BrightWeb.SkillPanelLive.SkillPanelHelper,
-    only: [calc_percentage: 2, count_skill_scores: 1]
+  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [count_skill_scores: 1]
 
   alias Bright.SkillScores
   alias BrightWeb.CardLive.SkillCardComponent
@@ -99,11 +98,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
               </p>
               <div class="flex items-center justify-center">
                 <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-                <span class="score-high-percentage"><%= calc_percentage(@counter.high, @num_skills) %>％</span>
+                <span class="score-high-percentage"><%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％</span>
               </div>
               <div class="flex items-center justify-center">
                 <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-                <span class="score-middle-percentage"><%= calc_percentage(@counter.middle, @num_skills) %>％</span>
+                <span class="score-middle-percentage"><%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％</span>
               </div>
             </div>
           </div>
@@ -428,7 +427,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   defp score_mark_class, do: @score_mark_class
 
   defp get_level(counter, num_skills) do
-    percentage = calc_percentage(counter.high, num_skills)
+    percentage = SkillScores.calc_high_skills_percentage(counter.high, num_skills)
     SkillScores.get_level(percentage)
   end
 

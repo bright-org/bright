@@ -108,4 +108,16 @@ defmodule Bright.SkillReferences do
   def change_skill_reference(%SkillReference{} = skill_reference, attrs \\ %{}) do
     SkillReference.changeset(skill_reference, attrs)
   end
+
+  @doc """
+  教材学習率(%)を返す。
+  完全達成時に100%と表示し99.5%などでは99%と表示するため切り捨てている。
+  """
+  def calc_read_percentage(_value, 0), do: 0
+
+  def calc_read_percentage(value, size) do
+    (value / size)
+    |> Kernel.*(100)
+    |> floor()
+  end
 end

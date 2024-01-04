@@ -461,4 +461,16 @@ defmodule Bright.SkillEvidencesTest do
                )
     end
   end
+
+  describe "calc_filled_percentage/2" do
+    test "returns percentage floored" do
+      assert 33 == SkillEvidences.calc_filled_percentage(1, 3)
+      assert 66 == SkillEvidences.calc_filled_percentage(2, 3)
+    end
+
+    test "returns 0 if size is 0" do
+      assert 0 == SkillEvidences.calc_filled_percentage(0, 0)
+      assert 0 == SkillEvidences.calc_filled_percentage(1, 0)
+    end
+  end
 end
