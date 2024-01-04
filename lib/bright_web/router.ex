@@ -264,6 +264,9 @@ defmodule BrightWeb.Router do
       live "/recruits/coordinations", RecruitCoordinationLive.Index, :index
       live "/recruits/coordinations/:id", RecruitCoordinationLive.Index, :show_interview
       live "/recruits/coordinations/member/:id", RecruitCoordinationLive.Index, :show_member
+      live "/recruits/employments", RecruitEmploymentLive.Index, :index
+      live "/recruits/employments/:id", RecruitEmploymentLive.Index, :show
+      live "/recruits/employments/acceptance/:id", RecruitEmploymentLive.Index, :show_acceptance
       live "/recruits/chats", ChatLive.Index, :recruit
       live "/recruits/chats/:id", ChatLive.Index, :recruit
     end
