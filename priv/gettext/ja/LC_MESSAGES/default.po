@@ -36,6 +36,9 @@ msgstr "面談却下"
 msgid "ongoing_interview"
 msgstr "面談確定"
 
+msgid "cancel_interview"
+msgstr "面談確定待ち"
+
 msgid "complete_interview"
 msgstr "面談完了"
 
@@ -48,6 +51,8 @@ msgstr "採用確定"
 msgid "dismiss_coordination"
 msgstr "不採用"
 
+msgid "cancel_coordination"
+msgstr ""
 
 msgid "complete_coordination"
 msgstr "採用完了"
@@ -61,7 +66,7 @@ msgstr "同席したい"
 msgid "not_wants"
 msgstr "同席しない"
 
-msgid  "keep"
+msgid "keep"
 msgstr "今は同席しない"
 
 msgid "recruit_wants"
@@ -70,5 +75,11 @@ msgstr "採用したい"
 msgid "recruit_not_wants"
 msgstr "採用しない"
 
-msgid  "recruit_keep"
+msgid "recruit_keep"
 msgstr "今は採用しない"
+
+msgid "level_normal"
+msgstr "平均"
+
+msgid "level_skilled"
+msgstr "ベテラン"

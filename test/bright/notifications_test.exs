@@ -70,6 +70,11 @@ defmodule Bright.NotificationsTest do
       |> Enum.sort_by(& &1.id, :desc)
     end
 
+    defp setup_notifications("skill_update", from_user, to_user) do
+      insert_list(3, :notification_skill_update, from_user: from_user, to_user: to_user)
+      |> Enum.sort_by(& &1.id, :desc)
+    end
+
     defp setup_notifications("something", from_user, _to_user) do
       [
         insert(:notification_community, from_user: from_user),
@@ -137,6 +142,40 @@ defmodule Bright.NotificationsTest do
 
       assert %{total_entries: 0} =
                Notifications.list_notification_by_type(no_related_user.id, "evidence", page: 1)
+    end
+
+    @tag type: "skill_update"
+    test "for type skill_update", %{
+      notifications: notifications,
+      to_user: to_user
+    } do
+      assert %{
+               entries: entries,
+               page_number: 1,
+               page_size: 2,
+               total_entries: 3,
+               total_pages: 2
+             } =
+               Notifications.list_notification_by_type(to_user.id, "skill_update",
+                 page: 1,
+                 page_size: 2
+               )
+
+      assert entries |> Enum.map(& &1.id) ==
+               notifications |> Enum.take(2) |> Enum.map(& &1.id)
+    end
+
+    @tag type: "skill_update"
+    test "for type skill_update, returns the notifications of given to_user_id", %{
+      to_user: to_user
+    } do
+      no_related_user = insert(:user)
+
+      assert %{total_entries: 3} =
+               Notifications.list_notification_by_type(to_user.id, "skill_update", page: 1)
+
+      assert %{total_entries: 0} =
+               Notifications.list_notification_by_type(no_related_user.id, "skill_update", page: 1)
     end
 
     @tag type: "something"
@@ -356,6 +395,177 @@ defmodule Bright.NotificationsTest do
       notification_community = insert(:notification_community)
 
       assert %Ecto.Changeset{} = Notifications.change_notification(notification_community)
+    end
+  end
+
+  describe "has_unread_notification?/1" do
+    test "returns true if the user does not have user_notifications record" do
+      user = insert(:user)
+
+      assert Notifications.has_unread_notification?(user)
+    end
+
+    test "returns true if the user has unread notification_operation" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+
+      insert(:notification_operation,
+        from_user: from_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(1)
+      )
+
+      assert Notifications.has_unread_notification?(to_user)
+    end
+
+    test "returns true if the user has unread notification_community" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+
+      insert(:notification_community,
+        from_user: from_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(1)
+      )
+
+      assert Notifications.has_unread_notification?(to_user)
+    end
+
+    test "returns true if the user has unread notification_evidence" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+
+      insert(:notification_evidence,
+        from_user: from_user,
+        to_user: to_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(1)
+      )
+
+      assert Notifications.has_unread_notification?(to_user)
+    end
+
+    test "returns true if the user has unread notification_skill_update" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+
+      insert(:notification_skill_update,
+        from_user: from_user,
+        to_user: to_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(1)
+      )
+
+      assert Notifications.has_unread_notification?(to_user)
+    end
+
+    test "returns false if the user does not have unread notification" do
+      last_viewed_at = NaiveDateTime.utc_now()
+      [from_user, to_user] = insert_pair(:user)
+      insert(:user_notification, user: to_user, last_viewed_at: last_viewed_at)
+
+      insert(:notification_operation,
+        from_user: from_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(-1)
+      )
+
+      insert(:notification_community,
+        from_user: from_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(-1)
+      )
+
+      insert(:notification_evidence,
+        from_user: from_user,
+        to_user: to_user,
+        updated_at: last_viewed_at |> NaiveDateTime.add(-1)
+      )
+
+      refute Notifications.has_unread_notification?(to_user)
+    end
+  end
+
+  describe "view_notification/1" do
+    test "creates user_notifications record when user does not have" do
+      user = insert(:user)
+
+      Notifications.view_notification(user)
+
+      assert user |> Repo.preload(:user_notification) |> Map.get(:user_notification)
+    end
+
+    test "updated user_notification.last_viewed_at when user has" do
+      before_last_viewed_at = NaiveDateTime.utc_now() |> NaiveDateTime.add(-1)
+
+      user = insert(:user)
+
+      user_notification =
+        insert(:user_notification, user: user, last_viewed_at: before_last_viewed_at)
+
+      Notifications.view_notification(user)
+
+      assert user_notification.last_viewed_at <
+               user
+               |> Repo.preload(:user_notification)
+               |> Map.get(:user_notification)
+               |> Map.get(:last_viewed_at)
+    end
+  end
+
+  describe "list_related_user_ids" do
+    setup do
+      # 自身と所属チーム
+      user = insert(:user)
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user)
+
+      %{user: user, team: team}
+    end
+
+    setup %{team: team} do
+      # チームメンバー
+      team_users = insert_pair(:user)
+      Enum.each(team_users, &insert(:team_member_users, team: team, user: &1))
+
+      %{team_users: team_users}
+    end
+
+    setup %{user: user} do
+      # 支援元チームメンバー
+      supporter_users = insert_pair(:user)
+      Enum.each(supporter_users, &relate_user_and_supporter(user, &1))
+
+      %{supporter_users: supporter_users}
+    end
+
+    setup %{user: user} do
+      # 支援先チームメンバー
+      supportee_users = insert_pair(:user)
+      Enum.each(supportee_users, &relate_user_and_supporter(&1, user))
+
+      %{supportee_users: supportee_users}
+    end
+
+    test "returns user_ids of teams, support_teams and supportee teams", %{
+      user: user,
+      team_users: team_users,
+      supporter_users: supporter_users,
+      supportee_users: supportee_users
+    } do
+      related_user_ids = Notifications.list_related_user_ids(user)
+
+      assert Enum.all?(team_users, &(&1.id in related_user_ids))
+      assert Enum.all?(supporter_users, &(&1.id in related_user_ids))
+      assert Enum.all?(supportee_users, &(&1.id in related_user_ids))
+    end
+
+    test "no unrelated users are included", %{
+      user: user
+    } do
+      user_2 = insert(:user)
+      related_user_ids = Notifications.list_related_user_ids(user)
+
+      refute user_2.id in related_user_ids
+      assert [] = Notifications.list_related_user_ids(user_2)
     end
   end
 end

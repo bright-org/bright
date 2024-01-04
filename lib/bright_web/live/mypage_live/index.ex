@@ -51,7 +51,7 @@ defmodule BrightWeb.MypageLive.Index do
 
   defp assign_skillset_gem(socket) do
     skillset_gem =
-      SkillScores.get_skillset_gem(socket.assigns.current_user.id)
+      SkillScores.get_skillset_gem(socket.assigns.display_user.id)
       |> Enum.sort_by(& &1.position, :asc)
       |> Enum.map(&[&1.name, floor(&1.percentage)])
       |> Enum.zip_reduce([], &(&2 ++ [&1]))

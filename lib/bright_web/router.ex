@@ -29,6 +29,7 @@ defmodule BrightWeb.Router do
   end
 
   pipeline :api do
+    plug :api_basic_auth
     plug :accepts, ["json"]
   end
 
@@ -257,6 +258,7 @@ defmodule BrightWeb.Router do
       live "/notifications/communities", NotificationLive.Community, :index
       live "/notifications/evidences", NotificationLive.Evidence, :index
       live "/notifications/evidences/:skill_evidence_id", NotificationLive.Evidence, :show
+      live "/notifications/skill_updates", NotificationLive.SkillUpdate, :index
 
       live "/recruits/interviews", RecruitInterviewLive.Index, :index
       live "/recruits/interviews/:id", RecruitInterviewLive.Index, :show_interview
@@ -320,7 +322,7 @@ defmodule BrightWeb.Router do
   end
 
   scope "/api", BrightWeb.Api do
-    pipe_through(:api)
+    pipe_through [:api]
 
     scope "/v1" do
       resources "/notification_operations", NotificationOperationController, except: [:new, :edit]
@@ -342,5 +344,11 @@ defmodule BrightWeb.Router do
       _ ->
         conn
     end
+  end
+
+  defp api_basic_auth(conn, _opts) do
+    username = Application.fetch_env!(:bright, :api_basic_auth_username)
+    password = Application.fetch_env!(:bright, :api_basic_auth_password)
+    Plug.BasicAuth.basic_auth(conn, username: username, password: password)
   end
 end

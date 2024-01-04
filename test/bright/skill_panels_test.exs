@@ -185,6 +185,11 @@ defmodule Bright.SkillPanelsTest do
   end
 
   describe "skill_classes" do
+    test "get_skill_panel!/1 returns the skill_class with given id" do
+      skill_class = insert(:skill_class, skill_panel: build(:skill_panel), class: 1)
+      assert SkillPanels.get_skill_class!(skill_class.id).id == skill_class.id
+    end
+
     test "list_skill_classs/0 returns all skill_classs" do
       skill_class = insert(:skill_class, skill_panel: build(:skill_panel), class: 1)
 

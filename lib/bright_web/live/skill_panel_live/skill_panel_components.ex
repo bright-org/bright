@@ -36,7 +36,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div>
-      <!--- スキルセットジェムの実装まで使用しない --->
+      <% # TODO キャリアフィールドの一角指定時の表示対応時にhiddenを消して表示すること %>
       <section class="hidden accordion flex my-2 max-w-[1236px] lg:hidden mt-2 px-4">
         <div class="bg-brightGray-50 rounded w-full">
           <p

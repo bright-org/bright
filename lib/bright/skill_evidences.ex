@@ -246,41 +246,13 @@ defmodule Bright.SkillEvidences do
 
     base_attrs = %{
       from_user_id: user.id,
-      message: "#{user.name}から「#{skill_breadcrumb}」のヘルプが届きました",
+      message: "#{user.name}さんから「#{skill_breadcrumb}」のヘルプが届きました",
       url: "/notifications/evidences/#{skill_evidence.id}",
       inserted_at: timestamp,
       updated_at: timestamp
     }
 
-    # ユーザー所属チームとその関連チーム取得
-    # NOTE: 今後設定によって通知要否（粒度未定）できるようになる想定です。そのため個別ロードしています。
-    teams =
-      Ecto.assoc(user, :teams)
-      |> preload([
-        :member_users,
-        supporter_teams_supporting: [:member_users],
-        supportee_teams_supporting: [:member_users]
-      ])
-      |> Repo.all()
-
-    # チームメンバー
-    team_related_ids = collect_team_user_ids(teams)
-
-    # 支援元メンバー
-    supporter_related_ids =
-      teams
-      |> Enum.flat_map(& &1.supporter_teams_supporting)
-      |> collect_team_user_ids()
-
-    # 支援先メンバー
-    supportee_related_ids =
-      teams
-      |> Enum.flat_map(& &1.supportee_teams_supporting)
-      |> collect_team_user_ids()
-
-    (team_related_ids ++ supporter_related_ids ++ supportee_related_ids)
-    |> Enum.uniq()
-    |> List.delete(user.id)
+    Notifications.list_related_user_ids(user)
     |> Enum.map(fn user_id ->
       Map.merge(base_attrs, %{
         id: Ecto.ULID.generate(),
@@ -288,12 +260,6 @@ defmodule Bright.SkillEvidences do
       })
     end)
     |> then(&Notifications.create_notifications("evidence", &1))
-  end
-
-  defp collect_team_user_ids(teams) do
-    Enum.flat_map(teams, fn team ->
-      Enum.map(team.member_users, & &1.user_id)
-    end)
   end
 
   @doc """
@@ -306,7 +272,7 @@ defmodule Bright.SkillEvidences do
     Notifications.create_notification("evidence", %{
       from_user_id: user.id,
       to_user_id: skill_evidence.user_id,
-      message: "#{user.name}から「#{skill_breadcrumb}」にメッセージが届きました",
+      message: "#{user.name}さんから「#{skill_breadcrumb}」にメッセージが届きました",
       url: "/notifications/evidences/#{skill_evidence.id}"
     })
   end

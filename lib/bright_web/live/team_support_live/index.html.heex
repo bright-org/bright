@@ -43,8 +43,11 @@
             </ul>
           <% end %>
           <%= if @card.total_entries > 0 do %>
-            <%= for team_supporter_team <- @card.entries do %>
-            <ul class="text-left flex relative items-center text-base hover:bg-brightGray-50 p-1 w-full my-0.5">
+            <%= for {team_supporter_team, index} <- Enum.with_index(@card.entries) do %>
+            <ul 
+              id={"team_support_#{index}"}
+              class="text-left flex relative items-center text-base hover:bg-brightGray-50 p-1 w-full my-0.5"
+              >
 
               <span>
                 <.profile_mini
@@ -55,7 +58,7 @@
               から
               <span>
                 <.team_small
-                  id={"team_small_" <> team_supporter_team.supportee_team.id}
+                  id={"team_small_#{index}"}
                   team_params={convert_team_params_from_team(team_supporter_team.supportee_team)}
                   row_on_click=""
                   on_hover_style=""

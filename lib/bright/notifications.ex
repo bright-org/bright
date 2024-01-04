@@ -6,12 +6,16 @@ defmodule Bright.Notifications do
   """
 
   import Ecto.Query, warn: false
+
   alias Bright.Repo
+  alias Bright.Accounts.User
 
   alias Bright.Notifications.{
     NotificationOperation,
     NotificationCommunity,
-    NotificationEvidence
+    NotificationEvidence,
+    NotificationSkillUpdate,
+    UserNotification
   }
 
   @doc """
@@ -89,6 +93,16 @@ defmodule Bright.Notifications do
       where: notification_evidence.to_user_id == ^to_user_id,
       order_by: [
         desc: notification_evidence.id
+      ]
+    )
+    |> Repo.paginate(page_param)
+  end
+
+  def list_notification_by_type(to_user_id, "skill_update", page_param) do
+    from(notification_skill_update in NotificationSkillUpdate,
+      where: notification_skill_update.to_user_id == ^to_user_id,
+      order_by: [
+        desc: notification_skill_update.id
       ]
     )
     |> Repo.paginate(page_param)
@@ -200,5 +214,100 @@ defmodule Bright.Notifications do
         attrs
       ) do
     NotificationCommunity.changeset(notification_community, attrs)
+  end
+
+  @doc """
+  Returns whether the user has new notification or not.
+
+  ## Examples
+
+      iex> has_unread_notification?(user)
+      true
+
+  """
+  def has_unread_notification?(%User{} = user) do
+    user
+    |> Repo.preload(:user_notification)
+    |> Map.get(:user_notification)
+    |> unread_notification_exists?()
+  end
+
+  defp unread_notification_exists?(nil), do: true
+
+  defp unread_notification_exists?(
+         %UserNotification{user_id: user_id, last_viewed_at: last_viewed_at} = _user_notification
+       ) do
+    NotificationOperation.new_notifications_query(last_viewed_at) |> Repo.exists?() ||
+      NotificationCommunity.new_notifications_query(last_viewed_at) |> Repo.exists?() ||
+      NotificationEvidence.new_notifications_query(user_id, last_viewed_at) |> Repo.exists?() ||
+      NotificationSkillUpdate.new_notifications_query(user_id, last_viewed_at) |> Repo.exists?()
+  end
+
+  @doc """
+  Create a user notification or Update last_viewed_at.
+
+  ## Examples
+
+      iex> view_notification(user)
+      {:ok, %UserNotification{}}
+  """
+  def view_notification(%User{} = user) do
+    user
+    |> Repo.preload(:user_notification)
+    |> Map.get(:user_notification)
+    |> create_or_update_user_notification(user)
+  end
+
+  defp create_or_update_user_notification(nil, user) do
+    %UserNotification{}
+    |> UserNotification.changeset(%{user_id: user.id, last_viewed_at: DateTime.utc_now()})
+    |> Repo.insert()
+  end
+
+  defp create_or_update_user_notification(user_notification, _user) do
+    user_notification
+    |> UserNotification.changeset(%{last_viewed_at: DateTime.utc_now()})
+    |> Repo.update()
+  end
+
+  @doc """
+  Returns related user_ids from user.
+  """
+  def list_related_user_ids(user) do
+    # ユーザー所属チームとその関連チームに属するuser_idを取得
+    # NOTE: 今後設定によって通知要否（粒度未定）できるようになる想定です。そのため個別ロードしています。
+    teams =
+      Ecto.assoc(user, :teams)
+      |> preload([
+        :member_users,
+        supporter_teams_supporting: [:member_users],
+        supportee_teams_supporting: [:member_users]
+      ])
+      |> Repo.all()
+
+    # チームメンバー
+    team_related_ids = collect_team_user_ids(teams)
+
+    # 支援元メンバー
+    supporter_related_ids =
+      teams
+      |> Enum.flat_map(& &1.supporter_teams_supporting)
+      |> collect_team_user_ids()
+
+    # 支援先メンバー
+    supportee_related_ids =
+      teams
+      |> Enum.flat_map(& &1.supportee_teams_supporting)
+      |> collect_team_user_ids()
+
+    (team_related_ids ++ supporter_related_ids ++ supportee_related_ids)
+    |> Enum.uniq()
+    |> List.delete(user.id)
+  end
+
+  defp collect_team_user_ids(teams) do
+    Enum.flat_map(teams, fn team ->
+      Enum.map(team.member_users, & &1.user_id)
+    end)
   end
 end
