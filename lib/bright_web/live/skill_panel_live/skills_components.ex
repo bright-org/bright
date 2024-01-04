@@ -2,11 +2,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   use BrightWeb, :component
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [score_mark_class: 2]
-  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
   import BrightWeb.GuideMessageComponents
   import BrightWeb.BrightCoreComponents, only: [action_button: 1]
   import Phoenix.LiveView, only: [send_update: 2]
 
+  alias Bright.SkillScores
   alias BrightWeb.SkillPanelLive.SkillsFieldComponent
 
   def compares(assigns) do
@@ -224,11 +224,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <div class="flex justify-center flex-wrap gap-x-2">
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
-                  <span class="score-high-percentage"><%= floor calc_percentage(@counter.high, @num_skills) %>％</span>
+                  <span class="score-high-percentage"><%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％</span>
                 </div>
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
-                  <span class="score-middle-percentage"><%= floor calc_percentage(@counter.middle, @num_skills) %>％</span>
+                  <span class="score-middle-percentage"><%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％</span>
                 </div>
               </div>
             </td>

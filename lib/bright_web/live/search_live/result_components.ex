@@ -9,8 +9,10 @@ defmodule BrightWeb.SearchLive.ResultComponents do
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
     only: [profile_skill_class_level: 1, score_mark_class: 2, skill_score_percentages: 2]
 
-  import BrightWeb.SkillPanelLive.SkillPanelHelper,
-    only: [calc_percentage: 2]
+  alias Bright.SkillScores
+  alias Bright.SkillEvidences
+  alias Bright.SkillReferences
+  alias Bright.SkillExams
 
   def job_area(assigns) do
     ~H"""
@@ -75,11 +77,11 @@ defmodule BrightWeb.SearchLive.ResultComponents do
             <div class="flex flex-col w-24 pl-6">
               <div class="min-w-[4em] flex items-center">
                 <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-                <%= calc_percentage(@counter.high, @num_skills) %>％
+                <%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％
               </div>
               <div class="min-w-[4em] flex items-center mt-1">
                 <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-                <%= calc_percentage(@counter.middle, @num_skills) %>％
+                <%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％
               </div>
             </div>
           </div>
@@ -89,21 +91,21 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         <li>
           <p>
             <span class="inline-block w-28">学習メモの登録率</span>
-            <span><%= calc_percentage(@counter.evidence_filled, @num_skills) %>%</span>
+            <span><%= SkillEvidences.calc_filled_percentage(@counter.evidence_filled, @num_skills) %>%</span>
           </p>
         </li>
 
         <li>
           <p>
             <span class="inline-block w-28">教材の学習率</span>
-            <span><%= calc_percentage(@counter.reference_read, @num_skills) %>%</span>
+            <span><%= SkillReferences.calc_read_percentage(@counter.reference_read, @num_skills) %>%</span>
           </p>
         </li>
 
         <li>
           <p>
             <span class="inline-block w-28">試験の受験率</span>
-            <span><%= calc_percentage(@counter.exam_touch, @num_skills) %>%</span>
+            <span><%= SkillExams.calc_touch_percentage(@counter.exam_touch, @num_skills) %>%</span>
           </p>
         </li>
       </ul>

@@ -10,6 +10,7 @@ defmodule Bright.SkillEvidences do
   alias Bright.Teams
   alias Bright.Notifications
   alias Bright.SkillUnits
+  alias Bright.Utils.Percentage
   alias Bright.Utils.GoogleCloud.Storage
 
   @doc """
@@ -314,5 +315,13 @@ defmodule Bright.SkillEvidences do
   def can_delete_skill_evidence_post?(skill_evidence_post, skill_evidence, user) do
     skill_evidence_post.user_id == user.id ||
       skill_evidence.user_id == user.id
+  end
+
+  @doc """
+  学習メモ登録率(%)を返す。
+  完全達成時に100%と表示し99.5%などでは99%と表示するため切り捨てている。
+  """
+  def calc_filled_percentage(value, size) do
+    Percentage.calc_floor_percentage(value, size)
   end
 end
