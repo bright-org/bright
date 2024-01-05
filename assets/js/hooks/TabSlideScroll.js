@@ -21,15 +21,33 @@ const setElementMargin = function(element, property, value) {
 
 const setButtonsDisplay = function(scrollerEl, thisEl, itemsSumWidth) {
   // 表示幅からスクロール操作ボタンを出すかを決定
-  // ただし、SPでDropdownが開いていないときはthisEl.clientWidthが取得できない(autoのため0で返る)ため、全体幅に基づいている。
-  let width = thisEl.clientWidth
-  width = (width == 0) ? document.body.clientWidth : width
+  const width = getElWidth(thisEl)
 
   if (itemsSumWidth > width) {
     scrollerEl.style.display = "flex"
   } else {
     scrollerEl.style.display = "none"
   }
+}
+
+// 引数elの要素幅を取得する。autoなどの場合は親要素にさかのぼる
+const getElWidth = function(el) {
+  let width = 0
+
+  // 幅取得できたときか、全要素を遡ったら終了する
+  while(width == 0 && el != null) {
+    width_value = el.clientWidth
+    width_style = window.getComputedStyle(el).width
+
+    if(width_value != 0) {
+      width = width_value
+    } else if(typeof width_style === 'string' && width_style.endsWith('px')) {
+      width = parseInt(width_style)
+    }
+
+    el = el.parentElement
+  }
+  return width
 }
 
 const TabSlideScroll = {
