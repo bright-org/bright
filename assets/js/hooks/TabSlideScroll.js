@@ -21,7 +21,7 @@ const setElementMargin = function(element, property, value) {
 
 const setButtonsDisplay = function(scrollerEl, thisEl, itemsSumWidth) {
   // 表示幅からスクロール操作ボタンを出すかを決定
-  const width = getElWidth(thisEl)
+  const width = getWidth(thisEl)
 
   if (itemsSumWidth > width) {
     scrollerEl.style.display = "flex"
@@ -30,24 +30,18 @@ const setButtonsDisplay = function(scrollerEl, thisEl, itemsSumWidth) {
   }
 }
 
-// 引数elの要素幅を取得する。autoなどの場合は親要素にさかのぼる
-const getElWidth = function(el) {
+const getWidth = function(el) {
   let width = 0
 
-  // 幅取得できたときか、全要素を遡ったら終了する
-  while(width == 0 && el != null) {
-    width_value = el.clientWidth
-    width_style = window.getComputedStyle(el).width
-
-    if(width_value != 0) {
-      width = width_value
-    } else if(typeof width_style === 'string' && width_style.endsWith('px')) {
-      width = parseInt(width_style)
-    }
-
-    el = el.parentElement
+  // 要素にスタイルとして設定されている値を取得
+  // `clientWidth`は表示状況によって取得できないケースがあったため本対応としている
+  const width_style = window.getComputedStyle(el).width
+  if(typeof width_style === 'string' && width_style.endsWith('px')) {
+    width = parseInt(width_style)
   }
-  return width
+
+  // 設定されていない場合（SP）は全体幅で扱う
+  return (width != 0) ? width : document.body.clientWidth
 }
 
 const TabSlideScroll = {

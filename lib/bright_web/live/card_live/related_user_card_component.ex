@@ -218,7 +218,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   defp inner_tab(assigns) do
     ~H"""
-    <div id={"#{@id}-#{@selected_tab}"} class="flex border-b border-brightGray-50" phx-hook="TabSlideScroll">
+    <div id={"#{@id}-#{@selected_tab}"} class="flex border-b border-brightGray-50 lg:w-[750px]" phx-hook="TabSlideScroll">
       <div class="overflow-hidden">
         <ul class="inner_tab_list overflow-hidden flex text-base !text-sm w-[99999px]">
           <%= for {key, value} <- @inner_tab do %>
