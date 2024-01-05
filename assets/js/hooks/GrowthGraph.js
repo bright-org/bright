@@ -317,31 +317,36 @@ const drawfastDataLine = (chart, scales, name, color) => {
   context.stroke();
 };
 
+// 成長グラフ 習得値より下側をグラデーションで塗る処理
 const fillMyselfData = (chart, scales) => {
   const context = chart.ctx;
   const dataset = chart.canvas.parentNode.dataset;
   const data = JSON.parse(dataset.data);
   let drawData = data["myself"];
   if (drawData === undefined) return;
-  // 期間外のデータを描画するかを判定　配列の先頭は期間外のデータ
+  // 表示期間外のデータを描画するかを判定
+  // - 配列の先頭は期間外のデータ
+  // - 期間外のデータが存在する場合は、期間外から期間内に入る部分も塗る必要がある
   const isDrawBefore = drawData[0] !== null;
 
   //TODO: α版では未来非表示↓
-  const future_enabled = data.future_enabled;
+  const futureEnabled = data.futureEnabled;
   //TODO: α版では未来非表示↑
 
-  // 期間外のデータがnullの場合は予め除外しておく、理由は通常のグリッド処理が可能の為
+  // 期間外のデータがない（nullの場合）は簡単化のため予め除外しておく。
+  // 期間内のデータと処理が分かれるため、こうすることで、drawDataを期間内のグリッド処理対象のみとしている。
   drawData = isDrawBefore ? drawData : drawData.slice(1);
   context.lineWidth = 1;
   context.setLineDash([]);
-  const y = scales.y;
   const x = scales.x;
+  const y = scales.y;
 
+  // getPixelForValue()でグラフ描画中アイテムの各座標位置が取れる
   const startX = x.getPixelForValue(0) - padding;
   const startY = y.getPixelForValue(0);
 
   //TODO: α版では未来非表示↓
-  const endX = x.getPixelForValue(future_enabled ? 3 : 4);
+  const endX = x.getPixelForValue(futureEnabled ? 3 : 4);
   //TODO: α版では未来非表示↑
   //const endX = x.getPixelForValue(4)
 
@@ -363,7 +368,7 @@ const fillMyselfData = (chart, scales) => {
   startIndex = isDrawBefore ? 1 : 0;
 
   //α対応の為一時的に記述↓
-  const drawDataKLength = future_enabled
+  const drawDataKLength = futureEnabled
     ? drawData.length - 1
     : drawData.length;
   for (let i = startIndex; i < drawDataKLength; i++) {
