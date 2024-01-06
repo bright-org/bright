@@ -408,7 +408,7 @@ defmodule Bright.NotificationsTest do
     test "returns true if the user has unread notification_operation" do
       last_viewed_at = NaiveDateTime.utc_now()
       [from_user, to_user] = insert_pair(:user)
-      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+      insert(:user_notification, user: to_user, last_viewed_at: last_viewed_at)
 
       insert(:notification_operation,
         from_user: from_user,
@@ -421,7 +421,7 @@ defmodule Bright.NotificationsTest do
     test "returns true if the user has unread notification_community" do
       last_viewed_at = NaiveDateTime.utc_now()
       [from_user, to_user] = insert_pair(:user)
-      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+      insert(:user_notification, user: to_user, last_viewed_at: last_viewed_at)
 
       insert(:notification_community,
         from_user: from_user,
@@ -434,7 +434,7 @@ defmodule Bright.NotificationsTest do
     test "returns true if the user has unread notification_evidence" do
       last_viewed_at = NaiveDateTime.utc_now()
       [from_user, to_user] = insert_pair(:user)
-      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+      insert(:user_notification, user: to_user, last_viewed_at: last_viewed_at)
 
       insert(:notification_evidence,
         from_user: from_user,
@@ -448,7 +448,7 @@ defmodule Bright.NotificationsTest do
     test "returns true if the user has unread notification_skill_update" do
       last_viewed_at = NaiveDateTime.utc_now()
       [from_user, to_user] = insert_pair(:user)
-      insert(:user_notification, user: to_user, last_viewed_at: NaiveDateTime.utc_now())
+      insert(:user_notification, user: to_user, last_viewed_at: last_viewed_at)
 
       insert(:notification_skill_update,
         from_user: from_user,
