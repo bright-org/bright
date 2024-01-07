@@ -65,11 +65,23 @@ defmodule Bright.UserProfiles do
   ## Examples
 
       iex> create_initial_user_profile(user_id)
-      {:ok, %UserProfile{}}
+      {:ok, %UserProfile{user_id: user_id, icon_file_path: "default_icon/default_avatar_engineer.png"}}
 
   """
   def create_initial_user_profile(user_id) do
-    create_user_profile(%{user_id: user_id})
+    create_user_profile(%{user_id: user_id, icon_file_path: default_icon_file_path()})
+  end
+
+  # 新規作成時は GCS に設置しているデフォルトアイコンのパスからランダムに選択する
+  defp default_icon_file_path do
+    [
+      "default_icon/default_avatar_designer.png",
+      "default_icon/default_avatar_engineer.png",
+      "default_icon/default_avatar_infra.png",
+      "default_icon/default_avatar_marketer.png",
+      "default_icon/default_avatar_sales.png"
+    ]
+    |> Enum.random()
   end
 
   @doc """
