@@ -164,7 +164,6 @@ defmodule Bright.AccountsTest do
                user_id: ^user_id,
                title: nil,
                detail: nil,
-               icon_file_path: nil,
                twitter_url: nil,
                facebook_url: nil,
                github_url: nil
