@@ -64,7 +64,7 @@ dev環境を例とする。
 
 そのためアプリケーションが使用する GCS のバケット(例: `bright-prod`)にデフォルトアイコンのアップロードが必要。
 
-新規に環境構築する場合は `gcs/initial_data/bright_storage_local/default_icon` ディレクトリを事前に対象環境の GCS にアップロードしてからアプリケーションを起動すること。
+新規に環境構築する場合は事前に `gcs/initial_data/bright_storage_local/default_icon` ディレクトリを対象環境の GCS に `bright-prod/default_icon` のような階層でアップロードしてからアプリケーションを起動すること。
 
 ## 秘匿情報の変更と反映
 
