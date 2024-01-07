@@ -4,8 +4,8 @@ on:
   pull_request:
     paths:
       - ".github/workflows/terraform.yml"
-      - "terraform/**"
       - "!terraform/README.md"
+      - "terraform/**"
 
 jobs:
   lint:
