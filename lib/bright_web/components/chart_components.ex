@@ -53,7 +53,7 @@ defmodule BrightWeb.ChartComponents do
           other: [10, 10, 10, 10, 45, 80],
           role: [20, 20, 50, 60, 75, 100],
           now: 55,
-          futureEnabled: true,
+          futureDisplay: true,
           labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2021.12"],
           myselfSelected: "2021.9",
           otherSelected: "2020.12",

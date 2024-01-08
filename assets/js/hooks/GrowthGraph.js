@@ -16,10 +16,10 @@ const futurePointColor = "#FFFFFF";
 const nowColor = "#B77285";
 const nowSelectColor = "#B71225";
 
-const dataDivision = (data, futureEnabled) => {
+const dataDivision = (data, futureDisplay) => {
   if (data === undefined) return [[], []];
   data = data.slice(1);
-  if (!futureEnabled) return [data, []];
+  if (!futureDisplay) return [data, []];
   const past = data.map((x, index) => (index > 3 ? null : x));
   const future = data.map((x, index) => (index < 3 ? null : x));
   return [past, future];
@@ -43,13 +43,13 @@ const createDataset = (
 };
 
 const createData = (data) => {
-  const futureEnabled = data["futureEnabled"] === undefined ? true : data["futureEnabled"]
-  const otherFutureEnabled = data["otherFutureEnabled"] === undefined ? true : data["otherFutureEnabled"]
-  const roleFutureEnabled = data["roleFutureEnabled"] === undefined ? true : data["roleFutureEnabled"]
+  const futureDisplay = data["futureDisplay"] === undefined ? true : data["futureDisplay"]
+  const otherFutureDisplay = data["otherFutureDisplay"] === undefined ? true : data["otherFutureDisplay"]
+  const roleFutureDisplay = data["roleFutureDisplay"] === undefined ? true : data["roleFutureDisplay"]
 
-  const [myselfData, myselfFuture] = dataDivision(data["myself"], futureEnabled);
-  const [otherData, otherFuture] = dataDivision(data["other"], otherFutureEnabled);
-  const [roleData, roleFuture] = dataDivision(data["role"], roleFutureEnabled);
+  const [myselfData, myselfFuture] = dataDivision(data["myself"], futureDisplay);
+  const [otherData, otherFuture] = dataDivision(data["other"], otherFutureDisplay);
+  const [roleData, roleFuture] = dataDivision(data["role"], roleFutureDisplay);
   const datasets = [];
   datasets.push(
     createDataset(
@@ -61,7 +61,7 @@ const createData = (data) => {
     )
   );
   // TODO: α版では未来非表示
-  // if (futureEnabled) {
+  // if (futureDisplay) {
   //   datasets.push(createDataset(myselfFuture, myselfBorderColor, futurePointColor, myselfPointColor, true))
   // }
   datasets.push(
@@ -74,7 +74,7 @@ const createData = (data) => {
     )
   );
   // TODO: α版では未来非表示
-  // if (futureEnabled) {
+  // if (futureDisplay) {
   //   datasets.push(createDataset(otherFuture, otherBorderColor, futurePointColor, otherPointColor, true))
   // }
   datasets.push(
@@ -87,7 +87,7 @@ const createData = (data) => {
     )
   );
   // TODO: α版では未来非表示
-  // if (futureEnabled) {
+  // if (futureDisplay) {
   //   datasets.push(createDataset(roleFuture, roleBorderColor, futurePointColor, rolePointColor, true))
   // }
 
@@ -330,7 +330,7 @@ const fillMyselfData = (chart, scales) => {
   const isDrawBefore = drawData[0] !== null;
 
   //TODO: α版では未来非表示↓
-  const futureEnabled = data.futureEnabled;
+  const futureDisplay = data.futureDisplay;
   //TODO: α版では未来非表示↑
 
   // 期間外のデータがない（nullの場合）は簡単化のため予め除外しておく。
@@ -346,7 +346,7 @@ const fillMyselfData = (chart, scales) => {
   const startY = y.getPixelForValue(0);
 
   //TODO: α版では未来非表示↓
-  const endX = x.getPixelForValue(futureEnabled ? 3 : 4);
+  const endX = x.getPixelForValue(futureDisplay ? 3 : 4);
   //TODO: α版では未来非表示↑
   //const endX = x.getPixelForValue(4)
 
@@ -368,7 +368,7 @@ const fillMyselfData = (chart, scales) => {
   startIndex = isDrawBefore ? 1 : 0;
 
   //α対応の為一時的に記述↓
-  const drawDataKLength = futureEnabled
+  const drawDataKLength = futureDisplay
     ? drawData.length - 1
     : drawData.length;
   for (let i = startIndex; i < drawDataKLength; i++) {

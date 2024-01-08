@@ -379,12 +379,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         myself: past_values,
         myselfSelected: timeline.selected_label,
         labels: timeline.labels,
-        # TODO: ここ`!`は意味が反転しているので未来対応時に要確認。timelineのfuture_enabled（未来へのシフト操作可能)とグラフデータ上のfuture_enabled(未来が表示されている?)というようにそれぞれで意味が違うのかもしれない。名前変更すること
-        futureEnabled: !timeline.future_enabled
+        # タイムライン上で未来方向に操作不可であれば、成長グラフ上未来は表示状態
+        futureDisplay: !timeline.future_enabled
       })
 
-    # TODO: ここもfuture_enabledの意味が反転している?ので要確認
-    now_value = create_user_now_value(user_id, skill_panel_id, class, data.futureEnabled)
+    now_value = create_user_now_value(user_id, skill_panel_id, class, !timeline.future_enabled)
     data = Map.put(data, :myselfNow, now_value)
 
     assign(socket, data: data)
@@ -397,7 +396,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         otherSelected: nil,
         comparedOther: nil,
         otherLabels: [],
-        otherFutureEnabled: nil,
+        otherFutureDisplay: nil,
         otherNow: nil
       })
     end)
@@ -418,7 +417,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     past_values =
       get_past_score_values(compared_timeline, compared_user.id, skill_panel_id, class)
 
-    # TODO: ここもfuture_enabledの意味が反転している?ので要確認
     now_value =
       create_user_now_value(
         compared_user.id,
@@ -435,8 +433,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         otherSelected: compared_timeline.selected_label,
         comparedOther: compared_other?(compared_user, user_id),
         otherLabels: compared_timeline.labels,
-        # TODO: ここ`!`は意味が反転しているので未来対応時に要確認。timelineのfuture_enabled（未来へのシフト操作可能)とグラフデータ上のfuture_enabled(未来が表示されている?)というようにそれぞれで意味が違うのかもしれない。名前変更すること
-        otherFutureEnabled: !compared_timeline.future_enabled,
+        # タイムライン上で未来方向に操作不可であれば、成長グラフ上未来は表示状態
+        otherFutureDisplay: !compared_timeline.future_enabled,
         otherNow: now_value
       })
     end)
