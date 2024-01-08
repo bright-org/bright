@@ -58,6 +58,14 @@ dev環境を例とする。
 
 **※Cloud Runサービスが再構築されると自動生成のドメイン名が変わるため要注意**
 
+## 新規環境構築時の注意点
+
+ユーザー登録時に GCS 上にアップロードされたデフォルトアイコンのパスをユーザーにセットする。
+
+そのためアプリケーションが使用する GCS のバケット(例: `bright-prod`)にデフォルトアイコンのアップロードが必要。
+
+新規に環境構築する場合は事前に `gcs/initial_data/bright_storage_local/default_icon` ディレクトリを対象環境の GCS に `bright-prod/default_icon` のような階層でアップロードしてからアプリケーションを起動すること。
+
 ## 秘匿情報の変更と反映
 
 秘匿情報の管理にはTerraform Cloudの [Variable sets](https://app.terraform.io/app/bright-org/settings/varsets) を使用しており、環境ごとに `bright-***` という名前のVariable setを登録している。

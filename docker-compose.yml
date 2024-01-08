@@ -50,6 +50,7 @@ services:
       - 4443:4443
     volumes:
       - gcsdata:/storage/bright_storage_local
+      - ./gcs/initial_data:/data
 volumes:
   dbdata:
   gcsdata:

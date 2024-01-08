@@ -28,6 +28,7 @@ erl_crash.dump
 /livebook/
 /docker_dev/
 /test/
+/gcs/
 
 docker-compose.yml
 Dockerfile.dev
