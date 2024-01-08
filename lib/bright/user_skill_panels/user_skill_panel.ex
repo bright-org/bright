@@ -22,5 +22,6 @@ defmodule Bright.UserSkillPanels.UserSkillPanel do
     user_skill_panel
     |> cast(attrs, [:user_id, :skill_panel_id])
     |> validate_required([:user_id, :skill_panel_id])
+    |> unique_constraint([:user_id, :skill_panel_id])
   end
 end

@@ -6,6 +6,8 @@ defmodule Bright.UserSkillPanels do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
+  alias Bright.SkillPanels
+  alias Bright.SkillScores
   alias Bright.UserSkillPanels.UserSkillPanel
 
   @doc """
@@ -42,19 +44,33 @@ defmodule Bright.UserSkillPanels do
   @doc """
   Creates a user_skill_panel.
 
+  合わせてスキルパネルに属するスキルクラスの各スコア用のレコードを生成している
+
   ## Examples
 
       iex> create_user_skill_panel(%{field: value})
-      {:ok, %UserSkillPanel{}}
+      {:ok, %{user_skill_panel: %UserSkillPanel{}, skill_class_scores: []}}
 
       iex> create_user_skill_panel(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      {:error, :user_skill_panel, %Ecto.Changeset{}, %{}}
 
   """
   def create_user_skill_panel(attrs \\ %{}) do
-    %UserSkillPanel{}
-    |> UserSkillPanel.changeset(attrs)
-    |> Repo.insert()
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:user_skill_panel, fn _ ->
+      %UserSkillPanel{}
+      |> UserSkillPanel.changeset(attrs)
+    end)
+    |> Ecto.Multi.run(:skill_class_scores, fn _repo, %{user_skill_panel: user_skill_panel} ->
+      result =
+        SkillPanels.list_skill_classes_by_skill_panel_id(user_skill_panel.skill_panel_id)
+        |> Enum.map(&SkillScores.create_skill_class_score(&1, user_skill_panel.user_id))
+
+      status = if Enum.all?(result, &(elem(&1, 0) == :ok)), do: :ok, else: :error
+      values = Enum.map(result, &elem(&1, 1))
+      {status, values}
+    end)
+    |> Repo.transaction()
   end
 
   @doc """
