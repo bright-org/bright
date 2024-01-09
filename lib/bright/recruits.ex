@@ -536,6 +536,12 @@ defmodule Bright.Recruits do
     |> Repo.insert()
   end
 
+  def cancel_employment(attrs \\ %{}) do
+    %Employment{}
+    |> Employment.cancel_changeset(attrs)
+    |> Repo.insert()
+  end
+
   @doc """
   Updates a employment.
 
