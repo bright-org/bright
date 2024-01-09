@@ -78,6 +78,22 @@ msgstr "採用しない"
 msgid "recruit_keep"
 msgstr "今は採用しない"
 
+msgid "employee"
+msgstr "正社員"
+
+msgid "subcontracting"
+msgstr "業務委託（フリーランス・服用）"
+
+msgid "contract_employee"
+msgstr "契約社員"
+
+msgid "temporary_employee"
+msgstr "派遣社員"
+
+msgid "part_time_job"
+msgstr "アルバイト・パートタイム"
+
+
 msgid "level_normal"
 msgstr "平均"
 

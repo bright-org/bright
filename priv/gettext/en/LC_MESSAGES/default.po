@@ -78,6 +78,22 @@ msgstr ""
 msgid "recruit_keep"
 msgstr ""
 
+msgid "employee"
+msgstr ""
+
+msgid "subcontracting"
+msgstr ""
+
+msgid "contract_employee"
+msgstr ""
+
+msgid "temporary_employee"
+msgstr ""
+
+msgid "part_time_job"
+msgstr ""
+
+
 msgid "level_normal"
 msgstr ""
 
