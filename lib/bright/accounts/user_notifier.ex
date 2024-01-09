@@ -410,13 +410,13 @@ defmodule Bright.Accounts.UserNotifier do
   @doc """
   Deliver coordination cancel mail to candidates_user .
   """
-  def deliver_cancel_coordination_to_candidates_user(from_user, to_user) do
-    deliver(to_user.email, "【Bright】採用検討がキャンセルされました", """
-    #{to_user.name}さん
+  def deliver_cancel_coordination_to_candidates_user(from_user, to_user, message) do
+    deliver(to_user.email, "【Bright】選考結果のご連絡", """
+    #{to_user.name}様
 
-    #{from_user.name}から、採用検討がキャンセルされました。
+    #{message}
 
-
+    #{from_user.name}
     ---------------------------------------------------------------------
     ■本メールにお心当たりのない場合
     ---------------------------------------------------------------------
@@ -432,12 +432,12 @@ defmodule Bright.Accounts.UserNotifier do
   Deliver employment acceptance .
   """
   def deliver_acceptance_employment_instructions(from_user, to_user, url) do
-    deliver(to_user.email, "【Bright】選考結果が届いています", """
+    deliver(to_user.email, "【Bright】採用通知が届いています", """
     #{to_user.name}さん
 
-    #{from_user.name} さんから、選考結果が届いています。
+    #{from_user.name} さんから、採用通知が届いています。
 
-    下記URLで雇用内容を確認し、受諾可否を選択してください。
+    下記URLで内容を確認し、受諾するか、辞退するかをお答えください。
     #{url}
 
     ---------------------------------------------------------------------
