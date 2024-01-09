@@ -52,44 +52,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
 
     <div id="coordination_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-
-    <h4 class="text-start">選考結果</h4>
-        <li :if={Enum.count(@employment_acceptances) == 0} class="flex">
-          <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
-            未処理の選考結果はありません
-          </div>
-        </li>
-        <%= for acceptance <- @employment_acceptances do %>
-        <% icon_path = acceptance.recruiter_user.user_profile.icon_file_path %>
-          <li class="flex my-5">
-            <.link
-               patch={~p"/recruits/employments/acceptance/#{acceptance.id}"}
-              class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
-            >
-              <img
-                src={UserProfiles.icon_url(icon_path)}
-                class="object-cover h-12 w-12 rounded-full mr-2"
-                alt=""
-              />
-              <div class="flex-1">
-                <span><%= acceptance.recruiter_user.name %></span>
-                <br />
-                <span class="text-brightGray-300">
-                  <%= NaiveDateTime.to_date(acceptance.inserted_at) %>
-                  提示年収:<%= acceptance.income %>
-                </span>
-              </div>
-
-              <span class="flex-1">
-                <%= Gettext.gettext(BrightWeb.Gettext, to_string(acceptance.status)) %>
-              </span>
-              <span class="w-24">
-                <CardListComponents.elapsed_time inserted_at={acceptance.updated_at} />
-              </span>
-            </.link>
-          </li>
-        <% end %>
-    </div>
+      </div>
     </div>
 
     <.bright_modal :if={@live_action in [:show_employment]} id="employment-modal" show on_cancel={JS.patch(~p"/recruits/employments")}>
@@ -121,7 +84,6 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
     socket
     |> assign(:page_title, "採用決定者チームジョイン")
     |> assign(:employments, Recruits.list_employment(user_id))
-    |> assign(:employment_acceptances, Recruits.list_acceptance_employment(user_id))
     |> assign(:employment, nil)
     |> then(&{:ok, &1})
   end
