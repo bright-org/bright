@@ -1,6 +1,10 @@
 defmodule Bright.Recruits.Coordination do
   @moduledoc """
-  採用調整
+  採用検討
+
+  面談調整画面の面談決定状態の面談調整からモーダルを開き作成する
+  採用選考画面から一覧できる
+  選考結果の準備から採用調整フェーズに進む
   """
 
   use Ecto.Schema

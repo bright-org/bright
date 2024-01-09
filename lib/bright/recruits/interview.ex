@@ -1,6 +1,11 @@
 defmodule Bright.Recruits.Interview do
   @moduledoc """
   面談調整
+
+  ユーザー検索画面から作成できる
+  面談調整画面から一覧する
+  チャットを開始できる
+  面談を決定状態にすることで次の採用検討フェーズに進む
   """
 
   use Ecto.Schema
