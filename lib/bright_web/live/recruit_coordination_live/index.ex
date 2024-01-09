@@ -52,8 +52,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
 
     <div id="coordination_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-
-    <h4 class="text-start">採用選考依頼</h4>
+        <h4 class="text-start">採用選考依頼</h4>
         <li :if={Enum.count(@coordination_members) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
             採用選考の依頼はありません
@@ -89,7 +88,40 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
             </.link>
           </li>
         <% end %>
+      </div>
     </div>
+
+    <div id="coordination_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
+      <div class="text-sm font-medium text-center">
+        <h4 class="text-start">選考結果</h4>
+        <li :if={Enum.count(@acceptances) == 0} class="flex">
+          <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
+            未返答の選考結果はありません
+          </div>
+        </li>
+        <%= for acceptance <- @acceptances do %>
+        <% icon_path = acceptance.recruiter_user.user_profile.icon_file_path %>
+          <li class="flex my-5">
+            <.link
+               patch={~p"/recruits/coordinations/acceptance/#{acceptance.id}"}
+              class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
+            >
+              <img
+                src={UserProfiles.icon_url(icon_path)}
+                class="object-cover h-12 w-12 rounded-full mr-2"
+                alt=""
+              />
+
+              <span class="flex-1">
+                <%= Gettext.gettext(BrightWeb.Gettext, to_string(acceptance.status)) %>
+              </span>
+              <span class="w-24">
+                <CardListComponents.elapsed_time inserted_at={acceptance.updated_at} />
+              </span>
+            </.link>
+          </li>
+        <% end %>
+      </div>
     </div>
 
 
@@ -129,6 +161,20 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         patch={~p"/recruits/coordinations"}
       />
     </.bright_modal>
+
+
+    <.bright_modal :if={@live_action in [:show_acceptance]} id="employment-acceptance-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
+      <.live_component
+        module={BrightWeb.RecruitCoordinationLive.AcceptanceComponent}
+        id="employment_acceptance_modal"
+        title={@page_title}
+        action={@live_action}
+        employment_id={@employment_id}
+        current_user={@current_user}
+        patch={~p"/recruits/coordinations"}
+      />
+    </.bright_modal>
+
     """
   end
 
@@ -142,6 +188,8 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
     |> assign(:coordination_members, Recruits.list_coordination_members(user_id, :not_answered))
     |> assign(:coordination, nil)
     |> assign(:coordination_member, nil)
+    |> assign(:acceptances, Recruits.list_acceptance_employment(user_id))
+    |> assign(:acceptance, nil)
     |> then(&{:ok, &1})
   end
 
@@ -155,6 +203,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
 
     socket
     |> assign(:coordination_member, Recruits.get_coordination_member!(id, user_id))
+  end
+
+  defp apply_action(socket, :show_acceptance, %{"id" => id}) do
+    assign(socket, :employment_id, id)
   end
 
   defp apply_action(socket, :index, _params) do
