@@ -296,7 +296,7 @@ defmodule Bright.Recruits do
   def get_coordination_with_member_users!(id, user_id) do
     Coordination
     |> where([i], i.recruiter_user_id == ^user_id)
-    |> preload(coordination_members: [user: :user_profile])
+    |> preload(coordination_members: [user: :user_profile], candidates_user: :user_profile)
     |> Repo.get!(id)
   end
 
