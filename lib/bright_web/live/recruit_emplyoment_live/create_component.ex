@@ -14,7 +14,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
     <div id="notification_modal">
       <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
       <div class="overflow-y-visible z-[60]">
-        <main class="flex items-center justify-center " role="main">
+        <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-4 shadow text-sm w-[60vw]">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">採用連絡</span>
@@ -251,7 +251,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
         cancel_reason: reason
       })
 
-    Recruits.send_coordination_cancel_notification_mails(coordination.id)
+    Recruits.send_coordination_cancel_notification_mails(coordination.id, params["message"])
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
   end

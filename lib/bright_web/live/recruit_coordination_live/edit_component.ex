@@ -153,8 +153,6 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
             cancel_reason: reason
           })
 
-        Recruits.send_coordination_cancel_notification_mails(coordination.id)
-
         {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
     end
   end

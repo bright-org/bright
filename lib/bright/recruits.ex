@@ -439,7 +439,7 @@ defmodule Bright.Recruits do
     )
   end
 
-  def send_coordination_cancel_notification_mails(coordination_id) do
+  def send_coordination_cancel_notification_mails(coordination_id, message) do
     coordination =
       Coordination
       |> preload([:candidates_user, :recruiter_user])
@@ -447,7 +447,8 @@ defmodule Bright.Recruits do
 
     UserNotifier.deliver_cancel_coordination_to_candidates_user(
       coordination.recruiter_user,
-      coordination.candidates_user
+      coordination.candidates_user,
+      message
     )
   end
 
@@ -471,7 +472,7 @@ defmodule Bright.Recruits do
     Employment
     |> where(
       [i],
-      i.recruiter_user_id == ^user_id and i.status in [:waiting_response, :acceptance_emplyoment]
+      i.recruiter_user_id == ^user_id and i.status in [:acceptance_emplyoment]
     )
     |> preload(candidates_user: :user_profile)
     |> Repo.all()
