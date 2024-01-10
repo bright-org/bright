@@ -282,7 +282,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <% current = @select_skill_class.class == skill_class.class %>
           <%= if @select_skill_class.class == skill_class.class do %>
             <li
-              class={"bg-white text-base w-full"}
+              class={"bg-white text-base w-full cursor-pointer"}
               phx-click="skill_class_tab_click"
               phx-target={@skill_class_tab_click_target}
               phx-value-user_id={@user.id}
@@ -301,7 +301,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <% else %>
 
             <li
-              class={"w-full bg-brightGreen-50 text-brightGray-500"}
+              class={"w-full bg-brightGreen-50 text-brightGray-500 cursor-pointer"}
               phx-click="skill_class_tab_click"
               phx-target={@skill_class_tab_click_target}
               phx-value-user_id={@user.id}
