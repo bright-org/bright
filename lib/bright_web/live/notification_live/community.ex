@@ -21,9 +21,7 @@ defmodule BrightWeb.NotificationLive.Community do
         <%= for notification <- @notifications do %>
           <li class="flex flex-wrap my-5">
             <div phx-click="confirm_notification" phx-value-notification_community_id={notification.id} class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate">
-              <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
-                person
-              </span>
+              <img src="/images/common/icons/community.svg" class="w-6 h-6 mr-2.5" />
               <span class={"order-3 lg:order-2 flex-1 mr-2 truncate"}><%= notification.message %></span>
               <CardListComponents.elapsed_time inserted_at={notification.inserted_at} />
             </div>
