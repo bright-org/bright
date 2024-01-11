@@ -13,7 +13,8 @@ defmodule BrightWeb.CreateFreeTrialTest do
         insert(:subscription_plans,
           plan_code: "hr_plan",
           name_jp: "採用・人材育成プラン",
-          free_trial_priority: 10
+          free_trial_priority: 20,
+          authorization_priority: 20
         )
 
       %{plan: plan}
