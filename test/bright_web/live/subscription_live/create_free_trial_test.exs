@@ -63,6 +63,29 @@ defmodule BrightWeb.CreateFreeTrialTest do
       assert index_live |> has_element?("p", "このプランはすでに選択済みです")
     end
 
+    test "view create_modal lower priority plan when subscribing hr_plan ", %{
+      conn: conn,
+      user: user,
+      plan: plan
+    } do
+      insert(:subscription_user_plan_subscribing_without_free_trial,
+        user: user,
+        subscription_plan: plan,
+        subscription_status: :subscribing,
+        subscription_end_datetime: NaiveDateTime.utc_now()
+      )
+
+      insert(:subscription_plans,
+        plan_code: "team_up_plan",
+        name_jp: "チームアッププラン",
+        free_trial_priority: 1
+      )
+
+      {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
+      assert html =~ "採用・人材育成プラン"
+      assert index_live |> has_element?("p", "このプランはすでに選択済みです")
+    end
+
     test "view create_modal free_trialing hr_plan", %{conn: conn, user: user, plan: plan} do
       insert(:subscription_user_plan_free_trial, user: user, subscription_plan: plan)
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
