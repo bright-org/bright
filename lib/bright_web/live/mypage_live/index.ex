@@ -49,6 +49,18 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:search, true)
   end
 
+  defp apply_action(socket, :free_trial, _params) do
+    # 一旦hr_planのみとする
+    # plan = Map.get(params, "plan", "hr_plan")
+
+    socket
+    |> assign(:page_title, "フリートライアル")
+    |> assign_skillset_gem()
+    |> assign(:plan, "hr_plan")
+    |> assign(:notification_detail, false)
+    |> assign(:search, false)
+  end
+
   defp assign_skillset_gem(socket) do
     skillset_gem =
       SkillScores.get_skillset_gem(socket.assigns.display_user.id)

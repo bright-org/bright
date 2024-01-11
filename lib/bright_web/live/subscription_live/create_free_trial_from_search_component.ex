@@ -43,7 +43,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
             <div class="pt-4">
               <.form
                 for={@form}
-                id="free_trial_form"
+                id="free_trial_form_from_search"
                 phx-target={@myself}
                 phx-change="validate"
                 phx-submit="submit"
@@ -150,7 +150,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"free_trial_form" => params}, socket) do
+  def handle_event("validate", %{"free_trial_form_from_search" => params}, socket) do
     changeset =
       socket.assigns.free_trial
       |> FreeTrial.changeset(params)
@@ -173,7 +173,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
 
   def handle_event(
         "submit",
-        %{"free_trial_form" => params},
+        %{"free_trial_form_from_search" => params},
         %{assigns: %{plan: plan, current_user: user}} = socket
       ) do
     case Subscriptions.start_free_trial(user.id, plan.id) do
