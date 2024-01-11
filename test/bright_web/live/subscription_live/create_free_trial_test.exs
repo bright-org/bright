@@ -55,8 +55,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
 
       insert(:subscription_plans,
         plan_code: "team_up_plan",
-        name_jp: "チームアッププラン",
-        free_trial_priority: 1
+        name_jp: "チームアッププラン"
       )
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
@@ -73,13 +72,12 @@ defmodule BrightWeb.CreateFreeTrialTest do
         user: user,
         subscription_plan: plan,
         subscription_status: :subscribing,
-        subscription_end_datetime: NaiveDateTime.utc_now()
+        subscription_start_datetime: NaiveDateTime.utc_now()
       )
 
       insert(:subscription_plans,
         plan_code: "team_up_plan",
-        name_jp: "チームアッププラン",
-        free_trial_priority: 1
+        name_jp: "チームアッププラン"
       )
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
@@ -111,8 +109,36 @@ defmodule BrightWeb.CreateFreeTrialTest do
         user: user,
         subscription_plan: plan,
         subscription_status: :subscription_ended,
+        subscription_start_datetime: NaiveDateTime.utc_now(),
         subscription_end_datetime: NaiveDateTime.utc_now()
       )
+
+      {:ok, index_live, html} = live(conn, ~p"/free_trial")
+      assert html =~ "採用・人材育成プラン"
+
+      assert index_live |> has_element?("p", "このプランの無料トライアル期間は終了しています")
+    end
+
+    test "view create_modal expired subscribing hr_plan and lower plan free trialing", %{
+      conn: conn,
+      user: user,
+      plan: plan
+    } do
+      insert(:subscription_user_plan_subscribing_without_free_trial,
+        user: user,
+        subscription_plan: plan,
+        subscription_status: :subscription_ended,
+        subscription_start_datetime: NaiveDateTime.utc_now(),
+        subscription_end_datetime: NaiveDateTime.utc_now()
+      )
+
+      lower_plan =
+        insert(:subscription_plans,
+          plan_code: "team_up_plan",
+          name_jp: "チームアッププラン"
+        )
+
+      insert(:subscription_user_plan_free_trial, user: user, subscription_plan: lower_plan)
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
       assert html =~ "採用・人材育成プラン"

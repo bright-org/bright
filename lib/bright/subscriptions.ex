@@ -541,6 +541,24 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
+  終了したのプラン一覧を返す
+
+   ## Examples
+      iex> get_users_expired_plans("01H7W3BZQY7CZVM5Q66T4EWEVC")
+      [
+        %Bright.Subscriptions.SubscriptionUserPlan{}, ...
+      ]
+  """
+  def get_users_expired_plans(user_id) do
+    from(sup in SubscriptionUserPlan,
+      where: sup.user_id == ^user_id and not is_nil(sup.subscription_end_datetime),
+      order_by: [asc: sup.trial_start_datetime]
+    )
+    |> preload(:subscription_plan)
+    |> Repo.all()
+  end
+
+  @doc """
   プランコードをキーに該当プランのフリートライアル利用可否を返す
   過去に一度でも該当のプランでフリートライアルを開始した履歴がある場合、利用不可
 
