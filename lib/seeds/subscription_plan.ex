@@ -8,8 +8,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
 
   @plans [
     %{
-      plan_code: "personal_skill_up_plan",
-      name_jp: "個人スキルアップ",
+      plan_code: "together",
+      name_jp: "みんなでワイワイ",
       create_teams_limit: 1,
       create_enable_hr_functions_teams_limit: 0,
       team_members_limit: 5,
