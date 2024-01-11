@@ -2,7 +2,6 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
   use BrightWeb, :live_component
 
   alias Bright.Subscriptions
-  alias Bright.Subscriptions.SubscriptionPlan
   alias Bright.Subscriptions.FreeTrialForm, as: FreeTrial
   alias BrightWeb.BrightCoreComponents, as: BrightCore
   import BrightWeb.BrightButtonComponents, only: [plan_upgrade_button: 1]
@@ -30,14 +29,26 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
               <h3 class="font-bold text-xl">
                 <%= @plan.name_jp %>プラン
               </h3>
-              <%= if @status && @status.subscription_status == :subscribing do %>
+              <%= if subscirption_plan_exists?(@status, @plan.plan_code) do %>
                 <div class="my-4">
-                  <p class="mt-4">
-                      このプランはすでに契約済みです
-                  </p>
+                  <%= if @status.subscription_status == :subscribing do %>
+                    <p class="mt-4">
+                      このプランはすでに選択済みです
+                    </p>
+                  <% else %>
+                    <p class="mt-4">
+                      このプランの無料トライアル期間は終了しています
+                    </p>
+                    <p class="mb-4">
+                      下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
+                    </p>
+                    <div class="flex justify-center">
+                      <.plan_upgrade_button />
+                    </div>
+                  <% end %>
                 </div>
               <% else %>
-                <%= if Subscriptions.free_trial_available?(@current_user.id, @plan.plan_code) do %>
+                <%= if free_trial_available?(@current_user.id, @plan, @status) do %>
                 <p class="mt-2">
                   お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください
                 </p>
@@ -112,13 +123,13 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
                   <div class="my-4">
                     <p class="mt-4">
                       <%= if is_nil(@status.trial_end_datetime) do %>
-                        このプランはすでに契約済みです
+                        このプランはすでに選択済みです
                       <% else %>
-                        このプランのフリートライアル期間は終了しています
+                        このプランの無料トライアル期間は終了しています
                       <% end %>
                     </p>
                     <p class="mb-4">
-                      下記「プランのアップグレード」ボタンよりアップグレードできます（別タブで開きます）
+                      下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
                     </p>
                     <div class="flex justify-center">
                     <.plan_upgrade_button />
@@ -141,15 +152,24 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
     # 現契約プランと比較してチーム作成数などの制限数が落ちないプランを取ること
     plan =
       case Subscriptions.get_plan_by_plan_code(assigns.plan_code) do
-        %SubscriptionPlan{} = plan -> plan
         nil -> Subscriptions.get_plan_by_plan_code("hr_plan")
+        plan -> plan
       end
 
     status =
-      Subscriptions.get_users_subscription_status(
-        assigns.current_user.id,
-        NaiveDateTime.utc_now()
-      )
+      case Subscriptions.get_users_subscription_status(
+             assigns.current_user.id,
+             NaiveDateTime.utc_now()
+           ) do
+        nil ->
+          Subscriptions.get_users_subscription_history(
+            assigns.current_user.id,
+            NaiveDateTime.utc_now()
+          )
+
+        status ->
+          status
+      end
 
     free_trial = %FreeTrial{}
     changeset = FreeTrial.changeset(free_trial, %{})
@@ -180,7 +200,6 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
   def handle_event("submit", %{"free_trial_form" => params}, socket) do
     user = socket.assigns.current_user
     plan = socket.assigns.plan
-    status = socket.assigns.status
 
     changeset =
       socket.assigns.free_trial
@@ -189,24 +208,13 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
 
     case changeset.valid? do
       true ->
-        if status && status.subscription_status == :subscription_ended do
-          trial_start_datetime = NaiveDateTime.utc_now()
-
-          {:ok, _subscription_user_plan} =
-            Subscriptions.update_subscription_user_plan(status, %{
-              trial_start_datetime: trial_start_datetime,
-              subscription_start_datetime: trial_start_datetime,
-              subscription_status: :free_trial
-            })
-        else
-          {:ok, _subscription_user_plan} = Subscriptions.start_free_trial(user.id, plan.id)
-        end
+        {:ok, _subscription_user_plan} = Subscriptions.start_free_trial(user.id, plan.id)
 
         params = Map.merge(params, %{"user_id" => user.id, "plan_name" => plan.name_jp})
         Subscriptions.deliver_free_trial_apply_instructions(user, params)
 
         socket
-        |> put_flash(:info, "フリートライアルを開始しました")
+        |> put_flash(:info, "無料トライアルを開始しました")
         |> push_patch(to: socket.assigns.patch)
         |> then(&{:noreply, &1})
 
@@ -217,5 +225,20 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  def subscirption_plan_exists?(status, plan_code) do
+    status &&
+      status.subscription_plan.plan_code == plan_code &&
+      status.subscription_status != :free_trial
+  end
+
+  def free_trial_available?(user_id, plan, nil) do
+    Subscriptions.free_trial_available?(user_id, plan.plan_code)
+  end
+
+  def free_trial_available?(user_id, plan, status) do
+    Subscriptions.free_trial_available?(user_id, plan.plan_code) &&
+      status.subscription_plan.free_trial_priority < plan.free_trial_priority
   end
 end

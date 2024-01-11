@@ -5,11 +5,17 @@ defmodule BrightWeb.CreateFreeTrialTest do
   import Phoenix.LiveViewTest
   import Bright.Factory
 
-  describe "hr_plan" do
+  describe "free_trial from mypage" do
     setup [:register_and_log_in_user]
 
     setup do
-      plan = insert(:subscription_plans, plan_code: "hr_plan", name_jp: "採用・人材育成プラン")
+      plan =
+        insert(:subscription_plans,
+          plan_code: "hr_plan",
+          name_jp: "採用・人材育成プラン",
+          free_trial_priority: 10
+        )
+
       %{plan: plan}
     end
 
@@ -32,18 +38,36 @@ defmodule BrightWeb.CreateFreeTrialTest do
       assert html =~ "採用・人材育成プラン"
     end
 
-    # test "view create_modal other plan", %{conn: conn} do
-    #  insert(:subscription_plans, plan_code: "team_up_plan", name_jp: "チームアッププラン")
-    #  {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
-    #
-    #  assert html =~ "チームアッププラン"
-    # end
+    test "view create_modal other plan", %{conn: conn} do
+      insert(:subscription_plans, plan_code: "team_up_plan", name_jp: "チームアッププラン")
+      {:ok, _index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
+
+      assert html =~ "チームアッププラン"
+    end
+
+    test "view create_modal lower priority plan when free_trialing hr_plan ", %{
+      conn: conn,
+      user: user,
+      plan: plan
+    } do
+      insert(:subscription_user_plan_free_trial, user: user, subscription_plan: plan)
+
+      insert(:subscription_plans,
+        plan_code: "team_up_plan",
+        name_jp: "チームアッププラン",
+        free_trial_priority: 1
+      )
+
+      {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
+      assert html =~ "採用・人材育成プラン"
+      assert index_live |> has_element?("p", "このプランはすでに選択済みです")
+    end
 
     test "view create_modal free_trialing hr_plan", %{conn: conn, user: user, plan: plan} do
       insert(:subscription_user_plan_free_trial, user: user, subscription_plan: plan)
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
       assert html =~ "採用・人材育成プラン"
-      assert index_live |> has_element?("p", "このプランはすでに契約済みです")
+      assert index_live |> has_element?("p", "このプランはすでに選択済みです")
     end
 
     test "view create_modal expired free_trial hr_plan", %{conn: conn, user: user, plan: plan} do
@@ -55,7 +79,21 @@ defmodule BrightWeb.CreateFreeTrialTest do
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
       assert html =~ "採用・人材育成プラン"
-      assert index_live |> has_element?("p", "このプランのフリートライアル期間は終了しています")
+      assert index_live |> has_element?("p", "このプランの無料トライアル期間は終了しています")
+    end
+
+    test "view create_modal expired hr_plan", %{conn: conn, user: user, plan: plan} do
+      insert(:subscription_user_plan_subscribing_without_free_trial,
+        user: user,
+        subscription_plan: plan,
+        subscription_status: :subscription_ended,
+        subscription_end_datetime: NaiveDateTime.utc_now()
+      )
+
+      {:ok, index_live, html} = live(conn, ~p"/free_trial")
+      assert html =~ "採用・人材育成プラン"
+
+      assert index_live |> has_element?("p", "このプランの無料トライアル期間は終了しています")
     end
 
     test "validate empty form submit", %{conn: conn} do
@@ -105,12 +143,18 @@ defmodule BrightWeb.CreateFreeTrialTest do
         Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
     end
 
-    test "subscription_ended and free_trial_start", %{conn: conn, user: user, plan: plan} do
-      insert(:subscription_user_plan_subscribing_without_free_trial,
-        user: user,
-        subscription_plan: plan,
-        subscription_status: :subscription_ended
-      )
+    test "free_trialing low_priority_plan", %{conn: conn, user: user} do
+      low_plan =
+        insert(:subscription_plans,
+          plan_code: "team_up_plan",
+          name_jp: "チームアッププラン",
+          free_trial_priority: 1
+        )
+
+      insert(:subscription_user_plan_free_trial, user: user, subscription_plan: low_plan)
+
+      %{subscription_status: :free_trial, subscription_plan: %{plan_code: "team_up_plan"}} =
+        Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
       assert html =~ "採用・人材育成プラン"
