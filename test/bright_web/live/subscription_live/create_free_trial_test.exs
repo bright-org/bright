@@ -59,7 +59,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       )
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
-      assert html =~ "採用・人材育成プラン"
+      assert html =~ "チームアッププラン"
       assert index_live |> has_element?("p", "このプランはすでに選択済みです")
     end
 
@@ -81,7 +81,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       )
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
-      assert html =~ "採用・人材育成プラン"
+      assert html =~ "チームアッププラン"
       assert index_live |> has_element?("p", "このプランはすでに選択済みです")
     end
 

@@ -273,9 +273,8 @@ defmodule Bright.SubscriptionsTest do
     end
   end
 
-  describe "get_most_priority_free_trial_subscription_plan/1" do
-    # サービス利用判定のパターン
-    test "true case. subscribing plan and available service" do
+  describe "get_most_priority_free_trial_subscription_plan_by_service/2" do
+    test "returns best plan" do
       # priorityが低い(数字が大きい)プランは採用されない)
       _subscription_plan1 =
         insert(:subscription_plans, %{free_trial_priority: 3})
@@ -294,9 +293,66 @@ defmodule Bright.SubscriptionsTest do
         |> plan_with_plan_service_by_service_code("non_target_service_code")
         |> Repo.preload(:subscription_plan_services)
 
-      result = Subscriptions.get_most_priority_free_trial_subscription_plan("target_service_code")
+      result =
+        Subscriptions.get_most_priority_free_trial_subscription_plan_by_service(
+          "target_service_code"
+        )
 
       assert result.id == subscription_plan2.id
+    end
+
+    test "returns best plan with current_plan" do
+      current_plan = insert(:subscription_plans, %{create_teams_limit: 2, team_members_limit: 10})
+
+      # チーム数制限が小さい
+      _subscription_plan1 =
+        insert(:subscription_plans, %{create_teams_limit: 1, team_members_limit: 11})
+        |> plan_with_plan_service_by_service_code("target_service_code")
+        |> Repo.preload(:subscription_plan_services)
+
+      # メンバー数制限が小さい
+      _subscription_plan2 =
+        insert(:subscription_plans, %{create_teams_limit: 2, team_members_limit: 9})
+        |> plan_with_plan_service_by_service_code("target_service_code")
+        |> Repo.preload(:subscription_plan_services)
+
+      # priorityが大きい
+      _subscription_plan3 =
+        insert(:subscription_plans, %{
+          create_teams_limit: 2,
+          team_members_limit: 10,
+          free_trial_priority: 3
+        })
+        |> plan_with_plan_service_by_service_code("target_service_code")
+        |> Repo.preload(:subscription_plan_services)
+
+      # priorityが小さい
+      subscription_plan =
+        insert(:subscription_plans, %{
+          create_teams_limit: 2,
+          team_members_limit: 10,
+          free_trial_priority: 2
+        })
+        |> plan_with_plan_service_by_service_code("target_service_code")
+        |> Repo.preload(:subscription_plan_services)
+
+      # サービスコードが異なるプランは採用されない
+      _subscription_plan4 =
+        insert(:subscription_plans, %{
+          create_teams_limit: 2,
+          team_members_limit: 10,
+          free_trial_priority: 1
+        })
+        |> plan_with_plan_service_by_service_code("non_target_service_code")
+        |> Repo.preload(:subscription_plan_services)
+
+      result =
+        Subscriptions.get_most_priority_free_trial_subscription_plan_by_service(
+          "target_service_code",
+          current_plan
+        )
+
+      assert result.id == subscription_plan.id
     end
   end
 

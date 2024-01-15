@@ -89,13 +89,13 @@
   on_cancel={JS.patch(~p"/mypage")}
   show
 >
-<.live_component
-  id="free_trial_modal"
-  module={BrightWeb.SubscriptionLive.CreateFreeTrialComponent}
-  current_user={@current_user}
-  plan_code={@plan}
-  patch={~p"/mypage"}
-/>
+  <.live_component
+    id="free_trial_modal"
+    module={BrightWeb.SubscriptionLive.CreateFreeTrialComponent}
+    current_user={@current_user}
+    plan_code={@plan}
+    patch={~p"/mypage"}
+  />
 </.bright_modal>
 
 
