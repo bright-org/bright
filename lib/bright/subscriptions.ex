@@ -221,7 +221,7 @@ defmodule Bright.Subscriptions do
 
   def list_subscription_user_plans_with_plan do
     SubscriptionUserPlan
-    |> preload(:subscription_plan)
+    |> preload([:subscription_plan, :user])
     |> Repo.all()
   end
 
@@ -243,7 +243,7 @@ defmodule Bright.Subscriptions do
 
   def get_subscription_user_plan_with_plan!(id) do
     SubscriptionUserPlan
-    |> preload(:subscription_plan)
+    |> preload([:subscription_plan, :user])
     |> Repo.get!(id)
   end
 
@@ -262,6 +262,12 @@ defmodule Bright.Subscriptions do
   def create_subscription_user_plan(attrs \\ %{}) do
     %SubscriptionUserPlan{}
     |> SubscriptionUserPlan.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_free_trial_subscription_user_plan(attrs \\ %{}) do
+    %SubscriptionUserPlan{}
+    |> SubscriptionUserPlan.trial_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -370,7 +376,7 @@ defmodule Bright.Subscriptions do
       }
 
   """
-  def start_free_trial(user_id, subscription_plan_id) do
+  def start_free_trial(user_id, subscription_plan_id, trial_data) do
     trial_start_datetime = NaiveDateTime.utc_now()
 
     %{
@@ -380,7 +386,8 @@ defmodule Bright.Subscriptions do
       trial_start_datetime: trial_start_datetime,
       subscription_start_datetime: trial_start_datetime
     }
-    |> create_subscription_user_plan()
+    |> Map.merge(trial_data)
+    |> create_free_trial_subscription_user_plan()
   end
 
   @doc """

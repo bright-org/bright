@@ -65,8 +65,8 @@ defmodule Bright.SubscriptionsTest do
     test "sucsecc start free trial" do
       subscription_plan1 = insert(:subscription_plans)
       user = insert(:user)
-
-      assert {:ok, result} = Subscriptions.start_free_trial(user.id, subscription_plan1.id)
+      form = %{company_name: "test company", pic_name: "test cto", phone_number: "01203333906"}
+      assert {:ok, result} = Subscriptions.start_free_trial(user.id, subscription_plan1.id, form)
 
       assert result.user_id == user.id
       assert result.subscription_plan_id == subscription_plan1.id
@@ -75,6 +75,9 @@ defmodule Bright.SubscriptionsTest do
       assert result.trial_end_datetime == nil
       assert result.subscription_start_datetime <= NaiveDateTime.utc_now()
       assert result.subscription_end_datetime == nil
+      assert result.company_name == "test company"
+      assert result.pic_name == "test cto"
+      assert result.phone_number == "01203333906"
     end
   end
 

@@ -181,9 +181,9 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
   end
 
   def handle_event("submit", %{"free_trial_form" => params}, socket) do
-    %{plan: plan, current_user: user, on_submit: on_submit} = socket.assigns
+    %{plan: plan, current_user: user, on_submit: on_submit, changeset: changeset} = socket.assigns
 
-    case Subscriptions.start_free_trial(user.id, plan.id) do
+    case Subscriptions.start_free_trial(user.id, plan.id, changeset.changes) do
       {:ok, subscription_user_plan} ->
         params = Map.merge(params, %{"user_id" => user.id, "plan_name" => plan.name_jp})
         Subscriptions.deliver_free_trial_apply_instructions(user, params)
