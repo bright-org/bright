@@ -21,6 +21,9 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:user_id]} type="text" label="User ID" />
+        <.input field={@form[:company_name]} type="text" label="Company Name" />
+        <.input field={@form[:pic_name]} type="text" label="PIC Name" />
+        <.input field={@form[:phone_number]} type="text" label="Phone Number" />
         <.input
             field={@form[:subscription_plan_id]}
             type="select"
