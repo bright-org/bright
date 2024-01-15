@@ -408,11 +408,11 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       labels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
       myself: [0, 0, 0, 0, 0, 0],
       myselfNow: 0.0,
-      futureEnabled: true,
+      futureDisplay: true,
       myselfSelected: "now",
       other: [],
       otherLabels: [],
-      otherFutureEnabled: nil,
+      otherFutureDisplay: nil,
       otherSelected: nil,
       otherNow: nil,
       comparedOther: nil
@@ -517,7 +517,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 10.0, 20.0, 0],
             otherNow: 0.0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
-            otherFutureEnabled: true,
+            otherFutureDisplay: true,
             otherSelected: "now",
             comparedOther: false
           })
@@ -538,7 +538,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 0, 10.0, 20.0],
             otherNow: nil,
             otherLabels: ["2022.10", "2023.1", "2023.4", "2023.7", "2023.10"],
-            otherFutureEnabled: false,
+            otherFutureDisplay: false,
             otherSelected: "now",
             comparedOther: false
           })
@@ -596,7 +596,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 10.0, 20.0, 0],
             otherNow: 0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
-            otherFutureEnabled: true,
+            otherFutureDisplay: true,
             otherSelected: "now",
             comparedOther: true
           })
@@ -618,7 +618,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 0, 10.0, 20.0],
             otherNow: nil,
             otherLabels: ["2022.10", "2023.1", "2023.4", "2023.7", "2023.10"],
-            otherFutureEnabled: false,
+            otherFutureDisplay: false,
             otherSelected: "now",
             comparedOther: true
           })
@@ -661,7 +661,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
             other: [0, 0, 0, 0, 0, 0],
             otherNow: 0,
             otherLabels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
-            otherFutureEnabled: true,
+            otherFutureDisplay: true,
             otherSelected: "now",
             comparedOther: true
           })

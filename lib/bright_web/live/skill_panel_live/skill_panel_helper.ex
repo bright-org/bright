@@ -110,6 +110,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
         %{assigns: %{me: true, skill_class_score: nil}} = socket
       ) do
     # 始めてスキルクラスにアクセスした際にスキルクラススコアを生成
+    # NOTE: 現在はスキルパネル取得時に全クラスのスキルクラススコアを生成している。本処理は後方互換性のために残している。
     user = socket.assigns.current_user
     skill_class = socket.assigns.skill_class
 
@@ -198,14 +199,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   def assign_page_sub_title(socket) do
     socket
     |> assign(:page_sub_title, socket.assigns.skill_panel.name)
-  end
-
-  def calc_percentage(_count, 0), do: 0
-
-  def calc_percentage(count, num_skills) do
-    (count / num_skills)
-    |> Kernel.*(100)
-    |> floor()
   end
 
   def build_path(root, skill_panel, display_user, me, anonymous)

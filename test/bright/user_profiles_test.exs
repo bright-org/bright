@@ -58,13 +58,13 @@ defmodule Bright.UserProfilesTest do
               %UserProfile{
                 title: nil,
                 detail: nil,
-                icon_file_path: nil,
                 twitter_url: nil,
                 facebook_url: nil,
                 github_url: nil
               } = user_profile} = UserProfiles.create_initial_user_profile(user.id)
 
       assert user_profile.user_id == user.id
+      assert user_profile.icon_file_path
     end
 
     test "create_user_profile/1 with invalid data returns error changeset" do

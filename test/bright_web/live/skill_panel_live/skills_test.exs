@@ -556,7 +556,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(
                show_live,
                "#skill_gem_in_skills_form .score-middle-percentage",
-               "33％"
+               "34％"
              )
 
       data = [[66]] |> Jason.encode!()
@@ -567,7 +567,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert has_element?(show_live, ".score-high-percentage", "66％")
-      assert has_element?(show_live, ".score-middle-percentage", "33％")
+      assert has_element?(show_live, ".score-middle-percentage", "34％")
 
       # 各スキルスコアの削除（lowにする操作）と、習得率表示更新
       start_edit(show_live)
@@ -871,7 +871,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, "#skill-2 .score-mark-high")
       assert has_element?(show_live, "#skill-3 .score-mark-low")
       assert has_element?(show_live, "#my-percentages .score-high-percentage", "33％")
-      assert has_element?(show_live, "#my-percentages .score-middle-percentage", "33％")
+      assert has_element?(show_live, "#my-percentages .score-middle-percentage", "34％")
     end
 
     @tag score: nil

@@ -16,10 +16,10 @@ const futurePointColor = "#FFFFFF";
 const nowColor = "#B77285";
 const nowSelectColor = "#B71225";
 
-const dataDivision = (data, futureEnabled) => {
+const dataDivision = (data, futureDisplay) => {
   if (data === undefined) return [[], []];
   data = data.slice(1);
-  if (!futureEnabled) return [data, []];
+  if (!futureDisplay) return [data, []];
   const past = data.map((x, index) => (index > 3 ? null : x));
   const future = data.map((x, index) => (index < 3 ? null : x));
   return [past, future];
@@ -43,13 +43,13 @@ const createDataset = (
 };
 
 const createData = (data) => {
-  const futureEnabled = data["futureEnabled"] === undefined ? true : data["futureEnabled"]
-  const otherFutureEnabled = data["otherFutureEnabled"] === undefined ? true : data["otherFutureEnabled"]
-  const roleFutureEnabled = data["roleFutureEnabled"] === undefined ? true : data["roleFutureEnabled"]
+  const futureDisplay = data["futureDisplay"] === undefined ? true : data["futureDisplay"]
+  const otherFutureDisplay = data["otherFutureDisplay"] === undefined ? true : data["otherFutureDisplay"]
+  const roleFutureDisplay = data["roleFutureDisplay"] === undefined ? true : data["roleFutureDisplay"]
 
-  const [myselfData, myselfFuture] = dataDivision(data["myself"], futureEnabled);
-  const [otherData, otherFuture] = dataDivision(data["other"], otherFutureEnabled);
-  const [roleData, roleFuture] = dataDivision(data["role"], roleFutureEnabled);
+  const [myselfData, myselfFuture] = dataDivision(data["myself"], futureDisplay);
+  const [otherData, otherFuture] = dataDivision(data["other"], otherFutureDisplay);
+  const [roleData, roleFuture] = dataDivision(data["role"], roleFutureDisplay);
   const datasets = [];
   datasets.push(
     createDataset(
@@ -61,7 +61,7 @@ const createData = (data) => {
     )
   );
   // TODO: α版では未来非表示
-  // if (futureEnabled) {
+  // if (futureDisplay) {
   //   datasets.push(createDataset(myselfFuture, myselfBorderColor, futurePointColor, myselfPointColor, true))
   // }
   datasets.push(
@@ -74,7 +74,7 @@ const createData = (data) => {
     )
   );
   // TODO: α版では未来非表示
-  // if (futureEnabled) {
+  // if (futureDisplay) {
   //   datasets.push(createDataset(otherFuture, otherBorderColor, futurePointColor, otherPointColor, true))
   // }
   datasets.push(
@@ -87,7 +87,7 @@ const createData = (data) => {
     )
   );
   // TODO: α版では未来非表示
-  // if (futureEnabled) {
+  // if (futureDisplay) {
   //   datasets.push(createDataset(roleFuture, roleBorderColor, futurePointColor, rolePointColor, true))
   // }
 
@@ -160,7 +160,8 @@ const drawMyselfNow = (chart, scales) => {
     prevValue: pastData[4],
     selected: (data["myselfSelected"] === "now"),
     axisColor: (data["myselfSelected"] === "now") ? nowSelectColor : nowColor,
-    borderColor: myselfBorderColor
+    borderColor: myselfBorderColor,
+    fillByGradation: true
   })
 }
 
@@ -177,7 +178,8 @@ const drawOtherNow = (chart, scales) => {
     prevValue: pastData[4],
     selected: (data["otherSelected"] === "now"),
     axisColor: (data["otherSelected"] === "now") ? nowSelectColor : nowColor,
-    borderColor: getOtherBorderColor(data)
+    borderColor: getOtherBorderColor(data),
+    fillByGradation: false
   })
 }
 
@@ -214,6 +216,14 @@ const drawNow = (chart, scales, state) => {
   context.lineTo(nowX, nowY);
   context.stroke();
 
+  // 直近の過去から現在の点までの下側グラデーション
+  // 現在の点描画前に実行しないと点がかすむためここで処理
+  if(state.fillByGradation) {
+    fillGradationPointToPoint(chart, scales, {x: pastX, y: pastY}, {x: nowX, y: nowY})
+
+    // TODO: 未来実装時に、現在から未来への下側グラデーションを行うこと。描画位置はおそらくここになるが未確定
+  }
+
   // 現在の点
   context.beginPath();
   context.arc(
@@ -227,6 +237,29 @@ const drawNow = (chart, scales, state) => {
   context.fillStyle = drawNowColor;
   context.fill();
 };
+
+// 2点の下側をグラデーションで塗る処理
+const fillGradationPointToPoint = (chart, scales, p1, p2) => {
+  const context = chart.ctx
+  const gradient = context.createLinearGradient(0, 0, 0, 300)
+  gradient.addColorStop(0, myselfFillStartColor)
+  gradient.addColorStop(1, myselfFillEndColor)
+
+  // zeroY XYグラフ上のy=0にあたる位置のy座標
+  const zeroY = scales.y.getPixelForValue(0)
+
+  // 1つ前の過去から現在を四角形で囲んでいる
+  context.lineWidth = 1
+  context.fillStyle = gradient;
+  context.beginPath()
+  context.moveTo(p1.x, zeroY)
+  context.lineTo(p1.x, p1.y)
+  context.lineTo(p2.x, p2.y)
+  context.lineTo(p2.x, zeroY)
+  context.lineTo(p1.x, zeroY)
+  context.closePath()
+  context.fill()
+}
 
 const drawSelectedLine = (chart, scales, dataname, selectedColor, index) => {
   if (index < 0) return;
@@ -317,34 +350,33 @@ const drawfastDataLine = (chart, scales, name, color) => {
   context.stroke();
 };
 
+// 習得値より下側をグラデーションで塗る処理
+// - グラデーションを塗るために各点を通る線を引いてその中をfillしている
+// - 「現在」以降はロジックが異なるためここでは対象外
 const fillMyselfData = (chart, scales) => {
   const context = chart.ctx;
   const dataset = chart.canvas.parentNode.dataset;
   const data = JSON.parse(dataset.data);
   let drawData = data["myself"];
   if (drawData === undefined) return;
-  // 期間外のデータを描画するかを判定　配列の先頭は期間外のデータ
+  // 表示期間外のデータを描画するかを判定
+  // - 配列の先頭は期間外のデータ
+  // - 期間外のデータが存在する場合は、期間外から期間内に入る部分も塗る必要がある
   const isDrawBefore = drawData[0] !== null;
+  const futureDisplay = data.futureDisplay;
 
-  //TODO: α版では未来非表示↓
-  const future_enabled = data.future_enabled;
-  //TODO: α版では未来非表示↑
-
-  // 期間外のデータがnullの場合は予め除外しておく、理由は通常のグリッド処理が可能の為
+  // 期間外のデータがない（nullの場合）は簡単化のため予め除外しておく。
+  // 期間内のデータと処理が分かれるため、こうすることで、drawDataを期間内のグリッド処理対象のみとしている。
   drawData = isDrawBefore ? drawData : drawData.slice(1);
   context.lineWidth = 1;
   context.setLineDash([]);
-  const y = scales.y;
   const x = scales.x;
+  const y = scales.y;
 
+  // getPixelForValue()でグラフ描画中アイテムの各座標位置が取れる
   const startX = x.getPixelForValue(0) - padding;
   const startY = y.getPixelForValue(0);
-
-  //TODO: α版では未来非表示↓
-  const endX = x.getPixelForValue(future_enabled ? 3 : 4);
-  //TODO: α版では未来非表示↑
-  //const endX = x.getPixelForValue(4)
-
+  const endX = x.getPixelForValue(futureDisplay ? 3 : 4);
   const endY = y.getPixelForValue(0);
 
   const gradient = context.createLinearGradient(0, 0, 0, 300);
@@ -354,21 +386,21 @@ const fillMyselfData = (chart, scales) => {
   context.fillStyle = gradient;
   context.beginPath();
   context.moveTo(startX, startY);
+
   if (isDrawBefore) {
     // 期間外のデータの時はグリッドでx座標を管理していない為x座標計算結果(startX)を代入
     let pointY = y.getPixelForValue(drawData[0]);
     context.lineTo(startX, pointY);
   }
 
-  startIndex = isDrawBefore ? 1 : 0;
+  const startIndex = isDrawBefore ? 1 : 0;
 
-  //α対応の為一時的に記述↓
-  const drawDataKLength = future_enabled
+  // 「現在」があるならば最後の点（未来）は別ロジックのため除外
+  const drawDataKLength = futureDisplay
     ? drawData.length - 1
     : drawData.length;
+
   for (let i = startIndex; i < drawDataKLength; i++) {
-    //α対応の為一時的に記述↑
-    //for (let i = startIndex; i < drawData.length; i++) {
     let pointX = x.getPixelForValue(i - startIndex);
     let pointY = y.getPixelForValue(drawData[i]);
     context.lineTo(pointX, pointY);

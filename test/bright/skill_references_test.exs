@@ -85,4 +85,16 @@ defmodule Bright.SkillReferencesTest do
       assert %Ecto.Changeset{} = SkillReferences.change_skill_reference(skill_reference)
     end
   end
+
+  describe "calc_read_percentage/2" do
+    test "returns percentage floored" do
+      assert 33 == SkillReferences.calc_read_percentage(1, 3)
+      assert 66 == SkillReferences.calc_read_percentage(2, 3)
+    end
+
+    test "returns 0 if size is 0" do
+      assert 0 == SkillReferences.calc_read_percentage(0, 0)
+      assert 0 == SkillReferences.calc_read_percentage(1, 0)
+    end
+  end
 end

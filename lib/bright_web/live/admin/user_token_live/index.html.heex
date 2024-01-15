@@ -46,11 +46,11 @@
     <th>email</th>
     <th>code</th>
   </tr>
-  <tr>
-    <%= for code <- @user_2fa_codes do %>
+  <%= for code <- @user_2fa_codes do %>
+    <tr>
       <td><%= code.sent_to %></td>
       <td><%= code.code %></td>
-    <% end %>
-  </tr>
+    </tr>
+  <% end %>
 </table>
 

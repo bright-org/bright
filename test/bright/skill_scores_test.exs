@@ -714,4 +714,28 @@ defmodule Bright.SkillScoresTest do
              })
     end
   end
+
+  describe "calc_high_skills_percentage/2" do
+    test "returns percentage floored" do
+      assert 33 == SkillScores.calc_high_skills_percentage(1, 3)
+      assert 66 == SkillScores.calc_high_skills_percentage(2, 3)
+    end
+
+    test "returns 0 if size is 0" do
+      assert 0 == SkillScores.calc_high_skills_percentage(0, 0)
+      assert 0 == SkillScores.calc_high_skills_percentage(1, 0)
+    end
+  end
+
+  describe "calc_middle_skills_percentage/2" do
+    test "returns percentage ceiled" do
+      assert 34 == SkillScores.calc_middle_skills_percentage(1, 3)
+      assert 67 == SkillScores.calc_middle_skills_percentage(2, 3)
+    end
+
+    test "returns 0 if size is 0" do
+      assert 0 == SkillScores.calc_middle_skills_percentage(0, 0)
+      assert 0 == SkillScores.calc_middle_skills_percentage(1, 0)
+    end
+  end
 end

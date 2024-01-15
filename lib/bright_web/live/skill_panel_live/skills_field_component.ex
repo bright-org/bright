@@ -9,7 +9,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   import BrightWeb.SkillPanelLive.SkillsComponents
 
   import BrightWeb.SkillPanelLive.SkillPanelHelper,
-    only: [calc_percentage: 2, assign_counter: 1, comparable_user?: 2]
+    only: [assign_counter: 1, comparable_user?: 2]
 
   alias Bright.SkillUnits
   alias Bright.SkillScores
@@ -415,8 +415,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
       end)
 
     size = Enum.count(skill_ids)
-    high_skills_percentage = calc_percentage(high_skills_count, size)
-    middle_skills_percentage = calc_percentage(middle_skills_count, size)
+    high_skills_percentage = SkillScores.calc_high_skills_percentage(high_skills_count, size)
+
+    middle_skills_percentage =
+      SkillScores.calc_middle_skills_percentage(middle_skills_count, size)
 
     socket
     |> update(

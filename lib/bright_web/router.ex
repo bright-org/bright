@@ -216,6 +216,7 @@ defmodule BrightWeb.Router do
            :notification_detail
 
       live "/searches", MypageLive.Index, :search
+      live "/free_trial", MypageLive.Index, :free_trial
       live "/more_skills", OnboardingLive.Index, :index
       live "/more_skills/wants/:want_id", OnboardingLive.SkillPanels
       live "/more_skills/wants/:want_id/skill_panels/:id", OnboardingLive.SkillPanel

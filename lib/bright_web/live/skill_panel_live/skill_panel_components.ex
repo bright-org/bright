@@ -1,11 +1,16 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use BrightWeb, :component
-  alias BrightWeb.PathHelper
+
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
   import BrightWeb.MegaMenuComponents
   import BrightWeb.GuideMessageComponents
-  import BrightWeb.SkillPanelLive.SkillPanelHelper, only: [calc_percentage: 2]
+
+  alias Bright.SkillScores
+  alias Bright.SkillEvidences
+  alias Bright.SkillReferences
+  alias Bright.SkillExams
+  alias BrightWeb.PathHelper
 
   # スコア（〇 △ー） 各スタイルと色の定義
   @score_mark %{
@@ -277,7 +282,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <% current = @select_skill_class.class == skill_class.class %>
           <%= if @select_skill_class.class == skill_class.class do %>
             <li
-              class={"bg-white text-base w-full"}
+              class={"bg-white text-base w-full cursor-pointer"}
               phx-click="skill_class_tab_click"
               phx-target={@skill_class_tab_click_target}
               phx-value-user_id={@user.id}
@@ -296,7 +301,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <% else %>
 
             <li
-              class={"w-full bg-brightGreen-50 text-brightGray-500"}
+              class={"w-full bg-brightGreen-50 text-brightGray-500 cursor-pointer"}
               phx-click="skill_class_tab_click"
               phx-target={@skill_class_tab_click_target}
               phx-value-user_id={@user.id}
@@ -478,17 +483,17 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <div class="flex flex-col mr-2 pl-2 lg:pl-6">
         <div class="min-w-[4em] flex items-center">
           <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-          <%= calc_percentage(@counter.high, @num_skills) %>％
+          <%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％
         </div>
         <div class="min-w-[4em] flex items-center">
           <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-          <%= calc_percentage(@counter.middle, @num_skills) %>％
+          <%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％
         </div>
       </div>
       <div class="text-right text-xs">
-        学習メモの登録率 <span class="evidence_percentage"><%= calc_percentage(@counter.evidence_filled, @num_skills) %>%</span><br />
-        教材の学習率 <span class="reference_percentage"><%= calc_percentage(@counter.reference_read, @num_skills) %>%</span><br />
-        試験の受験率 <span class="exam_percentage"><%= calc_percentage(@counter.exam_touch, @num_skills) %>%</span>
+        学習メモの登録率 <span class="evidence_percentage"><%= SkillEvidences.calc_filled_percentage(@counter.evidence_filled, @num_skills) %>%</span><br />
+        教材の学習率 <span class="reference_percentage"><%= SkillReferences.calc_read_percentage(@counter.reference_read, @num_skills) %>%</span><br />
+        試験の受験率 <span class="exam_percentage"><%= SkillExams.calc_touch_percentage(@counter.exam_touch, @num_skills) %>%</span>
       </div>
     </div>
     """
@@ -513,8 +518,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   end
 
   def skill_score_percentages(counter, num_skills) do
-    high = calc_percentage(counter.high, num_skills)
-    middle = calc_percentage(counter.middle, num_skills)
+    high = SkillScores.calc_high_skills_percentage(counter.high, num_skills)
+    middle = SkillScores.calc_middle_skills_percentage(counter.middle, num_skills)
     low = 100 - high - middle
 
     [high, middle, low]

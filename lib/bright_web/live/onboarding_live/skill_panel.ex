@@ -132,15 +132,11 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   end
 
   defp select_skill_panel(user_id, skill_panel_id) do
-    # 一度取得したスキルパネルを再度選択してもエラーにしないためにUnique indexの例外を握りつぶす
-    try do
-      UserSkillPanels.create_user_skill_panel(%{
-        user_id: user_id,
-        skill_panel_id: skill_panel_id
-      })
-    rescue
-      Ecto.ConstraintError -> :ok
-    end
+    # 一度取得したスキルパネルを再度選択した際に作成自体が行われないが問題ないため、処理を入れていない。
+    UserSkillPanels.create_user_skill_panel(%{
+      user_id: user_id,
+      skill_panel_id: skill_panel_id
+    })
   end
 
   defp finish_onboarding(nil, user_id, skill_panel_id) do

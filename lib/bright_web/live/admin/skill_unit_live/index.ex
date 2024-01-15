@@ -38,6 +38,7 @@ defmodule BrightWeb.Admin.SkillUnitLive.Index do
 
   @impl true
   def handle_info({BrightWeb.Admin.SkillUnitLive.FormComponent, {:saved, skill_unit}}, socket) do
+    skill_unit = Bright.Repo.preload(skill_unit, skill_classes: :skill_panel)
     {:noreply, stream_insert(socket, :skill_units, skill_unit)}
   end
 

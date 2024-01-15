@@ -9,142 +9,167 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
-      <main
-        id="free_trial_modal"
-        class={"flex h-screen items-center justify-center p-10 w-screen #{if !@open, do: "hidden"}"}
-        :if={@plan}
-      >
-        <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
-        <section
-          class="absolute bg-white h-[700px] left-1/2 -ml-[340px] -mt-[230px] px-10 py-8 shadow text-sm top-1/2 w-[680px] z-[60]"
-          phx-click-away="close"
-          phx-target={@myself}
-        >
-          <h2 class="font-bold text-3xl">
-            <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-              β期間終了までお試しいただけます
-            </span>
-          </h2>
-          <p class="mt-2">
-            ※現在、面談調整とチャットまでお試しいただけます
-          </p>
-          <p class="mt-2">
-            (お試し期間以降もご利用される場合はプランのアップグレードが必要です)
-          </p>
-          <div class="mt-8">
-            <h3 class="font-bold text-xl">
-              <%= @plan.name_jp %>プラン
-            </h3>
-            <p class="mt-2">
-              お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください
+    <div id="free_trial_modal">
+      <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
+      <div class="overflow-y-auto z-[60]">
+        <main class="flex items-center justify-center" role="main">
+          <section class="bg-white px-10 py-8 shadow text-sm w-full">
+            <h2 class="font-bold text-3xl">
+              <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
+                β期間終了までお試しいただけます
+              </span>
+            </h2>
+            <p class="mt-2" :if={@plan.plan_code == "hr_plan"}>
+              ※現在、面談調整とチャットまでお試しいただけます
             </p>
+            <p class="mt-2">
+              (お試し期間以降もご利用される場合はプランのアップグレードが必要です)
+            </p>
+            <div class="mt-8">
+              <h3 class="font-bold text-xl">
+                <%= @plan.name_jp %>プラン
+              </h3>
+              <%= if is_nil(@subscription) do %>
+                <%= if free_trial_available?(@current_user.id, @plan, @status) do %>
+                  <p class="mt-2">
+                    お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください
+                  </p>
 
-            <div class="pt-4">
-              <.form
-                for={@form}
-                id="free_trial_form"
-                phx-target={@myself}
-                phx-change="validate"
-                phx-submit="submit"
-              >
+                  <div class="pt-4">
+                    <.form
+                      for={@form}
+                      id="free_trial_form"
+                      phx-target={@myself}
+                      phx-change="validate"
+                      phx-submit="submit"
+                    >
 
-                <label class="flex items-center py-2">
-                  <span class="font-bold w-52">会社名</span>
-                  <BrightCore.input
-                    field={@form[:company_name]}
-                    input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                    size="20"
-                    type="text"
-                  />
-                </label>
+                      <label class="flex items-center py-2">
+                        <span class="font-bold w-52">会社名</span>
+                        <BrightCore.input
+                          field={@form[:company_name]}
+                          input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+                          size="20"
+                          type="text"
+                        />
+                      </label>
 
-                <label class="flex items-center py-2">
-                  <span class="font-bold w-52">連絡先（電話番号）</span>
-                  <BrightCore.input
-                    field={@form[:phone_number]}
-                    input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                    size="20"
-                    type="text"
-                  />
-                </label>
+                      <label class="flex items-center py-2">
+                        <span class="font-bold w-52">連絡先（電話番号）</span>
+                        <BrightCore.input
+                          field={@form[:phone_number]}
+                          input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+                          size="20"
+                          type="text"
+                        />
+                      </label>
 
-                <label class="flex items-center py-2">
-                  <span class="font-bold w-52">連絡先（メールアドレス）</span>
-                  <BrightCore.input
-                    field={@form[:email]}
-                    input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                    size="20"
-                    type="text"
-                  />
-                </label>
+                      <label class="flex items-center py-2">
+                        <span class="font-bold w-52">連絡先（メールアドレス）</span>
+                        <BrightCore.input
+                          field={@form[:email]}
+                          input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+                          size="20"
+                          type="text"
+                        />
+                      </label>
 
-                <label class="flex items-center py-2">
-                  <span class="font-bold w-52">担当者（本名）</span>
-                  <BrightCore.input
-                    field={@form[:pic_name]}
-                    input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                    size="20"
-                    type="text"
-                  />
-                </label>
+                      <label class="flex items-center py-2">
+                        <span class="font-bold w-52">担当者（本名）</span>
+                        <BrightCore.input
+                          field={@form[:pic_name]}
+                          input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+                          size="20"
+                          type="text"
+                        />
+                      </label>
 
-                <div class="flex justify-center gap-x-4 mt-8">
-                  <button
-                    class="text-sm font-bold py-3 rounded text-white bg-brightGray-900 border border-brightGray-900 w-72"
-                  >
-                    開始する
-                  </button>
+                      <div class="flex justify-center gap-x-4 mt-8">
+                        <button
+                          class="text-sm font-bold py-3 rounded text-white bg-brightGray-900 border border-brightGray-900 w-72"
+                        >
+                          開始する
+                        </button>
+                      </div>
+                    </.form>
+                    <div class="my-4">
+                      <p class="my-4">
+                        下記「プランのアップグレード」ボタンよりアップグレードできます（別タブで開きます）
+                      </p>
+                      <div class="flex justify-center">
+                      <.plan_upgrade_button />
+                      </div>
+                    </div>
+                  </div>
+                <% else %>
+                  <div class="my-4">
+                    <p class="mt-4">
+                      <%= if is_nil(@status.trial_end_datetime) do %>
+                        このプランはすでに選択済みです
+                      <% else %>
+                        このプランの無料トライアル期間は終了しています
+                      <% end %>
+                    </p>
+                    <p class="mb-4">
+                      下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
+                    </p>
+                    <div class="flex justify-center">
+                    <.plan_upgrade_button />
+                    </div>
+                  </div>
+                <% end %>
+              <% else %>
+                <div class="my-4">
+                  <%= if is_nil(@subscription.subscription_end_datetime) do %>
+                    <p class="mt-4">
+                      このプランはすでに選択済みです
+                    </p>
+                  <% else %>
+                  <p class="mt-4">
+                      このプランの無料トライアル期間は終了しています
+                    </p>
+                    <p class="mb-4">
+                      下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
+                    </p>
+                    <div class="flex justify-center">
+                      <.plan_upgrade_button />
+                    </div>
+                  <% end %>
                 </div>
-              </.form>
-              <div class="my-4">
-                <p class="my-4">
-                  下記「プランのアップグレード」ボタンよりアップグレードできます（別タブで開きます）
-                </p>
-                <div class="flex justify-center">
-                <.plan_upgrade_button />
-                </div>
-              </div>
+              <% end %>
             </div>
-
-            <!-- close button -->
-            <button class="absolute right-5 top-5 z-10">
-              <span
-                class="material-icons !text-3xl text-brightGray-900"
-                phx-click="close"
-                phx-target={@myself}
-              >
-                close</span>
-            </button>
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
+      </div>
     </div>
     """
   end
 
   @impl true
-  def mount(socket) do
-    {:ok, assign(socket, :plan, nil)}
-  end
-
-  @impl true
-  def update(%{open: true}, socket), do: {:ok, assign(socket, :open, true)}
-
   def update(assigns, socket) do
     # TODO: plan_codeではなく厳密にはservice_codeをもとに適切なプランを取ること
     # `Subscriptions.get_most_priority_free_trial_subscription_plan(service_code)`を用いること
     # 現契約プランと比較してチーム作成数などの制限数が落ちないプランを取ること
-    plan = Subscriptions.get_plan_by_plan_code(assigns.plan_code)
+    user = assigns.current_user
+
+    plan =
+      case Subscriptions.get_plan_by_plan_code(assigns.plan_code) do
+        nil -> Subscriptions.get_plan_by_plan_code("hr_plan")
+        plan -> plan
+      end
+
+    status = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+
     free_trial = %FreeTrial{}
     changeset = FreeTrial.changeset(free_trial, %{})
 
     socket
     |> assign(assigns)
     |> assign(:plan, plan)
+    |> assign(:subscription, exists_subscirption_plan(user.id, plan.plan_code))
     |> assign(:changeset, changeset)
     |> assign(:free_trial, free_trial)
-    |> assign(:open, false)
+    |> assign(:status, status)
     |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
@@ -162,54 +187,50 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
     |> then(&{:noreply, &1})
   end
 
-  def handle_event(
-        "submit",
-        _params,
-        %{assigns: %{changeset: %{valid?: false} = changeset}} = socket
-      ) do
-    changeset = Map.put(changeset, :action, :validte)
-    {:noreply, assign_form(socket, changeset)}
-  end
+  def handle_event("submit", %{"free_trial_form" => params}, socket) do
+    user = socket.assigns.current_user
+    plan = socket.assigns.plan
 
-  def handle_event(
-        "submit",
-        %{"free_trial_form" => params},
-        %{assigns: %{plan: plan, current_user: user}} = socket
-      ) do
-    case Subscriptions.start_free_trial(user.id, plan.id) do
-      {:ok, _subscription_user_plan} ->
+    changeset =
+      socket.assigns.free_trial
+      |> FreeTrial.changeset(params)
+      |> Map.put(:action, :validte)
+
+    case changeset.valid? do
+      true ->
+        {:ok, _subscription_user_plan} = Subscriptions.start_free_trial(user.id, plan.id)
+
         params = Map.merge(params, %{"user_id" => user.id, "plan_name" => plan.name_jp})
         Subscriptions.deliver_free_trial_apply_instructions(user, params)
 
-        send_update(BrightWeb.SearchLive.SearchResultsComponent,
-          id: "user_search_result",
-          hr_enabled: true
-        )
-
-        send_update(BrightWeb.SearchLive.SkillSearchComponent,
-          id: "skill_search_modal",
-          click_away_disable: false
-        )
-
         socket
-        |> assign(:open, false)
+        |> put_flash(:info, "無料トライアルを開始しました")
+        |> push_patch(to: socket.assigns.patch)
         |> then(&{:noreply, &1})
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      false ->
         {:noreply, assign_form(socket, changeset)}
     end
   end
 
-  def handle_event("close", _params, socket) do
-    send_update(BrightWeb.SearchLive.SkillSearchComponent,
-      id: "skill_search_modal",
-      click_away_disable: false
-    )
-
-    {:noreply, assign(socket, :open, false)}
-  end
-
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  defp exists_subscirption_plan(user_id, plan_code) do
+    (Subscriptions.get_users_trialed_plans(user_id) ++
+       Subscriptions.get_users_expired_plans(user_id))
+    |> Enum.find(fn plan ->
+      plan.subscription_plan.plan_code == plan_code && plan.subscription_status != :free_trial
+    end)
+  end
+
+  defp free_trial_available?(user_id, plan, nil) do
+    Subscriptions.free_trial_available?(user_id, plan.plan_code)
+  end
+
+  defp free_trial_available?(user_id, plan, status) do
+    Subscriptions.free_trial_available?(user_id, plan.plan_code) &&
+      status.subscription_plan.free_trial_priority < plan.free_trial_priority
   end
 end
