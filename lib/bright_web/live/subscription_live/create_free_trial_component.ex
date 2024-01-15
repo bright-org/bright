@@ -198,7 +198,8 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
 
     case changeset.valid? do
       true ->
-        {:ok, _subscription_user_plan} = Subscriptions.start_free_trial(user.id, plan.id)
+        {:ok, _subscription_user_plan} =
+          Subscriptions.start_free_trial(user.id, plan.id, changeset.changes)
 
         params = Map.merge(params, %{"user_id" => user.id, "plan_name" => plan.name_jp})
         Subscriptions.deliver_free_trial_apply_instructions(user, params)
