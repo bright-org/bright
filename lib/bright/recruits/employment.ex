@@ -35,6 +35,8 @@ defmodule Bright.Recruits.Employment do
         :part_time_job
       ]
 
+    field :used_sample, Ecto.Enum, values: [:none, :adoption, :not_adoption], default: :none
+
     field :recruiter_reason, :string
     field :candidates_reason, :string
 
@@ -52,6 +54,7 @@ defmodule Bright.Recruits.Employment do
       :message,
       :status,
       :employment_status,
+      :used_sample,
       :recruiter_reason,
       :candidates_reason,
       :recruiter_user_id,
@@ -74,6 +77,7 @@ defmodule Bright.Recruits.Employment do
       :income,
       :message,
       :status,
+      :used_sample,
       :recruiter_reason,
       :recruiter_user_id,
       :candidates_user_id
