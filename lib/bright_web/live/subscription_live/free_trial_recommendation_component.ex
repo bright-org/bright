@@ -1,4 +1,4 @@
-defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
+defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
   use BrightWeb, :live_component
 
   alias Bright.Subscriptions
@@ -43,7 +43,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
             <div class="pt-4">
               <.form
                 for={@form}
-                id="free_trial_form_from_search"
+                id="free_trial_recommendation_form"
                 phx-target={@myself}
                 phx-change="validate"
                 phx-submit="submit"

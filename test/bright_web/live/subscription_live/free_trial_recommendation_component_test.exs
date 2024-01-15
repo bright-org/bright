@@ -1,4 +1,4 @@
-defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponentTest do
+defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -15,11 +15,11 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponentTest do
     }
 
     live
-    |> form("#free_trial_form_from_search", params)
+    |> form("#free_trial_recommendation_form", params)
     |> render_change()
 
     live
-    |> form("#free_trial_form_from_search", params)
+    |> form("#free_trial_recommendation_form", params)
     |> render_submit()
   end
 
@@ -111,7 +111,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponentTest do
       |> render_click()
 
       assert live
-             |> element("#free_trial_modal_from_search")
+             |> element("#free_trial_recommendation_modal")
              |> render() =~ subscription_plan.name_jp
 
       submit_trial_form(live)
@@ -121,7 +121,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponentTest do
       |> element("a", "面談調整")
       |> render_click()
 
-      refute has_element?(live, "#free_trial_modal_from_search")
+      refute has_element?(live, "#free_trial_recommendation_modal")
     end
   end
 end

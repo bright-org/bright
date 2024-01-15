@@ -155,8 +155,8 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       click_away_disable: true
     )
 
-    send_update(BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent,
-      id: "free_trial_modal_from_search",
+    send_update(BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent,
+      id: "free_trial_recommendation_modal",
       open: true,
       service_code: "hr_basic",
       on_submit: fn _ ->
