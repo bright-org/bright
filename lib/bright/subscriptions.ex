@@ -504,7 +504,7 @@ defmodule Bright.Subscriptions do
   @doc """
   サービスコードをキーに該当サービスが利用可能な最も優先度の高いサブスクリプションプランを返す
 
-  TODO: 現契約プランと比較してチーム作成数などの制限数が落ちないプランを返すこと（service_code以外の条件考慮が必要）
+  現契約プランが渡された場合は、ダウングレードを避けるためにチーム作成可能数などの条件を追加している
 
   ## Examples
     iex> get_most_priority_free_trial_subscription_plan("team_up")
@@ -512,10 +512,24 @@ defmodule Bright.Subscriptions do
     iex> get_most_priority_free_trial_subscription_plan("hogheoge")
     nil
   """
-  def get_most_priority_free_trial_subscription_plan(service_code) do
+  def get_most_priority_free_trial_subscription_plan_by_service(service_code, current_plan \\ nil)
+
+  def get_most_priority_free_trial_subscription_plan_by_service(service_code, nil) do
     from(sp in SubscriptionPlan,
       join: sps in assoc(sp, :subscription_plan_services),
       where: sps.service_code == ^service_code,
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  def get_most_priority_free_trial_subscription_plan_by_service(service_code, current_plan) do
+    from(sp in SubscriptionPlan,
+      join: sps in assoc(sp, :subscription_plan_services),
+      where: sps.service_code == ^service_code,
+      where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
+      where: sp.team_members_limit >= ^current_plan.team_members_limit,
       order_by: [asc: sp.free_trial_priority],
       limit: 1
     )
