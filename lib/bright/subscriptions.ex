@@ -243,7 +243,7 @@ defmodule Bright.Subscriptions do
 
   def get_subscription_user_plan_with_plan!(id) do
     SubscriptionUserPlan
-    |> preload(:subscription_plan)
+    |> preload([:subscription_plan, :user])
     |> Repo.get!(id)
   end
 
