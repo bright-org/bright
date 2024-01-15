@@ -206,7 +206,7 @@ defmodule Bright.SkillPanelsTest do
 
       assert SkillPanels.list_skill_classes_by_skill_panel_id(skill_panel_1.id)
              |> Bright.Repo.preload(:skill_panel)
-             |> Enum.sort_by(& &1.id) == [skill_class_1_1, skill_class_1_2]
+             |> Enum.sort_by(& &1.id) == Enum.sort_by([skill_class_1_1, skill_class_1_2], & &1.id)
 
       assert SkillPanels.list_skill_classes_by_skill_panel_id(skill_panel_2.id)
              |> Bright.Repo.preload(:skill_panel) == [skill_class_2_1]
