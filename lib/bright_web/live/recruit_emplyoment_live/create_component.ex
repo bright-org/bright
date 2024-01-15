@@ -30,40 +30,43 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
               />
               </div>
               <.form
-                for={@employment_form}
+                for={@form}
                 id="employment_form"
                 phx-target={@myself}
                 phx-submit="create_employment"
                 phx-change="validate"
               >
               <h3 class="font-bold">メッセージ</h3>
-              <div class="flex gap-x-4 mt-4">
-                <.button
-                  type="button"
-                  phx-target={@myself}
-                  phx-click="insert_sample" phx-value-sample="none"
-                >
-                  何も入れない
-                </.button>
-                <.button
-                  type="button"
-                  phx-target={@myself}
-                  phx-click="insert_sample" phx-value-sample="adopted"
-                >
-                  採用サンプルを入れる
-                </.button>
-                <.button
-                  type="button"
-                  phx-target={@myself}
-                  phx-click="insert_sample" phx-value-sample="not_adopted"
-                >
-                  不採用サンプルを入れる
-                </.button>
+              <div class="flex mt-6 gap-x-4">
+                <BrightCore.input
+                    id="employment_used_sample_none"
+                    type="radio"
+                    name={@form[:used_sample].name}
+                    value="none"
+                    checked={@form[:used_sample].value == :none}
+                    label="何も入れない"
+                  />
+                <BrightCore.input
+                  id="employment_used_sample_adoption"
+                  type="radio"
+                  name={@form[:used_sample].name}
+                  value="adoption"
+                  checked={@form[:used_sample].value == :adoption}
+                  label="採用サンプルを入れる"
+                />
+                <BrightCore.input
+                  id="employment_used_sample_not_adoption"
+                  type="radio"
+                  name={@form[:used_sample].name}
+                  value="not_adoption"
+                  checked={@form[:used_sample].value == :not_adoption}
+                  label="不採用サンプルを入れる"
+                />
               </div>
               <div class="mt-6 overflow-y-auto">
                   <BrightCore.input
                       error_class="ml-[100px] mt-2"
-                      field={@employment_form[:message]}
+                      field={@form[:message]}
                       type="textarea"
                       required
                       rows="6"
@@ -75,7 +78,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                   <span class="font-bold -pt-2 mr-4">年収もしくは契約額</span>
                   <BrightCore.input
                       error_class="ml-[100px] mt-2"
-                      field={@employment_form[:income]}
+                      field={@form[:income]}
                       type="number"
                       size="20"
                       input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
@@ -86,7 +89,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                   <span class="font-bold -pt-2 mr-4">契約形態</span>
                   <BrightCore.input
                       error_class="ml-[100px] mt-2"
-                      field={@employment_form[:employment_status]}
+                      field={@form[:employment_status]}
                       options={@options}
                       type="select"
                       prompt="契約形態を選択してください"
@@ -185,21 +188,29 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"employment" => employment_params}, socket) do
+  def handle_event(
+        "validate",
+        %{
+          "employment" => %{"used_sample" => sample} = employment_params,
+          "_target" => ["employment", "used_sample"]
+        },
+        socket
+      ) do
+    candidates_user = socket.assigns.coordination.candidates_user.name
+    params = Map.merge(employment_params, sample_message(sample, candidates_user))
+
     changeset =
       socket.assigns.employment
-      |> Employment.changeset(employment_params)
-      |> Map.put(:action, :validate)
+      |> Employment.changeset(params)
 
     {:noreply, assign_employment_form(socket, changeset)}
   end
 
-  def handle_event("insert_sample", %{"sample" => sample}, socket) do
-    candidates_user = socket.assigns.coordination.candidates_user.name
-
+  def handle_event("validate", %{"employment" => employment_params} = params, socket) do
     changeset =
       socket.assigns.employment
-      |> Employment.changeset(sample_message(sample, candidates_user))
+      |> Employment.changeset(employment_params)
+      |> Map.put(:action, :validate)
 
     {:noreply, assign_employment_form(socket, changeset)}
   end
@@ -266,13 +277,13 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
   end
 
   defp assign_employment_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :employment_form, to_form(changeset))
+    assign(socket, :form, to_form(changeset))
   end
 
   defp sample_message("none", _), do: %{"message" => ""}
-  defp sample_message("adopted", _name), do: %{"message" => "採用"}
+  defp sample_message("adoption", _name), do: %{"message" => "採用"}
 
-  defp sample_message("not_adopted", name) do
+  defp sample_message("not_adoption", name) do
     message = """
     この度は、多数の企業の中から弊社にご応募いただき、誠にありがとうございました。
     応募書類をもとに慎重に選考しましたところ、誠に残念ではございますが、今回はご期待に添いかねる結果となりました。
