@@ -13,6 +13,7 @@
   row_click={fn {_id, subscription_user_plan} -> JS.navigate(~p"/admin/subscription_user_plans/#{subscription_user_plan}") end}
 >
   <:col :let={{_id, subscription_user_plan}} label="User"><%= subscription_user_plan.user_id %></:col>
+  <:col :let={{_id, subscription_user_plan}} label="User"><%= subscription_user_plan.user.email %></:col>
   <:col :let={{_id, subscription_user_plan}} label="Plan"><%= subscription_user_plan.subscription_plan.name_jp %></:col>
   <:col :let={{_id, subscription_user_plan}} label="Subscription status"><%= subscription_user_plan.subscription_status %></:col>
   <:col :let={{_id, subscription_user_plan}} label="Subscription start datetime"><%= subscription_user_plan.subscription_start_datetime %></:col>
