@@ -206,7 +206,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
     {:noreply, assign_employment_form(socket, changeset)}
   end
 
-  def handle_event("validate", %{"employment" => employment_params} = params, socket) do
+  def handle_event("validate", %{"employment" => employment_params}, socket) do
     changeset =
       socket.assigns.employment
       |> Employment.changeset(employment_params)
@@ -281,12 +281,25 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
   end
 
   defp sample_message("none", _), do: %{"message" => ""}
-  defp sample_message("adoption", _name), do: %{"message" => "採用"}
+
+  defp sample_message("adoption", name) do
+    message = """
+    この度は、多数の企業の中から弊社にご応募いただき、誠にありがとうございました。
+    また、先日はお忙しい中、お時間を取っていただけたこと、重ねてお礼申し上げます。
+
+    さて、慎重かつ厳正なる選考の結果、このたび#{name}様を採用することに決定いたしましたので、ご通知申し上げます。
+    つきましては、採用に伴う手続きに付いてメールを送信させていただきますので、対応のほど宜しくお願い致します。
+
+    今後とも引き続き、宜しくお願い申し上げます。
+    """
+
+    %{"message" => message}
+  end
 
   defp sample_message("not_adoption", name) do
     message = """
     この度は、多数の企業の中から弊社にご応募いただき、誠にありがとうございました。
-    応募書類をもとに慎重に選考しましたところ、誠に残念ではございますが、今回はご期待に添いかねる結果となりました。
+    スキルパネルと面談をもとに慎重に選考しましたところ、誠に残念ではございますが、今回はご期待に添いかねる結果となりました。
     大変申し訳ございませんが、ご了承くださいますようお願い申し上げます。
 
     ご応募いただいたことにお礼申し上げると共に、略式ながらメールにて通知申し上げます。
