@@ -1,4 +1,4 @@
-defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
+defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
   use BrightWeb, :live_component
 
   alias Bright.Subscriptions
@@ -11,7 +11,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
     ~H"""
     <div>
       <main
-        id="free_trial_modal"
+        id={@id}
         class={"flex h-screen items-center justify-center p-10 w-screen #{if !@open, do: "hidden"}"}
         :if={@plan}
       >
@@ -43,7 +43,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
             <div class="pt-4">
               <.form
                 for={@form}
-                id="free_trial_form_from_search"
+                id="free_trial_recommendation_form"
                 phx-target={@myself}
                 phx-change="validate"
                 phx-submit="submit"
@@ -125,23 +125,61 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, :plan, nil)}
+    {:ok,
+     socket
+     |> assign(:plan, nil)
+     |> assign(on_submit: nil, on_close: nil)}
   end
 
   @impl true
-  def update(%{open: true}, socket), do: {:ok, assign(socket, :open, true)}
+  def update(%{open: true, service_code: require_service_code} = assigns, socket) do
+    # モーダルを開く
+    # どの無料トライアルプランによりservice_codeを満たすかを決定する
+    # TODO: plan取得とfree_trial可能かどうかは別途判定が必要
+    user = socket.assigns.current_user
+    plan = get_plan_by_service(user, require_service_code)
+
+    {:ok,
+     socket
+     |> assign(:plan, plan)
+     |> assign(Map.take(assigns, ~w(on_submit on_close)a))
+     |> assign(:open, true)}
+  end
+
+  def update(%{open: true, create_teams_limit: require_create_teams_limit} = assigns, socket) do
+    # モーダルを開く
+    # どの無料トライアルプランにより指定上限数を満たすかを決定する
+    # TODO: plan取得とfree_trial可能かどうかは別途判定が必要
+    user = socket.assigns.current_user
+    plan = get_plan_by_create_teams_limit(user, require_create_teams_limit)
+
+    {:ok,
+     socket
+     |> assign(:plan, plan)
+     |> assign(Map.take(assigns, ~w(on_submit on_close)a))
+     |> assign(:open, true)}
+  end
+
+  def update(%{open: true, team_members_limit: require_team_members_limit} = assigns, socket) do
+    # モーダルを開く
+    # どの無料トライアルプランにより指定上限数を満たすかを決定する
+    # TODO: plan取得とfree_trial可能かどうかは別途判定が必要
+    user = socket.assigns.current_user
+    plan = get_plan_by_team_members_limit(user, require_team_members_limit)
+
+    {:ok,
+     socket
+     |> assign(:plan, plan)
+     |> assign(Map.take(assigns, ~w(on_submit on_close)a))
+     |> assign(:open, true)}
+  end
 
   def update(assigns, socket) do
-    # TODO: plan_codeではなく厳密にはservice_codeをもとに適切なプランを取ること
-    # `Subscriptions.get_most_priority_free_trial_subscription_plan(service_code)`を用いること
-    # 現契約プランと比較してチーム作成数などの制限数が落ちないプランを取ること
-    plan = Subscriptions.get_plan_by_plan_code(assigns.plan_code)
     free_trial = %FreeTrial{}
     changeset = FreeTrial.changeset(free_trial, %{})
 
     socket
     |> assign(assigns)
-    |> assign(:plan, plan)
     |> assign(:changeset, changeset)
     |> assign(:free_trial, free_trial)
     |> assign(:open, false)
@@ -150,7 +188,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"free_trial_form_from_search" => params}, socket) do
+  def handle_event("validate", %{"free_trial_form" => params}, socket) do
     changeset =
       socket.assigns.free_trial
       |> FreeTrial.changeset(params)
@@ -171,28 +209,18 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
     {:noreply, assign_form(socket, changeset)}
   end
 
-  def handle_event(
-        "submit",
-        %{"free_trial_form_from_search" => params},
-        %{assigns: %{plan: plan, current_user: user}} = socket
-      ) do
-    case Subscriptions.start_free_trial(user.id, plan.id) do
+  def handle_event("submit", %{"free_trial_form" => params}, socket) do
+    %{plan: plan, current_user: user, on_submit: on_submit, changeset: changeset} = socket.assigns
+
+    case Subscriptions.start_free_trial(user.id, plan.id, changeset.changes) do
       {:ok, _subscription_user_plan} ->
         params = Map.merge(params, %{"user_id" => user.id, "plan_name" => plan.name_jp})
         Subscriptions.deliver_free_trial_apply_instructions(user, params)
-
-        send_update(BrightWeb.SearchLive.SearchResultsComponent,
-          id: "user_search_result",
-          hr_enabled: true
-        )
-
-        send_update(BrightWeb.SearchLive.SkillSearchComponent,
-          id: "skill_search_modal",
-          click_away_disable: false
-        )
+        on_submit && on_submit.(plan)
 
         socket
         |> assign(:open, false)
+        |> assign(:plan, nil)
         |> then(&{:noreply, &1})
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -201,15 +229,47 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent do
   end
 
   def handle_event("close", _params, socket) do
-    send_update(BrightWeb.SearchLive.SkillSearchComponent,
-      id: "skill_search_modal",
-      click_away_disable: false
-    )
+    on_close = socket.assigns.on_close
+    on_close && on_close.()
 
     {:noreply, assign(socket, :open, false)}
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  defp get_plan_by_service(user, require_service_code) do
+    current_plan = get_current_plan(user)
+
+    Subscriptions.get_most_priority_free_trial_subscription_plan_by_service(
+      require_service_code,
+      current_plan
+    )
+  end
+
+  defp get_plan_by_create_teams_limit(user, require_create_teams_limit) do
+    current_plan = get_current_plan(user)
+
+    Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
+      require_create_teams_limit,
+      current_plan
+    )
+  end
+
+  defp get_plan_by_team_members_limit(user, require_team_members_limit) do
+    current_plan = get_current_plan(user)
+
+    Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(
+      require_team_members_limit,
+      current_plan
+    )
+  end
+
+  defp get_current_plan(user) do
+    current_user_plan =
+      Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+
+    current_user_plan && current_user_plan.subscription_plan
   end
 end

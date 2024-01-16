@@ -1,12 +1,12 @@
-<div class="relative w-[1280px] max-h-full">
-  <div id="create-team-modal" class="relative rounded-sm px-16 py-8">
+<div id={@id} class="relative w-[1280px] max-h-full">
+  <div class="relative rounded-sm px-16 py-8">
     <!-- Modal header -->
     <h3><%= @modal_title %></h3>
     <!-- Modal body -->
     <div class="flex pt-8">
       <!-- modal left -->
       <.live_component
-        id="add_user_form"
+        id="team_add_user"
         module={TeamAddUserComponent}
         users={@users}
         current_user={@current_user}

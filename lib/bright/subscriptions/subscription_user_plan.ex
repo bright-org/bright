@@ -17,6 +17,11 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
 
     field :trial_end_datetime, :naive_datetime
     field :trial_start_datetime, :naive_datetime
+    # for free trial
+    field :emial, :string, virtual: true
+    field :company_name, :string
+    field :phone_number, :string
+    field :pic_name, :string
 
     belongs_to :user, Bright.Accounts.User
     belongs_to :subscription_plan, Bright.Subscriptions.SubscriptionPlan
@@ -34,13 +39,40 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
       :subscription_start_datetime,
       :subscription_end_datetime,
       :trial_start_datetime,
-      :trial_end_datetime
+      :trial_end_datetime,
+      :company_name,
+      :phone_number,
+      :pic_name
     ])
     |> validate_required([
       :user_id,
       :subscription_plan_id,
       :subscription_status,
       :subscription_start_datetime
+    ])
+  end
+
+  def trial_changeset(subscription_user_plan, attrs) do
+    subscription_user_plan
+    |> cast(attrs, [
+      :user_id,
+      :subscription_plan_id,
+      :subscription_status,
+      :subscription_start_datetime,
+      :trial_start_datetime,
+      :company_name,
+      :phone_number,
+      :pic_name
+    ])
+    |> validate_required([
+      :user_id,
+      :subscription_plan_id,
+      :subscription_status,
+      :subscription_start_datetime,
+      :trial_start_datetime,
+      :company_name,
+      :phone_number,
+      :pic_name
     ])
   end
 end

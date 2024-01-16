@@ -155,9 +155,27 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       click_away_disable: true
     )
 
-    send_update(BrightWeb.SubscriptionLive.CreateFreeTrialFromSearchComponent,
-      id: "free_trial_modal_from_search",
-      open: true
+    send_update(BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent,
+      id: "free_trial_recommendation_modal",
+      open: true,
+      service_code: "hr_basic",
+      on_submit: fn _ ->
+        send_update(BrightWeb.SearchLive.SearchResultsComponent,
+          id: "user_search_result",
+          hr_enabled: true
+        )
+
+        send_update(BrightWeb.SearchLive.SkillSearchComponent,
+          id: "skill_search_modal",
+          click_away_disable: false
+        )
+      end,
+      on_close: fn ->
+        send_update(BrightWeb.SearchLive.SkillSearchComponent,
+          id: "skill_search_modal",
+          click_away_disable: false
+        )
+      end
     )
 
     {:noreply, socket}
