@@ -2,13 +2,14 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   use BrightWeb, :live_component
 
   alias Bright.Accounts
+  alias Bright.Subscriptions
 
   import BrightWeb.BrightCoreComponents, only: [action_button: 1]
 
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed">
+    <div id={@id} class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed">
     <!-- TODO α対象外
       <p>
         <span class="font-bold">気になる</span>からメンバーとして追加
@@ -34,6 +35,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
             placeholder="ハンドル名もしくはメールアドレスを入力してください"
             class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
             phx-change="change_add_user"
+            phx-target={@myself}
             value={@search_word}
           />
           <.action_button type="submit" class="ml-2.5">
@@ -57,6 +59,12 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   end
 
   @impl true
+  def update(%{trial_subscription_plan: _subscription_plan}, socket) do
+    # 無料トライアルを開始して戻った際に実行されるupdate
+    # planは上から更新されるためアサイン不要
+    {:ok, assign(socket, :search_word_error, nil)}
+  end
+
   def update(assigns, socket) do
     {:ok, assign(socket, assigns)}
   end
@@ -97,7 +105,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
         {:error, assign(socket, :search_word_error, "該当のユーザーが見つかりませんでした")}
 
       user.id == socket.assigns.current_user.id ->
-        assign(socket, search_word_error: "チーム作成者は自動的に管理者として追加されます")
+        {:error, assign(socket, search_word_error: "チーム作成者は自動的に管理者として追加されます")}
 
       true ->
         {:ok, socket, user}
@@ -107,24 +115,21 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   # 検索結果を追加する時のバリデーション
   defp validate_add_user({:error, socket}), do: {:error, socket}
 
-  defp validate_add_user({:ok, %{assigns: %{users: selected_users, plan: plan}} = socket, user}) do
+  defp validate_add_user({:ok, socket, user}) do
+    %{users: selected_users, plan: plan, id: id} = socket.assigns
+
+    # members_count: チームメンバー数, 管理者がselected_usersには含まれないため+1をしている
+    members_count = Enum.count(selected_users) + 1
+    limit = Subscriptions.get_team_members_limit(plan)
+
     cond do
       id_duplidated_user?(selected_users, user) ->
         {:error, assign(socket, :search_word_error, "対象のユーザーは既に追加されています")}
 
-      member_limit?(selected_users, plan) ->
-        message =
-          if !is_nil(plan) && plan.plan_code in ["hr_plan", "team_up_plan"],
-            do: "現在のプランでは、メンバーは#{plan.team_members_limit}名まで（管理者含む）が上限です",
-            else:
-              "現在のプランでは、メンバーは5名まで（管理者含む）が上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上をご購入いただくと、メンバー数を増やせます"
-
-        {:error,
-         assign(
-           socket,
-           :search_word_error,
-           message
-         )}
+      member_limit?(members_count, limit) ->
+        message = member_limit_message(limit)
+        open_free_trial_modal(members_count, id)
+        {:error, assign(socket, :search_word_error, message)}
 
       true ->
         {:ok, socket, user}
@@ -148,11 +153,25 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
     users |> Enum.find(fn u -> user.id == u.id end) |> is_nil() |> then(&(!&1))
   end
 
-  defp member_limit?(users, nil) do
-    Enum.count(users) >= 4
+  defp member_limit?(members_count, limit) do
+    members_count >= limit
   end
 
-  defp member_limit?(users, %{team_members_limit: limit}) do
-    Enum.count(users) >= limit - 1
+  defp member_limit_message(limit) do
+    "現在のプランでは、メンバーは#{limit}名まで（管理者含む）が上限です<br /><br />「アップグレード」ボタンから上位プランをご購入いただくと<br />メンバー数を増やせます"
+  end
+
+  defp open_free_trial_modal(require_limit, id) do
+    send_update(BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent,
+      id: "free_trial_recommendation_modal",
+      open: true,
+      team_members_limit: require_limit,
+      on_submit: fn subscription_plan ->
+        # 無料トライアル開始後はエラーメッセージを削除して表示
+        send_update(__MODULE__, id: id, trial_subscription_plan: subscription_plan)
+        # rootのLiveViewにplan変更通知
+        send(self(), {:plan_changed, subscription_plan})
+      end
+    )
   end
 end

@@ -124,4 +124,170 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       refute has_element?(live, "#free_trial_recommendation_modal")
     end
   end
+
+  # 「チームを作る」からの表示確認
+  describe "shows on teams page" do
+    alias Bright.Teams
+
+    # NOTE: swooshプロセスをglobalにしないと下記エラーが発生する
+    #
+    # refs:
+    # - https://hexdocs.pm/swoosh/Swoosh.TestAssertions.html#set_swoosh_global/1
+    # - https://github.com/swoosh/swoosh/pull/565/files
+    #
+    # ** (FunctionClauseError) no function clause matching in BrightWeb.MyTeamLive.handle_info/2
+    # (bright 0.1.0) lib/bright_web/live/team_live/my_team_live.ex:134: BrightWeb.MyTeamLive.handle_info({:email, %Swoosh.Email{subject: "【Bright】無料トライアル の申し込みがありました", ...
+    import Swoosh.TestAssertions
+    setup :set_swoosh_global
+
+    setup [:register_and_log_in_user]
+
+    # データ準備: プラン
+    setup do
+      subscription_plan =
+        insert(:subscription_plans, create_teams_limit: 2, team_members_limit: 7)
+
+      %{subscription_plan: subscription_plan}
+    end
+
+    def submit_team_form(live, name) do
+      live
+      |> form("#team_form", team: %{name: name})
+      |> render_submit()
+    end
+
+    def submit_add_user(live, name) do
+      insert(:user, name: name) |> insert_user_relations()
+
+      live
+      |> element("#search_word")
+      |> render_change(%{search_word: name})
+
+      live
+      |> form("#add_user_form", %{})
+      |> render_submit()
+    end
+
+    test "open modal when create_teams_limit is over", %{
+      conn: conn,
+      subscription_plan: subscription_plan
+    } do
+      # 最初のチーム作成
+      # プランなしでは1つは作成できるため、境界テストも含めて画面からチーム生成
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+      submit_team_form(live, "チーム1")
+      assert team = Bright.Repo.get_by(Teams.Team, name: "チーム1")
+      assert_redirect(live, "/teams/#{team.id}")
+
+      # 2つ目のチーム作成（できない）
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+      submit_team_form(live, "チーム2")
+      refute Bright.Repo.get_by(Teams.Team, name: "チーム2")
+
+      # 無料トライアルモーダルが表示されること
+      assert has_element?(live, "#free_trial_recommendation_modal")
+
+      assert live
+             |> element("#free_trial_recommendation_modal")
+             |> render() =~ subscription_plan.name_jp
+
+      # 無料トライアルの申し込み
+      submit_trial_form(live)
+
+      # 申し込み後は作成できること
+      submit_team_form(live, "チーム2")
+      assert team = Bright.Repo.get_by(Teams.Team, name: "チーム2")
+      assert_redirect(live, "/teams/#{team.id}")
+    end
+
+    test "open modal when team_members_limit is over on creation", %{
+      conn: conn,
+      subscription_plan: subscription_plan
+    } do
+      # 最初のチーム作成
+      # プランなしでは5人までメンバーにできる。
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+      # チーム新規作成 メンバー超過
+      submit_add_user(live, "user_2")
+      submit_add_user(live, "user_3")
+      submit_add_user(live, "user_4")
+      submit_add_user(live, "user_5")
+      submit_add_user(live, "user_6")
+
+      # 無料トライアルモーダルが表示されること
+      assert has_element?(live, "#free_trial_recommendation_modal")
+
+      assert live
+             |> element("#free_trial_recommendation_modal")
+             |> render() =~ subscription_plan.name_jp
+
+      # 無料トライアルの申し込み
+      submit_trial_form(live)
+
+      # 申し込み後は追加できること / 無料トライアルモーダルが表示されないこと
+      submit_add_user(live, "user_6_2")
+
+      refute has_element?(live, "#free_trial_recommendation_modal")
+    end
+
+    test "open modal when team_members_limit is over on update", %{
+      conn: conn,
+      subscription_plan: subscription_plan
+    } do
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+      # チーム新規作成
+      submit_add_user(live, "user_2")
+      submit_add_user(live, "user_3")
+      submit_add_user(live, "user_4")
+      submit_add_user(live, "user_5")
+      submit_team_form(live, "チーム1")
+      team = Bright.Repo.get_by(Teams.Team, name: "チーム1")
+
+      # チーム編集画面で6人目を追加
+      {:ok, live, _html} = live(conn, ~p"/teams/#{team}/edit")
+      submit_add_user(live, "user_6")
+
+      # 無料トライアルモーダルが表示されること
+      assert has_element?(live, "#free_trial_recommendation_modal")
+
+      assert live
+             |> element("#free_trial_recommendation_modal")
+             |> render() =~ subscription_plan.name_jp
+
+      # 無料トライアルの申し込み
+      submit_trial_form(live)
+
+      # 申し込み後は追加できること / 無料トライアルモーダルが表示されないこと
+      submit_add_user(live, "user_6_2")
+      submit_add_user(live, "user_7")
+      refute render(live) =~ "上限です"
+      refute has_element?(live, "#free_trial_recommendation_modal")
+
+      # 再度超えた場合は表示されること
+      submit_add_user(live, "user_8")
+      assert render(live) =~ "上限です"
+    end
+
+    test "NOT open modal if there is not satisfied plan", %{
+      conn: conn,
+      subscription_plan: subscription_plan
+    } do
+      Bright.Repo.delete(subscription_plan)
+
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+      submit_add_user(live, "user_2")
+      submit_add_user(live, "user_3")
+      submit_add_user(live, "user_4")
+      submit_add_user(live, "user_5")
+      submit_add_user(live, "user_6")
+
+      # 無料トライアルモーダルが表示されないこと
+      assert render(live) =~ "上限です"
+      refute has_element?(live, "#free_trial_recommendation_modal")
+    end
+  end
 end

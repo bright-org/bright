@@ -8,6 +8,21 @@ defmodule Bright.Subscriptions do
   alias Bright.Accounts.UserNotifier
   alias Bright.Subscriptions.SubscriptionPlan
 
+  @create_teams_limit_without_plan 1
+  @team_members_limit_without_plan 5
+
+  def get_create_teams_limit(nil), do: @create_teams_limit_without_plan
+
+  def get_create_teams_limit(subscription_plan) do
+    subscription_plan.create_teams_limit
+  end
+
+  def get_team_members_limit(nil), do: @team_members_limit_without_plan
+
+  def get_team_members_limit(subscription_plan) do
+    subscription_plan.team_members_limit
+  end
+
   @doc """
   Returns the list of subscription_plans.
 
@@ -509,7 +524,7 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  サービスコードをキーに該当サービスが利用可能な最も優先度の高いサブスクリプションプランを返す
+  サービスコードをキーに該当サービスが最も優先度の高いサブスクリプションプランを返す
 
   現契約プランが渡された場合は、ダウングレードを避けるためにチーム作成可能数などの条件を追加している
 
@@ -525,6 +540,7 @@ defmodule Bright.Subscriptions do
     from(sp in SubscriptionPlan,
       join: sps in assoc(sp, :subscription_plan_services),
       where: sps.service_code == ^service_code,
+      where: not is_nil(sp.free_trial_priority),
       order_by: [asc: sp.free_trial_priority],
       limit: 1
     )
@@ -537,6 +553,83 @@ defmodule Bright.Subscriptions do
       where: sps.service_code == ^service_code,
       where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
       where: sp.team_members_limit >= ^current_plan.team_members_limit,
+      where: not is_nil(sp.free_trial_priority),
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  チーム作成上限数を満たす最も優先度の高いサブスクリプションプランを返す
+
+  現プランがある場合は
+  - create_teams_limitが大、かつ
+  - 上位のauthorization_priorityをもつ（ダウングレード防止）
+  が対象
+  """
+  def get_most_priority_free_trial_subscription_plan_by_teams_limit(
+        create_teams_limit,
+        current_plan \\ nil
+      )
+
+  def get_most_priority_free_trial_subscription_plan_by_teams_limit(create_teams_limit, nil) do
+    from(sp in SubscriptionPlan,
+      where: sp.create_teams_limit >= ^create_teams_limit,
+      where: not is_nil(sp.free_trial_priority),
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  def get_most_priority_free_trial_subscription_plan_by_teams_limit(
+        _create_teams_limit,
+        current_plan
+      ) do
+    from(sp in SubscriptionPlan,
+      where: sp.create_teams_limit > ^current_plan.create_teams_limit,
+      where: sp.team_members_limit >= ^current_plan.team_members_limit,
+      where: sp.authorization_priority >= ^current_plan.authorization_priority,
+      where: not is_nil(sp.free_trial_priority),
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  メンバー上限数を満たす最も優先度の高いサブスクリプションプランを返す
+
+  現プランがある場合は
+  - team_members_limitが大、かつ
+  - 上位のauthorization_priorityをもつ（ダウングレード防止）
+  が対象
+  """
+  def get_most_priority_free_trial_subscription_plan_by_members_limit(
+        team_members_limit,
+        current_plan \\ nil
+      )
+
+  def get_most_priority_free_trial_subscription_plan_by_members_limit(team_members_limit, nil) do
+    from(sp in SubscriptionPlan,
+      where: sp.team_members_limit >= ^team_members_limit,
+      where: not is_nil(sp.free_trial_priority),
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  def get_most_priority_free_trial_subscription_plan_by_members_limit(
+        _team_members_limit,
+        current_plan
+      ) do
+    from(sp in SubscriptionPlan,
+      where: sp.team_members_limit > ^current_plan.team_members_limit,
+      where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
+      where: sp.authorization_priority >= ^current_plan.authorization_priority,
+      where: not is_nil(sp.free_trial_priority),
       order_by: [asc: sp.free_trial_priority],
       limit: 1
     )
