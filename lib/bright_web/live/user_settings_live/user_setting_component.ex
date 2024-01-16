@@ -78,6 +78,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     |> assign(:selected_tab, tab_name)
     |> assign(:module, Map.get(@tab_module, tab_name))
     |> assign(:action, tab_name)
+    |> assign(:modal_flash, %{})
     |> then(&{:noreply, &1})
   end
 end
