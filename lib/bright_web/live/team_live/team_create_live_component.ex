@@ -9,6 +9,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   alias Bright.Teams
   alias Bright.Teams.Team
+  alias Bright.Subscriptions
   alias BrightWeb.TeamLive.TeamAddUserComponent
   alias BrightWeb.BrightCoreComponents, as: BrightCore
 
@@ -49,6 +50,14 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   @impl true
+  def update(%{changeset: changeset, trial_subscription_plan: plan}, socket) do
+    # 無料トライアルを開始して戻った際に実行されるupdate
+    {:ok,
+     socket
+     |> assign_team_form(changeset)
+     |> assign(:plan, plan)}
+  end
+
   # add user eventでmy_team_liveからupdateが入ったときに実行されformの変更を保持する
   def update(assigns, %{assigns: %{team_form: %Phoenix.HTML.Form{}}} = socket) do
     {:ok, assign(socket, users: assigns.users)}
@@ -106,7 +115,8 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   def handle_event("create_team", %{"team" => team_params}, socket) do
     admin_count = Teams.count_admin_team(socket.assigns.current_user.id)
-    save_team(socket, socket.assigns.action, team_params, admin_count, socket.assigns.plan)
+    limit = Subscriptions.get_create_teams_limit(socket.assigns.plan)
+    save_team(socket, socket.assigns.action, team_params, admin_count, limit)
   end
 
   def handle_event("select_team_type", %{"team_type" => team_type}, socket) do
@@ -117,38 +127,15 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     }
   end
 
-  def save_team(socket, :new, team_params, count, %{create_teams_limit: limit})
-      when count >= limit do
-    msg =
-      if limit == 1,
-        do:
-          "現在のプランでは、チームは1つまでが上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上を<br />ご購入いただくと、作成できるチーム数を増やせます",
-        else: "現在のプランでは、チームは#{limit}つまでが上限です"
-
-    changeset =
-      socket.assigns.team
-      |> Team.registration_changeset(team_params)
-      |> Ecto.Changeset.add_error(:name, msg)
-      |> Map.put(:action, :validate)
-
+  def save_team(socket, :new, team_params, count, limit) when count >= limit do
+    # 上限になっており追加できないケース
+    %{id: id, team: team} = socket.assigns
+    changeset = changeset_with_teams_limit_msg(team, team_params, limit)
+    open_free_trial_modal(count + 1, team, team_params, id)
     {:noreply, assign_team_form(socket, changeset)}
   end
 
-  def save_team(socket, :new, team_params, count, nil)
-      when count >= 1 do
-    msg =
-      "現在のプランでは、チームは1つまでが上限です<br /><br />「アップグレード」ボタンでチームアッププラン以上を<br />ご購入いただくと、作成できるチーム数を増やせます"
-
-    changeset =
-      socket.assigns.team
-      |> Team.registration_changeset(team_params)
-      |> Ecto.Changeset.add_error(:name, msg)
-      |> Map.put(:action, :validate)
-
-    {:noreply, assign_team_form(socket, changeset)}
-  end
-
-  def save_team(socket, :new, team_params, _count, _plan) do
+  def save_team(socket, :new, team_params, _count, _limit) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
     enable_functions = Teams.build_enable_functions(socket.assigns.selected_team_type)
@@ -247,6 +234,34 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   defp assign_team_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :team_form, to_form(changeset))
+  end
+
+  defp changeset_with_teams_limit_msg(team, params, limit) do
+    msg =
+      "現在のプランでは、チームは#{limit}つまでが上限です<br /><br />「アップグレード」ボタンから上位プランをご購入いただくと<br />作成できるチーム数を増やせます"
+
+    team
+    |> Team.registration_changeset(params)
+    |> Ecto.Changeset.add_error(:name, msg)
+    |> Map.put(:action, :validate)
+  end
+
+  defp open_free_trial_modal(require_limit, team, team_params, id) do
+    send_update(BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent,
+      id: "free_trial_recommendation_modal",
+      open: true,
+      create_teams_limit: require_limit,
+      on_submit: fn subscription_plan ->
+        # 無料トライアル開始後はエラーメッセージを削除して表示
+        changeset = Team.registration_changeset(team, team_params)
+
+        send_update(__MODULE__,
+          id: id,
+          changeset: changeset,
+          trial_subscription_plan: subscription_plan
+        )
+      end
+    )
   end
 
   defp validate_user_grant(socket) do
