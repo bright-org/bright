@@ -79,6 +79,9 @@ msgstr ""
 msgid "recruit_keep"
 msgstr ""
 
+msgid "waiting_response"
+msgstr ""
+
 msgid "employee"
 msgstr ""
 

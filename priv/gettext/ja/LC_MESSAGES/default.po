@@ -78,6 +78,9 @@ msgstr "採用しない"
 msgid "recruit_keep"
 msgstr "今は採用しない"
 
+msgid "waiting_response"
+msgstr "承諾待ち"
+
 msgid "employee"
 msgstr "正社員"
 
