@@ -145,7 +145,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
     # データ準備: プラン
     setup do
       subscription_plan =
-        insert(:subscription_plans, create_teams_limit: 2, team_members_limit: 6)
+        insert(:subscription_plans, create_teams_limit: 2, team_members_limit: 7)
 
       %{subscription_plan: subscription_plan}
     end
@@ -262,8 +262,13 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
 
       # 申し込み後は追加できること / 無料トライアルモーダルが表示されないこと
       submit_add_user(live, "user_6_2")
-
+      submit_add_user(live, "user_7")
+      refute render(live) =~ "上限です"
       refute has_element?(live, "#free_trial_recommendation_modal")
+
+      # 再度超えた場合は表示されること
+      submit_add_user(live, "user_8")
+      assert render(live) =~ "上限です"
     end
 
     test "NOT open modal if there is not satisfied plan", %{
@@ -281,6 +286,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       submit_add_user(live, "user_6")
 
       # 無料トライアルモーダルが表示されないこと
+      assert render(live) =~ "上限です"
       refute has_element?(live, "#free_trial_recommendation_modal")
     end
   end

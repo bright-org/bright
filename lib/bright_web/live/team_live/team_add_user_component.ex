@@ -59,12 +59,10 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   end
 
   @impl true
-  def update(%{trial_subscription_plan: subscription_plan}, socket) do
+  def update(%{trial_subscription_plan: _subscription_plan}, socket) do
     # 無料トライアルを開始して戻った際に実行されるupdate
-    {:ok,
-     socket
-     |> assign(:plan, subscription_plan)
-     |> assign(:search_word_error, nil)}
+    # planは上から更新されるためアサイン不要
+    {:ok, assign(socket, :search_word_error, nil)}
   end
 
   def update(assigns, socket) do
@@ -171,6 +169,8 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
       on_submit: fn subscription_plan ->
         # 無料トライアル開始後はエラーメッセージを削除して表示
         send_update(__MODULE__, id: id, trial_subscription_plan: subscription_plan)
+        # rootのLiveViewにplan変更通知
+        send(self(), {:plan_changed, subscription_plan})
       end
     )
   end

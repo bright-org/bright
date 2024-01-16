@@ -50,17 +50,19 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   @impl true
-  def update(%{changeset: changeset, trial_subscription_plan: plan}, socket) do
+  def update(%{changeset: changeset, trial_subscription_plan: _plan}, socket) do
     # 無料トライアルを開始して戻った際に実行されるupdate
-    {:ok,
-     socket
-     |> assign_team_form(changeset)
-     |> assign(:plan, plan)}
+    # planはLiveViewから別途更新されるためアサイン不要
+    {:ok, assign_team_form(socket, changeset)}
   end
 
-  # add user eventでmy_team_liveからupdateが入ったときに実行されformの変更を保持する
   def update(assigns, %{assigns: %{team_form: %Phoenix.HTML.Form{}}} = socket) do
-    {:ok, assign(socket, users: assigns.users)}
+    # add user eventでmy_team_liveからupdateが入ったときに実行されformの変更を保持する
+    # plan更新時(無料トライアル開始時)にも本updateに入るためアサインがあれば更新
+    {:ok,
+     socket
+     |> assign(users: assigns.users)
+     |> update(:plan, &(Map.get(assigns, :plan) || &1))}
   end
 
   def update(%{action: :edit, team: team} = assigns, socket) do
@@ -260,6 +262,9 @@ defmodule BrightWeb.TeamCreateLiveComponent do
           changeset: changeset,
           trial_subscription_plan: subscription_plan
         )
+
+        # rootのLiveViewにplan変更通知
+        send(self(), {:plan_changed, subscription_plan})
       end
     )
   end

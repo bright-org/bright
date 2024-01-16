@@ -135,6 +135,10 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, assign(socket, :users, added_users)}
   end
 
+  def handle_info({:plan_changed, plan}, socket) do
+    {:noreply, assign(socket, :plan, plan)}
+  end
+
   defp deside_redirect(socket, display_team, skill_panel_id, skill_class_id) do
     socket
     |> redirect(to: MyTeamHelper.get_my_team_path(display_team, skill_panel_id, skill_class_id))
