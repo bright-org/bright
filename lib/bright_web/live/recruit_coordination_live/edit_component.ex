@@ -168,7 +168,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
         {:ok, _coordination} =
           Recruits.update_coordination(coordination, %{status: :hiring_decision})
 
-        {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
+        {:noreply, push_redirect(socket, to: ~p"/recruits/coordinations/#{coordination.id}")}
     end
   end
 end
