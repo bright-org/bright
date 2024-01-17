@@ -177,7 +177,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     (skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil)))
     |> if do
-      update(socket, :flash, &Map.put(&1, "first_skills_edit", true))
+      put_flash(socket, :first_skills_edit, true)
     else
       socket
     end

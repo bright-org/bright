@@ -27,6 +27,7 @@ defmodule BrightWeb.BrightCoreComponents do
   attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
   attr :title, :string, default: nil
   attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
+  attr :hide_timeout, :boolean, default: true
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
@@ -36,7 +37,7 @@ defmodule BrightWeb.BrightCoreComponents do
     <div
       :if={msg = render_slot(@inner_block) || Map.get(@flash, @kind)}
       id={@id}
-      phx-hook="HideFlashTimeout"
+      phx-hook={@hide_timeout && "HideFlashTimeout"}
       data-kind={Atom.to_string(@kind)}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
