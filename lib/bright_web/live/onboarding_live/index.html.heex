@@ -19,12 +19,13 @@
     </section>
   </div>
 
-  <div class="mt-8 max-w-[1236px]" :if={@current_user.user_onboardings == nil}>
+  <div class="mt-8 max-w-[1236px] text-base" :if={@current_user.user_onboardings == nil}>
+    <p>スキル評価やチーム育成、スカウトを行う方は、まずチームを作成してください</p>
     <a
       id="skip_onboarding"
-      class="w-full white cursor-pointer font-bold px-4 py-2 relative select-none hover:opacity-50 underline text-blue-600"
+      class="w-full white cursor-pointer font-bold py-2 relative select-none hover:opacity-50 underline text-blue-600"
       phx-click="skip_onboarding">
-      スカウトやチーム育成を行う方はこちら
+      チームを作る
     </a>
   </div>
 </section>
