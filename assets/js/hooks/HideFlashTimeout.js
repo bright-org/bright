@@ -5,7 +5,7 @@ const HideFlashTimeout = {
     timeout = this.el.dataset.timeout || 3000
     kind = this.el.dataset.kind || 'info'
     setTimeout(() => {
-      this.pushEvent('lv:clear-flash', {value: {key: kind}})
+      this.pushEvent('lv:clear-flash', {key: kind})
       this.el.classList.add("hidden")
     }, timeout)
   }

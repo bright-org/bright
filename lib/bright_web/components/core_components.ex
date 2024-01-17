@@ -101,6 +101,7 @@ defmodule BrightWeb.CoreComponents do
   attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
   attr :title, :string, default: nil
   attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
+  attr :hide_timeout, :boolean, default: true
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
@@ -110,7 +111,7 @@ defmodule BrightWeb.CoreComponents do
     <div
       :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
       id={@id}
-      phx-hook="HideFlashTimeout"
+      phx-hook={@hide_timeout && "HideFlashTimeout"}
       data-kind={Atom.to_string(@kind)}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
@@ -150,6 +151,7 @@ defmodule BrightWeb.CoreComponents do
     <.flash
       id="disconnected"
       kind={:error}
+      hide_timeout={false}
       title="We can't find the internet"
       phx-disconnected={show("#disconnected")}
       phx-connected={hide("#disconnected")}
