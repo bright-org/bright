@@ -697,4 +697,17 @@ defmodule Bright.Subscriptions do
       application_detail
     )
   end
+
+  @doc """
+  組織プランかどうかを返す
+
+  申し込み時に会社名を必要とするかといった判断で利用
+  サービス内容の実態はsubscription_plan_servicesでもつため、service_codeの有無で判定する
+  """
+  def organization_plan?(subscription_plan) do
+    subscription_plan
+    |> Repo.preload(:subscription_plan_services)
+    |> Map.get(:subscription_plan_services)
+    |> Enum.any?(&(&1.service_code == "team_up"))
+  end
 end

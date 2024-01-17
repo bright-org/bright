@@ -53,6 +53,8 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
   end
 
   def trial_changeset(subscription_user_plan, attrs) do
+    # company_name:
+    #   必須有無はplanによるためrequiredをつけていない。FreeTrialForm側で確認している。
     subscription_user_plan
     |> cast(attrs, [
       :user_id,
@@ -70,7 +72,6 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
       :subscription_status,
       :subscription_start_datetime,
       :trial_start_datetime,
-      :company_name,
       :phone_number,
       :pic_name
     ])

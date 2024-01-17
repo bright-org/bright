@@ -17,6 +17,11 @@ defmodule BrightWeb.CreateFreeTrialTest do
           authorization_priority: 20
         )
 
+      insert(:subscription_plan_services,
+        subscription_plan: plan,
+        service_code: "team_up"
+      )
+
       %{plan: plan}
     end
 
@@ -163,9 +168,25 @@ defmodule BrightWeb.CreateFreeTrialTest do
              |> element("#free_trial_form")
              |> render_submit(%{
                free_trial_form: %{
-                 company_name: "sample company",
                  phone_number: "00000",
-                 email: "hoge@email.com"
+                 email: "hoge@email.com",
+                 pic_name: "PM"
+               }
+             }) =~ "入力してください"
+    end
+
+    test "NOT validate input company_name required", %{conn: conn} do
+      insert(:subscription_plans, plan_code: "together", name_jp: "個人プラン")
+      {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=together")
+      assert html =~ "個人プラン"
+
+      refute index_live
+             |> element("#free_trial_form")
+             |> render_submit(%{
+               free_trial_form: %{
+                 phone_number: "00000",
+                 email: "hoge@email.com",
+                 pic_name: "PM"
                }
              }) =~ "入力してください"
     end
