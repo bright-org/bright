@@ -139,11 +139,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
     user = socket.assigns.current_user
     plan = get_plan_by_service(user, require_service_code)
 
-    {:ok,
-     socket
-     |> assign(:plan, plan)
-     |> assign(Map.take(assigns, ~w(on_submit on_close)a))
-     |> assign(:open, true)}
+    {:ok, assign_on_open(socket, plan, assigns)}
   end
 
   def update(%{open: true, create_teams_limit: require_create_teams_limit} = assigns, socket) do
@@ -153,11 +149,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
     user = socket.assigns.current_user
     plan = get_plan_by_create_teams_limit(user, require_create_teams_limit)
 
-    {:ok,
-     socket
-     |> assign(:plan, plan)
-     |> assign(Map.take(assigns, ~w(on_submit on_close)a))
-     |> assign(:open, true)}
+    {:ok, assign_on_open(socket, plan, assigns)}
   end
 
   def update(%{open: true, team_members_limit: require_team_members_limit} = assigns, socket) do
@@ -167,23 +159,13 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
     user = socket.assigns.current_user
     plan = get_plan_by_team_members_limit(user, require_team_members_limit)
 
-    {:ok,
-     socket
-     |> assign(:plan, plan)
-     |> assign(Map.take(assigns, ~w(on_submit on_close)a))
-     |> assign(:open, true)}
+    {:ok, assign_on_open(socket, plan, assigns)}
   end
 
   def update(assigns, socket) do
-    free_trial = %FreeTrial{}
-    changeset = FreeTrial.changeset(free_trial, %{})
-
     socket
     |> assign(assigns)
-    |> assign(:changeset, changeset)
-    |> assign(:free_trial, free_trial)
     |> assign(:open, false)
-    |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
 
@@ -237,6 +219,27 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  defp assign_on_open(socket, nil, _assigns) do
+    # プランが存在しない場合は開かない
+    # TODO: 暫定仕様でのち対応予定（問い合わせになる想定）
+    socket
+    |> assign(:plan, nil)
+    |> assign(:open, false)
+  end
+
+  defp assign_on_open(socket, plan, assigns) do
+    free_trial = %FreeTrial{organization_plan: Subscriptions.organization_plan?(plan)}
+    changeset = FreeTrial.changeset(free_trial, %{})
+
+    socket
+    |> assign(:plan, plan)
+    |> assign(Map.take(assigns, ~w(on_submit on_close)a))
+    |> assign(:changeset, changeset)
+    |> assign(:free_trial, free_trial)
+    |> assign_form(changeset)
+    |> assign(:open, true)
   end
 
   defp get_plan_by_service(user, require_service_code) do

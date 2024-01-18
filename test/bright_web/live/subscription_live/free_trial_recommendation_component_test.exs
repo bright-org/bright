@@ -4,23 +4,29 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
   import Phoenix.LiveViewTest
   import Bright.Factory
 
-  def submit_trial_form(live) do
+  def submit_trial_form(live, params \\ %{}) do
+    change_trial_form(live, params)
+
+    live
+    |> form("#free_trial_recommendation_form", params)
+    |> render_submit()
+  end
+
+  def change_trial_form(live, params \\ %{}) do
     params = %{
-      free_trial_form: %{
-        company_name: "dummy",
-        phone_number: "0000000000",
-        email: "test@example.com",
-        pic_name: "dummy"
-      }
+      free_trial_form:
+        %{
+          company_name: "dummy",
+          phone_number: "0000000000",
+          email: "test@example.com",
+          pic_name: "dummy"
+        }
+        |> Map.merge(params)
     }
 
     live
     |> form("#free_trial_recommendation_form", params)
     |> render_change()
-
-    live
-    |> form("#free_trial_recommendation_form", params)
-    |> render_submit()
   end
 
   # 「スキル検索」からの表示確認
@@ -288,6 +294,64 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       # 無料トライアルモーダルが表示されないこと
       assert render(live) =~ "上限です"
       refute has_element?(live, "#free_trial_recommendation_modal")
+    end
+  end
+
+  # フォーム仕様
+  describe "Form" do
+    setup [:register_and_log_in_user]
+
+    # 無料トライアルモーダルを表示するための共通処理
+    # チーム分析画面が容易に表示できるため使っている
+    def show_component_modal(conn) do
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+      live
+      |> form("#team_form", team: %{name: "チーム名1"})
+      |> render_submit()
+
+      # 2チーム目を作成するときに表示される
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+      live
+      |> form("#team_form", team: %{name: "チーム名2"})
+      |> render_submit()
+
+      live
+    end
+
+    test "requires company_name when plan has team_up", %{
+      conn: conn
+    } do
+      subscription_plan = insert(:subscription_plans, create_teams_limit: 2)
+
+      insert(:subscription_plan_services,
+        subscription_plan: subscription_plan,
+        service_code: "team_up"
+      )
+
+      live = show_component_modal(conn)
+
+      change_trial_form(live, %{company_name: ""})
+
+      assert has_element?(live, "#free_trial_recommendation_form", "入力してください")
+    end
+
+    test "not requires company_name when plan hasnot team_up", %{
+      conn: conn
+    } do
+      subscription_plan = insert(:subscription_plans, create_teams_limit: 2)
+
+      insert(:subscription_plan_services,
+        subscription_plan: subscription_plan,
+        service_code: "not_team_up"
+      )
+
+      live = show_component_modal(conn)
+
+      change_trial_form(live, %{company_name: ""})
+
+      refute has_element?(live, "#free_trial_recommendation_form", "入力してください")
     end
   end
 end
