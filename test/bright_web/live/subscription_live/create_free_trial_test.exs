@@ -180,15 +180,18 @@ defmodule BrightWeb.CreateFreeTrialTest do
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=together")
       assert html =~ "個人プラン"
 
-      refute index_live
-             |> element("#free_trial_form")
-             |> render_submit(%{
-               free_trial_form: %{
-                 phone_number: "00000",
-                 email: "hoge@email.com",
-                 pic_name: "PM"
-               }
-             }) =~ "入力してください"
+      index_live
+      |> element("#free_trial_form")
+      |> render_submit(%{
+        free_trial_form: %{
+          phone_number: "00000",
+          email: "hoge@email.com",
+          pic_name: "PM"
+        }
+      })
+
+      {path, _flash} = assert_redirect(index_live)
+      assert path == "/mypage"
     end
 
     test "free_trial start", %{conn: conn, user: user} do
