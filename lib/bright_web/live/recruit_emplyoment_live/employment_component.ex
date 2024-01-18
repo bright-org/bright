@@ -10,7 +10,7 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
       <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
       <div class="overflow-y-auto z-[60]">
         <main class="flex items-center justify-center" role="main">
-          <section class="absolute bg-white h-[800px] left-1/2 -ml-[750px] -mt-[400px] px-10 py-8 shadow text-sm top-1/2 w-[1500px]">
+          <section class="bg-white px-10 py-8 shadow text-sm">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">ジョイン先決定</span>
             </h2>
@@ -415,11 +415,6 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
                     </div>
                 </div><!-- End ジョイン先チーム調整内容 -->
 
-                <!-- close button -->
-                <button class="absolute right-5 top-5 z-10">
-                  <span class="material-icons !text-3xl text-brightGray-900"
-                    >close</span>
-                </button>
               </div>
             </section>
           </main>
