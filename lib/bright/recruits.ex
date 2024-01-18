@@ -508,7 +508,7 @@ defmodule Bright.Recruits do
   def get_employment_acceptance!(id, user_id) do
     Employment
     |> where([i], i.candidates_user_id == ^user_id)
-    |> preload(recruiter_user: :user_profile)
+    |> preload([:candidates_user, recruiter_user: :user_profile])
     |> Repo.get!(id)
   end
 
@@ -601,6 +601,20 @@ defmodule Bright.Recruits do
       from_user,
       to_user,
       acceptance_employment_url_fun.(employment.id)
+    )
+  end
+
+  def deliver_accept_employment_email_instructions(
+        from_user,
+        to_user,
+        employment,
+        employment_url_fun
+      )
+      when is_function(employment_url_fun, 1) do
+    UserNotifier.deliver_accept_employment_instructions(
+      from_user,
+      to_user,
+      employment_url_fun.(employment.id)
     )
   end
 end

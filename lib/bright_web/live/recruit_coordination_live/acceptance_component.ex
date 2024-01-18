@@ -8,92 +8,85 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
     <div id="acceptance_modal">
       <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
       <div class="overflow-y-auto z-[60]">
-      <main class="flex items-center justify-center" role="main">
-        <section class="bg-white px-10 py-8 shadow text-sm">
-        <h2 class="font-bold text-xl">
-        <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">選考結果</span>
-        </h2>
+        <main class="flex items-center justify-center" role="main">
+          <section class="bg-white px-10 py-8 shadow text-sm">
+            <h2 class="font-bold text-xl"><span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">選考結果</span></h2>
+            <div class="mt-8">
+              <div class="mt-4 overflow-y-auto">
+                <p class="w-full break-words">
+                  <%= raw(String.replace(@employment.message, ~r/\n/, "<br />")) %>
+                </p>
+                <label class="items-center flex mt-8 w-full">
+                  <span class="font-bold py-1 mr-4">雇用形態</span>
+                  <span><%= Gettext.gettext(BrightWeb.Gettext, to_string(@employment.employment_status)) %></span>
+                </label>
 
-        <div class="mt-8">
-          <!-- コメント表示 -->
-          <div class="mt-4 overflow-y-auto">
-            <p class="w-full break-words">
-              <%= @employment.message %>
-            </p>
-            <label class="items-center flex mt-8 w-full">
-              <span class="font-bold py-1 mr-4">雇用形態</span>
-              <span><%= @employment.employment_status %></span>
-            </label>
+                <label class="items-center flex mt-8 w-full">
+                  <span class="font-bold py-1 mr-4">年収もしくは契約額</span>
+                  <span><%= @employment.income %></span>
+                  <span class="ml-1">万円</span>
+                </label>
+              </div>
 
-            <label class="items-center flex mt-8 w-full">
-              <span class="font-bold py-1 mr-4">年収もしくは契約額</span>
-              <span><%= @employment.income %></span>
-              <span class="ml-1">万円</span>
-            </label>
-          </div>
+              <div class="flex justify-start gap-x-4 mt-4">
+                <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
+                  <.link navigate={@patch}>閉じる</.link>
+                </button>
+                <div>
+                  <button
+                    phx-click={JS.show(to: "#menu01")}
+                    phx-target={@myself}
+                    type="button"
+                    class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
+                  >
+                    <span class="min-w-[6em]">採用辞退</span>
+                    <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
+                  </button>
 
-        <div class="flex justify-center gap-x-4 mt-16 pb-2 relative w-full">
-          <button
-              class="text-sm font-bold px-2 py-2 rounded border bg-base text-white w-60"
-          >
-            採用を受諾する
-          </button>
-
-          <!-- 採用を辞退する -->
-          <button
-            id="noAdoptionDropdownButton"
-            data-dropdown-toggle="noAdoptionDropdown"
-            data-dropdown-offset-skidding="300"
-            data-dropdown-placement="bottom"
-            class="border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-            type="button"
-          >
-            <span class="min-w-[6em]">採用を辞退する</span>
-            <span
-              class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-              >add</span>
-          </button>
-          <!-- 採用を辞退する Donwdrop -->
-          <div
-            id="menu01"
-            class="hidden absolute z-10 bg-white rounded-lg shadow-md min-w-[286px] top-10 left-[310px]"
-          >
-            <ul
-              class="p-2 text-left text-base"
-              aria-labelledby="dropmenu04"
-            >
-              <li>
-                <a
-                  href="#"
-                  class="block px-4 py-3 hover:bg-brightGray-50 text-base"
-                  >金額が合わない</a>
-              </li>
-              <li>
-                <a
-                  data-modal-target="addTeamModal"
-                  data-modal-toggle="addTeamModal"
-                  class="block px-4 py-3 hover:bg-brightGray-50 text-base"
-                  >状況が変わった</a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block px-4 py-3 hover:bg-brightGray-50 text-base"
-                  >スカウト時と条件が異なる</a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block px-4 py-3 hover:bg-brightGray-50 text-base"
-                  >相性が悪い</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        </div>
-
-        </section>
-      </main>
+                  <div
+                    id="menu01"
+                    phx-click-away={JS.hide(to: "#menu01")}
+                    class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
+                  >
+                    <ul class="p-2 text-left text-base">
+                      <li
+                        phx-click={JS.push("decision", target: @myself, value: %{reason: "候補者の希望条件に添えない"})}
+                        class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                      >
+                        候補者の希望条件に添えない
+                      </li>
+                      <li
+                        phx-click={JS.push("decision", target: @myself, value: %{reason: "候補者のスキルが案件とマッチしない"})}
+                        class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                      >
+                        候補者のスキルが案件とマッチしない
+                      </li>
+                      <li
+                        phx-click={JS.push("decision", target: @myself, value: %{reason: "候補者のスキルが登録内容より不足"})}
+                        class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                      >
+                        候補者のスキルが登録内容より不足
+                      </li>
+                      <li
+                        phx-click={JS.push("decision", target: @myself, value: %{reason: "当方の状況が変わって中断"})}
+                        class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                      >
+                        当方の状況が変わって中断
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <button
+                  class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
+                  phx-click="accept"
+                  phx-target={@myself}
+                >
+                  採用受諾する
+                </button>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
     """
@@ -107,5 +100,35 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
     |> assign(assigns)
     |> assign(:employment, employment)
     |> then(&{:ok, &1})
+  end
+
+  def handle_event("accept", _params, socket) do
+    employment = socket.assigns.employment
+
+    {:ok, _employment} =
+      Recruits.update_employment(employment, %{status: "acceptance_emplyoment"})
+
+    Recruits.deliver_accept_employment_email_instructions(
+      employment.candidates_user,
+      employment.recruiter_user,
+      employment,
+      &url(~p"/recruits/employments/#{&1}")
+    )
+
+    {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
+  end
+
+  def handle_event("decision", %{"reason" => reason}, socket) do
+    employment = socket.assigns.employment
+
+    {:ok, _employment} =
+      Recruits.update_employment(employment, %{
+        status: :cancel_ccandidates,
+        candidates_reason: reason
+      })
+
+    # Recruits.send_employment_cancel_notification_mails(employment.id, reason)
+
+    {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
   end
 end

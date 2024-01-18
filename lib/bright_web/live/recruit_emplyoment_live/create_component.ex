@@ -22,12 +22,11 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
             <p class="mt-2 text-lg">※不採用を連絡時の理由は候補者には送信されません</p>
             <div class="mt-8">
               <div class="pb-4">
-              <.profile
+                <.profile
                   user_name={@coordination.candidates_user.name}
                   title={@coordination.candidates_user.user_profile.title}
                   icon_file_path={icon_url(@coordination.candidates_user.user_profile.icon_file_path)}
-
-              />
+                />
               </div>
               <.form
                 for={@form}
@@ -36,34 +35,34 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                 phx-submit="create_employment"
                 phx-change="validate"
               >
-              <h3 class="font-bold">メッセージ</h3>
-              <div class="flex mt-6 gap-x-4">
-                <BrightCore.input
-                    id="employment_used_sample_none"
+                <h3 class="font-bold">メッセージ</h3>
+                <div class="flex mt-6 gap-x-4">
+                  <BrightCore.input
+                      id="employment_used_sample_none"
+                      type="radio"
+                      name={@form[:used_sample].name}
+                      value="none"
+                      checked={@form[:used_sample].value == :none}
+                      label="何も入れない"
+                    />
+                  <BrightCore.input
+                    id="employment_used_sample_adoption"
                     type="radio"
                     name={@form[:used_sample].name}
-                    value="none"
-                    checked={@form[:used_sample].value == :none}
-                    label="何も入れない"
+                    value="adoption"
+                    checked={@form[:used_sample].value == :adoption}
+                    label="採用サンプルを入れる"
                   />
-                <BrightCore.input
-                  id="employment_used_sample_adoption"
-                  type="radio"
-                  name={@form[:used_sample].name}
-                  value="adoption"
-                  checked={@form[:used_sample].value == :adoption}
-                  label="採用サンプルを入れる"
-                />
-                <BrightCore.input
-                  id="employment_used_sample_not_adoption"
-                  type="radio"
-                  name={@form[:used_sample].name}
-                  value="not_adoption"
-                  checked={@form[:used_sample].value == :not_adoption}
-                  label="不採用サンプルを入れる"
-                />
-              </div>
-              <div class="mt-6 overflow-y-auto">
+                  <BrightCore.input
+                    id="employment_used_sample_not_adoption"
+                    type="radio"
+                    name={@form[:used_sample].name}
+                    value="not_adoption"
+                    checked={@form[:used_sample].value == :not_adoption}
+                    label="不採用サンプルを入れる"
+                  />
+                </div>
+                <div class="mt-6 overflow-y-auto">
                   <BrightCore.input
                       error_class="ml-[100px] mt-2"
                       field={@form[:message]}
@@ -72,87 +71,86 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                       rows="6"
                       cols="30"
                       input_class="border border-brightGray-300 px-2 py-1 rounded w-full"
-                    />
+                  />
 
-                <label class="items-center flex mt-8 w-full">
-                  <span class="font-bold -pt-2 mr-4">年収もしくは契約額</span>
-                  <BrightCore.input
-                      error_class="ml-[100px] mt-2"
-                      field={@form[:income]}
-                      type="number"
-                      size="20"
-                      input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
-                    />
-                  <span class="ml-1">万円</span>
-                </label>
-                <label class="items-center flex mt-8 w-full">
-                  <span class="font-bold -pt-2 mr-4">契約形態</span>
-                  <BrightCore.input
-                      error_class="ml-[100px] mt-2"
-                      field={@form[:employment_status]}
-                      options={@options}
-                      type="select"
-                      prompt="契約形態を選択してください"
-                      input_class="border border-brightGray-200 px-2 py-1 rounded w-80"
-                    />
-                </label>
+                  <label class="items-center flex mt-8 w-full">
+                    <span class="font-bold -pt-2 mr-4">年収もしくは契約額</span>
+                    <BrightCore.input
+                        error_class="ml-[100px] mt-2"
+                        field={@form[:income]}
+                        type="number"
+                        size="20"
+                        input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
+                      />
+                    <span class="ml-1">万円</span>
+                  </label>
+                  <label class="items-center flex mt-8 w-full">
+                    <span class="font-bold -pt-2 mr-4">契約形態</span>
+                    <BrightCore.input
+                        error_class="ml-[100px] mt-2"
+                        field={@form[:employment_status]}
+                        options={@options}
+                        type="select"
+                        prompt="契約形態を選択してください"
+                        input_class="border border-brightGray-200 px-2 py-1 rounded w-80"
+                      />
+                  </label>
+                </div>
 
-              </div>
+                <div class="flex justify-center gap-x-4 mt-16 pb-2 relative w-full">
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
+                    <.link navigate={@patch}>閉じる</.link>
+                  </button>
 
-              <div class="flex justify-center gap-x-4 mt-16 pb-2 relative w-full">
-                <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
-                  <.link navigate={@patch}>閉じる</.link>
-                </button>
+                  <div>
+                      <button
+                        phx-click={JS.show(to: "#menu01")}
+                        type="button"
+                        class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-44 flex items-center"
+                      >
+                        <span class="min-w-[6em]">不採用を連絡する</span>
+                        <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
+                      </button>
 
-                <div>
-                    <button
-                      phx-click={JS.show(to: "#menu01")}
-                      type="button"
-                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-44 flex items-center"
-                    >
-                      <span class="min-w-[6em]">不採用を連絡する</span>
-                      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
-                    </button>
-
-                    <div
-                      id="menu01"
-                      phx-click-away={JS.hide(to: "#menu01")}
-                      class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
-                    >
-                      <ul class="p-2 text-left text-base">
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者の希望条件に添えない"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          候補者の希望条件に添えない
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者のスキルが案件とマッチしない"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          候補者のスキルが案件とマッチしない
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者のスキルが登録内容より不足"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          候補者のスキルが登録内容より不足
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "当方の状況が変わって中断"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          当方の状況が変わって中断
-                        </li>
-                      </ul>
+                      <div
+                        id="menu01"
+                        phx-click-away={JS.hide(to: "#menu01")}
+                        class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
+                      >
+                        <ul class="p-2 text-left text-base">
+                          <li
+                            phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者の希望条件に添えない"})}
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                          >
+                            候補者の希望条件に添えない
+                          </li>
+                          <li
+                            phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者のスキルが案件とマッチしない"})}
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                          >
+                            候補者のスキルが案件とマッチしない
+                          </li>
+                          <li
+                            phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者のスキルが登録内容より不足"})}
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                          >
+                            候補者のスキルが登録内容より不足
+                          </li>
+                          <li
+                            phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "当方の状況が変わって中断"})}
+                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                          >
+                            当方の状況が変わって中断
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                  </div>
 
-                <button class="text-sm font-bold px-2 py-2 rounded border bg-base text-white w-40">
-                  採用を連絡する
-                </button>
+                  <button class="text-sm font-bold px-2 py-2 rounded border bg-base text-white w-40">
+                    採用を連絡する
+                  </button>
 
-              </div>
+                </div>
               </.form>
             </div>
           </section>
