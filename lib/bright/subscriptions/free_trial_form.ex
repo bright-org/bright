@@ -8,6 +8,7 @@ defmodule Bright.Subscriptions.FreeTrialForm do
 
   embedded_schema do
     field :user_id, :string
+    field :organization_plan, :boolean, default: true
     field :plan_name, :string
     field :company_name, :string
     field :phone_number, :string
@@ -26,6 +27,14 @@ defmodule Bright.Subscriptions.FreeTrialForm do
       :email,
       :pic_name
     ])
-    |> validate_required([:company_name, :phone_number, :email, :pic_name])
+    |> validate_required([:phone_number, :email, :pic_name])
+    |> validate_organization_required()
   end
+
+  defp validate_organization_required(%{data: %{organization_plan: true}} = changeset) do
+    changeset
+    |> validate_required([:company_name])
+  end
+
+  defp validate_organization_required(changeset), do: changeset
 end
