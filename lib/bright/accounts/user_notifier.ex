@@ -475,6 +475,26 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
+  Deliver employment cancel .
+  """
+  def deliver_cancel_employment_instructions(from_user, to_user) do
+    deliver(to_user.email, "【Bright】採用が辞退されました", """
+    #{to_user.name}さん
+
+    #{from_user.name} さんが採用を辞退しました
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
   Deliver free trial apply .
   """
   def deliver_new_message_notification_instructions(to_user, url) do

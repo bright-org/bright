@@ -617,4 +617,11 @@ defmodule Bright.Recruits do
       employment_url_fun.(employment.id)
     )
   end
+
+  def deliver_cancel_employment_email_instructions(from_user, to_user) do
+    UserNotifier.deliver_cancel_employment_instructions(
+      from_user,
+      to_user
+    )
+  end
 end

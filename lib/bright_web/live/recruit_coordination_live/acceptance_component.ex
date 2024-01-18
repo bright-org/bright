@@ -11,6 +11,7 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
         <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-8 shadow text-sm">
             <h2 class="font-bold text-xl"><span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">選考結果</span></h2>
+            <p class="mt-2 text-lg">※採用辞退で選択した理由は採用担当者には送信されません</p>
             <div class="mt-8">
               <div class="mt-4 overflow-y-auto">
                 <p class="w-full break-words">
@@ -50,22 +51,16 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
                   >
                     <ul class="p-2 text-left text-base">
                       <li
-                        phx-click={JS.push("decision", target: @myself, value: %{reason: "候補者の希望条件に添えない"})}
+                        phx-click={JS.push("decision", target: @myself, value: %{reason: "採用担当者の採用条件に添えない"})}
                         class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
                       >
-                        候補者の希望条件に添えない
+                        採用担当者の採用条件に添えない
                       </li>
                       <li
-                        phx-click={JS.push("decision", target: @myself, value: %{reason: "候補者のスキルが案件とマッチしない"})}
+                        phx-click={JS.push("decision", target: @myself, value: %{reason: "自身のスキルが案件とマッチしない"})}
                         class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
                       >
-                        候補者のスキルが案件とマッチしない
-                      </li>
-                      <li
-                        phx-click={JS.push("decision", target: @myself, value: %{reason: "候補者のスキルが登録内容より不足"})}
-                        class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                      >
-                        候補者のスキルが登録内容より不足
+                        自身のスキルが案件とマッチしない
                       </li>
                       <li
                         phx-click={JS.push("decision", target: @myself, value: %{reason: "当方の状況が変わって中断"})}
@@ -123,11 +118,14 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
 
     {:ok, _employment} =
       Recruits.update_employment(employment, %{
-        status: :cancel_ccandidates,
+        status: :cancel_candidates,
         candidates_reason: reason
       })
 
-    # Recruits.send_employment_cancel_notification_mails(employment.id, reason)
+    Recruits.deliver_cancel_employment_email_instructions(
+      employment.candidates_user,
+      employment.recruiter_user
+    )
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
   end
