@@ -72,7 +72,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                       cols="30"
                       input_class="border border-brightGray-300 px-2 py-1 rounded w-full"
                   />
-
+                  <div :if={@form[:used_sample].value != :not_adoption}>
                   <label class="items-center flex mt-8 w-full">
                     <span class="font-bold -pt-2 mr-4">年収もしくは契約額</span>
                     <BrightCore.input
@@ -95,6 +95,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                         input_class="border border-brightGray-200 px-2 py-1 rounded w-80"
                       />
                   </label>
+                  </div>
                 </div>
 
                 <div class="flex justify-center gap-x-4 mt-16 pb-2 relative w-full">
@@ -238,7 +239,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
   end
 
   def handle_event("decision", %{"reason" => reason}, socket) do
-    params = socket.assigns.employment_form.params
+    params = socket.assigns.form.params
     coordination = socket.assigns.coordination
     recruiter = socket.assigns.current_user
 
@@ -248,7 +249,8 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
         %{
           "recruiter_user_id" => recruiter.id,
           "candidates_user_id" => coordination.candidates_user_id,
-          "cancel_reason" => reason
+          "cancel_reason" => reason,
+          "status" => :cancel_recruiter
         }
       )
 
