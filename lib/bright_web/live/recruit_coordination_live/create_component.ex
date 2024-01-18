@@ -19,7 +19,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
         <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">
-                採用調整
+                採用選考
               </span>
             </h2>
 
@@ -41,7 +41,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                 </div>
 
                 <div class="mt-8">
-                  <h3 class="font-bold text-base">採用検討者<span class="font-normal">を追加</span></h3>
+                  <h3 class="font-bold text-base">採用選考を依頼したい人<span class="font-normal">を選んでください</span></h3>
                   <.live_component
                     id="recruit_card"
                     module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
@@ -64,16 +64,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
               >
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
-                    <dt
-                      class="font-bold w-[98px] flex items-center mb-10"
-                    >
-                      面談依頼者
-                    </dt>
-                    <dd class="w-[280px] mb-10">
-                      なし
-                    </dd>
-
-                    <dt class="font-bold w-[98px] mb-10">採用検討者</dt>
+                    <dt class="font-bold w-[98px] mb-10">選考依頼先</dt>
                     <dd class="w-[280px]">
                       <ul class="flex flex-wrap gap-y-1">
                       <%= for user <- @users do %>
@@ -112,7 +103,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                       type="button"
                       class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
                     >
-                      <span class="min-w-[6em]">検討キャンセル</span>
+                      <span class="min-w-[6em]">選考キャンセル</span>
                       <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
                     </button>
 
@@ -153,7 +144,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
                     type="submit"
                   >
-                    採用決定
+                    採用選考する
                   </button>
                 </div>
               </.form>

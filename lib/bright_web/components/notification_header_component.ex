@@ -66,7 +66,8 @@ defmodule BrightWeb.RecruitNotificationHeaderComponent do
   defp notification_list do
     [
       ["面談調整", ~p"/recruits/interviews"],
-      ["採用検討", ~p"/recruits/coordinations"]
+      ["採用選考", ~p"/recruits/coordinations"],
+      ["採用調整", ~p"/recruits/employments"]
     ]
   end
 end

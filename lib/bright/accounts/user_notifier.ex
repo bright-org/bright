@@ -410,12 +410,78 @@ defmodule Bright.Accounts.UserNotifier do
   @doc """
   Deliver coordination cancel mail to candidates_user .
   """
-  def deliver_cancel_coordination_to_candidates_user(from_user, to_user) do
-    deliver(to_user.email, "【Bright】採用検討がキャンセルされました", """
+  def deliver_cancel_coordination_to_candidates_user(from_user, to_user, message) do
+    deliver(to_user.email, "【Bright】選考結果のご連絡", """
+    #{to_user.name}様
+
+    #{message}
+
+    #{from_user.name}
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver employment acceptance .
+  """
+  def deliver_acceptance_employment_instructions(from_user, to_user, url) do
+    deliver(to_user.email, "【Bright】採用通知が届いています", """
     #{to_user.name}さん
 
-    #{from_user.name}から、採用検討がキャンセルされました。
+    #{from_user.name} さんから、採用通知が届いています。
 
+    下記URLで内容を確認し、受諾するか、辞退するかをお答えください。
+    #{url}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver employment accept .
+  """
+  def deliver_accept_employment_instructions(from_user, to_user, url) do
+    deliver(to_user.email, "【Bright】採用が受諾されました", """
+    #{to_user.name}さん
+
+    #{from_user.name} さんが採用を受諾しました
+
+    下記URLで内容を確認し、チームジョイン調整を行ってください
+    #{url}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
+  Deliver employment cancel .
+  """
+  def deliver_cancel_employment_instructions(from_user, to_user) do
+    deliver(to_user.email, "【Bright】採用が辞退されました", """
+    #{to_user.name}さん
+
+    #{from_user.name} さんが採用を辞退しました
 
     ---------------------------------------------------------------------
     ■本メールにお心当たりのない場合

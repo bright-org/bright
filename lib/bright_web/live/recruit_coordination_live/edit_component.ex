@@ -4,7 +4,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
   alias Bright.Recruits
   alias Bright.UserSearches
 
-  import BrightWeb.ProfileComponents, only: [profile_small: 1]
+  import BrightWeb.ProfileComponents, only: [profile_small: 1, profile: 1]
   import Bright.UserProfiles, only: [icon_url: 1]
 
   @impl true
@@ -24,7 +24,12 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
             <div :if={@coordination} class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">候補者</h3>
+                  <h3 class="font-bold text-base mb-8">候補者</h3>
+                  <.profile
+                  user_name={@coordination.candidates_user.name}
+                  title={@coordination.candidates_user.user_profile.title}
+                  icon_file_path={icon_url(@coordination.candidates_user.user_profile.icon_file_path)}
+              />
                   <.live_component
                     id="user_params_for_coordination"
                     prefix="interview"
@@ -41,27 +46,10 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
               </div>
 
             <div class="w-[493px]">
-              <h3 class="font-bold text-xl">検討内容</h3>
+              <h3 class="font-bold text-xl">選考内容</h3>
               <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
-                    <dt class="font-bold w-[98px] flex items-center mb-10">
-                      面談名
-                    </dt>
-                    <dd class="w-[280px] mb-10 break-words">
-                      <span><%= if @coordination.skill_panel_name == nil, do: "スキルパネルデータなし", else: @coordination.skill_panel_name %></span>
-                      <br />
-                      <span class="text-brightGray-300">
-                        <%= NaiveDateTime.to_date(@coordination.inserted_at) %>
-                        希望年収:<%= @coordination.desired_income %>
-                      </span>
-                    </dd>
-                    <dt class="font-bold w-[98px] flex items-center mb-10">
-                      面談依頼者
-                    </dt>
-                    <dd class="w-[280px] mb-10">
-                      なし
-                    </dd>
-                    <dt class="font-bold w-[98px] mb-10">採用検討者</dt>
+                    <dt class="font-bold w-[98px] mb-10">選考依頼先</dt>
                     <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
                       <%= for member <- @coordination.coordination_members do %>
@@ -96,54 +84,11 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                   <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
                     <.link navigate={@return_to}>閉じる</.link>
                   </button>
-                  <div>
-                    <button
-                      phx-click={JS.show(to: "#menu01")}
-                      type="button"
-                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
-                    >
-                      <span class="min-w-[6em]">採用キャンセル</span>
-                      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
-                    </button>
-
-                    <div
-                      id="menu01"
-                      phx-click-away={JS.hide(to: "#menu01")}
-                      class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
-                    >
-                      <ul class="p-2 text-left text-base">
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "条件が合わない"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          候補者の希望条件に添えない
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "相性が悪い"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          候補者のスキルが案件とマッチしない
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "スカウト時と状況が異なる"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          候補者のスキルが登録内容より不足
-                        </li>
-                        <li
-                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "状況が変わった"})}
-                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                        >
-                          当方の状況が変わって中断
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                   <button
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :hiring_decision})}
                   >
-                    採用決定
+                    選考結果連絡の準備
                   </button>
                 </div>
               </div>
@@ -208,8 +153,6 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
             cancel_reason: reason
           })
 
-        Recruits.send_coordination_cancel_notification_mails(coordination.id)
-
         {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
     end
   end
@@ -225,7 +168,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
         {:ok, _coordination} =
           Recruits.update_coordination(coordination, %{status: :hiring_decision})
 
-        {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
+        {:noreply, push_redirect(socket, to: ~p"/recruits/coordinations/#{coordination.id}")}
     end
   end
 end

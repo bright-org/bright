@@ -46,7 +46,7 @@ defmodule BrightWeb.RecruitInterviewLive.EditComponent do
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">
-                      面談名
+                      対象面談
                     </dt>
                     <dd class="w-[280px] mb-10 break-words">
                       <span><%= if @interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: @interview.skill_panel_name %></span>
@@ -56,13 +56,7 @@ defmodule BrightWeb.RecruitInterviewLive.EditComponent do
                         希望年収:<%= @interview.desired_income %>
                       </span>
                     </dd>
-                    <dt class="font-bold w-[98px] flex items-center mb-10">
-                      面談依頼者
-                    </dt>
-                    <dd class="w-[280px] mb-10">
-                      なし
-                    </dd>
-                    <dt class="font-bold w-[98px] mb-10">同席候補者</dt>
+                    <dt class="font-bold w-[98px] mb-10">同席依頼先</dt>
                     <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
                       <%= for member <- @interview.interview_members do %>
