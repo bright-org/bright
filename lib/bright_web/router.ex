@@ -273,7 +273,7 @@ defmodule BrightWeb.Router do
            :show_acceptance
 
       live "/recruits/employments", RecruitEmploymentLive.Index, :index
-      live "/recruits/employments/:id", RecruitEmploymentLive.Index, :show
+      live "/recruits/employments/:id", RecruitEmploymentLive.Index, :team_join
 
       live "/recruits/chats", ChatLive.Index, :recruit
       live "/recruits/chats/:id", ChatLive.Index, :recruit

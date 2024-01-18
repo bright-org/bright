@@ -1,9 +1,12 @@
 defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
   use BrightWeb, :live_component
 
-  # import BrightWeb.ProfileComponents, only: [profile_small: 1]
-  # import Bright.UserProfiles, only: [icon_url: 1]
+  alias Bright.UserSearches
+  alias Bright.Recruits
+  import BrightWeb.ProfileComponents, only: [profile: 1]
+  import Bright.UserProfiles, only: [icon_url: 1]
 
+  @impl true
   def render(assigns) do
     ~H"""
     <div id="employment_modal">
@@ -12,138 +15,39 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
         <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-8 shadow text-sm">
             <h2 class="font-bold text-3xl">
-              <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">ジョイン先決定</span>
+              <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">採用決定者のジョイン先確定</span>
             </h2>
 
             <div class="flex mt-8">
-            <!-- Start 採用候補者と依頼先 -->
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[928px]">
                 <div>
-                  <h3 class="font-bold text-base">採用候補者</h3>
-
-                  <ul class="mt-4">
-                    <!-- Start 検索結果 単体 -->
-                    <li class="border border-brightGray-200 flex h-64 mb-2 overflow-hidden p-2 rounded">
-                      <div class="bg-white w-[448px]">
-                        <div class="flex">
-                          <div class="overflow-hidden">
-                            <ul class="search_result_tab border-b border-brightGray-200 flex w-[99999px]">
-                              <li class="w-[200px] border-b-2 border-brightGreen-300 cursor-pointer min-w-fit overflow-hidden p-1.5 text-center whitespace-nowrap hover:bg-brightGray-50">Webアプリ開発 Elixir</li>
-                            </ul>
-                          </div>
-
-                          <div class="border-b border-brightGray-200 flex">
-                            <button type="button" class="px-1 border-l border-brightGray-50">
-                              <span class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"></span>
-                            </button>
-                            <button type="button" class="px-1 border-l border-brightGray-50">
-                              <span class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"></span>
-                            </button>
-                          </div>
-                        </div>
-
-                        <div id="search_result_contents">
-                          <!-- Start コンテンツ 1 -->
-                          <div class="relative">
-                            <p class="absolute left-0 ml-1 mt-1 top-0">クラス1</p>
-
-                            <div class="flex justify-between">
-                              <div class="-mt-4 ml-1 w-64">
-                                <canvas id="radarChart" width="200" height="200"></canvas>
-                              </div>
-
-                              <div class="flex flex-wrap items-start ml-2 mt-6 w-52">
-                                <div class="h-24 overflow-hidden w-20">
-                                  <canvas id="doughnutChart" width="80" height="80"></canvas>
-                                </div>
-
-                                <div class="h-24 overflow-hidden w-28">
-                                  <div class="h-20 ml-2 flex flex-wrap">
-                                    <p class="text-brightGreen-300 font-bold w-full flex mt-1 mb-1">
-                                      <img src="./images/common/icons/crown.svg" class="mr-2">
-                                      <span>ベテラン</span>
-                                    </p>
-
-                                    <div class="flex flex-col w-24 pl-6">
-                                      <div class="min-w-[4em] flex items-center">
-                                        <span class="h-4 w-4 rounded-full bg-brightGreen-600 inline-block mr-1"></span>
-                                        <span>68％</span>
-                                      </div>
-                                      <div class="min-w-[4em] flex items-center mt-1">
-                                        <span class="h-0 w-0 border-solid border-t-0 border-r-8 border-l-8 border-transparent border-b-[14px] border-b-brightGreen-300 inline-block mr-1"></span>
-                                        <span>11％</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <ul class="-mt-4 text-xs w-40">
-                                  <li>
-                                    <p>
-                                      <span class="inline-block w-28">エビデンスの登録率</span>
-                                      <span>30%</span>
-                                    </p>
-                                  </li>
-
-                                  <li>
-                                    <p>
-                                      <span class="inline-block w-28">教材の学習率</span>
-                                      <span>20%</span>
-                                    </p>
-                                  </li>
-
-                                  <li>
-                                    <p>
-                                      <span class="inline-block w-28">試験の合格率</span>
-                                      <span>60%</span>
-                                    </p>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div><!-- End コンテンツ 1 -->
-                        </div>
+                  <ul>
+                    <div class="flex">
+                      <div class="w-[460px]">
+                      <.profile
+                        user_name={@employment.candidates_user.name}
+                        title={@employment.candidates_user.user_profile.title}
+                        icon_file_path={icon_url(@employment.candidates_user.user_profile.icon_file_path)}
+                      />
                       </div>
-
-                      <div class="border-l border-brightGray-200 border-dashed w-[422px] ml-4 px-4 overflow-hidden">
-                        <div class="flex">
-                          <div class="w-full">
-                            <p class="mb-2">
-                              <span class="">出勤可：</span>
-                              <span>月160h以上</span>
-                              <span>土日祝日不可</span>
-                            </p>
-
-                            <p class="mb-2">
-                              <span>リモート可：</span>
-                              <span>月160h以上</span>
-                              <span>土日祝日不可</span>
-                            </p>
-
-                            <p class="mb-4">
-                              <span>希望年収：</span>
-                              <span>1,000万円</span>
-                            </p>
-
-                            <p class="border-t border-brightGray-200 mb-2 mt-2 pt-4">
-                              <span>スキルの最終更新日：</span>
-                              <span>2023/05/10</span>
-                            </p>
-
-                            <p class="mb-2">
-                              <span>担当者ステータス：</span>
-                              <span>－</span>
-                            </p>
-
-                            <div class="flex justify-between mt-8">
-                              <a class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-brightGreen-300 w-44 hover:opacity-50">成長グラフを開く</a>
-
-                              <a class="bg-white block border border-solid border-brightGreen-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-brightGreen-300 w-44 hover:opacity-50">スキルパネルを開く</a>
-                            </div>
-                          </div>
-                        </div>
+                      <div class="ml-8 mt-4 text-xl">
+                        <span>報酬：<%= @employment.income %>万円</span><br>
+                        <span>雇用形態：<%= Gettext.gettext(BrightWeb.Gettext, to_string(@employment.employment_status)) %></span>
                       </div>
-                    </li><!-- End 検索結果 -->
+                    </div>
+                    <div class="-mt-8">
+                    <.live_component
+                      id="user_params_for_employment"
+                      prefix="interview"
+                      search={false}
+                      anon={false}
+                      module={BrightWeb.SearchLive.SearchResultsComponent}
+                      current_user={@current_user}
+                      result={@candidates_user}
+                      skill_params={@skill_params}
+                      stock_user_ids={[]}
+                    />
+                    </div>
                   </ul>
                 </div>
 
@@ -423,10 +327,41 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
     """
   end
 
-  def update(assigns, socket) do
+  @impl true
+  def mount(socket) do
+    socket
+    |> assign(:search_results, [])
+    |> assign(:candidates_user, [])
+    |> assign(:skill_params, %{})
+    |> assign(:employment, nil)
+    |> assign(:no_answer_error, "")
+    |> then(&{:ok, &1})
+  end
+
+  @impl true
+  def update(%{employment_id: id, current_user: user} = assigns, socket) do
+    employment = Recruits.get_employment_with_profile!(id, user.id)
+
+    skill_params =
+      employment.skill_params
+      |> Jason.decode!()
+      |> Enum.map(fn s ->
+        s
+        |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
+        |> Enum.into(%{})
+      end)
+
+    user =
+      UserSearches.get_user_by_id_with_job_profile_and_skill_score(
+        employment.candidates_user_id,
+        skill_params
+      )
+
     socket
     |> assign(assigns)
-    |> assign(:no_answer_error, "")
+    |> assign(:employment, employment)
+    |> assign(:skill_params, skill_params)
+    |> assign(:candidates_user, user)
     |> then(&{:ok, &1})
   end
 end

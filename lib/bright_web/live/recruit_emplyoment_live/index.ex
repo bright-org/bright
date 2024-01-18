@@ -55,21 +55,11 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
       </div>
     </div>
 
-    <.bright_modal :if={@live_action in [:show_employment]} id="employment-modal" show on_cancel={JS.patch(~p"/recruits/employments")}>
+    <.bright_modal :if={@live_action in [:team_join]} id="employment-modal" show on_cancel={JS.patch(~p"/recruits/employments")}>
       <.live_component
         module={BrightWeb.RecruitEmploymentLive.EmploymentComponent}
         id="employment_modal"
-        employment={@employment}
-        current_user={@current_user}
-        return_to={~p"/recruits/employments"}
-      />
-    </.bright_modal>
-
-    <.bright_modal :if={@live_action in [:show_acceptance]} id="acceptance-modal" show on_cancel={JS.patch(~p"/recruits/employments")}>
-      <.live_component
-        module={BrightWeb.RecruitEmploymentLive.AcceptanceComponent}
-        id="acceptance_modal"
-        employment={@employment}
+        employment_id={@employment_id}
         current_user={@current_user}
         return_to={~p"/recruits/employments"}
       />
@@ -82,7 +72,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
     user_id = socket.assigns.current_user.id
 
     socket
-    |> assign(:page_title, "採用決定者チームジョイン")
+    |> assign(:page_title, "採用決定者のジョイン先確定")
     |> assign(:employments, Recruits.list_employment(user_id))
     |> assign(:employment, nil)
     |> then(&{:ok, &1})
@@ -93,27 +83,9 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :show_acceptance, %{"id" => id}) do
-    user_id = socket.assigns.current_user.id
-
-    socket
-    |> assign(:employment, Recruits.get_employment_acceptance!(id, user_id))
-  end
-
   defp apply_action(socket, :index, _params), do: assign(socket, :employment, nil)
 
-  defp apply_action(socket, _action, %{"id" => id}) do
-    user_id = socket.assigns.current_user.id
-    employment = Recruits.get_employment_with_profile!(id, user_id)
-
-    action =
-      case employment.status do
-        :waiting_response -> :show_employment
-        :acceptance_emplyoment -> :show_employment
-      end
-
-    socket
-    |> assign(:employment, employment)
-    |> assign(:live_action, action)
+  defp apply_action(socket, :team_join, %{"id" => id}) do
+    assign(socket, :employment_id, id)
   end
 end

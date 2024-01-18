@@ -220,6 +220,8 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
 
     employment_params =
       Map.merge(employment_params, %{
+        "skill_panel_name" => coordination.skill_panel_name,
+        "skill_params" => coordination.skill_params,
         "recruiter_user_id" => recruiter.id,
         "candidates_user_id" => coordination.candidates_user_id
       })

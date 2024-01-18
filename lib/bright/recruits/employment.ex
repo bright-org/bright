@@ -54,6 +54,8 @@ defmodule Bright.Recruits.Employment do
       :message,
       :status,
       :employment_status,
+      :skill_params,
+      :skill_panel_name,
       :used_sample,
       :recruiter_reason,
       :candidates_reason,
