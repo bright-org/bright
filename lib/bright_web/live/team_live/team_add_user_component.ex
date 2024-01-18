@@ -118,17 +118,17 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   defp validate_add_user({:ok, socket, user}) do
     %{users: selected_users, plan: plan, id: id} = socket.assigns
 
-    # members_count: チームメンバー数, 管理者がselected_usersには含まれないため+1をしている
-    members_count = Enum.count(selected_users) + 1
+    # current_members_count: チームメンバー数, 管理者がselected_usersには含まれないため+1をしている
+    current_members_count = Enum.count(selected_users) + 1
     limit = Subscriptions.get_team_members_limit(plan)
 
     cond do
       id_duplidated_user?(selected_users, user) ->
         {:error, assign(socket, :search_word_error, "対象のユーザーは既に追加されています")}
 
-      member_limit?(members_count, limit) ->
+      member_limit?(current_members_count, limit) ->
         message = member_limit_message(limit)
-        open_free_trial_modal(members_count, id)
+        open_free_trial_modal(current_members_count + 1, id)
         {:error, assign(socket, :search_word_error, message)}
 
       true ->
