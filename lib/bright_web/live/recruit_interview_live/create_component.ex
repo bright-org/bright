@@ -15,7 +15,7 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
       <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
       <div class="fixed inset-0 overflow-y-auto z-[60]">
         <main class="flex h-screen items-center justify-center w-screen" role="main">
-          <section class="absolute bg-white px-10 py-8 shadow text-sm top-0 w-[1500px]">
+          <section class="absolute bg-white px-10 py-8 shadow text-sm top-20 w-[1500px]">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
                 面談調整
