@@ -51,7 +51,7 @@
       <.live_component
         id="related_team_card"
         module={BrightWeb.CardLive.RelatedTeamCardComponent}
-        display_user={@display_user}
+        display_user={@current_user}
         show_menu={true}
       />
 
@@ -62,10 +62,9 @@
       <.live_component
         id="intriguing_card"
         module={BrightWeb.CardLive.RelatedUserCardComponent}
-        current_user={@display_user}
+        current_user={@current_user}
       />
     </div>
-    <!-- 検証 -->
   </div>
 </div>
 <.bright_modal
@@ -94,7 +93,7 @@
     module={BrightWeb.SubscriptionLive.CreateFreeTrialComponent}
     current_user={@current_user}
     plan_code={@plan}
-    patch={~p"/mypage"}
+    navigate={~p"/mypage"}
   />
 </.bright_modal>
 

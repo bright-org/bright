@@ -208,7 +208,8 @@ defmodule BrightWeb.CreateFreeTrialTest do
         }
       })
 
-      assert_patch(index_live, "/mypage")
+      {path, _flash} = assert_redirect(index_live)
+      assert path == "/mypage"
 
       %{subscription_status: :free_trial, subscription_plan: %{plan_code: "hr_plan"}} =
         Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
@@ -241,7 +242,8 @@ defmodule BrightWeb.CreateFreeTrialTest do
         }
       })
 
-      assert_patch(index_live, "/mypage")
+      {path, _flash} = assert_redirect(index_live)
+      assert path == "/mypage"
 
       %{subscription_status: :free_trial, subscription_plan: %{plan_code: "hr_plan"}} =
         Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())

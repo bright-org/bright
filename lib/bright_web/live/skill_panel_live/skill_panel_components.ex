@@ -232,8 +232,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <.live_component
         id="related_team_card"
         module={BrightWeb.CardLive.RelatedTeamCardComponent}
-        current_user={@current_user}
-        show_menu={false}
+        display_user={@current_user}
+        over_ride_on_card_row_click_target={true}
       />
     </div>
     """

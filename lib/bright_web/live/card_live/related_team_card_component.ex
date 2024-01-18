@@ -2,14 +2,14 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   @moduledoc """
   　関わっているチームカードコンポーネント
 
-  - display_user チーム一覧の取得対象となるユーザー
+  - display_user チーム一覧の取得対象となるユーザー. 匿名考慮がされていないため原則current_user
   - over_ride_on_card_row_click_target カードコンポーネント内の行クリック時のハンドラを呼び出し元のハンドラで実装するか否か falseの場合、本実装デフォルトの挙動(チームIDのみ指定してのチームスキル分析への遷移)を実行する
 
   ## Examples
     <.live_component
       id={@id}
       module={BrightWeb.CardLive.RelatedTeamCardComponent}
-      display_user={@display_user}
+      display_user={@current_user}
       over_ride_on_card_row_click_target={:true}
     />
   """
@@ -141,15 +141,15 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
   end
 
   defp assign_card(socket, "joined_teams") do
-    page =
-      Teams.list_joined_teams_by_user_id(
-        socket.assigns.display_user.id,
-        socket.assigns.card.page_params
-      )
+    %{display_user: display_user, card: card} = socket.assigns
+
+    page = Teams.list_joined_teams_by_user_id(display_user.id, card.page_params)
+    free_trial_together_link? = show_free_trial_together_link?(display_user)
 
     team_params =
       page.entries
       |> convert_team_params_from_team_member_users()
+      |> Enum.map(&Map.put(&1, :free_trial_together_link?, free_trial_together_link?))
 
     card = %{
       socket.assigns.card
