@@ -150,8 +150,19 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
 
     # データ準備: プラン
     setup do
+      _dummy_same_limit_plan =
+        insert(:subscription_plans,
+          create_teams_limit: 1,
+          team_members_limit: 5,
+          free_trial_priority: 1
+        )
+
       subscription_plan =
-        insert(:subscription_plans, create_teams_limit: 2, team_members_limit: 7)
+        insert(:subscription_plans,
+          create_teams_limit: 2,
+          team_members_limit: 7,
+          free_trial_priority: 2
+        )
 
       %{subscription_plan: subscription_plan}
     end
