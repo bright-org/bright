@@ -4,6 +4,8 @@ defmodule BrightWeb.TeamComponents do
   """
   use Phoenix.Component
 
+  import BrightWeb.CoreComponents, only: [icon: 1]
+
   alias Bright.Teams.TeamMemberUsers
   alias Bright.Teams
   alias Bright.Teams.Team
@@ -91,10 +93,18 @@ defmodule BrightWeb.TeamComponents do
       <%= @team_params.name %>
       <span
         :if={@team_params.is_admin}
-        class="text-white text-sm font-bold ml-4 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
+        class="text-white text-sm font-bold ml-6 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
       >
         管理者
       </span>
+      <.link
+        :if={@team_params.is_admin && @team_params.free_trial_together_link?}
+        navigate="/free_trial?plan=together"
+        class="text-white text-sm font-bold ml-4 px-2 py-1 inline-flex items-center bg-base rounded min-w-[60px]"
+      >
+        上限を増やす
+        <.icon name="hero-arrow-right" class="w-4 h-4" />
+      </.link>
     </li>
     """
   end
@@ -226,6 +236,11 @@ defmodule BrightWeb.TeamComponents do
         team_type: Teams.get_team_type_by_team(team_member_user.team)
       }
     end)
+  end
+
+  def show_free_trial_together_link?(user) do
+    Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+    |> is_nil()
   end
 
   defp get_team_icon_path(team_type) do

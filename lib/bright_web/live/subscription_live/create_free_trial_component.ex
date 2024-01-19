@@ -204,7 +204,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
 
         socket
         |> put_flash(:info, "無料トライアルを開始しました")
-        |> push_patch(to: socket.assigns.patch)
+        |> push_navigate(to: socket.assigns.navigate)
         |> then(&{:noreply, &1})
 
       false ->
