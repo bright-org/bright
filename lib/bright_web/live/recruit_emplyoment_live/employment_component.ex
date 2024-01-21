@@ -2,8 +2,12 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
   use BrightWeb, :live_component
 
   alias Bright.UserSearches
+  alias Bright.Accounts
   alias Bright.Recruits
-  import BrightWeb.ProfileComponents, only: [profile: 1]
+  alias Bright.Recruits.Employment
+  alias BrightWeb.BrightCoreComponents, as: BrightCore
+
+  import BrightWeb.ProfileComponents, only: [profile: 1, profile_small_with_remove_button: 1]
   import Bright.UserProfiles, only: [icon_url: 1]
 
   @impl true
@@ -52,276 +56,72 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
                 </div>
 
                 <div class="mt-8">
-                  <h3 class="font-bold text-base">ジョイン先チーム管理者<span class="font-normal">を追加</span></h3>
-                    <div class="bg-white border border-brightGray-200 rounded-md mt-1">
-                      <div class="text-sm font-medium text-center text-brightGray-500">
-                        <ul id="team_tab_menu_1" class="flex content-between border-b border-brightGray-200">
-                          <li class="w-60">
-                            <a href="#" class="py-3.5 w-full items-center justify-center inline-block text-brightGreen-300 font-bold border-brightGreen-300 border-b-2">
-                              所属チーム
-                            </a>
-                          </li>
-                          <li class="w-60">
-                            <a href="#" class="py-3.5 w-full items-center justify-center inline-block">
-                              支援先チーム
-                            </a>
-                          </li>
-                        </ul>
-
-                        <div class="flex border-b border-brightGray-50">
-                          <div class="overflow-hidden">
-                            <ul
-                              id="team_tab_menu_2"
-                              class="overflow-hidden flex text-base !text-sm w-full"
-                            >
-                              <li
-                                class="py-2 w-[200px] border-r border-brightGray-50"
-                              >
-                                開発一部人材チーム
-                              </li>
-                              <li
-                                class="py-2 w-[200px] border-r border-brightGray-50 bg-brightGreen-50"
-                              >
-                                開発二部人材チーム
-                              </li>
-                              <li
-                                class="py-2 w-[200px] border-r border-brightGray-50"
-                              >
-                                デザイン人材チーム
-                              </li>
-                              <li
-                                class="py-2 w-[200px] border-r border-brightGray-50"
-                              >
-                                デーータ分析チーム１
-                              </li>
-                              <li
-                                class="py-2 w-[200px] border-r border-brightGray-50"
-                              >
-                                デーータ分析チーム２
-                              </li>
-                            </ul>
-                          </div>
-                          <button class="px-1 border-l border-brightGray-50">
-                            <span
-                              class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-                            ></span>
-                          </button>
-                          <button class="px-1 border-l border-brightGray-50">
-                            <span
-                              class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-                            ></span>
-                          </button>
-                        </div>
-
-                        <div class="pt-3 pb-1 px-6">
-                          <ul class="flex flex-wrap gap-y-1">
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">アプリエンジニア</p>
-                                </div>
-                              </a>
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">アプリエンジニア</p>
-                                </div>
-                              </a>
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">アプリエンジニア</p>
-                                </div>
-                              </a>
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">アプリエンジニア</p>
-                                </div>
-                              </a>
-                            </li>
-                            <li
-                              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded w-1/2"
-                            >
-                              <a class="inline-flex items-center gap-x-6">
-                                <img
-                                  class="inline-block h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                />
-                                <div>
-                                  <p>nokichi</p>
-                                  <p class="text-brightGray-300">アプリエンジニア</p>
-                                </div>
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="flex justify-center gap-x-14 pb-3">
-                          <button
-                            type="button"
-                            class="text-brightGray-200 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-                          >
-                            <span
-                              class="material-icons md-18 mr-2 text-brightGray-200"
-                              >chevron_left</span>
-                            前
-                          </button>
-                          <button
-                            type="button"
-                            class="text-brightGray-900 bg-white px-3 py-1.5 inline-flex font-medium rounded-md text-sm items-center"
-                          >
-                            次
-                            <span
-                              class="material-icons md-18 ml-2 text-brightGray-900"
-                              >chevron_right</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div><!-- End 採用候補者と依頼先 -->
-
+                  <h3 class="font-bold text-base">ジョイン先チーム管理者<span class="font-normal">を選んでください</span></h3>
+                  <.live_component
+                    id="employment_card"
+                    module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
+                    current_user={@current_user}
+                    target="#employment_modal"
+                    event="add_user"
+                  />
+                  <span class="text-attention-600"><%= @candidate_error %></span>
+                </div>
+                </div>
                 <!-- Start ジョイン先チーム調整内容 -->
                 <div class="w-[493px]">
                   <h3 class="font-bold text-xl">ジョイン先チーム調整内容</h3>
-                      <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
-                        <dl class="flex flex-wrap w-full">
-                          <dt class="font-bold w-[98px] mb-10">ジョイン<br>先チーム<br>管理者</dt>
-                          <dd class="w-[280px]">
-                            <ul class="flex flex-wrap gap-y-1">
-                              <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
-                              >
-                                <a
-                                  class="inline-flex items-center gap-x-6 w-full"
-                                >
-                                  <img
-                                    class="inline-block h-10 w-10 rounded-full"
-                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                  />
-                                  <div class="flex-auto">
-                                    <p>nokichi</p>
-                                    <p class="text-brightGray-300">
-                                      アプリエンジニア
-                                    </p>
-                                  </div>
-                                  <button class="mx-4">
-                                    <span
-                                      class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                      >close</span>
-                                  </button>
-                                </a>
-                              </li>
-                              <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
-                              >
-                                <a
-                                  class="inline-flex items-center gap-x-6 w-full"
-                                >
-                                  <img
-                                    class="inline-block h-10 w-10 rounded-full"
-                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                  />
-                                  <div class="flex-auto">
-                                    <p>nokichi</p>
-                                    <p class="text-brightGray-300">
-                                      アプリエンジニア
-                                    </p>
-                                  </div>
-                                  <button class="mx-4">
-                                    <span
-                                      class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                      >close</span>
-                                  </button>
-                                </a>
-                              </li>
-                              <li
-                                class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded border border-brightGray-100 bg-white w-full"
-                              >
-                                <a
-                                  class="inline-flex items-center gap-x-6 w-full"
-                                >
-                                  <img
-                                    class="inline-block h-10 w-10 rounded-full"
-                                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80"
-                                  />
-                                  <div class="flex-auto">
-                                    <p>nokichi</p>
-                                    <p class="text-brightGray-300">
-                                      アプリエンジニア
-                                    </p>
-                                  </div>
-                                  <button class="mx-4">
-                                    <span
-                                      class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-                                      >close</span>
-                                  </button>
-                                </a>
-                              </li>
-                            </ul>
-                          </dd>
-
-                          <dt
-                            class="font-bold w-[98px] flex mt-16"
-                          >
-                            <label for="point" class="block pr-1">稼働按分・工数の扱いに関するメモ・注意点</label>
-                          </dt>
-                          <dd class="w-[280px] mt-16">
-                            <textarea
-                              id="point"
-                              name="point"
-                              placeholder="新しいチーム名を入力してください"
-                              rows="5"
-                              cols="30"
-                              class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
-                            >エンジニア領域だけでなく、インフラやデザイン、マーケティングなど幅広い領域の知識を持っていて劇ヤバイです。</textarea>
-                          </dd>
-                        </dl>
-                      </div>
+                  <.form
+                    for={@form}
+                    id="employment_form"
+                    phx-target={@myself}
+                    phx-submit="create"
+                    phx-change="validate"
+                  >
+                    <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
+                      <dl class="flex flex-wrap w-full">
+                      <dt class="font-bold w-[98px] mb-10">ジョイン<br>先チーム<br>管理者</dt>
+                        <dd class="w-[280px]">
+                          <ul class="flex flex-wrap gap-y-1">
+                          <%= for user <- @users do %>
+                            <.profile_small_with_remove_button
+                              remove_user_target={@myself}
+                              user_id={user.id} user_name={user.name}
+                              title={user.user_profile.title}
+                              icon_file_path={user.user_profile.icon_file_path}
+                            />
+                          <% end %>
+                          </ul>
+                        </dd>
+                        <dt class="font-bold w-[98px] flex mt-16">
+                          <label for="point" class="block pr-1">稼働按分・工数の扱いに関するメモ・注意点</label>
+                        </dt>
+                        <dd class="w-[280px] mt-16">
+                        <BrightCore.input
+                          error_class="ml-[100px] mt-2"
+                          field={@form[:comment]}
+                          type="textarea"
+                          required
+                          rows="5"
+                          cols="30"
+                          input_class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+                        />
+                        </dd>
+                      </dl>
+                    </div>
 
                     <div class="flex justify-end gap-x-4 mt-16">
                       <button
+                        type="submit"
                         class="text-sm font-bold py-3 rounded text-white bg-base w-72"
                       >
                         候補者のチーム招待を依頼する
                       </button>
                     </div>
-                </div><!-- End ジョイン先チーム調整内容 -->
-
+                  </.form>
               </div>
-            </section>
-          </main>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
     """
@@ -332,9 +132,10 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
     socket
     |> assign(:search_results, [])
     |> assign(:candidates_user, [])
+    |> assign(:users, [])
     |> assign(:skill_params, %{})
     |> assign(:employment, nil)
-    |> assign(:no_answer_error, "")
+    |> assign(:candidate_error, "")
     |> then(&{:ok, &1})
   end
 
@@ -357,11 +158,99 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
         skill_params
       )
 
+    changeset = Recruits.change_employment(employment)
+
     socket
     |> assign(assigns)
     |> assign(:employment, employment)
     |> assign(:skill_params, skill_params)
     |> assign(:candidates_user, user)
+    |> assign_form(changeset)
     |> then(&{:ok, &1})
+  end
+
+  @impl true
+  def handle_event("validate", %{"employment" => employment_params}, socket) do
+    changeset =
+      socket.assigns.employment
+      |> Employment.changeset(employment_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign_form(socket, changeset)}
+  end
+
+  def handle_event("add_user", %{"name" => name}, socket) do
+    user = Accounts.get_user_by_name_or_email(name)
+    users = socket.assigns.users
+
+    cond do
+      id_duplidated_user?(users, user) ->
+        {:noreply, assign(socket, :candidate_error, "対象のユーザーは既に追加されています")}
+
+      Enum.count(users) >= 4 ->
+        {:noreply, assign(socket, :candidate_error, "採用調整候補者の上限は４名です")}
+
+      true ->
+        socket
+        |> assign(:users, users ++ [user])
+        |> assign(:candidate_error, "")
+        |> then(&{:noreply, &1})
+    end
+  end
+
+  def handle_event("remove_user", %{"id" => id}, socket) do
+    # メンバーユーザー一時リストから削除
+    removed_users = Enum.reject(socket.assigns.users, fn x -> x.id == id end)
+    {:noreply, assign(socket, :users, removed_users)}
+  end
+
+  def handle_event("create", %{"employment" => employment_params}, socket) do
+    employment = socket.assigns.employment
+    users = socket.assigns.users
+
+    employment_params =
+      Map.merge(employment_params, %{
+        "status" => :requested,
+        "team_join_requests" =>
+          Enum.map(
+            users,
+            &%{
+              "team_owner_user_id" => &1.id,
+              "comment" => employment_params["comment"]
+            }
+          )
+      })
+
+    case Recruits.update_employment(employment, employment_params) do
+      {:ok, _coordination} ->
+        requests = Recruits.list_team_join_request_by_employment_id(employment.id)
+        # 追加したメンバー全員に可否メールを送信する。
+        send_request_mails(requests, socket.assigns.current_user)
+
+        {:noreply, redirect(socket, to: ~p"/recruits/employments")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
+  end
+
+  defp send_request_mails(requests, recruiter) do
+    requests
+    |> Enum.each(fn request ->
+      Recruits.deliver_team_join_request_email_instructions(
+        recruiter,
+        request.team_owner_user,
+        request,
+        &url(~p"/recruits/employments/team_join/#{&1}")
+      )
+    end)
+  end
+
+  defp id_duplidated_user?(users, user) do
+    users |> Enum.find(fn u -> user.id == u.id end) |> is_nil() |> then(&(!&1))
+  end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 end
