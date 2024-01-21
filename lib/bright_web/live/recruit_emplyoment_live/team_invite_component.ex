@@ -166,8 +166,7 @@ defmodule BrightWeb.RecruitEmploymentLive.TeamInviteComponent do
               &url(~p"/teams/invitation_confirm/#{&1}")
             )
 
-            {:ok, _request} =
-              Recruits.update_team_join_request(request, %{status: :invited})
+            {:ok, _request} = Recruits.update_team_join_request(request, %{status: :invited})
 
             socket
             |> put_flash(:info, "チームに招待しました")
