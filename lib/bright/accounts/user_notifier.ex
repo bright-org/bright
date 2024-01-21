@@ -43,7 +43,7 @@ defmodule Bright.Accounts.UserNotifier do
   defp deliver_many!(recipients, subject, body) do
     Enum.chunk_every(recipients, max_deliver_size())
     |> Enum.each(fn emails_chunk ->
-      personalizations = emails_chunk |> Enum.map(&%{to: [&1]})
+      personalizations = emails_chunk |> Enum.map(&%{to: [%{email: &1}]})
 
       new()
       |> put_provider_option(:personalizations, personalizations)
