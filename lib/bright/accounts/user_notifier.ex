@@ -495,6 +495,29 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
+  Deliver team join request .
+  """
+  def deliver_team_join_request_instructions(from_user, to_user, url) do
+    deliver(to_user.email, "【Bright】チームジョイン連携を依頼されました", """
+    #{to_user.name}さん
+
+    #{from_user.name} さんがチームジョイン連携を依頼しました
+
+    下記URLで内容を確認し、チームジョイン連携を行ってください
+    #{url}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
   Deliver free trial apply .
   """
   def deliver_new_message_notification_instructions(to_user, url) do

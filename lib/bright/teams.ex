@@ -669,6 +669,19 @@ defmodule Bright.Teams do
     |> Repo.paginate(page_param)
   end
 
+  def list_managing_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
+    from(tmbu in TeamMemberUsers,
+      left_join: t in assoc(tmbu, :team),
+      where:
+        tmbu.user_id == ^user_id and tmbu.is_admin == true and
+          not is_nil(tmbu.invitation_confirmed_at) and
+          is_nil(t.disabled_at),
+      order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
+    )
+    |> preload(team: :member_users)
+    |> Repo.paginate(page_param)
+  end
+
   @doc """
   ユーザーが所属する採用・育成チームの一覧取得
   招待へ承認済のチームのみ対象
