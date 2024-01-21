@@ -159,7 +159,7 @@ defmodule Bright.TestHelper do
       assert email.subject == "【Bright】運営からの通知が届きました"
 
       assert email.provider_options.personalizations ==
-               to_emails |> Enum.map(&%{to: %{email: &1}})
+               to_emails |> Enum.map(&%{to: [%{email: &1}]})
     end)
   end
 
