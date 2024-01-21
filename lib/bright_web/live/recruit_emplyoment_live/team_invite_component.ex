@@ -148,7 +148,7 @@ defmodule BrightWeb.RecruitEmploymentLive.TeamInviteComponent do
       if is_nil(sub), do: 4, else: Subscriptions.get_team_members_limit(sub.subscription_plan)
 
     cond do
-      !id_duplidated_user?(team.users, candidates_user) ->
+      id_duplidated_user?(team.users, candidates_user) ->
         {:noreply, assign(socket, :invite_error, "対象のユーザーは既に追加されています")}
 
       member_limit?(members_count, limit) ->
