@@ -515,7 +515,7 @@ defmodule Bright.Recruits do
   def get_employment_with_profile!(id, user_id) do
     Employment
     |> where([i], i.recruiter_user_id == ^user_id)
-    |> preload(candidates_user: :user_profile)
+    |> preload([:team_join_requests, candidates_user: :user_profile])
     |> Repo.get!(id)
   end
 
@@ -622,6 +622,144 @@ defmodule Bright.Recruits do
     UserNotifier.deliver_cancel_employment_instructions(
       from_user,
       to_user
+    )
+  end
+
+  alias Bright.Recruits.TeamJoinRequest
+
+  @doc """
+  Returns the list of TeamJoinRequest.
+
+  ## Examples
+
+      iex> list_team_join_request()
+      [%TeamJoinRequest{}, ...]
+
+  """
+
+  def list_team_join_request do
+    Repo.all(TeamJoinRequest)
+  end
+
+  def list_team_join_request(user_id) do
+    TeamJoinRequest
+    |> where(
+      [r],
+      r.team_owner_user_id == ^user_id and r.status in [:requested]
+    )
+    |> preload(employment: [recruiter_user: :user_profile])
+    |> Repo.all()
+  end
+
+  def list_team_join_request_by_employment_id(employment_id) do
+    TeamJoinRequest
+    |> where(
+      [r],
+      r.employment_id == ^employment_id and r.status in [:requested]
+    )
+    |> preload(:team_owner_user)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single TeamJoinRequest.
+
+  Raises `Ecto.NoResultsError` if the TeamJoinRequest does not exist.
+
+  ## Examples
+
+      iex> get_team_join_request!(123)
+      %TeamJoinRequest{}
+
+      iex> get_team_join_request!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_team_join_request!(id), do: Repo.get!(TeamJoinRequest, id)
+
+  def get_team_join_request_with_profile!(id, user_id) do
+    TeamJoinRequest
+    |> where([i], i.team_owner_user_id == ^user_id)
+    |> preload(employment: [candidates_user: :user_profile])
+    |> Repo.get!(id)
+  end
+
+  @doc """
+  Creates a TeamJoinRequest.
+
+  ## Examples
+
+      iex> create_team_join_request(%{field: value})
+      {:ok, %TeamJoinRequest{}}
+
+      iex> create_team_join_request(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_team_join_request(attrs \\ %{}) do
+    %TeamJoinRequest{}
+    |> TeamJoinRequest.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a TeamJoinRequest.
+
+  ## Examples
+
+      iex> update_team_join_request(team_join_request, %{field: new_value})
+      {:ok, %TeamJoinRequest{}}
+
+      iex> update_team_join_request(team_join_request, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_team_join_request(%TeamJoinRequest{} = team_join_request, attrs) do
+    team_join_request
+    |> TeamJoinRequest.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a TeamJoinRequest.
+
+  ## Examples
+
+      iex> delete_team_join_request(team_join_request)
+      {:ok, %TeamJoinRequest{}}
+
+      iex> delete_team_join_requestt(team_join_request)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_team_join_request(%TeamJoinRequest{} = team_join_request) do
+    Repo.delete(team_join_request)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking team_join_request changes.
+
+  ## Examples
+
+      iex> change_team_join_request(team_join_request)
+      %Ecto.Changeset{data: %TeamJoinRequest{}}
+
+  """
+  def change_team_join_request(%TeamJoinRequest{} = team_join_request, attrs \\ %{}) do
+    TeamJoinRequest.changeset(team_join_request, attrs)
+  end
+
+  def deliver_team_join_request_email_instructions(
+        from_user,
+        to_user,
+        team_join_request,
+        team_join_request_url_fun
+      )
+      when is_function(team_join_request_url_fun, 1) do
+    UserNotifier.deliver_team_join_request_instructions(
+      from_user,
+      to_user,
+      team_join_request_url_fun.(team_join_request.id)
     )
   end
 end
