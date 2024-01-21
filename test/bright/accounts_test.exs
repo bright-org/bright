@@ -2102,4 +2102,29 @@ defmodule Bright.AccountsTest do
       refute Accounts.onboarding_finished?(user)
     end
   end
+
+  describe "list_confirmed_user_emails/0" do
+    test "returns empty if no confirmed user" do
+      insert(:user_not_confirmed)
+      insert(:user_not_confirmed)
+
+      assert Accounts.list_confirmed_user_emails() == []
+    end
+
+    test "returns only confirmed user emails" do
+      user1 = insert(:user)
+      user2 = insert(:user)
+      insert(:user_not_confirmed)
+      insert(:user_not_confirmed)
+      user1_sub_email1 = insert(:user_sub_email, user: user1)
+      user1_sub_email2 = insert(:user_sub_email, user: user1)
+
+      assert Accounts.list_confirmed_user_emails() == [
+               user1.email,
+               user2.email,
+               user1_sub_email1.email,
+               user1_sub_email2.email
+             ]
+    end
+  end
 end
