@@ -10,6 +10,7 @@ defmodule Bright.Recruits.Employment do
 
   use Ecto.Schema
   alias Bright.Accounts.User
+  alias Bright.Recruits.TeamJoinRequest
   import Ecto.Changeset
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
@@ -17,13 +18,20 @@ defmodule Bright.Recruits.Employment do
 
   schema "employments" do
     field :message, :string
+    field :comment, :string, virtual: true
     field :skill_panel_name, :string
     field :income, :integer
     field :desired_income, :integer
     field :skill_params, :string
 
     field :status, Ecto.Enum,
-      values: [:waiting_response, :cancel_recruiter, :cancel_candidates, :acceptance_emplyoment],
+      values: [
+        :waiting_response,
+        :cancel_recruiter,
+        :cancel_candidates,
+        :acceptance_emplyoment,
+        :requested
+      ],
       default: :waiting_response
 
     field :employment_status, Ecto.Enum,
@@ -42,6 +50,7 @@ defmodule Bright.Recruits.Employment do
 
     belongs_to :candidates_user, User
     belongs_to :recruiter_user, User
+    has_many :team_join_requests, TeamJoinRequest, on_replace: :delete, on_delete: :delete_all
 
     timestamps()
   end
@@ -62,6 +71,9 @@ defmodule Bright.Recruits.Employment do
       :recruiter_user_id,
       :candidates_user_id
     ])
+    |> cast_assoc(:team_join_requests,
+      with: &TeamJoinRequest.changeset/2
+    )
     |> validate_required([
       :income,
       :message,
