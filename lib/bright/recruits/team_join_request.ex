@@ -1,4 +1,13 @@
 defmodule Bright.Recruits.TeamJoinRequest do
+  @moduledoc """
+  候補者のチーム招待依頼
+
+  採用候補者が採用を受諾後作成可能になる
+  採用調整画面から一覧できる
+  関わっているユーザーのチーム管理者に対して、依頼を行う
+  依頼を行った後は採用担当者のアクションは終了となる
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
