@@ -115,4 +115,23 @@ defmodule BrightWeb.ChartComponents do
     </div>
     """
   end
+
+  def growth_graph_demo(assigns) do
+    assigns =
+      assigns
+      |> assign(:data, assigns.data |> Jason.encode!())
+
+    ~H"""
+    <div
+      id={@id}
+      class="w-full"
+      phx-hook="GrowthGraphDemo"
+      phx-update="ignore"
+      data-data={@data}
+      data-size={@size}
+    >
+      <canvas class="w-full"></canvas>
+    </div>
+    """
+  end
 end
