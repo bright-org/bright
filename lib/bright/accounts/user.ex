@@ -363,4 +363,25 @@ defmodule Bright.Accounts.User do
       where: u.email == ^email
     )
   end
+
+  @doc """
+  Select confirmed users primary emails.
+  """
+  def confirmed_users_emails_query() do
+    from(u in User,
+      where: not is_nil(u.confirmed_at),
+      select: u.email
+    )
+  end
+
+  @doc """
+  Select confirmed users sub emails.
+  """
+  def confirmed_users_sub_emails_query() do
+    from(user in User,
+      where: not is_nil(user.confirmed_at),
+      join: user_sub_email in assoc(user, :user_sub_emails),
+      select: user_sub_email.email
+    )
+  end
 end

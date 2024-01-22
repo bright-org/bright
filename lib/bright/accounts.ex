@@ -904,4 +904,20 @@ defmodule Bright.Accounts do
     |> preload(:skill_panels)
     |> Repo.all()
   end
+
+  @doc """
+  Returns emails from all confirmed users.
+  The emails include primary email and sub emails.
+
+  ## Examples
+
+      iex> list_confirmed_user_emails()
+      ["user1_primary_email@example.com", "user2_primary_email@example.com", "user1_sub_email@example.com"]
+  """
+  def list_confirmed_user_emails() do
+    primary_emails = User.confirmed_users_emails_query() |> Repo.all()
+    sub_emails = User.confirmed_users_sub_emails_query() |> Repo.all()
+
+    primary_emails ++ sub_emails
+  end
 end

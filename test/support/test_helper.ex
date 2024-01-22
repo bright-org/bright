@@ -153,6 +153,16 @@ defmodule Bright.TestHelper do
     end)
   end
 
+  def assert_operations_notification_mail_sent(to_emails) do
+    assert_email_sent(fn email ->
+      assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
+      assert email.subject == "【Bright】運営からの通知が届きました"
+
+      assert email.provider_options.personalizations ==
+               to_emails |> Enum.map(&%{to: [%{email: &1}]})
+    end)
+  end
+
   def convert_map_string_key_to_atom(map) do
     Map.new(map, fn {k, v} -> {String.to_existing_atom(k), v} end)
   end

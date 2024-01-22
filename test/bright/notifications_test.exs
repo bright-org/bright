@@ -11,6 +11,7 @@ defmodule Bright.NotificationsTest do
   }
 
   import Bright.Factory
+  import Swoosh.TestAssertions
 
   describe "list_all_notifications/1" do
     test "for type operation" do
@@ -194,11 +195,11 @@ defmodule Bright.NotificationsTest do
 
   describe "create_notification/2" do
     test "with valid data for type operation" do
-      user = insert(:user)
+      from_user = insert(:user)
 
       valid_attrs = %{
         message: "some message",
-        from_user_id: user.id,
+        from_user_id: from_user.id,
         detail: "some detail"
       }
 
@@ -206,8 +207,36 @@ defmodule Bright.NotificationsTest do
                Notifications.create_notification("operation", valid_attrs)
 
       assert notification_operation.message == "some message"
-      assert notification_operation.from_user_id == user.id
+      assert notification_operation.from_user_id == from_user.id
       assert notification_operation.detail == "some detail"
+    end
+
+    test "sends operations notification mails when create operation" do
+      from_user = insert(:user)
+      user = insert(:user)
+      insert(:user_not_confirmed)
+      insert(:user_not_confirmed)
+      from_user_sub_email = insert(:user_sub_email, user: from_user)
+      user_sub_email = insert(:user_sub_email, user: user)
+
+      Application.put_env(:bright, :max_deliver_size, 2)
+
+      assert {:ok, %NotificationOperation{} = _notification_operation} =
+               Notifications.create_notification("operation", %{
+                 message: "some message",
+                 from_user_id: from_user.id,
+                 detail: "some detail"
+               })
+
+      assert_operations_notification_mail_sent([
+        from_user.email,
+        user.email
+      ])
+
+      assert_operations_notification_mail_sent([
+        from_user_sub_email.email,
+        user_sub_email.email
+      ])
     end
 
     test "with invalid data for type operation" do
@@ -215,6 +244,8 @@ defmodule Bright.NotificationsTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Notifications.create_notification("operation", invalid_attrs)
+
+      assert_no_email_sent()
     end
 
     test "with valid data for type community" do

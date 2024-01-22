@@ -7,6 +7,7 @@ defmodule Bright.Accounts.UserNotifier do
   use BrightWeb, :verified_routes
 
   alias Bright.Mailer
+  alias Bright.Accounts
 
   @signature """
   ──────────────────−--- -- - - - - -- ---−──────────────────
@@ -19,18 +20,38 @@ defmodule Bright.Accounts.UserNotifier do
   ──────────────────−--- -- - - - - -- ---−──────────────────
   """
 
+  @email_from {"Brightカスタマーサクセス", "agent@bright-fun.org"}
+
+  # SendGrid で1リクエストで一括送信可能な最大のメール件数は 1000 件
+  # NOTE: https://sendgrid.kke.co.jp/docs/API_Reference/Web_API_v3/Mail/index.html?_gl=1*1sf2pmz*_ga*MTE5MjM3OTk0OS4xNzA1NzI5Nzc1*_ga_JL4V7PSVHH*MTcwNTcyOTc3NC4xLjEuMTcwNTcyOTk2My4wLjAuMA..*_ga_NFRNW0FC62*MTcwNTcyOTc3NC4xLjEuMTcwNTcyOTk2My4wLjAuMA..#-Limitations
+  defp max_deliver_size, do: Application.get_env(:bright, :max_deliver_size, 1_000)
+
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
     email =
       new()
       |> to(recipient)
-      |> from({"Brightカスタマーサクセス", "agent@bright-fun.org"})
+      |> from(@email_from)
       |> subject(subject)
       |> text_body(body)
 
     with {:ok, _metadata} <- Mailer.deliver(email) do
       {:ok, email}
     end
+  end
+
+  defp deliver_many!(recipients, subject, body) do
+    Enum.chunk_every(recipients, max_deliver_size())
+    |> Enum.each(fn emails_chunk ->
+      personalizations = emails_chunk |> Enum.map(&%{to: [%{email: &1}]})
+
+      new()
+      |> put_provider_option(:personalizations, personalizations)
+      |> from(@email_from)
+      |> subject(subject)
+      |> text_body(body)
+      |> Mailer.deliver!()
+    end)
   end
 
   @doc """
@@ -287,7 +308,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver interview acceptance .
+  Deliver interview acceptance.
   """
   def deliver_acceptance_interview_instructions(from_user, to_user, url) do
     deliver(to_user.email, "【Bright】面談参加依頼が届いています", """
@@ -310,7 +331,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver interview start mail to candidates_user .
+  Deliver interview start mail to candidates_user.
   """
   def deliver_start_interview_to_candidates_user(from_user, to_user) do
     deliver(to_user.email, "【Bright】面談が確定されました", """
@@ -332,7 +353,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver interview start mail to recruitor .
+  Deliver interview start mail to recruitor.
   """
   def deliver_start_interview_to_recruiter(from_user, to_user) do
     deliver(from_user.email, "【Bright】面談確定を候補者に連絡しました（調整を行ってください）", """
@@ -364,7 +385,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver interview cancel mail to candidates_user .
+  Deliver interview cancel mail to candidates_user.
   """
   def deliver_cancel_interview_to_candidates_user(from_user, to_user) do
     deliver(to_user.email, "【Bright】面談がキャンセルされました", """
@@ -385,7 +406,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver coordination acceptance .
+  Deliver coordination acceptance.
   """
   def deliver_acceptance_coordination_instructions(from_user, to_user, url) do
     deliver(to_user.email, "【Bright】採用検討依頼が届いています", """
@@ -408,7 +429,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver coordination cancel mail to candidates_user .
+  Deliver coordination cancel mail to candidates_user.
   """
   def deliver_cancel_coordination_to_candidates_user(from_user, to_user, message) do
     deliver(to_user.email, "【Bright】選考結果のご連絡", """
@@ -518,7 +539,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver free trial apply .
+  Deliver free trial apply.
   """
   def deliver_new_message_notification_instructions(to_user, url) do
     deliver(to_user.email, "【Bright】新着メッセージが届いています", """
@@ -541,7 +562,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver free trial apply .
+  Deliver free trial apply.
   """
   def deliver_free_trial_apply_instructions(from_user, to_user, detail) do
     deliver(to_user.email, "【Bright】無料トライアルの申し込みがありました", """
@@ -558,6 +579,32 @@ defmodule Bright.Accounts.UserNotifier do
     申込日(UTC) #{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..-2)}
 
     お得意様であればフォローアップをお願いします
+    """)
+  end
+
+  @doc """
+  Deliver notifications to all confirmed users about sending notification from operation.
+  """
+  def deliver_operations_notification!() do
+    Accounts.list_confirmed_user_emails()
+    |> deliver_many!("【Bright】運営からの通知が届きました", """
+    Brightカスタマーサクセスです。
+
+    いつも Bright をご利用いただき、ありがとうございます。
+
+    運営からの通知をお届けしました。
+    下記 URL をクリックいただき、通知をご確認ください。
+
+    #{url(~p"/notifications/operations")}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
     """)
   end
 end

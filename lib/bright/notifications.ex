@@ -8,7 +8,7 @@ defmodule Bright.Notifications do
   import Ecto.Query, warn: false
 
   alias Bright.Repo
-  alias Bright.Accounts.User
+  alias Bright.Accounts.{User, UserNotifier}
 
   alias Bright.Notifications.{
     NotificationOperation,
@@ -111,6 +111,8 @@ defmodule Bright.Notifications do
   @doc """
   Creates a notification by type.
 
+  When notification_type is "operation" and successfully created, deliver emails to all confirmed users.
+
   ## Examples
 
       iex> create_notification("operation", %{field: value})
@@ -126,6 +128,7 @@ defmodule Bright.Notifications do
     %NotificationOperation{}
     |> NotificationOperation.changeset(attrs)
     |> Repo.insert()
+    |> try_deliver_operations_notification()
   end
 
   def create_notification("community", attrs) do
@@ -145,6 +148,16 @@ defmodule Bright.Notifications do
   """
   def create_notifications("evidence", attrs_list) do
     Repo.insert_all(NotificationEvidence, attrs_list)
+  end
+
+  defp try_deliver_operations_notification({:ok, %NotificationOperation{}} = result) do
+    UserNotifier.deliver_operations_notification!()
+
+    result
+  end
+
+  defp try_deliver_operations_notification({:error, _} = result) do
+    result
   end
 
   @doc """

@@ -1,11 +1,11 @@
 defmodule BrightWeb.Api.NotificationOperationControllerTest do
   use BrightWeb.ConnCase
   import Bright.Factory
+  import Swoosh.TestAssertions
+
   alias Bright.Notifications.NotificationOperation
 
-  defp create_attrs() do
-    from_user = insert(:user)
-
+  defp create_attrs(from_user) do
     %{
       message: "some message",
       from_user_id: from_user.id,
@@ -13,9 +13,7 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
     }
   end
 
-  defp update_attrs() do
-    from_user = insert(:user)
-
+  defp update_attrs(from_user) do
     %{
       message: "some updated message",
       from_user_id: from_user.id,
@@ -64,8 +62,10 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
     setup [:setup_api_basic_auth]
 
     test "renders notification_operation when data is valid", %{conn: conn} do
-      attrs = create_attrs()
-      from_user_id = attrs.from_user_id
+      from_user = insert(:user)
+      from_user_id = from_user.id
+      attrs = create_attrs(from_user)
+
       conn = post(conn, ~p"/api/v1/notification_operations", notification_operation: attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -79,11 +79,26 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
+    test "sends mails to confirmed_users", %{conn: conn} do
+      from_user = insert(:user)
+      attrs = create_attrs(from_user)
+
+      user = insert(:user)
+      user_sub_email = insert(:user_sub_email, user: user)
+      insert(:user_not_confirmed)
+      insert(:user_not_confirmed)
+
+      post(conn, ~p"/api/v1/notification_operations", notification_operation: attrs)
+
+      assert_operations_notification_mail_sent([from_user.email, user.email, user_sub_email.email])
+    end
+
     test "renders errors when data is invalid", %{conn: conn} do
       conn =
         post(conn, ~p"/api/v1/notification_operations", notification_operation: @invalid_attrs)
 
       assert json_response(conn, 422)["errors"] != %{}
+      assert_no_email_sent()
     end
   end
 
@@ -94,7 +109,8 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
       conn: conn,
       notification_operation: %NotificationOperation{id: id} = notification_operation
     } do
-      attrs = update_attrs()
+      from_user = insert(:user)
+      attrs = update_attrs(from_user)
 
       conn =
         put(conn, ~p"/api/v1/notification_operations/#{notification_operation}",
@@ -105,7 +121,7 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
 
       conn = get(conn, ~p"/api/v1/notification_operations/#{id}")
 
-      from_user_id = attrs.from_user_id
+      from_user_id = from_user.id
 
       assert %{
                "id" => ^id,
