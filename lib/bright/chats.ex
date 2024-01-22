@@ -31,7 +31,9 @@ defmodule Bright.Chats do
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
       join: i in Interview,
-      on: i.id == c.relation_id and i.status in [:consume_interview, :ongoing_interview],
+      on:
+        i.id == c.relation_id and
+          i.status in [:consume_interview, :ongoing_interview, :completed_interview],
       join: p in UserProfile,
       on: p.user_id == i.candidates_user_id,
       where: c.relation_type == "recruit",
@@ -64,7 +66,9 @@ defmodule Bright.Chats do
       on: m.user_id == ^user_id and m.chat_id == c.id,
       preload: [:messages, :users],
       join: i in Interview,
-      on: i.id == c.relation_id and i.status in [:consume_interview, :ongoing_interview],
+      on:
+        i.id == c.relation_id and
+          i.status in [:consume_interview, :ongoing_interview, :completed_interview],
       join: cu in User,
       on: cu.id == i.candidates_user_id,
       join: cp in UserProfile,

@@ -1,4 +1,5 @@
 defmodule BrightWeb.ChatLive.Index do
+  alias Bright.Recruits
   use BrightWeb, :live_view
 
   alias Bright.Chats
@@ -165,10 +166,21 @@ defmodule BrightWeb.ChatLive.Index do
                 </button>
               </.link>
               <div class="flex">
+                <.link
+                  phx-click="close_chat"
+                  data-confirm="このチャットを閉じますか？"
+                >
+                  <button
+                    type="button"
+                    class="text-sm font-bold ml-2 px-2 py-3 rounded border bg-white w-36 lg:w-56"
+                  >
+                    チャットを閉じる
+                  </button>
+                </.link>
                 <div
                   :if={@chat.owner_user_id == @current_user.id and  @chat.interview.status != :cancel_interview}
                 >
-                  <%= if @chat.interview.status in [:consume_interview ]do %>
+                  <%= if @chat.interview.status == :consume_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -176,7 +188,8 @@ defmodule BrightWeb.ChatLive.Index do
                     >
                       面談確定の確認
                     </button>
-                  <% else %>
+                  <% end %>
+                  <%= if @chat.interview.status == :ongoing_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -186,7 +199,6 @@ defmodule BrightWeb.ChatLive.Index do
                     </button>
                   <% end %>
                 </div>
-
                 <button
                   type="submit"
                   class="text-sm font-bold ml-2 px-2 py-3 rounded border bg-base text-white w-36 lg:w-56"
@@ -309,6 +321,16 @@ defmodule BrightWeb.ChatLive.Index do
 
   def handle_event("open_create_coordination", _params, socket) do
     {:noreply, assign(socket, :open_create_coordination, true)}
+  end
+
+  def handle_event("close_chat", _params, socket) do
+    {:ok, _chat} =
+      Recruits.update_interview(socket.assigns.chat.interview, %{status: :close_chat})
+
+    socket
+    |> put_flash(:info, "チャットを閉じました")
+    |> redirect(to: ~p"/recruits/chats")
+    |> then(&{:noreply, &1})
   end
 
   @impl true
