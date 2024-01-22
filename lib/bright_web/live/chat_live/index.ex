@@ -172,7 +172,7 @@ defmodule BrightWeb.ChatLive.Index do
                 >
                   <button
                     type="button"
-                    class="text-sm font-bold ml-2 px-2 py-3 rounded border bg-white w-36 lg:w-56"
+                    class="text-sm font-bold mr-2 px-2 py-3 rounded border bg-white w-36 lg:w-56"
                   >
                     チャットを閉じる
                   </button>
