@@ -318,6 +318,12 @@ defmodule Bright.SubscriptionsTest do
         |> plan_with_plan_service_by_service_code("non_target_service_code")
         |> Repo.preload(:subscription_plan_services)
 
+      # priorityがない（拡張プラン）は採用されない
+      _subscription_plan4 =
+        insert(:subscription_plans, %{free_trial_priority: nil})
+        |> plan_with_plan_service_by_service_code("target_service_code")
+        |> Repo.preload(:subscription_plan_services)
+
       result =
         Subscriptions.get_most_priority_free_trial_subscription_plan_by_service(
           "target_service_code"
@@ -333,13 +339,11 @@ defmodule Bright.SubscriptionsTest do
       _subscription_plan1 =
         insert(:subscription_plans, %{create_teams_limit: 1, team_members_limit: 11})
         |> plan_with_plan_service_by_service_code("target_service_code")
-        |> Repo.preload(:subscription_plan_services)
 
       # メンバー数制限が小さい
       _subscription_plan2 =
         insert(:subscription_plans, %{create_teams_limit: 2, team_members_limit: 9})
         |> plan_with_plan_service_by_service_code("target_service_code")
-        |> Repo.preload(:subscription_plan_services)
 
       # priorityが大きい
       _subscription_plan3 =
@@ -349,7 +353,6 @@ defmodule Bright.SubscriptionsTest do
           free_trial_priority: 3
         })
         |> plan_with_plan_service_by_service_code("target_service_code")
-        |> Repo.preload(:subscription_plan_services)
 
       # priorityが小さい
       subscription_plan =
@@ -359,7 +362,6 @@ defmodule Bright.SubscriptionsTest do
           free_trial_priority: 2
         })
         |> plan_with_plan_service_by_service_code("target_service_code")
-        |> Repo.preload(:subscription_plan_services)
 
       # サービスコードが異なるプランは採用されない
       _subscription_plan4 =
@@ -369,7 +371,15 @@ defmodule Bright.SubscriptionsTest do
           free_trial_priority: 1
         })
         |> plan_with_plan_service_by_service_code("non_target_service_code")
-        |> Repo.preload(:subscription_plan_services)
+
+      # priorityがない（拡張プラン）
+      _subscription_plan5 =
+        insert(:subscription_plans, %{
+          create_teams_limit: 2,
+          team_members_limit: 10,
+          free_trial_priority: nil
+        })
+        |> plan_with_plan_service_by_service_code("target_service_code")
 
       result =
         Subscriptions.get_most_priority_free_trial_subscription_plan_by_service(
@@ -388,6 +398,16 @@ defmodule Bright.SubscriptionsTest do
 
       # 上限を満たさない / priorityを満たす
       _plan_1 = insert(:subscription_plans, %{create_teams_limit: 1, free_trial_priority: 1})
+
+      assert nil ==
+               Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
+                 limit_order,
+                 current_plan
+               )
+
+      # 上限を満たす / 拡張プラン
+      _plan_extended =
+        insert(:subscription_plans, %{create_teams_limit: 2, free_trial_priority: nil})
 
       assert nil ==
                Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
@@ -506,6 +526,16 @@ defmodule Bright.SubscriptionsTest do
 
       # 上限を満たさない / priorityを満たす
       _plan_1 = insert(:subscription_plans, %{team_members_limit: 5, free_trial_priority: 1})
+
+      assert nil ==
+               Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(
+                 limit_order,
+                 current_plan
+               )
+
+      # 上限を満たす / 拡張プラン
+      _plan_extended =
+        insert(:subscription_plans, %{team_members_limit: 6, free_trial_priority: nil})
 
       assert nil ==
                Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(

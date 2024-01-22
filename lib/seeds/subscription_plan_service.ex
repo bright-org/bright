@@ -7,14 +7,22 @@ defmodule Bright.Seeds.SubscriptionPlanService do
   alias Bright.Subscriptions.SubscriptionPlan
 
   @plan_services [
-    %{plan_code: "personal_skill_up_plan", service_code: "skill_up"},
+    %{plan_code: "together", service_code: "skill_up"},
+    %{plan_code: "together_limit_extended", service_code: "skill_up"},
     %{plan_code: "team_up_plan", service_code: "skill_up"},
     %{plan_code: "team_up_plan", service_code: "team_up"},
+    %{plan_code: "team_up_plan_limit_extended", service_code: "skill_up"},
+    %{plan_code: "team_up_plan_limit_extended", service_code: "team_up"},
     %{plan_code: "hr_plan", service_code: "skill_up"},
     %{plan_code: "hr_plan", service_code: "team_up"},
     %{plan_code: "hr_plan", service_code: "hr_basic"},
-    %{plan_code: "hr_plan", service_code: "hr_recruitment "},
-    %{plan_code: "hr_plan", service_code: "hr_training"}
+    %{plan_code: "hr_plan", service_code: "hr_recruitment"},
+    %{plan_code: "hr_plan", service_code: "hr_training"},
+    %{plan_code: "hr_plan_limit_extended", service_code: "skill_up"},
+    %{plan_code: "hr_plan_limit_extended", service_code: "team_up"},
+    %{plan_code: "hr_plan_limit_extended", service_code: "hr_basic"},
+    %{plan_code: "hr_plan_limit_extended", service_code: "hr_recruitment"},
+    %{plan_code: "hr_plan_limit_extended", service_code: "hr_training"}
   ]
 
   def insert() do

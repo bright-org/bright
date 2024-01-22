@@ -33,7 +33,8 @@ defmodule Bright.Subscriptions.SubscriptionPlan do
       :create_enable_hr_functions_teams_limit,
       :team_members_limit,
       :available_contract_end_datetime,
-      :free_trial_priority
+      :free_trial_priority,
+      :authorization_priority
     ])
     |> validate_required([
       :plan_code,
@@ -41,7 +42,7 @@ defmodule Bright.Subscriptions.SubscriptionPlan do
       :create_teams_limit,
       :create_enable_hr_functions_teams_limit,
       :team_members_limit,
-      :free_trial_priority
+      :authorization_priority
     ])
   end
 end

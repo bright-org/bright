@@ -17,12 +17,29 @@ SubscriptionsコンテキストはBrightにおける定額契約プランおよ�
 
 ```mermaid
 erDiagram
-  "SubscriptionPlan"||--|{"SubscriptionService" : "利用可能なサービス群"
+  "SubscriptionPlan"||--|{"SubscriptionPlanService" : "利用可能なサービス群"
   "SubscriptionPlan"||--o{"SubscriptionUserPlan" : ""
   "SubscriptionUserPlan"}o--o{"User" : "契約したプラン(過去分を含む)"
 ```
 
-ユーザー毎の契約履歴はSubscriptionUserPlanとして登録される。
+以下、`subscription_plans`と`subscription_user_plans`のカラムである。
+
+```mermaid
+erDiagram
+
+  subscription_plans {
+    string plan_code "プランを表すコード 一意"
+    string name_jp "プラン表示名"
+    integer free_trial_priority "無料トライアルの優先度 小さい方が優先 nilは対象外"
+    integer authorization_priority "プランの採用優先度 大きい方が優先 上位プランが大"
+    integer create_teams_limit "通常チームの作成数上限"
+    integer team_members_limit "チームのメンバー数上限"
+    integer create_enable_hr_functions_teams_limit "育成・支援チームの作成数上限"
+    datetime available_contract_end_datetime "契約そのものの終了日時"
+  }
+```
+
+- 特に`authorization_priority`は重ならないように設定する。
 
 ```mermaid
 erDiagram
@@ -60,17 +77,34 @@ Brightのサービス・機能と利用可能なプランのマッピングに�
 | 採用                | hr_recruitment |
 | 育成                | hr_training    |
 
+
+## 無料トライアルで利用可能なプラン
+
+ユーザーはプランの無料トライアルを利用できる。ただし、利用可能かどうかはユーザー状況やプランで条件がある。
+
+- 同一プランで、既に無料トライアルか、あるいはサブスクリプションがある（完了含む）場合は利用できない。
+  - 同一とは、データ上では`subscription_plans.plan_code`を指す。
+  - 上位プランの無料トライアルやサブスクリプションがある（完了）場合は、利用できる。あくまで同一かどうかをみる。
+- 上位プランを無料トライアル中かサブスクリプション中であれば、利用できない。
+  - まず画面上において誘導しない。データ上は問題としない。
+  - 逆に、下位プランを無料トライアル中かサブスクリプション中のときは利用できる。
+- 個者(社)対応として作成されているプランは利用できない。
+  - データ上は、`subscription_plans.free_trial_priority`がnilなデータが該当する。
+
+
 ## サブスクリプションプランとサービスの初期データ登録
 
 priv/repo/seed_dummy_data.exsに収録すみの下記関数で[サービスタリフ](https://bright-fun.org/plan/)に即した初期データを登録できる。
 収録データについては[Seedsファイル参照](lib/seeds)
 
 ```elixir
-Bright.Seeds.SubscriptionPlanService.delete()
 Bright.Seeds.SubscriptionPlan.delete()
 Bright.Seeds.SubscriptionPlan.insert()
 Bright.Seeds.SubscriptionPlanService.insert()
 ```
+
+`Bright.Seeds.SubscriptionPlan.delete()`は、ユーザー毎の契約履歴も削除するので注意すること。
+
 
 ## Subscriptions関数
 
@@ -108,8 +142,15 @@ Subscriptions.service_enabled?(user_id, service_code)
 ```
 
 ```elixir
-#  サービスコードをキーに該当サービスが利用可能な最も優先度の高いサブスクリプションプランを返す
+# サービスコードをキーに該当サービスが利用可能な最も優先度の高いサブスクリプションプランを返す
 Subscriptions.get_most_priority_free_trial_subscription_plan(service_code)
+
+# 現在契約中のプランがあれば指定が必要
+Subscriptions.get_most_priority_free_trial_subscription_plan(service_code, current_plan)
+
+# サービスではなく、チーム数やチームメンバー数の上限で探す場合は下記
+Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(create_teams_limit, current_plan)
+Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(team_members_limit, current_plan)
 ```
 
 ```elixir

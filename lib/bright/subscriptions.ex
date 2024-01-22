@@ -341,7 +341,7 @@ defmodule Bright.Subscriptions do
 
   ## Examples
 
-      iex> get_plan_by_plan_code("free_plan")
+      iex> get_plan_by_plan_code("team_up_plan")
       %SubscriptionPlan{}
       iex> get_plan_by_plan_code("hogehoge")
       nil
@@ -370,7 +370,7 @@ defmodule Bright.Subscriptions do
   プランコードを指定してサブスクリプションプランと、プランで有効なサービス一覧を取得する
 
   ## Examples
-      iex> get_subscription_plan_with_enable_services_by_plan_code("personal_skill_up_plan")
+      iex> get_subscription_plan_with_enable_services_by_plan_code("together")
       %SubscriptionPlan{}
   """
   def get_subscription_plan_with_enable_services_by_plan_code(plan_code) do
@@ -679,7 +679,7 @@ defmodule Bright.Subscriptions do
   ## Examples
       iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
       true
-      iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "personal_skill_up_plan")
+      iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "together")
       false
   """
   def free_trial_available?(user_id, plan_code) do
