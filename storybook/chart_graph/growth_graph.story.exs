@@ -12,12 +12,14 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             myself: [nil, 0, 35, 45, 50, 70],
             other: [10, 10, 10, 10, 45, 80],
             role: [20, 20, 50, 60, 75, 100],
-            now: 55,
+            myselfNow: 55,
+            otherNow: 60,
             futureDisplay: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "2021.9",
-            otherSelected: "2020.12"
+            otherSelected: "2020.12",
+            comparedOther: true
           }
         }
       },
@@ -28,12 +30,14 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             myself: [nil, 0, 35, 45, 50, 70],
             other: [10, 10, 10, 10, 45, 80],
             role: [20, 20, 50, 60, 75, 100],
-            now: 55,
+            myselfNow: 55,
+            otherNow: 60,
             futureDisplay: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "2021.6",
-            otherSelected: "2020.12"
+            otherSelected: "2020.12",
+            comparedOther: true
           }
         }
       },
@@ -44,12 +48,14 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             myself: [nil, 0, 35, 45, 50, 70],
             other: [10, 10, 10, 10, 45, 80],
             role: [20, 20, 50, 60, 75, 100],
-            now: 55,
+            myselfNow: 55,
+            otherNow: 60,
             futureDisplay: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "now",
-            otherSelected: "2020.12"
+            otherSelected: "2020.12",
+            comparedOther: true
           }
         }
       },
@@ -60,9 +66,15 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             myself: [nil, 0, 35, 45, 50, 70],
             other: [10, 10, 10, 10, 45, 80],
             role: [20, 20, 50, 60, 75, 100],
+            myselfNow: nil,
+            otherNow: nil,
             futureDisplay: false,
-            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
-            otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
+            otherFutureDisplay: false,
+            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2021.12"],
+            otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2021.12"],
+            myselfSelected: "2020.9",
+            otherSelected: "2020.9",
+            comparedOther: true
           }
         }
       },
@@ -92,10 +104,12 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             myself: [10, 10, 35, 45, 55, 60],
             other: [10, 10, 10, 10, 45, 80],
             futureDisplay: false,
+            otherFutureDisplay: false,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             otherLabels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "2021.9",
-            otherSelected: "2011.12"
+            otherSelected: "2011.12",
+            comparedOther: true
           }
         }
       }
