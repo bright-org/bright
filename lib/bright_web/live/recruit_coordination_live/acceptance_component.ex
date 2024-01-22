@@ -11,7 +11,6 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
         <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-8 shadow text-sm">
             <h2 class="font-bold text-xl"><span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">選考結果</span></h2>
-            <p class="mt-2 text-lg">※採用辞退で選択した理由は採用担当者には送信されません</p>
             <div class="mt-8">
               <div class="mt-4 overflow-y-auto">
                 <p class="w-full break-words">
