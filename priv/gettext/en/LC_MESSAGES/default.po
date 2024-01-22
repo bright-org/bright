@@ -81,6 +81,12 @@ msgstr ""
 msgid "waiting_response"
 msgstr ""
 
+msgid "acceptance_emplyoment"
+msgstr ""
+
+msgid "requested"
+msgstr ""
+
 msgid "employee"
 msgstr ""
 

@@ -81,6 +81,12 @@ msgstr "今は採用しない"
 msgid "waiting_response"
 msgstr "承諾待ち"
 
+msgid "acceptance_emplyoment"
+msgstr "採用承諾済み"
+
+msgid "requested"
+msgstr "チーム連携待ち"
+
 msgid "employee"
 msgstr "正社員"
 
