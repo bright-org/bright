@@ -355,7 +355,7 @@ defmodule Bright.Accounts.UserNotifier do
   @doc """
   Deliver interview start mail to recruitor.
   """
-  def deliver_start_interview_to_recruiter(from_user, to_user) do
+  def deliver_start_interview_to_recruiter(from_user, to_user, url) do
     deliver(from_user.email, "【Bright】面談確定を候補者に連絡しました（調整を行ってください）", """
     #{from_user.name}さん
 
@@ -363,7 +363,7 @@ defmodule Bright.Accounts.UserNotifier do
     別途、日程などをメールで調整してください（Bright内では日程調整は行いません）。
 
     面談終了後、下記URLで採用調整、選考通知およびチーム招待を行ってください。
-    https://採用調整モーダル
+    #{url}
 
     ====================================================================
 

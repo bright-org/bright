@@ -203,7 +203,11 @@ defmodule Bright.Recruits do
     )
   end
 
-  def send_interview_start_notification_mails(interview_id) do
+  def send_interview_start_notification_mails(
+        interview_id,
+        start_interview_url_fun
+      )
+      when is_function(start_interview_url_fun, 1) do
     interview =
       Interview
       |> preload([:candidates_user, :recruiter_user])
@@ -216,7 +220,8 @@ defmodule Bright.Recruits do
 
     UserNotifier.deliver_start_interview_to_recruiter(
       interview.recruiter_user,
-      interview.candidates_user
+      interview.candidates_user,
+      start_interview_url_fun.(interview_id)
     )
   end
 
