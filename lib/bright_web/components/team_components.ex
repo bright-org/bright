@@ -98,7 +98,7 @@ defmodule BrightWeb.TeamComponents do
         管理者
       </span>
       <.link
-        :if={@team_params.is_admin && @team_params.free_trial_together_link?}
+        :if={@team_params.is_admin && Map.get(@team_params, :free_trial_together_link?)}
         navigate="/free_trial?plan=together"
         class="text-white text-sm font-bold ml-4 px-2 py-1 inline-flex items-center bg-base rounded min-w-[60px]"
       >
