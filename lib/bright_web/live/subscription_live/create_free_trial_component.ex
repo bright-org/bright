@@ -114,27 +114,25 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
                       下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
                     </p>
                     <div class="flex justify-center">
-                    <.plan_upgrade_button />
+                      <.plan_upgrade_button />
                     </div>
                   </div>
                 <% end %>
               <% else %>
                 <div class="my-4">
-                  <%= if is_nil(@subscription.subscription_end_datetime) do %>
-                    <p class="mt-4">
-                      このプランはすでに選択済みです
-                    </p>
-                  <% else %>
                   <p class="mt-4">
+                    <%= if is_nil(@subscription.subscription_end_datetime) do %>
+                      このプランはすでに選択済みです
+                    <% else %>
                       このプランの無料トライアル期間は終了しています
-                    </p>
-                    <p class="mb-4">
-                      下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
-                    </p>
-                    <div class="flex justify-center">
-                      <.plan_upgrade_button />
-                    </div>
-                  <% end %>
+                    <% end %>
+                  </p>
+                  <p class="mb-4">
+                    下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
+                  </p>
+                  <div class="flex justify-center">
+                    <.plan_upgrade_button />
+                  </div>
                 </div>
               <% end %>
             </div>
