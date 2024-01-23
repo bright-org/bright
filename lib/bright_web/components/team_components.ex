@@ -90,7 +90,7 @@ defmodule BrightWeb.TeamComponents do
         star
       </span>
       <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
-      <%= @team_params.name %>
+      <span class="max-w-[400px] truncate"><%= @team_params.name %></span>
       <span
         :if={@team_params.is_admin}
         class="text-white text-sm font-bold ml-6 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
@@ -98,7 +98,7 @@ defmodule BrightWeb.TeamComponents do
         管理者
       </span>
       <.link
-        :if={@team_params.is_admin && @team_params.free_trial_together_link?}
+        :if={@team_params.is_admin && Map.get(@team_params, :free_trial_together_link?)}
         navigate="/free_trial?plan=together"
         class="text-white text-sm font-bold ml-4 px-2 py-1 inline-flex items-center bg-base rounded min-w-[60px]"
       >
@@ -116,7 +116,7 @@ defmodule BrightWeb.TeamComponents do
   def team_header(assigns) do
     ~H"""
     <div class="flex gap-x-4">
-      <h3>
+      <h3 class="max-w-[1000px] truncate">
         <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2 !inline-flex w-8 h-8 !items-center !justify-center"/>
         <%= @team_name %>
       </h3>
