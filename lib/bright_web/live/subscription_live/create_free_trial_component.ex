@@ -227,7 +227,10 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
   end
 
   defp free_trial_available?(user_id, plan, status) do
+    # statusがある場合、そのプランが下位か、上位でも無料トライアル終了済みならplanで無料トライアル可能
+    # TODO: できればコンテキスト側にもたせる
     Subscriptions.free_trial_available?(user_id, plan.plan_code) &&
-      status.subscription_plan.free_trial_priority < plan.free_trial_priority
+      (status.subscription_plan.free_trial_priority < plan.free_trial_priority ||
+         (status.subscription_status == :free_trial && status.trial_end_datetime != nil))
   end
 end
