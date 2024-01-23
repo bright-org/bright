@@ -160,7 +160,11 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
   def handle_event("decision", %{"decision" => status}, socket) do
     {:ok, interview} = Recruits.update_interview(socket.assigns.interview, %{status: status})
 
-    Recruits.send_interview_start_notification_mails(interview.id)
+    Recruits.send_interview_start_notification_mails(
+      interview.id,
+      &url(~p"/recruits/interviews/#{&1}")
+    )
+
     chat = Chats.get_chat_by_interview_id(interview.id)
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}

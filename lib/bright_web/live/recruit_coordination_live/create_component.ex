@@ -28,7 +28,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                 <div>
                   <h3 class="font-bold text-base">候補者</h3>
                   <.live_component
-                    id="user_params"
+                    id="user_params_coordination"
                     prefix="interview"
                     search={false}
                     anon={true}
@@ -43,7 +43,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                 <div class="mt-8">
                   <h3 class="font-bold text-base">採用選考を依頼したい人<span class="font-normal">を選んでください</span></h3>
                   <.live_component
-                    id="recruit_card"
+                    id="recruit_card_coordination"
                     module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
                     current_user={@current_user}
                     target="#create_coordination_modal"
