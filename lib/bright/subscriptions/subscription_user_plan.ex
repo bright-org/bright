@@ -47,8 +47,7 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
     |> validate_required([
       :user_id,
       :subscription_plan_id,
-      :subscription_status,
-      :subscription_start_datetime
+      :subscription_status
     ])
   end
 
@@ -60,7 +59,6 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
       :user_id,
       :subscription_plan_id,
       :subscription_status,
-      :subscription_start_datetime,
       :trial_start_datetime,
       :company_name,
       :phone_number,
@@ -70,7 +68,6 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
       :user_id,
       :subscription_plan_id,
       :subscription_status,
-      :subscription_start_datetime,
       :trial_start_datetime,
       :phone_number,
       :pic_name

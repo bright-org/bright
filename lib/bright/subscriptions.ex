@@ -398,8 +398,7 @@ defmodule Bright.Subscriptions do
       user_id: user_id,
       subscription_plan_id: subscription_plan_id,
       subscription_status: :free_trial,
-      trial_start_datetime: trial_start_datetime,
-      subscription_start_datetime: trial_start_datetime
+      trial_start_datetime: trial_start_datetime
     }
     |> Map.merge(trial_data)
     |> create_free_trial_subscription_user_plan()
@@ -424,6 +423,33 @@ defmodule Bright.Subscriptions do
       subscription_start_datetime: start_datetime
     }
     |> create_subscription_user_plan()
+  end
+
+  @doc """
+  ユーザーの現プランを返す
+  契約かトライアルかに関わらず最も上位のプランが対象
+
+  ## Examples
+      iex> get_user_subscription_user_plan("01H7W3BZQY7CZVM5Q66T4EWEVC")
+      %Bright.Subscriptions.SubscriptionUserPlan{}
+      iex> get_user_subscription_user_plan("01H7W3BZQY7CZVM5Q66T4EWEVC")
+      nil
+  """
+  def get_user_subscription_user_plan(user_id) do
+    current_datetime = NaiveDateTime.utc_now()
+
+    from(sup in SubscriptionUserPlan,
+      where: sup.user_id == ^user_id,
+      where:
+        (sup.subscription_start_datetime <= ^current_datetime and
+           is_nil(sup.subscription_end_datetime)) or
+          (sup.trial_start_datetime <= ^current_datetime and is_nil(sup.trial_end_datetime)),
+      join: sp in assoc(sup, :subscription_plan),
+      order_by: {:desc, sp.authorization_priority},
+      preload: [subscription_plan: {sp, [:subscription_plan_services]}],
+      limit: 1
+    )
+    |> Repo.one()
   end
 
   @doc """
@@ -452,32 +478,6 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  ユーザーIDと基準時刻をキーに無効な契約内容を取得する
-
-  ## Examples
-      iex> get_users_subscription_status("01H7W3BZQY7CZVM5Q66T4EWEVC", NaiveDateTime.utc_now())
-      %Bright.Subscriptions.SubscriptionUserPlan{}
-      iex> get_users_subscription_status("01H7W3BZQY7CZVM5Q66T4EWEVC", NaiveDateTime.utc_now())
-      nil
-  """
-
-  def get_users_subscription_history(user_id, base_datetime) do
-    # free_trialの有無に関わらず、契約終了日がnilでない契約を無効とみなす
-    # 複数プランが対象になるとき（例: 契約中かつ無料トライアル中）は、
-    # authorization_priorityに基づいて権限が広範な契約内容を返す
-    from(sup in SubscriptionUserPlan,
-      where:
-        sup.user_id == ^user_id and sup.subscription_start_datetime <= ^base_datetime and
-          not is_nil(sup.subscription_end_datetime),
-      join: sp in assoc(sup, :subscription_plan),
-      order_by: {:desc, sp.authorization_priority},
-      preload: [subscription_plan: {sp, [:subscription_plan_services]}],
-      limit: 1
-    )
-    |> Repo.one()
-  end
-
-  @doc """
   サービスコードをキーに該当サービスの利用可否を返す
 
   ## Examples
@@ -487,7 +487,7 @@ defmodule Bright.Subscriptions do
       true
   """
   def service_enabled?(user_id, service_code) do
-    subscription_user_plan = get_users_subscription_status(user_id, NaiveDateTime.utc_now())
+    subscription_user_plan = get_user_subscription_user_plan(user_id)
 
     case subscription_user_plan do
       %SubscriptionUserPlan{} ->
@@ -655,7 +655,7 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  終了したのプラン一覧を返す
+  終了したプラン一覧を返す
 
    ## Examples
       iex> get_users_expired_plans("01H7W3BZQY7CZVM5Q66T4EWEVC")

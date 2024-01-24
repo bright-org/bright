@@ -93,9 +93,10 @@ defmodule Bright.SubscriptionsTest do
       assert result.user_id == user.id
       assert result.subscription_plan_id == subscription_plan1.id
       assert result.subscription_status == :free_trial
+      assert result.trial_start_datetime != nil
       assert result.trial_start_datetime <= NaiveDateTime.utc_now()
       assert result.trial_end_datetime == nil
-      assert result.subscription_start_datetime <= NaiveDateTime.utc_now()
+      assert result.subscription_start_datetime == nil
       assert result.subscription_end_datetime == nil
       assert result.company_name == "test company"
       assert result.pic_name == "test cto"
@@ -115,8 +116,61 @@ defmodule Bright.SubscriptionsTest do
       assert result.subscription_status == :subscribing
       assert result.trial_start_datetime == nil
       assert result.trial_end_datetime == nil
+      assert result.subscription_start_datetime != nil
       assert result.subscription_start_datetime <= NaiveDateTime.utc_now()
       assert result.subscription_end_datetime == nil
+    end
+  end
+
+  describe "get_user_subscription_user_plan/2" do
+    test "returns nil when no enabled subscription plans" do
+      subscription_plan = insert(:subscription_plans)
+      user = insert(:user)
+
+      # 契約完了済のプランは無視される
+      subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan)
+
+      # トライアル完了済のプランは無視される
+      subscription_user_plan_free_trial_end(user, subscription_plan)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result == nil
+    end
+
+    test "returns plan with given user" do
+      subscription_plan = insert(:subscription_plans)
+      user = insert(:user)
+      user_2 = insert(:user)
+
+      subscription_user_plan_free_trial(user, subscription_plan)
+
+      assert Subscriptions.get_user_subscription_user_plan(user.id)
+      refute Subscriptions.get_user_subscription_user_plan(user_2.id)
+    end
+
+    test "returns highest authorization plan" do
+      user = insert(:user)
+
+      # 契約中のプランが返る
+      subscription_plan_1 = insert(:subscription_plans, authorization_priority: 1)
+      subscription_user_plan_subscribing_with_free_trial(user, subscription_plan_1)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result.subscription_plan.id == subscription_plan_1.id
+
+      # より上位のトライアル中プランが返る
+      subscription_plan_2 = insert(:subscription_plans, authorization_priority: 2)
+      subscription_user_plan_free_trial(user, subscription_plan_2)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result.subscription_plan.id == subscription_plan_2.id
+
+      # 過去にトライアル済みの上位プランは無視される
+      subscription_plan_3 = insert(:subscription_plans, authorization_priority: 3)
+      subscription_user_plan_free_trial_end(user, subscription_plan_3)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result.subscription_plan.id == subscription_plan_2.id
     end
   end
 
@@ -178,7 +232,7 @@ defmodule Bright.SubscriptionsTest do
       assert result.subscription_end_datetime == nil
     end
 
-    test "one enable on free_trial plan" do
+    test "not returns free_trial plan" do
       subscription_plan1 = insert(:subscription_plans)
       subscription_plan2 = insert(:subscription_plans)
       user = insert(:user)
@@ -186,31 +240,23 @@ defmodule Bright.SubscriptionsTest do
       # 契約完了済のプランは無視される
       subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan2)
 
-      # 契約中(フリートライアル中)のプランが取得される
+      # フリートライアル中のプランは無視される
       subscription_user_plan_free_trial(user, subscription_plan1)
 
       result = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
-
-      assert result.user_id == user.id
-      assert result.subscription_plan_id == subscription_plan1.id
-      assert result.subscription_status == :free_trial
-      assert result.trial_start_datetime <= NaiveDateTime.utc_now()
-      assert result.trial_end_datetime == nil
-      assert result.subscription_start_datetime <= NaiveDateTime.utc_now()
-      assert result.subscription_end_datetime == nil
+      assert result == nil
     end
 
     test "get high authorization_priority user_plan if user has two plans" do
-      # 契約中およびフリートライアル中で２プランがある場合に、より上位のプランを返す確認
+      # 契約中で２プランがある場合に、より上位のプランを返す確認
+      # 基本的に契約中が2プランある状態は発生しない
       subscription_plan1 = insert(:subscription_plans, authorization_priority: 1)
       subscription_plan2 = insert(:subscription_plans, authorization_priority: 2)
       user = insert(:user)
 
       # 契約中のプラン
       subscription_user_plan_subscribing_without_free_trial(user, subscription_plan1)
-
-      # 契約中(フリートライアル中)のプラン
-      subscription_user_plan_free_trial(user, subscription_plan2)
+      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan2)
 
       # authorization_priorityに従って取得される
       result = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())

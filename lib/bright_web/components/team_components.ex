@@ -239,7 +239,8 @@ defmodule BrightWeb.TeamComponents do
   end
 
   def show_free_trial_together_link?(user) do
-    Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+    # プラン契約中でない場合にリンクを表示
+    Subscriptions.get_user_subscription_user_plan(user.id)
     |> is_nil()
   end
 
