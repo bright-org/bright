@@ -415,13 +415,13 @@ defmodule Bright.Subscriptions do
       }
   """
   def start_subscription(user_id, subscription_plan_id) do
-    trial_start_datetime = NaiveDateTime.utc_now()
+    start_datetime = NaiveDateTime.utc_now()
 
     %{
       user_id: user_id,
       subscription_plan_id: subscription_plan_id,
       subscription_status: :subscribing,
-      subscription_start_datetime: trial_start_datetime
+      subscription_start_datetime: start_datetime
     }
     |> create_subscription_user_plan()
   end
