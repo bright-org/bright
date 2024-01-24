@@ -54,7 +54,7 @@ erDiagram
 
 ## プラン・サービス・機能の要件
 
-Brightのサービス・機能と利用可能なプランのマッピングについては[サービス／機能／課金プラン／権限チェック（個人、チーム）](https://docs.google.com/spreadsheets/d/15kET7RX6EWv4DbDoSsG0NHIw2zW2hY0xeBD5L0yr-oA/edit#gid=1972527741)を参照
+Brightのサービス・機能と利用可能なプランのマッピングについては[サービス／機能／契約プラン／権限チェック（個人、チーム）](https://docs.google.com/spreadsheets/d/15kET7RX6EWv4DbDoSsG0NHIw2zW2hY0xeBD5L0yr-oA/edit#gid=1972527741)を参照
 
 表中のサービス分類と対応する初期データのservice_codeは下表参照
 
@@ -71,12 +71,12 @@ Brightのサービス・機能と利用可能なプランのマッピングに�
 
 ユーザーはプランの無料トライアルを利用できる。ただし、利用可能かどうかはユーザー状況やプランで条件がある。
 
-- 同一プランで、既に無料トライアルか、あるいはサブスクリプションがある（完了含む）場合は利用できない。
+- 同一プランで、既にトライアル中か契約中がある（完了含む）場合は利用できない。
   - 同一とは、データ上では`subscription_plans.plan_code`を指す。
-  - 上位プランの無料トライアルやサブスクリプションが完了している場合は、利用できる。あくまで同一かどうかをみる。
-- より上位のプランの無料トライアル中かサブスクリプション中であれば、利用できない。
+  - 上位プランのトライアルや契約が完了している場合は、利用できる。あくまで同一かどうかをみる。
+- より上位のプランのトライアル中か契約中であれば、利用できない。
   - まず画面上において誘導しない。データ上は問題としない。
-  - 逆に、下位プランの無料トライアル中かサブスクリプション中のときは利用できる。
+  - 逆に、下位プランの無料トライアル中か契約中のときは利用できる。
 
 
 ## サブスクリプションプランとサービスの初期データ登録
@@ -147,7 +147,6 @@ Subscriptions.get_users_subscription_status(user_id, NaiveDateTime.utc_now())
 ```elixir
 # ユーザーIDから現在有効な最上位のプラン（トライアル／契約を問わない）を取得する
 Subscriptions.get_user_subscription_user_plan(user_id)
-Subscriptions.get_user_subscription_user_plan(user_id, NaiveDateTime.utc_now())
 ```
 
 ```elixir
