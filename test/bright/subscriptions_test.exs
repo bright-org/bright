@@ -153,7 +153,7 @@ defmodule Bright.SubscriptionsTest do
 
       # 契約中のプランが返る
       subscription_plan_1 = insert(:subscription_plans, authorization_priority: 1)
-      subscription_user_plan_subscribing_with_free_trial(user, subscription_plan_1)
+      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan_1)
 
       result = Subscriptions.get_user_subscription_user_plan(user.id)
       assert result.subscription_plan.id == subscription_plan_1.id
@@ -165,9 +165,16 @@ defmodule Bright.SubscriptionsTest do
       result = Subscriptions.get_user_subscription_user_plan(user.id)
       assert result.subscription_plan.id == subscription_plan_2.id
 
-      # 過去にトライアル済みの上位プランは無視される
+      # 過去にトライアル完了済みの上位プランは無視される
       subscription_plan_3 = insert(:subscription_plans, authorization_priority: 3)
       subscription_user_plan_free_trial_end(user, subscription_plan_3)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result.subscription_plan.id == subscription_plan_2.id
+
+      # 過去に契約完了済みの上位プランは無視される
+      subscription_plan_4 = insert(:subscription_plans, authorization_priority: 3)
+      subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan_4)
 
       result = Subscriptions.get_user_subscription_user_plan(user.id)
       assert result.subscription_plan.id == subscription_plan_2.id
