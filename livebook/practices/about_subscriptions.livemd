@@ -54,7 +54,7 @@ erDiagram
 
 ## プラン・サービス・機能の要件
 
-Brightのサービス・機能と利用可能なプランのマッピングについては[サービス／機能／契約プラン／権限チェック（個人、チーム）](https://docs.google.com/spreadsheets/d/15kET7RX6EWv4DbDoSsG0NHIw2zW2hY0xeBD5L0yr-oA/edit#gid=1972527741)を参照
+Brightのサービス・機能と利用可能なプランのマッピングについては[サービス／機能／課金プラン／権限チェック（個人、チーム）](https://docs.google.com/spreadsheets/d/15kET7RX6EWv4DbDoSsG0NHIw2zW2hY0xeBD5L0yr-oA/edit#gid=1972527741)を参照
 
 表中のサービス分類と対応する初期データのservice_codeは下表参照
 
