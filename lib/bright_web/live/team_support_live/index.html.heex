@@ -44,47 +44,60 @@
           <% end %>
           <%= if @card.total_entries > 0 do %>
             <%= for {team_supporter_team, index} <- Enum.with_index(@card.entries) do %>
-            <ul 
+            <div
               id={"team_support_#{index}"}
-              class="text-left flex relative items-center text-base hover:bg-brightGray-50 p-1 w-full my-0.5"
-              >
+              class="text-left flex flex-col border rounded-md lg:border-none lg:flex-row relative  items-start lg:items-center text-base hover:bg-brightGray-50 p-1 w-full my-1"
+            >
+              <div class="grow flex flex-col lg:flex-row">
+                <div class="flex flex-wrap">
+                  <span>
+                    <.profile_mini
+                      user_name={team_supporter_team.request_from_user.name}
+                      icon_file_path={UserProfiles.icon_url(team_supporter_team.request_from_user.user_profile.icon_file_path)}
+                    />
+                  </span>                          
+                  <span class="mt-1">から</span>
+                </div>
 
-              <span>
-                <.profile_mini
-                  user_name={team_supporter_team.request_from_user.name}
-                  icon_file_path={UserProfiles.icon_url(team_supporter_team.request_from_user.user_profile.icon_file_path)}
-                />
-              </span>
-              から
-              <span>
-                <.team_small
-                  id={"team_small_#{index}"}
-                  team_params={convert_team_params_from_team(team_supporter_team.supportee_team)}
-                  row_on_click=""
-                  on_hover_style=""
-                />
-              </span>
-              に対する支援依頼
-              <li
+                <div class="flex flex-wrap -ml-2 lg:ml-0">
+                  <.team_small
+                    id={"team_small_#{index}"}
+                    team_params={convert_team_params_from_team(team_supporter_team.supportee_team)}
+                    row_on_click=""
+                    on_hover_style=""
+                  />
+                  <p class="mt-1">に対する支援依頼</p>
+                </div>
+
+                <div 
+                  :if={@card.selected_tab == "requesting"}
+                  class="mt-1"
+                >
+                  <CardListComponents.elapsed_time
+                    inserted_at={team_supporter_team.request_datetime}
+                  />
+                </div>
+                <div 
+                  :if={@card.selected_tab == "supporting"}
+                  class="flex flex-wrap mt-1"
+                > 
+                  <p>
+                  <CardListComponents.elapsed_time
+                    inserted_at={team_supporter_team.start_datetime}
+                  />
+                  </p>
+                  <p class="ml-2">
+                  に支援開始
+                  </p>
+                </div>
+              </div>
+
+              <div
                 :if={@card.selected_tab == "requesting"}
-              >
-                <CardListComponents.elapsed_time
-                  inserted_at={team_supporter_team.request_datetime}
-                />
-              </li>
-              <li
-                :if={@card.selected_tab == "supporting"}
-              >
-                <CardListComponents.elapsed_time
-                  inserted_at={team_supporter_team.start_datetime}
-                />
-                に支援開始
-              </li>
-              <li
-                :if={@card.selected_tab == "requesting"}
+                class="w-full lg:w-40 flex justify-end"
               >
                 <.button
-                  class="ml-2 absolute inset-y-0 right-1"
+                  class="ml-2"
                   type="submit"
                   phx-click="show_hr_support_modal"
                   phx-value-team_supporter_team_id={team_supporter_team.id}
@@ -92,10 +105,13 @@
                 >
                   支援依頼を確認する
                 </.button>
-              </li>
-              <li :if={@card.selected_tab == "supporting"}>
+              </div>
+              <div 
+                :if={@card.selected_tab == "supporting"}
+                class="w-full lg:w-36 flex justify-end"
+              >
                 <.button
-                  class="ml-2 absolute inset-y-0 right-1"
+                  class="ml-2 "
                   type="submit"
                   phx-click="show_hr_support_modal"
                   phx-value-team_supporter_team_id={team_supporter_team.id}
@@ -103,8 +119,8 @@
                 >
                   支援を終了する
                 </.button>
-              </li>
-            </ul>
+              </div>
+            </div>
             <% end %>
           <% else %>
             <% # 表示内容がないときの表示 %>

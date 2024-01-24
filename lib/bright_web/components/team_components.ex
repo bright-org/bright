@@ -90,7 +90,7 @@ defmodule BrightWeb.TeamComponents do
         star
       </span>
       <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
-      <span class="max-w-[400px] truncate"><%= @team_params.name %></span>
+      <span class="max-w-[160px] lg:max-w-[280px] truncate"><%= @team_params.name %></span>
       <span
         :if={@team_params.is_admin}
         class="text-white text-sm font-bold ml-6 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
