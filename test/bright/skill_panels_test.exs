@@ -87,7 +87,7 @@ defmodule Bright.SkillPanelsTest do
 
     test "get_skill_panel_with_career_fields!/1 returns the skill_panel with given id" do
       %{id: id} = insert(:skill_panel)
-      assert %{id: id} = SkillPanels.get_skill_panel_with_career_fields!(id)
+      assert %{id: ^id} = SkillPanels.get_skill_panel_with_career_fields!(id)
     end
 
     test "get_skill_panel_with_career_fields!/1 invalid ULID id" do
