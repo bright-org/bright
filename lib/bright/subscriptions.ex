@@ -674,20 +674,85 @@ defmodule Bright.Subscriptions do
 
   @doc """
   プランコードをキーに該当プランのフリートライアル利用可否を返す
-  過去に一度でも該当のプランでフリートライアルを開始した履歴がある場合、利用不可
+
+  下記条件下では利用できない
+
+  - 現在該当プランのサービスを内包するフリートライアル中か契約中である
+  - 過去に一度でも該当プランでフリートライアルや契約をしている
+    - 同一プランが対象（上位プランが既に済みでも利用可能）
+  - 指定されたプランが無料トライアル対象ではない（`free_trial_priority`が設定されていない）
 
   ## Examples
       iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
-      true
+      {true, nil}
       iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "personal_skill_up_plan")
-      false
+      {false, :already_available}
+      iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "personal_skill_up_plan")
+      {false, :already_used_once}
   """
   def free_trial_available?(user_id, plan_code) do
-    get_users_trialed_plans(user_id)
-    |> Enum.any?(fn subscription_user_plan ->
-      subscription_user_plan.subscription_plan.plan_code == plan_code
-    end)
-    |> Kernel.not()
+    # ユーザーの契約履歴を洗って、現状と過去に分けている
+    {currents, olds} =
+      from(sup in SubscriptionUserPlan,
+        where: sup.user_id == ^user_id,
+        join: sp in assoc(sup, :subscription_plan),
+        preload: [subscription_plan: {sp, :subscription_plan_services}]
+      )
+      |> Repo.all()
+      |> Enum.split_with(
+        &((&1.subscription_start_datetime && &1.subscription_end_datetime == nil) ||
+            (&1.trial_start_datetime && &1.trial_end_datetime == nil))
+      )
+
+    current =
+      if currents != [], do: Enum.max_by(currents, & &1.subscription_plan.authorization_priority)
+
+    already_available? =
+      subscription_user_plan_is_already_available?(
+        current && current.subscription_plan,
+        plan_code
+      )
+
+    already_used_once? = Enum.any?(olds, &(&1.subscription_plan.plan_code == plan_code))
+
+    target_plan = get_plan_by_plan_code(plan_code)
+
+    not_for_trial? =
+      Enum.any?([
+        target_plan.free_trial_priority == nil,
+        current && current.subscription_plan.free_trial_priority == nil
+      ])
+
+    cond do
+      already_available? -> {false, :already_available}
+      already_used_once? -> {false, :already_used_once}
+      not_for_trial? -> {false, :not_for_trial}
+      true -> {true, nil}
+    end
+  end
+
+  defp subscription_user_plan_is_already_available?(nil, _plan_code), do: false
+
+  defp subscription_user_plan_is_already_available?(subscription_plan, plan_code) do
+    # プランが指定したプランを内包するかどうかを返す
+    #
+    # 内包判定
+    # - service_codeをすべて満たす
+    # - limitの制限をすべて満たす
+    target_plan =
+      get_plan_by_plan_code(plan_code)
+      |> Repo.preload(:subscription_plan_services)
+
+    target_service_codes = Enum.map(target_plan.subscription_plan_services, & &1.service_code)
+    service_codes = Enum.map(subscription_plan.subscription_plan_services, & &1.service_code)
+    has_services? = target_service_codes -- service_codes == []
+
+    has_limit? =
+      ~w(create_teams_limit team_members_limit create_enable_hr_functions_teams_limit)
+      |> Enum.map(&(Map.get(subscription_plan, &1) >= Map.get(target_plan, &1)))
+      |> Enum.all?()
+
+    has_services? && has_limit?
   end
 
   def deliver_free_trial_apply_instructions(from_user, application_detail) do

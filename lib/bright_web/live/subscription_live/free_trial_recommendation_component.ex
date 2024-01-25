@@ -13,7 +13,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
       <main
         id={@id}
         class={"flex h-screen items-center justify-center p-10 w-screen #{if !@open, do: "hidden"}"}
-        :if={@plan}
+        :if={@open}
       >
         <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
         <section
@@ -33,17 +33,17 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
             (お試し期間以降もご利用される場合はプランのアップグレードが必要です)
           </p>
           <div class="mt-8">
-            <h3 class="font-bold text-xl">
+            <h3 :if={@plan} class="font-bold text-xl">
               <%= @plan.name_jp %>プラン
             </h3>
-            <p class="mt-2">
-              お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください
-            </p>
 
-            <div class="pt-4">
+            <div :if={@free_trial_available?} class="mt-2">
+              <p>お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください</p>
+
               <.form
                 for={@form}
                 id="free_trial_recommendation_form"
+                class="pt-4"
                 phx-target={@myself}
                 phx-change="validate"
                 phx-submit="submit"
@@ -97,13 +97,27 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
                   </button>
                 </div>
               </.form>
-              <div class="my-4">
-                <p class="my-4">
-                  下記「プランのアップグレード」ボタンよりアップグレードできます（別タブで開きます）
-                </p>
-                <div class="flex justify-center">
+            </div>
+
+            <div class="my-4">
+              <p :if={@invalid_reason == :already_available} class="mt-4">
+                <% # 上位プランを薦めるモーダルのため、実際には本ケースはない %>
+                このプランはすでに選択済みです
+              </p>
+
+              <p :if={@invalid_reason == :already_used_once} class="mt-4">
+                このプランの無料トライアル期間は終了しています
+              </p>
+
+              <p :if={@invalid_reason == :no_plan} class="mt-4">
+                無料トライアルの対象プランがありません
+              </p>
+
+              <p class="my-4">
+                下記「プランのアップグレード」ボタンよりアップグレードできます（別タブで開きます）
+              </p>
+              <div class="flex justify-center">
                 <.plan_upgrade_button />
-                </div>
               </div>
             </div>
 
@@ -128,6 +142,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
     {:ok,
      socket
      |> assign(:plan, nil)
+     |> assign(:open, false)
      |> assign(on_submit: nil, on_close: nil)}
   end
 
@@ -135,7 +150,6 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
   def update(%{open: true, service_code: require_service_code} = assigns, socket) do
     # モーダルを開く
     # どの無料トライアルプランによりservice_codeを満たすかを決定する
-    # TODO: plan取得とfree_trial可能かどうかは別途判定が必要
     user = socket.assigns.current_user
     plan = get_plan_by_service(user, require_service_code)
 
@@ -145,7 +159,6 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
   def update(%{open: true, create_teams_limit: require_create_teams_limit} = assigns, socket) do
     # モーダルを開く
     # どの無料トライアルプランにより指定上限数を満たすかを決定する
-    # TODO: plan取得とfree_trial可能かどうかは別途判定が必要
     user = socket.assigns.current_user
     plan = get_plan_by_create_teams_limit(user, require_create_teams_limit)
 
@@ -155,7 +168,6 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
   def update(%{open: true, team_members_limit: require_team_members_limit} = assigns, socket) do
     # モーダルを開く
     # どの無料トライアルプランにより指定上限数を満たすかを決定する
-    # TODO: plan取得とfree_trial可能かどうかは別途判定が必要
     user = socket.assigns.current_user
     plan = get_plan_by_team_members_limit(user, require_team_members_limit)
 
@@ -222,19 +234,22 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
   end
 
   defp assign_on_open(socket, nil, _assigns) do
-    # プランが存在しない場合は開かない
-    # TODO: 暫定仕様でのち対応予定（問い合わせになる想定）
     socket
     |> assign(:plan, nil)
-    |> assign(:open, false)
+    |> assign(free_trial_available?: false, invalid_reason: :no_plan)
+    |> assign(:open, true)
   end
 
   defp assign_on_open(socket, plan, assigns) do
     free_trial = %FreeTrial{organization_plan: Subscriptions.organization_plan?(plan)}
     changeset = FreeTrial.changeset(free_trial, %{})
 
+    {free_trial_available?, invalid_reason} =
+      Subscriptions.free_trial_available?(socket.assigns.current_user.id, plan.plan_code)
+
     socket
     |> assign(:plan, plan)
+    |> assign(free_trial_available?: free_trial_available?, invalid_reason: invalid_reason)
     |> assign(Map.take(assigns, ~w(on_submit on_close)a))
     |> assign(:changeset, changeset)
     |> assign(:free_trial, free_trial)

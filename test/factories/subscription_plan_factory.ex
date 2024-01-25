@@ -33,6 +33,23 @@ defmodule Bright.SubscriptionPlanFactory do
 
         subscription_plan
       end
+
+      def plan_with_plan_services_by_service_codes(
+            %Bright.Subscriptions.SubscriptionPlan{} = subscription_plan,
+            service_codes
+          ) do
+        subscription_plan_services =
+          service_codes
+          |> Enum.map(fn service_code ->
+            insert(
+              :subscription_plan_services,
+              %{subscription_plan: subscription_plan, service_code: service_code}
+            )
+          end)
+
+        subscription_plan
+        |> Map.put(:subscription_plan_services, subscription_plan_services)
+      end
     end
   end
 end

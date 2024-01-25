@@ -712,51 +712,180 @@ defmodule Bright.SubscriptionsTest do
   end
 
   describe "free_trial_available?/1" do
-    test "no trial plan" do
-      subscription_plan1 = insert(:subscription_plans)
+    setup do
+      low_plan = insert(:subscription_plans, authorization_priority: 1, free_trial_priority: 1)
+
+      mid_plan =
+        insert(:subscription_plans, authorization_priority: 2, free_trial_priority: 2)
+        |> plan_with_plan_services_by_service_codes(~w(srv1))
+
+      high_plan =
+        insert(:subscription_plans, authorization_priority: 3, free_trial_priority: 3)
+        |> plan_with_plan_services_by_service_codes(~w(srv1 srv2))
 
       user = insert(:user)
-      other_user = insert(:user)
 
-      # フリートライアルを実施していない契約は無視される
-      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan1)
-      # 他のユーザーの契約は無視される
-      subscription_user_plan_subscribing_with_free_trial(other_user, subscription_plan1)
-
-      assert true == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
+      %{user: user, plans: [low_plan, mid_plan, high_plan]}
     end
 
-    test "exist subscription end with free trial plan" do
-      subscription_plan1 = insert(:subscription_plans)
-
-      user = insert(:user)
-
-      # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
-      subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan1)
-
-      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
+    test "no plan first trial", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, mid_plan.plan_code)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
     end
 
-    test "exist subscribing with free trial plan" do
-      subscription_plan1 = insert(:subscription_plans)
+    test "already available, case same trial", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 同一プランでトライアル中
+      subscription_user_plan_free_trial(user, low_plan)
 
-      user = insert(:user)
-
-      # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
-      subscription_user_plan_subscribing_with_free_trial(user, subscription_plan1)
-
-      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
     end
 
-    test "exist on free trial plan" do
-      subscription_plan1 = insert(:subscription_plans)
+    test "already available, case same subscription", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 同一プランで契約中
+      subscription_user_plan_subscribing_without_free_trial(user, low_plan)
 
-      user = insert(:user)
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
 
-      # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
-      subscription_user_plan_free_trial(user, subscription_plan1)
+    test "already available, case higher trial", %{
+      user: user,
+      plans: [low_plan, mid_plan, _high_plan]
+    } do
+      # 上位プランでトライアル中
+      subscription_user_plan_free_trial(user, mid_plan)
 
-      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "already available, case higher subscription", %{
+      user: user,
+      plans: [low_plan, mid_plan, _high_plan]
+    } do
+      # 上位プランで契約中
+      subscription_user_plan_subscribing_without_free_trial(user, mid_plan)
+
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "takes ok, case lower subscription", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # 下位プランを契約中
+      subscription_user_plan_subscribing_without_free_trial(user, low_plan)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, mid_plan.plan_code)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
+    end
+
+    test "takes ok, case lower trial", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # 下位プランをトライアル中
+      subscription_user_plan_free_trial(user, low_plan)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, mid_plan.plan_code)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
+    end
+
+    test "already used once, case same trial", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 同一プランで既にトライアル完了済み
+      subscription_user_plan_free_trial_end(user, low_plan)
+
+      assert {false, :already_used_once} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "already used once, case same subscription", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 同一プランで既に契約完了済み
+      subscription_user_plan_subscription_end_without_free_trial(user, low_plan)
+
+      assert {false, :already_used_once} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "takes ok, case higher plan used once", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # 上位プランが以前完了済み（同一ではないので可能）
+      subscription_user_plan_subscription_end_without_free_trial(user, mid_plan)
+      subscription_user_plan_free_trial_end(user, high_plan)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "takes ok, case lower plan used once", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # 下位プランが以前完了済み（同一ではないので可能）
+      subscription_user_plan_subscription_end_without_free_trial(user, mid_plan)
+      subscription_user_plan_free_trial_end(user, low_plan)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
+    end
+
+    test "not for trial", %{
+      user: user
+    } do
+      # トライアル優先度がnilのものは対象外
+      other_plan =
+        insert(:subscription_plans, authorization_priority: 2, free_trial_priority: nil)
+
+      assert {false, :not_for_trial} =
+               Subscriptions.free_trial_available?(user.id, other_plan.plan_code)
+    end
+
+    test "not for trial, case current plan is extended", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # トライアル優先度がnil契約中は、いずれも対象外とする
+      other_plan =
+        insert(:subscription_plans, authorization_priority: 2, free_trial_priority: nil)
+
+      subscription_user_plan_subscribing_without_free_trial(user, other_plan)
+
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+
+      assert {false, :not_for_trial} =
+               Subscriptions.free_trial_available?(user.id, mid_plan.plan_code)
+
+      assert {false, :not_for_trial} =
+               Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
+    end
+
+    test "scopes given user", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 引数のuserが対象になっている確認
+      subscription_user_plan_subscription_end_without_free_trial(user, low_plan)
+
+      assert {false, :already_used_once} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+
+      user_2 = insert(:user)
+      assert {true, _} = Subscriptions.free_trial_available?(user_2.id, low_plan.plan_code)
     end
   end
 end
