@@ -67,8 +67,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
-    skill_panel =
-      SkillPanels.get_skill_panel_with_career_fields!(id)
+    skill_panel = SkillPanels.get_skill_panel_with_career_fields!(id)
 
     career_fields =
       skill_panel.jobs
