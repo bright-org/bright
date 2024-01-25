@@ -1,0 +1,55 @@
+<.form
+  id={@id}
+  for={@form}
+  phx-change={@phx_change}
+  phx-submit={@phx_submit}
+>
+
+  <label class="flex items-center py-2">
+    <span class="font-bold w-52">会社名</span>
+    <BrightCore.input
+      field={@form[:company_name]}
+      input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+      size="20"
+      type="text"
+    />
+  </label>
+
+  <label class="flex items-center py-2">
+    <span class="font-bold w-52">連絡先（電話番号）</span>
+    <BrightCore.input
+      field={@form[:phone_number]}
+      input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+      size="20"
+      type="text"
+    />
+  </label>
+
+  <label class="flex items-center py-2">
+    <span class="font-bold w-52">連絡先（メールアドレス）</span>
+    <BrightCore.input
+      field={@form[:email]}
+      input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+      size="20"
+      type="text"
+    />
+  </label>
+
+  <label class="flex items-center py-2">
+    <span class="font-bold w-52">担当者（本名）</span>
+    <BrightCore.input
+      field={@form[:pic_name]}
+      input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
+      size="20"
+      type="text"
+    />
+  </label>
+
+  <div class="flex justify-center gap-x-4 mt-8">
+    <button
+      class="text-sm font-bold py-3 rounded text-white bg-brightGray-900 border border-brightGray-900 w-72"
+    >
+      開始する
+    </button>
+  </div>
+</.form>
