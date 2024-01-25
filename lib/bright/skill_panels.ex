@@ -133,6 +133,18 @@ defmodule Bright.SkillPanels do
     |> Repo.one()
   end
 
+  def get_skill_panel_with_career_fields!(id) do
+    case Ecto.ULID.cast(id) do
+      {:ok, ulid} ->
+        SkillPanel
+        |> preload(jobs: :career_fields)
+        |> Repo.get!(ulid)
+
+      :error ->
+        raise Ecto.NoResultsError, queryable: SkillPanel
+    end
+  end
+
   @doc """
   Creates a skill_panel.
 

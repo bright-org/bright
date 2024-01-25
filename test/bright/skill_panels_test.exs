@@ -85,6 +85,19 @@ defmodule Bright.SkillPanelsTest do
       assert SkillPanels.get_skill_panel!(skill_panel.id) == skill_panel
     end
 
+    test "get_skill_panel_with_career_fields!/1 returns the skill_panel with given id" do
+      %{id: id} = insert(:skill_panel)
+      assert %{id: id} = SkillPanels.get_skill_panel_with_career_fields!(id)
+    end
+
+    test "get_skill_panel_with_career_fields!/1 invalid ULID id" do
+      insert(:skill_panel)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        SkillPanels.get_skill_panel_with_career_fields!("1")
+      end
+    end
+
     test "create_skill_panel/1 with valid data creates a skill_panel" do
       valid_attrs = params_for(:skill_panel)
 
