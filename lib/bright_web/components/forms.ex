@@ -3,7 +3,7 @@ defmodule BrightWeb.Forms do
   formまわりの共通コンポーネント
   """
 
-  use BrightWeb, :html
+  use BrightWeb, :component
 
   alias BrightWeb.BrightCoreComponents, as: BrightCore
 
