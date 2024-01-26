@@ -29,6 +29,25 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
     |> render_change()
   end
 
+  # 無料トライアルモーダルを表示するための共通処理
+  # チーム分析画面が容易に表示できるため使っている
+  def show_component_modal(conn) do
+    {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+    live
+    |> form("#team_form", team: %{name: "チーム名1"})
+    |> render_submit()
+
+    # 2チーム目を作成するときに表示される
+    {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+    live
+    |> form("#team_form", team: %{name: "チーム名2"})
+    |> render_submit()
+
+    live
+  end
+
   # 「スキル検索」からの表示確認
   describe "shows on search_result page" do
     setup [:register_and_log_in_user]
@@ -288,7 +307,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       assert render(live) =~ "上限です"
     end
 
-    test "NOT open modal if there is not satisfied plan", %{
+    test "NOT show form if there is not satisfied plan", %{
       conn: conn,
       subscription_plan: subscription_plan
     } do
@@ -302,34 +321,15 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       submit_add_user(live, "user_5")
       submit_add_user(live, "user_6")
 
-      # 無料トライアルモーダルが表示されないこと
+      # 無料トライアル申し込みフォームが表示されないこと
+      refute has_element?(live, "#free_trial_recommendation_form")
       assert render(live) =~ "上限です"
-      refute has_element?(live, "#free_trial_recommendation_modal")
     end
   end
 
   # フォーム仕様
   describe "Form" do
     setup [:register_and_log_in_user]
-
-    # 無料トライアルモーダルを表示するための共通処理
-    # チーム分析画面が容易に表示できるため使っている
-    def show_component_modal(conn) do
-      {:ok, live, _html} = live(conn, ~p"/teams/new")
-
-      live
-      |> form("#team_form", team: %{name: "チーム名1"})
-      |> render_submit()
-
-      # 2チーム目を作成するときに表示される
-      {:ok, live, _html} = live(conn, ~p"/teams/new")
-
-      live
-      |> form("#team_form", team: %{name: "チーム名2"})
-      |> render_submit()
-
-      live
-    end
 
     test "requires company_name when plan has team_up", %{
       conn: conn
@@ -363,6 +363,62 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       change_trial_form(live, %{company_name: ""})
 
       refute has_element?(live, "#free_trial_recommendation_form", "入力してください")
+    end
+  end
+
+  # 指定したプランが使用できないケース確認
+  describe "trial invalid cases" do
+    setup [:register_and_log_in_user]
+
+    # データ準備: プラン
+    setup do
+      subscription_plan = insert(:subscription_plans, create_teams_limit: 2)
+
+      %{subscription_plan: subscription_plan}
+    end
+
+    test "view message, case trial is used at once", %{
+      conn: conn,
+      user: user,
+      subscription_plan: subscription_plan
+    } do
+      # 過去に一度同一トライアルを使用済み
+      subscription_user_plan_free_trial_end(user, subscription_plan)
+
+      live = show_component_modal(conn)
+
+      refute has_element?(live, "#free_trial_recommendation_form")
+      assert has_element?(live, "#free_trial_recommendation_modal", "終了")
+      assert has_element?(live, "#free_trial_recommendation_modal button", "アップグレード")
+    end
+
+    test "view message, case subscription is used at once", %{
+      conn: conn,
+      user: user,
+      subscription_plan: subscription_plan
+    } do
+      # 過去に一度同一契約を使用済み
+      subscription_user_plan_subscription_end_without_free_trial(user, subscription_plan)
+
+      live = show_component_modal(conn)
+
+      refute has_element?(live, "#free_trial_recommendation_form")
+      assert has_element?(live, "#free_trial_recommendation_modal", "終了")
+      assert has_element?(live, "#free_trial_recommendation_modal button", "アップグレード")
+    end
+
+    test "view message, case no plan", %{
+      conn: conn,
+      subscription_plan: subscription_plan
+    } do
+      # 使用できるプランがない
+      Bright.Repo.delete(subscription_plan)
+
+      live = show_component_modal(conn)
+
+      refute has_element?(live, "#free_trial_recommendation_form")
+      assert has_element?(live, "#free_trial_recommendation_modal", "対象プランがありません")
+      assert has_element?(live, "#free_trial_recommendation_modal button", "アップグレード")
     end
   end
 end
