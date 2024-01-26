@@ -3,8 +3,8 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
 
   alias Bright.Subscriptions
   alias Bright.Subscriptions.FreeTrialForm, as: FreeTrial
-  alias BrightWeb.BrightCoreComponents, as: BrightCore
   import BrightWeb.BrightButtonComponents, only: [plan_upgrade_button: 1]
+  import BrightWeb.Forms, only: [free_trial_form: 1]
 
   @impl true
   def render(assigns) do
@@ -26,7 +26,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
               β期間終了までお試しいただけます
             </span>
           </h2>
-          <p class="mt-2">
+          <p class="mt-2" :if={@plan && @plan.plan_code == "hr_plan"}>
             ※現在、面談調整とチャットまでお試しいただけます
           </p>
           <p class="mt-2">
@@ -40,63 +40,11 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
             <div :if={@free_trial_available?} class="mt-2">
               <p>お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください</p>
 
-              <.form
-                for={@form}
+              <.free_trial_form
                 id="free_trial_recommendation_form"
-                class="pt-4"
-                phx-target={@myself}
-                phx-change="validate"
-                phx-submit="submit"
-              >
-
-                <label class="flex items-center py-2">
-                  <span class="font-bold w-52">会社名</span>
-                  <BrightCore.input
-                    field={@form[:company_name]}
-                    input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                    size="20"
-                    type="text"
-                  />
-                </label>
-
-                <label class="flex items-center py-2">
-                  <span class="font-bold w-52">連絡先（電話番号）</span>
-                  <BrightCore.input
-                    field={@form[:phone_number]}
-                    input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                    size="20"
-                    type="text"
-                  />
-                </label>
-
-                <label class="flex items-center py-2">
-                  <span class="font-bold w-52">連絡先（メールアドレス）</span>
-                  <BrightCore.input
-                    field={@form[:email]}
-                    input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                    size="20"
-                    type="text"
-                  />
-                </label>
-
-                <label class="flex items-center py-2">
-                  <span class="font-bold w-52">担当者（本名）</span>
-                  <BrightCore.input
-                    field={@form[:pic_name]}
-                    input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                    size="20"
-                    type="text"
-                  />
-                </label>
-
-                <div class="flex justify-center gap-x-4 mt-8">
-                  <button
-                    class="text-sm font-bold py-3 rounded text-white bg-brightGray-900 border border-brightGray-900 w-72"
-                  >
-                    開始する
-                  </button>
-                </div>
-              </.form>
+                form={@form}
+                phx_change={JS.push("validate", target: @myself)}
+                phx_submit={JS.push("submit", target: @myself)} />
             </div>
 
             <div class="my-4">

@@ -3,8 +3,8 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
 
   alias Bright.Subscriptions
   alias Bright.Subscriptions.FreeTrialForm, as: FreeTrial
-  alias BrightWeb.BrightCoreComponents, as: BrightCore
   import BrightWeb.BrightButtonComponents, only: [plan_upgrade_button: 1]
+  import BrightWeb.Forms, only: [free_trial_form: 1]
 
   @impl true
   def render(assigns) do
@@ -29,108 +29,41 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
               <h3 class="font-bold text-xl">
                 <%= @plan.name_jp %>プラン
               </h3>
-              <%= if is_nil(@same_plan_subscription) do %>
-                <%= if free_trial_available?(@plan, @currrent_subscription) do %>
-                  <p class="mt-2">
-                    お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください
-                  </p>
 
-                  <div class="pt-4">
-                    <.form
-                      for={@form}
-                      id="free_trial_form"
-                      phx-target={@myself}
-                      phx-change="validate"
-                      phx-submit="submit"
-                    >
+              <div :if={@free_trial_available?} class="mt-2">
+                <p class="mt-2">
+                  お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください
+                </p>
 
-                      <label class="flex items-center py-2">
-                        <span class="font-bold w-52">会社名</span>
-                        <BrightCore.input
-                          field={@form[:company_name]}
-                          input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                          size="20"
-                          type="text"
-                        />
-                      </label>
-
-                      <label class="flex items-center py-2">
-                        <span class="font-bold w-52">連絡先（電話番号）</span>
-                        <BrightCore.input
-                          field={@form[:phone_number]}
-                          input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                          size="20"
-                          type="text"
-                        />
-                      </label>
-
-                      <label class="flex items-center py-2">
-                        <span class="font-bold w-52">連絡先（メールアドレス）</span>
-                        <BrightCore.input
-                          field={@form[:email]}
-                          input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                          size="20"
-                          type="text"
-                        />
-                      </label>
-
-                      <label class="flex items-center py-2">
-                        <span class="font-bold w-52">担当者（本名）</span>
-                        <BrightCore.input
-                          field={@form[:pic_name]}
-                          input_class="border border-brightGray-200 px-2 py-1 rounded w-60"
-                          size="20"
-                          type="text"
-                        />
-                      </label>
-
-                      <div class="flex justify-center gap-x-4 mt-8">
-                        <button
-                          class="text-sm font-bold py-3 rounded text-white bg-brightGray-900 border border-brightGray-900 w-72"
-                        >
-                          開始する
-                        </button>
-                      </div>
-                    </.form>
-                    <div class="my-4">
-                      <p class="my-4">
-                        下記「プランのアップグレード」ボタンよりアップグレードできます（別タブで開きます）
-                      </p>
-                      <div class="flex justify-center">
-                      <.plan_upgrade_button />
-                      </div>
-                    </div>
-                  </div>
-                <% else %>
-                  <div class="my-4">
-                    <p class="mt-4">
-                      このプランはすでに選択済みです
-                    </p>
-                    <p class="mb-4">
-                      下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
-                    </p>
-                    <div class="flex justify-center">
-                      <.plan_upgrade_button />
-                    </div>
-                  </div>
-                <% end %>
-              <% else %>
-                <div class="my-4">
-                  <p class="mt-4">
-                    <%= if subscription_alive?(@same_plan_subscription) do %>
-                      このプランはすでに選択済みです
-                    <% else %>
-                      このプランの無料トライアル期間は終了しています
-                    <% end %>
-                  </p>
-                  <p class="mb-4">
-                    下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
-                  </p>
-                  <div class="flex justify-center">
-                    <.plan_upgrade_button />
-                  </div>
+                <div class="pt-4">
+                  <.free_trial_form
+                    id="free_trial_form"
+                    form={@form}
+                    phx_change={JS.push("validate", target: @myself)}
+                    phx_submit={JS.push("submit", target: @myself)} />
                 </div>
-              <% end %>
+              </div>
+
+              <div class="my-4">
+                <p :if={@invalid_reason == :already_available} class="mt-4">
+                  このプランはすでに選択済みです
+                </p>
+
+                <p :if={@invalid_reason == :already_used_once} class="mt-4">
+                  このプランの無料トライアル期間は終了しています
+                </p>
+
+                <p :if={@invalid_reason == :no_plan} class="mt-4">
+                  無料トライアルの対象プランがありません
+                </p>
+
+                <p class="my-4">
+                  下記「プランのアップグレード」ボタンよりアップグレードできます（別タブで開きます）
+                </p>
+                <div class="flex justify-center">
+                  <.plan_upgrade_button />
+                </div>
+              </div>
             </div>
           </section>
         </main>
@@ -141,7 +74,6 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
 
   @impl true
   def update(assigns, socket) do
-    # TODO: 現契約プランと比較してチーム作成数などの制限数が落ちないプラン(かつ、URL指定されたplanに属するservice_codeを全て持つ）を取ること
     user = assigns.current_user
 
     plan =
@@ -150,17 +82,16 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
         plan -> plan
       end
 
-    currrent_subscription = Subscriptions.get_user_subscription_user_plan(user.id)
-    same_plan_subscription = get_same_plan_subscription(user, plan.plan_code)
-
     free_trial = %FreeTrial{organization_plan: Subscriptions.organization_plan?(plan)}
     changeset = FreeTrial.changeset(free_trial, %{})
+
+    {free_trial_available?, invalid_reason} =
+      Subscriptions.free_trial_available?(user.id, plan.plan_code)
 
     socket
     |> assign(assigns)
     |> assign(:plan, plan)
-    |> assign(:currrent_subscription, currrent_subscription)
-    |> assign(:same_plan_subscription, same_plan_subscription)
+    |> assign(free_trial_available?: free_trial_available?, invalid_reason: invalid_reason)
     |> assign(:changeset, changeset)
     |> assign(:free_trial, free_trial)
     |> assign_form(changeset)
@@ -209,35 +140,5 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
-  end
-
-  defp get_same_plan_subscription(user, plan_code) do
-    # TODO: 個社対応時に関数化。単にplan_codeをみても同一性が取れないため。あるいは個社対応している場合は前提として別の無料トライアルを不可にする
-    user
-    |> Bright.Repo.preload(subscription_user_plans: [:subscription_plan])
-    |> Map.get(:subscription_user_plans)
-    |> Enum.filter(&(&1.subscription_plan.plan_code == plan_code))
-    |> List.first()
-  end
-
-  defp subscription_alive?(subscription_user_plan) do
-    %{
-      trial_start_datetime: trial_start,
-      trial_end_datetime: trial_end,
-      subscription_start_datetime: subscription_start,
-      subscription_end_datetime: subscription_end
-    } = subscription_user_plan
-
-    cond do
-      subscription_start && !subscription_end -> true
-      trial_start && !trial_end -> true
-      true -> false
-    end
-  end
-
-  defp free_trial_available?(_plan, nil), do: true
-
-  defp free_trial_available?(plan, currrent_subscription) do
-    currrent_subscription.subscription_plan.free_trial_priority < plan.free_trial_priority
   end
 end
