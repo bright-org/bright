@@ -29,8 +29,8 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
               <h3 class="font-bold text-xl">
                 <%= @plan.name_jp %>プラン
               </h3>
-              <%= if is_nil(@subscription) do %>
-                <%= if free_trial_available?(@current_user.id, @plan, @status) do %>
+              <%= if is_nil(@same_plan_subscription) do %>
+                <%= if free_trial_available?(@plan, @currrent_subscription) do %>
                   <p class="mt-2">
                     お試しいただくには、下記を入力し「開始する」ボタンをクリックしてください
                   </p>
@@ -104,11 +104,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
                 <% else %>
                   <div class="my-4">
                     <p class="mt-4">
-                      <%= if is_nil(@status.trial_end_datetime) do %>
-                        このプランはすでに選択済みです
-                      <% else %>
-                        このプランの無料トライアル期間は終了しています
-                      <% end %>
+                      このプランはすでに選択済みです
                     </p>
                     <p class="mb-4">
                       下記「アップグレード」ボタンよりアップグレードできます（別タブで開きます）
@@ -121,7 +117,7 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
               <% else %>
                 <div class="my-4">
                   <p class="mt-4">
-                    <%= if is_nil(@subscription.subscription_end_datetime) do %>
+                    <%= if subscription_alive?(@same_plan_subscription) do %>
                       このプランはすでに選択済みです
                     <% else %>
                       このプランの無料トライアル期間は終了しています
@@ -154,7 +150,8 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
         plan -> plan
       end
 
-    status = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+    currrent_subscription = Subscriptions.get_user_subscription_user_plan(user.id)
+    same_plan_subscription = get_same_plan_subscription(user, plan.plan_code)
 
     free_trial = %FreeTrial{organization_plan: Subscriptions.organization_plan?(plan)}
     changeset = FreeTrial.changeset(free_trial, %{})
@@ -162,10 +159,10 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
     socket
     |> assign(assigns)
     |> assign(:plan, plan)
-    |> assign(:subscription, exists_subscirption_plan(user.id, plan.plan_code))
+    |> assign(:currrent_subscription, currrent_subscription)
+    |> assign(:same_plan_subscription, same_plan_subscription)
     |> assign(:changeset, changeset)
     |> assign(:free_trial, free_trial)
-    |> assign(:status, status)
     |> assign_form(changeset)
     |> then(&{:ok, &1})
   end
@@ -214,23 +211,33 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
     assign(socket, :form, to_form(changeset))
   end
 
-  defp exists_subscirption_plan(user_id, plan_code) do
-    (Subscriptions.get_users_trialed_plans(user_id) ++
-       Subscriptions.get_users_expired_plans(user_id))
-    |> Enum.find(fn plan ->
-      plan.subscription_plan.plan_code == plan_code && plan.subscription_status != :free_trial
-    end)
+  defp get_same_plan_subscription(user, plan_code) do
+    # TODO: 個社対応時に関数化。単にplan_codeをみても同一性が取れないため。あるいは個社対応している場合は前提として別の無料トライアルを不可にする
+    user
+    |> Bright.Repo.preload(subscription_user_plans: [:subscription_plan])
+    |> Map.get(:subscription_user_plans)
+    |> Enum.filter(&(&1.subscription_plan.plan_code == plan_code))
+    |> List.first()
   end
 
-  defp free_trial_available?(user_id, plan, nil) do
-    Subscriptions.free_trial_available?(user_id, plan.plan_code)
+  defp subscription_alive?(subscription_user_plan) do
+    %{
+      trial_start_datetime: trial_start,
+      trial_end_datetime: trial_end,
+      subscription_start_datetime: subscription_start,
+      subscription_end_datetime: subscription_end
+    } = subscription_user_plan
+
+    cond do
+      subscription_start && !subscription_end -> true
+      trial_start && !trial_end -> true
+      true -> false
+    end
   end
 
-  defp free_trial_available?(user_id, plan, status) do
-    # statusがある場合、そのプランが下位か、上位でも無料トライアル終了済みならplanで無料トライアル可能
-    # TODO: できればコンテキスト側にもたせる
-    Subscriptions.free_trial_available?(user_id, plan.plan_code) &&
-      (status.subscription_plan.free_trial_priority < plan.free_trial_priority ||
-         (status.subscription_status == :free_trial && status.trial_end_datetime != nil))
+  defp free_trial_available?(_plan, nil), do: true
+
+  defp free_trial_available?(plan, currrent_subscription) do
+    currrent_subscription.subscription_plan.free_trial_priority < plan.free_trial_priority
   end
 end

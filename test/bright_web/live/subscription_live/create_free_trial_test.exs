@@ -98,7 +98,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
       assert html =~ "採用・人材育成プラン"
 
-      assert is_nil(Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now()))
+      assert is_nil(Subscriptions.get_user_subscription_user_plan(user.id))
 
       index_live
       |> element("#free_trial_form")
@@ -115,7 +115,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       assert path == "/mypage"
 
       %{subscription_status: :free_trial, subscription_plan: %{plan_code: "hr_plan"}} =
-        Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+        Subscriptions.get_user_subscription_user_plan(user.id)
     end
 
     test "free_trialing low_priority_plan", %{conn: conn, user: user} do
@@ -129,7 +129,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       insert(:subscription_user_plan_free_trial, user: user, subscription_plan: low_plan)
 
       %{subscription_status: :free_trial, subscription_plan: %{plan_code: "team_up_plan"}} =
-        Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+        Subscriptions.get_user_subscription_user_plan(user.id)
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
       assert html =~ "採用・人材育成プラン"
@@ -149,7 +149,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       assert path == "/mypage"
 
       %{subscription_status: :free_trial, subscription_plan: %{plan_code: "hr_plan"}} =
-        Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+        Subscriptions.get_user_subscription_user_plan(user.id)
     end
 
     test "view trial form when higher plan trial ended", %{
@@ -157,13 +157,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       user: user,
       plan: plan
     } do
-      insert(:subscription_user_plan_subscribing_with_free_trial,
-        user: user,
-        subscription_plan: plan,
-        subscription_status: :free_trial,
-        trial_start_datetime: NaiveDateTime.utc_now(),
-        trial_end_datetime: NaiveDateTime.utc_now()
-      )
+      subscription_user_plan_free_trial_end(user, plan)
 
       insert(:subscription_plans,
         plan_code: "team_up_plan",

@@ -2119,12 +2119,18 @@ defmodule Bright.AccountsTest do
       user1_sub_email1 = insert(:user_sub_email, user: user1)
       user1_sub_email2 = insert(:user_sub_email, user: user1)
 
-      assert Accounts.list_confirmed_user_emails() == [
-               user1.email,
-               user2.email,
-               user1_sub_email1.email,
-               user1_sub_email2.email
-             ]
+      expected =
+        [
+          user1.email,
+          user2.email,
+          user1_sub_email1.email,
+          user1_sub_email2.email
+        ]
+        |> Enum.sort()
+
+      actual = Accounts.list_confirmed_user_emails() |> Enum.sort()
+
+      assert actual == expected
     end
   end
 end

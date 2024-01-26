@@ -35,8 +35,8 @@ defmodule Bright.SubscriptionUserPlanFactory do
           subscription_plan: build(:subscription_plans),
           subscription_status: :subscription_ended,
           trial_start_datetime: nil,
-          trial_end_datetime: nil,
           subscription_start_datetime: NaiveDateTime.utc_now(),
+          trial_end_datetime: nil,
           subscription_end_datetime: NaiveDateTime.utc_now()
         }
       end
@@ -107,8 +107,8 @@ defmodule Bright.SubscriptionUserPlanFactory do
           subscription_plan: build(:subscription_plans),
           subscription_status: :free_trial,
           trial_start_datetime: NaiveDateTime.utc_now(),
+          subscription_start_datetime: nil,
           trial_end_datetime: nil,
-          subscription_start_datetime: NaiveDateTime.utc_now(),
           subscription_end_datetime: nil
         }
       end
@@ -120,6 +120,19 @@ defmodule Bright.SubscriptionUserPlanFactory do
         insert(:subscription_user_plan_free_trial,
           user: user,
           subscription_plan: subscription_plan
+        )
+
+        subscription_plan
+      end
+
+      def subscription_user_plan_free_trial_end(
+            %Bright.Accounts.User{} = user,
+            %Bright.Subscriptions.SubscriptionPlan{} = subscription_plan
+          ) do
+        insert(:subscription_user_plan_free_trial,
+          user: user,
+          subscription_plan: subscription_plan,
+          trial_end_datetime: NaiveDateTime.utc_now()
         )
 
         subscription_plan

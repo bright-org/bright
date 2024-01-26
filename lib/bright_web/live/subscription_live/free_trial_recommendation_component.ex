@@ -270,9 +270,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
   end
 
   defp get_current_plan(user) do
-    current_user_plan =
-      Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
-
+    current_user_plan = Subscriptions.get_user_subscription_user_plan(user.id)
     current_user_plan && current_user_plan.subscription_plan
   end
 end

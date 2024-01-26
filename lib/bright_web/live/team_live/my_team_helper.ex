@@ -16,7 +16,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   alias Bright.SkillPanels.SkillClass
 
   def init_assign(params, %{assigns: %{live_action: :new, current_user: user}} = socket) do
-    subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+    subscription = Subscriptions.get_user_subscription_user_plan(user.id)
 
     # 直接チーム作成モーダルを起動した場合、データの取得は行わない
     socket
@@ -52,8 +52,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
     member_skill_class_scores = list_skill_class_scores(display_team_members, display_skill_panel)
-
-    subscription = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+    subscription = Subscriptions.get_user_subscription_user_plan(user.id)
 
     # スキルとチームの取得結果に応じて各種assign
     socket
