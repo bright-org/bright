@@ -692,17 +692,7 @@ defmodule Bright.Subscriptions do
   """
   def free_trial_available?(user_id, plan_code) do
     # ユーザーの契約履歴を洗って、現状と過去に分けている
-    {currents, olds} =
-      from(sup in SubscriptionUserPlan,
-        where: sup.user_id == ^user_id,
-        join: sp in assoc(sup, :subscription_plan),
-        preload: [subscription_plan: {sp, :subscription_plan_services}]
-      )
-      |> Repo.all()
-      |> Enum.split_with(
-        &((&1.subscription_start_datetime && &1.subscription_end_datetime == nil) ||
-            (&1.trial_start_datetime && &1.trial_end_datetime == nil))
-      )
+    {currents, olds} = list_subscription_user_plans_history(user_id)
 
     current =
       if currents != [], do: Enum.max_by(currents, & &1.subscription_plan.authorization_priority)
@@ -729,6 +719,19 @@ defmodule Bright.Subscriptions do
       not_for_trial? -> {false, :not_for_trial}
       true -> {true, nil}
     end
+  end
+
+  defp list_subscription_user_plans_history(user_id) do
+    from(sup in SubscriptionUserPlan,
+      where: sup.user_id == ^user_id,
+      join: sp in assoc(sup, :subscription_plan),
+      preload: [subscription_plan: {sp, :subscription_plan_services}]
+    )
+    |> Repo.all()
+    |> Enum.split_with(
+      &((&1.subscription_start_datetime && &1.subscription_end_datetime == nil) ||
+          (&1.trial_start_datetime && &1.trial_end_datetime == nil))
+    )
   end
 
   defp subscription_user_plan_is_already_available?(nil, _plan_code), do: false
