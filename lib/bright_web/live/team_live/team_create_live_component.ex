@@ -118,9 +118,16 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   def handle_event("create_team", %{"team" => team_params}, socket) do
-    admin_count = Teams.count_admin_team(socket.assigns.current_user.id)
-    limit = Subscriptions.get_create_teams_limit(socket.assigns.plan)
-    save_team(socket, socket.assigns.action, team_params, admin_count, limit)
+    action = socket.assigns.action
+
+    validate_teams_limit(socket, action, team_params)
+    |> case do
+      {:ok, socket} ->
+        save_team(socket, action, team_params)
+
+      {:ng, socket} ->
+        {:noreply, socket}
+    end
   end
 
   def handle_event("select_team_type", %{"team_type" => team_type}, socket) do
@@ -131,15 +138,26 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     }
   end
 
-  def save_team(socket, :new, team_params, count, limit) when count >= limit do
-    # 上限になっており追加できないケース
-    %{id: id, team: team} = socket.assigns
-    changeset = changeset_with_teams_limit_msg(team, team_params, limit)
-    open_free_trial_modal(count + 1, team, team_params, id)
-    {:noreply, assign_team_form(socket, changeset)}
+  defp validate_teams_limit(socket, :new, team_params) do
+    %{current_user: user, plan: plan, id: id, team: team} = socket.assigns
+
+    admin_count = Teams.count_admin_team(user.id)
+    limit = Subscriptions.get_create_teams_limit(plan)
+
+    if admin_count >= limit do
+      # 上限になっており追加できないケース
+      changeset = changeset_with_teams_limit_msg(team, team_params, limit)
+      open_free_trial_modal(admin_count + 1, team, team_params, id)
+
+      {:ng, assign_team_form(socket, changeset)}
+    else
+      {:ok, socket}
+    end
   end
 
-  def save_team(socket, :new, team_params, _count, _limit) do
+  defp validate_teams_limit(socket, _action, _team_params), do: {:ok, socket}
+
+  defp save_team(socket, :new, team_params) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
     enable_functions = Teams.build_enable_functions(socket.assigns.selected_team_type)
@@ -166,7 +184,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     end
   end
 
-  def save_team(%{assigns: assigns} = socket, :edit, team_params, _count, _plan) do
+  defp save_team(%{assigns: assigns} = socket, :edit, team_params) do
     current_member = assigns.team.users
     new_member = assigns.users
     newcomer = new_member -- current_member
@@ -209,7 +227,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     end)
   end
 
-  def send_invitation_mails_to_newcomer(team, admin_user, newcomer, member_user_attrs) do
+  defp send_invitation_mails_to_newcomer(team, admin_user, newcomer, member_user_attrs) do
     newcomer
     |> Enum.map(&%{user_id: &1.id, user: &1})
     |> Enum.each(fn member_user ->
