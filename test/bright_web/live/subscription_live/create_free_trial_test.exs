@@ -75,6 +75,22 @@ defmodule BrightWeb.CreateFreeTrialTest do
              }) =~ "入力してください"
     end
 
+    test "validate email format", %{conn: conn} do
+      {:ok, index_live, html} = live(conn, ~p"/free_trial")
+      assert html =~ "採用・人材育成プラン"
+
+      assert index_live
+             |> element("#free_trial_form")
+             |> render_submit(%{
+               free_trial_form: %{
+                 company_name: "hoge",
+                 phone_number: "00000",
+                 email: "hogehoge",
+                 pic_name: "PM"
+               }
+             }) =~ "無効なフォーマットです"
+    end
+
     test "NOT validate input company_name required", %{conn: conn} do
       insert(:subscription_plans, plan_code: "together", name_jp: "個人プラン")
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=together")

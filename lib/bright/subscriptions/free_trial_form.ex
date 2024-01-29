@@ -6,6 +6,8 @@ defmodule Bright.Subscriptions.FreeTrialForm do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Bright.Utils.EmailValidation
+
   embedded_schema do
     field :user_id, :string
     field :organization_plan, :boolean, default: true
@@ -27,7 +29,8 @@ defmodule Bright.Subscriptions.FreeTrialForm do
       :email,
       :pic_name
     ])
-    |> validate_required([:phone_number, :email, :pic_name])
+    |> validate_required([:phone_number, :pic_name])
+    |> EmailValidation.validate()
     |> validate_organization_required()
   end
 
