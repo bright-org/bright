@@ -169,21 +169,25 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
 
     # データ準備: プラン
     setup do
-      _dummy_same_limit_plan =
-        insert(:subscription_plans,
-          create_teams_limit: 1,
-          team_members_limit: 5,
-          free_trial_priority: 1
-        )
-
       subscription_plan =
         insert(:subscription_plans,
           create_teams_limit: 2,
+          create_enable_hr_functions_teams_limit: 1,
           team_members_limit: 7,
-          free_trial_priority: 2
+          free_trial_priority: 2,
+          authorization_priority: 2
         )
 
-      %{subscription_plan: subscription_plan}
+      same_limit_plan =
+        insert(:subscription_plans,
+          create_teams_limit: 1,
+          create_enable_hr_functions_teams_limit: 0,
+          team_members_limit: 5,
+          free_trial_priority: 1,
+          authorization_priority: 1
+        )
+
+      %{subscription_plan: subscription_plan, same_limit_plan: same_limit_plan}
     end
 
     def submit_team_form(live, name) do
@@ -305,6 +309,50 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       # 再度超えた場合は表示されること
       submit_add_user(live, "user_8")
       assert render(live) =~ "上限です"
+    end
+
+    test "open modal when create_enable_hr_functions_teams_limit is over", %{
+      conn: conn,
+      user: user,
+      subscription_plan: subscription_plan,
+      same_limit_plan: same_limit_plan
+    } do
+      # 採用・育成チーム作成のためhr_basicなサービスの生成と契約
+      insert(:subscription_plan_services,
+        subscription_plan: subscription_plan,
+        service_code: "hr_basic"
+      )
+
+      insert(:subscription_plan_services,
+        subscription_plan: same_limit_plan,
+        service_code: "hr_basic"
+      )
+
+      subscription_user_plan_subscribing_without_free_trial(user, same_limit_plan)
+
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+      live
+      |> element(~s(li[phx-click='select_team_type'][phx-value-team_type='hr_support_team']))
+      |> render_click()
+
+      submit_team_form(live, "チーム")
+      refute Bright.Repo.get_by(Teams.Team, name: "チーム")
+
+      # 無料トライアルモーダルが表示されること
+      assert has_element?(live, "#free_trial_recommendation_modal")
+
+      assert live
+             |> element("#free_trial_recommendation_modal")
+             |> render() =~ subscription_plan.name_jp
+
+      # 無料トライアルの申し込み
+      submit_trial_form(live)
+
+      # 申し込み後は作成できること
+      submit_team_form(live, "チーム")
+      assert team = Bright.Repo.get_by(Teams.Team, name: "チーム")
+      assert_redirect(live, "/teams/#{team.id}")
     end
 
     test "NOT show form if there is not satisfied plan", %{

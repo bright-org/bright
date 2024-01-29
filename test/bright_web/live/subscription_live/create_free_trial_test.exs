@@ -191,17 +191,24 @@ defmodule BrightWeb.CreateFreeTrialTest do
       %{plan: plan}
     end
 
+    def create_lower_plan(plan) do
+      insert(:subscription_plans,
+        plan_code: "team_up_plan",
+        name_jp: "チームアッププラン",
+        create_teams_limit: plan.create_teams_limit - 1,
+        create_enable_hr_functions_teams_limit: plan.create_enable_hr_functions_teams_limit - 1,
+        team_members_limit: plan.team_members_limit - 1,
+        authorization_priority: plan.authorization_priority - 1
+      )
+    end
+
     test "view create_modal lower priority plan when free_trialing hr_plan ", %{
       conn: conn,
       user: user,
       plan: plan
     } do
       insert(:subscription_user_plan_free_trial, user: user, subscription_plan: plan)
-
-      insert(:subscription_plans,
-        plan_code: "team_up_plan",
-        name_jp: "チームアッププラン"
-      )
+      create_lower_plan(plan)
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
       assert html =~ "チームアッププラン"
@@ -220,10 +227,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
         subscription_start_datetime: NaiveDateTime.utc_now()
       )
 
-      insert(:subscription_plans,
-        plan_code: "team_up_plan",
-        name_jp: "チームアッププラン"
-      )
+      create_lower_plan(plan)
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
       assert html =~ "チームアッププラン"
@@ -293,11 +297,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
         subscription_end_datetime: NaiveDateTime.utc_now()
       )
 
-      lower_plan =
-        insert(:subscription_plans,
-          plan_code: "team_up_plan",
-          name_jp: "チームアッププラン"
-        )
+      lower_plan = create_lower_plan(plan)
 
       insert(:subscription_user_plan_free_trial, user: user, subscription_plan: lower_plan)
 

@@ -1159,11 +1159,30 @@ defmodule Bright.Teams do
     )
   end
 
-  def count_admin_team(user_id) do
+  @doc """
+  管理者になっているチーム数を返す
+
+  採用・育成チームを除く
+  """
+  def count_admin_team_without_hr_support_team(user_id) do
     from(
       tmu in TeamMemberUsers,
       left_join: t in assoc(tmu, :team),
-      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.disabled_at)
+      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.disabled_at),
+      where: t.enable_hr_functions == false
+    )
+    |> Repo.aggregate(:count)
+  end
+
+  @doc """
+  管理者になっている採用・育成チーム数を返す
+  """
+  def count_admin_hr_support_team(user_id) do
+    from(
+      tmu in TeamMemberUsers,
+      left_join: t in assoc(tmu, :team),
+      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.disabled_at),
+      where: t.enable_hr_functions == true
     )
     |> Repo.aggregate(:count)
   end

@@ -118,28 +118,67 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   def handle_event("create_team", %{"team" => team_params}, socket) do
-    admin_count = Teams.count_admin_team(socket.assigns.current_user.id)
-    limit = Subscriptions.get_create_teams_limit(socket.assigns.plan)
-    save_team(socket, socket.assigns.action, team_params, admin_count, limit)
+    %{action: action, selected_team_type: team_type} = socket.assigns
+
+    validate_teams_limit(socket, action, team_type, team_params)
+    |> case do
+      {:ok, socket} ->
+        save_team(socket, action, team_params)
+
+      {:ng, socket} ->
+        {:noreply, socket}
+    end
   end
 
-  def handle_event("select_team_type", %{"team_type" => team_type}, socket) do
-    {
-      :noreply,
-      socket
-      |> assign(:selected_team_type, String.to_atom(team_type))
-    }
+  def handle_event(
+        "select_team_type",
+        %{"team_type" => team_type},
+        %{assigns: %{action: :new}} = socket
+      ) do
+    {:noreply, assign(socket, :selected_team_type, String.to_atom(team_type))}
   end
 
-  def save_team(socket, :new, team_params, count, limit) when count >= limit do
-    # 上限になっており追加できないケース
-    %{id: id, team: team} = socket.assigns
-    changeset = changeset_with_teams_limit_msg(team, team_params, limit)
-    open_free_trial_modal(count + 1, team, team_params, id)
-    {:noreply, assign_team_form(socket, changeset)}
+  defp validate_teams_limit(socket, :new, :hr_support_team, team_params) do
+    %{current_user: user, plan: plan, id: id, team: team} = socket.assigns
+
+    team_count = Teams.count_admin_hr_support_team(user.id)
+    limit = Subscriptions.get_create_enable_hr_functions_teams_limit(plan)
+
+    if team_count >= limit do
+      # 上限になっており追加できないケース
+      changeset = changeset_with_hr_support_teams_limit_msg(team, team_params, limit)
+      open_free_trial_modal(team_count + 1, team, team_params, "hr_support_team", id)
+
+      {:ng, assign_team_form(socket, changeset)}
+    else
+      {:ok, socket}
+    end
   end
 
-  def save_team(socket, :new, team_params, _count, _limit) do
+  defp validate_teams_limit(socket, :new, team_type, team_params) do
+    %{current_user: user, plan: plan, id: id, team: team} = socket.assigns
+
+    team_count = Teams.count_admin_team_without_hr_support_team(user.id)
+    limit = Subscriptions.get_create_teams_limit(plan)
+
+    if team_count >= limit do
+      # 上限になっており追加できないケース
+      changeset = changeset_with_teams_limit_msg(team, team_params, limit)
+      open_free_trial_modal(team_count + 1, team, team_params, team_type, id)
+
+      {:ng, assign_team_form(socket, changeset)}
+    else
+      {:ok, socket}
+    end
+  end
+
+  defp validate_teams_limit(socket, _action, _team_type, _team_params) do
+    # 編集時はチーム数上限変更処理は何もしない
+    # チームタイプは変更できないため、変更に伴う検証も必要としない
+    {:ok, socket}
+  end
+
+  defp save_team(socket, :new, team_params) do
     member_users = socket.assigns.users
     admin_user = socket.assigns.current_user
     enable_functions = Teams.build_enable_functions(socket.assigns.selected_team_type)
@@ -166,7 +205,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     end
   end
 
-  def save_team(%{assigns: assigns} = socket, :edit, team_params, _count, _plan) do
+  defp save_team(%{assigns: assigns} = socket, :edit, team_params) do
     current_member = assigns.team.users
     new_member = assigns.users
     newcomer = new_member -- current_member
@@ -209,7 +248,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     end)
   end
 
-  def send_invitation_mails_to_newcomer(team, admin_user, newcomer, member_user_attrs) do
+  defp send_invitation_mails_to_newcomer(team, admin_user, newcomer, member_user_attrs) do
     newcomer
     |> Enum.map(&%{user_id: &1.id, user: &1})
     |> Enum.each(fn member_user ->
@@ -250,7 +289,38 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> Map.put(:action, :validate)
   end
 
-  defp open_free_trial_modal(require_limit, team, team_params, id) do
+  defp changeset_with_hr_support_teams_limit_msg(team, params, limit) do
+    msg =
+      "現在のプランでは、採用・支援チーム数の上限は#{limit}です<br /><br />「アップグレード」ボタンから上位プランをご購入いただくと<br />作成できるチーム数を増やせます"
+
+    team
+    |> Team.registration_changeset(params)
+    |> Ecto.Changeset.add_error(:name, msg)
+    |> Map.put(:action, :validate)
+  end
+
+  defp open_free_trial_modal(require_limit, team, team_params, "hr_support_team", id) do
+    send_update(BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent,
+      id: "free_trial_recommendation_modal",
+      open: true,
+      create_enable_hr_functions_teams_limit: require_limit,
+      on_submit: fn subscription_plan ->
+        # 無料トライアル開始後はエラーメッセージを削除して表示
+        changeset = Team.registration_changeset(team, team_params)
+
+        send_update(__MODULE__,
+          id: id,
+          changeset: changeset,
+          trial_subscription_plan: subscription_plan
+        )
+
+        # rootのLiveViewにplan変更通知
+        send(self(), {:plan_changed, subscription_plan})
+      end
+    )
+  end
+
+  defp open_free_trial_modal(require_limit, team, team_params, _team_type, id) do
     send_update(BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent,
       id: "free_trial_recommendation_modal",
       open: true,

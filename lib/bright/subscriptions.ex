@@ -9,12 +9,20 @@ defmodule Bright.Subscriptions do
   alias Bright.Subscriptions.SubscriptionPlan
 
   @create_teams_limit_without_plan 1
+  @create_enable_hr_functions_teams_limit_without_plan 0
   @team_members_limit_without_plan 5
 
   def get_create_teams_limit(nil), do: @create_teams_limit_without_plan
 
   def get_create_teams_limit(subscription_plan) do
     subscription_plan.create_teams_limit
+  end
+
+  def get_create_enable_hr_functions_teams_limit(nil),
+    do: @create_enable_hr_functions_teams_limit_without_plan
+
+  def get_create_enable_hr_functions_teams_limit(subscription_plan) do
+    subscription_plan.create_enable_hr_functions_teams_limit
   end
 
   def get_team_members_limit(nil), do: @team_members_limit_without_plan
@@ -552,6 +560,9 @@ defmodule Bright.Subscriptions do
       join: sps in assoc(sp, :subscription_plan_services),
       where: sps.service_code == ^service_code,
       where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
+      where:
+        sp.create_enable_hr_functions_teams_limit >=
+          ^current_plan.create_enable_hr_functions_teams_limit,
       where: sp.team_members_limit >= ^current_plan.team_members_limit,
       where: not is_nil(sp.free_trial_priority),
       order_by: [asc: sp.free_trial_priority],
@@ -589,6 +600,53 @@ defmodule Bright.Subscriptions do
       ) do
     from(sp in SubscriptionPlan,
       where: sp.create_teams_limit > ^current_plan.create_teams_limit,
+      where:
+        sp.create_enable_hr_functions_teams_limit >=
+          ^current_plan.create_enable_hr_functions_teams_limit,
+      where: sp.team_members_limit >= ^current_plan.team_members_limit,
+      where: sp.authorization_priority >= ^current_plan.authorization_priority,
+      where: not is_nil(sp.free_trial_priority),
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  採用・育成支援チーム作成上限数を満たす最も優先度の高いサブスクリプションプランを返す
+
+  現プランがある場合は
+  - create_enable_hr_functions_teams_limitが大、かつ
+  - 上位のauthorization_priorityをもつ（ダウングレード防止）
+  が対象
+  """
+  def get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+        create_enable_hr_functions_teams_limit,
+        current_plan \\ nil
+      )
+
+  def get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+        create_enable_hr_functions_teams_limit,
+        nil
+      ) do
+    from(sp in SubscriptionPlan,
+      where: sp.create_enable_hr_functions_teams_limit >= ^create_enable_hr_functions_teams_limit,
+      where: not is_nil(sp.free_trial_priority),
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  def get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+        _create_enable_hr_functions_teams_limit,
+        current_plan
+      ) do
+    from(sp in SubscriptionPlan,
+      where:
+        sp.create_enable_hr_functions_teams_limit >
+          ^current_plan.create_enable_hr_functions_teams_limit,
+      where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
       where: sp.team_members_limit >= ^current_plan.team_members_limit,
       where: sp.authorization_priority >= ^current_plan.authorization_priority,
       where: not is_nil(sp.free_trial_priority),
@@ -628,6 +686,9 @@ defmodule Bright.Subscriptions do
     from(sp in SubscriptionPlan,
       where: sp.team_members_limit > ^current_plan.team_members_limit,
       where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
+      where:
+        sp.create_enable_hr_functions_teams_limit >=
+          ^current_plan.create_enable_hr_functions_teams_limit,
       where: sp.authorization_priority >= ^current_plan.authorization_priority,
       where: not is_nil(sp.free_trial_priority),
       order_by: [asc: sp.free_trial_priority],
@@ -714,9 +775,9 @@ defmodule Bright.Subscriptions do
       ])
 
     cond do
+      not_for_trial? -> {false, :not_for_trial}
       already_available? -> {false, :already_available}
       already_used_once? -> {false, :already_used_once}
-      not_for_trial? -> {false, :not_for_trial}
       true -> {true, nil}
     end
   end
@@ -751,7 +812,7 @@ defmodule Bright.Subscriptions do
     has_services? = target_service_codes -- service_codes == []
 
     has_limit? =
-      ~w(create_teams_limit team_members_limit create_enable_hr_functions_teams_limit)
+      ~w(create_teams_limit create_enable_hr_functions_teams_limit team_members_limit)a
       |> Enum.map(&(Map.get(subscription_plan, &1) >= Map.get(target_plan, &1)))
       |> Enum.all?()
 
