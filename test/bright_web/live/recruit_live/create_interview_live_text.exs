@@ -9,18 +9,17 @@ defmodule BrightWeb.RecruitLive.CreateInterviewLiveTest do
     setup [:register_and_log_in_user]
 
     # データ準備: プラン
-    setup %{user: user} do
+    setup do
       subscription_plan =
         insert(:subscription_plans, plan_code: "hr_plan")
         |> plan_with_plan_service_by_service_code("hr_basic")
 
-      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan)
       %{subscription_plan: subscription_plan}
     end
 
     # データ準備: チーム
     setup %{user: user} do
-      team = insert(:team)
+      team = insert(:hr_support_team)
       member = insert(:user) |> with_user_profile()
       insert(:team_member_users, team: team, user: user, is_admin: true)
       insert(:team_member_users, team: team, user: member)
@@ -60,8 +59,11 @@ defmodule BrightWeb.RecruitLive.CreateInterviewLiveTest do
       conn: conn,
       career_field: career_field,
       skill_panel: skill_panel,
-      member: member
+      member: member,
+      user: user,
+      subscription_plan: subscription_plan
     } do
+      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan)
       {:ok, lv, _html} = live(conn, ~p"/mypage")
 
       lv
@@ -128,6 +130,46 @@ defmodule BrightWeb.RecruitLive.CreateInterviewLiveTest do
         assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
         assert email.subject == "【Bright】面談参加依頼が届いています"
       end)
+    end
+
+    test "open create interview modal when member at hr team, no subscrption", %{
+      conn: conn,
+      career_field: career_field,
+      skill_panel: skill_panel
+    } do
+      {:ok, lv, _html} = live(conn, ~p"/mypage")
+
+      lv
+      |> form("#user_search_form",
+        user_search: %{
+          skills: %{0 => %{career_field: career_field.name_en}}
+        }
+      )
+      |> render_change(%{_target: ["user_search", "skills", "0", "career_field"]})
+
+      lv
+      |> form("#user_search_form",
+        user_search: %{
+          skills: %{0 => %{skill_panel: skill_panel.id}}
+        }
+      )
+      |> render_change(%{_target: ["user_search", "skills", "0", "skill_panel"]})
+
+      lv
+      |> form("#user_search_form",
+        user_search: %{
+          skills: %{
+            0 => %{
+              career_field: career_field.name_en,
+              skill_panel: skill_panel.id
+            }
+          }
+        }
+      )
+      |> render_submit()
+
+      # 無料トライアルを開くクリックイベントになっていないか
+      refute element(lv, "a", "面談調整") |> render() =~ "open_free_trial"
     end
   end
 end
