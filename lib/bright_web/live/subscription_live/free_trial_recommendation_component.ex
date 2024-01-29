@@ -104,11 +104,23 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
     {:ok, assign_on_open(socket, plan, assigns)}
   end
 
-  def update(%{open: true, create_teams_limit: require_create_teams_limit} = assigns, socket) do
+  def update(%{open: true, create_teams_limit: require_limit} = assigns, socket) do
     # モーダルを開く
     # どの無料トライアルプランにより指定上限数を満たすかを決定する
     user = socket.assigns.current_user
-    plan = get_plan_by_create_teams_limit(user, require_create_teams_limit)
+    plan = get_plan_by_create_teams_limit(user, require_limit)
+
+    {:ok, assign_on_open(socket, plan, assigns)}
+  end
+
+  def update(
+        %{open: true, create_enable_hr_functions_teams_limit: require_limit} = assigns,
+        socket
+      ) do
+    # モーダルを開く
+    # どの無料トライアルプランにより指定上限数を満たすかを決定する
+    user = socket.assigns.current_user
+    plan = get_plan_by_create_enable_hr_functions_teams_limit(user, require_limit)
 
     {:ok, assign_on_open(socket, plan, assigns)}
   end
@@ -214,11 +226,20 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
     )
   end
 
-  defp get_plan_by_create_teams_limit(user, require_create_teams_limit) do
+  defp get_plan_by_create_teams_limit(user, require_limit) do
     current_plan = get_current_plan(user)
 
     Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
-      require_create_teams_limit,
+      require_limit,
+      current_plan
+    )
+  end
+
+  defp get_plan_by_create_enable_hr_functions_teams_limit(user, require_limit) do
+    current_plan = get_current_plan(user)
+
+    Subscriptions.get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+      require_limit,
       current_plan
     )
   end
