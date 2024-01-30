@@ -412,6 +412,17 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
 
       refute has_element?(live, "#free_trial_recommendation_form", "入力してください")
     end
+
+    test "validate email format", %{
+      conn: conn
+    } do
+      insert(:subscription_plans)
+
+      live = show_component_modal(conn)
+      change_trial_form(live, %{email: "hogehoge"})
+
+      assert has_element?(live, "#free_trial_recommendation_form", "無効なフォーマットです")
+    end
   end
 
   # 指定したプランが使用できないケース確認
