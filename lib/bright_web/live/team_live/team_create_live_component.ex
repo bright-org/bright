@@ -281,7 +281,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   defp changeset_with_teams_limit_msg(team, params, limit) do
     msg =
-      "現在のプランでは、チームは#{limit}つまでが上限です<br /><br />「アップグレード」ボタンから上位プランをご購入いただくと<br />作成できるチーム数を増やせます"
+      "現在のプランでは、チーム数の上限は#{limit}です<br /><br />「アップグレード」ボタンから上位プランをご購入いただくと<br />作成できるチーム数を増やせます"
 
     team
     |> Team.registration_changeset(params)
