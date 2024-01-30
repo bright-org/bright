@@ -90,7 +90,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
                  </p>
               </li>
 
-              <% # TODO ↓α版対応 %>
               <li :if={@card.selected_tab == "supporter_teams"} class="text-base text-left p-1">
                 <div class="text-base">支援を受けている採用・育成チームはありません</div>
                 <p class="my-4">
@@ -98,7 +97,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
                     採用・育成チームに支援してもらう（β）
                   </a>
                 </p>
-                <p class="text-sm">βリリースで利用可能になります</p>
               </li>
 
               <li :if={@card.selected_tab == "supportee_teams"} class="text-base text-left p-1">
