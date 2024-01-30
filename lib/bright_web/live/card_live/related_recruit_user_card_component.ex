@@ -11,7 +11,8 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
 
   @tabs [
     {"team", "所属チーム"},
-    {"hr_teams", "採用・育成チーム"}
+    {"supporter_teams", "採用・育成チーム"},
+    {"supportee_teams", "採用・育成支援先"}
   ]
 
   @page_size 6
@@ -64,13 +65,46 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
     """
   end
 
+  defp inner_tab(assigns) do
+    ~H"""
+    <div id={@id} class="flex border-b border-brightGray-50 lg:w-[750px]" phx-hook="TabSlideScroll">
+      <div class="overflow-hidden">
+        <ul class="inner_tab_list overflow-hidden flex text-base !text-sm w-[99999px]">
+          <%= for {key, value} <- @inner_tab do %>
+            <li
+              class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
+              phx-click="inner_tab_click"
+              phx-target={@target}
+              phx-value-tab_name={@selected_tab}
+              phx-value-inner_tab_name={key}
+            >
+              <%= value %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="inner_tab_slide_buttons flex">
+        <button class="px-1 border-l border-brightGray-50">
+          <span
+            class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+          ></span>
+        </button>
+        <button class="px-1 border-l border-brightGray-50">
+          <span
+            class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+          ></span>
+        </button>
+      </div>
+    </div>
+    """
+  end
+
   @impl true
   def mount(socket) do
     socket
     |> assign(:current_user, nil)
     |> assign(:menu_items, [])
     |> assign(:tabs, @tabs)
-    # TODO タブが増えたら初期選択タブの変更に対応する
     |> assign(:selected_tab, "team")
     |> assign(:user_profiles, [])
     |> assign(:inner_tab, [])
@@ -99,11 +133,7 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
   end
 
   @impl true
-  def handle_event(
-        "tab_click",
-        %{"id" => _id, "tab_name" => "team"},
-        socket
-      ) do
+  def handle_event("tab_click", %{"tab_name" => "team"}, socket) do
     # inner_tab用に所属チームの一覧を取得
     page =
       Teams.list_joined_teams_by_user_id(
@@ -140,101 +170,93 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
     end
   end
 
-  def handle_event("tab_click", %{"id" => _id, "tab_name" => "hr_teams"}, socket) do
-    socket
-    |> assign(:user_profiles, [])
-    |> assign(:inner_tab, [])
-    |> assign(:selected_tab, "hr_teams")
-    |> then(&{:noreply, &1})
-  end
+  def handle_event("tab_click", %{"tab_name" => "supporter_teams"}, socket) do
+    page =
+      Teams.list_supporter_teams_by_supportee_user_id(
+        socket.assigns.current_user.id,
+        %{page: 1, page_size: 999}
+      )
 
-  def handle_event(
+    inner_tabs = Enum.map(page.entries, fn team -> {team.id, team.name} end)
+
+    socket =
+      socket
+      |> assign(:selected_tab, "supporter_teams")
+      |> assign(:inner_tab, inner_tabs)
+
+    if length(inner_tabs) >= 1 do
+      {team_id, _name} = List.first(inner_tabs)
+
+      handle_event(
         "inner_tab_click",
         %{
-          "tab_name" => "team",
+          "tab_name" => "supporter_teams",
           "inner_tab_name" => team_id
         },
         socket
-      ) do
-    socket =
-      socket
-      # 選択中のinnserタブを変更
-      |> assign(:inner_selected_tab, team_id)
-      # １ページ目にリセット
-      |> assign(:page, 1)
-      # 選択中のタブ名に応じたassign_selected_cardを実行
-      |> assign_selected_card(socket.assigns.selected_tab)
-
-    {:noreply, socket}
+      )
+    else
+      {:noreply, socket}
+    end
   end
 
-  def handle_event(
-        "previous_button_click",
-        %{"id" => _id},
+  def handle_event("tab_click", %{"tab_name" => "supportee_teams"}, socket) do
+    page =
+      Teams.list_supportee_teams_by_supporter_user_id(
+        socket.assigns.current_user.id,
+        %{page: 1, page_size: 999}
+      )
+
+    inner_tabs = Enum.map(page.entries, fn team -> {team.id, team.name} end)
+
+    socket =
+      socket
+      |> assign(:selected_tab, "supportee_teams")
+      |> assign(:inner_tab, inner_tabs)
+
+    if length(inner_tabs) >= 1 do
+      {team_id, _name} = List.first(inner_tabs)
+
+      handle_event(
+        "inner_tab_click",
+        %{
+          "tab_name" => "supportee_teams",
+          "inner_tab_name" => team_id
+        },
         socket
-      ) do
+      )
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_event("inner_tab_click", %{"inner_tab_name" => team_id}, socket) do
+    socket
+    |> assign(:inner_selected_tab, team_id)
+    |> assign(:page, 1)
+    |> assign_selected_card(socket.assigns.selected_tab)
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("previous_button_click", _params, socket) do
     page = socket.assigns.page - 1
     page = if page < 1, do: 1, else: page
 
-    socket =
-      socket
-      |> assign(:page, page)
-      # 選択中のタブ名に応じたassign_selected_cardを実行
-      |> assign_selected_card(socket.assigns.selected_tab)
-
-    {:noreply, socket}
+    socket
+    |> assign(:page, page)
+    |> assign_selected_card(socket.assigns.selected_tab)
+    |> then(&{:noreply, &1})
   end
 
-  def handle_event(
-        "next_button_click",
-        %{"id" => _id},
-        socket
-      ) do
-    socket =
-      socket
-      |> assign(:page, socket.assigns.page + 1)
-      # 選択中のタブ名に応じたassign_selected_cardを実行
-      |> assign_selected_card(socket.assigns.selected_tab)
-
-    {:noreply, socket}
+  def handle_event("next_button_click", _params, socket) do
+    socket
+    |> assign(:page, socket.assigns.page + 1)
+    |> assign_selected_card(socket.assigns.selected_tab)
+    |> then(&{:noreply, &1})
   end
 
-  defp inner_tab(assigns) do
-    ~H"""
-    <div id={@id} class="flex border-b border-brightGray-50 lg:w-[750px]" phx-hook="TabSlideScroll">
-      <div class="overflow-hidden">
-        <ul class="inner_tab_list overflow-hidden flex text-base !text-sm w-[99999px]">
-          <%= for {key, value} <- @inner_tab do %>
-            <li
-              class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
-              phx-click="inner_tab_click"
-              phx-target={@target}
-              phx-value-tab_name={@selected_tab}
-              phx-value-inner_tab_name={key}
-            >
-              <%= value %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-      <div class="inner_tab_slide_buttons flex">
-        <button class="px-1 border-l border-brightGray-50">
-          <span
-            class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-          ></span>
-        </button>
-        <button class="px-1 border-l border-brightGray-50">
-          <span
-            class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-          ></span>
-        </button>
-      </div>
-    </div>
-    """
-  end
-
-  defp assign_selected_card(socket, "team") do
-    member_and_users =
+  defp assign_selected_card(socket, _) do
+    members =
       get_team_member_user_profiles(
         socket.assigns.current_user.id,
         socket.assigns.inner_selected_tab,
@@ -245,8 +267,8 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
       )
 
     socket
-    |> assign(:user_profiles, member_and_users.user_smalls)
-    |> assign(:total_pages, member_and_users.total_pages)
+    |> assign(:user_profiles, members.user_smalls)
+    |> assign(:total_pages, members.total_pages)
   end
 
   defp get_team_member_user_profiles(user_id, team_id, page_params) do
@@ -260,12 +282,12 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
     member_and_users =
       page.entries
       |> Enum.map(fn member_users ->
-        member_users.user.user_profile
+        prof = member_users.user.user_profile
 
         %{
           user_name: member_users.user.name,
-          title: member_users.user.user_profile.title,
-          icon_file_path: UserProfiles.icon_url(member_users.user.user_profile.icon_file_path),
+          title: prof.title,
+          icon_file_path: UserProfiles.icon_url(prof.icon_file_path),
           encrypt_user_name: ""
         }
       end)

@@ -237,6 +237,20 @@ defmodule Bright.Recruits do
     )
   end
 
+  def send_interview_acceptance_notification_mail(user, interview_id, interview_url_fun)
+      when is_function(interview_url_fun, 1) do
+    interview =
+      Interview
+      |> preload([:recruiter_user])
+      |> Repo.get!(interview_id)
+
+    UserNotifier.deliver_interview_acceptance_to_recruiter(
+      user,
+      interview.recruiter_user,
+      interview_url_fun.(interview_id)
+    )
+  end
+
   alias Bright.Recruits.Coordination
   alias Bright.Recruits.CoordinationMember
 

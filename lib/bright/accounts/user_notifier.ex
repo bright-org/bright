@@ -331,6 +331,29 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   @doc """
+  Deliver interview acceptance answer.
+  """
+  def deliver_interview_acceptance_to_recruiter(from_user, to_user, url) do
+    deliver(to_user.email, "【Bright】面談参加依頼に返答されました", """
+    #{to_user.name}さん
+
+    #{from_user.name} さんから、面談の参加依頼の返答が届いています。
+
+    下記URLで面談内容を確認してください。
+    #{url}
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    customer-success@bright-fun.org
+
+    #{@signature}
+    """)
+  end
+
+  @doc """
   Deliver interview start mail to candidates_user.
   """
   def deliver_start_interview_to_candidates_user(from_user, to_user) do
