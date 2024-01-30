@@ -26,9 +26,6 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
               β期間終了までお試しいただけます
             </span>
           </h2>
-          <p class="mt-2" :if={@plan && @plan.plan_code == "hr_plan"}>
-            ※現在、面談調整とチャットまでお試しいただけます
-          </p>
           <p class="mt-2">
             (お試し期間以降もご利用される場合はプランのアップグレードが必要です)
           </p>
