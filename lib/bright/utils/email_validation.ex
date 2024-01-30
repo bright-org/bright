@@ -1,4 +1,8 @@
 defmodule Bright.Utils.EmailValidation do
+  @moduledoc """
+  custom validator for email
+  """
+
   import Ecto.Changeset
 
   def validate(changeset) do
