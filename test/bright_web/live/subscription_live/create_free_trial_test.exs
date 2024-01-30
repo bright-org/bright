@@ -68,7 +68,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
              |> element("#free_trial_form")
              |> render_submit(%{
                free_trial_form: %{
-                 phone_number: "00000",
+                 phone_number: "000000000",
                  email: "hoge@email.com",
                  pic_name: "PM"
                }
@@ -84,8 +84,24 @@ defmodule BrightWeb.CreateFreeTrialTest do
              |> render_submit(%{
                free_trial_form: %{
                  company_name: "hoge",
-                 phone_number: "00000",
+                 phone_number: "000000000",
                  email: "hogehoge",
+                 pic_name: "PM"
+               }
+             }) =~ "無効なフォーマットです"
+    end
+
+    test "validate phone_number format", %{conn: conn} do
+      {:ok, index_live, html} = live(conn, ~p"/free_trial")
+      assert html =~ "採用・人材育成プラン"
+
+      assert index_live
+             |> element("#free_trial_form")
+             |> render_submit(%{
+               free_trial_form: %{
+                 company_name: "hoge",
+                 phone_number: "hoge",
+                 email: "hoge@email.com",
                  pic_name: "PM"
                }
              }) =~ "無効なフォーマットです"
@@ -100,7 +116,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       |> element("#free_trial_form")
       |> render_submit(%{
         free_trial_form: %{
-          phone_number: "00000",
+          phone_number: "000000000",
           email: "hoge@email.com",
           pic_name: "PM"
         }
@@ -121,7 +137,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       |> render_submit(%{
         free_trial_form: %{
           company_name: "sample company",
-          phone_number: "00000",
+          phone_number: "000000000",
           email: "hoge@email.com",
           pic_name: "PM"
         }
@@ -155,7 +171,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       |> render_submit(%{
         free_trial_form: %{
           company_name: "sample company",
-          phone_number: "00000",
+          phone_number: "000000000",
           email: "hoge@email.com",
           pic_name: "PM"
         }
