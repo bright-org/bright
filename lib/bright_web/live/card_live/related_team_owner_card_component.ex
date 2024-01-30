@@ -33,12 +33,11 @@ defmodule BrightWeb.CardLive.RelatedTeamOwnerCardComponent do
       >
         <div class="pt-3 pb-1 px-6 lg:min-h-[192px]">
           <%= if length(@user_profiles) == 0 do %>
-          <li class="flex">
+            <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
               <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>にチーム管理者はいません
               </div>
             </li>
-
           <% else %>
             <ul class="flex gap-y-2 flex-col">
               <%= for user_profile <- @user_profiles do %>
@@ -89,27 +88,11 @@ defmodule BrightWeb.CardLive.RelatedTeamOwnerCardComponent do
   end
 
   @impl true
-  def handle_event("tab_click", %{"tab_name" => "team"}, socket) do
+  def handle_event("tab_click", %{"tab_name" => tab}, socket) do
     socket
     |> assign(:page, 1)
-    |> assign(:selected_tab, "team")
-    |> assign_selected_card("team")
-    |> then(&{:noreply, &1})
-  end
-
-  def handle_event("tab_click", %{"tab_name" => "supporter_teams"}, socket) do
-    socket
-    |> assign(:page, 1)
-    |> assign(:selected_tab, "supporter_teams")
-    |> assign_selected_card("supporter_teams")
-    |> then(&{:noreply, &1})
-  end
-
-  def handle_event("tab_click", %{"tab_name" => "supportee_teams"}, socket) do
-    socket
-    |> assign(:page, 1)
-    |> assign(:selected_tab, "supportee_teams")
-    |> assign_selected_card("supportee_teams")
+    |> assign(:selected_tab, tab)
+    |> assign_selected_card(tab)
     |> then(&{:noreply, &1})
   end
 
