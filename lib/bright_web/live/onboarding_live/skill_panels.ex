@@ -80,14 +80,19 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   def handle_params(%{"job_id" => id}, uri, socket) do
     current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
     career_fields = Jobs.list_skill_panels_group_by_career_field(id)
-    career_field = Map.keys(career_fields) |> List.first()
 
-    socket
-    |> assign(:current_path, current_path)
-    |> assign(:route, "jobs")
-    |> assign(:return_to, "/#{current_path}?open=wants_job_panel&tab=#{career_field.name_en}")
-    |> assign(:id, id)
-    |> assign(:career_fields, career_fields)
-    |> then(&{:noreply, &1})
+    case Map.keys(career_fields) |> List.first() do
+      nil ->
+        raise Ecto.NoResultsError, queryable: Bright.CareerFields.CareerField
+
+      career_field ->
+        socket
+        |> assign(:current_path, current_path)
+        |> assign(:route, "jobs")
+        |> assign(:return_to, "/#{current_path}?open=wants_job_panel&tab=#{career_field.name_en}")
+        |> assign(:id, id)
+        |> assign(:career_fields, career_fields)
+        |> then(&{:noreply, &1})
+    end
   end
 end
