@@ -18,10 +18,17 @@ const nowSelectColor = "#B71225";
 
 const dataDivision = (data, futureDisplay) => {
   if (data === undefined) return [[], []];
+
+  // index:0はグラフ上にない1つ過去なので除去（別途描画で使う）
   data = data.slice(1);
+
+  // 未来表示状態でなければ、そのまま返す。通常ロジックで全データを描画できる
   if (!futureDisplay) return [data, []];
+
+  // 未来表示状態は間に「現在」が入るので描画しないようにデータを分離
   const past = data.map((x, index) => (index > 3 ? null : x));
   const future = data.map((x, index) => (index < 3 ? null : x));
+
   return [past, future];
 };
 
@@ -51,6 +58,7 @@ const createData = (data) => {
   const [otherData, otherFuture] = dataDivision(data["other"], otherFutureDisplay);
   const [roleData, roleFuture] = dataDivision(data["role"], roleFutureDisplay);
   const datasets = [];
+
   datasets.push(
     createDataset(
       myselfData,
@@ -97,7 +105,7 @@ const createData = (data) => {
   };
 };
 
-const drawvVrticalLine = (context, scales) => {
+const drawvVerticalLine = (context, scales, verticalPoints) => {
   const y = scales.y;
   const x = scales.x;
 
@@ -109,9 +117,13 @@ const drawvVrticalLine = (context, scales) => {
 
   context.beginPath();
   for (let i = 0; i < 5; i++) {
-    const vrticalX = x.getPixelForValue(i);
-    context.moveTo(vrticalX, upY);
-    context.lineTo(vrticalX, downY);
+    const verticalX = x.getPixelForValue(i);
+    const verticalValue = verticalPoints[i];
+
+    if(verticalValue) {
+      context.moveTo(verticalX, upY);
+      context.lineTo(verticalX, downY);
+    }
   }
   context.stroke();
 };
@@ -154,10 +166,20 @@ const drawMyselfNow = (chart, scales) => {
 
   if (now === undefined || now === null) return;
 
-  const pastData = data["myself"]
+  // 未来分も除いているためインデックス添え字の-1と合わせて-2
+  // また数値をいれずに幅をとっているケースがあるので値が入っている個所までさかのぼる
+  const futureIndex = data["myself"].length - 1
+  let prevIndex = data["myself"].length - 2
+  while(data["myself"][prevIndex] == null && prevIndex != 0) {
+    prevIndex -= 1
+  }
+
   drawNow(chart, scales, {
     nowValue: now,
-    prevValue: pastData[4],
+    prevValue: data["myself"][prevIndex],
+    futureIndex: futureIndex,
+    prevIndex: prevIndex,
+    values: data["myselfRecentSteps"],
     selected: (data["myselfSelected"] === "now"),
     axisColor: (data["myselfSelected"] === "now") ? nowSelectColor : nowColor,
     borderColor: myselfBorderColor,
@@ -172,10 +194,19 @@ const drawOtherNow = (chart, scales) => {
 
   if (now === undefined || now === null) return;
 
-  const pastData = data["other"]
+  // 未来分も除いているためインデックス添え字の-1と合わせて-2
+  const futureIndex = data["other"].length - 1
+  let prevIndex = data["other"].length - 2
+  while(data["other"][prevIndex] == null && prevIndex != 0) {
+    prevIndex -= 1
+  }
+
   drawNow(chart, scales, {
     nowValue: now,
-    prevValue: pastData[4],
+    prevValue: data["other"][prevIndex],
+    futureIndex: futureIndex,
+    prevIndex: prevIndex,
+    values: data["otherRecentSteps"],
     selected: (data["otherSelected"] === "now"),
     axisColor: (data["otherSelected"] === "now") ? nowSelectColor : nowColor,
     borderColor: getOtherBorderColor(data),
@@ -191,51 +222,108 @@ const drawNow = (chart, scales, state) => {
 
   context.setLineDash([2, 0]);
   context.strokeStyle = state.axisColor;
-  const nowDown = y.getPixelForValue(0);
+  const zeroY = y.getPixelForValue(0);
   const nowY = y.getPixelForValue(state.nowValue);
   const pastY = y.getPixelForValue(state.prevValue);
 
-  // 直近の過去から未来の真ん中を求める
-  const futureX = x.getPixelForValue(4);
-  const pastX = x.getPixelForValue(3);
-  const diffX = futureX - pastX;
-  const nowX = pastX + diffX / 2;
+
+  // 各点取得
+  // 取得時の差し値はグラフ上なのでprevIndexよりさらに-1した値
+  // グラフ上に最初の過去点はないため
+  const pastX = x.getPixelForValue(state.prevIndex - 1)
+  const futureX = x.getPixelForValue(state.futureIndex - 1)
+  const diffSize = state.futureIndex - state.prevIndex
+
+  const diffPrevX = futureX - pastX
+  const nowX = futureX - diffPrevX / (diffSize * 2)
+  const diffX = nowX - pastX
 
   // 「現在」縦線
-  context.lineWidth = state.selected ? 4 : 2;
-  context.beginPath();
-  context.moveTo(nowX, nowDown);
-  context.lineTo(nowX, nowY);
-  context.stroke();
+  context.lineWidth = state.selected ? 4 : 2
+  context.beginPath()
+  context.moveTo(nowX, zeroY)
+  context.lineTo(nowX, nowY)
+  context.stroke()
 
-  // 直近の過去から現在までの線
-  context.lineWidth = 3;
-  context.strokeStyle = state.borderColor;
-  context.beginPath();
-  context.moveTo(pastX, pastY);
-  context.lineTo(nowX, nowY);
-  context.stroke();
+  // 過去から現在の描画点(x)を決める
+  // 仮にsize: 1なら「現在」点のみ
+  // 仮にsize: 2なら「現在」までの間にステップ点が1つ
+  const size = state.values.length
+  const stepX = diffX / size
 
-  // 直近の過去から現在の点までの下側グラデーション
-  // 現在の点描画前に実行しないと点がかすむためここで処理
-  if(state.fillByGradation) {
-    fillGradationPointToPoint(chart, scales, {x: pastX, y: pastY}, {x: nowX, y: nowY})
+  // 現在点に値を入れておく。現在の赤い点の描画のため
+  const lastIndex = state.values.findLastIndex(v => v)
+  const lastValue = state.values[lastIndex]
+  state.values[size - 1] = lastValue
 
-    // TODO: 未来実装時に、現在から未来への下側グラデーションを行うこと。描画位置はおそらくここになるが未確定
-  }
+  // 線 直近の過去から現在まで
+  let currentX = pastX
+  let currentY = pastY
+  let stepSize = 1
 
-  // 現在の点
-  context.beginPath();
-  context.arc(
-    nowX,
-    nowY,
-    8.5,
-    (0 * Math.PI) / 180,
-    (360 * Math.PI) / 180,
-    false
-  );
-  context.fillStyle = drawNowColor;
-  context.fill();
+  state.values.forEach((value, index) => {
+    if(value == null) {
+      // 値がないのでスキップして次へ
+      // 次の幅を大きく取るためにstepSizeで調整
+      stepSize += 1
+      return
+    }
+
+    const nextX = currentX + stepSize * stepX
+    const nextY = y.getPixelForValue(value)
+
+    context.lineWidth = 2;
+    context.strokeStyle = state.borderColor;
+    context.beginPath()
+    context.moveTo(currentX, currentY)
+    context.lineTo(nextX, nextY)
+    context.stroke()
+
+    // 直近から現在の点までの下側グラデーション
+    // 現在の点描画前に実行しないと点がかすむためここで処理
+    if(state.fillByGradation) {
+      fillGradationPointToPoint(chart, scales, {x: currentX, y: currentY}, {x: nextX, y: nextY})
+    }
+
+    stepSize = 1
+    currentX = nextX
+    currentY = nextY
+  })
+
+  // 点 直近の過去から現在まで
+  currentX = pastX
+  currentY = pastY
+  stepSize = 1
+
+  state.values.forEach((value, index) => {
+    if(value == null) {
+      stepSize += 1
+      return
+    }
+
+    const nextX = currentX + stepSize * stepX
+    const nextY = y.getPixelForValue(value)
+    const nowValue = (index == size - 1)
+    const nowFocus = nowValue && state.selected
+
+    context.beginPath();
+    context.arc(
+      nextX,
+      nextY,
+      nowFocus ? 8.5 : 4,
+      (0 * Math.PI) / 180,
+      (360 * Math.PI) / 180,
+      false
+    );
+    // context.fillStyle = drawNowColor;
+    // TODO: ↓仮実装のため比較先の色を考慮していない
+    context.fillStyle = nowValue ? drawNowColor : myselfPointColor;
+    context.fill();
+
+    stepSize = 1
+    currentX = nextX
+    currentY = nextY
+  })
 };
 
 // 2点の下側をグラデーションで塗る処理
@@ -376,8 +464,6 @@ const fillMyselfData = (chart, scales) => {
   // getPixelForValue()でグラフ描画中アイテムの各座標位置が取れる
   const startX = x.getPixelForValue(0) - padding;
   const startY = y.getPixelForValue(0);
-  const endX = x.getPixelForValue(futureDisplay ? 3 : 4);
-  const endY = y.getPixelForValue(0);
 
   const gradient = context.createLinearGradient(0, 0, 0, 300);
   gradient.addColorStop(0, myselfFillStartColor);
@@ -400,10 +486,20 @@ const fillMyselfData = (chart, scales) => {
     ? drawData.length - 1
     : drawData.length;
 
+  // 最後のx(endX)は描画可能な点までにしている
+  // そうすることで0で描画されるのを避けている
+  let endX
+  const endY = y.getPixelForValue(0)
+
   for (let i = startIndex; i < drawDataKLength; i++) {
     let pointX = x.getPixelForValue(i - startIndex);
     let pointY = y.getPixelForValue(drawData[i]);
-    context.lineTo(pointX, pointY);
+
+    // データがnilの場合は処理をスキップ
+    if(!isNaN(pointY)) {
+      context.lineTo(pointX, pointY);
+      endX = x.getPixelForValue(i - startIndex)
+    }
   }
   context.lineTo(endX, endY);
   context.lineTo(startX, startY);
@@ -423,7 +519,11 @@ const beforeDatasetsDraw = (chart, ease) => {
   const otherSelected = (element) => element == data["otherSelected"];
   const otherSelectedIndex = (data["otherLabels"] || []).findIndex(otherSelected);
 
-  drawvVrticalLine(context, scales);
+  // labels配列がnilの部分には縦補助線を引かない
+  // nilで挟まれた日付範囲の描画領域を大きく取っている
+  const verticalPoints = data.labels;
+
+  drawvVerticalLine(context, scales, verticalPoints);
   drawHorizonLine(context, scales);
   fillMyselfData(chart, scales);
   drawMyselfNow(chart, scales);
