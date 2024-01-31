@@ -1289,6 +1289,24 @@ defmodule Bright.Teams do
     )
   end
 
+  def joined_supporter_teams_owner_ids(user_id) do
+    from(tmu in TeamMemberUsers,
+      where:
+        tmu.is_admin == true and
+          tmu.team_id in subquery(
+            from(tmu in TeamMemberUsers,
+              left_join: t in assoc(tmu, :team),
+              where:
+                tmu.user_id == ^user_id and not is_nil(tmu.invitation_confirmed_at) and
+                  is_nil(t.disabled_at) and t.enable_hr_functions == true,
+              select: t.id
+            )
+          ),
+      select: tmu.user_id
+    )
+    |> Repo.all()
+  end
+
   @doc """
   管理者になっているチーム数を返す
 
