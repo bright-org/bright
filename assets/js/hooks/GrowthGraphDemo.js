@@ -40,15 +40,8 @@ const createDataset = (
   pointBorderColor,
   isFuture
 ) => {
-  // sample: 「現在」の幅調整のため等幅では引いていない
-  const nowPoint = 1.0 - (3 / 8)
-  const xPoints = [0, nowPoint / 3, nowPoint / 3 * 2, nowPoint]
-  const dataPoints = data.map((value, i) => {
-    return {x: xPoints[i], y: value}
-  })
-
   return {
-    data: dataPoints,
+    data: data,
     borderColor: borderColor,
     pointRadius: 8,
     pointBackgroundColor: pointBackgroundColor,
@@ -108,7 +101,7 @@ const createData = (data) => {
   // }
 
   return {
-    // labels: data.labels,
+    labels: data.labels,
     datasets: datasets,
   };
 };
@@ -237,19 +230,14 @@ const drawNow = (chart, scales, state) => {
 
 
   // 各点取得
-  // 取得時の差し値はグラフ上なのでprevIndexよりさらに-1した値
+  // 取得時の差し値はグラフ上なのでIndexよりさらに-1した値
   // グラフ上に最初の過去点はないため
   const pastX = x.getPixelForValue(state.prevIndex - 1)
   const futureX = x.getPixelForValue(state.futureIndex - 1)
-  const diffSize = state.futureIndex - state.prevIndex
+
+  // 「現在」の点と、「現在」までの刻み幅を決める
   const diffPrevX = futureX - pastX
-
-  // sample D
-  // const nowXtmp = futureX - diffPrevX / (diffSize * 2)
-  // const nowX = nowXtmp + (futureX - nowXtmp) / 2
-
-  // const nowX = futureX - diffPrevX / (diffSize * 2)
-  const nowX = futureX - diffPrevX / 2
+  const nowX = pastX + diffPrevX * 0.75
   const diffX = nowX - pastX
 
   // 「現在」縦線
@@ -593,8 +581,7 @@ const createChartFromJSON = (data, size) => {
   let pad = size === "md" ? padding : 10;
 
   return {
-    // type: "line",
-    type: "scatter",
+    type: "line",
     data: createData(data),
     options: {
       animation: false,
@@ -628,8 +615,6 @@ const createChartFromJSON = (data, size) => {
           },
         },
         x: {
-          min: -0.075,
-          max: 1.075,
           display: false,
           grid: {
             display: false,
