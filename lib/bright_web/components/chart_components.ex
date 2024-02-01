@@ -73,9 +73,14 @@ defmodule BrightWeb.ChartComponents do
   attr :size, :string, default: "md"
 
   def growth_graph(assigns) do
+    data =
+      assigns.data
+      |> Map.update!(:myself, & Enum.slice(&1, 1..-1))
+      |> Map.update!(:labels, & Enum.slice(&1, 1..-1))
+
     assigns =
       assigns
-      |> assign(:data, assigns.data |> Jason.encode!())
+      |> assign(:data, data |> Jason.encode!())
 
     ~H"""
     <div

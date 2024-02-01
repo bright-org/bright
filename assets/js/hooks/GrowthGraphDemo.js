@@ -26,8 +26,9 @@ const dataDivision = (data, futureDisplay) => {
   if (!futureDisplay) return [data, []];
 
   // 未来表示状態は間に「現在」が入るので描画しないようにデータを分離
-  const past = data.map((x, index) => (index > 3 ? null : x));
-  const future = data.map((x, index) => (index < 3 ? null : x));
+  const futureIndex = data.length - 1
+  const past = data.map((x, index) => (index >= futureIndex ? null : x));
+  const future = data.map((x, index) => (index <= futureIndex ? null : x));
 
   return [past, future];
 };
@@ -39,8 +40,15 @@ const createDataset = (
   pointBorderColor,
   isFuture
 ) => {
+  // sample: 「現在」の幅調整のため等幅では引いていない
+  const nowPoint = 1.0 - (3 / 8)
+  const xPoints = [0, nowPoint / 3, nowPoint / 3 * 2, nowPoint]
+  const dataPoints = data.map((value, i) => {
+    return {x: xPoints[i], y: value}
+  })
+
   return {
-    data: data,
+    data: dataPoints,
     borderColor: borderColor,
     pointRadius: 8,
     pointBackgroundColor: pointBackgroundColor,
@@ -100,7 +108,7 @@ const createData = (data) => {
   // }
 
   return {
-    labels: data.labels,
+    // labels: data.labels,
     datasets: datasets,
   };
 };
@@ -195,6 +203,7 @@ const drawOtherNow = (chart, scales) => {
   if (now === undefined || now === null) return;
 
   // 未来分も除いているためインデックス添え字の-1と合わせて-2
+  // また数値をいれずに幅をとっているケースがあるので値が入っている個所までさかのぼる
   const futureIndex = data["other"].length - 1
   let prevIndex = data["other"].length - 2
   while(data["other"][prevIndex] == null && prevIndex != 0) {
@@ -233,9 +242,14 @@ const drawNow = (chart, scales, state) => {
   const pastX = x.getPixelForValue(state.prevIndex - 1)
   const futureX = x.getPixelForValue(state.futureIndex - 1)
   const diffSize = state.futureIndex - state.prevIndex
-
   const diffPrevX = futureX - pastX
-  const nowX = futureX - diffPrevX / (diffSize * 2)
+
+  // sample D
+  // const nowXtmp = futureX - diffPrevX / (diffSize * 2)
+  // const nowX = nowXtmp + (futureX - nowXtmp) / 2
+
+  // const nowX = futureX - diffPrevX / (diffSize * 2)
+  const nowX = futureX - diffPrevX / 2
   const diffX = nowX - pastX
 
   // 「現在」縦線
@@ -577,8 +591,10 @@ const afterDatasetsDraw = (chart, ease) => {
 
 const createChartFromJSON = (data, size) => {
   let pad = size === "md" ? padding : 10;
+
   return {
-    type: "line",
+    // type: "line",
+    type: "scatter",
     data: createData(data),
     options: {
       animation: false,
@@ -612,6 +628,8 @@ const createChartFromJSON = (data, size) => {
           },
         },
         x: {
+          min: -0.075,
+          max: 1.075,
           display: false,
           grid: {
             display: false,

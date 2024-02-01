@@ -69,7 +69,7 @@ defmodule BrightWeb.TimelineBarComponents do
        target={@target}
       />
 
-      <%= for date <- @dates do %>
+      <%= for date <- Enum.slice(@dates, 0, 4) do %>
         <.date_button
           id={@id}
           target={@target}
