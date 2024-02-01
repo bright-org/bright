@@ -114,7 +114,96 @@ defmodule Storybook.ChartComponents.GrowthGraph do
             comparedOther: true
           }
         }
-      }
+      },
+      %Variation{
+        id: :with_progress_first_day_january_1,
+        attributes: %{
+          data: %{
+            myself: [0, 35, 45, 50, 70],
+            myselfNow: 53,
+            futureDisplay: true,
+            labels: ["2021.3", "2021.6", "2021.9", "2011.12"],
+            myselfSelected: "now",
+            progress: [53]
+          }
+        }
+      },
+      %Variation{
+        id: :with_progress_third_day_january_3,
+        attributes: %{
+          data: %{
+            myself: [0, 35, 45, 50, 70],
+            myselfNow: 60,
+            futureDisplay: true,
+            labels: ["2021.3", "2021.6", "2021.9", "2011.12"],
+            myselfSelected: "now",
+            progress: [53, 55, 60]
+          }
+        }
+      },
+      %Variation{
+        id: :with_progress_first_3days_march_31,
+        attributes: %{
+          data: %{
+            myself: [0, 35, 45, 50, 70],
+            myselfNow: 60,
+            futureDisplay: true,
+            labels: ["2021.3", "2021.6", "2021.9", "2011.12"],
+            myselfSelected: "now",
+            progress: [
+              53, 55, 60, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
+            ]
+          }
+        }
+      },
+      %Variation{
+        id: :with_progress_last_3days_march_31,
+        attributes: %{
+          data: %{
+            myself: [0, 35, 45, 50, 70],
+            myselfNow: 60,
+            futureDisplay: true,
+            labels: ["2021.3", "2021.6", "2021.9", "2011.12"],
+            myselfSelected: "now",
+            progress: [
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+              nil, nil, nil, nil, nil, nil, nil, 53, 55, 60
+            ]
+          }
+        }
+      },
+      %Variation{
+        id: :with_progress_per_days_march_31,
+        attributes: %{
+          data: %{
+            myself: [0, 35, 45, 50, 70],
+            myselfNow: 54,
+            futureDisplay: true,
+            labels: ["2021.3", "2021.6", "2021.9", "2011.12"],
+            myselfSelected: "now",
+            progress: [
+              51.1, nil, nil, nil, nil, 51.6, nil, nil, nil, nil,
+              52.1, nil, nil, nil, nil, 52.6, nil, nil, nil, nil,
+              53.1, nil, nil, nil, nil, 53.6, nil, nil, nil, nil,
+              51.1, nil, nil, nil, nil, 51.6, nil, nil, nil, nil,
+              52.1, nil, nil, nil, nil, 52.6, nil, nil, nil, nil,
+              53.1, nil, nil, nil, nil, 53.6, nil, nil, nil, nil,
+              51.1, nil, nil, nil, nil, 51.6, nil, nil, nil, nil,
+              52.1, nil, nil, nil, nil, 52.6, nil, nil, nil, nil,
+              53.1, nil, nil, nil, nil, 53.6, nil, nil, nil, 54.0
+            ]
+          }
+        }
+      },
     ]
   end
 end

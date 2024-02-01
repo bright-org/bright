@@ -1,7 +1,6 @@
 import LocalStorageBackup from './LocalStorageBackup.js'
 import {SkillGem} from './SkillGem.js'
 import {GrowthGraph} from './GrowthGraph.js'
-import {GrowthGraphDemo} from './GrowthGraphDemo.js'
 import {DoughnutGraph} from './DoughnutGraph.js'
 import IframeSizeFitting from './IframeSizeFitting.js'
 import TabSlideScroll from './TabSlideScroll.js'
@@ -17,7 +16,6 @@ export const Hooks = {
   LocalStorageBackup: LocalStorageBackup,
   SkillGem: SkillGem,
   GrowthGraph: GrowthGraph,
-  GrowthGraphDemo: GrowthGraphDemo,
   DoughnutGraph: DoughnutGraph,
   IframeSizeFitting: IframeSizeFitting,
   TabSlideScroll: TabSlideScroll,
