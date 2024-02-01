@@ -171,6 +171,7 @@ const drawMyselfNow = (chart, scales) => {
     nowValue: now,
     prevValue: data["myself"][futureIndex - 1],
     futureIndex: futureIndex,
+    displayProgress: data["progress"] ? true : false,
     values: data["progress"] || [now],
     selected: (data["myselfSelected"] === "now"),
     axisColor: (data["myselfSelected"] === "now") ? nowSelectColor : nowColor,
@@ -192,6 +193,7 @@ const drawOtherNow = (chart, scales) => {
     nowValue: now,
     prevValue: data["other"][futureIndex - 1],
     futureIndex: data["other"].length - 1,
+    displayProgress: false,
     values: [now],
     selected: (data["otherSelected"] === "now"),
     axisColor: (data["otherSelected"] === "now") ? nowSelectColor : nowColor,
@@ -218,9 +220,8 @@ const drawNow = (chart, scales, state) => {
   const prevX = x.getPixelForValue(state.futureIndex - 2)
 
   // 「現在」の点と、「現在」までの刻み幅を決める
-  const diffPrevX = futureX - prevX
-  const nowX = prevX + diffPrevX * 0.75
-  const diffX = nowX - prevX
+  const pointCoeff = state.displayProgress ? 0.75 : 0.5
+  const nowX = prevX + pointCoeff * (futureX - prevX)
 
   // 「現在」縦線
   context.lineWidth = state.selected ? 4 : 2
@@ -233,7 +234,7 @@ const drawNow = (chart, scales, state) => {
   // 仮にsize: 1なら「現在」点のみ
   // 仮にsize: 2なら「現在」までの間にステップ点が1つ
   const size = state.values.length
-  const stepX = diffX / size
+  const stepX = (nowX - prevX) / size
 
   // 現在点に値を入れておく。現在の赤い点の描画のため
   const lastIndex = state.values.findLastIndex(v => v)
@@ -244,6 +245,9 @@ const drawNow = (chart, scales, state) => {
   let currentX = prevX
   let currentY = prevY
   let stepSize = 1
+
+  context.lineWidth = state.displayProgress ? 2 : 3
+  context.strokeStyle = state.borderColor
 
   state.values.forEach((value, index) => {
     if(value == null) {
@@ -256,8 +260,6 @@ const drawNow = (chart, scales, state) => {
     const nextX = currentX + stepSize * stepX
     const nextY = y.getPixelForValue(value)
 
-    context.lineWidth = 2;
-    context.strokeStyle = state.borderColor;
     context.beginPath()
     context.moveTo(currentX, currentY)
     context.lineTo(nextX, nextY)
@@ -288,19 +290,16 @@ const drawNow = (chart, scales, state) => {
     const nextX = currentX + stepSize * stepX
     const nextY = y.getPixelForValue(value)
     const nowValue = (index == size - 1)
-    const nowFocus = nowValue && state.selected
 
     context.beginPath();
     context.arc(
       nextX,
       nextY,
-      nowFocus ? 8.5 : 4,
+      nowValue ? 8.5 : 4,
       (0 * Math.PI) / 180,
       (360 * Math.PI) / 180,
       false
     );
-    // context.fillStyle = drawNowColor;
-    // TODO: ↓仮実装のため比較先の色を考慮していない
     context.fillStyle = nowValue ? drawNowColor : myselfPointColor;
     context.fill();
 

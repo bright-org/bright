@@ -83,7 +83,8 @@ defmodule Storybook.ChartComponents.GrowthGraph do
         attributes: %{
           data: %{
             myself: [nil, 0, 35, 45, 55, 60],
-            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
+            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+            futureDisplay: false,
           }
         }
       },
@@ -93,7 +94,8 @@ defmodule Storybook.ChartComponents.GrowthGraph do
           data: %{
             myself: [nil, 0, 35, 45, 55, 60],
             role: [10, 20, 50, 60, 75, 90],
-            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"]
+            labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
+            futureDisplay: false
           }
         }
       },
