@@ -14,7 +14,7 @@ defmodule Storybook.ChartComponents.GrowthGraphDemo do
             futureDisplay: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "now",
-            myselfRecentSteps: [53]
+            progress: [53]
           }
         }
       },
@@ -27,7 +27,7 @@ defmodule Storybook.ChartComponents.GrowthGraphDemo do
             futureDisplay: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "now",
-            myselfRecentSteps: [53, 55, 60]
+            progress: [53, 55, 60]
           }
         }
       },
@@ -40,7 +40,7 @@ defmodule Storybook.ChartComponents.GrowthGraphDemo do
             futureDisplay: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "now",
-            myselfRecentSteps: [
+            progress: [
               53, 55, 60, nil, nil, nil, nil, nil, nil, nil,
               nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
               nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
@@ -60,7 +60,7 @@ defmodule Storybook.ChartComponents.GrowthGraphDemo do
             futureDisplay: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "now",
-            myselfRecentSteps: [
+            progress: [
               nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
               nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
               nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
@@ -80,30 +80,7 @@ defmodule Storybook.ChartComponents.GrowthGraphDemo do
             futureDisplay: true,
             labels: ["2020.12", "2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "now",
-            myselfRecentSteps: [
-              51.1, nil, nil, nil, nil, 51.6, nil, nil, nil, nil,
-              52.1, nil, nil, nil, nil, 52.6, nil, nil, nil, nil,
-              53.1, nil, nil, nil, nil, 53.6, nil, nil, nil, nil,
-              51.1, nil, nil, nil, nil, 51.6, nil, nil, nil, nil,
-              52.1, nil, nil, nil, nil, 52.6, nil, nil, nil, nil,
-              53.1, nil, nil, nil, nil, 53.6, nil, nil, nil, nil,
-              51.1, nil, nil, nil, nil, 51.6, nil, nil, nil, nil,
-              52.1, nil, nil, nil, nil, 52.6, nil, nil, nil, nil,
-              53.1, nil, nil, nil, nil, 53.6, nil, nil, nil, 54.0
-            ]
-          }
-        }
-      },
-      %Variation{
-        id: :demo_per_days_march_31_expanded_double,
-        attributes: %{
-          data: %{
-            myself: [0, 35, 45, 50, nil, 70],
-            myselfNow: 54,
-            futureDisplay: true,
-            labels: ["2021.3", "2021.6", "2021.9", nil, "2011.12"],
-            myselfSelected: "now",
-            myselfRecentSteps: [
+            progress: [
               51.1, nil, nil, nil, nil, 51.6, nil, nil, nil, nil,
               52.1, nil, nil, nil, nil, 52.6, nil, nil, nil, nil,
               53.1, nil, nil, nil, nil, 53.6, nil, nil, nil, nil,
@@ -126,7 +103,7 @@ defmodule Storybook.ChartComponents.GrowthGraphDemo do
             futureDisplay: true,
             labels: ["2021.3", "2021.6", "2021.9", "2011.12"],
             myselfSelected: "now",
-            myselfRecentSteps: [
+            progress: [
               51.1, nil, nil, nil, nil, 51.6, nil, nil, nil, nil,
               52.1, nil, nil, nil, nil, 52.6, nil, nil, nil, nil,
               53.1, nil, nil, nil, nil, 53.6, nil, nil, nil, nil,
