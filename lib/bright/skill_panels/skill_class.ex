@@ -28,6 +28,7 @@ defmodule Bright.SkillPanels.SkillClass do
 
     has_many :skill_units, through: [:skill_class_units, :skill_unit]
     has_many :skill_class_scores, Bright.SkillScores.SkillClassScore
+    has_many :skill_class_score_logs, Bright.SkillScores.SkillClassScoreLog
 
     timestamps()
   end

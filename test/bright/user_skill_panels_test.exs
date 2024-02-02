@@ -1,8 +1,10 @@
 defmodule Bright.UserSkillPanelsTest do
   use Bright.DataCase
 
-  alias Bright.UserSkillPanels
   import Bright.Factory
+
+  alias Bright.UserSkillPanels
+  alias Bright.SkillScores.SkillClassScoreLog
 
   describe "user_skill_panels" do
     alias Bright.UserSkillPanels.UserSkillPanel
@@ -79,6 +81,14 @@ defmodule Bright.UserSkillPanelsTest do
       [%{skill_class_score: %{update_skill_class_score: skill_class_score}}] = results
       assert skill_class_score.percentage == 100.0
       assert skill_class_score.level == :skilled
+
+      # スキルクラススコアのログ作成確認
+      assert %{percentage: 100.0} =
+               Repo.get_by(SkillClassScoreLog, %{
+                 user_id: user.id,
+                 skill_class_id: skill_class.id,
+                 date: Date.utc_today()
+               })
     end
 
     test "update_user_skill_panel/2 with valid data updates the user_skill_panel" do
