@@ -11,7 +11,7 @@ defmodule BrightWeb.ChatLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex bg-white ml-1 h-[calc(100vh-56px)]">
+    <div class="flex bg-white ml-1 h-[calc(100vh-56px)] pb-16 lg:pb-0">
       <div class={"flex flex-col w-screen lg:w-[560px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
@@ -27,8 +27,8 @@ defmodule BrightWeb.ChatLive.Index do
         <% end %>
       </div>
 
-      <div class="w-full px-5 flex flex-col justify-between overflow-y-auto">
-        <div :if={@chat} class="flex flex-col mt-5" >
+      <div :if={@chat} class="w-full px-5 flex flex-col justify-between overflow-y-auto">
+        <div class="flex flex-col mt-5" >
           <p class="lg:ml-12 text-xl mb-2">※メールアドレスや電話番号等の個人情報は送らないでください</p>
           <p class="lg:ml-12 text-xl mb-8">※面談日時およびその重複は管理対象外ですので、別途管理を行ってください</p>
           <%= if Enum.count(@messages) == 0 do %>
@@ -46,7 +46,7 @@ defmodule BrightWeb.ChatLive.Index do
             <% end %>
           <% end %>
         </div>
-        <div :if={@chat} class="py-5 sticky bottom-0 bg-white mb-12 lg:mb-0">
+        <div :if={@chat} class="py-5 sticky bottom-0 bg-white">
           <form phx-submit="send">
             <div class="flex pb-2">
               <div class="w-[50px] flex justify-center flex-col items-center">
@@ -56,6 +56,7 @@ defmodule BrightWeb.ChatLive.Index do
                 <textarea
                   class="w-full min-h-1 outline-none p-2"
                   placeholder="メッセージを入力"
+                  autocapitalize="none"
                   name="message"
                   value={@message}
                 />
@@ -63,23 +64,33 @@ defmodule BrightWeb.ChatLive.Index do
             </div>
 
             <hr class="pb-1 border-brightGray-100" />
-            <div class="flex justify-end gap-x-4 pt-2 pb-2 relative w-full">
-              <button class="mr-auto">
-                <span class="material-icons-outlined !text-4xl opacity-50">add_photo_alternate</span>
-                <span class="material-symbols-outlined !text-4xl opacity-50">add_box</span>
-              </button>
-              <.link navigate={~p"/recruits/chats"}>
-                <button type="button" class="text-sm font-bold ml-auto px-2 py-[10px] rounded border bg-white w-24 lg:hidden">
-                  一覧に戻る
+            <div class="flex justify-end gap-x-4 pt-2 pb-2 w-full content-start">
+              <div class="mr-auto">
+                <button>
+                  <span class="material-icons-outlined !text-4xl opacity-50">add_photo_alternate</span>
                 </button>
-              </.link>
-              <div class="flex">
-                <.link phx-click="close_chat" data-confirm="このチャットを閉じますか？">
-                  <button type="button" class="text-sm font-bold mr-2 px-2 py-3 rounded border bg-white w-36 lg:w-56">
-                    チャットを閉じる
-                  </button>
-                </.link>
-                <div :if={@chat.owner_user_id == @current_user.id and Accounts.hr_enabled?(@current_user.id)}>
+                <button>
+                  <span class="material-symbols-outlined !text-4xl opacity-50">add_box</span>
+                </button>
+              </div>
+
+              <div class="flex flex-col lg:flex-row gap-2">
+                <div class="order-3 lg:order-1">
+                  <.link navigate={~p"/recruits/chats"}>
+                    <button type="button" class="text-sm font-bold ml-auto px-3 py-3 rounded border bg-white w-24 lg:hidden">
+                      一覧に戻る
+                    </button>
+                  </.link>
+                  <.link phx-click="close_chat" data-confirm="このチャットを閉じますか？">
+                    <button type="button" class="text-sm font-bold lg:mr-2 px-2 py-3 rounded border bg-white w-36 lg:w-56">
+                      チャットを閉じる
+                    </button>
+                  </.link>
+                </div>
+                <div
+                  :if={@chat.owner_user_id == @current_user.id and Accounts.hr_enabled?(@current_user.id)}
+                  class="order-2 flex justify-end"
+                >
                   <%= if @chat.interview.status == :consume_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
@@ -99,12 +110,14 @@ defmodule BrightWeb.ChatLive.Index do
                     </button>
                   <% end %>
                 </div>
-                <button
-                  type="submit"
-                  class="text-sm font-bold ml-2 px-2 py-3 rounded border bg-base text-white w-36 lg:w-56"
-                >
-                  メッセージを送る
-                </button>
+                <div class="order-1 lg:order-3 flex justify-end lg:ml-2">
+                  <button
+                    type="submit"
+                    class="text-sm font-bold px-2 py-3 rounded border bg-base text-white w-56"
+                  >
+                    メッセージを送る
+                  </button>
+                </div>
               </div>
             </div>
           </form>

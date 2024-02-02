@@ -176,6 +176,7 @@ defmodule BrightWeb.CardLive.CardListComponents do
   end
 
   attr :inserted_at, :any
+  attr :extend_style, :string, default: ""
 
   def elapsed_time(assigns) do
     {:ok, inserted_at} = DateTime.from_naive(assigns.inserted_at, "Etc/UTC")
@@ -186,7 +187,8 @@ defmodule BrightWeb.CardLive.CardListComponents do
 
     style =
       highlight(minutes < @highlight_minutes) <>
-        " font-bold pl-0 inline-block w-full text-sm order-1 lg:pl-4 lg:order-3 lg:w-auto"
+        " font-bold pl-0 inline-block w-full text-sm order-1 lg:pl-4 lg:order-3 lg:w-auto " <>
+        assigns.extend_style
 
     assigns =
       assigns
