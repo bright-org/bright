@@ -416,7 +416,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
     test "validate email format", %{
       conn: conn
     } do
-      insert(:subscription_plans)
+      insert(:subscription_plans, create_teams_limit: 2)
 
       live = show_component_modal(conn)
       change_trial_form(live, %{email: "hogehoge"})
@@ -427,7 +427,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
     test "validate phone_number format", %{
       conn: conn
     } do
-      insert(:subscription_plans)
+      insert(:subscription_plans, create_teams_limit: 2)
 
       live = show_component_modal(conn)
       change_trial_form(live, %{phone_number: "hogehoge"})
