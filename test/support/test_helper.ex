@@ -109,6 +109,7 @@ defmodule Bright.TestHelper do
       assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】ユーザー本登録を完了させ、Bright をお楽しみください（4 日以内有効）"
       assert email.to == [{"", user_email}]
+      assert email.reply_to == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
     end)
   end
 
@@ -117,6 +118,7 @@ defmodule Bright.TestHelper do
       assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】パスワードリセットを行ってください（24 時間以内有効）"
       assert email.to == [{"", user.email}]
+      assert email.reply_to == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
     end)
   end
 
@@ -125,6 +127,7 @@ defmodule Bright.TestHelper do
       assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】2段階認証コード"
       assert email.to == [{"", user.email}]
+      assert email.reply_to == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
     end)
   end
 
@@ -134,6 +137,7 @@ defmodule Bright.TestHelper do
       assert email.subject == "【Bright】2段階認証コード"
       assert email.to == [{"", user.email}]
       assert email.text_body =~ code
+      assert email.reply_to == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
     end)
   end
 
@@ -142,6 +146,7 @@ defmodule Bright.TestHelper do
       assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】メールアドレス変更を完了させてください（24 時間以内有効）"
       assert email.to == [{"", new_email}]
+      assert email.reply_to == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
     end)
   end
 
@@ -150,16 +155,21 @@ defmodule Bright.TestHelper do
       assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
       assert email.subject == "【Bright】サブメールアドレス追加を完了させてください（24 時間以内有効）"
       assert email.to == [{"", new_email}]
+      assert email.reply_to == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
     end)
   end
 
-  def assert_operations_notification_mail_sent(to_emails) do
+  def assert_operations_notification_mail_sent(%{message: message, detail: detail}, to_emails) do
     assert_email_sent(fn email ->
       assert email.from == {"Brightカスタマーサクセス", "agent@bright-fun.org"}
-      assert email.subject == "【Bright】運営からの通知が届きました"
+      assert email.subject == "【Bright】運営からのお知らせ"
+      assert email.text_body =~ message
+      assert email.text_body =~ String.slice(detail, 0, 100)
 
       assert email.provider_options.personalizations ==
                to_emails |> Enum.map(&%{to: [%{email: &1}]})
+
+      assert email.reply_to == {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
     end)
   end
 

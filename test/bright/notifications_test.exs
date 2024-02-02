@@ -221,19 +221,19 @@ defmodule Bright.NotificationsTest do
 
       Application.put_env(:bright, :max_deliver_size, 2)
 
-      assert {:ok, %NotificationOperation{} = _notification_operation} =
+      assert {:ok, %NotificationOperation{} = notification_operation} =
                Notifications.create_notification("operation", %{
                  message: "some message",
                  from_user_id: from_user.id,
                  detail: "some detail"
                })
 
-      assert_operations_notification_mail_sent([
+      assert_operations_notification_mail_sent(notification_operation, [
         from_user.email,
         user.email
       ])
 
-      assert_operations_notification_mail_sent([
+      assert_operations_notification_mail_sent(notification_operation, [
         from_user_sub_email.email,
         user_sub_email.email
       ])
