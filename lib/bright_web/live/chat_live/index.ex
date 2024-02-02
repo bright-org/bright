@@ -4,6 +4,7 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Chats
   alias Bright.Accounts
   alias Bright.Recruits
+  alias Bright.Recruits.Interview
   alias Bright.UserProfiles
   alias BrightWeb.CardLive.CardListComponents
 
@@ -27,7 +28,7 @@ defmodule BrightWeb.ChatLive.Index do
               class={"flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @chat != nil && chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
               patch={~p"/recruits/chats/#{chat.id}"}
             >
-              <% path = if chat.interview.status == :ongoing_interview, do: chat.interview.candidates_user_icon, else: nil %>
+              <% path = if Interview.anon?(chat.interview), do: nil, else: chat.interview.candidates_user_icon %>
               <img
                 src={UserProfiles.icon_url(path)}
                 class="object-cover h-10 w-10 rounded-full mr-2"
@@ -89,7 +90,13 @@ defmodule BrightWeb.ChatLive.Index do
               <% else %>
               <div class="flex justify-start mb-4">
                 <%= if @chat.owner_user_id == @current_user.id do %>
-                  <%= if @chat.interview.status == :ongoing_interview do %>
+                  <%= if Interview.anon?(@chat.interview) do %>
+                    <img
+                      src={UserProfiles.icon_url(nil)}
+                      class="object-cover h-10 w-10 rounded-full mt-4"
+                      alt=""
+                    />
+                  <% else %>
                     <div class="flex flex-col justify-end">
                       <img
                         src={UserProfiles.icon_url(@chat.interview.candidates_user_icon)}
@@ -98,12 +105,6 @@ defmodule BrightWeb.ChatLive.Index do
                       />
                       <p class="w-24 break-words"><%= @chat.interview.candidates_user_name %></p>
                     </div>
-                  <% else %>
-                    <img
-                      src={UserProfiles.icon_url(nil)}
-                      class="object-cover h-10 w-10 rounded-full mt-4"
-                      alt=""
-                    />
                   <% end %>
 
                 <% else %>
