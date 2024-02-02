@@ -19,7 +19,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         <.switch_user_icon chat={@chat} show_name={false} user_id={@user_id}/>
       </div>
       <div class="w-full flex justify-between p-1">
-        <div class="flex-1 mr-2 lg:truncate lg:text-xl">
+        <div class="mr-2 lg:truncate lg:text-xl">
           <span>
             <%= if @chat.interview.skill_panel_name == nil ,
               do: "スキルパネルデータなし",
@@ -32,7 +32,9 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             希望年収:<%= @chat.interview.desired_income %>
           </span>
         </div>
-        <.elapsed_time inserted_at={@chat.updated_at} />
+        <div>
+          <.elapsed_time inserted_at={@chat.updated_at} />
+        </div>
       </div>
     </.link>
     """
@@ -52,7 +54,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             <div class="text-xl mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
               <%= nl_to_br(@message.text) %>
             </div>
-            <div>
+            <div class="mt-4">
               <.user_icon path={@sender_icon_path} />
               <span><%= @current_user.name %></span>
             </div>
@@ -62,11 +64,13 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       </div>
     <% else %>
       <div class="flex justify-start mb-4">
-        <.switch_user_icon
-          chat={@chat}
-          user_id={@current_user.id}
-          anon={@chat.interview.recruiter_user_id == @current_user.id}
-        />
+        <div class="mt-4">
+          <.switch_user_icon
+            chat={@chat}
+            user_id={@current_user.id}
+            anon={@chat.interview.recruiter_user_id == @current_user.id}
+          />
+        </div>
         <div class="text-xl ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
           <%= nl_to_br(@message.text) %>
         </div>
@@ -90,7 +94,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       <% else %>
         <div class="flex flex-col justify-end">
           <.user_icon path={@user.icon}/>
-          <p :if={@show_name} class="w-24 break-words"><%= @user.name %></p>
+          <p :if={@show_name} class="lg:w-24 break-words"><%= @user.name %></p>
         </div>
       <% end %>
     """
@@ -100,7 +104,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     ~H"""
       <img
       src={UserProfiles.icon_url(@path)}
-      class="object-cover h-10 w-10 rounded-full mt-4"
+      class="object-cover h-10 w-10 rounded-full"
       alt=""
     />
     """
