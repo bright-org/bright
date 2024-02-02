@@ -21,6 +21,7 @@ defmodule Bright.Accounts.UserNotifier do
   """
 
   @email_from {"Brightカスタマーサクセス", "agent@bright-fun.org"}
+  @reply_to {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
 
   # SendGrid で1リクエストで一括送信可能な最大のメール件数は 1000 件
   # NOTE: https://sendgrid.kke.co.jp/docs/API_Reference/Web_API_v3/Mail/index.html?_gl=1*1sf2pmz*_ga*MTE5MjM3OTk0OS4xNzA1NzI5Nzc1*_ga_JL4V7PSVHH*MTcwNTcyOTc3NC4xLjEuMTcwNTcyOTk2My4wLjAuMA..*_ga_NFRNW0FC62*MTcwNTcyOTc3NC4xLjEuMTcwNTcyOTk2My4wLjAuMA..#-Limitations
@@ -33,6 +34,7 @@ defmodule Bright.Accounts.UserNotifier do
       |> to(recipient)
       |> from(@email_from)
       |> subject(subject)
+      |> reply_to(@reply_to)
       |> text_body(body)
 
     with {:ok, _metadata} <- Mailer.deliver(email) do
@@ -49,6 +51,7 @@ defmodule Bright.Accounts.UserNotifier do
       |> put_provider_option(:personalizations, personalizations)
       |> from(@email_from)
       |> subject(subject)
+      |> reply_to(@reply_to)
       |> text_body(body)
       |> Mailer.deliver!()
     end)
@@ -608,15 +611,19 @@ defmodule Bright.Accounts.UserNotifier do
   @doc """
   Deliver notifications to all confirmed users about sending notification from operation.
   """
-  def deliver_operations_notification!() do
+  def deliver_operations_notification!(message, detail) do
     Accounts.list_confirmed_user_emails()
-    |> deliver_many!("【Bright】運営からの通知が届きました", """
+    |> deliver_many!("【Bright】運営からのお知らせ", """
     Brightカスタマーサクセスです。
-
     いつも Bright をご利用いただき、ありがとうございます。
 
-    運営からの通知をお届けしました。
-    下記 URL をクリックいただき、通知をご確認ください。
+    運営から下記をお知らせします。
+
+    【#{message}】
+
+    #{String.slice(detail, 0, 100)}
+
+    続きは下記 URL からご確認ください。
 
     #{url(~p"/notifications/operations")}
 
