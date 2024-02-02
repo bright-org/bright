@@ -71,7 +71,11 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             anon={@chat.interview.recruiter_user_id == @current_user.id}
           />
         </div>
+    <<<<<<< HEAD
         <div class="break-words max-w-[80vw] text-xl ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
+    =======
+        <div class="text-xl ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
+    >>>>>>> 2d62f4e85d32e46a34e5525e58e53c18dec79adb
           <%= nl_to_br(@message.text) %>
         </div>
       </div>
