@@ -150,8 +150,13 @@ defmodule Bright.Notifications do
     Repo.insert_all(NotificationEvidence, attrs_list)
   end
 
-  defp try_deliver_operations_notification({:ok, %NotificationOperation{}} = result) do
-    UserNotifier.deliver_operations_notification!()
+  defp try_deliver_operations_notification(
+         {:ok, %NotificationOperation{} = notification_operation} = result
+       ) do
+    UserNotifier.deliver_operations_notification!(
+      notification_operation.message,
+      notification_operation.detail
+    )
 
     result
   end
