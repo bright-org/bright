@@ -10,7 +10,15 @@ defmodule Bright.SkillScores do
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.CareerFields
-  alias Bright.SkillScores.{SkillClassScore, SkillUnitScore, SkillScore, CareerFieldScore}
+
+  alias Bright.SkillScores.{
+    SkillClassScore,
+    SkillUnitScore,
+    SkillScore,
+    CareerFieldScore,
+    SkillClassScoreLog
+  }
+
   alias Bright.Notifications
   alias Bright.Utils.Percentage
 
@@ -101,25 +109,26 @@ defmodule Bright.SkillScores do
     percentage = Percentage.calc_percentage(high_scores_count, size)
     level = get_level(percentage)
 
-    skill_class_score
-    |> change_skill_class_score(%{percentage: percentage, level: level})
-    |> maybe_skill_class_score_change_with_notifications()
-    |> then(fn
-      {changeset, x} when x in [nil, []] ->
-        Ecto.Multi.new()
-        |> Ecto.Multi.update(:update_skill_class_score, changeset)
-        |> Repo.transaction()
+    changeset =
+      change_skill_class_score(skill_class_score, %{percentage: percentage, level: level})
 
-      {changeset, attrs_list} ->
-        Ecto.Multi.new()
-        |> Ecto.Multi.update(:update_skill_class_score, changeset)
-        |> Ecto.Multi.insert_all(
-          :insert_all_notifications,
-          Notifications.NotificationSkillUpdate,
-          attrs_list
-        )
-        |> Repo.transaction()
+    notification_attrs_list = build_notifications_by_skill_class_score_change(changeset)
+    log_attrs = build_log_by_skill_class_score_change(changeset)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:update_skill_class_score, changeset)
+    |> then_if_existing(notification_attrs_list, fn multi, values ->
+      Ecto.Multi.insert_all(
+        multi,
+        :insert_all_notifications,
+        Notifications.NotificationSkillUpdate,
+        values
+      )
     end)
+    |> then_if_existing(log_attrs, fn multi, value ->
+      Ecto.Multi.insert_or_update(multi, :skill_class_score_log, value)
+    end)
+    |> Repo.transaction()
   end
 
   @doc """
@@ -177,23 +186,23 @@ defmodule Bright.SkillScores do
     SkillClassScore.changeset(skill_class_score, Map.merge(attrs, additional_attrs))
   end
 
-  defp maybe_skill_class_score_change_with_notifications(changeset) do
-    # Returns changeset and related %NotificationSkillUpdate{} when new level
+  defp build_notifications_by_skill_class_score_change(changeset) do
+    # スキルクラススコアの変更内容に伴う通知の作成分を返す
     changeset.changes
     |> case do
       %{became_normal_at: _, became_skilled_at: _} ->
         # 同時に達成している場合はskilled(上位)通知のみ生成
-        {changeset, build_notification_attrs(changeset.data, :skilled)}
+        build_notification_attrs(changeset.data, :skilled)
 
       %{became_normal_at: _} ->
-        {changeset, build_notification_attrs(changeset.data, :normal)}
+        build_notification_attrs(changeset.data, :normal)
 
       %{became_skilled_at: _} ->
-        {changeset, build_notification_attrs(changeset.data, :skilled)}
+        build_notification_attrs(changeset.data, :skilled)
 
       _ ->
         # changeされていないときは通知生成しないため返さない
-        {changeset, nil}
+        []
     end
   end
 
@@ -221,6 +230,28 @@ defmodule Bright.SkillScores do
       })
     end)
   end
+
+  defp build_log_by_skill_class_score_change(changeset) do
+    # スキルクラススコアの変更内容に伴うスキルクラススコアログの作成分を返す
+    Map.has_key?(changeset.changes, :percentage)
+    |> if do
+      unique_condition = %{
+        user_id: changeset.data.user_id,
+        skill_class_id: changeset.data.skill_class_id,
+        date: Date.utc_today()
+      }
+
+      get_skill_class_log_by(unique_condition)
+      |> Kernel.||(%SkillClassScoreLog{} |> Map.merge(unique_condition))
+      |> Ecto.Changeset.change(percentage: changeset.changes.percentage)
+    end
+  end
+
+  defp then_if_existing(acc, [], _func), do: acc
+
+  defp then_if_existing(acc, nil, _func), do: acc
+
+  defp then_if_existing(acc, args, func), do: func.(acc, args)
 
   @doc """
   Returns the list of skill_scores.
@@ -623,22 +654,24 @@ defmodule Bright.SkillScores do
       percentage = Percentage.calc_percentage(high_scores_count, skills_count)
       level = get_level(percentage)
 
-      skill_class_score
-      |> change_skill_class_score(%{percentage: percentage, level: level})
-      |> maybe_skill_class_score_change_with_notifications()
-      |> then(fn
-        {changeset, x} when x in [nil, []] ->
-          multi
-          |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
+      changeset =
+        change_skill_class_score(skill_class_score, %{percentage: percentage, level: level})
 
-        {changeset, attrs_list} ->
-          multi
-          |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
-          |> Ecto.Multi.insert_all(
-            :"insert_all_notifications_#{user_id}",
-            Notifications.NotificationSkillUpdate,
-            attrs_list
-          )
+      notification_attrs_list = build_notifications_by_skill_class_score_change(changeset)
+      log_attrs = build_log_by_skill_class_score_change(changeset)
+
+      multi
+      |> Ecto.Multi.update(:"update_skill_class_score_#{user_id}", changeset)
+      |> then_if_existing(notification_attrs_list, fn multi, values ->
+        Ecto.Multi.insert_all(
+          multi,
+          :"insert_all_notifications_#{user_id}",
+          Notifications.NotificationSkillUpdate,
+          values
+        )
+      end)
+      |> then_if_existing(log_attrs, fn multi, value ->
+        Ecto.Multi.insert_or_update(multi, :"skill_class_score_log_#{user_id}", value)
       end)
     end)
     |> Repo.transaction()
@@ -661,5 +694,12 @@ defmodule Bright.SkillScores do
       end)
 
     {skills_count, score_count_user_dict}
+  end
+
+  @doc """
+  スキルクラススコア変遷の取得
+  """
+  def get_skill_class_log_by(condition) do
+    Repo.get_by(SkillClassScoreLog, condition)
   end
 end
