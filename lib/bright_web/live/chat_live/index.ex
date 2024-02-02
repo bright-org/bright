@@ -1,8 +1,9 @@
 defmodule BrightWeb.ChatLive.Index do
-  alias Bright.Recruits
   use BrightWeb, :live_view
 
   alias Bright.Chats
+  alias Bright.Accounts
+  alias Bright.Recruits
   alias Bright.UserProfiles
   alias BrightWeb.CardLive.CardListComponents
 
@@ -64,7 +65,7 @@ defmodule BrightWeb.ChatLive.Index do
           <%= if Enum.count(@messages) == 0 do %>
           <div
             class="lg:ml-12 text-xl font-bold"
-            :if={@current_user.id == @chat.owner_user_id}
+            :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id)}
           >
             本チャットで面談候補者と面談の調整を行い、「面談確定の確認」ボタンを押してください
           </div>
@@ -178,7 +179,7 @@ defmodule BrightWeb.ChatLive.Index do
                   </button>
                 </.link>
                 <div
-                  :if={@chat.owner_user_id == @current_user.id and  @chat.interview.status != :cancel_interview}
+                  :if={@chat.owner_user_id == @current_user.id and @chat.interview.status != :cancel_interview and Accounts.hr_enabled?(@current_user.id)}
                 >
                   <%= if @chat.interview.status == :consume_interview do %>
                     <button
