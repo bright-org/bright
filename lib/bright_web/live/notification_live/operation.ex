@@ -37,7 +37,7 @@ defmodule BrightWeb.NotificationLive.Operation do
     </div>
 
     <.bright_modal
-      :if={@shown_notification_operation != nil}
+      :if={@shown_notification_operation}
       id="notification_operation_modal"
       style_of_modal_flame_out="w-full max-w-3xl p-4 sm:p-6 lg:py-8"
       show
@@ -61,6 +61,18 @@ defmodule BrightWeb.NotificationLive.Operation do
     |> assign(:shown_notification_operation, nil)
     |> then(&{:ok, &1})
   end
+
+  @impl true
+  def handle_params(%{"operation" => operation}, _uri, socket) do
+    socket
+    |> assign(
+      :shown_notification_operation,
+      Notifications.get_notification("operation", operation)
+    )
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
   @impl true
   def handle_event("previous_button_click", _params, socket) do
