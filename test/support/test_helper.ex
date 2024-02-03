@@ -165,6 +165,7 @@ defmodule Bright.TestHelper do
       assert email.subject == "【Bright】運営からのお知らせ"
       assert email.text_body =~ message
       assert email.text_body =~ String.slice(detail, 0, 100)
+      assert email.text_body =~ "notifications/operations?operation="
 
       assert email.provider_options.personalizations ==
                to_emails |> Enum.map(&%{to: [%{email: &1}]})

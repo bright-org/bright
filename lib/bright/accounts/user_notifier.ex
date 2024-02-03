@@ -611,7 +611,7 @@ defmodule Bright.Accounts.UserNotifier do
   @doc """
   Deliver notifications to all confirmed users about sending notification from operation.
   """
-  def deliver_operations_notification!(message, detail) do
+  def deliver_operations_notification!(notification_operation) do
     Accounts.list_confirmed_user_emails()
     |> deliver_many!("【Bright】運営からのお知らせ", """
     Brightカスタマーサクセスです。
@@ -619,13 +619,13 @@ defmodule Bright.Accounts.UserNotifier do
 
     運営から下記をお知らせします。
 
-    【#{message}】
+    【#{notification_operation.message}】
 
-    #{String.slice(detail, 0, 100)}
+    #{String.slice(notification_operation.detail, 0, 100)}
 
     続きは下記 URL からご確認ください。
 
-    #{url(~p"/notifications/operations")}
+    #{url(~p"/notifications/operations?operation=#{notification_operation.id}")}
 
     ---------------------------------------------------------------------
     ■本メールにお心当たりのない場合

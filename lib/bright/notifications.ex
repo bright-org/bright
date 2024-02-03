@@ -171,10 +171,7 @@ defmodule Bright.Notifications do
   defp try_deliver_operations_notification(
          {:ok, %NotificationOperation{} = notification_operation} = result
        ) do
-    UserNotifier.deliver_operations_notification!(
-      notification_operation.message,
-      notification_operation.detail
-    )
+    UserNotifier.deliver_operations_notification!(notification_operation)
 
     result
   end
