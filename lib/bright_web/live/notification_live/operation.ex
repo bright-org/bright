@@ -63,11 +63,11 @@ defmodule BrightWeb.NotificationLive.Operation do
   end
 
   @impl true
-  def handle_params(%{"operation" => operation}, _uri, socket) do
+  def handle_params(%{"operation" => operation_id}, _uri, socket) do
     socket
     |> assign(
       :shown_notification_operation,
-      Notifications.get_notification("operation", operation)
+      Notifications.get_notification("operation", operation_id)
     )
     |> then(&{:noreply, &1})
   end
