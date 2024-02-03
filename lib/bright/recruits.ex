@@ -68,7 +68,11 @@ defmodule Bright.Recruits do
 
   def get_interview_with_member_users!(id, user_id) do
     Interview
-    |> where([i], i.recruiter_user_id == ^user_id)
+    |> where(
+      [i],
+      i.recruiter_user_id == ^user_id and
+        i.status in [:waiting_decision, :consume_interview, :ongoing_interview]
+    )
     |> preload(interview_members: [user: :user_profile])
     |> Repo.get!(id)
   end

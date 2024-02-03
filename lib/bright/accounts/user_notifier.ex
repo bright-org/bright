@@ -365,7 +365,7 @@ defmodule Bright.Accounts.UserNotifier do
 
     #{from_user.name}から、面談が確定されました。
 
-    面談日・ツール・場所は、#{from_user.name}から別途、連絡いたします。
+    面談日・ツール・場所は、Brightに登録されている連絡先に対し、#{from_user.name}から別途、連絡いたします。
 
     ---------------------------------------------------------------------
     ■本メールにお心当たりのない場合
@@ -395,7 +395,7 @@ defmodule Bright.Accounts.UserNotifier do
 
     #{from_user.name}から、面談が確定されました。
 
-    面談日・ツール・場所は、#{from_user.name}から別途、連絡いたします。
+    面談日・ツール・場所は、Brightに登録されている連絡先に対し、#{from_user.name}から別途、連絡いたします。
 
     ====================================================================
 
@@ -571,7 +571,7 @@ defmodule Bright.Accounts.UserNotifier do
     deliver(to_user.email, "【Bright】新着メッセージが届いています", """
     #{to_user.name}さん
 
-    採用チャットにメッセージが届いています。
+    面談チャットにメッセージが届いています。
 
     下記URLからご確認ください
     #{url}
