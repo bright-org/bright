@@ -55,6 +55,18 @@ defmodule Bright.NotificationsTest do
         Notifications.get_notification!("operation", other_notification.id)
       end
     end
+
+    test "for type community" do
+      notification = insert(:notification_community)
+
+      assert Notifications.get_notification!("community", notification.id)
+
+      other_notification = insert(:notification_operation)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Notifications.get_notification!("community", other_notification.id)
+      end
+    end
   end
 
   describe "list_notification_by_type/3" do
