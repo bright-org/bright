@@ -38,12 +38,30 @@ defmodule Bright.Notifications do
   @doc """
   Gets a single notification by type.
 
+  Returns `nil` if the Notification does not exist.
+
+  ## Examples
+
+      iex> get_notification("operation", 123)
+      %NotificationOperation{}
+
+      iex> get_notification(456)
+      nil
+  """
+
+  def get_notification("operation", id) do
+    Repo.get(NotificationOperation, id)
+  end
+
+  @doc """
+  Gets a single notification by type.
+
   Raises `Ecto.NoResultsError` if the Notification does not exist.
 
   ## Examples
 
       iex> get_notification!("operation", 123)
-      %{}
+      %NotificationOperation{}
 
       iex> get_notification!(456)
       ** (Ecto.NoResultsError)
