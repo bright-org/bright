@@ -31,6 +31,18 @@ defmodule Bright.NotificationsTest do
     end
   end
 
+  describe "get_notification/2" do
+    test "for type operation" do
+      notification = insert(:notification_operation)
+
+      assert Notifications.get_notification("operation", notification.id)
+
+      other_notification = insert(:notification_community)
+
+      refute Notifications.get_notification("operation", other_notification.id)
+    end
+  end
+
   describe "get_notification!/2" do
     test "for type operation" do
       notification = insert(:notification_operation)
@@ -41,6 +53,18 @@ defmodule Bright.NotificationsTest do
 
       assert_raise Ecto.NoResultsError, fn ->
         Notifications.get_notification!("operation", other_notification.id)
+      end
+    end
+
+    test "for type community" do
+      notification = insert(:notification_community)
+
+      assert Notifications.get_notification!("community", notification.id)
+
+      other_notification = insert(:notification_operation)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Notifications.get_notification!("community", other_notification.id)
       end
     end
   end
