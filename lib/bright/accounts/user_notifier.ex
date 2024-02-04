@@ -8,24 +8,39 @@ defmodule Bright.Accounts.UserNotifier do
 
   alias Bright.Mailer
   alias Bright.Accounts
-
-  @signature """
-  ──────────────────−--- -- - - - - -- ---−──────────────────
-  Bright https://bright-fun.org
-  エンジニアやPM、UX・UIデザイナーのスキルを見える化
-  【カスタマーサクセス連絡先】customer-success@bright-fun.org
-
-  運営会社：株式会社 DigiDockConsulting
-  〒802-0001 福岡県北九州市小倉北区浅野3-8-1 AIMビル6階
-  ──────────────────−--- -- - - - - -- ---−──────────────────
-  """
+  alias Bright.Utils.Env
 
   @email_from {"Brightカスタマーサクセス", "agent@bright-fun.org"}
-  @reply_to {"Brightカスタマーサクセス", "customer-success@bright-fun.org"}
 
   # SendGrid で1リクエストで一括送信可能な最大のメール件数は 1000 件
   # NOTE: https://sendgrid.kke.co.jp/docs/API_Reference/Web_API_v3/Mail/index.html?_gl=1*1sf2pmz*_ga*MTE5MjM3OTk0OS4xNzA1NzI5Nzc1*_ga_JL4V7PSVHH*MTcwNTcyOTc3NC4xLjEuMTcwNTcyOTk2My4wLjAuMA..*_ga_NFRNW0FC62*MTcwNTcyOTc3NC4xLjEuMTcwNTcyOTk2My4wLjAuMA..#-Limitations
   defp max_deliver_size, do: Application.get_env(:bright, :max_deliver_size, 1_000)
+
+  defp signature do
+    """
+    ──────────────────−--- -- - - - - -- ---−──────────────────
+    Bright https://bright-fun.org
+    エンジニアやPM、UX・UIデザイナーのスキルを見える化
+    【カスタマーサクセス連絡先】#{customer_success_email()}
+
+    運営会社：株式会社 DigiDockConsulting
+    〒802-0001 福岡県北九州市小倉北区浅野3-8-1 AIMビル6階
+    ──────────────────−--- -- - - - - -- ---−──────────────────
+    """
+  end
+
+  defp customer_success_email do
+    cond do
+      Env.prod?() -> "customer-success@bright-fun.org"
+      Env.stg?() -> "stg-customer-success@bright-fun.org"
+      Env.dev?() -> "dev-customer-success@bright-fun.org"
+      true -> "customer-success@bright-fun.org"
+    end
+  end
+
+  def reply_to do
+    {"Brightカスタマーサクセス", customer_success_email()}
+  end
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
@@ -34,7 +49,7 @@ defmodule Bright.Accounts.UserNotifier do
       |> to(recipient)
       |> from(@email_from)
       |> subject(subject)
-      |> reply_to(@reply_to)
+      |> reply_to(reply_to())
       |> text_body(body)
 
     with {:ok, _metadata} <- Mailer.deliver(email) do
@@ -51,7 +66,7 @@ defmodule Bright.Accounts.UserNotifier do
       |> put_provider_option(:personalizations, personalizations)
       |> from(@email_from)
       |> subject(subject)
-      |> reply_to(@reply_to)
+      |> reply_to(reply_to())
       |> text_body(body)
       |> Mailer.deliver!()
     end)
@@ -107,9 +122,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -133,9 +148,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -159,9 +174,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -186,9 +201,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -205,9 +220,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -232,9 +247,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -258,9 +273,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -281,9 +296,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -304,9 +319,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -327,9 +342,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -350,9 +365,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -372,9 +387,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -404,9 +419,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -425,9 +440,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -448,9 +463,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -469,9 +484,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -492,9 +507,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -515,9 +530,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -535,9 +550,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -558,9 +573,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
@@ -581,17 +596,17 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 
   @doc """
   Deliver free trial apply.
   """
-  def deliver_free_trial_apply_instructions(from_user, to_user, detail) do
-    deliver(to_user.email, "【Bright】無料トライアルの申し込みがありました", """
+  def deliver_free_trial_apply_instructions(from_user, detail) do
+    deliver(customer_success_email(), "【Bright】無料トライアルの申し込みがありました", """
     以下の内容で無料トライアルが申し込まれました
 
     ハンドル名: #{from_user.name}
@@ -632,9 +647,9 @@ defmodule Bright.Accounts.UserNotifier do
     ---------------------------------------------------------------------
     お手数ですが、本メールを破棄してください。
     もし気になる点ございましたら、下記までご連絡ください。
-    customer-success@bright-fun.org
+    #{customer_success_email()}
 
-    #{@signature}
+    #{signature()}
     """)
   end
 end
