@@ -38,7 +38,7 @@ defmodule Bright.Accounts.UserNotifier do
     end
   end
 
-  def reply_to do
+  defp reply_to do
     {"Brightカスタマーサクセス", customer_success_email()}
   end
 
