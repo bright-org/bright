@@ -166,11 +166,26 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
     |> RecruitmentStockUsers.create_recruitment_stock_user()
 
     Recruits.update_coordination_member(assigns.coordination_member, %{decision: :recruit_keep})
+
+    Recruits.send_coordination_acceptance_notification_mail(
+      socket.assigns.current_user,
+      coordination.id,
+      &url(~p"/recruits/coordinations/#{&1}")
+    )
+
     {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
   end
 
   def handle_event("submit", _params, %{assigns: assigns} = socket) do
+    coordination = assigns.coordination_member.coordination
+
     Recruits.update_coordination_member(assigns.coordination_member, %{decision: assigns.decision})
+
+    Recruits.send_coordination_acceptance_notification_mail(
+      socket.assigns.current_user,
+      coordination.id,
+      &url(~p"/recruits/coordinations/#{&1}")
+    )
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
   end
