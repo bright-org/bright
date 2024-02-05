@@ -31,7 +31,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </button>
       </div>
 
-      <% # 成長パネル %>
+      <% # 成長グラフ %>
       <div class="flex">
         <div class="w-14 relative">
           <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself} class="absolute -bottom-1 lg:bottom-1" />
@@ -61,6 +61,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           dates={@timeline.labels}
           selected_date={@timeline.selected_label}
           display_now={@timeline.display_now}
+          display_progress={@display_progress}
         />
         <div class="flex justify-center items-center ml-2"></div>
       </div>
@@ -232,7 +233,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
      socket
      |> assign(data: %{})
      |> assign(timeline: timeline)
-     |> assign(compared_user: nil, compared_timeline: nil)}
+     |> assign(compared_user: nil, compared_timeline: nil, display_progress: false)}
   end
 
   @impl true
@@ -244,6 +245,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       |> assign(assigns)
       |> create_user_data()
       |> create_compared_user_data()
+      |> assign_display_progress()
+      |> assign_progress_data()
 
     {:ok, socket}
   end
@@ -255,7 +258,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         socket
       ) do
     notify_parent_timeline_clicked(params)
-    {:noreply, select_data(socket, "myself", label)}
+
+    {:noreply,
+     socket
+     |> select_data("myself", label)
+     |> assign_display_progress()}
   end
 
   def handle_event(
@@ -264,7 +271,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         socket
       ) do
     notify_parent_timeline_clicked(params)
-    {:noreply, select_data(socket, "other", label)}
+
+    {:noreply,
+     socket
+     |> select_data("other", label)
+     |> assign_display_progress()}
   end
 
   def handle_event("shift_timeline_past", %{"id" => "myself"}, socket) do
@@ -273,7 +284,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:noreply,
      socket
      |> assign(timeline: timeline)
-     |> create_user_data()}
+     |> create_user_data()
+     |> assign_display_progress()}
   end
 
   def handle_event("shift_timeline_past", %{"id" => "other"}, socket) do
@@ -282,7 +294,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:noreply,
      socket
      |> assign(compared_timeline: compared_timeline)
-     |> create_compared_user_data()}
+     |> create_compared_user_data()
+     |> assign_display_progress()}
   end
 
   def handle_event("shift_timeline_future", %{"id" => "myself"}, socket) do
@@ -291,7 +304,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:noreply,
      socket
      |> assign(timeline: timeline)
-     |> create_user_data()}
+     |> create_user_data()
+     |> assign_display_progress()}
   end
 
   def handle_event("shift_timeline_future", %{"id" => "other"}, socket) do
@@ -300,7 +314,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     {:noreply,
      socket
      |> assign(compared_timeline: compared_timeline)
-     |> create_compared_user_data()}
+     |> create_compared_user_data()
+     |> assign_display_progress()}
   end
 
   def handle_event("compare_myself", _params, socket) do
@@ -314,7 +329,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
      socket
      |> assign(compared_timeline: compared_timeline)
      |> assign(compared_user: user)
-     |> create_compared_user_data()}
+     |> create_compared_user_data()
+     |> assign_display_progress()}
   end
 
   def handle_event("click_on_related_user_card_compare", params, socket) do
@@ -346,7 +362,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
        socket
        |> assign(compared_timeline: compared_timeline)
        |> assign(compared_user: user)
-       |> create_compared_user_data()}
+       |> create_compared_user_data()
+       |> assign_display_progress()}
     else
       # 変更なしかあるいは権限なし
       {:noreply, socket}
@@ -360,19 +377,20 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
      socket
      |> assign(compared_timeline: nil)
      |> assign(compared_user: nil)
-     |> create_compared_user_data()}
+     |> create_compared_user_data()
+     |> assign_display_progress()}
   end
 
   defp create_user_data(socket) do
     %{
       user_id: user_id,
       skill_panel_id: skill_panel_id,
-      class: class,
+      skill_class: skill_class,
       timeline: timeline,
       data: data
     } = socket.assigns
 
-    past_values = get_past_score_values(timeline, user_id, skill_panel_id, class)
+    past_values = get_past_score_values(timeline, user_id, skill_panel_id, skill_class.class)
 
     data =
       Map.merge(data, %{
@@ -383,7 +401,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         futureDisplay: !timeline.future_enabled
       })
 
-    now_value = create_user_now_value(user_id, skill_panel_id, class, !timeline.future_enabled)
+    now_value =
+      create_user_now_value(user_id, skill_panel_id, skill_class.class, !timeline.future_enabled)
+
     data = Map.put(data, :myselfNow, now_value)
 
     assign(socket, data: data)
@@ -407,7 +427,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       compared_user: compared_user,
       user_id: user_id,
       skill_panel_id: skill_panel_id,
-      class: class,
+      skill_class: skill_class,
       compared_timeline: compared_timeline,
       timeline: timeline
     } = socket.assigns
@@ -415,13 +435,18 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     compared_timeline = compared_timeline || timeline
 
     past_values =
-      get_past_score_values(compared_timeline, compared_user.id, skill_panel_id, class)
+      get_past_score_values(
+        compared_timeline,
+        compared_user.id,
+        skill_panel_id,
+        skill_class.class
+      )
 
     now_value =
       create_user_now_value(
         compared_user.id,
         skill_panel_id,
-        class,
+        skill_class.class,
         !compared_timeline.future_enabled
       )
 
@@ -505,6 +530,38 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
   defp put_profile(user) do
     Bright.Repo.preload(user, :user_profile)
+  end
+
+  defp assign_display_progress(socket) do
+    %{compared_user: compared_user, timeline: timeline} = socket.assigns
+    display_progress = !compared_user && timeline.selected_label == "now"
+
+    socket
+    |> assign(:display_progress, display_progress)
+    |> update(:data, &Map.put(&1, :displayProgress, display_progress))
+  end
+
+  defp assign_progress_data(%{assigns: %{display_progress: false}} = socket) do
+    update(socket, :data, &Map.put(&1, :progress, []))
+  end
+
+  defp assign_progress_data(socket) do
+    %{
+      user_id: user_id,
+      skill_class: skill_class,
+      timeline: timeline
+    } = socket.assigns
+
+    # 現在までのデータ取得。「現在」データは別途あるので含めない
+    progress =
+      SkillScores.list_user_skill_class_score_progress(
+        %{id: user_id},
+        skill_class,
+        TimelineHelper.get_prev_date_from_now(timeline),
+        Date.utc_today() |> Date.add(-1)
+      )
+
+    update(socket, :data, &Map.put(&1, :progress, progress))
   end
 
   defp compared_other?(compared_user, user_id) do

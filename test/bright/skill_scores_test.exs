@@ -806,4 +806,140 @@ defmodule Bright.SkillScoresTest do
       assert 0 == SkillScores.calc_middle_skills_percentage(1, 0)
     end
   end
+
+  describe "list_skill_class_score_logs/4" do
+    setup do
+      user = insert(:user)
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      %{user: user, skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    setup %{user: user, skill_class: skill_class} do
+      Date.range(~D[2023-10-01], ~D[2023-10-05])
+      |> Enum.each(fn date ->
+        insert(:skill_class_score_log, user: user, skill_class: skill_class, date: date)
+      end)
+
+      :ok
+    end
+
+    test "returns skill_class_score_logs with given condition", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      # 日付範囲を含む各条件での期待結果
+      list =
+        SkillScores.list_skill_class_score_logs(user, skill_class, ~D[2023-10-02], ~D[2023-10-04])
+
+      assert [~D[2023-10-02], ~D[2023-10-03], ~D[2023-10-04]] == Enum.map(list, & &1.date)
+
+      # ユーザー違いでの空確認
+      user_2 = insert(:user)
+
+      list =
+        SkillScores.list_skill_class_score_logs(
+          user_2,
+          skill_class,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [] == list
+
+      # スキルクラス違いでの空確認
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      list =
+        SkillScores.list_skill_class_score_logs(
+          user,
+          skill_class_2,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [] == list
+    end
+  end
+
+  describe "list_user_progress/4" do
+    setup do
+      user = insert(:user)
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      %{user: user, skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    setup %{user: user, skill_class: skill_class} do
+      Date.range(~D[2023-10-01], ~D[2023-10-05])
+      |> Enum.zip(1..5)
+      |> Enum.each(fn {date, percentage} ->
+        insert(:skill_class_score_log,
+          user: user,
+          skill_class: skill_class,
+          date: date,
+          percentage: percentage
+        )
+      end)
+
+      :ok
+    end
+
+    test "returns percentage values with given condition", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      # 日付範囲を含む各条件での期待結果
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [2, 3, 4] == list
+
+      # 日付範囲にログがない場合のnil確認
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class,
+          ~D[2023-10-05],
+          ~D[2023-10-10]
+        )
+
+      assert [5, nil, nil, nil, nil, nil] == list
+
+      # ユーザー違いでの空確認
+      user_2 = insert(:user)
+
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user_2,
+          skill_class,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [nil, nil, nil] == list
+
+      # スキルクラス違いでの空確認
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class_2,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [nil, nil, nil] == list
+    end
+  end
 end

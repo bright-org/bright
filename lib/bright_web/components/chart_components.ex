@@ -73,17 +73,13 @@ defmodule BrightWeb.ChartComponents do
   attr :size, :string, default: "md"
 
   def growth_graph(assigns) do
-    assigns =
-      assigns
-      |> assign(:data, assigns.data |> Jason.encode!())
-
     ~H"""
     <div
       id={@id}
       class="w-full"
       phx-hook="GrowthGraph"
       phx-update="ignore"
-      data-data={@data}
+      data-data={complement_growth_graph_data(@data)}
       data-size={@size}
     >
       <canvas class="w-full"></canvas>
@@ -118,4 +114,19 @@ defmodule BrightWeb.ChartComponents do
     </div>
     """
   end
+
+  defp complement_growth_graph_data(data) do
+    # 成長グラフデータ調整
+    # - 「現在」までの変遷を入れる場合は表示点を１つ減らす
+    maybe_cut_down_past_one(data)
+    |> Jason.encode!()
+  end
+
+  defp maybe_cut_down_past_one(%{displayProgress: true} = data) do
+    data
+    |> Map.update!(:myself, &List.delete_at(&1, 0))
+    |> Map.update!(:labels, &List.delete_at(&1, 0))
+  end
+
+  defp maybe_cut_down_past_one(data), do: Jason.encode!(data)
 end
