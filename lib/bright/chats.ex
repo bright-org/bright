@@ -33,7 +33,12 @@ defmodule Bright.Chats do
       join: i in Interview,
       on:
         i.id == c.relation_id and
-          i.status in [:consume_interview, :ongoing_interview, :completed_interview],
+          i.status in [
+            :consume_interview,
+            :ongoing_interview,
+            :completed_interview,
+            :cancel_interview
+          ],
       where: c.relation_type == "recruit",
       order_by: [desc: :updated_at],
       join: cu in User,
@@ -83,7 +88,12 @@ defmodule Bright.Chats do
       join: i in Interview,
       on:
         i.id == c.relation_id and
-          i.status in [:consume_interview, :ongoing_interview, :completed_interview],
+          i.status in [
+            :consume_interview,
+            :ongoing_interview,
+            :completed_interview,
+            :cancel_interview
+          ],
       join: cu in User,
       on: cu.id == i.candidates_user_id,
       join: cp in UserProfile,

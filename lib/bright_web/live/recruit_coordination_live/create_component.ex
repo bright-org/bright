@@ -256,7 +256,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
         cancel_reason: reason
       })
 
-    Recruits.send_interview_cancel_notification_mails(socket.assings.interview)
+    Recruits.send_interview_cancel_notification_mails(socket.assigns.interview.id)
 
     {:noreply, push_navigate(socket, to: socket.assigns.patch)}
   end
