@@ -241,7 +241,7 @@ defmodule Bright.SkillScores do
         date: Date.utc_today()
       }
 
-      get_skill_class_log_by(unique_condition)
+      get_skill_class_score_log_by(unique_condition)
       |> Kernel.||(%SkillClassScoreLog{} |> Map.merge(unique_condition))
       |> Ecto.Changeset.change(percentage: changeset.changes.percentage)
     end
@@ -699,7 +699,31 @@ defmodule Bright.SkillScores do
   @doc """
   スキルクラススコア変遷の取得
   """
-  def get_skill_class_log_by(condition) do
+  def get_skill_class_score_log_by(condition) do
     Repo.get_by(SkillClassScoreLog, condition)
+  end
+
+  @doc """
+  スキルクラススコア変遷データの日付から日付までの取得
+  """
+  def list_skill_class_score_logs(user, skill_class, date_from, date_end) do
+    from(scsl in SkillClassScoreLog,
+      where: scsl.user_id == ^user.id,
+      where: scsl.skill_class_id == ^skill_class.id,
+      where: scsl.date >= ^date_from and scsl.date <= ^date_end,
+      order_by: {:asc, scsl.date}
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  スキルクラススコア変遷データの日付から日付までの取得
+  """
+  def list_user_skill_class_score_progress(user, skill_class, date_from, date_end) do
+    date_log =
+      list_skill_class_score_logs(user, skill_class, date_from, date_end)
+      |> Map.new(&{&1.date, &1.percentage})
+
+    Date.range(date_from, date_end) |> Enum.map(&Map.get(date_log, &1))
   end
 end

@@ -85,4 +85,13 @@ defmodule BrightWeb.TimelineHelperTest do
       end
     end
   end
+
+  describe "get_prev_date_from_now/1" do
+    test "returns prev date from now" do
+      with_mocks([date_mock()]) do
+        timeline = TimelineHelper.get_current()
+        assert ~D[2023-10-01] == TimelineHelper.get_prev_date_from_now(timeline)
+      end
+    end
+  end
 end

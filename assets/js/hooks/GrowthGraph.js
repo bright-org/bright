@@ -166,13 +166,14 @@ const drawMyselfNow = (chart, scales) => {
   if (now === undefined || now === null) return;
 
   const futureIndex = data["myself"].length - 1
+  const progress = data["displayProgress"] ? (data["progress"] || []).concat([now]) : [now]
 
   drawNow(chart, scales, {
     nowValue: now,
     prevValue: data["myself"][futureIndex - 1],
     futureIndex: futureIndex,
-    displayProgress: data["progress"] ? true : false,
-    values: data["progress"] || [now],
+    displayProgress: data["displayProgress"],
+    values: progress,
     selected: (data["myselfSelected"] === "now"),
     axisColor: (data["myselfSelected"] === "now") ? nowSelectColor : nowColor,
     borderColor: myselfBorderColor,
@@ -235,11 +236,6 @@ const drawNow = (chart, scales, state) => {
   // 仮にsize: 2なら「現在」までの間にステップ点が1つ
   const size = state.values.length
   const stepX = (nowX - prevX) / size
-
-  // 現在点に値を入れておく。現在の赤い点の描画のため
-  const lastIndex = state.values.findLastIndex(v => v)
-  const lastValue = state.values[lastIndex]
-  state.values[size - 1] = lastValue
 
   // 線 直近の過去から現在まで
   let currentX = prevX
@@ -320,7 +316,6 @@ const fillGradationPointToPoint = (chart, scales, p1, p2) => {
   const zeroY = scales.y.getPixelForValue(0)
 
   // 1つ前の過去から現在を四角形で囲んでいる
-  context.lineWidth = 1
   context.fillStyle = gradient;
   context.beginPath()
   context.moveTo(p1.x, zeroY)
