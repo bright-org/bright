@@ -867,7 +867,6 @@ defmodule Bright.Subscriptions do
   def deliver_free_trial_apply_instructions(from_user, application_detail) do
     UserNotifier.deliver_free_trial_apply_instructions(
       from_user,
-      %{email: "customer-success@bright-fun.org"},
       application_detail
     )
   end

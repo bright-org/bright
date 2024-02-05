@@ -9,4 +9,12 @@ defmodule Bright.Utils.Env do
   def prod? do
     System.get_env("SENTRY_ENVIRONMENT_NAME") == "prod"
   end
+
+  def stg? do
+    System.get_env("SENTRY_ENVIRONMENT_NAME") == "stg"
+  end
+
+  def dev? do
+    System.get_env("SENTRY_ENVIRONMENT_NAME") == "dev"
+  end
 end
