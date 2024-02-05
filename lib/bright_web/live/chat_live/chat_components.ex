@@ -16,7 +16,12 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       patch={~p"/recruits/chats/#{@chat.id}"}
     >
       <div class="mr-2">
-        <.switch_user_icon chat={@chat} show_name={false} user_id={@user_id}/>
+        <.switch_user_icon
+          chat={@chat}
+          show_name={false}
+          user_id={@user_id}
+          anon={@chat.interview.recruiter_user_id == @user_id}
+        />
       </div>
       <div class="w-full flex justify-between p-1">
         <div class="mr-2 lg:truncate lg:text-xl">
