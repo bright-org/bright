@@ -170,7 +170,8 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
 
     {:ok, _message} =
       Chats.create_message(%{
-        text: "#{user.name}から面談が確定されました",
+        text:
+          "#{user.name}から面談が確定されました \n 面談日・ツール・場所は、Brightに登録されている連絡先に対し、#{user.name}から別途、連絡いたします。",
         chat_id: chat.id,
         sender_user_id: user.id
       })
