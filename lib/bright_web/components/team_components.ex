@@ -109,6 +109,25 @@ defmodule BrightWeb.TeamComponents do
     """
   end
 
+  attr :id, :string, required: true
+  attr :team_params, :map, required: true
+
+  attr :on_hover_style, :string,
+    required: false,
+    default: " hover:bg-brightGray-50 cursor-pointer"
+
+  def team_minimum(assigns) do
+    ~H"""
+    <li
+      id={@id}
+      class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
+    >
+      <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
+      <span class="max-w-[160px] lg:max-w-[280px] truncate"><%= @team_params.name %></span>
+    </li>
+    """
+  end
+
   attr :team_name, :string, required: true
   attr :team_type, :atom, default: :general_team
   attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: false, default: nil
