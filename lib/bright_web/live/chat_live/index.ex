@@ -16,7 +16,7 @@ defmodule BrightWeb.ChatLive.Index do
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
             チャット対象者がいません<br />
-            「スキル検索」の「面談調整」や<br />
+            「スキル検索」の「面談の打診」や<br />
             「チームスキル分析」の「1on1に誘う」<br/>
             からチャット開始してください
           </p>
@@ -31,19 +31,20 @@ defmodule BrightWeb.ChatLive.Index do
         <div class="flex flex-col mt-5" >
           <p class="lg:ml-12 text-xl mb-2">※メールアドレスや電話番号等の個人情報は送らないでください</p>
           <p class="lg:ml-12 text-xl mb-8">※面談日時およびその重複は管理対象外ですので、別途管理を行ってください</p>
-          <%= if Enum.count(@messages) == 0 do %>
-            <div :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id)} class="lg:ml-12 text-xl font-bold">
-              本チャットで面談候補者と面談の調整を行い、「面談確定の確認」ボタンを押してください
-            </div>
-          <% else %>
-            <%= for message <- @messages do %>
-              <.message
-                chat={@chat}
-                message={message}
-                current_user={@current_user}
-                sender_icon_path={@sender_icon_path}
-              />
+          <div :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id) } class="lg:ml-12 text-xl">
+            <%= if @chat.interview.status == :consume_interview do %>
+            <p>本チャットで面談対象者と連絡を取り、「面談調整の確認」ボタンを押してください</p>
+            <p class="mt-2 text-attention-600">面談確定するとチャットに（担当者から面談が確定されました）が自動投入されます</p>
             <% end %>
+          </div>
+
+          <%= for message <- @messages do %>
+            <.message
+              chat={@chat}
+              message={message}
+              current_user={@current_user}
+              sender_icon_path={@sender_icon_path}
+            />
           <% end %>
         </div>
         <div :if={@chat} class="py-5 sticky bottom-0 bg-white">

@@ -25,7 +25,7 @@ msgid "close"
 msgstr ""
 
 msgid "waiting_decision"
-msgstr "面談調整中"
+msgstr "面談打診中"
 
 msgid "consume_interview"
 msgstr "面談確定待ち"

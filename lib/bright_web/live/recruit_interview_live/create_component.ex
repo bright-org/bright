@@ -25,7 +25,7 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
             <div class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">候補者</h3>
+                  <h3 class="font-bold text-xl">候補者</h3>
                   <.live_component
                     id="user_params"
                     prefix="interview"
