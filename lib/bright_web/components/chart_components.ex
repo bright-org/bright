@@ -128,5 +128,5 @@ defmodule BrightWeb.ChartComponents do
     |> Map.update!(:labels, &List.delete_at(&1, 0))
   end
 
-  defp maybe_cut_down_past_one(data), do: Jason.encode!(data)
+  defp maybe_cut_down_past_one(data), do: data
 end
