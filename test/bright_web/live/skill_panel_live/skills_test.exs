@@ -7,6 +7,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   alias Bright.Repo
   alias Bright.UserJobProfiles
   alias Bright.SkillScores.SkillClassScore
+  alias Bright.SkillScores.SkillClassScoreLog
   alias Bright.Teams.TeamMemberUsers
   alias Bright.CustomGroups.CustomGroupMemberUser
 
@@ -196,6 +197,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
                skill_class_id: skill_class_2.id
              )
 
+      skill_unit =
+        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_2.id, position: 1}])
+
+      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
+      insert(:skill_score, user: user, skill: skill, score: :high)
+
       show_live
       |> element("#class_tab_2 a")
       |> render_click()
@@ -206,6 +213,14 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
                user_id: user.id,
                skill_class_id: skill_class_2.id
              )
+
+      # スキルクラススコアのログ作成確認
+      assert %{percentage: 100.0} =
+               Repo.get_by(SkillClassScoreLog, %{
+                 user_id: user.id,
+                 skill_class_id: skill_class_2.id,
+                 date: Date.utc_today()
+               })
     end
   end
 
@@ -408,7 +423,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     setup [:register_and_log_in_user, :setup_skills]
 
     @tag score: :low
-    test "update scores", %{conn: conn, skill_panel: skill_panel} do
+    test "update scores", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       start_edit(show_live)
@@ -435,6 +455,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, "#skill-1 .score-mark-low")
       assert has_element?(show_live, "#skill-2 .score-mark-middle")
       assert has_element?(show_live, "#skill-3 .score-mark-high")
+
+      # スキルクラススコアのログ作成確認
+      skill_class_score_log =
+        Repo.get_by(SkillClassScoreLog, %{
+          user_id: user.id,
+          skill_class_id: skill_class.id,
+          date: Date.utc_today()
+        })
+
+      assert round(skill_class_score_log.percentage) == 33
     end
 
     @tag score: nil

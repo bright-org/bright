@@ -34,9 +34,12 @@ defmodule BrightWeb.TimelineBarComponents do
     "sm" => %{height: "lg:h-[38px]", width: "lg:w-[38px]"}
   }
 
+  # 「現在」ボタン位置
+  # サイズと成長グラフに現在までのスコア変遷をいれるか(true/false)で変更している
+  # ["sm", true]はユースケースなし
   @button_now_position %{
-    "md" => "lg:right-[86px]",
-    "sm" => "lg:right-[58px]"
+    "md" => %{false: "right-[38px] lg:right-[86px]", true: "right-[54px] lg:right-[108px]"},
+    "sm" => %{false: "right-[38px] lg:right-[58px]", true: "right-[54px] lg:right-[62px]"}
   }
 
   @button_style %{
@@ -55,6 +58,7 @@ defmodule BrightWeb.TimelineBarComponents do
   attr :selected_date, :string, default: ""
   attr :type, :string, default: "myself", values: ["myself", "other"]
   attr :display_now, :boolean, default: false
+  attr :display_progress, :boolean, default: false
   attr :display_close, :boolean, default: false
   attr :target, :any, default: nil
   attr :scale, :string, default: "md"
@@ -62,14 +66,14 @@ defmodule BrightWeb.TimelineBarComponents do
   def timeline_bar(assigns) do
     ~H"""
     <div
-      class={["bg-brightGray-50 rounded-full my-5 flex justify-around items-center relative w-full", layout_scale_class(@scale)]}>
+      class={["bg-brightGray-50 rounded-full my-5 flex justify-around items-center relative w-full", flex_items_gap_class(@display_progress), layout_scale_class(@scale)]}>
       <.close_button
        :if={@display_close}
        id={@id}
        target={@target}
       />
 
-      <%= for date <- @dates do %>
+      <%= for date <- maybe_cut_down_for_display_progress(@display_progress, @dates) do %>
         <.date_button
           id={@id}
           target={@target}
@@ -85,6 +89,7 @@ defmodule BrightWeb.TimelineBarComponents do
         id={@id}
         target={@target}
         selected={"now" == @selected_date}
+        display_progress={@display_progress}
         scale={@scale}
       />
     </div>
@@ -146,6 +151,7 @@ defmodule BrightWeb.TimelineBarComponents do
   attr :selected, :boolean
   attr :target, :any
   attr :scale, :string
+  attr :display_progress, :boolean
 
   defp now_button(%{selected: true} = assigns) do
     assigns =
@@ -154,7 +160,7 @@ defmodule BrightWeb.TimelineBarComponents do
 
     ~H"""
     <div
-      class={["flex justify-center items-center absolute h-[52px] w-[52px] right-[38px]", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
+      class={["flex justify-center items-center absolute h-[52px] w-[52px]", button_outer_scale_class(@scale), button_now_position_class(@scale, @display_progress)]}>
       <button
         phx-click="timeline_bar_button_click"
         phx-value-id={@id}
@@ -172,7 +178,7 @@ defmodule BrightWeb.TimelineBarComponents do
   defp now_button(assigns) do
     ~H"""
     <div
-      class={["flex justify-center items-center absolute  h-[52px] w-[52px] right-[38px]", button_outer_scale_class(@scale), button_now_position_class(@scale)]}>
+      class={["flex justify-center items-center absolute  h-[52px] w-[52px]", button_outer_scale_class(@scale), button_now_position_class(@scale, @display_progress)]}>
       <button
         phx-click="timeline_bar_button_click"
         phx-value-id={@id}
@@ -213,6 +219,17 @@ defmodule BrightWeb.TimelineBarComponents do
     |> Enum.join(" ")
   end
 
+  defp flex_items_gap_class(true), do: "lg:gap-x-14"
+
+  defp flex_items_gap_class(_display_progress), do: nil
+
+  defp maybe_cut_down_for_display_progress(false, dates), do: dates
+
+  defp maybe_cut_down_for_display_progress(true, dates) do
+    # 「現在」までの変遷を表示する際は点を１つ減らしてスペースを広げる
+    List.delete_at(dates, 0)
+  end
+
   defp button_outer_scale_class(scale) do
     [
       get_in(@button_outer_size, [scale, :height]),
@@ -249,8 +266,8 @@ defmodule BrightWeb.TimelineBarComponents do
     get_in(@button_selected_font_size, [scale])
   end
 
-  defp button_now_position_class(scale) do
-    get_in(@button_now_position, [scale])
+  defp button_now_position_class(scale, display_progress) do
+    get_in(@button_now_position, [scale, display_progress])
   end
 
   defp button_style_class(scale) do

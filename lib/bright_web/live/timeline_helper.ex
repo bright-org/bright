@@ -116,6 +116,14 @@ defmodule BrightWeb.TimelineHelper do
 
   def label_to_date(_label), do: nil
 
+  @doc """
+  現在より1つ前のラベルの日付を返す
+  """
+  def get_prev_date_from_now(%{selected_label: "now"} = timeline) do
+    # 最後のラベルは未来なので2つ前のindexの日付を返す
+    get_date_at(timeline, -2)
+  end
+
   defp get_future_month(), do: get_future_month(@start_month, Date.utc_today())
 
   defp get_future_month(start_month, now) do
