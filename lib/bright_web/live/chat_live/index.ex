@@ -97,7 +97,7 @@ defmodule BrightWeb.ChatLive.Index do
                       type="button"
                       phx-click={JS.push("open_confirm_interview") |> JS.show(to: "interview-confirm-modal")}
                     >
-                      面談確定の確認
+                      面談調整の確認
                     </button>
                   <% end %>
                   <%= if @chat.interview.status == :ongoing_interview do %>
