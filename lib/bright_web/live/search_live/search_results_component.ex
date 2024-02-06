@@ -3,8 +3,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
 
   alias Bright.Repo
   alias Bright.SkillPanels
-  alias Bright.Subscriptions
-  alias Bright.Teams
+  alias Bright.Accounts
 
   def render(assigns) do
     ~H"""
@@ -32,10 +31,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
   def update(%{skill_params: skill_params, current_user: user} = assigns, socket) do
     socket
     |> assign(assigns)
-    |> assign(
-      :hr_enabled,
-      Subscriptions.service_enabled?(user.id, "hr_basic") || Teams.enable_hr_functions?(user.id)
-    )
+    |> assign(:hr_enabled, Accounts.hr_enabled?(user.id))
     |> assign(:skill_params, put_skill_panel_name(skill_params))
     |> then(&{:ok, &1})
   end

@@ -158,6 +158,7 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
   end
 
   def handle_event("decision", %{"decision" => status}, socket) do
+    user = socket.assigns.current_user
     {:ok, interview} = Recruits.update_interview(socket.assigns.interview, %{status: status})
 
     Recruits.send_interview_start_notification_mails(
@@ -166,6 +167,13 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
     )
 
     chat = Chats.get_chat_by_interview_id(interview.id)
+
+    {:ok, _message} =
+      Chats.create_message(%{
+        text: "#{user.name}から面談が確定されました",
+        chat_id: chat.id,
+        sender_user_id: user.id
+      })
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
   end

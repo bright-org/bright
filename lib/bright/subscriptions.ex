@@ -442,7 +442,30 @@ defmodule Bright.Subscriptions do
       %Bright.Subscriptions.SubscriptionUserPlan{}
       iex> get_user_subscription_user_plan("01H7W3BZQY7CZVM5Q66T4EWEVC")
       nil
+      iex> get_user_subscription_user_plan(["01H7W3BZQY7CZVM5Q66T4EWEVC"])
+      [%Bright.Subscriptions.SubscriptionUserPlan{}]
+      iex> get_user_subscription_user_plan(["01H7W3BZQY7CZVM5Q66T4EWEVC"])
+      []
+
   """
+  def get_user_subscription_user_plan(user_ids) when is_list(user_ids) do
+    current_datetime = NaiveDateTime.utc_now()
+    limit = length(user_ids)
+
+    from(sup in SubscriptionUserPlan,
+      where: sup.user_id in ^user_ids,
+      where:
+        (sup.subscription_start_datetime <= ^current_datetime and
+           is_nil(sup.subscription_end_datetime)) or
+          (sup.trial_start_datetime <= ^current_datetime and is_nil(sup.trial_end_datetime)),
+      join: sp in assoc(sup, :subscription_plan),
+      order_by: {:desc, sp.authorization_priority},
+      preload: [subscription_plan: {sp, [:subscription_plan_services]}],
+      limit: ^limit
+    )
+    |> Repo.all()
+  end
+
   def get_user_subscription_user_plan(user_id) do
     current_datetime = NaiveDateTime.utc_now()
 
@@ -493,7 +516,29 @@ defmodule Bright.Subscriptions do
       false
       iex> service_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC", "skill_up")
       true
+      iex> service_enabled?(["01H7W3BZQY7CZVM5Q66T4EWEVC"], "hogehoge")
+      false
+      iex> service_enabled?(["01H7W3BZQY7CZVM5Q66T4EWEVC"], "skill_up")
+      true
   """
+
+  def service_enabled?(user_ids, service_code) when is_list(user_ids) do
+    subscription_user_plans = get_user_subscription_user_plan(user_ids)
+
+    case subscription_user_plans do
+      [] ->
+        false
+
+      _ ->
+        subscription_user_plans
+        |> Enum.map(fn plan ->
+          plan.subscription_plan.subscription_plan_services
+          |> Enum.any?(&(&1.service_code == service_code))
+        end)
+        |> Enum.any?()
+    end
+  end
+
   def service_enabled?(user_id, service_code) do
     subscription_user_plan = get_user_subscription_user_plan(user_id)
 
@@ -822,7 +867,6 @@ defmodule Bright.Subscriptions do
   def deliver_free_trial_apply_instructions(from_user, application_detail) do
     UserNotifier.deliver_free_trial_apply_instructions(
       from_user,
-      %{email: "customer-success@bright-fun.org"},
       application_detail
     )
   end

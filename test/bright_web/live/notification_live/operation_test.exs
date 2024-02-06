@@ -62,5 +62,24 @@ defmodule BrightWeb.NotificationLive.OperationTest do
       assert lv |> has_element?("#notification_operation_modal")
       assert lv |> has_element?("#notification_operation_modal", notification_operation.detail)
     end
+
+    test "shows modal when query params exist", %{conn: conn} do
+      notification_operation = insert(:notification_operation)
+
+      {:ok, lv, _html} =
+        live(conn, ~p"/notifications/operations?operation=#{notification_operation.id}")
+
+      assert lv |> has_element?("#notification_operation_modal")
+      assert lv |> has_element?("#notification_operation_modal", notification_operation.detail)
+    end
+
+    test "can render page when invalid query params exist", %{conn: conn} do
+      notification_community = insert(:notification_community)
+
+      {:ok, lv, _html} =
+        live(conn, ~p"/notifications/operations?operation=#{notification_community.id}")
+
+      refute lv |> has_element?("#notification_operation_modal")
+    end
   end
 end

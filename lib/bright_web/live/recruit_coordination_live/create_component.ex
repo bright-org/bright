@@ -31,7 +31,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                     id="user_params_coordination"
                     prefix="interview"
                     search={false}
-                    anon={true}
+                    anon={false}
                     module={BrightWeb.SearchLive.SearchResultsComponent}
                     current_user={@current_user}
                     result={@candidates_user}

@@ -59,7 +59,7 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
                   <h3 class="font-bold text-base">ジョイン先チーム管理者<span class="font-normal">を選んでください</span></h3>
                   <.live_component
                     id="employment_card"
-                    module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
+                    module={BrightWeb.CardLive.RelatedTeamOwnerCardComponent }
                     current_user={@current_user}
                     target="#employment_modal"
                     event="add_user"
