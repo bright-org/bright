@@ -68,11 +68,43 @@ defmodule BrightWeb.CreateFreeTrialTest do
              |> element("#free_trial_form")
              |> render_submit(%{
                free_trial_form: %{
-                 phone_number: "00000",
+                 phone_number: "000000000",
                  email: "hoge@email.com",
                  pic_name: "PM"
                }
              }) =~ "入力してください"
+    end
+
+    test "validate email format", %{conn: conn} do
+      {:ok, index_live, html} = live(conn, ~p"/free_trial")
+      assert html =~ "採用・人材育成プラン"
+
+      assert index_live
+             |> element("#free_trial_form")
+             |> render_submit(%{
+               free_trial_form: %{
+                 company_name: "hoge",
+                 phone_number: "000000000",
+                 email: "hogehoge",
+                 pic_name: "PM"
+               }
+             }) =~ "無効なフォーマットです"
+    end
+
+    test "validate phone_number format", %{conn: conn} do
+      {:ok, index_live, html} = live(conn, ~p"/free_trial")
+      assert html =~ "採用・人材育成プラン"
+
+      assert index_live
+             |> element("#free_trial_form")
+             |> render_submit(%{
+               free_trial_form: %{
+                 company_name: "hoge",
+                 phone_number: "hoge",
+                 email: "hoge@email.com",
+                 pic_name: "PM"
+               }
+             }) =~ "無効なフォーマットです"
     end
 
     test "NOT validate input company_name required", %{conn: conn} do
@@ -84,7 +116,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       |> element("#free_trial_form")
       |> render_submit(%{
         free_trial_form: %{
-          phone_number: "00000",
+          phone_number: "000000000",
           email: "hoge@email.com",
           pic_name: "PM"
         }
@@ -98,14 +130,14 @@ defmodule BrightWeb.CreateFreeTrialTest do
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
       assert html =~ "採用・人材育成プラン"
 
-      assert is_nil(Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now()))
+      assert is_nil(Subscriptions.get_user_subscription_user_plan(user.id))
 
       index_live
       |> element("#free_trial_form")
       |> render_submit(%{
         free_trial_form: %{
           company_name: "sample company",
-          phone_number: "00000",
+          phone_number: "000000000",
           email: "hoge@email.com",
           pic_name: "PM"
         }
@@ -115,7 +147,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       assert path == "/mypage"
 
       %{subscription_status: :free_trial, subscription_plan: %{plan_code: "hr_plan"}} =
-        Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+        Subscriptions.get_user_subscription_user_plan(user.id)
     end
 
     test "free_trialing low_priority_plan", %{conn: conn, user: user} do
@@ -129,7 +161,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       insert(:subscription_user_plan_free_trial, user: user, subscription_plan: low_plan)
 
       %{subscription_status: :free_trial, subscription_plan: %{plan_code: "team_up_plan"}} =
-        Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+        Subscriptions.get_user_subscription_user_plan(user.id)
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial")
       assert html =~ "採用・人材育成プラン"
@@ -139,7 +171,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       |> render_submit(%{
         free_trial_form: %{
           company_name: "sample company",
-          phone_number: "00000",
+          phone_number: "000000000",
           email: "hoge@email.com",
           pic_name: "PM"
         }
@@ -149,7 +181,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       assert path == "/mypage"
 
       %{subscription_status: :free_trial, subscription_plan: %{plan_code: "hr_plan"}} =
-        Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
+        Subscriptions.get_user_subscription_user_plan(user.id)
     end
 
     test "view trial form when higher plan trial ended", %{
@@ -157,13 +189,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
       user: user,
       plan: plan
     } do
-      insert(:subscription_user_plan_subscribing_with_free_trial,
-        user: user,
-        subscription_plan: plan,
-        subscription_status: :free_trial,
-        trial_start_datetime: NaiveDateTime.utc_now(),
-        trial_end_datetime: NaiveDateTime.utc_now()
-      )
+      subscription_user_plan_free_trial_end(user, plan)
 
       insert(:subscription_plans,
         plan_code: "team_up_plan",
@@ -197,17 +223,24 @@ defmodule BrightWeb.CreateFreeTrialTest do
       %{plan: plan}
     end
 
+    def create_lower_plan(plan) do
+      insert(:subscription_plans,
+        plan_code: "team_up_plan",
+        name_jp: "チームアッププラン",
+        create_teams_limit: plan.create_teams_limit - 1,
+        create_enable_hr_functions_teams_limit: plan.create_enable_hr_functions_teams_limit - 1,
+        team_members_limit: plan.team_members_limit - 1,
+        authorization_priority: plan.authorization_priority - 1
+      )
+    end
+
     test "view create_modal lower priority plan when free_trialing hr_plan ", %{
       conn: conn,
       user: user,
       plan: plan
     } do
       insert(:subscription_user_plan_free_trial, user: user, subscription_plan: plan)
-
-      insert(:subscription_plans,
-        plan_code: "team_up_plan",
-        name_jp: "チームアッププラン"
-      )
+      create_lower_plan(plan)
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
       assert html =~ "チームアッププラン"
@@ -226,10 +259,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
         subscription_start_datetime: NaiveDateTime.utc_now()
       )
 
-      insert(:subscription_plans,
-        plan_code: "team_up_plan",
-        name_jp: "チームアッププラン"
-      )
+      create_lower_plan(plan)
 
       {:ok, index_live, html} = live(conn, ~p"/free_trial?plan=team_up_plan")
       assert html =~ "チームアッププラン"
@@ -299,11 +329,7 @@ defmodule BrightWeb.CreateFreeTrialTest do
         subscription_end_datetime: NaiveDateTime.utc_now()
       )
 
-      lower_plan =
-        insert(:subscription_plans,
-          plan_code: "team_up_plan",
-          name_jp: "チームアッププラン"
-        )
+      lower_plan = create_lower_plan(plan)
 
       insert(:subscription_user_plan_free_trial, user: user, subscription_plan: lower_plan)
 

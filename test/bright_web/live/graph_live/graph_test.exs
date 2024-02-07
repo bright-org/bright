@@ -404,6 +404,10 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       %{skill_panel: skill_panel, skill_class: skill_class}
     end
 
+    # 現在データまでの24日分のnilデータ
+    # （`date_modk`で10/25を指定している）
+    @nil_25 Enum.map(1..24, fn _ -> nil end)
+
     @base_data %{
       labels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
       myself: [0, 0, 0, 0, 0, 0],
@@ -415,7 +419,25 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       otherFutureDisplay: nil,
       otherSelected: nil,
       otherNow: nil,
-      comparedOther: nil
+      comparedOther: nil,
+      displayProgress: false,
+      progress: []
+    }
+
+    @base_data_on_now %{
+      labels: ["2023.4", "2023.7", "2023.10", "2024.1"],
+      myself: [0, 0, 0, 0, 0],
+      myselfNow: 0.0,
+      futureDisplay: true,
+      myselfSelected: "now",
+      other: [],
+      otherLabels: [],
+      otherFutureDisplay: nil,
+      otherSelected: nil,
+      otherNow: nil,
+      comparedOther: nil,
+      displayProgress: true,
+      progress: @nil_25
     }
 
     test "shows growth graph", %{
@@ -424,7 +446,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     } do
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
-        data = Jason.encode!(@base_data)
+        data = Jason.encode!(@base_data_on_now)
         assert has_element?(show_live, ~s(#growth-graph[data-data='#{data}']))
       end
     end
@@ -439,7 +461,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
-        data = Map.merge(@base_data, %{myselfNow: 50.0}) |> Jason.encode!()
+        data = Map.merge(@base_data_on_now, %{myselfNow: 50.0}) |> Jason.encode!()
         assert has_element?(show_live, ~s(#growth-graph[data-data='#{data}']))
       end
     end
@@ -470,8 +492,8 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
 
         data =
-          Map.merge(@base_data, %{
-            myself: [0, 0, 0, 10.0, 20.0, 0]
+          Map.merge(@base_data_on_now, %{
+            myself: [0, 0, 10.0, 20.0, 0]
           })
           |> Jason.encode!()
 
@@ -667,6 +689,46 @@ defmodule BrightWeb.GraphLive.GraphsTest do
           })
           |> Jason.encode!()
 
+        assert has_element?(show_live, ~s(#growth-graph[data-data='#{data}']))
+      end
+    end
+
+    test "shows progress data", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      insert(:skill_class_score_log,
+        user: user,
+        skill_class: skill_class,
+        percentage: 10.0,
+        date: ~D[2023-10-01]
+      )
+
+      insert(:skill_class_score_log,
+        user: user,
+        skill_class: skill_class,
+        percentage: 20.0,
+        date: ~D[2023-10-05]
+      )
+
+      # 当日分はnowをみるので含まれない
+      insert(:skill_class_score_log,
+        user: user,
+        skill_class: skill_class,
+        percentage: 30.0,
+        date: ~D[2023-10-25]
+      )
+
+      expected_progress =
+        @nil_25
+        |> List.replace_at(1 - 1, 10.0)
+        |> List.replace_at(5 - 1, 20.0)
+
+      with_mocks([date_mock()]) do
+        {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+        data = Map.merge(@base_data_on_now, %{progress: expected_progress}) |> Jason.encode!()
         assert has_element?(show_live, ~s(#growth-graph[data-data='#{data}']))
       end
     end

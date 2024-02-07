@@ -59,8 +59,14 @@ erDiagram
 - 通常１ユーザーには複数のsubscription_status: subscribingなレコードは存在しない。
   - 上位プランが下位プランの機能（権限及び制限）を包含する。
   - ただし、システム上は発生を想定して上位プランを優先して適用する。
-- 一方で、無料トライアル中に、subscription_status: subscribingとfree_trialのレコードは同時に存在する。
+- 一方で、トライアル中に、subscription_status: subscribingとfree_trialのレコードは同時に存在する。
   - この場合は、上位プランを優先して適用する。
+- `subscription_start_datetime`に値があり、`subscription_end_datetime`に値がない場合に「契約中」である。
+  - `subscription_start_datetime`が未来日時のときはその日時より契約中となる。
+  - `subscription_end_datetime`が未来日時であっても値があれば契約完了として扱われる。
+- `trial_start_datetime`に値があり、`trial_end_datetime`に値がない場合に「トライアル中」である。
+  - `trial_start_datetime`が未来日時のときはその日時よりトライアル中となる。
+  - `trial_end_datetime`が未来日時であっても値があればトライアル完了として扱われる。
 
 
 ## プラン・サービス・機能の要件
@@ -88,16 +94,19 @@ Brightのサービス・機能と利用可能なプランのマッピングに�
 - `free_trial_priority`を設定しないこと
   - 無料トライアル対象外にするため
 
+
 ## 無料トライアルで利用可能なプラン
 
 ユーザーはプランの無料トライアルを利用できる。ただし、利用可能かどうかはユーザー状況やプランで条件がある。
 
-- 同一プランで、既に無料トライアルか、あるいはサブスクリプションがある（完了含む）場合は利用できない。
+- 個者(社)対応として作成されているプランは利用できない。
+  - データ上は、`subscription_plans.free_trial_priority`がnilなデータが該当する。
+- 同一プランで、既にトライアル中か契約中がある（完了含む）場合は利用できない。
   - 同一とは、データ上では`subscription_plans.plan_code`を指す。
-  - 上位プランの無料トライアルやサブスクリプションがある（完了）場合は、利用できる。あくまで同一かどうかをみる。
-- 上位プランを無料トライアル中かサブスクリプション中であれば、利用できない。
+  - 上位プランのトライアルや契約が完了している場合は、利用できる。あくまで同一かどうかをみる。
+- より上位のプランのトライアル中か契約中であれば、利用できない。
   - まず画面上において誘導しない。データ上は問題としない。
-  - 逆に、下位プランを無料トライアル中かサブスクリプション中のときは利用できる。
+  - 逆に、下位プランの無料トライアル中か契約中のときは利用できる。
 - 個者(社)対応として作成されているプランは利用できない。
   - データ上は、`subscription_plans.free_trial_priority`がnilなデータが該当する。
 
@@ -174,6 +183,11 @@ Subscriptions.free_trial_available?(user_id, plan_code)
 ```elixir
 # ユーザーIDと基準時刻をキーに有効な契約内容を取得する
 Subscriptions.get_users_subscription_status(user_id, NaiveDateTime.utc_now())
+```
+
+```elixir
+# ユーザーIDから現在有効な最上位のプラン（トライアル／契約を問わない）を取得する
+Subscriptions.get_user_subscription_user_plan(user_id)
 ```
 
 ```elixir

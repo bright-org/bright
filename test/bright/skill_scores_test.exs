@@ -4,6 +4,7 @@ defmodule Bright.SkillScoresTest do
 
   alias Bright.SkillScores
   alias Bright.Notifications
+  alias Bright.SkillScores.SkillClassScoreLog
 
   describe "skill_class_scores" do
     alias Bright.SkillScores.SkillClassScore
@@ -149,6 +150,38 @@ defmodule Bright.SkillScoresTest do
 
       assert notification.message == "HogeさんがElixir基本【零細Web開発】で「平均」レベルになりました"
       assert notification.url == "/panels/#{skill_panel.id}/#{user.name}?class=1"
+    end
+
+    test "update_skill_class_score_stats with log", %{
+      user: user,
+      skill_class: skill_class
+    } do
+      skill_class_score = insert(:init_skill_class_score, user: user, skill_class: skill_class)
+      skill_unit = insert(:skill_unit)
+      insert(:skill_class_unit, skill_class: skill_class, skill_unit: skill_unit)
+      [%{skills: [skill_1, skill_2]}] = insert_skill_categories_and_skills(skill_unit, [2])
+
+      insert(:skill_score, user: user, skill: skill_1, score: :high)
+
+      # 作成
+      {:ok, %{skill_class_score_log: skill_class_score_log}} =
+        SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
+
+      assert skill_class_score_log.percentage == 50.0
+
+      # 更新
+      insert(:skill_score, user: user, skill: skill_2, score: :high)
+
+      {:ok, _} = SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
+
+      skill_class_score_log =
+        Repo.get_by(SkillClassScoreLog, %{
+          user_id: user.id,
+          skill_class_id: skill_class.id,
+          date: skill_class_score_log.date
+        })
+
+      assert skill_class_score_log.percentage == 100.0
     end
 
     test "get_level" do
@@ -434,6 +467,13 @@ defmodule Bright.SkillScoresTest do
       |> Enum.flat_map(& &1.skill_class_scores)
     end
 
+    defp get_skill_class_score_logs(skill_panel) do
+      skill_panel
+      |> Repo.preload([skill_classes: [:skill_class_score_logs]], force: true)
+      |> Map.get(:skill_classes)
+      |> Enum.flat_map(& &1.skill_class_score_logs)
+    end
+
     # batch処理での操作想定の各処理
     #
     defp batch_case("none", _context), do: :ok
@@ -597,6 +637,10 @@ defmodule Bright.SkillScoresTest do
 
       # 4 / (8 + 2)
       assert %{percentage: 40.0} = skill_class_1_score
+
+      # ログ
+      [log_1] = get_skill_class_score_logs(skill_panel)
+      assert log_1.percentage == 40.0
     end
 
     @tag batch: "skill_added", skill_size: 8
@@ -609,6 +653,10 @@ defmodule Bright.SkillScoresTest do
 
       # 4 / (8 + 8)
       assert %{percentage: 25.0, level: :beginner} = skill_class_1_score
+
+      # ログ
+      [log_1] = get_skill_class_score_logs(skill_panel)
+      assert log_1.percentage == 25.0
     end
 
     @tag batch: "skill_moved"
@@ -648,6 +696,11 @@ defmodule Bright.SkillScoresTest do
 
       # (0 + 1) / (1 + 1)
       assert %{percentage: 50.0, level: :normal} = skill_class_2_score
+
+      # ログ
+      [log_1, log_2] = get_skill_class_score_logs(skill_panel)
+      assert Float.round(log_1.percentage, 1) == 42.9
+      assert log_2.percentage == 50.0
     end
 
     @tag batch: "skill_unit_added", skill_unit_size: [4]
@@ -661,6 +714,10 @@ defmodule Bright.SkillScoresTest do
       # 4 / (8 + 4)
       assert 33.3 == Float.round(skill_class_1_score.percentage, 1)
       assert %{level: :beginner} = skill_class_1_score
+
+      # ログ
+      [log_1] = get_skill_class_score_logs(skill_panel)
+      assert Float.round(log_1.percentage, 1) == 33.3
     end
 
     @tag batch: "skill_unit_moved_to_class2"
@@ -677,6 +734,11 @@ defmodule Bright.SkillScoresTest do
 
       # (0 + 4) / (1 + 4)
       assert %{percentage: 80.0, level: :skilled} = skill_class_2_score
+
+      # ログ
+      [log_1, log_2] = get_skill_class_score_logs(skill_panel)
+      assert log_1.percentage == 0.0
+      assert log_2.percentage == 80.0
     end
 
     @tag batch: "skill_unit_moved_to_class2"
@@ -690,10 +752,16 @@ defmodule Bright.SkillScoresTest do
       [_, skill_class_2_score] = get_skill_class_scores(skill_panel)
       assert %{percentage: 0.0} = skill_class_2_score
 
+      [log] = get_skill_class_score_logs(skill_panel)
+      assert log.skill_class_id == skill_class_1.id
+
       # skill_class_2を指定、更新される
       SkillScores.re_aggregate_scores([skill_class_2])
       [_, skill_class_2_score] = get_skill_class_scores(skill_panel)
       assert %{percentage: 80.0} = skill_class_2_score
+
+      [_, log_2] = get_skill_class_score_logs(skill_panel)
+      assert log_2.percentage == 80.0
     end
 
     @tag batch: "skill_unit_moved_to_class2"
@@ -736,6 +804,142 @@ defmodule Bright.SkillScoresTest do
     test "returns 0 if size is 0" do
       assert 0 == SkillScores.calc_middle_skills_percentage(0, 0)
       assert 0 == SkillScores.calc_middle_skills_percentage(1, 0)
+    end
+  end
+
+  describe "list_skill_class_score_logs/4" do
+    setup do
+      user = insert(:user)
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      %{user: user, skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    setup %{user: user, skill_class: skill_class} do
+      Date.range(~D[2023-10-01], ~D[2023-10-05])
+      |> Enum.each(fn date ->
+        insert(:skill_class_score_log, user: user, skill_class: skill_class, date: date)
+      end)
+
+      :ok
+    end
+
+    test "returns skill_class_score_logs with given condition", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      # 日付範囲を含む各条件での期待結果
+      list =
+        SkillScores.list_skill_class_score_logs(user, skill_class, ~D[2023-10-02], ~D[2023-10-04])
+
+      assert [~D[2023-10-02], ~D[2023-10-03], ~D[2023-10-04]] == Enum.map(list, & &1.date)
+
+      # ユーザー違いでの空確認
+      user_2 = insert(:user)
+
+      list =
+        SkillScores.list_skill_class_score_logs(
+          user_2,
+          skill_class,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [] == list
+
+      # スキルクラス違いでの空確認
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      list =
+        SkillScores.list_skill_class_score_logs(
+          user,
+          skill_class_2,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [] == list
+    end
+  end
+
+  describe "list_user_progress/4" do
+    setup do
+      user = insert(:user)
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+
+      %{user: user, skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    setup %{user: user, skill_class: skill_class} do
+      Date.range(~D[2023-10-01], ~D[2023-10-05])
+      |> Enum.zip(1..5)
+      |> Enum.each(fn {date, percentage} ->
+        insert(:skill_class_score_log,
+          user: user,
+          skill_class: skill_class,
+          date: date,
+          percentage: percentage
+        )
+      end)
+
+      :ok
+    end
+
+    test "returns percentage values with given condition", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      # 日付範囲を含む各条件での期待結果
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [2, 3, 4] == list
+
+      # 日付範囲にログがない場合のnil確認
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class,
+          ~D[2023-10-05],
+          ~D[2023-10-10]
+        )
+
+      assert [5, nil, nil, nil, nil, nil] == list
+
+      # ユーザー違いでの空確認
+      user_2 = insert(:user)
+
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user_2,
+          skill_class,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [nil, nil, nil] == list
+
+      # スキルクラス違いでの空確認
+      skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class_2,
+          ~D[2023-10-02],
+          ~D[2023-10-04]
+        )
+
+      assert [nil, nil, nil] == list
     end
   end
 end

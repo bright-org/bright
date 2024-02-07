@@ -1,7 +1,7 @@
 defmodule BrightWeb.OnboardingLive.SkillPanel do
   use BrightWeb, :live_view
 
-  alias Bright.{Repo, SkillPanels, UserSkillPanels, Onboardings}
+  alias Bright.{SkillPanels, UserSkillPanels, Onboardings}
   alias Bright.Onboardings.UserOnboarding
 
   import BrightWeb.OnboardingLive.Index, only: [hidden_more_skills: 1]
@@ -67,9 +67,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
-    skill_panel =
-      SkillPanels.get_skill_panel!(id)
-      |> Repo.preload(jobs: :career_fields)
+    skill_panel = SkillPanels.get_skill_panel_with_career_fields!(id)
 
     career_fields =
       skill_panel.jobs

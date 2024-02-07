@@ -70,4 +70,8 @@ defmodule Bright.Recruits.Interview do
     |> validate_length(:skill_panel_name, max: 255)
     |> validate_length(:comment, max: 255)
   end
+
+  def anon?(interview) do
+    !(interview.status in [:ongoing_interview, :completed_interview])
+  end
 end

@@ -68,7 +68,11 @@ defmodule Bright.Recruits do
 
   def get_interview_with_member_users!(id, user_id) do
     Interview
-    |> where([i], i.recruiter_user_id == ^user_id)
+    |> where(
+      [i],
+      i.recruiter_user_id == ^user_id and
+        i.status in [:waiting_decision, :consume_interview, :ongoing_interview]
+    )
     |> preload(interview_members: [user: :user_profile])
     |> Repo.get!(id)
   end
@@ -234,6 +238,20 @@ defmodule Bright.Recruits do
     UserNotifier.deliver_cancel_interview_to_candidates_user(
       interview.recruiter_user,
       interview.candidates_user
+    )
+  end
+
+  def send_interview_acceptance_notification_mail(user, interview_id, interview_url_fun)
+      when is_function(interview_url_fun, 1) do
+    interview =
+      Interview
+      |> preload([:recruiter_user])
+      |> Repo.get!(interview_id)
+
+    UserNotifier.deliver_interview_acceptance_to_recruiter(
+      user,
+      interview.recruiter_user,
+      interview_url_fun.(interview_id)
     )
   end
 

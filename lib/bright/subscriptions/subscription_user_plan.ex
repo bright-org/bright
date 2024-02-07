@@ -47,20 +47,17 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
     |> validate_required([
       :user_id,
       :subscription_plan_id,
-      :subscription_status,
-      :subscription_start_datetime
+      :subscription_status
     ])
   end
 
   def trial_changeset(subscription_user_plan, attrs) do
-    # company_name:
-    #   必須有無はplanによるためrequiredをつけていない。FreeTrialForm側で確認している。
+    # Subscriptions.FreeTrialForm側で確認済みの検証はこちらでは未実施
     subscription_user_plan
     |> cast(attrs, [
       :user_id,
       :subscription_plan_id,
       :subscription_status,
-      :subscription_start_datetime,
       :trial_start_datetime,
       :company_name,
       :phone_number,
@@ -70,7 +67,6 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
       :user_id,
       :subscription_plan_id,
       :subscription_status,
-      :subscription_start_datetime,
       :trial_start_datetime,
       :phone_number,
       :pic_name

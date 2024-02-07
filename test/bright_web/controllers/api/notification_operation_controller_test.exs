@@ -90,7 +90,11 @@ defmodule BrightWeb.Api.NotificationOperationControllerTest do
 
       post(conn, ~p"/api/v1/notification_operations", notification_operation: attrs)
 
-      assert_operations_notification_mail_sent([from_user.email, user.email, user_sub_email.email])
+      assert_operations_notification_mail_sent(attrs, [
+        from_user.email,
+        user.email,
+        user_sub_email.email
+      ])
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

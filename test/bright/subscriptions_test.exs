@@ -93,9 +93,10 @@ defmodule Bright.SubscriptionsTest do
       assert result.user_id == user.id
       assert result.subscription_plan_id == subscription_plan1.id
       assert result.subscription_status == :free_trial
+      assert result.trial_start_datetime != nil
       assert result.trial_start_datetime <= NaiveDateTime.utc_now()
       assert result.trial_end_datetime == nil
-      assert result.subscription_start_datetime <= NaiveDateTime.utc_now()
+      assert result.subscription_start_datetime == nil
       assert result.subscription_end_datetime == nil
       assert result.company_name == "test company"
       assert result.pic_name == "test cto"
@@ -115,8 +116,68 @@ defmodule Bright.SubscriptionsTest do
       assert result.subscription_status == :subscribing
       assert result.trial_start_datetime == nil
       assert result.trial_end_datetime == nil
+      assert result.subscription_start_datetime != nil
       assert result.subscription_start_datetime <= NaiveDateTime.utc_now()
       assert result.subscription_end_datetime == nil
+    end
+  end
+
+  describe "get_user_subscription_user_plan/2" do
+    test "returns nil when no enabled subscription plans" do
+      subscription_plan = insert(:subscription_plans)
+      user = insert(:user)
+
+      # 契約完了済のプランは無視される
+      subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan)
+
+      # トライアル完了済のプランは無視される
+      subscription_user_plan_free_trial_end(user, subscription_plan)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result == nil
+    end
+
+    test "returns plan with given user" do
+      subscription_plan = insert(:subscription_plans)
+      user = insert(:user)
+      user_2 = insert(:user)
+
+      subscription_user_plan_free_trial(user, subscription_plan)
+
+      assert Subscriptions.get_user_subscription_user_plan(user.id)
+      refute Subscriptions.get_user_subscription_user_plan(user_2.id)
+    end
+
+    test "returns highest authorization plan" do
+      user = insert(:user)
+
+      # 契約中のプランが返る
+      subscription_plan_1 = insert(:subscription_plans, authorization_priority: 1)
+      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan_1)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result.subscription_plan.id == subscription_plan_1.id
+
+      # より上位のトライアル中プランが返る
+      subscription_plan_2 = insert(:subscription_plans, authorization_priority: 2)
+      subscription_user_plan_free_trial(user, subscription_plan_2)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result.subscription_plan.id == subscription_plan_2.id
+
+      # 過去にトライアル完了済みの上位プランは無視される
+      subscription_plan_3 = insert(:subscription_plans, authorization_priority: 3)
+      subscription_user_plan_free_trial_end(user, subscription_plan_3)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result.subscription_plan.id == subscription_plan_2.id
+
+      # 過去に契約完了済みの上位プランは無視される
+      subscription_plan_4 = insert(:subscription_plans, authorization_priority: 3)
+      subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan_4)
+
+      result = Subscriptions.get_user_subscription_user_plan(user.id)
+      assert result.subscription_plan.id == subscription_plan_2.id
     end
   end
 
@@ -178,7 +239,7 @@ defmodule Bright.SubscriptionsTest do
       assert result.subscription_end_datetime == nil
     end
 
-    test "one enable on free_trial plan" do
+    test "not returns free_trial plan" do
       subscription_plan1 = insert(:subscription_plans)
       subscription_plan2 = insert(:subscription_plans)
       user = insert(:user)
@@ -186,31 +247,23 @@ defmodule Bright.SubscriptionsTest do
       # 契約完了済のプランは無視される
       subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan2)
 
-      # 契約中(フリートライアル中)のプランが取得される
+      # フリートライアル中のプランは無視される
       subscription_user_plan_free_trial(user, subscription_plan1)
 
       result = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
-
-      assert result.user_id == user.id
-      assert result.subscription_plan_id == subscription_plan1.id
-      assert result.subscription_status == :free_trial
-      assert result.trial_start_datetime <= NaiveDateTime.utc_now()
-      assert result.trial_end_datetime == nil
-      assert result.subscription_start_datetime <= NaiveDateTime.utc_now()
-      assert result.subscription_end_datetime == nil
+      assert result == nil
     end
 
     test "get high authorization_priority user_plan if user has two plans" do
-      # 契約中およびフリートライアル中で２プランがある場合に、より上位のプランを返す確認
+      # 契約中で２プランがある場合に、より上位のプランを返す確認
+      # 基本的に契約中が2プランある状態は発生しない
       subscription_plan1 = insert(:subscription_plans, authorization_priority: 1)
       subscription_plan2 = insert(:subscription_plans, authorization_priority: 2)
       user = insert(:user)
 
       # 契約中のプラン
       subscription_user_plan_subscribing_without_free_trial(user, subscription_plan1)
-
-      # 契約中(フリートライアル中)のプラン
-      subscription_user_plan_free_trial(user, subscription_plan2)
+      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan2)
 
       # authorization_priorityに従って取得される
       result = Subscriptions.get_users_subscription_status(user.id, NaiveDateTime.utc_now())
@@ -333,52 +386,53 @@ defmodule Bright.SubscriptionsTest do
     end
 
     test "returns best plan with current_plan" do
-      current_plan = insert(:subscription_plans, %{create_teams_limit: 2, team_members_limit: 10})
+      current_attrs = %{
+        create_teams_limit: 2,
+        create_enable_hr_functions_teams_limit: 2,
+        team_members_limit: 10
+      }
+
+      # 下記の現プランと比較して"target_service_code"がついているプランを探す
+      current_plan = insert(:subscription_plans, current_attrs)
+
+      # 返す対象のプラン
+      expected_attrs = Map.put(current_attrs, :free_trial_priority, 1)
+
+      subscription_plan =
+        insert(:subscription_plans, expected_attrs)
+        |> plan_with_plan_service_by_service_code("target_service_code")
 
       # チーム数制限が小さい
-      _subscription_plan1 =
-        insert(:subscription_plans, %{create_teams_limit: 1, team_members_limit: 11})
+      _subscription_plan =
+        insert(:subscription_plans, Map.update!(expected_attrs, :create_teams_limit, &(&1 - 1)))
+        |> plan_with_plan_service_by_service_code("target_service_code")
+
+      # hrチーム数制限が小さい
+      _subscription_plan =
+        insert(
+          :subscription_plans,
+          Map.update!(expected_attrs, :create_enable_hr_functions_teams_limit, &(&1 - 1))
+        )
         |> plan_with_plan_service_by_service_code("target_service_code")
 
       # メンバー数制限が小さい
-      _subscription_plan2 =
-        insert(:subscription_plans, %{create_teams_limit: 2, team_members_limit: 9})
+      _subscription_plan =
+        insert(:subscription_plans, Map.update!(expected_attrs, :team_members_limit, &(&1 - 1)))
         |> plan_with_plan_service_by_service_code("target_service_code")
 
       # priorityが大きい
-      _subscription_plan3 =
-        insert(:subscription_plans, %{
-          create_teams_limit: 2,
-          team_members_limit: 10,
-          free_trial_priority: 3
-        })
-        |> plan_with_plan_service_by_service_code("target_service_code")
-
-      # priorityが小さい
-      subscription_plan =
-        insert(:subscription_plans, %{
-          create_teams_limit: 2,
-          team_members_limit: 10,
-          free_trial_priority: 2
-        })
+      _subscription_plan =
+        insert(:subscription_plans, Map.update!(expected_attrs, :free_trial_priority, &(&1 + 1)))
         |> plan_with_plan_service_by_service_code("target_service_code")
 
       # サービスコードが異なるプランは採用されない
-      _subscription_plan4 =
-        insert(:subscription_plans, %{
-          create_teams_limit: 2,
-          team_members_limit: 10,
-          free_trial_priority: 1
-        })
+      _subscription_plan =
+        insert(:subscription_plans, expected_attrs)
         |> plan_with_plan_service_by_service_code("non_target_service_code")
 
       # priorityがない（拡張プラン）
-      _subscription_plan5 =
-        insert(:subscription_plans, %{
-          create_teams_limit: 2,
-          team_members_limit: 10,
-          free_trial_priority: nil
-        })
+      _subscription_plan =
+        insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, nil))
         |> plan_with_plan_service_by_service_code("target_service_code")
 
       result =
@@ -391,13 +445,128 @@ defmodule Bright.SubscriptionsTest do
     end
   end
 
+  describe "get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit" do
+    test "returns best plan" do
+      limit_order = 2
+      current_plan = nil
+
+      # 上限を満たさない
+      _plan =
+        insert(:subscription_plans, %{
+          create_enable_hr_functions_teams_limit: 1,
+          free_trial_priority: 1
+        })
+
+      assert nil ==
+               Subscriptions.get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+                 limit_order,
+                 current_plan
+               )
+
+      # 上限を満たす / 拡張プラン
+      _plan =
+        insert(:subscription_plans, %{
+          create_enable_hr_functions_teams_limit: 2,
+          free_trial_priority: nil
+        })
+
+      assert nil ==
+               Subscriptions.get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+                 limit_order,
+                 current_plan
+               )
+
+      # 上限を満たす
+      plan_2 =
+        insert(:subscription_plans, %{
+          create_enable_hr_functions_teams_limit: 2,
+          free_trial_priority: 3
+        })
+
+      assert plan_2 ==
+               Subscriptions.get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+                 limit_order,
+                 current_plan
+               )
+
+      # 上限を満たす / priorityをより優先的に満たす
+      plan_3 =
+        insert(:subscription_plans, %{
+          create_enable_hr_functions_teams_limit: 2,
+          free_trial_priority: 2
+        })
+
+      assert plan_3 ==
+               Subscriptions.get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+                 limit_order,
+                 current_plan
+               )
+    end
+
+    test "returns best plan with current_plan" do
+      current_attrs = %{
+        create_teams_limit: 5,
+        create_enable_hr_functions_teams_limit: 2,
+        team_members_limit: 5,
+        authorization_priority: 2
+      }
+
+      limit_order = 3
+
+      # 下記の現プランと比較して、create_enable_hr_functions_teams_limit: limit_orderを満たすプランを探す
+      current_plan = insert(:subscription_plans, current_attrs)
+
+      # 返す対象のプランが満たす属性
+      expected_attrs =
+        Map.put(current_attrs, :create_enable_hr_functions_teams_limit, limit_order)
+
+      # 同じプラン（満たさない）
+      _plan = insert(:subscription_plans, current_attrs)
+
+      # グレードを満たさない
+      _plan =
+        insert(
+          :subscription_plans,
+          Map.update!(expected_attrs, :authorization_priority, &(&1 - 1))
+        )
+
+      # 各制限数を満たさない
+      _plan =
+        insert(:subscription_plans, Map.update!(expected_attrs, :create_teams_limit, &(&1 - 1)))
+
+      _plan =
+        insert(:subscription_plans, Map.update!(expected_attrs, :team_members_limit, &(&1 - 1)))
+
+      # フリートライアル対象外
+      _plan = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, nil))
+
+      # ここまでのプランは全て満たさないので何も返さない
+      assert nil ==
+               Subscriptions.get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+                 limit_order,
+                 current_plan
+               )
+
+      # 条件を満たす / 最も優先されるものを返す
+      _plan_1 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 3))
+      plan_2 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 1))
+      _plan_3 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 2))
+
+      assert plan_2 ==
+               Subscriptions.get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+                 limit_order,
+                 current_plan
+               )
+    end
+  end
+
   describe "get_most_priority_free_trial_subscription_plan_by_teams_limit" do
     test "returns best plan" do
       limit_order = 2
       current_plan = nil
 
       # 上限を満たさない / priorityを満たす
-      _plan_1 = insert(:subscription_plans, %{create_teams_limit: 1, free_trial_priority: 1})
+      _plan = insert(:subscription_plans, %{create_teams_limit: 1, free_trial_priority: 1})
 
       assert nil ==
                Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
@@ -406,8 +575,7 @@ defmodule Bright.SubscriptionsTest do
                )
 
       # 上限を満たす / 拡張プラン
-      _plan_extended =
-        insert(:subscription_plans, %{create_teams_limit: 2, free_trial_priority: nil})
+      _plan = insert(:subscription_plans, %{create_teams_limit: 2, free_trial_priority: nil})
 
       assert nil ==
                Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
@@ -435,83 +603,57 @@ defmodule Bright.SubscriptionsTest do
     end
 
     test "returns best plan with current_plan" do
+      current_attrs = %{
+        create_teams_limit: 5,
+        create_enable_hr_functions_teams_limit: 2,
+        team_members_limit: 5,
+        authorization_priority: 2
+      }
+
       limit_order = 6
 
-      current_plan =
-        insert(:subscription_plans, %{
-          create_teams_limit: 5,
-          authorization_priority: 2,
-          team_members_limit: 5
-        })
+      # 下記の現プランと比較して、create_teams_limit: limit_orderを満たすプランを探す
+      current_plan = insert(:subscription_plans, current_attrs)
 
-      # 上限を満たさない / グレードを満たす（同じプラン）
-      _plan_1 =
-        insert(:subscription_plans, %{
-          create_teams_limit: 5,
-          authorization_priority: 2,
-          team_members_limit: 5
-        })
+      # 返す対象のプランが満たす属性
+      expected_attrs = Map.put(current_attrs, :create_teams_limit, limit_order)
 
+      # 同じプラン（満たさない）
+      _plan = insert(:subscription_plans, current_attrs)
+
+      # グレードを満たさない
+      _plan =
+        insert(
+          :subscription_plans,
+          Map.update!(expected_attrs, :authorization_priority, &(&1 - 1))
+        )
+
+      # 各制限数を満たさない
+      _plan =
+        insert(
+          :subscription_plans,
+          Map.update!(expected_attrs, :create_enable_hr_functions_teams_limit, &(&1 - 1))
+        )
+
+      _plan =
+        insert(:subscription_plans, Map.update!(expected_attrs, :team_members_limit, &(&1 - 1)))
+
+      # フリートライアル対象外
+      _plan = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, nil))
+
+      # ここまでのプランは全て満たさないので何も返さない
       assert nil ==
                Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
                  limit_order,
                  current_plan
                )
 
-      # 上限を満たす / グレードを満たさない（例えば個人プランのextended）
-      _plan_2 =
-        insert(:subscription_plans, %{
-          create_teams_limit: 6,
-          authorization_priority: 1,
-          team_members_limit: 5
-        })
+      # 条件を満たす / 最も優先されるものを返す
+      _plan_1 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 3))
+      plan_2 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 1))
+      _plan_3 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 2))
 
-      assert nil ==
-               Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
-                 limit_order,
-                 current_plan
-               )
-
-      # 上限を満たす / グレードを満たす / フリートライアル対象外
-      _plan_3 =
-        insert(:subscription_plans, %{
-          create_teams_limit: 6,
-          authorization_priority: 2,
-          free_trial_priority: nil,
-          team_members_limit: 5
-        })
-
-      assert nil ==
-               Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
-                 limit_order,
-                 current_plan
-               )
-
-      # 上限を満たす / グレードを満たす
-      plan_4 =
-        insert(:subscription_plans, %{
-          create_teams_limit: 6,
-          authorization_priority: 2,
-          team_members_limit: 5,
-          free_trial_priority: 2
-        })
-
-      assert plan_4 ==
-               Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
-                 limit_order,
-                 current_plan
-               )
-
-      # 上限を満たす / グレードを満たす / 優先
-      plan_5 =
-        insert(:subscription_plans, %{
-          create_teams_limit: 6,
-          authorization_priority: 2,
-          team_members_limit: 5,
-          free_trial_priority: 1
-        })
-
-      assert plan_5 ==
+      assert plan_2 ==
                Subscriptions.get_most_priority_free_trial_subscription_plan_by_teams_limit(
                  limit_order,
                  current_plan
@@ -563,83 +705,57 @@ defmodule Bright.SubscriptionsTest do
     end
 
     test "returns best plan with current_plan" do
-      limit_order = 6
+      current_attrs = %{
+        create_teams_limit: 5,
+        create_enable_hr_functions_teams_limit: 2,
+        team_members_limit: 10,
+        authorization_priority: 2
+      }
 
-      current_plan =
-        insert(:subscription_plans, %{
-          team_members_limit: 5,
-          authorization_priority: 2,
-          create_teams_limit: 1
-        })
+      limit_order = 11
 
-      # 上限を満たさない / グレードを満たす（同じプラン）
-      _plan_1 =
-        insert(:subscription_plans, %{
-          team_members_limit: 5,
-          authorization_priority: 2,
-          create_teams_limit: 1
-        })
+      # 下記の現プランと比較して、team_members_limit: limit_orderを満たすプランを探す
+      current_plan = insert(:subscription_plans, current_attrs)
 
+      # 返す対象のプランが満たす属性
+      expected_attrs = Map.put(current_attrs, :team_members_limit, limit_order)
+
+      # 同じプラン（満たさない）
+      _plan = insert(:subscription_plans, current_attrs)
+
+      # グレードを満たさない
+      _plan =
+        insert(
+          :subscription_plans,
+          Map.update!(expected_attrs, :authorization_priority, &(&1 - 1))
+        )
+
+      # 各制限数を満たさない
+      _plan =
+        insert(:subscription_plans, Map.update!(expected_attrs, :create_teams_limit, &(&1 - 1)))
+
+      _plan =
+        insert(
+          :subscription_plans,
+          Map.update!(expected_attrs, :create_enable_hr_functions_teams_limit, &(&1 - 1))
+        )
+
+      # フリートライアル対象外
+      _plan = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, nil))
+
+      # ここまでのプランは全て満たさないので何も返さない
       assert nil ==
                Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(
                  limit_order,
                  current_plan
                )
 
-      # 上限を満たす / グレードを満たさない（例えば個人プランのextended）
-      _plan_2 =
-        insert(:subscription_plans, %{
-          team_members_limit: 6,
-          authorization_priority: 1,
-          create_teams_limit: 1
-        })
+      # 条件を満たす / 最も優先されるものを返す
+      _plan_1 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 3))
+      plan_2 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 1))
+      _plan_3 = insert(:subscription_plans, Map.put(expected_attrs, :free_trial_priority, 2))
 
-      assert nil ==
-               Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(
-                 limit_order,
-                 current_plan
-               )
-
-      # 上限を満たす / グレードを満たす / フリートライアル対象外
-      _plan_3 =
-        insert(:subscription_plans, %{
-          team_members_limit: 6,
-          authorization_priority: 2,
-          free_trial_priority: nil,
-          create_teams_limit: 1
-        })
-
-      assert nil ==
-               Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(
-                 limit_order,
-                 current_plan
-               )
-
-      # 上限を満たす / グレードを満たす
-      plan_4 =
-        insert(:subscription_plans, %{
-          team_members_limit: 6,
-          authorization_priority: 2,
-          create_teams_limit: 1,
-          free_trial_priority: 2
-        })
-
-      assert plan_4 ==
-               Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(
-                 limit_order,
-                 current_plan
-               )
-
-      # 上限を満たす / グレードを満たす / 優先
-      plan_5 =
-        insert(:subscription_plans, %{
-          team_members_limit: 6,
-          authorization_priority: 2,
-          create_teams_limit: 1,
-          free_trial_priority: 1
-        })
-
-      assert plan_5 ==
+      assert plan_2 ==
                Subscriptions.get_most_priority_free_trial_subscription_plan_by_members_limit(
                  limit_order,
                  current_plan
@@ -696,51 +812,218 @@ defmodule Bright.SubscriptionsTest do
   end
 
   describe "free_trial_available?/1" do
-    test "no trial plan" do
-      subscription_plan1 = insert(:subscription_plans)
+    setup do
+      low_plan =
+        insert(:subscription_plans,
+          authorization_priority: 1,
+          free_trial_priority: 1,
+          create_teams_limit: 3,
+          create_enable_hr_functions_teams_limit: 0,
+          team_members_limit: 6
+        )
+
+      mid_plan =
+        insert(:subscription_plans,
+          authorization_priority: 2,
+          free_trial_priority: 2,
+          create_teams_limit: 6,
+          create_enable_hr_functions_teams_limit: 0,
+          team_members_limit: 12
+        )
+        |> plan_with_plan_services_by_service_codes(~w(srv1))
+
+      high_plan =
+        insert(:subscription_plans,
+          authorization_priority: 3,
+          free_trial_priority: 3,
+          create_teams_limit: 9,
+          create_enable_hr_functions_teams_limit: 2,
+          team_members_limit: 24
+        )
+        |> plan_with_plan_services_by_service_codes(~w(srv1 srv2))
 
       user = insert(:user)
-      other_user = insert(:user)
 
-      # フリートライアルを実施していない契約は無視される
-      subscription_user_plan_subscribing_without_free_trial(user, subscription_plan1)
-      # 他のユーザーの契約は無視される
-      subscription_user_plan_subscribing_with_free_trial(other_user, subscription_plan1)
-
-      assert true == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
+      %{user: user, plans: [low_plan, mid_plan, high_plan]}
     end
 
-    test "exist subscription end with free trial plan" do
-      subscription_plan1 = insert(:subscription_plans)
-
-      user = insert(:user)
-
-      # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
-      subscription_user_plan_subscription_end_with_free_trial(user, subscription_plan1)
-
-      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
+    test "no plan first trial", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, mid_plan.plan_code)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
     end
 
-    test "exist subscribing with free trial plan" do
-      subscription_plan1 = insert(:subscription_plans)
+    test "already available, case same trial", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 同一プランでトライアル中
+      subscription_user_plan_free_trial(user, low_plan)
 
-      user = insert(:user)
-
-      # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
-      subscription_user_plan_subscribing_with_free_trial(user, subscription_plan1)
-
-      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
     end
 
-    test "exist on free trial plan" do
-      subscription_plan1 = insert(:subscription_plans)
+    test "already available, case same subscription", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 同一プランで契約中
+      subscription_user_plan_subscribing_without_free_trial(user, low_plan)
 
-      user = insert(:user)
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
 
-      # フリートライアルを実施しいる契約はステータスにかかわらずトライアル済と判断
-      subscription_user_plan_free_trial(user, subscription_plan1)
+    test "already available, case higher trial", %{
+      user: user,
+      plans: [low_plan, mid_plan, _high_plan]
+    } do
+      # 上位プランでトライアル中
+      subscription_user_plan_free_trial(user, mid_plan)
 
-      assert false == Subscriptions.free_trial_available?(user.id, subscription_plan1.plan_code)
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "already available, case higher subscription", %{
+      user: user,
+      plans: [low_plan, mid_plan, _high_plan]
+    } do
+      # 上位プランで契約中
+      subscription_user_plan_subscribing_without_free_trial(user, mid_plan)
+
+      assert {false, :already_available} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "takes ok, case lower subscription", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # 下位プランを契約中
+      subscription_user_plan_subscribing_without_free_trial(user, low_plan)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, mid_plan.plan_code)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
+    end
+
+    test "takes ok, case lower trial", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # 下位プランをトライアル中
+      subscription_user_plan_free_trial(user, low_plan)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, mid_plan.plan_code)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
+    end
+
+    test "takes ok, case high condition", %{
+      user: user,
+      plans: [_low_plan, _mid_plan, high_plan]
+    } do
+      # 上位プランをトライアル中
+      subscription_user_plan_free_trial(user, high_plan)
+
+      # より制限が大きいプランを仮定
+      higher_plan =
+        insert(:subscription_plans,
+          authorization_priority: 3,
+          free_trial_priority: 3,
+          create_enable_hr_functions_teams_limit: 3
+        )
+        |> plan_with_plan_services_by_service_codes(~w(srv1 srv2))
+
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, higher_plan.plan_code)
+    end
+
+    test "already used once, case same trial", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 同一プランで既にトライアル完了済み
+      subscription_user_plan_free_trial_end(user, low_plan)
+
+      assert {false, :already_used_once} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "already used once, case same subscription", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 同一プランで既に契約完了済み
+      subscription_user_plan_subscription_end_without_free_trial(user, low_plan)
+
+      assert {false, :already_used_once} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "takes ok, case higher plan used once", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # 上位プランが以前完了済み（同一ではないので可能）
+      subscription_user_plan_subscription_end_without_free_trial(user, mid_plan)
+      subscription_user_plan_free_trial_end(user, high_plan)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+    end
+
+    test "takes ok, case lower plan used once", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # 下位プランが以前完了済み（同一ではないので可能）
+      subscription_user_plan_subscription_end_without_free_trial(user, mid_plan)
+      subscription_user_plan_free_trial_end(user, low_plan)
+      assert {true, _} = Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
+    end
+
+    test "not for trial", %{
+      user: user
+    } do
+      # トライアル優先度がnilのものは対象外
+      other_plan =
+        insert(:subscription_plans, authorization_priority: 2, free_trial_priority: nil)
+
+      assert {false, :not_for_trial} =
+               Subscriptions.free_trial_available?(user.id, other_plan.plan_code)
+    end
+
+    test "not for trial, case current plan is extended", %{
+      user: user,
+      plans: [low_plan, mid_plan, high_plan]
+    } do
+      # トライアル優先度がnil契約中は、いずれも対象外とする
+      other_plan =
+        insert(:subscription_plans, authorization_priority: 2, free_trial_priority: nil)
+
+      subscription_user_plan_subscribing_without_free_trial(user, other_plan)
+
+      assert {false, :not_for_trial} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+
+      assert {false, :not_for_trial} =
+               Subscriptions.free_trial_available?(user.id, mid_plan.plan_code)
+
+      assert {false, :not_for_trial} =
+               Subscriptions.free_trial_available?(user.id, high_plan.plan_code)
+    end
+
+    test "scopes given user", %{
+      user: user,
+      plans: [low_plan | _]
+    } do
+      # 引数のuserが対象になっている確認
+      subscription_user_plan_subscription_end_without_free_trial(user, low_plan)
+
+      assert {false, :already_used_once} =
+               Subscriptions.free_trial_available?(user.id, low_plan.plan_code)
+
+      user_2 = insert(:user)
+      assert {true, _} = Subscriptions.free_trial_available?(user_2.id, low_plan.plan_code)
     end
   end
 end

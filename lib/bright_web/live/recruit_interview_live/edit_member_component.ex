@@ -160,12 +160,26 @@ defmodule BrightWeb.RecruitInterviewLive.EditMemberComponent do
     }
     |> RecruitmentStockUsers.create_recruitment_stock_user()
 
+    Recruits.send_interview_acceptance_notification_mail(
+      socket.assigns.current_user,
+      interview.id,
+      &url(~p"/recruits/interviews/#{&1}")
+    )
+
     Recruits.update_interview_member(assigns.interview_member, %{decision: :keep})
     {:noreply, push_navigate(socket, to: ~p"/recruits/interviews")}
   end
 
   def handle_event("submit", _params, %{assigns: assigns} = socket) do
+    interview = assigns.interview_member.interview
     Recruits.update_interview_member(assigns.interview_member, %{decision: assigns.decision})
+
+    Recruits.send_interview_acceptance_notification_mail(
+      socket.assigns.current_user,
+      interview.id,
+      &url(~p"/recruits/interviews/#{&1}")
+    )
+
     {:noreply, push_navigate(socket, to: ~p"/recruits/interviews")}
   end
 end

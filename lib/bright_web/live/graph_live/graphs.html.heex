@@ -1,4 +1,3 @@
-<!-- feat: スキルパネル更新 861b28d9a8ec541ac03fe716ac0926b4e5575d5e　まで適用 -->
 <%= if @skill_panel do %>
 <.navigations
   current_user={@current_user}
@@ -57,7 +56,7 @@
         current_user={@current_user}
         user_id={@display_user.id}
         skill_panel_id={@skill_panel.id}
-        class={@skill_class.class}
+        skill_class={@skill_class}
         compared_user={@compared_user}
       />
       <div class="w-full pl-2 mt-4 mb-2 lg:w-[700px] lg:pl-28 lg:mt-0 lg:mb-0">

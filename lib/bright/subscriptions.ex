@@ -9,12 +9,20 @@ defmodule Bright.Subscriptions do
   alias Bright.Subscriptions.SubscriptionPlan
 
   @create_teams_limit_without_plan 1
+  @create_enable_hr_functions_teams_limit_without_plan 0
   @team_members_limit_without_plan 5
 
   def get_create_teams_limit(nil), do: @create_teams_limit_without_plan
 
   def get_create_teams_limit(subscription_plan) do
     subscription_plan.create_teams_limit
+  end
+
+  def get_create_enable_hr_functions_teams_limit(nil),
+    do: @create_enable_hr_functions_teams_limit_without_plan
+
+  def get_create_enable_hr_functions_teams_limit(subscription_plan) do
+    subscription_plan.create_enable_hr_functions_teams_limit
   end
 
   def get_team_members_limit(nil), do: @team_members_limit_without_plan
@@ -398,8 +406,7 @@ defmodule Bright.Subscriptions do
       user_id: user_id,
       subscription_plan_id: subscription_plan_id,
       subscription_status: :free_trial,
-      trial_start_datetime: trial_start_datetime,
-      subscription_start_datetime: trial_start_datetime
+      trial_start_datetime: trial_start_datetime
     }
     |> Map.merge(trial_data)
     |> create_free_trial_subscription_user_plan()
@@ -424,6 +431,56 @@ defmodule Bright.Subscriptions do
       subscription_start_datetime: start_datetime
     }
     |> create_subscription_user_plan()
+  end
+
+  @doc """
+  ユーザーの現プランを返す
+  契約かトライアルかに関わらず最も上位のプランが対象
+
+  ## Examples
+      iex> get_user_subscription_user_plan("01H7W3BZQY7CZVM5Q66T4EWEVC")
+      %Bright.Subscriptions.SubscriptionUserPlan{}
+      iex> get_user_subscription_user_plan("01H7W3BZQY7CZVM5Q66T4EWEVC")
+      nil
+      iex> get_user_subscription_user_plan(["01H7W3BZQY7CZVM5Q66T4EWEVC"])
+      [%Bright.Subscriptions.SubscriptionUserPlan{}]
+      iex> get_user_subscription_user_plan(["01H7W3BZQY7CZVM5Q66T4EWEVC"])
+      []
+
+  """
+  def get_user_subscription_user_plan(user_ids) when is_list(user_ids) do
+    current_datetime = NaiveDateTime.utc_now()
+    limit = length(user_ids)
+
+    from(sup in SubscriptionUserPlan,
+      where: sup.user_id in ^user_ids,
+      where:
+        (sup.subscription_start_datetime <= ^current_datetime and
+           is_nil(sup.subscription_end_datetime)) or
+          (sup.trial_start_datetime <= ^current_datetime and is_nil(sup.trial_end_datetime)),
+      join: sp in assoc(sup, :subscription_plan),
+      order_by: {:desc, sp.authorization_priority},
+      preload: [subscription_plan: {sp, [:subscription_plan_services]}],
+      limit: ^limit
+    )
+    |> Repo.all()
+  end
+
+  def get_user_subscription_user_plan(user_id) do
+    current_datetime = NaiveDateTime.utc_now()
+
+    from(sup in SubscriptionUserPlan,
+      where: sup.user_id == ^user_id,
+      where:
+        (sup.subscription_start_datetime <= ^current_datetime and
+           is_nil(sup.subscription_end_datetime)) or
+          (sup.trial_start_datetime <= ^current_datetime and is_nil(sup.trial_end_datetime)),
+      join: sp in assoc(sup, :subscription_plan),
+      order_by: {:desc, sp.authorization_priority},
+      preload: [subscription_plan: {sp, [:subscription_plan_services]}],
+      limit: 1
+    )
+    |> Repo.one()
   end
 
   @doc """
@@ -452,32 +509,6 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  ユーザーIDと基準時刻をキーに無効な契約内容を取得する
-
-  ## Examples
-      iex> get_users_subscription_status("01H7W3BZQY7CZVM5Q66T4EWEVC", NaiveDateTime.utc_now())
-      %Bright.Subscriptions.SubscriptionUserPlan{}
-      iex> get_users_subscription_status("01H7W3BZQY7CZVM5Q66T4EWEVC", NaiveDateTime.utc_now())
-      nil
-  """
-
-  def get_users_subscription_history(user_id, base_datetime) do
-    # free_trialの有無に関わらず、契約終了日がnilでない契約を無効とみなす
-    # 複数プランが対象になるとき（例: 契約中かつ無料トライアル中）は、
-    # authorization_priorityに基づいて権限が広範な契約内容を返す
-    from(sup in SubscriptionUserPlan,
-      where:
-        sup.user_id == ^user_id and sup.subscription_start_datetime <= ^base_datetime and
-          not is_nil(sup.subscription_end_datetime),
-      join: sp in assoc(sup, :subscription_plan),
-      order_by: {:desc, sp.authorization_priority},
-      preload: [subscription_plan: {sp, [:subscription_plan_services]}],
-      limit: 1
-    )
-    |> Repo.one()
-  end
-
-  @doc """
   サービスコードをキーに該当サービスの利用可否を返す
 
   ## Examples
@@ -485,9 +516,31 @@ defmodule Bright.Subscriptions do
       false
       iex> service_enabled?("01H7W3BZQY7CZVM5Q66T4EWEVC", "skill_up")
       true
+      iex> service_enabled?(["01H7W3BZQY7CZVM5Q66T4EWEVC"], "hogehoge")
+      false
+      iex> service_enabled?(["01H7W3BZQY7CZVM5Q66T4EWEVC"], "skill_up")
+      true
   """
+
+  def service_enabled?(user_ids, service_code) when is_list(user_ids) do
+    subscription_user_plans = get_user_subscription_user_plan(user_ids)
+
+    case subscription_user_plans do
+      [] ->
+        false
+
+      _ ->
+        subscription_user_plans
+        |> Enum.map(fn plan ->
+          plan.subscription_plan.subscription_plan_services
+          |> Enum.any?(&(&1.service_code == service_code))
+        end)
+        |> Enum.any?()
+    end
+  end
+
   def service_enabled?(user_id, service_code) do
-    subscription_user_plan = get_users_subscription_status(user_id, NaiveDateTime.utc_now())
+    subscription_user_plan = get_user_subscription_user_plan(user_id)
 
     case subscription_user_plan do
       %SubscriptionUserPlan{} ->
@@ -552,6 +605,9 @@ defmodule Bright.Subscriptions do
       join: sps in assoc(sp, :subscription_plan_services),
       where: sps.service_code == ^service_code,
       where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
+      where:
+        sp.create_enable_hr_functions_teams_limit >=
+          ^current_plan.create_enable_hr_functions_teams_limit,
       where: sp.team_members_limit >= ^current_plan.team_members_limit,
       where: not is_nil(sp.free_trial_priority),
       order_by: [asc: sp.free_trial_priority],
@@ -589,6 +645,53 @@ defmodule Bright.Subscriptions do
       ) do
     from(sp in SubscriptionPlan,
       where: sp.create_teams_limit > ^current_plan.create_teams_limit,
+      where:
+        sp.create_enable_hr_functions_teams_limit >=
+          ^current_plan.create_enable_hr_functions_teams_limit,
+      where: sp.team_members_limit >= ^current_plan.team_members_limit,
+      where: sp.authorization_priority >= ^current_plan.authorization_priority,
+      where: not is_nil(sp.free_trial_priority),
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  採用・育成支援チーム作成上限数を満たす最も優先度の高いサブスクリプションプランを返す
+
+  現プランがある場合は
+  - create_enable_hr_functions_teams_limitが大、かつ
+  - 上位のauthorization_priorityをもつ（ダウングレード防止）
+  が対象
+  """
+  def get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+        create_enable_hr_functions_teams_limit,
+        current_plan \\ nil
+      )
+
+  def get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+        create_enable_hr_functions_teams_limit,
+        nil
+      ) do
+    from(sp in SubscriptionPlan,
+      where: sp.create_enable_hr_functions_teams_limit >= ^create_enable_hr_functions_teams_limit,
+      where: not is_nil(sp.free_trial_priority),
+      order_by: [asc: sp.free_trial_priority],
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
+  def get_most_priority_free_trial_subscription_plan_by_hr_support_teams_limit(
+        _create_enable_hr_functions_teams_limit,
+        current_plan
+      ) do
+    from(sp in SubscriptionPlan,
+      where:
+        sp.create_enable_hr_functions_teams_limit >
+          ^current_plan.create_enable_hr_functions_teams_limit,
+      where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
       where: sp.team_members_limit >= ^current_plan.team_members_limit,
       where: sp.authorization_priority >= ^current_plan.authorization_priority,
       where: not is_nil(sp.free_trial_priority),
@@ -628,6 +731,9 @@ defmodule Bright.Subscriptions do
     from(sp in SubscriptionPlan,
       where: sp.team_members_limit > ^current_plan.team_members_limit,
       where: sp.create_teams_limit >= ^current_plan.create_teams_limit,
+      where:
+        sp.create_enable_hr_functions_teams_limit >=
+          ^current_plan.create_enable_hr_functions_teams_limit,
       where: sp.authorization_priority >= ^current_plan.authorization_priority,
       where: not is_nil(sp.free_trial_priority),
       order_by: [asc: sp.free_trial_priority],
@@ -655,7 +761,7 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
-  終了したのプラン一覧を返す
+  終了したプラン一覧を返す
 
    ## Examples
       iex> get_users_expired_plans("01H7W3BZQY7CZVM5Q66T4EWEVC")
@@ -674,26 +780,93 @@ defmodule Bright.Subscriptions do
 
   @doc """
   プランコードをキーに該当プランのフリートライアル利用可否を返す
-  過去に一度でも該当のプランでフリートライアルを開始した履歴がある場合、利用不可
+
+  下記条件下では利用できない
+
+  - 現在該当プランのサービスを内包するフリートライアル中か契約中である
+  - 過去に一度でも該当プランでフリートライアルや契約をしている
+    - 同一プランが対象（上位プランが既に済みでも利用可能）
+  - 指定されたプランが無料トライアル対象ではない（`free_trial_priority`が設定されていない）
 
   ## Examples
       iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "hogehoge")
-      true
+      {true, nil}
       iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "together")
-      false
+      {false, :already_available}
+      iex> free_trial_available?("01H7W3BZQY7CZVM5Q66T4EWEVC", "together")
+      {false, :already_used_once}
   """
   def free_trial_available?(user_id, plan_code) do
-    get_users_trialed_plans(user_id)
-    |> Enum.any?(fn subscription_user_plan ->
-      subscription_user_plan.subscription_plan.plan_code == plan_code
-    end)
-    |> Kernel.not()
+    # ユーザーの契約履歴を洗って、現状と過去に分けている
+    {currents, olds} = list_subscription_user_plans_history(user_id)
+
+    current =
+      if currents != [], do: Enum.max_by(currents, & &1.subscription_plan.authorization_priority)
+
+    already_available? =
+      subscription_user_plan_is_already_available?(
+        current && current.subscription_plan,
+        plan_code
+      )
+
+    already_used_once? = Enum.any?(olds, &(&1.subscription_plan.plan_code == plan_code))
+
+    target_plan = get_plan_by_plan_code(plan_code)
+
+    not_for_trial? =
+      Enum.any?([
+        target_plan.free_trial_priority == nil,
+        current && current.subscription_plan.free_trial_priority == nil
+      ])
+
+    cond do
+      not_for_trial? -> {false, :not_for_trial}
+      already_available? -> {false, :already_available}
+      already_used_once? -> {false, :already_used_once}
+      true -> {true, nil}
+    end
+  end
+
+  defp list_subscription_user_plans_history(user_id) do
+    from(sup in SubscriptionUserPlan,
+      where: sup.user_id == ^user_id,
+      join: sp in assoc(sup, :subscription_plan),
+      preload: [subscription_plan: {sp, :subscription_plan_services}]
+    )
+    |> Repo.all()
+    |> Enum.split_with(
+      &((&1.subscription_start_datetime && &1.subscription_end_datetime == nil) ||
+          (&1.trial_start_datetime && &1.trial_end_datetime == nil))
+    )
+  end
+
+  defp subscription_user_plan_is_already_available?(nil, _plan_code), do: false
+
+  defp subscription_user_plan_is_already_available?(subscription_plan, plan_code) do
+    # プランが指定したプランを内包するかどうかを返す
+    #
+    # 内包判定
+    # - service_codeをすべて満たす
+    # - limitの制限をすべて満たす
+    target_plan =
+      get_plan_by_plan_code(plan_code)
+      |> Repo.preload(:subscription_plan_services)
+
+    target_service_codes = Enum.map(target_plan.subscription_plan_services, & &1.service_code)
+    service_codes = Enum.map(subscription_plan.subscription_plan_services, & &1.service_code)
+    has_services? = target_service_codes -- service_codes == []
+
+    has_limit? =
+      ~w(create_teams_limit create_enable_hr_functions_teams_limit team_members_limit)a
+      |> Enum.map(&(Map.get(subscription_plan, &1) >= Map.get(target_plan, &1)))
+      |> Enum.all?()
+
+    has_services? && has_limit?
   end
 
   def deliver_free_trial_apply_instructions(from_user, application_detail) do
     UserNotifier.deliver_free_trial_apply_instructions(
       from_user,
-      %{email: "customer-success@bright-fun.org"},
       application_detail
     )
   end

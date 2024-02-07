@@ -142,7 +142,7 @@ defmodule BrightWeb.RecruitEmploymentLive.TeamInviteComponent do
 
     # members_count: チームメンバー数, 管理者がselected_usersには含まれないため+1をしている
     members_count = Enum.count(team.users) + 1
-    sub = Subscriptions.get_users_subscription_status(admin_user.id, NaiveDateTime.utc_now())
+    sub = Subscriptions.get_user_subscription_user_plan(admin_user.id)
 
     limit =
       if is_nil(sub), do: 4, else: Subscriptions.get_team_members_limit(sub.subscription_plan)

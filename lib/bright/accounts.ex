@@ -920,4 +920,15 @@ defmodule Bright.Accounts do
 
     primary_emails ++ sub_emails
   end
+
+  def hr_enabled?(user_id) do
+    case Bright.Subscriptions.service_hr_basic_enabled?(user_id) do
+      true ->
+        true
+
+      false ->
+        Bright.Teams.joined_supporter_teams_owner_ids(user_id)
+        |> Bright.Subscriptions.service_enabled?("hr_basic")
+    end
+  end
 end

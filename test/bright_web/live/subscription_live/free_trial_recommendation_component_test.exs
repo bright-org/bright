@@ -29,6 +29,25 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
     |> render_change()
   end
 
+  # 無料トライアルモーダルを表示するための共通処理
+  # チーム分析画面が容易に表示できるため使っている
+  def show_component_modal(conn) do
+    {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+    live
+    |> form("#team_form", team: %{name: "チーム名1"})
+    |> render_submit()
+
+    # 2チーム目を作成するときに表示される
+    {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+    live
+    |> form("#team_form", team: %{name: "チーム名2"})
+    |> render_submit()
+
+    live
+  end
+
   # 「スキル検索」からの表示確認
   describe "shows on search_result page" do
     setup [:register_and_log_in_user]
@@ -150,21 +169,25 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
 
     # データ準備: プラン
     setup do
-      _dummy_same_limit_plan =
-        insert(:subscription_plans,
-          create_teams_limit: 1,
-          team_members_limit: 5,
-          free_trial_priority: 1
-        )
-
       subscription_plan =
         insert(:subscription_plans,
           create_teams_limit: 2,
+          create_enable_hr_functions_teams_limit: 1,
           team_members_limit: 7,
-          free_trial_priority: 2
+          free_trial_priority: 2,
+          authorization_priority: 2
         )
 
-      %{subscription_plan: subscription_plan}
+      same_limit_plan =
+        insert(:subscription_plans,
+          create_teams_limit: 1,
+          create_enable_hr_functions_teams_limit: 0,
+          team_members_limit: 5,
+          free_trial_priority: 1,
+          authorization_priority: 1
+        )
+
+      %{subscription_plan: subscription_plan, same_limit_plan: same_limit_plan}
     end
 
     def submit_team_form(live, name) do
@@ -288,7 +311,51 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       assert render(live) =~ "上限です"
     end
 
-    test "NOT open modal if there is not satisfied plan", %{
+    test "open modal when create_enable_hr_functions_teams_limit is over", %{
+      conn: conn,
+      user: user,
+      subscription_plan: subscription_plan,
+      same_limit_plan: same_limit_plan
+    } do
+      # 採用・育成チーム作成のためhr_basicなサービスの生成と契約
+      insert(:subscription_plan_services,
+        subscription_plan: subscription_plan,
+        service_code: "hr_basic"
+      )
+
+      insert(:subscription_plan_services,
+        subscription_plan: same_limit_plan,
+        service_code: "hr_basic"
+      )
+
+      subscription_user_plan_subscribing_without_free_trial(user, same_limit_plan)
+
+      {:ok, live, _html} = live(conn, ~p"/teams/new")
+
+      live
+      |> element(~s(li[phx-click='select_team_type'][phx-value-team_type='hr_support_team']))
+      |> render_click()
+
+      submit_team_form(live, "チーム")
+      refute Bright.Repo.get_by(Teams.Team, name: "チーム")
+
+      # 無料トライアルモーダルが表示されること
+      assert has_element?(live, "#free_trial_recommendation_modal")
+
+      assert live
+             |> element("#free_trial_recommendation_modal")
+             |> render() =~ subscription_plan.name_jp
+
+      # 無料トライアルの申し込み
+      submit_trial_form(live)
+
+      # 申し込み後は作成できること
+      submit_team_form(live, "チーム")
+      assert team = Bright.Repo.get_by(Teams.Team, name: "チーム")
+      assert_redirect(live, "/teams/#{team.id}")
+    end
+
+    test "NOT show form if there is not satisfied plan", %{
       conn: conn,
       subscription_plan: subscription_plan
     } do
@@ -302,34 +369,15 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       submit_add_user(live, "user_5")
       submit_add_user(live, "user_6")
 
-      # 無料トライアルモーダルが表示されないこと
+      # 無料トライアル申し込みフォームが表示されないこと
+      refute has_element?(live, "#free_trial_recommendation_form")
       assert render(live) =~ "上限です"
-      refute has_element?(live, "#free_trial_recommendation_modal")
     end
   end
 
   # フォーム仕様
   describe "Form" do
     setup [:register_and_log_in_user]
-
-    # 無料トライアルモーダルを表示するための共通処理
-    # チーム分析画面が容易に表示できるため使っている
-    def show_component_modal(conn) do
-      {:ok, live, _html} = live(conn, ~p"/teams/new")
-
-      live
-      |> form("#team_form", team: %{name: "チーム名1"})
-      |> render_submit()
-
-      # 2チーム目を作成するときに表示される
-      {:ok, live, _html} = live(conn, ~p"/teams/new")
-
-      live
-      |> form("#team_form", team: %{name: "チーム名2"})
-      |> render_submit()
-
-      live
-    end
 
     test "requires company_name when plan has team_up", %{
       conn: conn
@@ -363,6 +411,84 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       change_trial_form(live, %{company_name: ""})
 
       refute has_element?(live, "#free_trial_recommendation_form", "入力してください")
+    end
+
+    test "validate email format", %{
+      conn: conn
+    } do
+      insert(:subscription_plans, create_teams_limit: 2)
+
+      live = show_component_modal(conn)
+      change_trial_form(live, %{email: "hogehoge"})
+
+      assert has_element?(live, "#free_trial_recommendation_form", "無効なフォーマットです")
+    end
+
+    test "validate phone_number format", %{
+      conn: conn
+    } do
+      insert(:subscription_plans, create_teams_limit: 2)
+
+      live = show_component_modal(conn)
+      change_trial_form(live, %{phone_number: "hogehoge"})
+
+      assert has_element?(live, "#free_trial_recommendation_form", "無効なフォーマットです")
+    end
+  end
+
+  # 指定したプランが使用できないケース確認
+  describe "trial invalid cases" do
+    setup [:register_and_log_in_user]
+
+    # データ準備: プラン
+    setup do
+      subscription_plan = insert(:subscription_plans, create_teams_limit: 2)
+
+      %{subscription_plan: subscription_plan}
+    end
+
+    test "view message, case trial is used at once", %{
+      conn: conn,
+      user: user,
+      subscription_plan: subscription_plan
+    } do
+      # 過去に一度同一トライアルを使用済み
+      subscription_user_plan_free_trial_end(user, subscription_plan)
+
+      live = show_component_modal(conn)
+
+      refute has_element?(live, "#free_trial_recommendation_form")
+      assert has_element?(live, "#free_trial_recommendation_modal", "終了")
+      assert has_element?(live, "#free_trial_recommendation_modal button", "アップグレード")
+    end
+
+    test "view message, case subscription is used at once", %{
+      conn: conn,
+      user: user,
+      subscription_plan: subscription_plan
+    } do
+      # 過去に一度同一契約を使用済み
+      subscription_user_plan_subscription_end_without_free_trial(user, subscription_plan)
+
+      live = show_component_modal(conn)
+
+      refute has_element?(live, "#free_trial_recommendation_form")
+      assert has_element?(live, "#free_trial_recommendation_modal", "終了")
+      assert has_element?(live, "#free_trial_recommendation_modal button", "アップグレード")
+    end
+
+    test "view message, case no plan", %{
+      conn: conn,
+      subscription_plan: subscription_plan
+    } do
+      # 使用できるプランがない
+      Bright.Repo.delete(subscription_plan)
+
+      live = show_component_modal(conn)
+
+      refute has_element?(live, "#free_trial_recommendation_form")
+      assert has_element?(live, "#free_trial_recommendation_modal", "対象プランがありません")
+      assert has_element?(live, "#free_trial_recommendation_modal button", "アップグレード")
     end
   end
 end

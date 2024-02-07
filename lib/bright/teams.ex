@@ -669,6 +669,21 @@ defmodule Bright.Teams do
     |> Repo.paginate(page_param)
   end
 
+  @doc """
+  ユーザーが管理するチームの一覧取得
+
+    iex> list_managing_teams_by_user_id(user_id, %{page: 1, page_size: 5})
+      %Scrivener.Page{
+        page_number: 1,
+        page_size: 5,
+        total_entries: 2,
+        total_pages: 1,
+        entries: [
+          %Bright.Teams.TeamMemberUsers{},
+        ]
+      }
+  """
+
   def list_managing_teams_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
     from(tmbu in TeamMemberUsers,
       left_join: t in assoc(tmbu, :team),
@@ -679,6 +694,121 @@ defmodule Bright.Teams do
       order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
     )
     |> preload(team: :member_users)
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  ユーザーが所属するチームのメンバーが管理しているチームの一覧取得
+
+    iex> list_joined_teams_owner_by_user_id(user_id, %{page: 1, page_size: 5})
+      %Scrivener.Page{
+        page_number: 1,
+        page_size: 5,
+        total_entries: 2,
+        total_pages: 1,
+        entries: [
+          %Bright.Teams.TeamMemberUsers{},
+        ]
+      }
+  """
+
+  def list_joined_teams_owner_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
+    from(tmbu in TeamMemberUsers,
+      where:
+        tmbu.is_admin == true and
+          tmbu.user_id in subquery(
+            from(tmbu in TeamMemberUsers,
+              where:
+                tmbu.team_id in subquery(
+                  from(tmbu in TeamMemberUsers,
+                    left_join: t in assoc(tmbu, :team),
+                    where:
+                      tmbu.user_id == ^user_id and
+                        not is_nil(tmbu.invitation_confirmed_at) and
+                        is_nil(t.disabled_at),
+                    select: t.id
+                  )
+                ),
+              select: tmbu.user_id
+            )
+          ),
+      order_by: tmbu.user_id
+    )
+    |> preload([:team, user: :user_profile])
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  ユーザーが支援依頼を出しているチームの管理者の一覧取得
+
+    iex> list_supporter_teams_ower_by_supportee_id(user_id, %{page: 1, page_size: 5})
+      %Scrivener.Page{
+        page_number: 1,
+        page_size: 5,
+        total_entries: 2,
+        total_pages: 1,
+        entries: [
+          %Bright.Teams.TeamSupporterTeam{},
+        ]
+      }
+  """
+
+  def list_supporter_teams_ower_by_supportee_id(
+        supportee_user_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(tst in TeamSupporterTeam,
+      left_join: tmu in TeamMemberUsers,
+      on: tmu.team_id == tst.supportee_team_id,
+      left_join: supportee_team in Team,
+      on: tst.supportee_team_id == supportee_team.id,
+      left_join: supporter_team in Team,
+      on: tst.supporter_team_id == supporter_team.id,
+      where:
+        tmu.user_id == ^supportee_user_id and not is_nil(tmu.invitation_confirmed_at) and
+          tst.status == :supporting,
+      order_by: [
+        desc: tst.start_datetime
+      ]
+    )
+    |> preload(request_to_user: :user_profile)
+    |> preload(:supporter_team)
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
+  ユーザーに支援依頼を出しているチームの管理者の一覧取得
+
+    iex> list_supportee_team_owner_by_supporter_id(user_id, %{page: 1, page_size: 5})
+      %Scrivener.Page{
+        page_number: 1,
+        page_size: 5,
+        total_entries: 2,
+        total_pages: 1,
+        entries: [
+          %Bright.Teams.TeamSupporterTeam{},
+        ]
+      }
+  """
+
+  def list_supportee_team_owner_by_supporter_id(
+        supporter_user_id,
+        page_param \\ %{page: 1, page_size: 1}
+      ) do
+    from(tst in TeamSupporterTeam,
+      join: tmu in TeamMemberUsers,
+      on: tmu.team_id == tst.supporter_team_id,
+      left_join: t in assoc(tmu, :team),
+      where:
+        tst.status == :supporting and tmu.user_id == ^supporter_user_id and
+          not is_nil(tmu.invitation_confirmed_at) and
+          is_nil(t.disabled_at),
+      order_by: [
+        desc: tst.start_datetime
+      ]
+    )
+    |> preload(request_from_user: :user_profile)
+    |> preload(:supportee_team)
     |> Repo.paginate(page_param)
   end
 
@@ -1159,11 +1289,48 @@ defmodule Bright.Teams do
     )
   end
 
-  def count_admin_team(user_id) do
+  def joined_supporter_teams_owner_ids(user_id) do
+    from(tmu in TeamMemberUsers,
+      where:
+        tmu.is_admin == true and
+          tmu.team_id in subquery(
+            from(tmu in TeamMemberUsers,
+              left_join: t in assoc(tmu, :team),
+              where:
+                tmu.user_id == ^user_id and not is_nil(tmu.invitation_confirmed_at) and
+                  is_nil(t.disabled_at) and t.enable_hr_functions == true,
+              select: t.id
+            )
+          ),
+      select: tmu.user_id
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  管理者になっているチーム数を返す
+
+  採用・育成チームを除く
+  """
+  def count_admin_team_without_hr_support_team(user_id) do
     from(
       tmu in TeamMemberUsers,
       left_join: t in assoc(tmu, :team),
-      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.disabled_at)
+      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.disabled_at),
+      where: t.enable_hr_functions == false
+    )
+    |> Repo.aggregate(:count)
+  end
+
+  @doc """
+  管理者になっている採用・育成チーム数を返す
+  """
+  def count_admin_hr_support_team(user_id) do
+    from(
+      tmu in TeamMemberUsers,
+      left_join: t in assoc(tmu, :team),
+      where: tmu.user_id == ^user_id and tmu.is_admin and is_nil(t.disabled_at),
+      where: t.enable_hr_functions == true
     )
     |> Repo.aggregate(:count)
   end

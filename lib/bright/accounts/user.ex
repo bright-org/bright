@@ -11,6 +11,7 @@ defmodule Bright.Accounts.User do
   alias Bright.Accounts.UserSubEmail
   alias Bright.Accounts.User
   alias Bright.UserProfiles.UserProfile
+  alias Bright.Utils.EmailValidation
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -128,12 +129,7 @@ defmodule Bright.Accounts.User do
   """
   def validate_email(changeset, opts) do
     changeset
-    |> validate_required([:email])
-    |> validate_format(
-      :email,
-      ~r/^(?>[-[:alpha:][:alnum:]+_!"'#$%^&*{}\/=?`|~](?:\.?[-[:alpha:][:alnum:]+_!"'#$%^&*{}\/=?`|~]){0,63})@(?=.{1,255}$)(?:(?=[^.]{1,63}(?:\.|$))(?!.*?--.*$)[[:alnum:]](?:(?:[[:alnum:]]|-){0,61}[[:alnum:]])?\.)*(?=[^.]{1,63}(?:\.|$))(?!.*?--.*$)[[:alnum:]](?:(?:[[:alnum:]]|-){0,61}[[:alnum:]])?\.[[:alpha:]]{1,64}$/i
-    )
-    |> validate_length(:email, max: 160)
+    |> EmailValidation.validate()
     |> maybe_validate_unique_email(opts)
   end
 
