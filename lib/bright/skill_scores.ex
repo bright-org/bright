@@ -714,32 +714,42 @@ defmodule Bright.SkillScores do
   end
 
   @doc """
-  スキルクラススコア変遷データの日付から日付までの取得
+  スキルクラススコア変遷データを指定の過去日付から取得して返す
 
-  当日分:
-    直前ではないデータがあれば履歴として扱い1つ追加
-    N個あればN-1個目を返す
-    N個目は「現在」のため返していない
-
-  その他の日:
-    最も遅い日時のものを1つ返す
-
-  データがない日:
-    nilで返す
+  最新のログは「現在」扱いに当たるため返さない
+  直近(1つ前)のログの値は日付に関わらず最後にセットして返される
+  それ以前の日付のログは日付単位で並べて値がセットして返される
+  データがない日はnilが入っている
   """
   def list_user_skill_class_score_progress(user, skill_class, date_from, date_end) do
-    today = Date.utc_today()
+    # スキルクラススコア変遷取得
+    # - 最新は「現在」と一致するので除去している
+    logs = list_skill_class_score_logs(user, skill_class, date_from, date_end)
+    {_latest_log, logs} = List.pop_at(logs, -1)
+    prev_log = Enum.at(logs, -1, %{})
+    prev_date = Map.get(prev_log, :date)
+    prev_value = Map.get(prev_log, :percentage)
 
     date_percentage =
-      list_skill_class_score_logs(user, skill_class, date_from, date_end)
+      logs
       |> Enum.reduce(%{}, fn log, acc ->
         Map.update(acc, log.date, [log.percentage], &(&1 ++ [log.percentage]))
       end)
-      |> Map.new(fn
-        {^today, values} -> {today, Enum.at(values, -2)}
-        {date, values} -> {date, List.last(values)}
-      end)
+      |> Map.new(fn {date, values} -> {date, List.last(values)} end)
 
-    Date.range(date_from, date_end) |> Enum.map(&Map.get(date_percentage, &1))
+    # データ集約
+    # - prev_dateまでは日付単位で拾っていく
+    # - prev_date以降はnil確定で、直前スコアとしてprev_valueを入れている
+    #   - 言い換えると、prev_dateにあたるところには値をいれず、最後になるように入れている
+    dates_before_prev = Date.range(date_from, Date.add(prev_date || date_end, -1), 1)
+    dates_after_prev = Date.range(Date.add(prev_date || date_end, 1), date_end, 1)
+
+    values_before_prev = Enum.map(dates_before_prev, &Map.get(date_percentage, &1))
+
+    values_after_prev =
+      Enum.map(dates_after_prev, fn _ -> nil end)
+      |> Kernel.++([prev_value])
+
+    values_before_prev ++ values_after_prev
   end
 end

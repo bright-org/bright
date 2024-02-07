@@ -2,7 +2,6 @@ defmodule Bright.SkillScoresTest do
   use Bright.DataCase
 
   import Bright.Factory
-  import Mock
 
   alias Bright.SkillScores
   alias Bright.Notifications
@@ -860,7 +859,7 @@ defmodule Bright.SkillScoresTest do
     end
   end
 
-  describe "list_user_progress/4" do
+  describe "list_user_skill_class_score_progress/4" do
     setup do
       user = insert(:user)
       skill_panel = insert(:skill_panel)
@@ -909,18 +908,19 @@ defmodule Bright.SkillScoresTest do
           ~D[2023-10-04]
         )
 
-      assert [20, 31, 41] == list
+      # 引数指定日内の最新ログは現在相当で扱うので42が正
+      assert [20, 31, 42] == list
 
-      # 日付範囲にログがない場合のnil確認
+      # nil埋めと直近データが最後に挿入される確認
       list =
         SkillScores.list_user_skill_class_score_progress(
           user,
           skill_class,
-          ~D[2023-10-05],
-          ~D[2023-10-10]
+          ~D[2023-10-01],
+          ~D[2023-10-06]
         )
 
-      assert [50, nil, nil, nil, nil, nil] == list
+      assert [10, 20, 31, nil, nil, 41] == list
 
       # ユーザー違いでの空確認
       user_2 = insert(:user)
@@ -947,33 +947,6 @@ defmodule Bright.SkillScoresTest do
         )
 
       assert [nil, nil, nil] == list
-    end
-
-    test "returns prev today value", %{
-      user: user,
-      skill_class: skill_class
-    } do
-      date_mock = {
-        Date,
-        [:passthrough],
-        [
-          utc_today: fn -> ~D[2023-10-04] end,
-          new: fn y, m, d -> passthrough([y, m, d]) end
-        ]
-      }
-
-      # １つ前との変化をみる観点から当日のものがあれば、1つ前の値を返す
-      with_mocks([date_mock]) do
-        list =
-          SkillScores.list_user_skill_class_score_progress(
-            user,
-            skill_class,
-            ~D[2023-10-02],
-            ~D[2023-10-04]
-          )
-
-        assert [20, 31, 42] == list
-      end
     end
   end
 end
