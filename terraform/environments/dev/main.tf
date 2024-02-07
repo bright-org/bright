@@ -164,6 +164,14 @@ module "secret_github_client_secret" {
   data = var.github_client_secret
 }
 
+module "secret_bright_env" {
+  source     = "../../modules/google/secret"
+  depends_on = [module.googleapis]
+
+  name = "bright-bright-env"
+  data = "dev"
+}
+
 module "service_account_cloud_run" {
   source     = "../../modules/google/service_account"
   depends_on = [module.googleapis]
