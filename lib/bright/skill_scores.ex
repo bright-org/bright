@@ -126,7 +126,7 @@ defmodule Bright.SkillScores do
       )
     end)
     |> then_if_existing(log_attrs, fn multi, value ->
-      Ecto.Multi.insert_or_update(multi, :skill_class_score_log, value)
+      Ecto.Multi.insert(multi, :skill_class_score_log, value)
     end)
     |> Repo.transaction()
   end
@@ -235,15 +235,12 @@ defmodule Bright.SkillScores do
     # スキルクラススコアの変更内容に伴うスキルクラススコアログの作成分を返す
     Map.has_key?(changeset.changes, :percentage)
     |> if do
-      unique_condition = %{
+      %SkillClassScoreLog{
         user_id: changeset.data.user_id,
         skill_class_id: changeset.data.skill_class_id,
-        date: Date.utc_today()
+        date: Date.utc_today(),
+        percentage: changeset.changes.percentage
       }
-
-      get_skill_class_score_log_by(unique_condition)
-      |> Kernel.||(%SkillClassScoreLog{} |> Map.merge(unique_condition))
-      |> Ecto.Changeset.change(percentage: changeset.changes.percentage)
     end
   end
 
@@ -671,7 +668,7 @@ defmodule Bright.SkillScores do
         )
       end)
       |> then_if_existing(log_attrs, fn multi, value ->
-        Ecto.Multi.insert_or_update(multi, :"skill_class_score_log_#{user_id}", value)
+        Ecto.Multi.insert(multi, :"skill_class_score_log_#{user_id}", value)
       end)
     end)
     |> Repo.transaction()
@@ -711,19 +708,38 @@ defmodule Bright.SkillScores do
       where: scsl.user_id == ^user.id,
       where: scsl.skill_class_id == ^skill_class.id,
       where: scsl.date >= ^date_from and scsl.date <= ^date_end,
-      order_by: {:asc, scsl.date}
+      order_by: {:asc, :id}
     )
     |> Repo.all()
   end
 
   @doc """
   スキルクラススコア変遷データの日付から日付までの取得
+
+  当日分:
+    直前ではないデータがあれば履歴として扱い1つ追加
+    N個あればN-1個目を返す
+    N個目は「現在」のため返していない
+
+  その他の日:
+    最も遅い日時のものを1つ返す
+
+  データがない日:
+    nilで返す
   """
   def list_user_skill_class_score_progress(user, skill_class, date_from, date_end) do
-    date_log =
-      list_skill_class_score_logs(user, skill_class, date_from, date_end)
-      |> Map.new(&{&1.date, &1.percentage})
+    today = Date.utc_today()
 
-    Date.range(date_from, date_end) |> Enum.map(&Map.get(date_log, &1))
+    date_percentage =
+      list_skill_class_score_logs(user, skill_class, date_from, date_end)
+      |> Enum.reduce(%{}, fn log, acc ->
+        Map.update(acc, log.date, [log.percentage], &(&1 ++ [log.percentage]))
+      end)
+      |> Map.new(fn
+        {^today, values} -> {today, Enum.at(values, -2)}
+        {date, values} -> {date, List.last(values)}
+      end)
+
+    Date.range(date_from, date_end) |> Enum.map(&Map.get(date_percentage, &1))
   end
 end

@@ -1,10 +1,11 @@
 defmodule Bright.SkillScoresTest do
   use Bright.DataCase
+
   import Bright.Factory
+  import Mock
 
   alias Bright.SkillScores
   alias Bright.Notifications
-  alias Bright.SkillScores.SkillClassScoreLog
 
   describe "skill_class_scores" do
     alias Bright.SkillScores.SkillClassScore
@@ -172,14 +173,8 @@ defmodule Bright.SkillScoresTest do
       # 更新
       insert(:skill_score, user: user, skill: skill_2, score: :high)
 
-      {:ok, _} = SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
-
-      skill_class_score_log =
-        Repo.get_by(SkillClassScoreLog, %{
-          user_id: user.id,
-          skill_class_id: skill_class.id,
-          date: skill_class_score_log.date
-        })
+      {:ok, %{skill_class_score_log: skill_class_score_log}} =
+        SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
 
       assert skill_class_score_log.percentage == 100.0
     end
@@ -820,6 +815,7 @@ defmodule Bright.SkillScoresTest do
       Date.range(~D[2023-10-01], ~D[2023-10-05])
       |> Enum.each(fn date ->
         insert(:skill_class_score_log, user: user, skill_class: skill_class, date: date)
+        :timer.sleep(1)
       end)
 
       :ok
@@ -874,8 +870,17 @@ defmodule Bright.SkillScoresTest do
     end
 
     setup %{user: user, skill_class: skill_class} do
-      Date.range(~D[2023-10-01], ~D[2023-10-05])
-      |> Enum.zip(1..5)
+      [
+        {~D[2023-10-01], 10},
+        {~D[2023-10-02], 20},
+        {~D[2023-10-03], 30},
+        {~D[2023-10-03], 32},
+        {~D[2023-10-03], 31},
+        {~D[2023-10-04], 40},
+        {~D[2023-10-04], 42},
+        {~D[2023-10-04], 41},
+        {~D[2023-10-05], 50}
+      ]
       |> Enum.each(fn {date, percentage} ->
         insert(:skill_class_score_log,
           user: user,
@@ -883,6 +888,8 @@ defmodule Bright.SkillScoresTest do
           date: date,
           percentage: percentage
         )
+
+        :timer.sleep(1)
       end)
 
       :ok
@@ -902,7 +909,7 @@ defmodule Bright.SkillScoresTest do
           ~D[2023-10-04]
         )
 
-      assert [2, 3, 4] == list
+      assert [20, 31, 41] == list
 
       # 日付範囲にログがない場合のnil確認
       list =
@@ -913,7 +920,7 @@ defmodule Bright.SkillScoresTest do
           ~D[2023-10-10]
         )
 
-      assert [5, nil, nil, nil, nil, nil] == list
+      assert [50, nil, nil, nil, nil, nil] == list
 
       # ユーザー違いでの空確認
       user_2 = insert(:user)
@@ -940,6 +947,33 @@ defmodule Bright.SkillScoresTest do
         )
 
       assert [nil, nil, nil] == list
+    end
+
+    test "returns prev today value", %{
+      user: user,
+      skill_class: skill_class
+    } do
+      date_mock = {
+        Date,
+        [:passthrough],
+        [
+          utc_today: fn -> ~D[2023-10-04] end,
+          new: fn y, m, d -> passthrough([y, m, d]) end
+        ]
+      }
+
+      # １つ前との変化をみる観点から当日のものがあれば、1つ前の値を返す
+      with_mocks([date_mock]) do
+        list =
+          SkillScores.list_user_skill_class_score_progress(
+            user,
+            skill_class,
+            ~D[2023-10-02],
+            ~D[2023-10-04]
+          )
+
+        assert [20, 31, 42] == list
+      end
     end
   end
 end

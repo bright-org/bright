@@ -404,9 +404,9 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       %{skill_panel: skill_panel, skill_class: skill_class}
     end
 
-    # 現在データまでの24日分のnilデータ
-    # （`date_modk`で10/25を指定している）
-    @nil_25 Enum.map(1..24, fn _ -> nil end)
+    # 現在データまでの25日分+5日分のnilデータ
+    # （`date_mock`で10/25を指定している + 表示のための5つのnil）
+    @nil_25 Enum.map(1..25, fn _ -> nil end) ++ [nil, nil, nil, nil, nil]
 
     @base_data %{
       labels: ["2023.1", "2023.4", "2023.7", "2023.10", "2024.1"],
