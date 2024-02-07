@@ -41,7 +41,10 @@ defmodule BrightWeb.CardLive.RelatedTeamOwnerCardComponent do
           <% else %>
             <ul class="flex gap-y-2 flex-col">
               <%= for user_profile <- @user_profiles do %>
-                <div class="flex hover:bg-brightGray-50 hover:cursor-pointer">
+                <div
+                  class="flex hover:bg-brightGray-50 hover:cursor-pointer"
+                  phx-click={@event} phx-target={@target} phx-value-name={user_profile.user_name}
+                >
                   <.profile_small
                     user_name={user_profile.user_name}
                     title={user_profile.title}
@@ -50,10 +53,12 @@ defmodule BrightWeb.CardLive.RelatedTeamOwnerCardComponent do
                     click_target={@target}
                     click_event={@event}
                   />
-                  <.team_small
+                  <div class="mt-2">
+                  <.team_minimum
                     id={user_profile.team.team_id}
                     team_params={user_profile.team}
                   />
+                  </div>
                 </div>
               <% end %>
             </ul>

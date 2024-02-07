@@ -24,7 +24,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
             <div :if={@coordination} class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base mb-8">候補者</h3>
+                  <h3 class="font-bold text-xl mb-8">候補者</h3>
                   <.profile
                   user_name={@coordination.candidates_user.name}
                   title={@coordination.candidates_user.user_profile.title}

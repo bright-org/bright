@@ -75,7 +75,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             }
             class="self-center bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:opacity-50"
           >
-          面談調整
+          面談の打診
           </a>
           <a :if={false} class="bg-brightGray-900 border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 opacity-50">
           採用・育成チームに採用依頼 <br />βリリース（11月予定）から

@@ -475,6 +475,20 @@ defmodule Bright.Recruits do
     )
   end
 
+  def send_coordination_acceptance_notification_mail(user, coordination_id, coordination_url_fun)
+      when is_function(coordination_url_fun, 1) do
+    coordination =
+      Coordination
+      |> preload([:recruiter_user])
+      |> Repo.get!(coordination_id)
+
+    UserNotifier.deliver_coordination_acceptance_to_recruiter(
+      user,
+      coordination.recruiter_user,
+      coordination_url_fun.(coordination_id)
+    )
+  end
+
   alias Bright.Recruits.Employment
 
   @doc """

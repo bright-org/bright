@@ -16,7 +16,12 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       patch={~p"/recruits/chats/#{@chat.id}"}
     >
       <div class="mr-2">
-        <.switch_user_icon chat={@chat} show_name={false} user_id={@user_id}/>
+        <.switch_user_icon
+          chat={@chat}
+          show_name={false}
+          user_id={@user_id}
+          anon={@chat.interview.recruiter_user_id == @user_id}
+        />
       </div>
       <div class="w-full flex justify-between p-1">
         <div class="mr-2 lg:truncate lg:text-xl">
@@ -60,6 +65,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             </div>
           </div>
           <p class="mt-1 flex justify-end"><.elapsed_time extend_style={"w-auto"} inserted_at={@message.inserted_at} /></p>
+          <p class="flex justify-end">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
         </div>
       </div>
     <% else %>
@@ -77,6 +83,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         </div>
       </div>
       <p class="-ml-4"><.elapsed_time inserted_at={@message.inserted_at} /></p>
+      <p class="">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
     <% end %>
     """
   end
@@ -129,4 +136,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   end
 
   defp nl_to_br(str), do: str |> String.replace(~r/\n/, "<br />") |> Phoenix.HTML.raw()
+
+  defp datetime(naive_datetime, "Asia/Tokyo") do
+    naive_datetime
+    |> NaiveDateTime.add(9, :hour)
+    |> NaiveDateTime.to_string()
+  end
 end

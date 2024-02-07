@@ -132,7 +132,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       submit_search_form(live, career_field, skill_panel)
 
       live
-      |> element("a", "面談調整")
+      |> element("a", "面談の打診")
       |> render_click()
 
       assert live
@@ -143,7 +143,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
 
       # 申し込み後に改めてクリックした場合は無料トライアルモーダルは開かれない
       live
-      |> element("a", "面談調整")
+      |> element("a", "面談の打診")
       |> render_click()
 
       refute has_element?(live, "#free_trial_recommendation_modal")

@@ -11,10 +11,10 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
     ~H"""
     <div id="interview_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-        <h4 class="text-start">面談調整の状況</h4>
+        <h4 class="text-start">面談打診の状況</h4>
         <li :if={Enum.count(@interviews) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
-            調整中の面談はありません
+            打診中の面談はありません
           </div>
         </li>
         <%= for interview <- @interviews do %>
@@ -144,7 +144,7 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
     user_id = socket.assigns.current_user.id
 
     socket
-    |> assign(:page_title, "面談調整")
+    |> assign(:page_title, "面談の打診状況")
     |> assign(:interviews, Recruits.list_interview(user_id, :not_complete))
     |> assign(:interview_members, Recruits.list_interview_members(user_id, :not_answered))
     |> assign(:interview, nil)

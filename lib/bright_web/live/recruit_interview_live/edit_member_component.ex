@@ -16,14 +16,14 @@ defmodule BrightWeb.RecruitInterviewLive.EditMemberComponent do
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-                面談検討
+                面談同席検討
               </span>
             </h2>
 
             <div :if={@interview_member} class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">候補者</h3>
+                  <h3 class="font-bold text-xl">候補者</h3>
                   <.live_component
                     id="user_params_for_interview"
                     prefix="interview"
@@ -39,7 +39,7 @@ defmodule BrightWeb.RecruitInterviewLive.EditMemberComponent do
               </div>
               <!-- Start 面談調整内容 -->
               <div class="w-[493px]">
-                <h3 class="font-bold text-xl">調整内容</h3>
+                <h3 class="font-bold text-xl">面談内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">

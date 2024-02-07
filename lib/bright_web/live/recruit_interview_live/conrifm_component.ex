@@ -25,7 +25,7 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
             <div :if={@interview} class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">候補者</h3>
+                  <h3 class="font-bold text-xl">候補者</h3>
                   <.live_component
                     id="user_params_for_interview"
                     prefix="interview"
@@ -170,7 +170,8 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
 
     {:ok, _message} =
       Chats.create_message(%{
-        text: "#{user.name}から面談が確定されました",
+        text:
+          "#{user.name}から面談が確定されました \n 面談日・ツール・場所は、Brightに登録されている連絡先に対し、#{user.name}から別途、連絡いたします。",
         chat_id: chat.id,
         sender_user_id: user.id
       })

@@ -18,14 +18,14 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
           <section class="absolute bg-white px-10 py-8 shadow text-sm top-20 w-[1500px]">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
-                面談調整
+                面談の打診
               </span>
             </h2>
 
             <div class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">候補者</h3>
+                  <h3 class="font-bold text-xl">候補者</h3>
                   <.live_component
                     id="user_params"
                     prefix="interview"
@@ -53,7 +53,7 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
               </div>
           <!-- Start 面談調整内容 -->
             <div class="w-[493px]">
-              <h3 class="font-bold text-xl">調整内容</h3>
+              <h3 class="font-bold text-xl">打診内容</h3>
               <.form
                 for={@interview_form}
                 id="interview_form"
@@ -96,7 +96,7 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
                   <button
                     class="text-sm font-bold py-3 rounded text-white bg-base w-72"
                   >
-                    面談調整する
+                    面談を打診する
                   </button>
                 </div>
               </.form>

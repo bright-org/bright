@@ -23,7 +23,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
             <div :if={@coordination_member} class="flex mt-8">
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[860px]">
                 <div>
-                  <h3 class="font-bold text-base">候補者</h3>
+                  <h3 class="font-bold text-xl">候補者</h3>
                   <.live_component
                     id="user_params_for_coordination"
                     prefix="coordination"
@@ -166,11 +166,26 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
     |> RecruitmentStockUsers.create_recruitment_stock_user()
 
     Recruits.update_coordination_member(assigns.coordination_member, %{decision: :recruit_keep})
+
+    Recruits.send_coordination_acceptance_notification_mail(
+      socket.assigns.current_user,
+      coordination.id,
+      &url(~p"/recruits/coordinations/#{&1}")
+    )
+
     {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
   end
 
   def handle_event("submit", _params, %{assigns: assigns} = socket) do
+    coordination = assigns.coordination_member.coordination
+
     Recruits.update_coordination_member(assigns.coordination_member, %{decision: assigns.decision})
+
+    Recruits.send_coordination_acceptance_notification_mail(
+      socket.assigns.current_user,
+      coordination.id,
+      &url(~p"/recruits/coordinations/#{&1}")
+    )
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
   end
