@@ -24,6 +24,7 @@ steps:
            '--set-secrets=GOOGLE_CLIENT_SECRET=bright-google-client-secret:latest',
            '--set-secrets=GITHUB_CLIENT_ID=bright-github-client-id:latest',
            '--set-secrets=GITHUB_CLIENT_SECRET=bright-github-client-secret:latest',
+           '--set-secrets=BRIGHT_ENV=bright-bright-env:latest',
            '--set-cloudsql-instances=${_CLOUD_SQL_INSTANCE}',
            '--service-account=${_SERVICE_ACCOUNT}',
            '--region=asia-northeast1',
@@ -53,6 +54,7 @@ steps:
            '--set-secrets=GOOGLE_CLIENT_SECRET=bright-google-client-secret:latest',
            '--set-secrets=GITHUB_CLIENT_ID=bright-github-client-id:latest',
            '--set-secrets=GITHUB_CLIENT_SECRET=bright-github-client-secret:latest',
+           '--set-secrets=BRIGHT_ENV=bright-bright-env:latest',
            '--add-cloudsql-instances=${_CLOUD_SQL_INSTANCE}',
            '--service-account=${_SERVICE_ACCOUNT}',
            '--region=asia-northeast1',
@@ -82,6 +84,7 @@ steps:
            '--set-secrets=GOOGLE_CLIENT_SECRET=bright-google-client-secret:latest',
            '--set-secrets=GITHUB_CLIENT_ID=bright-github-client-id:latest',
            '--set-secrets=GITHUB_CLIENT_SECRET=bright-github-client-secret:latest',
+           '--set-secrets=BRIGHT_ENV=bright-bright-env:latest',
            '--set-cloudsql-instances=${_CLOUD_SQL_INSTANCE}',
            '--service-account=${_SERVICE_ACCOUNT}',
            '--region=asia-northeast1']
@@ -109,6 +112,7 @@ steps:
            '--set-secrets=GOOGLE_CLIENT_SECRET=bright-google-client-secret:latest',
            '--set-secrets=GITHUB_CLIENT_ID=bright-github-client-id:latest',
            '--set-secrets=GITHUB_CLIENT_SECRET=bright-github-client-secret:latest',
+           '--set-secrets=BRIGHT_ENV=bright-bright-env:latest',
            '--set-cloudsql-instances=${_CLOUD_SQL_INSTANCE}',
            '--service-account=${_SERVICE_ACCOUNT}',
            '--region=asia-northeast1']
