@@ -552,14 +552,17 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       timeline: timeline
     } = socket.assigns
 
-    # 現在までのデータ取得。「現在」データは別途あるので含めない
+    # 変遷データ取得
     progress =
       SkillScores.list_user_skill_class_score_progress(
         %{id: user_id},
         skill_class,
         TimelineHelper.get_prev_date_from_now(timeline),
-        Date.utc_today() |> Date.add(-1)
+        Date.utc_today()
       )
+
+    # 成長グラフ上で「現在」と直前点が近すぎるためnilデータを挿入
+    progress = progress ++ [nil, nil, nil, nil, nil]
 
     update(socket, :data, &Map.put(&1, :progress, progress))
   end

@@ -1,10 +1,10 @@
 defmodule Bright.SkillScoresTest do
   use Bright.DataCase
+
   import Bright.Factory
 
   alias Bright.SkillScores
   alias Bright.Notifications
-  alias Bright.SkillScores.SkillClassScoreLog
 
   describe "skill_class_scores" do
     alias Bright.SkillScores.SkillClassScore
@@ -172,14 +172,8 @@ defmodule Bright.SkillScoresTest do
       # 更新
       insert(:skill_score, user: user, skill: skill_2, score: :high)
 
-      {:ok, _} = SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
-
-      skill_class_score_log =
-        Repo.get_by(SkillClassScoreLog, %{
-          user_id: user.id,
-          skill_class_id: skill_class.id,
-          date: skill_class_score_log.date
-        })
+      {:ok, %{skill_class_score_log: skill_class_score_log}} =
+        SkillScores.update_skill_class_score_stats(skill_class_score, skill_class)
 
       assert skill_class_score_log.percentage == 100.0
     end
@@ -864,7 +858,7 @@ defmodule Bright.SkillScoresTest do
     end
   end
 
-  describe "list_user_progress/4" do
+  describe "list_user_skill_class_score_progress/4" do
     setup do
       user = insert(:user)
       skill_panel = insert(:skill_panel)
@@ -874,8 +868,17 @@ defmodule Bright.SkillScoresTest do
     end
 
     setup %{user: user, skill_class: skill_class} do
-      Date.range(~D[2023-10-01], ~D[2023-10-05])
-      |> Enum.zip(1..5)
+      [
+        {~D[2023-10-01], 10},
+        {~D[2023-10-02], 20},
+        {~D[2023-10-03], 30},
+        {~D[2023-10-03], 32},
+        {~D[2023-10-03], 31},
+        {~D[2023-10-04], 40},
+        {~D[2023-10-04], 42},
+        {~D[2023-10-04], 41},
+        {~D[2023-10-05], 50}
+      ]
       |> Enum.each(fn {date, percentage} ->
         insert(:skill_class_score_log,
           user: user,
@@ -883,6 +886,9 @@ defmodule Bright.SkillScoresTest do
           date: date,
           percentage: percentage
         )
+
+        # 並び替えで日付が同じ場合にidを使うが不安定になり落ちるときがあるのでmilisecondだけ待ちを入れている
+        :timer.sleep(1)
       end)
 
       :ok
@@ -902,18 +908,19 @@ defmodule Bright.SkillScoresTest do
           ~D[2023-10-04]
         )
 
-      assert [2, 3, 4] == list
+      # 引数指定日内の最新ログは現在相当で扱うので42が正
+      assert [20, 31, 42] == list
 
-      # 日付範囲にログがない場合のnil確認
+      # nil埋めと直近データが最後に挿入される確認
       list =
         SkillScores.list_user_skill_class_score_progress(
           user,
           skill_class,
-          ~D[2023-10-05],
-          ~D[2023-10-10]
+          ~D[2023-10-01],
+          ~D[2023-10-06]
         )
 
-      assert [5, nil, nil, nil, nil, nil] == list
+      assert [10, 20, 31, nil, nil, 41] == list
 
       # ユーザー違いでの空確認
       user_2 = insert(:user)
@@ -940,6 +947,79 @@ defmodule Bright.SkillScoresTest do
         )
 
       assert [nil, nil, nil] == list
+    end
+
+    test "returns zero value when latest log is existing only", %{
+      skill_class: skill_class
+    } do
+      # 初めての入力後は直前スコアがないため0が打たれる
+      user = insert(:user)
+
+      insert(:skill_class_score_log,
+        user: user,
+        skill_class: skill_class,
+        date: ~D[2023-10-04],
+        percentage: 40
+      )
+
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class,
+          ~D[2023-10-01],
+          ~D[2023-10-04]
+        )
+
+      assert [nil, nil, nil, 0] == list
+    end
+
+    test "returns historical value when latest log is existing only", %{
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      # 該当期間での初めての入力後は期間前のスキルクラススコア履歴からデータを取る
+      user = insert(:user)
+
+      insert(:skill_class_score_log,
+        user: user,
+        skill_class: skill_class,
+        date: ~D[2023-10-04],
+        percentage: 40
+      )
+
+      # スキルクラススコア履歴データ
+      [
+        {~D[2023-07-01], 20},
+        {~D[2023-10-01], 30},
+        {~D[2024-01-01], 50}
+      ]
+      |> Enum.each(fn {date, percentage} ->
+        historical_skill_class =
+          build(
+            :historical_skill_class,
+            skill_panel_id: skill_panel.id,
+            trace_id: skill_class.trace_id,
+            locked_date: Timex.shift(date, months: -3)
+          )
+
+        insert(:historical_skill_class_score,
+          user: user,
+          historical_skill_class: historical_skill_class,
+          locked_date: date,
+          percentage: percentage
+        )
+      end)
+
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class,
+          ~D[2023-10-01],
+          ~D[2023-10-04]
+        )
+
+      # 1つ前（2023-10-01）のスキルクラススコア履歴が採用されていること
+      assert [nil, nil, nil, 30] == list
     end
   end
 end

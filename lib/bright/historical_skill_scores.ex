@@ -10,6 +10,7 @@ defmodule Bright.HistoricalSkillScores do
   alias Bright.HistoricalSkillUnits.HistoricalSkillUnit
   alias Bright.HistoricalSkillPanels.HistoricalSkillClass
   alias Bright.HistoricalSkillScores.HistoricalSkillScore
+  alias Bright.HistoricalSkillScores.HistoricalSkillClassScore
   alias Bright.HistoricalSkillScores.HistoricalSkillUnitScore
 
   @doc """
@@ -107,7 +108,7 @@ defmodule Bright.HistoricalSkillScores do
 
   ## Examples
 
-      iex> get_historical_skill_class_scores(locked_date, skill_panel_id, class, user_id, from_date, to_date)
+      iex> list_historical_skill_class_scores(locked_date, skill_panel_id, class, user_id, from_date, to_date)
       [
         {~D[2022-10-01], 15.555555555555555},
         {~D[2023-01-01], 25.0},
@@ -141,5 +142,22 @@ defmodule Bright.HistoricalSkillScores do
     )
     |> Repo.all()
     |> Enum.sort_by(&elem(&1, 0), {:asc, Date})
+  end
+
+  @doc """
+  Returns historical_skill_class_scores.percentage with given date
+  """
+  def get_historical_skill_class_score_percentage(user, skill_class, date) do
+    from(hscs in HistoricalSkillClassScore,
+      join: hsc in assoc(hscs, :historical_skill_class),
+      where: hscs.user_id == ^user.id,
+      where: hscs.locked_date <= ^date,
+      where: hsc.trace_id == ^skill_class.trace_id,
+      order_by: {:desc, hscs.locked_date},
+      limit: 1
+    )
+    |> Repo.one()
+    |> Kernel.||(%{})
+    |> Map.get(:percentage)
   end
 end

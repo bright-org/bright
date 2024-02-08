@@ -10,6 +10,7 @@ defmodule Bright.SkillScores do
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.CareerFields
+  alias Bright.HistoricalSkillScores
 
   alias Bright.SkillScores.{
     SkillClassScore,
@@ -126,7 +127,7 @@ defmodule Bright.SkillScores do
       )
     end)
     |> then_if_existing(log_attrs, fn multi, value ->
-      Ecto.Multi.insert_or_update(multi, :skill_class_score_log, value)
+      Ecto.Multi.insert(multi, :skill_class_score_log, value)
     end)
     |> Repo.transaction()
   end
@@ -235,15 +236,12 @@ defmodule Bright.SkillScores do
     # スキルクラススコアの変更内容に伴うスキルクラススコアログの作成分を返す
     Map.has_key?(changeset.changes, :percentage)
     |> if do
-      unique_condition = %{
+      %SkillClassScoreLog{
         user_id: changeset.data.user_id,
         skill_class_id: changeset.data.skill_class_id,
-        date: Date.utc_today()
+        date: Date.utc_today(),
+        percentage: changeset.changes.percentage
       }
-
-      get_skill_class_score_log_by(unique_condition)
-      |> Kernel.||(%SkillClassScoreLog{} |> Map.merge(unique_condition))
-      |> Ecto.Changeset.change(percentage: changeset.changes.percentage)
     end
   end
 
@@ -671,7 +669,7 @@ defmodule Bright.SkillScores do
         )
       end)
       |> then_if_existing(log_attrs, fn multi, value ->
-        Ecto.Multi.insert_or_update(multi, :"skill_class_score_log_#{user_id}", value)
+        Ecto.Multi.insert(multi, :"skill_class_score_log_#{user_id}", value)
       end)
     end)
     |> Repo.transaction()
@@ -711,19 +709,59 @@ defmodule Bright.SkillScores do
       where: scsl.user_id == ^user.id,
       where: scsl.skill_class_id == ^skill_class.id,
       where: scsl.date >= ^date_from and scsl.date <= ^date_end,
-      order_by: {:asc, scsl.date}
+      order_by: [{:asc, scsl.date}, {:asc, scsl.id}]
     )
     |> Repo.all()
   end
 
   @doc """
-  スキルクラススコア変遷データの日付から日付までの取得
+  スキルクラススコア変遷データを指定の過去日付から取得して返す
+
+  最新のログは「現在」扱いに当たるため返さない
+  直近(1つ前)のログの値は日付に関わらず最後にセットして返される
+  それ以前の日付のログは日付単位で並べて値がセットして返される
+  データがない日はnilが入っている
   """
   def list_user_skill_class_score_progress(user, skill_class, date_from, date_end) do
-    date_log =
-      list_skill_class_score_logs(user, skill_class, date_from, date_end)
-      |> Map.new(&{&1.date, &1.percentage})
+    # スキルクラススコア変遷取得, 最新は「現在」と一致するので除去している
+    logs = list_skill_class_score_logs(user, skill_class, date_from, date_end)
+    {latest_log, logs} = List.pop_at(logs, -1)
+    prev_log = Enum.at(logs, -1, %{})
+    prev_date = Map.get(prev_log, :date)
+    prev_value = Map.get(prev_log, :percentage)
 
-    Date.range(date_from, date_end) |> Enum.map(&Map.get(date_log, &1))
+    # 直前値がないとき、最新値が存在するならば点を打つために過去から引いてくる
+    prev_value =
+      if latest_log do
+        prev_value ||
+          HistoricalSkillScores.get_historical_skill_class_score_percentage(
+            user,
+            skill_class,
+            date_from
+          ) ||
+          0
+      end
+
+    date_percentage =
+      logs
+      |> Enum.reduce(%{}, fn log, acc ->
+        Map.update(acc, log.date, [log.percentage], &(&1 ++ [log.percentage]))
+      end)
+      |> Map.new(fn {date, values} -> {date, List.last(values)} end)
+
+    # データ集約
+    # - prev_dateまでは日付単位で拾っていく
+    # - prev_date以降はnil詰めし直前スコアとしてprev_valueを入れている
+    #   - 言い換えると、prev_dateにあたるところには値をいれず、最後になるように入れている
+    dates_before_prev = Date.range(date_from, Date.add(prev_date || date_end, -1), 1)
+    dates_after_prev = Date.range(Date.add(prev_date || date_end, 1), date_end, 1)
+
+    values_before_prev = Enum.map(dates_before_prev, &Map.get(date_percentage, &1))
+
+    values_after_prev =
+      Enum.map(dates_after_prev, fn _ -> nil end)
+      |> Kernel.++([prev_value])
+
+    values_before_prev ++ values_after_prev
   end
 end
