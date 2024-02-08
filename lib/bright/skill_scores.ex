@@ -709,7 +709,7 @@ defmodule Bright.SkillScores do
       where: scsl.user_id == ^user.id,
       where: scsl.skill_class_id == ^skill_class.id,
       where: scsl.date >= ^date_from and scsl.date <= ^date_end,
-      order_by: {:asc, :id}
+      order_by: [{:asc, scsl.date}, {:asc, scsl.id}]
     )
     |> Repo.all()
   end

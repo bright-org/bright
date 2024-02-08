@@ -814,7 +814,6 @@ defmodule Bright.SkillScoresTest do
       Date.range(~D[2023-10-01], ~D[2023-10-05])
       |> Enum.each(fn date ->
         insert(:skill_class_score_log, user: user, skill_class: skill_class, date: date)
-        :timer.sleep(1)
       end)
 
       :ok
@@ -888,6 +887,7 @@ defmodule Bright.SkillScoresTest do
           percentage: percentage
         )
 
+        # 並び替えで日付が同じ場合にidを使うが不安定になり落ちるときがあるのでmilisecondだけ待ちを入れている
         :timer.sleep(1)
       end)
 

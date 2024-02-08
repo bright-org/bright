@@ -153,7 +153,7 @@ defmodule Bright.HistoricalSkillScores do
       where: hscs.user_id == ^user.id,
       where: hscs.locked_date <= ^date,
       where: hsc.trace_id == ^skill_class.trace_id,
-      order_by: {:asc, hscs.locked_date},
+      order_by: {:desc, hscs.locked_date},
       limit: 1
     )
     |> Repo.one()
