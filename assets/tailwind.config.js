@@ -128,6 +128,21 @@ module.exports = {
           600: "#acacac",
         },
       },
+      animation: {
+        "fade-in-bottom": "fade-in-bottom 0.5s ease-in-out both"
+      },
+      keyframes: {
+          "fade-in-bottom": {
+              "0%": {
+                  transform: "translateY(50px)",
+                  opacity: "0"
+              },
+              to: {
+                  transform: "translateY(0)",
+                  opacity: "1"
+              }
+          }
+      },
       backgroundImage: (theme) => ({
         bgGem: "url('/images/bg_gem_title.png')",
         bgGemEngineer: "url('/images/bg_gem_engineer.png')",
