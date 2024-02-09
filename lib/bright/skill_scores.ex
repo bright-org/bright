@@ -10,6 +10,7 @@ defmodule Bright.SkillScores do
   alias Bright.SkillPanels
   alias Bright.SkillUnits
   alias Bright.CareerFields
+  alias Bright.HistoricalSkillScores
 
   alias Bright.SkillScores.{
     SkillClassScore,
@@ -722,13 +723,24 @@ defmodule Bright.SkillScores do
   データがない日はnilが入っている
   """
   def list_user_skill_class_score_progress(user, skill_class, date_from, date_end) do
-    # スキルクラススコア変遷取得
-    # - 最新は「現在」と一致するので除去している
+    # スキルクラススコア変遷取得, 最新は「現在」と一致するので除去している
     logs = list_skill_class_score_logs(user, skill_class, date_from, date_end)
-    {_latest_log, logs} = List.pop_at(logs, -1)
+    {latest_log, logs} = List.pop_at(logs, -1)
     prev_log = Enum.at(logs, -1, %{})
     prev_date = Map.get(prev_log, :date)
     prev_value = Map.get(prev_log, :percentage)
+
+    # 直前値がないとき、最新値が存在するならば点を打つために過去から引いてくる
+    prev_value =
+      if latest_log do
+        prev_value ||
+          HistoricalSkillScores.get_historical_skill_class_score_percentage(
+            user,
+            skill_class,
+            date_from
+          ) ||
+          0
+      end
 
     date_percentage =
       logs
@@ -739,7 +751,7 @@ defmodule Bright.SkillScores do
 
     # データ集約
     # - prev_dateまでは日付単位で拾っていく
-    # - prev_date以降はnil確定で、直前スコアとしてprev_valueを入れている
+    # - prev_date以降はnil詰めし直前スコアとしてprev_valueを入れている
     #   - 言い換えると、prev_dateにあたるところには値をいれず、最後になるように入れている
     dates_before_prev = Date.range(date_from, Date.add(prev_date || date_end, -1), 1)
     dates_after_prev = Date.range(Date.add(prev_date || date_end, 1), date_end, 1)

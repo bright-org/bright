@@ -948,5 +948,78 @@ defmodule Bright.SkillScoresTest do
 
       assert [nil, nil, nil] == list
     end
+
+    test "returns zero value when latest log is existing only", %{
+      skill_class: skill_class
+    } do
+      # 初めての入力後は直前スコアがないため0が打たれる
+      user = insert(:user)
+
+      insert(:skill_class_score_log,
+        user: user,
+        skill_class: skill_class,
+        date: ~D[2023-10-04],
+        percentage: 40
+      )
+
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class,
+          ~D[2023-10-01],
+          ~D[2023-10-04]
+        )
+
+      assert [nil, nil, nil, 0] == list
+    end
+
+    test "returns historical value when latest log is existing only", %{
+      skill_panel: skill_panel,
+      skill_class: skill_class
+    } do
+      # 該当期間での初めての入力後は期間前のスキルクラススコア履歴からデータを取る
+      user = insert(:user)
+
+      insert(:skill_class_score_log,
+        user: user,
+        skill_class: skill_class,
+        date: ~D[2023-10-04],
+        percentage: 40
+      )
+
+      # スキルクラススコア履歴データ
+      [
+        {~D[2023-07-01], 20},
+        {~D[2023-10-01], 30},
+        {~D[2024-01-01], 50}
+      ]
+      |> Enum.each(fn {date, percentage} ->
+        historical_skill_class =
+          build(
+            :historical_skill_class,
+            skill_panel_id: skill_panel.id,
+            trace_id: skill_class.trace_id,
+            locked_date: Timex.shift(date, months: -3)
+          )
+
+        insert(:historical_skill_class_score,
+          user: user,
+          historical_skill_class: historical_skill_class,
+          locked_date: date,
+          percentage: percentage
+        )
+      end)
+
+      list =
+        SkillScores.list_user_skill_class_score_progress(
+          user,
+          skill_class,
+          ~D[2023-10-01],
+          ~D[2023-10-04]
+        )
+
+      # 1つ前（2023-10-01）のスキルクラススコア履歴が採用されていること
+      assert [nil, nil, nil, 30] == list
+    end
   end
 end

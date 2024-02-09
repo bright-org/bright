@@ -721,7 +721,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         date: ~D[2023-10-25]
       )
 
-      # 20.0は最後に付加したnil分の前につく
+      # 20.0は直近として最後に付加される（ただしnil分がその後ろにつく）
       expected_progress =
         @nil_25
         |> List.replace_at(1 - 1, 10.0)
@@ -730,11 +730,6 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
         data = Map.merge(@base_data_on_now, %{progress: expected_progress}) |> Jason.encode!()
-
-        element(show_live, ~s(#growth-graph))
-        |> render()
-        |> then(fn item -> IO.inspect(item, label: "DEBUG"); item end)
-
         assert has_element?(show_live, ~s(#growth-graph[data-data='#{data}']))
       end
     end
