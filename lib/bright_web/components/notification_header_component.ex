@@ -14,7 +14,7 @@ defmodule BrightWeb.RecruitNotificationHeaderComponent do
         phx-click-away={@open? && "close_recruit_notifications"}
         phx-target={@myself}
       >
-        <.icon name="hero-inbox-stack" class="h-8 w-8" />
+        <.icon name="hero-calendar-days" class="h-8 w-8" />
       </button>
       <div :if={@open?} class="absolute p-2 bg-brightGray-10 top-12 right-20 lg:right-24 shadow-lg">
         <ul>

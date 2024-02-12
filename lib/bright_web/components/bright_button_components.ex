@@ -5,6 +5,11 @@ defmodule BrightWeb.BrightButtonComponents do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
 
+  import BrightWeb.CoreComponents,
+    only: [
+      icon: 1
+    ]
+
   @doc """
   Renders a Profile Button
 
@@ -168,14 +173,11 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       type="button"
-      class="hidden text-white bg-brightGreen-300 px-4 justify-center rounded-md text-sm items-center font-bold h-9 w-48 hover:opacity-50 lg:inline-flex"
+      class="fixed relative top-0 right-0 ml-4 hidden lg:block hover:opacity-70"
       phx-click={JS.toggle(to: "#skill_search_modal")}
     >
-      <span
-          class="bg-white material-icons mr-2 !text-base !text-brightGreen-300 rounded-full h-6 w-6 !font-bold">search</span>
-      スキル検索
+      <.icon name="hero-magnifying-glass" class="w-8 h-8" />
     </button>
-
     """
   end
 
