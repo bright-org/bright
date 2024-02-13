@@ -22,6 +22,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       </div>
       <% else %>
       <div class="bg-white w-[450px]">
+        <p class="text-left" :if={!@anon}><%= @user.name %></p>
         <.tab
           id={"#{@prefix}_skill_search_result_tab_#{@index}"}
           tabs={@tabs}
@@ -60,6 +61,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           <div :if={@search}>
           <.action_area
             user={@user}
+            anon={@anon}
             skill_panel={@selected_skill_panel}
             stock_user_ids={@stock_user_ids}
           />

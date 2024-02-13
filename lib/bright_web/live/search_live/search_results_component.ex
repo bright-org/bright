@@ -3,6 +3,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
 
   alias Bright.Repo
   alias Bright.SkillPanels
+  alias Bright.Teams
   alias Bright.Accounts
 
   def render(assigns) do
@@ -15,7 +16,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
           search={@search}
           prefix={@prefix}
           module={BrightWeb.SearchLive.SearchResultComponent}
-          anon={@anon}
+          anon={!Enum.member?(@team_members, user.id)}
           user={user}
           index={index}
           skill_params={@skill_params}
@@ -33,6 +34,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
     |> assign(assigns)
     |> assign(:hr_enabled, Accounts.hr_enabled?(user.id))
     |> assign(:skill_params, put_skill_panel_name(skill_params))
+    |> assign(:team_members, Teams.list_user_ids_related_team_by_user(user))
     |> then(&{:ok, &1})
   end
 
