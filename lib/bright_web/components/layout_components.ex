@@ -132,24 +132,28 @@ defmodule BrightWeb.LayoutComponents do
     ~H"""
     <aside class="relative z-50 lg:z-20">
       <input id="sp_navi_input" class="hidden peer" type="checkbox">
-      <label id="sp_navi_open" class="bg-white block cursor-pointer fixed h-10 ml-4 left-0 rounded top-2 w-10 z-[60] lg:hidden" for="sp_navi_input">
+      <label id="sp_navi_open" class="bg-white block cursor-pointer fixed h-10 ml-4 left-0 rounded top-2 w-10 z-[60] peer-checked:z-0 lg:hidden" for="sp_navi_input">
         <span class="absolute bg-brightGray-300 block cursor-pointer h-[3px] left-1 top-1.5 w-8 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8"></span>
       </label>
-      <label id="sp_navi_close" for="sp_navi_input" class="cursor-pointer hidden h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
-      <div class="fixed bg-brightGray-900 pt-3 min-h-screen h-full hidden flex-col w-full lg:flex lg:static lg:w-[200px] peer-checked:flex overflow-y-scroll lg:overflow-y-hidden">
-        <.link href="/mypage"><img src="/images/common/logo.svg" width="163px" class="ml-2 lg:ml-4 mt-12 lg:mt-0" /></.link>
-        <ul class="grid lg:pt-2">
-          <%= for {title, path, regex} <- links() do %>
+      <label id="sp_navi_background" for="sp_navi_input" class="cursor-pointer hidden peer-checked:block bg-pureGray-600/90 h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
+      <div class="lg:gap-y-10 pt-2 fixed bg-brightGray-900 min-h-screen h-full flex-col w-[110px] z-40 lg:flex lg:items-center lg:static lg:w-[110px] hidden peer-checked:flex peer-checked:animate-fade-in-left">
+        <.link href="/mypage"><img src="/images/common/logo.svg" width="100" class="hidden lg:block" /></.link>
+        <ul class="grid lg:flex lg:flex-col lg:items-center lg:gap-y-2">
+          <%= for {title, path, regex, img_src} <- links() do %>
             <li>
-              <.link class={menu_active_style(match_link?(@href, path, regex))} href={path} ><%= title %></.link>
+              <.link class={menu_active_style(match_link?(@href, path, regex))} href={path}>
+                <img src={img_src} alt="path image" width="32" height="32">
+                <%= title %>
+              </.link>
             </li>
           <% end %>
           <li>
             <.link
             href="/users/log_out"
             method="delete"
-            class="!text-white text-base py-4 inline-block pl-4 w-full mb"
+            class="hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded text-xs text-white w-28"
             >
+              <img src= "/images/common/icons/logout.svg" alt="path image" width="32" height="32">
               ログアウト
             </.link>
           </li>
@@ -159,15 +163,16 @@ defmodule BrightWeb.LayoutComponents do
     """
   end
 
+  # {title, path, regex, img_src}
   def links() do
     [
-      {"チームを作る（β）", "/teams/new", nil},
-      {"マイページ", "/mypage", nil},
-      {"スキルを選ぶ", "/more_skills?open=want_todo_panel", nil},
-      {"成長パネル", "/graphs", nil},
-      {"スキルパネル", "/panels", nil},
-      {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/},
-      {"面談チャット", "/recruits/chats", nil}
+      {"マイページ", "/mypage", nil, "/images/common/icons/mypage.svg"},
+      {"スキルを選ぶ", "/more_skills", nil, "/images/common/icons/skillSelect.svg"},
+      {"成長パネル", "/graphs", nil, "/images/common/icons/growthPanel.svg"},
+      {"スキルパネル", "/panels", nil, "/images/common/icons/skillPanel.svg"},
+      {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/, "/images/common/icons/skillAnalyze.svg"},
+      {"チームを作る（β）", "/teams/new", nil, "/images/common/icons/teamAdd.svg"},
+      {"面談チャット", "/recruits/chats", nil, "/images/common/icons/oneOnOneChat.svg"}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
       # {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html", nil},
@@ -175,9 +180,12 @@ defmodule BrightWeb.LayoutComponents do
   end
 
   defp menu_active_style(true),
-    do: "!text-white bg-white bg-opacity-30 text-base py-4 inline-block pl-4 w-full mb-1"
+    do:
+      "bg-white bg-opacity-30 hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded text-xs text-white w-28"
 
-  defp menu_active_style(false), do: "!text-white text-base py-4 inline-block pl-4 w-full mb"
+  defp menu_active_style(false),
+    do:
+      "hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded text-xs text-white w-28"
 
   defp match_link?(href, path, nil) do
     String.starts_with?(href, path)
