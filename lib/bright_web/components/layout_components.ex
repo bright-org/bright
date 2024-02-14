@@ -151,7 +151,7 @@ defmodule BrightWeb.LayoutComponents do
             <.link
             href="/users/log_out"
             method="delete"
-            class="hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded text-xs text-white w-28"
+            class="hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded font-bold text-xs text-white w-28"
             >
               <img src= "/images/common/icons/logout.svg" alt="path image" width="32" height="32">
               ログアウト
@@ -181,11 +181,11 @@ defmodule BrightWeb.LayoutComponents do
 
   defp menu_active_style(true),
     do:
-      "bg-white bg-opacity-30 hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded text-xs text-white w-28"
+      "bg-white bg-opacity-30 hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded font-bold text-xs text-white w-28"
 
   defp menu_active_style(false),
     do:
-      "hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded text-xs text-white w-28"
+      "hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded font-bold text-xs text-white w-28"
 
   defp match_link?(href, path, nil) do
     String.starts_with?(href, path)
