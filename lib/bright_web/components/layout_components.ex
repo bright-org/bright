@@ -137,7 +137,7 @@ defmodule BrightWeb.LayoutComponents do
       </label>
       <label id="sp_navi_background" for="sp_navi_input" class="cursor-pointer hidden peer-checked:block bg-pureGray-600/90 h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
       <div class="lg:gap-y-10 pt-2 fixed bg-brightGray-900 min-h-screen h-full flex-col w-[110px] z-40 lg:flex lg:items-center lg:static lg:w-[110px] hidden peer-checked:flex peer-checked:animate-fade-in-left">
-        <.link href="/mypage"><img src="/images/common/logo.svg" width="100" class="hidden lg:block" /></.link>
+        <.link href="/mypage"><img src="/images/common/logo.svg" width="110" class="hidden lg:block" /></.link>
         <ul class="grid lg:flex lg:flex-col lg:items-center lg:gap-y-2">
           <%= for {title, path, regex, img_src} <- links() do %>
             <li>
