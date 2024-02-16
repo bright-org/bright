@@ -7,6 +7,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   import BrightWeb.TabComponents
   import BrightWeb.DisplayUserHelper, only: [encrypt_user_name: 1]
 
+  alias Bright.Accounts
   alias Bright.Teams
   alias Bright.CustomGroups
   alias Bright.UserProfiles
@@ -49,6 +50,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
       |> assign(:page_size, @page_size)
       |> assign(:card_row_click_target, nil)
       |> assign(:purpose, nil)
+      |> assign(:hr_enabled, false)
 
     {:ok, socket}
   end
@@ -107,11 +109,13 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
               <% else %>
                 <.profile_stock_small_with_remove_button
                   stock_id={user_profile.id}
+                  user_id={user_profile.user_id}
                   stock_date={Date.to_iso8601(user_profile.inserted_at)}
                   skill_panel={user_profile.skill_panel}
                   desired_income={if user_profile.desired_income == 0, do: "-" ,else: user_profile.desired_income}
                   encrypt_user_name={encrypt_user_name(user_profile.user)}
                   remove_user_target={@myself}
+                  hr_enabled={@hr_enabled}
                   click_event={click_event(@purpose)}
                   click_target={@card_row_click_target}
                 />
@@ -129,6 +133,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     socket =
       socket
       |> assign(assigns)
+      |> assign(:hr_enabled, Accounts.hr_enabled?(assigns.current_user.id))
       # 初期表示データの取得 mount時に設定したselected_tabの選択処理を実行
       |> assign_with_seleted_tab()
 

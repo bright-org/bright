@@ -149,11 +149,11 @@ defmodule BrightWeb.RecruitInterviewLive.CreateComponent do
   end
 
   def handle_event("open", %{"user" => user_id, "skill_params" => skill_params}, socket) do
-    user = UserSearches.get_user_by_id_with_job_profile_and_skill_score(user_id, skill_params)
-
     skill_params =
       skill_params
       |> Enum.map(&(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end) |> Enum.into(%{})))
+
+    user = UserSearches.get_user_by_id_with_job_profile_and_skill_score(user_id, skill_params)
 
     socket
     |> assign(:candidates_user, user)
