@@ -11,10 +11,10 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
     ~H"""
     <div id="employment_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-        <h4 class="text-start">採用の状況</h4>
+        <h4 class="text-start">配属チームの調整状況</h4>
         <li :if={Enum.count(@employments) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
-            進行中の採用はありません
+            進行中の配属チームの調整はありません
           </div>
         </li>
         <%= for employment <- @employments do %>
@@ -52,10 +52,10 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
 
     <div id="team_join_request_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
-        <h4 class="text-start">チームジョイン連携の依頼</h4>
+        <h4 class="text-start">配属チームの調整の依頼</h4>
         <li :if={Enum.count(@team_join_requests) == 0} class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
-            進行中の採用はありません
+            進行中の配属チームの調整はありません
           </div>
         </li>
         <%= for request <- @team_join_requests do %>
@@ -114,7 +114,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
     user_id = socket.assigns.current_user.id
 
     socket
-    |> assign(:page_title, "採用決定者のジョイン先確定")
+    |> assign(:page_title, "配属チームの調整状況")
     |> assign(:employments, Recruits.list_employment(user_id))
     |> assign(:team_join_requests, Recruits.list_team_join_request(user_id))
     |> then(&{:ok, &1})

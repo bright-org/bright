@@ -183,7 +183,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
     user_id = socket.assigns.current_user.id
 
     socket
-    |> assign(:page_title, "採用選考")
+    |> assign(:page_title, "採用の選考状況")
     |> assign(:coordinations, Recruits.list_coordination(user_id, :not_complete))
     |> assign(:coordination_members, Recruits.list_coordination_members(user_id, :not_answered))
     |> assign(:coordination, nil)
