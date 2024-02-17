@@ -136,7 +136,7 @@ defmodule BrightWeb.LayoutComponents do
         <span class="absolute bg-brightGray-300 block cursor-pointer h-[3px] left-1 top-1.5 w-8 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8"></span>
       </label>
       <label id="sp_navi_background" for="sp_navi_input" class="cursor-pointer hidden peer-checked:block bg-pureGray-600/90 h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
-      <div class="lg:gap-y-10 pt-2 fixed bg-brightGray-900 min-h-svh h-full flex-col w-[110px] z-40 lg:flex lg:items-center lg:static lg:w-[110px] hidden peer-checked:flex peer-checked:animate-fade-in-left">
+      <div class="lg:gap-y-10 pt-2 fixed bg-brightGray-900 min-h-svh h-svh lg:h-full flex-col w-[110px] z-40 lg:flex lg:items-center lg:static lg:w-[110px] hidden peer-checked:flex peer-checked:animate-fade-in-left">
         <.link href="/mypage"><img src="/images/common/logo.svg" width="110" class="hidden lg:block" /></.link>
         <ul class="grid lg:flex lg:flex-col lg:items-center lg:gap-y-2">
           <%= for {title, path, regex, img_src} <- links() do %>
