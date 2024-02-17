@@ -56,23 +56,6 @@
 
 /* SP */
 
-#sp_navi_input:checked ~ label {
-  background-color: rgb(46, 58, 58) !important;
-}
-#sp_navi_input:checked ~ #sp_navi_open span {
-  background-color: rgb(46, 58, 58) !important;
-  transform: translateY(-3px);
-  transition: 0.2s ease-in-out;
-}
-#sp_navi_input:checked ~ #sp_navi_open span::before {
-  background: #ffffff !important;
-  transform: translateY(4px) rotate(-45deg);
-}
-#sp_navi_input:checked ~ #sp_navi_open span::after {
-  background: #ffffff !important;
-  transform: translateY(-8px) rotate(45deg);
-}
-
 @keyframes arrow-to-job-searching {
   0% {
     transform: rotate(-45deg) translate(0, 0);
