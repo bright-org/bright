@@ -114,6 +114,10 @@ defmodule Bright.Factory do
   # Recruit context
   use Bright.InterviewFactory
   use Bright.InterviewMemberFactory
+  use Bright.CoordinationFactory
+  use Bright.CoordinationMemberFactory
+  use Bright.EmploymentFactory
+  use Bright.TeamJoinRequestFactory
 
   # Chat context
   use Bright.ChatFactory
