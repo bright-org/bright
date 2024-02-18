@@ -136,13 +136,13 @@ defmodule BrightWeb.LayoutComponents do
         <span class="absolute bg-brightGray-300 block cursor-pointer h-[3px] left-1 top-1.5 w-8 before:bg-brightGray-300 before:block before:content-[''] before:cursor-pointer before:h-[3px] before:absolute before:top-3 before:w-8 after:bg-brightGray-300 after:block after:content-[''] after:cursor-pointer after:h-[3px] after:absolute after:top-6 after:w-8"></span>
       </label>
       <label id="sp_navi_background" for="sp_navi_input" class="cursor-pointer hidden peer-checked:block bg-pureGray-600/90 h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
-      <div class="lg:gap-y-10 pt-2 fixed bg-brightGray-900 min-h-svh h-svh lg:h-full flex-col w-[110px] z-40 lg:flex lg:items-center lg:static lg:w-[110px] hidden peer-checked:flex peer-checked:animate-fade-in-left">
+      <div class="lg:gap-y-10 pt-2 fixed bg-brightGray-900 min-h-svh h-full overflow-y-scroll lg:overflow-y-visible flex-col w-[110px] z-40 lg:flex lg:items-center lg:static lg:w-[110px] hidden peer-checked:flex peer-checked:animate-fade-in-left">
         <.link href="/mypage"><img src="/images/common/logo.svg" width="110" class="hidden lg:block" /></.link>
         <ul class="grid lg:flex lg:flex-col lg:items-center lg:gap-y-2">
           <%= for {title, path, regex, img_src} <- links() do %>
             <li>
               <.link class={menu_active_style(match_link?(@href, path, regex))} href={path}>
-                <img src={img_src} alt="path image" width="32" height="32">
+                <img src={img_src} alt="path image">
                 <%= title %>
               </.link>
             </li>
@@ -151,9 +151,9 @@ defmodule BrightWeb.LayoutComponents do
             <.link
             href="/users/log_out"
             method="delete"
-            class="hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded font-bold text-xs text-white w-28"
+            class="hover:bg-brightGray-500 content-center flex flex-col gap-1 lg:gap-2 h-16 lg:h-20 items-center justify-center rounded font-bold text-xs text-white w-[110px]"
             >
-              <img src= "/images/common/icons/logout.svg" alt="path image" width="32" height="32">
+              <img src= "/images/common/icons/logout.svg" alt="path image">
               ログアウト
             </.link>
           </li>
@@ -181,11 +181,11 @@ defmodule BrightWeb.LayoutComponents do
 
   defp menu_active_style(true),
     do:
-      "bg-white bg-opacity-30 hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded font-bold text-xs text-white w-28"
+      "bg-white bg-opacity-30 hover:bg-brightGray-500 content-center flex flex-col gap-1 lg:gap-2 h-16 lg:h-20 items-center justify-center font-bold text-xs text-white w-[110px]"
 
   defp menu_active_style(false),
     do:
-      "hover:bg-brightGray-500 content-center flex flex-col gap-2 h-20 items-center justify-center rounded font-bold text-xs text-white w-28"
+      "hover:bg-brightGray-500 content-center flex flex-col gap-1 lg:gap-2 h-16 lg:h-20 items-center justify-center font-bold text-xs text-white w-[110px]"
 
   defp match_link?(href, path, nil) do
     String.starts_with?(href, path)
