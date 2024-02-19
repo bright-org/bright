@@ -147,6 +147,7 @@ defmodule Bright.Recruits do
     InterviewMember
     |> where([m], m.user_id == ^user_id)
     |> preload(:interview)
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -276,6 +277,7 @@ defmodule Bright.Recruits do
   def list_coordination(user_id) do
     Coordination
     |> where([i], i.recruiter_user_id == ^user_id)
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -400,6 +402,7 @@ defmodule Bright.Recruits do
     CoordinationMember
     |> where([m], m.user_id == ^user_id)
     |> preload(coordination: [candidates_user: :user_profile])
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -513,6 +516,7 @@ defmodule Bright.Recruits do
       i.recruiter_user_id == ^user_id and i.status in [:acceptance_emplyoment]
     )
     |> preload(candidates_user: :user_profile)
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -686,6 +690,7 @@ defmodule Bright.Recruits do
       r.team_owner_user_id == ^user_id and r.status in [:requested]
     )
     |> preload(employment: [recruiter_user: :user_profile])
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -696,6 +701,7 @@ defmodule Bright.Recruits do
       r.employment_id == ^employment_id and r.status in [:requested]
     )
     |> preload(:team_owner_user)
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
