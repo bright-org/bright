@@ -329,12 +329,12 @@ defmodule Bright.Accounts.UserNotifier do
   Deliver interview acceptance.
   """
   def deliver_acceptance_interview_instructions(from_user, to_user, url) do
-    deliver(to_user.email, "【Bright】面談参加依頼が届いています", """
+    deliver(to_user.email, "【Bright】面談同席依頼が届いています", """
     #{to_user.name}さん
 
-    #{from_user.name} さんから、面談の参加依頼が届いています。
+    #{from_user.name} さんから、面談の同席依頼が届いています。
 
-    下記URLで面談内容を確認し、面談参加可否を選択してください。
+    下記URLで面談内容を確認し、面談同席可否を選択してください。
     #{url}
 
     ---------------------------------------------------------------------
@@ -352,10 +352,10 @@ defmodule Bright.Accounts.UserNotifier do
   Deliver interview acceptance answer.
   """
   def deliver_interview_acceptance_to_recruiter(from_user, to_user, url) do
-    deliver(to_user.email, "【Bright】面談参加依頼に返答されました", """
+    deliver(to_user.email, "【Bright】面談同席依頼に返答されました", """
     #{to_user.name}さん
 
-    #{from_user.name} さんから、面談の参加依頼の返答が届いています。
+    #{from_user.name} さんから、面談の同駅依頼の返答が届いています。
 
     下記URLで面談内容を確認してください。
     #{url}
