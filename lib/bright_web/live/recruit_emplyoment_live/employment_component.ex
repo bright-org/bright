@@ -190,7 +190,7 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
         {:noreply, assign(socket, :candidate_error, "対象のユーザーは既に追加されています")}
 
       Enum.count(users) >= 4 ->
-        {:noreply, assign(socket, :candidate_error, "採用調整候補者の上限は４名です")}
+        {:noreply, assign(socket, :candidate_error, "ジョイン先チーム管理者の上限は４名です")}
 
       true ->
         socket
