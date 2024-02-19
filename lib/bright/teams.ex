@@ -1175,6 +1175,19 @@ defmodule Bright.Teams do
     end
   end
 
+  def joined_teams_or_supportee_teams_or_supporter_teams_or_hr_by_user_id!(
+        current_user_id,
+        other_user_id
+      ) do
+    if joined_teams_by_user_id?(current_user_id, other_user_id) ||
+         joined_supportee_teams_or_supporter_teams_by_user_id?(current_user_id, other_user_id) ||
+         Bright.Recruits.get_ongoing_interview_by_user_id!(current_user_id, other_user_id) do
+      true
+    else
+      raise(Bright.Exceptions.ForbiddenResourceError)
+    end
+  end
+
   @doc """
   　自身の所属チームの支援元、支援先のチームに所属しているかを確認
   所属していない場合Ecto.NoResultsErrorをraise

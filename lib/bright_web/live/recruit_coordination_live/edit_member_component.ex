@@ -27,7 +27,7 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
                   <.live_component
                     id="user_params_for_coordination"
                     prefix="coordination"
-                    anon={true}
+                    anon={false}
                     search={false}
                     module={BrightWeb.SearchLive.SearchResultsComponent}
                     current_user={@current_user}
