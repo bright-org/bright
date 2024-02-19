@@ -141,5 +141,6 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     naive_datetime
     |> NaiveDateTime.add(9, :hour)
     |> NaiveDateTime.to_string()
+    |> String.slice(0, 16)
   end
 end
