@@ -19,7 +19,9 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
         <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-8 shadow text-sm">
             <h2 class="font-bold text-3xl">
-              <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">採用決定者のジョイン先確定</span>
+              <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">
+                採用決定者のジョイン先確定
+              </span>
             </h2>
 
             <div class="flex mt-8">
@@ -188,7 +190,7 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
         {:noreply, assign(socket, :candidate_error, "対象のユーザーは既に追加されています")}
 
       Enum.count(users) >= 4 ->
-        {:noreply, assign(socket, :candidate_error, "採用調整候補者の上限は４名です")}
+        {:noreply, assign(socket, :candidate_error, "ジョイン先チーム管理者の上限は４名です")}
 
       true ->
         socket

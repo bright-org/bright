@@ -4,6 +4,7 @@ defmodule Bright.Recruits do
   """
 
   import Ecto.Query, warn: false
+  alias Bright.Recruits.CoordinationMember
   alias Bright.Repo
   alias Bright.Recruits.InterviewMember
   alias Bright.Recruits.Interview
@@ -146,6 +147,7 @@ defmodule Bright.Recruits do
     InterviewMember
     |> where([m], m.user_id == ^user_id)
     |> preload(:interview)
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -275,6 +277,7 @@ defmodule Bright.Recruits do
   def list_coordination(user_id) do
     Coordination
     |> where([i], i.recruiter_user_id == ^user_id)
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -399,6 +402,7 @@ defmodule Bright.Recruits do
     CoordinationMember
     |> where([m], m.user_id == ^user_id)
     |> preload(coordination: [candidates_user: :user_profile])
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -512,6 +516,7 @@ defmodule Bright.Recruits do
       i.recruiter_user_id == ^user_id and i.status in [:acceptance_emplyoment]
     )
     |> preload(candidates_user: :user_profile)
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -685,6 +690,7 @@ defmodule Bright.Recruits do
       r.team_owner_user_id == ^user_id and r.status in [:requested]
     )
     |> preload(employment: [recruiter_user: :user_profile])
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -695,6 +701,7 @@ defmodule Bright.Recruits do
       r.employment_id == ^employment_id and r.status in [:requested]
     )
     |> preload(:team_owner_user)
+    |> order_by(desc: :updated_at)
     |> Repo.all()
   end
 
@@ -798,5 +805,46 @@ defmodule Bright.Recruits do
       to_user,
       team_join_request_url_fun.(team_join_request.id)
     )
+  end
+
+  @doc """
+  指定されたcurrent_user_idに対して、other_user_idで指定されたユーザーが面談確定しているか、確定後以降の依頼を受けているかを確認
+  確定or依頼がある場合はtrue
+  確定していない、依頼していない場合はfalseを返す
+  Teams.joined_teams_or_supportee_teams_or_supporter_teams_or_hr_by_user_id!
+  関数内での判定に使い、全てfalseの場合はBright.Exceptions.ForbiddenResourceError(404扱い)をraise
+  """
+  def get_ongoing_interview_by_user_id!(current_user_id, other_user_id) do
+    recruiter =
+      Interview
+      |> where(
+        [i],
+        i.recruiter_user_id == ^current_user_id and
+          i.candidates_user_id == ^other_user_id and
+          i.status in [:ongoing_interview, :completed_interview]
+      )
+      |> Repo.exists?()
+
+    coordination_member =
+      from(c in Coordination,
+        join: cm in CoordinationMember,
+        on: cm.user_id == ^current_user_id,
+        where: c.candidates_user_id == ^other_user_id
+      )
+      |> Repo.exists?()
+
+    team_join =
+      from(c in Employment,
+        join: cm in TeamJoinRequest,
+        on: cm.team_owner_user_id == ^current_user_id,
+        where: c.candidates_user_id == ^other_user_id
+      )
+      |> Repo.exists?()
+
+    if recruiter or coordination_member or team_join do
+      true
+    else
+      false
+    end
   end
 end

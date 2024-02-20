@@ -166,7 +166,9 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
         socket
       )
     else
-      {:noreply, socket}
+      socket
+      |> assign(:user_profiles, [])
+      |> then(&{:noreply, &1})
     end
   end
 
@@ -196,7 +198,9 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
         socket
       )
     else
-      {:noreply, socket}
+      socket
+      |> assign(:user_profiles, [])
+      |> then(&{:noreply, &1})
     end
   end
 
@@ -226,7 +230,9 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
         socket
       )
     else
-      {:noreply, socket}
+      socket
+      |> assign(:user_profiles, [])
+      |> then(&{:noreply, &1})
     end
   end
 
