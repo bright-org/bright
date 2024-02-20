@@ -9,7 +9,7 @@ alias Bright.Subscriptions
 
 ## Brightにおける有料サービスの概念
 
-有料サービスに関する概念については[概念ER図](https://github.com/bright-org/bright/blob/develop/docs/conceptual_schemas/service.md)を参照
+有料サービスに関する概念については[概念ER図](https://github.com/bright-org/bright/blob/main/docs/conceptual_schemas/service.md)を参照
 
 ## Subscriptionsコンテキストのデータモデル
 
