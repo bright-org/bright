@@ -130,7 +130,7 @@ module.exports = {
       },
       animation: {
         "fade-in-bottom": "fade-in-bottom 0.5s ease-in-out both",
-        "fade-in-left": "fade-in-left 0.5s ease-in-out both",
+        "fade-in-left": "fade-in-left 0.3s ease-in-out both",
       },
       keyframes: {
           "fade-in-bottom": {
