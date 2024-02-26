@@ -94,17 +94,15 @@ defmodule Bright.UserSearches do
 
   def get_user_by_id_with_job_profile_and_skill_score(
         user_id,
-        skill_params
+        [%{skill_panel: skill_panel_id} | _]
       ) do
-    # user_job_profileとskill_paramsのskill_panel_idで絞り込んだ skill_scoreの一覧
-    skill_scores =
-      skill_score_query([], [job_searching: true], %{})
-      |> skill_query(skill_params)
-      |> Repo.all()
-
-    # ソート用の1つ目のskill_paramsのskill_classのidを取得
     skill_class_id =
-      get_first_skill_query_params_skill_class_id(skill_scores, List.first(skill_params))
+      from(
+        sc in SkillClass,
+        where: sc.skill_panel_id == ^skill_panel_id and sc.class == 1,
+        select: sc.id
+      )
+      |> Repo.all()
 
     from(
       u in User,
@@ -124,6 +122,19 @@ defmodule Bright.UserSearches do
       }
     )
     |> Repo.all()
+  end
+
+  def generate_search_params_from_skill_panel_name(skill_panel_name) do
+    skill_panel =
+      Bright.SkillPanels.SkillPanel
+      |> Repo.get_by(name: skill_panel_name)
+
+    [
+      %{
+        skill_panel_name: skill_panel_name,
+        skill_panel: skill_panel.id
+      }
+    ]
   end
 
   # joinしたデータで動的なorderを設定する場合は fragment asでschemaのvirtual fieldのカラム名を指定する

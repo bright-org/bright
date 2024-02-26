@@ -129,7 +129,8 @@ module.exports = {
         },
       },
       animation: {
-        "fade-in-bottom": "fade-in-bottom 0.5s ease-in-out both"
+        "fade-in-bottom": "fade-in-bottom 0.5s ease-in-out both",
+        "fade-in-left": "fade-in-left 0.3s ease-in-out both",
       },
       keyframes: {
           "fade-in-bottom": {
@@ -141,6 +142,16 @@ module.exports = {
                   transform: "translateY(0)",
                   opacity: "1"
               }
+          },
+          "fade-in-left": {
+            "0%": {
+              transform: "translateX(-100%)",
+              opacity: "0"
+            },
+            to: {
+                transform: "translateX(0%)",
+                opacity: "1"
+            }
           }
       },
       backgroundImage: (theme) => ({

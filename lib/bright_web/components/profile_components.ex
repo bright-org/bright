@@ -261,14 +261,16 @@ defmodule BrightWeb.ProfileComponents do
   """
   attr :remove_user_target, :any
   attr :stock_id, :string, required: true
+  attr :user_id, :string, default: ""
   attr :stock_date, :string, required: true
   attr :skill_panel, :string, required: true
   attr :desired_income, :string, default: ""
   attr :encrypt_user_name, :string, required: true
   attr :click_event, :string, default: ""
   attr :click_target, :string, default: nil
+  attr :hr_enabled, :boolean, default: false
 
-  def profile_stock_small_with_remove_button(assigns) do
+  def profile_stock_small_with_remove_button(%{hr_enabled: false} = assigns) do
     ~H"""
     <li class="relative text-left flex items-center text-base p-1  bg-white w-full lg:w-1/2">
       <.profile_stock_small_link click_event={@click_event} click_target={@click_target} encrypt_user_name={@encrypt_user_name}>
@@ -282,6 +284,46 @@ defmodule BrightWeb.ProfileComponents do
           <span class="text-brightGray-300">希望年収：<%= @desired_income %></span>
         </div>
       </.profile_stock_small_link>
+      <button
+        phx-click={JS.push("remove_user", value: %{stock_id: @stock_id})}
+        phx-target={@remove_user_target}
+        class="absolute top-0 -right-4 lg:right-2"
+      >
+        <span class="material-icons bg-brightGray-900 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+          close
+        </span>
+      </button>
+    </li>
+    """
+  end
+
+  def profile_stock_small_with_remove_button(%{hr_enabled: true} = assigns) do
+    assigns =
+      Map.put(
+        assigns,
+        :skill_params,
+        Bright.UserSearches.generate_search_params_from_skill_panel_name(assigns.skill_panel)
+      )
+
+    ~H"""
+    <li class="relative text-left flex items-center text-base p-1  bg-white w-full lg:w-1/2">
+      <.link
+        phx-click={
+          JS.show(to: "#create_interview_modal")
+          |> JS.push("open", value: %{user: @user_id, skill_params: @skill_params}, target: "#create_interview_modal")
+        }
+        class="cursor-pointer w-full inline-flex items-center gap-x-6"
+      >
+        <img
+          class="inline-block h-10 w-10 rounded-full"
+          src="/images/avatar.png"
+        />
+        <div class="flex-auto gap-x-2">
+          <p class="truncate max-w-[240px]">検索：<%= @skill_panel %></p>
+          <span class="text-brightGray-300">(<%= @stock_date %>)</span>
+          <span class="text-brightGray-300">希望年収：<%= @desired_income %></span>
+        </div>
+      </.link>
       <button
         phx-click={JS.push("remove_user", value: %{stock_id: @stock_id})}
         phx-target={@remove_user_target}
