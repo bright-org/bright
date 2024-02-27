@@ -355,7 +355,7 @@ defmodule Bright.Accounts.UserNotifier do
     deliver(to_user.email, "【Bright】面談同席依頼に返答されました", """
     #{to_user.name}さん
 
-    #{from_user.name} さんから、面談の同駅依頼の返答が届いています。
+    #{from_user.name} さんから、面談の同席依頼の返答が届いています。
 
     下記URLで面談内容を確認してください。
     #{url}
