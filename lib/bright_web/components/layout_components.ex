@@ -125,7 +125,7 @@ defmodule BrightWeb.LayoutComponents do
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
-    <h3 class="mx-4 lg:mx-10 py-4">
+    <h3 id="page-top-title" class="mx-4 lg:mx-10 py-4">
       <%= @page_title %><%= @page_sub_title %>
     </h3>
     """
