@@ -16,7 +16,7 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
   def render(assigns) do
     ~H"""
     <div id="skill_search_modal" class="hidden">
-      <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-20" />
+      <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-50" />
       <div class="fixed inset-0 overflow-y-auto z-50">
         <section
           id="user_search" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-[1024px]"
