@@ -73,28 +73,16 @@ defmodule BrightWeb.LayoutComponents do
       <.user_header />
   """
   attr :profile, :map
-  attr :page_title, :string
-  attr :page_sub_title, :string
   attr :current_user, :map
 
   def user_header(assigns) do
-    page_sub_title =
-      if assigns.page_sub_title != nil, do: " / #{assigns.page_sub_title}", else: ""
-
     assigns =
       assigns
       |> assign(:profile, assigns.profile || %UserProfiles.UserProfile{})
-      |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
     <div id="user-header" class="sticky top-0 z-40 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
-      <h4 class="lg:hidden font-bold mt-2 text-sm before:bg-bgGem before:bg-6 before:bg-left before:bg-no-repeat before:content-[''] before:h-6 before:inline-block before:align-[-5px] before:w-6">
-        <%= @page_title %><%= @page_sub_title %>
-      </h4>
-      <h4 class="hidden lg:block font-bold lg:mt-0 lg:text-xl">
-        <%= @page_title %><%= @page_sub_title %>
-      </h4>
-      <div class="bg-white fixed bottom-0 left-0 p-2 lg:ml-auto lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
+      <div class="bg-white fixed bottom-0 left-0 p-2 lg:mr-2 lg:static lg:p-0 w-full lg:w-[440px]">
         <div class="flex justify-between gap-2">
           <.plan_upgrade_button />
           <.contact_customer_success_button />
@@ -116,6 +104,30 @@ defmodule BrightWeb.LayoutComponents do
         <.user_button icon_file_path={UserProfiles.icon_url(@profile.icon_file_path)}/>
       </div>
     </div>
+    """
+  end
+
+  @doc """
+  Renders a page title.
+
+  ## Examples
+      <.page_top_title />
+  """
+  attr :page_title, :string
+  attr :page_sub_title, :string
+
+  def page_top_title(assigns) do
+    page_sub_title =
+      if assigns.page_sub_title != nil, do: " / #{assigns.page_sub_title}", else: ""
+
+    assigns =
+      assigns
+      |> assign(:page_sub_title, page_sub_title)
+
+    ~H"""
+    <h3 id="page-top-title" class="mx-4 lg:mx-10 py-4">
+      <%= @page_title %><%= @page_sub_title %>
+    </h3>
     """
   end
 
