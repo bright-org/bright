@@ -15,7 +15,14 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
   alias Bright.SkillUnits.{SkillUnit, SkillCategory, Skill, SkillClassUnit}
   alias Bright.SkillPanels.{SkillPanel, SkillClass}
-  alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore, CareerFieldScore}
+
+  alias Bright.SkillScores.{
+    SkillUnitScore,
+    SkillScore,
+    SkillClassScore,
+    CareerFieldScore,
+    SkillClassScoreLog
+  }
 
   alias Bright.HistoricalSkillUnits.{
     HistoricalSkillUnit,
@@ -30,7 +37,8 @@ defmodule Bright.Batches.UpdateSkillPanels do
     HistoricalSkillUnitScore,
     HistoricalSkillScore,
     HistoricalSkillClassScore,
-    HistoricalCareerFieldScore
+    HistoricalCareerFieldScore,
+    HistoricalSkillClassScoreLog
   }
 
   alias Bright.SkillEvidences.{SkillEvidence, SkillEvidencePost}
@@ -81,6 +89,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
       create_historical_skill_class_scores(skill_class_pairs, now, locked_date)
       create_historical_career_field_scores(now, locked_date)
+      create_historical_skill_class_score_logs(now, skill_class_pairs)
 
       log("historical_skill_classes inserted count: #{length(skill_class_pairs)}")
       log("historical_skill_units inserted count: #{length(skill_unit_pairs)}")
@@ -123,6 +132,7 @@ defmodule Bright.Batches.UpdateSkillPanels do
       update_skill_references(draft_skill_pairs, now)
 
       # コピー元の公開データを削除
+      delete_old_skill_class_score_logs()
       delete_old_skill_classes(locked_date)
       delete_old_skill_units(locked_date)
 
@@ -347,6 +357,31 @@ defmodule Bright.Batches.UpdateSkillPanels do
       end)
 
     insert_all_with_chunk(HistoricalCareerFieldScore, entries)
+  end
+
+  defp create_historical_skill_class_score_logs(now, skill_class_pairs) do
+    historical_skill_class_id_dict =
+      skill_class_pairs
+      |> Map.new(fn {skill_class, historical_skill_class} ->
+        {skill_class.id, historical_skill_class.id}
+      end)
+
+    entries =
+      SkillClassScoreLog
+      |> Repo.all()
+      |> Enum.map(fn log ->
+        %{
+          id: Ecto.ULID.generate(),
+          user_id: log.user_id,
+          historical_skill_class_id: Map.get(historical_skill_class_id_dict, log.skill_class_id),
+          date: log.date,
+          percentage: log.percentage,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+
+    insert_all_with_chunk(HistoricalSkillClassScoreLog, entries)
   end
 
   defp create_skill_units(now, locked_date) do
@@ -673,6 +708,10 @@ defmodule Bright.Batches.UpdateSkillPanels do
 
     from(su in SkillUnit, where: su.locked_date != ^locked_date)
     |> Repo.delete_all()
+  end
+
+  defp delete_old_skill_class_score_logs do
+    Repo.delete_all(SkillClassScoreLog)
   end
 
   defp insert_all_with_chunk(scheme_module, entries) do

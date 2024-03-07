@@ -336,6 +336,20 @@ erDiagram
 
 # 更新ロジックのざっくりした流れ
 
+- 公開→履歴
+    1. 公開テーブルに入っているデータを履歴テーブルにコピーする
+        - `skill_classes` → `historical_skill_classes`
+        - `skill_class_units` → `historical_skill_class_units`
+        - `skill_units` → `historical_skill_units`
+        - `skill_categories` → `historical_skill_categories`
+        - `skills` → `historical_skills`
+        - `skill_class_scores` → `historical_skill_class_scores`
+        - `skill_scores` → `historical_skill_scores`
+        - `skill_unit_scores` → `historical_skill_unit_scores`
+        - `career_field_scores` → `historical_career_field_scores`
+        - `skill_class_score_logs` → `historical_skill_class_score_logs`
+        - `historical_skill_class_scores`, `historical_skill_unit_scores`, `historical_career_field_scores`の `locked_date` には処理を実行した日付を入れる
+    2. 1のコピー元データを公開テーブルから削除する
 - 運営下書き→公開
     1. 運営下書きテーブルに入っているデータを公開テーブルにコピーする
         - `draft_skill_classes` → `skill_classes`
@@ -351,19 +365,6 @@ erDiagram
         - `skill_exams` の外部キー(skill_id)
         - `skill_references` の外部キー(skill_id)
         - 1のコピー先データがなければ削除する
-- 公開→履歴
-    1. 公開テーブルに入っているデータを履歴テーブルにコピーする
-        - `skill_classes` → `historical_skill_classes`
-        - `skill_class_units` → `historical_skill_class_units`
-        - `skill_units` → `historical_skill_units`
-        - `skill_categories` → `historical_skill_categories`
-        - `skills` → `historical_skills`
-        - `skill_class_scores` → `historical_skill_class_scores`
-        - `skill_scores` → `historical_skill_scores`
-        - `skill_unit_scores` → `historical_skill_unit_scores`
-        - `career_field_scores` → `historical_career_field_scores`
-        - `historical_skill_class_scores`, `historical_skill_unit_scores`, `historical_career_field_scores`の `locked_date` には処理を実行した日付を入れる
-    2. 1のコピー元データを公開テーブルから削除する
 - 履歴はどこにもコピーしない
 - ユーザーのスキルスコア集計値更新
     1. 変更があったスキルユニットの把握
