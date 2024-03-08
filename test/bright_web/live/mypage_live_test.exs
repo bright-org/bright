@@ -26,6 +26,9 @@ defmodule BrightWeb.MypageLiveTest do
       assert index_live
              |> has_element?("button:nth-child(3) img[src='/images/common/facebook.svg']")
 
+      assert index_live |> has_element?("h5", "保有スキル（ジェムをクリック）")
+      assert index_live |> has_element?("li a", "エンジニア")
+
       assert index_live |> has_element?("h5", "関わっているチーム")
       assert index_live |> has_element?("li a", "所属チーム")
 
@@ -54,9 +57,6 @@ defmodule BrightWeb.MypageLiveTest do
       data_labels = Enum.map(career_fields, & &1.name_ja) |> Jason.encode!()
       assert has_element?(index_live, ~s(#skillset-gem[data-labels='#{data_labels}']))
 
-      # 未実装
-      # assert index_live |> has_element?("h5", "保有スキル（ジェムをクリック）")
-      # assert index_live |> has_element?("li a", "エンジニア")
     end
 
     test "shows gem without data", %{conn: conn} do
