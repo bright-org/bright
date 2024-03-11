@@ -11,13 +11,29 @@ defmodule Bright.Chats.ChatFile do
 
   schema "chat_files" do
     field :file_name, :string
-    field :file_type, Ecto.Enum, values: [:image, :file]
+    field :file_type, Ecto.Enum, values: [:images, :files]
     field :file_path, :string
     field :deleted_at, :naive_datetime
 
     belongs_to :chat_message, Bright.Chats.ChatMessage
 
     timestamps()
+  end
+
+  def build(target, entry) do
+    %{
+      file_name: entry.client_name,
+      file_path: build_file_path(target, entry.client_name, entry.uuid),
+      file_type: target
+    }
+  end
+
+  def build_file_path(:images, file_name, uuid) do
+    "chats/image_#{uuid}" <> Path.extname(file_name)
+  end
+
+  def build_file_path(:files, file_name, uuid) do
+    "chats/file_#{uuid}" <> Path.extname(file_name)
   end
 
   @doc false
