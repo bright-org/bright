@@ -56,8 +56,9 @@ defmodule BrightWeb.ChatLive.Index do
               <div class="w-[50px] flex justify-center flex-col items-center">
                 <.user_icon path={@sender_icon_path} />
               </div>
-              <div id="message" class="w-full" phx-update="ignore">
-                <textarea
+              <div class="w-full">
+                <.input
+                  type="textarea"
                   class="w-full min-h-1 outline-none p-2"
                   placeholder="メッセージを入力"
                   autocapitalize="none"
@@ -66,7 +67,6 @@ defmodule BrightWeb.ChatLive.Index do
                 />
               </div>
             </div>
-
             <hr class="pb-1 border-brightGray-100" />
             <div class="flex justify-end gap-x-4 pt-2 pb-2 w-full content-start">
               <div class="mr-auto">
@@ -75,22 +75,38 @@ defmodule BrightWeb.ChatLive.Index do
                     <.live_file_input upload={@uploads.images}  class="hidden"/>
                     <span class="material-icons-outlined !text-4xl">add_photo_alternate</span>
                   </label>
-                  <button>
-                    <span class="material-symbols-outlined !text-4xl opacity-50">add_box</span>
-                  </button>
+                  <label for={@uploads.files.ref} class="cursor-pointer hover:opacity-70">
+                    <.live_file_input upload={@uploads.files}  class="hidden"/>
+                    <span class="material-symbols-outlined !text-4xl">add_box</span>
+                  </label>
                 </div>
-                <div>
-                  <%= for entry <- @uploads.images.entries do %>
-                    <div class="flex flex-col w-20">
-                      <button type="button" class="self-end z-[4] -mr-1" phx-click="cancel-upload" phx-value-ref={entry.ref} phx-value-target="images" aria-label="cancel">
-                        <span class="material-icons bg-attention-300 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
-                          close
-                        </span>
-                      </button>
-                      <.live_img_preview entry={entry} class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 -mt-4" />
-                    </div>
-                  <% end %>
-                  <p class="mt-2 text-attention-600"><%= error_to_string(@images_error) %></p>
+                <div class="flex gap-x-12">
+                  <div>
+                    <%= for entry <- @uploads.images.entries do %>
+                      <div class="flex flex-col w-20">
+                        <button type="button" class="self-end z-[4] -mr-1" phx-click="cancel-upload" phx-value-ref={entry.ref} phx-value-target="images" aria-label="cancel">
+                          <span class="material-icons bg-attention-300 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+                            close
+                          </span>
+                        </button>
+                        <.live_img_preview entry={entry} class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 -mt-4" />
+                      </div>
+                    <% end %>
+                    <p class="mt-2 text-attention-600"><%= error_to_string(@images_error) %></p>
+                  </div>
+                  <div>
+                    <%= for entry <- @uploads.files.entries do %>
+                      <div class="flex w-full">
+                        <p><%= entry.client_name %></p>
+                        <button type="button" class="self-end z-[4] ml-4" phx-click="cancel-upload" phx-value-ref={entry.ref} phx-value-target="files" aria-label="cancel">
+                          <span class="material-icons bg-attention-300 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+                            close
+                          </span>
+                        </button>
+                      </div>
+                    <% end %>
+                    <p class="mt-2 text-attention-600"><%= error_to_string(@files_error) %></p>
+                  </div>
                 </div>
               </div>
               <div class="flex flex-col lg:flex-row gap-2">
@@ -181,7 +197,7 @@ defmodule BrightWeb.ChatLive.Index do
 
       <.modal id="preview" :if={!is_nil(@preview)} show on_cancel={JS.push("close_preview")}>
         <img src={Storage.public_url(@preview)} />
-        <a class="" href={Storage.public_url(@preview)} target="_blank">
+        <a href={Storage.public_url(@preview)} target="_blank" rel="noopener">
           <.button class="mt-4">Dwonload</.button>
         </a>
       </.modal>
@@ -240,6 +256,7 @@ defmodule BrightWeb.ChatLive.Index do
   @impl true
   def handle_event("validate", %{"_target" => [target]} = params, socket)
       when target in ["images", "files"] do
+    IO.inspect(socket.assigns.message)
     target = String.to_atom(target)
     error_target = String.to_atom("#{target}_error")
     uploads = Map.get(socket.assigns.uploads, target)
@@ -268,8 +285,8 @@ defmodule BrightWeb.ChatLive.Index do
     {:noreply, assign(socket, :message, params["message"])}
   end
 
-  def handle_event("validate", %{"message" => message}, socket) do
-    {:noreply, assign(socket, :message, message)}
+  def handle_event("validate", params, socket) do
+    {:noreply, assign(socket, :message, params["message"])}
   end
 
   def handle_event("cancel-upload", %{"ref" => ref, "target" => target}, socket) do
@@ -292,7 +309,8 @@ defmodule BrightWeb.ChatLive.Index do
       {:ok, _message} ->
         Chats.update_chat(chat, %{updated_at: NaiveDateTime.utc_now()})
         send_new_message_notification_mails(chat, user)
-        {:noreply, socket}
+
+        {:noreply, assign(socket, :message, nil)}
 
       {:error, %Ecto.Changeset{}} ->
         {:noreply, socket}
