@@ -29,7 +29,6 @@ defmodule BrightWeb.Router do
   end
 
   pipeline :api do
-    plug :api_basic_auth
     plug :accepts, ["json"]
   end
 
@@ -329,7 +328,7 @@ defmodule BrightWeb.Router do
   end
 
   scope "/api", BrightWeb.Api do
-    pipe_through [:api]
+    pipe_through [:api, :api_basic_auth]
 
     scope "/v1" do
       resources "/notification_operations", NotificationOperationController, except: [:new, :edit]
