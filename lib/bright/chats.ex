@@ -7,6 +7,7 @@ defmodule Bright.Chats do
   alias Bright.Repo
   alias Bright.Accounts.{UserNotifier, User}
   alias Bright.UserProfiles.UserProfile
+  alias Bright.Chats
   alias Bright.Chats.Chat
   alias Bright.Chats.ChatUser
   alias Bright.Chats.ChatMessage
@@ -85,7 +86,7 @@ defmodule Bright.Chats do
       where: c.id == ^id and c.relation_type == "recruit",
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
-      preload: [:messages, :users],
+      preload: [:users, messages: :files],
       join: i in Interview,
       on:
         i.id == c.relation_id and
@@ -240,16 +241,14 @@ defmodule Bright.Chats do
     |> broadcast(:send_message)
   end
 
-  def create_message(
-        attrs,
-        local_file_paths
-      )
-      when is_list(local_file_paths) do
+  def create_message(attrs, socket) do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:message, ChatMessage.changeset(%ChatMessage{}, attrs))
-    |> Ecto.Multi.run(:upload_gcs, fn _repo, %{message: _user} ->
-      Enum.zip_with(local_file_paths, attrs.files, fn local_file_path, storage_file ->
-        :ok = Storage.upload!(local_file_path, storage_file.file_path)
+    |> Ecto.Multi.run(:upload_gcs, fn _repo, %{message: _message} ->
+      Phoenix.LiveView.consume_uploaded_entries(socket, :images, fn %{path: path}, entry ->
+        file_path = Chats.ChatFile.build_file_path(:images, entry.client_name, entry.uuid)
+        :ok = Storage.upload!(path, file_path)
+        {:ok}
       end)
 
       {:ok, :uploaded}

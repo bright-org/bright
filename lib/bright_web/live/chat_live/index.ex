@@ -4,9 +4,12 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Chats
   alias Bright.Accounts
   alias Bright.Recruits
+  alias Bright.Utils.GoogleCloud.Storage
 
   import BrightWeb.ChatLive.ChatComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
+
+  @max_entries 4
 
   @impl true
   def render(assigns) do
@@ -48,12 +51,12 @@ defmodule BrightWeb.ChatLive.Index do
           <% end %>
         </div>
         <div :if={@chat} class="py-5 sticky bottom-0 bg-white">
-          <form phx-submit="send">
+          <form id="message_form" phx-submit="send" phx-change="validate">
             <div class="flex pb-2">
               <div class="w-[50px] flex justify-center flex-col items-center">
                 <.user_icon path={@sender_icon_path} />
               </div>
-              <div class="w-full">
+              <div id="message" class="w-full" phx-update="ignore">
                 <textarea
                   class="w-full min-h-1 outline-none p-2"
                   placeholder="メッセージを入力"
@@ -67,14 +70,29 @@ defmodule BrightWeb.ChatLive.Index do
             <hr class="pb-1 border-brightGray-100" />
             <div class="flex justify-end gap-x-4 pt-2 pb-2 w-full content-start">
               <div class="mr-auto">
-                <button>
-                  <span class="material-icons-outlined !text-4xl opacity-50">add_photo_alternate</span>
-                </button>
-                <button>
-                  <span class="material-symbols-outlined !text-4xl opacity-50">add_box</span>
-                </button>
+                <div class="flex">
+                  <label for={@uploads.images.ref} class="cursor-pointer hover:opacity-70">
+                    <.live_file_input upload={@uploads.images}  class="hidden"/>
+                    <span class="material-icons-outlined !text-4xl">add_photo_alternate</span>
+                  </label>
+                  <button>
+                    <span class="material-symbols-outlined !text-4xl opacity-50">add_box</span>
+                  </button>
+                </div>
+                <div>
+                  <%= for entry <- @uploads.images.entries do %>
+                    <div class="flex flex-col w-20">
+                      <button type="button" class="self-end z-[4] -mr-1" phx-click="cancel-upload" phx-value-ref={entry.ref} phx-value-target="images" aria-label="cancel">
+                        <span class="material-icons bg-attention-300 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
+                          close
+                        </span>
+                      </button>
+                      <.live_img_preview entry={entry} class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 -mt-4" />
+                    </div>
+                  <% end %>
+                  <p class="mt-2 text-attention-600"><%= error_to_string(@images_error) %></p>
+                </div>
               </div>
-
               <div class="flex flex-col lg:flex-row gap-2">
                 <div class="order-3 lg:order-1">
                   <.link navigate={~p"/recruits/chats"}>
@@ -114,7 +132,7 @@ defmodule BrightWeb.ChatLive.Index do
                 <div class="order-1 lg:order-3 flex justify-end lg:ml-2">
                   <button
                     type="submit"
-                    class="text-sm font-bold px-2 py-3 rounded border bg-base text-white w-56"
+                    class="text-sm font-bold px-2 py-3 rounded border bg-base text-white w-56 h-12"
                   >
                     メッセージを送る
                   </button>
@@ -160,6 +178,13 @@ defmodule BrightWeb.ChatLive.Index do
           patch={~p"/recruits/chats/#{@chat.id}"}
         />
       </.bright_modal>
+
+      <.modal id="preview" :if={!is_nil(@preview)} show on_cancel={JS.push("close_preview")}>
+        <img src={Storage.public_url(@preview)} />
+        <a class="" href={Storage.public_url(@preview)} target="_blank">
+          <.button class="mt-4">Dwonload</.button>
+        </a>
+      </.modal>
     </div>
     """
   end
@@ -171,6 +196,15 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:open_cancel_interview, false)
     |> assign(:open_create_coordination, false)
     |> assign(:sender_icon_path, user.user_profile.icon_file_path)
+    |> assign(:images_error, "")
+    |> assign(:files_error, "")
+    |> assign(:preview, nil)
+    |> allow_upload(:images,
+      accept: ~w(.jpg .jpeg .png),
+      max_file_size: 2_000_000,
+      max_entries: @max_entries
+    )
+    |> allow_upload(:files, accept: :any, max_file_size: 2_000_000, max_entries: @max_entries)
     |> then(&{:ok, &1})
   end
 
@@ -204,6 +238,47 @@ defmodule BrightWeb.ChatLive.Index do
   end
 
   @impl true
+  def handle_event("validate", %{"_target" => [target]} = params, socket)
+      when target in ["images", "files"] do
+    target = String.to_atom(target)
+    error_target = String.to_atom("#{target}_error")
+    uploads = Map.get(socket.assigns.uploads, target)
+
+    socket =
+      case uploads.errors do
+        [] ->
+          assign(socket, error_target, "")
+
+        [{_ref, :too_many_files}] ->
+          entry = List.last(uploads.entries)
+
+          socket
+          |> assign(error_target, :too_many_files)
+          |> cancel_upload(target, entry.ref)
+
+        [{_ref, error}] ->
+          assign(socket, error_target, error)
+      end
+
+    socket =
+      uploads.entries
+      |> Enum.filter(&(&1.valid? == false && &1.cancelled? == false))
+      |> Enum.reduce(socket, fn entry, socket -> cancel_upload(socket, target, entry.ref) end)
+
+    {:noreply, assign(socket, :message, params["message"])}
+  end
+
+  def handle_event("validate", %{"message" => message}, socket) do
+    {:noreply, assign(socket, :message, message)}
+  end
+
+  def handle_event("cancel-upload", %{"ref" => ref, "target" => target}, socket) do
+    socket
+    |> cancel_upload(String.to_atom(target), ref)
+    |> assign(String.to_atom("#{target}_error"), "")
+    |> then(&{:noreply, &1})
+  end
+
   def handle_event("send", %{"message" => ""}, socket) do
     {:noreply, socket}
   end
@@ -213,7 +288,7 @@ defmodule BrightWeb.ChatLive.Index do
         %{"message" => text},
         %{assigns: %{current_user: user, chat: chat}} = socket
       ) do
-    case Chats.create_message(%{text: text, chat_id: chat.id, sender_user_id: user.id}) do
+    case Chats.create_message(gen_params(socket.assigns, text), socket) do
       {:ok, _message} ->
         Chats.update_chat(chat, %{updated_at: NaiveDateTime.utc_now()})
         send_new_message_notification_mails(chat, user)
@@ -246,6 +321,14 @@ defmodule BrightWeb.ChatLive.Index do
     |> then(&{:noreply, &1})
   end
 
+  def handle_event("preview", %{"preview" => url}, socket) do
+    {:noreply, assign(socket, :preview, url)}
+  end
+
+  def handle_event("close_preview", _params, socket) do
+    {:noreply, assign(socket, :preview, nil)}
+  end
+
   @impl true
   def handle_info(
         {:send_message, message},
@@ -257,6 +340,12 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
     |> assign(:messages, chat.messages)
     |> then(&{:noreply, &1})
+  end
+
+  defp gen_params(%{current_user: user, chat: chat, uploads: uploads}, text) do
+    images = Enum.map(uploads.images.entries, &Chats.ChatFile.build(:images, &1))
+    files = Enum.map(uploads.files.entries, &Chats.ChatFile.build(:files, &1))
+    %{text: text, chat_id: chat.id, sender_user_id: user.id, files: images ++ files}
   end
 
   defp send_new_message_notification_mails(chat, sender) do
@@ -271,4 +360,9 @@ defmodule BrightWeb.ChatLive.Index do
       end
     end)
   end
+
+  defp error_to_string(:too_large), do: "ファイルサイズが大きすぎます"
+  defp error_to_string(:too_many_files), do: "アップロードファイルの上限は#{@max_entries}つです"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(_), do: ""
 end

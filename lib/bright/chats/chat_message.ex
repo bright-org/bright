@@ -21,7 +21,7 @@ defmodule Bright.Chats.ChatMessage do
   end
 
   @doc false
-  def changeset(chat_message, attrs) do
+  def changeset(chat_message, attrs \\ %{}) do
     chat_message
     |> cast(attrs, [:text, :sender_user_id, :chat_id])
     |> cast_assoc(:files,
