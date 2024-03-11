@@ -20,7 +20,7 @@ defmodule BrightWeb.Controllers.Openid.AuthorizeControllerTest do
   end
 
   defmodule User do
-    defstruct id: 1, email: "test@test.test", last_login_at: nil
+    defstruct id: 1, email: "test@test.test"
   end
 
   describe "authorize/2" do
@@ -67,37 +67,6 @@ defmodule BrightWeb.Controllers.Openid.AuthorizeControllerTest do
       conn = AuthorizeController.authorize(conn, %{})
 
       assert redirected_to(conn) =~ ~r/error=login_required/
-    end
-
-    test "redirects to login if user is logged in and max age is expired", %{conn: conn} do
-      current_user = %User{last_login_at: DateTime.utc_now()}
-      conn = assign(conn, :current_user, current_user)
-      conn = %{conn | query_params: %{"max_age" => "0"}}
-
-      assert_authorize_user_logged_out(conn)
-    end
-
-    test "authorizes if user is logged in and max age is not expired", %{conn: conn} do
-      current_user = %User{last_login_at: DateTime.utc_now()}
-      conn = assign(conn, :current_user, current_user)
-      conn = %{conn | query_params: %{"max_age" => "10"}}
-
-      response = %AuthorizeResponse{
-        type: :token,
-        redirect_uri: "http://redirect.uri",
-        access_token: "access_token",
-        expires_in: 10
-      }
-
-      Boruta.OauthMock
-      |> expect(:authorize, fn conn, _resource_owner, module ->
-        module.authorize_success(conn, response)
-      end)
-
-      conn = AuthorizeController.authorize(conn, %{})
-
-      assert redirected_to(conn) ==
-               "http://redirect.uri#access_token=access_token&expires_in=10"
     end
 
     test "redirects to user login when user not logged in", %{conn: conn} do

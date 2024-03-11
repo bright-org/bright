@@ -1,6 +1,4 @@
 defmodule BrightWeb.OauthView do
-  use BrightWeb, :view
-
   alias Boruta.Oauth.IntrospectResponse
   alias Boruta.Oauth.TokenResponse
 

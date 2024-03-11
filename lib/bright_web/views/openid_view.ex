@@ -1,6 +1,4 @@
 defmodule BrightWeb.OpenidView do
-  use BrightWeb, :view
-
   alias Boruta.Openid.UserinfoResponse
 
   def render("jwks.json", %{jwk_keys: jwk_keys}) do

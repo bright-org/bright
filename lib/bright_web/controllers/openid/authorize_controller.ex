@@ -97,17 +97,7 @@ defmodule BrightWeb.Openid.AuthorizeController do
 
   defp max_age_redirection(%Plug.Conn{} = conn, _resource_owner), do: {:unchanged, conn}
 
-  defp login_expired?(%ResourceOwner{last_login_at: last_login_at}, max_age) do
-    now = DateTime.utc_now() |> DateTime.to_unix()
-
-    with "" <> max_age <- max_age,
-         {max_age, _} <- Integer.parse(max_age),
-         true <- now - DateTime.to_unix(last_login_at) >= max_age do
-      true
-    else
-      _ -> false
-    end
-  end
+  defp login_expired?(_resource_owner, _max_age), do: false
 
   defp login_redirection(%Plug.Conn{assigns: %{current_user: _current_user}} = conn) do
     {:unchanged, conn}
@@ -129,8 +119,7 @@ defmodule BrightWeb.Openid.AuthorizeController do
       current_user ->
         %ResourceOwner{
           sub: to_string(current_user.id),
-          username: current_user.email,
-          last_login_at: current_user.last_login_at
+          username: current_user.email
         }
     end
   end
@@ -140,6 +129,6 @@ defmodule BrightWeb.Openid.AuthorizeController do
   end
 
   defp log_out_user(conn) do
-    UserAuth.log_out_user(conn)
+    BrightWeb.UserAuth.log_out_user(conn)
   end
 end
