@@ -244,9 +244,18 @@ defmodule Bright.Chats do
   def create_message(attrs, socket) do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:message, ChatMessage.changeset(%ChatMessage{}, attrs))
-    |> Ecto.Multi.run(:upload_gcs, fn _repo, %{message: _message} ->
+    |> Ecto.Multi.run(:upload_gcs_images, fn _repo, %{message: _message} ->
       Phoenix.LiveView.consume_uploaded_entries(socket, :images, fn %{path: path}, entry ->
         file_path = Chats.ChatFile.build_file_path(:images, entry.client_name, entry.uuid)
+        :ok = Storage.upload!(path, file_path)
+        {:ok}
+      end)
+
+      {:ok, :uploaded}
+    end)
+    |> Ecto.Multi.run(:upload_gcs_files, fn _repo, %{message: _message} ->
+      Phoenix.LiveView.consume_uploaded_entries(socket, :files, fn %{path: path}, entry ->
+        file_path = Chats.ChatFile.build_file_path(:files, entry.client_name, entry.uuid)
         :ok = Storage.upload!(path, file_path)
         {:ok}
       end)

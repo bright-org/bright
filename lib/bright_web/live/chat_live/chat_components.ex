@@ -75,9 +75,15 @@ defmodule BrightWeb.ChatLive.ChatComponents do
               </div>
             <% end %>
           </div>
+          <div class="flex flex-col justify-end">
+            <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
+              <a class="cursor-pointer hover:opacity-50 underline text-xl" href={Storage.public_url(file.file_path)} target="_blank" rel="noopener">
+                <%= file.file_name %>
+              </a>
+            <% end %>
+          </div>
         </div>
       </div>
-
     <% else %>
       <div class="flex justify-start mb-4">
         <div class="mt-4">
@@ -95,14 +101,28 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       <p class="-ml-4"><.elapsed_time inserted_at={@message.inserted_at} /></p>
       <p class="">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
       <div class="flex justify-start">
-            <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
-              <div class="cursor-pointer hover:opacity-50" phx-click="preview" phx-value-preview={file.file_path}>
-                <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
-                <%= file.file_name %>
-              </div>
-            <% end %>
+        <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
+          <div class="cursor-pointer hover:opacity-50" phx-click="preview" phx-value-preview={file.file_path}>
+            <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
+            <%= file.file_name %>
           </div>
-
+        <% end %>
+      </div>
+      <div class="flex justify-end">
+        <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
+          <div class="cursor-pointer hover:opacity-50" phx-click="preview" phx-value-preview={file.file_path}>
+            <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
+            <%= file.file_name %>
+          </div>
+        <% end %>
+      </div>
+      <div class="flex flex-col justify-end">
+        <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
+          <a class="cursor-pointer hover:opacity-50 underline text-xl" href={Storage.public_url(file.file_path)} target="_blank" rel="noopener">
+            <%= file.file_name %>
+          </a>
+        <% end %>
+      </div>
     <% end %>
     """
   end
