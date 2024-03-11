@@ -97,6 +97,13 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: {:system, "GITHUB_CLIENT_ID"},
   client_secret: {:system, "GITHUB_CLIENT_SECRET"}
 
+config :boruta, Boruta.Oauth,
+  repo: Bright.Repo,
+  issuer: "https://app.bright-fun.org",
+  contexts: [
+    resource_owners: Bright.ResourceOwners
+  ]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

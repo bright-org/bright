@@ -339,6 +339,32 @@ defmodule BrightWeb.Router do
     end
   end
 
+  # Boruta
+  scope "/oauth", BrightWeb.Oauth do
+    pipe_through :api
+
+    post "/revoke", RevokeController, :revoke
+    post "/token", TokenController, :token
+    post "/introspect", IntrospectController, :introspect
+  end
+  scope "/openid", BrightWeb.Openid do
+    pipe_through [:api]
+
+    get "/userinfo", UserinfoController, :userinfo
+    post "/userinfo", UserinfoController, :userinfo
+    get "/jwks", JwksController, :jwks_index
+  end
+  scope "/oauth", BrightWeb.Oauth do
+    pipe_through [:browser, :fetch_current_user]
+
+    get "/authorize", AuthorizeController, :authorize
+  end
+  scope "/openid", BrightWeb.Openid do
+    pipe_through [:browser, :fetch_current_user]
+
+    get "/authorize", AuthorizeController, :authorize
+  end
+
   # See https://hexdocs.pm/plug/Plug.BasicAuth.html#module-runtime-time-usage
   defp admin_basic_auth(conn, _opts) do
     case System.fetch_env("MIX_ENV") do
