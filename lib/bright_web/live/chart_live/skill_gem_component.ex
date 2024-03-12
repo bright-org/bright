@@ -22,11 +22,14 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
 
   @impl true
   def render(assigns) do
+    if length(assigns.skill_gem_labels) < 3,
+      do: Sentry.capture_message("BrightWeb.ChartLive.SkillGemComponent: データが表示できません")
+
     ~H"""
     <div class="mx-auto w-full -mt-20 lg:mt-0 lg:w-[450px]">
       <%= if length(@skill_gem_labels) < 3 do %>
         <div class="bg-white w-[450px] h-[360px] flex items-center justify-center">
-          <p class="text-start font-bold">データが破損しています</p>
+          <p class="text-start font-bold">データが表示できません</p>
         </div>
       <% else %>
         <.skill_gem
