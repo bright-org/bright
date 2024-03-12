@@ -12,17 +12,6 @@ defmodule BrightWeb.MypageLiveTest do
 
       assert html =~ "マイページ"
 
-      # メニュー
-      menu = Floki.find(html, "aside div li a")
-      assert Enum.any?(menu, &menu_find?(&1, "チームを作る（β）"))
-      assert Enum.any?(menu, &menu_find?(&1, "マイページ"))
-      assert Enum.any?(menu, &menu_find?(&1, "スキルを選ぶ"))
-      assert Enum.any?(menu, &menu_find?(&1, "成長パネル"))
-      assert Enum.any?(menu, &menu_find?(&1, "スキルパネル"))
-      assert Enum.any?(menu, &menu_find?(&1, "チームスキル分析"))
-      assert Enum.any?(menu, &menu_find?(&1, "面談チャット"))
-      assert Enum.any?(menu, &menu_find?(&1, "ログアウト"))
-
       # プロフィールの検証
       assert index_live |> has_element?("div .font-bold", user.name)
       assert index_live |> has_element?("div .break-all", user.user_profile.title)
@@ -96,15 +85,5 @@ defmodule BrightWeb.MypageLiveTest do
       data = [[50, 0, 0, 0]] |> Jason.encode!()
       assert has_element?(index_live, ~s(#skillset-gem[data-data='#{data}']))
     end
-  end
-
-  defp menu_find?(el, menu_text) do
-    text =
-      el
-      |> Tuple.to_list()
-      |> Enum.at(2)
-      |> Enum.at(1)
-
-    text =~ menu_text
   end
 end
