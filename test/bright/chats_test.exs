@@ -7,7 +7,6 @@ defmodule Bright.ChatsTest do
   describe "chats" do
     alias Bright.Chats.Chat
     alias Bright.Chats.ChatMessage
-    alias Bright.Chats.ChatFile
 
     @invalid_attrs %{relation_type: nil, relation_id: nil}
 
