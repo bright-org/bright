@@ -11,6 +11,7 @@ import { SnsFloatingShareButtons } from './SnsFloatingShareButtons.js'
 import Imagebox from './Imagebox.js'
 import LocalTime from './LocalTime.js'
 import HideFlashTimeout from './HideFlashTimeout.js'
+import Chat from './Chat.js'
 
 export const Hooks = {
   LocalStorageBackup: LocalStorageBackup,
@@ -26,4 +27,5 @@ export const Hooks = {
   Imagebox: Imagebox,
   LocalTime: LocalTime,
   HideFlashTimeout: HideFlashTimeout,
+  Chat: Chat
 }
