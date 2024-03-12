@@ -248,7 +248,7 @@ defmodule Bright.Chats do
       Phoenix.LiveView.consume_uploaded_entries(socket, :images, fn %{path: path}, entry ->
         file_path = Chats.ChatFile.build_file_path(:images, entry.client_name, entry.uuid)
         :ok = Storage.upload!(path, file_path)
-        {:ok}
+        {:ok, :uploaded}
       end)
 
       {:ok, :uploaded}
@@ -257,7 +257,7 @@ defmodule Bright.Chats do
       Phoenix.LiveView.consume_uploaded_entries(socket, :files, fn %{path: path}, entry ->
         file_path = Chats.ChatFile.build_file_path(:files, entry.client_name, entry.uuid)
         :ok = Storage.upload!(path, file_path)
-        {:ok}
+        {:ok, :uploaded}
       end)
 
       {:ok, :uploaded}
