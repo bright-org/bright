@@ -37,7 +37,7 @@ defmodule BrightWeb.ChatLive.Index do
           <div :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id) } class="lg:ml-12 text-xl">
             <%= if @chat.interview.status == :consume_interview do %>
             <p>本チャットで面談対象者と連絡を取り、「面談調整の確認」ボタンを押してください</p>
-            <p class="mt-2 text-attention-600">面談確定するとチャットに（担当者から面談が確定されました）が自動投入されます</p>
+            <p class="mt-2 text-attention-600">面談確定するとチャットに（担当者から面談が確定されました）が自動投入され、メールも送信されます</p>
             <% end %>
           </div>
 

@@ -12,8 +12,9 @@ defmodule Storybook.Components.UserHeader do
           profile: %{
             user_name: "piacere",
             title: "リードプログラマー",
-            icon_file_path: "/images/sample/sample-image.png"
+            icon_file_path: "default_icon/default_avatar_engineer.png"
           },
+          current_user: %Bright.Accounts.User{},
           page_title: "タイトル"
         }
       }

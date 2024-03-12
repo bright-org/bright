@@ -3,13 +3,13 @@
   :if={@render_header?}
   profile={@current_user.user_profile}
   current_user={@current_user}
-  page_title={@page_title}
-  page_sub_title={@page_sub_title}
 />
 
 <.flash_group flash={@flash} />
 
+<.page_top_title :if={@render_header?} page_title={@page_title} page_sub_title={@page_sub_title} />
 <%= @inner_content %>
+
 <.live_component
   id="user_setting_modal"
   module={BrightWeb.UserSettingsLive.UserSettingComponent}

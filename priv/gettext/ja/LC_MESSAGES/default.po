@@ -85,7 +85,7 @@ msgid "acceptance_emplyoment"
 msgstr "採用承諾済み"
 
 msgid "requested"
-msgstr "チーム連携待ち"
+msgstr "チーム招待待ち"
 
 msgid "employee"
 msgstr "正社員"

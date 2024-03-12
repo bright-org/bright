@@ -130,7 +130,7 @@ defmodule BrightWeb.BrightButtonComponents do
         type="button"
         class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm"
       >
-        <span class="bg-white material-icons mr-1 !text-sm !text-planUpgrade-600 rounded-full h-5 w-5 !font-bold material-icons-outlined lg:mr-2 lg:h-6 lg:w-6">upgrade</span>
+        <span class="material-icons mr-1 material-icons-outlined lg:mr-2">upgrade</span>
         アップグレード
       </button>
     </.link>
@@ -155,7 +155,7 @@ defmodule BrightWeb.BrightButtonComponents do
       <button type="button"
         class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm">
         <span
-            class="bg-white material-icons mr-1 !text-sm !text-brightGreen-300 rounded-full h-5 w-5 !font-bold material-icons-outlined lg:mr-2 lg:h-6 lg:w-6">sms</span>
+            class="material-icons mr-1 material-icons-outlined lg:mr-2">sms</span>
         カスタマーサクセスに連絡
       </button>
     </.link>

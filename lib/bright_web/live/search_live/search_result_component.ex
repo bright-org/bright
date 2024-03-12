@@ -22,7 +22,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       </div>
       <% else %>
       <div class="bg-white w-[450px]">
-        <p class="text-left" :if={!@anon}><%= @user.name %></p>
+        <p class="text-left" :if={!@anon && @search}><%= @user.name %></p>
         <.tab
           id={"#{@prefix}_skill_search_result_tab_#{@index}"}
           tabs={@tabs}

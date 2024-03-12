@@ -14,7 +14,7 @@ defmodule BrightWeb.RecruitEmploymentLive.TeamInviteComponent do
       <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
       <div class="overflow-y-auto z-[60]">
         <main class="flex items-center justify-center" role="main">
-          <section class="bg-white px-10 py-8 shadow text-sm">
+          <section class="bg-white px-10 py-4 shadow text-sm">
             <h2 class="font-bold text-3xl"><span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">採用決定者のチームへの招待</span></h2>
             <div class="flex mt-8">
              <!-- Start 採用候補者と依頼先 -->
@@ -34,7 +34,13 @@ defmodule BrightWeb.RecruitEmploymentLive.TeamInviteComponent do
                         <span>雇用形態：<%= Gettext.gettext(BrightWeb.Gettext, to_string(@request.employment.employment_status)) %></span>
                       </div>
                     </div>
-                    <div class="-mt-8">
+                    <div class="flex flex-col">
+                      <p class="font-bold">稼働按分・工数の扱いに関するメモ・注意点</p>
+                      <p class="mt-1 px-5 py-2 border border-brightGray-200 rounded-sm">
+                        <%= @request.comment %>
+                        </p>
+                    </div>
+                    <div class="">
                     <.live_component
                       id="user_params_for_employment"
                       prefix="interview"

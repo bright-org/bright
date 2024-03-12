@@ -9,7 +9,15 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
 
     alias Bright.SkillUnits.{SkillUnit, SkillClassUnit}
     alias Bright.SkillPanels.SkillClass
-    alias Bright.SkillScores.{SkillUnitScore, SkillScore, SkillClassScore, CareerFieldScore}
+
+    alias Bright.SkillScores.{
+      SkillUnitScore,
+      SkillScore,
+      SkillClassScore,
+      SkillClassScoreLog,
+      CareerFieldScore
+    }
+
     alias Bright.SkillEvidences.SkillEvidence
     alias Bright.SkillExams.SkillExam
     alias Bright.SkillReferences.SkillReference
@@ -21,6 +29,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       HistoricalSkillUnitScore,
       HistoricalSkillScore,
       HistoricalSkillClassScore,
+      HistoricalSkillClassScoreLog,
       HistoricalCareerFieldScore
     }
 
@@ -190,11 +199,25 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         insert(:career_field_score, user: user2)
       ]
 
+      skill_class_score_logs =
+        Enum.map(skill_class_scores, fn skill_class_score ->
+          # バッチ処理中で作られるデータと分けるためにdateを前日にしている
+          date = Date.add(@locked_date, -1)
+
+          insert(:skill_class_score_log,
+            skill_class: skill_class_score.skill_class,
+            user: skill_class_score.user,
+            percentage: skill_class_score.percentage,
+            date: date
+          )
+        end)
+
       %{
         skill_unit_scores: skill_unit_scores,
         skill_scores: skill_scores,
         skill_class_scores: skill_class_scores,
-        career_field_scores: career_field_scores
+        career_field_scores: career_field_scores,
+        skill_class_score_logs: skill_class_score_logs
       }
     end
 
@@ -240,6 +263,7 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       skill_scores: skill_scores,
       skill_class_scores: skill_class_scores,
       career_field_scores: career_field_scores,
+      skill_class_score_logs: skill_class_score_logs,
       skill_evidences: skill_evidences,
       skill_exams: skill_exams,
       skill_references: skill_references
@@ -619,6 +643,33 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
         assert historical_career_field_score.high_skills_count ==
                  career_field_score.high_skills_count
       end)
+
+      # スキルクラス単位のログの履歴データ生成を確認
+      historical_skill_class_score_logs =
+        Repo.all(HistoricalSkillClassScoreLog)
+        |> Repo.preload(:historical_skill_class)
+
+      assert length(historical_skill_class_score_logs) == length(skill_class_score_logs)
+
+      Enum.each(skill_class_score_logs, fn skill_class_score_log ->
+        historical_skill_class_score_log =
+          Enum.find(
+            historical_skill_class_score_logs,
+            &(&1.user_id == skill_class_score_log.user_id &&
+                &1.historical_skill_class.trace_id == skill_class_score_log.skill_class.trace_id)
+          )
+
+        assert historical_skill_class_score_log.date == skill_class_score_log.date
+        assert historical_skill_class_score_log.percentage == skill_class_score_log.percentage
+      end)
+
+      # スキルクラス単位のログの現データ削除を確認
+      # および、バッチ中の変動データ分生成を確認
+      old_ids = Enum.map(skill_class_score_logs, & &1.id)
+      skill_class_score_logs_after = Repo.all(SkillClassScoreLog)
+
+      assert Enum.all?(skill_class_score_logs_after, &(&1.id not in old_ids))
+      assert Enum.all?(skill_class_score_logs_after, &(&1.date == @locked_date))
     end
 
     test "updates skill panels when published data are more than draft data", %{
@@ -1320,6 +1371,10 @@ defmodule Bright.Batches.UpdateSkillPanelsTest do
       # キャリアフィールド単位の集計の履歴データ生成がロールバックされることを確認
       historical_career_field_scores = Repo.all(HistoricalCareerFieldScore)
       assert Enum.empty?(historical_career_field_scores)
+
+      # スキルクラス単位のログの履歴データ生成がロールバックされることを確認
+      historical_skill_class_score_logs = Repo.all(HistoricalSkillClassScoreLog)
+      assert Enum.empty?(historical_skill_class_score_logs)
     end
   end
 end
