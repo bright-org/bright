@@ -30,7 +30,7 @@ defmodule BrightWeb.ChatLive.Index do
         <% end %>
       </div>
 
-      <div :if={@chat} class="w-full px-5 flex flex-col justify-between overflow-y-auto">
+      <div :if={@chat} id="messages" class="w-full px-5 flex flex-col justify-between overflow-y-auto" phx-hook="Chat">
         <div class="flex flex-col mt-5" >
           <p class="lg:ml-12 text-xl mb-2">※メールアドレスや電話番号等の個人情報は送らないでください</p>
           <p class="lg:ml-12 text-xl mb-8">※面談日時およびその重複は管理対象外ですので、別途管理を行ってください</p>
@@ -240,6 +240,7 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
     |> assign(:message, nil)
+    |> push_event("scroll_bottom", %{})
   end
 
   defp apply_action(socket, :recruit, _params) do
@@ -256,7 +257,6 @@ defmodule BrightWeb.ChatLive.Index do
   @impl true
   def handle_event("validate", %{"_target" => [target]} = params, socket)
       when target in ["images", "files"] do
-    IO.inspect(socket.assigns.message)
     target = String.to_atom(target)
     error_target = String.to_atom("#{target}_error")
     uploads = Map.get(socket.assigns.uploads, target)
@@ -310,7 +310,11 @@ defmodule BrightWeb.ChatLive.Index do
         Chats.update_chat(chat, %{updated_at: NaiveDateTime.utc_now()})
         send_new_message_notification_mails(chat, user)
 
-        {:noreply, assign(socket, :message, nil)}
+        socket
+        |> assign(:message, nil)
+        |> assign(:images_error, "")
+        |> assign(:files_error, "")
+        |> then(&{:noreply, &1})
 
       {:error, %Ecto.Changeset{}} ->
         {:noreply, socket}
@@ -357,6 +361,7 @@ defmodule BrightWeb.ChatLive.Index do
     socket
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
     |> assign(:messages, chat.messages)
+    |> push_event("scroll_bottom", %{})
     |> then(&{:noreply, &1})
   end
 
@@ -379,8 +384,11 @@ defmodule BrightWeb.ChatLive.Index do
     end)
   end
 
-  defp error_to_string(:too_large), do: "ファイルサイズが大きすぎます"
-  defp error_to_string(:too_many_files), do: "アップロードファイルの上限は#{@max_entries}つです"
-  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(:too_large), do: translate_error({"The file is too large", []})
+  defp error_to_string(:too_many_files), do: translate_error({"Too many files are uploaded", []})
+
+  defp error_to_string(:not_accepted),
+    do: translate_error({"You have selected an unacceptable file type", []})
+
   defp error_to_string(_), do: ""
 end
