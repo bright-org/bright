@@ -105,7 +105,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewLiveTest do
       # 選択した候補者で面談調整モーダルが開かれているか
       assert lv
              |> element("#create_interview_modal")
-             |> render() =~ "データが破損しています"
+             |> render() =~ "データが表示できません"
 
       lv |> element("#create_interview_modal a", member.name) |> render_click()
 
