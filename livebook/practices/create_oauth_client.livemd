@@ -36,7 +36,7 @@ Boruta.Ecto.Admin.create_client(%{
   # userinfo signature algorithm, defaults to nil (no signature)
   userinfo_signed_response_alg: "RS256",
   # OAuth client redirect_uris
-  redirect_uris: ["http://redirect.uri"],
+  redirect_uris: ["http://localhost:4001/auth/bright/callback"],
   # take following authorized_scopes into account (skip public scopes)
   authorize_scope: true,
   # scopes that are authorized using this client
