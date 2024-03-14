@@ -7,10 +7,12 @@ defmodule Bright.Chats do
   alias Bright.Repo
   alias Bright.Accounts.{UserNotifier, User}
   alias Bright.UserProfiles.UserProfile
+  alias Bright.Chats
   alias Bright.Chats.Chat
   alias Bright.Chats.ChatUser
   alias Bright.Chats.ChatMessage
   alias Bright.Recruits.Interview
+  alias Bright.Utils.GoogleCloud.Storage
 
   @doc """
   Returns the list of chats.
@@ -84,7 +86,7 @@ defmodule Bright.Chats do
       where: c.id == ^id and c.relation_type == "recruit",
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
-      preload: [:messages, :users],
+      preload: [:users, messages: :files],
       join: i in Interview,
       on:
         i.id == c.relation_id and
@@ -220,11 +222,63 @@ defmodule Bright.Chats do
     ChatMessage.changeset(message, attrs)
   end
 
-  def create_message(attrs \\ %{}) do
+  @doc """
+  Create Chat Message.
+
+  ## Examples
+      iex> create_message(%{field: value},nil)
+      {:ok, %ChatMessage{}}
+
+      iex> create_message(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_message(attrs, nil) do
     %ChatMessage{}
     |> ChatMessage.changeset(attrs)
     |> Repo.insert()
     |> broadcast(:send_message)
+  end
+
+  def create_message(attrs, socket) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:message, ChatMessage.changeset(%ChatMessage{}, attrs))
+    |> Ecto.Multi.run(:upload_gcs_images, fn _repo, %{message: _message} ->
+      Phoenix.LiveView.consume_uploaded_entries(socket, :images, fn %{path: path}, entry ->
+        file_path = Chats.ChatFile.build_file_path(:images, entry.client_name, entry.uuid)
+        :ok = Storage.upload!(path, file_path)
+        {:ok, :uploaded}
+      end)
+
+      {:ok, :uploaded}
+    end)
+    |> Ecto.Multi.run(:upload_gcs_files, fn _repo, %{message: _message} ->
+      Phoenix.LiveView.consume_uploaded_entries(socket, :files, fn %{path: path}, entry ->
+        file_path = Chats.ChatFile.build_file_path(:files, entry.client_name, entry.uuid)
+        :ok = Storage.upload!(path, file_path)
+        {:ok, :uploaded}
+      end)
+
+      {:ok, :uploaded}
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{message: message}} -> broadcast({:ok, message}, :send_message)
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  @doc """
+  Build file_path by file_name.
+
+  ## Examples
+
+      iex> build_file_path("uploaded_file.png")
+      "/chats/message_file_xxxxx.png"
+  """
+  def build_file_path(file_name) do
+    "chats/message_file_#{Ecto.UUID.generate()}" <> Path.extname(file_name)
   end
 
   def broadcast({:ok, message}, :send_message) do

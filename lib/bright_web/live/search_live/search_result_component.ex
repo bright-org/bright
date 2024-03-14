@@ -14,11 +14,14 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
 
   @impl true
   def render(assigns) do
+    if is_nil(assigns.skill_class_score),
+      do: Sentry.capture_message("BrightWeb.SearchLive.SearchResultComponent: データが表示できません")
+
     ~H"""
     <div class="flex">
       <%= if is_nil(@skill_class_score) do %>
       <div class="bg-white w-[450px] flex items-center justify-center">
-        <p class="text-start">データが破損しています</p>
+        <p class="text-start">データが表示できません</p>
       </div>
       <% else %>
       <div class="bg-white w-[450px]">

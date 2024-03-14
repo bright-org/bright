@@ -15,13 +15,18 @@ defmodule Bright.Chats.ChatMessage do
     belongs_to :chat, Bright.Chats.Chat
     belongs_to :sender_user, Bright.Accounts.User
 
+    has_many :files, Bright.Chats.ChatFile
+
     timestamps()
   end
 
   @doc false
-  def changeset(chat_message, attrs) do
+  def changeset(chat_message, attrs \\ %{}) do
     chat_message
     |> cast(attrs, [:text, :sender_user_id, :chat_id])
+    |> cast_assoc(:files,
+      with: &Bright.Chats.ChatFile.changeset/2
+    )
     |> validate_required([:text, :sender_user_id, :chat_id])
   end
 end

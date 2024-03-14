@@ -41,39 +41,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def navigations(assigns) do
     ~H"""
     <div>
-      <% # TODO キャリアフィールドの一角指定時の表示対応時にhiddenを消して表示すること %>
-      <section class="hidden accordion flex my-2 max-w-[1236px] lg:hidden mt-2 px-4">
-        <div class="bg-brightGray-50 rounded w-full">
-          <p
-            id="close_navigation"
-            class={
-              "hidden bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
-              open()
-            }
-            phx-click={
-              JS.hide(to: "#switch")
-              |> JS.hide(to: "#close_navigation")
-              |> JS.show(to: "#open_navigation")
-            }
-          >
-            表示するスキル／ユーザー／チームを切り替える
-          </p>
-          <p
-            id="open_navigation"
-            class={
-              "bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
-              close()
-            }
-            phx-click={
-              JS.show(to: "#switch")
-              |> JS.show(to: "#close_navigation")
-              |> JS.hide(to: "#open_navigation")
-            }
-          >
-            表示するスキル／ユーザー／チームを切り替える
-          </p>
-        </div>
-      </section>
       <div id="switch" class="flex gap-x-2 lg:gap-x-4 mt-2 px-4 pb-4 lg:mt-4 lg:px-10 lg:pb-3">
         <.target_switch current_user={@current_user} />
         <.skill_panel_switch
@@ -86,12 +53,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     </div>
     """
   end
-
-  defp close(),
-    do: "before:-mt-2 before:rotate-225"
-
-  defp open(),
-    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 
   @spec skill_panel_switch(any()) :: Phoenix.LiveView.Rendered.t()
   def skill_panel_switch(assigns) do
@@ -113,67 +74,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         />
       </.mega_menu_button>
     </div>
-    <% # TODO: α版後にifを除去して表示 %>
-    <.skill_set_menu :if={false} />
-    """
-  end
-
-  def skill_set_menu(assigns) do
-    ~H"""
-      <button
-        id="dropdownDefaultButton"
-        data-dropdown-toggle="dropdown"
-        data-dropdown-offset-skidding="20"
-        data-dropdown-placement="bottom"
-        class="text-white bg-brightGreen-300 rounded h-[35px] pl-3 flex items-center font-bold"
-        type="button"
-      >
-        スキルセット
-        <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
-          expand_more
-        </span>
-      </button>
-      <!-- スキルセット menu -->
-      <div
-        id="dropdown"
-        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-      >
-        <ul
-          class="py-2 text-sm text-gray-700 dark:text-gray-200"
-          aria-labelledby="dropdownDefaultButton"
-        >
-          <li>
-            <a
-              href="#"
-              class="block px-4 py-3 hover:bg-brightGray-50"
-            >全スキルセット</a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="block px-4 py-3 hover:bg-brightGray-50"
-            >エンジニア</a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="block px-4 py-3 hover:bg-brightGray-50"
-            >インフラ</a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="block px-4 py-3 hover:bg-brightGray-50"
-            >デザイナー</a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="block px-4 py-3 hover:bg-brightGray-50"
-            >マーケッター</a>
-          </li>
-        </ul>
-      </div>
     """
   end
 
@@ -182,11 +82,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <div class="flex flex-col lg:flex-row">
       <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象者の<br class="hidden lg:inline">切替</p>
       <.related_user_menu current_user={@current_user} />
-    </div>
-    <% # TODO: α版後にifを除去して表示 %>
-    <div :if={false}>
-      <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象チームの<br class="hidden lg:inline">切替</p>
-      <.team_menu current_user={@current_user} />
     </div>
     """
   end
@@ -206,36 +101,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         purpose="menu"
       />
     </.mega_menu_button>
-    """
-  end
-
-  def team_menu(assigns) do
-    ~H"""
-    <button
-      id="dropdownDefaultButton"
-      data-dropdown-toggle="dropdown3"
-      data-dropdown-offset-skidding="307"
-      data-dropdown-placement="bottom"
-      class="text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
-      type="button"
-    >
-      <span class="min-w-[4em] lg:min-w-[6em]">チーム</span>
-      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
-        expand_more
-      </span>
-    </button>
-    <!-- チーム menu -->
-    <div
-      id="dropdown3"
-      class="z-10 hidden bg-white rounded-lg shadow w-[750px]"
-    >
-    <.live_component
-        id="related_team_card"
-        module={BrightWeb.CardLive.RelatedTeamCardComponent}
-        display_user={@current_user}
-        over_ride_on_card_row_click_target={true}
-      />
-    </div>
     """
   end
 
