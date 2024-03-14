@@ -102,7 +102,7 @@ defmodule BrightWeb.OAuthControllerTest do
       }
 
       log =
-        capture_log([level: :warn], fn ->
+        capture_log([level: :warning], fn ->
           conn =
             conn
             |> assign(:ueberauth_failure, ueberauth_failure)
@@ -239,7 +239,7 @@ defmodule BrightWeb.OAuthControllerTest do
       }
 
       log =
-        capture_log([level: :warn], fn ->
+        capture_log([level: :warning], fn ->
           conn =
             conn
             |> assign(:ueberauth_failure, ueberauth_failure)

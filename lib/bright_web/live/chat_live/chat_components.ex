@@ -3,6 +3,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   alias Bright.Recruits.Interview
   alias Bright.UserProfiles
+  alias Bright.Utils.GoogleCloud.Storage
   import BrightWeb.CardLive.CardListComponents, only: [elapsed_time: 1]
 
   attr :chat, :any, required: true
@@ -55,7 +56,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     <%= if @current_user.id == @message.sender_user_id do %>
       <div class="flex justify-end">
         <div class="flex flex-col mb-4">
-          <div class="flex">
+          <div class="flex justify-end">
             <div class="break-words max-w-[80vw] text-xl mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
               <%= nl_to_br(@message.text) %>
             </div>
@@ -66,6 +67,22 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           </div>
           <p class="mt-1 flex justify-end"><.elapsed_time extend_style={"w-auto"} inserted_at={@message.inserted_at} /></p>
           <p class="flex justify-end">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+          <div class="flex justify-end gap-x-4">
+            <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
+            <div class="cursor-pointer hover:opacity-50" phx-click="preview" phx-value-preview={file.file_path}>
+                <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
+                <%= file.file_name %>
+              </div>
+            <% end %>
+          </div>
+          <div class="flex justify-end mt-4 gap-x-4">
+            <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
+              <a class="cursor-pointer hover:opacity-50 underline" href={Storage.public_url(file.file_path)} target="_blank" rel="noopener">
+                <.icon name="hero-document" class="w-24 h-24" /><br>
+                <%= file.file_name %>
+              </a>
+            <% end %>
+          </div>
         </div>
       </div>
     <% else %>
@@ -84,6 +101,29 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       </div>
       <p class="-ml-4"><.elapsed_time inserted_at={@message.inserted_at} /></p>
       <p class="">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+      <div class="flex justify-start">
+        <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
+          <div class="cursor-pointer hover:opacity-50" phx-click="preview" phx-value-preview={file.file_path}>
+            <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
+            <%= file.file_name %>
+          </div>
+        <% end %>
+      </div>
+      <div class="flex justify-end gap-x-4">
+        <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
+          <div class="cursor-pointer hover:opacity-50" phx-click="preview" phx-value-preview={file.file_path}>
+            <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
+            <%= file.file_name %>
+          </div>
+        <% end %>
+      </div>
+      <div class="w-full flex flex-col justify-end mt-4">
+        <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
+          <a class="cursor-pointer hover:opacity-50 underline text-xl" href={Storage.public_url(file.file_path)} target="_blank" rel="noopener">
+            <%= file.file_name %>
+          </a>
+        <% end %>
+      </div>
     <% end %>
     """
   end

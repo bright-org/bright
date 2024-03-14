@@ -8,10 +8,10 @@ defmodule Bright.EmploymentFactory do
       def employment_factory do
         %Bright.Recruits.Employment{
           skill_params: "some skill_params",
-          desired_income: 10000,
+          desired_income: 10_000,
           status: :waiting_responce,
           comment: "some comment",
-          income: 10000,
+          income: 10_000,
           message: "hire you",
           used_sample: :none,
           employment_status: :employee
