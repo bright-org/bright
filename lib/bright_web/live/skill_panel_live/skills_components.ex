@@ -33,17 +33,17 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     <div class="w-full mb-8 lg:mb-0 lg:mr-8 lg:max-w-[566px] lg:w-[566px]">
       <div class="flex flex-wrap justify-center lg:flex-nowrap lg:justify-start">
         <% # 過去方向ボタン %>
-        <div class="order-2 flex justify-center items-center ml-1 mr-2 lg:order-1">
+        <div class="flex justify-center items-center ml-1 mr-2">
           <%= if @timeline.past_enabled do %>
             <button
-              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative"
+              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative"
               phx-click="shift_timeline_past"
               phx-target={@myself}
             >
               <span class="material-icons text-white !text-3xl">arrow_left</span>
             </button>
           <% else %>
-            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative">
+            <button class="w-6 h-10 bg-brightGray-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative">
               <span class="material-icons text-white !text-3xl">arrow_left</span>
             </button>
           <% end %>
@@ -61,10 +61,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         />
 
         <% # 未来方向ボタン %>
-        <div class="order-3 flex justify-center items-center ml-2">
+        <div class="flex justify-center items-center ml-2">
           <%= if @timeline.future_enabled do %>
             <button
-              class="w-6 h-8 bg-brightGray-900 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative"
+              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative"
               phx-click="shift_timeline_future"
               phx-target={@myself}
               disabled={!@timeline.future_enabled}
@@ -72,7 +72,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <span class="material-icons text-white !text-3xl">arrow_right</span>
             </button>
           <% else %>
-            <button class="w-6 h-8 bg-brightGray-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative">
+            <button class="w-6 h-10 bg-brightGray-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative">
               <span class="material-icons text-white !text-3xl">arrow_right</span>
             </button>
           <% end %>
