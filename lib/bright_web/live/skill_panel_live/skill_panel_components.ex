@@ -4,7 +4,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
   import BrightWeb.MegaMenuComponents
-  import BrightWeb.GuideMessageComponents
 
   alias Bright.SkillScores
   alias Bright.SkillEvidences
