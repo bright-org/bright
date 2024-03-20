@@ -1,13 +1,7 @@
 <%= if @skill_panel do %>
-<.navigations
-  current_user={@current_user}
-  display_user={@display_user}
-  me={@me}
-  anonymous={@anonymous}
-  root="graphs"
-/>
 
-<div class="mx-4 pb-20 lg:mx-10 lg:pb-0">
+<div class="flex flex-col lg:flex-row gap-y-4 lg:gap-x-2 px-4 pb-4 lg:px-10 lg:pb-3">
+  <%!-- スマホ 成長パネル/スキルパネル切替 --%>
   <div class="lg:hidden mb-4">
     <.toggle_link
       skill_panel={@skill_panel}
@@ -18,8 +12,17 @@
       active="graph"
     />
   </div>
-  <div class="flex justify-between">
-    <div class="hidden lg:flex">
+
+  <.navigations
+    current_user={@current_user}
+    display_user={@display_user}
+    me={@me}
+    anonymous={@anonymous}
+    root="graphs"
+  />
+
+  <%!-- PC 成長パネル/スキルパネル切替 --%>
+  <div class="hidden lg:flex lg:ml-auto">
     <.toggle_link
       skill_panel={@skill_panel}
       display_user={@display_user}
@@ -28,7 +31,11 @@
       skill_class={@skill_class.class}
       active="graph"
     />
-    </div>
+  </div>
+</div>
+
+<div class="mx-4 pb-20 lg:mx-10 lg:pb-0">
+  <div class="flex justify-between">
     <.class_tab
       skill_classes={@skill_classes}
       skill_class={@skill_class}
@@ -45,7 +52,6 @@
       skill_class_score={@skill_class_score}
       counter={@counter}
       num_skills={@num_skills}
-      display_skill_edit_button={false}
       me={@me}
       flash={@flash}
     />

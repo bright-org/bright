@@ -40,16 +40,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def navigations(assigns) do
     ~H"""
-    <div>
-      <div id="switch" class="flex gap-x-2 lg:gap-x-4 mt-2 px-4 pb-4 lg:mt-4 lg:px-10 lg:pb-3">
-        <.target_switch current_user={@current_user} />
-        <.skill_panel_switch
-          display_user={@display_user}
-          me={@me}
-          anonymous={@anonymous}
-          root={@root}
-        />
-      </div>
+    <div id="switch" class="flex flex-col lg:flex-row gap-y-4 lg:gap-x-2 pb-4 lg:pb-3">
+      <.target_switch current_user={@current_user} />
+      <.skill_panel_switch
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        root="panels"
+      />
     </div>
     """
   end
@@ -58,10 +56,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
-      <p class="text-xs lg:text-sm leading-tight my-2 lg:mt-0 lg:mb-0 lg:m-4">対象スキルの<br class="hidden lg:inline">切替</p>
       <.mega_menu_button
         id="skill_panel_menu"
-        label="スキル"
+        label="対象スキルの切替"
         dropdown_offset_skidding="307"
       >
         <.live_component
@@ -80,7 +77,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def target_switch(assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
-      <p class="text-xs lg:text-sm leading-tight my-2 lg:my-0 mb-2 lg:m-4 lg:mb-0">対象者の<br class="hidden lg:inline">切替</p>
       <.related_user_menu current_user={@current_user} />
     </div>
     """
@@ -90,7 +86,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
     <.mega_menu_button
       id="related_user_card_menu"
-      label="個人"
+      label="表示対象者を切替"
       dropdown_offset_skidding="307"
     >
       <.live_component
@@ -239,56 +235,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def profile_area(assigns) do
     ~H"""
       <div class="flex flex-col lg:justify-between lg:flex-row">
-        <div class="lg:order-last mb-8 lg:mt-2 lg:mr-3 flex flex-col gap-y-2 lg:gap-y-4">
-          <div
-            class="flex justify-between items-center w-full lg:w-48 gap-x-2"
-            :if={@display_skill_edit_button}
-          >
-            <.link
-              patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
-              id="link-skills-form"
-              class={[Map.get(@flash, "first_skills_edit") && "z-20", "flex-1 flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 hover:opacity-50"]}>
-              <span class="absolute material-icons-outlined left-4 top-1/2 text-white !text-xl -translate-y-1/2">edit</span>
-              スキル入力する
-            </.link>
-
-            <div
-              :if={@display_skill_edit_button}
-              id="btn-help-enter-skills-button"
-              class="flex-none cursor-pointer"
-              phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
-              <img class="w-8 h-8" src="/images/icon_help.svg" />
-            </div>
-          </div>
-
-          <div class="lg:absolute lg:right-0 lg:top-16 z-10 flex items-center lg:items-end flex-col">
-            <% # スキル入力前メッセージ %>
-            <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
-            <.live_component
-              :if={Map.get(@flash, "first_skills_edit")}
-              module={BrightWeb.HelpMessageComponent}
-              id="help-enter-skills"
-              overlay={true}>
-              <.first_skills_edit_message />
-            </.live_component>
-
-            <% # スキル入力するボタン 手動表示メッセージ %>
-            <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
-            <.live_component
-              module={BrightWeb.HelpMessageComponent}
-              id="help-enter-skills-button"
-              open={false}>
-              <.enter_skills_help_message reference_from={"button"} />
-            </.live_component>
-          </div>
-
-          <% # TODO: α版後にifを除去して表示 %>
-          <button :if={false} class="flex items-center text-sm font-bold justify-center pl-6 py-3 relative rounded !text-white bg-brightGray-900 w-full lg:w-48 hover:opacity-50">
-            <img src="/images/common/icons/up.svg" class="absolute left-4 top-1/2 -translate-y-1/2">
-            スキルアップする
-          </button>
-        </div>
-
         <div class="pt-2 w-full lg:pt-6 lg:max-w-[650px]">
           <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
           <.profile_inline
@@ -299,7 +245,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             display_excellent_person={false}
             display_anxious_person={false}
             display_return_to_yourself={!@me}
-            display_sns={true}
+            display_sns={false}
             twitter_url={@display_user.user_profile.twitter_url}
             github_url={@display_user.user_profile.github_url}
             facebook_url={@display_user.user_profile.facebook_url}
