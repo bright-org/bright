@@ -229,18 +229,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
-  def profile_area(assigns) do
-    ~H"""
-      <.profile_with_selected_skill_class
-          user_name={@display_user.name}
-          title={@display_user.user_profile.title}
-          icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
-          display_return_to_yourself={!@me}
-          is_anonymous={@anonymous}
-      />
-    """
-  end
-
   def no_skill_panel(assigns) do
     ~H"""
     <div class="h-screen w-full flex flex-col justify-center items-center gap-y-2">
