@@ -185,7 +185,7 @@ defmodule BrightWeb.ProfileComponents do
     """
   end
 
-  defp assign_by_anonymous(assigns = %{is_anonymous: true}) do
+  defp assign_by_anonymous(%{is_anonymous: true} = assigns) do
     assigns
     |> assign(:icon_file_path, "/images/avatar.png")
     |> assign(:user_name, "非表示")
