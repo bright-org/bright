@@ -105,7 +105,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <.link navigate={"#{PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
           class={
-            "inline-flex items-center font-bold rounded-l-full px-6 py-2 " <>
+            "inline-flex items-center font-bold rounded-l-full px-6 py-2 hover:opacity-50 " <>
             if @active == "graph", do: "button-toggle-active", else: ""
           }
         >
@@ -115,7 +115,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
           class={
-            "inline-flex items-center font-bold rounded-r-full px-4 py-2 " <>
+            "inline-flex items-center font-bold rounded-r-full px-4 py-2 hover:opacity-50 " <>
             if @active == "panel", do: "button-toggle-active", else: ""
           }
         >

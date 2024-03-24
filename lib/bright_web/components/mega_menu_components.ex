@@ -39,7 +39,7 @@ defmodule BrightWeb.MegaMenuComponents do
       data-dropdown-placement="bottom"
     >
       <button
-        class="dropdownTrigger text-white bg-brightGreen-300 rounded-md py-1.5 pl-3 flex items-center font-bold"
+        class="dropdownTrigger text-white bg-brightGreen-300 rounded-md py-1.5 pl-3 flex items-center font-bold hover:opacity-50"
         type="button"
       >
         <span class="min-w-[4em] lg:min-w-[6em] px-4">

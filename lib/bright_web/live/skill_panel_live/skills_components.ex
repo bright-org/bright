@@ -36,7 +36,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <div class="flex justify-center items-center ml-1 mr-2">
           <%= if @timeline.past_enabled do %>
             <button
-              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative"
+              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative hover:opacity-50"
               phx-click="shift_timeline_past"
               phx-target={@myself}
             >
@@ -64,7 +64,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <div class="flex justify-center items-center ml-2">
           <%= if @timeline.future_enabled do %>
             <button
-              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative"
+              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative hover:opacity-50"
               phx-click="shift_timeline_future"
               phx-target={@myself}
               disabled={!@timeline.future_enabled}
