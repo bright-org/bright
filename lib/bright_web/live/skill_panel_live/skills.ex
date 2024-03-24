@@ -16,6 +16,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillExams
   alias Bright.UserJobProfiles
   alias BrightWeb.PathHelper
+  alias BrightWeb.ProfileComponents
 
   @impl true
   def mount(params, _session, socket) do
@@ -24,8 +25,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"])
      |> assign(:page_title, "スキルパネル")
-     |> assign(init_team_id: nil, init_timeline: nil)
-     |> assign_page_sub_title()}
+     |> assign(init_team_id: nil, init_timeline: nil)}
   end
 
   @impl true

@@ -1,5 +1,8 @@
 <%= if @skill_panel do %>
-<div class="flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
+<div class="relative flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
+  <% # 働く際の希望の入力を促すメッセージ %>
+  <.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !user_job_searching?(@current_user)} />
+
   <%!-- スマホ 成長パネル/スキルパネル切替 --%>
   <div class="lg:hidden mb-4">
     <.toggle_link
@@ -75,6 +78,18 @@
   </div>
 </div>
 
+<div class="mx-4 lg:mx-10 pb-6">
+  <ProfileComponents.profile_with_selected_skill_class
+    user_name={@display_user.name}
+    title={@display_user.user_profile.title}
+    icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
+    skill_panel={@skill_panel}
+    skill_class={@skill_class}
+    display_return_to_yourself={!@me}
+    is_anonymous={@anonymous}
+  />
+</div>
+
 <div class="mx-4 lg:mx-10 relative">
   <div class="flex justify-between">
     <.class_tab
@@ -87,21 +102,6 @@
   </div>
 
   <div class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-3">
-    <div class="px-2 lg:px-6">
-      <h3 class="text-xl my-4 lg:hidden"><%= "クラス#{@skill_class.class} : #{@skill_class.name}" %></h3>
-      <.profile_area
-        display_user={@display_user}
-        anonymous={@anonymous}
-        skill_class_score={@skill_class_score}
-        counter={@counter}
-        num_skills={@num_skills}
-        skill_panel={@skill_panel}
-        query={@query}
-        me={@me}
-        flash={@flash}
-      />
-    </div>
-
     <.live_component
       id="skills-field"
       module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
@@ -109,6 +109,7 @@
       skill_panel={@skill_panel}
       skill_class={@skill_class}
       current_skill_score_dict={@skill_score_dict}
+      skill_class_score={@skill_class_score}
       counter={@counter}
       num_skills={@num_skills}
       path={@path}
@@ -120,9 +121,6 @@
       init_timeline={@init_timeline}
     />
   </div>
-
-  <% # 働く際の希望の入力を促すメッセージ %>
-  <.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !user_job_searching?(@current_user)} />
 </div>
 
 <% # スコア入力用モーダル %>

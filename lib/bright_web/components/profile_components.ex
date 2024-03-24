@@ -5,6 +5,12 @@ defmodule BrightWeb.ProfileComponents do
   use Phoenix.Component
   import BrightWeb.BrightButtonComponents
   import BrightWeb.SnsComponents
+
+  import BrightWeb.CoreComponents,
+    only: [
+      icon: 1
+    ]
+
   alias Phoenix.LiveView.JS
   alias Bright.UserProfiles
 
@@ -92,11 +98,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :is_anonymous, :boolean, default: false
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
-  attr :detail, :string, default: ""
   attr :icon_file_path, :string, default: ""
-  attr :display_detail, :boolean, default: true
-  attr :display_excellent_person, :boolean, default: false
-  attr :display_anxious_person, :boolean, default: false
   attr :display_return_to_yourself, :boolean, default: false
   attr :display_stock_candidates_for_employment, :boolean, default: false
   attr :display_adopt, :boolean, default: false
@@ -107,17 +109,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :github_url, :string, default: ""
 
   def profile_inline(assigns) do
-    icon_file_path =
-      if assigns.is_anonymous, do: "/images/avatar.png", else: assigns.icon_file_path
-
-    user_name = if assigns.is_anonymous, do: "非表示", else: assigns.user_name
-    title = if assigns.is_anonymous, do: "非表示", else: assigns.title
-
-    assigns =
-      assigns
-      |> assign(:icon_file_path, icon_file_path)
-      |> assign(:user_name, user_name)
-      |> assign(:title, title)
+    assigns = assign_by_anonymous(assigns)
 
     ~H"""
     <div class="flex">
@@ -131,8 +123,6 @@ defmodule BrightWeb.ProfileComponents do
         <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
         <div class="flex flex-col lg:flex-row">
           <div class="flex gap-x-3 h-6 lg:h-8 ml-7 lg:ml-9">
-            <.excellent_person_button :if={@display_excellent_person}/>
-            <.anxious_person_button :if={@display_anxious_person} />
             <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">自分に戻す</.profile_button>
             <.profile_button :if={@display_stock_candidates_for_employment}>採用候補者としてストック</.profile_button>
             <.profile_button :if={@display_adopt}>採用する</.profile_button>
@@ -145,6 +135,65 @@ defmodule BrightWeb.ProfileComponents do
       </div>
     </div>
     """
+  end
+
+  attr :is_anonymous, :boolean, default: false
+  attr :user_name, :string, default: ""
+  attr :title, :string, default: ""
+  attr :icon_file_path, :string, default: ""
+  attr :skill_class, :any, required: true
+  attr :skill_panel, :any, required: true
+  attr :display_return_to_yourself, :boolean, default: false
+
+  def profile_with_selected_skill_class(assigns) do
+    assigns = assign_by_anonymous(assigns)
+
+    ~H"""
+      <div class="flex flex-col gap-y-2 w-full">
+        <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4">
+          <h4 class="w-full lg:w-auto">選択中のユーザー／スキル／クラス</h4>
+          <div>
+            <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">
+              <.icon name="hero-arrow-uturn-right" class="mr-2" />
+              自分に戻す
+            </.profile_button>
+          </div>
+        </div>
+        <div class="p-4 px-6 bg-white rounded-lg">
+          <div class="flex">
+            <div class="flex items-center">
+              <div class="mr-2 lg:mr-5 w-12 lg:w-20">
+                <img
+                  class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
+                  src={@icon_file_path}
+                />
+              </div>
+              <div class="flex mr-2 lg:mr-20">
+                <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-y-2 font-bold">
+              <div class="text-md lg:text-2xl mt-1 lg:mt-2"><%= @skill_panel.name %></div>
+              <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
+                <span class="text-sm lg:text-normal">クラス<%= @skill_class.class %></span>
+                <span class="text-sm lg:text-normal break-all"><%= @skill_class.name %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    """
+  end
+
+  defp assign_by_anonymous(assigns = %{is_anonymous: true}) do
+    assigns
+    |> assign(:icon_file_path, "/images/avatar.png")
+    |> assign(:user_name, "非表示")
+    |> assign(:title, "非表示")
+  end
+
+  defp assign_by_anonymous(assigns) do
+    assigns
   end
 
   @doc """
@@ -400,7 +449,7 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   # 採用候補者 LiveComponent用イベント
-  # スキルパネル「個人と比較」で利用
+  # スキルパネル「個人とスキルを比較」で利用
   defp profile_stock_small_link(assigns) do
     ~H"""
     <.link

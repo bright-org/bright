@@ -9,11 +9,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   alias Bright.SkillScores
   alias BrightWeb.SkillPanelLive.SkillsFieldComponent
 
-  def compares(assigns) do
+  def compare_buttons(assigns) do
     ~H"""
-    <div class="flex flex-wrap mt-4 items-center lg:flex-nowrap">
-      <.compare_timeline myself={@myself} timeline={@timeline} />
-      <div class="flex gap-x-4 ml-20">
+    <div class="flex flex-wrap items-center lg:flex-nowrap">
+      <div class="flex gap-x-4">
         <.compare_individual current_user={@current_user} myself={@myself} />
         <.compare_team current_user={@current_user} myself={@myself} />
         <.compare_custom_group
@@ -92,7 +91,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-placement="bottom"
     >
       <.action_button icon="add" class="dropdownTrigger">
-        <span class="min-w-[6em]">個人と比較</span>
+        <span class="min-w-[6em]">個人とスキルを比較</span>
       </.action_button>
       <div
         class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"

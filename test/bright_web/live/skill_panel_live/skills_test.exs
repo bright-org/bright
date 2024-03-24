@@ -980,7 +980,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      # 「個人と比較」 チームタブ選択
+      # 「個人とスキルを比較」 チームタブ選択
       show_live
       |> element(~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]})
       |> render_click()
@@ -1004,7 +1004,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      # 「個人と比較」 チームタブ選択
+      # 「個人とスキルを比較」 チームタブ選択
       show_live
       |> element(~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]})
       |> render_click()

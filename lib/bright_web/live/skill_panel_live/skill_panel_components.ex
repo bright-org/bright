@@ -1,7 +1,6 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use BrightWeb, :component
 
-  import BrightWeb.ChartComponents
   import BrightWeb.ProfileComponents
   import BrightWeb.MegaMenuComponents
 
@@ -232,36 +231,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def profile_area(assigns) do
     ~H"""
-      <div class="flex flex-col lg:justify-between lg:flex-row">
-        <div class="pt-2 w-full lg:pt-6 lg:max-w-[650px]">
-          <% # TODO: α版後にexcellent_person/anxious_personをtrueに変更して表示 %>
-          <.profile_inline
-            user_name={@display_user.name}
-            title={@display_user.user_profile.title}
-            detail={@display_user.user_profile.detail}
-            icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
-            display_excellent_person={false}
-            display_anxious_person={false}
-            display_return_to_yourself={!@me}
-            display_sns={false}
-            twitter_url={@display_user.user_profile.twitter_url}
-            github_url={@display_user.user_profile.github_url}
-            facebook_url={@display_user.user_profile.facebook_url}
-            is_anonymous={@anonymous}
-          />
-        </div>
-        <div class="flex ml-8 mb-4 h-[80px] lg:ml-7">
-          <div class="w-20 mt-5">
-            <.doughnut_graph id="doughnut-graph-single" data={skill_score_percentages(@counter, @num_skills)} />
-          </div>
-
-          <.profile_score_stats
-            skill_class_score={@skill_class_score}
-            counter={@counter}
-            num_skills={@num_skills}
-          />
-        </div>
-      </div>
+      <.profile_with_selected_skill_class
+          user_name={@display_user.name}
+          title={@display_user.user_profile.title}
+          icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
+          display_return_to_yourself={!@me}
+          is_anonymous={@anonymous}
+      />
     """
   end
 
@@ -283,9 +259,9 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     [Map.get(@score_mark, mark), get_in(@score_mark_color, [color, mark])]
   end
 
-  defp profile_score_stats(assigns) do
+  def profile_score_stats(assigns) do
     ~H"""
-    <div id="profile_score_stats" class="h-20 mt-4 lg:ml-2 flex flex-wrap lg:mt-5">
+    <div id="profile_score_stats" class="h-20 lg:ml-2 flex flex-wrap">
       <p class="text-brightGreen-300 font-bold w-full flex ml-[7px] lg:ml-6 mt-2 mb-1">
         <.profile_skill_class_level level={@skill_class_score.level} />
       </p>
