@@ -14,7 +14,7 @@ defmodule BrightWeb.HelpMessageComponent do
 
   def render(assigns) do
     ~H"""
-    <div id={@id}>
+    <div id={@id} class="w-full">
       <div :if={@overlay} class="bg-pureGray-600/90 fixed inset-0 transition-opacity"></div>
       <div class="relative px-4 py-2 my-1 rounded text-sm bg-designer-dazzle leading-normal">
         <%= render_slot(@inner_block) %>
