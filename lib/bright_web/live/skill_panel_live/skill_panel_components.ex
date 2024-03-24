@@ -1,7 +1,6 @@
 defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   use BrightWeb, :component
 
-  import BrightWeb.ProfileComponents
   import BrightWeb.MegaMenuComponents
 
   alias Bright.SkillScores
