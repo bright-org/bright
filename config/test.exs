@@ -43,6 +43,11 @@ config :bright, :google_api_storage,
   bucket_name: "bright_storage_local_test",
   public_base_url: System.get_env("GCS_PUBLIC_BASE_URL", "http://localhost:4443")
 
+# Sentry
+config :sentry,
+  dsn: "",
+  included_environments: []
+
 # NOTE: テスト用に Bright.Ueberauth.Strategy.Test を作成して使用
 config :ueberauth, Ueberauth,
   providers: [
