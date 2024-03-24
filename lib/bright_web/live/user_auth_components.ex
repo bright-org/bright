@@ -6,8 +6,6 @@ defmodule BrightWeb.UserAuthComponents do
   use Phoenix.Component
   import BrightWeb.CoreComponents, only: [error: 1, translate_error: 1]
 
-  # TODO: core_component にマージできないか検討
-
   @doc """
   Auth form.
   """
