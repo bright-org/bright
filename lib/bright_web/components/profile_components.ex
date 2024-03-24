@@ -173,7 +173,7 @@ defmodule BrightWeb.ProfileComponents do
               </div>
             </div>
             <div class="flex flex-col gap-y-2 font-bold">
-              <div class="text-md lg:text-2xl mt-1 lg:mt-2"><%= @skill_panel.name %></div>
+              <span id="profile-skill-panel-name" class="text-md lg:text-2xl mt-1 lg:mt-2"><%= @skill_panel.name %></span>
               <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
                 <span class="text-sm lg:text-normal">クラス<%= @skill_class.class %></span>
                 <span class="text-sm lg:text-normal break-all"><%= @skill_class.name %></span>
