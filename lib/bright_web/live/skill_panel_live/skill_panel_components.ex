@@ -195,7 +195,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def class_tab(assigns) do
     ~H"""
     <div class="w-full bg-white border-b border-b-brightGray-100">
-      <ul class="flex relative z-1 text-normal font-bold text-brightGray-300 lg:text-center lg:text-md w-full lg:w-fit">
+      <ul class="flex relative z-1 text-normal font-bold text-brightGray-300 text-center lg:text-md w-full lg:w-fit">
         <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
           <% current = @skill_class.class == skill_class.class %>
           <%= if !@me && is_nil(skill_class_score) do %>
@@ -209,7 +209,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             <li id={"class_tab_#{skill_class.class}"} class={["grow", current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300", !current && "hover:opacity-50 hover:text-brightGreen-300"]}>
               <.link
                 patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
-                class="flex lg:justify-start items-center px-1 lg:px-4 py-1 lg:py-3"
+                class="flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3"
                 aria-current={current && "page"}
               >
                 <span class="text-sm lg:text-normal">クラス<%= skill_class.class %></span>
