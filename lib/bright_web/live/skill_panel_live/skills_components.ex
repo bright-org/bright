@@ -91,6 +91,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-placement="bottom"
     >
       <.action_button icon="add" class="dropdownTrigger">
+        <img class="mr-1" src="/images/common/icons/compareIndividual.svg" />
         <span class="min-w-[6em]">個人とスキルを比較</span>
       </.action_button>
       <div
@@ -119,6 +120,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-placement="bottom"
     >
       <.action_button icon="add" class="dropdownTrigger">
+        <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
         <span class="min-w-[6em]">チーム全員と比較</span>
       </.action_button>
       <div
@@ -145,7 +147,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-offset-skidding="110"
       data-dropdown-placement="bottom"
     >
-      <.action_button class="dropdownTrigger">
+      <.action_button icon="add" class="dropdownTrigger">
+        <img class="mr-1" src="/images/common/icons/addCustomGroup.svg" />
         <span>カスタムグループ追加・比較</span>
       </.action_button>
       <div

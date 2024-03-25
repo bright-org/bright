@@ -97,26 +97,39 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
+  # NOTE: svg に css で色を付けるために mask-xxx プロパティを使用している
   def toggle_link(assigns) do
     ~H"""
     <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
       <.link navigate={"#{PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
           class={
-            "inline-flex items-center font-bold rounded-l-full px-6 py-2 " <>
+            "inline-flex items-center font-bold rounded-l-full gap-x-2 px-6 py-2 " <>
             if @active == "graph", do: "button-toggle-active", else: "hover:opacity-50"
           }
         >
+          <div
+            class={[
+              "h-6 w-6 [mask-image:url('/images/common/icons/growthPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
+              @active == "graph" && "bg-white", @active != "graph" && "bg-brightGray-500"]
+            }
+          />
           成長パネル
         </button>
       </.link>
       <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
           class={
-            "inline-flex items-center font-bold rounded-r-full px-4 py-2 " <>
+            "inline-flex items-center font-bold rounded-r-full gap-x-2 px-4 py-2 " <>
             if @active == "panel", do: "button-toggle-active", else: "hover:opacity-50"
           }
         >
+          <div
+            class={[
+              "h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
+              @active == "panel" && "bg-white", @active != "panel" && "bg-brightGray-500"]
+            }
+          />
           スキルパネル
         </button>
       </.link>
