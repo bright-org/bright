@@ -36,7 +36,10 @@ Boruta.Ecto.Admin.create_client(%{
   # userinfo signature algorithm, defaults to nil (no signature)
   userinfo_signed_response_alg: "RS256",
   # OAuth client redirect_uris
-  redirect_uris: ["http://localhost:4001/auth/bright/callback"],
+  redirect_uris: [
+    "http://localhost:4001/auth/bright/callback",
+    "http://localhost:4001/auth/oidc/callback"
+  ],
   # take following authorized_scopes into account (skip public scopes)
   authorize_scope: true,
   # scopes that are authorized using this client
@@ -52,7 +55,7 @@ Boruta.Ecto.Admin.create_client(%{
     "introspect"
   ],
   # PKCE enabled
-  pkce: true,
+  pkce: false,
   # do not require client_secret for refreshing tokens
   public_refresh_token: false,
   # do not require client_secret for revoking tokens

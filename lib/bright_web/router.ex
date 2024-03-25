@@ -363,6 +363,11 @@ defmodule BrightWeb.Router do
 
     get "/authorize", AuthorizeController, :authorize
   end
+  scope "/.well-known", BrightWeb do
+    pipe_through [:api]
+
+    get "/openid-configuration", Openid.WellKnownController, :configuration
+  end
 
   # See https://hexdocs.pm/plug/Plug.BasicAuth.html#module-runtime-time-usage
   defp admin_basic_auth(conn, _opts) do
