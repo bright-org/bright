@@ -179,6 +179,32 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   @doc """
+  Renders a Profile small for inline
+
+  ## Examples
+      <.profile_small_inline
+        user_name="piacere"
+        title="リードプログラマー"
+        icon_file_path="/images/sample/sample-image.png"
+      />
+  """
+  attr :user_name, :string, default: ""
+  attr :title, :string, default: ""
+  attr :icon_file_path, :string, default: ""
+  attr :detail, :string, default: ""
+
+  def profile_small_inline(assigns) do
+    ~H"""
+    <li class="text-left flex gap-x-8 text-base p-1 rounded w-full">
+      <img class="inline-block h-10 w-10 rounded-full -mr-4" src={@icon_file_path} />
+      <p class="truncate max-w-[240px] mt-2"><%= @user_name %></p>
+      <p class="text-brightGray-300 max-w-[420px] mt-2"><%= @title %></p>
+      <p class="max-w-[520px] overflow-hidden mt-2"><%= @detail %></p>
+    </li>
+    """
+  end
+
+  @doc """
   Renders a Profile small with remove button
 
   ## Examples
