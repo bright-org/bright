@@ -195,12 +195,12 @@ defmodule BrightWeb.ProfileComponents do
 
   def profile_small_inline(assigns) do
     ~H"""
-    <li class="text-left flex gap-x-8 text-base p-1 rounded w-full">
+    <div class="text-left flex gap-x-8 text-base p-1 rounded w-full">
       <img class="inline-block h-10 w-10 rounded-full -mr-4" src={@icon_file_path} />
       <p class="truncate max-w-[240px] mt-2"><%= @user_name %></p>
       <p class="text-brightGray-300 max-w-[420px] mt-2"><%= @title %></p>
       <p class="max-w-[520px] overflow-hidden mt-2"><%= @detail %></p>
-    </li>
+    </div>
     """
   end
 
