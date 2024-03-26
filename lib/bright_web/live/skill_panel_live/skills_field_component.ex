@@ -21,22 +21,41 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias BrightWeb.TimelineHelper
   alias BrightWeb.BrightCoreComponents
   alias BrightWeb.DisplayUserHelper
+  alias BrightWeb.ChartComponents
+  alias BrightWeb.SkillPanelLive.SkillPanelComponents
 
   def render(assigns) do
     ~H"""
     <div id={@id}>
       <BrightCoreComponents.flash_group flash={@inner_flash} />
       <div class="hidden lg:block px-6">
-        <.compares
+        <.compare_buttons
           current_user={@current_user}
           myself={@myself}
-          timeline={@timeline}
           custom_group={@custom_group}
           compared_users={@compared_users}
           skills_field_id={@id}
         />
       </div>
-      <div class="px-6 hidden lg:block">
+
+      <div class="flex mt-4 px-6 items-center">
+        <div class="hidden lg:flex">
+          <.compare_timeline myself={@myself} timeline={@timeline} />
+        </div>
+        <div class="flex lg:ml-20 gap-x-4 lg:gap-x-0 lg:items-center">
+          <div class="w-20">
+            <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
+          </div>
+
+          <SkillPanelComponents.profile_score_stats
+            skill_class_score={@skill_class_score}
+            counter={@counter}
+            num_skills={@num_skills}
+          />
+        </div>
+      </div>
+
+      <div class="px-6 mt-4 lg:mt-8 hidden lg:block">
         <.skills_table
           table_structure={@table_structure}
           skill_panel={@skill_panel}
@@ -56,7 +75,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
           anonymous={@anonymous}
         />
       </div>
-      <div class="lg:hidden px-2">
+      <div class="lg:hidden px-2 mt-4">
         <.skills_table_sp
           skill_panel={@skill_panel}
           skill_score_dict={@skill_score_dict}
@@ -162,7 +181,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
      |> assign_compared_users_info()}
   end
 
-  # 「個人と比較」チーム選択時のイベント
+  # 「個人とスキルを比較」チーム選択時のイベント
   def handle_event("on_card_row_click", %{"team_id" => team_id}, socket) do
     %{
       current_user: current_user,

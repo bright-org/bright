@@ -78,35 +78,33 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     setup %{user: user} do
       skill_panel = insert(:skill_panel)
       insert(:user_skill_panel, user: user, skill_panel: skill_panel)
-      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+      insert(:skill_class, skill_panel: skill_panel, class: 1)
 
-      %{skill_panel: skill_panel, skill_class: skill_class}
+      %{skill_panel: skill_panel}
     end
 
     test "shows content", %{
       conn: conn,
-      skill_panel: skill_panel,
-      skill_class: skill_class
+      skill_panel: skill_panel
     } do
       {:ok, show_live, html} = live(conn, ~p"/graphs/#{skill_panel}")
 
       assert html =~ skill_panel.name
 
       assert show_live
-             |> has_element?("#class_tab_1", skill_class.name)
+             |> has_element?("#class_tab_1", "クラス1")
     end
 
     test "shows content without parameters", %{
       conn: conn,
-      skill_panel: skill_panel,
-      skill_class: skill_class
+      skill_panel: skill_panel
     } do
       {:ok, show_live, html} = live(conn, ~p"/graphs")
 
       assert html =~ skill_panel.name
 
       assert show_live
-             |> has_element?("#class_tab_1", skill_class.name)
+             |> has_element?("#class_tab_1", "クラス1")
     end
   end
 

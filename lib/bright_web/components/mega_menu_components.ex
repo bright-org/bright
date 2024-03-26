@@ -39,10 +39,10 @@ defmodule BrightWeb.MegaMenuComponents do
       data-dropdown-placement="bottom"
     >
       <button
-        class="dropdownTrigger text-white bg-brightGreen-300 rounded-sm py-1.5 pl-3 flex items-center font-bold"
+        class="dropdownTrigger text-white bg-brightGreen-300 rounded-md py-1.5 pl-3 flex items-center font-bold hover:opacity-50"
         type="button"
       >
-        <span class="min-w-[4em] lg:min-w-[6em]">
+        <span class="min-w-[4em] lg:min-w-[6em] px-4">
           <%= @label %>
         </span>
         <span
@@ -52,7 +52,7 @@ defmodule BrightWeb.MegaMenuComponents do
       </button>
 
       <div
-        class={["dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-full", @menu_width]}
+        class={["dropdownTarget z-30 hidden bg-white rounded-md shadow static w-full", @menu_width]}
       >
         <%= render_slot(@inner_block) %>
       </div>

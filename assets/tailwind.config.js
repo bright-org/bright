@@ -184,6 +184,9 @@ module.exports = {
         notosans: ["Noto Sans JP"],
         sans: ["Noto Sans JP"],
       }),
+      fontSize: {
+        normal: ["1rem", "1.5rem"]
+      },
       rotate: (theme) => ({
         225: "225deg",
       }),
