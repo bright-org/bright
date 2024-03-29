@@ -346,6 +346,7 @@ defmodule BrightWeb.Router do
     post "/token", TokenController, :token
     post "/introspect", IntrospectController, :introspect
   end
+
   scope "/openid", BrightWeb.Openid do
     pipe_through [:api]
 
@@ -353,16 +354,19 @@ defmodule BrightWeb.Router do
     post "/userinfo", UserinfoController, :userinfo
     get "/jwks", JwksController, :jwks_index
   end
+
   scope "/oauth", BrightWeb.Oauth do
     pipe_through [:browser, :fetch_current_user]
 
     get "/authorize", AuthorizeController, :authorize
   end
+
   scope "/openid", BrightWeb.Openid do
     pipe_through [:browser, :fetch_current_user]
 
     get "/authorize", AuthorizeController, :authorize
   end
+
   scope "/.well-known", BrightWeb do
     pipe_through [:api]
 

@@ -31,12 +31,12 @@ defmodule BrightWeb.Controllers.Openid.TokenControllerTest do
       conn = TokenController.token(conn, %{})
 
       assert json_response(conn, 200) == %{
-        "access_token" => "access_token",
-        "id_token" => "id_token",
-        "expires_in" => 10,
-        "token_type" => "token_type",
-        "refresh_token" => "refresh_token"
-      }
+               "access_token" => "access_token",
+               "id_token" => "id_token",
+               "expires_in" => 10,
+               "token_type" => "token_type",
+               "refresh_token" => "refresh_token"
+             }
     end
   end
 end

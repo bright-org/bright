@@ -13,6 +13,7 @@ defmodule Bright.ResourceOwners do
       _ -> {:error, "User not found."}
     end
   end
+
   def get_by(sub: sub) do
     with %User{id: id, email: email} <- Repo.get_by(User, id: sub) do
       {:ok, %ResourceOwner{sub: to_string(id), username: email}}
@@ -24,6 +25,7 @@ defmodule Bright.ResourceOwners do
   @impl Boruta.Oauth.ResourceOwners
   def check_password(resource_owner, password) do
     user = Repo.get_by(User, id: resource_owner.sub)
+
     case User.valid_password?(user, password) do
       true -> :ok
       false -> {:error, "Invalid email or password."}
@@ -32,7 +34,6 @@ defmodule Bright.ResourceOwners do
 
   @impl Boruta.Oauth.ResourceOwners
   def authorized_scopes(%ResourceOwner{}), do: []
-
 
   @impl Boruta.Oauth.ResourceOwners
   def claims(_resource_owner, _scope), do: %{}
