@@ -7,6 +7,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias BrightWeb.ProfileComponents
   alias BrightWeb.ChartComponents
   alias BrightWeb.SkillPanelLive.SkillPanelComponents
+  alias BrightWeb.GuideMessageComponents
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper

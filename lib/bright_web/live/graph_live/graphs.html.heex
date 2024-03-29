@@ -13,6 +13,36 @@
     />
   </div>
 
+  <div class="relative flex flex-col gap-y-2 lg:gap-y-4" :if={@me}>
+    <div class="flex justify-between items-center w-full gap-x-2">
+      <.link
+        patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+        id="link-skills-form"
+        class={["w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:opacity-50"]}>
+        <span class="material-icons-outlined text-white text-md">edit</span>
+        スキルを入力する
+      </.link>
+
+      <div
+        :if={@me}
+        id="btn-help-enter-skills-button"
+        class="flex-none cursor-pointer w-8 h-8 hover:opacity-50 bg-[url('/images/icon_help.svg')]"
+        phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
+      </div>
+    </div>
+
+    <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
+      <% # スキル入力するボタン 手動表示メッセージ %>
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        module={BrightWeb.HelpMessageComponent}
+        id="help-enter-skills-button"
+        open={false}>
+        <GuideMessageComponents.enter_skills_help_message reference_from={"button"} />
+      </.live_component>
+    </div>
+  </div>
+
   <.navigations
     current_user={@current_user}
     display_user={@display_user}
