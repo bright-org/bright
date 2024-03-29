@@ -158,7 +158,7 @@ defmodule BrightWeb.Controllers.Openid.AuthorizeControllerTest do
       conn = AuthorizeController.authorize(conn, %{})
 
       assert redirected_to(conn) ==
-               "http://redirect.uri#access_token=access_token&expires_in=10"
+               "http://redirect.uri#expires_in=10&access_token=access_token"
     end
 
     test "redirects with an access_token and a state", %{conn: conn} do
@@ -181,7 +181,7 @@ defmodule BrightWeb.Controllers.Openid.AuthorizeControllerTest do
       conn = AuthorizeController.authorize(conn, %{})
 
       assert redirected_to(conn) ==
-               "http://redirect.uri#access_token=access_token&expires_in=10&state=state"
+               "http://redirect.uri#state=state&expires_in=10&access_token=access_token"
     end
 
     test "redirects with an code", %{conn: conn} do
@@ -229,24 +229,12 @@ defmodule BrightWeb.Controllers.Openid.AuthorizeControllerTest do
   end
 
   defp assert_authorize_redirected_to_login(conn) do
-    assert_raise RuntimeError,
-                 """
-                 Here occurs the login process. After login, user may be redirected to
-                 get_session(conn, :user_return_to)
-                 """,
-                 fn ->
-                   AuthorizeController.authorize(conn, %{})
-                 end
+    conn = AuthorizeController.authorize(conn, %{})
+    assert redirected_to(conn) == "/users/log_in"
   end
 
   defp assert_authorize_user_logged_out(conn) do
-    assert_raise RuntimeError,
-                 """
-                 Here user shall be logged out then redirected to login. After login, user may be redirected to
-                 get_session(conn, :user_return_to)
-                 """,
-                 fn ->
-                   AuthorizeController.authorize(conn, %{})
-                 end
+    conn = AuthorizeController.authorize(conn, %{})
+    assert redirected_to(conn) == "/users/log_in"
   end
 end

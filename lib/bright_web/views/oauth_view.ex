@@ -1,4 +1,6 @@
 defmodule BrightWeb.OauthView do
+  use Phoenix.View, root: "lib/bright_web/templates"
+
   alias Boruta.Oauth.IntrospectResponse
   alias Boruta.Oauth.TokenResponse
 
