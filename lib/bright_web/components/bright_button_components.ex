@@ -24,7 +24,7 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       type="button"
-      class="text-brightGreen-300 bg-white px-1 inline-flex rounded-md min-w-[60px] text-[10px] items-center border border-brightGreen-300 font-bold lg:px-2 lg:py-1 lg:text-sm"
+      class="text-brightGreen-300 bg-white px-1 inline-flex rounded-md min-w-[60px] text-[10px] items-center border border-brightGreen-300 font-bold lg:px-2 lg:py-1 lg:text-sm hover:opacity-50"
       {@rest}
     >
       <%= render_slot(@inner_block) %>

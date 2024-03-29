@@ -4,6 +4,9 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias Bright.SkillPanels.SkillPanel
   alias Bright.Teams
   alias Bright.Accounts
+  alias BrightWeb.ProfileComponents
+  alias BrightWeb.ChartComponents
+  alias BrightWeb.SkillPanelLive.SkillPanelComponents
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
@@ -18,8 +21,7 @@ defmodule BrightWeb.GraphLive.Graphs do
      |> assign(:select_label, "now")
      |> assign(:compared_user, nil)
      |> assign(:select_label_compared_user, nil)
-     |> assign(:page_title, "成長パネル")
-     |> assign_page_sub_title()}
+     |> assign(:page_title, "成長パネル")}
   end
 
   @impl true

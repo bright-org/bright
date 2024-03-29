@@ -74,26 +74,23 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     test "shows content", %{
       conn: conn,
-      skill_panel: skill_panel,
-      skill_class: skill_class,
-      skill_class_2: skill_class_2
+      skill_panel: skill_panel
     } do
       {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}")
 
       assert html =~ "スキルパネル"
-      assert has_element?(show_live, "#class_tab_1", skill_class.name)
-      assert has_element?(show_live, "#class_tab_2", skill_class_2.name)
+      assert has_element?(show_live, "#class_tab_1", "クラス1")
+      assert has_element?(show_live, "#class_tab_2", "クラス2")
     end
 
     test "shows content without parameters", %{
       conn: conn,
-      skill_panel: skill_panel,
-      skill_class: skill_class
+      skill_panel: skill_panel
     } do
       {:ok, show_live, html} = live(conn, ~p"/panels")
 
       assert html =~ skill_panel.name
-      assert has_element?(show_live, "#class_tab_1", skill_class.name)
+      assert has_element?(show_live, "#class_tab_1", "クラス1")
     end
 
     test "shows skills table", %{
@@ -663,7 +660,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel_2}/anon/#{encrypted_name}")
 
       assert show_live
-             |> element("#page-top-title")
+             |> element("#profile-skill-panel-name")
              |> render() =~ skill_panel_2.name
 
       # 自分に戻す
@@ -674,7 +671,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
         |> follow_redirect(conn)
 
       assert show_live
-             |> element("#page-top-title")
+             |> element("#profile-skill-panel-name")
              |> render() =~ skill_panel.name
     end
   end
@@ -980,7 +977,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      # 「個人と比較」 チームタブ選択
+      # 「個人とスキルを比較」 チームタブ選択
       show_live
       |> element(~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]})
       |> render_click()
@@ -1004,7 +1001,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      # 「個人と比較」 チームタブ選択
+      # 「個人とスキルを比較」 チームタブ選択
       show_live
       |> element(~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]})
       |> render_click()

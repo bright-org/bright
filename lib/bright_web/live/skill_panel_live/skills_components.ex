@@ -9,11 +9,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   alias Bright.SkillScores
   alias BrightWeb.SkillPanelLive.SkillsFieldComponent
 
-  def compares(assigns) do
+  def compare_buttons(assigns) do
     ~H"""
-    <div class="flex flex-wrap mt-4 items-center lg:flex-nowrap">
-      <.compare_timeline myself={@myself} timeline={@timeline} />
-      <div class="flex gap-x-4 ml-20">
+    <div class="flex flex-wrap items-center lg:flex-nowrap">
+      <div class="flex gap-x-4">
         <.compare_individual current_user={@current_user} myself={@myself} />
         <.compare_team current_user={@current_user} myself={@myself} />
         <.compare_custom_group
@@ -36,7 +35,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <div class="flex justify-center items-center ml-1 mr-2">
           <%= if @timeline.past_enabled do %>
             <button
-              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative"
+              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute left-4 lg:left-0 lg:relative hover:opacity-50"
               phx-click="shift_timeline_past"
               phx-target={@myself}
             >
@@ -64,7 +63,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <div class="flex justify-center items-center ml-2">
           <%= if @timeline.future_enabled do %>
             <button
-              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative"
+              class="w-6 h-10 bg-brightGreen-300 flex justify-center items-center rounded absolute right-4 lg:right-0 lg:relative hover:opacity-50"
               phx-click="shift_timeline_future"
               phx-target={@myself}
               disabled={!@timeline.future_enabled}
@@ -92,7 +91,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-placement="bottom"
     >
       <.action_button icon="add" class="dropdownTrigger">
-        <span class="min-w-[6em]">個人と比較</span>
+        <img class="mr-1" src="/images/common/icons/compareIndividual.svg" />
+        <span class="min-w-[6em]">個人とスキルを比較</span>
       </.action_button>
       <div
         class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
@@ -120,6 +120,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-placement="bottom"
     >
       <.action_button icon="add" class="dropdownTrigger">
+        <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
         <span class="min-w-[6em]">チーム全員と比較</span>
       </.action_button>
       <div
@@ -146,7 +147,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-offset-skidding="110"
       data-dropdown-placement="bottom"
     >
-      <.action_button class="dropdownTrigger">
+      <.action_button icon="add" class="dropdownTrigger">
+        <img class="mr-1" src="/images/common/icons/addCustomGroup.svg" />
         <span>カスタムグループ追加・比較</span>
       </.action_button>
       <div
@@ -428,7 +430,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   """
   def help_messages_area(assigns) do
     ~H"""
-    <div class="lg:absolute lg:right-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col">
+    <div class="lg:absolute lg:left-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
       <% # スキル入力後メッセージ（初回のみ） %>
       <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
       <.live_component

@@ -139,7 +139,7 @@ defmodule BrightWeb.TimelineBarComponents do
         phx-value-id={@id}
         phx-value-date={@date}
         phx-target={@target}
-        class={["rounded-full bg-white text-xs flex justify-center items-center h-12 w-12 lg:h-16 lg:w-16", button_scale_class(@scale), button_style_class(@scale)]}
+        class={["rounded-full bg-white text-xs flex justify-center items-center h-12 w-12 lg:h-16 lg:w-16 hover:opacity-50", button_scale_class(@scale), button_style_class(@scale)]}
       >
         <%= @date %>
       </button>
@@ -184,7 +184,7 @@ defmodule BrightWeb.TimelineBarComponents do
         phx-value-id={@id}
         phx-value-date="now"
         phx-target={@target}
-        class={["rounded-full bg-white text-xs text-attention-900 flex justify-center items-center h-[44px] w-[44px]", button_now_scale_class(@scale), button_style_class(@scale)]}
+        class={["rounded-full bg-white text-xs text-attention-900 flex justify-center items-center h-[44px] w-[44px] hover:opacity-50", button_now_scale_class(@scale), button_style_class(@scale)]}
       >
         現在
       </button>
@@ -201,7 +201,7 @@ defmodule BrightWeb.TimelineBarComponents do
       phx-click="timeline_bar_close_button_click"
       phx-value-id={@id}
       phx-target={@target}
-      class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200"
+      class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200 hover:opacity-50"
     >
       <span class="material-icons !text-base !text-brightGray-200">close</span>
     </button>

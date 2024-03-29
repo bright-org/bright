@@ -1,13 +1,9 @@
 <%= if @skill_panel do %>
-<.navigations
-  current_user={@current_user}
-  display_user={@display_user}
-  me={@me}
-  anonymous={@anonymous}
-  root="panels"
-/>
+<div class="relative flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
+  <% # 働く際の希望の入力を促すメッセージ %>
+  <.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !user_job_searching?(@current_user)} />
 
-<div class="mx-4 lg:mx-10 relative">
+  <%!-- スマホ 成長パネル/スキルパネル切替 --%>
   <div class="lg:hidden mb-4">
     <.toggle_link
       skill_panel={@skill_panel}
@@ -18,17 +14,84 @@
       active="panel"
     />
   </div>
-  <div class="flex justify-between">
-    <div class="hidden lg:flex">
-      <.toggle_link
-        skill_panel={@skill_panel}
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        skill_class={@skill_class.class}
-        active="panel"
-      />
+
+  <div class="relative flex flex-col gap-y-2 lg:gap-y-4" :if={@me}>
+    <div class="flex justify-between items-center w-full gap-x-2">
+      <.link
+        patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+        id="link-skills-form"
+        class={[Map.get(@flash, "first_skills_edit") && "z-20", "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:opacity-50"]}>
+        <span class="material-icons-outlined text-white text-md">edit</span>
+        スキルを入力する
+      </.link>
+
+      <div
+        :if={@me}
+        id="btn-help-enter-skills-button"
+        class="flex-none cursor-pointer w-8 h-8 hover:opacity-50 bg-[url('/images/icon_help.svg')]"
+        phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
+      </div>
     </div>
+
+    <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
+      <% # スキル入力前メッセージ %>
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        :if={Map.get(@flash, "first_skills_edit")}
+        module={BrightWeb.HelpMessageComponent}
+        id="help-enter-skills"
+        overlay={true}>
+        <.first_skills_edit_message />
+      </.live_component>
+
+      <% # スキル入力するボタン 手動表示メッセージ %>
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        module={BrightWeb.HelpMessageComponent}
+        id="help-enter-skills-button"
+        open={false}>
+        <.enter_skills_help_message reference_from={"button"} />
+      </.live_component>
+    </div>
+
+    <.help_messages_area flash={@flash} />
+  </div>
+
+  <.navigations
+    current_user={@current_user}
+    display_user={@display_user}
+    me={@me}
+    anonymous={@anonymous}
+    root="panels"
+  />
+
+  <%!-- PC 成長パネル/スキルパネル切替 --%>
+  <div class="hidden lg:flex lg:ml-auto">
+    <.toggle_link
+      skill_panel={@skill_panel}
+      display_user={@display_user}
+      me={@me}
+      anonymous={@anonymous}
+      skill_class={@skill_class.class}
+      active="panel"
+    />
+  </div>
+</div>
+
+<div class="mx-4 lg:mx-10 pb-6">
+  <ProfileComponents.profile_with_selected_skill_class
+    user_name={@display_user.name}
+    title={@display_user.user_profile.title}
+    icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
+    skill_panel={@skill_panel}
+    skill_class={@skill_class}
+    display_return_to_yourself={!@me}
+    is_anonymous={@anonymous}
+  />
+</div>
+
+<div class="mx-4 lg:mx-10 relative">
+  <div class="flex justify-between">
     <.class_tab
       skill_classes={@skill_classes}
       skill_class={@skill_class}
@@ -39,24 +102,6 @@
   </div>
 
   <div class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-3">
-    <div class="px-2 lg:px-6">
-      <h3 class="text-xl my-4 lg:hidden"><%= "クラス#{@skill_class.class} : #{@skill_class.name}" %></h3>
-      <.profile_area
-        display_user={@display_user}
-        anonymous={@anonymous}
-        skill_class_score={@skill_class_score}
-        counter={@counter}
-        num_skills={@num_skills}
-        display_skill_edit_button={@me}
-        skill_panel={@skill_panel}
-        query={@query}
-        me={@me}
-        flash={@flash}
-      />
-
-      <.help_messages_area flash={@flash} />
-    </div>
-
     <.live_component
       id="skills-field"
       module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
@@ -64,6 +109,7 @@
       skill_panel={@skill_panel}
       skill_class={@skill_class}
       current_skill_score_dict={@skill_score_dict}
+      skill_class_score={@skill_class_score}
       counter={@counter}
       num_skills={@num_skills}
       path={@path}
@@ -75,15 +121,7 @@
       init_timeline={@init_timeline}
     />
   </div>
-
-  <% # 働く際の希望の入力を促すメッセージ %>
-  <.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !user_job_searching?(@current_user)} />
 </div>
-
-<BrightWeb.SnsComponents.floating_share_buttons
-  text="スキルパネル"
-  path={@path}
-/>
 
 <% # スコア入力用モーダル %>
 <.bright_modal

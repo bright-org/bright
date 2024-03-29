@@ -192,15 +192,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
   def touch_user_skill_panel(socket), do: socket
 
-  def assign_page_sub_title(%{assigns: %{skill_panel: nil}} = socket) do
-    socket
-  end
-
-  def assign_page_sub_title(socket) do
-    socket
-    |> assign(:page_sub_title, socket.assigns.skill_panel.name)
-  end
-
   def build_path(root, skill_panel, display_user, me, anonymous)
 
   def build_path(root, skill_panel, _display_user, true, _anonymous) do
