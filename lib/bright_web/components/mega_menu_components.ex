@@ -16,18 +16,22 @@ defmodule BrightWeb.MegaMenuComponents do
   ## Examples
     <.mega_menu_button
       id="mega_menu_team"
-      label="ボタンに表示する文言"
       dropdown_offset_skidding="307"
       menu_width="w-[750px]"
-    />
+    >
+      <:button_content>
+        表示対象者を切替
+      </:button_content>
+      <div>メガメニューの中身</div>
+    </.mega_menu_button>
   """
 
   use Phoenix.Component
 
   attr :id, :string, required: true
-  attr :label, :string, required: true
   attr :dropdown_offset_skidding, :string, required: true
   attr :menu_width, :string, required: false, default: "lg:w-[750px]"
+  slot :button_content, required: true
   slot :inner_block
 
   def mega_menu_button(assigns) do
@@ -43,7 +47,7 @@ defmodule BrightWeb.MegaMenuComponents do
         type="button"
       >
         <span class="min-w-[4em] lg:min-w-[6em] px-4">
-          <%= @label %>
+          <%= render_slot(@button_content) %>
         </span>
         <span
           class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">

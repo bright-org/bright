@@ -36,13 +36,14 @@
     </section>
     <div id="switch" class="flex gap-x-2 lg:gap-x-4 ">
       <div class="flex flex-col lg:flex-row">
-      <p class="leading-tight my-2 lg:my-0 lg:m-4">対象者の<br class="hidden lg:block" />切替</p>
       <!-- チーム menu -->
       <.mega_menu_button
         id="mega_menu_team"
-        label="チーム"
         dropdown_offset_skidding="307"
       >
+        <:button_content>
+          対象チームの切替
+        </:button_content>
         <.live_component
           id="team_card"
           module={BrightWeb.CardLive.RelatedTeamCardComponent}
@@ -52,15 +53,16 @@
       </.mega_menu_button>
       </div>
       <div class="flex flex-col lg:flex-row">
-      <p class="leading-tight my-2 lg:my-0 lg:m-4">対象スキルの<br class="hidden lg:block"/>切替</p>
       <!-- スキルパネル menu -->
       <.mega_menu_button
         :if={is_nil(@display_team)}
         id="mega_menu_skill_panel"
-        label="スキル"
         dropdown_offset_skidding="156"
         menu_width="lg:w-[450px]"
       >
+        <:button_content>
+          対象スキルの切替
+        </:button_content>
         <div
           class="w-[440px] flex items-center text-base rounded"
           >
@@ -73,9 +75,11 @@
       <.mega_menu_button
         :if={!is_nil(@display_team)}
         id="mega_menu_skill_panel"
-        label="スキル"
         dropdown_offset_skidding="307"
       >
+        <:button_content>
+          対象スキルの切替
+        </:button_content>
         <.live_component
           id="skill_card"
           module={BrightWeb.CardLive.SkillCardComponent}

@@ -55,9 +55,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <div class="flex flex-col lg:flex-row">
       <.mega_menu_button
         id="skill_panel_menu"
-        label="対象スキルの切替"
         dropdown_offset_skidding="307"
       >
+        <:button_content>
+          対象スキルの切替
+        </:button_content>
         <.live_component
           id="skill_card"
           module={BrightWeb.CardLive.SkillCardComponent}
@@ -83,9 +85,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
     <.mega_menu_button
       id="related_user_card_menu"
-      label="表示対象者を切替"
       dropdown_offset_skidding="307"
     >
+      <:button_content>
+        表示対象者を切替
+      </:button_content>
       <.live_component
         id="related_user"
         module={BrightWeb.CardLive.RelatedUserCardComponent}
