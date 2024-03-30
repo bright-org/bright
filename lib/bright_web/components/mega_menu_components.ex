@@ -46,7 +46,7 @@ defmodule BrightWeb.MegaMenuComponents do
         class="dropdownTrigger text-white bg-brightGreen-300 rounded-md py-1.5 pl-3 flex items-center font-bold hover:opacity-50"
         type="button"
       >
-        <span class="min-w-[4em] lg:min-w-[6em] px-4">
+        <span class="inline-flex gap-x-2 min-w-[4em] lg:min-w-[6em]">
           <%= render_slot(@button_content) %>
         </span>
         <span

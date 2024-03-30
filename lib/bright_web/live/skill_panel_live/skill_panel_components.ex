@@ -58,6 +58,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         dropdown_offset_skidding="307"
       >
         <:button_content>
+          <div
+            class={[
+              "h-5 w-5 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+            }
+          />
           対象スキルの切替
         </:button_content>
         <.live_component
@@ -81,6 +86,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
+  @spec related_user_menu(any()) :: Phoenix.LiveView.Rendered.t()
   def related_user_menu(assigns) do
     ~H"""
     <.mega_menu_button
@@ -88,6 +94,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       dropdown_offset_skidding="307"
     >
       <:button_content>
+        <div
+          class={[
+            "h-5 w-5 [mask-image:url('/images/common/icons/switchIndividual.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+          }
+        />
         表示対象者を切替
       </:button_content>
       <.live_component
