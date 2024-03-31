@@ -15,7 +15,7 @@
     />
   </div>
 
-  <div class="relative flex flex-col gap-y-2 lg:gap-y-4" :if={@me}>
+  <div class="relative flex flex-col mb-4 lg:mb-0" :if={@me}>
     <div class="flex justify-between items-center w-full gap-x-2">
       <.link
         patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
@@ -101,7 +101,7 @@
     />
   </div>
 
-  <div class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-3">
+  <div class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-4">
     <.live_component
       id="skills-field"
       module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
