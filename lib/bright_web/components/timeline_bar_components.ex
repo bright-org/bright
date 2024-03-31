@@ -201,9 +201,9 @@ defmodule BrightWeb.TimelineBarComponents do
       phx-click="timeline_bar_close_button_click"
       phx-value-id={@id}
       phx-target={@target}
-      class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightGray-200 hover:opacity-50"
+      class="absolute right-0 -top-2 border rounded-full w-6 h-6 flex justify-center items-center bg-white border-brightPurple-300 hover:opacity-50"
     >
-      <span class="material-icons !text-base !text-brightGray-200">close</span>
+      <span class="material-icons text-brightPurple-300">close</span>
     </button>
     """
   end

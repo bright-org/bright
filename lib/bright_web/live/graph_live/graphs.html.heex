@@ -13,7 +13,7 @@
     />
   </div>
 
-  <div class="relative flex flex-col gap-y-2 lg:gap-y-4" :if={@me}>
+  <div class="relative flex flex-col mb-4 lg:mb-0" :if={@me}>
     <div class="flex justify-between items-center w-full gap-x-2">
       <.link
         patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
@@ -86,19 +86,8 @@
       me={@me}
     />
   </div>
-  <div class="flex ml-6 gap-x-4 lg:gap-x-0 lg:items-center mt-4">
-    <div class="w-20">
-      <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
-    </div>
-
-    <SkillPanelComponents.profile_score_stats
-      skill_class_score={@skill_class_score}
-      counter={@counter}
-      num_skills={@num_skills}
-    />
-  </div>
-  <div class="shadow relative z-2 px-2 py-1 lg:pl-7 lg:pr-5 lg:py-0">
-    <div class="mt-12 lg:mt-0 flex flex-col-reverse lg:flex-row">
+  <div class="shadow relative z-2 py-1 lg:px-6">
+    <div class="mt-4 lg:mt-0 flex flex-col-reverse lg:flex-row">
       <.live_component
         id="rowth-graph"
         module={BrightWeb.ChartLive.GrowthGraphComponent}
@@ -108,8 +97,20 @@
         skill_class={@skill_class}
         compared_user={@compared_user}
       />
-      <div class="w-full pl-2 mt-4 mb-2 lg:w-[700px] lg:pl-28 lg:mt-0 lg:mb-0">
-        <div class="hidden lg:block">
+      <div class="w-full lg:mt-4">
+        <div class="flex w-full gap-x-4 lg:gap-x-0 px-6 justify-center">
+          <div class="w-20 lg:w-24">
+            <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
+          </div>
+
+          <SkillPanelComponents.profile_score_stats
+            skill_class_score={@skill_class_score}
+            counter={@counter}
+            num_skills={@num_skills}
+          />
+        </div>
+        <%!-- PC版 スキルジェム --%>
+        <div class="hidden lg:block px-6">
           <.live_component
             id="skill-gem"
             module={BrightWeb.ChartLive.SkillGemComponent}
@@ -123,7 +124,8 @@
             compared_user={@compared_user}
           />
         </div>
-        <div class="lg:hidden">
+        <%!-- SP版 スキルジェム --%>
+        <div class="lg:hidden px-6">
           <.live_component
             id="skill-gem-sp"
             module={BrightWeb.ChartLive.SkillGemComponent}
@@ -137,18 +139,6 @@
             compared_user={@compared_user}
             size="sp"
           />
-        </div>
-
-        <% # TODO: 実装後に:if={false}を除去して表示 %>
-        <div :if={false} class="flex justify-center">
-          <p>
-            あと<span class="text-error !text-2xl font-bold">8</span>%でベテランになれます。
-          </p>
-          <p>
-            次のレベルまでのスキル数<span
-              class="text-error !text-2xl font-bold"
-              >10</span>個
-          </p>
         </div>
       </div>
     </div>

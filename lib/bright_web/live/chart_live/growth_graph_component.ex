@@ -18,69 +18,30 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col w-full">
-      <% # 成長グラフ %>
-      <div class="flex">
-        <div class="w-14 relative">
-          <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself} class="absolute -bottom-1 lg:bottom-1" />
-        </div>
-        <div class="hidden lg:block">
-          <.growth_graph data={@data} id="growth-graph"/>
-        </div>
-        <div class="lg:hidden">
-          <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
-        </div>
-        <div class="ml-1 flex flex-col relative text-xs text-brightGray-500 text-bold w-20 lg:ml-5 lg:text-xl lg:w-20">
-          <p class="py-4 lg:py-5">ベテラン</p>
-          <p class="py-3 lg:py-20">平均</p>
-          <p class="py-2 lg:py-6">見習い</p>
-
-          <.btn_timeline_shift_future enabled={@timeline.future_enabled} id="myself" myself={@myself} class="absolute -bottom-1 lg:bottom-1" />
-        </div>
-      </div>
-
-      <% # タイムライン自身 %>
-      <div class="flex">
-        <div class="w-7 lg:w-14"></div>
-        <.timeline_bar
-          id="myself"
-          target={@myself}
-          type="myself"
-          dates={@timeline.labels}
-          selected_date={@timeline.selected_label}
-          display_now={@timeline.display_now}
-          display_progress={@display_progress}
-        />
-        <div class="flex justify-center items-center ml-2"></div>
-      </div>
-
+    <div class="flex flex-col w-full px-2">
       <% # 比較対象 選択 %>
-      <div :if={is_nil @compared_user} class="py-2 lg:py-4">
-        <div class="w-7 lg:w-14"> </div>
-        <div class="flex gap-x-4">
-          <button
-            class="text-brightGray-600 bg-white px-2 py-2 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-            type="button"
-            phx-click="compare_myself"
-            phx-target={@myself}
-          >
-            <span class="min-w-[6em]">自分と比較</span>
-          </button>
+      <div class="py-2 lg:py-4 mt-4 order-last lg:order-none">
+        <div class="flex gap-x-4 justify-between lg:justify-start">
+          <div>
+            <BrightWeb.BrightCoreComponents.action_button
+              class="flex"
+              phx-click="compare_myself"
+              phx-target={@myself}
+            >
+              <img class="mr-1" src="/images/common/icons/compareIndividual.svg" />
+              <span class="min-w-[5em]">自分と比較</span>
+            </BrightWeb.BrightCoreComponents.action_button>
+          </div>
           <div
             id="compare-indivividual-dropdown"
             phx-hook="Dropdown"
             data-dropdown-offset-skidding="307"
             data-dropdown-placement="bottom"
           >
-            <button
-              class="dropdownTrigger border border-brightGray-200 rounded-md py-1.5 pl-3 flex items-center"
-              type="button"
-            >
-              <span class="min-w-[6em]">他者と比較</span>
-              <span
-                class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
-                >add</span>
-            </button>
+            <BrightWeb.BrightCoreComponents.action_button icon="add" class="dropdownTrigger flex py-2">
+              <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
+              <span class="min-w-[5em]">他者と比較</span>
+            </BrightWeb.BrightCoreComponents.action_button>
             <div
               class="dropdownTarget bg-white rounded-md mt-1 w-full lg:w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
             >
@@ -95,14 +56,55 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             </div>
           </div>
         </div>
-        <div class="flex justify-center items-center ml-2"></div>
+      </div>
+
+      <% # 成長グラフ %>
+      <div class="flex px-6">
+        <div class="hidden lg:block">
+          <.growth_graph data={@data} id="growth-graph"/>
+        </div>
+        <div class="lg:hidden">
+          <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
+        </div>
+        <div class="ml-1 flex flex-col relative text-xs text-brightGray-500 text-bold w-20 lg:ml-5 lg:text-xl lg:w-20">
+          <p class="py-4 lg:py-5">ベテラン</p>
+          <p class="py-3 lg:py-20">平均</p>
+          <p class="py-2 lg:py-6">見習い</p>
+        </div>
+      </div>
+
+      <% # タイムライン自身 %>
+      <div class="lg:flex lg:items-center">
+        <div class="hidden lg:flex justify-center items-center mr-2" data-size="pc">
+          <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself}/>
+        </div>
+
+        <.timeline_bar
+          id="myself"
+          target={@myself}
+          type="myself"
+          dates={@timeline.labels}
+          selected_date={@timeline.selected_label}
+          display_now={@timeline.display_now}
+          display_progress={@display_progress}
+        />
+
+        <div class="hidden lg:flex justify-center items-center ml-2" data-size="pc">
+          <.btn_timeline_shift_future enabled={@timeline.future_enabled} id="myself" myself={@myself} />
+        </div>
+
+        <div class="flex justify-between lg:hidden" data-size="sp">
+          <% # スマホ版タイムライン移動ボタン %>
+          <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself}/>
+          <.btn_timeline_shift_future enabled={@timeline.future_enabled} id="myself" myself={@myself} />
+        </div>
       </div>
 
       <% # 比較対象 表示 %>
       <div :if={compared_other?(@compared_user, @user_id)} id="compared-user-display" class="py-2 lg:py-4">
         <div class="w-14"></div>
-        <div class="w-full lg:w-[725px] flex justify-between items-center">
-          <div class="text-left flex items-center text-base border border-brightGray-200 px-3 py-1 rounded">
+        <div class="w-full flex justify-between items-center">
+          <div class="text-left flex items-center text-base border border-brightPurple-300 px-3 py-1 rounded">
             <img class="inline-block h-10 w-10 rounded-full" src={UserProfiles.icon_url(@compared_user.user_profile.icon_file_path)} />
             <div class="ml-2">
               <p><%= compared_user_name(@compared_user) %></p>
@@ -115,7 +117,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
       <% # タイムライン比較対象用 %>
       <div :if={@compared_user} id="timeline-bar-compared" class="lg:flex lg:items-center">
-        <div class="w-14 hidden lg:block" data-size="pc">
+        <div class="hidden lg:flex justify-center items-center mr-2" data-size="pc">
           <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself} />
         </div>
 
@@ -130,13 +132,13 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           display_close={true}
         />
 
-        <div class="w-14 hidden lg:flex justify-end" data-size="pc">
+        <div class="hidden lg:flex justify-center items-center ml-2" data-size="pc">
           <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
         </div>
 
         <div class="flex justify-between lg:hidden" data-size="sp">
           <% # スマホ版タイムライン移動ボタン %>
-          <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself} />
+          <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself}/>
           <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
         </div>
       </div>
@@ -153,7 +155,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       phx-click="shift_timeline_past"
       phx-value-id={@id}
       phx-target={@myself}
-      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded", @class]}
+      class={["w-8 h-6 lg:w-11 lg:h-9 flex justify-center items-center rounded", @id == "myself" && "bg-brightGreen-300", @id == "other" && "bg-brightPurple-300", @class]}
       disabled={false}
     >
       <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
@@ -184,7 +186,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       phx-click="shift_timeline_future"
       phx-value-id={@id}
       phx-target={@myself}
-      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded", @class]}
+      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded", @id == "myself" && "bg-brightGreen-300", @id == "other" && "bg-brightPurple-300", @class]}
       disabled={false}
     >
       <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
