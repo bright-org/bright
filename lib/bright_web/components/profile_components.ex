@@ -159,25 +159,23 @@ defmodule BrightWeb.ProfileComponents do
             </.profile_button>
           </div>
         </div>
-        <div class="p-4 px-6 bg-white rounded-lg">
-          <div class="flex">
-            <div class="flex items-center">
-              <div class="mr-2 lg:mr-5 w-12 lg:w-20">
-                <img
-                  class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
-                  src={@icon_file_path}
-                />
-              </div>
-              <div class="flex mr-2 lg:mr-20">
-                <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
-              </div>
+        <div class="flex p-4 px-6 bg-white rounded-lg">
+          <div class="flex flex-col lg:flex-row justify-center items-center mr-4 lg:mr-0">
+            <div class="lg:mr-5 w-12 lg:w-20">
+              <img
+                class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
+                src={@icon_file_path}
+              />
             </div>
-            <div class="flex flex-col gap-y-2 font-bold">
-              <span id="profile-skill-panel-name" class="text-md lg:text-2xl mt-1 lg:mt-2"><%= @skill_panel.name %></span>
-              <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
-                <span class="text-sm lg:text-normal">クラス<%= @skill_class.class %></span>
-                <span class="text-sm lg:text-normal break-all"><%= @skill_class.name %></span>
-              </div>
+            <div class="flex mr-2 lg:mr-20">
+              <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-y-2 font-bold">
+            <span id="profile-skill-panel-name" class="text-md lg:text-2xl mt-1 lg:mt-2"><%= @skill_panel.name %></span>
+            <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
+              <span class="text-sm lg:text-normal">クラス<%= @skill_class.class %></span>
+              <span class="text-sm lg:text-normal break-all"><%= @skill_class.name %></span>
             </div>
           </div>
         </div>
