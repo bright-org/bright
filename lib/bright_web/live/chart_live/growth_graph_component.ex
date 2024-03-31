@@ -18,19 +18,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col w-full lg:w-[880px]">
-
-      <% # ロールモデル解除 %>
-      <div class="ml-auto mr-28 mt-6 mb-1">
-        <%# TODO ロールモデル選択できるまで非表示 %>
-        <button :if={false}
-          type="button"
-          class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-        >
-          ロールモデルを解除
-        </button>
-      </div>
-
+    <div class="flex flex-col w-full">
       <% # 成長グラフ %>
       <div class="flex">
         <div class="w-14 relative">
@@ -121,13 +109,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
               <p class="text-brightGray-300"><%= @compared_user.user_profile.title %></p>
             </div>
           </div>
-          <%# TODO ロールモデル対応できるまで非表示 %>
-          <button :if={false}
-            type="button"
-            class="text-brightGray-600 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200"
-          >
-            ロールモデルに固定
-          </button>
         </div>
         <div></div>
       </div>
