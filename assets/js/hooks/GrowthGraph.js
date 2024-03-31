@@ -639,8 +639,8 @@ export const GrowthGraph = {
       this.myChart.canvas.parentNode.style.height = "357px";
       this.myChart.canvas.parentNode.style.width = "714px";
     } else {
-      this.myChart.canvas.parentNode.style.height = "178px";
-      this.myChart.canvas.parentNode.style.width = "256px";
+      this.myChart.canvas.parentNode.style.height = "145px";
+      this.myChart.canvas.parentNode.style.width = "290px";
     }
   },
   mounted() {
