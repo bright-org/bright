@@ -26,7 +26,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
 
   def render(assigns) do
     ~H"""
-    <div id={@id}>
+    <div id={@id} class="mt-4">
       <BrightCoreComponents.flash_group flash={@inner_flash} />
       <div class="hidden lg:block px-6">
         <.compare_buttons

@@ -13,6 +13,36 @@
     />
   </div>
 
+  <div class="relative flex flex-col mb-4 lg:mb-0" :if={@me}>
+    <div class="flex justify-between items-center w-full gap-x-2">
+      <.link
+        patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+        id="link-skills-form"
+        class={["w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:opacity-50"]}>
+        <span class="material-icons-outlined text-white text-md">edit</span>
+        スキルを入力する
+      </.link>
+
+      <div
+        :if={@me}
+        id="btn-help-enter-skills-button"
+        class="flex-none cursor-pointer w-8 h-8 hover:opacity-50 bg-[url('/images/icon_help.svg')]"
+        phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
+      </div>
+    </div>
+
+    <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
+      <% # スキル入力するボタン 手動表示メッセージ %>
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        module={BrightWeb.HelpMessageComponent}
+        id="help-enter-skills-button"
+        open={false}>
+        <GuideMessageComponents.enter_skills_help_message reference_from={"button"} />
+      </.live_component>
+    </div>
+  </div>
+
   <.navigations
     current_user={@current_user}
     display_user={@display_user}
@@ -56,19 +86,8 @@
       me={@me}
     />
   </div>
-  <div class="flex ml-6 gap-x-4 lg:gap-x-0 lg:items-center mt-4">
-    <div class="w-20">
-      <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
-    </div>
-
-    <SkillPanelComponents.profile_score_stats
-      skill_class_score={@skill_class_score}
-      counter={@counter}
-      num_skills={@num_skills}
-    />
-  </div>
-  <div class="shadow relative z-2 px-2 py-1 lg:pl-7 lg:pr-5 lg:py-0">
-    <div class="mt-12 lg:mt-0 flex flex-col-reverse lg:flex-row">
+  <div class="shadow relative z-2 py-1 lg:px-6">
+    <div class="mt-4 lg:mt-0 flex flex-col-reverse lg:flex-row">
       <.live_component
         id="rowth-graph"
         module={BrightWeb.ChartLive.GrowthGraphComponent}
@@ -78,8 +97,20 @@
         skill_class={@skill_class}
         compared_user={@compared_user}
       />
-      <div class="w-full pl-2 mt-4 mb-2 lg:w-[700px] lg:pl-28 lg:mt-0 lg:mb-0">
-        <div class="hidden lg:block">
+      <div class="w-full lg:mt-4">
+        <div class="flex w-full gap-x-4 lg:gap-x-0 px-6 justify-center">
+          <div class="w-20 lg:w-24">
+            <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
+          </div>
+
+          <SkillPanelComponents.profile_score_stats
+            skill_class_score={@skill_class_score}
+            counter={@counter}
+            num_skills={@num_skills}
+          />
+        </div>
+        <%!-- PC版 スキルジェム --%>
+        <div class="hidden lg:block px-6">
           <.live_component
             id="skill-gem"
             module={BrightWeb.ChartLive.SkillGemComponent}
@@ -93,6 +124,7 @@
             compared_user={@compared_user}
           />
         </div>
+        <%!-- SP版 スキルジェム --%>
         <div class="lg:hidden">
           <.live_component
             id="skill-gem-sp"
@@ -107,18 +139,6 @@
             compared_user={@compared_user}
             size="sp"
           />
-        </div>
-
-        <% # TODO: 実装後に:if={false}を除去して表示 %>
-        <div :if={false} class="flex justify-center">
-          <p>
-            あと<span class="text-error !text-2xl font-bold">8</span>%でベテランになれます。
-          </p>
-          <p>
-            次のレベルまでのスキル数<span
-              class="text-error !text-2xl font-bold"
-              >10</span>個
-          </p>
         </div>
       </div>
     </div>

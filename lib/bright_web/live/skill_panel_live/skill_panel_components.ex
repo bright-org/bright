@@ -55,9 +55,16 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <div class="flex flex-col lg:flex-row">
       <.mega_menu_button
         id="skill_panel_menu"
-        label="対象スキルの切替"
         dropdown_offset_skidding="307"
       >
+        <:button_content>
+          <div
+            class={[
+              "h-5 w-5 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+            }
+          />
+          対象スキルの切替
+        </:button_content>
         <.live_component
           id="skill_card"
           module={BrightWeb.CardLive.SkillCardComponent}
@@ -79,13 +86,21 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
+  @spec related_user_menu(any()) :: Phoenix.LiveView.Rendered.t()
   def related_user_menu(assigns) do
     ~H"""
     <.mega_menu_button
       id="related_user_card_menu"
-      label="表示対象者を切替"
       dropdown_offset_skidding="307"
     >
+      <:button_content>
+        <div
+          class={[
+            "h-5 w-5 [mask-image:url('/images/common/icons/switchIndividual.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+          }
+        />
+        表示対象者を切替
+      </:button_content>
       <.live_component
         id="related_user"
         module={BrightWeb.CardLive.RelatedUserCardComponent}

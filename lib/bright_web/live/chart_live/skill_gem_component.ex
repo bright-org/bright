@@ -26,9 +26,9 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
       do: Sentry.capture_message("BrightWeb.ChartLive.SkillGemComponent: データが表示できません")
 
     ~H"""
-    <div class="mx-auto w-full -mt-20 lg:mt-0 lg:w-[450px]">
+    <div class="mx-auto w-full lg:mt-0 lg:w-[450px]">
       <%= if check_skill_gem?(@skill_gem_labels) do %>
-        <div class="bg-white w-[450px] h-[360px] flex items-center justify-center">
+        <div class="bg-white lg:w-[450px] h-[360px] flex items-center justify-center">
           <p class="text-start font-bold">データが表示できません</p>
         </div>
       <% else %>

@@ -33,6 +33,9 @@ module.exports = {
           600: "#008971",
           900: "#004D36",
         },
+        brightPurple: {
+          300: "#EC32AD"
+        },
         lapislazuli: {
           50: "#ECE7F9",
           100: "#CDC3EF",

@@ -9,7 +9,7 @@ const minValue = -5;
 const gemSizeSet = {
   // サイズと主な使用箇所
   // sm: スキル検索(スキルジェム), マイページ(スキルバランス)
-  // sp: スマートホン用途 スキルジェム
+  // sp: スマートフォン用途 スキルジェム
   // md: チームスキル分析
   "default": {width: "535px", height: "450px"},
   "sm": {width: "250px", height: "165px"},
