@@ -43,7 +43,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         display_user={@display_user}
         me={@me}
         anonymous={@anonymous}
-        root="panels"
+        root={@root}
       />
     </div>
     """
