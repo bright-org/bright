@@ -56,7 +56,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   end
 
   @impl true
-  @spec render(any) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~H"""
     <div>
@@ -223,9 +222,9 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   defp inner_tab(assigns) do
     ~H"""
-    <div id={"#{@id}-#{@selected_tab}"} class="flex border-b border-brightGray-50 lg:w-[750px]" phx-hook="TabSlideScroll">
+    <div id={"#{@id}-#{@selected_tab}"} class="flex border-b border-brightGray-50" phx-hook="TabSlideScroll">
       <div class="overflow-hidden">
-        <ul class="inner_tab_list overflow-hidden flex text-base !text-sm w-[99999px]">
+        <ul class="inner_tab_list overflow-hidden flex text-base !text-sm">
           <%= for {key, value} <- @inner_tab do %>
             <li
               class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}

@@ -1,6 +1,6 @@
 <!-- プロフィール -->
 <div class="flex flex-col lg:flex-row justify-between px-4 py-2 bg-white lg:px-10 lg:py-6">
-  <div class="pt-4 lg:w-[850px]">
+  <div class="pt-4 lg:w-full lg:max-w-[850px]">
     <.profile
       user_name={@display_user.name}
       title={@display_user.user_profile.title}
@@ -29,8 +29,8 @@
   </div>
 </div>
 <!-- コンテンツ -->
-<div class="px-4 py-3 flex flex-col justify-between pb-20 lg:flex-row lg:pb-0 lg:px-10">
-  <div class="flex flex-col gap-y-6 lg:w-[850px]">
+<div class="px-4 py-3 flex flex-col items-center pb-20 lg:pb-4 lg:px-10">
+  <div class="flex flex-col gap-y-6 w-full">
     <!-- 保有スキル（ジェムをクリックすると成長パネルが見れます） -->
     <div>
       <h5>保有スキル（ジェムをクリック）</h5>
@@ -44,7 +44,7 @@
       />
     </div>
   </div>
-  <div class="flex flex-col mt-6 gap-y-6 lg:w-[850px] lg:mt-0">
+  <div class="flex flex-col mt-6 gap-y-6 w-full lt-0">
     <!-- 関わっているチーム -->
     <div :if={@me}>
       <h5>関わっているチーム</h5>
