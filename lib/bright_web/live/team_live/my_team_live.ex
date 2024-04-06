@@ -141,10 +141,4 @@ defmodule BrightWeb.MyTeamLive do
     socket
     |> redirect(to: MyTeamHelper.get_my_team_path(display_team, skill_panel_id, skill_class_id))
   end
-
-  defp close(),
-    do: "before:-mt-2 before:rotate-225"
-
-  defp open(),
-    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 end
