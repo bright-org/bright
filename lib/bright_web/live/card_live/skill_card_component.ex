@@ -37,7 +37,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
             </li>
           </ul>
           <div :if={Enum.count(@skill_panels) > 0} class="hidden lg:flex">
-            <div class="flex-1 text-left font-bold"></div>
+            <div class="flex-1"></div>
             <div class="w-36 font-bold">クラス1</div>
             <div class="w-36 font-bold">クラス2</div>
             <div class="w-36 font-bold">クラス3</div>
@@ -85,7 +85,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
-      <div class="text-left font-bold w-full lg:flex-1 lg:w-fit">
+      <div class="text-left font-bold w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
         <p
           phx-click="on_skill_pannel_click"
           phx-value-skill_panel_id={@skill_panel.id}
@@ -161,7 +161,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       |> assign(:level, level)
 
     ~H"""
-    <div class="w-28 lg:w-36">
+    <div class="w-24 lg:w-36">
       <p
         phx-click="on_skill_class_click"
         phx-value-skill_panel_id={@skill_panel.id}
@@ -182,7 +182,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       |> assign(:level, level)
 
     ~H"""
-    <div class="w-28 lg:w-36">
+    <div class="w-24 lg:w-36">
       <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
           <img src={@icon_path} class="mr-1" />
