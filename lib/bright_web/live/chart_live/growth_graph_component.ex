@@ -59,14 +59,14 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       </div>
 
       <% # 成長グラフ %>
-      <div class="flex px-2">
+      <div class="flex">
         <div class="hidden lg:block">
           <.growth_graph data={@data} id="growth-graph"/>
         </div>
         <div class="lg:hidden">
           <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
         </div>
-        <div class="ml-1 flex flex-col relative text-xs text-brightGray-500 text-bold w-20 lg:ml-5 lg:text-xl lg:w-20">
+        <div class="ml-1 flex flex-col relative text-xs lg:text-xl text-brightGray-500 text-bold w-20 lg:ml-5 lg:w-20">
           <p class="py-4 lg:py-5">ベテラン</p>
           <p class="py-3 lg:py-20">平均</p>
           <p class="py-2 lg:py-6">見習い</p>
