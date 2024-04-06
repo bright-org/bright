@@ -113,13 +113,13 @@ defmodule BrightWeb.BrightCoreComponents do
   attr :type, :string, default: "button"
   attr :icon, :string, default: nil
   attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(disabled phx-click phx-target)
+  attr :rest, :global, include: ~w(disabled)
 
   slot :inner_block, required: true
 
   def action_button(%{icon: nil} = assigns) do
     ~H"""
-    <button type={@type} class={["bg-brightGray-10 text-sm font-bold px-5 py-2 rounded border border-base hover:opacity-50", @class]} {@rest}>
+    <button type={@type} class={["bg-brightGray-10 text-xs lg:text-sm font-bold rounded border border-base hover:opacity-50", @class]} {@rest}>
       <%= render_slot(@inner_block) %>
     </button>
     """
@@ -129,7 +129,7 @@ defmodule BrightWeb.BrightCoreComponents do
     ~H"""
     <button
       type={@type}
-      class={["bg-brightGray-10 text-sm font-bold border border-base rounded py-1.5 pl-3 flex items-center hover:opacity-50", @class]}
+      class={["bg-brightGray-10 text-xs lg:text-sm font-bold border border-base rounded flex items-center hover:opacity-50", @class]}
       @rest
     >
       <%= render_slot(@inner_block) %>

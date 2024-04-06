@@ -24,7 +24,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         <div class="flex gap-x-4 justify-between lg:justify-start">
           <div>
             <BrightWeb.BrightCoreComponents.action_button
-              class="flex"
+              class="flex px-5 py-2"
               phx-click="compare_myself"
               phx-target={@myself}
             >
@@ -38,7 +38,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             data-dropdown-offset-skidding="307"
             data-dropdown-placement="bottom"
           >
-            <BrightWeb.BrightCoreComponents.action_button icon="add" class="dropdownTrigger flex py-2">
+            <BrightWeb.BrightCoreComponents.action_button icon="add" class="dropdownTrigger flex py-2 pl-3">
               <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
               <span class="min-w-[5em]">他者と比較</span>
             </BrightWeb.BrightCoreComponents.action_button>

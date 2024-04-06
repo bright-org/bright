@@ -272,7 +272,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
               phx-change="change_search_user"
               value={@search_word}
             />
-            <.action_button type="submit" class="ml-2.5">
+            <.action_button type="submit" class="ml-2.5 px-5 py-2">
               検索
             </.action_button>
           </form>
