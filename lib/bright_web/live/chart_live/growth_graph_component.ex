@@ -59,7 +59,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       </div>
 
       <% # 成長グラフ %>
-      <div class="flex">
+      <div class="flex pl-7 lg:pl-14">
         <div class="hidden lg:block">
           <.growth_graph data={@data} id="growth-graph"/>
         </div>
