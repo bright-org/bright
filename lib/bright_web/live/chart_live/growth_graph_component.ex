@@ -22,9 +22,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       <% # 比較対象 選択 %>
       <div class="py-2 lg:py-4 mt-4 order-last lg:order-none">
         <div class="flex gap-x-4 justify-between lg:justify-start">
-          <div>
+          <div class="flex">
             <BrightWeb.BrightCoreComponents.action_button
-              class="flex px-5 py-2"
+              class="flex px-5 py-2 items-center"
               phx-click="compare_myself"
               phx-target={@myself}
             >
