@@ -1,194 +1,165 @@
-<div class="px-4 lg:px-10 pt-2 pb-4 lg:pt-4 lg:pb-8 bg-white">
-  <!-- スキルと対象の切り替え -->
-  <div class="flex flex-col lg:flex-row lg:justify-between gap-y-4 lg:gap-x-4">
-    <div class="flex flex-col lg:flex-row">
-    <section class="hidden accordion flex max-w-[1236px] lg:hidden mt-2">
-      <div class="bg-brightGray-50 rounded w-full">
-        <p
-          id="close_navigation"
-          class={
-            "hidden bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
-            open()
-          }
-          phx-click={
-            JS.hide(to: "#switch")
-            |> JS.hide(to: "#close_navigation")
-            |> JS.show(to: "#open_navigation")
-          }
-        >
-          表示するチーム／スキルを切り替える
-        </p>
-        <p
-          id="open_navigation"
-          class={
-            "bg-brightGray-900 cursor-pointer font-bold pl-2 pr-8 py-2 relative rounded select-none text-white text-sm hover:opacity-50 before:absolute before:block before:border-l-2 before:border-t-2 before:border-solid before:content-[&#39;&#39;] before:h-3 before:right-4 before:top-1/2 before:w-3 before:-mt-2 before:rotate-225 " <>
-            close()
-          }
-          phx-click={
-            JS.show(to: "#switch")
-            |> JS.show(to: "#close_navigation")
-            |> JS.hide(to: "#open_navigation")
-          }
-        >
-          表示するチーム／スキルを切り替える
-        </p>
-        </div>
-    </section>
-    <div id="switch" class="flex gap-x-2 lg:gap-x-4 ">
-      <div class="flex flex-col lg:flex-row">
-      <!-- チーム menu -->
-      <.mega_menu_button
-        id="mega_menu_team"
-        dropdown_offset_skidding="307"
-      >
-        <:button_content>
-          <div
-            class={[
-              "h-5 w-5 [mask-image:url('/images/common/icons/teamAdd.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
-            }
-          />
-          対象チームの切替
-        </:button_content>
-        <.live_component
-          id="team_card"
-          module={BrightWeb.CardLive.RelatedTeamCardComponent}
-          display_user={@current_user}
-          over_ride_on_card_row_click_target={true}
-        />
-      </.mega_menu_button>
-      </div>
-      <div class="flex flex-col lg:flex-row">
-      <!-- スキルパネル menu -->
-      <.mega_menu_button
-        :if={is_nil(@display_team)}
-        id="mega_menu_skill_panel"
-        dropdown_offset_skidding="156"
-        menu_width="lg:w-[450px]"
-      >
-        <:button_content>
-          <div
-            class={[
-              "h-5 w-5 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
-            }
-          />
-          対象スキルの切替
-        </:button_content>
-        <div
-          class="w-[440px] flex items-center text-base rounded"
+<div class="pb-20">
+  <div class="px-4 lg:px-10 pb-4">
+    <!-- スキルと対象の切り替え -->
+    <div class="flex flex-col gap-y-4 lg:gap-x-4">
+      <div class="flex flex-col lg:flex-row gap-4">
+        <.link navigate={~p"/teams/new"}>
+          <button class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-52 hover:opacity-50">
+            <div
+              class={[
+                "inline-block h-6 w-6 [mask-image:url('/images/common/icons/teamAdd.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+              }
+            />
+            チームを作る（β）
+          </button>
+        </.link>
+
+        <.link
+          :if={Teams.is_admin?(@display_team, @current_user)}
+          navigate={~p"/teams/#{@display_team.id}/edit"}
           >
-          <div class="text-left flex items-center text-base px-1 py-1 flex-1 m-2">所属しているチームはありません</div>
-            <a href="/teams/new" class="text-sm font-bold px-5 py-3 rounded text-white bg-base m-2">
-              チームを作る（β）
-            </a>
-        </div>
-      </.mega_menu_button>
-      <.mega_menu_button
-        :if={!is_nil(@display_team)}
-        id="mega_menu_skill_panel"
-        dropdown_offset_skidding="307"
-      >
-        <:button_content>
-          <div
+          <button class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-52 hover:opacity-50">
+            <span class="material-icons-outlined text-white text-md">edit</span>
+            チームを編集（β）
+          </button>
+        </.link>
+        <button
+          :if={!is_nil(@display_team) && Teams.is_admin?(@display_team, @current_user)}
+          class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-64 hover:opacity-50"
+          phx-click="toggle_show_hr_support_modal"
+          phx-value-team_id={@display_team.id}
+        >
+        <div
             class={[
-              "h-5 w-5 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+              "inline-block h-6 w-6 [mask-image:url('/images/common/icons/team_hr_support_white.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
             }
           />
-          対象スキルの切替
-        </:button_content>
-        <.live_component
-          id="skill_card"
-          module={BrightWeb.CardLive.SkillCardComponent}
-          display_user={@current_user}
-          display_team={@display_team}
-          me={true}
-          anonymous={false}
-          root={""}
-          over_ride_on_card_row_click_target={:true}
-        />
-      </.mega_menu_button>
+          採用・育成の支援依頼（β）
+        </button>
+      </div>
+      <div class="flex flex-col lg:flex-row gap-4">
+        <!-- チーム menu -->
+        <.mega_menu_button
+          id="mega_menu_team"
+          dropdown_offset_skidding="307"
+        >
+          <:button_content>
+            <div
+              class={[
+                "inline-block h-5 w-5 [mask-image:url('/images/common/icons/teamAdd.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+              }
+            />
+            対象チームの切替
+          </:button_content>
+          <.live_component
+            id="team_card"
+            module={BrightWeb.CardLive.RelatedTeamCardComponent}
+            display_user={@current_user}
+            over_ride_on_card_row_click_target={true}
+          />
+        </.mega_menu_button>
+        <!-- スキルパネル menu -->
+        <%!-- チームがない場合 --%>
+        <.mega_menu_button
+          :if={is_nil(@display_team)}
+          id="mega_menu_skill_panel"
+          dropdown_offset_skidding="156"
+          menu_width="lg:w-[450px]"
+        >
+          <:button_content>
+            <div
+              class={[
+                "inline-block h-5 w-5 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+              }
+            />
+            対象スキルの切替
+          </:button_content>
+          <div
+            class="w-[440px] flex items-center text-base rounded"
+            >
+            <div class="text-left flex items-center text-base px-1 py-1 flex-1 m-2">所属しているチームはありません</div>
+              <a href="/teams/new" class="text-sm font-bold px-5 py-3 rounded text-white bg-base m-2">
+                チームを作る（β）
+              </a>
+          </div>
+        </.mega_menu_button>
+
+        <%!-- チームがある場合 --%>
+        <.mega_menu_button
+          :if={!is_nil(@display_team)}
+          id="mega_menu_skill_panel"
+          dropdown_offset_skidding="307"
+        >
+          <:button_content>
+            <div
+              class={[
+                "inline-block h-5 w-5 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+              }
+            />
+            対象スキルの切替
+          </:button_content>
+          <.live_component
+            id="skill_card"
+            module={BrightWeb.CardLive.SkillCardComponent}
+            display_user={@current_user}
+            display_team={@display_team}
+            me={true}
+            anonymous={false}
+            root={""}
+            over_ride_on_card_row_click_target={:true}
+          />
+        </.mega_menu_button>
       </div>
     </div>
-    </div>
-    <!-- TODO αリリースではスキルセットは対応しない -->
-    <!-- スキルセット menu -->
-
-    <div class="flex flex-col lg:flex-row gap-4">
-      <.link navigate={~p"/teams/new"}>
-        <button class="text-sm text-center font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-44">
-          チームを作る（β）
-        </button>
-      </.link>
-
-      <.link
-        :if={Teams.is_admin?(@display_team, @current_user)}
-        navigate={~p"/teams/#{@display_team.id}/edit"}
-        >
-        <button class="text-sm text-center font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-52">
-          チームを編集する（β）
-        </button>
-      </.link>
-      <button
-        :if={!is_nil(@display_team) && Teams.is_admin?(@display_team, @current_user)}
-        class="text-sm font-bold px-5 py-3 rounded text-white bg-base lg:ml-auto w-full lg:w-56"
-        phx-click="toggle_show_hr_support_modal"
-        phx-value-team_id={@display_team.id}
-      >
-        採用・育成の支援依頼（β）
-      </button>
-    </div>
   </div>
 
-  <!-- プロフィール -->
-  <div class="flex justify-between py-6 px-2 lg:px-10 bg-white">
-    <div class="w-full lg:w-[850px] pt-4">
-      <.profile_inline
-        user_name={@current_user.name}
-        title={@current_user.user_profile.title}
-        icon_file_path={UserProfiles.icon_url(@current_user.user_profile.icon_file_path)}
-        display_sns
-        twitter_url={@current_user.user_profile.twitter_url}
-        github_url={@current_user.user_profile.github_url}
-        facebook_url={@current_user.user_profile.facebook_url}
-      />
-    </div>
+  <div class="mx-4 lg:mx-10 pb-6">
+    <BrightWeb.ProfileComponents.profile_with_selected_skill_class
+      user_name={@current_user.name}
+      title={@current_user.user_profile.title}
+      icon_file_path={Bright.UserProfiles.icon_url(@current_user.user_profile.icon_file_path)}
+      skill_panel={@display_skill_panel}
+      skill_class={@display_skill_class}
+    />
   </div>
-</div>
 
-<!-- card -->
+  <!-- card -->
 
-<div
-  :if={@display_team == nil}
-  class="m-10 bg-white shadow flex justify-center items-center flex-1 h-full"
->
-  <div class="flex flex-col items-center text-center">
-    <p class="font-bold">管理／所属しているチームはありません</p>
-  </div>
-</div>
-<div
-  :if={@display_team != nil}
-  class="mb-20 lg:mb-0 lg:ml-24 p-6"
+  <div
+    :if={@display_team == nil}
+    class="m-10 bg-white shadow flex justify-center items-center flex-1 h-full"
   >
-  <!-- チームタイトルー -->
-  <!-- TODO チームがない場合の表示に対応  -->
-  <.team_header
-    team_name={@display_team.name}
-    team_type={Teams.get_team_type_by_team(@display_team)}
-    current_users_team_member={@current_users_team_member}
-  />
+    <div class="flex flex-col items-center text-center">
+      <p class="font-bold">管理／所属しているチームはありません</p>
+    </div>
+  </div>
 
-  <!-- チームメンバー -->
-  <div class="flex gap-8 pt-4 flex-wrap">
-    <%= for {display_skill_card, index} <- Enum.with_index(@display_skill_cards) do %>
-      <.live_component
-        module={BrightWeb.TeamMemberSkillCardComponent}
-        id={"skill_card_#{index}"}
-        team_id={@display_team.id}
-        current_user={@current_user}
-        display_skill_panel={@display_skill_panel}
-        display_skill_card={display_skill_card}
-        display_skill_classes={@display_skill_classes}
-        />
-    <% end %>
+  <div
+    :if={@display_team != nil}
+    class="px-4 lg:px-10 pb-4"
+    >
+    <!-- チームタイトルー -->
+    <!-- TODO チームがない場合の表示に対応  -->
+    <.team_header
+      team_name={@display_team.name}
+      team_type={Teams.get_team_type_by_team(@display_team)}
+      current_users_team_member={@current_users_team_member}
+    />
+
+    <!-- チームメンバー -->
+    <div class="flex gap-4 pt-4 flex-wrap">
+      <%= for {display_skill_card, index} <- Enum.with_index(@display_skill_cards) do %>
+        <.live_component
+          module={BrightWeb.TeamMemberSkillCardComponent}
+          id={"skill_card_#{index}"}
+          team_id={@display_team.id}
+          current_user={@current_user}
+          display_skill_panel={@display_skill_panel}
+          display_skill_card={display_skill_card}
+          display_skill_classes={@display_skill_classes}
+          />
+      <% end %>
+    </div>
   </div>
 </div>
 

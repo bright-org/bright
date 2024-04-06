@@ -96,7 +96,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <:button_content>
         <div
           class={[
-            "h-5 w-5 [mask-image:url('/images/common/icons/switchIndividual.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+            "inline-block h-5 w-5 [mask-image:url('/images/common/icons/switchIndividual.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
           }
         />
         表示対象者を切替
@@ -125,7 +125,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         >
           <div
             class={[
-              "h-6 w-6 [mask-image:url('/images/common/icons/growthPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
+              "inline-block h-6 w-6 [mask-image:url('/images/common/icons/growthPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
               @active == "graph" && "bg-white", @active != "graph" && "bg-brightGray-500"]
             }
           />
@@ -141,7 +141,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         >
           <div
             class={[
-              "h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
+              "inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
               @active == "panel" && "bg-white", @active != "panel" && "bg-brightGray-500"]
             }
           />
@@ -162,59 +162,61 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     # userを起点にpre_loadしていった場合、skill_score.skill_classの構造になる為pair_skill_class_score関数に対応できない
     # チームスキル分析でタブをタップした場合の挙動をハンドラで実装したい
     ~H"""
-    <ul class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full">
-      <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- @user_skill_class_score do %>
-        <%= if skill_class_score do %>
-          <% current = @select_skill_class.class == skill_class.class %>
-          <%= if @select_skill_class.class == skill_class.class do %>
-            <li
-              class={"bg-white text-base w-full cursor-pointer"}
-              phx-click="skill_class_tab_click"
-              phx-target={@skill_class_tab_click_target}
-              phx-value-user_id={@user.id}
-              phx-value-skill_class_id={skill_class.id}
-            >
-              <span
-                id={"class_tab_#{skill_class.class}"}
-                class="inline-block p-4 pt-3"
-                aria-current={current && "page"}
-              >
-                クラス<%= skill_class.class %>
-              <span class="text-xl ml-4">
-                <%= floor skill_class_score.percentage %></span>％
-              </span>
-            </li>
-          <% else %>
-
-            <li
-              class={"w-full bg-brightGreen-50 text-brightGray-500 cursor-pointer"}
-              phx-click="skill_class_tab_click"
-              phx-target={@skill_class_tab_click_target}
-              phx-value-user_id={@user.id}
-              phx-value-skill_class_id={skill_class.id}
-            >
-              <span
-                id={"class_tab_#{skill_class.class}"}
-                class="inline-block p-4 pt-3"
-              >
-                クラス<%= skill_class.class %>
-                <span class="text-xl ml-4">
-                <%= floor skill_class_score.percentage %></span>％
-              </span>
-            </li>
-          <% end %>
-        <% else %>
-          <li class="w-full bg-pureGray-600 text-pureGray-100">
-            <span
-              class="select-none inline-block p-4 pt-3"
-            >
-              クラス<%= skill_class.class %>
-              <span class="text-xl ml-4">0</span>％
-            </span>
-          </li>
-        <% end %>
-      <% end %>
+    <ul class="flex bg-white border-b border-b-brightGray-100 text-normal lg:text-md font-bold text-brightGray-300 text-center">
+      <.team_member_class_tab_content
+        user={@user}
+        user_skill_class_score={@user_skill_class_score}
+        select_skill_class={@select_skill_class}
+        skill_class_tab_click_target={@skill_class_tab_click_target}
+      />
     </ul>
+    """
+  end
+
+  defp team_member_class_tab_content(%{user_skill_class_score: nil} = assigns) do
+    ~H"""
+    <li class="h-14" />
+    """
+  end
+
+  defp team_member_class_tab_content(assigns) do
+    ~H"""
+    <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- @user_skill_class_score do %>
+      <%= if skill_class_score do %>
+        <% current = @select_skill_class.class == skill_class.class %>
+        <li
+          class={
+            [
+              "w-full flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3",
+              current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300",
+              !current && "cursor-pointer hover:opacity-50 hover:text-brightGreen-300"
+            ]
+          }
+          phx-click="skill_class_tab_click"
+          phx-target={@skill_class_tab_click_target}
+          phx-value-user_id={@user.id}
+          phx-value-skill_class_id={skill_class.id}
+        >
+          <span
+            class="text-sm lg:text-normal"
+            aria-current={current && "page"}
+          >
+            クラス<%= skill_class.class %>
+          <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
+            <%= floor skill_class_score.percentage %></span>％
+          </span>
+        </li>
+      <% else %>
+        <li class="w-full bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3">
+          <span
+            class="select-none text-sm lg:text-normal"
+          >
+            クラス<%= skill_class.class %>
+            <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0</span>％
+          </span>
+        </li>
+      <% end %>
+    <% end %>
     """
   end
 

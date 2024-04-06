@@ -3,7 +3,6 @@ defmodule BrightWeb.MyTeamLive do
   チームスキル分析画面
   """
   use BrightWeb, :live_view
-  import BrightWeb.ProfileComponents
   import BrightWeb.TeamComponents
   import BrightWeb.MegaMenuComponents
   import BrightWeb.BrightModalComponents
@@ -11,7 +10,6 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.CustomGroups
-  alias Bright.UserProfiles
   alias BrightWeb.TeamLive.MyTeamHelper
 
   def mount(params, _session, socket) do

@@ -22,7 +22,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     socket
     |> assign(:show_hr_support_modal, false)
     |> assign_plan(subscription)
-    |> assign_page_title(nil)
+    |> assign_page_title()
     |> assign_display_type(params["type"])
     |> assign_display_skill_panel(nil)
     |> assign_display_skill_classes([])
@@ -58,7 +58,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     socket
     |> assign(:show_hr_support_modal, false)
     |> assign_plan(subscription)
-    |> assign_page_title(display_skill_panel)
+    |> assign_page_title()
     |> assign_display_type(params["type"])
     |> assign_display_skill_panel(display_skill_panel)
     |> assign_display_skill_classes(display_skill_classes)
@@ -167,16 +167,9 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     assign(socket, :plan, subscription.subscription_plan)
   end
 
-  defp assign_page_title(socket, %SkillPanel{} = display_skill_panel) do
+  defp assign_page_title(socket) do
     socket
     |> assign(:page_title, "チームスキル分析")
-    |> assign(:page_sub_title, display_skill_panel.name)
-  end
-
-  defp assign_page_title(socket, nil) do
-    socket
-    |> assign(:page_title, "チームスキル分析")
-    |> assign(:page_sub_title, nil)
   end
 
   defp assign_display_type(socket, "custom_group") do
