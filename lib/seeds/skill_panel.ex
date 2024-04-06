@@ -45,7 +45,7 @@ defmodule Bright.Seeds.SkillPanel do
   end
 
   def create_skill_unit(skill_class) do
-    for x <- 1..5 do
+    for x <- 1..Enum.random([5, 6, 7, 8, 9, 10]) do
       {:ok, _skill_unit} = SkillUnits.create_skill_unit(skill_unit(skill_class, x))
     end
   end
