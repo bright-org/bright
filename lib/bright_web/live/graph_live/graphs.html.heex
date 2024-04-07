@@ -65,7 +65,7 @@
 </div>
 
 <div class="flex mx-4 lg:mx-10 pb-6">
-  <ProfileComponents.profile_with_selected_skill_class
+  <ProfileComponents.profile_with_selected_skill_and_doughnut_graph
     user_name={@display_user.name}
     title={@display_user.user_profile.title}
     icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
@@ -73,6 +73,9 @@
     skill_class={@skill_class}
     display_return_to_yourself={!@me}
     is_anonymous={@anonymous}
+    skill_class_score={@skill_class_score}
+    counter={@counter}
+    num_skills={@num_skills}
   />
 </div>
 
@@ -98,17 +101,6 @@
         compared_user={@compared_user}
       />
       <div class="w-full lg:mt-4">
-        <%!-- <div class="flex w-full gap-x-4 lg:gap-x-0 px-6 justify-center">
-          <div class="w-20 lg:w-24">
-            <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
-          </div>
-
-          <SkillPanelComponents.profile_score_stats
-            skill_class_score={@skill_class_score}
-            counter={@counter}
-            num_skills={@num_skills}
-          />
-        </div> --%>
         <%!-- PC版 スキルジェム --%>
         <div class="hidden lg:block px-6">
           <.live_component
