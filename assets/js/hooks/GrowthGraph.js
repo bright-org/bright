@@ -18,8 +18,6 @@ const nowSelectColor = "#B71225";
 
 const graphSizeSet = {
   // 成長グラフのサイズ
-  // "2xl": {width: "1280px", height: "640px"},
-  // "xl": {width: "920px", height: "460px"},
   "default": {width: "714px", height: "357px"},
   "sp": {width: "270px", height: "135px"}
 }
