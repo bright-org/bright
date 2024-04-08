@@ -39,6 +39,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   @impl true
   def render(assigns) do
     assigns = assign(assigns, :local_storage_backup_key, @local_storage_backup_key)
+    link = "/panels/" <> assigns.skill_panel.id <> "/edit?class=1&#unit-"
+    IO.inspect("-------------------sssss----------")
+    #assigns.skill_panel.id
+    links =
+    1..length(assigns.gem_labels)
+    |> Enum.map(fn x ->  link <> "#{x}" end)
+    |> IO.inspect()
+    IO.inspect("-------------------sssss----------")
+    assigns = assign(assigns, :local_storage_backup_key, @local_storage_backup_key)
+    |>  assign(:links, links)
 
     ~H"""
     <div
@@ -82,7 +92,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
               labels={@gem_labels}
               data={[@gem_values]}
               size="sm"
-              display_link="false"
+              links={@links}
+              display_link="true"
             />
           </div>
           <div class="basis-1/4 flex flex-col mr-2 gap-y-1">
