@@ -39,7 +39,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   @impl true
   def render(assigns) do
     assigns = assign(assigns, :local_storage_backup_key, @local_storage_backup_key)
-    link = "/panels/" <> assigns.skill_panel.id <> "/edit?class=1&#unit-"
+    link = "/panels/" <> assigns.skill_panel.id <> "/edit?class=1&#input-unit-"
     IO.inspect("-------------------sssss----------")
     #assigns.skill_panel.id
     links =
