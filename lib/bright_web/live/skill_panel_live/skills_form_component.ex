@@ -109,8 +109,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
         </div>
 
         <div id={"#{@id}-scroll"} class="h-[400px] lg:h-[600px] overflow-y-auto">
-          <%= for skill_unit <- @skill_units do %>
-            <b class="block font-bold mt-6 text-xl">
+          <%= for {skill_unit, index} <- @skill_units |> Enum.with_index(1) do %>
+            <b id={"input-unit-#{index}"} class="block font-bold mt-6 text-xl">
               <%= skill_unit.name %>
             </b>
 
