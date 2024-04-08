@@ -70,7 +70,7 @@ defmodule BrightWeb.ChartComponents do
   """
   attr :id, :string, required: true
   attr :data, :map, required: true
-  attr :size, :string, default: "md"
+  attr :size, :string, default: "default"
 
   def growth_graph(assigns) do
     ~H"""

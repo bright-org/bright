@@ -38,7 +38,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
             phx-target={@myself}
             value={@search_word}
           />
-          <.action_button type="submit" class="ml-2.5">
+          <.action_button type="submit" class="ml-2.5 px-5 py-2">
             追加
           </.action_button>
         </form>

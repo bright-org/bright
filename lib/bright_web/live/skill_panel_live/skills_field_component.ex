@@ -21,12 +21,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   alias BrightWeb.TimelineHelper
   alias BrightWeb.BrightCoreComponents
   alias BrightWeb.DisplayUserHelper
-  alias BrightWeb.ChartComponents
-  alias BrightWeb.SkillPanelLive.SkillPanelComponents
 
   def render(assigns) do
     ~H"""
-    <div id={@id} class="mt-4">
+    <div id={@id} class="mt-0 lg:mt-4">
       <BrightCoreComponents.flash_group flash={@inner_flash} />
       <div class="hidden lg:block px-6">
         <.compare_buttons
@@ -38,20 +36,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
         />
       </div>
 
-      <div class="flex mt-4 px-6 items-center">
+      <div class="flex px-6 items-center">
         <div class="hidden lg:flex">
           <.compare_timeline myself={@myself} timeline={@timeline} />
-        </div>
-        <div class="flex lg:ml-20 gap-x-4 lg:gap-x-0 lg:items-center">
-          <div class="w-20">
-            <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
-          </div>
-
-          <SkillPanelComponents.profile_score_stats
-            skill_class_score={@skill_class_score}
-            counter={@counter}
-            num_skills={@num_skills}
-          />
         </div>
       </div>
 
@@ -75,7 +62,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
           anonymous={@anonymous}
         />
       </div>
-      <div class="lg:hidden px-2 mt-4">
+      <div class="lg:hidden px-2">
         <.skills_table_sp
           skill_panel={@skill_panel}
           skill_score_dict={@skill_score_dict}

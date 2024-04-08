@@ -3,7 +3,6 @@ defmodule BrightWeb.MyTeamLive do
   チームスキル分析画面
   """
   use BrightWeb, :live_view
-  import BrightWeb.ProfileComponents
   import BrightWeb.TeamComponents
   import BrightWeb.MegaMenuComponents
   import BrightWeb.BrightModalComponents
@@ -11,7 +10,6 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.CustomGroups
-  alias Bright.UserProfiles
   alias BrightWeb.TeamLive.MyTeamHelper
 
   def mount(params, _session, socket) do
@@ -143,10 +141,4 @@ defmodule BrightWeb.MyTeamLive do
     socket
     |> redirect(to: MyTeamHelper.get_my_team_path(display_team, skill_panel_id, skill_class_id))
   end
-
-  defp close(),
-    do: "before:-mt-2 before:rotate-225"
-
-  defp open(),
-    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 end

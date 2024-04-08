@@ -16,6 +16,17 @@ const futurePointColor = "#FFFFFF";
 const nowColor = "#B77285";
 const nowSelectColor = "#B71225";
 
+const graphSizeSet = {
+  // 成長グラフのサイズ
+  "default": {width: "714px", height: "357px"},
+  "sp": {width: "270px", height: "135px"}
+}
+
+const padSize = {
+  "default": padding,
+  "sp": 10
+}
+
 const dataDivision = (data, futureDisplay) => {
   if (data === undefined) return [[], []];
 
@@ -550,7 +561,7 @@ const afterDatasetsDraw = (chart, ease) => {
 };
 
 const createChartFromJSON = (data, size) => {
-  let pad = size === "md" ? padding : 10;
+  let pad = padSize[size] || padSize["default"];
 
   return {
     type: "line",
@@ -631,17 +642,14 @@ export const GrowthGraph = {
   drawGrowthGraph(element) {
     const dataset = element.dataset;
     const size = element.dataset.size;
+    const graphSize = graphSizeSet[size] || graphSizeSet["default"];
     const data = JSON.parse(dataset.data);
     const ctx = document.querySelector("#" + element.id + " canvas");
 
     this.myChart = new Chart(ctx, createChartFromJSON(data, size));
-    if (size === "md") {
-      this.myChart.canvas.parentNode.style.height = "357px";
-      this.myChart.canvas.parentNode.style.width = "714px";
-    } else {
-      this.myChart.canvas.parentNode.style.height = "145px";
-      this.myChart.canvas.parentNode.style.width = "290px";
-    }
+
+    this.myChart.canvas.parentNode.style.height = graphSize.height;
+    this.myChart.canvas.parentNode.style.width = graphSize.width;
   },
   mounted() {
     this.drawGrowthGraph(this.el);

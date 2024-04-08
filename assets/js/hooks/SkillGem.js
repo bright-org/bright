@@ -13,7 +13,7 @@ const gemSizeSet = {
   // md: チームスキル分析
   "default": {width: "535px", height: "450px"},
   "sm": {width: "250px", height: "165px"},
-  "sp": {width: "350px", height: "300px"},
+  "sp": {width: "340px", height: "300px"},
   "md": {width: "450px", height: "400px"}
 }
 const labelFontSet = {

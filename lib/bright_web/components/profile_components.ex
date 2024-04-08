@@ -13,6 +13,8 @@ defmodule BrightWeb.ProfileComponents do
 
   alias Phoenix.LiveView.JS
   alias Bright.UserProfiles
+  alias BrightWeb.ChartComponents
+  alias BrightWeb.SkillPanelLive.SkillPanelComponents
 
   @doc """
   Renders a Profile
@@ -145,40 +147,124 @@ defmodule BrightWeb.ProfileComponents do
   attr :skill_panel, :any, required: true
   attr :display_return_to_yourself, :boolean, default: false
 
-  def profile_with_selected_skill_class(assigns) do
+  def profile_with_selected_skill(assigns) do
     assigns = assign_by_anonymous(assigns)
 
     ~H"""
       <div class="flex flex-col gap-y-2 w-full">
-        <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4">
-          <h4 class="w-full lg:w-auto">選択中のユーザー／スキル／クラス</h4>
-          <div>
-            <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">
-              <.icon name="hero-arrow-uturn-right" class="mr-2" />
-              自分に戻す
-            </.profile_button>
-          </div>
+        <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
+        <.selected_skill_content
+          user_name={@user_name}
+          title={@title}
+          icon_file_path={@icon_file_path}
+          skill_panel={@skill_panel}
+          skill_class={@skill_class}
+        />
+      </div>
+    """
+  end
+
+  defp selected_skill_title(assigns) do
+    ~H"""
+      <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4">
+        <h4 class="w-full lg:w-auto">選択中のユーザー／スキル／クラス</h4>
+        <div>
+          <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">
+            <.icon name="hero-arrow-uturn-right" class="mr-2" />
+            自分に戻す
+          </.profile_button>
         </div>
-        <div class="flex p-4 px-6 bg-white rounded-lg">
-          <div class="flex flex-col lg:flex-row justify-center items-center mr-4 lg:mr-0">
-            <div class="lg:mr-5 w-12 lg:w-20">
-              <img
-                class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
-                src={@icon_file_path}
+      </div>
+    """
+  end
+
+  defp selected_skill_content(assigns) do
+    ~H"""
+      <div class="flex p-4 px-6 bg-white rounded-lg">
+        <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
+        <.selected_skill
+          skill_panel={@skill_panel}
+          skill_class={@skill_class}
+        />
+      </div>
+    """
+  end
+
+  defp selected_user(assigns) do
+    ~H"""
+      <div class="flex flex-col lg:flex-row justify-center items-center mr-4 lg:mr-0">
+        <div class="lg:mr-5 w-12 lg:w-20">
+          <img
+            class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
+            src={@icon_file_path}
+          />
+        </div>
+        <div class="flex mr-2 lg:mr-20">
+          <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+        </div>
+      </div>
+    """
+  end
+
+  defp selected_skill(assigns) do
+    ~H"""
+      <div class="flex flex-col gap-y-2 font-bold">
+        <span id="profile-skill-panel-name" class="text-md lg:text-2xl mt-1 lg:mt-2"><%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
+        <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
+          <span class="text-sm lg:text-normal">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
+          <span class="text-sm lg:text-normal break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
+        </div>
+      </div>
+    """
+  end
+
+  attr :is_anonymous, :boolean, default: false
+  attr :user_name, :string, default: ""
+  attr :title, :string, default: ""
+  attr :icon_file_path, :string, default: ""
+  attr :skill_class, :any, required: true
+  attr :skill_panel, :any, required: true
+  attr :display_return_to_yourself, :boolean, default: false
+  attr :skill_class_score, :any, required: true
+  attr :counter, :integer, required: true
+  attr :num_skills, :integer, required: true
+
+  def profile_with_selected_skill_and_doughnut_graph(assigns) do
+    assigns = assign_by_anonymous(assigns)
+
+    ~H"""
+      <div class="flex flex-col gap-y-2 w-full">
+        <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
+        <div class="flex flex-col lg:flex-row gap-x-8 gap-y-8 lg:gap-y-0 p-4 px-6 bg-white rounded-lg">
+          <div class="flex">
+            <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
+            <.selected_skill
+                skill_panel={@skill_panel}
+                skill_class={@skill_class}
               />
-            </div>
-            <div class="flex mr-2 lg:mr-20">
-              <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
-            </div>
           </div>
-          <div class="flex flex-col gap-y-2 font-bold">
-            <span id="profile-skill-panel-name" class="text-md lg:text-2xl mt-1 lg:mt-2"><%= @skill_panel.name %></span>
-            <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
-              <span class="text-sm lg:text-normal">クラス<%= @skill_class.class %></span>
-              <span class="text-sm lg:text-normal break-all"><%= @skill_class.name %></span>
-            </div>
-          </div>
+          <.dounat_graph_with_score_stats
+            skill_class_score={@skill_class_score}
+            counter={@counter}
+            num_skills={@num_skills}
+          />
         </div>
+      </div>
+    """
+  end
+
+  defp dounat_graph_with_score_stats(assigns) do
+    ~H"""
+      <div class="flex gap-x-4 lg:gap-x-0">
+        <div class="w-20 lg:w-24">
+          <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
+        </div>
+
+        <SkillPanelComponents.profile_score_stats
+          skill_class_score={@skill_class_score}
+          counter={@counter}
+          num_skills={@num_skills}
+        />
       </div>
     """
   end

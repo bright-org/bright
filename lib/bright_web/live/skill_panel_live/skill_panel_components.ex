@@ -43,7 +43,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         display_user={@display_user}
         me={@me}
         anonymous={@anonymous}
-        root="panels"
+        root={@root}
       />
     </div>
     """
@@ -96,7 +96,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <:button_content>
         <div
           class={[
-            "h-5 w-5 [mask-image:url('/images/common/icons/switchIndividual.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
+            "inline-block h-5 w-5 [mask-image:url('/images/common/icons/switchIndividual.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
           }
         />
         表示対象者を切替
@@ -125,7 +125,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         >
           <div
             class={[
-              "h-6 w-6 [mask-image:url('/images/common/icons/growthPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
+              "inline-block h-6 w-6 [mask-image:url('/images/common/icons/growthPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
               @active == "graph" && "bg-white", @active != "graph" && "bg-brightGray-500"]
             }
           />
@@ -141,7 +141,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         >
           <div
             class={[
-              "h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
+              "inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
               @active == "panel" && "bg-white", @active != "panel" && "bg-brightGray-500"]
             }
           />
@@ -162,59 +162,61 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     # userを起点にpre_loadしていった場合、skill_score.skill_classの構造になる為pair_skill_class_score関数に対応できない
     # チームスキル分析でタブをタップした場合の挙動をハンドラで実装したい
     ~H"""
-    <ul class="flex text-md font-bold text-brightGray-500 bg-skillGem-50 content-between w-full">
-      <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- @user_skill_class_score do %>
-        <%= if skill_class_score do %>
-          <% current = @select_skill_class.class == skill_class.class %>
-          <%= if @select_skill_class.class == skill_class.class do %>
-            <li
-              class={"bg-white text-base w-full cursor-pointer"}
-              phx-click="skill_class_tab_click"
-              phx-target={@skill_class_tab_click_target}
-              phx-value-user_id={@user.id}
-              phx-value-skill_class_id={skill_class.id}
-            >
-              <span
-                id={"class_tab_#{skill_class.class}"}
-                class="inline-block p-4 pt-3"
-                aria-current={current && "page"}
-              >
-                クラス<%= skill_class.class %>
-              <span class="text-xl ml-4">
-                <%= floor skill_class_score.percentage %></span>％
-              </span>
-            </li>
-          <% else %>
-
-            <li
-              class={"w-full bg-brightGreen-50 text-brightGray-500 cursor-pointer"}
-              phx-click="skill_class_tab_click"
-              phx-target={@skill_class_tab_click_target}
-              phx-value-user_id={@user.id}
-              phx-value-skill_class_id={skill_class.id}
-            >
-              <span
-                id={"class_tab_#{skill_class.class}"}
-                class="inline-block p-4 pt-3"
-              >
-                クラス<%= skill_class.class %>
-                <span class="text-xl ml-4">
-                <%= floor skill_class_score.percentage %></span>％
-              </span>
-            </li>
-          <% end %>
-        <% else %>
-          <li class="w-full bg-pureGray-600 text-pureGray-100">
-            <span
-              class="select-none inline-block p-4 pt-3"
-            >
-              クラス<%= skill_class.class %>
-              <span class="text-xl ml-4">0</span>％
-            </span>
-          </li>
-        <% end %>
-      <% end %>
+    <ul class="flex bg-white border-b border-b-brightGray-100 text-normal lg:text-md font-bold text-brightGray-300 text-center">
+      <.team_member_class_tab_content
+        user={@user}
+        user_skill_class_score={@user_skill_class_score}
+        select_skill_class={@select_skill_class}
+        skill_class_tab_click_target={@skill_class_tab_click_target}
+      />
     </ul>
+    """
+  end
+
+  defp team_member_class_tab_content(%{user_skill_class_score: nil} = assigns) do
+    ~H"""
+    <li class="h-14" />
+    """
+  end
+
+  defp team_member_class_tab_content(assigns) do
+    ~H"""
+    <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- @user_skill_class_score do %>
+      <%= if skill_class_score do %>
+        <% current = @select_skill_class.class == skill_class.class %>
+        <li
+          class={
+            [
+              "w-full flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3",
+              current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300",
+              !current && "cursor-pointer hover:opacity-50 hover:text-brightGreen-300"
+            ]
+          }
+          phx-click="skill_class_tab_click"
+          phx-target={@skill_class_tab_click_target}
+          phx-value-user_id={@user.id}
+          phx-value-skill_class_id={skill_class.id}
+        >
+          <span
+            class="text-sm lg:text-normal"
+            aria-current={current && "page"}
+          >
+            クラス<%= skill_class.class %>
+          <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
+            <%= floor skill_class_score.percentage %></span>％
+          </span>
+        </li>
+      <% else %>
+        <li class="w-full bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3">
+          <span
+            class="select-none text-sm lg:text-normal"
+          >
+            クラス<%= skill_class.class %>
+            <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0</span>％
+          </span>
+        </li>
+      <% end %>
+    <% end %>
     """
   end
 
@@ -276,24 +278,26 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def profile_score_stats(assigns) do
     ~H"""
-    <div id="profile_score_stats" class="h-20 lg:ml-2 flex flex-wrap">
-      <p class="text-brightGreen-300 font-bold w-full flex ml-[7px] lg:ml-6 mt-2 mb-1">
+    <div id="profile_score_stats" class="h-20 lg:ml-2 flex flex-col">
+      <p class="text-brightGreen-300 font-bold flex ml-[7px] lg:ml-4 mt-2 mb-1">
         <.profile_skill_class_level level={@skill_class_score.level} />
       </p>
-      <div class="flex flex-col mr-2 pl-2 lg:pl-6">
-        <div class="min-w-[4em] flex items-center">
-          <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-          <%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％
+      <div class="flex">
+        <div class="flex flex-col mr-2 pl-2 lg:pl-4">
+          <div class="min-w-[4em] flex items-center">
+            <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
+            <%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％
+          </div>
+          <div class="min-w-[4em] flex items-center">
+            <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
+            <%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％
+          </div>
         </div>
-        <div class="min-w-[4em] flex items-center">
-          <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-          <%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％
+        <div class="text-right text-xs">
+          学習メモの登録率 <span class="evidence_percentage"><%= SkillEvidences.calc_filled_percentage(@counter.evidence_filled, @num_skills) %>%</span><br />
+          教材の学習率 <span class="reference_percentage"><%= SkillReferences.calc_read_percentage(@counter.reference_read, @num_skills) %>%</span><br />
+          試験の受験率 <span class="exam_percentage"><%= SkillExams.calc_touch_percentage(@counter.exam_touch, @num_skills) %>%</span>
         </div>
-      </div>
-      <div class="text-right text-xs">
-        学習メモの登録率 <span class="evidence_percentage"><%= SkillEvidences.calc_filled_percentage(@counter.evidence_filled, @num_skills) %>%</span><br />
-        教材の学習率 <span class="reference_percentage"><%= SkillReferences.calc_read_percentage(@counter.reference_read, @num_skills) %>%</span><br />
-        試験の受験率 <span class="exam_percentage"><%= SkillExams.calc_touch_percentage(@counter.exam_touch, @num_skills) %>%</span>
       </div>
     </div>
     """
