@@ -256,7 +256,7 @@ defmodule BrightWeb.ProfileComponents do
   defp dounat_graph_with_score_stats(assigns) do
     ~H"""
       <div class="flex gap-x-4 lg:gap-x-0">
-        <div class="w-20 lg:w-24">
+        <div class="w-20 lg:w-24 h-20 lg:h-24">
           <ChartComponents.doughnut_graph id="doughnut-graph-single" data={SkillPanelComponents.skill_score_percentages(@counter, @num_skills)} />
         </div>
 
