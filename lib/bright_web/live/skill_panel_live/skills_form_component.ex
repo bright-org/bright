@@ -38,8 +38,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
   @impl true
   def render(assigns) do
-    assigns = assign(assigns, :local_storage_backup_key, @local_storage_backup_key)
-    |>  assign(:links, create_links(assigns))
+    assigns =
+      assign(assigns, :local_storage_backup_key, @local_storage_backup_key)
+      |> assign(:links, create_links(assigns))
 
     ~H"""
     <div
@@ -462,6 +463,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     link = "/panels/" <> assigns.skill_panel.id <> "/edit?class=1&#input-unit-"
 
     1..length(assigns.gem_labels)
-    |> Enum.map(fn x ->  link <> "#{x}" end)
+    |> Enum.map(fn x -> link <> "#{x}" end)
   end
 end
