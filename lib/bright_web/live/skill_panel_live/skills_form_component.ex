@@ -460,7 +460,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   end
 
   defp create_links(assigns) do
-    link = "/panels/" <> assigns.skill_panel.id <> "/edit?class=1&#input-unit-"
+    link = "#input-unit-"
 
     1..length(assigns.gem_labels)
     |> Enum.map(fn x -> link <> "#{x}" end)
