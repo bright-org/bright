@@ -38,7 +38,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
   @impl true
   def render(assigns) do
-    assigns = assign(assigns, :local_storage_backup_key, @local_storage_backup_key)
+    assigns =
+      assign(assigns, :local_storage_backup_key, @local_storage_backup_key)
+      |> assign(:links, create_links(assigns))
 
     ~H"""
     <div
@@ -82,7 +84,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
               labels={@gem_labels}
               data={[@gem_values]}
               size="sm"
-              display_link="false"
+              links={@links}
+              display_link="true"
             />
           </div>
           <div class="basis-1/4 flex flex-col mr-2 gap-y-1">
@@ -109,8 +112,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
         </div>
 
         <div id={"#{@id}-scroll"} class="h-[400px] lg:h-[600px] overflow-y-auto">
-          <%= for skill_unit <- @skill_units do %>
-            <b class="block font-bold mt-6 text-xl">
+          <%= for {skill_unit, index} <- @skill_units |> Enum.with_index(1) do %>
+            <b id={"input-unit-#{index}"} class="block font-bold mt-6 text-xl">
               <%= skill_unit.name %>
             </b>
 
@@ -454,5 +457,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
         })
       )
     end)
+  end
+
+  defp create_links(assigns) do
+    link = "#input-unit-"
+
+    1..length(assigns.gem_labels)
+    |> Enum.map(fn x -> link <> "#{x}" end)
   end
 end
