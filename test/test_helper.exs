@@ -3,6 +3,9 @@ ExUnit.start()
 Faker.start()
 Ecto.Adapters.SQL.Sandbox.mode(Bright.Repo, :manual)
 
+Mox.defmock(Boruta.OauthMock, for: Boruta.OauthModule)
+Mox.defmock(Boruta.OpenidMock, for: Boruta.OpenidModule)
+
 # Setup fake gcs test bucket
 GoogleApi.Storage.V1.Api.Buckets.storage_buckets_insert(
   GoogleApi.Storage.V1.Connection.new(),

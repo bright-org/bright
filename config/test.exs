@@ -64,3 +64,6 @@ config :ueberauth, Ueberauth.Strategy.Google.OAuth,
 config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: "dummy_client_id",
   client_secret: "dummy_client_secret"
+
+config :bright, :oauth_module, Boruta.OauthMock
+config :bright, :openid_module, Boruta.OpenidMock

@@ -29,7 +29,6 @@ defmodule BrightWeb.Router do
   end
 
   pipeline :api do
-    plug :api_basic_auth
     plug :accepts, ["json"]
   end
 
@@ -329,7 +328,7 @@ defmodule BrightWeb.Router do
   end
 
   scope "/api", BrightWeb.Api do
-    pipe_through [:api]
+    pipe_through [:api, :api_basic_auth]
 
     scope "/v1" do
       resources "/notification_operations", NotificationOperationController, except: [:new, :edit]
@@ -337,6 +336,41 @@ defmodule BrightWeb.Router do
       resources "/notification_communities", NotificationCommunityController,
         except: [:new, :edit]
     end
+  end
+
+  # Boruta
+  scope "/oauth", BrightWeb.Oauth do
+    pipe_through :api
+
+    post "/revoke", RevokeController, :revoke
+    post "/token", TokenController, :token
+    post "/introspect", IntrospectController, :introspect
+  end
+
+  scope "/openid", BrightWeb.Openid do
+    pipe_through [:api]
+
+    get "/userinfo", UserinfoController, :userinfo
+    post "/userinfo", UserinfoController, :userinfo
+    get "/jwks", JwksController, :jwks_index
+  end
+
+  scope "/oauth", BrightWeb.Oauth do
+    pipe_through [:browser, :fetch_current_user]
+
+    get "/authorize", AuthorizeController, :authorize
+  end
+
+  scope "/openid", BrightWeb.Openid do
+    pipe_through [:browser, :fetch_current_user]
+
+    get "/authorize", AuthorizeController, :authorize
+  end
+
+  scope "/.well-known", BrightWeb do
+    pipe_through [:api]
+
+    get "/openid-configuration", Openid.WellKnownController, :configuration
   end
 
   # See https://hexdocs.pm/plug/Plug.BasicAuth.html#module-runtime-time-usage
