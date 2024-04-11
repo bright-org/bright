@@ -30,12 +30,14 @@ defmodule BrightWeb.LevelComponents do
       assigns
       |> assign(level: level)
       |> assign(next_percentage: get_next_percentage(level, percentage))
+      |> assign(next_num_skills: get_next_num_skills(level, assigns.size, assigns.value))
 
     ~H"""
-    <div class="flex justify-center">
+    <div class="flex">
       <.level_render
        level={@level}
        next_percentage={@next_percentage}
+       next_num_skills={@next_num_skills}
       />
     </div>
     """
@@ -49,7 +51,7 @@ defmodule BrightWeb.LevelComponents do
     <p>
       次のレベルまでのスキル数<span
         class="text-error !text-2xl font-bold"
-        >10</span>個
+        ><%= @next_num_skills %></span>個
     </p>
     """
   end
@@ -62,7 +64,7 @@ defmodule BrightWeb.LevelComponents do
     <p>
       次のレベルまでのスキル数<span
         class="text-error !text-2xl font-bold"
-        >10</span>個
+        ><%= @next_num_skills %></span>個
     </p>
     """
   end
@@ -75,7 +77,7 @@ defmodule BrightWeb.LevelComponents do
     <p>
       マスターまでのスキル数<span
         class="text-error !text-2xl font-bold"
-        >10</span>個
+        ><%= @next_num_skills %></span>個
     </p>
     """
   end
@@ -95,6 +97,11 @@ defmodule BrightWeb.LevelComponents do
   defp get_next_percentage(:normal, percentage), do: @skilled_level - percentage
   defp get_next_percentage(:skilled, percentage), do: @master_level - percentage
   defp get_next_percentage(:master, _percentage), do: 0
+
+  defp get_next_num_skills(:beginner, num_skills, current_skills), do: ceil((num_skills * (@normal_level / 100)) - current_skills)
+  defp get_next_num_skills(:normal, num_skills, current_skills), do: ceil((num_skills * (@skilled_level / 100)) - current_skills)
+  defp get_next_num_skills(:skilled, num_skills, current_skills), do: ceil(num_skills  - current_skills)
+  defp get_next_num_skills(:master, _num_skills, _current_skills), do: 0
 
   defp get_level(100), do: :master
   defp get_level(percentage), do: SkillScores.get_level(percentage)
