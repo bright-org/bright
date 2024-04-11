@@ -6,10 +6,18 @@ defmodule BrightWeb.LevelComponents do
 
   @doc """
   Level a Tab
-
+  ## Examples
+       <.level
+          value={@counter.high}
+          size={@num_skills}
+        />
   """
 
+  attr :value, :integer
+  attr :size, :integer
   def level(assigns) do
+    IO.inspect("--------------")
+    IO.inspect(assigns)
     ~H"""
     <div class="flex justify-center">
       <p>
