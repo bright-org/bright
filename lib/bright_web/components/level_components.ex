@@ -5,7 +5,7 @@ defmodule BrightWeb.LevelComponents do
   use Phoenix.Component
 
   @doc """
-  Level a Tab
+  Renders a Level
   ## Examples
        <.level
           value={@counter.high}
@@ -15,9 +15,11 @@ defmodule BrightWeb.LevelComponents do
 
   attr :value, :integer
   attr :size, :integer
+
   def level(assigns) do
     IO.inspect("--------------")
     IO.inspect(assigns)
+
     ~H"""
     <div class="flex justify-center">
       <p>
