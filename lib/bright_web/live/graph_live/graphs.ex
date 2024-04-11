@@ -10,6 +10,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
+  import BrightWeb.LevelComponents
 
   @impl true
   def mount(params, _session, socket) do
