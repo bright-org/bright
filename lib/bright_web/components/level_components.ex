@@ -10,6 +10,8 @@ defmodule BrightWeb.LevelComponents do
   @skilled_level 60
   @master_level 100
 
+  @next_level %{beginner: "平均", normal: "ベテラン"}
+
   @doc """
   Renders a Level
   ## Examples
@@ -43,32 +45,6 @@ defmodule BrightWeb.LevelComponents do
     """
   end
 
-  defp level_render(%{level: :beginner} = assigns) do
-    ~H"""
-    <div class="flex flex-col lg:flex-row">
-     <div>
-      あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で平均になれます。
-     </div>
-     <div>
-      次のレベルまでのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
-      </div>
-    </div>
-    """
-  end
-
-  defp level_render(%{level: :normal} = assigns) do
-    ~H"""
-    <div class="flex flex-col lg:flex-row">
-      <div>
-        あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%でベテランになれます。
-      </div>
-      <div>
-        次のレベルまでのスキル数<span class="text-error !text-2xl font-bold"><%= @next_num_skills %></span>個
-      </div>
-    </div>
-    """
-  end
-
   defp level_render(%{level: :skilled} = assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
@@ -90,6 +66,21 @@ defmodule BrightWeb.LevelComponents do
       </div>
       <div>
         おめでとうございます
+      </div>
+    </div>
+    """
+  end
+
+  defp level_render(assigns) do
+    assigns = assign(assigns, next_level_name: Map.get(@next_level, assigns.level))
+
+    ~H"""
+    <div class="flex flex-col lg:flex-row">
+     <div>
+      あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で<%= @next_level_name %>になれます。
+     </div>
+     <div>
+      次のレベルまでのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
       </div>
     </div>
     """
