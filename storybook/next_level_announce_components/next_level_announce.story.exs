@@ -1,7 +1,7 @@
-defmodule Storybook.Components.Level do
+defmodule Storybook.Components.NextLevelAnnounce do
   use PhoenixStorybook.Story, :component
 
-  def function, do: &Elixir.BrightWeb.LevelComponents.level/1
+  def function, do: &Elixir.BrightWeb.NextLevelAnnounceComponents.next_level_announce/1
 
   def variations do
     [

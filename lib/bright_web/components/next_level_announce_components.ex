@@ -1,4 +1,4 @@
-defmodule BrightWeb.LevelComponents do
+defmodule BrightWeb.NextLevelAnnounceComponents do
   @moduledoc """
   Level Components
   """
@@ -15,7 +15,7 @@ defmodule BrightWeb.LevelComponents do
   @doc """
   Renders a Level
   ## Examples
-       <.level
+       <.next_level_announce
           value={@counter.high}
           size={@num_skills}
         />
@@ -24,7 +24,7 @@ defmodule BrightWeb.LevelComponents do
   attr :value, :integer
   attr :size, :integer
 
-  def level(assigns) do
+  def next_level_announce(assigns) do
     percentage = SkillScores.calc_high_skills_percentage(assigns.value, assigns.size)
     level = get_level(percentage)
 
