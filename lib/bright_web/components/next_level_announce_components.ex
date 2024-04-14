@@ -5,11 +5,6 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
   use Phoenix.Component
   alias Bright.SkillScores
 
-  # レベルの判定値
-  @normal_level 40
-  @skilled_level 60
-  @master_level 100
-
   @next_level %{beginner: "平均", normal: "ベテラン", skilled: "マスター"}
 
   @doc """
@@ -73,16 +68,22 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
     """
   end
 
-  defp get_next_percentage(:beginner, percentage), do: @normal_level - percentage
-  defp get_next_percentage(:normal, percentage), do: @skilled_level - percentage
-  defp get_next_percentage(:skilled, percentage), do: @master_level - percentage
+  defp get_next_percentage(:beginner, percentage),
+    do: SkillScores.get_level_judgment_value(:normal) - percentage
+
+  defp get_next_percentage(:normal, percentage),
+    do: SkillScores.get_level_judgment_value(:skilled) - percentage
+
+  defp get_next_percentage(:skilled, percentage),
+    do: SkillScores.get_level_judgment_value(:master) - percentage
+
   defp get_next_percentage(:master, _percentage), do: 0
 
   defp get_next_num_skills(:beginner, num_skills, current_skills),
-    do: ceil(num_skills * (@normal_level / 100) - current_skills)
+    do: ceil(num_skills * (SkillScores.get_level_judgment_value(:normal) / 100) - current_skills)
 
   defp get_next_num_skills(:normal, num_skills, current_skills),
-    do: ceil(num_skills * (@skilled_level / 100) - current_skills)
+    do: ceil(num_skills * (SkillScores.get_level_judgment_value(:skilled) / 100) - current_skills)
 
   defp get_next_num_skills(:skilled, num_skills, current_skills),
     do: ceil(num_skills - current_skills)
