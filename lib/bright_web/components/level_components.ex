@@ -10,7 +10,7 @@ defmodule BrightWeb.LevelComponents do
   @skilled_level 60
   @master_level 100
 
-  @next_level %{beginner: "平均", normal: "ベテラン"}
+  @next_level %{beginner: "平均", normal: "ベテラン", skilled: "マスター"}
 
   @doc """
   Renders a Level
@@ -45,19 +45,6 @@ defmodule BrightWeb.LevelComponents do
     """
   end
 
-  defp level_render(%{level: :skilled} = assigns) do
-    ~H"""
-    <div class="flex flex-col lg:flex-row">
-      <div>
-        あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%でマスターになれます。
-      </div>
-      <div>
-        マスターまでのスキル数<span class="text-error !text-2xl font-bold"><%= @next_num_skills %></span>個
-      </div>
-    </div>
-    """
-  end
-
   defp level_render(%{level: :master} = assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
@@ -76,11 +63,11 @@ defmodule BrightWeb.LevelComponents do
 
     ~H"""
     <div class="flex flex-col lg:flex-row">
-     <div>
-      あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で<%= @next_level_name %>になれます。
-     </div>
-     <div>
-      次のレベルまでのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
+      <div>
+        あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で<%= @next_level_name %>になれます。
+      </div>
+      <div>
+        <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
       </div>
     </div>
     """
