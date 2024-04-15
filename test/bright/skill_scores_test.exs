@@ -17,6 +17,17 @@ defmodule Bright.SkillScoresTest do
       %{user: user, skill_panel: skill_panel, skill_class: skill_class}
     end
 
+    test "get_level_judgment_value returns level judgment value" do
+      [
+        {:normal, 40},
+        {:skilled, 60},
+        {:master, 100}
+      ]
+      |> Enum.each(fn {level, expected_value} ->
+        assert expected_value == SkillScores.get_level_judgment_value(level)
+      end)
+    end
+
     test "list_skill_class_scores/0 returns all skill_class_scores", %{
       user: user,
       skill_class: skill_class

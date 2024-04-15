@@ -26,6 +26,18 @@ defmodule Bright.SkillScores do
   # レベルの判定値
   @normal_level 40
   @skilled_level 60
+  @master_level 100
+
+  @doc """
+  Return level judgment value.
+  ## Examples
+      iex> get_level_judgment_value((:normal))
+      40
+  """
+
+  def get_level_judgment_value(:normal), do: @normal_level
+  def get_level_judgment_value(:skilled), do: @skilled_level
+  def get_level_judgment_value(:master), do: @master_level
 
   @doc """
   Returns the list of skill_class_scores.
