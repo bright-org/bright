@@ -5,7 +5,8 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
   use Phoenix.Component
   alias Bright.SkillScores
 
-  @next_level %{beginner: "平均", normal: "ベテラン", skilled: "マスター"}
+  @next_level_jp %{beginner: "平均", normal: "ベテラン", skilled: "マスター"}
+  @next_level %{beginner: :normal, normal: :skilled, skilled: :master}
 
   @doc """
   Renders a Level
@@ -54,7 +55,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
   end
 
   defp level_render(assigns) do
-    assigns = assign(assigns, next_level_name: Map.get(@next_level, assigns.level))
+    assigns = assign(assigns, next_level_name: Map.get(@next_level_jp, assigns.level))
 
     ~H"""
     <div class="flex flex-col lg:flex-row">
@@ -68,27 +69,19 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
     """
   end
 
-  defp get_next_percentage(:beginner, percentage),
-    do: SkillScores.get_level_judgment_value(:normal) - percentage
-
-  defp get_next_percentage(:normal, percentage),
-    do: SkillScores.get_level_judgment_value(:skilled) - percentage
-
-  defp get_next_percentage(:skilled, percentage),
-    do: SkillScores.get_level_judgment_value(:master) - percentage
-
   defp get_next_percentage(:master, _percentage), do: 0
 
-  defp get_next_num_skills(:beginner, num_skills, current_skills),
-    do: ceil(num_skills * (SkillScores.get_level_judgment_value(:normal) / 100) - current_skills)
-
-  defp get_next_num_skills(:normal, num_skills, current_skills),
-    do: ceil(num_skills * (SkillScores.get_level_judgment_value(:skilled) / 100) - current_skills)
-
-  defp get_next_num_skills(:skilled, num_skills, current_skills),
-    do: ceil(num_skills - current_skills)
+  defp get_next_percentage(level, percentage),
+    do: SkillScores.get_level_judgment_value(Map.get(@next_level, level)) - percentage
 
   defp get_next_num_skills(:master, _num_skills, _current_skills), do: 0
+
+  defp get_next_num_skills(level, num_skills, current_skills),
+    do:
+      ceil(
+        num_skills * (SkillScores.get_level_judgment_value(Map.get(@next_level, level)) / 100) -
+          current_skills
+      )
 
   defp get_level(100), do: :master
   defp get_level(percentage), do: SkillScores.get_level(percentage)
