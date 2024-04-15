@@ -9,7 +9,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
   @next_level %{beginner: :normal, normal: :skilled, skilled: :master}
 
   @doc """
-  Renders a Level
+  Renders a Next Level Announce
   ## Examples
        <.next_level_announce
           value={@counter.high}
