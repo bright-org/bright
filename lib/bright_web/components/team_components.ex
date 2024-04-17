@@ -131,7 +131,7 @@ defmodule BrightWeb.TeamComponents do
   attr :team_name, :string, required: true
   attr :team_type, :atom, default: :general_team
   attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: false, default: nil
-
+  attr :team_size, :integer, default: 0
   def team_header(assigns) do
     ~H"""
     <div class="flex gap-x-4">
@@ -151,7 +151,7 @@ defmodule BrightWeb.TeamComponents do
         </span>
       </button>
       <h3>
-      ２人
+      <%= @team_size %>
       </h3>
       <.team_header_sum />
     </div>

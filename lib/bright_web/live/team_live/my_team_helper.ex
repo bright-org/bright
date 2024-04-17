@@ -74,6 +74,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     )
     # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
     |> assign_push_redirect(params, display_team, display_skill_panel)
+    |> assign(:team_size, length(display_team_members))
   end
 
   defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team_members) do
