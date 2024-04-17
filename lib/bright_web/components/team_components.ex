@@ -150,10 +150,46 @@ defmodule BrightWeb.TeamComponents do
           star
         </span>
       </button>
+      <h3>
+      ２人
+      </h3>
+      <.team_header_sum />
     </div>
     """
   end
 
+  def team_header_sum(assigns) do
+    assigns = assigns |> assign(:css, "pt-0 text-xs leading-3")
+    ~H"""
+    <table>
+      <tr>
+      <td class={@css}></td>
+      <td class={@css}>クラス1</td>
+      <td class={@css}>クラス2</td>
+      <td class={@css}>クラス3</td>
+      </tr>
+      <tr>
+      <td class={@css}>レベル1</td>
+      <td class={@css}>1</td>
+      <td class={@css}>2</td>
+      <td class={@css}>3</td>
+      </tr>
+      <tr>
+      <td class={@css}>レベル2</td>
+      <td class={@css}>1</td>
+      <td class={@css}>2</td>
+      <td class={@css}>3</td>
+    </tr>
+      <tr>
+        <td class={@css}>レベル3</td>
+        <td class={@css}>1</td>
+        <td class={@css}>2</td>
+        <td class={@css}>3</td>
+      </tr>
+
+    </table>
+    """
+  end
   def convert_team_params_from_team(%Team{} = team) do
     %{
       team_id: team.id,
