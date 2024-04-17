@@ -136,28 +136,33 @@ defmodule BrightWeb.TeamComponents do
 
   def team_header(assigns) do
     ~H"""
-    <div class="flex gap-x-4">
-      <h3 class="max-w-[1000px] truncate">
-        <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2 !inline-flex w-8 h-8 !items-center !justify-center"/>
-        <%= @team_name %>
-      </h3>
-      <button
-        :if={show_star_button?(@current_users_team_member)}
-        class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
-        phx-click="click_star_button"
-      >
-        <span
-          class={"material-icons text-#{get_star_style(@current_users_team_member)}"}
+    <div class="flex">
+      <div class="flex gap-x-4 h-8" >
+        <h3 class="max-w-[1000px] truncate">
+          <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2 !inline-flex w-8 h-8 !items-center !justify-center"/>
+          <%= @team_name %>
+        </h3>
+        <button
+          :if={show_star_button?(@current_users_team_member)}
+          class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
+          phx-click="click_star_button"
         >
-          star
-        </span>
-      </button>
-      <h3>
-      <%= @team_size %>人
-      </h3>
-      <.team_header_sum
-      level_count={@level_count}
-      />
+          <span
+            class={"material-icons text-#{get_star_style(@current_users_team_member)}"}
+          >
+            star
+          </span>
+        </button>
+        <h3>
+        <%= @team_size %>人
+        </h3>
+
+      </div>
+      <div class="flex">
+        <.team_header_sum
+        level_count={@level_count}
+        />
+      </div>
     </div>
     """
   end
