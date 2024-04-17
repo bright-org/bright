@@ -132,6 +132,8 @@ defmodule BrightWeb.TeamComponents do
   attr :team_type, :atom, default: :general_team
   attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: false, default: nil
   attr :team_size, :integer, default: 0
+  attr :level_count, :list, default: []
+
   def team_header(assigns) do
     ~H"""
     <div class="flex gap-x-4">
@@ -151,45 +153,48 @@ defmodule BrightWeb.TeamComponents do
         </span>
       </button>
       <h3>
-      <%= @team_size %>
+      <%= @team_size %>人
       </h3>
-      <.team_header_sum />
+      <.team_header_sum
+      level_count={@level_count}
+      />
     </div>
     """
   end
 
   def team_header_sum(assigns) do
     assigns = assigns |> assign(:css, "pt-0 text-xs leading-3")
+
     ~H"""
     <table>
       <tr>
-      <td class={@css}></td>
-      <td class={@css}>クラス1</td>
-      <td class={@css}>クラス2</td>
-      <td class={@css}>クラス3</td>
+       <td class={@css}></td>
+       <td class={@css}>クラス1</td>
+       <td class={@css}>クラス2</td>
+       <td class={@css}>クラス3</td>
       </tr>
-      <tr>
-      <td class={@css}>レベル1</td>
-      <td class={@css}>1</td>
-      <td class={@css}>2</td>
-      <td class={@css}>3</td>
-      </tr>
-      <tr>
-      <td class={@css}>レベル2</td>
-      <td class={@css}>1</td>
-      <td class={@css}>2</td>
-      <td class={@css}>3</td>
-    </tr>
-      <tr>
-        <td class={@css}>レベル3</td>
-        <td class={@css}>1</td>
-        <td class={@css}>2</td>
-        <td class={@css}>3</td>
-      </tr>
+      <.team_header_sum_row name="見習い" row={Enum.at(@level_count,0)}/>
+      <.team_header_sum_row name="平均" row={Enum.at(@level_count,1)}/>
+      <.team_header_sum_row name="ベテラン" row={Enum.at(@level_count,2)}/>
 
     </table>
     """
   end
+
+  @spec team_header_sum_row(map()) :: Phoenix.LiveView.Rendered.t()
+  def team_header_sum_row(assigns) do
+    assigns = assigns |> assign(:css, "pt-0 text-xs leading-3")
+
+    ~H"""
+    <tr>
+      <td class={@css}><%= @name %></td>
+      <td class={@css}><%= Enum.at(@row, 0) %></td>
+      <td class={@css}><%= Enum.at(@row, 1) %></td>
+      <td class={@css}><%= Enum.at(@row, 2) %></td>
+    </tr>
+    """
+  end
+
   def convert_team_params_from_team(%Team{} = team) do
     %{
       team_id: team.id,

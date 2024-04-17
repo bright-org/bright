@@ -55,9 +55,11 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     subscription = Subscriptions.get_user_subscription_user_plan(user.id)
 
     level = [:beginner, :normal, :skilled]
-    IO.inspect("-----------------------------------------------------")
-    Enum.map(1..3, fn c ->  Enum.map(level, fn x ->  level_count(member_skill_class_scores, c, x) end) end)
-    |> IO.inspect()
+
+    level_count =
+      Enum.map(level, fn l ->
+        Enum.map(1..3, fn c -> level_count(member_skill_class_scores, c, l) end)
+      end)
 
     # スキルとチームの取得結果に応じて各種assign
     socket
@@ -80,6 +82,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
     |> assign_push_redirect(params, display_team, display_skill_panel)
     |> assign(:team_size, length(display_team_members))
+    |> assign(:level_count, level_count)
   end
 
   defp level_count(member_skill_class_scores, class, level) do
