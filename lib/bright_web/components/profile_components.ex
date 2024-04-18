@@ -347,6 +347,7 @@ defmodule BrightWeb.ProfileComponents do
         user_id="1234"
         title="リードプログラマー"
         icon_file_path="/images/sample/sample-image.png"
+        invitation_confirmed=""
       />
   """
   attr :remove_user_target, :any
@@ -354,6 +355,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :user_id, :string, required: true
   attr :title, :string, default: ""
   attr :icon_file_path, :string, default: ""
+  attr :invitation_confirmed, :any, default: ""
 
   def profile_small_with_remove_button(assigns) do
     ~H"""
@@ -367,6 +369,12 @@ defmodule BrightWeb.ProfileComponents do
           <p class="truncate max-w-[240px]"><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
+        <span
+        :if={@invitation_confirmed == nil}
+        class="text-white text-sm font-bold ml-6 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
+        >
+          未承認
+        </span>
         <div
           phx-click={JS.push("remove_user", value: %{id: @user_id})}
           phx-target={@remove_user_target}
