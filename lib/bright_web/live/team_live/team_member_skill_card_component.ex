@@ -129,7 +129,15 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
 
         <div class="pb-2 flex w-full gap-x-1 lg:gap-x-2 justify-around">
-          <button class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-brightGray-200">
+          <button
+            :if={@display_skill_card.user.id != @current_user.id}
+            class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-base"
+            phx-click={
+                if @hr_enabled,
+                do: JS.show(to: "#create_interview_modal") |> JS.push("open", value: %{user: @display_skill_card.user.id, skill_params: [%{skill_panel: @display_skill_panel.id, career_field: "1on1"}]}, target: "#create_interview_modal"),
+                else: JS.push("open_free_trial",target: @myself)
+              }
+          >
             <div
               class={
                 "inline-block h-4 w-4 lg:h-6 lg:w-6 [mask-image:url('/images/common/icons/oneOnOneInvitation.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"

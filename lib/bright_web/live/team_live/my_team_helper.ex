@@ -5,6 +5,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   import Phoenix.Component, only: [assign: 3]
   import Phoenix.LiveView, only: [push_navigate: 2]
 
+  alias Bright.Accounts
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.CustomGroups
@@ -21,6 +22,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     # 直接チーム作成モーダルを起動した場合、データの取得は行わない
     socket
     |> assign(:show_hr_support_modal, false)
+    |> assign(:hr_enabled, Accounts.hr_enabled?(user.id))
     |> assign_plan(subscription)
     |> assign_page_title()
     |> assign_display_type(params["type"])
@@ -57,6 +59,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     # スキルとチームの取得結果に応じて各種assign
     socket
     |> assign(:show_hr_support_modal, false)
+    |> assign(:hr_enabled, Accounts.hr_enabled?(user.id))
     |> assign_plan(subscription)
     |> assign_page_title()
     |> assign_display_type(params["type"])
