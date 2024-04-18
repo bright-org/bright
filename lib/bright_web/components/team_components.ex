@@ -136,7 +136,7 @@ defmodule BrightWeb.TeamComponents do
 
   def team_header(assigns) do
     ~H"""
-    <div class="flex flex-row">
+    <div class="flex flex-col">
       <div class="flex gap-x-4 h-8" >
         <h3 class="max-w-[1000px] truncate">
           <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2 !inline-flex w-8 h-8 !items-center !justify-center"/>
