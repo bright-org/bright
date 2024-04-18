@@ -19,7 +19,6 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       <div class="mr-2">
         <.switch_user_icon
           chat={@chat}
-          show_name={false}
           user_id={@user_id}
           anon={@chat.interview.recruiter_user_id == @user_id}
         />
