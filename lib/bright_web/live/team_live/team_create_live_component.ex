@@ -74,6 +74,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(:submit, "チームを更新し、新規メンバーに招待メールを送る")
     |> assign(:selected_team_type, Teams.get_team_type_by_team(team))
     |> assign_team_form(Teams.change_team(team))
+    |> assign(:invitation_confirmed, invitation_confirmed(team.member_users))
     |> then(&{:ok, &1})
   end
 
@@ -350,5 +351,12 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     else
       raise Bright.Exceptions.ForbiddenResourceError
     end
+  end
+
+  defp invitation_confirmed(member_users) do
+    member_users
+    |> Enum.reduce(%{}, fn x, acc ->
+      Map.put(acc, String.to_atom(Map.get(x, :user_id)), Map.get(x, :invitation_confirmed_at))
+    end)
   end
 end
