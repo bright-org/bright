@@ -148,11 +148,17 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
       end)
 
     skill_gem =
-      SkillScores.get_skill_gem(
-        user.id,
-        selected_skill_panel.skill_panel,
-        selected_skill_panel.class
-      )
+      case skill_class_score do
+        nil ->
+          []
+
+        _ ->
+          SkillScores.get_skill_gem(
+            user.id,
+            selected_skill_panel.skill_panel,
+            selected_skill_panel.class
+          )
+      end
 
     case length(skill_gem) > 2 do
       true ->
