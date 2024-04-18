@@ -356,7 +356,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   defp invitation_confirmed(member_users) do
     member_users
     |> Enum.reduce(%{}, fn x, acc ->
-      Map.put(acc, String.to_atom(Map.get(x, :user_id)), Map.get(x, :invitation_confirmed_at))
+      Map.put(acc, Map.get(x, :user_id), Map.get(x, :invitation_confirmed_at))
     end)
   end
 end

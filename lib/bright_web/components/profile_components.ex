@@ -371,7 +371,7 @@ defmodule BrightWeb.ProfileComponents do
         </div>
         <span
         :if={@invitation_confirmed == nil}
-        class="text-white text-sm font-bold ml-6 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
+        class="text-white text-xs font-bold ml-1 px-1 py-1 inline-block bg-lapislazuli-300 rounded min-w-[43px]"
         >
           未承認
         </span>
