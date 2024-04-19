@@ -88,6 +88,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(:submit, "チームを作成し、上記メンバーに招待を送る")
     |> assign(:selected_team_type, :general_team)
     |> assign_team_form(team_changeset)
+    |> assign(:invitation_confirmed, %{})
     |> then(&{:ok, &1})
   end
 
