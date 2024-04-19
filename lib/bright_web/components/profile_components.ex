@@ -366,7 +366,7 @@ defmodule BrightWeb.ProfileComponents do
           src={UserProfiles.icon_url(@icon_file_path)}
         />
         <div class="flex-auto">
-          <p class="truncate max-w-[240px]"><%= @user_name %></p>
+          <p class="truncate max-w-[120px]"><%= @user_name %></p>
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
         <span
