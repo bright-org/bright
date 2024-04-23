@@ -154,14 +154,11 @@ defmodule BrightWeb.TeamComponents do
           </span>
         </button>
         <h3>
-        <%= @team_size %>人
+          <%= @team_size %>人
         </h3>
-
       </div>
       <div>
-        <.team_header_sum
-        level_count={@level_count}
-        />
+        <.team_header_sum level_count={@level_count} />
       </div>
     </div>
     """
@@ -173,15 +170,14 @@ defmodule BrightWeb.TeamComponents do
     ~H"""
     <table>
       <tr>
-       <td class={@css}></td>
-       <td class={@css}>クラス1</td>
-       <td class={@css}>クラス2</td>
-       <td class={@css}>クラス3</td>
+        <td class={@css}></td>
+        <td class={@css}>クラス1</td>
+        <td class={@css}>クラス2</td>
+        <td class={@css}>クラス3</td>
       </tr>
       <.team_header_sum_row name="見習い" row={Enum.at(@level_count,0)}/>
       <.team_header_sum_row name="平均" row={Enum.at(@level_count,1)}/>
       <.team_header_sum_row name="ベテラン" row={Enum.at(@level_count,2)}/>
-
     </table>
     """
   end
