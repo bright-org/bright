@@ -74,6 +74,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(:submit, "チームを更新し、新規メンバーに招待メールを送る")
     |> assign(:selected_team_type, Teams.get_team_type_by_team(team))
     |> assign_team_form(Teams.change_team(team))
+    |> assign(:not_invitation_confirmed_users, not_invitation_confirmed_users(team.member_users))
     |> then(&{:ok, &1})
   end
 
@@ -87,6 +88,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(:submit, "チームを作成し、上記メンバーに招待を送る")
     |> assign(:selected_team_type, :general_team)
     |> assign_team_form(team_changeset)
+    |> assign(:not_invitation_confirmed_users, [])
     |> then(&{:ok, &1})
   end
 
@@ -351,4 +353,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
       raise Bright.Exceptions.ForbiddenResourceError
     end
   end
+
+  def not_invitation_confirmed_users(member_users),
+    do: Enum.filter(member_users, &is_nil(&1.invitation_confirmed_at)) |> Enum.map(& &1.user_id)
 end
