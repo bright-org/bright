@@ -184,7 +184,7 @@ defmodule BrightWeb.TeamComponents do
 
   @spec team_header_sum_row(map()) :: Phoenix.LiveView.Rendered.t()
   def team_header_sum_row(assigns) do
-    assigns = assigns |> assign(:css, "pt-0 text-xs leading-3")
+    assigns = assigns |> assign(:css, "pt-0 text-xs leading-3 text-center")
 
     ~H"""
     <tr>
