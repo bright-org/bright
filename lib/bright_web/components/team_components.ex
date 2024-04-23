@@ -131,26 +131,68 @@ defmodule BrightWeb.TeamComponents do
   attr :team_name, :string, required: true
   attr :team_type, :atom, default: :general_team
   attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: false, default: nil
+  attr :team_size, :integer, default: 0
+  attr :level_count, :list, default: []
 
   def team_header(assigns) do
     ~H"""
-    <div class="flex gap-x-4">
-      <h3 class="max-w-[1000px] truncate">
-        <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2 !inline-flex w-8 h-8 !items-center !justify-center"/>
-        <%= @team_name %>
-      </h3>
-      <button
-        :if={show_star_button?(@current_users_team_member)}
-        class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
-        phx-click="click_star_button"
-      >
-        <span
-          class={"material-icons text-#{get_star_style(@current_users_team_member)}"}
+    <div class="flex flex-col">
+      <div class="flex gap-x-4 h-8" >
+        <h3 class="max-w-[1000px] truncate">
+          <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2 !inline-flex w-8 h-8 !items-center !justify-center"/>
+          <%= @team_name %>
+        </h3>
+        <button
+          :if={show_star_button?(@current_users_team_member)}
+          class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
+          phx-click="click_star_button"
         >
-          star
-        </span>
-      </button>
+          <span
+            class={"material-icons text-#{get_star_style(@current_users_team_member)}"}
+          >
+            star
+          </span>
+        </button>
+        <h3>
+          <%= @team_size %>人
+        </h3>
+      </div>
+      <div>
+        <.team_header_sum level_count={@level_count} />
+      </div>
     </div>
+    """
+  end
+
+  def team_header_sum(assigns) do
+    assigns = assigns |> assign(:css, "pt-0 text-xs leading-3")
+
+    ~H"""
+    <table>
+      <tr>
+        <td class={@css}></td>
+        <td class={@css}>クラス1</td>
+        <td class={@css}>クラス2</td>
+        <td class={@css}>クラス3</td>
+      </tr>
+      <.team_header_sum_row name="見習い" row={Enum.at(@level_count,0)}/>
+      <.team_header_sum_row name="平均" row={Enum.at(@level_count,1)}/>
+      <.team_header_sum_row name="ベテラン" row={Enum.at(@level_count,2)}/>
+    </table>
+    """
+  end
+
+  @spec team_header_sum_row(map()) :: Phoenix.LiveView.Rendered.t()
+  def team_header_sum_row(assigns) do
+    assigns = assigns |> assign(:css, "pt-0 text-xs leading-3 text-center")
+
+    ~H"""
+    <tr>
+      <td class={@css}><%= @name %></td>
+      <td class={@css}><%= Enum.at(@row, 0) %></td>
+      <td class={@css}><%= Enum.at(@row, 1) %></td>
+      <td class={@css}><%= Enum.at(@row, 2) %></td>
+    </tr>
     """
   end
 

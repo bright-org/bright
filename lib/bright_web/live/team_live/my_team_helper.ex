@@ -56,6 +56,13 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     member_skill_class_scores = list_skill_class_scores(display_team_members, display_skill_panel)
     subscription = Subscriptions.get_user_subscription_user_plan(user.id)
 
+    level = [:beginner, :normal, :skilled]
+
+    level_count =
+      Enum.map(level, fn l ->
+        Enum.map(1..3, fn c -> level_count(member_skill_class_scores, c, l) end)
+      end)
+
     # スキルとチームの取得結果に応じて各種assign
     socket
     |> assign(:show_hr_support_modal, false)
@@ -77,6 +84,14 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     )
     # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
     |> assign_push_redirect(params, display_team, display_skill_panel)
+    |> assign(:team_size, length(display_team_members))
+    |> assign(:level_count, level_count)
+  end
+
+  defp level_count(member_skill_class_scores, class, level) do
+    member_skill_class_scores
+    |> Enum.filter(fn x -> x.skill_class.class == class and x.level == level end)
+    |> Enum.count()
   end
 
   defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team_members) do
