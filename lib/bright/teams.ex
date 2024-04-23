@@ -1418,4 +1418,6 @@ defmodule Bright.Teams do
     admin = Enum.find(team.member_users, & &1.is_admin)
     admin.user_id == user.id
   end
+
+  def get_invitation_validity_ago(), do: @invitation_validity_ago
 end

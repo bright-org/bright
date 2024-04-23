@@ -355,7 +355,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :user_id, :string, required: true
   attr :title, :string, default: ""
   attr :icon_file_path, :string, default: ""
-  attr :invitation_not_confirmed, :boolean, default: false
+  attr :invitation_not_confirmed, :any, default: nil
 
   def profile_small_with_remove_button(assigns) do
     ~H"""
