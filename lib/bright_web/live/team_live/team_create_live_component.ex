@@ -357,13 +357,13 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   defp not_invitation_confirmed_users(member_users) do
     Enum.filter(member_users, &is_nil(&1.invitation_confirmed_at))
     |> Enum.reduce(%{}, fn x, acc ->
-      Map.put(acc, x.user_id, not_invitation_confirmed_string(x.updated_at))
+      Map.put(acc, x.user_id, not_invitation_confirmed_string(x.inserted_at))
     end)
   end
 
-  defp not_invitation_confirmed_string(updated_at) do
+  defp not_invitation_confirmed_string(inserted_at) do
     diff_day =
-      Date.diff(Date.utc_today(), updated_at) > Bright.Teams.get_invitation_validity_ago()
+      Date.diff(Date.utc_today(), inserted_at) > Bright.Teams.get_invitation_validity_ago()
 
     if diff_day, do: "期限切れ未承認", else: "未承認"
   end
