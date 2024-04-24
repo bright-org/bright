@@ -356,7 +356,6 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
   defp not_invitation_confirmed_users(member_users) do
     Enum.filter(member_users, &is_nil(&1.invitation_confirmed_at))
-    |> Enum.map(fn x -> Map.take(x, [:user_id, :updated_at]) end)
     |> Enum.reduce(%{}, fn x, acc ->
       Map.put(acc, x.user_id, not_invitation_confirmed_string(x.updated_at))
     end)

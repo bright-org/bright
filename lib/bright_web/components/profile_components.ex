@@ -347,7 +347,7 @@ defmodule BrightWeb.ProfileComponents do
         user_id="1234"
         title="リードプログラマー"
         icon_file_path="/images/sample/sample-image.png"
-        not_invitation_confirmed={false}
+        not_invitation_confirmed="未承認"
       />
   """
   attr :remove_user_target, :any
@@ -355,7 +355,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :user_id, :string, required: true
   attr :title, :string, default: ""
   attr :icon_file_path, :string, default: ""
-  attr :not_invitation_confirmed, :any, default: nil
+  attr :not_invitation_confirmed, :string, default: nil
 
   def profile_small_with_remove_button(assigns) do
     ~H"""
