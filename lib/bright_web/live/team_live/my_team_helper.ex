@@ -90,8 +90,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   defp level_count(member_skill_class_scores, class, level) do
     member_skill_class_scores
-    |> Enum.filter(fn x -> x.skill_class.class == class and x.level == level end)
-    |> Enum.count()
+    |> Enum.count(fn x -> x.skill_class.class == class and x.level == level end)
   end
 
   defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team_members) do
