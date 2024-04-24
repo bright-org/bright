@@ -347,7 +347,7 @@ defmodule BrightWeb.ProfileComponents do
         user_id="1234"
         title="リードプログラマー"
         icon_file_path="/images/sample/sample-image.png"
-        invitation_not_confirmed={false}
+        not_invitation_confirmed={false}
       />
   """
   attr :remove_user_target, :any
@@ -355,7 +355,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :user_id, :string, required: true
   attr :title, :string, default: ""
   attr :icon_file_path, :string, default: ""
-  attr :invitation_not_confirmed, :any, default: nil
+  attr :not_invitation_confirmed, :any, default: nil
 
   def profile_small_with_remove_button(assigns) do
     ~H"""
@@ -370,10 +370,10 @@ defmodule BrightWeb.ProfileComponents do
           <p class="text-brightGray-300"><%= @title %></p>
         </div>
         <span
-        :if={@invitation_not_confirmed}
+        :if={@not_invitation_confirmed}
         class="text-white text-xs font-bold ml-1 px-1 py-1 inline-block bg-lapislazuli-300 rounded min-w-[43px]"
         >
-          <%= @invitation_not_confirmed %>
+          <%= @not_invitation_confirmed %>
         </span>
         <div
           phx-click={JS.push("remove_user", value: %{id: @user_id})}

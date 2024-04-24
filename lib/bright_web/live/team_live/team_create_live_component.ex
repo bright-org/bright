@@ -88,7 +88,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(:submit, "チームを作成し、上記メンバーに招待を送る")
     |> assign(:selected_team_type, :general_team)
     |> assign_team_form(team_changeset)
-    |> assign(:not_invitation_confirmed_users, [])
+    |> assign(:not_invitation_confirmed_users, %{})
     |> then(&{:ok, &1})
   end
 
@@ -357,12 +357,15 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   defp not_invitation_confirmed_users(member_users) do
     Enum.filter(member_users, &is_nil(&1.invitation_confirmed_at))
     |> Enum.map(fn x -> Map.take(x, [:user_id, :updated_at]) end)
-    |> Enum.reduce(%{}, fn x, acc -> Map.put(acc, x.user_id, not_invitation_confirmed_string(x.updated_at)) end)
-    |> IO.inspect()
+    |> Enum.reduce(%{}, fn x, acc ->
+      Map.put(acc, x.user_id, not_invitation_confirmed_string(x.updated_at))
+    end)
   end
 
   defp not_invitation_confirmed_string(updated_at) do
-    diff_day = Date.diff(Date.utc_today, updated_at) > Bright.Teams.get_invitation_validity_ago
-    if diff_day , do: "期限切れ未承認" , else: "未承認"
+    diff_day =
+      Date.diff(Date.utc_today(), updated_at) > Bright.Teams.get_invitation_validity_ago()
+
+    if diff_day, do: "期限切れ未承認", else: "未承認"
   end
 end
