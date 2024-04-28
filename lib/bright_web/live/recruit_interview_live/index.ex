@@ -82,7 +82,7 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %>
               </span>
               <span class="w-24">
-                <CardListComponents.elapsed_time inserted_at={member.updated_at} />
+                <.elapsed_time inserted_at={member.updated_at} />
               </span>
             </.link>
           </li>
