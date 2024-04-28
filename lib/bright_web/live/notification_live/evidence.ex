@@ -4,9 +4,9 @@ defmodule BrightWeb.NotificationLive.Evidence do
   alias Bright.Notifications
   alias Bright.SkillEvidences
   alias Bright.SkillUnits
-  alias BrightWeb.CardLive.CardListComponents
   alias BrightWeb.TabComponents
 
+  import BrightWeb.BrightCoreComponents, only: [elapsed_time: 1]
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @default_page 1
@@ -29,7 +29,7 @@ defmodule BrightWeb.NotificationLive.Evidence do
                 person
               </span>
               <span class={["order-3 lg:order-2 flex-1 mr-2"]}><%= notification.message %></span>
-              <CardListComponents.elapsed_time inserted_at={notification.inserted_at} />
+              <.elapsed_time inserted_at={notification.inserted_at} />
             </div>
             <div class="flex gap-x-2 w-full justify-end lg:justify-start lg:w-auto">
               <button phx-click="click" phx-value-notification_evidence_id={notification.id} class="hidden hover:opacity-70 font-bold lg:inline-block bg-brightGray-900 text-white min-w-[76px] rounded p-2 text-sm">

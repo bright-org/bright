@@ -1,8 +1,8 @@
 defmodule BrightWeb.NotificationLive.Operation do
   use BrightWeb, :live_view
   alias Bright.Notifications
-  alias BrightWeb.CardLive.CardListComponents
   alias BrightWeb.TabComponents
+  import BrightWeb.BrightCoreComponents, only: [elapsed_time: 1]
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @default_page 1
@@ -23,7 +23,7 @@ defmodule BrightWeb.NotificationLive.Operation do
             <div phx-click="confirm_notification" phx-value-notification_operation_id={notification.id} class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate">
               <img src="/images/common/icons/management.svg" class="w-6 h-6 mr-2.5" />
               <span class={["order-3 lg:order-2 flex-1 mr-2 truncate"]}><%= notification.message %></span>
-              <CardListComponents.elapsed_time inserted_at={notification.inserted_at} />
+              <.elapsed_time inserted_at={notification.inserted_at} />
             </div>
             <div class="flex gap-x-2 w-full justify-end lg:justify-start lg:w-auto">
               <button phx-click="confirm_notification" phx-value-notification_operation_id={notification.id} class="hidden hover:opacity-70 font-bold lg:inline-block bg-brightGray-900 text-white min-w-[76px] rounded p-2 text-sm">

@@ -2,8 +2,8 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
   use BrightWeb, :live_view
 
   alias Bright.Recruits
-  alias BrightWeb.CardLive.CardListComponents
   alias Bright.UserProfiles
+  import BrightWeb.BrightCoreComponents, only: [elapsed_time: 1]
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @impl true
@@ -42,7 +42,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(coordination.status)) %>
               </span>
               <span class="w-24">
-                <CardListComponents.elapsed_time inserted_at={coordination.updated_at} />
+                <.elapsed_time inserted_at={coordination.updated_at} />
               </span>
             </.link>
           </li>
@@ -83,7 +83,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %>
               </span>
               <span class="w-24">
-                <CardListComponents.elapsed_time inserted_at={member.updated_at} />
+                <.elapsed_time inserted_at={member.updated_at} />
               </span>
             </.link>
           </li>
@@ -116,7 +116,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(acceptance.status)) %>
               </span>
               <span class="w-24">
-                <CardListComponents.elapsed_time inserted_at={acceptance.updated_at} />
+                <.elapsed_time inserted_at={acceptance.updated_at} />
               </span>
             </.link>
           </li>

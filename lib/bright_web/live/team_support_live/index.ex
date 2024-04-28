@@ -6,10 +6,9 @@ defmodule BrightWeb.TeamSupportLive.Index do
 
   import BrightWeb.ProfileComponents
   import BrightWeb.TabComponents
+  import BrightWeb.BrightCoreComponents, only: [elapsed_time: 1]
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
   import BrightWeb.TeamComponents
-
-  alias BrightWeb.CardLive.CardListComponents
 
   alias Bright.UserProfiles
   alias Bright.Teams

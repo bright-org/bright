@@ -4,7 +4,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   alias Bright.Recruits.Interview
   alias Bright.UserProfiles
   alias Bright.Utils.GoogleCloud.Storage
-  import BrightWeb.CardLive.CardListComponents, only: [elapsed_time: 1]
+  import BrightWeb.BrightCoreComponents, only: [elapsed_time: 1]
 
   attr :chat, :any, required: true
   attr :selected_chat, :any, required: true
