@@ -90,7 +90,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
         </div>
 
         <div
-          :if={ !is_nil(@display_skill_card.user_skill_class_score)}
+          :if={!is_nil(@display_skill_card.user_skill_class_score)}
           class="hidden lg:flex w-[400px] h-[400px] justify-center mx-auto"
           >
           <.live_component
@@ -109,7 +109,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
         </div>
 
         <div
-          :if={ !is_nil(@display_skill_card.user_skill_class_score)}
+          :if={!is_nil(@display_skill_card.user_skill_class_score)}
           class="lg:hidden w-full h-[300px] flex justify-center mx-auto"
           >
           <.live_component
@@ -131,11 +131,10 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
         <div class="pb-2 flex w-full gap-x-1 lg:gap-x-2 justify-around">
           <button
             :if={@display_skill_card.user.id != @current_user.id}
-            class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-base"
+            class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-base hover:opacity-50"
             phx-click={
                 if @hr_enabled,
-                do: JS.show(to: "#create_interview_modal") |> JS.push("open", value: %{user: @display_skill_card.user.id, skill_params: [%{skill_panel: @display_skill_panel.id, career_field: "1on1"}]}, target: "#create_interview_modal"),
-                else: JS.push("open_free_trial",target: @myself)
+                do: JS.show(to: "#create_interview_modal") |> JS.push("open", value: %{user: @display_skill_card.user.id, skill_params: [%{skill_panel: @display_skill_panel.id, career_field: "1on1"}]}, target: "#create_interview_modal")
               }
           >
             <div
