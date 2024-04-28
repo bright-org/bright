@@ -31,7 +31,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
       |> assign(next_num_skills: get_next_num_skills(level, assigns.size, assigns.value))
 
     ~H"""
-    <div class="flex px-10">
+    <div class="flex pb-4">
       <.level_render
        level={@level}
        next_percentage={@next_percentage}
