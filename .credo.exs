@@ -50,7 +50,8 @@
       #
       # To modify the timeout for parsing files, change this value:
       #
-      parse_timeout: 5000,
+      # 全ファイルチェックしたいので30分程度までは許容する。CI での実行時間が気になる場合は調整する。
+      parse_timeout: 1_800_000,
       #
       # If you want to use uncolored output by default, you can change `color`
       # to `false` below:

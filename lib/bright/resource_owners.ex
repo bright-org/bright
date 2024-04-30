@@ -1,4 +1,5 @@
 defmodule Bright.ResourceOwners do
+  @moduledoc false
   @behaviour Boruta.Oauth.ResourceOwners
 
   alias Boruta.Oauth.ResourceOwner
@@ -7,6 +8,8 @@ defmodule Bright.ResourceOwners do
 
   @impl Boruta.Oauth.ResourceOwners
   def get_by(username: username) do
+    # NOTE: credo の Readability 警告が出るが自動生成によるコードかつ大きな問題ではないので無視する
+    # credo:disable-for-next-line
     with %User{id: id, email: email} <- Repo.get_by(User, email: username) do
       {:ok, %ResourceOwner{sub: to_string(id), username: email}}
     else
@@ -15,6 +18,8 @@ defmodule Bright.ResourceOwners do
   end
 
   def get_by(sub: sub) do
+    # NOTE: credo の Readability 警告が出るが自動生成によるコードかつ大きな問題ではないので無視する
+    # credo:disable-for-next-line
     with %User{id: id, email: email} <- Repo.get_by(User, id: sub) do
       {:ok, %ResourceOwner{sub: to_string(id), username: email}}
     else
