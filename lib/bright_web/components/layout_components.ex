@@ -178,9 +178,9 @@ defmodule BrightWeb.LayoutComponents do
   # {title, path, regex, img_src}
   def links() do
     [
-      {"マイページ", "/mypage", nil, "/images/common/icons/mypage.svg"},
+      {"マイページ", "/graphs", nil, "/images/common/icons/mypage.svg"},
       {"スキルを選ぶ", "/more_skills", nil, "/images/common/icons/skillSelect.svg"},
-      {"成長パネル", "/graphs", nil, "/images/common/icons/growthPanel.svg"},
+      {"保有スキル", "/mypage", nil, "/images/common/icons/mySkill.svg"},
       {"スキルパネル", "/panels", nil, "/images/common/icons/skillPanel.svg"},
       {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/, "/images/common/icons/skillAnalyze.svg"},
       {"チームを作る（β）", "/teams/new", nil, "/images/common/icons/teamAdd.svg"},
