@@ -116,11 +116,6 @@ defmodule BrightWeb.ChatLive.Index do
                       一覧に戻る
                     </button>
                   </.link>
-                  <.link phx-click="close_chat" data-confirm="このチャットを閉じますか？">
-                    <button type="button" class="text-sm font-bold lg:mr-2 px-2 py-3 rounded border bg-white w-36 lg:w-56">
-                      チャットを閉じる
-                    </button>
-                  </.link>
                 </div>
                 <div
                   :if={@chat.owner_user_id == @current_user.id and Accounts.hr_enabled?(@current_user.id)}
