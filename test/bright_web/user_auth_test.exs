@@ -61,10 +61,10 @@ defmodule BrightWeb.UserAuthTest do
       refute get_session(conn, :to_be_removed)
     end
 
-    test "redirects mypage if user already finished onboardings", %{conn: conn, user: user} do
+    test "redirects if user already finished onboardings", %{conn: conn, user: user} do
       insert(:user_onboarding, user: user)
       conn = conn |> UserAuth.log_in_user(user)
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/graphs"
     end
 
     test "redirects to the configured path", %{conn: conn, user: user} do
@@ -312,7 +312,7 @@ defmodule BrightWeb.UserAuthTest do
   end
 
   describe "redirect_if_user_is_authenticated/2" do
-    test "redirects if user is authenticated", %{conn: conn, user: user} do
+    test "redirects onboardings if user is authenticated", %{conn: conn, user: user} do
       conn =
         conn
         |> fetch_flash()
@@ -323,7 +323,7 @@ defmodule BrightWeb.UserAuthTest do
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
-    test "redirects mypage if user already finished onboardings", %{conn: conn, user: user} do
+    test "redirects if user already finished onboardings", %{conn: conn, user: user} do
       insert(:user_onboarding, user: user)
 
       conn =
@@ -333,7 +333,7 @@ defmodule BrightWeb.UserAuthTest do
         |> UserAuth.redirect_if_user_is_authenticated([])
 
       assert conn.halted
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/graphs"
     end
 
     test "does not redirect if user is not authenticated", %{conn: conn} do

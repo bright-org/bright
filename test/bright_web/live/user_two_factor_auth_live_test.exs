@@ -97,7 +97,7 @@ defmodule BrightWeb.UserTwoFactorAuthLiveTest do
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
-    test "redirects mypage and does user log_in when submits valid code and onboarding was finished",
+    test "redirects and does user log_in when submits valid code and onboarding was finished",
          %{
            conn: conn,
            user: user,
@@ -119,7 +119,7 @@ defmodule BrightWeb.UserTwoFactorAuthLiveTest do
 
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/graphs"
     end
 
     test "redirects back with flash submits invalid code", %{

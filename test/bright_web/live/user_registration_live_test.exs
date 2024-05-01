@@ -26,7 +26,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       assert {:ok, _conn} = result
     end
 
-    test "redirects mypage if already logged in and finished onboarding", %{conn: conn} do
+    test "redirects if already logged in and finished onboarding", %{conn: conn} do
       user = insert(:user)
       insert(:user_onboarding, user: user)
 
@@ -34,7 +34,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
         conn
         |> log_in_user(user)
         |> live(~p"/users/register")
-        |> follow_redirect(conn, ~p"/mypage")
+        |> follow_redirect(conn, ~p"/graphs")
 
       assert {:ok, _conn} = result
     end
