@@ -129,6 +129,11 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, assign(socket, :show_hr_support_modal, !socket.assigns.show_hr_support_modal)}
   end
 
+  def handle_event("filter", params, socket) do
+    IO.inspect(params)
+    {:noreply, socket}
+  end
+
   def handle_info({BrightWeb.TeamLive.TeamAddUserComponent, {:add, added_users}}, socket) do
     {:noreply, assign(socket, :users, added_users)}
   end
