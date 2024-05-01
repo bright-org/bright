@@ -55,7 +55,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
       assert {:ok, _conn} = result
     end
 
-    test "redirects mypage if already logged in and finished onboarding", %{
+    test "redirects if already logged in and finished onboarding", %{
       conn: conn,
       session_token: session_token
     } do
@@ -66,7 +66,7 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
         conn
         |> log_in_user(user)
         |> live(~p"/users/register_social_account/#{session_token}")
-        |> follow_redirect(conn, ~p"/mypage")
+        |> follow_redirect(conn, ~p"/graphs")
 
       assert {:ok, _conn} = result
     end

@@ -26,7 +26,7 @@ defmodule BrightWeb.UserLoginLiveTest do
       assert {:ok, _conn} = result
     end
 
-    test "redirects mypage if already logged in and finished onboarding", %{conn: conn} do
+    test "redirects if already logged in and finished onboarding", %{conn: conn} do
       user = insert(:user)
       insert(:user_onboarding, user: user)
 
@@ -34,7 +34,7 @@ defmodule BrightWeb.UserLoginLiveTest do
         conn
         |> log_in_user(user)
         |> live(~p"/users/log_in")
-        |> follow_redirect(conn, ~p"/mypage")
+        |> follow_redirect(conn, ~p"/graphs")
 
       assert {:ok, _conn} = result
     end
@@ -55,7 +55,7 @@ defmodule BrightWeb.UserLoginLiveTest do
       assert redirected_to(conn) =~ ~p"/users/two_factor_auth/"
     end
 
-    test "redirects mypage if user already done two factor auth in operating browser",
+    test "redirects if user already done two factor auth in operating browser",
          %{conn: conn} do
       password = "123456789abcd"
 
@@ -68,10 +68,10 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       conn = conn |> set_two_factor_auth_done(user) |> then(&submit_form(form, &1))
 
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/graphs"
     end
 
-    test "redirects mypage if user already finished onboardings and already done two factor auth in operating browser",
+    test "redirects if user already finished onboardings and already done two factor auth in operating browser",
          %{conn: conn} do
       password = "123456789abcd"
 
@@ -84,7 +84,7 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       conn = conn |> set_two_factor_auth_done(user) |> then(&submit_form(form, &1))
 
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/graphs"
     end
 
     test "redirects to login page with a flash error if there are no valid credentials", %{

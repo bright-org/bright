@@ -39,7 +39,7 @@ defmodule BrightWeb.UserTwoFactorAuthControllerTest do
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
-    test "varidates code and redirects mypage if onboarding was finished", %{conn: conn} do
+    test "varidates code and redirects if onboarding was finished", %{conn: conn} do
       user = insert(:user)
       insert(:user_onboarding, user: user)
       user_2fa_code = insert(:user_2fa_code, user: user)
@@ -51,7 +51,7 @@ defmodule BrightWeb.UserTwoFactorAuthControllerTest do
           "user_2fa_code" => %{"code" => user_2fa_code.code, "token" => token}
         })
 
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/graphs"
     end
 
     test "redirects back if code is invalid", %{conn: conn} do

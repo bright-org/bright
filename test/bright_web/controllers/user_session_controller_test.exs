@@ -71,7 +71,7 @@ defmodule BrightWeb.UserSessionControllerTest do
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
-    test "redirects mypage if user already finished onboardings", %{conn: conn, user: user} do
+    test "redirects if user already finished onboardings", %{conn: conn, user: user} do
       insert(:user_onboarding, user: user)
 
       conn =
@@ -80,7 +80,7 @@ defmodule BrightWeb.UserSessionControllerTest do
           "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/graphs"
     end
 
     test "redirects to login page with invalid credentials", %{conn: conn} do

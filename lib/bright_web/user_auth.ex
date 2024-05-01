@@ -64,9 +64,9 @@ defmodule BrightWeb.UserAuth do
     |> redirect(to: user_return_to || log_in_redirect_path(user))
   end
 
-  def log_in_redirect_path(user) do
+  defp log_in_redirect_path(user) do
     if Accounts.onboarding_finished?(user) do
-      ~p"/mypage"
+      ~p"/graphs"
     else
       ~p"/onboardings/welcome"
     end

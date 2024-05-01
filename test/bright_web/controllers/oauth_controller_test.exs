@@ -193,7 +193,7 @@ defmodule BrightWeb.OAuthControllerTest do
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
-    test "logs in and redirects mypage when OAuth is success and user by provider and identifier is already registered and confirmed and finished onboarding",
+    test "logs in and redirects when OAuth is success and user by provider and identifier is already registered and confirmed and finished onboarding",
          %{
            conn: conn,
            state: state,
@@ -217,7 +217,7 @@ defmodule BrightWeb.OAuthControllerTest do
 
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
-      assert redirected_to(conn) == ~p"/mypage"
+      assert redirected_to(conn) == ~p"/graphs"
     end
   end
 
