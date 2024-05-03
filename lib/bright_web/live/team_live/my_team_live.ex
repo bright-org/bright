@@ -129,6 +129,19 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, assign(socket, :show_hr_support_modal, !socket.assigns.show_hr_support_modal)}
   end
 
+  def handle_event("filter", %{"filter_name" => filter_name}, %{assigns: assigns} = socket) do
+    display_skill_cards_src =
+      Map.get(assigns, :display_skill_cards_src, assigns.display_skill_cards)
+
+    socket =
+      socket
+      |> assign(:display_skill_cards, filter_by_name(display_skill_cards_src, filter_name))
+      |> assign(:display_skill_cards_src, display_skill_cards_src)
+      |> assign(:filter_name, filter_name)
+
+    {:noreply, socket}
+  end
+
   def handle_info({BrightWeb.TeamLive.TeamAddUserComponent, {:add, added_users}}, socket) do
     {:noreply, assign(socket, :users, added_users)}
   end
@@ -140,5 +153,16 @@ defmodule BrightWeb.MyTeamLive do
   defp deside_redirect(socket, display_team, skill_panel_id, skill_class_id) do
     socket
     |> redirect(to: MyTeamHelper.get_my_team_path(display_team, skill_panel_id, skill_class_id))
+  end
+
+  defp filter_by_name(display_skill_cards, ""), do: display_skill_cards
+
+  defp filter_by_name(display_skill_cards, filter_name) do
+    filter_name_list =
+      String.split(filter_name, ",")
+      |> Enum.reject(fn x -> x == "" end)
+
+    display_skill_cards
+    |> Enum.filter(&String.contains?(&1.user.name, filter_name_list))
   end
 end

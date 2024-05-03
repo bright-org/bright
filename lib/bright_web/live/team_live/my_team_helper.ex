@@ -86,6 +86,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign_push_redirect(params, display_team, display_skill_panel)
     |> assign(:team_size, length(display_team_members))
     |> assign(:level_count, level_count)
+    |> assign(:filter_name, "")
   end
 
   defp level_count(member_skill_class_scores, class, level) do
