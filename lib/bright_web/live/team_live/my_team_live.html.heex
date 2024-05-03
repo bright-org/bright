@@ -147,16 +147,12 @@
       team_size={@team_size}
       level_count={@level_count}
     />
-    <.form
-      id="filter-form"
-      for={%{}}
-      phx-submit="filter"
-    >
+    <form id="filter-form" phx-submit="filter">
       <input type="text" name="filter_name" value={@filter_name} placeholder="ハンドル名" class="input">
       <button class="text-sm font-bold p-2 rounded border bg-base text-white hover:opacity-50">
         フィルター
       </button>
-    </.form>
+    </form>
     <!-- チームメンバー -->
     <div class="flex gap-4 pt-4 flex-wrap">
       <%= for {display_skill_card, index} <- Enum.with_index(@display_skill_cards) do %>
