@@ -137,13 +137,8 @@ defmodule BrightWeb.MyTeamLive do
     display_skill_cards_src =
       Map.get(assigns, :display_skill_cards_src, assigns.display_skill_cards)
 
-    filter_names = String.split(filter_name, ",")
-
-    display_skill_cards =
-      case filter_names do
-        [""] -> display_skill_cards_src
-        _ -> filter_names(display_skill_cards_src, filter_name)
-      end
+    names = String.split(filter_name, ",")
+    display_skill_cards = filter_names(display_skill_cards_src, names)
 
     socket =
       socket
@@ -167,7 +162,16 @@ defmodule BrightWeb.MyTeamLive do
     |> redirect(to: MyTeamHelper.get_my_team_path(display_team, skill_panel_id, skill_class_id))
   end
 
-  defp filter_names(display_skill_cards_src, filter_name) do
-    display_skill_cards_src |> Enum.filter(fn x ->  String.contains?(x.user.name, filter_name)  end)
+  defp filter_names(display_skill_cards_src, [""]), do: display_skill_cards_src
+
+  defp filter_names(display_skill_cards_src, names) do
+    names
+    |> Enum.map(fn x -> filter_name(display_skill_cards_src, x) end)
+    |> List.flatten()
+    |> Enum.uniq()
+  end
+
+  defp filter_name(display_skill_cards_src, name) do
+    display_skill_cards_src |> Enum.filter(fn x -> String.contains?(x.user.name, name) end)
   end
 end
