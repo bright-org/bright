@@ -3,6 +3,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
   Level Components
   """
   use Phoenix.Component
+  import BrightWeb.BrightButtonComponents
   alias Bright.SkillScores
 
   @next_level_jp %{beginner: "平均", normal: "ベテラン", skilled: "マスター"}
@@ -44,11 +45,14 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
   defp level_render(%{level: :master} = assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
-      <div>
+      <div class="leading-8">
         このスキルはマスターしました。
       </div>
-      <div>
+      <div class="leading-8">
         おめでとうございます
+      </div>
+      <div class="px-2 leading-8">
+        <.remuneration_consultation_button />
       </div>
     </div>
     """
@@ -64,6 +68,9 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
       </div>
       <div>
         <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
+      </div>
+      <div class="px-2">
+        <.remuneration_consultation_button />
       </div>
     </div>
     """
