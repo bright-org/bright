@@ -14,7 +14,11 @@ defmodule BrightWeb.MyTeamLive do
 
   def mount(params, _session, socket) do
     # スキルとチームの取得結果に応じて各種assign
-    {:ok, MyTeamHelper.init_assign(params, socket)}
+    socket =
+      MyTeamHelper.init_assign(params, socket)
+      |> assign(:filter_name, "")
+
+    {:ok, socket}
   end
 
   def handle_params(params, _url, socket) do
@@ -129,18 +133,21 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, assign(socket, :show_hr_support_modal, !socket.assigns.show_hr_support_modal)}
   end
 
-  def handle_event("filter",  %{"filter_name" => filter_name}, %{assigns: assigns} = socket) do
-
-    display_skill_cards_src =  Map.get(assigns, :display_skill_cards_src, assigns.display_skill_cards)
+  def handle_event("filter", %{"filter_name" => filter_name}, %{assigns: assigns} = socket) do
+    display_skill_cards_src =
+      Map.get(assigns, :display_skill_cards_src, assigns.display_skill_cards)
 
     display_skill_cards =
-      display_skill_cards_src
-      |> Enum.filter(fn x -> x.user.name == filter_name end)
+      case filter_name do
+        "" -> display_skill_cards_src
+        _ -> display_skill_cards_src |> Enum.filter(fn x -> x.user.name == filter_name end)
+      end
 
-    socket = socket
-    |> assign(:display_skill_cards, display_skill_cards)
-    |> assign(:display_skill_cards_src, display_skill_cards_src)
-    |> assign(:filter_name, filter_name)
+    socket =
+      socket
+      |> assign(:display_skill_cards, display_skill_cards)
+      |> assign(:display_skill_cards_src, display_skill_cards_src)
+      |> assign(:filter_name, filter_name)
 
     {:noreply, socket}
   end
