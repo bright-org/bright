@@ -74,7 +74,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       </div>
 
       <% # タイムライン自身 %>
-      <div class="lg:flex lg:items-center">
+      <div class="lg:flex lg:items-center justify-center 2xl:justify-normal pr-7 lg:pr-14">
         <div class="hidden lg:flex justify-center items-center mr-2" data-size="pc">
           <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself}/>
         </div>
