@@ -14,11 +14,7 @@ defmodule BrightWeb.MyTeamLive do
 
   def mount(params, _session, socket) do
     # スキルとチームの取得結果に応じて各種assign
-    socket =
-      MyTeamHelper.init_assign(params, socket)
-      |> assign(:filter_name, "")
-
-    {:ok, socket}
+    {:ok, MyTeamHelper.init_assign(params, socket)}
   end
 
   def handle_params(params, _url, socket) do
