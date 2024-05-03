@@ -129,12 +129,18 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, assign(socket, :show_hr_support_modal, !socket.assigns.show_hr_support_modal)}
   end
 
-  def handle_event("filter",  %{"name" => mame}, socket) do
-    display_skill_cards =
-      socket.assigns.display_skill_cards
-      |> Enum.filter(fn x -> x.user.name == mame end)
+  def handle_event("filter",  %{"name" => name}, %{assigns: assigns} = socket) do
 
-    socket = socket |> assign(:display_skill_cards, display_skill_cards)
+    display_skill_cards_src =  Map.get(assigns, :display_skill_cards_src, assigns.display_skill_cards)
+
+    display_skill_cards =
+      display_skill_cards_src
+      |> Enum.filter(fn x -> x.user.name == name end)
+
+    socket = socket
+    |> assign(:display_skill_cards, display_skill_cards)
+    |> assign(:display_skill_cards_src, display_skill_cards_src)
+
     {:noreply, socket}
   end
 
