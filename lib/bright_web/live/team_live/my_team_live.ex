@@ -166,10 +166,12 @@ defmodule BrightWeb.MyTeamLive do
 
   defp filter_names(display_skill_cards_src, names) do
     names
-    |> Enum.map(fn x -> filter_name(display_skill_cards_src, x) end)
+    |> Enum.map(fn x -> filter_name(display_skill_cards_src, String.trim(x)) end)
     |> List.flatten()
     |> Enum.uniq()
   end
+
+  defp filter_name(_display_skill_cards_src, ""), do: []
 
   defp filter_name(display_skill_cards_src, name) do
     display_skill_cards_src |> Enum.filter(fn x -> String.contains?(x.user.name, name) end)
