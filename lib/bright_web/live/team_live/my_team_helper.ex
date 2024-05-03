@@ -261,8 +261,6 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
         |> add_user_skill_class_score(display_skill_classes, filterd_member_skill_class_scores)
         |> add_select_skill_class(first_skill_class)
       end)
-      |> Enum.filter(fn x -> x.user.name == "ymn" end)
-
 
     socket
     |> assign(:display_skill_cards, display_member_for_skill_card)
