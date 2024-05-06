@@ -196,6 +196,17 @@ defmodule BrightWeb.ChatLive.Index do
           <.button class="mt-4">Dwonload</.button>
         </a>
       </.modal>
+
+      <.bright_modal id="coordination-create-modal2" show>
+        報酬アップを相談する為面談する上長を選択してください
+        <.live_component
+          id="team_card"
+          module={BrightWeb.CardLive.RelatedTeamCardComponent}
+          display_user={@current_user}
+          over_ride_on_card_row_click_target={true}
+        />
+      </.bright_modal>
+
     </div>
     """
   end
