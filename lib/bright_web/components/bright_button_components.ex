@@ -215,7 +215,7 @@ defmodule BrightWeb.BrightButtonComponents do
   def remuneration_consultation_button(assigns) do
     ~H"""
     <.link
-      href="/recruits/chats"
+      href="/recruits/remuneration_consultation"
     >
       <button type="button"
         class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm">

@@ -197,7 +197,7 @@ defmodule BrightWeb.ChatLive.Index do
         </a>
       </.modal>
 
-      <.bright_modal id="coordination-create-modal2" show>
+      <.bright_modal id="coordination-create-modal2" :if={@open_remuneration_consultation} show>
         報酬アップを相談する為面談する上長を選択してください
         <.live_component
           id="team_card"
@@ -217,6 +217,7 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:open_confirm_interview, false)
     |> assign(:open_cancel_interview, false)
     |> assign(:open_create_coordination, false)
+    |> assign(:open_remuneration_consultation, false)
     |> assign(:sender_icon_path, user.user_profile.icon_file_path)
     |> assign(:images_error, "")
     |> assign(:files_error, "")
@@ -255,6 +256,18 @@ defmodule BrightWeb.ChatLive.Index do
     socket
     |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> assign(:chat, nil)
+    |> assign(:messages, [])
+    |> assign(:message, nil)
+  end
+
+  defp apply_action(socket, :remuneration_consultation, _params) do
+    user = socket.assigns.current_user
+
+    socket
+    |> assign(:page_title, "面談チャット")
+    |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> assign(:open_remuneration_consultation, true)
     |> assign(:chat, nil)
     |> assign(:messages, [])
     |> assign(:message, nil)
