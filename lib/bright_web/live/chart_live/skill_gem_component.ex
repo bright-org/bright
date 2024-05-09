@@ -23,13 +23,16 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   @impl true
   def render(assigns) do
     if check_skill_gem?(assigns.skill_gem_labels),
-      do: Sentry.capture_message("BrightWeb.ChartLive.SkillGemComponent: データが表示できません")
+      do:
+        Sentry.capture_message(
+          "BrightWeb.ChartLive.SkillGemComponent: 該当時期には未だスキルパネルがアンロックされていません"
+        )
 
     ~H"""
     <div class="flex justify-center w-full lg:mt-0 lg:w-[450px]">
       <%= if check_skill_gem?(@skill_gem_labels) do %>
         <div class="bg-white lg:w-[450px] h-[360px] flex items-center justify-center">
-          <p class="text-start font-bold">データが表示できません</p>
+          <p class="text-start font-bold">該当時期には未だスキルパネルがアンロックされていません</p>
         </div>
       <% else %>
         <.skill_gem
