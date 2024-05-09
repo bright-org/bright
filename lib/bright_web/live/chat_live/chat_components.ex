@@ -111,6 +111,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       <div class="w-full flex flex-col justify-end mt-4">
         <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
           <a class="cursor-pointer hover:opacity-50 underline text-xl" href={Storage.public_url(file.file_path)} target="_blank" rel="noopener">
+            <.icon name="hero-document" class="w-24 h-24" /><br>
             <%= file.file_name %>
           </a>
         <% end %>
