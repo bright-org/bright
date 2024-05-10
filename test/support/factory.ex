@@ -122,4 +122,5 @@ defmodule Bright.Factory do
   # Chat context
   use Bright.ChatFactory
   use Bright.ChatMessageFactory
+  use Bright.ChatUserFactory
 end
