@@ -12,6 +12,7 @@ defmodule Bright.Chats.ChatUser do
   schema "chat_users" do
     belongs_to :chat, Bright.Chats.Chat
     belongs_to :user, Bright.Accounts.User
+    field :is_read, :boolean, default: true
 
     timestamps()
   end
