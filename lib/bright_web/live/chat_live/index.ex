@@ -200,8 +200,8 @@ defmodule BrightWeb.ChatLive.Index do
       <.bright_modal id="coordination-create-modal2" :if={@open_remuneration_consultation} show>
         報酬アップを相談する為面談する上長を選択してください
         <.live_component
-          id="team_card"
-          module={BrightWeb.CardLive.RelatedTeamCardComponent}
+          id="remuneration_consultation"
+          module={BrightWeb.CardLive.RemunerationConsultationComponent}
           display_user={@current_user}
           over_ride_on_card_row_click_target={true}
         />
