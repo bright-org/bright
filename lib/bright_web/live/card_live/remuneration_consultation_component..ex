@@ -19,10 +19,6 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
 
   alias Bright.Teams
 
-  @tabs [
-    {"joined_teams", "所属チーム"}
-  ]
-
   @menu_items []
 
   @impl true
