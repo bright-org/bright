@@ -53,12 +53,6 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
           <% else %>
             <% # 表示内容がないときの表示 %>
             <ul>
-
-
-
-
-
-
             </ul>
           <% end %>
         </div>
@@ -68,23 +62,17 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
 
   @impl true
   def update(assigns, socket) do
-    tabs = filter_tabs(@tabs, Map.get(assigns, :display_tabs))
-    first_tab = tabs |> Enum.at(0) |> elem(0)
+
 
     {:ok,
      socket
      |> assign(:over_ride_on_card_row_click_target, false)
      |> assign(assigns)
-     |> assign(:tabs, tabs)
-     |> assign(:card, create_card_param(first_tab))
-     |> assign_card(first_tab)}
+
+     |> assign(:card, create_card_param("joined_teams"))
+     |> assign_card("joined_teams")}
   end
 
-  defp filter_tabs(tabs, nil), do: tabs
-
-  defp filter_tabs(tabs, display_tabs) do
-    Enum.filter(tabs, fn {key, _} -> key in display_tabs end)
-  end
 
   defp assign_card(socket, "joined_teams") do
     %{display_user: display_user, card: card} = socket.assigns
@@ -172,24 +160,5 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
     }
   end
 
-  defp show_menu(assings) do
-    if Map.has_key?(assings, :show_menu) && assings.show_menu == true do
-      assings.card.menu_items
-    else
-      []
-    end
-  end
 
-  defp convert_team_params_from_custom_groups(custom_groups) do
-    custom_groups
-    |> Enum.map(fn custom_group ->
-      %{
-        team_id: custom_group.id,
-        name: custom_group.name,
-        is_star: nil,
-        is_admin: nil,
-        team_type: :custom_group
-      }
-    end)
-  end
 end
