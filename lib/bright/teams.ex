@@ -687,7 +687,9 @@ defmodule Bright.Teams do
   """
   def list_joined_teams_by_user_id2(user_id, page_param \\ %{page: 1, page_size: 1}) do
     from(tmbu in TeamMemberUsers,
-      left_join: t in assoc(tmbu, :team),
+      join: t in assoc(tmbu, :team),
+      join: u in assoc(t, :member_users),
+      on: u.is_admin == true,
       where:
         tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at) and
           is_nil(t.disabled_at) and
