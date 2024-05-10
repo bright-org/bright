@@ -15,11 +15,9 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
   """
   use BrightWeb, :live_component
 
-  import BrightWeb.TabComponents
   import BrightWeb.TeamComponents
 
   alias Bright.Teams
-  alias Bright.CustomGroups
 
   @tabs [
     {"joined_teams", "所属チーム"}
@@ -40,15 +38,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
 
     ~H"""
     <div>
-      <.tab
-        id={"related-team-card-tab#{@id}"}
-        tabs={@tabs}
-        selected_tab={@card.selected_tab}
-        page={@card.page_params.page}
-        total_pages={@card.total_pages}
-        menu_items={show_menu(assigns)}
-        target={@myself}
-      >
+
         <div class="pt-3 pb-1 px-6 lg:h-[226px]">
           <%= if @card.total_entries > 0 do %>
             <ul class="flex gap-y-2 flex-col">
@@ -63,55 +53,16 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
           <% else %>
             <% # 表示内容がないときの表示 %>
             <ul>
-              <li :if={@card.selected_tab == "joined_teams"} class="text-base text-left p-1">
-                <div class="text-base">所属しているチームはありません</div>
-                <p class="my-4">
-                  <a
-                     href="/teams/new"
-                     class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                   >
-                    チームを作る（β）
-                   </a>
-                 </p>
-              </li>
 
-              <li :if={@card.selected_tab == "custom_groups"} class="text-base text-left p-1">
-                <div class="text-base">カスタムグループはありません</div>
-                <p class="my-4">
-                  <a
-                     href="/panels"
-                     class="hidden lg:inline text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                   >
-                     カスタムグループを作る
-                   </a>
-                 </p>
-              </li>
 
-              <li :if={@card.selected_tab == "supporter_teams"} class="text-base text-left p-1">
-                <div class="text-base">支援を受けている採用・育成チームはありません</div>
-                <p class="my-4">
-                  <a class="text-sm font-bold px-3 py-3 rounded text-white bg-brightGray-200">
-                    採用・育成チームに支援してもらう（β）
-                  </a>
-                </p>
-              </li>
 
-              <li :if={@card.selected_tab == "supportee_teams"} class="text-base text-left p-1">
-                <div class="text-base">支援中の採用・育成先チームはありません</div>
-                <p class="my-4">
-                  <a href="https://bright-fun.org/plan" class="w-[calc(45%-6px)] lg:w-56" rel="noopener noreferrer" target="_blank">
-                    <button type="button" class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm">
-                      <span class="bg-white material-icons mr-1 !text-sm !text-planUpgrade-600 rounded-full h-5 w-5 !font-bold material-icons-outlined lg:mr-2 lg:h-6 lg:w-6">upgrade</span>
-                      アップグレード
-                    </button>
-                  </a>
-                </p>
-              </li>
+
+
+
             </ul>
           <% end %>
         </div>
-      </.tab>
-    </div>
+       </div>
     """
   end
 
@@ -157,71 +108,6 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
     |> assign(:card, card)
   end
 
-  defp assign_card(socket, "supportee_teams") do
-    page =
-      Teams.list_supportee_teams_by_supporter_user_id(
-        socket.assigns.display_user.id,
-        socket.assigns.card.page_params
-      )
-
-    team_params =
-      page.entries
-      |> convert_team_params_from_teams()
-
-    card = %{
-      socket.assigns.card
-      | entries: team_params,
-        total_entries: page.total_entries,
-        total_pages: page.total_pages
-    }
-
-    socket
-    |> assign(:card, card)
-  end
-
-  defp assign_card(socket, "supporter_teams") do
-    page =
-      Teams.list_supporter_teams_by_supportee_user_id(
-        socket.assigns.display_user.id,
-        socket.assigns.card.page_params
-      )
-
-    team_params =
-      page.entries
-      |> convert_team_params_from_teams()
-
-    card = %{
-      socket.assigns.card
-      | entries: team_params,
-        total_entries: page.total_entries,
-        total_pages: page.total_pages
-    }
-
-    socket
-    |> assign(:card, card)
-  end
-
-  defp assign_card(socket, "custom_groups") do
-    page =
-      CustomGroups.list_user_custom_groups(
-        socket.assigns.display_user.id,
-        socket.assigns.card.page_params
-      )
-
-    team_params =
-      page.entries
-      |> convert_team_params_from_custom_groups()
-
-    card = %{
-      socket.assigns.card
-      | entries: team_params,
-        total_entries: page.total_entries,
-        total_pages: page.total_pages
-    }
-
-    socket
-    |> assign(:card, card)
-  end
 
   @impl true
   def handle_event(
