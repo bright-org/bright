@@ -69,7 +69,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
   defp assign_card(socket, "joined_teams") do
     %{display_user: display_user, card: card} = socket.assigns
 
-    page = Teams.list_joined_teams_by_user_id(display_user.id, card.page_params)
+    page = Teams.list_joined_teams_by_user_id2(display_user.id, card.page_params)
     free_trial_together_link? = show_free_trial_together_link?(display_user)
 
     team_params =

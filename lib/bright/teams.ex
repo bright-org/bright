@@ -670,6 +670,35 @@ defmodule Bright.Teams do
   end
 
   @doc """
+  ユーザーが所属するチームの一覧取得
+  招待へ承認済のチームのみ対象
+  Scrivenerのページングに対応
+
+    iex> list_joined_teams_by_user_id(user_id, %{page: 1, page_size: 5})
+      %Scrivener.Page{
+        page_number: 1,
+        page_size: 5,
+        total_entries: 2,
+        total_pages: 1,
+        entries: [
+          %Bright.Teams.TeamMemberUsers{},
+        ]
+      }
+  """
+  def list_joined_teams_by_user_id2(user_id, page_param \\ %{page: 1, page_size: 1}) do
+    from(tmbu in TeamMemberUsers,
+      left_join: t in assoc(tmbu, :team),
+      where:
+        tmbu.user_id == ^user_id and not is_nil(tmbu.invitation_confirmed_at) and
+          is_nil(t.disabled_at) and
+          tmbu.is_admin == false,
+      order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
+    )
+    |> preload(team: :member_users)
+    |> Repo.paginate(page_param)
+  end
+
+  @doc """
   ユーザーが管理するチームの一覧取得
 
     iex> list_managing_teams_by_user_id(user_id, %{page: 1, page_size: 5})
