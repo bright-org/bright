@@ -39,7 +39,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
           <%= if @card.total_entries > 0 do %>
             <ul class="flex gap-y-2 flex-col">
               <%= for team_params <- @card.entries do %>
-                <.team_small
+                <.team_small_admin
                   id={team_params.team_id}
                   team_params={team_params}
                   row_on_click_target={assigns.row_on_click_target}
@@ -89,7 +89,6 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
   end
 
   @impl true
-
 
   def handle_event(
         "previous_button_click",

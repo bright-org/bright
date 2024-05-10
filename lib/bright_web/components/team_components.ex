@@ -111,6 +111,62 @@ defmodule BrightWeb.TeamComponents do
 
   attr :id, :string, required: true
   attr :team_params, :map, required: true
+  attr :row_on_click, :string, required: false, default: "on_card_row_click"
+  attr :row_on_click_target, :any, required: false, default: nil
+
+  attr :on_hover_style, :string,
+    required: false,
+    default: " hover:bg-brightGray-50 cursor-pointer"
+
+  def team_small_admin(assigns) do
+    ~H"""
+    <li
+      id={@id}
+      phx-click={@row_on_click}
+      phx-target={@row_on_click_target}
+      phx-value-team_id={@team_params.team_id}
+      phx-value-team_type={@team_params.team_type}
+      class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
+    >
+
+    <span
+    :if={@team_params.is_star == nil}
+    >
+    </span>
+      <span
+        :if={@team_params.is_star == true}
+        class="material-icons text-brightGreen-300"
+      >
+        star
+      </span>
+      <span
+        :if={@team_params.is_star == false}
+        class="material-icons text-brightGray-100"
+      >
+        star
+      </span>
+      <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
+      <span class="max-w-[160px] lg:max-w-[280px] truncate"><%= @team_params.name %></span>
+      <span
+        :if={@team_params.is_admin}
+        class="text-white text-sm font-bold ml-6 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
+      >
+        管理者2
+      </span>
+      <.link
+        :if={@team_params.is_admin && Map.get(@team_params, :free_trial_together_link?)}
+        navigate="/free_trial?plan=together"
+        class="text-white text-sm font-bold ml-4 px-2 py-1 inline-flex items-center bg-base rounded min-w-[60px]"
+      >
+        上限を増やす
+        <.icon name="hero-arrow-right" class="w-4 h-4" />
+      </.link>
+    </li>
+    """
+  end
+
+  attr :id, :string, required: true
+  attr :team_params, :map, required: true
 
   attr :on_hover_style, :string,
     required: false,
