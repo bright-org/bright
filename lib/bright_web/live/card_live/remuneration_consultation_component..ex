@@ -89,13 +89,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
   end
 
   @impl true
-  def handle_event(
-        "tab_click",
-        %{"id" => _id, "tab_name" => tab_name},
-        socket
-      ) do
-    card_view(socket, tab_name, 1)
-  end
+
 
   def handle_event(
         "previous_button_click",
