@@ -13,7 +13,13 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   def chat_list(assigns) do
     ~H"""
     <.link
-      class={"flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer #{if @selected_chat != nil && @selected_chat.id == @chat.id, do: "border-l-4 border-l-blue-400"}"}
+      class={
+          [
+            "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
+            (@selected_chat != nil && @selected_chat.id == @chat.id) && "border-l-4 border-l-blue-400",
+            !@chat.interview.is_read? && "bg-attention-50"
+          ]
+        }
       patch={~p"/recruits/chats/#{@chat.id}"}
     >
       <div class="mr-2">
@@ -23,7 +29,8 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           anon={@chat.interview.recruiter_user_id == @user_id}
         />
       </div>
-      <div class="w-full flex justify-between p-1">
+      <div class="w-full flex justify-between p-1 relative">
+        <span :if={!@chat.interview.is_read?} class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full" />
         <div class="mr-2 lg:truncate lg:text-xl">
           <span>
             <%= if @chat.interview.skill_panel_name == nil ,
