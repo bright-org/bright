@@ -229,6 +229,8 @@ defmodule BrightWeb.ChatLive.Index do
     chat = Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
     Phoenix.PubSub.subscribe(Bright.PubSub, "chat:#{chat.id}")
 
+    Chats.read_chat!(chat.id, user.id)
+
     socket
     |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
@@ -353,8 +355,11 @@ defmodule BrightWeb.ChatLive.Index do
       ) do
     chat = Chats.get_chat_with_messages_and_interview!(message.chat_id, user.id)
 
+    Chats.read_chat!(chat.id, user.id)
+
     socket
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
     |> push_event("scroll_bottom", %{})
     |> then(&{:noreply, &1})
