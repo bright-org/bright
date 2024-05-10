@@ -62,17 +62,13 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
 
   @impl true
   def update(assigns, socket) do
-
-
     {:ok,
      socket
      |> assign(:over_ride_on_card_row_click_target, false)
      |> assign(assigns)
-
      |> assign(:card, create_card_param("joined_teams"))
      |> assign_card("joined_teams")}
   end
-
 
   defp assign_card(socket, "joined_teams") do
     %{display_user: display_user, card: card} = socket.assigns
@@ -95,7 +91,6 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
     socket
     |> assign(:card, card)
   end
-
 
   @impl true
   def handle_event(
@@ -159,6 +154,4 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
       menu_items: @menu_items
     }
   end
-
-
 end
