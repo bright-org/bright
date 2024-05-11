@@ -74,7 +74,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
 
     team_params =
       page.entries
-      |> convert_team_params_from_team_member_users()
+      |> convert_team_params_from_team_member_users2()
       |> Enum.map(&Map.put(&1, :free_trial_together_link?, free_trial_together_link?))
 
     card = %{

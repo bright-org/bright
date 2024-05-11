@@ -147,20 +147,7 @@ defmodule BrightWeb.TeamComponents do
       </span>
       <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
       <span class="max-w-[160px] lg:max-w-[280px] truncate"><%= @team_params.name %></span>
-      <span
-        :if={@team_params.is_admin}
-        class="text-white text-sm font-bold ml-6 px-2 py-1 inline-block bg-lapislazuli-300 rounded min-w-[60px]"
-      >
-        管理者2
-      </span>
-      <.link
-        :if={@team_params.is_admin && Map.get(@team_params, :free_trial_together_link?)}
-        navigate="/free_trial?plan=together"
-        class="text-white text-sm font-bold ml-4 px-2 py-1 inline-flex items-center bg-base rounded min-w-[60px]"
-      >
-        上限を増やす
-        <.icon name="hero-arrow-right" class="w-4 h-4" />
-      </.link>
+      <span class="max-w-[160px] lg:max-w-[280px] truncate px-3"><%= @team_params.admin_user.user.name %></span>
     </li>
     """
   end
@@ -351,6 +338,23 @@ defmodule BrightWeb.TeamComponents do
         is_star: team_member_user.is_star,
         is_admin: team_member_user.is_admin,
         team_type: Teams.get_team_type_by_team(team_member_user.team)
+      }
+    end)
+  end
+
+  def convert_team_params_from_team_member_users2(team_member_users) do
+    team_member_users
+    |> Enum.map(fn team_member_user ->
+      %{
+        team_id: team_member_user.team.id,
+        name: team_member_user.team.name,
+        is_star: team_member_user.is_star,
+        is_admin: team_member_user.is_admin,
+        team_type: Teams.get_team_type_by_team(team_member_user.team),
+        admin_user:
+          team_member_user.team.member_users
+          |> Enum.filter(fn x -> x.is_admin end)
+          |> List.first()
       }
     end)
   end
