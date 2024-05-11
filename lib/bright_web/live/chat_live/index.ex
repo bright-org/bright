@@ -370,6 +370,14 @@ defmodule BrightWeb.ChatLive.Index do
     {:noreply, assign(socket, :preview, nil)}
   end
 
+  def handle_event("on_card_row_click", %{"team_admin_user_id" => team_admin_user_id}, %{assigns: %{current_user: user}} = socket) do
+    # 報酬アップを相談する為面談する上長を選択
+    #IO.inspect(user.id)
+    #IO.inspect(team_admin_user_id)
+
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_info(
         {:send_message, message},

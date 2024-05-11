@@ -126,6 +126,7 @@ defmodule BrightWeb.TeamComponents do
       phx-target={@row_on_click_target}
       phx-value-team_id={@team_params.team_id}
       phx-value-team_type={@team_params.team_type}
+      phx-value-team_admin_user_id={@team_params.admin_user.user.id}
       class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
 
