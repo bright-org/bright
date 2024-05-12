@@ -43,14 +43,6 @@
     </div>
   </div>
 
-  <.navigations
-    current_user={@current_user}
-    display_user={@display_user}
-    me={@me}
-    anonymous={@anonymous}
-    root="graphs"
-  />
-
   <%!-- PC 成長パネル/スキルパネル切替 --%>
   <div class="hidden lg:flex lg:ml-auto">
     <.toggle_link
@@ -65,7 +57,7 @@
 </div>
 
 <div class="flex mx-4 lg:mx-10 pb-6">
-  <ProfileComponents.profile_with_selected_skill_and_doughnut_graph
+  <ProfileComponents.profile_with_skill
     user_name={@display_user.name}
     title={@display_user.user_profile.title}
     icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
@@ -73,10 +65,26 @@
     skill_class={@skill_class}
     display_return_to_yourself={!@me}
     is_anonymous={@anonymous}
-    skill_class_score={@skill_class_score}
-    counter={@counter}
-    num_skills={@num_skills}
-  />
+  >
+    <:score_stats>
+      <ProfileComponents.dounat_graph_with_score_stats
+        skill_class_score={@skill_class_score}
+        counter={@counter}
+        num_skills={@num_skills}
+      />
+    </:score_stats>
+    <:switch_button>
+      <div class="mt-4">
+        <.navigations
+          current_user={@current_user}
+          display_user={@display_user}
+          me={@me}
+          anonymous={@anonymous}
+          root="graphs"
+        />
+      </div>
+    </:switch_button>
+  </ProfileComponents.profile_with_skill>
 </div>
 
 <div class="mx-4 pb-20 lg:mx-10 lg:pb-0 bg-white">
