@@ -55,23 +55,23 @@ defmodule Bright.Seeds.CareerWants do
         5 ->
           {:ok, want} = CareerWants.create_career_want(w)
           rand_insert(want, jobs["engineer"], 2, "データサイエンティスト")
-          rand_insert(want, jobs["infra"], 3)
+          rand_insert(want, jobs["product"], 3)
 
         6 ->
           {:ok, want} = CareerWants.create_career_want(w)
-          rand_insert(want, jobs["infra"], 3)
+          rand_insert(want, jobs["product"], 3)
 
         7 ->
           {:ok, want} = CareerWants.create_career_want(w)
           rand_insert(want, jobs["engineer"], 3)
-          rand_insert(want, jobs["infra"], 3)
+          rand_insert(want, jobs["product"], 3)
           rand_insert(want, jobs["designer"], 3)
           rand_insert(want, jobs["marketer"], 3)
 
         8 ->
           {:ok, want} = CareerWants.create_career_want(w)
           rand_insert(want, jobs["engineer"], 3, "アプリ")
-          rand_insert(want, jobs["infra"], 2)
+          rand_insert(want, jobs["product"], 2)
           rand_insert(want, jobs["designer"], 2)
           rand_insert(want, jobs["marketer"], 2)
       end
