@@ -225,35 +225,33 @@ defmodule BrightWeb.ProfileComponents do
   attr :skill_class, :any, required: true
   attr :skill_panel, :any, required: true
   attr :display_return_to_yourself, :boolean, default: false
-  attr :skill_class_score, :any, required: true
-  attr :counter, :integer, required: true
-  attr :num_skills, :integer, required: true
+  slot :score_stats, default: nil
+  slot :switch_button, default: nil
 
-  def profile_with_selected_skill_and_doughnut_graph(assigns) do
+  def profile_with_skill(assigns) do
     assigns = assign_by_anonymous(assigns)
 
     ~H"""
       <div class="flex flex-col gap-y-2 w-full">
         <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
-        <div class="flex flex-col lg:flex-row gap-x-8 gap-y-8 lg:gap-y-0 p-4 px-6 bg-white rounded-lg">
-          <div class="flex">
-            <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
-            <.selected_skill
+        <div class="p-4 px-6 bg-white rounded-lg">
+          <div class="flex flex-col lg:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
+            <div class="flex">
+              <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
+              <.selected_skill
                 skill_panel={@skill_panel}
                 skill_class={@skill_class}
               />
+            </div>
+            <%= if @score_stats, do: render_slot(@score_stats) %>
           </div>
-          <.dounat_graph_with_score_stats
-            skill_class_score={@skill_class_score}
-            counter={@counter}
-            num_skills={@num_skills}
-          />
+          <%= if @switch_button, do: render_slot(@switch_button) %>
         </div>
       </div>
     """
   end
 
-  defp dounat_graph_with_score_stats(assigns) do
+  def dounat_graph_with_score_stats(assigns) do
     ~H"""
       <div class="flex gap-x-4 lg:gap-x-0">
         <div class="w-20 lg:w-24 h-20 lg:h-24">

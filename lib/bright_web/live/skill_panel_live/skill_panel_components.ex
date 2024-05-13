@@ -37,8 +37,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def navigations(assigns) do
     ~H"""
-    <div id="switch" class="flex flex-col lg:flex-row gap-y-4 lg:gap-x-2 pb-4 lg:pb-3">
-      <.target_switch current_user={@current_user} />
+    <div id="switch" class="flex flex-col lg:flex-row gap-y-2 lg:gap-y-0 lg:gap-x-2">
+      <.target_user_switch current_user={@current_user} />
       <.skill_panel_switch
         display_user={@display_user}
         me={@me}
@@ -78,7 +78,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
-  def target_switch(assigns) do
+  def target_user_switch(assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
       <.related_user_menu current_user={@current_user} />
