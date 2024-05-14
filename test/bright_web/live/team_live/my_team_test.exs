@@ -3,6 +3,7 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
 
   import Phoenix.LiveViewTest
   import Bright.Factory
+  import Mock
 
   describe "my team" do
     setup [:register_and_log_in_user]
@@ -61,12 +62,24 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
       insert(:user_skill_panel, skill_panel: skill_panel, user: user_2)
       insert(:skill_class_score, skill_class: skill_class, user: user_2)
 
-      assert {:ok, lv, _html} = live(conn, ~p"/teams/#{team}/skill_panels/#{skill_panel}")
+      with_mock Bright.Utils.Aes.Aes128,
+        encrypt: fn x -> x end do
+        assert {:ok, lv, _html} = live(conn, ~p"/teams/#{team}/skill_panels/#{skill_panel}")
 
-      # 自分自身に表示しない
-      refute has_element?(lv, "#skill_card_#{user.id}", "この人と比較")
-      # 他者に表示する
-      assert has_element?(lv, "#skill_card_#{user_2.id}", "この人と比較")
+        # 自分自身に表示しない
+        refute has_element?(
+                 lv,
+                 "#skill_card_#{Bright.Utils.Aes.Aes128.encrypt(user.id)}",
+                 "この人と比較"
+               )
+
+        # 他者に表示する
+        assert has_element?(
+                 lv,
+                 "#skill_card_#{Bright.Utils.Aes.Aes128.encrypt(user_2.id)}",
+                 "この人と比較"
+               )
+      end
     end
 
     test "not displays when user(me) has not skill panel", %{
@@ -134,24 +147,36 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
       users: [user, user_2],
       skill_class_scores: [skill_class_score_1, skill_class_score_2]
     } do
-      {:ok, lv, _html} = live(conn, ~p"/teams/#{custom_group}")
+      with_mock Bright.Utils.Aes.Aes128,
+        encrypt: fn x -> x end do
+        {:ok, lv, _html} = live(conn, ~p"/teams/#{custom_group}")
 
-      assert has_element?(lv, "h3", custom_group.name)
-      assert has_element?(lv, "#skill_card_#{user.id}", user.name)
+        assert has_element?(lv, "h3", custom_group.name)
 
-      assert has_element?(
-               lv,
-               "#skill_card_#{user.id}",
-               "#{floor(skill_class_score_1.percentage)}"
-             )
+        assert has_element?(
+                 lv,
+                 "#skill_card_#{Bright.Utils.Aes.Aes128.encrypt(user.id)}",
+                 user.name
+               )
 
-      assert has_element?(lv, "#skill_card_#{user_2.id}", user_2.name)
+        assert has_element?(
+                 lv,
+                 "#skill_card_#{Bright.Utils.Aes.Aes128.encrypt(user.id)}",
+                 "#{floor(skill_class_score_1.percentage)}"
+               )
 
-      assert has_element?(
-               lv,
-               "#skill_card_#{user_2.id}",
-               "#{floor(skill_class_score_2.percentage)}"
-             )
+        assert has_element?(
+                 lv,
+                 "#skill_card_#{Bright.Utils.Aes.Aes128.encrypt(user_2.id)}",
+                 user_2.name
+               )
+
+        assert has_element?(
+                 lv,
+                 "#skill_card_#{Bright.Utils.Aes.Aes128.encrypt(user_2.id)}",
+                 "#{floor(skill_class_score_2.percentage)}"
+               )
+      end
     end
   end
 end
