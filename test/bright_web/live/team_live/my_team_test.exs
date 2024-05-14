@@ -64,9 +64,9 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
       assert {:ok, lv, _html} = live(conn, ~p"/teams/#{team}/skill_panels/#{skill_panel}")
 
       # 自分自身に表示しない
-      refute has_element?(lv, "#skill_card_0", "この人と比較")
+      refute has_element?(lv, "#skill_card_#{user.id}", "この人と比較")
       # 他者に表示する
-      assert has_element?(lv, "#skill_card_1", "この人と比較")
+      assert has_element?(lv, "#skill_card_#{user_2.id}", "この人と比較")
     end
 
     test "not displays when user(me) has not skill panel", %{
@@ -137,10 +137,21 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
       {:ok, lv, _html} = live(conn, ~p"/teams/#{custom_group}")
 
       assert has_element?(lv, "h3", custom_group.name)
-      assert has_element?(lv, "#skill_card_0", user.name)
-      assert has_element?(lv, "#skill_card_0", "#{floor(skill_class_score_1.percentage)}")
-      assert has_element?(lv, "#skill_card_1", user_2.name)
-      assert has_element?(lv, "#skill_card_1", "#{floor(skill_class_score_2.percentage)}")
+      assert has_element?(lv, "#skill_card_#{user.id}", user.name)
+
+      assert has_element?(
+               lv,
+               "#skill_card_#{user.id}",
+               "#{floor(skill_class_score_1.percentage)}"
+             )
+
+      assert has_element?(lv, "#skill_card_#{user_2.id}", user_2.name)
+
+      assert has_element?(
+               lv,
+               "#skill_card_#{user_2.id}",
+               "#{floor(skill_class_score_2.percentage)}"
+             )
     end
   end
 end
