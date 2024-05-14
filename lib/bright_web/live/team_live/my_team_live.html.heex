@@ -158,7 +158,7 @@
       <%= for {display_skill_card, index} <- Enum.with_index(@display_skill_cards) do %>
         <.live_component
           module={BrightWeb.TeamMemberSkillCardComponent}
-          id={"skill_card_#{index}"}
+          id={"skill_card_#{display_skill_card.user.id}"}}
           team_id={@display_team.id}
           current_user={@current_user}
           hr_enabled={@hr_enabled}
