@@ -119,7 +119,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       data-dropdown-offset-skidding="290"
       data-dropdown-placement="bottom"
     >
-      <.action_button icon="add" class="dropdownTrigger  pl-3 py-1.5">
+      <.action_button icon="add" class="dropdownTrigger pl-3 py-1.5">
         <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
         <span class="min-w-[6em]">チーム全員と比較</span>
       </.action_button>

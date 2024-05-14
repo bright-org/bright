@@ -15,6 +15,8 @@ defmodule BrightWeb.ProfileComponents do
   alias Bright.UserProfiles
   alias BrightWeb.ChartComponents
   alias BrightWeb.SkillPanelLive.SkillPanelComponents
+  alias BrightWeb.TeamComponents
+  alias Bright.Teams
 
   @doc """
   Renders a Profile
@@ -139,27 +141,36 @@ defmodule BrightWeb.ProfileComponents do
     """
   end
 
-  attr :is_anonymous, :boolean, default: false
-  attr :user_name, :string, default: ""
-  attr :title, :string, default: ""
-  attr :icon_file_path, :string, default: ""
+  attr :display_team, :map
+  attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: false, default: nil
+  attr :team_size, :integer, default: 0
   attr :skill_class, :any, required: true
   attr :skill_panel, :any, required: true
-  attr :display_return_to_yourself, :boolean, default: false
+  slot :switch_button, default: nil
 
-  def profile_with_selected_skill(assigns) do
+  def profile_with_selected_team(assigns) do
     assigns = assign_by_anonymous(assigns)
 
     ~H"""
       <div class="flex flex-col gap-y-2 w-full">
-        <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
-        <.selected_skill_content
-          user_name={@user_name}
-          title={@title}
-          icon_file_path={@icon_file_path}
-          skill_panel={@skill_panel}
-          skill_class={@skill_class}
-        />
+        <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4">
+          <h4 class="w-full lg:w-auto">選択中のチーム／スキル</h4>
+        </div>
+        <div class=" p-4 lg:px-6 bg-white rounded-lg">
+          <div class="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:gap-y-0">
+            <TeamComponents.team_title
+              team_name={@display_team.name}
+              team_type={Teams.get_team_type_by_team(@display_team)}
+              current_users_team_member={@current_users_team_member}
+              team_size={@team_size}
+            />
+            <.selected_skill
+              skill_panel={@skill_panel}
+              skill_class={@skill_class}
+            />
+          </div>
+          <%= if @switch_button, do: render_slot(@switch_button) %>
+        </div>
       </div>
     """
   end
@@ -178,21 +189,9 @@ defmodule BrightWeb.ProfileComponents do
     """
   end
 
-  defp selected_skill_content(assigns) do
-    ~H"""
-      <div class="flex p-4 px-6 bg-white rounded-lg">
-        <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
-        <.selected_skill
-          skill_panel={@skill_panel}
-          skill_class={@skill_class}
-        />
-      </div>
-    """
-  end
-
   defp selected_user(assigns) do
     ~H"""
-      <div class="flex flex-col lg:flex-row justify-center items-center mr-4 lg:mr-0">
+      <div class="flex flex-col lg:flex-row justify-center items-center">
         <div class="lg:mr-5 w-12 lg:w-20">
           <img
             class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
@@ -208,8 +207,8 @@ defmodule BrightWeb.ProfileComponents do
 
   defp selected_skill(assigns) do
     ~H"""
-      <div class="flex flex-col gap-y-2 font-bold">
-        <span id="profile-skill-panel-name" class="text-md lg:text-2xl mt-1 lg:mt-2"><%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
+      <div class="flex flex-col gap-y-2 font-bold justify-center">
+        <span id="profile-skill-panel-name" class="text-md lg:text-2xl"><%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
         <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
           <span class="text-sm lg:text-normal">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
           <span class="text-sm lg:text-normal break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
@@ -234,9 +233,9 @@ defmodule BrightWeb.ProfileComponents do
     ~H"""
       <div class="flex flex-col gap-y-2 w-full">
         <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
-        <div class="p-4 px-6 bg-white rounded-lg">
+        <div class="p-4 lg:px-6 bg-white rounded-lg">
           <div class="flex flex-col lg:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
-            <div class="flex">
+            <div class="flex gap-x-4 lg:gap-x-0">
               <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
               <.selected_skill
                 skill_panel={@skill_panel}
