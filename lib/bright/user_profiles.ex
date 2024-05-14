@@ -77,7 +77,7 @@ defmodule Bright.UserProfiles do
     [
       "default_icon/default_avatar_designer.png",
       "default_icon/default_avatar_engineer.png",
-      "default_icon/default_avatar_infra.png",
+      "default_icon/default_avatar_product.png",
       "default_icon/default_avatar_marketer.png",
       "default_icon/default_avatar_sales.png"
     ]

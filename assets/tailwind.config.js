@@ -15,7 +15,7 @@ module.exports = {
   safelist: [
     {
       pattern:
-        /bg-(engineer|infra|designer|marketer|sales|cxo)-(dark|light|dazzle)/,
+        /bg-(engineer|product|designer|marketer|sales|cxo)-(dark|light|dazzle)/,
       variants: ["hover"],
     },
   ],
@@ -87,7 +87,7 @@ module.exports = {
         },
         // キャリアフィールドを追加した場合は合わせて以下のページに色見本を追加してください
         // lib/bright_web/live/admin/career_field_live/index.html.heex
-        infra: {
+        product: {
           dark: "#51971A",
           light: "#8CEB14",
           dazzle: "#F2FFE1",
@@ -160,7 +160,7 @@ module.exports = {
       backgroundImage: (theme) => ({
         bgGem: "url('/images/bg_gem_title.png')",
         bgGemEngineer: "url('/images/bg_gem_engineer.png')",
-        bgGemInfra: "url('/images/bg_gem_infra.png')",
+        bgGemproduct: "url('/images/bg_gem_product.png')",
         bgGemDesigner: "url('/images/bg_gem_designer.png')",
         bgGemMarketer: "url('/images/bg_gem_marketer.png')",
         bgGemSales: "url('/images/bg_gem_sales.png')",

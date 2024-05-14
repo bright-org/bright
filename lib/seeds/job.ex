@@ -222,7 +222,7 @@ defmodule Bright.Seeds.Job do
     }
   ]
 
-  @infra [
+  @product [
     %{
       rank: "expert",
       position: 1,
@@ -467,7 +467,7 @@ defmodule Bright.Seeds.Job do
     |> Enum.each(fn c ->
       case c.name_en do
         "engineer" -> create_job(@engineer, c)
-        "infra" -> create_job(@infra, c)
+        "product" -> create_job(@product, c)
         "designer" -> create_job(@designer, c)
         "marketer" -> create_job(@marketer, c)
       end
