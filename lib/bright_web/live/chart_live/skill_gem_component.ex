@@ -19,7 +19,6 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
   # anonymous: 匿名はfalse
   # size: base: 成長パネル md:チーム分析 sm:マイページ
   # display_link:　falseでスキルジェムのリンクを非表示にする
-  # forced_update: 強制更新
 
   @impl true
   def render(assigns) do
@@ -60,8 +59,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
 
   @impl true
   def update(assigns, socket) do
-    skill_gem_update_required =
-      skill_gem_update_required?(socket.assigns, assigns) || socket.assigns.forced_update
+    skill_gem_update_required = skill_gem_update_required?(socket.assigns, assigns)
 
     skill_gem_compared_user_update_required =
       skill_gem_compared_user_update_required?(socket.assigns, assigns)

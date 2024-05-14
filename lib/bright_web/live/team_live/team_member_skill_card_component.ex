@@ -105,7 +105,6 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             root={""}
             size="md"
             display_link="false"
-            forced_update={:true}
           />
         </div>
 
@@ -125,7 +124,6 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
             root={""}
             size="sp"
             display_link="false"
-            forced_update={:true}
           />
         </div>
 
