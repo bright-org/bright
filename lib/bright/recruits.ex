@@ -216,7 +216,7 @@ defmodule Bright.Recruits do
       when is_function(start_interview_url_fun, 1) do
     interview =
       Interview
-      |> preload([:candidates_user, :recruiter_user])
+      |> preload([:candidates_user, :recruiter_user, interview_members: :user])
       |> Repo.get!(interview_id)
 
     UserNotifier.deliver_start_interview_to_candidates_user(
@@ -229,6 +229,15 @@ defmodule Bright.Recruits do
       interview.candidates_user,
       start_interview_url_fun.(interview_id)
     )
+
+    interview.interview_members
+    |> Enum.each(fn member ->
+      UserNotifier.deliver_start_interview_to_member(
+        interview.recruiter_user,
+        interview.candidates_user,
+        member.user
+      )
+    end)
   end
 
   def send_interview_cancel_notification_mails(interview_id) do

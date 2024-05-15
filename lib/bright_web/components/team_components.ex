@@ -176,14 +176,12 @@ defmodule BrightWeb.TeamComponents do
   attr :team_type, :atom, default: :general_team
   attr :current_users_team_member, Bright.Teams.TeamMemberUsers, required: false, default: nil
   attr :team_size, :integer, default: 0
-  attr :level_count, :list, default: []
 
-  def team_header(assigns) do
+  def team_title(assigns) do
     ~H"""
-    <div class="flex flex-col">
-      <div class="flex gap-x-4 h-8" >
-        <h3 class="max-w-[1000px] truncate">
-          <img src={get_team_icon_path(@team_type)} class="ml-2 mr-2 !inline-flex w-8 h-8 !items-center !justify-center"/>
+      <div class="flex gap-x-2 lg:gap-x-4 h-8" >
+        <h3 class="max-w-[70%] lg:max-w-none truncate">
+          <img src={get_team_icon_path(@team_type)} class="mr-2 inline-flex w-8 h-8 items-center justify-center"/>
           <%= @team_name %>
         </h3>
         <button
@@ -197,18 +195,14 @@ defmodule BrightWeb.TeamComponents do
             star
           </span>
         </button>
-        <h3>
-          <%= @team_size %>人
-        </h3>
+        <h3><%= @team_size %>人</h3>
       </div>
-      <div>
-        <.team_header_sum level_count={@level_count} />
-      </div>
-    </div>
     """
   end
 
-  def team_header_sum(assigns) do
+  attr :level_count, :list, default: []
+
+  def team_skill_summary_table(assigns) do
     assigns = assigns |> assign(:css, "pt-0 text-xs leading-3")
 
     ~H"""

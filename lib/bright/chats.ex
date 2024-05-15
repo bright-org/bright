@@ -58,7 +58,8 @@ defmodule Bright.Chats do
             | candidates_user_name: cu.name,
               candidates_user_icon: cp.icon_file_path,
               recruiter_user_name: ru.name,
-              recruiter_user_icon: rp.icon_file_path
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
           }
       }
     )
@@ -111,7 +112,8 @@ defmodule Bright.Chats do
             | candidates_user_name: cu.name,
               candidates_user_icon: cp.icon_file_path,
               recruiter_user_name: ru.name,
-              recruiter_user_icon: rp.icon_file_path
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
           }
       }
     )
@@ -223,10 +225,10 @@ defmodule Bright.Chats do
   end
 
   @doc """
-  Create Chat Message.
+  Creates a chat_message and updates chat_users except sender_user is_read to false.
 
   ## Examples
-      iex> create_message(%{field: value},nil)
+      iex> create_message(%{field: value}, nil)
       {:ok, %ChatMessage{}}
 
       iex> create_message(%{field: bad_value})
@@ -235,15 +237,20 @@ defmodule Bright.Chats do
   """
 
   def create_message(attrs, nil) do
-    %ChatMessage{}
-    |> ChatMessage.changeset(attrs)
-    |> Repo.insert()
-    |> broadcast(:send_message)
+    Ecto.Multi.new()
+    |> insert_chat_message_multi(attrs)
+    |> update_chat_users_unread_multi()
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{message: message}} -> broadcast({:ok, message}, :send_message)
+      {:error, :message, changeset, _} -> {:error, changeset}
+    end
   end
 
   def create_message(attrs, socket) do
     Ecto.Multi.new()
-    |> Ecto.Multi.insert(:message, ChatMessage.changeset(%ChatMessage{}, attrs))
+    |> insert_chat_message_multi(attrs)
+    |> update_chat_users_unread_multi()
     |> Ecto.Multi.run(:upload_gcs_images, fn _repo, %{message: _message} ->
       Phoenix.LiveView.consume_uploaded_entries(socket, :images, fn %{path: path}, entry ->
         file_path = Chats.ChatFile.build_file_path(:images, entry.client_name, entry.uuid)
@@ -267,6 +274,36 @@ defmodule Bright.Chats do
       {:ok, %{message: message}} -> broadcast({:ok, message}, :send_message)
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  defp insert_chat_message_multi(multi, attrs) do
+    Ecto.Multi.insert(multi, :message, ChatMessage.changeset(%ChatMessage{}, attrs))
+  end
+
+  defp update_chat_users_unread_multi(multi) do
+    Ecto.Multi.update_all(
+      multi,
+      :update_chat_users_unread,
+      fn %{message: %{chat_id: chat_id, sender_user_id: sender_user_id}} ->
+        ChatUser.chat_users_except_sender_query(chat_id, sender_user_id)
+      end,
+      set: [is_read: false]
+    )
+  end
+
+  @doc """
+  Updates chat user is_read to true.
+
+  ## Examples
+
+      iex> read_chat!(chat_id, user_id)
+      :ok
+  """
+  def read_chat!(chat_id, user_id) do
+    ChatUser.chat_user_query(chat_id, user_id)
+    |> Repo.update_all(set: [is_read: true])
+
+    :ok
   end
 
   @doc """

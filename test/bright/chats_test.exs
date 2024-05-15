@@ -6,6 +6,7 @@ defmodule Bright.ChatsTest do
 
   describe "chats" do
     alias Bright.Chats.Chat
+    alias Bright.Chats.ChatUser
     alias Bright.Chats.ChatMessage
 
     @invalid_attrs %{relation_type: nil, relation_id: nil}
@@ -80,20 +81,36 @@ defmodule Bright.ChatsTest do
     end
 
     test "create_message/2 with valid data creates a message" do
-      user = insert(:user)
+      sender_user = insert(:user)
       interview = insert(:interview)
-      chat = insert(:recruit_chat, relation_id: interview.id, owner_user_id: user.id)
+      chat = insert(:recruit_chat, relation_id: interview.id, owner_user_id: sender_user.id)
 
       valid_attrs = %{
         text: "some text",
         chat_id: chat.id,
-        sender_user_id: user.id
+        sender_user_id: sender_user.id
       }
+
+      insert(:chat_user, chat: chat, user: sender_user, is_read: true)
+      [chat_user1, chat_user2] = insert_list(2, :chat_user, chat: chat)
 
       assert {:ok, %ChatMessage{} = message} = Chats.create_message(valid_attrs, nil)
       assert message.text == "some text"
       assert message.chat_id == chat.id
-      assert message.sender_user_id == user.id
+      assert message.sender_user_id == sender_user.id
+
+      refute Repo.get!(ChatUser, chat_user1.id).is_read
+      refute Repo.get!(ChatUser, chat_user2.id).is_read
+      assert Repo.get_by!(ChatUser, chat_id: chat.id, user_id: sender_user.id).is_read
+    end
+
+    test "read_chat!/2" do
+      user = insert(:user)
+      chat = insert(:recruit_chat, owner_user_id: user.id)
+      chat_user = insert(:chat_user, chat: chat, user: user, is_read: false)
+
+      assert :ok = Chats.read_chat!(chat.id, user.id)
+      assert Repo.get!(ChatUser, chat_user.id).is_read
     end
   end
 end
