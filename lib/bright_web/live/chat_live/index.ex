@@ -378,12 +378,39 @@ defmodule BrightWeb.ChatLive.Index do
     # 報酬アップを相談する為面談する上長を選択
     #IO.inspect(user.id)
     #IO.inspect(team_admin_user_id)
-    IO.inspect("-----------------------------------")
 
-    %Interview{}
-    |> IO.inspect()
+    interview_params = %Interview{}
 
-    {:noreply, socket}
+    # candidates_user = socket.assigns.candidates_user |> List.first()
+
+    interview_params =
+      Map.merge(interview_params, %{
+        #"skill_panel_name" => gen_interview_name(skill_params),
+        #"desired_income" => candidates_user.desired_income,
+        #"skill_params" => Jason.encode!(skill_params),
+        "interview_members" => team_admin_user_id,
+        "recruiter_user_id" => user.id,
+        #"candidates_user_id" => user.id
+      })
+
+      case Recruits.create_interview(interview_params) do
+        {:ok, interview} ->
+          preloaded_interview =
+            Recruits.get_interview_with_member_users!(interview.id, user.id)
+
+          # 追加したメンバー全員に可否メールを送信する。
+          send_acceptance_mails(preloaded_interview, user)
+
+          # メール送信の成否に関わらず正常終了とする
+          # TODO メール送信エラーを運用上検知する必要がないか?
+
+          {:noreply, redirect(socket, to: ~p"/recruits/interviews")}
+
+        {:error, %Ecto.Changeset{} = _changeset} ->
+          #{:noreply, assign_interview_form(socket, changeset)}
+          # TODO エラー時の対策を検討すること
+          {:noreply, redirect(socket, to: ~p"/recruits/interviews")}
+      end
   end
 
   @impl true
@@ -429,4 +456,17 @@ defmodule BrightWeb.ChatLive.Index do
     do: translate_error({"You have selected an unacceptable file type", []})
 
   defp error_to_string(_), do: ""
+
+  # TODO 「報酬アップを相談」リファクタリングすること
+  defp send_acceptance_mails(coordination, recruiter) do
+    coordination.coordination_members
+    |> Enum.each(fn member ->
+      Recruits.deliver_acceptance_coordination_email_instructions(
+        recruiter,
+        member.user,
+        member,
+        &url(~p"/recruits/coordinations/member/#{&1}")
+      )
+    end)
+  end
 end
