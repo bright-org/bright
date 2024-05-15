@@ -1,3 +1,4 @@
+# TODO 「報酬アップを相談」リファクタリングすること
 defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
   @moduledoc """
   　関わっているチームカードコンポーネント

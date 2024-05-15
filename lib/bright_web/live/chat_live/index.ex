@@ -5,6 +5,7 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Accounts
   alias Bright.Recruits
   alias Bright.Utils.GoogleCloud.Storage
+  alias Bright.Recruits.Interview
 
   import BrightWeb.ChatLive.ChatComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
@@ -373,9 +374,14 @@ defmodule BrightWeb.ChatLive.Index do
   end
 
   def handle_event("on_card_row_click", %{"team_admin_user_id" => team_admin_user_id}, %{assigns: %{current_user: user}} = socket) do
+    # TODO 「報酬アップを相談」リファクタリングすること
     # 報酬アップを相談する為面談する上長を選択
     #IO.inspect(user.id)
     #IO.inspect(team_admin_user_id)
+    IO.inspect("-----------------------------------")
+
+    %Interview{}
+    |> IO.inspect()
 
     {:noreply, socket}
   end

@@ -205,6 +205,7 @@ defmodule BrightWeb.BrightButtonComponents do
     """
   end
 
+  # TODO 「報酬アップを相談」リファクタリングすること
   @doc """
   Renders a Remuneration Consultation Button
 

@@ -42,6 +42,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
     """
   end
 
+  # TODO 「報酬アップを相談」リファクタリングすること
   defp level_render(%{level: :master} = assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">

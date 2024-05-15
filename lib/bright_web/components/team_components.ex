@@ -109,6 +109,7 @@ defmodule BrightWeb.TeamComponents do
     """
   end
 
+  # TODO 「報酬アップを相談」リファクタリングすること
   attr :id, :string, required: true
   attr :team_params, :map, required: true
   attr :row_on_click, :string, required: false, default: "on_card_row_click"
@@ -337,6 +338,7 @@ defmodule BrightWeb.TeamComponents do
     end)
   end
 
+  # TODO 「報酬アップを相談」リファクタリングすること
   def convert_team_params_from_team_member_users2(team_member_users) do
     team_member_users
     |> Enum.map(fn team_member_user ->

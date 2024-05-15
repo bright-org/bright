@@ -669,7 +669,8 @@ defmodule Bright.Teams do
     |> Repo.paginate(page_param)
   end
 
-  @doc """
+ # TODO 「報酬アップを相談」リファクタリングすること
+ @doc """
   ユーザーが所属するチームの一覧取得
   招待へ承認済のチームのみ対象
   Scrivenerのページングに対応
