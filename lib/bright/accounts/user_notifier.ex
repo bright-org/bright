@@ -425,6 +425,33 @@ defmodule Bright.Accounts.UserNotifier do
     """)
   end
 
+  def deliver_start_interview_to_member(from_user, to_user, member) do
+    deliver(member.email, "【Bright】面談確定を候補者に連絡しました", """
+    #{member.name}さん
+
+    #{from_user.name}さんが以下の文面を#{to_user.name}(#{to_user.email})さんへ送りました。
+    別途、日程などを#{from_user.name}さんと調整してください（Bright内では日程調整は行いません）。
+
+
+    ====================================================================
+
+    #{from_user.name}から、面談が確定されました。
+
+    面談日・ツール・場所は、Brightに登録されている連絡先に対し、#{from_user.name}から別途、連絡いたします。
+
+    ====================================================================
+
+    ---------------------------------------------------------------------
+    ■本メールにお心当たりのない場合
+    ---------------------------------------------------------------------
+    お手数ですが、本メールを破棄してください。
+    もし気になる点ございましたら、下記までご連絡ください。
+    #{customer_success_email()}
+
+    #{signature()}
+    """)
+  end
+
   @doc """
   Deliver interview cancel mail to candidates_user.
   """
