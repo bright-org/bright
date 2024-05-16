@@ -669,13 +669,13 @@ defmodule Bright.Teams do
     |> Repo.paginate(page_param)
   end
 
- # TODO 「報酬アップを相談」リファクタリングすること
- @doc """
-  ユーザーが所属するチームの一覧取得
+  # TODO 「報酬アップを相談」リファクタリングすること
+  @doc """
+  ユーザーが所属するチームの上長の一覧取得
   招待へ承認済のチームのみ対象
   Scrivenerのページングに対応
 
-    iex> list_joined_teams_by_user_id(user_id, %{page: 1, page_size: 5})
+    iex> list_joined_teams_superior_by_user_id(user_id, %{page: 1, page_size: 5})
       %Scrivener.Page{
         page_number: 1,
         page_size: 5,
@@ -686,7 +686,7 @@ defmodule Bright.Teams do
         ]
       }
   """
-  def list_joined_teams_by_user_id2(user_id, page_param \\ %{page: 1, page_size: 1}) do
+  def list_joined_teams_superior_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
     from(tmbu in TeamMemberUsers,
       join: t in assoc(tmbu, :team),
       where:

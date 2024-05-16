@@ -40,7 +40,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
           <%= if @card.total_entries > 0 do %>
             <ul class="flex gap-y-2 flex-col">
               <%= for team_params <- @card.entries do %>
-                <.team_small_admin
+                <.team_superior_small
                   id={team_params.team_id}
                   team_params={team_params}
                   row_on_click_target={assigns.row_on_click_target}
@@ -70,12 +70,12 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
   defp assign_card(socket, "joined_teams") do
     %{display_user: display_user, card: card} = socket.assigns
 
-    page = Teams.list_joined_teams_by_user_id2(display_user.id, card.page_params)
+    page = Teams.list_joined_teams_superior_by_user_id(display_user.id, card.page_params)
     free_trial_together_link? = show_free_trial_together_link?(display_user)
 
     team_params =
       page.entries
-      |> convert_team_params_from_team_member_users2()
+      |> convert_team_params_from_team_superior()
       |> Enum.map(&Map.put(&1, :free_trial_together_link?, free_trial_together_link?))
 
     card = %{

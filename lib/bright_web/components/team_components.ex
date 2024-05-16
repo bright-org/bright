@@ -119,7 +119,7 @@ defmodule BrightWeb.TeamComponents do
     required: false,
     default: " hover:bg-brightGray-50 cursor-pointer"
 
-  def team_small_admin(assigns) do
+  def team_superior_small(assigns) do
     ~H"""
     <li
       id={@id}
@@ -339,7 +339,7 @@ defmodule BrightWeb.TeamComponents do
   end
 
   # TODO 「報酬アップを相談」リファクタリングすること
-  def convert_team_params_from_team_member_users2(team_member_users) do
+  def convert_team_params_from_team_superior(team_member_users) do
     team_member_users
     |> Enum.map(fn team_member_user ->
       %{
