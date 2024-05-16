@@ -327,8 +327,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       file_input(lv, "#skill_evidence_post-form", :image, [
         %{
           name: "sample.png",
-          content: Path.join([test_support_dir(), "images", "sample.png"]) |> File.read!(),
-          size: 5_000_001
+          content: Path.join([test_support_dir(), "images", "6_000_000byte.png"]) |> File.read!()
         }
       ])
       |> render_upload("sample.png")
