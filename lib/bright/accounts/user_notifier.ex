@@ -667,7 +667,7 @@ defmodule Bright.Accounts.UserNotifier do
     メールアドレス: #{detail["email"]}
     担当者（本名） #{detail["pic_name"]}
     申込日(JST) #{DateTime.now!("Japan") |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..18)}
-    申込日(UTC) #{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..-2)}
+    申込日(UTC) #{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..-2//1)}
 
     お得意様であればフォローアップをお願いします
     """)
