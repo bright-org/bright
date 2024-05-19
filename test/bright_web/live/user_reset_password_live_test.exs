@@ -2,7 +2,6 @@ defmodule BrightWeb.UserResetPasswordLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   alias Bright.Accounts
 

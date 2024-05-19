@@ -3,8 +3,6 @@ defmodule Bright.UserJobProfilesTest do
 
   alias Bright.UserJobProfiles
 
-  import Bright.Factory
-
   describe "user_job_profiles" do
     alias Bright.UserJobProfiles.UserJobProfile
     alias Bright.Accounts.User

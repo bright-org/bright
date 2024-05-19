@@ -2,7 +2,6 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   @create_attrs %{
     skill_params: "some skill_params",

@@ -6,7 +6,6 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
   alias Bright.UserProfiles
   alias Bright.UserProfiles.UserProfile
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   setup [:register_and_log_in_user]
 

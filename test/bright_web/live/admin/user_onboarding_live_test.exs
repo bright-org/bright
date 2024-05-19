@@ -2,7 +2,6 @@ defmodule BrightWeb.Admin.UserOnboardingLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   @create_attrs %{completed_at: "2023-07-08T11:20:00"}
   @update_attrs %{completed_at: "2023-07-09T11:20:00"}

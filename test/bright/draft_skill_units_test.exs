@@ -1,6 +1,5 @@
 defmodule Bright.DraftSkillUnitsTest do
   use Bright.DataCase
-  import Bright.Factory
 
   alias Bright.DraftSkillUnits
 

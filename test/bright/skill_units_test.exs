@@ -1,6 +1,5 @@
 defmodule Bright.SkillUnitsTest do
   use Bright.DataCase
-  import Bright.Factory
 
   alias Bright.SkillUnits
 
