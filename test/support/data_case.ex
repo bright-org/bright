@@ -25,6 +25,7 @@ defmodule Bright.DataCase do
       import Ecto.Query
       import Bright.DataCase
       import Bright.TestHelper
+      import Bright.Factory
     end
   end
 
