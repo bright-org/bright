@@ -178,13 +178,13 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
                  career_field_id: career_field_1.id
                )
 
-      assert %{high_skills_count: 0, percentage: 0.0} =
+      assert %{high_skills_count: 0, percentage: +0.0} =
                Repo.get_by(CareerFieldScore,
                  user_id: user_1.id,
                  career_field_id: career_field_2.id
                )
 
-      assert %{high_skills_count: 0, percentage: 0.0} =
+      assert %{high_skills_count: 0, percentage: +0.0} =
                Repo.get_by(CareerFieldScore,
                  user_id: user_2.id,
                  career_field_id: career_field_1.id
