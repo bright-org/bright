@@ -67,7 +67,7 @@ jobs:
             _build
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-
+            ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
 
       - name: Dependencies install
         run: |
