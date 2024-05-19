@@ -405,7 +405,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       )
       |> render_submit()
 
-      assert Bright.Repo.get_by(NotificationEvidence, from_user_id: user.id, to_user_id: user_2.id)
+      assert Bright.Repo.get_by(NotificationEvidence,
+               from_user_id: user.id,
+               to_user_id: user_2.id
+             )
     end
   end
 

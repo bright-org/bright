@@ -63,7 +63,11 @@ defmodule BrightWeb.NotificationLive.EvidenceTest do
       skill_evidence = insert(:skill_evidence, user: user_2, skill: skill)
 
       skill_evidence_post =
-        insert(:skill_evidence_post, user: user_2, skill_evidence: skill_evidence, content: "HELP")
+        insert(:skill_evidence_post,
+          user: user_2,
+          skill_evidence: skill_evidence,
+          content: "HELP"
+        )
 
       %{
         user_2: user_2,
