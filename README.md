@@ -4,7 +4,7 @@ Bright!!
 
 ## 環境情報
 
-- Elixir: 1.14 系
+- Elixir: 1.16 系
 - Phoenix: 1.7 系
 - Erlang: OTP 26 系
 - PostgreSQL: 15 系
