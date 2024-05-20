@@ -1,6 +1,5 @@
 defmodule Bright.SkillPanelsTest do
   use Bright.DataCase
-  import Bright.Factory
 
   alias Bright.SkillPanels
 

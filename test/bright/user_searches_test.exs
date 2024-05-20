@@ -3,8 +3,6 @@ defmodule Bright.UserSearchesTest do
 
   alias Bright.UserSearches
 
-  import Bright.Factory
-
   describe "search_users_by_job_profile_and_skill_score/3" do
     setup do
       user_1 = insert(:user)

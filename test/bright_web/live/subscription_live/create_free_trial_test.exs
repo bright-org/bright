@@ -3,7 +3,6 @@ defmodule BrightWeb.CreateFreeTrialTest do
 
   alias Bright.Subscriptions
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   describe "free_trial start from mypage" do
     setup [:register_and_log_in_user]

@@ -3,8 +3,6 @@ defmodule Bright.SubscriptionsTest do
 
   alias Bright.Subscriptions
 
-  import Bright.Factory
-
   describe "get_create_teams_limit/1" do
     test "returns 1 when plan is nil" do
       assert 1 == Subscriptions.get_create_teams_limit(nil)

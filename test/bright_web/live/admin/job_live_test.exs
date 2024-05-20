@@ -2,7 +2,6 @@ defmodule BrightWeb.Admin.JobLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   @create_attrs %{name: "some name", position: 42, description: "some description", rank: :basic}
   @update_attrs %{

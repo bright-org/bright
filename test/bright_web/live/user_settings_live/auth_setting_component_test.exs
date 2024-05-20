@@ -7,7 +7,6 @@ defmodule BrightWeb.UserSettingsLive.AuthSettingComponentTest do
   alias Bright.Accounts.UserSubEmail
   import Phoenix.LiveViewTest
   import Swoosh.TestAssertions
-  import Bright.Factory
 
   describe "メール・パスワード" do
     setup [:register_and_log_in_user]

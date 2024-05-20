@@ -3,7 +3,6 @@ defmodule Bright.RecruitmentStockUsersTest do
 
   alias Bright.RecruitmentStockUsers
   alias Bright.RecruitmentStockUsers.RecruitmentStockUser
-  import Bright.Factory
 
   @invalid_attrs %{
     recruiter_id: nil,

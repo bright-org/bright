@@ -1,8 +1,6 @@
 defmodule Bright.UserSkillPanelsTest do
   use Bright.DataCase
 
-  import Bright.Factory
-
   alias Bright.UserSkillPanels
   alias Bright.SkillScores.SkillClassScoreLog
 

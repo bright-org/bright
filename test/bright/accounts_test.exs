@@ -11,7 +11,6 @@ defmodule Bright.AccountsTest do
   alias Bright.UserProfiles.UserProfile
   alias Bright.UserJobProfiles.UserJobProfile
 
-  import Bright.Factory
   alias Bright.Accounts.{User, UserToken}
 
   describe "get_user!/1" do

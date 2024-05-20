@@ -3,7 +3,6 @@ defmodule BrightWeb.UserRegisterSocialAccountLiveTest do
 
   import Phoenix.LiveViewTest
 
-  import Bright.Factory
   alias Bright.Accounts.UserToken
   alias Bright.Repo
   alias Bright.Accounts

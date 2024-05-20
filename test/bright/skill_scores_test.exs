@@ -1,8 +1,6 @@
 defmodule Bright.SkillScoresTest do
   use Bright.DataCase
 
-  import Bright.Factory
-
   alias Bright.SkillScores
   alias Bright.Notifications
 

@@ -2,7 +2,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   alias Bright.SkillEvidences.SkillEvidencePost
 

@@ -1,6 +1,5 @@
 defmodule Bright.Batches.UpdateSkillPanelsTest do
   use Bright.DataCase
-  import Bright.Factory
 
   alias Bright.Batches.UpdateSkillPanels
 
