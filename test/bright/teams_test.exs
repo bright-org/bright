@@ -6,8 +6,6 @@ defmodule Bright.TeamsTest do
   alias Bright.Teams.TeamSupporterTeam
   alias Bright.TeamTestHelper
 
-  import Bright.Factory
-
   describe "create_team_multi/3" do
     test "create team and member users." do
       name = Faker.Lorem.word()

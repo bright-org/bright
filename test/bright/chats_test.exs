@@ -2,7 +2,6 @@ defmodule Bright.ChatsTest do
   use Bright.DataCase
 
   alias Bright.Chats
-  import Bright.Factory
 
   describe "chats" do
     alias Bright.Chats.Chat

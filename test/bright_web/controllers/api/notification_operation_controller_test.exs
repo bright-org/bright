@@ -1,6 +1,6 @@
 defmodule BrightWeb.Api.NotificationOperationControllerTest do
   use BrightWeb.ConnCase
-  import Bright.Factory
+
   import Swoosh.TestAssertions
 
   alias Bright.Notifications.NotificationOperation

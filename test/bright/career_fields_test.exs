@@ -3,7 +3,6 @@ defmodule Bright.CareerFieldsTest do
 
   alias Bright.CareerFields
   alias Bright.CareerFields.CareerField
-  import Bright.Factory
 
   describe "career_fields" do
     @invalid_attrs %{name_en: nil, name_ja: nil, position: nil}

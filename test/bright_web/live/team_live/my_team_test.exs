@@ -2,7 +2,7 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
+
   import Mock
 
   describe "my team" do

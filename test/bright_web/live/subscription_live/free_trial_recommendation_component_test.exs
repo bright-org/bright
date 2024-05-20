@@ -2,7 +2,6 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   def submit_trial_form(live, params \\ %{}) do
     change_trial_form(live, params)

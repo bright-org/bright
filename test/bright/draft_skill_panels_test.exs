@@ -1,6 +1,5 @@
 defmodule Bright.DraftSkillPanelsTest do
   use Bright.DataCase
-  import Bright.Factory
 
   alias Bright.DraftSkillPanels
 

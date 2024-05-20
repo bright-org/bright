@@ -29,6 +29,7 @@ defmodule BrightWeb.ConnCase do
       import Phoenix.ConnTest
       import BrightWeb.ConnCase
       import Bright.TestHelper
+      import Bright.Factory
     end
   end
 

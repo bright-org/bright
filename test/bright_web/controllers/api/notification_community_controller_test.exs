@@ -1,6 +1,6 @@
 defmodule BrightWeb.Api.NotificationCommunityControllerTest do
   use BrightWeb.ConnCase
-  import Bright.Factory
+
   alias Bright.Notifications.NotificationCommunity
 
   defp create_attrs() do
