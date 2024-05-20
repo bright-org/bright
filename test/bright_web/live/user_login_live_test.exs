@@ -2,7 +2,6 @@ defmodule BrightWeb.UserLoginLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do

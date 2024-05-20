@@ -2,7 +2,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   alias Bright.Repo
   alias Bright.UserJobProfiles

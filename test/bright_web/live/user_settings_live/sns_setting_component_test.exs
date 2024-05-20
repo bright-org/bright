@@ -2,7 +2,6 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   describe "SNS連携" do
     setup [:register_and_log_in_user]

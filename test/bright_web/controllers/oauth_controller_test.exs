@@ -1,7 +1,6 @@
 defmodule BrightWeb.OAuthControllerTest do
   use BrightWeb.ConnCase, async: false
 
-  import Bright.Factory
   alias Bright.Repo
   alias Bright.Accounts.SocialIdentifierToken
   alias Bright.Accounts.UserSocialAuth

@@ -2,7 +2,7 @@ defmodule BrightWeb.RecruitLive.CreateInterviewLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
+
   import Swoosh.TestAssertions
 
   describe "create interview" do
