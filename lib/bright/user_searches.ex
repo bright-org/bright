@@ -112,7 +112,7 @@ defmodule Bright.UserSearches do
       left_join: sc_score in assoc(u, :skill_class_scores),
       on: sc_score.skill_class_id in ^skill_class_id,
       group_by: [u.id, job.id],
-      preload: [:skill_class_scores, :user_job_profile],
+      preload: [:skill_class_scores, :user_job_profile, :user_profile],
       # 匿名リンク生成のためUserを保ったまま、ソート用カラムを追加している
       select: %{
         u
