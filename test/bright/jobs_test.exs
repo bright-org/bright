@@ -4,8 +4,6 @@ defmodule Bright.JobsTest do
   alias Bright.Jobs
   alias Bright.Jobs.Job
 
-  import Bright.Factory
-
   describe "jobs" do
     @invalid_attrs %{name: nil, position: nil}
 

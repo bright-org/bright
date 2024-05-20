@@ -1,7 +1,6 @@
 defmodule BrightWeb.UserConfirmEmailControllerTest do
   use BrightWeb.ConnCase, async: true
 
-  import Bright.Factory
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.User

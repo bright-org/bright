@@ -2,7 +2,6 @@ defmodule BrightWeb.MypageLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   describe "Index" do
     setup [:register_and_log_in_user, :setup_career_fields]

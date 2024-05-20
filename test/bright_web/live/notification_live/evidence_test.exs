@@ -2,7 +2,6 @@ defmodule BrightWeb.NotificationLive.EvidenceTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   setup [:register_and_log_in_user]
 

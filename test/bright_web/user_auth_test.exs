@@ -4,7 +4,6 @@ defmodule BrightWeb.UserAuthTest do
   alias Phoenix.LiveView
   alias Bright.Accounts
   alias BrightWeb.UserAuth
-  import Bright.Factory
 
   @cookie_key "_bright_web_user"
   @user_2fa_cookie_key "_bright_web_user_2fa_done"

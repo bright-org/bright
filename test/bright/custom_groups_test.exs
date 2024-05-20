@@ -4,8 +4,6 @@ defmodule Bright.CustomGroupsTest do
   alias Bright.CustomGroups
   alias Bright.CustomGroups.CustomGroupMemberUser
 
-  import Bright.Factory
-
   setup do
     user = insert(:user)
     %{user: user}

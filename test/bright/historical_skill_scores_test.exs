@@ -1,6 +1,5 @@
 defmodule Bright.HistoricalSkillScoresTest do
   use Bright.DataCase
-  import Bright.Factory
 
   alias Bright.HistoricalSkillScores
 

@@ -1,7 +1,6 @@
 defmodule BrightWeb.UserSessionControllerTest do
   use BrightWeb.ConnCase, async: true
 
-  import Bright.Factory
   alias Bright.Accounts.UserToken
   alias Bright.Accounts.User2faCodes
   alias Bright.Repo

@@ -2,7 +2,6 @@ defmodule BrightWeb.Admin.CareerFieldLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   @create_attrs %{
     name_en: "some name",
