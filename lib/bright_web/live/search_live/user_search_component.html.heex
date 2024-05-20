@@ -198,7 +198,8 @@
     <div class="flex items-center mt-8">
       <span>
         <%= if @total_entries > 5 && @page != @total_pages, do: 5 * @page, else: @total_entries %>
-      </span><span class="text-xs">件／</span>
+      </span>
+      <span class="text-xs">件／</span>
       <span><%= @total_entries %></span><span class="text-xs">件中</span>
 
       <form phx-change="change_sort" phx-target={@myself}>

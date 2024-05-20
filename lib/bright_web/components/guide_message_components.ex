@@ -46,7 +46,8 @@ defmodule BrightWeb.GuideMessageComponents do
     <div>
       <p>スキル入力完了おめでとうございます！</p>
       <p class="mt-4">
-        <span class={[score_mark_class(:high, :green), "inline-block align-middle mr-1"]} /><span class="align-middle">
+        <span class={[score_mark_class(:high, :green), "inline-block align-middle mr-1"]} />
+        <span class="align-middle">
           が40％より下は「見習い」、40％以上で「平均」、60％以上で「ベテラン」となります。
         </span>
       </p>
