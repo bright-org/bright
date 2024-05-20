@@ -14,7 +14,10 @@
     />
   </div>
 
-  <div :if={@skillset_gem} class="chart-container flex flex-col justify-center items-center my-2 lg:my-0">
+  <div
+    :if={@skillset_gem}
+    class="chart-container flex flex-col justify-center items-center my-2 lg:my-0"
+  >
     <% # TODO: リンクは成長パネル側の対応後に開放 %>
     <p class="text-base !font-bold">
       スキルバランス<span :if={false} class="font-normal text-xs ml-2">※クリックすると詳細</span>
@@ -54,7 +57,6 @@
         display_user={@current_user}
         show_menu={true}
       />
-
     </div>
     <!-- 関わっているユーザー -->
     <div :if={@me}>
@@ -83,6 +85,4 @@
   />
 </.bright_modal>
 
-
 <div phx-mounted={if @search, do: JS.show(to: "#skill_search_modal")}></div>
-

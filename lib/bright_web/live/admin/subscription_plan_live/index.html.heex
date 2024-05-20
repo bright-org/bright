@@ -10,15 +10,31 @@
 <.table
   id="subscription_plans"
   rows={@streams.subscription_plans}
-  row_click={fn {_id, subscription_plan} -> JS.navigate(~p"/admin/subscription_plans/#{subscription_plan}") end}
+  row_click={
+    fn {_id, subscription_plan} ->
+      JS.navigate(~p"/admin/subscription_plans/#{subscription_plan}")
+    end
+  }
 >
-  <:col :let={{_id, subscription_plan}} label="Plan code"><%= subscription_plan.plan_code %></:col>
+  <:col :let={{_id, subscription_plan}} label="Plan code">
+    <%= subscription_plan.plan_code %>
+  </:col>
   <:col :let={{_id, subscription_plan}} label="Name jp"><%= subscription_plan.name_jp %></:col>
-  <:col :let={{_id, subscription_plan}} label="Create teams limit"><%= subscription_plan.create_teams_limit %></:col>
-  <:col :let={{_id, subscription_plan}} label="Create enable hr functions teams limit"><%= subscription_plan.create_enable_hr_functions_teams_limit %></:col>
-  <:col :let={{_id, subscription_plan}} label="Team members limit"><%= subscription_plan.team_members_limit %></:col>
-  <:col :let={{_id, subscription_plan}} label="Available contract end datetime"><%= subscription_plan.available_contract_end_datetime %></:col>
-  <:col :let={{_id, subscription_plan}} label="Free trial priority"><%= subscription_plan.free_trial_priority %></:col>
+  <:col :let={{_id, subscription_plan}} label="Create teams limit">
+    <%= subscription_plan.create_teams_limit %>
+  </:col>
+  <:col :let={{_id, subscription_plan}} label="Create enable hr functions teams limit">
+    <%= subscription_plan.create_enable_hr_functions_teams_limit %>
+  </:col>
+  <:col :let={{_id, subscription_plan}} label="Team members limit">
+    <%= subscription_plan.team_members_limit %>
+  </:col>
+  <:col :let={{_id, subscription_plan}} label="Available contract end datetime">
+    <%= subscription_plan.available_contract_end_datetime %>
+  </:col>
+  <:col :let={{_id, subscription_plan}} label="Free trial priority">
+    <%= subscription_plan.free_trial_priority %>
+  </:col>
   <:action :let={{_id, subscription_plan}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/subscription_plans/#{subscription_plan}"}>Show</.link>
@@ -35,7 +51,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="subscription_plan-modal" show on_cancel={JS.patch(~p"/admin/subscription_plans")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="subscription_plan-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/subscription_plans")}
+>
   <.live_component
     module={BrightWeb.Admin.SubscriptionPlanLive.FormComponent}
     id={@subscription_plan.id || :new}

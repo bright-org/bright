@@ -11,7 +11,10 @@ defmodule BrightWeb.NotificationLive.SkillUpdate do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id="notification_skill_update_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
+    <div
+      id="notification_skill_update_container"
+      class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5"
+    >
       <div class="text-sm font-medium text-center">
         <li :if={Enum.count(@notifications) == 0} class="flex">
           <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
@@ -20,19 +23,32 @@ defmodule BrightWeb.NotificationLive.SkillUpdate do
         </li>
         <%= for notification <- @notifications do %>
           <li class="flex flex-wrap my-5">
-            <div phx-click="click" phx-value-notification_skill_update_id={notification.id} class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap">
+            <div
+              phx-click="click"
+              phx-value-notification_skill_update_id={notification.id}
+              class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap"
+            >
               <img src="/images/common/icons/skill.svg" class="w-6 h-6 mr-2.5" />
               <span class={["order-3 lg:order-2 flex-1 mr-2"]}><%= notification.message %></span>
               <.elapsed_time inserted_at={notification.inserted_at} />
             </div>
             <div class="flex gap-x-2 w-full justify-end lg:justify-start lg:w-auto">
-              <button phx-click="click" phx-value-notification_skill_update_id={notification.id} class="hidden hover:opacity-70 font-bold lg:inline-block bg-brightGray-900 text-white min-w-[76px] rounded p-2 text-sm">
+              <button
+                phx-click="click"
+                phx-value-notification_skill_update_id={notification.id}
+                class="hidden hover:opacity-70 font-bold lg:inline-block bg-brightGray-900 text-white min-w-[76px] rounded p-2 text-sm"
+              >
                 詳細を見る
               </button>
             </div>
           </li>
         <% end %>
-        <TabComponents.tab_footer id="notification_skill_update_footer" page={@page} total_pages={@total_pages} target={"#notification_skill_update_container"} />
+        <TabComponents.tab_footer
+          id="notification_skill_update_footer"
+          page={@page}
+          total_pages={@total_pages}
+          target="#notification_skill_update_container"
+        />
       </div>
     </div>
     """

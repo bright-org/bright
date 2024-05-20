@@ -39,7 +39,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="job-modal" show on_cancel={JS.patch(~p"/admin/jobs")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="job-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/jobs")}
+>
   <.live_component
     module={BrightWeb.Admin.JobLive.FormComponent}
     id={@job.id || :new}

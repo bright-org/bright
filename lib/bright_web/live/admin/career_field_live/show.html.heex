@@ -16,7 +16,12 @@
 
 <.back navigate={~p"/admin/career_fields"}>Back to career_fields</.back>
 
-<.modal :if={@live_action == :edit} id="career_field-modal" show on_cancel={JS.patch(~p"/admin/career_fields/#{@career_field}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="career_field-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/career_fields/#{@career_field}")}
+>
   <.live_component
     module={BrightWeb.Admin.CareerFieldLive.FormComponent}
     id={@career_field.id}

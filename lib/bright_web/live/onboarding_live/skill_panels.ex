@@ -8,7 +8,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   def render(assigns) do
     ~H"""
     <section class="bg-white pt-2 px-8 lg:py-8 min-h-[720px] relative rounded-lg pb-28">
-      <h1 class={["font-bold text-3xl",hidden_more_skills(@current_path)]}>
+      <h1 class={["font-bold text-3xl", hidden_more_skills(@current_path)]}>
         <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
           スキルを選ぶ
         </span>
@@ -18,10 +18,10 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         <!-- スキルセクション ここから -->
         <section>
           <%= for {career_field, skill_panels} <- @career_fields do %>
-            <% skill_panels = Enum.uniq(skill_panels)%>
+            <% skill_panels = Enum.uniq(skill_panels) %>
             <section
-              class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-full lg:w-[1040px]"}
               :if={Enum.count(skill_panels) > 0}
+              class={"bg-#{career_field.name_en}-dazzle mt-4 px-4 py-4 w-full lg:w-[1040px]"}
             >
               <p class="font-bold"><%= career_field.name_ja %>向けのスキル</p>
               <ul class="flex flex-wrap flex-col lg:flex-row mt-2 gap-4">
@@ -33,8 +33,8 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                       class={[
                         "bg-#{career_field.name_en}-dark border-#{career_field.name_en}-dark",
                         "block border border-solid cursor-pointer font-bold px-4 py-2 rounded select-none text-white text-center w-full lg:w-60 hover:opacity-50"
-                        ]}
-                      >
+                      ]}
+                    >
                       <%= skill_panel.name %>
                     </.link>
                   </li>

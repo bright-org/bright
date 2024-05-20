@@ -10,27 +10,25 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
       <ul class="flex flex-wrap gap-4 justify-center p-4 lg:justify-start">
         <!-- やりたいこと ここから -->
         <%= for wants <- @career_wants do %>
-        <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
-          <.link navigate={"#{@current_path}/wants/#{wants.id}"} class="block">
-            <b class="block text-center"><%= wants.name %></b>
-            <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
-              <%= for career_field <- wants.jobs do %>
-                <span
-                  class={[
-                      "px-2 py-0.5 rounded-full text-white text-xs",
-                      "bg-#{career_field.name_en}-dark"
-                    ]}
-                  >
-                  <%= career_field.name_ja %>
-                </span>
-              <% end %>
-            </div>
-          </.link>
-        </li>
+          <li class="bg-white px-4 py-4 rounded select-none w-72 hover:opacity-50">
+            <.link navigate={"#{@current_path}/wants/#{wants.id}"} class="block">
+              <b class="block text-center"><%= wants.name %></b>
+              <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
+                <%= for career_field <- wants.jobs do %>
+                  <span class={[
+                    "px-2 py-0.5 rounded-full text-white text-xs",
+                    "bg-#{career_field.name_en}-dark"
+                  ]}>
+                    <%= career_field.name_ja %>
+                  </span>
+                <% end %>
+              </div>
+            </.link>
+          </li>
         <% end %>
       </ul>
       <!-- αは落とす -->
-      <form class="flex flex-wrap gap-4 justify-start p-4" :if={false}>
+      <form :if={false} class="flex flex-wrap gap-4 justify-start p-4">
         <input
           type="text"
           placeholder="やりたいことに関連するキーワードを入れてください"

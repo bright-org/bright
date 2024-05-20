@@ -10,7 +10,11 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
       <div class="overflow-y-auto z-[60]">
         <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-8 shadow text-sm">
-            <h2 class="font-bold text-xl"><span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">選考結果</span></h2>
+            <h2 class="font-bold text-xl">
+              <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">
+                選考結果
+              </span>
+            </h2>
             <div class="mt-8">
               <div class="mt-4 overflow-y-auto">
                 <p class="w-full break-words">
@@ -18,7 +22,9 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
                 </p>
                 <label class="items-center flex mt-8 w-full">
                   <span class="font-bold py-1 mr-4">雇用形態</span>
-                  <span><%= Gettext.gettext(BrightWeb.Gettext, to_string(@employment.employment_status)) %></span>
+                  <span>
+                    <%= Gettext.gettext(BrightWeb.Gettext, to_string(@employment.employment_status)) %>
+                  </span>
                 </label>
 
                 <label class="items-center flex mt-8 w-full">
@@ -40,7 +46,9 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
                     class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
                   >
                     <span class="min-w-[6em]">採用辞退</span>
-                    <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
+                    <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">
+                      add
+                    </span>
                   </button>
 
                   <div
@@ -50,19 +58,25 @@ defmodule BrightWeb.RecruitCoordinationLive.AcceptanceComponent do
                   >
                     <ul class="p-2 text-left text-base">
                       <li
-                        phx-click={JS.push("decision", target: @myself, value: %{reason: "採用担当者の採用条件に添えない"})}
+                        phx-click={
+                          JS.push("decision", target: @myself, value: %{reason: "採用担当者の採用条件に添えない"})
+                        }
                         class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
                       >
                         採用担当者の採用条件に添えない
                       </li>
                       <li
-                        phx-click={JS.push("decision", target: @myself, value: %{reason: "自身のスキルが案件とマッチしない"})}
+                        phx-click={
+                          JS.push("decision", target: @myself, value: %{reason: "自身のスキルが案件とマッチしない"})
+                        }
                         class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
                       >
                         自身のスキルが案件とマッチしない
                       </li>
                       <li
-                        phx-click={JS.push("decision", target: @myself, value: %{reason: "当方の状況が変わって中断"})}
+                        phx-click={
+                          JS.push("decision", target: @myself, value: %{reason: "当方の状況が変わって中断"})
+                        }
                         class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
                       >
                         当方の状況が変わって中断

@@ -39,12 +39,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
     <div id="switch" class="flex flex-col lg:flex-row gap-y-2 lg:gap-y-0 lg:gap-x-2">
       <.target_user_switch current_user={@current_user} />
-      <.skill_panel_switch
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        root={@root}
-      />
+      <.skill_panel_switch display_user={@display_user} me={@me} anonymous={@anonymous} root={@root} />
     </div>
     """
   end
@@ -53,17 +48,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def skill_panel_switch(assigns) do
     ~H"""
     <div class="flex flex-col lg:flex-row">
-      <.mega_menu_button
-        id="skill_panel_menu"
-        dropdown_offset_skidding="307"
-      >
+      <.mega_menu_button id="skill_panel_menu" dropdown_offset_skidding="307">
         <:button_content>
-          <div
-            class={[
-              "h-5 w-5 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
-            }
-          />
-          対象スキルの切替
+          <div class={[
+            "h-5 w-5 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"
+          ]} /> 対象スキルの切替
         </:button_content>
         <.live_component
           id="skill_card"
@@ -89,17 +78,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   @spec related_user_menu(any()) :: Phoenix.LiveView.Rendered.t()
   def related_user_menu(assigns) do
     ~H"""
-    <.mega_menu_button
-      id="related_user_card_menu"
-      dropdown_offset_skidding="307"
-    >
+    <.mega_menu_button id="related_user_card_menu" dropdown_offset_skidding="307">
       <:button_content>
-        <div
-          class={[
-            "inline-block h-5 w-5 [mask-image:url('/images/common/icons/switchIndividual.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
-          }
-        />
-        表示対象者を切替
+        <div class={[
+          "inline-block h-5 w-5 [mask-image:url('/images/common/icons/switchIndividual.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"
+        ]} /> 表示対象者を切替
       </:button_content>
       <.live_component
         id="related_user"
@@ -117,35 +100,27 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
     <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
       <.link navigate={"#{PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
-        <button
-          class={
+        <button class={
             "inline-flex items-center font-bold rounded-l-full gap-x-2 px-6 py-2 " <>
             if @active == "graph", do: "button-toggle-active", else: "hover:opacity-50"
-          }
-        >
-          <div
-            class={[
-              "inline-block h-6 w-6 [mask-image:url('/images/common/icons/growthPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
-              @active == "graph" && "bg-white", @active != "graph" && "bg-brightGray-500"]
-            }
-          />
-          成長パネル
+          }>
+          <div class={[
+            "inline-block h-6 w-6 [mask-image:url('/images/common/icons/growthPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
+            @active == "graph" && "bg-white",
+            @active != "graph" && "bg-brightGray-500"
+          ]} /> 成長パネル
         </button>
       </.link>
       <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
-        <button
-          class={
+        <button class={
             "inline-flex items-center font-bold rounded-r-full gap-x-2 px-4 py-2 " <>
             if @active == "panel", do: "button-toggle-active", else: "hover:opacity-50"
-          }
-        >
-          <div
-            class={[
-              "inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
-              @active == "panel" && "bg-white", @active != "panel" && "bg-brightGray-500"]
-            }
-          />
-          スキルパネル
+          }>
+          <div class={[
+            "inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
+            @active == "panel" && "bg-white",
+            @active != "panel" && "bg-brightGray-500"
+          ]} /> スキルパネル
         </button>
       </.link>
     </div>
@@ -185,32 +160,25 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <%= if skill_class_score do %>
         <% current = @select_skill_class.class == skill_class.class %>
         <li
-          class={
-            [
-              "w-full flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3",
-              current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300",
-              !current && "cursor-pointer hover:opacity-50 hover:text-brightGreen-300"
-            ]
-          }
+          class={[
+            "w-full flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3",
+            current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300",
+            !current && "cursor-pointer hover:opacity-50 hover:text-brightGreen-300"
+          ]}
           phx-click="skill_class_tab_click"
           phx-target={@skill_class_tab_click_target}
           phx-value-user_id={@user.id}
           phx-value-skill_class_id={skill_class.id}
         >
-          <span
-            class="text-sm lg:text-normal"
-            aria-current={current && "page"}
-          >
+          <span class="text-sm lg:text-normal" aria-current={current && "page"}>
             クラス<%= skill_class.class %>
-          <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
+            <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
             <%= floor skill_class_score.percentage %></span>％
           </span>
         </li>
       <% else %>
         <li class="w-full bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3">
-          <span
-            class="select-none text-sm lg:text-normal"
-          >
+          <span class="select-none text-sm lg:text-normal">
             クラス<%= skill_class.class %>
             <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0</span>％
           </span>
@@ -228,13 +196,25 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           <% current = @skill_class.class == skill_class.class %>
           <%= if !@me && is_nil(skill_class_score) do %>
             <li id={"class_tab_#{skill_class.class}"} class="grow lg:grow-0">
-              <a href="#" class="hover:cursor-default flex items-center lg:select-none px-2 lg:px-4 py-1 lg:py-3 text-xs">
+              <a
+                href="#"
+                class="hover:cursor-default flex items-center lg:select-none px-2 lg:px-4 py-1 lg:py-3 text-xs"
+              >
                 <span class="text-sm lg:text-normal">クラス<%= skill_class.class %></span>
-                <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0％</span>
+                <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
+                  0％
+                </span>
               </a>
             </li>
           <% else %>
-            <li id={"class_tab_#{skill_class.class}"} class={["grow", current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300", !current && "hover:opacity-50 hover:text-brightGreen-300"]}>
+            <li
+              id={"class_tab_#{skill_class.class}"}
+              class={[
+                "grow",
+                current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300",
+                !current && "hover:opacity-50 hover:text-brightGreen-300"
+              ]}
+            >
               <.link
                 patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
                 class="flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3"
@@ -243,7 +223,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
                 <span class="text-sm lg:text-normal">クラス<%= skill_class.class %></span>
                 <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
                   <%= if skill_class_score do %>
-                    <%= floor skill_class_score.percentage %>
+                    <%= floor(skill_class_score.percentage) %>
                   <% else %>
                     0
                   <% end %>
@@ -263,8 +243,11 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <div class="h-screen w-full flex flex-col justify-center items-center gap-y-2">
       <p class="text-2xl lg:text-4xl">スキルパネルがありません</p>
       <p class="text-md lg:text-xl">スキルを選ぶからスキルパネルを取得しましょう</p>
-      <a href={~p"/onboardings"} class="text-xl cursor-pointer bg-brightGray-900 !text-white font-bold px-6 py-4 rounded mt-10 hover:opacity-50">
-      スキルを選ぶ
+      <a
+        href={~p"/onboardings"}
+        class="text-xl cursor-pointer bg-brightGray-900 !text-white font-bold px-6 py-4 rounded mt-10 hover:opacity-50"
+      >
+        スキルを選ぶ
       </a>
     </div>
     """
@@ -294,9 +277,18 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           </div>
         </div>
         <div class="text-right text-xs">
-          学習メモの登録率 <span class="evidence_percentage"><%= SkillEvidences.calc_filled_percentage(@counter.evidence_filled, @num_skills) %>%</span><br />
-          教材の学習率 <span class="reference_percentage"><%= SkillReferences.calc_read_percentage(@counter.reference_read, @num_skills) %>%</span><br />
-          試験の受験率 <span class="exam_percentage"><%= SkillExams.calc_touch_percentage(@counter.exam_touch, @num_skills) %>%</span>
+          学習メモの登録率
+          <span class="evidence_percentage">
+            <%= SkillEvidences.calc_filled_percentage(@counter.evidence_filled, @num_skills) %>%
+          </span>
+          <br /> 教材の学習率
+          <span class="reference_percentage">
+            <%= SkillReferences.calc_read_percentage(@counter.reference_read, @num_skills) %>%
+          </span>
+          <br /> 試験の受験率
+          <span class="exam_percentage">
+            <%= SkillExams.calc_touch_percentage(@counter.exam_touch, @num_skills) %>%
+          </span>
         </div>
       </div>
     </div>

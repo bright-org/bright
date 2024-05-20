@@ -7,7 +7,7 @@ defmodule BrightWeb.UserSendResetPasswordUrlLive do
     <UserAuthComponents.header>リンクを送信しました</UserAuthComponents.header>
 
     <UserAuthComponents.description>
-    登録しているメールアドレスにパスワード再設定用のリンクを送信しました。<br>メールをご確認いただき、リンクを開いてください。
+      登録しているメールアドレスにパスワード再設定用のリンクを送信しました。<br />メールをご確認いただき、リンクを開いてください。
     </UserAuthComponents.description>
     """
   end

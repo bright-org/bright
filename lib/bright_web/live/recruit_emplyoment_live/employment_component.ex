@@ -30,74 +30,85 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
                   <ul>
                     <div class="flex">
                       <div class="w-[460px]">
-                      <.profile
-                        user_name={@employment.candidates_user.name}
-                        title={@employment.candidates_user.user_profile.title}
-                        icon_file_path={icon_url(@employment.candidates_user.user_profile.icon_file_path)}
-                      />
+                        <.profile
+                          user_name={@employment.candidates_user.name}
+                          title={@employment.candidates_user.user_profile.title}
+                          icon_file_path={
+                            icon_url(@employment.candidates_user.user_profile.icon_file_path)
+                          }
+                        />
                       </div>
                       <div class="ml-8 mt-4 text-xl">
-                        <span>報酬：<%= @employment.income %>万円</span><br>
-                        <span>雇用形態：<%= Gettext.gettext(BrightWeb.Gettext, to_string(@employment.employment_status)) %></span>
+                        <span>報酬：<%= @employment.income %>万円</span>
+                        <br />
+                        <span>
+                          雇用形態：<%= Gettext.gettext(
+                            BrightWeb.Gettext,
+                            to_string(@employment.employment_status)
+                          ) %>
+                        </span>
                       </div>
                     </div>
                     <div class="-mt-8">
-                    <.live_component
-                      id="user_params_for_employment"
-                      prefix="interview"
-                      search={false}
-                      anon={false}
-                      module={BrightWeb.SearchLive.SearchResultsComponent}
-                      current_user={@current_user}
-                      result={@candidates_user}
-                      skill_params={@skill_params}
-                      stock_user_ids={[]}
-                    />
+                      <.live_component
+                        id="user_params_for_employment"
+                        prefix="interview"
+                        search={false}
+                        anon={false}
+                        module={BrightWeb.SearchLive.SearchResultsComponent}
+                        current_user={@current_user}
+                        result={@candidates_user}
+                        skill_params={@skill_params}
+                        stock_user_ids={[]}
+                      />
                     </div>
                   </ul>
                 </div>
 
                 <div class="mt-8">
-                  <h3 class="font-bold text-base">ジョイン先チーム管理者<span class="font-normal">を選んでください</span></h3>
+                  <h3 class="font-bold text-base">
+                    ジョイン先チーム管理者<span class="font-normal">を選んでください</span>
+                  </h3>
                   <.live_component
                     id="employment_card"
-                    module={BrightWeb.CardLive.RelatedTeamOwnerCardComponent }
+                    module={BrightWeb.CardLive.RelatedTeamOwnerCardComponent}
                     current_user={@current_user}
                     target="#employment_modal"
                     event="add_user"
                   />
                   <span class="text-attention-600"><%= @candidate_error %></span>
                 </div>
-                </div>
-                <!-- Start ジョイン先チーム調整内容 -->
-                <div class="w-[493px]">
-                  <h3 class="font-bold text-xl">ジョイン先チーム調整内容</h3>
-                  <.form
-                    for={@form}
-                    id="employment_form"
-                    phx-target={@myself}
-                    phx-submit="create"
-                    phx-change="validate"
-                  >
-                    <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
-                      <dl class="flex flex-wrap w-full">
-                      <dt class="font-bold w-[98px] mb-10">ジョイン<br>先チーム<br>管理者</dt>
-                        <dd class="w-[280px]">
-                          <ul class="flex flex-wrap gap-y-1">
+              </div>
+              <!-- Start ジョイン先チーム調整内容 -->
+              <div class="w-[493px]">
+                <h3 class="font-bold text-xl">ジョイン先チーム調整内容</h3>
+                <.form
+                  for={@form}
+                  id="employment_form"
+                  phx-target={@myself}
+                  phx-submit="create"
+                  phx-change="validate"
+                >
+                  <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
+                    <dl class="flex flex-wrap w-full">
+                      <dt class="font-bold w-[98px] mb-10">ジョイン<br />先チーム<br />管理者</dt>
+                      <dd class="w-[280px]">
+                        <ul class="flex flex-wrap gap-y-1">
                           <%= for user <- @users do %>
                             <.profile_small_with_remove_button
                               remove_user_target={@myself}
-                              user_id={user.id} user_name={user.name}
+                              user_id={user.id}
+                              user_name={user.name}
                               title={user.user_profile.title}
                               icon_file_path={user.user_profile.icon_file_path}
                             />
                           <% end %>
-                          </ul>
-                        </dd>
-                        <dt class="font-bold w-[98px] flex mt-16">
-                          <label for="point" class="block pr-1">稼働按分・工数の扱いに関するメモ・注意点</label>
-                        </dt>
-                        <dd class="w-[280px] mt-16">
+                        </ul>
+                      </dd>
+                      <dt class="font-bold w-[98px] flex mt-16">
+                        <label for="point" class="block pr-1">稼働按分・工数の扱いに関するメモ・注意点</label>
+                      </dt>
+                      <dd class="w-[280px] mt-16">
                         <BrightCore.input
                           error_class="ml-[100px] mt-2"
                           field={@form[:comment]}
@@ -107,19 +118,19 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
                           cols="30"
                           input_class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
                         />
-                        </dd>
-                      </dl>
-                    </div>
+                      </dd>
+                    </dl>
+                  </div>
 
-                    <div class="flex justify-end gap-x-4 mt-16">
-                      <button
-                        type="submit"
-                        class="text-sm font-bold py-3 rounded text-white bg-base w-72"
-                      >
-                        候補者のチーム招待を依頼する
-                      </button>
-                    </div>
-                  </.form>
+                  <div class="flex justify-end gap-x-4 mt-16">
+                    <button
+                      type="submit"
+                      class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+                    >
+                      候補者のチーム招待を依頼する
+                    </button>
+                  </div>
+                </.form>
               </div>
             </div>
           </section>

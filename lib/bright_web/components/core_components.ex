@@ -116,8 +116,10 @@ defmodule BrightWeb.CoreComponents do
       role="alert"
       class={[
         "animate-fade-in-bottom fixed inset-x-0 bottom-2 m-auto w-80 sm:w-96 z-[60] rounded-lg p-3 ring-1",
-        @kind == :info && "bg-brightGreen-50 text-brightGreen-900 ring-brightGreen-600 fill-brightGreen-900",
-        @kind == :error && "bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900"
+        @kind == :info &&
+          "bg-brightGreen-50 text-brightGreen-900 ring-brightGreen-600 fill-brightGreen-900",
+        @kind == :error &&
+          "bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900"
       ]}
       {@rest}
     >
@@ -156,7 +158,8 @@ defmodule BrightWeb.CoreComponents do
       phx-connected={hide("#disconnected")}
       hidden
     >
-      We can't find the internet Attempting to reconnect <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
+      We can't find the internet Attempting to reconnect
+      <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
     </.flash>
     """
   end
