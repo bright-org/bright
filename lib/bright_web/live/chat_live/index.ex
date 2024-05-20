@@ -4,6 +4,7 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Chats
   alias Bright.Accounts
   alias Bright.Recruits
+  alias Bright.Teams
   alias Bright.Utils.GoogleCloud.Storage
 
   import BrightWeb.ChatLive.ChatComponents
@@ -18,26 +19,36 @@ defmodule BrightWeb.ChatLive.Index do
       <div class={"flex flex-col w-screen lg:w-[560px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
-            チャット対象者がいません<br />
-            「スキル検索」の「面談の打診」や<br />
-            「チームスキル分析」の「1on1に誘う」<br/>
-            からチャット開始してください
+            チャット対象者がいません<br /> 「スキル検索」の「面談の打診」や<br /> 「チームスキル分析」の「1on1に誘う」<br /> からチャット開始してください
           </p>
         <% else %>
           <%= for chat <- @chats do %>
-            <.chat_list chat={chat} selected_chat={@chat} user_id={@current_user.id}/>
+            <.chat_list
+              chat={chat}
+              selected_chat={@chat}
+              user_id={@current_user.id}
+              member_ids={@team_members}
+            />
           <% end %>
         <% end %>
       </div>
 
-      <div :if={@chat} id="messages" class="w-full px-5 flex flex-col justify-between overflow-y-auto" phx-hook="Chat">
-        <div class="flex flex-col mt-5" >
+      <div
+        :if={@chat}
+        id="messages"
+        class="w-full px-5 flex flex-col justify-between overflow-y-auto"
+        phx-hook="Chat"
+      >
+        <div class="flex flex-col mt-5">
           <p class="lg:ml-12 text-xl mb-2">※メールアドレスや電話番号等の個人情報は送らないでください</p>
           <p class="lg:ml-12 text-xl mb-8">※面談日時およびその重複は管理対象外ですので、別途管理を行ってください</p>
-          <div :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id) } class="lg:ml-12 text-xl">
+          <div
+            :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id)}
+            class="lg:ml-12 text-xl"
+          >
             <%= if @chat.interview.status == :consume_interview do %>
-            <p>本チャットで面談対象者と連絡を取り、「面談調整の確認」ボタンを押してください</p>
-            <p class="mt-2 text-attention-600">面談確定するとチャットに（担当者から面談が確定されました）が自動投入され、メールも送信されます</p>
+              <p>本チャットで面談対象者と連絡を取り、「面談調整の確認」ボタンを押してください</p>
+              <p class="mt-2 text-attention-600">面談確定するとチャットに（担当者から面談が確定されました）が自動投入され、メールも送信されます</p>
             <% end %>
           </div>
 
@@ -72,11 +83,11 @@ defmodule BrightWeb.ChatLive.Index do
               <div class="mr-auto">
                 <div class="flex">
                   <label for={@uploads.images.ref} class="cursor-pointer hover:opacity-70">
-                    <.live_file_input upload={@uploads.images}  class="hidden"/>
+                    <.live_file_input upload={@uploads.images} class="hidden" />
                     <span class="material-icons-outlined !text-4xl">add_photo_alternate</span>
                   </label>
                   <label for={@uploads.files.ref} class="cursor-pointer hover:opacity-70">
-                    <.live_file_input upload={@uploads.files}  class="hidden"/>
+                    <.live_file_input upload={@uploads.files} class="hidden" />
                     <span class="material-symbols-outlined !text-4xl">add_box</span>
                   </label>
                 </div>
@@ -84,12 +95,22 @@ defmodule BrightWeb.ChatLive.Index do
                   <div>
                     <%= for entry <- @uploads.images.entries do %>
                       <div class="flex flex-col w-20">
-                        <button type="button" class="self-end z-[4] -mr-1" phx-click="cancel-upload" phx-value-ref={entry.ref} phx-value-target="images" aria-label="cancel">
+                        <button
+                          type="button"
+                          class="self-end z-[4] -mr-1"
+                          phx-click="cancel-upload"
+                          phx-value-ref={entry.ref}
+                          phx-value-target="images"
+                          aria-label="cancel"
+                        >
                           <span class="material-icons bg-attention-300 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
                             close
                           </span>
                         </button>
-                        <.live_img_preview entry={entry} class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 -mt-4" />
+                        <.live_img_preview
+                          entry={entry}
+                          class="object-cover cursor-pointer hover:opacity-70 h-20 w-20 -mt-4"
+                        />
                       </div>
                     <% end %>
                     <p class="mt-2 text-attention-600"><%= error_to_string(@images_error) %></p>
@@ -98,7 +119,14 @@ defmodule BrightWeb.ChatLive.Index do
                     <%= for entry <- @uploads.files.entries do %>
                       <div class="flex w-full">
                         <p><%= entry.client_name %></p>
-                        <button type="button" class="self-end z-[4] ml-4" phx-click="cancel-upload" phx-value-ref={entry.ref} phx-value-target="files" aria-label="cancel">
+                        <button
+                          type="button"
+                          class="self-end z-[4] ml-4"
+                          phx-click="cancel-upload"
+                          phx-value-ref={entry.ref}
+                          phx-value-target="files"
+                          aria-label="cancel"
+                        >
                           <span class="material-icons bg-attention-300 !text-sm rounded-full !inline-flex w-4 h-4 !items-center !justify-center text-white">
                             close
                           </span>
@@ -112,20 +140,37 @@ defmodule BrightWeb.ChatLive.Index do
               <div class="flex flex-col lg:flex-row gap-2">
                 <div class="order-3 lg:order-1">
                   <.link navigate={~p"/recruits/chats"}>
-                    <button type="button" class="text-sm font-bold ml-auto px-3 py-3 rounded border bg-white w-24 lg:hidden">
+                    <button
+                      type="button"
+                      class="text-sm font-bold ml-auto px-3 py-3 rounded border bg-white w-24 lg:hidden"
+                    >
                       一覧に戻る
                     </button>
                   </.link>
                 </div>
                 <div
-                  :if={@chat.owner_user_id == @current_user.id and Accounts.hr_enabled?(@current_user.id)}
+                  :if={
+                    @chat.owner_user_id == @current_user.id and Accounts.hr_enabled?(@current_user.id)
+                  }
                   class="order-2 flex justify-end"
                 >
+                  <%= if @chat.interview.status == :one_on_one do %>
+                    <button
+                      class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
+                      type="button"
+                      phx-click={JS.push("open_edit_interview")}
+                    >
+                      面談の打診
+                    </button>
+                  <% end %>
+
                   <%= if @chat.interview.status == :consume_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
-                      phx-click={JS.push("open_confirm_interview") |> JS.show(to: "interview-confirm-modal")}
+                      phx-click={
+                        JS.push("open_confirm_interview") |> JS.show(to: "interview-confirm-modal")
+                      }
                     >
                       面談調整の確認
                     </button>
@@ -134,7 +179,10 @@ defmodule BrightWeb.ChatLive.Index do
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
-                      phx-click={JS.push("open_create_coordination") |> JS.show(to: "coordination-create-modal")}
+                      phx-click={
+                        JS.push("open_create_coordination")
+                        |> JS.show(to: "coordination-create-modal")
+                      }
                     >
                       採用選考の確認
                     </button>
@@ -154,7 +202,12 @@ defmodule BrightWeb.ChatLive.Index do
         </div>
       </div>
 
-      <.bright_modal :if={@chat && @open_confirm_interview} id="interview-confirm-modal" show on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}>
+      <.bright_modal
+        :if={@chat && @open_confirm_interview}
+        id="interview-confirm-modal"
+        show
+        on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}
+      >
         <.live_component
           module={BrightWeb.RecruitInterviewLive.ConfirmComponent}
           id="interview_confirm_modal"
@@ -166,7 +219,12 @@ defmodule BrightWeb.ChatLive.Index do
         />
       </.bright_modal>
 
-      <.bright_modal :if={@chat && @open_cancel_interview}  id="interview-cancel-modal" show on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}>
+      <.bright_modal
+        :if={@chat && @open_cancel_interview}
+        id="interview-cancel-modal"
+        show
+        on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}
+      >
         <.live_component
           module={BrightWeb.RecruitInterviewLive.CancelComponent}
           id="interview_cancel_modal"
@@ -179,18 +237,39 @@ defmodule BrightWeb.ChatLive.Index do
         />
       </.bright_modal>
 
-      <.bright_modal :if={@chat && @open_create_coordination}  id="coordination-create-modal" show on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}>
+      <.bright_modal
+        :if={@chat && @open_create_coordination}
+        id="coordination-create-modal"
+        show
+        on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}
+      >
         <.live_component
+          :if={@current_user}
           id="coordination_modal"
           module={BrightWeb.RecruitCoordinationLive.CreateComponent}
           current_user={@current_user}
           interview_id={@chat.relation_id}
-          :if={@current_user}
           patch={~p"/recruits/chats/#{@chat.id}"}
         />
       </.bright_modal>
 
-      <.modal id="preview" :if={!is_nil(@preview)} show on_cancel={JS.push("close_preview")}>
+      <.bright_modal
+        :if={@chat && @open_edit_interview}
+        id="interview-edit-modal"
+        show
+        on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}
+      >
+        <.live_component
+          :if={@current_user}
+          id="interview_edit_modal"
+          module={BrightWeb.RecruitInterviewLive.Edit1on1InterviewComponent}
+          current_user={@current_user}
+          interview_id={@chat.relation_id}
+          patch={~p"/recruits/chats/#{@chat.id}"}
+        />
+      </.bright_modal>
+
+      <.modal :if={!is_nil(@preview)} id="preview" show on_cancel={JS.push("close_preview")}>
         <img src={Storage.public_url(@preview)} />
         <a href={Storage.public_url(@preview)} target="_blank" rel="noopener">
           <.button class="mt-4">Dwonload</.button>
@@ -206,10 +285,12 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:open_confirm_interview, false)
     |> assign(:open_cancel_interview, false)
     |> assign(:open_create_coordination, false)
+    |> assign(:open_edit_interview, false)
     |> assign(:sender_icon_path, user.user_profile.icon_file_path)
     |> assign(:images_error, "")
     |> assign(:files_error, "")
     |> assign(:preview, nil)
+    |> assign(:team_members, Teams.list_user_ids_related_team_by_user(user))
     |> allow_upload(:images,
       accept: ~w(.jpg .jpeg .png),
       max_file_size: 2_000_000,
@@ -324,6 +405,10 @@ defmodule BrightWeb.ChatLive.Index do
 
   def handle_event("cancel_interview", _params, socket) do
     {:noreply, assign(socket, :open_cancel_interview, true)}
+  end
+
+  def handle_event("open_edit_interview", _params, socket) do
+    {:noreply, assign(socket, :open_edit_interview, true)}
   end
 
   def handle_event("open_create_coordination", _params, socket) do
