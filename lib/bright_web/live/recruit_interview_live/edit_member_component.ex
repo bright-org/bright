@@ -46,43 +46,54 @@ defmodule BrightWeb.RecruitInterviewLive.EditMemberComponent do
                       対象面談
                     </dt>
                     <dd class="w-[280px] mb-10 break-words">
-                        <span><%= if @interview_member.interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: @interview_member.interview.skill_panel_name %></span>
-                        <br />
-                        <span class="text-brightGray-300">
-                        <%= NaiveDateTime.to_date(@interview_member.inserted_at) %>
-                        希望年収:<%= @interview_member.interview.desired_income %>
-                        </span>
-                      </dd>
+                      <span>
+                        <%= if @interview_member.interview.skill_panel_name == nil,
+                          do: "スキルパネルデータなし",
+                          else: @interview_member.interview.skill_panel_name %>
+                      </span>
+                      <br />
+                      <span class="text-brightGray-300">
+                        <%= NaiveDateTime.to_date(@interview_member.inserted_at) %> 希望年収:<%= @interview_member.interview.desired_income %>
+                      </span>
+                    </dd>
 
                     <dt class="font-bold w-[98px] flex">
                       <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
                     <dd class="w-[280px] break-words">
-                    <%= @interview_member.interview.comment %>
+                      <%= @interview_member.interview.comment %>
                     </dd>
-                    <dt class="font-bold w-[98px] flex mt-8" >
+                    <dt class="font-bold w-[98px] flex mt-8">
                       <label for="point" class="block pr-1">参加の<br />意思確認</label>
                     </dt>
                     <dd class="w-[280px] mt-8">
                       <label class="block">
                         <input
-                          type="radio" name="interview" class="mr-1"
+                          type="radio"
+                          name="interview"
+                          class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :wants})}
-                        >
+                        />
                         <span class="align-[2px]">同席したい</span>
                       </label>
                       <label class="block">
                         <input
-                          type="radio" name="interview" class="mr-1"
+                          type="radio"
+                          name="interview"
+                          class="mr-1"
                           phx-click={JS.push("checked", target: @myself, value: %{decision: :keep})}
-                        >
+                        />
                         <span class="align-[2px]">今は同席しないが候補者をストック</span>
                       </label>
                       <label class="block">
                         <input
-                          type="radio" name="interview" class="mr-1"
-                          phx-click={JS.push("checked", target: @myself, value: %{decision: :not_wants})}
-                        >
+                          type="radio"
+                          name="interview"
+                          class="mr-1"
+                          phx-click={
+                            JS.push("checked", target: @myself, value: %{decision: :not_wants})
+                          }
+                        />
                         <span class="align-[2px]">同席を希望しない</span>
                       </label>
                     </dd>
@@ -96,7 +107,8 @@ defmodule BrightWeb.RecruitInterviewLive.EditMemberComponent do
                     確定する
                   </button>
                 </div>
-              </div><!-- End 面談調整内容 -->
+              </div>
+              <!-- End 面談調整内容 -->
             </div>
           </section>
         </main>

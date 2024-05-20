@@ -43,20 +43,23 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
           <ul :if={Enum.count(@user_profiles) == 0} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はいません
+                <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はいません
               </div>
             </li>
           </ul>
-          <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-col lg:flex-row lg:flex-wrap gap-y-1">
+          <ul
+            :if={Enum.count(@user_profiles) > 0}
+            class="flex flex-col lg:flex-row lg:flex-wrap gap-y-1"
+          >
             <%= for user_profile <- @user_profiles do %>
-                <.profile_small
-                  user_name={user_profile.user_name}
-                  title={user_profile.title}
-                  icon_file_path={user_profile.icon_file_path}
-                  encrypt_user_name={user_profile.encrypt_user_name}
-                  click_target={@target}
-                  click_event={@event}
-                />
+              <.profile_small
+                user_name={user_profile.user_name}
+                title={user_profile.title}
+                icon_file_path={user_profile.icon_file_path}
+                encrypt_user_name={user_profile.encrypt_user_name}
+                click_target={@target}
+                click_event={@event}
+              />
             <% end %>
           </ul>
         </div>
@@ -72,7 +75,10 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
         <ul class="inner_tab_list overflow-hidden flex text-base !text-sm w-[99999px]">
           <%= for {key, value} <- @inner_tab do %>
             <li
-              class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
+              class={[
+                "p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50",
+                key == @inner_selected_tab && "bg-brightGreen-50"
+              ]}
               phx-click="inner_tab_click"
               phx-target={@target}
               phx-value-tab_name={@selected_tab}
@@ -85,14 +91,12 @@ defmodule BrightWeb.CardLive.RelatedRecruitUserCardComponent do
       </div>
       <div class="inner_tab_slide_buttons flex">
         <button class="px-1 border-l border-brightGray-50">
-          <span
-            class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-          ></span>
+          <span class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block">
+          </span>
         </button>
         <button class="px-1 border-l border-brightGray-50">
-          <span
-            class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-          ></span>
+          <span class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block">
+          </span>
         </button>
       </div>
     </div>

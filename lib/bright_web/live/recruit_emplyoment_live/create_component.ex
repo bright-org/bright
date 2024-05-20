@@ -17,7 +17,9 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
         <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-4 shadow text-sm w-[60vw]">
             <h2 class="font-bold text-3xl">
-              <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">採用連絡</span>
+              <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">
+                採用連絡
+              </span>
             </h2>
             <p class="mt-2 text-lg">※不採用を連絡時の理由は候補者には送信されません</p>
             <div class="mt-8">
@@ -38,13 +40,13 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                 <h3 class="font-bold">メッセージ</h3>
                 <div class="flex mt-6 gap-x-4">
                   <BrightCore.input
-                      id="employment_used_sample_none"
-                      type="radio"
-                      name={@form[:used_sample].name}
-                      value="none"
-                      checked={@form[:used_sample].value == :none}
-                      label="何も入れない"
-                    />
+                    id="employment_used_sample_none"
+                    type="radio"
+                    name={@form[:used_sample].name}
+                    value="none"
+                    checked={@form[:used_sample].value == :none}
+                    label="何も入れない"
+                  />
                   <BrightCore.input
                     id="employment_used_sample_adoption"
                     type="radio"
@@ -64,29 +66,29 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                 </div>
                 <div class="mt-6 overflow-y-auto">
                   <BrightCore.input
-                      error_class="ml-[100px] mt-2"
-                      field={@form[:message]}
-                      type="textarea"
-                      required
-                      rows="6"
-                      cols="30"
-                      input_class="border border-brightGray-300 px-2 py-1 rounded w-full"
+                    error_class="ml-[100px] mt-2"
+                    field={@form[:message]}
+                    type="textarea"
+                    required
+                    rows="6"
+                    cols="30"
+                    input_class="border border-brightGray-300 px-2 py-1 rounded w-full"
                   />
                   <div :if={@form[:used_sample].value != :not_adoption}>
-                  <label class="items-center flex mt-8 w-full">
-                    <span class="font-bold -pt-2 mr-4">年収もしくは契約額</span>
-                    <BrightCore.input
+                    <label class="items-center flex mt-8 w-full">
+                      <span class="font-bold -pt-2 mr-4">年収もしくは契約額</span>
+                      <BrightCore.input
                         error_class="ml-[100px] mt-2"
                         field={@form[:income]}
                         type="number"
                         size="20"
                         input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
                       />
-                    <span class="ml-1">万円</span>
-                  </label>
-                  <label class="items-center flex mt-8 w-full">
-                    <span class="font-bold -pt-2 mr-4">契約形態</span>
-                    <BrightCore.input
+                      <span class="ml-1">万円</span>
+                    </label>
+                    <label class="items-center flex mt-8 w-full">
+                      <span class="font-bold -pt-2 mr-4">契約形態</span>
+                      <BrightCore.input
                         error_class="ml-[100px] mt-2"
                         field={@form[:employment_status]}
                         options={@options}
@@ -94,7 +96,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                         prompt="契約形態を選択してください"
                         input_class="border border-brightGray-200 px-2 py-1 rounded w-80"
                       />
-                  </label>
+                    </label>
                   </div>
                 </div>
 
@@ -104,53 +106,74 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                   </button>
 
                   <div>
-                      <button
-                        phx-click={JS.show(to: "#menu01")}
-                        type="button"
-                        class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-44 flex items-center"
-                      >
-                        <span class="min-w-[6em]">不採用を連絡する</span>
-                        <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
-                      </button>
+                    <button
+                      phx-click={JS.show(to: "#menu01")}
+                      type="button"
+                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-44 flex items-center"
+                    >
+                      <span class="min-w-[6em]">不採用を連絡する</span>
+                      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">
+                        add
+                      </span>
+                    </button>
 
-                      <div
-                        id="menu01"
-                        phx-click-away={JS.hide(to: "#menu01")}
-                        class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
-                      >
-                        <ul class="p-2 text-left text-base">
-                          <li
-                            phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者の希望条件に添えない"})}
-                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                          >
-                            候補者の希望条件に添えない
-                          </li>
-                          <li
-                            phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者のスキルが案件とマッチしない"})}
-                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                          >
-                            候補者のスキルが案件とマッチしない
-                          </li>
-                          <li
-                            phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "候補者のスキルが登録内容より不足"})}
-                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                          >
-                            候補者のスキルが登録内容より不足
-                          </li>
-                          <li
-                            phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_coordination, reason: "当方の状況が変わって中断"})}
-                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                          >
-                            当方の状況が変わって中断
-                          </li>
-                        </ul>
-                      </div>
+                    <div
+                      id="menu01"
+                      phx-click-away={JS.hide(to: "#menu01")}
+                      class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
+                    >
+                      <ul class="p-2 text-left text-base">
+                        <li
+                          phx-click={
+                            JS.push("decision",
+                              target: @myself,
+                              value: %{decision: :cancel_coordination, reason: "候補者の希望条件に添えない"}
+                            )
+                          }
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者の希望条件に添えない
+                        </li>
+                        <li
+                          phx-click={
+                            JS.push("decision",
+                              target: @myself,
+                              value: %{decision: :cancel_coordination, reason: "候補者のスキルが案件とマッチしない"}
+                            )
+                          }
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者のスキルが案件とマッチしない
+                        </li>
+                        <li
+                          phx-click={
+                            JS.push("decision",
+                              target: @myself,
+                              value: %{decision: :cancel_coordination, reason: "候補者のスキルが登録内容より不足"}
+                            )
+                          }
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者のスキルが登録内容より不足
+                        </li>
+                        <li
+                          phx-click={
+                            JS.push("decision",
+                              target: @myself,
+                              value: %{decision: :cancel_coordination, reason: "当方の状況が変わって中断"}
+                            )
+                          }
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          当方の状況が変わって中断
+                        </li>
+                      </ul>
                     </div>
+                  </div>
 
                   <button class="text-sm font-bold px-2 py-2 rounded border bg-base text-white w-40">
                     採用を連絡する
                   </button>
-
                 </div>
               </.form>
             </div>

@@ -10,7 +10,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   def render(assigns) do
     ~H"""
     <div id={@id} class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed">
-    <!-- TODO α対象外
+      <!-- TODO α対象外
       <p>
         <span class="font-bold">気になる</span>からメンバーとして追加
       </p>
@@ -20,11 +20,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
       </p>
     -->
       <div class="flex items-center">
-        <form
-          id="add_user_form"
-          phx-target={@myself}
-          phx-submit="add_user"
-        >
+        <form id="add_user_form" phx-target={@myself} phx-submit="add_user">
           <p class="pb-2 text-base">
             <span class="font-bold">Brightハンドル名もしくはメールアドレス</span>からメンバーとして追加
           </p>
@@ -44,7 +40,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
         </form>
       </div>
       <div :if={@search_word_error != nil}>
-        <p class= "text-error text-xs"><%= Phoenix.HTML.raw(@search_word_error) %></p>
+        <p class="text-error text-xs"><%= Phoenix.HTML.raw(@search_word_error) %></p>
       </div>
     </div>
     """

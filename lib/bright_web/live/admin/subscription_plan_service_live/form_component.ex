@@ -9,7 +9,9 @@ defmodule BrightWeb.Admin.SubscriptionPlanServiceLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage subscription_plan_service records in your database.</:subtitle>
+        <:subtitle>
+          Use this form to manage subscription_plan_service records in your database.
+        </:subtitle>
       </.header>
 
       <.simple_form

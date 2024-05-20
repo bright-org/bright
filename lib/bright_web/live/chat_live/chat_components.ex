@@ -13,13 +13,11 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   def chat_list(assigns) do
     ~H"""
     <.link
-      class={
-          [
-            "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
-            (@selected_chat != nil && @selected_chat.id == @chat.id) && "border-l-4 border-l-blue-400",
-            !@chat.interview.is_read? && "bg-attention-50"
-          ]
-        }
+      class={[
+        "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
+        @selected_chat != nil && @selected_chat.id == @chat.id && "border-l-4 border-l-blue-400",
+        !@chat.interview.is_read? && "bg-attention-50"
+      ]}
       patch={~p"/recruits/chats/#{@chat.id}"}
     >
       <div class="mr-2">
@@ -30,18 +28,19 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         />
       </div>
       <div class="w-full flex justify-between p-1 relative">
-        <span :if={!@chat.interview.is_read?} class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full" />
+        <span
+          :if={!@chat.interview.is_read?}
+          class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
+        />
         <div class="mr-2 lg:truncate lg:text-xl">
           <span>
-            <%= if @chat.interview.skill_panel_name == nil ,
+            <%= if @chat.interview.skill_panel_name == nil,
               do: "スキルパネルデータなし",
-              else: @chat.interview.skill_panel_name
-            %>
+              else: @chat.interview.skill_panel_name %>
           </span>
           <br />
           <span class="text-brightGray-300">
-            <%= NaiveDateTime.to_date(@chat.interview.inserted_at) %>
-            希望年収:<%= @chat.interview.desired_income %>
+            <%= NaiveDateTime.to_date(@chat.interview.inserted_at) %> 希望年収:<%= @chat.interview.desired_income %>
           </span>
         </div>
         <div>
@@ -71,11 +70,17 @@ defmodule BrightWeb.ChatLive.ChatComponents do
               <span><%= @current_user.name %></span>
             </div>
           </div>
-          <p class="mt-1 flex justify-end"><.elapsed_time extend_style={"w-auto"} inserted_at={@message.inserted_at} /></p>
+          <p class="mt-1 flex justify-end">
+            <.elapsed_time extend_style="w-auto" inserted_at={@message.inserted_at} />
+          </p>
           <p class="flex justify-end">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
           <div class="flex justify-end gap-x-4">
             <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
-            <div class="cursor-pointer hover:opacity-50" phx-click="preview" phx-value-preview={file.file_path}>
+              <div
+                class="cursor-pointer hover:opacity-50"
+                phx-click="preview"
+                phx-value-preview={file.file_path}
+              >
                 <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
                 <%= file.file_name %>
               </div>
@@ -83,8 +88,13 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           </div>
           <div class="flex justify-end mt-4 gap-x-4">
             <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
-              <a class="cursor-pointer hover:opacity-50 underline" href={Storage.public_url(file.file_path)} target="_blank" rel="noopener">
-                <.icon name="hero-document" class="w-24 h-24" /><br>
+              <a
+                class="cursor-pointer hover:opacity-50 underline"
+                href={Storage.public_url(file.file_path)}
+                target="_blank"
+                rel="noopener"
+              >
+                <.icon name="hero-document" class="w-24 h-24" /><br />
                 <%= file.file_name %>
               </a>
             <% end %>
@@ -109,7 +119,11 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       <p class="">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
       <div class="flex justify-start">
         <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
-          <div class="cursor-pointer hover:opacity-50" phx-click="preview" phx-value-preview={file.file_path}>
+          <div
+            class="cursor-pointer hover:opacity-50"
+            phx-click="preview"
+            phx-value-preview={file.file_path}
+          >
             <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
             <%= file.file_name %>
           </div>
@@ -117,8 +131,13 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       </div>
       <div class="w-full flex flex-col justify-end mt-4">
         <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
-          <a class="cursor-pointer hover:opacity-50 underline text-xl" href={Storage.public_url(file.file_path)} target="_blank" rel="noopener">
-            <.icon name="hero-document" class="w-24 h-24" /><br>
+          <a
+            class="cursor-pointer hover:opacity-50 underline text-xl"
+            href={Storage.public_url(file.file_path)}
+            target="_blank"
+            rel="noopener"
+          >
+            <.icon name="hero-document" class="w-24 h-24" /><br />
             <%= file.file_name %>
           </a>
         <% end %>
@@ -136,24 +155,20 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     assigns = set_user(assigns)
 
     ~H"""
-      <%= if @anon and Interview.anon?(@chat.interview) do %>
-        <.user_icon path={nil} />
-      <% else %>
-        <div class="flex flex-col justify-end">
-          <.user_icon path={@user.icon}/>
-          <p :if={@show_name} class="lg:w-24 break-words"><%= @user.name %></p>
-        </div>
-      <% end %>
+    <%= if @anon and Interview.anon?(@chat.interview) do %>
+      <.user_icon path={nil} />
+    <% else %>
+      <div class="flex flex-col justify-end">
+        <.user_icon path={@user.icon} />
+        <p :if={@show_name} class="lg:w-24 break-words"><%= @user.name %></p>
+      </div>
+    <% end %>
     """
   end
 
   def user_icon(assigns) do
     ~H"""
-      <img
-      src={UserProfiles.icon_url(@path)}
-      class="object-cover h-10 w-10 rounded-full"
-      alt=""
-    />
+    <img src={UserProfiles.icon_url(@path)} class="object-cover h-10 w-10 rounded-full" alt="" />
     """
   end
 

@@ -5,7 +5,7 @@ defmodule BrightWeb.OnboardingLive.Welcome do
     ~H"""
     <section class="w-screen bg-white p-8 min-h-[720px] rounded-lg">
       <div class="flex place-content-center lg:place-content-start mb-12">
-          <img src={~p"/images/logo_tagline_skill.svg"} width="256" />
+        <img src={~p"/images/logo_tagline_skill.svg"} width="256" />
       </div>
 
       <h1 class="font-bold text-3xl my-8">

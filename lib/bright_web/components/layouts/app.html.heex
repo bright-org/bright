@@ -11,31 +11,31 @@
 <%= @inner_content %>
 
 <.live_component
+  :if={@current_user}
   id="user_setting_modal"
   module={BrightWeb.UserSettingsLive.UserSettingComponent}
-  action={"general"}
+  action="general"
   current_user={@current_user}
   current_request_path={Map.get(assigns, :current_request_path)}
-  :if={@current_user}
 />
 
 <.live_component
+  :if={@current_user}
   id="skill_search_modal"
   module={BrightWeb.SearchLive.SkillSearchComponent}
   current_user={@current_user}
-  :if={@current_user}
 />
 
 <.live_component
+  :if={@current_user}
   id="interview_modal"
   module={BrightWeb.RecruitInterviewLive.CreateComponent}
   current_user={@current_user}
-  :if={@current_user}
 />
 
 <.live_component
+  :if={@current_user}
   id="free_trial_recommendation_modal"
   module={BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent}
   current_user={@current_user}
-  :if={@current_user}
 />

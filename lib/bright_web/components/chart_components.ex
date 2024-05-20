@@ -104,12 +104,7 @@ defmodule BrightWeb.ChartComponents do
       |> assign(:data, assigns.data |> Jason.encode!())
 
     ~H"""
-    <div
-      id={@id}
-      phx-hook="DoughnutGraph"
-      phx-update="ignore"
-      data-data={@data}
-    >
+    <div id={@id} phx-hook="DoughnutGraph" phx-update="ignore" data-data={@data}>
       <canvas></canvas>
     </div>
     """

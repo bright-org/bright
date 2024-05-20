@@ -39,72 +39,82 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
                   />
                 </div>
               </div>
-          <!-- Start 面談調整内容 -->
-            <div class="w-[493px]">
-              <h3 class="font-bold text-xl">面談内容</h3>
+              <!-- Start 面談調整内容 -->
+              <div class="w-[493px]">
+                <h3 class="font-bold text-xl">面談内容</h3>
                 <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] flex items-center mb-10">
                       対象面談
                     </dt>
                     <dd class="w-[280px] mb-10 break-words">
-                      <span><%= if @interview.skill_panel_name == nil, do: "スキルパネルデータなし", else: @interview.skill_panel_name %></span>
+                      <span>
+                        <%= if @interview.skill_panel_name == nil,
+                          do: "スキルパネルデータなし",
+                          else: @interview.skill_panel_name %>
+                      </span>
                       <br />
                       <span class="text-brightGray-300">
-                        <%= NaiveDateTime.to_date(@interview.inserted_at) %>
-                        希望年収:<%= @interview.desired_income %>
+                        <%= NaiveDateTime.to_date(@interview.inserted_at) %> 希望年収:<%= @interview.desired_income %>
                       </span>
                     </dd>
                     <dt class="font-bold w-[98px] mb-10">同席依頼先</dt>
                     <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
-                      <%= for member <- @interview.interview_members do %>
-                        <div class="flex">
-                          <div class="w-[200px] truncate mr-4">
-                          <.profile_small
-                            user_name={member.user.name}
-                            icon_file_path={icon_url(member.user.user_profile.icon_file_path)}
-                          />
+                        <%= for member <- @interview.interview_members do %>
+                          <div class="flex">
+                            <div class="w-[200px] truncate mr-4">
+                              <.profile_small
+                                user_name={member.user.name}
+                                icon_file_path={icon_url(member.user.user_profile.icon_file_path)}
+                              />
+                            </div>
+                            <div class="mt-4">
+                              <span>
+                                <%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %>
+                              </span>
+                            </div>
                           </div>
-                          <div class="mt-4">
-                            <span><%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %></span>
-                          </div>
-                        </div>
-                      <% end %>
+                        <% end %>
                       </ul>
                     </dd>
                     <dt class="font-bold w-[98px] flex mt-16">
                       <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
                     <dd class="w-[280px] mt-16">
-                    <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full break-words">
-                      <%= @interview.comment %>
-                    </div>
+                      <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full break-words">
+                        <%= @interview.comment %>
+                      </div>
                     </dd>
                   </dl>
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
                   <.link navigate={@patch}>
-                  <button class="text-sm font-bold py-3 rounded border border-base w-44">
-                  閉じる
-                  </button>
+                    <button class="text-sm font-bold py-3 rounded border border-base w-44">
+                      閉じる
+                    </button>
                   </.link>
                   <button
-                    phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview})}
+                    phx-click={
+                      JS.push("decision", target: @myself, value: %{decision: :cancel_interview})
+                    }
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
                     面談をキャンセル
                   </button>
 
                   <button
-                    phx-click={JS.push("decision", target: @myself, value: %{decision: :ongoing_interview})}
+                    phx-click={
+                      JS.push("decision", target: @myself, value: %{decision: :ongoing_interview})
+                    }
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44"
                   >
                     面談確定
                   </button>
                 </div>
-            </div><!-- End 面談調整内容 -->
-          </div>
+              </div>
+              <!-- End 面談調整内容 -->
+            </div>
           </section>
         </main>
       </div>

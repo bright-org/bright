@@ -68,20 +68,11 @@ defmodule BrightWeb.TabComponents do
     ~H"""
     <ul class={["flex content-between border-b border-brightGray-200 text-brightGray-500", @rest]}>
       <%= for {key, value} <- @tabs do %>
-        <.tab_header_item
-          id={@id}
-          tab_name={key}
-          selected={key == @selected_tab}
-          target={@target}
-        >
+        <.tab_header_item id={@id} tab_name={key} selected={key == @selected_tab} target={@target}>
           <%= value %>
         </.tab_header_item>
       <% end %>
-      <.tab_menu_button
-        :if={length(@menu_items) > 0}
-        id={@id}
-        menu_items={@menu_items}
-      />
+      <.tab_menu_button :if={length(@menu_items) > 0} id={@id} menu_items={@menu_items} />
     </ul>
     """
   end
@@ -116,7 +107,9 @@ defmodule BrightWeb.TabComponents do
 
     ~H"""
     <li class="max-w-xs w-full">
-      <a href="#" phx-click="tab_click"
+      <a
+        href="#"
+        phx-click="tab_click"
         phx-target={@target}
         phx-value-id={@id}
         phx-value-tab_name={@tab_name}
@@ -148,7 +141,7 @@ defmodule BrightWeb.TabComponents do
         <span class="material-icons text-brightGreen-900">more_vert</span>
       </button>
       <!-- Dropdown menu -->
-      <.tab_menu id={@id} menu_items={@menu_items}/>
+      <.tab_menu id={@id} menu_items={@menu_items} />
     </li>
     """
   end
@@ -163,13 +156,10 @@ defmodule BrightWeb.TabComponents do
       |> assign(:aria_labelledby, assigns.id <> "_dropmenu")
 
     ~H"""
-    <div
-      id={@menu_id}
-      class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px]"
-    >
+    <div id={@menu_id} class="z-10 hidden bg-white rounded-lg shadow-md min-w-[286px]">
       <ul class="p-2 text-left text-base" aria-labelledby={@aria_labelledby}>
         <%= for menu_item <- @menu_items do %>
-          <.tab_menu_item menu_item={menu_item}/>
+          <.tab_menu_item menu_item={menu_item} />
         <% end %>
       </ul>
     </div>
@@ -186,20 +176,14 @@ defmodule BrightWeb.TabComponents do
       |> assign(:style, style)
 
     ~H"""
-        <li>
-          <a :if={Map.has_key?(@menu_item, :href)}
-            href={@menu_item.href}
-            class={@style}
-          >
-            <%= @menu_item.text %>
-          </a>
-          <a :if={Map.has_key?(@menu_item, :on_click)}
-            phx-click={@menu_item.on_click}
-            class={@style}
-          >
-            <%= @menu_item.text %>
-          </a>
-        </li>
+    <li>
+      <a :if={Map.has_key?(@menu_item, :href)} href={@menu_item.href} class={@style}>
+        <%= @menu_item.text %>
+      </a>
+      <a :if={Map.has_key?(@menu_item, :on_click)} phx-click={@menu_item.on_click} class={@style}>
+        <%= @menu_item.text %>
+      </a>
+    </li>
     """
   end
 
@@ -243,7 +227,7 @@ defmodule BrightWeb.TabComponents do
         phx-target={@target}
         phx-value-id={@id}
       >
-        <span class={@previous_span_style} >chevron_left</span> 前
+        <span class={@previous_span_style}>chevron_left</span> 前
       </button>
       <button
         type="button"
@@ -252,7 +236,7 @@ defmodule BrightWeb.TabComponents do
         phx-target={@target}
         phx-value-id={@id}
       >
-        次 <span class={@next_span_style} >chevron_right</span>
+        次 <span class={@next_span_style}>chevron_right</span>
       </button>
     </div>
     """

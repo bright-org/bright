@@ -10,15 +10,27 @@
 <.table
   id="subscription_plan_services"
   rows={@streams.subscription_plan_services}
-  row_click={fn {_id, subscription_plan_service} -> JS.navigate(~p"/admin/subscription_plan_services/#{subscription_plan_service}") end}
+  row_click={
+    fn {_id, subscription_plan_service} ->
+      JS.navigate(~p"/admin/subscription_plan_services/#{subscription_plan_service}")
+    end
+  }
 >
-  <:col :let={{_id, subscription_plan_service}} label="Service code"><%= subscription_plan_service.service_code %></:col>
-  <:col :let={{_id, subscription_plan_service}} label="Plan"><%= subscription_plan_service.subscription_plan_id %></:col>
+  <:col :let={{_id, subscription_plan_service}} label="Service code">
+    <%= subscription_plan_service.service_code %>
+  </:col>
+  <:col :let={{_id, subscription_plan_service}} label="Plan">
+    <%= subscription_plan_service.subscription_plan_id %>
+  </:col>
   <:action :let={{_id, subscription_plan_service}}>
     <div class="sr-only">
-      <.link navigate={~p"/admin/subscription_plan_services/#{subscription_plan_service}"}>Show</.link>
+      <.link navigate={~p"/admin/subscription_plan_services/#{subscription_plan_service}"}>
+        Show
+      </.link>
     </div>
-    <.link patch={~p"/admin/subscription_plan_services/#{subscription_plan_service}/edit"}>Edit</.link>
+    <.link patch={~p"/admin/subscription_plan_services/#{subscription_plan_service}/edit"}>
+      Edit
+    </.link>
   </:action>
   <:action :let={{id, subscription_plan_service}}>
     <.link
@@ -30,7 +42,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="subscription_plan_service-modal" show on_cancel={JS.patch(~p"/admin/subscription_plan_services")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="subscription_plan_service-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/subscription_plan_services")}
+>
   <.live_component
     module={BrightWeb.Admin.SubscriptionPlanServiceLive.FormComponent}
     id={@subscription_plan_service.id || :new}

@@ -9,16 +9,18 @@ defmodule BrightWeb.UserForgotPasswordLive do
     <UserAuthComponents.header>パスワードを忘れた方へ</UserAuthComponents.header>
 
     <UserAuthComponents.description>
-      パスワードをリセットするリンクをメールに送ります。<br>登録しているユーザーのメールアドレスを入力してください。
+      パスワードをリセットするリンクをメールに送ります。<br />登録しているユーザーのメールアドレスを入力してください。
     </UserAuthComponents.description>
 
-    <UserAuthComponents.auth_form
-      for={@form}
-      id="reset_password_form"
-      phx-submit="send_email"
-    >
+    <UserAuthComponents.auth_form for={@form} id="reset_password_form" phx-submit="send_email">
       <UserAuthComponents.form_section variant="center">
-        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+        <UserAuthComponents.input_with_label
+          field={@form[:email]}
+          id="email"
+          type="email"
+          label_text="メールアドレス"
+          required
+        />
 
         <UserAuthComponents.button variant="mt-sm">パスワードリセット用リンクを送信</UserAuthComponents.button>
 

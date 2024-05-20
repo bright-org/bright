@@ -10,7 +10,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   def render(assigns) do
     ~H"""
     <section class="bg-white pt-6 pb-24 px-8 lg:py-8 min-h-[720px] relative rounded-lg">
-      <h1 class={["font-bold text-3xl",hidden_more_skills(@current_path)] }>
+      <h1 class={["font-bold text-3xl", hidden_more_skills(@current_path)]}>
         <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
           スキルを選ぶ
         </span>
@@ -24,11 +24,11 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
           <section class="mt-1 lg:px-4 py-4 w-full lg:w-[1040px]">
             <ul>
               <%= for skill_unit <- @skill_units do %>
-              <li>
-                <span class={"bg-#{@career_field.name_en}-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGem#{String.capitalize(@career_field.name_en)} before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"}>
-                  <%= skill_unit.name %>
-                </span>
-              </li>
+                <li>
+                  <span class={"bg-#{@career_field.name_en}-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGem#{String.capitalize(@career_field.name_en)} before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"}>
+                    <%= skill_unit.name %>
+                  </span>
+                </li>
               <% end %>
             </ul>
           </section>
@@ -39,12 +39,15 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
 
       <p class="flex flex-col lg:flex-row gap-y-4 lg:gap-y-0 justify-center mt-8 lg:px-4 w-full lg:w-[1040px]">
         <button
-          phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "input"})}
+          phx-click={
+            JS.push("select_skill_panel",
+              value: %{id: @skill_panel.id, name: @skill_panel.name, type: "input"}
+            )
+          }
           class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold px-4 py-2 rounded select-none text-white w-full lg:w-64 hover:opacity-50"
         >
           このスキルでスキル入力に進む
         </button>
-
         <!-- αは落とす
         <button
           phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "skillup"})}
@@ -53,7 +56,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
           このスキルでスキルアップに進む
         </button>
         -->
-
         <.link
           navigate={@return_to}
           class="bg-white block border border-solid border-black font-bold lg:ml-16 px-4 py-2 rounded select-none text-black text-center w-full lg:w-40 hover:opacity-50"

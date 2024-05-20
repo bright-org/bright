@@ -26,10 +26,12 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                 <div>
                   <h3 class="font-bold text-xl mb-8">候補者</h3>
                   <.profile
-                  user_name={@coordination.candidates_user.name}
-                  title={@coordination.candidates_user.user_profile.title}
-                  icon_file_path={icon_url(@coordination.candidates_user.user_profile.icon_file_path)}
-              />
+                    user_name={@coordination.candidates_user.name}
+                    title={@coordination.candidates_user.user_profile.title}
+                    icon_file_path={
+                      icon_url(@coordination.candidates_user.user_profile.icon_file_path)
+                    }
+                  />
                   <.live_component
                     id="user_params_for_coordination"
                     prefix="interview"
@@ -42,41 +44,42 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                     stock_user_ids={[]}
                   />
                 </div>
-
               </div>
 
-            <div class="w-[493px]">
-              <h3 class="font-bold text-xl">選考内容</h3>
-              <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
+              <div class="w-[493px]">
+                <h3 class="font-bold text-xl">選考内容</h3>
+                <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
                   <dl class="flex flex-wrap w-full">
                     <dt class="font-bold w-[98px] mb-10">選考依頼先</dt>
                     <dd class="min-w-[280px]">
                       <ul class="flex flex-col gap-y-1">
-                      <%= for member <- @coordination.coordination_members do %>
-                        <div class="flex">
-                          <div class="w-[200px] truncate mr-4">
-                          <.profile_small
-                            user_name={member.user.name}
-                            icon_file_path={icon_url(member.user.user_profile.icon_file_path)}
-                          />
+                        <%= for member <- @coordination.coordination_members do %>
+                          <div class="flex">
+                            <div class="w-[200px] truncate mr-4">
+                              <.profile_small
+                                user_name={member.user.name}
+                                icon_file_path={icon_url(member.user.user_profile.icon_file_path)}
+                              />
+                            </div>
+                            <div class="mt-4">
+                              <span>
+                                <%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %>
+                              </span>
+                            </div>
                           </div>
-                          <div class="mt-4">
-                            <span><%= Gettext.gettext(BrightWeb.Gettext, to_string(member.decision)) %></span>
-                          </div>
-                        </div>
-                      <% end %>
+                        <% end %>
                       </ul>
                     </dd>
                     <p class="text-attention-600">
-                    <%= @no_answer_error %>
+                      <%= @no_answer_error %>
                     </p>
                     <dt class="font-bold w-[98px] flex mt-16">
                       <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
                     <dd class="w-[280px] mt-16">
-                    <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full break-words">
-                      <%= @coordination.comment %>
-                    </div>
+                      <div class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full break-words">
+                        <%= @coordination.comment %>
+                      </div>
                     </dd>
                   </dl>
                 </div>
@@ -86,13 +89,15 @@ defmodule BrightWeb.RecruitCoordinationLive.EditComponent do
                   </button>
                   <button
                     class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
-                    phx-click={JS.push("decision", target: @myself, value: %{decision: :hiring_decision})}
+                    phx-click={
+                      JS.push("decision", target: @myself, value: %{decision: :hiring_decision})
+                    }
                   >
                     選考結果連絡の準備
                   </button>
                 </div>
               </div>
-          </div>
+            </div>
           </section>
         </main>
       </div>

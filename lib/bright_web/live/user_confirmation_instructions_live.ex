@@ -9,15 +9,10 @@ defmodule BrightWeb.UserConfirmationInstructionsLive do
     <UserAuthComponents.header>確認メールが届かなかった方へ</UserAuthComponents.header>
 
     <UserAuthComponents.description>
-      確認メールを再度送信します。
-      <br>
-      登録時に使用したメールアドレスを入力してください。
-      <br>
-      <br>
+      確認メールを再度送信します。 <br /> 登録時に使用したメールアドレスを入力してください。 <br />
+      <br />
       <span class="text-xs">
-        メールが届かない場合は、Brightからのメールが受信できるように
-        <br>
-        ドメイン指定受信で「bright-fun.org」を許可するように設定してください。
+        メールが届かない場合は、Brightからのメールが受信できるように <br /> ドメイン指定受信で「bright-fun.org」を許可するように設定してください。
       </span>
     </UserAuthComponents.description>
 
@@ -27,7 +22,13 @@ defmodule BrightWeb.UserConfirmationInstructionsLive do
       phx-submit="send_instructions"
     >
       <UserAuthComponents.form_section variant="center">
-        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+        <UserAuthComponents.input_with_label
+          field={@form[:email]}
+          id="email"
+          type="email"
+          label_text="メールアドレス"
+          required
+        />
 
         <UserAuthComponents.button variant="mt-sm">確認メールを送信</UserAuthComponents.button>
 

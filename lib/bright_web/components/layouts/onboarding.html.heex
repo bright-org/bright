@@ -1,4 +1,8 @@
-<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()} user_id={get_user_id(assigns)}>
+<.root_layout
+  page_title={assigns[:page_title]}
+  csrf_token={get_csrf_token()}
+  user_id={get_user_id(assigns)}
+>
   <body class="bg-white font-notosans">
     <.google_tag_manager_noscript />
     <div class="flex lg:h-screen lg:p-10">

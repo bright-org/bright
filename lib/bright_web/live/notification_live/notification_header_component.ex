@@ -20,8 +20,11 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponent do
       >
         <.icon name="hero-bell" class="h-8 w-8" />
 
-        <span id="notification_unread_batch" :if={@has_new_notification?} class="absolute top-0 right-0 h-3 w-3 bg-attention-300 rounded-full" />
-
+        <span
+          :if={@has_new_notification?}
+          id="notification_unread_batch"
+          class="absolute top-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
+        />
       </button>
       <div :if={@open?} class="absolute p-2 bg-brightGray-10 top-12 right-20 lg:right-24 shadow-lg">
         <ul>

@@ -8,7 +8,10 @@ defmodule BrightWeb.UserTwoFactorAuthLive do
     <UserAuthComponents.header>2段階認証</UserAuthComponents.header>
 
     <UserAuthComponents.description>
-    メールに届いた認証コードを入力し「次へ進む」を押してください。<br><UserAuthComponents.link_inline_text href="#" phx-click="resend_two_factor_auth_code">再送信する</UserAuthComponents.link_inline_text>
+      メールに届いた認証コードを入力し「次へ進む」を押してください。<br />
+      <UserAuthComponents.link_inline_text href="#" phx-click="resend_two_factor_auth_code">
+        再送信する
+      </UserAuthComponents.link_inline_text>
     </UserAuthComponents.description>
 
     <UserAuthComponents.auth_form
@@ -18,8 +21,14 @@ defmodule BrightWeb.UserTwoFactorAuthLive do
       action={~p"/users/two_factor_auth"}
     >
       <UserAuthComponents.form_section variant="center">
-        <UserAuthComponents.input_with_label field={@form[:code]} id="code" type="number" label_text="認証用コード" required/>
-        <.input field={@form[:token]} type="hidden" id="hidden_token" value={@token}/>
+        <UserAuthComponents.input_with_label
+          field={@form[:code]}
+          id="code"
+          type="number"
+          label_text="認証用コード"
+          required
+        />
+        <.input field={@form[:token]} type="hidden" id="hidden_token" value={@token} />
 
         <UserAuthComponents.button variant="mt-sm">次に進む</UserAuthComponents.button>
 

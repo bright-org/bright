@@ -2,7 +2,10 @@
   Subscription plan <%= @subscription_plan.id %>
   <:subtitle>This is a subscription_plan record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/admin/subscription_plans/#{@subscription_plan}/show/edit"} phx-click={JS.push_focus()}>
+    <.link
+      patch={~p"/admin/subscription_plans/#{@subscription_plan}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
       <.button>Edit subscription_plan</.button>
     </.link>
   </:actions>
@@ -12,15 +15,24 @@
   <:item title="Plan code"><%= @subscription_plan.plan_code %></:item>
   <:item title="Name jp"><%= @subscription_plan.name_jp %></:item>
   <:item title="Create teams limit"><%= @subscription_plan.create_teams_limit %></:item>
-  <:item title="Create enable hr functions teams limit"><%= @subscription_plan.create_enable_hr_functions_teams_limit %></:item>
+  <:item title="Create enable hr functions teams limit">
+    <%= @subscription_plan.create_enable_hr_functions_teams_limit %>
+  </:item>
   <:item title="Team members limit"><%= @subscription_plan.team_members_limit %></:item>
-  <:item title="Available contract end datetime"><%= @subscription_plan.available_contract_end_datetime %></:item>
+  <:item title="Available contract end datetime">
+    <%= @subscription_plan.available_contract_end_datetime %>
+  </:item>
   <:item title="Free trial priority"><%= @subscription_plan.free_trial_priority %></:item>
 </.list>
 
 <.back navigate={~p"/admin/subscription_plans"}>Back to subscription_plans</.back>
 
-<.modal :if={@live_action == :edit} id="subscription_plan-modal" show on_cancel={JS.patch(~p"/admin/subscription_plans/#{@subscription_plan}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="subscription_plan-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/subscription_plans/#{@subscription_plan}")}
+>
   <.live_component
     module={BrightWeb.Admin.SubscriptionPlanLive.FormComponent}
     id={@subscription_plan.id}

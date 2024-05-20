@@ -32,7 +32,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
           <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はありません
+                <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はありません
               </div>
             </li>
           </ul>
@@ -86,10 +86,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
       <div class="text-left font-bold w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
-        <p
-          phx-click="on_skill_pannel_click"
-          phx-value-skill_panel_id={@skill_panel.id}
-        >
+        <p phx-click="on_skill_pannel_click" phx-value-skill_panel_id={@skill_panel.id}>
           <%= @skill_panel.name %>
         </p>
       </div>
@@ -167,7 +164,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
         phx-value-skill_panel_id={@skill_panel.id}
         phx-value-skill_class_id={@skill_class.id}
         class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
-        >
+      >
         <img src={@icon_path} class="mr-1" />
         <span class="w-16"><%= level_text(@level) %></span>
       </p>

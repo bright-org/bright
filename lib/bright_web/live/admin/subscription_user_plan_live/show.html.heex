@@ -2,7 +2,10 @@
   Subscription user plan <%= @subscription_user_plan.id %>
   <:subtitle>This is a subscription_user_plan record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/admin/subscription_user_plans/#{@subscription_user_plan}/show/edit"} phx-click={JS.push_focus()}>
+    <.link
+      patch={~p"/admin/subscription_user_plans/#{@subscription_user_plan}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
       <.button>Edit subscription_user_plan</.button>
     </.link>
   </:actions>
@@ -12,15 +15,24 @@
   <:item title="User"><%= @subscription_user_plan.user_id %></:item>
   <:item title="Plan"><%= @subscription_user_plan.subscription_plan_id %></:item>
   <:item title="Subscription status"><%= @subscription_user_plan.subscription_status %></:item>
-  <:item title="Subscription start datetime"><%= @subscription_user_plan.subscription_start_datetime %></:item>
-  <:item title="Subscription end datetime"><%= @subscription_user_plan.subscription_end_datetime %></:item>
+  <:item title="Subscription start datetime">
+    <%= @subscription_user_plan.subscription_start_datetime %>
+  </:item>
+  <:item title="Subscription end datetime">
+    <%= @subscription_user_plan.subscription_end_datetime %>
+  </:item>
   <:item title="Trial start datetime"><%= @subscription_user_plan.trial_start_datetime %></:item>
   <:item title="Trial end datetime"><%= @subscription_user_plan.trial_end_datetime %></:item>
 </.list>
 
 <.back navigate={~p"/admin/subscription_user_plans"}>Back to subscription_user_plans</.back>
 
-<.modal :if={@live_action == :edit} id="subscription_user_plan-modal" show on_cancel={JS.patch(~p"/admin/subscription_user_plans/#{@subscription_user_plan}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="subscription_user_plan-modal"
+  show
+  on_cancel={JS.patch(~p"/admin/subscription_user_plans/#{@subscription_user_plan}")}
+>
   <.live_component
     module={BrightWeb.Admin.SubscriptionUserPlanLive.FormComponent}
     id={@subscription_user_plan.id}

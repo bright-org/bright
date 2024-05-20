@@ -9,7 +9,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id="coordination_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
+    <div
+      id="coordination_container"
+      class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5"
+    >
       <div class="text-sm font-medium text-center">
         <h4 class="text-start">採用選考の状況</h4>
         <li :if={Enum.count(@coordinations) == 0} class="flex">
@@ -21,7 +24,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
           <% icon_path = coordination.candidates_user.user_profile.icon_file_path %>
           <li class="flex my-5">
             <.link
-               patch={~p"/recruits/coordinations/#{coordination.id}"}
+              patch={~p"/recruits/coordinations/#{coordination.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <img
@@ -30,11 +33,14 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
                 alt=""
               />
               <div class="flex-1">
-                <span><%= if coordination.skill_panel_name == nil, do: "スキルパネルデータなし", else: coordination.skill_panel_name %></span>
+                <span>
+                  <%= if coordination.skill_panel_name == nil,
+                    do: "スキルパネルデータなし",
+                    else: coordination.skill_panel_name %>
+                </span>
                 <br />
                 <span class="text-brightGray-300">
-                <%= NaiveDateTime.to_date(coordination.inserted_at) %>
-                希望年収:<%= coordination.desired_income %>
+                  <%= NaiveDateTime.to_date(coordination.inserted_at) %> 希望年収:<%= coordination.desired_income %>
                 </span>
               </div>
 
@@ -50,7 +56,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
       </div>
     </div>
 
-    <div id="coordination_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
+    <div
+      id="coordination_member_container"
+      class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5"
+    >
       <div class="text-sm font-medium text-center">
         <h4 class="text-start">採用選考依頼</h4>
         <li :if={Enum.count(@coordination_members) == 0} class="flex">
@@ -59,10 +68,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
           </div>
         </li>
         <%= for member <- @coordination_members do %>
-        <% icon_path = member.coordination.candidates_user.user_profile.icon_file_path %>
+          <% icon_path = member.coordination.candidates_user.user_profile.icon_file_path %>
           <li class="flex my-5">
             <.link
-               patch={~p"/recruits/coordinations/member/#{member.id}"}
+              patch={~p"/recruits/coordinations/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <img
@@ -71,11 +80,14 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
                 alt=""
               />
               <div class="flex-1">
-                <span><%= if member.coordination.skill_panel_name == nil, do: "スキルパネルデータなし", else: member.coordination.skill_panel_name %></span>
+                <span>
+                  <%= if member.coordination.skill_panel_name == nil,
+                    do: "スキルパネルデータなし",
+                    else: member.coordination.skill_panel_name %>
+                </span>
                 <br />
                 <span class="text-brightGray-300">
-                  <%= NaiveDateTime.to_date(member.inserted_at) %>
-                  希望年収:<%= member.coordination.desired_income %>
+                  <%= NaiveDateTime.to_date(member.inserted_at) %> 希望年収:<%= member.coordination.desired_income %>
                 </span>
               </div>
 
@@ -91,7 +103,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
       </div>
     </div>
 
-    <div id="coordination_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
+    <div
+      id="coordination_member_container"
+      class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5"
+    >
       <div class="text-sm font-medium text-center">
         <h4 class="text-start">選考結果</h4>
         <li :if={Enum.count(@acceptances) == 0} class="flex">
@@ -100,10 +115,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
           </div>
         </li>
         <%= for acceptance <- @acceptances do %>
-        <% icon_path = acceptance.recruiter_user.user_profile.icon_file_path %>
+          <% icon_path = acceptance.recruiter_user.user_profile.icon_file_path %>
           <li class="flex my-5">
             <.link
-               patch={~p"/recruits/coordinations/acceptance/#{acceptance.id}"}
+              patch={~p"/recruits/coordinations/acceptance/#{acceptance.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <img
@@ -124,8 +139,12 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
       </div>
     </div>
 
-
-    <.bright_modal :if={@live_action in [:show_coordination]} id="coordination-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
+    <.bright_modal
+      :if={@live_action in [:show_coordination]}
+      id="coordination-modal"
+      show
+      on_cancel={JS.patch(~p"/recruits/coordinations")}
+    >
       <.live_component
         module={BrightWeb.RecruitCoordinationLive.EditComponent}
         id="coordination_modal"
@@ -138,7 +157,12 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
       />
     </.bright_modal>
 
-    <.bright_modal :if={@live_action in [:show_member]} id="coordination-member-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
+    <.bright_modal
+      :if={@live_action in [:show_member]}
+      id="coordination-member-modal"
+      show
+      on_cancel={JS.patch(~p"/recruits/coordinations")}
+    >
       <.live_component
         module={BrightWeb.RecruitCoordinationLive.EditMemberComponent}
         id="coordination_member_modal"
@@ -150,7 +174,12 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
       />
     </.bright_modal>
 
-    <.bright_modal :if={@live_action in [:employment_notification]} id="employment-notification-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
+    <.bright_modal
+      :if={@live_action in [:employment_notification]}
+      id="employment-notification-modal"
+      show
+      on_cancel={JS.patch(~p"/recruits/coordinations")}
+    >
       <.live_component
         module={BrightWeb.RecruitEmploymentLive.CreateComponent}
         id="employment_notification_modal"
@@ -162,8 +191,12 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
       />
     </.bright_modal>
 
-
-    <.bright_modal :if={@live_action in [:show_acceptance]} id="employment-acceptance-modal" show on_cancel={JS.patch(~p"/recruits/coordinations")}>
+    <.bright_modal
+      :if={@live_action in [:show_acceptance]}
+      id="employment-acceptance-modal"
+      show
+      on_cancel={JS.patch(~p"/recruits/coordinations")}
+    >
       <.live_component
         module={BrightWeb.RecruitCoordinationLive.AcceptanceComponent}
         id="employment_acceptance_modal"
@@ -174,7 +207,6 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         patch={~p"/recruits/coordinations"}
       />
     </.bright_modal>
-
     """
   end
 

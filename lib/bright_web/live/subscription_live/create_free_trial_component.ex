@@ -37,7 +37,8 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
                     id="free_trial_form"
                     form={@form}
                     phx_change={JS.push("validate", target: @myself)}
-                    phx_submit={JS.push("submit", target: @myself)} />
+                    phx_submit={JS.push("submit", target: @myself)}
+                  />
                 </div>
               </div>
 

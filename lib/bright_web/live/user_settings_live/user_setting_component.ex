@@ -29,16 +29,19 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
       <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
       <div class="fixed inset-0 overflow-y-auto z-[60]">
         <section
-          id="personal_settings" class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-full lg:w-[800px] z-20"
+          id="personal_settings"
+          class="absolute bg-white min-h-[600px] p-4 right-0 shadow text-sm top-[60px] w-full lg:w-[800px] z-20"
           phx-click-away={JS.hide(to: "#personal_setting_modal")}
         >
           <div class="w-full mb-4">
-          <button class="absolute top-4 right-8">
-            <span
-              class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
-              phx-click={JS.hide(to: "#personal_setting_modal")}
-            >close</span>
-          </button>
+            <button class="absolute top-4 right-8">
+              <span
+                class="material-icons text-white !text-sm bg-base rounded-full !inline-flex w-4 h-4 !items-center !justify-center"
+                phx-click={JS.hide(to: "#personal_setting_modal")}
+              >
+                close
+              </span>
+            </button>
           </div>
           <.tab
             id="user_settings"
@@ -49,7 +52,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
           >
             <.live_component
               module={@module}
-              id={"user_settings"}
+              id="user_settings"
               user={@current_user}
               action={:edit}
               current_request_path={@current_request_path}

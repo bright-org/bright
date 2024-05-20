@@ -55,8 +55,7 @@ defmodule BrightWeb.CardLive.ManagingTeamCardComponent do
           <%= if @card.total_entries > 0 do %>
             <ul class="flex gap-y-2 flex-col">
               <%= for team_params <- @card.entries do %>
-                <div
-                  class={if team_params.team_id == @team_id, do: "bg-brightGray-50", else: ""}>
+                <div class={if team_params.team_id == @team_id, do: "bg-brightGray-50", else: ""}>
                   <li
                     id={team_params.team_id}
                     phx-click="on_card_row_click"
@@ -64,8 +63,10 @@ defmodule BrightWeb.CardLive.ManagingTeamCardComponent do
                     phx-value-team_id={team_params.team_id}
                     class="h-[35px] text-left flex items-center text-base p-1 rounded cursor-pointer"
                   >
-                    <img src={get_team_icon_path(team_params.team_type)} class="ml-2 mr-2"/>
-                    <span class="max-w-[160px] lg:max-w-[540px] truncate"><%= team_params.name %></span>
+                    <img src={get_team_icon_path(team_params.team_type)} class="ml-2 mr-2" />
+                    <span class="max-w-[160px] lg:max-w-[540px] truncate">
+                      <%= team_params.name %>
+                    </span>
                   </li>
                 </div>
               <% end %>
@@ -76,13 +77,10 @@ defmodule BrightWeb.CardLive.ManagingTeamCardComponent do
               <li :if={@card.selected_tab == "joined_teams"} class="text-base text-left p-1">
                 <div class="text-base">招待可能なチームはありません</div>
                 <p class="my-4">
-                  <a
-                     href="/teams/new"
-                     class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
-                   >
+                  <a href="/teams/new" class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
                     チームを作る（β）
-                   </a>
-                 </p>
+                  </a>
+                </p>
               </li>
             </ul>
           <% end %>

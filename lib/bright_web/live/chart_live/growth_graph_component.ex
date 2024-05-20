@@ -38,13 +38,14 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
             data-dropdown-offset-skidding="307"
             data-dropdown-placement="bottom"
           >
-            <BrightWeb.BrightCoreComponents.action_button icon="add" class="dropdownTrigger flex py-2 pl-3">
+            <BrightWeb.BrightCoreComponents.action_button
+              icon="add"
+              class="dropdownTrigger flex py-2 pl-3"
+            >
               <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
               <span class="min-w-[5em]">他者と比較</span>
             </BrightWeb.BrightCoreComponents.action_button>
-            <div
-              class="dropdownTarget bg-white rounded-md mt-1 w-full lg:w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
-            >
+            <div class="dropdownTarget bg-white rounded-md mt-1 w-full lg:w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10">
               <.live_component
                 id="related-user-card-compare"
                 module={BrightWeb.CardLive.RelatedUserCardComponent}
@@ -61,7 +62,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       <% # 成長グラフ %>
       <div class="flex justify-center pl-7 lg:pl-14">
         <div class="hidden lg:block">
-          <.growth_graph data={@data} id="growth-graph"/>
+          <.growth_graph data={@data} id="growth-graph" />
         </div>
         <div class="lg:hidden">
           <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
@@ -76,7 +77,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       <% # タイムライン自身 %>
       <div class="lg:flex lg:items-center justify-center 2xl:justify-normal pr-7 lg:pr-14">
         <div class="hidden lg:flex justify-center items-center mr-2" data-size="pc">
-          <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself}/>
+          <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself} />
         </div>
 
         <.timeline_bar
@@ -95,17 +96,24 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
 
         <div class="flex justify-between lg:hidden" data-size="sp">
           <% # スマホ版タイムライン移動ボタン %>
-          <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself}/>
+          <.btn_timeline_shift_past enabled={@timeline.past_enabled} id="myself" myself={@myself} />
           <.btn_timeline_shift_future enabled={@timeline.future_enabled} id="myself" myself={@myself} />
         </div>
       </div>
 
       <% # 比較対象 表示 %>
-      <div :if={compared_other?(@compared_user, @user_id)} id="compared-user-display" class="py-2 lg:py-4">
+      <div
+        :if={compared_other?(@compared_user, @user_id)}
+        id="compared-user-display"
+        class="py-2 lg:py-4"
+      >
         <div class="w-14"></div>
         <div class="w-full flex justify-between items-center">
           <div class="text-left flex items-center text-base border border-brightPurple-300 px-3 py-1 rounded">
-            <img class="inline-block h-10 w-10 rounded-full" src={UserProfiles.icon_url(@compared_user.user_profile.icon_file_path)} />
+            <img
+              class="inline-block h-10 w-10 rounded-full"
+              src={UserProfiles.icon_url(@compared_user.user_profile.icon_file_path)}
+            />
             <div class="ml-2">
               <p><%= compared_user_name(@compared_user) %></p>
               <p class="text-brightGray-300"><%= @compared_user.user_profile.title %></p>
@@ -118,7 +126,11 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       <% # タイムライン比較対象用 %>
       <div :if={@compared_user} id="timeline-bar-compared" class="lg:flex lg:items-center">
         <div class="hidden lg:flex justify-center items-center mr-2" data-size="pc">
-          <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself} />
+          <.btn_timeline_shift_past
+            enabled={@compared_timeline.past_enabled}
+            id="other"
+            myself={@myself}
+          />
         </div>
 
         <.timeline_bar
@@ -133,13 +145,25 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         />
 
         <div class="hidden lg:flex justify-center items-center ml-2" data-size="pc">
-          <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
+          <.btn_timeline_shift_future
+            enabled={@compared_timeline.future_enabled}
+            id="other"
+            myself={@myself}
+          />
         </div>
 
         <div class="flex justify-between lg:hidden" data-size="sp">
           <% # スマホ版タイムライン移動ボタン %>
-          <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself}/>
-          <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
+          <.btn_timeline_shift_past
+            enabled={@compared_timeline.past_enabled}
+            id="other"
+            myself={@myself}
+          />
+          <.btn_timeline_shift_future
+            enabled={@compared_timeline.future_enabled}
+            id="other"
+            myself={@myself}
+          />
         </div>
       </div>
     </div>
@@ -155,7 +179,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       phx-click="shift_timeline_past"
       phx-value-id={@id}
       phx-target={@myself}
-      class={["w-8 h-6 lg:w-11 lg:h-9 flex justify-center items-center rounded", @id == "myself" && "bg-brightGreen-300", @id == "other" && "bg-brightPurple-300", @class]}
+      class={[
+        "w-8 h-6 lg:w-11 lg:h-9 flex justify-center items-center rounded",
+        @id == "myself" && "bg-brightGreen-300",
+        @id == "other" && "bg-brightPurple-300",
+        @class
+      ]}
       disabled={false}
     >
       <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
@@ -169,7 +198,10 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     ~H"""
     <button
       :if={!@enabled}
-      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-300 flex justify-center items-center rounded", @class]}
+      class={[
+        "w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-300 flex justify-center items-center rounded",
+        @class
+      ]}
       disabled={true}
     >
       <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
@@ -186,7 +218,12 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       phx-click="shift_timeline_future"
       phx-value-id={@id}
       phx-target={@myself}
-      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded", @id == "myself" && "bg-brightGreen-300", @id == "other" && "bg-brightPurple-300", @class]}
+      class={[
+        "w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded",
+        @id == "myself" && "bg-brightGreen-300",
+        @id == "other" && "bg-brightPurple-300",
+        @class
+      ]}
       disabled={false}
     >
       <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
@@ -200,7 +237,10 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     ~H"""
     <button
       :if={!@enabled}
-      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-300 flex justify-center items-center rounded", @class]}
+      class={[
+        "w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-300 flex justify-center items-center rounded",
+        @class
+      ]}
       disabled={true}
     >
       <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
