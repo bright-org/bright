@@ -22,7 +22,10 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
 
   defp create_interview(_) do
     interview =
-      insert(:interview, recruiter_user_id: insert(:user).id, candidates_user_id: insert(:user).id)
+      insert(:interview,
+        recruiter_user_id: insert(:user).id,
+        candidates_user_id: insert(:user).id
+      )
 
     %{interview: interview}
   end
