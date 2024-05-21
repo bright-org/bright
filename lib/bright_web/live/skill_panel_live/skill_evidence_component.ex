@@ -215,7 +215,11 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   def mount(socket) do
     {:ok,
      socket
-     |> allow_upload(:image, accept: ~w(.jpg .jpeg .png), max_file_size: 5_000_000, max_entries: 4)
+     |> allow_upload(:image,
+       accept: ~w(.jpg .jpeg .png),
+       max_file_size: 5_000_000,
+       max_entries: 4
+     )
      |> assign(:entry_errors, [])}
   end
 

@@ -3,6 +3,7 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
 
   alias Bright.Recruits
   alias Bright.UserProfiles
+  alias Bright.Teams
   import BrightWeb.BrightCoreComponents, only: [elapsed_time: 1]
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
@@ -19,19 +20,25 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
         </li>
         <%= for interview <- @interviews do %>
           <% icon_path =
-            if interview.status == :ongoing_interview,
-              do: interview.candidates_user.user_profile.icon_file_path,
-              else: nil %>
+            if interview.status == :ongoing_interview or
+                 Enum.member?(@team_members, interview.candidates_user_id),
+               do: interview.candidates_user.user_profile.icon_file_path,
+               else: nil %>
           <li class="flex my-5">
             <.link
               patch={~p"/recruits/interviews/#{interview.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <img
-                src={UserProfiles.icon_url(icon_path)}
-                class="object-cover h-12 w-12 rounded-full mr-2"
-                alt=""
-              />
+              <div class="flex flex-col">
+                <img
+                  src={UserProfiles.icon_url(icon_path)}
+                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  alt=""
+                />
+                <span :if={Enum.member?(@team_members, interview.candidates_user_id)}>
+                  <%= interview.candidates_user.name %>
+                </span>
+              </div>
               <div class="flex-1">
                 <span>
                   <%= if interview.skill_panel_name == nil,
@@ -68,16 +75,25 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
           </div>
         </li>
         <%= for member <- @interview_members do %>
+          <% icon_path =
+            if Enum.member?(@team_members, member.interview.candidates_user_id),
+              do: member.interview.candidates_user.user_profile.icon_file_path,
+              else: nil %>
           <li class="flex my-5">
             <.link
               patch={~p"/recruits/interviews/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <img
-                src={UserProfiles.icon_url(nil)}
-                class="object-cover h-12 w-12 rounded-full mr-2"
-                alt=""
-              />
+              <div class="flex flex-col">
+                <img
+                  src={UserProfiles.icon_url(icon_path)}
+                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  alt=""
+                />
+                <span :if={Enum.member?(@team_members, member.interview.candidates_user_id)}>
+                  <%= member.interview.candidates_user.name %>
+                </span>
+              </div>
               <div class="flex-1">
                 <span>
                   <%= if member.interview.skill_panel_name == nil,
@@ -173,14 +189,15 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    user_id = socket.assigns.current_user.id
+    user = socket.assigns.current_user
 
     socket
     |> assign(:page_title, "面談の打診状況")
-    |> assign(:interviews, Recruits.list_interview(user_id, :not_complete))
-    |> assign(:interview_members, Recruits.list_interview_members(user_id, :not_answered))
+    |> assign(:interviews, Recruits.list_interview(user.id, :not_complete))
+    |> assign(:interview_members, Recruits.list_interview_members(user.id, :not_answered))
     |> assign(:interview, nil)
     |> assign(:interview_member, nil)
+    |> assign(:team_members, Teams.list_user_ids_related_team_by_user(user))
     |> then(&{:ok, &1})
   end
 

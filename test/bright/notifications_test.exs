@@ -200,7 +200,9 @@ defmodule Bright.NotificationsTest do
                Notifications.list_notification_by_type(to_user.id, "skill_update", page: 1)
 
       assert %{total_entries: 0} =
-               Notifications.list_notification_by_type(no_related_user.id, "skill_update", page: 1)
+               Notifications.list_notification_by_type(no_related_user.id, "skill_update",
+                 page: 1
+               )
     end
 
     @tag type: "something"

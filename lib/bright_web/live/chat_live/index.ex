@@ -4,6 +4,7 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Chats
   alias Bright.Accounts
   alias Bright.Recruits
+  alias Bright.Teams
   alias Bright.Utils.GoogleCloud.Storage
 
   import BrightWeb.ChatLive.ChatComponents
@@ -22,7 +23,12 @@ defmodule BrightWeb.ChatLive.Index do
           </p>
         <% else %>
           <%= for chat <- @chats do %>
-            <.chat_list chat={chat} selected_chat={@chat} user_id={@current_user.id} />
+            <.chat_list
+              chat={chat}
+              selected_chat={@chat}
+              user_id={@current_user.id}
+              member_ids={@team_members}
+            />
           <% end %>
         <% end %>
       </div>
@@ -148,6 +154,16 @@ defmodule BrightWeb.ChatLive.Index do
                   }
                   class="order-2 flex justify-end"
                 >
+                  <%= if @chat.interview.status == :one_on_one do %>
+                    <button
+                      class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
+                      type="button"
+                      phx-click={JS.push("open_edit_interview")}
+                    >
+                      面談の打診
+                    </button>
+                  <% end %>
+
                   <%= if @chat.interview.status == :consume_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
@@ -237,6 +253,22 @@ defmodule BrightWeb.ChatLive.Index do
         />
       </.bright_modal>
 
+      <.bright_modal
+        :if={@chat && @open_edit_interview}
+        id="interview-edit-modal"
+        show
+        on_cancel={JS.navigate(~p"/recruits/chats/#{@chat.id}")}
+      >
+        <.live_component
+          :if={@current_user}
+          id="interview_edit_modal"
+          module={BrightWeb.RecruitInterviewLive.Edit1on1InterviewComponent}
+          current_user={@current_user}
+          interview_id={@chat.relation_id}
+          patch={~p"/recruits/chats/#{@chat.id}"}
+        />
+      </.bright_modal>
+
       <.modal :if={!is_nil(@preview)} id="preview" show on_cancel={JS.push("close_preview")}>
         <img src={Storage.public_url(@preview)} />
         <a href={Storage.public_url(@preview)} target="_blank" rel="noopener">
@@ -253,10 +285,12 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:open_confirm_interview, false)
     |> assign(:open_cancel_interview, false)
     |> assign(:open_create_coordination, false)
+    |> assign(:open_edit_interview, false)
     |> assign(:sender_icon_path, user.user_profile.icon_file_path)
     |> assign(:images_error, "")
     |> assign(:files_error, "")
     |> assign(:preview, nil)
+    |> assign(:team_members, Teams.list_user_ids_related_team_by_user(user))
     |> allow_upload(:images,
       accept: ~w(.jpg .jpeg .png),
       max_file_size: 2_000_000,
@@ -371,6 +405,10 @@ defmodule BrightWeb.ChatLive.Index do
 
   def handle_event("cancel_interview", _params, socket) do
     {:noreply, assign(socket, :open_cancel_interview, true)}
+  end
+
+  def handle_event("open_edit_interview", _params, socket) do
+    {:noreply, assign(socket, :open_edit_interview, true)}
   end
 
   def handle_event("open_create_coordination", _params, socket) do

@@ -11,6 +11,10 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
   alias Bright.UserProfiles
   alias Bright.SkillPanels
+  alias Bright.UserSearches
+  alias Bright.Chats
+  alias Bright.Recruits
+  alias Bright.Recruits.Interview
 
   @impl true
   def render(assigns) do
@@ -129,13 +133,12 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           phx-click={
             if @hr_enabled,
               do:
-                JS.show(to: "#create_interview_modal")
-                |> JS.push("open",
+                JS.push("start_1on1",
+                  target: @myself,
                   value: %{
-                    user: @display_skill_card.user.id,
+                    user_id: @display_skill_card.user.id,
                     skill_params: [%{skill_panel: @display_skill_panel.id, career_field: "1on1"}]
-                  },
-                  target: "#create_interview_modal"
+                  }
                 )
           }
         >
@@ -210,11 +213,69 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
     {:noreply, socket}
   end
 
+  def handle_event("start_1on1", %{"skill_params" => skill_params, "user_id" => user_id}, socket) do
+    recruiter = socket.assigns.current_user
+
+    interview =
+      case Recruits.get_interview(recruiter.id, user_id) do
+        %Interview{} = interview ->
+          interview
+
+        nil ->
+          skill_params =
+            skill_params
+            |> Enum.map(
+              &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
+                |> Enum.into(%{}))
+            )
+
+          candidates_user =
+            UserSearches.get_user_by_id_with_job_profile_and_skill_score(user_id, skill_params)
+            |> List.first()
+
+          interview_params = %{
+            "status" => :one_on_one,
+            "skill_panel_name" => gen_interview_name(skill_params),
+            "desired_income" => candidates_user.desired_income,
+            "skill_params" => Jason.encode!(skill_params),
+            "interview_members" => [],
+            "recruiter_user_id" => recruiter.id,
+            "candidates_user_id" => candidates_user.id
+          }
+
+          {:ok, interview} = Recruits.create_interview(interview_params)
+
+          interview
+      end
+
+    chat =
+      Chats.get_or_create_chat(
+        interview.recruiter_user_id,
+        interview.candidates_user_id,
+        interview.id,
+        "recruit",
+        [
+          %{user_id: interview.recruiter_user_id},
+          %{user_id: interview.candidates_user_id}
+        ]
+      )
+
+    {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+  end
+
   defp comparable_skill_panel?(skill_panel, skill_card, current_user) do
     # 「この人と比較」押下可能かどうか
     # - 「この人」にスキルスコアがあり、
     # - 自身が取得済みのスキルパネルであること
     skill_card.user_skill_class_score &&
       SkillPanels.get_user_skill_panel(current_user, skill_panel.id)
+  end
+
+  defp gen_interview_name(skill_params) do
+    skill_params
+    |> List.first()
+    |> Map.get(:skill_panel)
+    |> SkillPanels.get_skill_panel!()
+    |> Map.get(:name)
   end
 end

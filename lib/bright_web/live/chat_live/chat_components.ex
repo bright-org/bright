@@ -9,6 +9,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :chat, :any, required: true
   attr :selected_chat, :any, required: true
   attr :user_id, :string, required: true
+  attr :member_ids, :any, default: []
 
   def chat_list(assigns) do
     ~H"""
@@ -25,6 +26,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           chat={@chat}
           user_id={@user_id}
           anon={@chat.interview.recruiter_user_id == @user_id}
+          member_ids={@member_ids}
         />
       </div>
       <div class="w-full flex justify-between p-1 relative">
@@ -150,12 +152,13 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :show_name, :boolean, default: true
   attr :user_id, :string, required: true
   attr :anon, :boolean, default: true
+  attr :member_ids, :any, default: []
 
   def switch_user_icon(assigns) do
     assigns = set_user(assigns)
 
     ~H"""
-    <%= if @anon and Interview.anon?(@chat.interview) do %>
+    <%= if @anon and Interview.anon?(@chat.interview) and !@user.is_member do %>
       <.user_icon path={nil} />
     <% else %>
       <div class="flex flex-col justify-end">
@@ -177,12 +180,14 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       if assigns.chat.owner_user_id == assigns.user_id do
         %{
           name: assigns.chat.interview.candidates_user_name,
-          icon: assigns.chat.interview.candidates_user_icon
+          icon: assigns.chat.interview.candidates_user_icon,
+          is_member: Enum.member?(assigns.member_ids, assigns.chat.interview.candidates_user_id)
         }
       else
         %{
           name: assigns.chat.interview.recruiter_user_name,
-          icon: assigns.chat.interview.recruiter_user_icon
+          icon: assigns.chat.interview.recruiter_user_icon,
+          is_member: Enum.member?(assigns.member_ids, assigns.chat.interview.recruiter_user_id)
         }
       end
 

@@ -52,7 +52,7 @@ defmodule Bright.SkillScoresTest do
       assert %{skill_class_score_init: skill_class_score} = multi_result
 
       assert skill_class_score.level == :beginner
-      assert skill_class_score.percentage == 0.0
+      assert skill_class_score.percentage == +0.0
     end
 
     test "create_skill_class_score/2 case duplicated skill_scores", %{
@@ -127,7 +127,7 @@ defmodule Bright.SkillScoresTest do
 
       skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
       assert skill_class_score.level == :beginner
-      assert skill_class_score.percentage == 0.0
+      assert skill_class_score.percentage == +0.0
     end
 
     test "update_skill_class_score_stats with notification", %{
@@ -189,7 +189,7 @@ defmodule Bright.SkillScoresTest do
 
     test "get_level" do
       [
-        {0.0, :beginner},
+        {+0.0, :beginner},
         {39.9, :beginner},
         {40.0, :normal},
         {59.9, :normal},
@@ -325,7 +325,7 @@ defmodule Bright.SkillScoresTest do
       refute Repo.get_by(SkillUnitScore, user_id: user.id, skill_unit_id: skill_unit.id)
       {:ok, _results} = SkillScores.insert_or_update_skill_unit_scores_stats([skill_unit], user)
 
-      assert %{percentage: 0.0} =
+      assert %{percentage: +0.0} =
                Repo.get_by(SkillUnitScore, user_id: user.id, skill_unit_id: skill_unit.id)
     end
 
@@ -352,7 +352,7 @@ defmodule Bright.SkillScoresTest do
 
       {:ok, _results} = SkillScores.insert_or_update_skill_unit_scores_stats([skill_unit], user)
 
-      assert %{percentage: 0.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score.id)
+      assert %{percentage: +0.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score.id)
     end
 
     test "updates by insert_orupdate_skill_unit_score_stats" do
@@ -375,7 +375,7 @@ defmodule Bright.SkillScoresTest do
       {:ok, _results} =
         SkillScores.insert_or_update_skill_unit_scores_stats([skill_unit_1, skill_unit_2], user)
 
-      assert %{percentage: 0.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_1.id)
+      assert %{percentage: +0.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_1.id)
       assert %{percentage: 50.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_2.id)
     end
 
@@ -399,7 +399,7 @@ defmodule Bright.SkillScoresTest do
       {:ok, _results} = SkillScores.insert_or_update_skill_unit_scores_stats([skill_unit], user_2)
 
       assert %{percentage: 100.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_1.id)
-      assert %{percentage: 0.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_2.id)
+      assert %{percentage: +0.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_2.id)
     end
   end
 
@@ -420,7 +420,11 @@ defmodule Bright.SkillScoresTest do
       career_fields
       |> Enum.zip(percentages)
       |> Enum.each(fn {career_field, percentage} ->
-        insert(:career_field_score, career_field: career_field, user: user, percentage: percentage)
+        insert(:career_field_score,
+          career_field: career_field,
+          user: user,
+          percentage: percentage
+        )
       end)
 
       ret = SkillScores.get_skillset_gem(user.id)
@@ -431,7 +435,7 @@ defmodule Bright.SkillScoresTest do
       user_2 = insert(:user)
       ret = SkillScores.get_skillset_gem(user_2.id)
       assert ^names = Enum.map(ret, & &1.name)
-      assert [0.0, 0.0, 0.0, 0.0] = Enum.map(ret, & &1.percentage)
+      assert [+0.0, +0.0, +0.0, +0.0] = Enum.map(ret, & &1.percentage)
     end
   end
 
@@ -578,7 +582,7 @@ defmodule Bright.SkillScoresTest do
       |> Enum.each(&insert(:skill_score, skill: &1, user: user, score: :high))
 
       insert(:skill_unit_score, skill_unit: skill_unit_1, user: user, percentage: 100.0)
-      insert(:skill_unit_score, skill_unit: skill_unit_2, user: user, percentage: 0.0)
+      insert(:skill_unit_score, skill_unit: skill_unit_2, user: user, percentage: +0.0)
 
       insert(:skill_class_score,
         skill_class: skill_class_1,
@@ -590,7 +594,7 @@ defmodule Bright.SkillScoresTest do
       insert(:skill_class_score,
         skill_class: skill_class_2,
         user: user,
-        percentage: 0.0,
+        percentage: +0.0,
         level: :beginner
       )
 
@@ -615,7 +619,7 @@ defmodule Bright.SkillScoresTest do
 
       assert %{percentage: 100.0} = skill_unit_1_score
       assert %{percentage: 50.0, level: :normal} = skill_class_1_score
-      assert %{percentage: 0.0, level: :beginner} = skill_class_2_score
+      assert %{percentage: +0.0, level: :beginner} = skill_class_2_score
     end
 
     @tag batch: "skill_added", skill_size: 1
@@ -733,14 +737,14 @@ defmodule Bright.SkillScoresTest do
       [skill_class_1_score, skill_class_2_score] = get_skill_class_scores(skill_panel)
 
       # (4 - 4) / (8 - 4)
-      assert %{percentage: 0.0, level: :beginner} = skill_class_1_score
+      assert %{percentage: +0.0, level: :beginner} = skill_class_1_score
 
       # (0 + 4) / (1 + 4)
       assert %{percentage: 80.0, level: :skilled} = skill_class_2_score
 
       # ログ
       [log_1, log_2] = get_skill_class_score_logs(skill_panel)
-      assert log_1.percentage == 0.0
+      assert log_1.percentage == +0.0
       assert log_2.percentage == 80.0
     end
 
@@ -753,7 +757,7 @@ defmodule Bright.SkillScoresTest do
       # skill_class_1を指定、skill_class_2は更新されない
       SkillScores.re_aggregate_scores([skill_class_1])
       [_, skill_class_2_score] = get_skill_class_scores(skill_panel)
-      assert %{percentage: 0.0} = skill_class_2_score
+      assert %{percentage: +0.0} = skill_class_2_score
 
       [log] = get_skill_class_score_logs(skill_panel)
       assert log.skill_class_id == skill_class_1.id
