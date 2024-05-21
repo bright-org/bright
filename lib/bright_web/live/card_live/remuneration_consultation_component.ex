@@ -12,6 +12,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
       module={BrightWeb.CardLive.RelatedTeamCardComponent}
       display_user={@current_user}
       over_ride_on_card_row_click_target={:true}
+      skill_panel_id={@skill_panel_id}
     />
   """
   use BrightWeb, :live_component
@@ -44,6 +45,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
                   id={team_params.team_id}
                   team_params={team_params}
                   row_on_click_target={assigns.row_on_click_target}
+                  skill_panel_id={@skill_panel_id}
                 />
               <% end %>
             </ul>

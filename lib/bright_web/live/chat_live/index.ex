@@ -286,6 +286,7 @@ defmodule BrightWeb.ChatLive.Index do
           module={BrightWeb.CardLive.RemunerationConsultationComponent}
           display_user={@current_user}
           over_ride_on_card_row_click_target={true}
+          skill_panel_id={@skill_panel_id}
         />
       </.bright_modal>
 
@@ -301,6 +302,7 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:open_create_coordination, false)
     |> assign(:open_edit_interview, false)
     |> assign(:open_remuneration_consultation, false)
+    |> assign(:skill_panel_id, "")
     |> assign(:sender_icon_path, user.user_profile.icon_file_path)
     |> assign(:images_error, "")
     |> assign(:files_error, "")
@@ -347,13 +349,14 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:message, nil)
   end
 
-  defp apply_action(socket, :remuneration_consultation, _params) do
+  defp apply_action(socket, :remuneration_consultation, %{"skill_panel_id" => skill_panel_id}) do
     user = socket.assigns.current_user
 
-    socket
+   socket
     |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
     |> assign(:open_remuneration_consultation, true)
+    |> assign(:skill_panel_id, skill_panel_id)
     |> assign(:chat, nil)
     |> assign(:messages, [])
     |> assign(:message, nil)
@@ -462,13 +465,12 @@ defmodule BrightWeb.ChatLive.Index do
 
   def handle_event(
         "on_card_row_click",
-        %{"team_admin_user_id" => team_admin_user_id},
+        %{"team_admin_user_id" => team_admin_user_id, "skill_panel_id" => skill_panel_id},
         %{assigns: %{current_user: user}} = socket
       ) do
 
 
-       skill_params = [%{"career_field" => "1on1", "skill_panel" => "01HYD3MS8YK5FFAVRSXEQEKQ4C"}]
-       recruiter = socket.assigns.current_user
+       skill_params = [%{"career_field" => "1on1", "skill_panel" => skill_panel_id}]
 
        interview =
          case Recruits.get_interview(team_admin_user_id, user.id) do

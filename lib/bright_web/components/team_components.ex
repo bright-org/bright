@@ -118,6 +118,7 @@ defmodule BrightWeb.TeamComponents do
   attr :on_hover_style, :string,
     required: false,
     default: " hover:bg-brightGray-50 cursor-pointer"
+  attr :skill_panel_id, :string
 
   def team_superior_small(assigns) do
     ~H"""
@@ -128,6 +129,7 @@ defmodule BrightWeb.TeamComponents do
       phx-value-team_id={@team_params.team_id}
       phx-value-team_type={@team_params.team_type}
       phx-value-team_admin_user_id={@team_params.admin_user.user.id}
+      phx-value-skill_panel_id={@skill_panel_id}
       class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
 

@@ -211,12 +211,17 @@ defmodule BrightWeb.BrightButtonComponents do
 
   ## Examples
 
-      <.remuneration_consultation_button />
+      <.remuneration_consultation_button skill_panel_id={@skill_panel_id} />
   """
+  attr :skill_panel_id, :string
   def remuneration_consultation_button(assigns) do
+    assigns =
+    assigns
+    |> assign(:href, "/recruits/remuneration_consultation/#{assigns.skill_panel_id}")
+
     ~H"""
     <.link
-      href="/recruits/remuneration_consultation"
+      href={@href}
     >
       <button type="button"
         class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm">
