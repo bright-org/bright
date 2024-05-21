@@ -33,14 +33,7 @@ defmodule Bright.Chats do
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
       join: i in Interview,
-      on:
-        i.id == c.relation_id and
-          i.status in [
-            :consume_interview,
-            :ongoing_interview,
-            :completed_interview,
-            :cancel_interview
-          ],
+      on: i.id == c.relation_id,
       where: c.relation_type == "recruit",
       order_by: [desc: :updated_at],
       join: cu in User,
@@ -89,14 +82,7 @@ defmodule Bright.Chats do
       on: m.user_id == ^user_id and m.chat_id == c.id,
       preload: [:users, messages: :files],
       join: i in Interview,
-      on:
-        i.id == c.relation_id and
-          i.status in [
-            :consume_interview,
-            :ongoing_interview,
-            :completed_interview,
-            :cancel_interview
-          ],
+      on: i.id == c.relation_id,
       join: cu in User,
       on: cu.id == i.candidates_user_id,
       join: cp in UserProfile,
@@ -120,7 +106,7 @@ defmodule Bright.Chats do
     |> Repo.one!()
   end
 
-  def get_or_create_chat(owner_user_id, relation_id, relation_type, chat_users \\ []) do
+  def get_or_create_chat(owner_user_id, relation_id, relation_type, chat_users) do
     query =
       from(
         c in Chat,
@@ -140,6 +126,44 @@ defmodule Bright.Chats do
         {:ok, chat} =
           create_chat(%{
             owner_user_id: owner_user_id,
+            relation_type: relation_type,
+            relation_id: relation_id,
+            chat_users: chat_users
+          })
+
+        Map.put(chat, :messages, [])
+    end
+  end
+
+  def get_or_create_chat(
+        recruiter_user_id,
+        candidates_user_id,
+        relation_id,
+        relation_type,
+        chat_users
+      ) do
+    query =
+      from(
+        c in Chat,
+        where:
+          (c.owner_user_id == ^recruiter_user_id and
+             c.relation_type == ^relation_type and
+             c.relation_id == ^relation_id) or
+            (c.owner_user_id == ^candidates_user_id and
+               c.relation_type == ^relation_type and
+               c.relation_id == ^relation_id)
+      )
+
+    case Repo.exists?(query) do
+      true ->
+        query
+        |> preload(:messages)
+        |> Repo.one()
+
+      false ->
+        {:ok, chat} =
+          create_chat(%{
+            owner_user_id: recruiter_user_id,
             relation_type: relation_type,
             relation_id: relation_id,
             chat_users: chat_users
