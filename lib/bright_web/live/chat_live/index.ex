@@ -6,6 +6,9 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Recruits
   alias Bright.Teams
   alias Bright.Utils.GoogleCloud.Storage
+  alias Bright.Recruits.Interview
+  alias Bright.UserSearches
+  alias Bright.SkillPanels
 
   import BrightWeb.ChatLive.ChatComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
@@ -459,10 +462,59 @@ defmodule BrightWeb.ChatLive.Index do
 
   def handle_event(
         "on_card_row_click",
-        %{"team_admin_user_id" => _team_admin_user_id},
-        %{assigns: %{current_user: _user}} = socket
+        %{"team_admin_user_id" => team_admin_user_id},
+        %{assigns: %{current_user: user}} = socket
       ) do
-    {:noreply, redirect(socket, to: ~p"/recruits/interviews")}
+
+
+       skill_params = [%{"career_field" => "1on1", "skill_panel" => "01HYD3MS8YK5FFAVRSXEQEKQ4C"}]
+       recruiter = socket.assigns.current_user
+
+       interview =
+         case Recruits.get_interview(team_admin_user_id, user.id) do
+           %Interview{} = interview ->
+             interview
+
+           nil ->
+             skill_params =
+               skill_params
+               |> Enum.map(
+                 &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
+                   |> Enum.into(%{}))
+               )
+
+             candidates_user =
+               UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
+               |> List.first()
+
+             interview_params = %{
+               "status" => :one_on_one,
+               "skill_panel_name" => gen_interview_name(skill_params),
+               "desired_income" => candidates_user.desired_income,
+               "skill_params" => Jason.encode!(skill_params),
+               "interview_members" => [],
+               "recruiter_user_id" => team_admin_user_id,
+               "candidates_user_id" => user.id
+             }
+
+             {:ok, interview} = Recruits.create_interview(interview_params)
+
+             interview
+         end
+
+       chat =
+         Chats.get_or_create_chat(
+           interview.recruiter_user_id,
+           interview.candidates_user_id,
+           interview.id,
+           "recruit",
+           [
+             %{user_id: interview.recruiter_user_id},
+             %{user_id: interview.candidates_user_id}
+           ]
+         )
+
+       {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
   end
 
   @impl true
@@ -508,4 +560,12 @@ defmodule BrightWeb.ChatLive.Index do
     do: translate_error({"You have selected an unacceptable file type", []})
 
   defp error_to_string(_), do: ""
+
+  defp gen_interview_name(skill_params) do
+    skill_params
+    |> List.first()
+    |> Map.get(:skill_panel)
+    |> SkillPanels.get_skill_panel!()
+    |> Map.get(:name)
+  end
 end
