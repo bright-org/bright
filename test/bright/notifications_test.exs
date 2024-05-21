@@ -10,7 +10,7 @@ defmodule Bright.NotificationsTest do
     NotificationEvidence
   }
 
-  import Bright.Factory
+  import Mock
   import Swoosh.TestAssertions
 
   describe "list_all_notifications/1" do
@@ -200,7 +200,9 @@ defmodule Bright.NotificationsTest do
                Notifications.list_notification_by_type(to_user.id, "skill_update", page: 1)
 
       assert %{total_entries: 0} =
-               Notifications.list_notification_by_type(no_related_user.id, "skill_update", page: 1)
+               Notifications.list_notification_by_type(no_related_user.id, "skill_update",
+                 page: 1
+               )
     end
 
     @tag type: "something"
@@ -243,24 +245,24 @@ defmodule Bright.NotificationsTest do
       from_user_sub_email = insert(:user_sub_email, user: from_user)
       user_sub_email = insert(:user_sub_email, user: user)
 
-      Application.put_env(:bright, :max_deliver_size, 2)
+      with_mocks([{Bright.Const, [:passthrough], [sendgrid_max_deliver_size: fn -> 2 end]}]) do
+        assert {:ok, %NotificationOperation{} = notification_operation} =
+                 Notifications.create_notification("operation", %{
+                   message: "some message",
+                   from_user_id: from_user.id,
+                   detail: "some detail"
+                 })
 
-      assert {:ok, %NotificationOperation{} = notification_operation} =
-               Notifications.create_notification("operation", %{
-                 message: "some message",
-                 from_user_id: from_user.id,
-                 detail: "some detail"
-               })
+        assert_operations_notification_mail_sent(notification_operation, [
+          from_user.email,
+          user.email
+        ])
 
-      assert_operations_notification_mail_sent(notification_operation, [
-        from_user.email,
-        user.email
-      ])
-
-      assert_operations_notification_mail_sent(notification_operation, [
-        from_user_sub_email.email,
-        user_sub_email.email
-      ])
+        assert_operations_notification_mail_sent(notification_operation, [
+          from_user_sub_email.email,
+          user_sub_email.email
+        ])
+      end
     end
 
     test "with invalid data for type operation" do

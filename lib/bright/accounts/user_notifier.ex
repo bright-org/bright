@@ -9,12 +9,9 @@ defmodule Bright.Accounts.UserNotifier do
   alias Bright.Mailer
   alias Bright.Accounts
   alias Bright.Utils.Env
+  alias Bright.Const
 
   @email_from {"Brightカスタマーサクセス", "agent@bright-fun.org"}
-
-  # SendGrid で1リクエストで一括送信可能な最大のメール件数は 1000 件
-  # NOTE: https://sendgrid.kke.co.jp/docs/API_Reference/Web_API_v3/Mail/index.html?_gl=1*1sf2pmz*_ga*MTE5MjM3OTk0OS4xNzA1NzI5Nzc1*_ga_JL4V7PSVHH*MTcwNTcyOTc3NC4xLjEuMTcwNTcyOTk2My4wLjAuMA..*_ga_NFRNW0FC62*MTcwNTcyOTc3NC4xLjEuMTcwNTcyOTk2My4wLjAuMA..#-Limitations
-  defp max_deliver_size, do: Application.get_env(:bright, :max_deliver_size, 1_000)
 
   defp signature do
     """
@@ -58,7 +55,7 @@ defmodule Bright.Accounts.UserNotifier do
   end
 
   defp deliver_many!(recipients, subject, body) do
-    Enum.chunk_every(recipients, max_deliver_size())
+    Enum.chunk_every(recipients, Const.sendgrid_max_deliver_size())
     |> Enum.each(fn emails_chunk ->
       personalizations = emails_chunk |> Enum.map(&%{to: [%{email: &1}]})
 
@@ -667,7 +664,7 @@ defmodule Bright.Accounts.UserNotifier do
     メールアドレス: #{detail["email"]}
     担当者（本名） #{detail["pic_name"]}
     申込日(JST) #{DateTime.now!("Japan") |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..18)}
-    申込日(UTC) #{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..-2)}
+    申込日(UTC) #{DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_string() |> String.slice(0..-2//1)}
 
     お得意様であればフォローアップをお願いします
     """)

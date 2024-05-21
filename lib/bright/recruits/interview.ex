@@ -31,7 +31,8 @@ defmodule Bright.Recruits.Interview do
         :ongoing_interview,
         :completed_interview,
         :cancel_interview,
-        :close_chat
+        :close_chat,
+        :one_on_one
       ],
       default: :waiting_decision
 
@@ -73,6 +74,6 @@ defmodule Bright.Recruits.Interview do
   end
 
   def anon?(interview) do
-    !(interview.status in [:ongoing_interview, :completed_interview])
+    !(interview.status in [:ongoing_interview, :completed_interview, :one_on_one])
   end
 end

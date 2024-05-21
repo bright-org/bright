@@ -2,7 +2,7 @@ defmodule BrightWeb.UserForgotPasswordLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
+
   import Swoosh.TestAssertions
 
   alias Bright.Accounts

@@ -2,7 +2,7 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
+
   import Mock
 
   describe "my team" do
@@ -177,6 +177,64 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
                  "#{floor(skill_class_score_2.percentage)}"
                )
       end
+    end
+  end
+
+  # スキルカード「1on1に誘う」
+  describe "Skill card link to 1on1" do
+    setup [:register_and_log_in_user]
+
+    setup do
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel)
+
+      %{skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    setup %{user: user} do
+      subscription =
+        insert(:subscription_plans)
+        |> plan_with_plan_service_by_service_code("hr_basic")
+
+      subscription_user_plan_subscribing_without_free_trial(user, subscription)
+
+      user_2 = insert(:user) |> with_user_profile()
+      insert(:user_job_profile, user: user_2)
+
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user, is_admin: true)
+      insert(:team_member_users, team: team, user: user_2)
+
+      %{team: team, user_2: user_2}
+    end
+
+    test "create interview and chat when 1on1 start", %{
+      conn: conn,
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      user: user,
+      user_2: user_2
+    } do
+      insert(:user_skill_panel, skill_panel: skill_panel, user: user)
+      insert(:user_skill_panel, skill_panel: skill_panel, user: user_2)
+      insert(:skill_class_score, skill_class: skill_class, user: user_2)
+
+      assert {:ok, lv, _html} = live(conn, ~p"/teams") |> follow_redirect(conn)
+
+      assert {:ok, _lv, html} =
+               lv
+               |> element("button", "1on1に誘う")
+               |> render_click()
+               |> follow_redirect(conn)
+
+      assert %{status: :one_on_one} = Bright.Recruits.get_interview(user.id, user_2.id)
+
+      # 面談チャットに移動している
+      assert html =~ "面談チャット"
+      # 匿名が解除されている
+      assert html =~ user_2.name
+      # 面談の打診が可能
+      assert html =~ "面談の打診"
     end
   end
 end

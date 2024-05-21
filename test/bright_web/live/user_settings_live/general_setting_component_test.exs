@@ -6,7 +6,6 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
   alias Bright.UserProfiles
   alias Bright.UserProfiles.UserProfile
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   setup [:register_and_log_in_user]
 
@@ -280,11 +279,10 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       file_input(lv, "#general_setting_form", :icon, [
         %{
           name: "sample.png",
-          content: Path.join([test_support_dir(), "images", "sample.png"]) |> File.read!(),
-          size: 3_000_000
+          content: Path.join([test_support_dir(), "images", "6_000_000byte.png"]) |> File.read!()
         }
       ])
-      |> render_upload("sample.svg")
+      |> render_upload("sample.png")
 
       assert lv |> has_element?("#general_setting_form .text-error", "ファイルサイズが大きすぎます")
     end
@@ -297,8 +295,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       file_input(lv, "#general_setting_form", :icon, [
         %{
           name: "sample.jpg",
-          content: Path.join([test_support_dir(), "images", "sample.jpg"]) |> File.read!(),
-          size: 1_000_000
+          content: Path.join([test_support_dir(), "images", "sample.jpg"]) |> File.read!()
         }
       ])
       |> render_upload("sample.jpg")
@@ -308,8 +305,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       file_input(lv, "#general_setting_form", :icon, [
         %{
           name: "sample.jpeg",
-          content: Path.join([test_support_dir(), "images", "sample.jpeg"]) |> File.read!(),
-          size: 1_000_000
+          content: Path.join([test_support_dir(), "images", "sample.jpeg"]) |> File.read!()
         }
       ])
       |> render_upload("sample.jpeg")
@@ -319,8 +315,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
       file_input(lv, "#general_setting_form", :icon, [
         %{
           name: "sample.svg",
-          content: Path.join([test_support_dir(), "images", "sample.svg"]) |> File.read!(),
-          size: 1_000_000
+          content: Path.join([test_support_dir(), "images", "sample.svg"]) |> File.read!()
         }
       ])
       |> render_upload("sample.svg")
@@ -337,13 +332,11 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponentTest do
         file_input(lv, "#general_setting_form", :icon, [
           %{
             name: "sample.png",
-            content: Path.join([test_support_dir(), "images", "sample.png"]) |> File.read!(),
-            size: 1_000_000
+            content: Path.join([test_support_dir(), "images", "sample.png"]) |> File.read!()
           },
           %{
             name: "sample.jpg",
-            content: Path.join([test_support_dir(), "images", "sample.jpg"]) |> File.read!(),
-            size: 1_000_000
+            content: Path.join([test_support_dir(), "images", "sample.jpg"]) |> File.read!()
           }
         ])
 

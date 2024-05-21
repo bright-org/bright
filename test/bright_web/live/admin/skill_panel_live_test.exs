@@ -2,7 +2,6 @@ defmodule BrightWeb.Admin.SkillPanelLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   @create_attrs params_for(:skill_panel)
   @update_attrs params_for(:skill_panel)

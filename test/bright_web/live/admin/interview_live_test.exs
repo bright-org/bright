@@ -2,7 +2,6 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   @create_attrs %{
     skill_params: "some skill_params",
@@ -23,7 +22,10 @@ defmodule BrightWeb.Admin.InterviewLiveTest do
 
   defp create_interview(_) do
     interview =
-      insert(:interview, recruiter_user_id: insert(:user).id, candidates_user_id: insert(:user).id)
+      insert(:interview,
+        recruiter_user_id: insert(:user).id,
+        candidates_user_id: insert(:user).id
+      )
 
     %{interview: interview}
   end

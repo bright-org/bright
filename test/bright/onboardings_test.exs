@@ -4,8 +4,6 @@ defmodule Bright.OnboardingsTest do
   alias Bright.Onboardings
   alias Bright.Onboardings.UserOnboarding
 
-  import Bright.Factory
-
   describe "user_onboardings" do
     @invalid_attrs %{completed_at: nil}
 

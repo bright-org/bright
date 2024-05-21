@@ -21,7 +21,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
 
     ~H"""
     <div class="flex flex-col">
-      <%= if !@anon && @search do %>
+      <%= if !@anon do %>
       <.profile_small_inline
           user_name={@user.name}
           title={@user.user_profile.title}

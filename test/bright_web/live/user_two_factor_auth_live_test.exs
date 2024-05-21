@@ -5,7 +5,6 @@ defmodule BrightWeb.UserTwoFactorAuthLiveTest do
   alias Bright.Accounts
   alias Bright.Repo
   import Phoenix.LiveViewTest
-  import Bright.Factory
 
   setup %{conn: conn} do
     user = insert(:user)

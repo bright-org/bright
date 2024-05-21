@@ -4,7 +4,6 @@ defmodule Bright.RecruitsTest do
   alias Bright.Recruits
   alias Bright.Recruits.Interview
   alias Bright.Recruits.InterviewMember
-  import Bright.Factory
 
   describe "interview" do
     setup do

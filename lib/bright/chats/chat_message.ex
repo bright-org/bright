@@ -15,7 +15,7 @@ defmodule Bright.Chats.ChatMessage do
     belongs_to :chat, Bright.Chats.Chat
     belongs_to :sender_user, Bright.Accounts.User
 
-    has_many :files, Bright.Chats.ChatFile
+    has_many :files, Bright.Chats.ChatFile, on_delete: :delete_all
 
     timestamps()
   end

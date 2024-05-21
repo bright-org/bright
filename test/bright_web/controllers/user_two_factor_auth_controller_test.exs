@@ -1,7 +1,6 @@
 defmodule BrightWeb.UserTwoFactorAuthControllerTest do
   use BrightWeb.ConnCase, async: true
 
-  import Bright.Factory
   alias Bright.Accounts.User2faCodes
   alias Bright.Repo
   alias Bright.Accounts

@@ -67,12 +67,24 @@ defmodule Bright.Recruits do
   """
   def get_interview!(id), do: Repo.get!(Interview, id)
 
+  def get_interview(recruiter_user_id, candidates_user_id) do
+    from(
+      i in Interview,
+      where:
+        (i.recruiter_user_id == ^recruiter_user_id and
+           i.candidates_user_id == ^candidates_user_id) or
+          (i.recruiter_user_id == ^candidates_user_id and
+             i.candidates_user_id == ^recruiter_user_id)
+    )
+    |> Repo.one()
+  end
+
   def get_interview_with_member_users!(id, user_id) do
     Interview
     |> where(
       [i],
       i.recruiter_user_id == ^user_id and
-        i.status in [:waiting_decision, :consume_interview, :ongoing_interview]
+        i.status in [:waiting_decision, :consume_interview, :ongoing_interview, :one_on_one]
     )
     |> preload(interview_members: [user: :user_profile])
     |> Repo.get!(id)
@@ -157,7 +169,7 @@ defmodule Bright.Recruits do
       on: i.id == m.interview_id and i.status in [:waiting_decision, :consume_interview],
       where: m.user_id == ^user_id and m.decision == ^decision,
       order_by: [desc: :updated_at],
-      preload: :interview
+      preload: [interview: [candidates_user: :user_profile]]
     )
     |> Repo.all()
   end

@@ -2,7 +2,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Bright.Factory
+
   alias Bright.Repo
   alias Bright.Accounts.User
   alias Bright.Accounts.UserToken
