@@ -81,6 +81,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
                         error_class="ml-[100px] mt-2"
                         field={@form[:income]}
                         type="number"
+                        step="0.01"
                         size="20"
                         input_class="border border-brightGray-200 px-2 py-1 rounded w-40"
                       />
