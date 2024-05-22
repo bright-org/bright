@@ -46,7 +46,7 @@ defmodule BrightWeb.LayoutComponents do
         />
         <meta
           property="og:description"
-          content="ITで世の中に価値をもたらすエンジニアやインフラ、デザイナー、マーケッターから、気になるスキルを選び、あなたがどのような"輝き"を放つかを体験してください。"
+          content={"ITで世の中に価値をもたらすエンジニアやインフラ、デザイナー、マーケッターから、気になるスキルを選び、あなたがどのような\"輝き\"を放つかを体験してください。"}
         />
         <meta property="og:image" content="https://bright-fun.org/images/ogp_a.png" />
         <meta property="og:type" content="article" />
