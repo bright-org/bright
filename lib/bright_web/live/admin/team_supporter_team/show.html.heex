@@ -2,10 +2,7 @@
   Team supporter team <%= @team_supporter_team.id %>
   <:subtitle>This is a team_supporter_team record from your database.</:subtitle>
   <:actions>
-    <.link
-      patch={~p"/admin/team_supporter_teams/#{@team_supporter_team}/show/edit"}
-      phx-click={JS.push_focus()}
-    >
+    <.link patch={~p"/admin/team_supporter_teams/#{@team_supporter_team}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit team_supporter_team</.button>
     </.link>
   </:actions>
@@ -24,12 +21,7 @@
 
 <.back navigate={~p"/admin/team_supporter_teams"}>Back to team_supporter_teams</.back>
 
-<.modal
-  :if={@live_action == :edit}
-  id="team_supporter_team-modal"
-  show
-  on_cancel={JS.patch(~p"/admin/team_supporter_teams/#{@team_supporter_team}")}
->
+<.modal :if={@live_action == :edit} id="team_supporter_team-modal" show on_cancel={JS.patch(~p"/admin/team_supporter_teams/#{@team_supporter_team}")}>
   <.live_component
     module={BrightWeb.Admin.TeamSupporterTeamLive.FormComponent}
     id={@team_supporter_team.id}

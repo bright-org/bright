@@ -15,7 +15,7 @@
   <:col :let={{_id, career_want}} label="Name"><%= career_want.name %></:col>
   <:col :let={{_id, career_want}} label="Position"><%= career_want.position %></:col>
   <:col :let={{_id, career_want}} label="Jobs">
-    <%= Enum.map(career_want.jobs, & &1.name) |> Enum.join(",") %>
+      <%= Enum.map(career_want.jobs, & &1.name) |> Enum.join(",") %>
   </:col>
   <:action :let={{_id, career_want}}>
     <div class="sr-only">
@@ -33,12 +33,7 @@
   </:action>
 </.table>
 
-<.modal
-  :if={@live_action in [:new, :edit]}
-  id="career_want-modal"
-  show
-  on_cancel={JS.patch(~p"/admin/career_wants")}
->
+<.modal :if={@live_action in [:new, :edit]} id="career_want-modal" show on_cancel={JS.patch(~p"/admin/career_wants")}>
   <.live_component
     module={BrightWeb.Admin.CareerWantLive.FormComponent}
     id={@career_want.id || :new}

@@ -34,15 +34,15 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     ~H"""
     <div class="relative rounded-sm px-16 py-8">
       <!-- Modal header -->
-      <.render_title modal_mode={assigns.modal_mode} />
+      <.render_title modal_mode={assigns.modal_mode}/>
       <!-- Modal Body -->
       <div class="pt-8">
         <div id="supportee_block" class="flex mb-1">
           <div
-            :if={@modal_mode == "request" || @modal_mode == "requesting"}
-            id="supportee_area_left"
-            class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed"
-          >
+            :if={@modal_mode == "request" || @modal_mode == "requesting" }
+            id="supportee_area_left"class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed"
+            >
+
             <.render_user_search
               :if={@modal_mode == "request"}
               search_word={@search_word}
@@ -57,6 +57,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
               phx_target={@myself}
               select_supporter_team_error={@select_supporter_team_error}
             />
+
           </div>
           <div id="supportee_area_right" class="w-[580px] pl-10 flex flex-col justify-between">
             <div class="item-left mb-5">
@@ -72,7 +73,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
                   :if={@modal_mode != "request"}
                   request_from_user={@request_from_user}
                 />
-              </div>
+                </div>
             </div>
 
             <div class="item-left mb-5">
@@ -83,13 +84,18 @@ defmodule BrightWeb.TeamSupportLiveComponent do
                   :if={@modal_mode != "request"}
                   supporter_team={@supporter_team}
                 />
-                <.render_request_to_user request_to_user={@request_to_user} />
+                <.render_request_to_user
+                  request_to_user={@request_to_user}
+                />
               </div>
             </div>
           </div>
         </div>
         <div id="bottom_area" class="flex justify-end gap-x-4 pt-3">
-          <.render_botton modal_mode={@modal_mode} phx_target={@myself} />
+          <.render_botton
+            modal_mode={@modal_mode}
+            phx_target={@myself}
+          />
         </div>
       </div>
     </div>
@@ -116,7 +122,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
       class="text-sm font-bold px-5 py-3 rounded text-white bg-base"
       phx-click="accept_team_support"
       phx-target={@phx_target}
-    >
+      >
       チームを支援する
     </button>
     <button
@@ -124,7 +130,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
       class="text-sm font-bold px-5 py-2 rounded border border-base ml-2.5"
       phx-click="reject_team_support"
       phx-target={@phx_target}
-    >
+      >
       支援対象チームではない
     </button>
     """
@@ -137,7 +143,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
       phx-click="end_team_support"
       phx-target={@phx_target}
       data-confirm="支援を終了してよろしいでしょうか？"
-    >
+      >
       支援を終了する
     </button>
     """
@@ -213,7 +219,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
           :if={!is_nil(@request_from_user)}
           class="w-[300px] text-left flex items-center text-base p-2 rounded border border-brightGray-100 bg-white"
         >
-          <.profile_mini
+        <.profile_mini
             user_name={@request_from_user.name}
             icon_file_path={UserProfiles.icon_url(@request_from_user.user_profile.icon_file_path)}
           />
@@ -232,7 +238,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
           :if={!is_nil(@request_to_user)}
           class="w-[300px] text-left flex items-center text-base p-2 rounded border border-brightGray-100 bg-white"
         >
-          <.profile_mini
+        <.profile_mini
             user_name={@request_to_user.name}
             icon_file_path={UserProfiles.icon_url(@request_to_user.user_profile.icon_file_path)}
           />
@@ -249,27 +255,31 @@ defmodule BrightWeb.TeamSupportLiveComponent do
 
     ~H"""
     <div class="flex items-center">
-      <form id="search_user_form" phx-target={@phx_target} phx-submit="search_user">
-        <p class="pb-2 text-base">
-          支援依頼先ユーザーの<span class="font-bold">Brightハンドル名もしくはメールアドレス</span>を検索
-        </p>
-        <input
-          id="search_word"
-          name="search_word"
-          type="autocomplete"
-          placeholder="ハンドル名もしくはメールアドレスを入力してください"
-          class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
-          phx-change="change_search_user"
-          value={@search_word}
-        />
-        <.action_button type="submit" class="ml-2.5 px-5 py-2">
-          検索
-        </.action_button>
-      </form>
-    </div>
-    <div :if={@search_word_error != nil}>
-      <p class="text-error text-xs"><%= Phoenix.HTML.raw(@search_word_error) %></p>
-    </div>
+          <form
+            id="search_user_form"
+            phx-target={@phx_target}
+            phx-submit="search_user"
+          >
+            <p class="pb-2 text-base">
+              支援依頼先ユーザーの<span class="font-bold">Brightハンドル名もしくはメールアドレス</span>を検索
+            </p>
+            <input
+              id="search_word"
+              name="search_word"
+              type="autocomplete"
+              placeholder="ハンドル名もしくはメールアドレスを入力してください"
+              class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
+              phx-change="change_search_user"
+              value={@search_word}
+            />
+            <.action_button type="submit" class="ml-2.5 px-5 py-2">
+              検索
+            </.action_button>
+          </form>
+        </div>
+        <div :if={@search_word_error != nil}>
+          <p class= "text-error text-xs"><%= Phoenix.HTML.raw(@search_word_error) %></p>
+        </div>
     """
   end
 
@@ -280,28 +290,28 @@ defmodule BrightWeb.TeamSupportLiveComponent do
     </p>
     <div class="rounded border border-brightGray-100 bg-white">
       <.tab
-        id="supporter-team-card-tab"
-        tabs={@tabs}
-        selected_tab={@card.selected_tab}
-        page={@card.page_params.page}
-        total_pages={@card.total_pages}
-        target={@phx_target}
-      >
-        <div class="pt-3 pb-1 px-6 lg:h-[226px]">
-          <ul class="flex gap-y-2 flex-col">
-            <%= for team_params <- @card.entries do %>
-              <.team_small
-                id={team_params.team_id}
-                team_params={team_params}
-                row_on_click_target={@phx_target}
-              />
-            <% end %>
-          </ul>
-        </div>
+          id={"supporter-team-card-tab"}
+          tabs={@tabs}
+          selected_tab={@card.selected_tab}
+          page={@card.page_params.page}
+          total_pages={@card.total_pages}
+          target={@phx_target}
+        >
+          <div class="pt-3 pb-1 px-6 lg:h-[226px]">
+            <ul class="flex gap-y-2 flex-col">
+              <%= for team_params <- @card.entries do %>
+                <.team_small
+                  id={team_params.team_id}
+                  team_params={team_params}
+                  row_on_click_target={@phx_target}
+                />
+              <% end %>
+            </ul>
+          </div>
       </.tab>
     </div>
     <div :if={!is_nil(@select_supporter_team_error)}>
-      <p class="text-error text-xs"><%= Phoenix.HTML.raw(@select_supporter_team_error) %></p>
+      <p class= "text-error text-xs"><%= Phoenix.HTML.raw(@select_supporter_team_error) %></p>
     </div>
     """
   end

@@ -10,9 +10,7 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>
-          Use this form to manage subscription_user_plan records in your database.
-        </:subtitle>
+        <:subtitle>Use this form to manage subscription_user_plan records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -27,32 +25,20 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.FormComponent do
         <.input field={@form[:pic_name]} type="text" label="PIC Name" />
         <.input field={@form[:phone_number]} type="text" label="Phone Number" />
         <.input
-          field={@form[:subscription_plan_id]}
-          type="select"
-          label="Plan"
-          options={@subscription_plans}
-        />
+            field={@form[:subscription_plan_id]}
+            type="select"
+            label="Plan"
+            options={@subscription_plans}
+          />
         <.input
           field={@form[:subscription_status]}
           type="select"
           label="Subscription status"
           options={Ecto.Enum.mappings(SubscriptionUserPlan, :subscription_status)}
         />
-        <.input
-          field={@form[:subscription_start_datetime]}
-          type="datetime-local"
-          label="Subscription start datetime"
-        />
-        <.input
-          field={@form[:subscription_end_datetime]}
-          type="datetime-local"
-          label="Subscription end datetime"
-        />
-        <.input
-          field={@form[:trial_start_datetime]}
-          type="datetime-local"
-          label="Trial start datetime"
-        />
+        <.input field={@form[:subscription_start_datetime]} type="datetime-local" label="Subscription start datetime" />
+        <.input field={@form[:subscription_end_datetime]} type="datetime-local" label="Subscription end datetime" />
+        <.input field={@form[:trial_start_datetime]} type="datetime-local" label="Trial start datetime" />
         <.input field={@form[:trial_end_datetime]} type="datetime-local" label="Trial end datetime" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Subscription user plan</.button>

@@ -43,13 +43,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                     phx-hook="LocalTime"
                     phx-update="ignore"
                     data-iso={NaiveDateTime.to_iso8601(post.inserted_at)}
-                  >
+                   >
                     <p class="text-sm" data-local-time="%x %H:%M"></p>
                   </div>
-                  <BrightCoreComponents.text_to_html_with_link
-                    text={post.content}
-                    attributes={[class: "break-all first:mt-0 mt-3"]}
-                  />
+                  <BrightCoreComponents.text_to_html_with_link text={post.content} attributes={[class: "break-all first:mt-0 mt-3"]} />
                 </div>
 
                 <% # 画像表示 %>
@@ -78,9 +75,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   phx-target={@myself}
                   phx-value-id={post.id}
                 >
-                  <span class="material-symbols-outlined text-brightGray-500 font-xs hover:opacity-50">
-                    delete
-                  </span>
+                  <span class="material-symbols-outlined text-brightGray-500 font-xs hover:opacity-50">delete</span>
                 </div>
               </div>
             </div>
@@ -92,16 +87,12 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
             id="skill_evidence_post-form"
             phx-target={@myself}
             phx-submit="save"
-            phx-change="validate"
-          >
+            phx-change="validate">
             <div>
               <% # コメント入力 %>
               <div class="flex flex-wrap pb-2">
                 <div class="w-[50px] flex justify-center flex-col items-center">
-                  <img
-                    class="inline-block h-10 w-10 rounded-full"
-                    src={icon_file_path(@user, @anonymous)}
-                  />
+                  <img class="inline-block h-10 w-10 rounded-full" src={icon_file_path(@user, @anonymous)} />
                 </div>
                 <div class="w-[370px]">
                   <.input_textarea field={@form[:content]} />
@@ -111,9 +102,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
               <% # アップロード画像プレビュー %>
               <div class="mb-2">
-                <.error :for={err <- upload_errors(@uploads.image)}>
-                  <%= upload_error_to_string(err) %>
-                </.error>
+                <.error :for={err <- upload_errors(@uploads.image)}><%= upload_error_to_string(err) %></.error>
                 <.error :for={err <- @entry_errors}><%= upload_error_to_string(err) %></.error>
               </div>
               <%= if Enum.count(@uploads.image.entries) == 1 do %>
@@ -133,7 +122,11 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
               <% # TODO: 実装して有効化 %>
               <div :if={false} class="flex justify-end py-2 items-center">
                 <label>
-                  <input type="checkbox" value="" class="w-4 h-4 mr-3" />学習を完了する
+                  <input
+                    type="checkbox"
+                    value=""
+                    class="w-4 h-4 mr-3"
+                  />学習を完了する
                 </label>
               </div>
               <div class="flex justify-end gap-x-4 py-2">
@@ -163,15 +156,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   このメモでヘルプを出す
                 </button>
                 <% # ヘルプを出す/出さない制御用checkbox %>
-                <input
-                  type="checkbox"
-                  id="checkbox-help"
-                  class="hidden"
-                  name="help"
-                  checked={true}
-                  value="on"
-                  phx-update="ignore"
-                />
+                <input type="checkbox" id="checkbox-help" class="hidden" name="help" checked={true} value="on" phx-update="ignore" />
               </div>
             </div>
           </.simple_form>
@@ -183,12 +168,9 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         class="hidden fixed top-0 left-0 z-50 w-screen h-screen bg-black/70 flex justify-center items-center"
         phx-hook="Imagebox"
         data-imagebox-container={@id}
-        data-imagebox-img-target-class="imagebox"
-      >
+        data-imagebox-img-target-class="imagebox">
         <img class="object-cover cursor-pointer" />
-        <a class="btn-close-imagebox absolute z-50 top-6 right-8 text-white text-5xl font-bold">
-          &times;
-        </a>
+        <a class="btn-close-imagebox absolute z-50 top-6 right-8 text-white text-5xl font-bold">&times;</a>
       </div>
     </div>
     """
@@ -201,11 +183,8 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       class="absolute top-2 right-2 flex justify-center items-center"
       phx-click="cancel_upload"
       phx-target={@myself}
-      phx-value-ref={@entry.ref}
-    >
-      <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5">
-        close
-      </span>
+      phx-value-ref={@entry.ref}>
+      <span class="material-icons text-white bg-brightGray-900 rounded-full !text-sm w-5 h-5">close</span>
     </button>
     <.live_img_preview entry={@entry} class="imagebox" />
     """

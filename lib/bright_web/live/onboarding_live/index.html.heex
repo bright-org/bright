@@ -1,5 +1,5 @@
 <section class="bg-white p-2 mb-12 relative rounded-lg lg:p-8 lg:pb-8 lg:min-h-[720px] lg:min-w-[1000px]">
-  <h1 class={["font-bold text-3xl", hidden_more_skills(@current_path)]}>
+  <h1 class={["font-bold text-3xl",hidden_more_skills(@current_path)]}>
     <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:align-[-5px] before:w-9">
       スキルを選ぶ
     </span>
@@ -19,13 +19,12 @@
     </section>
   </div>
 
-  <div :if={@current_user.user_onboardings == nil} class="mt-8 max-w-[1236px] text-base">
+  <div class="mt-8 max-w-[1236px] text-base" :if={@current_user.user_onboardings == nil}>
     <p>スキル評価やチーム育成、スカウトを行う方は、まずチームを作成してください</p>
     <a
       id="skip_onboarding"
       class="w-full white cursor-pointer font-bold py-2 relative select-none hover:opacity-50 underline text-blue-600"
-      phx-click="skip_onboarding"
-    >
+      phx-click="skip_onboarding">
       チームを作る
     </a>
   </div>

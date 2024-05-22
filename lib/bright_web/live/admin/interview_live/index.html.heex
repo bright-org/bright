@@ -13,9 +13,7 @@
   row_click={fn {_id, interview} -> JS.navigate(~p"/admin/recruits/interviews/#{interview}") end}
 >
   <:col :let={{_id, interview}} label="Comment"><%= interview.comment %></:col>
-  <:col :let={{_id, interview}} label="Status">
-    <%= Gettext.gettext(BrightWeb.Gettext, to_string(interview.status)) %>
-  </:col>
+  <:col :let={{_id, interview}} label="Status"><%= Gettext.gettext(BrightWeb.Gettext, to_string(interview.status)) %></:col>
   <:action :let={{_id, interview}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/recruits/interviews/#{interview}"}>Show</.link>
@@ -32,12 +30,7 @@
   </:action>
 </.table>
 
-<.modal
-  :if={@live_action in [:new, :edit]}
-  id="interview-modal"
-  show
-  on_cancel={JS.patch(~p"/admin/recruits/interviews")}
->
+<.modal :if={@live_action in [:new, :edit]} id="interview-modal" show on_cancel={JS.patch(~p"/admin/recruits/interviews")}>
   <.live_component
     module={BrightWeb.Admin.InterviewLive.FormComponent}
     id={@interview.id || :new}

@@ -15,55 +15,43 @@ defmodule BrightWeb.RecruitEmploymentLive.TeamInviteComponent do
       <div class="overflow-y-auto z-[60]">
         <main class="flex items-center justify-center" role="main">
           <section class="bg-white px-10 py-4 shadow text-sm">
-            <h2 class="font-bold text-3xl">
-              <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">
-                採用決定者のチームへの招待
-              </span>
-            </h2>
+            <h2 class="font-bold text-3xl"><span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">採用決定者のチームへの招待</span></h2>
             <div class="flex mt-8">
-              <!-- Start 採用候補者と依頼先 -->
+             <!-- Start 採用候補者と依頼先 -->
               <div class="border-r border-r-brightGray-200 border-dashed mr-8 pr-8 w-[928px]">
                 <div>
                   <ul>
                     <div class="flex">
                       <div class="w-[460px]">
-                        <.profile
-                          user_name={@request.employment.candidates_user.name}
-                          title={@request.employment.candidates_user.user_profile.title}
-                          icon_file_path={
-                            icon_url(@request.employment.candidates_user.user_profile.icon_file_path)
-                          }
-                        />
+                      <.profile
+                        user_name={@request.employment.candidates_user.name}
+                        title={@request.employment.candidates_user.user_profile.title}
+                        icon_file_path={icon_url(@request.employment.candidates_user.user_profile.icon_file_path)}
+                      />
                       </div>
                       <div class="ml-8 mt-4 text-xl">
-                        <span>報酬：<%= @request.employment.income %>万円</span>
-                        <br />
-                        <span>
-                          雇用形態：<%= Gettext.gettext(
-                            BrightWeb.Gettext,
-                            to_string(@request.employment.employment_status)
-                          ) %>
-                        </span>
+                        <span>報酬：<%= @request.employment.income %>万円</span><br>
+                        <span>雇用形態：<%= Gettext.gettext(BrightWeb.Gettext, to_string(@request.employment.employment_status)) %></span>
                       </div>
                     </div>
                     <div class="flex flex-col">
                       <p class="font-bold">稼働按分・工数の扱いに関するメモ・注意点</p>
                       <p class="mt-1 px-5 py-2 border border-brightGray-200 rounded-sm">
                         <%= @request.comment %>
-                      </p>
+                        </p>
                     </div>
                     <div class="">
-                      <.live_component
-                        id="user_params_for_employment"
-                        prefix="interview"
-                        search={false}
-                        anon={false}
-                        module={BrightWeb.SearchLive.SearchResultsComponent}
-                        current_user={@current_user}
-                        result={@candidates_user}
-                        skill_params={@skill_params}
-                        stock_user_ids={[]}
-                      />
+                    <.live_component
+                      id="user_params_for_employment"
+                      prefix="interview"
+                      search={false}
+                      anon={false}
+                      module={BrightWeb.SearchLive.SearchResultsComponent}
+                      current_user={@current_user}
+                      result={@candidates_user}
+                      skill_params={@skill_params}
+                      stock_user_ids={[]}
+                    />
                     </div>
                   </ul>
                 </div>
@@ -71,38 +59,37 @@ defmodule BrightWeb.RecruitEmploymentLive.TeamInviteComponent do
                 <div class="mt-8">
                   <h3 class="font-bold text-base">ジョイン先チーム</h3>
                   <span class="text-attention-600"><%= Phoenix.HTML.raw(@invite_error) %></span>
-                  <div class="bg-white border border-brightGray-200 rounded-md mt-1">
-                    <div class="bg-white rounded-md mt-1">
-                      <.live_component
-                        id="related_team_card"
-                        module={BrightWeb.CardLive.ManagingTeamCardComponent}
-                        display_user={@current_user}
-                      />
+                    <div class="bg-white border border-brightGray-200 rounded-md mt-1">
+                      <div class="bg-white rounded-md mt-1">
+                        <.live_component
+                          id="related_team_card"
+                          module={BrightWeb.CardLive.ManagingTeamCardComponent}
+                          display_user={@current_user}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="flex justify-center gap-x-4 mt-8">
-                    <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
-                      <.link navigate={@return_to}>閉じる</.link>
-                    </button>
-                    <button
-                      class="text-sm font-bold py-3 rounded border border-base w-44 h-12"
-                      phx-target={@myself}
-                      phx-click="cancel"
-                    >
-                      チーム招待を行わない
-                    </button>
-                    <button
-                      type="button"
-                      class="text-sm font-bold py-3 rounded text-white bg-base w-72"
-                      phx-click={JS.push("invite", value: %{team_id: @team_id}, target: @myself)}
-                    >
-                      チームに招待する
-                    </button>
-                  </div>
+                    <div class="flex justify-center gap-x-4 mt-8">
+                      <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
+                        <.link navigate={@return_to}>閉じる</.link>
+                      </button>
+                      <button
+                        class="text-sm font-bold py-3 rounded border border-base w-44 h-12"
+                        phx-target={@myself}
+                        phx-click="cancel"
+                      >
+                        チーム招待を行わない
+                      </button>
+                      <button
+                        type="button"
+                        class="text-sm font-bold py-3 rounded text-white bg-base w-72"
+                        phx-click={JS.push("invite", value: %{team_id: @team_id}, target: @myself)}
+                      >
+                        チームに招待する
+                      </button>
+                    </div>
                 </div>
-              </div>
-              <!-- End 採用候補者と依頼先 -->
+              </div><!-- End 採用候補者と依頼先 -->
             </div>
           </section>
         </main>

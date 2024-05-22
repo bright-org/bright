@@ -9,15 +9,11 @@
     <th>URL</th>
   </tr>
   <%= for {_context, email, name, url} <- @user_tokens do %>
-    <tr>
+  <tr>
       <td><%= email %></td>
       <td><%= name %></td>
-      <td>
-        <a class="underline text-blue-700" href={url} target="_blank" rel="noopener noreferrer">
-          <%= url %>
-        </a>
-      </td>
-    </tr>
+      <td><a class="underline text-blue-700" href={url} target="_blank" rel="noopener noreferrer"><%= url %></a></td>
+  </tr>
   <% end %>
 </table>
 
@@ -32,17 +28,14 @@
     <th>URL</th>
   </tr>
   <%= for {_context,email, name, url} <- @team_invite do %>
-    <tr>
-      <td><%= email %></td>
-      <td><%= name %></td>
-      <td>
-        <a class="underline text-blue-700" href={url} target="_blank" rel="noopener noreferrer">
-          <%= url %>
-        </a>
-      </td>
-    </tr>
+  <tr>
+    <td><%= email %></td>
+    <td><%= name %></td>
+    <td><a class="underline text-blue-700" href={url} target="_blank" rel="noopener noreferrer"><%= url %></a></td>
+  </tr>
   <% end %>
 </table>
+
 
 <.header>
   2FA Codes
@@ -60,3 +53,4 @@
     </tr>
   <% end %>
 </table>
+

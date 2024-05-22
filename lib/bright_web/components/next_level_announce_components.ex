@@ -33,9 +33,9 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
     ~H"""
     <div class="flex pb-4">
       <.level_render
-        level={@level}
-        next_percentage={@next_percentage}
-        next_num_skills={@next_num_skills}
+       level={@level}
+       next_percentage={@next_percentage}
+       next_num_skills={@next_num_skills}
       />
     </div>
     """
@@ -63,7 +63,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
         あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で<%= @next_level_name %>になれます。
       </div>
       <div>
-        <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold"><%= @next_num_skills %></span>個
+        <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
       </div>
     </div>
     """

@@ -39,6 +39,7 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
   def render(assigns) do
     ~H"""
     <ul class="w-96 p-2 text-left text-base">
+
       <% # カスタムグループ名表示および変更と削除 %>
       <li :if={@custom_group} class="flex items-center justify-between">
         <div :if={is_nil(@form_update)} class="text-left flex items-center text-base py-3">
@@ -81,15 +82,9 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
             phx-target={@myself}
           >
             <div class="grow">
-              <BrightCoreComponents.input
-                type="text"
-                input_class="w-full"
-                field={@form_update[:name]}
-              />
+              <BrightCoreComponents.input type="text" input_class="w-full" field={@form_update[:name]} />
             </div>
-            <button class="grow-0 text-sm font-bold px-3 py-2 rounded border bg-base text-white">
-              保存
-            </button>
+            <button class="grow-0 text-sm font-bold px-3 py-2 rounded border bg-base text-white">保存</button>
           </.form>
         </div>
       </li>
@@ -122,23 +117,13 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
             <% else %>
               比較するカスタムグループの選択
             <% end %>
-            <svg
-              class="w-2.5 h-2.5 ml-2.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 6 10"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m1 9 4-4-4-4"
-              />
+            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
             </svg>
           </button>
-          <div class="dropdownTarget bg-white rounded-md mt-1 border border-brightGray-100 shadow-md hidden z-10">
+          <div
+            class="dropdownTarget bg-white rounded-md mt-1 border border-brightGray-100 shadow-md hidden z-10"
+          >
             <ul class="py-2 text-sm text-base">
               <li :for={custom_group <- @custom_groups}>
                 <div
@@ -165,16 +150,9 @@ defmodule BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent do
           phx-target={@myself}
         >
           <div class="grow">
-            <BrightCoreComponents.input
-              type="text"
-              input_class="w-full"
-              field={@form[:name]}
-              placeholder="表示メンバーでカスタムグループ追加"
-            />
+            <BrightCoreComponents.input type="text" input_class="w-full" field={@form[:name]} placeholder="表示メンバーでカスタムグループ追加" />
           </div>
-          <button class="grow-0 text-sm font-bold px-3 py-2 rounded border bg-base text-white">
-            追加
-          </button>
+          <button class="grow-0 text-sm font-bold px-3 py-2 rounded border bg-base text-white">追加</button>
         </.form>
       </li>
     </ul>

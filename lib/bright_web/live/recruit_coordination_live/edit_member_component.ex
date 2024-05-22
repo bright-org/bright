@@ -45,16 +45,13 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
                       面談名
                     </dt>
                     <dd class="w-[280px] mb-10 break-words">
-                      <span>
-                        <%= if @coordination_member.coordination.skill_panel_name == nil,
-                          do: "スキルパネルデータなし",
-                          else: @coordination_member.coordination.skill_panel_name %>
-                      </span>
-                      <br />
-                      <span class="text-brightGray-300">
-                        <%= NaiveDateTime.to_date(@coordination_member.inserted_at) %> 希望年収:<%= @coordination_member.coordination.desired_income %>
-                      </span>
-                    </dd>
+                        <span><%= if @coordination_member.coordination.skill_panel_name == nil, do: "スキルパネルデータなし", else: @coordination_member.coordination.skill_panel_name %></span>
+                        <br />
+                        <span class="text-brightGray-300">
+                        <%= NaiveDateTime.to_date(@coordination_member.inserted_at) %>
+                        希望年収:<%= @coordination_member.coordination.desired_income %>
+                        </span>
+                      </dd>
                     <dt class="font-bold w-[98px] flex items-center mb-10">
                       面談依頼者
                     </dt>
@@ -66,43 +63,31 @@ defmodule BrightWeb.RecruitCoordinationLive.EditMemberComponent do
                       <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
                     </dt>
                     <dd class="w-[280px] break-words">
-                      <%= @coordination_member.coordination.comment %>
+                    <%= @coordination_member.coordination.comment %>
                     </dd>
-                    <dt class="font-bold w-[98px] flex mt-8">
+                    <dt class="font-bold w-[98px] flex mt-8" >
                       <label for="point" class="block pr-1">採用の<br />意思確認</label>
                     </dt>
                     <dd class="w-[280px] mt-8">
                       <label class="block">
                         <input
-                          type="radio"
-                          name="coordination"
-                          class="mr-1"
-                          phx-click={
-                            JS.push("checked", target: @myself, value: %{decision: :recruit_wants})
-                          }
-                        />
+                          type="radio" name="coordination" class="mr-1"
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :recruit_wants})}
+                        >
                         <span class="align-[2px]">採用したい</span>
                       </label>
                       <label class="block">
                         <input
-                          type="radio"
-                          name="coordination"
-                          class="mr-1"
-                          phx-click={
-                            JS.push("checked", target: @myself, value: %{decision: :recruit_keep})
-                          }
-                        />
+                          type="radio" name="coordination" class="mr-1"
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :recruit_keep})}
+                        >
                         <span class="align-[2px]">採用しないが候補者をストック</span>
                       </label>
                       <label class="block">
                         <input
-                          type="radio"
-                          name="coordination"
-                          class="mr-1"
-                          phx-click={
-                            JS.push("checked", target: @myself, value: %{decision: :recruit_not_wants})
-                          }
-                        />
+                          type="radio" name="coordination" class="mr-1"
+                          phx-click={JS.push("checked", target: @myself, value: %{decision: :recruit_not_wants})}
+                        >
                         <span class="align-[2px]">採用しない</span>
                       </label>
                     </dd>

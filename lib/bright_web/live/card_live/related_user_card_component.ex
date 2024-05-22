@@ -87,20 +87,14 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
           </ul>
           <% # TODO ↑α版対応 %>
           <% # TODO ↓α版対応 @selected_tab == "joined_teams" && の条件を削除 %>
-          <ul
-            :if={@selected_tab != "intriguing" && Enum.count(@user_profiles) == 0}
-            class="flex gap-y-2.5 flex-col"
-          >
+          <ul :if={@selected_tab != "intriguing" && Enum.count(@user_profiles) == 0} class="flex gap-y-2.5 flex-col">
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
                 <%= Map.get(nobody_exists_message(), @selected_tab) %>
               </div>
             </li>
           </ul>
-          <ul
-            :if={Enum.count(@user_profiles) > 0}
-            class="flex flex-col lg:flex-row lg:flex-wrap gap-y-1"
-          >
+          <ul :if={Enum.count(@user_profiles) > 0} class="flex flex-col lg:flex-row lg:flex-wrap gap-y-1">
             <%= for user_profile <- @user_profiles do %>
               <%= if @selected_tab in ["team", "custom_group"] do %>
                 <.profile_small
@@ -117,9 +111,7 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
                   user_id={user_profile.user_id}
                   stock_date={Date.to_iso8601(user_profile.inserted_at)}
                   skill_panel={user_profile.skill_panel}
-                  desired_income={
-                    if user_profile.desired_income == 0, do: "-", else: user_profile.desired_income
-                  }
+                  desired_income={if user_profile.desired_income == 0, do: "-" ,else: user_profile.desired_income}
                   encrypt_user_name={encrypt_user_name(user_profile.user)}
                   remove_user_target={@myself}
                   hr_enabled={@hr_enabled}
@@ -230,19 +222,12 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
 
   defp inner_tab(assigns) do
     ~H"""
-    <div
-      id={"#{@id}-#{@selected_tab}"}
-      class="flex border-b border-brightGray-50"
-      phx-hook="TabSlideScroll"
-    >
+    <div id={"#{@id}-#{@selected_tab}"} class="flex border-b border-brightGray-50" phx-hook="TabSlideScroll">
       <div class="overflow-hidden">
         <ul class="inner_tab_list overflow-hidden flex text-base !text-sm">
           <%= for {key, value} <- @inner_tab do %>
             <li
-              class={[
-                "p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50",
-                key == @inner_selected_tab && "bg-brightGreen-50"
-              ]}
+              class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
               phx-click="inner_tab_click"
               phx-target={@target}
               phx-value-tab_name={@selected_tab}
@@ -255,12 +240,14 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
       </div>
       <div class="inner_tab_slide_buttons flex">
         <button class="px-1 border-l border-brightGray-50">
-          <span class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block">
-          </span>
+          <span
+            class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+          ></span>
         </button>
         <button class="px-1 border-l border-brightGray-50">
-          <span class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block">
-          </span>
+          <span
+            class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+          ></span>
         </button>
       </div>
     </div>

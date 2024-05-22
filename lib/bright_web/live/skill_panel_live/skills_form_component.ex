@@ -59,10 +59,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
           <div
             id="btn-help-enter-skills-modal"
             class="flex-none cursor-pointer"
-            phx-click={
-              JS.push("open", target: "#help-enter-skills-modal") |> show("#help-enter-skills-modal")
-            }
-          >
+            phx-click={JS.push("open", target: "#help-enter-skills-modal") |> show("#help-enter-skills-modal")}>
             <img class="w-8 h-8" src="/images/icon_help.svg" />
           </div>
         </h2>
@@ -72,15 +69,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
         <.live_component
           module={BrightWeb.HelpMessageComponent}
           id="help-enter-skills-modal"
-          open={false}
-        >
-          <.enter_skills_help_message reference_from="modal" />
+          open={false}>
+          <.enter_skills_help_message reference_from={"modal"} />
         </.live_component>
 
-        <p
-          :if={@restore}
-          class="bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900 p-2 text-sm"
-        >
+        <p :if={@restore} class="bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900 p-2 text-sm">
           入力の途中で接続が切れたため、入力中のデータを復元しました。必ず「保存する」ボタンを押して入力を完了してください。
         </p>
 
@@ -108,15 +101,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
               </p>
               <div class="flex items-center justify-center">
                 <span class={[score_mark_class(:high, :green), "inline-block mr-1"]}></span>
-                <span class="score-high-percentage">
-                  <%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％
-                </span>
+                <span class="score-high-percentage"><%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％</span>
               </div>
               <div class="flex items-center justify-center">
                 <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]}></span>
-                <span class="score-middle-percentage">
-                  <%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％
-                </span>
+                <span class="score-middle-percentage"><%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％</span>
               </div>
             </div>
           </div>

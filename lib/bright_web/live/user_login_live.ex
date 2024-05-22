@@ -14,38 +14,18 @@ defmodule BrightWeb.UserLoginLive do
       phx-update="ignore"
     >
       <UserAuthComponents.form_section variant="left">
-        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">
-          Google
-        </UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href={~p"/auth/github"} variant="github">
-          GitHub
-        </UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href="#" variant="facebook">
-          Facebook
-        </UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href="#" variant="twitter">
-          Twitter
-        </UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">Google</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="facebook">Facebook</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="twitter">Twitter</UserAuthComponents.social_auth_button>
       </UserAuthComponents.form_section>
 
       <UserAuthComponents.or_text>または</UserAuthComponents.or_text>
 
       <UserAuthComponents.form_section variant="right">
-        <UserAuthComponents.input_with_label
-          field={@form[:email]}
-          id="email"
-          type="email"
-          label_text="メールアドレス"
-          required
-        />
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
 
-        <UserAuthComponents.input_with_label
-          field={@form[:password]}
-          id="password"
-          type="password"
-          label_text="パスワード"
-          required
-        >
+        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required>
           <:under_block>
             <UserAuthComponents.link_text_under_input href={~p"/users/reset_password"}>
               パスワードを忘れた方はこちら
@@ -57,9 +37,7 @@ defmodule BrightWeb.UserLoginLive do
         </UserAuthComponents.input_with_label>
 
         <UserAuthComponents.button variant="mt-xs">ログイン</UserAuthComponents.button>
-        <UserAuthComponents.link_text href={~p"/users/register"}>
-          ユーザー新規作成はこちら
-        </UserAuthComponents.link_text>
+        <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
     """

@@ -94,7 +94,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <img class="mr-1" src="/images/common/icons/compareIndividual.svg" />
         <span class="min-w-[6em]">個人とスキルを比較</span>
       </.action_button>
-      <div class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10">
+      <div
+        class="dropdownTarget bg-white rounded-md mt-1 w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
+      >
         <.live_component
           id="related-user-card-compare"
           module={BrightWeb.CardLive.RelatedUserCardComponent}
@@ -121,7 +123,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
         <span class="min-w-[6em]">チーム全員と比較</span>
       </.action_button>
-      <div class="dropdownTarget bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden z-10">
+      <div
+        class="dropdownTarget bg-white rounded-md mt-1 w-[750px] border border-brightGray-100 shadow-md hidden z-10"
+      >
         <.live_component
           id="related-team_card-compare"
           module={BrightWeb.CardLive.RelatedTeamCardComponent}
@@ -147,41 +151,29 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <img class="mr-1" src="/images/common/icons/addCustomGroup.svg" />
         <span>カスタムグループ追加・比較</span>
       </.action_button>
-      <div class="dropdownTarget z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50">
+      <div
+        class="dropdownTarget z-10 hidden bg-white rounded-lg shadow-md min-w-[286px] border border-brightGray-50"
+      >
         <.live_component
           id="compare-custom-group-menu"
           module={BrightWeb.SkillPanelLive.CompareCustomGroupMenuComponent}
           custom_group={@custom_group}
           current_user={@current_user}
           compared_users={@compared_users}
-          on_create={
-            &send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_created: &1)
-          }
-          on_select={
-            &send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_selected: &1)
-          }
-          on_assign={
-            &send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_assigned: &1)
-          }
-          on_update={
-            &send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_updated: &1)
-          }
-          on_delete={
-            &send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_deleted: &1)
-          }
+          on_create={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_created: &1)}
+          on_select={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_selected: &1)}
+          on_assign={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_assigned: &1)}
+          on_update={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_updated: &1)}
+          on_delete={&send_update(SkillsFieldComponent, id: @skills_field_id, custom_group_deleted: &1)}
         />
       </div>
     </div>
 
-    <div
-      :if={@custom_group}
-      id="selected-custom-group-name"
-      class="text-left flex items-center text-base"
-    >
+    <div :if={@custom_group} id="selected-custom-group-name" class="text-left flex items-center text-base">
       <img
         src="/images/common/icons/coustom_group.svg"
         class="!flex w-6 h-6 mr-1 !items-center !justify-center"
-      />
+        />
       <%= @custom_group.name %>
     </div>
     """
@@ -194,8 +186,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <% # z-[1]: table内のsticky優先表示で使用 %>
         <thead>
           <tr>
-            <td colspan="4" class="sticky z-[1] left-0 top-0 min-w-[900px] bg-white sticky-border">
-            </td>
+            <td colspan="4" class="sticky z-[1] left-0 top-0 min-w-[900px] bg-white sticky-border"> </td>
             <td class="sticky top-0 bg-white sticky-border sticky-border-plus-top">
               <div class="flex justify-center items-center min-w-[80px] min-w-[150px]">
                 <p class="inline-flex flex-1 justify-center">
@@ -203,14 +194,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </p>
               </div>
             </td>
-            <td
-              :for={user <- @compared_users}
-              class="sticky top-0 bg-white sticky-border sticky-border-plus-top"
-            >
+            <td :for={user <- @compared_users} class="sticky top-0 bg-white sticky-border sticky-border-plus-top">
               <div class="flex justify-center items-center">
-                <p class="inline-flex flex-1 justify-center">
-                  <%= if user.anonymous, do: "非表示", else: user.name %>
-                </p>
+                <p class="inline-flex flex-1 justify-center"><%= if user.anonymous, do: "非表示", else: user.name %></p>
                 <button
                   type="button"
                   class="text-brightGray-900 rounded-full w-3 h-3 inline-flex items-center justify-center"
@@ -240,15 +226,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <div class="flex justify-center flex-wrap gap-x-2">
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
-                  <span class="score-high-percentage">
-                    <%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％
-                  </span>
+                  <span class="score-high-percentage"><%= SkillScores.calc_high_skills_percentage(@counter.high, @num_skills) %>％</span>
                 </div>
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
-                  <span class="score-middle-percentage">
-                    <%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％
-                  </span>
+                  <span class="score-middle-percentage"><%= SkillScores.calc_middle_skills_percentage(@counter.middle, @num_skills) %>％</span>
                 </div>
               </div>
             </td>
@@ -265,9 +247,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                 </div>
                 <div class="min-w-[3em] flex items-center">
                   <span class={[score_mark_class(:middle, :amethyst), "inline-block mr-1"]}></span>
-                  <span class="score-middle-percentage">
-                    <%= user_data.middle_skills_percentage %>％
-                  </span>
+                  <span class="score-middle-percentage"><%= user_data.middle_skills_percentage %>％</span>
                 </div>
               </div>
             </td>
@@ -280,45 +260,19 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
           <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
           <tr id={"skill-#{row}"}>
-            <td
-              :if={col1}
-              rowspan={col1.size}
-              id={"unit-#{col1.position}"}
-              class="align-top sticky left-0 bg-white sticky-border sticky-border-plus-left"
-            >
+            <td :if={col1} rowspan={col1.size} id={"unit-#{col1.position}"} class="align-top sticky left-0 bg-white sticky-border sticky-border-plus-left">
               <%= col1.skill_unit.name %>
             </td>
-            <td
-              :if={col2}
-              rowspan={col2.size}
-              class="align-top sticky left-[200px] bg-white sticky-border"
-            >
+            <td :if={col2} rowspan={col2.size} class="align-top sticky left-[200px] bg-white sticky-border">
               <%= col2.skill_category.name %>
             </td>
             <td class="sticky left-[400px] bg-white sticky-border">
               <div class="flex justify-between items-center">
                 <p><%= col3.skill.name %></p>
                 <div class="flex justify-between items-center gap-x-2">
-                  <.skill_evidence_link
-                    skill_panel={@skill_panel}
-                    skill={current_skill}
-                    skill_score={current_skill_score}
-                    query={@query}
-                  />
-                  <.skill_reference_link
-                    :if={@me}
-                    skill_panel={@skill_panel}
-                    skill={current_skill}
-                    skill_score={current_skill_score}
-                    query={@query}
-                  />
-                  <.skill_exam_link
-                    :if={@me}
-                    skill_panel={@skill_panel}
-                    skill={current_skill}
-                    skill_score={current_skill_score}
-                    query={@query}
-                  />
+                  <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                 </div>
               </div>
             </td>
@@ -344,11 +298,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
             </td>
             <td>
               <div class="flex justify-center gap-x-4 px-4 h-[21px] items-center">
-                <span class={[
-                  score_mark_class(skill_score.score, :green),
-                  "inline-block",
-                  "score-mark-#{skill_score.score}"
-                ]} />
+                <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
               </div>
             </td>
             <td :for={user <- @compared_users}>
@@ -374,10 +324,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   def skills_table_sp(assigns) do
     ~H"""
     <div
-      id="skills-table-field-sp"
-      class="flex justify-center items-center mb-20"
-      phx-hook="SkillUnitScrolling"
-    >
+    id="skills-table-field-sp"
+    class="flex justify-center items-center mb-20"
+    phx-hook="SkillUnitScrolling">
       <section class="text-sm w-full">
         <div>
           <%= for {skill_unit, position} <- Enum.with_index(@skill_units, 1) do %>
@@ -394,43 +343,24 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                   <%= for skill <- get_children(skill_category, "skills") do %>
                     <% skill_score = @skill_score_dict[skill.id] || %{score: :low} %>
                     <% current_skill = Map.get(@current_skill_dict, skill.trace_id, %{}) %>
-                    <% current_skill_score =
-                      Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
+                    <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
 
-                    <tr id={"skill-sp-#{skill.id}"} class={["border border-brightGray-200"]}>
+                    <tr
+                      id={"skill-sp-#{skill.id}"}
+                      class={["border border-brightGray-200"]}
+                    >
                       <th class="flex justify-between align-middle w-full mb-2 min-h-8 p-2 text-left">
                         <span class="break-words max-w-[172px]"><%= skill.name %></span>
                         <div class="flex justify-end items-center gap-x-2 min-w-[80px]">
-                          <.skill_evidence_link
-                            skill_panel={@skill_panel}
-                            skill={current_skill}
-                            skill_score={current_skill_score}
-                            query={@query}
-                          />
-                          <.skill_reference_link
-                            :if={@me}
-                            skill_panel={@skill_panel}
-                            skill={current_skill}
-                            skill_score={current_skill_score}
-                            query={@query}
-                          />
-                          <.skill_exam_link
-                            :if={@me}
-                            skill_panel={@skill_panel}
-                            skill={current_skill}
-                            skill_score={current_skill_score}
-                            query={@query}
-                          />
+                          <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                         </div>
                       </th>
 
                       <td class="align-middle border-l border-brightGray-200 p-2 w-12">
                         <div class="flex justify-center gap-x-1">
-                          <span class={[
-                            score_mark_class(skill_score.score, :green),
-                            "inline-block",
-                            "score-mark-#{skill_score.score}"
-                          ]} />
+                          <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}"]} />
                         </div>
                       </td>
                     </tr>
@@ -457,10 +387,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_evidence_link(assigns) do
     ~H"""
-    <.link
-      class="link-evidence"
-      patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/evidences?#{@query}"}
-    >
+    <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/evidences?#{@query}"}>
       <%= if @skill_score.evidence_filled do %>
         <img src="/images/common/icons/skillEvidenceActive.svg" />
       <% else %>
@@ -474,11 +401,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_reference_link(assigns) do
     ~H"""
-    <.link
-      :if={skill_reference_existing?(@skill.skill_reference)}
-      class="link-reference"
-      patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}
-    >
+    <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}>
       <%= if @skill_score.reference_read do %>
         <img src="/images/common/icons/skillStudyActive.svg" />
       <% else %>
@@ -492,11 +415,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_exam_link(assigns) do
     ~H"""
-    <.link
-      :if={skill_exam_existing?(@skill.skill_exam)}
-      class="link-exam"
-      patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/exam?#{@query}"}
-    >
+    <.link :if={skill_exam_existing?(@skill.skill_exam)} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/exam?#{@query}"}>
       <%= if @skill_score.exam_progress in [:wip, :done] do %>
         <img src="/images/common/icons/skillTestActive.svg" />
       <% else %>
@@ -517,8 +436,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
       <.live_component
         :if={Map.get(@flash, "first_submit_in_overall")}
         module={BrightWeb.HelpMessageComponent}
-        id="help-first-skill-submit-in-overall"
-      >
+        id="help-first-skill-submit-in-overall">
         <.first_submit_in_overall_message />
       </.live_component>
     </div>

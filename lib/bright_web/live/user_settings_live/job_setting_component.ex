@@ -58,30 +58,30 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 <span class="pt-1 w-24">業務可否</span>
               </div>
               <div class="py-4 flex flex-col gap-y-2 lg:flex-row">
-                <BrightCore.input
-                  field={@form[:wish_employed]}
-                  container_class="ml-4 lg:ml-0"
-                  type="checkbox"
-                  label="要OJT"
-                />
-                <BrightCore.input
-                  field={@form[:wish_change_job]}
-                  container_class="ml-4"
-                  type="checkbox"
-                  label="現業以外も可"
-                />
-                <BrightCore.input
-                  field={@form[:wish_side_job]}
-                  container_class="ml-4"
-                  type="checkbox"
-                  label="副業も可"
-                />
-                <BrightCore.input
-                  field={@form[:wish_freelance]}
-                  container_class="ml-4"
-                  type="checkbox"
-                  label="業務委託も可"
-                />
+              <BrightCore.input
+                field={@form[:wish_employed]}
+                container_class="ml-4 lg:ml-0"
+                type="checkbox"
+                label="要OJT"
+              />
+              <BrightCore.input
+                field={@form[:wish_change_job]}
+                container_class="ml-4"
+                type="checkbox"
+                label="現業以外も可"
+              />
+              <BrightCore.input
+                field={@form[:wish_side_job]}
+                container_class="ml-4"
+                type="checkbox"
+                label="副業も可"
+              />
+              <BrightCore.input
+                field={@form[:wish_freelance]}
+                container_class="ml-4"
+                type="checkbox"
+                label="業務委託も可"
+              />
               </div>
             </div>
           </div>
@@ -132,9 +132,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                   type="checkbox"
                   label="土日祝の稼働も含む"
                   disabled={@form[:work_style].value not in ["office", "both"]}
-                  label_class={
-                    if @form[:work_style].value not in ["office", "both"], do: "text-pureGray-600"
-                  }
+                  label_class={if @form[:work_style].value not in ["office", "both"], do: "text-pureGray-600"}
                 />
               </div>
 
@@ -158,9 +156,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
                 <BrightCore.input
                   field={@form[:remote_work_holidays]}
                   container_class="ml-4"
-                  label_class={
-                    if @form[:work_style].value not in ["remote", "both"], do: "text-pureGray-600"
-                  }
+                  label_class={if @form[:work_style].value not in ["remote", "both"], do: "text-pureGray-600"}
                   type="checkbox"
                   label="土日祝の稼働も含む"
                   disabled={@form[:work_style].value not in ["remote", "both"]}

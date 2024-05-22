@@ -11,9 +11,9 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
     ~H"""
     <div>
       <main
-        :if={@open}
         id={@id}
         class={"flex h-screen items-center justify-center p-10 w-screen #{if !@open, do: "hidden"}"}
+        :if={@open}
       >
         <div class="bg-pureGray-600/90 fixed inset-0 transition-opacity z-[55]" />
         <section
@@ -41,13 +41,13 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
                 id="free_trial_recommendation_form"
                 form={@form}
                 phx_change={JS.push("validate", target: @myself)}
-                phx_submit={JS.push("submit", target: @myself)}
-              />
+                phx_submit={JS.push("submit", target: @myself)} />
             </div>
 
             <div class="my-4">
               <p :if={@invalid_reason == :already_available} class="mt-4">
-                <% # 上位プランを薦めるモーダルのため、実際には本ケースはない %> このプランはすでに選択済みです
+                <% # 上位プランを薦めるモーダルのため、実際には本ケースはない %>
+                このプランはすでに選択済みです
               </p>
 
               <p :if={@invalid_reason == :already_used_once} class="mt-4">
@@ -65,6 +65,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
                 <.plan_upgrade_button />
               </div>
             </div>
+
             <!-- close button -->
             <button class="absolute right-5 top-5 z-10">
               <span
@@ -72,8 +73,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponent do
                 phx-click="close"
                 phx-target={@myself}
               >
-                close
-              </span>
+                close</span>
             </button>
           </div>
         </section>

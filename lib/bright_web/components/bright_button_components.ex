@@ -45,10 +45,7 @@ defmodule BrightWeb.BrightButtonComponents do
       type="button"
       class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border hover:border-brightGreen-300 group"
     >
-      <span class="material-icons md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300">
-        share
-      </span>
-      優秀な人として紹介
+      <span class="material-icons md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300">share</span> 優秀な人として紹介
     </button>
     """
   end
@@ -68,10 +65,7 @@ defmodule BrightWeb.BrightButtonComponents do
       data-dropdown-toggle="checkmenu"
       class="text-gray-900 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-brightGray-200 hover:border-brightGreen-300 group"
     >
-      <span class="material-icons md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300">
-        star
-      </span>
-      気になる
+      <span class="material-icons md-18 mr-1 text-brightGray-200 group-hover:text-brightGreen-300">star</span> 気になる
     </button>
     <!-- 気になるDropdown menu -->
     <div id="checkmenu" class="z-10 hidden bg-white rounded-lg shadow min-w-[286px]">
@@ -136,7 +130,8 @@ defmodule BrightWeb.BrightButtonComponents do
         type="button"
         class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm"
       >
-        <span class="material-icons mr-1 material-icons-outlined lg:mr-2">upgrade</span> アップグレード
+        <span class="material-icons mr-1 material-icons-outlined lg:mr-2">upgrade</span>
+        アップグレード
       </button>
     </.link>
     """
@@ -157,11 +152,11 @@ defmodule BrightWeb.BrightButtonComponents do
       target="_blank"
       rel="noopener noreferrer"
     >
-      <button
-        type="button"
-        class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm"
-      >
-        <span class="material-icons mr-1 material-icons-outlined lg:mr-2">sms</span> カスタマーサクセスに連絡
+      <button type="button"
+        class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm">
+        <span
+            class="material-icons mr-1 material-icons-outlined lg:mr-2">sms</span>
+        カスタマーサクセスに連絡
       </button>
     </.link>
     """
@@ -202,7 +197,10 @@ defmodule BrightWeb.BrightButtonComponents do
       class="fixed top-2 right-0 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:mr-0 lg:relative"
       phx-click={JS.toggle(to: "#personal_setting_modal")}
     >
-      <img class="object-cover inline-block h-10 w-10 rounded-full" src={@icon_file_path} />
+      <img
+        class="object-cover inline-block h-10 w-10 rounded-full"
+        src={@icon_file_path}
+      />
     </button>
     """
   end

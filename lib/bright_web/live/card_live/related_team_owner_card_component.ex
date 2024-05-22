@@ -35,7 +35,7 @@ defmodule BrightWeb.CardLive.RelatedTeamOwnerCardComponent do
           <%= if length(@user_profiles) == 0 do %>
             <li class="flex">
               <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-                <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>にチーム管理者はいません
+              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>にチーム管理者はいません
               </div>
             </li>
           <% else %>
@@ -43,9 +43,7 @@ defmodule BrightWeb.CardLive.RelatedTeamOwnerCardComponent do
               <%= for user_profile <- @user_profiles do %>
                 <div
                   class="flex hover:bg-brightGray-50 hover:cursor-pointer"
-                  phx-click={@event}
-                  phx-target={@target}
-                  phx-value-name={user_profile.user_name}
+                  phx-click={@event} phx-target={@target} phx-value-name={user_profile.user_name}
                 >
                   <.profile_small
                     user_name={user_profile.user_name}
@@ -56,7 +54,10 @@ defmodule BrightWeb.CardLive.RelatedTeamOwnerCardComponent do
                     click_event={@event}
                   />
                   <div class="mt-2">
-                    <.team_minimum id={user_profile.team.team_id} team_params={user_profile.team} />
+                  <.team_minimum
+                    id={user_profile.team.team_id}
+                    team_params={user_profile.team}
+                  />
                   </div>
                 </div>
               <% end %>
