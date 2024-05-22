@@ -3,7 +3,6 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
   Level Components
   """
   use Phoenix.Component
-  import BrightWeb.BrightButtonComponents
   alias Bright.SkillScores
 
   @next_level_jp %{beginner: "平均", normal: "ベテラン", skilled: "マスター"}
@@ -21,8 +20,6 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
 
   attr :value, :integer
   attr :size, :integer
-  attr :skill_panel_id, :string
-  attr :me, :boolean
 
   def next_level_announce(assigns) do
     percentage = SkillScores.calc_high_skills_percentage(assigns.value, assigns.size)
@@ -35,30 +32,21 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
       |> assign(next_num_skills: get_next_num_skills(level, assigns.size, assigns.value))
 
     ~H"""
-    <div class="flex pb-4">
       <.level_render
        level={@level}
        next_percentage={@next_percentage}
        next_num_skills={@next_num_skills}
-       skill_panel_id={@skill_panel_id}
-       me={@me}
       />
-    </div>
     """
   end
 
   defp level_render(%{level: :master} = assigns) do
     ~H"""
-    <div class="flex flex-col lg:flex-row">
-      <div class="leading-8">
-        このスキルはマスターしました。
-      </div>
-      <div class="leading-8">
-        おめでとうございます
-      </div>
-      <div class="px-2 leading-8" :if={@me}>
-        <.income_consultation_button skill_panel_id={@skill_panel_id}/>
-      </div>
+    <div class="leading-8">
+      このスキルはマスターしました。
+    </div>
+    <div class="leading-8">
+      おめでとうございます
     </div>
     """
   end
@@ -67,16 +55,11 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
     assigns = assign(assigns, next_level_name: Map.get(@next_level_jp, assigns.level))
 
     ~H"""
-    <div class="flex flex-col lg:flex-row">
-      <div>
-        あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で<%= @next_level_name %>になれます。
-      </div>
-      <div>
-        <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
-      </div>
-      <div class="px-2" :if={@me}>
-        <.income_consultation_button skill_panel_id={@skill_panel_id}/>
-      </div>
+    <div>
+      あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で<%= @next_level_name %>になれます。
+    </div>
+    <div>
+      <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
     </div>
     """
   end

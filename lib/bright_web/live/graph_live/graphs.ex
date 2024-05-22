@@ -11,6 +11,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
   import BrightWeb.NextLevelAnnounceComponents
+  import BrightWeb.BrightButtonComponents
 
   @impl true
   def mount(params, _session, socket) do
