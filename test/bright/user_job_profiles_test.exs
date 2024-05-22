@@ -70,7 +70,7 @@ defmodule Bright.UserJobProfilesTest do
       assert {:ok, %UserJobProfile{} = user_job_profile} =
                UserJobProfiles.create_user_job_profile(valid_attrs)
 
-      assert user_job_profile.desired_income == 80
+      assert user_job_profile.desired_income == Decimal.new("80")
       assert user_job_profile.job_searching == true
       assert user_job_profile.office_working_hours == :"月140h~159h"
       assert user_job_profile.office_pref == :福岡県
@@ -111,7 +111,7 @@ defmodule Bright.UserJobProfilesTest do
       assert {:ok, %UserJobProfile{} = user_job_profile} =
                UserJobProfiles.update_user_job_profile(user_job_profile, update_attrs)
 
-      assert user_job_profile.desired_income == 43
+      assert user_job_profile.desired_income == Decimal.new("43")
       assert user_job_profile.job_searching == false
       assert user_job_profile.office_working_hours == :"月80h~99h"
       assert user_job_profile.office_pref == :東京都
