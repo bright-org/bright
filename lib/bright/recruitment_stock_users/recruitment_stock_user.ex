@@ -11,7 +11,7 @@ defmodule Bright.RecruitmentStockUsers.RecruitmentStockUser do
 
   schema "recruitment_stock_users" do
     field :skill_panel, :string
-    field :desired_income, :integer
+    field :desired_income, :decimal
     belongs_to :recruiter, User
     belongs_to :user, User
 

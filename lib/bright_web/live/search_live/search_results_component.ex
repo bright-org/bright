@@ -10,20 +10,20 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
     ~H"""
     <ul class="mt-4">
       <%= for {user, index} <- Enum.with_index(@result) do %>
-      <li>
-        <.live_component
-          id={"#{@prefix}_search_result_#{index}"}
-          search={@search}
-          prefix={@prefix}
-          module={BrightWeb.SearchLive.SearchResultComponent}
-          anon={!Enum.member?(@team_members, user.id)}
-          user={user}
-          index={index}
-          skill_params={@skill_params}
-          stock_user_ids={@stock_user_ids}
-          hr_enabled={@hr_enabled}
-        />
-      </li>
+        <li>
+          <.live_component
+            id={"#{@prefix}_search_result_#{index}"}
+            search={@search}
+            prefix={@prefix}
+            module={BrightWeb.SearchLive.SearchResultComponent}
+            anon={!Enum.member?(@team_members, user.id) and @anon}
+            user={user}
+            index={index}
+            skill_params={@skill_params}
+            stock_user_ids={@stock_user_ids}
+            hr_enabled={@hr_enabled}
+          />
+        </li>
       <% end %>
     </ul>
     """
