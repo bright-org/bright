@@ -34,28 +34,29 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
       end
 
     ~H"""
-    <div>
-
-        <div class="pt-3 pb-1 px-6 lg:h-[226px]">
-          <%= if @card.total_entries > 0 do %>
-            <ul class="flex gap-y-2 flex-col">
-              <%= for team_params <- @card.entries do %>
-                <.team_superior_small
-                  id={team_params.team_id}
-                  team_params={team_params}
-                  row_on_click_target={assigns.row_on_click_target}
-                  skill_panel_id={@skill_panel_id}
-                />
-              <% end %>
-            </ul>
-          <% else %>
-            <% # 表示内容がないときの表示 %>
-            <ul>
-            対象の上長がいません
-            </ul>
-          <% end %>
-        </div>
-       </div>
+    <div class="py-1">
+      <h3>報酬アップを相談する</h3>
+      <div class="py-1"> 報酬アップを相談する為面談する上長を選択してください</div>
+      <div class="pt-3 pb-1 px-6 lg:h-[226px] lg:w-[500px]">
+        <%= if @card.total_entries > 0 do %>
+          <ul class="flex gap-y-2 flex-col">
+            <%= for team_params <- @card.entries do %>
+              <.team_superior_small
+                id={team_params.team_id}
+                team_params={team_params}
+                row_on_click_target={assigns.row_on_click_target}
+                skill_panel_id={@skill_panel_id}
+              />
+            <% end %>
+          </ul>
+        <% else %>
+          <% # 表示内容がないときの表示 %>
+          <ul>
+          対象の上長がいません
+          </ul>
+        <% end %>
+      </div>
+    </div>
     """
   end
 
