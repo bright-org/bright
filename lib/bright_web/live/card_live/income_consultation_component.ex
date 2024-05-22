@@ -74,12 +74,10 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
     %{display_user: display_user, card: card} = socket.assigns
 
     page = Teams.list_joined_teams_superior_by_user_id(display_user.id, card.page_params)
-    free_trial_together_link? = show_free_trial_together_link?(display_user)
 
     team_params =
       page.entries
       |> convert_team_params_from_team_superior()
-      |> Enum.map(&Map.put(&1, :free_trial_together_link?, free_trial_together_link?))
 
     card = %{
       socket.assigns.card
