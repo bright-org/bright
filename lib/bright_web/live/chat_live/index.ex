@@ -6,8 +6,6 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Recruits
   alias Bright.Teams
   alias Bright.Utils.GoogleCloud.Storage
-  alias Bright.UserSearches
-  alias Bright.SkillPanels
 
   import BrightWeb.ChatLive.ChatComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]

@@ -20,6 +20,7 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
 
   alias Bright.Teams
   alias Bright.UserSearches
+  alias Bright.SkillPanels
   alias Bright.Chats
   alias Bright.Recruits
   alias Bright.Recruits.Interview

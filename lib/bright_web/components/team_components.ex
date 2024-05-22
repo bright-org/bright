@@ -10,7 +10,6 @@ defmodule BrightWeb.TeamComponents do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.Subscriptions
-  alias Phoenix.LiveView.JS
 
   # チームタイプ事の定義(UI向け) Teamsの方のリストと異なりカスタムグループもチーム扱い
   @team_types [
