@@ -6,7 +6,6 @@ defmodule BrightWeb.ChatLive.Index do
   alias Bright.Recruits
   alias Bright.Teams
   alias Bright.Utils.GoogleCloud.Storage
-  alias Bright.Recruits.Interview
   alias Bright.UserSearches
   alias Bright.SkillPanels
 
@@ -278,17 +277,6 @@ defmodule BrightWeb.ChatLive.Index do
           <.button class="mt-4">Dwonload</.button>
         </a>
       </.modal>
-
-      <.bright_modal id="incomecoordination-create-modal" :if={@open_income_consultation} show>
-        <.live_component
-          id="income_consultation"
-          module={BrightWeb.CardLive.IncomeConsultationComponent}
-          display_user={@current_user}
-          over_ride_on_card_row_click_target={true}
-          skill_panel_id={@skill_panel_id}
-        />
-      </.bright_modal>
-
     </div>
     """
   end
@@ -300,8 +288,6 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:open_cancel_interview, false)
     |> assign(:open_create_coordination, false)
     |> assign(:open_edit_interview, false)
-    |> assign(:open_income_consultation, false)
-    |> assign(:skill_panel_id, "")
     |> assign(:sender_icon_path, user.user_profile.icon_file_path)
     |> assign(:images_error, "")
     |> assign(:files_error, "")
@@ -343,19 +329,6 @@ defmodule BrightWeb.ChatLive.Index do
     socket
     |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
-    |> assign(:chat, nil)
-    |> assign(:messages, [])
-    |> assign(:message, nil)
-  end
-
-  defp apply_action(socket, :income_consultation, %{"skill_panel_id" => skill_panel_id}) do
-    user = socket.assigns.current_user
-
-    socket
-    |> assign(:page_title, "面談チャット")
-    |> assign(:chats, Chats.list_chats(user.id, :recruit))
-    |> assign(:open_income_consultation, true)
-    |> assign(:skill_panel_id, skill_panel_id)
     |> assign(:chat, nil)
     |> assign(:messages, [])
     |> assign(:message, nil)
@@ -462,60 +435,6 @@ defmodule BrightWeb.ChatLive.Index do
     {:noreply, assign(socket, :preview, nil)}
   end
 
-  def handle_event(
-        "on_card_row_click",
-        %{"team_admin_user_id" => team_admin_user_id, "skill_panel_id" => skill_panel_id},
-        %{assigns: %{current_user: user}} = socket
-      ) do
-    skill_params = [%{"career_field" => "1on1", "skill_panel" => skill_panel_id}]
-
-    interview =
-      case Recruits.get_interview(team_admin_user_id, user.id) do
-        %Interview{} = interview ->
-          interview
-
-        nil ->
-          skill_params =
-            skill_params
-            |> Enum.map(
-              &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
-                |> Enum.into(%{}))
-            )
-
-          candidates_user =
-            UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
-            |> List.first()
-
-          interview_params = %{
-            "status" => :one_on_one,
-            "skill_panel_name" => gen_interview_name(skill_params),
-            "desired_income" => candidates_user.desired_income,
-            "skill_params" => Jason.encode!(skill_params),
-            "interview_members" => [],
-            "recruiter_user_id" => team_admin_user_id,
-            "candidates_user_id" => user.id
-          }
-
-          {:ok, interview} = Recruits.create_interview(interview_params)
-
-          interview
-      end
-
-    chat =
-      Chats.get_or_create_chat(
-        interview.recruiter_user_id,
-        interview.candidates_user_id,
-        interview.id,
-        "recruit",
-        [
-          %{user_id: interview.recruiter_user_id},
-          %{user_id: interview.candidates_user_id}
-        ]
-      )
-
-    {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
-  end
-
   @impl true
   def handle_info(
         {:send_message, message},
@@ -559,12 +478,4 @@ defmodule BrightWeb.ChatLive.Index do
     do: translate_error({"You have selected an unacceptable file type", []})
 
   defp error_to_string(_), do: ""
-
-  defp gen_interview_name(skill_params) do
-    skill_params
-    |> List.first()
-    |> Map.get(:skill_panel)
-    |> SkillPanels.get_skill_panel!()
-    |> Map.get(:name)
-  end
 end

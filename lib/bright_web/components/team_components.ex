@@ -73,24 +73,14 @@ defmodule BrightWeb.TeamComponents do
       phx-value-team_type={@team_params.team_type}
       class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
-
-    <span
-    :if={@team_params.is_star == nil}
-    >
-    </span>
-      <span
-        :if={@team_params.is_star == true}
-        class="material-icons text-brightGreen-300"
-      >
+      <span :if={@team_params.is_star == nil}></span>
+      <span :if={@team_params.is_star == true} class="material-icons text-brightGreen-300">
         star
       </span>
-      <span
-        :if={@team_params.is_star == false}
-        class="material-icons text-brightGray-100"
-      >
+      <span :if={@team_params.is_star == false} class="material-icons text-brightGray-100">
         star
       </span>
-      <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
+      <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2" />
       <span class="max-w-[160px] lg:max-w-[280px] truncate"><%= @team_params.name %></span>
       <span
         :if={@team_params.is_admin}
@@ -103,52 +93,8 @@ defmodule BrightWeb.TeamComponents do
         navigate="/free_trial?plan=together"
         class="text-white text-sm font-bold ml-4 px-2 py-1 inline-flex items-center bg-base rounded min-w-[60px]"
       >
-        上限を増やす
-        <.icon name="hero-arrow-right" class="w-4 h-4" />
+        上限を増やす <.icon name="hero-arrow-right" class="w-4 h-4" />
       </.link>
-    </li>
-    """
-  end
-
-  attr :id, :string, required: true
-  attr :team_params, :map, required: true
-  attr :row_on_click, :string, required: false, default: "on_card_row_click"
-  attr :row_on_click_target, :any, required: false, default: nil
-
-  attr :on_hover_style, :string,
-    required: false,
-    default: " hover:bg-brightGray-50 cursor-pointer"
-
-  attr :skill_panel_id, :string
-
-  def team_superior_small(assigns) do
-    ~H"""
-    <li
-      id={@id}
-      phx-click={JS.push(@row_on_click, value: %{team_id: @team_params.team_id, team_admin_user_id: @team_params.admin_user.user.id, skill_panel_id: @skill_panel_id })}
-      phx-target={@row_on_click_target}
-      class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
-    >
-
-    <span
-    :if={@team_params.is_star == nil}
-    >
-    </span>
-      <span
-        :if={@team_params.is_star == true}
-        class="material-icons text-brightGreen-300"
-      >
-        star
-      </span>
-      <span
-        :if={@team_params.is_star == false}
-        class="material-icons text-brightGray-100"
-      >
-        star
-      </span>
-      <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
-      <span class="max-w-[160px] lg:max-w-[280px] truncate"><%= @team_params.name %></span>
-      <span class="max-w-[160px] lg:max-w-[280px] truncate px-3"><%= @team_params.admin_user.user.name %></span>
     </li>
     """
   end
@@ -166,7 +112,7 @@ defmodule BrightWeb.TeamComponents do
       id={@id}
       class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
-      <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2"/>
+      <img src={get_team_icon_path(@team_params.team_type)} class="ml-2 mr-2" />
       <span class="max-w-[160px] lg:max-w-[280px] truncate"><%= @team_params.name %></span>
     </li>
     """
@@ -179,24 +125,25 @@ defmodule BrightWeb.TeamComponents do
 
   def team_title(assigns) do
     ~H"""
-      <div class="flex gap-x-2 lg:gap-x-4 h-8" >
-        <h3 class="max-w-[70%] lg:max-w-none truncate">
-          <img src={get_team_icon_path(@team_type)} class="mr-2 inline-flex w-8 h-8 items-center justify-center"/>
-          <%= @team_name %>
-        </h3>
-        <button
-          :if={show_star_button?(@current_users_team_member)}
-          class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
-          phx-click="click_star_button"
-        >
-          <span
-            class={"material-icons text-#{get_star_style(@current_users_team_member)}"}
-          >
-            star
-          </span>
-        </button>
-        <h3><%= @team_size %>人</h3>
-      </div>
+    <div class="flex gap-x-2 lg:gap-x-4 h-8">
+      <h3 class="max-w-[70%] lg:max-w-none truncate">
+        <img
+          src={get_team_icon_path(@team_type)}
+          class="mr-2 inline-flex w-8 h-8 items-center justify-center"
+        />
+        <%= @team_name %>
+      </h3>
+      <button
+        :if={show_star_button?(@current_users_team_member)}
+        class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1"}
+        phx-click="click_star_button"
+      >
+        <span class={"material-icons text-#{get_star_style(@current_users_team_member)}"}>
+          star
+        </span>
+      </button>
+      <h3><%= @team_size %>人</h3>
+    </div>
     """
   end
 
@@ -213,9 +160,9 @@ defmodule BrightWeb.TeamComponents do
         <td class={@css}>クラス2</td>
         <td class={@css}>クラス3</td>
       </tr>
-      <.team_header_sum_row name="見習い" row={Enum.at(@level_count,0)}/>
-      <.team_header_sum_row name="平均" row={Enum.at(@level_count,1)}/>
-      <.team_header_sum_row name="ベテラン" row={Enum.at(@level_count,2)}/>
+      <.team_header_sum_row name="見習い" row={Enum.at(@level_count, 0)} />
+      <.team_header_sum_row name="平均" row={Enum.at(@level_count, 1)} />
+      <.team_header_sum_row name="ベテラン" row={Enum.at(@level_count, 2)} />
     </table>
     """
   end
@@ -262,40 +209,39 @@ defmodule BrightWeb.TeamComponents do
       |> Map.put(:team_type_select_list, @team_type_select_list)
 
     ~H"""
-    <div
-      :if={!assigns.is_clickable? || length(filter_team_type_select_list_by_user_id(@user_id)) <= 1}
-    >
+    <div :if={
+      !assigns.is_clickable? || length(filter_team_type_select_list_by_user_id(@user_id)) <= 1
+    }>
       <div
-        class={"text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full"}
+        class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full"
         type="button"
       >
-        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2"/>
+        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2" />
         <%= get_display_name(@selected_team_type) %>
       </div>
     </div>
     <div
       :if={assigns.is_clickable? && length(filter_team_type_select_list_by_user_id(@user_id)) >= 2}
-      id={"{@id}"}
+      id="{@id}"
       phx-hook="Dropdown"
       data-dropdown-offset-skidding="0"
       data-dropdown-placement="bottom"
     >
       <bottun
-          class={"text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full  hover:bg-brightGray-50 dropdownTrigger"}
-          type="button"
-        >
-        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2"/>
+        class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full  hover:bg-brightGray-50 dropdownTrigger"
+        type="button"
+      >
+        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2" />
         <%= get_display_name(@selected_team_type) %>
       </bottun>
-      <p
-      >
+      <p>
         チームタイプを選択してください
       </p>
       <!-- menue list-->
       <div
-          :if={@is_clickable?}
-          class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-full lg:w-[340px]"
-        >
+        :if={@is_clickable?}
+        class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-full lg:w-[340px]"
+      >
         <ul>
           <%= for team_type_item <- filter_team_type_select_list_by_user_id(@user_id) do %>
             <li
@@ -304,7 +250,7 @@ defmodule BrightWeb.TeamComponents do
               phx-value-team_type={team_type_item.team_type}
               phx-target={@phx_target}
             >
-              <img src={get_team_icon_path(team_type_item.team_type)} class="ml-2 mr-2"/>
+              <img src={get_team_icon_path(team_type_item.team_type)} class="ml-2 mr-2" />
               <%= team_type_item.display_name %>
             </li>
           <% end %>
@@ -337,30 +283,13 @@ defmodule BrightWeb.TeamComponents do
     end)
   end
 
-  def convert_team_params_from_team_superior(team_member_users) do
-    team_member_users
-    |> Enum.map(fn team_member_user ->
-      %{
-        team_id: team_member_user.team.id,
-        name: team_member_user.team.name,
-        is_star: team_member_user.is_star,
-        is_admin: team_member_user.is_admin,
-        team_type: Teams.get_team_type_by_team(team_member_user.team),
-        admin_user:
-          team_member_user.team.member_users
-          |> Enum.filter(fn x -> x.is_admin end)
-          |> List.first()
-      }
-    end)
-  end
-
   def show_free_trial_together_link?(user) do
     # プラン契約中でない場合にリンクを表示
     Subscriptions.get_user_subscription_user_plan(user.id)
     |> is_nil()
   end
 
-  defp get_team_icon_path(team_type) do
+  def get_team_icon_path(team_type) do
     # TODO 全チーム種別のアイコンの追加、関数の実装場所の相談
     icons = @team_types
     icons[team_type]
