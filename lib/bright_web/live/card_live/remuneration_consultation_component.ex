@@ -51,6 +51,7 @@ defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
           <% else %>
             <% # 表示内容がないときの表示 %>
             <ul>
+            対象の上長がいません
             </ul>
           <% end %>
         </div>
