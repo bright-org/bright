@@ -279,10 +279,10 @@ defmodule BrightWeb.ChatLive.Index do
         </a>
       </.modal>
 
-      <.bright_modal id="remunerationcoordination-create-modal" :if={@open_remuneration_consultation} show>
+      <.bright_modal id="incomecoordination-create-modal" :if={@open_income_consultation} show>
         <.live_component
-          id="remuneration_consultation"
-          module={BrightWeb.CardLive.RemunerationConsultationComponent}
+          id="income_consultation"
+          module={BrightWeb.CardLive.IncomeConsultationComponent}
           display_user={@current_user}
           over_ride_on_card_row_click_target={true}
           skill_panel_id={@skill_panel_id}
@@ -300,7 +300,7 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:open_cancel_interview, false)
     |> assign(:open_create_coordination, false)
     |> assign(:open_edit_interview, false)
-    |> assign(:open_remuneration_consultation, false)
+    |> assign(:open_income_consultation, false)
     |> assign(:skill_panel_id, "")
     |> assign(:sender_icon_path, user.user_profile.icon_file_path)
     |> assign(:images_error, "")
@@ -348,13 +348,13 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:message, nil)
   end
 
-  defp apply_action(socket, :remuneration_consultation, %{"skill_panel_id" => skill_panel_id}) do
+  defp apply_action(socket, :income_consultation, %{"skill_panel_id" => skill_panel_id}) do
     user = socket.assigns.current_user
 
     socket
     |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
-    |> assign(:open_remuneration_consultation, true)
+    |> assign(:open_income_consultation, true)
     |> assign(:skill_panel_id, skill_panel_id)
     |> assign(:chat, nil)
     |> assign(:messages, [])

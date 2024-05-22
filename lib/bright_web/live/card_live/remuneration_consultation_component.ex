@@ -1,6 +1,6 @@
-defmodule BrightWeb.CardLive.RemunerationConsultationComponent do
+defmodule BrightWeb.CardLive.IncomeConsultationComponent do
   @moduledoc """
-  　関わっているチームカードコンポーネント
+  　関わっているチームの上長カードコンポーネント
 
   - display_user チーム一覧の取得対象となるユーザー. 匿名考慮がされていないため原則current_user
   - over_ride_on_card_row_click_target カードコンポーネント内の行クリック時のハンドラを呼び出し元のハンドラで実装するか否か falseの場合、本実装デフォルトの挙動(チームIDのみ指定してのチームスキル分析への遷移)を実行する

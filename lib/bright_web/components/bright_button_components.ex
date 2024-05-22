@@ -206,18 +206,18 @@ defmodule BrightWeb.BrightButtonComponents do
   end
 
   @doc """
-  Renders a Remuneration Consultation Button
+  Renders a Income Consultation Button
 
   ## Examples
 
-      <.remuneration_consultation_button skill_panel_id={@skill_panel_id} />
+      <.income_consultation_button skill_panel_id={@skill_panel_id} />
   """
   attr :skill_panel_id, :string
 
-  def remuneration_consultation_button(assigns) do
+  def income_consultation_button(assigns) do
     assigns =
       assigns
-      |> assign(:href, "/recruits/remuneration_consultation/#{assigns.skill_panel_id}")
+      |> assign(:href, "/recruits/income_consultation/#{assigns.skill_panel_id}")
 
     ~H"""
     <.link

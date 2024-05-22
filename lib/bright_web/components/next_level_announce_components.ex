@@ -57,7 +57,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
         おめでとうございます
       </div>
       <div class="px-2 leading-8" :if={@me}>
-        <.remuneration_consultation_button skill_panel_id={@skill_panel_id}/>
+        <.income_consultation_button skill_panel_id={@skill_panel_id}/>
       </div>
     </div>
     """
@@ -75,7 +75,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
         <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
       </div>
       <div class="px-2" :if={@me}>
-        <.remuneration_consultation_button skill_panel_id={@skill_panel_id}/>
+        <.income_consultation_button skill_panel_id={@skill_panel_id}/>
       </div>
     </div>
     """
