@@ -88,7 +88,4 @@ config :bright, :google_api_storage,
   bucket_name: System.get_env("BUCKET_NAME", "bright_storage_local"),
   public_base_url: System.get_env("GCS_PUBLIC_BASE_URL", "http://localhost:4443")
 
-# TODO 「報酬アップを相談」のレビュー時はconfig :logger, level: :warningを削除すること
-config :logger, level: :warning
-
 config :boruta, Boruta.Oauth, issuer: "http://localhost:4000"

@@ -273,7 +273,10 @@ defmodule BrightWeb.Router do
 
       live "/recruits/chats", ChatLive.Index, :recruit
       live "/recruits/chats/:id", ChatLive.Index, :recruit
-      live "/recruits/remuneration_consultation/:skill_panel_id", ChatLive.Index, :remuneration_consultation
+
+      live "/recruits/remuneration_consultation/:skill_panel_id",
+           ChatLive.Index,
+           :remuneration_consultation
     end
 
     ## OAuth

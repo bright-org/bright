@@ -352,7 +352,7 @@ defmodule BrightWeb.ChatLive.Index do
   defp apply_action(socket, :remuneration_consultation, %{"skill_panel_id" => skill_panel_id}) do
     user = socket.assigns.current_user
 
-   socket
+    socket
     |> assign(:page_title, "面談チャット")
     |> assign(:chats, Chats.list_chats(user.id, :recruit))
     |> assign(:open_remuneration_consultation, true)
@@ -468,55 +468,53 @@ defmodule BrightWeb.ChatLive.Index do
         %{"team_admin_user_id" => team_admin_user_id, "skill_panel_id" => skill_panel_id},
         %{assigns: %{current_user: user}} = socket
       ) do
+    skill_params = [%{"career_field" => "1on1", "skill_panel" => skill_panel_id}]
 
+    interview =
+      case Recruits.get_interview(team_admin_user_id, user.id) do
+        %Interview{} = interview ->
+          interview
 
-       skill_params = [%{"career_field" => "1on1", "skill_panel" => skill_panel_id}]
+        nil ->
+          skill_params =
+            skill_params
+            |> Enum.map(
+              &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
+                |> Enum.into(%{}))
+            )
 
-       interview =
-         case Recruits.get_interview(team_admin_user_id, user.id) do
-           %Interview{} = interview ->
-             interview
+          candidates_user =
+            UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
+            |> List.first()
 
-           nil ->
-             skill_params =
-               skill_params
-               |> Enum.map(
-                 &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
-                   |> Enum.into(%{}))
-               )
+          interview_params = %{
+            "status" => :one_on_one,
+            "skill_panel_name" => gen_interview_name(skill_params),
+            "desired_income" => candidates_user.desired_income,
+            "skill_params" => Jason.encode!(skill_params),
+            "interview_members" => [],
+            "recruiter_user_id" => team_admin_user_id,
+            "candidates_user_id" => user.id
+          }
 
-             candidates_user =
-               UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
-               |> List.first()
+          {:ok, interview} = Recruits.create_interview(interview_params)
 
-             interview_params = %{
-               "status" => :one_on_one,
-               "skill_panel_name" => gen_interview_name(skill_params),
-               "desired_income" => candidates_user.desired_income,
-               "skill_params" => Jason.encode!(skill_params),
-               "interview_members" => [],
-               "recruiter_user_id" => team_admin_user_id,
-               "candidates_user_id" => user.id
-             }
+          interview
+      end
 
-             {:ok, interview} = Recruits.create_interview(interview_params)
+    chat =
+      Chats.get_or_create_chat(
+        interview.recruiter_user_id,
+        interview.candidates_user_id,
+        interview.id,
+        "recruit",
+        [
+          %{user_id: interview.recruiter_user_id},
+          %{user_id: interview.candidates_user_id}
+        ]
+      )
 
-             interview
-         end
-
-       chat =
-         Chats.get_or_create_chat(
-           interview.recruiter_user_id,
-           interview.candidates_user_id,
-           interview.id,
-           "recruit",
-           [
-             %{user_id: interview.recruiter_user_id},
-             %{user_id: interview.candidates_user_id}
-           ]
-         )
-
-       {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+    {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
   end
 
   @impl true

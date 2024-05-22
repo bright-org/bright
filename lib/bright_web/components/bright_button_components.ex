@@ -205,7 +205,6 @@ defmodule BrightWeb.BrightButtonComponents do
     """
   end
 
-  # TODO 「報酬アップを相談」リファクタリングすること
   @doc """
   Renders a Remuneration Consultation Button
 
@@ -214,10 +213,11 @@ defmodule BrightWeb.BrightButtonComponents do
       <.remuneration_consultation_button skill_panel_id={@skill_panel_id} />
   """
   attr :skill_panel_id, :string
+
   def remuneration_consultation_button(assigns) do
     assigns =
-    assigns
-    |> assign(:href, "/recruits/remuneration_consultation/#{assigns.skill_panel_id}")
+      assigns
+      |> assign(:href, "/recruits/remuneration_consultation/#{assigns.skill_panel_id}")
 
     ~H"""
     <.link
