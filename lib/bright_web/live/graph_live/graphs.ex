@@ -71,8 +71,11 @@ defmodule BrightWeb.GraphLive.Graphs do
   end
 
   def handle_event("open_income_consultation", _params, socket) do
-    IO.inspect("open")
     {:noreply, assign(socket, :open_income_consultation, true)}
+  end
+
+  def handle_event("close_income_consultation", _params, socket) do
+    {:noreply, assign(socket, :open_income_consultation, false)}
   end
 
   @impl true

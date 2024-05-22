@@ -169,7 +169,7 @@
     </div>
   </div>
 
-  <.bright_modal :if={@open_income_consultation} id="incomecoordination-create-modal" show>
+  <.bright_modal :if={@open_income_consultation}id="incomecoordination-create-modal" on_cancel={JS.push("close_income_consultation")} show>
     <.live_component
       id="income_consultation"
       module={BrightWeb.CardLive.IncomeConsultationComponent}
