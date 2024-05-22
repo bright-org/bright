@@ -11,18 +11,19 @@ defmodule BrightWeb.GraphLive.Graphs do
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
   import BrightWeb.NextLevelAnnounceComponents
-  import BrightWeb.BrightButtonComponents
+  import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @impl true
   def mount(params, _session, socket) do
-    {:ok,
-     socket
-     |> assign_display_user(params)
-     |> assign_skill_panel(params["skill_panel_id"])
-     |> assign(:select_label, "now")
-     |> assign(:compared_user, nil)
-     |> assign(:select_label_compared_user, nil)
-     |> assign(:page_title, "成長パネル")}
+    socket
+    |> assign_display_user(params)
+    |> assign_skill_panel(params["skill_panel_id"])
+    |> assign(:select_label, "now")
+    |> assign(:compared_user, nil)
+    |> assign(:select_label_compared_user, nil)
+    |> assign(:page_title, "成長パネル")
+    |> assign(:open_income_consultation, false)
+    |> then(&{:ok, &1})
   end
 
   @impl true
@@ -67,6 +68,11 @@ defmodule BrightWeb.GraphLive.Graphs do
     move_to = get_path_to_switch_me("graphs", current_user, skill_panel)
 
     {:noreply, push_redirect(socket, to: move_to)}
+  end
+
+  def handle_event("open_income_consultation", _params, socket) do
+    IO.inspect("open")
+    {:noreply, assign(socket, :open_income_consultation, true)}
   end
 
   @impl true
