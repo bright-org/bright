@@ -10,6 +10,7 @@ defmodule BrightWeb.TeamComponents do
   alias Bright.Teams
   alias Bright.Teams.Team
   alias Bright.Subscriptions
+  alias Phoenix.LiveView.JS
 
   # チームタイプ事の定義(UI向け) Teamsの方のリストと異なりカスタムグループもチーム扱い
   @team_types [
@@ -124,12 +125,8 @@ defmodule BrightWeb.TeamComponents do
     ~H"""
     <li
       id={@id}
-      phx-click={@row_on_click}
+      phx-click={JS.push(@row_on_click, value: %{team_id: @team_params.team_id, team_admin_user_id: @team_params.admin_user.user.id, skill_panel_id: @skill_panel_id })}
       phx-target={@row_on_click_target}
-      phx-value-team_id={@team_params.team_id}
-      phx-value-team_type={@team_params.team_type}
-      phx-value-team_admin_user_id={@team_params.admin_user.user.id}
-      phx-value-skill_panel_id={@skill_panel_id}
       class="h-[35px] text-left flex items-center text-base hover:bg-brightGray-50 p-1 rounded cursor-pointer"
     >
 
