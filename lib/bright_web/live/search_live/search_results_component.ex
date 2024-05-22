@@ -16,7 +16,7 @@ defmodule BrightWeb.SearchLive.SearchResultsComponent do
             search={@search}
             prefix={@prefix}
             module={BrightWeb.SearchLive.SearchResultComponent}
-            anon={!Enum.member?(@team_members, user.id)}
+            anon={!Enum.member?(@team_members, user.id) and @anon}
             user={user}
             index={index}
             skill_params={@skill_params}

@@ -10,7 +10,7 @@ defmodule BrightWeb.RecruitEmploymentLive.TeamInviteComponent do
 
   def render(assigns) do
     ~H"""
-    <div id="team_invite_modal">
+    <div id="team_invite_modal" phx-mounted={JS.add_class("hidden", to: ".user_icon")}>
       <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
       <div class="overflow-y-auto z-[60]">
         <main class="flex items-center justify-center" role="main">

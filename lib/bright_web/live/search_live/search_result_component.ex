@@ -22,12 +22,14 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
     ~H"""
     <div class="flex flex-col">
       <%= if !@anon do %>
+        <div class="user_icon">
         <.profile_small_inline
           user_name={@user.name}
           title={@user.user_profile.title}
           icon_file_path={UserProfiles.icon_url(@user.user_profile.icon_file_path)}
           detail={@user.user_profile.detail}
         />
+        </div>
       <% else %>
         <.profile_small_inline user_name="非公開" icon_file_path="/images/avatar.png" />
       <% end %>
