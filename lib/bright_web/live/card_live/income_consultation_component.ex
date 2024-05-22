@@ -90,51 +90,6 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
     |> assign(:card, card)
   end
 
-  @impl true
-
-  def handle_event(
-        "previous_button_click",
-        %{"id" => _id},
-        %{assigns: %{card: card}} = socket
-      ) do
-    page = card.page_params.page - 1
-    page = if page < 1, do: 1, else: page
-
-    card_view(socket, card.selected_tab, page)
-  end
-
-  def handle_event(
-        "next_button_click",
-        %{"id" => _id},
-        %{assigns: %{card: card}} = socket
-      ) do
-    page = card.page_params.page + 1
-
-    page =
-      if page > card.total_pages,
-        do: card.total_pages,
-        else: page
-
-    card_view(socket, card.selected_tab, page)
-  end
-
-  @doc """
-  パラメータにrow_on_click_targetを指定されなかった場合のチーム行クリック時のデフォルトイベント
-  クリックされたチームのチームIDのみを指定して、チームスキル分析に遷移する
-  """
-  def handle_event("on_card_row_click", params, socket) do
-    {:noreply, redirect(socket, to: "/teams/#{params["team_id"]}")}
-  end
-
-  defp card_view(socket, tab_name, page) do
-    card = create_card_param(tab_name, page)
-
-    socket
-    |> assign(:card, card)
-    |> assign_card(tab_name)
-    |> then(&{:noreply, &1})
-  end
-
   defp create_card_param(selected_tab, page \\ 1) do
     %{
       selected_tab: selected_tab,
