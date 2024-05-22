@@ -17,7 +17,7 @@ defmodule Bright.Recruits.Coordination do
 
   schema "coordinations" do
     field :skill_panel_name, :string
-    field :desired_income, :integer
+    field :desired_income, :decimal
     field :comment, :string
     field :skill_params, :string
     field :cancel_reason, :string

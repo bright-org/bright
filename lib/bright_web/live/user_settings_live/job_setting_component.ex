@@ -47,6 +47,7 @@ defmodule BrightWeb.UserSettingsLive.JobSettingComponent do
               label_class="py-1 w-24 text-start"
               after_label_class="ml-1"
               type="number"
+              step="0.01"
               min={0}
               label="希望年収"
               after_label="万円以上"

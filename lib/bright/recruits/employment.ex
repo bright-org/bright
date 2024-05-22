@@ -20,8 +20,8 @@ defmodule Bright.Recruits.Employment do
     field :message, :string
     field :comment, :string, virtual: true
     field :skill_panel_name, :string
-    field :income, :integer
-    field :desired_income, :integer
+    field :income, :decimal
+    field :desired_income, :decimal
     field :skill_params, :string
 
     field :status, Ecto.Enum,

@@ -13,7 +13,7 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id="employment_modal">
+    <div id="employment_modal" phx-mounted={JS.add_class("hidden", to: ".user_icon")}>
       <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
       <div class="overflow-y-auto z-[60]">
         <main class="flex items-center justify-center" role="main">

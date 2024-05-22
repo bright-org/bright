@@ -8,7 +8,7 @@ defmodule Bright.SearchForm.UserSearch do
   alias Bright.SearchForm.SkillSearch
 
   embedded_schema do
-    field :desired_income, :integer
+    field :desired_income, :decimal
     field :office_work, :boolean, default: false
     field :office_pref, :string
     field :office_working_hours, :string
