@@ -672,9 +672,8 @@ defmodule Bright.Teams do
   @doc """
   ユーザーが所属するチームの上長の一覧取得
   招待へ承認済のチームのみ対象
-  Scrivenerのページングに対応
 
-    iex> list_joined_teams_superior_by_user_id(user_id, %{page: 1, page_size: 5})
+    iex> list_joined_teams_superior_by_user_id(user_id)
       %Scrivener.Page{
         page_number: 1,
         page_size: 5,
@@ -685,7 +684,7 @@ defmodule Bright.Teams do
         ]
       }
   """
-  def list_joined_teams_superior_by_user_id(user_id, page_param \\ %{page: 1, page_size: 1}) do
+  def list_joined_teams_superior_by_user_id(user_id) do
     from(tmbu in TeamMemberUsers,
       join: t in assoc(tmbu, :team),
       where:
@@ -695,7 +694,7 @@ defmodule Bright.Teams do
       order_by: [desc: tmbu.is_star, desc: tmbu.invitation_confirmed_at]
     )
     |> preload(team: [member_users: :user])
-    |> Repo.paginate(page_param)
+    |> Repo.all()
   end
 
   @doc """
