@@ -206,7 +206,6 @@ defmodule BrightWeb.ChatLive.Index do
         />
       </.bright_modal>
 
-    <<<<<<< HEAD
       <.bright_modal
         :if={@chat && @open_edit_interview}
         id="interview-edit-modal"
@@ -223,10 +222,7 @@ defmodule BrightWeb.ChatLive.Index do
         />
       </.bright_modal>
 
-      <.modal :if={!is_nil(@preview)} id="preview" show on_cancel={JS.push("close_preview")}>
-    =======
       <.modal id="preview" :if={!is_nil(@preview)} show on_cancel={JS.push("close_preview")}>
-    >>>>>>> parent of 4c16d299 (mix format)
         <img src={Storage.public_url(@preview)} />
         <a href={Storage.public_url(@preview)} target="_blank" rel="noopener">
           <.button class="mt-4">Dwonload</.button>
