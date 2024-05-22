@@ -41,7 +41,8 @@ defmodule BrightWeb.Admin.CareerWantLive.FormComponent do
           </label>
         </.inputs_for>
         <label class="block cursor-pointer">
-          <input type="checkbox" name="career_want[career_want_jobs_sort][]" class="hidden" /> add job
+          <input type="checkbox" name="career_want[career_want_jobs_sort][]" class="hidden" />
+          add job
         </label>
 
         <:actions>

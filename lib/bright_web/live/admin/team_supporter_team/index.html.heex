@@ -10,34 +10,16 @@
 <.table
   id="team_supporter_teams"
   rows={@streams.team_supporter_teams}
-  row_click={
-    fn {_id, team_supporter_team} ->
-      JS.navigate(~p"/admin/team_supporter_teams/#{team_supporter_team}")
-    end
-  }
+  row_click={fn {_id, team_supporter_team} -> JS.navigate(~p"/admin/team_supporter_teams/#{team_supporter_team}") end}
 >
-  <:col :let={{_id, team_supporter_team}} label="supportee_team">
-    <%= team_supporter_team.supportee_team_id %>
-  </:col>
-  <:col :let={{_id, team_supporter_team}} label="supporter_team">
-    <%= team_supporter_team.supporter_team_id %>
-  </:col>
-  <:col :let={{_id, team_supporter_team}} label="request_from_user">
-    <%= team_supporter_team.request_from_user_id %>
-  </:col>
-  <:col :let={{_id, team_supporter_team}} label="request_to_user">
-    <%= team_supporter_team.request_to_user_id %>
-  </:col>
+  <:col :let={{_id, team_supporter_team}} label="supportee_team"><%= team_supporter_team.supportee_team_id %></:col>
+  <:col :let={{_id, team_supporter_team}} label="supporter_team"><%= team_supporter_team.supporter_team_id %></:col>
+  <:col :let={{_id, team_supporter_team}} label="request_from_user"><%= team_supporter_team.request_from_user_id %></:col>
+  <:col :let={{_id, team_supporter_team}} label="request_to_user"><%= team_supporter_team.request_to_user_id %></:col>
   <:col :let={{_id, team_supporter_team}} label="status"><%= team_supporter_team.status %></:col>
-  <:col :let={{_id, team_supporter_team}} label="start datetime">
-    <%= team_supporter_team.start_datetime %>
-  </:col>
-  <:col :let={{_id, team_supporter_team}} label="end datetime">
-    <%= team_supporter_team.end_datetime %>
-  </:col>
-  <:col :let={{_id, team_supporter_team}} label="request datetime">
-    <%= team_supporter_team.request_datetime %>
-  </:col>
+  <:col :let={{_id, team_supporter_team}} label="start datetime"><%= team_supporter_team.start_datetime %></:col>
+  <:col :let={{_id, team_supporter_team}} label="end datetime"><%= team_supporter_team.end_datetime %></:col>
+  <:col :let={{_id, team_supporter_team}} label="request datetime"><%= team_supporter_team.request_datetime %></:col>
   <:action :let={{_id, team_supporter_team}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/team_supporter_teams/#{team_supporter_team}"}>Show</.link>
@@ -54,12 +36,7 @@
   </:action>
 </.table>
 
-<.modal
-  :if={@live_action in [:new, :edit]}
-  id="team_supporter_team-modal"
-  show
-  on_cancel={JS.patch(~p"/admin/team_supporter_teams")}
->
+<.modal :if={@live_action in [:new, :edit]} id="team_supporter_team-modal" show on_cancel={JS.patch(~p"/admin/team_supporter_teams")}>
   <.live_component
     module={BrightWeb.Admin.TeamSupporterTeamLive.FormComponent}
     id={@team_supporter_team.id || :new}

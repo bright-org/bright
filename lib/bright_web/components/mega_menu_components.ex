@@ -49,12 +49,15 @@ defmodule BrightWeb.MegaMenuComponents do
         <span class="inline-flex gap-x-2 min-w-[4em] lg:min-w-[6em]">
           <%= render_slot(@button_content) %>
         </span>
-        <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
+        <span
+          class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
           expand_more
         </span>
       </button>
 
-      <div class={["dropdownTarget z-30 hidden bg-white rounded-md shadow static w-full", @menu_width]}>
+      <div
+        class={["dropdownTarget z-30 hidden bg-white rounded-md shadow static w-full", @menu_width]}
+      >
         <%= render_slot(@inner_block) %>
       </div>
     </div>

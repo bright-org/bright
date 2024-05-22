@@ -14,109 +14,118 @@
     </div>
   </div>
 </div>
-<div
-  id="team_supporter_team__container"
-  class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5"
->
-  <div class="text-sm font-medium text-center w-full">
-    <.tab
-      id="team_supporter_team_tabs"
-      tabs={@tabs}
-      selected_tab={@card.selected_tab}
-      page={@card.page_params.page}
-      total_pages={@card.total_pages}
-    >
-      <%= if @card.total_entries == 0 && @card.selected_tab == "requesting" do %>
-        <ul class="flex gap-y-2.5 flex-col">
-          <li class="flex">
-            <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-              承認待ちの支援依頼はありません
-            </div>
-          </li>
-        </ul>
-      <% end %>
-      <%= if @card.total_entries == 0 && @card.selected_tab == "supporting" do %>
-        <ul class="flex gap-y-2.5 flex-col">
-          <li class="flex">
-            <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-              現在支援中の支援依頼はありません
-            </div>
-          </li>
-        </ul>
-      <% end %>
-      <%= if @card.total_entries > 0 do %>
-        <%= for {team_supporter_team, index} <- Enum.with_index(@card.entries) do %>
-          <div
-            id={"team_support_#{index}"}
-            class="text-left flex flex-col border rounded-md lg:border-none lg:flex-row relative  items-start lg:items-center text-base hover:bg-brightGray-50 p-1 w-full my-1"
+<div id="team_supporter_team__container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
+      <div class="text-sm font-medium text-center w-full">
+        <.tab
+          id="team_supporter_team_tabs"
+          tabs={@tabs}
+          selected_tab={@card.selected_tab}
+          page={@card.page_params.page}
+          total_pages={@card.total_pages}
           >
-            <div class="grow flex flex-col lg:flex-row">
-              <div class="flex flex-wrap">
-                <span>
-                  <.profile_mini
-                    user_name={team_supporter_team.request_from_user.name}
-                    icon_file_path={
-                      UserProfiles.icon_url(
-                        team_supporter_team.request_from_user.user_profile.icon_file_path
-                      )
-                    }
+          <%= if @card.total_entries == 0 && @card.selected_tab == "requesting" do %>
+            <ul class="flex gap-y-2.5 flex-col">
+              <li class="flex">
+                <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+                 承認待ちの支援依頼はありません
+                </div>
+              </li>
+            </ul>
+          <% end %>
+          <%= if @card.total_entries == 0 && @card.selected_tab == "supporting" do %>
+             <ul class="flex gap-y-2.5 flex-col">
+              <li class="flex">
+                <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+                 現在支援中の支援依頼はありません
+                </div>
+              </li>
+            </ul>
+          <% end %>
+          <%= if @card.total_entries > 0 do %>
+            <%= for {team_supporter_team, index} <- Enum.with_index(@card.entries) do %>
+            <div
+              id={"team_support_#{index}"}
+              class="text-left flex flex-col border rounded-md lg:border-none lg:flex-row relative  items-start lg:items-center text-base hover:bg-brightGray-50 p-1 w-full my-1"
+            >
+              <div class="grow flex flex-col lg:flex-row">
+                <div class="flex flex-wrap">
+                  <span>
+                    <.profile_mini
+                      user_name={team_supporter_team.request_from_user.name}
+                      icon_file_path={UserProfiles.icon_url(team_supporter_team.request_from_user.user_profile.icon_file_path)}
+                    />
+                  </span>
+                  <span class="mt-1">から</span>
+                </div>
+
+                <div class="flex flex-wrap -ml-2 lg:ml-0">
+                  <.team_small
+                    id={"team_small_#{index}"}
+                    team_params={convert_team_params_from_team(team_supporter_team.supportee_team)}
+                    row_on_click=""
+                    on_hover_style=""
                   />
-                </span>
-                <span class="mt-1">から</span>
-              </div>
+                  <p class="mt-1">に対する支援依頼</p>
+                </div>
 
-              <div class="flex flex-wrap -ml-2 lg:ml-0">
-                <.team_small
-                  id={"team_small_#{index}"}
-                  team_params={convert_team_params_from_team(team_supporter_team.supportee_team)}
-                  row_on_click=""
-                  on_hover_style=""
-                />
-                <p class="mt-1">に対する支援依頼</p>
-              </div>
-
-              <div :if={@card.selected_tab == "requesting"} class="mt-1">
-                <.elapsed_time inserted_at={team_supporter_team.request_datetime} />
-              </div>
-              <div :if={@card.selected_tab == "supporting"} class="flex flex-wrap mt-1">
-                <p>
-                  <.elapsed_time inserted_at={team_supporter_team.start_datetime} />
-                </p>
-                <p class="ml-2">
+                <div
+                  :if={@card.selected_tab == "requesting"}
+                  class="mt-1"
+                >
+                  <.elapsed_time
+                    inserted_at={team_supporter_team.request_datetime}
+                  />
+                </div>
+                <div
+                  :if={@card.selected_tab == "supporting"}
+                  class="flex flex-wrap mt-1"
+                >
+                  <p>
+                  <.elapsed_time
+                    inserted_at={team_supporter_team.start_datetime}
+                  />
+                  </p>
+                  <p class="ml-2">
                   に支援開始
-                </p>
+                  </p>
+                </div>
+              </div>
+
+              <div
+                :if={@card.selected_tab == "requesting"}
+                class="w-full lg:w-40 flex justify-end"
+              >
+                <.button
+                  class="ml-2"
+                  type="submit"
+                  phx-click="show_hr_support_modal"
+                  phx-value-team_supporter_team_id={team_supporter_team.id}
+                  phx-value-hr_support_modal_mode="requesting"
+                >
+                  支援依頼を確認する
+                </.button>
+              </div>
+              <div
+                :if={@card.selected_tab == "supporting"}
+                class="w-full lg:w-36 flex justify-end"
+              >
+                <.button
+                  class="ml-2 "
+                  type="submit"
+                  phx-click="show_hr_support_modal"
+                  phx-value-team_supporter_team_id={team_supporter_team.id}
+                  phx-value-hr_support_modal_mode="supporting"
+                >
+                  支援を終了する
+                </.button>
               </div>
             </div>
-
-            <div :if={@card.selected_tab == "requesting"} class="w-full lg:w-40 flex justify-end">
-              <.button
-                class="ml-2"
-                type="submit"
-                phx-click="show_hr_support_modal"
-                phx-value-team_supporter_team_id={team_supporter_team.id}
-                phx-value-hr_support_modal_mode="requesting"
-              >
-                支援依頼を確認する
-              </.button>
-            </div>
-            <div :if={@card.selected_tab == "supporting"} class="w-full lg:w-36 flex justify-end">
-              <.button
-                class="ml-2 "
-                type="submit"
-                phx-click="show_hr_support_modal"
-                phx-value-team_supporter_team_id={team_supporter_team.id}
-                phx-value-hr_support_modal_mode="supporting"
-              >
-                支援を終了する
-              </.button>
-            </div>
-          </div>
-        <% end %>
-      <% else %>
-        <% # 表示内容がないときの表示 %>
-      <% end %>
-    </.tab>
-  </div>
+            <% end %>
+          <% else %>
+            <% # 表示内容がないときの表示 %>
+          <% end %>
+        </.tab>
+      </div>
 </div>
 
 <.bright_modal

@@ -21,7 +21,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
           <% icon_path = employment.candidates_user.user_profile.icon_file_path %>
           <li class="flex my-5">
             <.link
-              patch={~p"/recruits/employments/#{employment.id}"}
+               patch={~p"/recruits/employments/#{employment.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <img
@@ -33,7 +33,8 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
                 <span><%= employment.candidates_user.name %></span>
                 <br />
                 <span class="text-brightGray-300">
-                  <%= NaiveDateTime.to_date(employment.inserted_at) %> 提示年収:<%= employment.income %>
+                <%= NaiveDateTime.to_date(employment.inserted_at) %>
+                提示年収:<%= employment.income %>
                 </span>
               </div>
 
@@ -49,10 +50,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
       </div>
     </div>
 
-    <div
-      id="team_join_request_container"
-      class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5"
-    >
+    <div id="team_join_request_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
         <h4 class="text-start">配属チームの調整の依頼</h4>
         <li :if={Enum.count(@team_join_requests) == 0} class="flex">
@@ -64,7 +62,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
           <% icon_path = request.employment.recruiter_user.user_profile.icon_file_path %>
           <li class="flex my-5">
             <.link
-              patch={~p"/recruits/employments/team_join/#{request.id}"}
+               patch={~p"/recruits/employments/team_join/#{request.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <img
@@ -88,12 +86,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
       </div>
     </div>
 
-    <.bright_modal
-      :if={@live_action in [:team_join]}
-      id="employment-modal"
-      show
-      on_cancel={JS.patch(~p"/recruits/employments")}
-    >
+    <.bright_modal :if={@live_action in [:team_join]} id="employment-modal" show on_cancel={JS.patch(~p"/recruits/employments")}>
       <.live_component
         module={BrightWeb.RecruitEmploymentLive.EmploymentComponent}
         id="employment_modal"
@@ -103,12 +96,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
       />
     </.bright_modal>
 
-    <.bright_modal
-      :if={@live_action in [:team_invite]}
-      id="team-join-modal"
-      show
-      on_cancel={JS.patch(~p"/recruits/employments")}
-    >
+    <.bright_modal :if={@live_action in [:team_invite]} id="team-join-modal" show on_cancel={JS.patch(~p"/recruits/employments")}>
       <.live_component
         module={BrightWeb.RecruitEmploymentLive.TeamInviteComponent}
         id="team_join_modal"
@@ -117,6 +105,7 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
         return_to={~p"/recruits/employments"}
       />
     </.bright_modal>
+
     """
   end
 

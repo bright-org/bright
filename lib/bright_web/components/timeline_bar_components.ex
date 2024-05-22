@@ -65,12 +65,13 @@ defmodule BrightWeb.TimelineBarComponents do
 
   def timeline_bar(assigns) do
     ~H"""
-    <div class={[
-      "bg-brightGray-50 rounded-full my-5 flex justify-around items-center relative w-full",
-      flex_items_gap_class(@display_progress),
-      layout_scale_class(@scale)
-    ]}>
-      <.close_button :if={@display_close} id={@id} target={@target} />
+    <div
+      class={["bg-brightGray-50 rounded-full my-5 flex justify-around items-center relative w-full", flex_items_gap_class(@display_progress), layout_scale_class(@scale)]}>
+      <.close_button
+       :if={@display_close}
+       id={@id}
+       target={@target}
+      />
 
       <%= for date <- maybe_cut_down_for_display_progress(@display_progress, @dates) do %>
         <.date_button
@@ -80,7 +81,7 @@ defmodule BrightWeb.TimelineBarComponents do
           type={@type}
           selected={date == @selected_date}
           scale={@scale}
-        />
+         />
       <% end %>
 
       <.now_button
@@ -138,11 +139,7 @@ defmodule BrightWeb.TimelineBarComponents do
         phx-value-id={@id}
         phx-value-date={@date}
         phx-target={@target}
-        class={[
-          "rounded-full bg-white text-xs flex justify-center items-center h-12 w-12 lg:h-16 lg:w-16 hover:opacity-50",
-          button_scale_class(@scale),
-          button_style_class(@scale)
-        ]}
+        class={["rounded-full bg-white text-xs flex justify-center items-center h-12 w-12 lg:h-16 lg:w-16 hover:opacity-50", button_scale_class(@scale), button_style_class(@scale)]}
       >
         <%= @date %>
       </button>
@@ -162,25 +159,16 @@ defmodule BrightWeb.TimelineBarComponents do
       |> assign(:font, button_selected_font_class(assigns.scale))
 
     ~H"""
-    <div class={[
-      "flex justify-center items-center absolute h-[52px] w-[52px]",
-      button_outer_scale_class(@scale),
-      button_now_position_class(@scale, @display_progress)
-    ]}>
+    <div
+      class={["flex justify-center items-center absolute h-[52px] w-[52px]", button_outer_scale_class(@scale), button_now_position_class(@scale, @display_progress)]}>
       <button
         phx-click="timeline_bar_button_click"
         phx-value-id={@id}
         phx-value-date="now"
         phx-target={@target}
-        class={[
-          "rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold flex justify-center items-center flex-col h-[44px] w-[44px] text-sm",
-          button_selected_scale_class(@scale),
-          @font.whole
-        ]}
+        class={["rounded-full bg-attention-50 border-white border-8 shadow text-attention-900 font-bold flex justify-center items-center flex-col h-[44px] w-[44px] text-sm", button_selected_scale_class(@scale), @font.whole]}
       >
-        <span class={["-mb-1 lg:mb-0 material-icons !font-bold !text-xl lg:!text-4xl", @font.check]}>
-          check
-        </span>
+        <span class={["-mb-1 lg:mb-0 material-icons !font-bold !text-xl lg:!text-4xl", @font.check]}>check</span>
         現在
       </button>
     </div>
@@ -189,21 +177,14 @@ defmodule BrightWeb.TimelineBarComponents do
 
   defp now_button(assigns) do
     ~H"""
-    <div class={[
-      "flex justify-center items-center absolute  h-[52px] w-[52px]",
-      button_outer_scale_class(@scale),
-      button_now_position_class(@scale, @display_progress)
-    ]}>
+    <div
+      class={["flex justify-center items-center absolute  h-[52px] w-[52px]", button_outer_scale_class(@scale), button_now_position_class(@scale, @display_progress)]}>
       <button
         phx-click="timeline_bar_button_click"
         phx-value-id={@id}
         phx-value-date="now"
         phx-target={@target}
-        class={[
-          "rounded-full bg-white text-xs text-attention-900 flex justify-center items-center h-[44px] w-[44px] hover:opacity-50",
-          button_now_scale_class(@scale),
-          button_style_class(@scale)
-        ]}
+        class={["rounded-full bg-white text-xs text-attention-900 flex justify-center items-center h-[44px] w-[44px] hover:opacity-50", button_now_scale_class(@scale), button_style_class(@scale)]}
       >
         現在
       </button>

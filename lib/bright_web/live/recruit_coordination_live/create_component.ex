@@ -16,7 +16,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
       <div class="bg-pureGray-600/90 transition-opacity z-[55]" />
       <div class="overflow-y-auto z-[60]">
         <main class="flex items-center justify-center " role="main">
-          <section class="bg-white px-10 py-8 shadow text-sm w-full">
+        <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <h2 class="font-bold text-3xl">
               <span class="before:bg-bgGemSales before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[8px] before:w-9">
                 採用選考
@@ -41,9 +41,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                 </div>
 
                 <div class="mt-8">
-                  <h3 class="font-bold text-base">
-                    採用選考を依頼したい人<span class="font-normal">を選んでください</span>
-                  </h3>
+                  <h3 class="font-bold text-base">採用選考を依頼したい人<span class="font-normal">を選んでください</span></h3>
                   <.live_component
                     id="recruit_card_coordination"
                     module={BrightWeb.CardLive.RelatedRecruitUserCardComponent}
@@ -54,127 +52,104 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                   <span class="text-attention-600"><%= @candidate_error %></span>
                 </div>
               </div>
-              <!-- Start 面談調整内容 -->
-              <div class="w-[493px]">
-                <h3 class="font-bold text-xl">調整内容</h3>
-                <.form
-                  for={@coordination_form}
-                  id="coordination_form"
-                  phx-target={@myself}
-                  phx-submit="create_coordination"
-                  phx-change="validate_coordination"
-                >
-                  <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
-                    <dl class="flex flex-wrap w-full">
-                      <dt class="font-bold w-[98px] mb-10">選考依頼先</dt>
-                      <dd class="w-[280px]">
-                        <ul class="flex flex-wrap gap-y-1">
-                          <%= for user <- @users do %>
-                            <.profile_small_with_remove_button
-                              remove_user_target={@myself}
-                              user_id={user.id}
-                              user_name={user.name}
-                              title={user.user_profile.title}
-                              icon_file_path={user.user_profile.icon_file_path}
-                            />
-                          <% end %>
-                        </ul>
-                      </dd>
-                      <dt class="font-bold w-[98px] flex mt-16">
-                        <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
-                      </dt>
-                      <dd class="w-[280px] mt-16">
-                        <BrightCore.input
-                          error_class="ml-[100px] mt-2"
-                          field={@coordination_form[:comment]}
-                          type="textarea"
-                          required
-                          rows="5"
-                          cols="30"
-                          input_class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+          <!-- Start 面談調整内容 -->
+            <div class="w-[493px]">
+              <h3 class="font-bold text-xl">調整内容</h3>
+              <.form
+                for={@coordination_form}
+                id="coordination_form"
+                phx-target={@myself}
+                phx-submit="create_coordination"
+                phx-change="validate_coordination"
+              >
+                <div class="bg-brightGray-10 mt-4 rounded-sm px-10 py-6">
+                  <dl class="flex flex-wrap w-full">
+                    <dt class="font-bold w-[98px] mb-10">選考依頼先</dt>
+                    <dd class="w-[280px]">
+                      <ul class="flex flex-wrap gap-y-1">
+                      <%= for user <- @users do %>
+                        <.profile_small_with_remove_button
+                          remove_user_target={@myself}
+                          user_id={user.id} user_name={user.name}
+                          title={user.user_profile.title}
+                          icon_file_path={user.user_profile.icon_file_path}
                         />
-                      </dd>
-                    </dl>
-                  </div>
-                  <div class="flex justify-start gap-x-4 mt-4">
-                    <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
-                      <.link navigate={@patch}>閉じる</.link>
-                    </button>
-                    <div>
-                      <button
-                        phx-click={JS.show(to: "#menu01")}
-                        type="button"
-                        class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
-                      >
-                        <span class="min-w-[6em]">選考キャンセル</span>
-                        <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">
-                          add
-                        </span>
-                      </button>
-
-                      <div
-                        id="menu01"
-                        phx-click-away={JS.hide(to: "#menu01")}
-                        class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
-                      >
-                        <ul class="p-2 text-left text-base">
-                          <li
-                            phx-click={
-                              JS.push("decision",
-                                target: @myself,
-                                value: %{decision: :cancel_interview, reason: "候補者の希望条件に添えない"}
-                              )
-                            }
-                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                          >
-                            候補者の希望条件に添えない
-                          </li>
-                          <li
-                            phx-click={
-                              JS.push("decision",
-                                target: @myself,
-                                value: %{decision: :cancel_interview, reason: "候補者のスキルが案件とマッチしない"}
-                              )
-                            }
-                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                          >
-                            候補者のスキルが案件とマッチしない
-                          </li>
-                          <li
-                            phx-click={
-                              JS.push("decision",
-                                target: @myself,
-                                value: %{decision: :cancel_interview, reason: "候補者のスキルが登録内容より不足"}
-                              )
-                            }
-                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                          >
-                            候補者のスキルが登録内容より不足
-                          </li>
-                          <li
-                            phx-click={
-                              JS.push("decision",
-                                target: @myself,
-                                value: %{decision: :cancel_interview, reason: "当方の状況が変わって中断"}
-                              )
-                            }
-                            class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
-                          >
-                            当方の状況が変わって中断
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
+                      <% end %>
+                      </ul>
+                    </dd>
+                    <dt class="font-bold w-[98px] flex mt-16">
+                      <label for="point" class="block pr-1">候補者の推しポイントや<br />確認・注意点</label>
+                    </dt>
+                    <dd class="w-[280px] mt-16">
+                    <BrightCore.input
+                      error_class="ml-[100px] mt-2"
+                      field={@coordination_form[:comment]}
+                      type="textarea"
+                      required
+                      rows="5"
+                      cols="30"
+                      input_class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-full"
+                    />
+                    </dd>
+                  </dl>
+                </div>
+                <div class="flex justify-start gap-x-4 mt-4">
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
+                    <.link navigate={@patch}>閉じる</.link>
+                  </button>
+                  <div>
                     <button
-                      class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
-                      type="submit"
+                      phx-click={JS.show(to: "#menu01")}
+                      type="button"
+                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
                     >
-                      採用選考する
+                      <span class="min-w-[6em]">選考キャンセル</span>
+                      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
                     </button>
+
+                    <div
+                      id="menu01"
+                      phx-click-away={JS.hide(to: "#menu01")}
+                      class="hidden absolute bg-white rounded-lg shadow-md min-w-[286px]"
+                    >
+                      <ul class="p-2 text-left text-base">
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "候補者の希望条件に添えない"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者の希望条件に添えない
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "候補者のスキルが案件とマッチしない"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者のスキルが案件とマッチしない
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "候補者のスキルが登録内容より不足"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          候補者のスキルが登録内容より不足
+                        </li>
+                        <li
+                          phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview, reason: "当方の状況が変わって中断"})}
+                          class="block px-4 py-3 hover:bg-brightGray-50 text-base cursor-pointer"
+                        >
+                          当方の状況が変わって中断
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </.form>
-              </div>
+                  <button
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
+                    type="submit"
+                  >
+                    採用選考する
+                  </button>
+                </div>
+              </.form>
             </div>
+          </div>
           </section>
         </main>
       </div>

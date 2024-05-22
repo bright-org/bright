@@ -23,8 +23,7 @@ defmodule BrightWeb.Admin.InterviewLive.FormComponent do
         <.input field={@form[:candidates_user_id]} type="text" label="Candidates User Id" />
         <.input field={@form[:skill_params]} type="text" label="Skill params" />
         <.input field={@form[:comment]} type="text" label="Comment" />
-        <.input
-          field={@form[:status]}
+        <.input field={@form[:status]}
           type="select"
           label="Status"
           options={Ecto.Enum.mappings(Recruits.Interview, :status)}

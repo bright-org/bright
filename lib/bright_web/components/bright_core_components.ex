@@ -42,10 +42,8 @@ defmodule BrightWeb.BrightCoreComponents do
       role="alert"
       class={[
         "animate-fade-in-bottom fixed inset-x-0 bottom-2 m-auto w-80 sm:w-96 z-[65] rounded-lg p-3 ring-1",
-        @kind == :info &&
-          "bg-brightGreen-50 text-brightGreen-900 ring-brightGreen-600 fill-brightGreen-900",
-        @kind == :error &&
-          "bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900"
+        @kind == :info && "bg-brightGreen-50 text-brightGreen-900 ring-brightGreen-600 fill-brightGreen-900",
+        @kind == :error && "bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900"
       ]}
       {@rest}
     >
@@ -121,14 +119,7 @@ defmodule BrightWeb.BrightCoreComponents do
 
   def action_button(%{icon: nil} = assigns) do
     ~H"""
-    <button
-      type={@type}
-      class={[
-        "bg-brightGray-10 text-xs lg:text-sm font-bold rounded border border-base hover:opacity-50",
-        @class
-      ]}
-      {@rest}
-    >
+    <button type={@type} class={["bg-brightGray-10 text-xs lg:text-sm font-bold rounded border border-base hover:opacity-50", @class]} {@rest}>
       <%= render_slot(@inner_block) %>
     </button>
     """
@@ -138,16 +129,13 @@ defmodule BrightWeb.BrightCoreComponents do
     ~H"""
     <button
       type={@type}
-      class={[
-        "bg-brightGray-10 text-xs lg:text-sm font-bold border border-base rounded flex items-center hover:opacity-50",
-        @class
-      ]}
+      class={["bg-brightGray-10 text-xs lg:text-sm font-bold border border-base rounded flex items-center hover:opacity-50", @class]}
       @rest
     >
       <%= render_slot(@inner_block) %>
-      <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]">
-        <%= @icon %>
-      </span>
+      <span
+        class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-7px] before:bg-brightGray-200 before:w-[1px] before:h-[38px]"
+        ><%= @icon %></span>
     </button>
     """
   end
@@ -265,6 +253,7 @@ defmodule BrightWeb.BrightCoreComponents do
       <div class={@error_class}>
         <.error :for={msg <- @errors}><%= msg %></.error>
       </div>
+
     </div>
     """
   end
@@ -301,7 +290,7 @@ defmodule BrightWeb.BrightCoreComponents do
         name={@name}
         class={[
           "border border-brightGray-200 px-2 py-1 rounded",
-          @input_class
+          @input_class,
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
@@ -325,7 +314,7 @@ defmodule BrightWeb.BrightCoreComponents do
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
           class={[
             "border border-brightGray-200 px-2 py-1 rounded w-40",
-            @input_class
+            @input_class,
           ]}
           {@rest}
         />
@@ -361,7 +350,7 @@ defmodule BrightWeb.BrightCoreComponents do
   attr :attributes, :list, default: []
 
   def text_to_html_with_link(assigns) do
-    ~H"<%= Phoenix.HTML.raw(_text_to_html_with_link(@text, @attributes)) %>"
+    ~H"<%= Phoenix.HTML.raw _text_to_html_with_link(@text, @attributes) %>"
   end
 
   defp _text_to_html_with_link(text, attributes) do

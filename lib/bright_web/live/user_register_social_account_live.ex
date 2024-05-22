@@ -22,77 +22,34 @@ defmodule BrightWeb.UserRegisterSocialAccountLive do
       phx-change="validate"
     >
       <UserAuthComponents.form_section variant="center-w-full">
-        <UserAuthComponents.input_with_label
-          field={@form[:name]}
-          id="handle_name"
-          type="text"
-          label_text="ハンドル名"
-          variant="w-full"
-          required
-        />
+        <UserAuthComponents.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドル名" variant="w-full" required/>
 
-        <UserAuthComponents.input_with_label
-          field={@form[:email]}
-          id="email"
-          type="email"
-          label_text="メールアドレス"
-          variant="w-full"
-          required
-        />
+        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" variant="w-full" required/>
 
         <div class="mx-auto mt-1 max-w-xs w-full">
           <div phx-click="toggre_is_terms_of_service_checked" class="mt-1 w-full">
-            <input
-              type="checkbox"
-              id="terms_of_service"
-              class="rounded"
-              checked={@is_terms_of_service_checked?}
-            />
+            <input type="checkbox" id="terms_of_service" class="rounded" checked={@is_terms_of_service_checked?} />
             <label for="terms_of_service" class="pl-1 text-xs">
-              <a
-                href="https://bright-fun.org/terms/terms.pdf"
-                class="text-link underline font-semibold"
-                target="_blank"
-              >利用規約</a>に同意する
+              <a href="https://bright-fun.org/terms/terms.pdf" class="text-link underline font-semibold" target="_blank">利用規約</a>に同意する
             </label>
           </div>
 
           <div phx-click="toggre_is_privacy_policy_checked" class="mt-1 w-full">
-            <input
-              type="checkbox"
-              id="privacy_policy"
-              class="rounded"
-              checked={@is_privacy_policy_checked?}
-            />
+            <input type="checkbox" id="privacy_policy" class="rounded" checked={@is_privacy_policy_checked?} />
             <label for="privacy_policy" class="pl-1 text-xs">
-              <a
-                href="https://bright-fun.org/privacy/privacy.pdf"
-                class="text-link underline font-semibold"
-                target="_blank"
-              >プライバシーポリシー</a>に同意する
+              <a href="https://bright-fun.org/privacy/privacy.pdf" class="text-link underline font-semibold" target="_blank">プライバシーポリシー</a>に同意する
             </label>
           </div>
 
           <div phx-click="toggre_is_law_checked" class="mt-1 w-full">
             <input type="checkbox" id="law" class="rounded" checked={@is_law_checked?} />
             <label for="law" class="pl-1 text-xs">
-              <a
-                href="https://bright-fun.org/laws/laws.pdf"
-                class="text-link underline font-semibold"
-                target="_blank"
-              >法令に基づく表記</a>を確認した
+              <a href="https://bright-fun.org/laws/laws.pdf" class="text-link underline font-semibold" target="_blank">法令に基づく表記</a>を確認した
             </label>
           </div>
         </div>
 
-        <UserAuthComponents.button
-          variant="mx-auto"
-          disabled={
-            !(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)
-          }
-        >
-          ユーザーを新規作成する
-        </UserAuthComponents.button>
+        <UserAuthComponents.button variant="mx-auto" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UserAuthComponents.button>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
 

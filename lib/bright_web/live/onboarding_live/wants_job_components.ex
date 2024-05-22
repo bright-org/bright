@@ -43,26 +43,31 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
       <!-- ジョブセクションここから -->
       <section>
         <%= if @selected_career do %>
-          <section class={"bg-#{@selected_career.name_en}-dazzle px-4 py-4"}>
-            <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
-              <div class="mb-8">
-                <p class="font-bold text-center lg:text-left"><%= @rank[rank] %></p>
-                <ul class="flex flex-wrap gap-4 justify-center mt-2 lg:justify-start">
-                  <% jobs = Map.get(@jobs, @selected_career.name_en, %{}) %>
-                  <%= for job <- Map.get(jobs, rank, []) do %>
-                    <li>
-                      <.link navigate={"#{@current_path}/jobs/#{job.id}"} class="block">
-                        <label class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}>
-                          <%= job.name %>
-                        </label>
-                      </.link>
-                    </li>
-                  <% end %>
-                  <!-- ジョブここまで -->
-                </ul>
-              </div>
-            <% end %>
-          </section>
+        <section
+          class={"bg-#{@selected_career.name_en}-dazzle px-4 py-4"}
+        >
+          <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
+          <div class="mb-8">
+            <p class="font-bold text-center lg:text-left"><%= @rank[rank] %></p>
+            <ul class="flex flex-wrap gap-4 justify-center mt-2 lg:justify-start">
+
+              <% jobs = Map.get(@jobs, @selected_career.name_en, %{}) %>
+              <%= for job <- Map.get(jobs, rank, []) do %>
+              <li>
+                <.link navigate={"#{@current_path}/jobs/#{job.id}"} class="block">
+                  <label
+                    class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
+                  >
+                    <%= job.name %>
+                  </label>
+                </.link>
+              </li>
+              <% end %>
+              <!-- ジョブここまで -->
+            </ul>
+          </div>
+          <% end %>
+        </section>
         <% end %>
       </section>
       <!-- ジョブセクション ここまで -->

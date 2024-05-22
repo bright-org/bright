@@ -17,21 +17,9 @@ defmodule BrightWeb.UserResetPasswordLive do
       phx-change="validate"
     >
       <UserAuthComponents.form_section variant="center">
-        <UserAuthComponents.input_with_label
-          field={@form[:password]}
-          id="password"
-          type="password"
-          label_text="新しいパスワード"
-          required
-        />
+        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="新しいパスワード" required/>
 
-        <UserAuthComponents.input_with_label
-          field={@form[:password_confirmation]}
-          id="re_password"
-          type="password"
-          label_text="（確認）新しいパスワード"
-          required
-        />
+        <UserAuthComponents.input_with_label field={@form[:password_confirmation]} id="re_password" type="password" label_text="（確認）新しいパスワード" required/>
 
         <UserAuthComponents.button>パスワードをリセットする</UserAuthComponents.button>
       </UserAuthComponents.form_section>

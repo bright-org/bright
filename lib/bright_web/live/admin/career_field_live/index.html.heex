@@ -7,30 +7,30 @@
   </:actions>
 </.header>
 
-<.table
-  id="career_fields"
-  rows={@streams.career_fields}
-  row_click={fn {_id, career_field} -> JS.navigate(~p"/admin/career_fields/#{career_field}") end}
->
-  <:col :let={{_id, career_field}} label="Name English"><%= career_field.name_en %></:col>
-  <:col :let={{_id, career_field}} label="Name Japanese"><%= career_field.name_ja %></:col>
-  <:col :let={{_id, career_field}} label="Position"><%= career_field.position %></:col>
-  <:action :let={{_id, career_field}}>
-    <div class="sr-only">
-      <.link navigate={~p"/admin/career_fields/#{career_field}"}>Show</.link>
-    </div>
-    <.link patch={~p"/admin/career_fields/#{career_field}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={{id, career_field}}>
-    <.link
-      phx-click={JS.push("delete", value: %{id: career_field.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
-    >
-      Delete
-    </.link>
-  </:action>
-</.table>
-<div>
+  <.table
+    id="career_fields"
+    rows={@streams.career_fields}
+    row_click={fn {_id, career_field} -> JS.navigate(~p"/admin/career_fields/#{career_field}") end}
+  >
+    <:col :let={{_id, career_field}} label="Name English"><%= career_field.name_en %></:col>
+    <:col :let={{_id, career_field}} label="Name Japanese"><%= career_field.name_ja %></:col>
+    <:col :let={{_id, career_field}} label="Position"><%= career_field.position %></:col>
+    <:action :let={{_id, career_field}}>
+      <div class="sr-only">
+        <.link navigate={~p"/admin/career_fields/#{career_field}"}>Show</.link>
+      </div>
+      <.link patch={~p"/admin/career_fields/#{career_field}/edit"}>Edit</.link>
+    </:action>
+    <:action :let={{id, career_field}}>
+      <.link
+        phx-click={JS.push("delete", value: %{id: career_field.id}) |> hide("##{id}")}
+        data-confirm="Are you sure?"
+      >
+        Delete
+      </.link>
+    </:action>
+  </.table>
+  <div>
   <h1 class="font-bold text-brightGreen-300 text-3xl">Color Sample</h1>
   <table class="mt-8">
     <tbody>
@@ -45,144 +45,62 @@
 
       <tr>
         <td class="border border-brightGray-100 p-2">enginner</td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-engineer-dark text-white block px-3 py-1 rounded">#165BC8</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-engineer-light text-white block px-3 py-1 rounded">#6BDDFE</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-engineer-dazzle text-black block px-3 py-1 rounded">#EEFBFF</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-engineer-dazzle hover:bg-engineer-dark text-black hover:text-white block px-3 py-1 rounded">
-            hover
-          </span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-          </span>
-        </td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-engineer-dark text-white block px-3 py-1 rounded">#165BC8</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-engineer-light text-white block px-3 py-1 rounded">#6BDDFE</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-engineer-dazzle text-black block px-3 py-1 rounded">#EEFBFF</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-engineer-dazzle hover:bg-engineer-dark text-black hover:text-white block px-3 py-1 rounded">hover</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="before:relative before:top-[3px] before:bg-bgGemEngineer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"></span></td>
       </tr>
 
       <tr>
         <td class="border border-brightGray-100 p-2">product</td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-product-dark text-white block px-3 py-1 rounded">#51971A</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-product-light text-white block px-3 py-1 rounded">#8CEB14</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-product-dazzle text-black block px-3 py-1 rounded">#F2FFE1</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-product-dazzle hover:bg-product-dark text-black hover:text-white block px-3 py-1 rounded">
-            hover
-          </span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="before:relative before:top-[3px] before:bg-bgGemproduct before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-          </span>
-        </td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-product-dark text-white block px-3 py-1 rounded">#51971A</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-product-light text-white block px-3 py-1 rounded">#8CEB14</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-product-dazzle text-black block px-3 py-1 rounded">#F2FFE1</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-product-dazzle hover:bg-product-dark text-black hover:text-white block px-3 py-1 rounded">hover</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="before:relative before:top-[3px] before:bg-bgGemproduct before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"></span></td>
       </tr>
 
       <tr>
         <td class="border border-brightGray-100 p-2">designer</td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-designer-dark text-white block px-3 py-1 rounded">#E96500</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-designer-light text-white block px-3 py-1 rounded">#E3E312</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-designer-dazzle text-black block px-3 py-1 rounded">#FFFFDC</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-designer-dazzle hover:bg-designer-dark text-black hover:text-white block px-3 py-1 rounded">
-            hover
-          </span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="before:relative before:top-[3px] before:bg-bgGemDesigner before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-          </span>
-        </td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-designer-dark text-white block px-3 py-1 rounded">#E96500</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-designer-light text-white block px-3 py-1 rounded">#E3E312</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-designer-dazzle text-black block px-3 py-1 rounded">#FFFFDC</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-designer-dazzle hover:bg-designer-dark text-black hover:text-white block px-3 py-1 rounded">hover</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="before:relative before:top-[3px] before:bg-bgGemDesigner before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"></span></td>
       </tr>
 
       <tr>
         <td class="border border-brightGray-100 p-2">marketer</td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-marketer-dark text-white block px-3 py-1 rounded">#6B50A4</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-marketer-light text-white block px-3 py-1 rounded">#C6A2EA</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-marketer-dazzle text-black block px-3 py-1 rounded">#F1E3FF</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-marketer-dazzle hover:bg-marketer-dark text-black hover:text-white block px-3 py-1 rounded">
-            hover
-          </span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="before:relative before:top-[3px] before:bg-bgGemMarketer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-          </span>
-        </td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-marketer-dark text-white block px-3 py-1 rounded">#6B50A4</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-marketer-light text-white block px-3 py-1 rounded">#C6A2EA</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-marketer-dazzle text-black block px-3 py-1 rounded">#F1E3FF</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-marketer-dazzle hover:bg-marketer-dark text-black hover:text-white block px-3 py-1 rounded">hover</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="before:relative before:top-[3px] before:bg-bgGemMarketer before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"></span></td>
       </tr>
 
       <tr>
         <td class="border border-brightGray-100 p-2">sales</td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-sales-dark text-white block px-3 py-1 rounded">#D3000E</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-sales-light text-white block px-3 py-1 rounded">#FD5B87</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-sales-dazzle text-black block px-3 py-1 rounded">#FFE9EF</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-sales-dazzle hover:bg-sales-dark text-black hover:text-white block px-3 py-1 rounded">
-            hover
-          </span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="before:relative before:top-[3px] before:bg-bgGemSales before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-          </span>
-        </td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-sales-dark text-white block px-3 py-1 rounded">#D3000E</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-sales-light text-white block px-3 py-1 rounded">#FD5B87</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-sales-dazzle text-black block px-3 py-1 rounded">#FFE9EF</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-sales-dazzle hover:bg-sales-dark text-black hover:text-white block px-3 py-1 rounded">hover</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="before:relative before:top-[3px] before:bg-bgGemSales before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"></span></td>
       </tr>
 
       <tr>
         <td class="border border-brightGray-100 p-2">cxo</td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-cxo-dark text-white block px-3 py-1 rounded">#D3000E</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-cxo-light text-white block px-3 py-1 rounded">#FD5B87</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-cxo-dazzle text-black block px-3 py-1 rounded">#FFE9EF</span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="bg-cxo-dazzle hover:bg-sales-dark text-black hover:text-white block px-3 py-1 rounded">
-            hover
-          </span>
-        </td>
-        <td class="border border-brightGray-100 p-2">
-          <span class="before:relative before:top-[3px] before:bg-bgGemCxo before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5">
-          </span>
-        </td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-cxo-dark text-white block px-3 py-1 rounded">#D3000E</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-cxo-light text-white block px-3 py-1 rounded">#FD5B87</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-cxo-dazzle text-black block px-3 py-1 rounded">#FFE9EF</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="bg-cxo-dazzle hover:bg-sales-dark text-black hover:text-white block px-3 py-1 rounded">hover</span></td>
+        <td class="border border-brightGray-100 p-2"><span class="before:relative before:top-[3px] before:bg-bgGemCxo before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"></span></td>
       </tr>
+
     </tbody>
   </table>
 </div>
-<.modal
-  :if={@live_action in [:new, :edit]}
-  id="career_field-modal"
-  show
-  on_cancel={JS.patch(~p"/admin/career_fields")}
->
+<.modal :if={@live_action in [:new, :edit]} id="career_field-modal" show on_cancel={JS.patch(~p"/admin/career_fields")}>
   <.live_component
     module={BrightWeb.Admin.CareerFieldLive.FormComponent}
     id={@career_field.id || :new}

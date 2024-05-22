@@ -75,11 +75,7 @@ defmodule BrightWeb.BrightModalComponents do
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
-      <div
-        id={"#{@id}-bg"}
-        class="bg-pureGray-600/90 fixed inset-0 transition-opacity"
-        aria-hidden="true"
-      />
+      <div id={"#{@id}-bg"} class="bg-pureGray-600/90 fixed inset-0 transition-opacity" aria-hidden="true" />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -90,20 +86,23 @@ defmodule BrightWeb.BrightModalComponents do
       >
         <div class="flex min-h-full items-center justify-center">
           <div class={@style_of_modal_flame_out}>
-            <.focus_wrap id={"#{@id}-container"} class={@style_of_modal_flame}>
-              <%= if @enable_cancel_button do %>
-                <div class={@style_of_cancel_button_rayout}>
-                  <button
-                    phx-click={JS.exec("data-cancel", to: "##{@id}")}
-                    type="button"
-                    class={@style_of_cancel_button}
-                    data-confirm={@cancel_button_confirm}
-                    aria-label={gettext("close")}
-                  >
-                    <.icon name="hero-x-mark-solid" class={@style_of_cancel_button_x_mark} />
-                  </button>
-                </div>
-              <% end %>
+            <.focus_wrap
+              id={"#{@id}-container"}
+              class={@style_of_modal_flame}
+            >
+            <%= if @enable_cancel_button do %>
+              <div class={@style_of_cancel_button_rayout} >
+                <button
+                  phx-click={JS.exec("data-cancel", to: "##{@id}")}
+                  type="button"
+                  class={@style_of_cancel_button}
+                  data-confirm={@cancel_button_confirm}
+                  aria-label={gettext("close")}
+                >
+                  <.icon name="hero-x-mark-solid" class={@style_of_cancel_button_x_mark} />
+                </button>
+              </div>
+            <% end %>
               <div id={"#{@id}-content"}>
                 <%= render_slot(@inner_block) %>
               </div>

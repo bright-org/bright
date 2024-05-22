@@ -7,7 +7,7 @@ defmodule BrightWeb.UserFinishRegistrationLive do
     <UserAuthComponents.header>仮登録完了</UserAuthComponents.header>
 
     <UserAuthComponents.description>
-      仮登録完了メールを送信しましたので<br />メールの内容に従って本登録の手続き<br />を進めてください。
+      仮登録完了メールを送信しましたので<br>メールの内容に従って本登録の手続き<br>を進めてください。
     </UserAuthComponents.description>
     """
   end

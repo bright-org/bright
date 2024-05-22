@@ -14,16 +14,12 @@
   <:item title="Jobs">
     <%= Enum.map(@career_want.jobs, & &1.name) |> Enum.join(",") %>
   </:item>
+
 </.list>
 
 <.back navigate={~p"/admin/career_wants"}>Back to career_wants</.back>
 
-<.modal
-  :if={@live_action == :edit}
-  id="career_want-modal"
-  show
-  on_cancel={JS.patch(~p"/admin/career_wants/#{@career_want}")}
->
+<.modal :if={@live_action == :edit} id="career_want-modal" show on_cancel={JS.patch(~p"/admin/career_wants/#{@career_want}")}>
   <.live_component
     module={BrightWeb.Admin.CareerWantLive.FormComponent}
     id={@career_want.id}

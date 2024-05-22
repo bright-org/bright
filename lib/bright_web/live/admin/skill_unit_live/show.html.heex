@@ -23,7 +23,7 @@
           <ul class="pl-4 list-disc">
             <%= for skill <- skill_category.skills do %>
               <li class="flex justify-between m-1">
-                <p><%= skill.name %></p>
+                <p> <%= skill.name %> </p>
                 <.link navigate={~p"/admin/skills/#{skill}/show/edit"}>
                   <.button class="text-xs ml-4 p-0.5">Edit skill</.button>
                 </.link>

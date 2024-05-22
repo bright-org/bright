@@ -71,7 +71,8 @@ defmodule BrightWeb.Admin.JobLive.FormComponent do
           </label>
         </.inputs_for>
         <label class="block cursor-pointer">
-          <input type="checkbox" name="job[job_skill_panels_sort][]" class="hidden" /> add skill panel
+          <input type="checkbox" name="job[job_skill_panels_sort][]" class="hidden" />
+          add skill panel
         </label>
         <:actions>
           <.button phx-disable-with="Saving...">Save Job</.button>

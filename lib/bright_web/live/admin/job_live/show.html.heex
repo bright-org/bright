@@ -19,16 +19,12 @@
   <:item title="SkillPanels">
     <%= Enum.map(@job.skill_panels, & &1.name) |> Enum.join(",") %>
   </:item>
+
 </.list>
 
 <.back navigate={~p"/admin/jobs"}>Back to jobs</.back>
 
-<.modal
-  :if={@live_action == :edit}
-  id="job-modal"
-  show
-  on_cancel={JS.patch(~p"/admin/jobs/#{@job}")}
->
+<.modal :if={@live_action == :edit} id="job-modal" show on_cancel={JS.patch(~p"/admin/jobs/#{@job}")}>
   <.live_component
     module={BrightWeb.Admin.JobLive.FormComponent}
     id={@job.id}
