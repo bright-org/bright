@@ -1,5 +1,4 @@
 <%= if @skill_panel do %>
-
 <div class="flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
   <%!-- スマホ 成長パネル/スキルパネル切替 --%>
   <div class="lg:hidden mb-4">
@@ -145,6 +144,7 @@
           value={@counter.high}
           size={@num_skills}
           skill_panel_id={@skill_panel.id}
+          me={@me}
         />
       </div>
     </div>

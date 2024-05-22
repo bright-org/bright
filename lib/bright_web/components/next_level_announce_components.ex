@@ -22,6 +22,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
   attr :value, :integer
   attr :size, :integer
   attr :skill_panel_id, :string
+  attr :me, :boolean
 
   def next_level_announce(assigns) do
     percentage = SkillScores.calc_high_skills_percentage(assigns.value, assigns.size)
@@ -40,6 +41,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
        next_percentage={@next_percentage}
        next_num_skills={@next_num_skills}
        skill_panel_id={@skill_panel_id}
+       me={@me}
       />
     </div>
     """
@@ -54,7 +56,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
       <div class="leading-8">
         おめでとうございます
       </div>
-      <div class="px-2 leading-8">
+      <div class="px-2 leading-8" :if={@me}>
         <.remuneration_consultation_button skill_panel_id={@skill_panel_id}/>
       </div>
     </div>
@@ -72,7 +74,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
       <div>
         <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
       </div>
-      <div class="px-2">
+      <div class="px-2" :if={@me}>
         <.remuneration_consultation_button skill_panel_id={@skill_panel_id}/>
       </div>
     </div>
