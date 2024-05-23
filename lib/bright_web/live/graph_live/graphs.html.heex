@@ -1,157 +1,182 @@
 <%= if @skill_panel do %>
-
-<div class="flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
-  <%!-- スマホ 成長パネル/スキルパネル切替 --%>
-  <div class="lg:hidden mb-4">
-    <.toggle_link
-      skill_panel={@skill_panel}
-      display_user={@display_user}
-      me={@me}
-      anonymous={@anonymous}
-      skill_class={@skill_class.class}
-      active="graph"
-    />
-  </div>
-
-  <div class="relative flex flex-col mb-4 lg:mb-0" :if={@me}>
-    <div class="flex justify-between items-center w-full gap-x-2">
-      <.link
-        patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
-        id="link-skills-form"
-        class={["w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:opacity-50"]}>
-        <span class="material-icons-outlined text-white text-md">edit</span>
-        スキルを入力する
-      </.link>
-
-      <div
-        :if={@me}
-        id="btn-help-enter-skills-button"
-        class="flex-none cursor-pointer w-8 h-8 hover:opacity-50 bg-[url('/images/icon_help.svg')]"
-        phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
-      </div>
-    </div>
-
-    <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
-      <% # スキル入力するボタン 手動表示メッセージ %>
-      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
-      <.live_component
-        module={BrightWeb.HelpMessageComponent}
-        id="help-enter-skills-button"
-        open={false}>
-        <GuideMessageComponents.enter_skills_help_message reference_from={"button"} />
-      </.live_component>
-    </div>
-  </div>
-
-  <%!-- PC 成長パネル/スキルパネル切替 --%>
-  <div class="hidden lg:flex lg:ml-auto">
-    <.toggle_link
-      skill_panel={@skill_panel}
-      display_user={@display_user}
-      me={@me}
-      anonymous={@anonymous}
-      skill_class={@skill_class.class}
-      active="graph"
-    />
-  </div>
-</div>
-
-<div class="flex mx-4 lg:mx-10 pb-6">
-  <ProfileComponents.profile_with_skill
-    user_name={@display_user.name}
-    title={@display_user.user_profile.title}
-    icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
-    skill_panel={@skill_panel}
-    skill_class={@skill_class}
-    display_return_to_yourself={!@me}
-    is_anonymous={@anonymous}
-  >
-    <:score_stats>
-      <ProfileComponents.dounat_graph_with_score_stats
-        skill_class_score={@skill_class_score}
-        counter={@counter}
-        num_skills={@num_skills}
+  <div class="flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
+    <%!-- スマホ 成長パネル/スキルパネル切替 --%>
+    <div class="lg:hidden mb-4">
+      <.toggle_link
+        skill_panel={@skill_panel}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        skill_class={@skill_class.class}
+        active="graph"
       />
-    </:score_stats>
-    <:switch_button>
-      <div class="mt-4 lg:mt-2">
-        <.navigations
-          current_user={@current_user}
-          display_user={@display_user}
-          me={@me}
-          anonymous={@anonymous}
-          root="graphs"
-        />
-      </div>
-    </:switch_button>
-  </ProfileComponents.profile_with_skill>
-</div>
+    </div>
 
-<div class="mx-4 pb-20 lg:mx-10 lg:pb-0 bg-white">
-  <div class="flex justify-between">
-    <.class_tab
-      skill_classes={@skill_classes}
+    <div :if={@me} class="relative flex flex-col mb-4 lg:mb-0">
+      <div class="flex justify-between items-center w-full gap-x-2">
+        <.link
+          patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+          id="link-skills-form"
+          class={[
+            "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:opacity-50"
+          ]}
+        >
+          <span class="material-icons-outlined text-white text-md">edit</span> スキルを入力する
+        </.link>
+
+        <div
+          :if={@me}
+          id="btn-help-enter-skills-button"
+          class="flex-none cursor-pointer w-8 h-8 hover:opacity-50 bg-[url('/images/icon_help.svg')]"
+          phx-click={
+            JS.push("open", target: "#help-enter-skills-button")
+            |> show("#help-enter-skills-button")
+          }
+        >
+        </div>
+      </div>
+
+      <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
+        <% # スキル入力するボタン 手動表示メッセージ %>
+        <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+        <.live_component
+          module={BrightWeb.HelpMessageComponent}
+          id="help-enter-skills-button"
+          open={false}
+        >
+          <GuideMessageComponents.enter_skills_help_message reference_from="button" />
+        </.live_component>
+      </div>
+    </div>
+
+    <%!-- PC 成長パネル/スキルパネル切替 --%>
+    <div class="hidden lg:flex lg:ml-auto">
+      <.toggle_link
+        skill_panel={@skill_panel}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        skill_class={@skill_class.class}
+        active="graph"
+      />
+    </div>
+  </div>
+
+  <div class="flex mx-4 lg:mx-10 pb-6">
+    <ProfileComponents.profile_with_skill
+      user_name={@display_user.name}
+      title={@display_user.user_profile.title}
+      icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
+      skill_panel={@skill_panel}
       skill_class={@skill_class}
-      path={@path}
-      query={@query}
-      me={@me}
-    />
-  </div>
-  <div class="shadow relative z-2 py-1 lg:px-6">
-    <div class="mt-4 lg:mt-0 flex flex-col-reverse lg:flex-col 2xl:flex-row">
-      <.live_component
-        id="rowth-graph"
-        module={BrightWeb.ChartLive.GrowthGraphComponent}
-        current_user={@current_user}
-        user_id={@display_user.id}
-        skill_panel_id={@skill_panel.id}
-        skill_class={@skill_class}
-        compared_user={@compared_user}
-      />
-      <div class="flex flex-col items-center justify-center w-full lg:mt-4">
-        <%!-- PC版 スキルジェム --%>
-        <div class="hidden lg:block px-6">
-          <.live_component
-            id="skill-gem"
-            module={BrightWeb.ChartLive.SkillGemComponent}
-            display_user={@display_user}
-            skill_panel={@skill_panel}
-            class={@skill_class.class}
-            select_label={@select_label}
-            me={@me}
-            anonymous={@anonymous}
-            select_label_compared_user={@select_label_compared_user}
-            compared_user={@compared_user}
-          />
-        </div>
-        <%!-- SP版 スキルジェム --%>
-        <div class="lg:hidden">
-          <.live_component
-            id="skill-gem-sp"
-            module={BrightWeb.ChartLive.SkillGemComponent}
-            display_user={@display_user}
-            skill_panel={@skill_panel}
-            class={@skill_class.class}
-            select_label={@select_label}
-            me={@me}
-            anonymous={@anonymous}
-            select_label_compared_user={@select_label_compared_user}
-            compared_user={@compared_user}
-            size="sp"
-          />
-        </div>
-        <.next_level_announce
-          :if={@select_label == "now"}
-          value={@counter.high}
-          size={@num_skills}
+      display_return_to_yourself={!@me}
+      is_anonymous={@anonymous}
+    >
+      <:score_stats>
+        <ProfileComponents.dounat_graph_with_score_stats
+          skill_class_score={@skill_class_score}
+          counter={@counter}
+          num_skills={@num_skills}
         />
+      </:score_stats>
+      <:switch_button>
+        <div class="mt-4 lg:mt-2">
+          <.navigations
+            current_user={@current_user}
+            display_user={@display_user}
+            me={@me}
+            anonymous={@anonymous}
+            root="graphs"
+          />
+        </div>
+      </:switch_button>
+    </ProfileComponents.profile_with_skill>
+  </div>
+
+  <div class="mx-4 pb-20 lg:mx-10 lg:pb-0 bg-white">
+    <div class="flex justify-between">
+      <.class_tab
+        skill_classes={@skill_classes}
+        skill_class={@skill_class}
+        path={@path}
+        query={@query}
+        me={@me}
+      />
+    </div>
+    <div class="shadow relative z-2 py-1 lg:px-6">
+      <div class="mt-4 lg:mt-0 flex flex-col-reverse lg:flex-col 2xl:flex-row">
+        <.live_component
+          id="rowth-graph"
+          module={BrightWeb.ChartLive.GrowthGraphComponent}
+          current_user={@current_user}
+          user_id={@display_user.id}
+          skill_panel_id={@skill_panel.id}
+          skill_class={@skill_class}
+          compared_user={@compared_user}
+        />
+        <div class="flex flex-col items-center justify-center w-full lg:mt-4">
+          <%!-- PC版 スキルジェム --%>
+          <div class="hidden lg:block px-6">
+            <.live_component
+              id="skill-gem"
+              module={BrightWeb.ChartLive.SkillGemComponent}
+              display_user={@display_user}
+              skill_panel={@skill_panel}
+              class={@skill_class.class}
+              select_label={@select_label}
+              me={@me}
+              anonymous={@anonymous}
+              select_label_compared_user={@select_label_compared_user}
+              compared_user={@compared_user}
+            />
+          </div>
+          <%!-- SP版 スキルジェム --%>
+          <div class="lg:hidden">
+            <.live_component
+              id="skill-gem-sp"
+              module={BrightWeb.ChartLive.SkillGemComponent}
+              display_user={@display_user}
+              skill_panel={@skill_panel}
+              class={@skill_class.class}
+              select_label={@select_label}
+              me={@me}
+              anonymous={@anonymous}
+              select_label_compared_user={@select_label_compared_user}
+              compared_user={@compared_user}
+              size="sp"
+            />
+          </div>
+          <div class="flex pb-4">
+            <div class="flex flex-col lg:flex-row">
+              <.next_level_announce
+                :if={@select_label == "now"}
+                value={@counter.high}
+                size={@num_skills}
+              />
+              <div :if={@me} class="px-2 leading-8">
+                <button
+                  phx-click="open_income_consultation"
+                  type="button"
+                  class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm"
+                >
+                  報酬アップを相談する
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
+  <.bright_modal :if={@open_income_consultation}id="incomecoordination-create-modal" on_cancel={JS.push("close_income_consultation")} show>
+    <.live_component
+      id="income_consultation"
+      module={BrightWeb.CardLive.IncomeConsultationComponent}
+      current_user={@current_user}
+      skill_panel_id={@skill_panel.id}
+    />
+  </.bright_modal>
 <% else %>
-
-<.no_skill_panel />
-
+  <.no_skill_panel />
 <% end %>

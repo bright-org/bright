@@ -14,6 +14,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
        <.next_level_announce
           value={@counter.high}
           size={@num_skills}
+          skill_panel_id={@skill_panel_id}
         />
   """
 
@@ -31,7 +32,7 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
       |> assign(next_num_skills: get_next_num_skills(level, assigns.size, assigns.value))
 
     ~H"""
-    <div class="flex pb-4">
+    <div class="flex flex-col lg:flex-row">
       <.level_render
        level={@level}
        next_percentage={@next_percentage}
@@ -43,13 +44,11 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
 
   defp level_render(%{level: :master} = assigns) do
     ~H"""
-    <div class="flex flex-col lg:flex-row">
-      <div>
-        このスキルはマスターしました。
-      </div>
-      <div>
-        おめでとうございます
-      </div>
+    <div class="leading-8">
+      このスキルはマスターしました。
+    </div>
+    <div class="leading-8">
+      おめでとうございます
     </div>
     """
   end
@@ -58,13 +57,11 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
     assigns = assign(assigns, next_level_name: Map.get(@next_level_jp, assigns.level))
 
     ~H"""
-    <div class="flex flex-col lg:flex-row">
-      <div>
-        あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で<%= @next_level_name %>になれます。
-      </div>
-      <div>
-        <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
-      </div>
+    <div>
+      あと<span class="text-error !text-2xl font-bold"><%= @next_percentage %></span>%で<%= @next_level_name %>になれます。
+    </div>
+    <div>
+      <%= @next_level_name %>までのスキル数<span class="text-error !text-2xl font-bold" ><%= @next_num_skills %></span>個
     </div>
     """
   end
