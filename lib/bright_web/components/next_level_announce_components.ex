@@ -32,11 +32,13 @@ defmodule BrightWeb.NextLevelAnnounceComponents do
       |> assign(next_num_skills: get_next_num_skills(level, assigns.size, assigns.value))
 
     ~H"""
+    <div class="flex flex-col lg:flex-row">
       <.level_render
        level={@level}
        next_percentage={@next_percentage}
        next_num_skills={@next_num_skills}
       />
+    </div>
     """
   end
 
