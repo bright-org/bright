@@ -221,7 +221,7 @@ defmodule BrightWeb.TeamComponents do
     </div>
     <div
       :if={assigns.is_clickable? && length(filter_team_type_select_list_by_user_id(@user_id)) >= 2}
-      id="{@id}"
+      id="team_type_select_dropdown_menue"
       phx-hook="Dropdown"
       data-dropdown-offset-skidding="0"
       data-dropdown-placement="bottom"
