@@ -7,11 +7,10 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
 
   ## Examples
     <.live_component
-      id={@id}
-      module={BrightWeb.CardLive.RelatedTeamCardComponent}
-      display_user={@current_user}
-      over_ride_on_card_row_click_target={:true}
-      skill_panel_id={@skill_panel_id}
+      id="income_consultation"
+      module={BrightWeb.CardLive.IncomeConsultationComponent}
+      current_user={@current_user}
+      skill_panel_id={@skill_panel.id}
     />
   """
   use BrightWeb, :live_component
