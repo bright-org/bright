@@ -1448,4 +1448,27 @@ defmodule Bright.Teams do
   end
 
   def get_invitation_validity_ago(), do: @invitation_validity_ago
+
+  @doc """
+    チームが所有しているスキルパネルの一覧を取得する
+      iex > get_team_skill_panel_list(team_id)
+      [
+        %Bright.SkillPanels.SkillPanel{}
+      ]
+  """
+  def get_team_skill_panel_list(team_id) do
+    from(team in Team,
+      join: member_users in assoc(team, :member_users),
+      join: user in assoc(member_users, :user),
+      join: user_skill_panels in assoc(user, :user_skill_panels),
+      join: skill_panel in assoc(user_skill_panels, :skill_panel),
+      join: jobs in assoc(skill_panel, :jobs),
+      join: career_fields in assoc(jobs, :career_fields),
+      where: team.id == ^team_id,
+      select: skill_panel,
+      order_by: career_fields.position,
+      distinct: skill_panel
+    )
+    |> Repo.all()
+  end
 end
