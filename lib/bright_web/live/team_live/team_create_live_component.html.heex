@@ -43,10 +43,10 @@
                 </dt>
                 <dd :if={@action == :edit} class="w-[340px] mb-6">
                   <.team_skill_panel_select_dropdown_menue
-                    selected_team_type={@selected_team_type}
+                    selected_team_skill_panel={@selected_team_skill_panel}
+                    team_skill_panels={@team_skill_panels}
                     phx_target={@myself}
-                    is_clickable?={@action == :new}
-                    user_id={@current_user.id}
+
                   />
                 </dd>
                 <dt class="font-bold w-[100px] mb-10 text-base">

@@ -259,30 +259,13 @@ defmodule BrightWeb.TeamComponents do
     """
   end
 
-  attr :selected_team_type, :any, required: true
+  attr :selected_team_skill_panel, :any, required: true
   attr :phx_target, :any, default: ""
-  attr :is_clickable?, :boolean, default: false
-  attr :user_id, :any, required: true
+  attr :team_skill_panels, :any, default: []
 
   def team_skill_panel_select_dropdown_menue(assigns) do
-    assigns =
-      assigns
-      |> Map.put(:team_type_select_list, @team_type_select_list)
-
     ~H"""
-    <div :if={
-      !assigns.is_clickable? || length(filter_team_type_select_list_by_user_id(@user_id)) <= 1
-    }>
-      <div
-        class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full"
-        type="button"
-      >
-        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2" />
-        <%= get_display_name(@selected_team_type) %>
-      </div>
-    </div>
     <div
-      :if={assigns.is_clickable? && length(filter_team_type_select_list_by_user_id(@user_id)) >= 2}
       id="team_skill_panel_select_dropdown_menue"
       phx-hook="Dropdown"
       data-dropdown-offset-skidding="0"
@@ -292,27 +275,24 @@ defmodule BrightWeb.TeamComponents do
         class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full  hover:bg-brightGray-50 dropdownTrigger"
         type="button"
       >
-        <img src={get_team_icon_path(@selected_team_type)} class="ml-2 mr-2" />
-        <%= get_display_name(@selected_team_type) %>
+       <%= @selected_team_skill_panel.name %>
       </bottun>
       <p>
-        チームタイプを選択してください
+        スキルパネルを選択してください
       </p>
       <!-- menue list-->
       <div
-        :if={@is_clickable?}
         class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-full lg:w-[340px]"
       >
         <ul>
-          <%= for team_type_item <- filter_team_type_select_list_by_user_id(@user_id) do %>
+          <%= for team_skill_panel <- @team_skill_panels  do %>
             <li
               class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 bg-white w-full"
-              phx-click="select_team_type"
-              phx-value-team_type={team_type_item.team_type}
+              phx-click="select_skill_panel"
+              phx-value-team_type={"team_type_item.team_type"}
               phx-target={@phx_target}
             >
-              <img src={get_team_icon_path(team_type_item.team_type)} class="ml-2 mr-2" />
-              <%= team_type_item.display_name %>
+              <%= team_skill_panel.name %>
             </li>
           <% end %>
         </ul>
