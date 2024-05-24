@@ -5,7 +5,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.ProfileComponents
-  import BrightWeb.TeamComponents, only: [team_type_select_dropdown_menue: 1]
+  import BrightWeb.TeamComponents, only: [team_type_select_dropdown_menue: 1, team_skill_panel_select_dropdown_menue: 1]
 
   alias Bright.Teams
   alias Bright.Teams.Team

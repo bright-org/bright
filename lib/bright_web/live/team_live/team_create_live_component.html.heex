@@ -39,6 +39,17 @@
                   />
                 </dt>
                 <dt class="font-bold w-[100px] mb-10 text-base">
+                  スキルパネル
+                </dt>
+                <dd class="w-[340px] mb-6">
+                  <.team_skill_panel_select_dropdown_menue
+                    selected_team_type={@selected_team_type}
+                    phx_target={@myself}
+                    is_clickable?={@action == :new}
+                    user_id={@current_user.id}
+                  />
+                </dd>
+                <dt class="font-bold w-[100px] mb-10 text-base">
                   チームタイプ
                 </dt>
                 <dd class="w-[340px] mb-6">
