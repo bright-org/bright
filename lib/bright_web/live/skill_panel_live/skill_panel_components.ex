@@ -222,40 +222,36 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
 
   def class_tab(assigns) do
     ~H"""
-    <div class="w-full bg-white border-b border-b-brightGray-100">
-      <ul class="flex relative z-1 text-normal font-bold text-brightGray-300 text-center lg:text-md w-full lg:w-fit">
+    <div class="w-full bg-white">
+      <ul class="flex relative z-1 text-normal font-bold text-brightGray-300 text-center lg:text-md w-full">
         <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
-          <% current = @skill_class.class == skill_class.class %>
-          <%= if !@me && is_nil(skill_class_score) do %>
-            <li id={"class_tab_#{skill_class.class}"} class="grow lg:grow-0">
-              <a href="#" class="hover:cursor-default flex items-center lg:select-none px-2 lg:px-4 py-1 lg:py-3 text-xs">
-                <span class="text-sm lg:text-normal">クラス<%= skill_class.class %></span>
-                <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0％</span>
-              </a>
-            </li>
-          <% else %>
-            <li id={"class_tab_#{skill_class.class}"} class={["grow", current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300", !current && "hover:opacity-50 hover:text-brightGreen-300"]}>
-              <.link
-                patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
-                class="flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3"
-                aria-current={current && "page"}
-              >
-                <span class="text-sm lg:text-normal">クラス<%= skill_class.class %></span>
-                <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
-                  <%= if skill_class_score do %>
-                    <%= floor skill_class_score.percentage %>
-                  <% else %>
-                    0
-                  <% end %>
-                  ％
-                </span>
-              </.link>
-            </li>
-          <% end %>
+          <li class="w-1 lg:w-2 border-b-2 border-b-brightGreen-300"></li>
+          <li id={"class_tab_#{skill_class.class}"} class={["grow lg:grow-0 rounded-t", selected_skill?(@skill_class, skill_class) && "text-brightGreen-300 border-x-2 border-x-brightGreen-300 border-t-2 border-t-brightGreen-300", !selected_skill?(@skill_class, skill_class) && "hover:opacity-50 hover:text-brightGreen-300 border-x-2 border-x-brightGray-100 border-t-2 border-t-brightGray-100 border-b-2 border-b-brightGreen-300"]}>
+            <.link
+              patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
+              class="flex justify-center items-center px-1 lg:px-10 py-2"
+              aria-current={selected_skill?(@skill_class, skill_class) && "page"}
+            >
+              <span class="text-sm lg:text-normal">クラス<%= skill_class.class %>：</span>
+              <span class="text-sm text-right lg:text-normal min-w-[32px] lg:min-w-0">
+                <%= if skill_class_score do %>
+                  <%= floor skill_class_score.percentage %>
+                <% else %>
+                  0
+                <% end %>
+                ％
+              </span>
+            </.link>
+          </li>
         <% end %>
+        <li class="grow border-b-2 border-b-brightGreen-300"></li>
       </ul>
     </div>
     """
+  end
+
+  defp selected_skill?(current_skill_class, target_skill_class) do
+    current_skill_class.class == target_skill_class.class
   end
 
   def no_skill_panel(assigns) do
