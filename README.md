@@ -17,6 +17,18 @@ Bright!!
 $ make setup # 最初の1回だけでOK
 ```
 
+### 以前、Docker 起動成功しているが、再度起動した際にエラーが出る場合
+
+起動時に下記のようなエラーが出ているときは、Dockerfile側で Elixir や PostgreSQL がバージョンアップしており、未対応のため、本対応が必要
+
+```
+** (Mix) You're trying to run :bright on Elixir v1.14.5 but it has declared in its mix.exs file it supports only Elixir ~> 1.16
+```
+
+```
+$ docker compose build
+```
+
 ### WSL2 などにおいて Docker で開発環境を構築する場合 (Windows, etc)
 
 WSL2 などでは Docker コンテナ内で生成したファイルが root になり、開発上の障害になるので別途 Docker ファイル用意しています
