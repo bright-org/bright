@@ -1,6 +1,7 @@
 defmodule BrightWeb.Admin.SkillUnitLive.FormComponent do
   use BrightWeb, :live_component
 
+  alias BrightWeb.TimelineHelper
   alias Bright.SkillUnits
 
   @impl true
@@ -20,6 +21,10 @@ defmodule BrightWeb.Admin.SkillUnitLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
+        <label class="block text-sm font-semibold leading-6 text-zinc-800 !mt-2">LockedDate</label>
+        <p class="!mt-2 ml-2"><%= @form[:locked_date].value || @locked_date %></p>
+        <.input field={@form[:locked_date]} type="hidden" value={@form[:locked_date].value || @locked_date} />
+
         <.label>Skill categories</.label>
         <.inputs_for :let={scf} field={@form[:skill_categories]}>
           <input type="hidden" name="skill_unit[skill_categories_sort][]" value={scf.index} />
@@ -71,6 +76,10 @@ defmodule BrightWeb.Admin.SkillUnitLive.FormComponent do
 
   @impl true
   def update(%{skill_unit: skill_unit} = assigns, socket) do
+    # 現スキルパネルを操作しているためlocked_dateを1つ前のバッチ更新日相当日付としている
+    timeline = TimelineHelper.get_current()
+    locked_date = TimelineHelper.get_shift_date_from_date(timeline.future_date, -1)
+
     skill_class_options =
       Bright.SkillPanels.list_skill_classes()
       |> Bright.Repo.preload(:skill_panel)
@@ -87,7 +96,8 @@ defmodule BrightWeb.Admin.SkillUnitLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:skill_class_options, skill_class_options)
-     |> assign_form(changeset)}
+     |> assign_form(changeset)
+     |> assign(:locked_date, locked_date)}
   end
 
   @impl true

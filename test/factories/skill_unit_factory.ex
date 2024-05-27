@@ -7,7 +7,8 @@ defmodule Bright.SkillUnitFactory do
     quote do
       def skill_unit_factory do
         %Bright.SkillUnits.SkillUnit{
-          name: Faker.Lorem.word()
+          name: Faker.Lorem.word(),
+          locked_date: ~D[2023-07-01]
         }
       end
 

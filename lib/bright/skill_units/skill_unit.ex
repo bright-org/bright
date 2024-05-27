@@ -13,8 +13,7 @@ defmodule Bright.SkillUnits.SkillUnit do
   @foreign_key_type Ecto.ULID
 
   schema "skill_units" do
-    # NOTE: 本来はスキルパネル更新バッチによってのみ生成されるデータのためデフォルト値や自動生成は不要だが、現状では管理機能で作成することができてしまうため便宜上残している
-    field :locked_date, :date, default: ~D[2023-07-01]
+    field :locked_date, :date
     field :trace_id, Ecto.ULID, autogenerate: {Ecto.ULID, :generate, []}
 
     field :name, :string
@@ -37,7 +36,7 @@ defmodule Bright.SkillUnits.SkillUnit do
   @doc false
   def changeset(skill_unit, attrs) do
     skill_unit
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :locked_date])
     |> cast_assoc(:skill_categories,
       with: &SkillCategory.changeset/2,
       sort_param: :skill_categories_sort,
