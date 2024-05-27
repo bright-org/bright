@@ -68,15 +68,32 @@ defmodule Bright.Recruits do
   def get_interview!(id), do: Repo.get!(Interview, id)
 
   def get_interview(recruiter_user_id, candidates_user_id) do
-    from(
-      i in Interview,
-      where:
-        (i.recruiter_user_id == ^recruiter_user_id and
-           i.candidates_user_id == ^candidates_user_id) or
-          (i.recruiter_user_id == ^candidates_user_id and
-             i.candidates_user_id == ^recruiter_user_id)
-    )
-    |> Repo.one()
+    query =
+      from(
+        i in Interview,
+        where:
+          i.recruiter_user_id == ^recruiter_user_id and
+            i.candidates_user_id == ^candidates_user_id,
+        order_by: [desc: :updated_at]
+      )
+
+    case Repo.exists?(query) do
+      true ->
+        query
+        |> first()
+        |> Repo.one()
+
+      false ->
+        from(
+          i in Interview,
+          where:
+            i.recruiter_user_id == ^candidates_user_id and
+              i.candidates_user_id == ^recruiter_user_id,
+          order_by: [desc: :updated_at]
+        )
+        |> first()
+        |> Repo.one()
+    end
   end
 
   def get_interview_with_member_users!(id, user_id) do
