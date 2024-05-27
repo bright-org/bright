@@ -1,6 +1,7 @@
 defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
   use BrightWeb, :live_component
 
+  alias BrightWeb.TimelineHelper
   alias Bright.SkillPanels
 
   @impl true
@@ -24,6 +25,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
         <.inputs_for :let={scf} field={@form[:skill_classes]}>
           <input type="hidden" name="skill_panel[skill_classes_sort][]" value={scf.index} />
           <.input field={scf[:name]} type="text" label="Name" />
+          <.input field={scf[:locked_date]} type="hidden" value={scf[:locked_date].value || @locked_date} />
           <label class="cursor-pointer">
             <input
               type="checkbox"
@@ -35,7 +37,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
         </.inputs_for>
         <label class="block cursor-pointer">
           <input type="checkbox" name="skill_panel[skill_classes_sort][]" class="hidden" />
-          add skill class
+          add skill class (locked_date: <%= @locked_date %>)
         </label>
         <:actions>
           <.button phx-disable-with="Saving...">Save Skill panel</.button>
@@ -47,6 +49,10 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
 
   @impl true
   def update(%{skill_panel: skill_panel} = assigns, socket) do
+    # 現スキルパネルを操作しているためlocked_dateを1つ前のバッチ更新日相当日付としている
+    timeline = TimelineHelper.get_current()
+    locked_date = TimelineHelper.get_shift_date_from_date(timeline.future_date, -1)
+
     changeset =
       skill_panel
       |> preload_assoc()
@@ -55,7 +61,8 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_form(changeset)}
+     |> assign_form(changeset)
+     |> assign(:locked_date, locked_date)}
   end
 
   @impl true

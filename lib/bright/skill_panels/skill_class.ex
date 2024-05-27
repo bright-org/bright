@@ -13,8 +13,7 @@ defmodule Bright.SkillPanels.SkillClass do
   @foreign_key_type Ecto.ULID
 
   schema "skill_classes" do
-    # NOTE: 本来はスキルパネル更新バッチによってのみ生成されるデータのためデフォルト値や自動生成は不要だが、現状では管理機能で作成することができてしまうため便宜上残している
-    field :locked_date, :date, default: ~D[2023-07-01]
+    field :locked_date, :date
     field :trace_id, Ecto.ULID, autogenerate: {Ecto.ULID, :generate, []}
 
     field :name, :string
@@ -36,7 +35,7 @@ defmodule Bright.SkillPanels.SkillClass do
   @doc false
   def changeset(skill_class, attrs) do
     skill_class
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :locked_date])
     |> validate_required([:name])
   end
 end
