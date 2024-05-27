@@ -34,7 +34,7 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
           <section class="bg-white px-10 py-8 shadow text-sm w-full">
             <div class="py-1">
               <h3>報酬アップを相談する</h3>
-              <div class="py-1">報酬アップを相談する為面談する上長を選択してください</div>
+              <div class="py-1">報酬アップを相談する先となるチームのリーダーを選択してください</div>
               <div class="pt-3 pb-1 px-6 lg:h-[226px] lg:w-[500px]">
                 <%= if length(@team_readers) > 0 do %>
                   <ul class="flex gap-y-2 flex-col">

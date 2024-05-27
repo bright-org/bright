@@ -76,7 +76,8 @@ defmodule Bright.Recruits do
           (i.recruiter_user_id == ^candidates_user_id and
              i.candidates_user_id == ^recruiter_user_id)
     )
-    |> Repo.one()
+    |> Repo.all()
+    |> List.first()
   end
 
   def get_interview_with_member_users!(id, user_id) do
