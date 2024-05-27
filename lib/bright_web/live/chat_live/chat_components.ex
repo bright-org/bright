@@ -35,6 +35,8 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
         />
         <%= if @chat.interview.status == :one_on_one do %>
+          1on1
+        <% else %>
           <div class="mr-2 lg:truncate lg:text-xl">
             <span>
               <%= if @chat.interview.skill_panel_name == nil,
@@ -46,8 +48,6 @@ defmodule BrightWeb.ChatLive.ChatComponents do
               <%= NaiveDateTime.to_date(@chat.interview.inserted_at) %> 希望年収:<%= @chat.interview.desired_income %>
             </span>
           </div>
-        <% else %>
-          1on1
         <% end %>
         <div>
           <.elapsed_time inserted_at={@chat.updated_at} />
