@@ -153,7 +153,8 @@
                 value={@counter.high}
                 size={@num_skills}
               />
-              <div :if={@me} class="px-2 leading-8">
+              <%!-- TODO 「報酬アップを相談する」不具合原因がわかるまで封印  :if={@me}→ :if={false} --%>
+              <div :if={false} class="px-2 leading-8">
                 <button
                   phx-click="open_income_consultation"
                   type="button"
