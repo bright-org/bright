@@ -3,6 +3,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
 
   alias BrightWeb.TimelineHelper
   alias Bright.SkillPanels
+  alias Bright.DraftSkillPanels
 
   @impl true
   def render(assigns) do
@@ -86,6 +87,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
     case SkillPanels.update_skill_panel(skill_panel, skill_panel_params) do
       {:ok, skill_panel} ->
         notify_parent({:saved, preload_assoc(skill_panel)})
+        DraftSkillPanels.sync_new_skill_classes(skill_panel)
 
         {:noreply,
          socket
@@ -101,6 +103,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.FormComponent do
     case SkillPanels.create_skill_panel(skill_panel_params) do
       {:ok, skill_panel} ->
         notify_parent({:saved, preload_assoc(skill_panel)})
+        DraftSkillPanels.sync_new_skill_classes(skill_panel)
 
         {:noreply,
          socket
