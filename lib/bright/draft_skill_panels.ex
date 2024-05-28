@@ -119,4 +119,6 @@ defmodule Bright.DraftSkillPanels do
   def list_draft_skill_classes do
     Repo.all(DraftSkillClass)
   end
+
+  def get_draft_skill_class!(id), do: Repo.get!(DraftSkillClass, id)
 end

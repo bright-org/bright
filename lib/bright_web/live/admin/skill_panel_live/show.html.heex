@@ -28,6 +28,17 @@
       <% end %>
     </ul>
   </:item>
+  <:item title="Draft skill classes">
+    <ul>
+      <%= for draft_skill_class <- @draft_skill_classes do %>
+        <li class="mb-1">
+          <.link navigate={~p"/admin/draft_skill_classes/#{draft_skill_class}"} class="text-blue-800 hover:underline">
+            <%= draft_skill_class.name %>
+          </.link>
+        </li>
+      <% end %>
+    </ul>
+  </:item>
 </.list>
 
 <.back navigate={~p"/admin/skill_panels"}>Back to skill_panels</.back>

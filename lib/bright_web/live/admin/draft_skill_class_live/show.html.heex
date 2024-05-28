@@ -1,0 +1,11 @@
+<.header class="mt-4">
+  <%= @skill_class.name %>
+  <:subtitle><%= @skill_panel.name %> クラス<%= @skill_class.class %></:subtitle>
+
+  <:actions>
+    <.link navigate={~p"/admin/skill_panels/#{@skill_class.skill_panel_id}"}>
+      <.button>スキルパネルに戻る</.button>
+    </.link>
+  </:actions>
+</.header>
+
