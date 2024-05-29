@@ -140,11 +140,18 @@ defmodule Bright.DraftSkillPanels do
       |> Repo.all()
 
     skill_classes
-    |> Enum.reject(& &1.trace_id in existing_trace_ids)
+    |> Enum.reject(&(&1.trace_id in existing_trace_ids))
     |> Enum.map(fn new_skill_class ->
-      Map.take(new_skill_class, [:skill_panel_id, :trace_id, :name, :class, :inserted_at, :updated_at])
+      Map.take(new_skill_class, [
+        :skill_panel_id,
+        :trace_id,
+        :name,
+        :class,
+        :inserted_at,
+        :updated_at
+      ])
       |> Map.put(:id, Ecto.ULID.generate())
     end)
-    |> then(& Repo.insert_all(DraftSkillClass, &1))
+    |> then(&Repo.insert_all(DraftSkillClass, &1))
   end
 end

@@ -8,6 +8,7 @@ defmodule Bright.DraftSkillUnits do
 
   alias Bright.DraftSkillUnits.DraftSkillUnit
   alias Bright.DraftSkillUnits.DraftSkillCategory
+  alias Bright.DraftSkillUnits.DraftSkill
 
   @doc """
   Returns the list of draft_skill_units.
@@ -148,5 +149,101 @@ defmodule Bright.DraftSkillUnits do
   """
   def change_draft_skill_category(%DraftSkillCategory{} = draft_skill_category, attrs \\ %{}) do
     DraftSkillCategory.changeset(draft_skill_category, attrs)
+  end
+
+  alias Bright.DraftSkillUnits.DraftSkill
+
+  @doc """
+  Returns the list of draft_skills.
+
+  ## Examples
+
+      iex> list_draft_skills()
+      [%DraftSkill{}, ...]
+
+  """
+  def list_draft_skills do
+    Repo.all(DraftSkill)
+  end
+
+  @doc """
+  Gets a single draft_skill.
+
+  Raises `Ecto.NoResultsError` if the Draft skill does not exist.
+
+  ## Examples
+
+      iex> get_draft_skill!(123)
+      %DraftSkill{}
+
+      iex> get_draft_skill!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_draft_skill!(id), do: Repo.get!(DraftSkill, id)
+
+  @doc """
+  Creates a draft_skill.
+
+  ## Examples
+
+      iex> create_draft_skill(%{field: value})
+      {:ok, %DraftSkill{}}
+
+      iex> create_draft_skill(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_draft_skill(attrs \\ %{}) do
+    %DraftSkill{}
+    |> DraftSkill.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a draft_skill.
+
+  ## Examples
+
+      iex> update_draft_skill(draft_skill, %{field: new_value})
+      {:ok, %DraftSkill{}}
+
+      iex> update_draft_skill(draft_skill, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_draft_skill(%DraftSkill{} = draft_skill, attrs) do
+    draft_skill
+    |> DraftSkill.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a draft_skill.
+
+  ## Examples
+
+      iex> delete_draft_skill(draft_skill)
+      {:ok, %DraftSkill{}}
+
+      iex> delete_draft_skill(draft_skill)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_draft_skill(%DraftSkill{} = draft_skill) do
+    Repo.delete(draft_skill)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking draft_skill changes.
+
+  ## Examples
+
+      iex> change_draft_skill(draft_skill)
+      %Ecto.Changeset{data: %DraftSkill{}}
+
+  """
+  def change_draft_skill(%DraftSkill{} = draft_skill, attrs \\ %{}) do
+    DraftSkill.changeset(draft_skill, attrs)
   end
 end

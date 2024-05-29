@@ -38,7 +38,9 @@
           <div class="flex justify-between items-center">
             <p><%= col3.skill.name %></p>
             <div class="flex justify-between items-center gap-x-2">
-              操作する何か
+              <.link patch={"#{@page_path}/skills/#{col3.skill.id}/edit"}>
+                <span class="hero-pencil-square" />
+              </.link>
             </div>
           </div>
         </td>
@@ -46,3 +48,22 @@
     <% end %>
   </table>
 </div>
+
+<%# 各種 作成／編集用モーダル %>
+
+<.modal
+  :if={@live_action in [:new_skill, :edit_skill]}
+  id="skill-modal"
+  show
+  on_cancel={JS.patch("#{@page_path}")}
+>
+  <.live_component
+    module={SkillFormComponent}
+    id={@skill.id || :new}
+    title={@skill.name || "スキル新規追加"}
+    action={@live_action}
+    skill={@skill}
+    patch={@page_path}
+  />
+</.modal>
+

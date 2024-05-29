@@ -108,4 +108,60 @@ defmodule Bright.DraftSkillUnitsTest do
       assert %Ecto.Changeset{} = DraftSkillUnits.change_draft_skill_category(draft_skill_category)
     end
   end
+
+  describe "draft_skills" do
+    alias Bright.DraftSkillUnits.DraftSkill
+
+    import Bright.DraftSkillUnitsFixtures
+
+    @invalid_attrs %{}
+
+    test "list_draft_skills/0 returns all draft_skills" do
+      draft_skill = draft_skill_fixture()
+      assert DraftSkillUnits.list_draft_skills() == [draft_skill]
+    end
+
+    test "get_draft_skill!/1 returns the draft_skill with given id" do
+      draft_skill = draft_skill_fixture()
+      assert DraftSkillUnits.get_draft_skill!(draft_skill.id) == draft_skill
+    end
+
+    test "create_draft_skill/1 with valid data creates a draft_skill" do
+      valid_attrs = %{}
+
+      assert {:ok, %DraftSkill{} = draft_skill} = DraftSkillUnits.create_draft_skill(valid_attrs)
+    end
+
+    test "create_draft_skill/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = DraftSkillUnits.create_draft_skill(@invalid_attrs)
+    end
+
+    test "update_draft_skill/2 with valid data updates the draft_skill" do
+      draft_skill = draft_skill_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %DraftSkill{} = draft_skill} =
+               DraftSkillUnits.update_draft_skill(draft_skill, update_attrs)
+    end
+
+    test "update_draft_skill/2 with invalid data returns error changeset" do
+      draft_skill = draft_skill_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               DraftSkillUnits.update_draft_skill(draft_skill, @invalid_attrs)
+
+      assert draft_skill == DraftSkillUnits.get_draft_skill!(draft_skill.id)
+    end
+
+    test "delete_draft_skill/1 deletes the draft_skill" do
+      draft_skill = draft_skill_fixture()
+      assert {:ok, %DraftSkill{}} = DraftSkillUnits.delete_draft_skill(draft_skill)
+      assert_raise Ecto.NoResultsError, fn -> DraftSkillUnits.get_draft_skill!(draft_skill.id) end
+    end
+
+    test "change_draft_skill/1 returns a draft_skill changeset" do
+      draft_skill = draft_skill_fixture()
+      assert %Ecto.Changeset{} = DraftSkillUnits.change_draft_skill(draft_skill)
+    end
+  end
 end
