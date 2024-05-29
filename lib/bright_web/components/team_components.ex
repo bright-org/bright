@@ -259,48 +259,6 @@ defmodule BrightWeb.TeamComponents do
     """
   end
 
-  attr :selected_team_skill_panel, :any, required: true
-  attr :phx_target, :any, default: ""
-  attr :team_skill_panels, :any, default: []
-
-  def team_skill_panel_select_dropdown_menue(assigns) do
-    ~H"""
-    <div
-      id="team_skill_panel_select_dropdown_menue"
-      phx-hook="Dropdown"
-      data-dropdown-offset-skidding="0"
-      data-dropdown-placement="bottom"
-    >
-      <bottun
-        class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white w-full  hover:bg-brightGray-50 dropdownTrigger"
-        type="button"
-      >
-       <%= @selected_team_skill_panel.name %>
-      </bottun>
-      <p>
-        スキルパネルを選択してください
-      </p>
-      <!-- menue list-->
-      <div
-        class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-full lg:w-[340px]"
-      >
-        <ul>
-          <%= for team_skill_panel <- @team_skill_panels  do %>
-            <li
-              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 bg-white w-full"
-              phx-click="select_skill_panel"
-              phx-value-team_type={"team_type_item.team_type"}
-              phx-target={@phx_target}
-            >
-              <%= team_skill_panel.name %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-    </div>
-    """
-  end
-
   defp get_display_name(team_type) do
     team_type =
       @team_type_select_list

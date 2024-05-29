@@ -5,7 +5,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.ProfileComponents
-  import BrightWeb.TeamComponents, only: [team_type_select_dropdown_menue: 1, team_skill_panel_select_dropdown_menue: 1]
+  import BrightWeb.TeamComponents, only: [team_type_select_dropdown_menue: 1]
 
   alias Bright.Teams
   alias Bright.Teams.Team
@@ -66,7 +66,6 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   end
 
   def update(%{action: :edit, team: team} = assigns, socket) do
-    skill_panel_list = Teams.get_team_skill_panel_list(team.id)
     socket
     |> assign(assigns)
     |> validate_user_grant()
@@ -76,8 +75,6 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(:selected_team_type, Teams.get_team_type_by_team(team))
     |> assign_team_form(Teams.change_team(team))
     |> assign(:not_invitation_confirmed_users, not_invitation_confirmed_users(team.member_users))
-    |> assign(:team_skill_panels, skill_panel_list)
-    |> assign(:selected_team_skill_panel, skill_panel_list |> List.first())
     |> then(&{:ok, &1})
   end
 
@@ -92,8 +89,6 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     |> assign(:selected_team_type, :general_team)
     |> assign_team_form(team_changeset)
     |> assign(:not_invitation_confirmed_users, %{})
-    |> assign(:team_skill_panels, [%Bright.SkillPanels.SkillPanel{}])
-    |> assign(:selected_team_skill_panel, "")
     |> then(&{:ok, &1})
   end
 

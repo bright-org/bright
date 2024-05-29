@@ -38,17 +38,6 @@
                     placeholder="新しいチーム名を入力してください"
                   />
                 </dt>
-                <dt :if={@action == :edit} class="font-bold w-[100px] mb-10 text-base">
-                  スキルパネル
-                </dt>
-                <dd :if={@action == :edit} class="w-[340px] mb-6">
-                  <.team_skill_panel_select_dropdown_menue
-                    selected_team_skill_panel={@selected_team_skill_panel}
-                    team_skill_panels={@team_skill_panels}
-                    phx_target={@myself}
-
-                  />
-                </dd>
                 <dt class="font-bold w-[100px] mb-10 text-base">
                   チームタイプ
                 </dt>
