@@ -208,7 +208,17 @@ defmodule BrightWeb.ProfileComponents do
   defp selected_skill(assigns) do
     ~H"""
       <div class="flex flex-col gap-y-2 font-bold justify-center">
-        <span id="profile-skill-panel-name" class="text-md lg:text-2xl"><%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
+        <span id="profile-skill-panel-name" class="text-md lg:text-2xl"><%= if @skill_panel, do: @skill_panel.name, else: "" %>
+          <button
+            :if={show_star_button?(true)}
+            class={"bg-white border border-#{get_star_style(true)} rounded px-1 h-8 items-center mt-auto mb-1"}
+            phx-click="click_star_button"
+          >
+            <span class={"material-icons text-#{get_star_style(true)}"}>
+            star
+            </span>
+          </button>
+        </span>
         <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
           <span class="text-sm lg:text-normal">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
           <span class="text-sm lg:text-normal break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
@@ -576,5 +586,21 @@ defmodule BrightWeb.ProfileComponents do
       <%= render_slot(@inner_block) %>
     </.link>
     """
+  end
+
+  defp show_star_button?(true) do
+    # チームメンバーの場合はスターのon/off可能
+    true
+  end
+
+  defp show_star_button?(_), do: false
+
+  defp get_star_style(_) do
+    if true do
+      "brightGreen-300"
+    else
+      # TODO スターのOFFの時の色指定確認
+      "brightGray-500"
+    end
   end
 end
