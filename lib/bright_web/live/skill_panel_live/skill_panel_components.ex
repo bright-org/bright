@@ -162,7 +162,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     # userを起点にpre_loadしていった場合、skill_score.skill_classの構造になる為pair_skill_class_score関数に対応できない
     # チームスキル分析でタブをタップした場合の挙動をハンドラで実装したい
     ~H"""
-    <ul class="flex bg-white border-b border-b-brightGray-100 text-normal lg:text-md font-bold text-brightGray-300 text-center">
+    <ul class="flex bg-white text-normal lg:text-md font-bold text-brightGray-300 text-center">
       <.team_member_class_tab_content
         user={@user}
         user_skill_class_score={@user_skill_class_score}
@@ -182,14 +182,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   defp team_member_class_tab_content(assigns) do
     ~H"""
     <%= for %{skill_class: skill_class, skill_class_score: skill_class_score} <- @user_skill_class_score do %>
+      <li class="w-1 lg:w-2 border-b-2 border-b-brightGreen-300"></li>
       <%= if skill_class_score do %>
-        <% current = @select_skill_class.class == skill_class.class %>
         <li
           class={
             [
-              "w-full flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3",
-              current && "text-brightGreen-300 border-b-2 border-b-brightGreen-300",
-              !current && "cursor-pointer hover:opacity-50 hover:text-brightGreen-300"
+              "flex grow cursor-pointer justify-center items-center rounded-t px-1 lg:px-4 py-1 lg:py-3",
+              selected_skill?(@select_skill_class, skill_class) && "text-brightGreen-300 border-x-2 border-x-brightGreen-300 border-t-2 border-t-brightGreen-300",
+              !selected_skill?(@select_skill_class, skill_class) && "hover:opacity-50 hover:text-brightGreen-300 border-x-2 border-x-brightGray-100 border-t-2 border-t-brightGray-100 border-b-2 border-b-brightGreen-300"
             ]
           }
           phx-click="skill_class_tab_click"
@@ -199,24 +199,25 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         >
           <span
             class="text-sm lg:text-normal"
-            aria-current={current && "page"}
+            aria-current={selected_skill?(@select_skill_class, skill_class) && "page"}
           >
-            クラス<%= skill_class.class %>
-          <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">
+            クラス<%= skill_class.class %>：
+          <span class="text-sm text-right lg:text-normal min-w-[32px] lg:min-w-0">
             <%= floor skill_class_score.percentage %></span>％
           </span>
         </li>
       <% else %>
-        <li class="w-full bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3">
+        <li class="flex grow rounded-t bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3">
           <span
             class="select-none text-sm lg:text-normal"
           >
-            クラス<%= skill_class.class %>
-            <span class="text-lg text-right lg:text-xl min-w-[32px] lg:min-w-0 ml-1 lg:ml-4">0</span>％
+            クラス<%= skill_class.class %>：
+            <span class="text-sm text-right lg:text-normal min-w-[32px] lg:min-w-0">0</span>％
           </span>
         </li>
       <% end %>
     <% end %>
+    <li class="w-1 lg:w-2 border-b-2 border-b-brightGreen-300"></li>
     """
   end
 
