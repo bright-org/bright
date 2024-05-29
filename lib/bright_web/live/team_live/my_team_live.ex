@@ -46,6 +46,17 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, socket}
   end
 
+  def handle_event("click_skill_star_button", _params, socket) do
+    # {:ok, team_member_user} = Teams.toggle_is_star(socket.assigns.current_users_team_member)
+
+    # socket =
+    #   socket
+    #   |> assign(:current_users_team_member, team_member_user)
+
+    IO.inspect("------------------------------------------------")
+    {:noreply, socket}
+  end
+
   def handle_event("on_card_row_click", %{"team_type" => "custom_group"} = params, socket) do
     # メガメニューのチームカードからカスタムグループの行をクリックした場合のハンドラー
     # display_teamを選択したカスタムグループで更新し、リダイレクトする。

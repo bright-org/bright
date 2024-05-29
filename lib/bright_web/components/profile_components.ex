@@ -212,7 +212,7 @@ defmodule BrightWeb.ProfileComponents do
           <button
             :if={show_star_button?(true)}
             class={"bg-white border border-#{get_star_style(true)} rounded px-1 h-8 items-center mt-auto mb-1"}
-            phx-click="click_star_button"
+            phx-click="click_skill_star_button"
           >
             <span class={"material-icons text-#{get_star_style(true)}"}>
             star
