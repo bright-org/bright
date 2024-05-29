@@ -24,7 +24,7 @@ defmodule Bright.DraftSkillUnits.DraftSkill do
   @doc false
   def changeset(draft_skill, attrs) do
     draft_skill
-    |> cast(attrs, [:name, :position])
+    |> cast(attrs, [:draft_skill_category_id, :name, :position])
     |> validate_required([:name, :position])
   end
 end
