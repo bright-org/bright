@@ -10,6 +10,7 @@ defmodule Bright.Teams.TeamMemberUsers do
   schema "team_member_users" do
     field :is_admin, :boolean, default: false
     field :is_star, :boolean, default: false
+    field :is_skill_star, :boolean, default: false
     field :invitation_token, :binary
     field :invitation_sent_to, :string
     field :invitation_confirmed_at, :naive_datetime
