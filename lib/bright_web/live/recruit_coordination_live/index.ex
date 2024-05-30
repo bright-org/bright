@@ -63,11 +63,21 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         </li>
         <%= for member <- @coordination_members do %>
         <% icon_path = member.coordination.candidates_user.user_profile.icon_file_path %>
+        <% recruiter = member.coordination.recruiter_user %>
           <li class="flex my-5">
             <.link
                patch={~p"/recruits/coordinations/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
+              <div class="flex flex-col mr-4">
+                <img
+                  src={UserProfiles.icon_url(recruiter.user_profile.icon_file_path)}
+                  class="object-cover h-12 w-12 rounded-full ml-2"
+                  alt=""
+                />
+                <span><%= recruiter.name %></span>
+              </div>
+
               <div class="flex flex-col">
                 <img
                   src={UserProfiles.icon_url(icon_path)}

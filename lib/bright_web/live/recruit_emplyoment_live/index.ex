@@ -64,7 +64,8 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
           </div>
         </li>
         <%= for request <- @team_join_requests do %>
-          <% icon_path = request.employment.recruiter_user.user_profile.icon_file_path %>
+          <% candidates_user = request.employment.candidates_user %>
+          <% recruiter = request.employment.recruiter_user %>
           <li class="flex my-5">
             <.link
                patch={~p"/recruits/employments/team_join/#{request.id}"}
@@ -72,12 +73,24 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
             >
               <div class="flex flex-col mr-4">
                 <img
-                  src={UserProfiles.icon_url(icon_path)}
+                  src={UserProfiles.icon_url(recruiter.user_profile.icon_file_path)}
                   class="object-cover h-12 w-12 rounded-full ml-2"
                   alt=""
                 />
-                <span><%= request.employment.recruiter_user.name %></span>
+                <span><%= recruiter.name %></span>
               </div>
+
+              <div class="flex flex-col">
+                <img
+                  src={UserProfiles.icon_url(candidates_user.user_profile.icon_file_path)}
+                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  alt=""
+                />
+                <span>
+                  <%= candidates_user.name %>
+                </span>
+              </div>
+
               <span class="flex-1">
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(request.status)) %>
               </span>

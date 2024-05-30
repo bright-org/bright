@@ -452,7 +452,7 @@ defmodule Bright.Recruits do
           i.status in [:waiting_recruit_decision, :hiring_decision, :completed_coordination],
       where: m.user_id == ^user_id and m.decision == ^decision,
       order_by: [desc: :updated_at],
-      preload: [coordination: [candidates_user: :user_profile]]
+      preload: [coordination: [candidates_user: :user_profile, recruiter_user: :user_profile]]
     )
     |> Repo.all()
   end
@@ -727,7 +727,7 @@ defmodule Bright.Recruits do
       [r],
       r.team_owner_user_id == ^user_id and r.status in [:requested]
     )
-    |> preload(employment: [recruiter_user: :user_profile])
+    |> preload(employment: [candidates_user: :user_profile, recruiter_user: :user_profile])
     |> order_by(desc: :updated_at)
     |> Repo.all()
   end
