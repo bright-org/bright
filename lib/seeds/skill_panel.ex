@@ -13,9 +13,9 @@ defmodule Bright.Seeds.SkillPanel do
     %{
       name: "#{career_field.name_ja} スキルパネル#{panel_name}",
       skill_classes: [
-        %{name: "#{panel_name}-クラス1", class: 1},
-        %{name: "#{panel_name}-クラス2", class: 2},
-        %{name: "#{panel_name}-クラス3", class: 3}
+        %{name: "#{panel_name}-クラス1", class: 1, locked_date: ~D[2023-07-01]},
+        %{name: "#{panel_name}-クラス2", class: 2, locked_date: ~D[2023-07-01]},
+        %{name: "#{panel_name}-クラス3", class: 3, locked_date: ~D[2023-07-01]}
       ]
     }
   end
@@ -29,7 +29,8 @@ defmodule Bright.Seeds.SkillPanel do
         end,
       skill_class_units: [
         %{skill_class_id: skill_class.id, position: position}
-      ]
+      ],
+      locked_date: ~D[2023-07-01]
     }
   end
 
