@@ -33,6 +33,7 @@ defmodule Bright.Teams.TeamMemberUsers do
       :team_id,
       :is_admin,
       :is_star,
+      :is_skill_star,
       :invitation_token,
       :invitation_sent_to,
       :invitation_confirmed_at
