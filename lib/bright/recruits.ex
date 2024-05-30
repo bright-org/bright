@@ -186,7 +186,7 @@ defmodule Bright.Recruits do
       on: i.id == m.interview_id and i.status in [:waiting_decision, :consume_interview],
       where: m.user_id == ^user_id and m.decision == ^decision,
       order_by: [desc: :updated_at],
-      preload: [interview: [candidates_user: :user_profile]]
+      preload: [interview: [candidates_user: :user_profile, recruiter_user: :user_profile]]
     )
     |> Repo.all()
   end
