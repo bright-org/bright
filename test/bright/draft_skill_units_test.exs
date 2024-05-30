@@ -108,4 +108,70 @@ defmodule Bright.DraftSkillUnitsTest do
       assert %Ecto.Changeset{} = DraftSkillUnits.change_draft_skill_category(draft_skill_category)
     end
   end
+
+  describe "draft_skills" do
+    alias Bright.DraftSkillUnits.DraftSkill
+
+    @invalid_attrs params_for(:draft_skill) |> Map.put(:name, nil)
+
+    setup do
+      draft_skill_category =
+        insert(:draft_skill_category, draft_skill_unit: build(:draft_skill_unit))
+
+      %{draft_skill_category: draft_skill_category}
+    end
+
+    test "list_draft_skills/0 returns all draft_skills", ctx do
+      draft_skill = insert(:draft_skill, draft_skill_category_id: ctx.draft_skill_category.id)
+      assert DraftSkillUnits.list_draft_skills() == [draft_skill]
+    end
+
+    test "get_draft_skill!/1 returns the draft_skill with given id", ctx do
+      draft_skill = insert(:draft_skill, draft_skill_category_id: ctx.draft_skill_category.id)
+      assert DraftSkillUnits.get_draft_skill!(draft_skill.id) == draft_skill
+    end
+
+    test "create_draft_skill/1 with valid data creates a draft_skill", ctx do
+      valid_attrs = params_for(:draft_skill, draft_skill_category_id: ctx.draft_skill_category.id)
+
+      assert {:ok, %DraftSkill{} = draft_skill} = DraftSkillUnits.create_draft_skill(valid_attrs)
+      assert draft_skill.name == valid_attrs.name
+    end
+
+    test "create_draft_skill/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = DraftSkillUnits.create_draft_skill(@invalid_attrs)
+    end
+
+    test "update_draft_skill/2 with valid data updates the draft_skill", ctx do
+      draft_skill =
+        insert(:draft_skill, name: "before", draft_skill_category_id: ctx.draft_skill_category.id)
+
+      update_attrs = params_for(:draft_skill)
+
+      assert {:ok, %DraftSkill{} = draft_skill} =
+               DraftSkillUnits.update_draft_skill(draft_skill, update_attrs)
+
+      assert draft_skill.name == update_attrs.name
+    end
+
+    test "update_draft_skill/2 with invalid data returns error changeset", ctx do
+      draft_skill = insert(:draft_skill, draft_skill_category_id: ctx.draft_skill_category.id)
+
+      assert {:error, %Ecto.Changeset{}} =
+               DraftSkillUnits.update_draft_skill(draft_skill, @invalid_attrs)
+
+      assert draft_skill == DraftSkillUnits.get_draft_skill!(draft_skill.id)
+    end
+
+    test "delete_draft_skill/1 deletes the draft_skill", ctx do
+      draft_skill = insert(:draft_skill, draft_skill_category_id: ctx.draft_skill_category.id)
+      assert {:ok, %DraftSkill{}} = DraftSkillUnits.delete_draft_skill(draft_skill)
+      assert_raise Ecto.NoResultsError, fn -> DraftSkillUnits.get_draft_skill!(draft_skill.id) end
+    end
+
+    test "change_draft_skill/1 returns a draft_skill changeset", ctx do
+      draft_skill = insert(:draft_skill, draft_skill_category_id: ctx.draft_skill_category.id)
+      assert %Ecto.Changeset{} = DraftSkillUnits.change_draft_skill(draft_skill)
+    end
+  end
 end

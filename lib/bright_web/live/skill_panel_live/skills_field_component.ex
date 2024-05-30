@@ -11,13 +11,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   import BrightWeb.SkillPanelLive.SkillPanelHelper,
     only: [assign_counter: 1, comparable_user?: 2]
 
-  alias Bright.SkillUnits
   alias Bright.SkillScores
-  alias Bright.HistoricalSkillUnits
   alias Bright.HistoricalSkillPanels
   alias Bright.HistoricalSkillScores
   alias Bright.Teams
   alias Bright.CustomGroups
+  alias Bright.Utils.SkillsTableStructure
   alias BrightWeb.TimelineHelper
   alias BrightWeb.BrightCoreComponents
   alias BrightWeb.DisplayUserHelper
@@ -500,82 +499,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsFieldComponent do
   end
 
   defp assign_table_structure(socket) do
-    table_structure = build_table_structure(socket.assigns.skill_units)
+    table_structure = SkillsTableStructure.build(socket.assigns.skill_units)
     max_row = Enum.count(table_structure)
 
     socket
     |> assign(:table_structure, table_structure)
     |> assign(:max_row, max_row)
-  end
-
-  defp build_table_structure(skill_units) do
-    # スキルユニット～スキルの構造をテーブル表示で扱う形式に変換
-    #
-    # 出力サンプル:
-    # [
-    #   [%{size: 5, skill_unit: %SkillUnit{}}, %{size: 2, skill_category: %SkillCategory{}}, %{skill: %Skill{}}],
-    #   [nil, nil, %{skill: %Skill{}}],
-    #   [nil, %{size: 3, skill_category: %SkillCategory{}}, %{skill: %Skill{}}],
-    #   [nil, nil, %{skill: %Skill{}}],
-    #   [nil, nil, %{skill: %Skill{}}]
-    # ]
-
-    skill_units
-    |> Enum.with_index(1)
-    |> Enum.flat_map(fn {skill_unit, position} ->
-      skill_category_items =
-        list_skill_categories(skill_unit)
-        |> Enum.flat_map(&build_skill_category_table_structure/1)
-
-      build_skill_unit_table_structure(skill_unit, skill_category_items, position)
-    end)
-  end
-
-  defp build_skill_category_table_structure(skill_category) do
-    skills = list_skills(skill_category)
-    size = length(skills)
-    skill_category_item = %{size: size, skill_category: skill_category}
-
-    skills
-    |> Enum.with_index()
-    |> Enum.map(fn
-      {skill, 0} -> [skill_category_item] ++ [%{skill: skill}]
-      {skill, _i} -> [nil] ++ [%{skill: skill}]
-    end)
-  end
-
-  defp build_skill_unit_table_structure(skill_unit, skill_category_items, position) do
-    size =
-      skill_category_items
-      |> Enum.reduce(0, fn
-        [nil, _], acc -> acc
-        [%{size: size}, _], acc -> acc + size
-      end)
-
-    skill_unit_item = %{size: size, skill_unit: skill_unit, position: position}
-
-    skill_category_items
-    |> Enum.with_index()
-    |> Enum.map(fn
-      {skill_category_item, 0} -> [skill_unit_item] ++ skill_category_item
-      {skill_category_item, _i} -> [nil] ++ skill_category_item
-    end)
-  end
-
-  defp list_skill_categories(%SkillUnits.SkillUnit{} = skill_unit) do
-    skill_unit.skill_categories
-  end
-
-  defp list_skill_categories(%HistoricalSkillUnits.HistoricalSkillUnit{} = skill_unit) do
-    skill_unit.historical_skill_categories
-  end
-
-  defp list_skills(%SkillUnits.SkillCategory{} = skill_category) do
-    skill_category.skills
-  end
-
-  defp list_skills(%HistoricalSkillUnits.HistoricalSkillCategory{} = skill_category) do
-    skill_category.historical_skills
   end
 
   defp list_user_skill_scores_from_skill_ids(skill_ids, user_id, :now) do

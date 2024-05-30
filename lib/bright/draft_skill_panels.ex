@@ -119,4 +119,39 @@ defmodule Bright.DraftSkillPanels do
   def list_draft_skill_classes do
     Repo.all(DraftSkillClass)
   end
+
+  @doc """
+  下書きスキルクラスを取得
+  """
+  def get_draft_skill_class!(id), do: Repo.get!(DraftSkillClass, id)
+
+  @doc """
+  スキルパネル配下の新しいスキルクラスを下書きスキルクラスに作成
+
+  スキルパネルの作成ないしは編集で、新規追加したskill_classをドラフトにも作成する
+  以降はドラフト管理ツール側でデータ生成／現行データへの反映、となる
+  """
+  def sync_new_skill_classes(skill_panel) do
+    draft_skill_panel = get_skill_panel!(skill_panel.id)
+    skill_classes = Ecto.assoc(skill_panel, :skill_classes) |> Repo.all()
+
+    existing_trace_ids =
+      from(q in Ecto.assoc(draft_skill_panel, :draft_skill_classes), select: q.trace_id)
+      |> Repo.all()
+
+    skill_classes
+    |> Enum.reject(&(&1.trace_id in existing_trace_ids))
+    |> Enum.map(fn new_skill_class ->
+      Map.take(new_skill_class, [
+        :skill_panel_id,
+        :trace_id,
+        :name,
+        :class,
+        :inserted_at,
+        :updated_at
+      ])
+      |> Map.put(:id, Ecto.ULID.generate())
+    end)
+    |> then(&Repo.insert_all(DraftSkillClass, &1))
+  end
 end

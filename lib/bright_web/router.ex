@@ -128,6 +128,11 @@ defmodule BrightWeb.Router do
       live "/team_supporter_teams/:id", TeamSupporterTeamLive.Show, :show
       live "/team_supporter_teams/:id/show/edit", TeamSupporterTeamLive.Show, :edit
 
+      # ドラフト管理ツール
+      live "/draft_skill_classes/:id", DraftSkillClassLive.Show, :show
+      live "/draft_skill_classes/:id/skills/new", DraftSkillClassLive.Show, :new_skill
+      live "/draft_skill_classes/:id/skills/:skill_id/edit", DraftSkillClassLive.Show, :edit_skill
+
       if System.get_env("SERVER") == "dev" do
         live "/user_tokens", UserTokenLive.Index, :index
       end
