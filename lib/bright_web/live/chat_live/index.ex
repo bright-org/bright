@@ -15,7 +15,7 @@ defmodule BrightWeb.ChatLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex bg-white ml-1 h-[calc(100vh-56px)] pb-16 lg:pb-0">
+    <div class="flex bg-white ml-1 h-[calc(100vh-128px)] pb-16 lg:pb-0">
       <div class={"flex flex-col w-screen lg:w-[560px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
