@@ -27,7 +27,6 @@ defmodule Bright.Chats do
     Repo.all(Chat)
   end
 
-  @spec list_chats(any(), :recruit) :: any()
   def list_chats(user_id, :recruit) do
     from(
       c in Chat,
