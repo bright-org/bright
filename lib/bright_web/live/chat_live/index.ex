@@ -11,7 +11,10 @@ defmodule BrightWeb.ChatLive.Index do
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @max_entries 4
-  @filter_types [%{name: "すべて", value: "recruit"}, %{name: "完了以外", value: "not"}]
+  @filter_types [
+    %{name: "完了以外", value: :not_completed_interview},
+    %{name: "すべて", value: :recruit}
+  ]
   @impl true
   def render(assigns) do
     ~H"""
@@ -307,8 +310,8 @@ defmodule BrightWeb.ChatLive.Index do
           <%= for filter_type <- @filter_types do %>
             <li
               class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 bg-white w-full"
-              phx-click="select_team_type"
-              phx-value-team_type={filter_type.value}
+              phx-click="select_filter_type"
+              phx-value-select_filter_type={filter_type.value}
             >
 
               <%= filter_type.name %>
@@ -352,10 +355,12 @@ defmodule BrightWeb.ChatLive.Index do
     Phoenix.PubSub.subscribe(Bright.PubSub, "chat:#{chat.id}")
 
     Chats.read_chat!(chat.id, user.id)
+    select_filter_type = @filter_types |> List.first()
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> assign(:select_filter_type, select_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, select_filter_type.value))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
     |> assign(:message, nil)
@@ -365,9 +370,12 @@ defmodule BrightWeb.ChatLive.Index do
   defp apply_action(socket, :recruit, _params) do
     user = socket.assigns.current_user
 
+    select_filter_type = @filter_types |> List.first()
+
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> assign(:select_filter_type, select_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, select_filter_type.value))
     |> assign(:chat, nil)
     |> assign(:messages, [])
     |> assign(:message, nil)
@@ -472,6 +480,16 @@ defmodule BrightWeb.ChatLive.Index do
 
   def handle_event("close_preview", _params, socket) do
     {:noreply, assign(socket, :preview, nil)}
+  end
+
+  def handle_event("select_filter_type", %{"select_filter_type" => select_filter_type}, socket) do
+    user = socket.assigns.current_user
+    socket =
+      socket
+      |> assign(:select_filter_type, String.to_atom(select_filter_type))
+      |> assign(:chats, Chats.list_chats(user.id, String.to_atom(select_filter_type)))
+
+    {:noreply, socket}
   end
 
   @impl true
