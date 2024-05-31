@@ -64,7 +64,7 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
                 <% else %>
                   <% # 表示内容がないときの表示 %>
                   <ul>
-                    対象の上長がいません
+                    対象のチームのリーダーがいません
                   </ul>
                 <% end %>
               </div>
