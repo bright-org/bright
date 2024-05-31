@@ -20,7 +20,7 @@ defmodule BrightWeb.ChatLive.Index do
     ~H"""
     <div class="flex bg-white ml-1 h-[calc(100vh-56px)] pb-16 lg:pb-0">
       <div class={"flex flex-col w-screen lg:w-[560px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
-       <.filter_type_select_dropdown_menue />
+       <.filter_type_select_dropdown_menue select_filter_type={@select_filter_type}/>
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
             チャット対象者がいません<br /> 「スキル検索」の「面談の打診」や<br /> 「チームスキル分析」の「1on1に誘う」<br /> からチャット開始してください
@@ -283,8 +283,8 @@ defmodule BrightWeb.ChatLive.Index do
     """
   end
 
-  # attr :selected_team_type, :any, required: true
 
+  attr :select_filter_type, :any, required: true
   def filter_type_select_dropdown_menue(assigns) do
     assigns = assigns |> assign(filter_types: @filter_types)
 
@@ -299,7 +299,7 @@ defmodule BrightWeb.ChatLive.Index do
         class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white  w-[200px] hover:bg-brightGray-50 dropdownTrigger"
         type="button"
       >
-      <%= @filter_types |> List.first() |> Map.get(:name) %>
+      <%= get_display_name(@select_filter_type) %>
 
       </bottun>
       <!-- menue list-->
@@ -359,7 +359,7 @@ defmodule BrightWeb.ChatLive.Index do
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:select_filter_type, select_filter_type)
+    |> assign(:select_filter_type, select_filter_type.value)
     |> assign(:chats, Chats.list_chats(user.id, select_filter_type.value))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
@@ -374,7 +374,7 @@ defmodule BrightWeb.ChatLive.Index do
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:select_filter_type, select_filter_type)
+    |> assign(:select_filter_type, select_filter_type.value)
     |> assign(:chats, Chats.list_chats(user.id, select_filter_type.value))
     |> assign(:chat, nil)
     |> assign(:messages, [])
@@ -535,4 +535,14 @@ defmodule BrightWeb.ChatLive.Index do
     do: translate_error({"You have selected an unacceptable file type", []})
 
   defp error_to_string(_), do: ""
+
+defp get_display_name(value) do
+    filter_type =
+      @filter_types
+      |> Enum.find(fn x ->
+        x.value == value
+      end)
+
+      filter_type.name
+  end
 end
