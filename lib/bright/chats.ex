@@ -27,6 +27,7 @@ defmodule Bright.Chats do
     Repo.all(Chat)
   end
 
+  @spec list_chats(any(), :recruit) :: any()
   def list_chats(user_id, :recruit) do
     from(
       c in Chat,
@@ -44,6 +45,7 @@ defmodule Bright.Chats do
       on: ru.id == i.recruiter_user_id,
       join: rp in UserProfile,
       on: rp.user_id == i.recruiter_user_id,
+      where: i.status != :completed_interview,
       select: %{
         c
         | interview: %{
