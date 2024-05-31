@@ -11,12 +11,13 @@ defmodule BrightWeb.ChatLive.Index do
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @max_entries 4
-
+  @filter_types [%{name: "すべて", value: "recruit"}, %{name: "完了以外", value: "not"}]
   @impl true
   def render(assigns) do
     ~H"""
     <div class="flex bg-white ml-1 h-[calc(100vh-56px)] pb-16 lg:pb-0">
       <div class={"flex flex-col w-screen lg:w-[560px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
+       <.filter_type_select_dropdown_menue />
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
             チャット対象者がいません<br /> 「スキル検索」の「面談の打診」や<br /> 「チームスキル分析」の「1on1に誘う」<br /> からチャット開始してください
@@ -275,6 +276,46 @@ defmodule BrightWeb.ChatLive.Index do
           <.button class="mt-4">Dwonload</.button>
         </a>
       </.modal>
+    </div>
+    """
+  end
+
+  # attr :selected_team_type, :any, required: true
+
+  def filter_type_select_dropdown_menue(assigns) do
+    assigns = assigns |> assign(filter_types: @filter_types)
+
+    ~H"""
+    <div
+      id="filter_select"
+      phx-hook="Dropdown"
+      data-dropdown-offset-skidding="0"
+      data-dropdown-placement="bottom"
+    >
+      <bottun
+        class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white  w-[200px] hover:bg-brightGray-50 dropdownTrigger"
+        type="button"
+      >
+      <%= @filter_types |> List.first() |> Map.get(:name) %>
+
+      </bottun>
+      <!-- menue list-->
+      <div
+        class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-[200px]"
+      >
+        <ul>
+          <%= for filter_type <- @filter_types do %>
+            <li
+              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 bg-white w-full"
+              phx-click="select_team_type"
+              phx-value-team_type={filter_type.value}
+            >
+
+              <%= filter_type.name %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     </div>
     """
   end
