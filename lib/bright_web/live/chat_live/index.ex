@@ -299,8 +299,7 @@ defmodule BrightWeb.ChatLive.Index do
         class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white  w-[200px] hover:bg-brightGray-50 dropdownTrigger"
         type="button"
       >
-      <%= get_display_name(@select_filter_type) %>
-
+        <%= get_display_name(@select_filter_type) %>
       </bottun>
       <!-- menue list-->
       <div
@@ -313,7 +312,6 @@ defmodule BrightWeb.ChatLive.Index do
               phx-click="select_filter_type"
               phx-value-select_filter_type={filter_type.value}
             >
-
               <%= filter_type.name %>
             </li>
           <% end %>
