@@ -283,8 +283,8 @@ defmodule BrightWeb.ChatLive.Index do
     """
   end
 
-
   attr :select_filter_type, :any, required: true
+
   def filter_type_select_dropdown_menue(assigns) do
     assigns = assigns |> assign(filter_types: @filter_types)
 
@@ -484,6 +484,7 @@ defmodule BrightWeb.ChatLive.Index do
 
   def handle_event("select_filter_type", %{"select_filter_type" => select_filter_type}, socket) do
     user = socket.assigns.current_user
+
     socket =
       socket
       |> assign(:select_filter_type, String.to_atom(select_filter_type))
@@ -536,13 +537,13 @@ defmodule BrightWeb.ChatLive.Index do
 
   defp error_to_string(_), do: ""
 
-defp get_display_name(value) do
+  defp get_display_name(value) do
     filter_type =
       @filter_types
       |> Enum.find(fn x ->
         x.value == value
       end)
 
-      filter_type.name
+    filter_type.name
   end
 end
