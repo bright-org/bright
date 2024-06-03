@@ -10,7 +10,7 @@ defmodule BrightWeb.Admin.TeamSupporterTeamLive.Index do
      stream(
        socket,
        :team_supporter_teams,
-       Teams.list_team_supporter_team()
+       list_team_supporter_teams()
      )}
   end
 
@@ -43,7 +43,7 @@ defmodule BrightWeb.Admin.TeamSupporterTeamLive.Index do
         socket
       ) do
     team = Teams.get_team_supporter_team!(team.id)
-    {:noreply, stream_insert(socket, :team_supporter_teams, team)}
+    {:noreply, stream_insert(socket, :team_supporter_teams, team, at: 0)}
   end
 
   @impl true
@@ -52,5 +52,10 @@ defmodule BrightWeb.Admin.TeamSupporterTeamLive.Index do
     {:ok, _} = Teams.delete_team_supporter_team(team)
 
     {:noreply, stream_delete(socket, :team_supporter_teams, team)}
+  end
+
+  defp list_team_supporter_teams do
+    Teams.list_team_supporter_team()
+    |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
   end
 end

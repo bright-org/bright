@@ -6,9 +6,7 @@ defmodule BrightWeb.Admin.SkillUnitLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    skill_units =
-      SkillUnits.list_skill_units()
-      |> Bright.Repo.preload(skill_classes: :skill_panel)
+    skill_units = list_skill_units()
 
     {:ok, stream(socket, :skill_units, skill_units)}
   end
@@ -39,7 +37,7 @@ defmodule BrightWeb.Admin.SkillUnitLive.Index do
   @impl true
   def handle_info({BrightWeb.Admin.SkillUnitLive.FormComponent, {:saved, skill_unit}}, socket) do
     skill_unit = Bright.Repo.preload(skill_unit, skill_classes: :skill_panel)
-    {:noreply, stream_insert(socket, :skill_units, skill_unit)}
+    {:noreply, stream_insert(socket, :skill_units, skill_unit, at: 0)}
   end
 
   @impl true
@@ -48,5 +46,11 @@ defmodule BrightWeb.Admin.SkillUnitLive.Index do
     {:ok, _} = SkillUnits.delete_skill_unit(skill_unit)
 
     {:noreply, stream_delete(socket, :skill_units, skill_unit)}
+  end
+
+  defp list_skill_units do
+    SkillUnits.list_skill_units()
+    |> Bright.Repo.preload(skill_classes: :skill_panel)
+    |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
   end
 end
