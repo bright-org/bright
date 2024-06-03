@@ -38,7 +38,7 @@
           <%= col1.skill_unit.name %>
 
           <div class="text-xs mt-1">
-            <p class="font-bold">共通利用スキルクラス</p>
+            <p class="font-bold">共通スキルクラス</p>
             <ul>
               <li :for={skill_class <- list_shared_skill_classes(col1.skill_unit, @skill_class)} class="my-1">
                 <%= skill_class.skill_panel.name %>／
@@ -49,6 +49,11 @@
         </td>
         <td :if={col2} rowspan={col2.size} class="align-top sticky left-[200px] bg-white sticky-border">
           <%= col2.skill_category.name %>
+
+          <.link class="flex items-center border rounded-lg bg-zinc-50 hover:bg-zinc-300 p-1 mt-1 w-24" patch={"#{@page_path}/skills/new?category=#{col2.skill_category.id}"}>
+            <span class="hero-plus h-4 w-4" />
+            <span class="text-xs">スキル追加</span>
+          </.link>
         </td>
         <td class="sticky left-[400px] bg-white sticky-border">
           <div class="flex justify-between items-center">

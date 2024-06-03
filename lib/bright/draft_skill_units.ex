@@ -195,8 +195,16 @@ defmodule Bright.DraftSkillUnits do
 
   """
   def create_draft_skill(attrs \\ %{}) do
+    draft_skill_category = get_draft_skill_category!(attrs["draft_skill_category_id"])
+
+    position =
+      draft_skill_category
+      |> Ecto.assoc(:draft_skills)
+      |> Repo.aggregate(:max, :position)
+      |> Kernel.+(1)
+
     %DraftSkill{}
-    |> DraftSkill.changeset(attrs)
+    |> DraftSkill.changeset(attrs |> Map.put("position", position))
     |> Repo.insert()
   end
 

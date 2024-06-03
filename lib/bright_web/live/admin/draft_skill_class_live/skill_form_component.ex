@@ -15,6 +15,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillFormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="スキル名" />
+        <.input field={@form[:draft_skill_category_id]} type="hidden" />
         <:actions>
           <.button phx-disable-with="Saving...">保存</.button>
         </:actions>

@@ -31,6 +31,15 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     {:noreply, assign_base_page_attrs(socket, params)}
   end
 
+  def assign_on_action(:new_skill, %{"category" => category_id} = params, socket) do
+    skill = %DraftSkillUnits.DraftSkill{draft_skill_category_id: category_id}
+
+    {:noreply,
+      socket
+      |> assign(:skill, skill)
+      |> assign_base_page_attrs(params)}
+  end
+
   def assign_on_action(:edit_skill, %{"skill_id" => skill_id} = params, socket) do
     skill = DraftSkillUnits.get_draft_skill!(skill_id)
     {:noreply,
