@@ -14,6 +14,17 @@ defmodule Bright.Chats do
   alias Bright.Recruits.Interview
   alias Bright.Utils.GoogleCloud.Storage
 
+  @interview_status_all [
+    :waiting_decision,
+    :consume_interview,
+    :dismiss_interview,
+    :ongoing_interview,
+    :completed_interview,
+    :cancel_interview,
+    :close_chat,
+    :one_on_one
+  ]
+
   @doc """
   Returns the list of chats.
 
@@ -28,38 +39,19 @@ defmodule Bright.Chats do
   end
 
   def list_chats(user_id, :recruit) do
-    from(
-      c in Chat,
-      join: m in ChatUser,
-      on: m.user_id == ^user_id and m.chat_id == c.id,
-      join: i in Interview,
-      on: i.id == c.relation_id,
-      where: c.relation_type == "recruit",
-      order_by: [desc: :updated_at],
-      join: cu in User,
-      on: cu.id == i.candidates_user_id,
-      join: cp in UserProfile,
-      on: cp.user_id == i.candidates_user_id,
-      join: ru in User,
-      on: ru.id == i.recruiter_user_id,
-      join: rp in UserProfile,
-      on: rp.user_id == i.recruiter_user_id,
-      select: %{
-        c
-        | interview: %{
-            i
-            | candidates_user_name: cu.name,
-              candidates_user_icon: cp.icon_file_path,
-              recruiter_user_name: ru.name,
-              recruiter_user_icon: rp.icon_file_path,
-              is_read?: m.is_read
-          }
-      }
-    )
-    |> Repo.all()
+    list_chats(user_id, @interview_status_all)
   end
 
   def list_chats(user_id, :not_completed_interview) do
+    status =
+      @interview_status_all
+      |> Enum.reject(fn key -> key == :completed_interview end)
+      |> IO.inspect()
+
+    list_chats(user_id, status)
+  end
+
+  def list_chats(user_id, status) do
     from(
       c in Chat,
       join: m in ChatUser,
@@ -76,7 +68,7 @@ defmodule Bright.Chats do
       on: ru.id == i.recruiter_user_id,
       join: rp in UserProfile,
       on: rp.user_id == i.recruiter_user_id,
-      where: i.status != :completed_interview,
+      where: i.status in ^status,
       select: %{
         c
         | interview: %{
