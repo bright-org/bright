@@ -6,33 +6,52 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   alias Bright.Utils.SkillsTableStructure
 
   alias BrightWeb.Admin.DraftSkillClassLive.{
-    SkillFormComponent
+    SkillFormComponent,
+    SkillClassFormComponent
   }
 
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    # base_loadは開発都合でいれているフラグです。
+    # patch移動時にエラーがでるとアサインが整わない状態になり開発に手がかかるため対応しています。
+    {:ok, assign(socket, :base_load, false)}
   end
 
-  def handle_params(params, url, socket) do
-    assign_on_action(socket.assigns.live_action, params, url, socket)
+  def handle_params(params, _url, socket) do
+    assign_on_action(socket.assigns.live_action, params, socket)
   end
 
-  def assign_on_action(:show, %{"id" => id}, url, socket) do
+  def assign_on_action(:show, params, socket) do
+    {:noreply,
+      socket
+      |> assign(:base_load, false)
+      |> assign_base_page_attrs(params)}
+  end
+
+  def assign_on_action(:edit_skill_class, params, socket) do
+    {:noreply, assign_base_page_attrs(socket, params)}
+  end
+
+  def assign_on_action(:edit_skill, %{"skill_id" => skill_id} = params, socket) do
+    skill = DraftSkillUnits.get_draft_skill!(skill_id)
+    {:noreply,
+      socket
+      |> assign(:skill, skill)
+      |> assign_base_page_attrs(params)}
+  end
+
+  defp assign_base_page_attrs(%{assigns: %{base_load: false}} = socket, %{"id" => id}) do
     skill_class = DraftSkillPanels.get_draft_skill_class!(id)
     skill_panel = DraftSkillPanels.get_skill_panel!(skill_class.skill_panel_id)
 
-    {:noreply,
-     socket
-     |> assign(:skill_panel, skill_panel)
-     |> assign(:skill_class, skill_class)
-     |> assign(:page_path, URI.parse(url).path)
-     |> assign_table_structure()}
+    socket
+    |> assign(:skill_panel, skill_panel)
+    |> assign(:skill_class, skill_class)
+    |> assign_table_structure()
+    |> assign(:page_path, ~p"/admin/draft_skill_classes/#{skill_class}")
+    |> assign(:base_load, true)
   end
 
-  def assign_on_action(:edit_skill, %{"skill_id" => skill_id}, _, socket) do
-    skill = DraftSkillUnits.get_draft_skill!(skill_id)
-    {:noreply, assign(socket, :skill, skill)}
-  end
+  defp assign_base_page_attrs(socket, _params), do: socket
 
   defp assign_table_structure(socket) do
     %{skill_class: skill_class} = socket.assigns

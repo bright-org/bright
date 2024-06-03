@@ -5,10 +5,16 @@
 </.link>
 
 <.header class="my-4">
-  <%= @skill_class.name %>
+  <div class="flex items-center gap-x-2">
+    <p><%= @skill_class.name %></p>
+    <div class="flex justify-between items-center gap-x-2">
+      <.link patch={"#{@page_path}/edit"}>
+        <span class="hero-pencil-square h-6 w-6" />
+      </.link>
+    </div>
+  </div>
   <:subtitle><%= @skill_panel.name %> クラス<%= @skill_class.class %></:subtitle>
 </.header>
-
 
 <div id="skills-table-field" class="h-[70vh] overflow-auto scroll-pt-[76px] my-4">
   <table class="skill-panel-table">
@@ -51,6 +57,24 @@
 
 <%# 各種 作成／編集用モーダル %>
 
+<%# スキルクラス %>
+<.modal
+  :if={@live_action in [:edit_skill_class]}
+  id="skill-class-modal"
+  show
+  on_cancel={JS.patch("#{@page_path}")}
+>
+  <.live_component
+    module={SkillClassFormComponent}
+    id={@skill_class.id}
+    title={@skill_class.name}
+    action={@live_action}
+    skill_class={@skill_class}
+    patch={@page_path}
+  />
+</.modal>
+
+<%# スキル %>
 <.modal
   :if={@live_action in [:new_skill, :edit_skill]}
   id="skill-modal"

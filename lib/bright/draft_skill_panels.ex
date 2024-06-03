@@ -121,9 +121,85 @@ defmodule Bright.DraftSkillPanels do
   end
 
   @doc """
-  下書きスキルクラスを取得
+  Gets a single draft_skill_class.
+
+  Raises `Ecto.NoResultsError` if the Draft skill does not exist.
+
+  ## Examples
+
+      iex> get_draft_skill_class!(123)
+      %DraftSkillClass{}
+
+      iex> get_draft_skill_class!(456)
+      ** (Ecto.NoResultsError)
+
   """
   def get_draft_skill_class!(id), do: Repo.get!(DraftSkillClass, id)
+
+  @doc """
+  Creates a draft_skill_class.
+
+  ## Examples
+
+      iex> create_draft_skill_class(%{field: value})
+      {:ok, %DraftSkillClass{}}
+
+      iex> create_draft_skill_class(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_draft_skill_class(attrs \\ %{}) do
+    %DraftSkillClass{}
+    |> DraftSkillClass.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a draft_skill_class.
+
+  ## Examples
+
+      iex> update_draft_skill_class(draft_skill_class, %{field: new_value})
+      {:ok, %DraftSkillClass{}}
+
+      iex> update_draft_skill_class(draft_skill_class, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_draft_skill_class(%DraftSkillClass{} = draft_skill_class, attrs) do
+    draft_skill_class
+    |> DraftSkillClass.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a draft_skill_class.
+
+  ## Examples
+
+      iex> delete_draft_skill_class(draft_skill_class)
+      {:ok, %DraftSkillClass{}}
+
+      iex> delete_draft_skill_class(draft_skill_class)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_draft_skill_class(%DraftSkillClass{} = draft_skill_class) do
+    Repo.delete(draft_skill_class)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking draft_skill_class changes.
+
+  ## Examples
+
+      iex> change_draft_skill_class(draft_skill_class)
+      %Ecto.Changeset{data: %DraftSkillClass{}}
+
+  """
+  def change_draft_skill_class(%DraftSkillClass{} = draft_skill_class, attrs \\ %{}) do
+    DraftSkillClass.changeset(draft_skill_class, attrs)
+  end
 
   @doc """
   スキルパネル配下の新しいスキルクラスを下書きスキルクラスに作成
