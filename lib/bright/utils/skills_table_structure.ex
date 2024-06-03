@@ -37,9 +37,10 @@ defmodule Bright.Utils.SkillsTableStructure do
     skill_category_item = %{size: size, skill_category: skill_category}
 
     skills
-    |> Enum.with_index()
+    |> Enum.with_index(1)
     |> Enum.map(fn
-      {skill, 0} -> [skill_category_item] ++ [%{skill: skill}]
+      {skill, 1} -> [skill_category_item] ++ [%{skill: skill, first: true}]
+      {skill, ^size} -> [nil] ++ [%{skill: skill, last: true}]
       {skill, _i} -> [nil] ++ [%{skill: skill}]
     end)
   end

@@ -20,18 +20,44 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     assign_on_action(socket.assigns.live_action, params, socket)
   end
 
-  def assign_on_action(:show, params, socket) do
+  def handle_event("position_up_skill", %{"row" => row}, socket) do
+    %{table_structure: table_structure} = socket.assigns
+    index = String.to_integer(row) - 1
+    [_, _, %{skill: skill_from}] = Enum.at(table_structure, index)
+    [_, _, %{skill: skill_to}] = Enum.at(table_structure, index - 1)
+    DraftSkillUnits.replace_position(skill_from, skill_to)
+
+    {:noreply,
+      socket
+      |> put_flash(:info, "並び替えました")
+      |> assign_table_structure()}
+  end
+
+  def handle_event("position_down_skill", %{"row" => row}, socket) do
+    %{table_structure: table_structure} = socket.assigns
+    index = String.to_integer(row) - 1
+    [_, _, %{skill: skill_from}] = Enum.at(table_structure, index)
+    [_, _, %{skill: skill_to}] = Enum.at(table_structure, index + 1)
+    DraftSkillUnits.replace_position(skill_from, skill_to)
+
+    {:noreply,
+      socket
+      |> put_flash(:info, "並び替えました")
+      |> assign_table_structure()}
+  end
+
+  defp assign_on_action(:show, params, socket) do
     {:noreply,
       socket
       |> assign(:base_load, false)
       |> assign_base_page_attrs(params)}
   end
 
-  def assign_on_action(:edit_skill_class, params, socket) do
+  defp assign_on_action(:edit_skill_class, params, socket) do
     {:noreply, assign_base_page_attrs(socket, params)}
   end
 
-  def assign_on_action(:new_skill, %{"category" => category_id} = params, socket) do
+  defp assign_on_action(:new_skill, %{"category" => category_id} = params, socket) do
     skill = %DraftSkillUnits.DraftSkill{draft_skill_category_id: category_id}
 
     {:noreply,
@@ -40,7 +66,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
       |> assign_base_page_attrs(params)}
   end
 
-  def assign_on_action(:edit_skill, %{"skill_id" => skill_id} = params, socket) do
+  defp assign_on_action(:edit_skill, %{"skill_id" => skill_id} = params, socket) do
     skill = DraftSkillUnits.get_draft_skill!(skill_id)
     {:noreply,
       socket

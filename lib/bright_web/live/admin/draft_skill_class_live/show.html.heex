@@ -32,6 +32,7 @@
       </tr>
     </thead>
 
+    <% # rowは並び替え処理等で使うため1始まりを変更しないこと %>
     <%= for {[col1, col2, col3], row} <- @table_structure |> Enum.with_index(1) do %>
       <tr id={"skill-#{row}"}>
         <td :if={col1} rowspan={col1.size} id={"unit-#{col1.position}"} class="align-top sticky left-0 bg-white sticky-border sticky-border-plus-left">
@@ -58,7 +59,21 @@
         <td class="sticky left-[400px] bg-white sticky-border">
           <div class="flex justify-between items-center">
             <p><%= col3.skill.name %></p>
+
+            <%# スキル操作ボタン %>
             <div class="flex justify-between items-center gap-x-2">
+              <%= if Map.get(col3, :first) do %>
+                <span class="h-5 w-5" />
+              <% else %>
+                <span class="cursor-pointer hero-arrow-up-circle" phx-click="position_up_skill" phx-value-row={row} />
+              <% end %>
+
+              <%= if Map.get(col3, :last) do %>
+                <span class="h-5 w-5" />
+              <% else %>
+                <span class="cursor-pointer hero-arrow-down-circle" phx-click="position_down_skill" phx-value-row={row}  />
+              <% end %>
+
               <.link patch={"#{@page_path}/skills/#{col3.skill.id}/edit"}>
                 <span class="hero-pencil-square" />
               </.link>

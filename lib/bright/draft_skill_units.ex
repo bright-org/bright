@@ -254,4 +254,21 @@ defmodule Bright.DraftSkillUnits do
   def change_draft_skill(%DraftSkill{} = draft_skill, attrs \\ %{}) do
     DraftSkill.changeset(draft_skill, attrs)
   end
+
+  @doc """
+  位置(position)を入れ替える
+
+  positionを属性でもっていればよくStructを問わない
+  """
+  def replace_position(struct_1, struct_2) do
+    changeset_tmp = Ecto.Changeset.change(struct_2, position: -1)
+    changeset_1 = Ecto.Changeset.change(struct_1, position: struct_2.position)
+    changeset_2 = Ecto.Changeset.change(struct_2, position: struct_1.position)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:position_change_tmp, changeset_tmp)
+    |> Ecto.Multi.update(:position_change_1, changeset_1)
+    |> Ecto.Multi.update(:position_change_2, changeset_2)
+    |> Repo.transaction()
+  end
 end
