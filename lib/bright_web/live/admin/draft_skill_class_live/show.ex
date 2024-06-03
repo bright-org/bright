@@ -59,10 +59,15 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     skill_units =
       Ecto.assoc(skill_class, :draft_skill_units)
       |> DraftSkillUnits.list_draft_skill_units()
-      |> Bright.Repo.preload(draft_skill_categories: [:draft_skills])
+      |> Bright.Repo.preload(draft_skill_categories: [:draft_skills], draft_skill_classes: [:skill_panel])
 
     table_structure = SkillsTableStructure.build(skill_units)
 
     assign(socket, :table_structure, table_structure)
+  end
+
+  defp list_shared_skill_classes(skill_unit, skill_class) do
+    skill_unit.draft_skill_classes
+    |> Enum.filter(& &1.id != skill_class.id)
   end
 end

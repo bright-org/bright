@@ -36,6 +36,16 @@
       <tr id={"skill-#{row}"}>
         <td :if={col1} rowspan={col1.size} id={"unit-#{col1.position}"} class="align-top sticky left-0 bg-white sticky-border sticky-border-plus-left">
           <%= col1.skill_unit.name %>
+
+          <div class="text-xs mt-1">
+            <p class="font-bold">共通利用スキルクラス</p>
+            <ul>
+              <li :for={skill_class <- list_shared_skill_classes(col1.skill_unit, @skill_class)} class="my-1">
+                <%= skill_class.skill_panel.name %>／
+                <%= skill_class.name %>
+              </li>
+            </ul>
+          </div>
         </td>
         <td :if={col2} rowspan={col2.size} class="align-top sticky left-[200px] bg-white sticky-border">
           <%= col2.skill_category.name %>
