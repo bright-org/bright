@@ -11,12 +11,19 @@ defmodule BrightWeb.ChatLive.Index do
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
   @max_entries 4
+  @filter_types [
+    %{name: "面談未完了", value: :not_completed_interview},
+    %{name: "すべて", value: :recruit}
+  ]
+
+  @default_filter_type :not_completed_interview
 
   @impl true
   def render(assigns) do
     ~H"""
     <div class="flex bg-white ml-1 h-[calc(100vh-56px)] pb-16 lg:pb-0">
       <div class={"flex flex-col w-screen lg:w-[560px] border-r-2 overflow-y-auto #{if @chat != nil, do: "hidden lg:flex"}"}>
+       <.filter_type_select_dropdown_menue select_filter_type={@select_filter_type}/>
         <%= if Enum.count(@chats) == 0 do %>
           <p class="text-xl lg:p-4">
             チャット対象者がいません<br /> 「スキル検索」の「面談の打診」や<br /> 「チームスキル分析」の「1on1に誘う」<br /> からチャット開始してください
@@ -279,6 +286,44 @@ defmodule BrightWeb.ChatLive.Index do
     """
   end
 
+  attr :select_filter_type, :any, required: true
+
+  def filter_type_select_dropdown_menue(assigns) do
+    assigns = assigns |> assign(filter_types: @filter_types)
+
+    ~H"""
+    <div
+      id="filter_select"
+      phx-hook="Dropdown"
+      data-dropdown-offset-skidding="0"
+      data-dropdown-placement="bottom"
+    >
+      <bottun
+        class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white  w-[200px] hover:bg-brightGray-50 dropdownTrigger"
+        type="button"
+      >
+        <%= get_display_name(@select_filter_type) %>
+      </bottun>
+      <!-- menue list-->
+      <div
+        class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-[200px]"
+      >
+        <ul>
+          <%= for filter_type <- @filter_types do %>
+            <li
+              class="text-left flex items-center text-base hover:bg-brightGray-50 p-1 bg-white w-full"
+              phx-click="select_filter_type"
+              phx-value-select_filter_type={filter_type.value}
+            >
+              <%= filter_type.name %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    """
+  end
+
   @impl true
   def mount(_params, _session, %{assigns: %{current_user: user}} = socket) do
     socket
@@ -314,7 +359,8 @@ defmodule BrightWeb.ChatLive.Index do
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> assign(:select_filter_type, @default_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, @default_filter_type))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
     |> assign(:message, nil)
@@ -326,7 +372,8 @@ defmodule BrightWeb.ChatLive.Index do
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> assign(:select_filter_type, @default_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, @default_filter_type))
     |> assign(:chat, nil)
     |> assign(:messages, [])
     |> assign(:message, nil)
@@ -433,6 +480,17 @@ defmodule BrightWeb.ChatLive.Index do
     {:noreply, assign(socket, :preview, nil)}
   end
 
+  def handle_event("select_filter_type", %{"select_filter_type" => select_filter_type}, socket) do
+    user = socket.assigns.current_user
+
+    socket =
+      socket
+      |> assign(:select_filter_type, String.to_atom(select_filter_type))
+      |> assign(:chats, Chats.list_chats(user.id, String.to_atom(select_filter_type)))
+
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_info(
         {:send_message, message},
@@ -476,4 +534,14 @@ defmodule BrightWeb.ChatLive.Index do
     do: translate_error({"You have selected an unacceptable file type", []})
 
   defp error_to_string(_), do: ""
+
+  defp get_display_name(value) do
+    filter_type =
+      @filter_types
+      |> Enum.find(fn x ->
+        x.value == value
+      end)
+
+    filter_type.name
+  end
 end

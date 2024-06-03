@@ -14,6 +14,17 @@ defmodule Bright.Chats do
   alias Bright.Recruits.Interview
   alias Bright.Utils.GoogleCloud.Storage
 
+  @interview_status_all [
+    :waiting_decision,
+    :consume_interview,
+    :dismiss_interview,
+    :ongoing_interview,
+    :completed_interview,
+    :cancel_interview,
+    :close_chat,
+    :one_on_one
+  ]
+
   @doc """
   Returns the list of chats.
 
@@ -28,6 +39,18 @@ defmodule Bright.Chats do
   end
 
   def list_chats(user_id, :recruit) do
+    list_chats(user_id, @interview_status_all)
+  end
+
+  def list_chats(user_id, :not_completed_interview) do
+    status =
+      @interview_status_all
+      |> Enum.reject(fn key -> key == :completed_interview end)
+
+    list_chats(user_id, status)
+  end
+
+  def list_chats(user_id, status) do
     from(
       c in Chat,
       join: m in ChatUser,
@@ -44,6 +67,7 @@ defmodule Bright.Chats do
       on: ru.id == i.recruiter_user_id,
       join: rp in UserProfile,
       on: rp.user_id == i.recruiter_user_id,
+      where: i.status in ^status,
       select: %{
         c
         | interview: %{
