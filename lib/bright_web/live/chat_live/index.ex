@@ -12,9 +12,12 @@ defmodule BrightWeb.ChatLive.Index do
 
   @max_entries 4
   @filter_types [
-    %{name: "完了以外", value: :not_completed_interview},
+    %{name: "面談未完了", value: :not_completed_interview},
     %{name: "すべて", value: :recruit}
   ]
+
+  @default_filter_type :not_completed_interview
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -353,12 +356,11 @@ defmodule BrightWeb.ChatLive.Index do
     Phoenix.PubSub.subscribe(Bright.PubSub, "chat:#{chat.id}")
 
     Chats.read_chat!(chat.id, user.id)
-    select_filter_type = @filter_types |> List.first()
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:select_filter_type, select_filter_type.value)
-    |> assign(:chats, Chats.list_chats(user.id, select_filter_type.value))
+    |> assign(:select_filter_type, @default_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, @default_filter_type))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
     |> assign(:message, nil)
@@ -368,12 +370,10 @@ defmodule BrightWeb.ChatLive.Index do
   defp apply_action(socket, :recruit, _params) do
     user = socket.assigns.current_user
 
-    select_filter_type = @filter_types |> List.first()
-
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:select_filter_type, select_filter_type.value)
-    |> assign(:chats, Chats.list_chats(user.id, select_filter_type.value))
+    |> assign(:select_filter_type, @default_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, @default_filter_type))
     |> assign(:chat, nil)
     |> assign(:messages, [])
     |> assign(:message, nil)
