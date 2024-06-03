@@ -6,8 +6,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   alias Bright.Utils.SkillsTableStructure
 
   alias BrightWeb.Admin.DraftSkillClassLive.{
+    SkillClassFormComponent,
     SkillFormComponent,
-    SkillClassFormComponent
+    SkillReplaceFormComponent
   }
 
   def mount(_params, _session, socket) do
@@ -68,6 +69,16 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
 
   defp assign_on_action(:edit_skill, %{"skill_id" => skill_id} = params, socket) do
     skill = DraftSkillUnits.get_draft_skill!(skill_id)
+
+    {:noreply,
+      socket
+      |> assign(:skill, skill)
+      |> assign_base_page_attrs(params)}
+  end
+
+  defp assign_on_action(:replace_skill, %{"skill_id" => skill_id} = params, socket) do
+    skill = DraftSkillUnits.get_draft_skill!(skill_id)
+
     {:noreply,
       socket
       |> assign(:skill, skill)
@@ -104,5 +115,14 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   defp list_shared_skill_classes(skill_unit, skill_class) do
     skill_unit.draft_skill_classes
     |> Enum.filter(& &1.id != skill_class.id)
+  end
+
+  defp list_skill_categories_on_skill_class(table_structure) do
+    table_structure
+    |> Enum.map(fn
+      [_, nil, _] -> nil
+      [_, col2, _] -> col2.skill_category
+    end)
+    |> Enum.filter(& &1)
   end
 end

@@ -7,6 +7,10 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillClassFormComponent do
   def render(assigns) do
     ~H"""
     <div id={@id}>
+      <.header class="my-2">
+        <p><%= @skill_class.name %></p>
+      </.header>
+
       <.simple_form
         for={@form}
         id="skill-class-form"

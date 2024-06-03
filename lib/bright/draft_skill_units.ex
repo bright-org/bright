@@ -196,12 +196,7 @@ defmodule Bright.DraftSkillUnits do
   """
   def create_draft_skill(attrs \\ %{}) do
     draft_skill_category = get_draft_skill_category!(attrs["draft_skill_category_id"])
-
-    position =
-      draft_skill_category
-      |> Ecto.assoc(:draft_skills)
-      |> Repo.aggregate(:max, :position)
-      |> Kernel.+(1)
+    position = get_max_position(draft_skill_category, :draft_skills) |> Kernel.+(1)
 
     %DraftSkill{}
     |> DraftSkill.changeset(attrs |> Map.put("position", position))
@@ -253,6 +248,13 @@ defmodule Bright.DraftSkillUnits do
   """
   def change_draft_skill(%DraftSkill{} = draft_skill, attrs \\ %{}) do
     DraftSkill.changeset(draft_skill, attrs)
+  end
+
+  @doc """
+  位置の最大を取得する
+  """
+  def get_max_position(struct, relation) do
+    struct |> Ecto.assoc(relation) |> Repo.aggregate(:max, :position)
   end
 
   @doc """
