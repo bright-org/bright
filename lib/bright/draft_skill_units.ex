@@ -121,6 +121,39 @@ defmodule Bright.DraftSkillUnits do
   def get_draft_skill_category!(id), do: Repo.get!(DraftSkillCategory, id)
 
   @doc """
+  Creates a draft_skill_category.
+
+  ## Examples
+
+      iex> create_draft_skill_category(%{field: value})
+      {:ok, {%DraftSkillCategory{}, %DraftSkill{}}}
+
+      iex> create_draft_skill_category(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_draft_skill_category(attrs \\ %{}) do
+    # NOTE: ドラフト編集ツールの表形式表示の都合上、少なくとも1つスキルがないと出せないので必ず1つダミーでスキルを作成している
+    draft_skill_unit = get_draft_skill_unit!(attrs["draft_skill_unit_id"])
+    position = get_max_position(draft_skill_unit, :draft_skill_categories) |> Kernel.+(1)
+
+    Repo.transaction(fn ->
+      draft_skill_category =
+        %DraftSkillCategory{}
+        |> DraftSkillCategory.changeset(attrs |> Map.put("position", position))
+        |> Repo.insert!()
+
+      draft_skill = Repo.insert!(%DraftSkill{
+        draft_skill_category_id: draft_skill_category.id,
+        name: "<スキル名を入力してください>",
+        position: 1
+      })
+
+      {draft_skill_category, draft_skill}
+    end)
+  end
+
+  @doc """
   Updates a draft_skill_category.
 
   ## Examples
@@ -149,6 +182,22 @@ defmodule Bright.DraftSkillUnits do
   """
   def change_draft_skill_category(%DraftSkillCategory{} = draft_skill_category, attrs \\ %{}) do
     DraftSkillCategory.changeset(draft_skill_category, attrs)
+  end
+
+  @doc """
+  Deletes a draft_skill_category.
+
+  ## Examples
+
+      iex> delete_draft_skill_category(draft_skill_category)
+      {:ok, %DraftSkillCategory{}}
+
+      iex> delete_draft_skill_category(draft_skill_category)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_draft_skill_category(%DraftSkillCategory{} = draft_skill_category) do
+    Repo.delete(draft_skill_category)
   end
 
   alias Bright.DraftSkillUnits.DraftSkill

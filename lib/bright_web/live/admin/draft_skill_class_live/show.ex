@@ -7,6 +7,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
 
   alias BrightWeb.Admin.DraftSkillClassLive.{
     SkillClassFormComponent,
+    SkillCategoryFormComponent,
     SkillFormComponent,
     SkillReplaceFormComponent
   }
@@ -47,6 +48,32 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
       |> assign_table_structure()}
   end
 
+  def handle_event("position_up_skill_category", %{"row" => row}, socket) do
+    %{table_structure: table_structure} = socket.assigns
+    index = String.to_integer(row) - 1
+    [_, %{skill_category: skill_category_from}, _] = Enum.at(table_structure, index)
+    [_, %{skill_category: skill_category_to}, _] = find_previous_structure_data(table_structure, 1, index - 1)
+    DraftSkillUnits.replace_position(skill_category_from, skill_category_to)
+
+    {:noreply,
+      socket
+      |> put_flash(:info, "並び替えました")
+      |> assign_table_structure()}
+  end
+
+  def handle_event("position_down_skill_category", %{"row" => row}, socket) do
+    %{table_structure: table_structure} = socket.assigns
+    index = String.to_integer(row) - 1
+    [_, %{skill_category: skill_category_from}, _] = Enum.at(table_structure, index)
+    [_, %{skill_category: skill_category_to}, _] = find_next_structure_data(table_structure, 1, index + 1)
+    DraftSkillUnits.replace_position(skill_category_from, skill_category_to)
+
+    {:noreply,
+      socket
+      |> put_flash(:info, "並び替えました")
+      |> assign_table_structure()}
+  end
+
   defp assign_on_action(:show, params, socket) do
     {:noreply,
       socket
@@ -56,6 +83,24 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
 
   defp assign_on_action(:edit_skill_class, params, socket) do
     {:noreply, assign_base_page_attrs(socket, params)}
+  end
+
+  defp assign_on_action(:new_skill_category, %{"unit" => unit_id} = params, socket) do
+    skill_category = %DraftSkillUnits.DraftSkillCategory{draft_skill_unit_id: unit_id}
+
+    {:noreply,
+      socket
+      |> assign(:skill_category, skill_category)
+      |> assign_base_page_attrs(params)}
+  end
+
+  defp assign_on_action(:edit_skill_category, %{"skill_category_id" => category_id} = params, socket) do
+    skill_category = DraftSkillUnits.get_draft_skill_category!(category_id)
+
+    {:noreply,
+      socket
+      |> assign(:skill_category, skill_category)
+      |> assign_base_page_attrs(params)}
   end
 
   defp assign_on_action(:new_skill, %{"category" => category_id} = params, socket) do
@@ -124,5 +169,20 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
       [_, col2, _] -> col2.skill_category
     end)
     |> Enum.filter(& &1)
+  end
+
+  defp find_previous_structure_data(table_structure, focus_col, start_row) do
+    # 入れ替えのために、入れ替え先データをテーブル構造から探す処理
+    table_structure
+    |> Enum.slice(0..start_row//1)
+    |> Enum.reverse()
+    |> Enum.find(& Enum.at(&1, focus_col))
+  end
+
+  defp find_next_structure_data(table_structure, focus_col, start_row) do
+    # 入れ替えのために、入れ替え先データをテーブル構造から探す処理
+    table_structure
+    |> Enum.slice(start_row..-1//1)
+    |> Enum.find(& Enum.at(&1, focus_col))
   end
 end

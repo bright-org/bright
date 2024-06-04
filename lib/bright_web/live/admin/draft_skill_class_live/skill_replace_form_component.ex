@@ -3,7 +3,6 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
 
   alias Bright.DraftSkillUnits
 
-  @impl true
   def render(assigns) do
     ~H"""
     <div id={@id}>
@@ -50,7 +49,6 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
     """
   end
 
-  @impl true
   def update(%{skill: skill} = assigns, socket) do
     changeset = DraftSkillUnits.change_draft_skill(skill)
 

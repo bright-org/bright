@@ -134,6 +134,8 @@ defmodule BrightWeb.Router do
       live "/draft_skill_classes/:id/skills/new", DraftSkillClassLive.Show, :new_skill
       live "/draft_skill_classes/:id/skills/:skill_id/edit", DraftSkillClassLive.Show, :edit_skill
       live "/draft_skill_classes/:id/skills/:skill_id/replace", DraftSkillClassLive.Show, :replace_skill
+      live "/draft_skill_classes/:id/skill_categories/new", DraftSkillClassLive.Show, :new_skill_category
+      live "/draft_skill_classes/:id/skill_categories/:skill_category_id/edit", DraftSkillClassLive.Show, :edit_skill_category
 
       if System.get_env("SERVER") == "dev" do
         live "/user_tokens", UserTokenLive.Index, :index

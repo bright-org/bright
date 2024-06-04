@@ -38,6 +38,11 @@
         <td :if={col1} rowspan={col1.size} id={"unit-#{col1.position}"} class="align-top sticky left-0 bg-white sticky-border sticky-border-plus-left">
           <%= col1.skill_unit.name %>
 
+          <.link class="flex items-center border rounded-lg bg-zinc-50 hover:bg-zinc-300 p-1 my-2 w-32" patch={"#{@page_path}/skill_categories/new?unit=#{col1.skill_unit.id}"}>
+            <span class="hero-plus h-4 w-4" />
+            <span class="text-xs">カテゴリー追加</span>
+          </.link>
+
           <div class="text-xs mt-1">
             <p class="font-bold">共通スキルクラス</p>
             <ul>
@@ -48,14 +53,37 @@
             </ul>
           </div>
         </td>
+
         <td :if={col2} rowspan={col2.size} class="align-top sticky left-[200px] bg-white sticky-border">
-          <%= col2.skill_category.name %>
+          <div class="flex justify-between items-center">
+            <p><%= col2.skill_category.name %></p>
+
+            <%# カテゴリー操作ボタン %>
+            <div class="flex justify-between items-center gap-x-2">
+              <%= if Map.get(col2, :first) do %>
+                <span class="h-5 w-5" />
+              <% else %>
+                <span class="cursor-pointer hero-arrow-up-circle" phx-click="position_up_skill_category" phx-value-row={row} />
+              <% end %>
+
+              <%= if Map.get(col2, :last) do %>
+                <span class="h-5 w-5" />
+              <% else %>
+                <span class="cursor-pointer hero-arrow-down-circle" phx-click="position_down_skill_category" phx-value-row={row}  />
+              <% end %>
+
+              <.link patch={"#{@page_path}/skill_categories/#{col2.skill_category.id}/edit"}>
+                <span class="hero-pencil-square" />
+              </.link>
+            </div>
+          </div>
 
           <.link class="flex items-center border rounded-lg bg-zinc-50 hover:bg-zinc-300 p-1 mt-1 w-24" patch={"#{@page_path}/skills/new?category=#{col2.skill_category.id}"}>
             <span class="hero-plus h-4 w-4" />
             <span class="text-xs">スキル追加</span>
           </.link>
         </td>
+
         <td class="sticky left-[400px] bg-white sticky-border">
           <div class="flex justify-between items-center">
             <p><%= col3.skill.name %></p>
@@ -104,6 +132,23 @@
     title={@skill_class.name}
     action={@live_action}
     skill_class={@skill_class}
+    patch={@page_path}
+  />
+</.modal>
+
+<%# スキルカテゴリ %>
+<.modal
+  :if={@live_action in [:new_skill_category, :edit_skill_category]}
+  id="skill-category-modal"
+  show
+  on_cancel={JS.patch("#{@page_path}")}
+>
+  <.live_component
+    module={SkillCategoryFormComponent}
+    id={@skill_category.id || :new}
+    title={@skill_category.name || "カテゴリー新規追加"}
+    action={@live_action}
+    skill_category={@skill_category}
     patch={@page_path}
   />
 </.modal>

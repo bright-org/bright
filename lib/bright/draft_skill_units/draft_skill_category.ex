@@ -18,7 +18,7 @@ defmodule Bright.DraftSkillUnits.DraftSkillCategory do
     field :position, :integer
 
     belongs_to :draft_skill_unit, DraftSkillUnit
-    has_many :draft_skills, DraftSkill, preload_order: [asc: :position], on_replace: :delete
+    has_many :draft_skills, DraftSkill, preload_order: [asc: :position], on_replace: :delete, on_delete: :delete_all
 
     timestamps()
   end
@@ -26,7 +26,7 @@ defmodule Bright.DraftSkillUnits.DraftSkillCategory do
   @doc false
   def changeset(draft_skill_category, attrs) do
     draft_skill_category
-    |> cast(attrs, [:name, :position])
+    |> cast(attrs, [:name, :position, :draft_skill_unit_id])
     |> cast_assoc(:draft_skills,
       with: &DraftSkill.changeset/2,
       sort_param: :draft_skills_sort,

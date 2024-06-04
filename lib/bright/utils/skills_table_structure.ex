@@ -23,9 +23,17 @@ defmodule Bright.Utils.SkillsTableStructure do
     skill_units
     |> Enum.with_index(1)
     |> Enum.flat_map(fn {skill_unit, position} ->
+      skill_categories = list_skill_categories(skill_unit)
+      size = Enum.count(skill_categories)
+
       skill_category_items =
-        list_skill_categories(skill_unit)
-        |> Enum.flat_map(&build_skill_category_table_structure/1)
+        skill_categories
+        |> Enum.with_index(1)
+        |> Enum.flat_map(fn {skill_category, row} ->
+          [[d_category, d_skill] | rest] = build_skill_category_table_structure(skill_category)
+          d_category = merge_row_info(d_category, row, size)
+          List.insert_at(rest, 0, [d_category, d_skill])
+        end)
 
       build_skill_unit_table_structure(skill_unit, skill_category_items, position)
     end)
@@ -39,9 +47,8 @@ defmodule Bright.Utils.SkillsTableStructure do
     skills
     |> Enum.with_index(1)
     |> Enum.map(fn
-      {skill, 1} -> [skill_category_item] ++ [%{skill: skill, first: true}]
-      {skill, ^size} -> [nil] ++ [%{skill: skill, last: true}]
-      {skill, _i} -> [nil] ++ [%{skill: skill}]
+      {skill, 1} -> [skill_category_item] ++ [merge_row_info(%{skill: skill}, 1, size)]
+      {skill, row} -> [nil] ++ [merge_row_info(%{skill: skill}, row, size)]
     end)
   end
 
@@ -85,5 +92,13 @@ defmodule Bright.Utils.SkillsTableStructure do
 
   defp list_skills(%HistoricalSkillUnits.HistoricalSkillCategory{} = skill_category) do
     skill_category.historical_skills
+  end
+
+  defp merge_row_info(data, row, size) do
+    # 画面の入れ替えボタン表示の関係で、先頭と末尾がわかるようにfirst/lastを追加している
+    data
+    |> Map.put(:row, row)
+    |> Map.put(:first, row == 1)
+    |> Map.put(:last, row == size)
   end
 end
