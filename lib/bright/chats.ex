@@ -50,10 +50,7 @@ defmodule Bright.Chats do
     list_chats(user_id, status)
   end
 
-  def list_chats(user_id, :waiting_decision = status), do: list_chats(user_id, [status])
-  def list_chats(user_id, :consume_interview = status), do: list_chats(user_id, [status])
-  def list_chats(user_id, :ongoing_interview = status), do: list_chats(user_id, [status])
-  def list_chats(user_id, :completed_interview = status), do: list_chats(user_id, [status])
+  def list_chats(user_id, status) when is_atom(status), do: list_chats(user_id, [status])
 
   def list_chats(user_id, status) when is_list(status) do
     from(
