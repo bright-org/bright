@@ -50,7 +50,9 @@ defmodule Bright.Chats do
     list_chats(user_id, status)
   end
 
-  def list_chats(user_id, status) do
+  def list_chats(user_id, status) when is_atom(status), do: list_chats(user_id, [status])
+
+  def list_chats(user_id, status) when is_list(status) do
     from(
       c in Chat,
       join: m in ChatUser,

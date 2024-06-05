@@ -12,8 +12,12 @@ defmodule BrightWeb.ChatLive.Index do
 
   @max_entries 4
   @filter_types [
-    %{name: "面談未完了", value: :not_completed_interview},
-    %{name: "すべて", value: :recruit}
+    %{name: "（条件を選択してください）", value: :not_completed_interview},
+    %{name: "面談打診中", value: :waiting_decision},
+    %{name: "面談確定待ち", value: :consume_interview},
+    %{name: "面談確定", value: :ongoing_interview},
+    %{name: "採用選考中", value: :completed_interview},
+    %{name: "（すべて）", value: :recruit}
   ]
 
   @default_filter_type :not_completed_interview
@@ -299,14 +303,14 @@ defmodule BrightWeb.ChatLive.Index do
       data-dropdown-placement="bottom"
     >
       <bottun
-        class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white  w-[200px] hover:bg-brightGray-50 dropdownTrigger"
+        class="text-left flex items-center text-base p-1 rounded border border-brightGray-100 bg-white  w-[220px] hover:bg-brightGray-50 dropdownTrigger"
         type="button"
       >
         <%= get_display_name(@select_filter_type) %>
       </bottun>
       <!-- menue list-->
       <div
-        class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-[200px]"
+        class="dropdownTarget z-30 hidden bg-white rounded-sm shadow static w-[220px]"
       >
         <ul>
           <%= for filter_type <- @filter_types do %>
