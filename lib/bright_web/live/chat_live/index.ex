@@ -17,6 +17,7 @@ defmodule BrightWeb.ChatLive.Index do
     %{name: "面談確定待ち", value: :consume_interview},
     %{name: "面談確定", value: :ongoing_interview},
     %{name: "採用選考中", value: :completed_interview},
+    %{name: "面談キャンセル", value: :cancel_interview},
     %{name: "（すべて）", value: :recruit}
   ]
 
