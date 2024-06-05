@@ -356,7 +356,11 @@ defmodule BrightWeb.ChatLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :recruit, %{"id" => chat_id}) do
+  defp apply_action(socket, :recruit, %{"id" => chat_id} = params) do
+    select_filter_type =
+      Map.get(params, "select_filter_type", Atom.to_string(@default_filter_type))
+      |> String.to_atom()
+
     user = socket.assigns.current_user
     chat = Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
     Phoenix.PubSub.subscribe(Bright.PubSub, "chat:#{chat.id}")
@@ -365,8 +369,8 @@ defmodule BrightWeb.ChatLive.Index do
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:select_filter_type, @default_filter_type)
-    |> assign(:chats, Chats.list_chats(user.id, @default_filter_type))
+    |> assign(:select_filter_type, select_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, select_filter_type))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
     |> assign(:message, nil)

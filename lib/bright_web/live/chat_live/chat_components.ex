@@ -11,6 +11,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :user_id, :string, required: true
   attr :member_ids, :any, default: []
   attr :select_filter_type, :atom
+
   def chat_list(assigns) do
     ~H"""
     <.link
