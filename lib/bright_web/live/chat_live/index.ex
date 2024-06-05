@@ -21,7 +21,7 @@ defmodule BrightWeb.ChatLive.Index do
     %{name: "（すべて）", value: :recruit}
   ]
 
-  @default_filter_type :not_completed_interview
+  @default_filter_type "not_completed_interview"
 
   @impl true
   def render(assigns) do
@@ -357,9 +357,7 @@ defmodule BrightWeb.ChatLive.Index do
   end
 
   defp apply_action(socket, :recruit, %{"id" => chat_id} = params) do
-    select_filter_type =
-      Map.get(params, "select_filter_type", Atom.to_string(@default_filter_type))
-      |> String.to_atom()
+    select_filter_type = get_select_filter_type(params)
 
     user = socket.assigns.current_user
     chat = Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
@@ -377,13 +375,14 @@ defmodule BrightWeb.ChatLive.Index do
     |> push_event("scroll_bottom", %{})
   end
 
-  defp apply_action(socket, :recruit, _params) do
+  defp apply_action(socket, :recruit, params) do
+    select_filter_type = get_select_filter_type(params)
     user = socket.assigns.current_user
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:select_filter_type, @default_filter_type)
-    |> assign(:chats, Chats.list_chats(user.id, @default_filter_type))
+    |> assign(:select_filter_type, select_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, select_filter_type))
     |> assign(:chat, nil)
     |> assign(:messages, [])
     |> assign(:message, nil)
@@ -491,13 +490,9 @@ defmodule BrightWeb.ChatLive.Index do
   end
 
   def handle_event("select_filter_type", %{"select_filter_type" => select_filter_type}, socket) do
-    user = socket.assigns.current_user
-
     socket =
       socket
-      |> assign(:select_filter_type, String.to_atom(select_filter_type))
-      |> assign(:chats, Chats.list_chats(user.id, String.to_atom(select_filter_type)))
-
+      |> redirect(to: ~p"/recruits/chats?select_filter_type=#{select_filter_type}")
     {:noreply, socket}
   end
 
@@ -553,5 +548,11 @@ defmodule BrightWeb.ChatLive.Index do
       end)
 
     filter_type.name
+  end
+
+  defp get_select_filter_type(params) do
+  params
+   |> Map.get("select_filter_type", @default_filter_type)
+    |> String.to_atom()
   end
 end
