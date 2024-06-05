@@ -493,6 +493,7 @@ defmodule BrightWeb.ChatLive.Index do
     socket =
       socket
       |> redirect(to: ~p"/recruits/chats?select_filter_type=#{select_filter_type}")
+
     {:noreply, socket}
   end
 
@@ -551,8 +552,8 @@ defmodule BrightWeb.ChatLive.Index do
   end
 
   defp get_select_filter_type(params) do
-  params
-   |> Map.get("select_filter_type", @default_filter_type)
+    params
+    |> Map.get("select_filter_type", @default_filter_type)
     |> String.to_atom()
   end
 end
