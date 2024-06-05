@@ -40,6 +40,7 @@ defmodule BrightWeb.ChatLive.Index do
               selected_chat={@chat}
               user_id={@current_user.id}
               member_ids={@team_members}
+              select_filter_type={@select_filter_type}
             />
           <% end %>
         <% end %>

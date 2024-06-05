@@ -10,7 +10,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :selected_chat, :any, required: true
   attr :user_id, :string, required: true
   attr :member_ids, :any, default: []
-
+  attr :select_filter_type, :atom
   def chat_list(assigns) do
     ~H"""
     <.link
@@ -19,7 +19,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         @selected_chat != nil && @selected_chat.id == @chat.id && "border-l-4 border-l-blue-400",
         !@chat.interview.is_read? && "bg-attention-50"
       ]}
-      patch={~p"/recruits/chats/#{@chat.id}"}
+      patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}
     >
       <div class="mr-2">
         <.switch_user_icon
