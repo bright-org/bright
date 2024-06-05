@@ -21,7 +21,6 @@ defmodule Bright.Chats do
     :ongoing_interview,
     :completed_interview,
     :cancel_interview,
-    :close_chat,
     :one_on_one
   ]
 
