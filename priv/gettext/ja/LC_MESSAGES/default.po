@@ -34,7 +34,7 @@ msgid "dismiss_interview"
 msgstr "面談却下"
 
 msgid "ongoing_interview"
-msgstr "面談確定"
+msgstr "面談確定／採用選考前"
 
 msgid "cancel_interview"
 msgstr "面談確定待ち"

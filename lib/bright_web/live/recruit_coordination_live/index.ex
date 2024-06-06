@@ -24,11 +24,14 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
                patch={~p"/recruits/coordinations/#{coordination.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <img
-                src={UserProfiles.icon_url(icon_path)}
-                class="object-cover h-12 w-12 rounded-full mr-2"
-                alt=""
-              />
+              <div class="flex flex-col">
+                <img
+                  src={UserProfiles.icon_url(icon_path)}
+                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  alt=""
+                />
+                <span><%= coordination.candidates_user.name %></span>
+              </div>
               <div class="flex-1">
                 <span><%= if coordination.skill_panel_name == nil, do: "スキルパネルデータなし", else: coordination.skill_panel_name %></span>
                 <br />
@@ -60,16 +63,31 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         </li>
         <%= for member <- @coordination_members do %>
         <% icon_path = member.coordination.candidates_user.user_profile.icon_file_path %>
+        <% recruiter = member.coordination.recruiter_user %>
           <li class="flex my-5">
             <.link
                patch={~p"/recruits/coordinations/member/#{member.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <img
-                src={UserProfiles.icon_url(icon_path)}
-                class="object-cover h-12 w-12 rounded-full mr-2"
-                alt=""
-              />
+              <div class="flex flex-col mr-4">
+                <img
+                  src={UserProfiles.icon_url(recruiter.user_profile.icon_file_path)}
+                  class="object-cover h-12 w-12 rounded-full ml-2"
+                  alt=""
+                />
+                <span><%= recruiter.name %></span>
+              </div>
+
+              <div class="flex flex-col">
+                <img
+                  src={UserProfiles.icon_url(icon_path)}
+                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  alt=""
+                />
+                <span>
+                  <%= member.coordination.candidates_user.name %>
+                </span>
+              </div>
               <div class="flex-1">
                 <span><%= if member.coordination.skill_panel_name == nil, do: "スキルパネルデータなし", else: member.coordination.skill_panel_name %></span>
                 <br />
@@ -106,12 +124,16 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
                patch={~p"/recruits/coordinations/acceptance/#{acceptance.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <img
-                src={UserProfiles.icon_url(icon_path)}
-                class="object-cover h-12 w-12 rounded-full mr-2"
-                alt=""
-              />
-
+              <div class="flex flex-col mr-4">
+                <img
+                  src={UserProfiles.icon_url(icon_path)}
+                  class="object-cover h-12 w-12 rounded-full ml-2"
+                  alt=""
+                />
+                <span>
+                  <%= acceptance.recruiter_user.name %>
+                </span>
+              </div>
               <span class="flex-1">
                 <%= Gettext.gettext(BrightWeb.Gettext, to_string(acceptance.status)) %>
               </span>

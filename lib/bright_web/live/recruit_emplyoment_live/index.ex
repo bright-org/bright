@@ -24,11 +24,16 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
                patch={~p"/recruits/employments/#{employment.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <img
-                src={UserProfiles.icon_url(icon_path)}
-                class="object-cover h-12 w-12 rounded-full mr-2"
-                alt=""
-              />
+              <div class="flex flex-col">
+                <img
+                  src={UserProfiles.icon_url(icon_path)}
+                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  alt=""
+                />
+                <span>
+                  <%= employment.candidates_user.name %>
+                </span>
+              </div>
               <div class="flex-1">
                 <span><%= employment.candidates_user.name %></span>
                 <br />
@@ -59,19 +64,31 @@ defmodule BrightWeb.RecruitEmploymentLive.Index do
           </div>
         </li>
         <%= for request <- @team_join_requests do %>
-          <% icon_path = request.employment.recruiter_user.user_profile.icon_file_path %>
+          <% candidates_user = request.employment.candidates_user %>
+          <% recruiter = request.employment.recruiter_user %>
           <li class="flex my-5">
             <.link
                patch={~p"/recruits/employments/team_join/#{request.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <img
-                src={UserProfiles.icon_url(icon_path)}
-                class="object-cover h-12 w-12 rounded-full mr-2"
-                alt=""
-              />
-              <div class="flex-1">
-                <span><%= request.employment.recruiter_user.name %></span>
+              <div class="flex flex-col mr-4">
+                <img
+                  src={UserProfiles.icon_url(recruiter.user_profile.icon_file_path)}
+                  class="object-cover h-12 w-12 rounded-full ml-2"
+                  alt=""
+                />
+                <span><%= recruiter.name %></span>
+              </div>
+
+              <div class="flex flex-col">
+                <img
+                  src={UserProfiles.icon_url(candidates_user.user_profile.icon_file_path)}
+                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  alt=""
+                />
+                <span>
+                  <%= candidates_user.name %>
+                </span>
               </div>
 
               <span class="flex-1">
