@@ -17,10 +17,11 @@ defmodule BrightWeb.ChatLive.Index do
     %{name: "面談確定待ち", value: :consume_interview},
     %{name: "面談確定", value: :ongoing_interview},
     %{name: "採用選考中", value: :completed_interview},
+    %{name: "面談キャンセル", value: :cancel_interview},
     %{name: "（すべて）", value: :recruit}
   ]
 
-  @default_filter_type :not_completed_interview
+  @default_filter_type "not_completed_interview"
 
   @impl true
   def render(assigns) do
@@ -39,6 +40,7 @@ defmodule BrightWeb.ChatLive.Index do
               selected_chat={@chat}
               user_id={@current_user.id}
               member_ids={@team_members}
+              select_filter_type={@select_filter_type}
             />
           <% end %>
         <% end %>
@@ -354,7 +356,9 @@ defmodule BrightWeb.ChatLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :recruit, %{"id" => chat_id}) do
+  defp apply_action(socket, :recruit, %{"id" => chat_id} = params) do
+    select_filter_type = get_select_filter_type(params)
+
     user = socket.assigns.current_user
     chat = Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
     Phoenix.PubSub.subscribe(Bright.PubSub, "chat:#{chat.id}")
@@ -363,21 +367,22 @@ defmodule BrightWeb.ChatLive.Index do
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:select_filter_type, @default_filter_type)
-    |> assign(:chats, Chats.list_chats(user.id, @default_filter_type))
+    |> assign(:select_filter_type, select_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, select_filter_type))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
     |> assign(:message, nil)
     |> push_event("scroll_bottom", %{})
   end
 
-  defp apply_action(socket, :recruit, _params) do
+  defp apply_action(socket, :recruit, params) do
+    select_filter_type = get_select_filter_type(params)
     user = socket.assigns.current_user
 
     socket
     |> assign(:page_title, "面談チャット")
-    |> assign(:select_filter_type, @default_filter_type)
-    |> assign(:chats, Chats.list_chats(user.id, @default_filter_type))
+    |> assign(:select_filter_type, select_filter_type)
+    |> assign(:chats, Chats.list_chats(user.id, select_filter_type))
     |> assign(:chat, nil)
     |> assign(:messages, [])
     |> assign(:message, nil)
@@ -485,12 +490,9 @@ defmodule BrightWeb.ChatLive.Index do
   end
 
   def handle_event("select_filter_type", %{"select_filter_type" => select_filter_type}, socket) do
-    user = socket.assigns.current_user
-
     socket =
       socket
-      |> assign(:select_filter_type, String.to_atom(select_filter_type))
-      |> assign(:chats, Chats.list_chats(user.id, String.to_atom(select_filter_type)))
+      |> redirect(to: ~p"/recruits/chats?select_filter_type=#{select_filter_type}")
 
     {:noreply, socket}
   end
@@ -547,5 +549,11 @@ defmodule BrightWeb.ChatLive.Index do
       end)
 
     filter_type.name
+  end
+
+  defp get_select_filter_type(params) do
+    params
+    |> Map.get("select_filter_type", @default_filter_type)
+    |> String.to_atom()
   end
 end
