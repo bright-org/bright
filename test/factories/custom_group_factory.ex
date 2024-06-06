@@ -7,7 +7,7 @@ defmodule Bright.CustomGroupFactory do
     quote do
       def custom_group_factory do
         %Bright.CustomGroups.CustomGroup{
-          name: Faker.Lorem.word()
+          name: sequence(:name, &"#{Faker.Lorem.word()}_#{&1}")
         }
       end
     end
