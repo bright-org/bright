@@ -44,7 +44,7 @@ defmodule Bright.Chats do
   def list_chats(user_id, :not_completed_interview) do
     status =
       @interview_status_all
-      |> Enum.reject(fn key -> key in [:completed_interview, :cancel_interview] end)
+      |> Enum.reject(fn key -> key in [:completed_interview, :cancel_interview, :dismiss_interview] end)
 
     list_chats(user_id, status)
   end
