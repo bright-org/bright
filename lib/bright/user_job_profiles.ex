@@ -121,7 +121,7 @@ defmodule Bright.UserJobProfiles do
   end
 
   @doc """
-  Returns true if the user is job searching.
+  Returns true if the user is searching job.
 
   ## Examples
 
