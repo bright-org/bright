@@ -149,5 +149,19 @@ defmodule Bright.UserJobProfilesTest do
       user_job_profile = insert(:user_job_profile)
       assert %Ecto.Changeset{} = UserJobProfiles.change_user_job_profile(user_job_profile)
     end
+
+    test "job_searching?/1 returns true if the user is job searching" do
+      user = insert(:user)
+      insert(:user_job_profile, user: user)
+
+      assert UserJobProfiles.job_searching?(user)
+    end
+
+    test "job_searching?/1 returns false if the user is not job searching" do
+      user = insert(:user)
+      insert(:user_job_profile, user: user, job_searching: false)
+
+      refute UserJobProfiles.job_searching?(user)
+    end
   end
 end
