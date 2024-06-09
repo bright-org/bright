@@ -7,6 +7,7 @@ defmodule Bright.UserJobProfiles do
   alias Bright.Repo
 
   alias Bright.UserJobProfiles.UserJobProfile
+  alias Bright.Accounts.User
 
   @doc """
   Returns the list of user_job_profiles.
@@ -117,5 +118,20 @@ defmodule Bright.UserJobProfiles do
   """
   def change_user_job_profile(%UserJobProfile{} = user_job_profile, attrs \\ %{}) do
     UserJobProfile.changeset(user_job_profile, attrs)
+  end
+
+  @doc """
+  Returns true if the user is job searching.
+
+  ## Examples
+
+      iex> job_searching?(user)
+      true
+
+  """
+  def job_searching?(%User{} = user) do
+    user.id
+    |> get_user_job_profile_by_user_id!()
+    |> Map.get(:job_searching)
   end
 end

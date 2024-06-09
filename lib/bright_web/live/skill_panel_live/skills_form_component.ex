@@ -250,7 +250,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
      socket
      |> put_flash_first_submit_in_overall()
      |> put_flash_first_submit_in_skill_panel()
-     |> push_patch(to: socket.assigns.patch)}
+     |> redirect_or_patch()}
   end
 
   def handle_event("change", %{"score" => score, "skill_id" => skill_id}, socket) do
@@ -403,6 +403,17 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   defp put_flash_first_submit_in_skill_panel(socket) do
     socket.assigns.first_time_in_skill_panel
     |> if(do: put_flash(socket, :first_submit_in_skill_panel, true), else: socket)
+  end
+
+  # NOTE: 登録後初回入力時は成長パネルに、それ以外はスキルパネルに遷移
+  defp redirect_or_patch(%{assigns: %{first_time_in_overall: true}} = socket) do
+    socket
+    |> push_redirect(to: socket.assigns.graphs_path)
+  end
+
+  defp redirect_or_patch(socket) do
+    socket
+    |> push_patch(to: socket.assigns.panels_path)
   end
 
   defp push_scroll_to(socket) do

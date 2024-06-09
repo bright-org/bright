@@ -1,7 +1,7 @@
 <%= if @skill_panel do %>
 <div class="relative flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
   <% # 働く際の希望の入力を促すメッセージ %>
-  <.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !user_job_searching?(@current_user)} />
+  <GuideMessageComponents.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !UserJobProfiles.job_searching?(@current_user)} />
 
   <%!-- スマホ 成長パネル/スキルパネル切替 --%>
   <div class="lg:hidden mb-4">
@@ -53,8 +53,6 @@
         <.enter_skills_help_message reference_from={"button"} />
       </.live_component>
     </div>
-
-    <.help_messages_area flash={@flash} />
   </div>
 
   <%!-- PC 成長パネル/スキルパネル切替 --%>
@@ -150,7 +148,8 @@
     skill_class={@skill_class}
     skill_class_score={@skill_class_score}
     skill_score_dict={@skill_score_dict}
-    patch={PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
+    panels_path={PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
+    graphs_path={PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
   />
 </.bright_modal>
 
