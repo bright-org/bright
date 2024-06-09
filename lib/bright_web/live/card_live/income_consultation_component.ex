@@ -99,33 +99,12 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
     interview =
       case Recruits.get_interview(team_admin_user_id, user.id) do
         %Interview{} = interview ->
-          interview
+          if interview.status in [:cancel_interview, :completed_interview],
+            do: create_interview(skill_params, team_admin_user_id, user),
+            else: interview
 
         nil ->
-          skill_params =
-            skill_params
-            |> Enum.map(
-              &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
-                |> Enum.into(%{}))
-            )
-
-          candidates_user =
-            UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
-            |> List.first()
-
-          interview_params = %{
-            "status" => :one_on_one,
-            "skill_panel_name" => gen_interview_name(skill_params),
-            "desired_income" => candidates_user.desired_income,
-            "skill_params" => Jason.encode!(skill_params),
-            "interview_members" => [],
-            "recruiter_user_id" => team_admin_user_id,
-            "candidates_user_id" => user.id
-          }
-
-          {:ok, interview} = Recruits.create_interview(interview_params)
-
-          interview
+          create_interview(skill_params, team_admin_user_id, user)
       end
 
     chat =
@@ -141,6 +120,33 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
       )
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+  end
+
+  defp create_interview(skill_params, team_admin_user_id, user) do
+    skill_params =
+      skill_params
+      |> Enum.map(
+        &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
+          |> Enum.into(%{}))
+      )
+
+    candidates_user =
+      UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
+      |> List.first()
+
+    interview_params = %{
+      "status" => :one_on_one,
+      "skill_panel_name" => gen_interview_name(skill_params),
+      "desired_income" => candidates_user.desired_income,
+      "skill_params" => Jason.encode!(skill_params),
+      "interview_members" => [],
+      "recruiter_user_id" => team_admin_user_id,
+      "candidates_user_id" => user.id
+    }
+
+    {:ok, interview} = Recruits.create_interview(interview_params)
+
+    interview
   end
 
   def convert_team_params_from_team_superior(team_member_users) do
