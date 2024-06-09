@@ -44,9 +44,15 @@ defmodule Bright.Chats do
   def list_chats(user_id, :not_completed_interview) do
     status =
       @interview_status_all
-      |> Enum.reject(fn key -> key in [:completed_interview, :cancel_interview, :dismiss_interview] end)
+      |> Enum.reject(fn key ->
+        key in [:completed_interview, :cancel_interview, :dismiss_interview]
+      end)
 
     list_chats(user_id, status)
+  end
+
+  def list_chats(user_id, :cancel_interview) do
+    list_chats(user_id, [:cancel_interview, :dismiss_interview])
   end
 
   def list_chats(user_id, status) when is_atom(status), do: list_chats(user_id, [status])
