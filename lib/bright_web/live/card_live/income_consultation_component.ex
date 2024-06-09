@@ -99,7 +99,7 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
     interview =
       case Recruits.get_interview(team_admin_user_id, user.id) do
         %Interview{} = interview ->
-          if interview.status in [:cancel_interview, :completed_interview],
+          if interview.status in [:cancel_interview, :completed_interview, :close_chat],
             do: create_interview(skill_params, team_admin_user_id, user),
             else: interview
 
