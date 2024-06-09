@@ -219,7 +219,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
     interview =
       case Recruits.get_interview(recruiter.id, user_id) do
         %Interview{} = interview ->
-          if interview.status == :completed_interview,
+          if interview.status in [:cancel_interview, :completed_interview],
             do: create_interview(skill_params, recruiter, user_id),
             else: interview
 
