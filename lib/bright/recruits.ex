@@ -889,9 +889,9 @@ defmodule Bright.Recruits do
     end
   end
 
-  def find_or_create(skill_params, recruiter, user_id) do
+  def find_or_create(skill_params, recruiter_id, user_id) do
     interview =
-      case get_interview(recruiter.id, user_id) do
+      case get_interview(recruiter_id, user_id) do
         %Interview{} = interview ->
           if interview.status in [
                :cancel_interview,
@@ -903,7 +903,7 @@ defmodule Bright.Recruits do
              else: interview
 
         nil ->
-          create_interview(skill_params, recruiter, user_id)
+          create_interview(skill_params, recruiter_id, user_id)
       end
 
     Chats.get_or_create_chat(
@@ -927,7 +927,7 @@ defmodule Bright.Recruits do
     interview
   end
 
-  defp create_interview(skill_params, team_admin_user_id, user) do
+  defp create_interview(skill_params, recruiter_user_id, user) do
     skill_params =
       skill_params
       |> Enum.map(
@@ -945,7 +945,7 @@ defmodule Bright.Recruits do
       "desired_income" => candidates_user.desired_income,
       "skill_params" => Jason.encode!(skill_params),
       "interview_members" => [],
-      "recruiter_user_id" => team_admin_user_id,
+      "recruiter_user_id" => recruiter_user_id,
       "candidates_user_id" => user.id
     }
 

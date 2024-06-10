@@ -215,7 +215,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
   def handle_event("start_1on1", %{"skill_params" => skill_params, "user_id" => user_id}, socket) do
     recruiter = socket.assigns.current_user
-    chat = Recruits.find_or_create(skill_params, recruiter, user_id)
+    chat = Recruits.find_or_create(skill_params, recruiter.id, user_id)
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
   end
