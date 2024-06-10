@@ -20,6 +20,8 @@ defmodule Bright.Utils.SkillsTableStructure do
   ]
   """
   def build(skill_units) do
+    units_count = Enum.count(skill_units)
+
     skill_units
     |> Enum.with_index(1)
     |> Enum.flat_map(fn {skill_unit, position} ->
@@ -35,7 +37,11 @@ defmodule Bright.Utils.SkillsTableStructure do
           List.insert_at(rest, 0, [d_category, d_skill])
         end)
 
-      build_skill_unit_table_structure(skill_unit, skill_category_items, position)
+      [[d_unit, d_category, d_skill] | rest] =
+        build_skill_unit_table_structure(skill_unit, skill_category_items, position)
+
+      d_unit = merge_row_info(d_unit, position, units_count)
+      List.insert_at(rest, 0, [d_unit, d_category, d_skill])
     end)
   end
 

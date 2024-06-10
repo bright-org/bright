@@ -7,6 +7,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
 
   alias BrightWeb.Admin.DraftSkillClassLive.{
     SkillClassFormComponent,
+    SkillUnitFormComponent,
     SkillCategoryFormComponent,
     SkillFormComponent,
     SkillReplaceFormComponent
@@ -22,12 +23,10 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     assign_on_action(socket.assigns.live_action, params, socket)
   end
 
-  def handle_event("position_up_skill", %{"row" => row}, socket) do
-    %{table_structure: table_structure} = socket.assigns
+  def handle_event("position_up_skill_unit", %{"row" => row}, socket) do
+    %{table_structure: table_structure, skill_class: skill_class} = socket.assigns
     index = String.to_integer(row) - 1
-    [_, _, %{skill: skill_from}] = Enum.at(table_structure, index)
-    [_, _, %{skill: skill_to}] = Enum.at(table_structure, index - 1)
-    DraftSkillUnits.replace_position(skill_from, skill_to)
+    replace_skill_unit(table_structure, skill_class, index, index - 1)
 
     {:noreply,
       socket
@@ -35,12 +34,10 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
       |> assign_table_structure()}
   end
 
-  def handle_event("position_down_skill", %{"row" => row}, socket) do
-    %{table_structure: table_structure} = socket.assigns
+  def handle_event("position_down_skill_unit", %{"row" => row}, socket) do
+    %{table_structure: table_structure, skill_class: skill_class} = socket.assigns
     index = String.to_integer(row) - 1
-    [_, _, %{skill: skill_from}] = Enum.at(table_structure, index)
-    [_, _, %{skill: skill_to}] = Enum.at(table_structure, index + 1)
-    DraftSkillUnits.replace_position(skill_from, skill_to)
+    replace_skill_unit(table_structure, skill_class, index, index + 1)
 
     {:noreply,
       socket
@@ -74,6 +71,32 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
       |> assign_table_structure()}
   end
 
+  def handle_event("position_up_skill", %{"row" => row}, socket) do
+    %{table_structure: table_structure} = socket.assigns
+    index = String.to_integer(row) - 1
+    [_, _, %{skill: skill_from}] = Enum.at(table_structure, index)
+    [_, _, %{skill: skill_to}] = Enum.at(table_structure, index - 1)
+    DraftSkillUnits.replace_position(skill_from, skill_to)
+
+    {:noreply,
+      socket
+      |> put_flash(:info, "並び替えました")
+      |> assign_table_structure()}
+  end
+
+  def handle_event("position_down_skill", %{"row" => row}, socket) do
+    %{table_structure: table_structure} = socket.assigns
+    index = String.to_integer(row) - 1
+    [_, _, %{skill: skill_from}] = Enum.at(table_structure, index)
+    [_, _, %{skill: skill_to}] = Enum.at(table_structure, index + 1)
+    DraftSkillUnits.replace_position(skill_from, skill_to)
+
+    {:noreply,
+      socket
+      |> put_flash(:info, "並び替えました")
+      |> assign_table_structure()}
+  end
+
   defp assign_on_action(:show, params, socket) do
     {:noreply,
       socket
@@ -83,6 +106,24 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
 
   defp assign_on_action(:edit_skill_class, params, socket) do
     {:noreply, assign_base_page_attrs(socket, params)}
+  end
+
+  defp assign_on_action(:new_skill_unit, params, socket) do
+    skill_unit = %DraftSkillUnits.DraftSkillUnit{}
+
+    {:noreply,
+      socket
+      |> assign_base_page_attrs(params)
+      |> assign(:skill_unit, skill_unit)}
+  end
+
+  defp assign_on_action(:edit_skill_unit, %{"skill_unit_id" => unit_id} = params, socket) do
+    skill_unit = DraftSkillUnits.get_draft_skill_unit!(unit_id)
+
+    {:noreply,
+      socket
+      |> assign(:skill_unit, skill_unit)
+      |> assign_base_page_attrs(params)}
   end
 
   defp assign_on_action(:new_skill_category, %{"unit" => unit_id} = params, socket) do
@@ -148,8 +189,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     %{skill_class: skill_class} = socket.assigns
 
     skill_units =
-      Ecto.assoc(skill_class, :draft_skill_units)
-      |> DraftSkillUnits.list_draft_skill_units()
+      DraftSkillUnits.list_draft_skill_units_on_class(skill_class)
       |> Bright.Repo.preload(draft_skill_categories: [:draft_skills], draft_skill_classes: [:skill_panel])
 
     table_structure = SkillsTableStructure.build(skill_units)
@@ -169,6 +209,22 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
       [_, col2, _] -> col2.skill_category
     end)
     |> Enum.filter(& &1)
+  end
+
+  defp replace_skill_unit(table_structure, skill_class, index_1, index_2) do
+    [%{skill_unit: skill_unit_1}, _, _] = Enum.at(table_structure, index_1)
+    [%{skill_unit: skill_unit_2}, _, _] = find_previous_structure_data(table_structure, 0, index_2)
+    skill_class_unit_1 = get_draft_skill_class_unit(skill_class, skill_unit_1)
+    skill_class_unit_2 = get_draft_skill_class_unit(skill_class, skill_unit_2)
+
+    DraftSkillUnits.replace_position(skill_class_unit_1, skill_class_unit_2)
+  end
+
+  defp get_draft_skill_class_unit(skill_class, skill_unit) do
+    DraftSkillUnits.get_draft_skill_class_unit_by!(
+      draft_skill_class_id: skill_class.id,
+      draft_skill_unit_id: skill_unit.id
+    )
   end
 
   defp find_previous_structure_data(table_structure, focus_col, start_row) do

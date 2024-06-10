@@ -9,6 +9,7 @@ defmodule Bright.DraftSkillUnits do
   alias Bright.DraftSkillUnits.DraftSkillUnit
   alias Bright.DraftSkillUnits.DraftSkillCategory
   alias Bright.DraftSkillUnits.DraftSkill
+  alias Bright.DraftSkillUnits.DraftSkillClassUnit
 
   @doc """
   Returns the list of draft_skill_units.
@@ -21,6 +22,16 @@ defmodule Bright.DraftSkillUnits do
   """
   def list_draft_skill_units(query \\ DraftSkillUnit) do
     Repo.all(query)
+  end
+
+  def list_draft_skill_units_on_class(draft_skill_class) do
+    from(q in DraftSkillClassUnit,
+      where: q.draft_skill_class_id == ^draft_skill_class.id,
+      join: dsu in assoc(q, :draft_skill_unit),
+      order_by: {:asc, q.position},
+      select: dsu
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -44,17 +55,37 @@ defmodule Bright.DraftSkillUnits do
 
   ## Examples
 
-      iex> create_draft_skill_unit(%{field: value})
+      iex> create_draft_skill_unit(skill_class, %{field: value})
       {:ok, %DraftSkillUnit{}}
 
-      iex> create_draft_skill_unit(%{field: bad_value})
+      iex> create_draft_skill_unit(skill_class, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_draft_skill_unit(attrs \\ %{}) do
-    %DraftSkillUnit{}
-    |> DraftSkillUnit.changeset(attrs)
-    |> Repo.insert()
+  def create_draft_skill_unit(skill_class, attrs \\ %{}) do
+    position = get_max_position(skill_class, :draft_skill_class_units) |> Kernel.+(1)
+
+    Repo.transaction(fn ->
+      draft_skill_unit =
+        %DraftSkillUnit{}
+        |> DraftSkillUnit.changeset(attrs)
+        |> Repo.insert!()
+
+      Repo.insert!(%DraftSkillClassUnit{
+        draft_skill_class_id: skill_class.id,
+        draft_skill_unit_id: draft_skill_unit.id,
+        position: position
+      })
+
+      # NOTE: ドラフト編集ツールの表形式表示の都合上、少なくとも1つスキルがないと出せないので必ず1つダミーでスキルを作成している
+      create_draft_skill_category(%{
+        "draft_skill_unit_id" => draft_skill_unit.id,
+        "name" => "<カテゴリ名を入力してください>",
+        "position" => 1
+      })
+
+      draft_skill_unit
+    end)
   end
 
   @doc """
@@ -88,7 +119,13 @@ defmodule Bright.DraftSkillUnits do
 
   """
   def delete_draft_skill_unit(%DraftSkillUnit{} = draft_skill_unit) do
-    Repo.delete(draft_skill_unit)
+    Repo.transaction(fn ->
+      Ecto.assoc(draft_skill_unit, :draft_skill_categories)
+      |> Repo.all()
+      |> Enum.each(& Repo.delete!/1)
+
+      Repo.delete!(draft_skill_unit)
+    end)
   end
 
   @doc """
@@ -135,7 +172,7 @@ defmodule Bright.DraftSkillUnits do
   def create_draft_skill_category(attrs \\ %{}) do
     # NOTE: ドラフト編集ツールの表形式表示の都合上、少なくとも1つスキルがないと出せないので必ず1つダミーでスキルを作成している
     draft_skill_unit = get_draft_skill_unit!(attrs["draft_skill_unit_id"])
-    position = get_max_position(draft_skill_unit, :draft_skill_categories) |> Kernel.+(1)
+    position = get_max_position(draft_skill_unit, :draft_skill_class_units) |> Kernel.+(1)
 
     Repo.transaction(fn ->
       draft_skill_category =
@@ -297,6 +334,10 @@ defmodule Bright.DraftSkillUnits do
   """
   def change_draft_skill(%DraftSkill{} = draft_skill, attrs \\ %{}) do
     DraftSkill.changeset(draft_skill, attrs)
+  end
+
+  def get_draft_skill_class_unit_by!(condition) do
+    Repo.get_by(DraftSkillClassUnit, condition)
   end
 
   @doc """
