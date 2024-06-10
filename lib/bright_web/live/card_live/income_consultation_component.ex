@@ -20,7 +20,6 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
   alias Bright.Teams
   alias Bright.Recruits
 
-
   @impl true
   def render(assigns) do
     ~H"""

@@ -13,7 +13,6 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
   alias Bright.SkillPanels
   alias Bright.Recruits
 
-
   @impl true
   def render(assigns) do
     ~H"""
