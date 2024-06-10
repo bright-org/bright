@@ -9,6 +9,9 @@ defmodule Bright.Recruits do
   alias Bright.Recruits.InterviewMember
   alias Bright.Recruits.Interview
   alias Bright.Accounts.UserNotifier
+  alias Bright.Chats
+  alias Bright.SkillPanels
+  alias Bright.UserSearches
 
   @doc """
   Returns the list of recruit_interview.
@@ -884,5 +887,78 @@ defmodule Bright.Recruits do
     else
       false
     end
+  end
+
+  def find_or_create(skill_params, recruiter, user_id) do
+    interview =
+      case get_interview(recruiter.id, user_id) do
+        %Interview{} = interview ->
+          if interview.status in [
+               :cancel_interview,
+               :completed_interview,
+               :dismiss_interview,
+               :close_chat
+             ],
+             do: update_interview(interview),
+             else: interview
+
+        nil ->
+          create_interview(skill_params, recruiter, user_id)
+      end
+
+    Chats.get_or_create_chat(
+      interview.recruiter_user_id,
+      interview.candidates_user_id,
+      interview.id,
+      "recruit",
+      [
+        %{user_id: interview.recruiter_user_id},
+        %{user_id: interview.candidates_user_id}
+      ]
+    )
+  end
+
+  defp update_interview(interview) do
+    interview_params = %{
+      "status" => :one_on_one
+    }
+
+    {:ok, interview} = update_interview(interview, interview_params)
+    interview
+  end
+
+  defp create_interview(skill_params, team_admin_user_id, user) do
+    skill_params =
+      skill_params
+      |> Enum.map(
+        &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
+          |> Enum.into(%{}))
+      )
+
+    candidates_user =
+      UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
+      |> List.first()
+
+    interview_params = %{
+      "status" => :one_on_one,
+      "skill_panel_name" => gen_interview_name(skill_params),
+      "desired_income" => candidates_user.desired_income,
+      "skill_params" => Jason.encode!(skill_params),
+      "interview_members" => [],
+      "recruiter_user_id" => team_admin_user_id,
+      "candidates_user_id" => user.id
+    }
+
+    {:ok, interview} = create_interview(interview_params)
+
+    interview
+  end
+
+  defp gen_interview_name(skill_params) do
+    skill_params
+    |> List.first()
+    |> Map.get(:skill_panel)
+    |> SkillPanels.get_skill_panel!()
+    |> Map.get(:name)
   end
 end

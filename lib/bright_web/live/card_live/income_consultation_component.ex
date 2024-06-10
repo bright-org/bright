@@ -129,8 +129,9 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
 
   defp update_interview(interview) do
     interview_params = %{
-      "status" => :one_on_one,
+      "status" => :one_on_one
     }
+
     {:ok, interview} = Recruits.update_interview(interview, interview_params)
     interview
   end
