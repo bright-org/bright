@@ -75,9 +75,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitAddFormComponent do
     DraftSkillUnits.create_draft_skill_class_unit(skill_class, skill_unit)
 
     {:noreply,
-      socket
-      |> put_flash(:info, "知識エリアを追加しました")
-      |> push_patch(to: socket.assigns.patch)}
+     socket
+     |> put_flash(:info, "知識エリアを追加しました")
+     |> push_patch(to: socket.assigns.patch)}
   end
 
   def handle_event("select", %{"_target" => ["skill_panel_id"]} = params, socket) do
@@ -85,9 +85,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitAddFormComponent do
     skill_panel = DraftSkillPanels.get_skill_panel!(skill_panel_id)
 
     {:noreply,
-      socket
-      |> assign(:skill_panel, skill_panel)
-      |> assign_skill_class_options()}
+     socket
+     |> assign(:skill_panel, skill_panel)
+     |> assign_skill_class_options()}
   end
 
   def handle_event("select", %{"_target" => ["skill_class_id"]} = params, socket) do
@@ -95,9 +95,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitAddFormComponent do
     skill_class = DraftSkillPanels.get_draft_skill_class!(skill_class_id)
 
     {:noreply,
-      socket
-      |> assign(:skill_class, skill_class)
-      |> assign_skill_unit_options()}
+     socket
+     |> assign(:skill_class, skill_class)
+     |> assign_skill_unit_options()}
   end
 
   def handle_event("select", %{"_target" => ["skill_unit_id"]} = params, socket) do
@@ -105,8 +105,8 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitAddFormComponent do
     skill_unit = DraftSkillUnits.get_draft_skill_unit!(skill_unit_id)
 
     {:noreply,
-      socket
-      |> assign(:skill_unit, skill_unit)}
+     socket
+     |> assign(:skill_unit, skill_unit)}
   end
 
   defp reset_selection(socket) do
@@ -122,7 +122,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitAddFormComponent do
     options =
       DraftSkillPanels.list_skill_panels()
       |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
-      |> Enum.map(& {&1.name, &1.id})
+      |> Enum.map(&{&1.name, &1.id})
 
     assign(socket, :skill_panel_options, options)
   end
@@ -133,9 +133,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitAddFormComponent do
     options =
       Ecto.assoc(skill_panel, :draft_skill_classes)
       |> DraftSkillPanels.list_draft_skill_classes()
-      |> Enum.reject(& &1.id == this_skill_class.id)
+      |> Enum.reject(&(&1.id == this_skill_class.id))
       |> Enum.sort_by(& &1.class, :asc)
-      |> Enum.map(& {&1.name, &1.id})
+      |> Enum.map(&{&1.name, &1.id})
 
     assign(socket, :skill_class_options, options)
   end
@@ -145,7 +145,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitAddFormComponent do
 
     options =
       DraftSkillUnits.list_draft_skill_units_on_class(skill_class)
-      |> Enum.map(& {&1.name, &1.id})
+      |> Enum.map(&{&1.name, &1.id})
 
     assign(socket, :skill_unit_options, options)
   end

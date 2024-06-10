@@ -67,25 +67,29 @@ defmodule Bright.DraftSkillUnits do
     position = get_max_position(skill_class, :draft_skill_class_units) |> Kernel.+(1)
 
     Repo.transaction(fn ->
-      draft_skill_unit =
-        %DraftSkillUnit{}
-        |> DraftSkillUnit.changeset(attrs)
-        |> Repo.insert!()
+      %DraftSkillUnit{}
+      |> DraftSkillUnit.changeset(attrs)
+      |> Repo.insert()
+      |> case do
+        {:ok, draft_skill_unit} ->
+          Repo.insert!(%DraftSkillClassUnit{
+            draft_skill_class_id: skill_class.id,
+            draft_skill_unit_id: draft_skill_unit.id,
+            position: position
+          })
 
-      Repo.insert!(%DraftSkillClassUnit{
-        draft_skill_class_id: skill_class.id,
-        draft_skill_unit_id: draft_skill_unit.id,
-        position: position
-      })
+          # NOTE: ドラフト編集ツールの表形式表示の都合上、少なくとも1つスキルがないと出せないので必ず1つダミーでスキルを作成している
+          create_draft_skill_category(%{
+            "draft_skill_unit_id" => draft_skill_unit.id,
+            "name" => "<カテゴリ名を入力してください>",
+            "position" => 1
+          })
 
-      # NOTE: ドラフト編集ツールの表形式表示の都合上、少なくとも1つスキルがないと出せないので必ず1つダミーでスキルを作成している
-      create_draft_skill_category(%{
-        "draft_skill_unit_id" => draft_skill_unit.id,
-        "name" => "<カテゴリ名を入力してください>",
-        "position" => 1
-      })
+          draft_skill_unit
 
-      draft_skill_unit
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
     end)
   end
 
@@ -123,7 +127,7 @@ defmodule Bright.DraftSkillUnits do
     Repo.transaction(fn ->
       Ecto.assoc(draft_skill_unit, :draft_skill_categories)
       |> Repo.all()
-      |> Enum.each(& Repo.delete!/1)
+      |> Enum.each(&Repo.delete!/1)
 
       Repo.delete!(draft_skill_unit)
     end)
@@ -173,21 +177,25 @@ defmodule Bright.DraftSkillUnits do
   def create_draft_skill_category(attrs \\ %{}) do
     # NOTE: ドラフト編集ツールの表形式表示の都合上、少なくとも1つスキルがないと出せないので必ず1つダミーでスキルを作成している
     draft_skill_unit = get_draft_skill_unit!(attrs["draft_skill_unit_id"])
-    position = get_max_position(draft_skill_unit, :draft_skill_class_units) |> Kernel.+(1)
+    position = get_max_position(draft_skill_unit, :draft_skill_categories) |> Kernel.+(1)
 
     Repo.transaction(fn ->
-      draft_skill_category =
-        %DraftSkillCategory{}
-        |> DraftSkillCategory.changeset(attrs |> Map.put("position", position))
-        |> Repo.insert!()
+      %DraftSkillCategory{}
+      |> DraftSkillCategory.changeset(attrs |> Map.put("position", position))
+      |> Repo.insert()
+      |> case do
+        {:ok, draft_skill_category} ->
+          Repo.insert!(%DraftSkill{
+            draft_skill_category_id: draft_skill_category.id,
+            name: "<スキル名を入力してください>",
+            position: 1
+          })
 
-      draft_skill = Repo.insert!(%DraftSkill{
-        draft_skill_category_id: draft_skill_category.id,
-        name: "<スキル名を入力してください>",
-        position: 1
-      })
+          draft_skill_category
 
-      {draft_skill_category, draft_skill}
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
     end)
   end
 
@@ -342,9 +350,9 @@ defmodule Bright.DraftSkillUnits do
   end
 
   def create_draft_skill_class_unit(
-    %DraftSkillPanels.DraftSkillClass{} = draft_skill_class,
-    %DraftSkillUnit{} = draft_skill_unit
-  ) do
+        %DraftSkillPanels.DraftSkillClass{} = draft_skill_class,
+        %DraftSkillUnit{} = draft_skill_unit
+      ) do
     position = get_max_position(draft_skill_class, :draft_skill_class_units)
 
     # 重複していないならば追加する
@@ -364,9 +372,9 @@ defmodule Bright.DraftSkillUnits do
   end
 
   def delete_draft_skill_class_unit(
-    %DraftSkillPanels.DraftSkillClass{} = draft_skill_class,
-    %DraftSkillUnit{} = draft_skill_unit
-  ) do
+        %DraftSkillPanels.DraftSkillClass{} = draft_skill_class,
+        %DraftSkillUnit{} = draft_skill_unit
+      ) do
     Repo.get_by(
       DraftSkillClassUnit,
       draft_skill_class_id: draft_skill_class.id,
@@ -379,7 +387,7 @@ defmodule Bright.DraftSkillUnits do
   位置の最大を取得する
   """
   def get_max_position(struct, relation) do
-    struct |> Ecto.assoc(relation) |> Repo.aggregate(:max, :position)
+    struct |> Ecto.assoc(relation) |> Repo.aggregate(:max, :position) |> Kernel.||(0)
   end
 
   @doc """

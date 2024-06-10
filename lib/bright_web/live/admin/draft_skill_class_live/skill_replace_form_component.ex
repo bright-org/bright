@@ -8,7 +8,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
     <div id={@id}>
       <.header class="my-2">
         <p><%= @skill.name %></p>
-        <:subtitle>カテゴリー移動</:subtitle>
+        <:subtitle>別カテゴリーへの移動</:subtitle>
       </.header>
 
       <.simple_form
@@ -65,7 +65,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
 
   def handle_event("save", %{"draft_skill" => skill_params}, socket) do
     skill = socket.assigns.skill
-    skill_category = DraftSkillUnits.get_draft_skill_category!(skill_params["draft_skill_category_id"])
+
+    skill_category =
+      DraftSkillUnits.get_draft_skill_category!(skill_params["draft_skill_category_id"])
 
     # 末尾追加とする
     position =

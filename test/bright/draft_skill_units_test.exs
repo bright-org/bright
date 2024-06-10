@@ -19,16 +19,20 @@ defmodule Bright.DraftSkillUnitsTest do
     end
 
     test "create_draft_skill_unit/1 with valid data creates a draft_skill_unit" do
+      draft_skill_class = insert(:draft_skill_class, skill_panel: build(:draft_skill_panel))
       valid_attrs = params_for(:draft_skill_unit)
 
       assert {:ok, %DraftSkillUnit{} = draft_skill_unit} =
-               DraftSkillUnits.create_draft_skill_unit(valid_attrs)
+               DraftSkillUnits.create_draft_skill_unit(draft_skill_class, valid_attrs)
 
       assert draft_skill_unit.name == valid_attrs.name
     end
 
     test "create_draft_skill_unit/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = DraftSkillUnits.create_draft_skill_unit(@invalid_attrs)
+      draft_skill_class = insert(:draft_skill_class, skill_panel: build(:draft_skill_panel))
+
+      assert {:error, %Ecto.Changeset{}} =
+               DraftSkillUnits.create_draft_skill_unit(draft_skill_class, @invalid_attrs)
     end
 
     test "update_draft_skill_unit/2 with valid data updates the draft_skill_unit" do
@@ -132,14 +136,21 @@ defmodule Bright.DraftSkillUnitsTest do
     end
 
     test "create_draft_skill/1 with valid data creates a draft_skill", ctx do
-      valid_attrs = params_for(:draft_skill, draft_skill_category_id: ctx.draft_skill_category.id)
+      valid_attrs =
+        params_for(:draft_skill, draft_skill_category_id: ctx.draft_skill_category.id)
+        |> Map.new(fn {k, v} -> {to_string(k), v} end)
 
       assert {:ok, %DraftSkill{} = draft_skill} = DraftSkillUnits.create_draft_skill(valid_attrs)
-      assert draft_skill.name == valid_attrs.name
+      assert draft_skill.name == valid_attrs["name"]
     end
 
-    test "create_draft_skill/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = DraftSkillUnits.create_draft_skill(@invalid_attrs)
+    test "create_draft_skill/1 with invalid data returns error changeset", ctx do
+      invalid_attrs =
+        @invalid_attrs
+        |> Map.put(:draft_skill_category_id, ctx.draft_skill_category.id)
+        |> Map.new(fn {k, v} -> {to_string(k), v} end)
+
+      assert {:error, %Ecto.Changeset{}} = DraftSkillUnits.create_draft_skill(invalid_attrs)
     end
 
     test "update_draft_skill/2 with valid data updates the draft_skill", ctx do

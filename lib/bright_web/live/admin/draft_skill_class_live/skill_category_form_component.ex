@@ -65,9 +65,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillCategoryFormComponent do
     DraftSkillUnits.delete_draft_skill_category(skill_category)
 
     {:noreply,
-      socket
-      |> put_flash(:info, "カテゴリーを削除しました")
-      |> push_patch(to: socket.assigns.patch)}
+     socket
+     |> put_flash(:info, "カテゴリーを削除しました")
+     |> push_patch(to: socket.assigns.patch)}
   end
 
   defp save_skill_category(socket, :edit_skill_category, params) do

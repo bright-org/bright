@@ -65,9 +65,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillFormComponent do
     DraftSkillUnits.delete_draft_skill(skill)
 
     {:noreply,
-      socket
-      |> put_flash(:info, "スキルを削除しました")
-      |> push_patch(to: socket.assigns.patch)}
+     socket
+     |> put_flash(:info, "スキルを削除しました")
+     |> push_patch(to: socket.assigns.patch)}
   end
 
   defp save_skill(socket, :edit_skill, skill_params) do

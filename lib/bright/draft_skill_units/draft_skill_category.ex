@@ -18,7 +18,11 @@ defmodule Bright.DraftSkillUnits.DraftSkillCategory do
     field :position, :integer
 
     belongs_to :draft_skill_unit, DraftSkillUnit
-    has_many :draft_skills, DraftSkill, preload_order: [asc: :position], on_replace: :delete, on_delete: :delete_all
+
+    has_many :draft_skills, DraftSkill,
+      preload_order: [asc: :position],
+      on_replace: :delete,
+      on_delete: :delete_all
 
     timestamps()
   end

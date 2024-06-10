@@ -80,9 +80,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitFormComponent do
     DraftSkillUnits.delete_draft_skill_class_unit(skill_class, skill_unit)
 
     {:noreply,
-      socket
-      |> put_flash(:info, "知識エリアの紐づけを解除しました")
-      |> push_patch(to: socket.assigns.patch)}
+     socket
+     |> put_flash(:info, "知識エリアの紐づけを解除しました")
+     |> push_patch(to: socket.assigns.patch)}
   end
 
   def handle_event("delete", _params, socket) do
@@ -90,9 +90,9 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitFormComponent do
     DraftSkillUnits.delete_draft_skill_unit(skill_unit)
 
     {:noreply,
-      socket
-      |> put_flash(:info, "知識エリアを削除しました")
-      |> push_patch(to: socket.assigns.patch)}
+     socket
+     |> put_flash(:info, "知識エリアを削除しました")
+     |> push_patch(to: socket.assigns.patch)}
   end
 
   defp save_skill_unit(socket, :edit_skill_unit, params) do
