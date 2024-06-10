@@ -225,7 +225,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
                :dismiss_interview,
                :close_chat
              ],
-             do: create_interview(skill_params, recruiter, user_id),
+             do: update_interview(interview),
              else: interview
 
         nil ->
@@ -245,6 +245,14 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
       )
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
+  end
+
+  defp update_interview(interview) do
+    interview_params = %{
+      "status" => :one_on_one,
+    }
+    {:ok, interview} = Recruits.update_interview(interview, interview_params)
+    interview
   end
 
   defp create_interview(skill_params, recruiter, user_id) do
