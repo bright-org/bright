@@ -18,11 +18,8 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
   import BrightWeb.TeamComponents, only: [get_team_icon_path: 1]
 
   alias Bright.Teams
-  alias Bright.UserSearches
-  alias Bright.SkillPanels
-  alias Bright.Chats
   alias Bright.Recruits
-  alias Bright.Recruits.Interview
+
 
   @impl true
   def render(assigns) do

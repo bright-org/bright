@@ -11,10 +11,8 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
   alias Bright.UserProfiles
   alias Bright.SkillPanels
-  alias Bright.UserSearches
-  alias Bright.Chats
   alias Bright.Recruits
-  alias Bright.Recruits.Interview
+
 
   @impl true
   def render(assigns) do
