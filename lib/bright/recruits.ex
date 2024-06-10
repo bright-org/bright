@@ -927,7 +927,7 @@ defmodule Bright.Recruits do
     interview
   end
 
-  defp create_interview(skill_params, recruiter_user_id, user) do
+  defp create_interview(skill_params, recruiter_user_id, user_id) do
     skill_params =
       skill_params
       |> Enum.map(
@@ -936,7 +936,7 @@ defmodule Bright.Recruits do
       )
 
     candidates_user =
-      UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
+      UserSearches.get_user_by_id_with_job_profile_and_skill_score(user_id, skill_params)
       |> List.first()
 
     interview_params = %{
@@ -946,7 +946,7 @@ defmodule Bright.Recruits do
       "skill_params" => Jason.encode!(skill_params),
       "interview_members" => [],
       "recruiter_user_id" => recruiter_user_id,
-      "candidates_user_id" => user.id
+      "candidates_user_id" => user_id
     }
 
     {:ok, interview} = create_interview(interview_params)
