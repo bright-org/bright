@@ -16,10 +16,17 @@
   <:subtitle><%= @skill_panel.name %> クラス<%= @skill_class.class %></:subtitle>
 </.header>
 
-<.link class="flex items-center border rounded-lg bg-zinc-50 hover:bg-zinc-300 p-1 mt-1 w-32" patch={"#{@page_path}/skill_units/new"}>
-  <span class="hero-plus h-4 w-4" />
-  <span class="text-xs">知識エリア追加</span>
-</.link>
+<div class="flex gap-x-2">
+  <.link class="flex items-center border rounded-lg bg-zinc-50 hover:bg-zinc-300 p-1 mt-1 w-40" patch={"#{@page_path}/skill_units/new"}>
+    <span class="hero-plus h-4 w-4" />
+    <span class="text-xs">知識エリアの新規追加</span>
+  </.link>
+
+  <.link class="flex items-center border rounded-lg bg-zinc-50 hover:bg-zinc-300 p-1 mt-1 w-24" patch={"#{@page_path}/skill_units/add"}>
+    <span class="hero-link h-4 w-4" />
+    <span class="text-xs">紐づけ追加</span>
+  </.link>
+</div>
 
 <div id="skills-table-field" class="h-[70vh] overflow-auto scroll-pt-[76px] my-4">
   <table class="skill-panel-table">
@@ -172,10 +179,26 @@
   <.live_component
     module={SkillUnitFormComponent}
     id={@skill_unit.id || :new}
-    title={@skill_unit.name || "知識エリア新規追加"}
+    title={@skill_unit.name || "知識エリアの新規追加"}
     action={@live_action}
     skill_unit={@skill_unit}
     skill_class={@skill_class}
+    patch={@page_path}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action in [:add_skill_unit]}
+  id="skill-unit-add-modal"
+  show
+  on_cancel={JS.patch("#{@page_path}")}
+>
+  <.live_component
+    module={SkillUnitAddFormComponent}
+    id={:add}
+    title={"知識エリアの新規紐づけ"}
+    action={@live_action}
+    this_skill_class={@skill_class}
     patch={@page_path}
   />
 </.modal>

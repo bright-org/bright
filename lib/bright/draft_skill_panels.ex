@@ -116,8 +116,8 @@ defmodule Bright.DraftSkillPanels do
       [%DraftSkillClass{}, ...]
 
   """
-  def list_draft_skill_classes do
-    Repo.all(DraftSkillClass)
+  def list_draft_skill_classes(query \\ DraftSkillClass) do
+    Repo.all(query)
   end
 
   @doc """

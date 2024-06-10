@@ -21,14 +21,26 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitFormComponent do
         <.input field={@form[:name]} type="text" label="知識エリア名" />
         <:actions>
           <.button phx-disable-with="Saving...">保存</.button>
-          <.button
-            :if={@action == :edit_skill_unit}
-            class="!bg-red-600 !hover:bg-red-500"
-            type="button"
-            data-confirm="この操作は取り消せません。同じ名前で再作成しても削除した知識エリアとは違うものになります。削除しますか？"
-            phx-click="delete"
-            phx-target={@myself}
-          >削除</.button>
+
+          <div class="flex gap-x-2">
+            <.button
+              :if={@action == :edit_skill_unit}
+              class="!bg-orange-400 hover:!bg-orange-300"
+              type="button"
+              data-confirm="このスキルクラスとの紐づけを解除しますか？"
+              phx-click="remove"
+              phx-target={@myself}
+            >紐づけ解除</.button>
+
+            <.button
+              :if={@action == :edit_skill_unit}
+              class="!bg-red-600 hover:!bg-red-500"
+              type="button"
+              data-confirm="この操作は取り消せません。同じ名前で再作成しても削除した知識エリアとは違うものになります。削除しますか？"
+              phx-click="delete"
+              phx-target={@myself}
+            >削除</.button>
+          </div>
         </:actions>
       </.simple_form>
     </div>
@@ -57,6 +69,20 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitFormComponent do
 
   def handle_event("save", %{"draft_skill_unit" => params}, socket) do
     save_skill_unit(socket, socket.assigns.action, params)
+  end
+
+  def handle_event("remove", _params, socket) do
+    %{
+      skill_class: skill_class,
+      skill_unit: skill_unit
+    } = socket.assigns
+
+    DraftSkillUnits.delete_draft_skill_class_unit(skill_class, skill_unit)
+
+    {:noreply,
+      socket
+      |> put_flash(:info, "知識エリアの紐づけを解除しました")
+      |> push_patch(to: socket.assigns.patch)}
   end
 
   def handle_event("delete", _params, socket) do

@@ -6,6 +6,7 @@ defmodule Bright.DraftSkillUnits do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
+  alias Bright.DraftSkillPanels
   alias Bright.DraftSkillUnits.DraftSkillUnit
   alias Bright.DraftSkillUnits.DraftSkillCategory
   alias Bright.DraftSkillUnits.DraftSkill
@@ -336,8 +337,42 @@ defmodule Bright.DraftSkillUnits do
     DraftSkill.changeset(draft_skill, attrs)
   end
 
-  def get_draft_skill_class_unit_by!(condition) do
+  def get_draft_skill_class_unit_by(condition) do
     Repo.get_by(DraftSkillClassUnit, condition)
+  end
+
+  def create_draft_skill_class_unit(
+    %DraftSkillPanels.DraftSkillClass{} = draft_skill_class,
+    %DraftSkillUnit{} = draft_skill_unit
+  ) do
+    position = get_max_position(draft_skill_class, :draft_skill_class_units)
+
+    # 重複していないならば追加する
+    get_draft_skill_class_unit_by(
+      draft_skill_class_id: draft_skill_class.id,
+      draft_skill_unit_id: draft_skill_unit.id
+    )
+    |> if do
+      nil
+    else
+      Repo.insert(%DraftSkillClassUnit{
+        draft_skill_class_id: draft_skill_class.id,
+        draft_skill_unit_id: draft_skill_unit.id,
+        position: position + 1
+      })
+    end
+  end
+
+  def delete_draft_skill_class_unit(
+    %DraftSkillPanels.DraftSkillClass{} = draft_skill_class,
+    %DraftSkillUnit{} = draft_skill_unit
+  ) do
+    Repo.get_by(
+      DraftSkillClassUnit,
+      draft_skill_class_id: draft_skill_class.id,
+      draft_skill_unit_id: draft_skill_unit.id
+    )
+    |> Repo.delete()
   end
 
   @doc """

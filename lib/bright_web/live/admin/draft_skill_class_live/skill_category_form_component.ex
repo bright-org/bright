@@ -24,7 +24,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillCategoryFormComponent do
           <.button phx-disable-with="Saving...">保存</.button>
           <.button
             :if={@action == :edit_skill_category}
-            class="!bg-red-600 !hover:bg-red-500"
+            class="!bg-red-600 hover:!bg-red-500"
             type="button"
             data-confirm="この操作は取り消せません。同じ名前で再作成しても削除したカテゴリーとは違うものになります。削除しますか？"
             phx-click="delete"

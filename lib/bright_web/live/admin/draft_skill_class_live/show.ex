@@ -8,6 +8,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   alias BrightWeb.Admin.DraftSkillClassLive.{
     SkillClassFormComponent,
     SkillUnitFormComponent,
+    SkillUnitAddFormComponent,
     SkillCategoryFormComponent,
     SkillFormComponent,
     SkillReplaceFormComponent
@@ -26,7 +27,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   def handle_event("position_up_skill_unit", %{"row" => row}, socket) do
     %{table_structure: table_structure, skill_class: skill_class} = socket.assigns
     index = String.to_integer(row) - 1
-    replace_skill_unit(table_structure, skill_class, index, index - 1)
+    replace_skill_unit(table_structure, skill_class, index, :up)
 
     {:noreply,
       socket
@@ -37,7 +38,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   def handle_event("position_down_skill_unit", %{"row" => row}, socket) do
     %{table_structure: table_structure, skill_class: skill_class} = socket.assigns
     index = String.to_integer(row) - 1
-    replace_skill_unit(table_structure, skill_class, index, index + 1)
+    replace_skill_unit(table_structure, skill_class, index, :down)
 
     {:noreply,
       socket
@@ -115,6 +116,12 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
       socket
       |> assign_base_page_attrs(params)
       |> assign(:skill_unit, skill_unit)}
+  end
+
+  defp assign_on_action(:add_skill_unit, params, socket) do
+    {:noreply,
+      socket
+      |> assign_base_page_attrs(params)}
   end
 
   defp assign_on_action(:edit_skill_unit, %{"skill_unit_id" => unit_id} = params, socket) do
@@ -211,9 +218,17 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     |> Enum.filter(& &1)
   end
 
-  defp replace_skill_unit(table_structure, skill_class, index_1, index_2) do
-    [%{skill_unit: skill_unit_1}, _, _] = Enum.at(table_structure, index_1)
-    [%{skill_unit: skill_unit_2}, _, _] = find_previous_structure_data(table_structure, 0, index_2)
+  defp replace_skill_unit(table_structure, skill_class, index, direction) do
+    [%{skill_unit: skill_unit_1}, _, _] = Enum.at(table_structure, index)
+    [%{skill_unit: skill_unit_2}, _, _] =
+      case direction do
+        :up ->
+          find_previous_structure_data(table_structure, 0, index - 1)
+
+        :down ->
+          find_next_structure_data(table_structure, 0, index + 1)
+      end
+
     skill_class_unit_1 = get_draft_skill_class_unit(skill_class, skill_unit_1)
     skill_class_unit_2 = get_draft_skill_class_unit(skill_class, skill_unit_2)
 
@@ -221,7 +236,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp get_draft_skill_class_unit(skill_class, skill_unit) do
-    DraftSkillUnits.get_draft_skill_class_unit_by!(
+    DraftSkillUnits.get_draft_skill_class_unit_by(
       draft_skill_class_id: skill_class.id,
       draft_skill_unit_id: skill_unit.id
     )
