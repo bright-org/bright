@@ -18,11 +18,7 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
   import BrightWeb.TeamComponents, only: [get_team_icon_path: 1]
 
   alias Bright.Teams
-  alias Bright.UserSearches
-  alias Bright.SkillPanels
-  alias Bright.Chats
   alias Bright.Recruits
-  alias Bright.Recruits.Interview
 
   @impl true
   def render(assigns) do
@@ -96,49 +92,7 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
       ) do
     skill_params = [%{"career_field" => "1on1", "skill_panel" => skill_panel_id}]
 
-    interview =
-      case Recruits.get_interview(team_admin_user_id, user.id) do
-        %Interview{} = interview ->
-          interview
-
-        nil ->
-          skill_params =
-            skill_params
-            |> Enum.map(
-              &(Enum.map(&1, fn {k, v} -> {String.to_atom(k), v} end)
-                |> Enum.into(%{}))
-            )
-
-          candidates_user =
-            UserSearches.get_user_by_id_with_job_profile_and_skill_score(user.id, skill_params)
-            |> List.first()
-
-          interview_params = %{
-            "status" => :one_on_one,
-            "skill_panel_name" => gen_interview_name(skill_params),
-            "desired_income" => candidates_user.desired_income,
-            "skill_params" => Jason.encode!(skill_params),
-            "interview_members" => [],
-            "recruiter_user_id" => team_admin_user_id,
-            "candidates_user_id" => user.id
-          }
-
-          {:ok, interview} = Recruits.create_interview(interview_params)
-
-          interview
-      end
-
-    chat =
-      Chats.get_or_create_chat(
-        interview.recruiter_user_id,
-        interview.candidates_user_id,
-        interview.id,
-        "recruit",
-        [
-          %{user_id: interview.recruiter_user_id},
-          %{user_id: interview.candidates_user_id}
-        ]
-      )
+    chat = Recruits.find_or_create(skill_params, team_admin_user_id, user.id)
 
     {:noreply, push_navigate(socket, to: ~p"/recruits/chats/#{chat.id}")}
   end
@@ -158,13 +112,5 @@ defmodule BrightWeb.CardLive.IncomeConsultationComponent do
           |> List.first()
       }
     end)
-  end
-
-  defp gen_interview_name(skill_params) do
-    skill_params
-    |> List.first()
-    |> Map.get(:skill_panel)
-    |> SkillPanels.get_skill_panel!()
-    |> Map.get(:name)
   end
 end

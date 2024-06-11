@@ -500,14 +500,14 @@ defmodule BrightWeb.ChatLive.Index do
   @impl true
   def handle_info(
         {:send_message, message},
-        %{assigns: %{current_user: user}} = socket
+        %{assigns: %{current_user: user, select_filter_type: select_filter_type}} = socket
       ) do
     chat = Chats.get_chat_with_messages_and_interview!(message.chat_id, user.id)
 
     Chats.read_chat!(chat.id, user.id)
 
     socket
-    |> assign(:chats, Chats.list_chats(user.id, :recruit))
+    |> assign(:chats, Chats.list_chats(user.id, select_filter_type))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
     |> push_event("scroll_bottom", %{})
