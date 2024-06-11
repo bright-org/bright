@@ -48,6 +48,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             <span class="text-brightGray-300">
               <%= NaiveDateTime.to_date(@chat.interview.inserted_at) %> 希望年収:<%= @chat.interview.desired_income %>
             </span>
+            <br />
+            <span class="text-brightGray-300">
+              <%= BrightWeb.ChatLive.Index.get_status(@chat.interview.status) %>
+            </span>
           </div>
         <% end %>
         <div>
