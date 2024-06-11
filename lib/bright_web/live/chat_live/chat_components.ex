@@ -180,7 +180,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   def user_icon(assigns) do
     ~H"""
-    <img src={UserProfiles.icon_url(@path)} class="object-cover h-10 w-10 rounded-full" alt="" />
+    <img src={UserProfiles.icon_url(@path)} class="object-cover max-h-10 max-w-10 rounded-full" alt="" />
     """
   end
 
