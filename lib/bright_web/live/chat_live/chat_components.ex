@@ -21,7 +21,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         !@chat.interview.is_read? && "bg-attention-50"
       ]}
     >
-      <.link patch={get_panels_link_form_chat(@chat, @user_id)}>
+      <.link patch={get_panels_link_form_chat(@chat, @user_id, @member_ids)}>
       <div class="mr-2">
         <.switch_user_icon
           chat={@chat}
@@ -217,7 +217,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     |> String.slice(0, 16)
   end
 
-  def get_panels_link_form_chat(chat, user_id) do
+  def get_panels_link_form_chat(chat, user_id, member_ids) do
     user_name =
       if chat.owner_user_id == user_id,
         do: chat.interview.candidates_user_name,
@@ -229,10 +229,12 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       |> List.first()
       |> Map.get("skill_panel")
 
-    #user = Bright.Accounts.get_user_by_name(user_name)
-    #encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user)
-    #"/panels/#{skill_panel}/anon/#{encrypted_name}"
-
-    "/panels/#{skill_panel}/#{user_name}"
+    if Enum.member?(member_ids, chat.interview.candidates_user_id) do
+      "/panels/#{skill_panel}/#{user_name}"
+    else
+      user = Bright.Accounts.get_user_by_name(user_name)
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user)
+      "/panels/#{skill_panel}/anon/#{encrypted_name}"
+    end
   end
 end
