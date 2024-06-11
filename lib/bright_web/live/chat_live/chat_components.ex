@@ -229,6 +229,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       |> List.first()
       |> Map.get("skill_panel")
 
+    #user = Bright.Accounts.get_user_by_name(user_name)
+    #encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user)
+    #"/panels/#{skill_panel}/anon/#{encrypted_name}"
+
     "/panels/#{skill_panel}/#{user_name}"
   end
 end
