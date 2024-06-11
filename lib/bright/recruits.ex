@@ -889,6 +889,13 @@ defmodule Bright.Recruits do
     end
   end
 
+  @doc """
+  Find or create a chat from an interview
+
+    ## Examples
+        iex> find_or_create(skill_params, recruiter_id, user_id)
+          %Bright.Chats.Chat{}
+  """
   def find_or_create(skill_params, recruiter_id, user_id) do
     interview =
       case get_interview(recruiter_id, user_id) do
