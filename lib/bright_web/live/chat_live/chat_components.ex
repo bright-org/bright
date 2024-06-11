@@ -14,14 +14,14 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   def chat_list(assigns) do
     ~H"""
-    <.link
+    <div
       class={[
         "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
         @selected_chat != nil && @selected_chat.id == @chat.id && "border-l-4 border-l-blue-400",
         !@chat.interview.is_read? && "bg-attention-50"
       ]}
-      patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}
     >
+      <.link patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}>
       <div class="mr-2">
         <.switch_user_icon
           chat={@chat}
@@ -30,13 +30,17 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           member_ids={@member_ids}
         />
       </div>
+      </.link>
+      <.link patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}>
       <div class="w-full flex justify-between p-1 relative">
         <span
           :if={!@chat.interview.is_read?}
           class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
         />
         <%= if @chat.interview.status == :one_on_one do %>
+         <span class="w-[203px]">
           1on1
+         </span>
         <% else %>
           <div class="mr-2 lg:truncate lg:text-xl">
             <span>
@@ -58,7 +62,8 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           <.elapsed_time inserted_at={@chat.updated_at} />
         </div>
       </div>
-    </.link>
+      </.link>
+    </div>
     """
   end
 
