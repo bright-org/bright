@@ -21,7 +21,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         !@chat.interview.is_read? && "bg-attention-50"
       ]}
     >
-      <.link patch={get_panels_link_form_chat(@chat)}>
+      <.link patch={get_panels_link_form_chat(@chat, @user_id)}>
       <div class="mr-2">
         <.switch_user_icon
           chat={@chat}
@@ -217,12 +217,18 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     |> String.slice(0, 16)
   end
 
-  def get_panels_link_form_chat(chat) do
-    skill_panel = chat.interview.skill_params
-    |> Jason.decode!()
-    |> List.first()
-    |> Map.get("skill_panel")
+  def get_panels_link_form_chat(chat, user_id) do
+    user_name =
+      if chat.owner_user_id == user_id,
+        do: chat.interview.candidates_user_name,
+        else: chat.interview.recruiter_user_name
 
-    "/panels/#{skill_panel}/#{chat.interview.candidates_user_name}"
+    skill_panel =
+      chat.interview.skill_params
+      |> Jason.decode!()
+      |> List.first()
+      |> Map.get("skill_panel")
+
+    "/panels/#{skill_panel}/#{user_name}"
   end
 end
