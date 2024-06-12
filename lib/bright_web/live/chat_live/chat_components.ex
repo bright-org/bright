@@ -14,14 +14,14 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   def chat_list(assigns) do
     ~H"""
-    <div
+    <.link
       class={[
         "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
         @selected_chat != nil && @selected_chat.id == @chat.id && "border-l-4 border-l-blue-400",
         !@chat.interview.is_read? && "bg-attention-50"
       ]}
+      patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}
     >
-      <.link patch={get_panels_link_form_chat(@chat, @user_id, @member_ids)}>
       <div class="mr-2">
         <.switch_user_icon
           chat={@chat}
@@ -30,8 +30,6 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           member_ids={@member_ids}
         />
       </div>
-      </.link>
-      <.link patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}>
       <div class="w-full flex justify-between p-1 relative">
         <span
           :if={!@chat.interview.is_read?}
@@ -62,8 +60,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           <.elapsed_time inserted_at={@chat.updated_at} />
         </div>
       </div>
-      </.link>
-    </div>
+    </.link>
     """
   end
 
@@ -185,7 +182,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   def user_icon(assigns) do
     ~H"""
-    <img src={UserProfiles.icon_url(@path)} class="object-cover max-h-10 max-w-10 rounded-full" alt="" />
+    <img src={UserProfiles.icon_url(@path)} class="object-cover h-10 w-10 rounded-full" alt="" />
     """
   end
 
@@ -217,24 +214,4 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     |> String.slice(0, 16)
   end
 
-  def get_panels_link_form_chat(chat, user_id, member_ids) do
-    user_name =
-      if chat.owner_user_id == user_id,
-        do: chat.interview.candidates_user_name,
-        else: chat.interview.recruiter_user_name
-
-    skill_panel =
-      chat.interview.skill_params
-      |> Jason.decode!()
-      |> List.first()
-      |> Map.get("skill_panel")
-
-    if Enum.member?(member_ids, chat.interview.candidates_user_id) do
-      "/panels/#{skill_panel}/#{user_name}"
-    else
-      user = Bright.Accounts.get_user_by_name(user_name)
-      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user)
-      "/panels/#{skill_panel}/anon/#{encrypted_name}"
-    end
-  end
 end
