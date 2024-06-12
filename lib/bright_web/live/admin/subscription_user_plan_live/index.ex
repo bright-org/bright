@@ -10,7 +10,7 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.Index do
      stream(
        socket,
        :subscription_user_plans,
-       Subscriptions.list_subscription_user_plans_with_plan()
+       list_subscription_user_plans()
      )}
   end
 
@@ -44,7 +44,7 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.Index do
         socket
       ) do
     plan = Subscriptions.get_subscription_user_plan_with_plan!(subscription_user_plan.id)
-    {:noreply, stream_insert(socket, :subscription_user_plans, plan)}
+    {:noreply, stream_insert(socket, :subscription_user_plans, plan, at: 0)}
   end
 
   @impl true
@@ -53,5 +53,10 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.Index do
     {:ok, _} = Subscriptions.delete_subscription_user_plan(subscription_user_plan)
 
     {:noreply, stream_delete(socket, :subscription_user_plans, subscription_user_plan)}
+  end
+
+  defp list_subscription_user_plans do
+    Subscriptions.list_subscription_user_plans_with_plan()
+    |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
   end
 end

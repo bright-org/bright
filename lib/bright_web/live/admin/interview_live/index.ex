@@ -6,7 +6,7 @@ defmodule BrightWeb.Admin.InterviewLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :interviews, Recruits.list_interview())}
+    {:ok, stream(socket, :interviews, list_interviews())}
   end
 
   @impl true
@@ -34,7 +34,7 @@ defmodule BrightWeb.Admin.InterviewLive.Index do
 
   @impl true
   def handle_info({BrightWeb.Admin.InterviewLive.FormComponent, {:saved, interview}}, socket) do
-    {:noreply, stream_insert(socket, :interviews, interview)}
+    {:noreply, stream_insert(socket, :interviews, interview, at: 0)}
   end
 
   @impl true
@@ -43,5 +43,10 @@ defmodule BrightWeb.Admin.InterviewLive.Index do
     {:ok, _} = Recruits.delete_interview(interview)
 
     {:noreply, stream_delete(socket, :interviews, interview)}
+  end
+
+  defp list_interviews do
+    Recruits.list_interview()
+    |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
   end
 end

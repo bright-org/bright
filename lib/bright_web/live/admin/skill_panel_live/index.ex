@@ -6,7 +6,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :skill_panels, SkillPanels.list_skill_panels())}
+    {:ok, stream(socket, :skill_panels, list_skill_panels())}
   end
 
   @impl true
@@ -34,7 +34,7 @@ defmodule BrightWeb.Admin.SkillPanelLive.Index do
 
   @impl true
   def handle_info({BrightWeb.Admin.SkillPanelLive.FormComponent, {:saved, skill_panel}}, socket) do
-    {:noreply, stream_insert(socket, :skill_panels, skill_panel)}
+    {:noreply, stream_insert(socket, :skill_panels, skill_panel, at: 0)}
   end
 
   @impl true
@@ -43,5 +43,10 @@ defmodule BrightWeb.Admin.SkillPanelLive.Index do
     {:ok, _} = SkillPanels.delete_skill_panel(skill_panel)
 
     {:noreply, stream_delete(socket, :skill_panels, skill_panel)}
+  end
+
+  defp list_skill_panels do
+    SkillPanels.list_skill_panels()
+    |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
   end
 end
