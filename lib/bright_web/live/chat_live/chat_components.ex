@@ -36,9 +36,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
         />
         <%= if @chat.interview.status == :one_on_one do %>
-         <span class="w-[203px]">
           1on1
-         </span>
         <% else %>
           <div class="mr-2 lg:truncate lg:text-xl">
             <span>
@@ -213,5 +211,4 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     |> NaiveDateTime.to_string()
     |> String.slice(0, 16)
   end
-
 end
