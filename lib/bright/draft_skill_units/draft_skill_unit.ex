@@ -22,7 +22,8 @@ defmodule Bright.DraftSkillUnits.DraftSkillUnit do
 
     has_many :draft_skill_class_units, DraftSkillClassUnit,
       preload_order: [asc: :position],
-      on_replace: :delete
+      on_replace: :delete,
+      on_delete: :delete_all
 
     has_many :draft_skill_classes, through: [:draft_skill_class_units, :draft_skill_class]
 
