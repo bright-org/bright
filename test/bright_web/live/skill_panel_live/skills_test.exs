@@ -11,6 +11,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   alias Bright.CustomGroups.CustomGroupMemberUser
 
   defp setup_skills(%{user: user, score: score}) do
+    insert_user_skill_panel(user, score)
+  end
+
+  defp insert_user_skill_panel(user, score) do
     skill_panel = insert(:skill_panel)
     insert(:user_skill_panel, user: user, skill_panel: skill_panel)
     skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
@@ -46,8 +50,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     show_live
     |> element("#link-skills-form")
     |> render_click()
-
-    assert has_element?(show_live, "#skills-form")
   end
 
   # 共通処理: 入力完了
@@ -55,8 +57,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     show_live
     |> element(~s{button[phx-click="submit"]})
     |> render_click()
-
-    refute has_element?(show_live, "#skills-form")
   end
 
   describe "Show" do
@@ -428,6 +428,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       # skill_1
       # lowからlowのキャンセル操作相当
@@ -444,6 +445,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> render_click()
 
       submit_form(show_live)
+      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
+      refute has_element?(show_live, "#skills-form")
 
       # 永続化確認のための再描画
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
@@ -468,6 +471,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       # 1を押してスコアを設定する。以下、2, 3と続く
       # 最終行は押してもそのままフォーカスした状態を継続する
@@ -490,9 +494,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, ~s{#skill-3-form [phx-window-keydown="shortcut"]})
 
       submit_form(show_live)
+      {path, _flash} = assert_redirect(show_live)
+      assert path == ~p"/graphs/#{skill_panel}?class=1"
 
       # 永続化確認のための再描画
-      {:ok, _show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       assert has_element?(show_live, "#skill-1 .score-mark-high")
       assert has_element?(show_live, "#skill-2 .score-mark-middle")
@@ -504,6 +510,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       # ↓、Enter、↑による移動
       # 最初と最終行は押してもそのままフォーカスした状態を継続する
@@ -534,6 +541,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       refute has_element?(show_live, ~s{#skill-3-form [phx-window-keydown="shortcut"]})
 
       submit_form(show_live)
+      {path, _flash} = assert_redirect(show_live)
+      assert path == ~p"/graphs/#{skill_panel}?class=1"
     end
   end
 
@@ -549,6 +558,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, ".score-middle-percentage", "0％")
 
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       assert has_element?(show_live, "#skill_gem_in_skills_form", "見習い")
       assert has_element?(show_live, "#skill_gem_in_skills_form .score-high-percentage", "0％")
@@ -589,6 +599,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, ~s(#skills-form-gem[data-data='#{data}']))
 
       submit_form(show_live)
+      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
@@ -597,6 +608,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       # 各スキルスコアの削除（lowにする操作）と、習得率表示更新
       start_edit(show_live)
+      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
+      assert has_element?(show_live, "#skills-form")
 
       show_live
       |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
@@ -623,6 +636,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert has_element?(show_live, ~s(#skills-form-gem[data-data='#{data}']))
 
       submit_form(show_live)
+      refute has_element?(show_live, "#skills-form")
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
@@ -1374,12 +1388,17 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       # 入力後に表示されないことの確認
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       show_live
       |> element(~s{#skill-1-form label[phx-value-score="middle"]})
       |> render_click()
 
       submit_form(show_live)
+      {path, flash} = assert_redirect(show_live)
+      assert path == ~p"/graphs/#{skill_panel}?class=1"
+      assert flash["first_submit_in_overall"]
+
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       refute has_element?(show_live, "#help-enter-skills")
     end
@@ -1389,13 +1408,16 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       show_live
       |> element(~s{#skill-1-form label[phx-value-score="low"]})
       |> render_click()
 
       submit_form(show_live)
-      assert has_element?(show_live, "#help-first-skill-submit-in-overall")
+      {path, flash} = assert_redirect(show_live)
+      assert path == ~p"/graphs/#{skill_panel}?class=1"
+      assert flash["first_submit_in_overall"]
     end
 
     @tag score: :low
@@ -1406,29 +1428,65 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       show_live
       |> element(~s{#skill-1-form label[phx-value-score="low"]})
       |> render_click()
 
       submit_form(show_live)
+      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
+      refute has_element?(show_live, "#skills-form")
       refute has_element?(show_live, "#help-first-skill-submit-in-overall")
     end
 
     @tag score: nil
-    test "shows job searching message", %{conn: conn, user: user, skill_panel: skill_panel} do
+    test "shows job searching message when first submit in overall", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
       # job_searching: false に設定
       UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
       |> UserJobProfiles.update_user_job_profile(%{job_searching: false})
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       show_live
       |> element(~s{#skill-1-form label[phx-value-score="low"]})
       |> render_click()
 
       submit_form(show_live)
+      {path, flash} = assert_redirect(show_live)
+      assert path == ~p"/graphs/#{skill_panel}?class=1"
+      assert flash["first_submit_in_overall"]
+      assert flash["first_submit_in_skill_panel"]
+    end
+
+    @tag score: nil
+    test "shows job searching message when first submit in skill panel", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel
+    } do
+      # job_searching: false に設定
+      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
+      |> UserJobProfiles.update_user_job_profile(%{job_searching: false})
+
+      insert_user_skill_panel(user, :low)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
+      start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
+
+      show_live
+      |> element(~s{#skill-1-form label[phx-value-score="low"]})
+      |> render_click()
+
+      submit_form(show_live)
+      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
       assert has_element?(show_live, "#job_searching_message")
     end
 
@@ -1444,12 +1502,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       show_live
       |> element(~s{#skill-1-form label[phx-value-score="low"]})
       |> render_click()
 
       submit_form(show_live)
+      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
+      refute has_element?(show_live, "#skills-form")
       refute has_element?(show_live, "#job_searching_message")
     end
 
@@ -1465,12 +1526,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       show_live
       |> element(~s{#skill-1-form label[phx-value-score="low"]})
       |> render_click()
 
       submit_form(show_live)
+      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
+      refute has_element?(show_live, "#skills-form")
       refute has_element?(show_live, "job_searching_message")
     end
 
@@ -1495,6 +1559,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       start_edit(show_live)
+      assert has_element?(show_live, "#skills-form")
 
       show_live
       |> element("#btn-help-enter-skills-modal")

@@ -7,6 +7,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
   alias Bright.Repo
   alias Bright.Teams.TeamMemberUsers
+  alias Bright.UserJobProfiles
 
   defp date_mock do
     {
@@ -105,6 +106,27 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
       assert show_live
              |> has_element?("#class_tab_1", "クラス1")
+    end
+
+    test "shows help message", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+      refute has_element?(show_live, "#help-first-skill-submit-in-overall")
+
+      conn = conn |> fetch_flash() |> put_flash(:first_submit_in_overall, true)
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+      assert has_element?(show_live, "#help-first-skill-submit-in-overall")
+    end
+
+    test "shows job searching message", %{conn: conn, user: user, skill_panel: skill_panel} do
+      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
+      |> UserJobProfiles.update_user_job_profile(%{job_searching: false})
+
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+      refute has_element?(show_live, "#job_searching_message")
+
+      conn = conn |> fetch_flash() |> put_flash(:first_submit_in_skill_panel, true)
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+      assert has_element?(show_live, "#job_searching_message")
     end
   end
 

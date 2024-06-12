@@ -3,7 +3,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   import BrightWeb.BrightModalComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents
-  import BrightWeb.SkillPanelLive.SkillsComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
   import BrightWeb.GuideMessageComponents
@@ -17,6 +16,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.UserJobProfiles
   alias BrightWeb.PathHelper
   alias BrightWeb.ProfileComponents
+  alias BrightWeb.GuideMessageComponents
 
   @impl true
   def mount(params, _session, socket) do
@@ -184,10 +184,4 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp put_flash_first_skills_edit(socket), do: socket
-
-  defp user_job_searching?(user) do
-    user.id
-    |> UserJobProfiles.get_user_job_profile_by_user_id!()
-    |> Map.get(:job_searching)
-  end
 end

@@ -2,7 +2,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
   use BrightWeb, :component
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [score_mark_class: 2]
-  import BrightWeb.GuideMessageComponents
   import BrightWeb.BrightCoreComponents, only: [action_button: 1]
   import Phoenix.LiveView, only: [send_update: 2]
 
@@ -422,24 +421,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
         <img src="/images/common/icons/skillTest.svg" />
       <% end %>
     </.link>
-    """
-  end
-
-  @doc """
-  案内メッセージエリア
-  """
-  def help_messages_area(assigns) do
-    ~H"""
-    <div class="lg:absolute lg:left-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
-      <% # スキル入力後メッセージ（初回のみ） %>
-      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
-      <.live_component
-        :if={Map.get(@flash, "first_submit_in_overall")}
-        module={BrightWeb.HelpMessageComponent}
-        id="help-first-skill-submit-in-overall">
-        <.first_submit_in_overall_message />
-      </.live_component>
-    </div>
     """
   end
 

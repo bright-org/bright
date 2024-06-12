@@ -4,6 +4,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias Bright.SkillPanels.SkillPanel
   alias Bright.Teams
   alias Bright.Accounts
+  alias Bright.UserJobProfiles
   alias BrightWeb.ProfileComponents
   alias BrightWeb.GuideMessageComponents
 
@@ -122,5 +123,20 @@ defmodule BrightWeb.GraphLive.Graphs do
     socket
     |> assign(:compared_user, compared_user)
     |> assign(:select_label_compared_user, "now")
+  end
+
+  # NOTE: スキル入力後メッセージ（初回のみ）
+  def help_messages_area(assigns) do
+    ~H"""
+    <div class="lg:absolute lg:left-0 lg:top-16 lg:z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
+      <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+      <.live_component
+        :if={Map.get(@flash, "first_submit_in_overall")}
+        module={BrightWeb.HelpMessageComponent}
+        id="help-first-skill-submit-in-overall">
+        <GuideMessageComponents.first_submit_in_overall_message />
+      </.live_component>
+    </div>
+    """
   end
 end
