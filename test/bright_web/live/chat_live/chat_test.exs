@@ -15,5 +15,20 @@ defmodule BrightWeb.ChatLive.ChatTest do
 
     end
 
+
+    test "shows chats", %{
+      conn: conn
+    } do
+
+      #user_2 = insert(:user)
+      #interview = insert(:interview)
+      #IO.inspect()
+
+      {:ok, _show_live, html} = live(conn, ~p"/recruits/chats")
+
+      assert html =~ "チャット対象者がいません"
+
+    end
+
   end
 end
