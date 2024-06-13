@@ -31,7 +31,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
           <li :if={false}>
             <a
               href="#"
-              class="absolute bg-brightGray-900 block cursor-pointer font-bold select-none py-2 right-0 rounded text-center text-white -top-1.5 w-48 hover:opacity-50"
+              class="absolute bg-brightGray-900 block cursor-pointer font-bold select-none py-2 right-0 rounded text-center text-white -top-1.5 w-48 hover:filter hover:brightness-90"
             >
               キャリアパスを見直す
             </a>
@@ -56,7 +56,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               <li>
                 <.link navigate={"#{@current_path}/jobs/#{job.id}"} class="block">
                   <label
-                    class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:opacity-50 min-w-[220px] h-10 leading-10"}
+                    class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:filter hover:brightness-90 min-w-[220px] h-10 leading-10"}
                   >
                     <%= job.name %>
                   </label>

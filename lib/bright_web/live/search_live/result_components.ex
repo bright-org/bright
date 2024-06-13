@@ -138,7 +138,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
       </button>
       <% end %>
       <.link
-        class="bg-white block border border-solid border-brightGreen-300 cursor-pointer mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 font-bold w-28 hover:opacity-50"
+        class="bg-white block border border-solid border-brightGreen-300 cursor-pointer mb-2 px-4 py-1 rounded select-none text-center text-brightGreen-300 font-bold w-28 hover:filter hover:brightness-90"
         target="_blank"
         rel="noopener noreferrer"
         href={if (@anon), do: skill_panel_path("graphs",%{id: @skill_panel.skill_panel}, %{name_encrypted: encrypt_user_name(@user)},false,true)
@@ -150,7 +150,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
         成長パネル
       </.link>
       <.link
-        class="bg-white block border border-solid border-brightGreen-300 cursor-pointer px-4 py-1 rounded select-none text-center text-brightGreen-300 font-bold w-28 hover:opacity-50"
+        class="bg-white block border border-solid border-brightGreen-300 cursor-pointer px-4 py-1 rounded select-none text-center text-brightGreen-300 font-bold w-28 hover:filter hover:brightness-90"
         target="_blank"
         rel="noopener noreferrer"
         href={if (@anon), do: "/mypage/anon/#{encrypt_user_name(@user)}", else: "/mypage/#{@user.name}"

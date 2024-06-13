@@ -90,7 +90,7 @@ defmodule BrightWeb.UserSettingsLive.NotificationSettingComponent do
       </div><!-- End スキルパネル更新通知 -->
 
       <div class="flex mt-8 mx-auto w-fit">
-        <a class="bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">保存する</a>
+        <a class="bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:filter hover:brightness-90">保存する</a>
       </div>
     </li>
     """

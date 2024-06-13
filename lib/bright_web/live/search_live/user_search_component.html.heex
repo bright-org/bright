@@ -128,7 +128,7 @@
                 value={sk.index}
                 class="hidden"
               />
-              <i class="delete_skill_conditions bg-base block border border-base cursor-pointer h-4 indent-40 -ml-5 mr-1 overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white hover:opacity-50">
+              <i class="delete_skill_conditions bg-base block border border-base cursor-pointer h-4 indent-40 -ml-5 mr-1 overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white hover:filter hover:brightness-90">
                 スキル削除
               </i>
             </label>
@@ -166,13 +166,6 @@
               disabled={sk[:class].value in ["", nil]}
               prompt="レベル"
             />
-            <!--- αでは落とす
-        <a
-          class="bg-white border border-solid border-brightGray-900 cursor-pointer font-bold ml-6 px-2 py-1 rounded select-none text-center text-brightGray-900 w-44 hover:opacity-50"
-        >
-          スキル詳細も設定
-        </a>
-        --->
           </div>
         </.inputs_for>
       </div>
@@ -181,7 +174,7 @@
       <input type="checkbox" name="user_search[skills_sort][]" class="hidden" />
       <i
         id="set_skill_conditions"
-        class="bg-base block border border-base cursor-pointer h-4 indent-40 mx-auto overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white after:top-1/2 after:left-1/2 after:-ml-1 after:-mt-px after:content-[''] after:block after:absolute after:w-2 after:h-0.5 after:bg-white after:rotate-90 hover:opacity-50"
+        class="bg-base block border border-base cursor-pointer h-4 indent-40 mx-auto overflow-hidden relative rounded-full w-4 before:top-1/2 before:left-1/2 before:-ml-1 before:-mt-px before:content-[''] before:block before:absolute before:w-2 before:h-0.5 before:bg-white after:top-1/2 after:left-1/2 after:-ml-1 after:-mt-px after:content-[''] after:block after:absolute after:w-2 after:h-0.5 after:bg-white after:rotate-90 hover:filter hover:brightness-90"
       >
         追加
       </i>

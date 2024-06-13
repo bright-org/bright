@@ -81,7 +81,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
         </div>
 
         <div class="flex mt-8 relative">
-          <button type="submit" class="bg-brightGray-900 border block border-solid border-brightGray-900 cursor-pointer font-bold mx-auto px-4 py-2 rounded select-none text-center text-white w-80 hover:opacity-50">保存する</button>
+          <button type="submit" class="bg-brightGray-900 border block border-solid border-brightGray-900 cursor-pointer font-bold mx-auto px-4 py-2 rounded select-none text-center text-white w-80 hover:filter hover:brightness-90">保存する</button>
         </div>
       </.form>
     </li>

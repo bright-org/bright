@@ -88,7 +88,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           <div class="flex justify-end gap-x-4">
             <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
               <div
-                class="cursor-pointer hover:opacity-50"
+                class="cursor-pointer hover:opacity-70"
                 phx-click="preview"
                 phx-value-preview={file.file_path}
               >
@@ -100,7 +100,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           <div class="flex justify-end mt-4 gap-x-4">
             <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
               <a
-                class="cursor-pointer hover:opacity-50 underline"
+                class="cursor-pointer hover:opacity-70 underline"
                 href={Storage.public_url(file.file_path)}
                 target="_blank"
                 rel="noopener"
@@ -131,7 +131,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       <div class="flex justify-start">
         <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
           <div
-            class="cursor-pointer hover:opacity-50"
+            class="cursor-pointer hover:opacity-70"
             phx-click="preview"
             phx-value-preview={file.file_path}
           >
@@ -143,7 +143,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       <div class="w-full flex flex-col justify-end mt-4">
         <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
           <a
-            class="cursor-pointer hover:opacity-50 underline text-xl"
+            class="cursor-pointer hover:opacity-70 underline text-xl"
             href={Storage.public_url(file.file_path)}
             target="_blank"
             rel="noopener"

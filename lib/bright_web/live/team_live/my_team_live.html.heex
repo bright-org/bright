@@ -4,7 +4,7 @@
     <div class="flex flex-col gap-y-4 lg:gap-x-4">
       <div class="flex flex-col lg:flex-row gap-4">
         <.link navigate={~p"/teams/new"}>
-          <button class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-52 hover:opacity-50">
+          <button class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-52 hover:filter hover:brightness-90">
             <div
               class={[
                 "inline-block h-6 w-6 [mask-image:url('/images/common/icons/teamAdd.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"]
@@ -18,14 +18,14 @@
           :if={Teams.is_admin?(@display_team, @current_user)}
           navigate={~p"/teams/#{@display_team.id}/edit"}
           >
-          <button class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-52 hover:opacity-50">
+          <button class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-52 hover:filter hover:brightness-90">
             <span class="material-icons-outlined text-white text-md">edit</span>
             チームを編集（β）
           </button>
         </.link>
         <button
           :if={!is_nil(@display_team) && Teams.is_admin?(@display_team, @current_user)}
-          class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-64 hover:opacity-50"
+          class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-64 hover:filter hover:brightness-90"
           phx-click="toggle_show_hr_support_modal"
           phx-value-team_id={@display_team.id}
         >
@@ -145,7 +145,7 @@
     <.team_skill_summary_table level_count={@level_count} />
     <form id="filter-form" phx-submit="filter">
       <input type="text" name="filter_name" value={@filter_name} placeholder="ハンドル名で絞り込みできます" class="input w-64">
-      <button class="text-sm font-bold p-2 rounded border bg-base text-white hover:opacity-50">
+      <button class="text-sm font-bold p-2 rounded border bg-base text-white hover:filter hover:brightness-90">
         絞り込み
       </button>
     </form>

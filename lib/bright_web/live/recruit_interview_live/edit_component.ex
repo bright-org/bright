@@ -89,20 +89,20 @@ defmodule BrightWeb.RecruitInterviewLive.EditComponent do
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
                   <.link navigate={~p"/recruits/interviews"}>
-                  <button class="text-sm font-bold py-3 rounded border border-base w-44">
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44 bg-white hover:filter hover:brightness-90">
                   閉じる
                   </button>
                   </.link>
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :dismiss_interview})}
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 hover:filter hover:brightness-90"
                   >
                     面談をキャンセル
                   </button>
 
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :consume_interview})}
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-44"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 hover:filter hover:brightness-90"
                   >
                     面談対象者に連絡
                   </button>

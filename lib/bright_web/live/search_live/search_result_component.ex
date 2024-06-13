@@ -85,7 +85,6 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
             </div>
           </div>
           <div :if={@search} class="flex justify-end mt-8">
-            <!--- β opacity-50 -> hover:opacity-50 に戻すこと --->
             <a
               phx-click={
                 if @hr_enabled,
@@ -97,7 +96,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
                     ),
                   else: JS.push("open_free_trial", target: @myself)
               }
-              class="self-center bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:opacity-50"
+              class="self-center bg-base border border-solid border-brightGray-300 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-56 hover:filter hover:brightness-90"
             >
               面談の打診
             </a>
@@ -110,7 +109,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
           </div>
           <div :if={!@search} class="flex justify-start mt-8">
             <.link
-              class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:opacity-50"
+              class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:filter hover:brightness-90"
               target="_blank"
               rel="noopener noreferrer"
               href={
@@ -121,7 +120,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
               成長パネル
             </.link>
             <.link
-              class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:opacity-50"
+              class="bg-white text-sm block border border-solid border-brightGreen-300 cursor-pointer font-bold lg:mx-2 my-1 py-1 rounded text-center select-none text-brightGreen-300 w-28 hover:filter hover:brightness-90"
               target="_blank"
               rel="noopener noreferrer"
               href={
