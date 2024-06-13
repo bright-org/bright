@@ -219,20 +219,20 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     Map.put(assigns, :user, user)
   end
 
-  defp set_url(assigns) do
+  defp set_url(%{user: user, chat: chat, anon: anon} = assigns) do
     skill_panel =
-      assigns.chat.interview.skill_params
+      chat.interview.skill_params
       |> Jason.decode!()
       |> List.first()
       |> Map.get("skill_panel")
 
     url =
-      if assigns.anon and Interview.anon?(assigns.chat.interview) and !assigns.user.is_member do
-        user = Bright.Accounts.get_user_by_name(assigns.user.name)
-        encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user)
+      if anon and Interview.anon?(chat.interview) and !user.is_member do
+        user_by_name = Bright.Accounts.get_user_by_name(user.name)
+        encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_by_name)
         "/panels/#{skill_panel}/anon/#{encrypted_name}"
       else
-        "/panels/#{skill_panel}/#{assigns.user.name}"
+        "/panels/#{skill_panel}/#{user.name}"
       end
 
     assigns
