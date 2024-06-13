@@ -514,6 +514,20 @@ defmodule BrightWeb.ChatLive.Index do
     |> then(&{:noreply, &1})
   end
 
+  @doc """
+  チャットのステータスを表示する
+  get_display_name差はフィルターで集約している内容も追加している
+  """
+  def get_status(value) do
+    filter_type =
+      [%{name: "面談キャンセル", value: :dismiss_interview} | @filter_types]
+      |> Enum.find(fn x ->
+        x.value == value
+      end)
+
+    filter_type.name
+  end
+
   defp gen_params(%{current_user: user, chat: chat, uploads: uploads}, text) do
     images = Enum.map(uploads.images.entries, &Chats.ChatFile.build(:images, &1))
     files = Enum.map(uploads.files.entries, &Chats.ChatFile.build(:files, &1))
