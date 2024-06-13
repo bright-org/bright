@@ -519,14 +519,8 @@ defmodule BrightWeb.ChatLive.Index do
   get_display_name差はフィルターで集約している内容も追加している
   """
   def get_status(value) do
-    status_list =
-      @filter_types ++
-        [
-          %{name: "面談キャンセル", value: :dismiss_interview}
-        ]
-
     filter_type =
-      status_list
+      [%{name: "面談キャンセル", value: :dismiss_interview} | @filter_types]
       |> Enum.find(fn x ->
         x.value == value
       end)
