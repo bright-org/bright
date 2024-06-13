@@ -119,6 +119,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             chat={@chat}
             user_id={@current_user.id}
             anon={@chat.interview.recruiter_user_id == @current_user.id}
+            is_link={true}
           />
         </div>
 
@@ -162,19 +163,34 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :user_id, :string, required: true
   attr :anon, :boolean, default: true
   attr :member_ids, :any, default: []
+  attr :is_link, :boolean, default: false
 
   def switch_user_icon(assigns) do
-    assigns = set_user(assigns)
+    assigns =
+      set_user(assigns)
+      |> set_url()
 
     ~H"""
     <%= if @anon and Interview.anon?(@chat.interview) and !@user.is_member do %>
-      <.user_icon path={nil} />
+      <.user_icon path={nil} is_link={@is_link} url={@url} />
     <% else %>
       <div class="flex flex-col justify-end">
-        <.user_icon path={@user.icon} />
+        <.user_icon path={@user.icon} is_link={@is_link} url={@url}/>
         <p :if={@show_name} class="lg:w-24 break-words"><%= @user.name %></p>
       </div>
     <% end %>
+    """
+  end
+
+  attr :path, :any
+  attr :is_link, :boolean, default: false
+  attr :url, :any, default: nil
+
+  def user_icon(%{is_link: true} = assigns) do
+    ~H"""
+    <.link patch={@url} >
+      <.user_icon path={@path} />
+    </.link>
     """
   end
 
@@ -201,6 +217,26 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       end
 
     Map.put(assigns, :user, user)
+  end
+
+  defp set_url(assigns) do
+    skill_panel =
+      assigns.chat.interview.skill_params
+      |> Jason.decode!()
+      |> List.first()
+      |> Map.get("skill_panel")
+
+    url =
+      if assigns.anon and Interview.anon?(assigns.chat.interview) and !assigns.user.is_member do
+        user = Bright.Accounts.get_user_by_name(assigns.user.name)
+        encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user)
+        "/panels/#{skill_panel}/anon/#{encrypted_name}"
+      else
+        "/panels/#{skill_panel}/#{assigns.user.name}"
+      end
+
+    assigns
+    |> assign(url: url)
   end
 
   defp nl_to_br(str), do: str |> String.replace(~r/\n/, "<br />") |> Phoenix.HTML.raw()
