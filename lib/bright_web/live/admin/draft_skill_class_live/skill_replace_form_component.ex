@@ -2,6 +2,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
   use BrightWeb, :live_component
 
   alias Bright.DraftSkillUnits
+  alias BrightWeb.Admin.DraftSkillClassLive.SkillSelectionComponent
 
   def render(assigns) do
     ~H"""
@@ -17,11 +18,11 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
         phx-target={@myself}
         phx-submit="save"
       >
-        <.input field={@form[:draft_skill_category_id]} value={@skill_category_id} type="hidden" />
+        <.input field={@form[:draft_skill_category_id]} value={@skill_category && @skill_category.id} type="hidden" />
 
         <ul>
           <li :for={category <- @skill_categories} class="my-2">
-            <%= if category.id == @skill_category_id do %>
+            <%= if @skill_category && @skill_category.id == category.id do %>
               <button type="button" class="border rounded-lg bg-zinc-400">
                 <span class="p-2"><%= category.name %></span>
               </button>
@@ -33,13 +34,15 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
           </li>
         </ul>
 
-        <p>
-          スキルクラス外への移動の場合は下記から選択してください
-          <br />
-          スキルパネル - スキルクラス - スキルユニット - スキルカテゴリー
-          <br />
-          Coming soon
-        </p>
+        <p>スキルクラス外への移動の場合は下記から選択してください</p>
+
+        <.live_component
+          id="skill-category-selection"
+          module={SkillSelectionComponent}
+          skill_panel={@this_skill_panel}
+          target={Bright.DraftSkillUnits.DraftSkillCategory}
+          on_select={on_select_skill_category(@id)}
+        />
 
         <:actions>
           <.button phx-disable-with="Saving...">保存</.button>
@@ -49,18 +52,26 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
     """
   end
 
+  def update(%{form_skill_category: skill_category}, socket) do
+    # ParentSelectionComponentの選択結果受け取り
+    {:ok, assign(socket, :skill_category, skill_category)}
+  end
+
   def update(%{skill: skill} = assigns, socket) do
     changeset = DraftSkillUnits.change_draft_skill(skill)
+    skill_category = DraftSkillUnits.get_draft_skill_category!(skill.draft_skill_category_id)
 
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:skill_category_id, skill.draft_skill_category_id)
+     |> assign(:skill_category, skill_category)
      |> assign_form(changeset)}
   end
 
   def handle_event("select", %{"id" => id}, socket) do
-    {:noreply, assign(socket, :skill_category_id, id)}
+    skill_category = DraftSkillUnits.get_draft_skill_category!(id)
+
+    {:noreply, assign(socket, :skill_category, skill_category)}
   end
 
   def handle_event("save", %{"draft_skill" => skill_params}, socket) do
@@ -90,5 +101,11 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  defp on_select_skill_category(id) do
+    fn skill_category ->
+      send_update(__MODULE__, id: id, form_skill_category: skill_category)
+    end
   end
 end

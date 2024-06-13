@@ -51,6 +51,10 @@ defmodule Bright.DraftSkillUnits do
   """
   def get_draft_skill_unit!(id), do: Repo.get!(DraftSkillUnit, id)
 
+  def get_draft_skill_unit(id) when id in ["", nil], do: nil
+
+  def get_draft_skill_unit(id), do: Repo.get(DraftSkillUnit, id)
+
   @doc """
   Creates a draft_skill_unit.
 
@@ -161,6 +165,18 @@ defmodule Bright.DraftSkillUnits do
 
   """
   def get_draft_skill_category!(id), do: Repo.get!(DraftSkillCategory, id)
+
+  def get_draft_skill_category(id) when id in ["", nil], do: nil
+
+  def get_draft_skill_category(id), do: Repo.get(DraftSkillCategory, id)
+
+  def list_draft_skill_categorys_on_unit(draft_skill_unit) do
+    from(q in DraftSkillCategory,
+      where: q.draft_skill_unit_id == ^draft_skill_unit.id,
+      order_by: {:asc, q.position}
+    )
+    |> Repo.all()
+  end
 
   @doc """
   Creates a draft_skill_category.
@@ -276,6 +292,10 @@ defmodule Bright.DraftSkillUnits do
 
   """
   def get_draft_skill!(id), do: Repo.get!(DraftSkill, id)
+
+  def get_draft_skill(id) when id in ["", nil], do: nil
+
+  def get_draft_skill(id), do: Repo.get(DraftSkill, id)
 
   @doc """
   Creates a draft_skill.
