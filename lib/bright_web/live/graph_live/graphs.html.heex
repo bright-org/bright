@@ -78,12 +78,14 @@
       display_return_to_yourself={!@me}
       is_star={@is_star}
       is_anonymous={@anonymous}
+      me={@me}
     >
       <:score_stats>
         <ProfileComponents.dounat_graph_with_score_stats
           skill_class_score={@skill_class_score}
           counter={@counter}
           num_skills={@num_skills}
+          me={@me}
         />
       </:score_stats>
       <:switch_button>

@@ -243,7 +243,7 @@ defmodule BrightWeb.ProfileComponents do
                 skill_class={@skill_class}
               />
             </div>
-            <div class="pt-4">
+            <div class="pt-4" :if={@me}>
               <button
                 class={"bg-white border border-#{get_star_style(@is_star)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
                 phx-click="click_star_button"
