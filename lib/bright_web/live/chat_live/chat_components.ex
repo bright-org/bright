@@ -184,7 +184,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   attr :path, :any
   attr :has_link, :boolean, default: false
-  attr :url, :string, required: true
+  attr :url, :string, default: nil
 
   def user_icon(%{has_link: true} = assigns) do
     ~H"""
