@@ -230,9 +230,9 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       if anon and Interview.anon?(chat.interview) and !user.is_member do
         user_by_name = Bright.Accounts.get_user_by_name(user.name)
         encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_by_name)
-        "/panels/#{skill_panel}/anon/#{encrypted_name}"
+        "/graphs/#{skill_panel}/anon/#{encrypted_name}"
       else
-        "/panels/#{skill_panel}/#{user.name}"
+        "/graphs/#{skill_panel}/#{user.name}"
       end
 
     assigns
