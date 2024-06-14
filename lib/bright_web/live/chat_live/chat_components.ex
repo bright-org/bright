@@ -119,7 +119,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             chat={@chat}
             user_id={@current_user.id}
             anon={@chat.interview.recruiter_user_id == @current_user.id}
-            is_link={true}
+            has_link={true}
           />
         </div>
 
@@ -163,7 +163,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :user_id, :string, required: true
   attr :anon, :boolean, default: true
   attr :member_ids, :any, default: []
-  attr :is_link, :boolean, default: false
+  attr :has_link, :boolean, default: false
 
   def switch_user_icon(assigns) do
     assigns =
@@ -172,10 +172,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
     ~H"""
     <%= if @anon and Interview.anon?(@chat.interview) and !@user.is_member do %>
-      <.user_icon path={nil} is_link={@is_link} url={@url} />
+      <.user_icon path={nil} has_link={@has_link} url={@url} />
     <% else %>
       <div class="flex flex-col justify-end">
-        <.user_icon path={@user.icon} is_link={@is_link} url={@url}/>
+        <.user_icon path={@user.icon} has_link={@has_link} url={@url}/>
         <p :if={@show_name} class="lg:w-24 break-words"><%= @user.name %></p>
       </div>
     <% end %>
@@ -183,10 +183,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   end
 
   attr :path, :any
-  attr :is_link, :boolean, default: false
-  attr :url, :any, default: nil
+  attr :has_link, :boolean, default: false
+  attr :url, :string, required: true
 
-  def user_icon(%{is_link: true} = assigns) do
+  def user_icon(%{has_link: true} = assigns) do
     ~H"""
     <.link patch={@url} >
       <.user_icon path={@path} />
