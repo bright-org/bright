@@ -171,7 +171,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       |> set_url()
 
     ~H"""
-    <%= if @anon and Interview.anon?(@chat.interview) and !@user.is_member do %>
+    <%= if anon?(@anon, @chat, @user) do %>
       <.user_icon path={nil} has_link={@has_link} url={@url} />
     <% else %>
       <div class="flex flex-col justify-end">
@@ -227,7 +227,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       |> Map.get("skill_panel")
 
     url =
-      if anon and Interview.anon?(chat.interview) and !user.is_member do
+      if anon?(anon, chat, user) do
         user_by_name = Bright.Accounts.get_user_by_name(user.name)
         encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_by_name)
         "/graphs/#{skill_panel}/anon/#{encrypted_name}"
@@ -247,4 +247,6 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     |> NaiveDateTime.to_string()
     |> String.slice(0, 16)
   end
+
+  defp anon?(anon, chat, user), do: anon and Interview.anon?(chat.interview) and !user.is_member
 end
