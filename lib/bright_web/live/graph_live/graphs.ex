@@ -19,7 +19,6 @@ defmodule BrightWeb.GraphLive.Graphs do
     socket
     |> assign_display_user(params)
     |> assign_skill_panel(params["skill_panel_id"])
-    |> assign(:is_star, false)
     |> assign(:select_label, "now")
     |> assign(:compared_user, nil)
     |> assign(:select_label_compared_user, nil)

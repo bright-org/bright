@@ -41,6 +41,16 @@ defmodule Bright.UserSkillPanels do
   def get_user_skill_panel!(id),
     do: Repo.get!(UserSkillPanel, id) |> Repo.preload([:user, :skill_panel])
 
+  def get_star!(user_id, skill_panel_id) do
+    from(u in UserSkillPanel,
+      where:
+        u.user_id == ^user_id and
+          u.skill_panel_id == ^skill_panel_id,
+      select: u.is_star
+    )
+    |> Repo.one!()
+  end
+
   @doc """
   Creates a user_skill_panel.
 

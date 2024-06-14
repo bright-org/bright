@@ -24,7 +24,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      socket
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"])
-     |> assign(:is_star, false)
      |> assign(:page_title, "スキルパネル")
      |> assign(init_team_id: nil, init_timeline: nil)}
   end
