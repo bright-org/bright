@@ -72,6 +72,11 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, push_redirect(socket, to: move_to)}
   end
 
+  def handle_event("click_star_button", _params, socket) do
+    IO.inspect("sss")
+    {:noreply, socket}
+  end
+
   defp apply_action(socket, :show, params) do
     socket
     |> assign(:init_team_id, params["team"])
