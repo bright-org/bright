@@ -242,6 +242,16 @@ defmodule BrightWeb.ProfileComponents do
                 skill_class={@skill_class}
               />
             </div>
+            <div class="pt-4">
+              <button
+                class={"bg-white border border-brightGreen-300 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+                phx-click="click_star_button"
+              >
+                <span class={"material-icons text-brightGreen-300"}>
+                  star
+                </span>
+              </button>
+            </div>
             <%= if @score_stats, do: render_slot(@score_stats) %>
           </div>
           <%= if @switch_button, do: render_slot(@switch_button) %>
