@@ -75,7 +75,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   phx-target={@myself}
                   phx-value-id={post.id}
                 >
-                  <span class="material-symbols-outlined text-brightGray-500 font-xs hover:opacity-50">delete</span>
+                  <span class="material-symbols-outlined text-brightGray-500 font-xs hover:filter hover:brightness-90">delete</span>
                 </div>
               </div>
             </div>

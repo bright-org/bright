@@ -40,7 +40,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
               />
             </div>
             <.link
-              class="text-xl w-40 lg:w-56 truncate lg:text-2xl font-bold hover:opacity-50"
+              class="text-xl w-40 lg:w-56 truncate lg:text-2xl font-bold hover:opacity-70"
               navigate={~p"/mypage/#{if me, do: "", else: @display_skill_card.user.name}"}
             >
               <%= @display_skill_card.user.name %>
@@ -49,7 +49,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <div class="flex gap-x-1 lg:gap-x-2">
             <.link
               :if={!is_nil(@display_skill_card.user_skill_class_score)}
-              class="h-8 bg-white flex items-center justify-center border border-solid border-brightGreen-300 px-1 rounded text-center hover:opacity-50"
+              class="h-8 bg-white flex items-center justify-center border border-solid border-brightGreen-300 px-1 rounded text-center hover:filter hover:brightness-95"
               href={
                     skill_panel_path("graphs",@display_skill_panel, @display_skill_card.user, me, false)
                     <> "?class=#{@display_skill_card.select_skill_class.class}"
@@ -60,7 +60,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
             <.link
               :if={!is_nil(@display_skill_card.user_skill_class_score)}
-              class="h-8 bg-white flex items-center justify-center border border-solid border-brightGreen-300 px-1 rounded text-center hover:opacity-50"
+              class="h-8 bg-white flex items-center justify-center border border-solid border-brightGreen-300 px-1 rounded text-center hover:filter hover:brightness-95"
               href={
                     skill_panel_path("panels",@display_skill_panel, @display_skill_card.user, me, false)
                     <> "?class=#{@display_skill_card.select_skill_class.class}"
@@ -126,7 +126,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
       <div class="pb-2 flex w-full gap-x-1 lg:gap-x-2 justify-around">
         <button
           :if={@display_skill_card.user.id != @current_user.id}
-          class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-base hover:opacity-50"
+          class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-base hover:filter hover:brightness-90"
           phx-click={
             if @hr_enabled,
               do:
@@ -145,7 +145,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
         <%= if @display_skill_card.user.id == @current_user.id do %>
           <%= if !is_nil(@display_skill_panel) && is_nil(@display_skill_card.user_skill_class_score) do %>
             <.link navigate={~p"/more_skills/teams/#{@team_id}/skill_panels/#{@display_skill_panel}"}>
-              <button class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-base hover:opacity-50">
+              <button class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-base hover:filter hover:brightness-90">
                 <div class={[
                   "inline-block h-4 w-4 lg:h-6 lg:w-6 [mask-image:url('/images/common/icons/skillSelect.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-white"
                 ]} /> スキルを取得

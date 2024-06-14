@@ -21,7 +21,7 @@
           patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
           id="link-skills-form"
           class={[
-            "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:opacity-50"
+            "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-90"
           ]}
         >
           <span class="material-icons-outlined text-white text-md">edit</span> スキルを入力する
@@ -30,7 +30,7 @@
         <div
           :if={@me}
           id="btn-help-enter-skills-button"
-          class="flex-none cursor-pointer w-8 h-8 hover:opacity-50 bg-[url('/images/icon_help.svg')]"
+          class="flex-none cursor-pointer w-8 h-8 hover:filter hover:brightness-90 bg-[url('/images/icon_help.svg')]"
           phx-click={
             JS.push("open", target: "#help-enter-skills-button")
             |> show("#help-enter-skills-button")
@@ -163,7 +163,7 @@
                 <button
                   phx-click="open_income_consultation"
                   type="button"
-                  class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:opacity-70 lg:px-2 lg:text-sm"
+                  class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:filter hover:brightness-95 lg:px-2 lg:text-sm"
                 >
                   報酬アップを相談する
                 </button>

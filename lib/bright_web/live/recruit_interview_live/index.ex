@@ -27,7 +27,7 @@ defmodule BrightWeb.RecruitInterviewLive.Index do
           <li class="flex my-5">
             <.link
               patch={~p"/recruits/interviews/#{interview.id}"}
-              class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
+              class="cursor-pointer hover:filter hover:brightness-90 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
               <div class="flex flex-col">
                 <img

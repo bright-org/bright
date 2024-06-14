@@ -94,14 +94,14 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                   </dl>
                 </div>
                 <div class="flex justify-start gap-x-4 mt-4">
-                  <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12">
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44 h-12 bg-white hover:filter hover:brightness-90">
                     <.link navigate={@patch}>閉じる</.link>
                   </button>
                   <div>
                     <button
                       phx-click={JS.show(to: "#menu01")}
                       type="button"
-                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center"
+                      class="text-sm font-bold py-3 pl-3 rounded text-white bg-base w-40 flex items-center hover:filter hover:brightness-90"
                     >
                       <span class="min-w-[6em]">選考キャンセル</span>
                       <span class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-9px] before:bg-brightGray-200 before:w-[1px] before:h-[42px]">add</span>
@@ -141,7 +141,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
                     </div>
                   </div>
                   <button
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 h-12 hover:filter hover:brightness-90"
                     type="submit"
                   >
                     採用選考する
