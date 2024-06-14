@@ -127,7 +127,7 @@ defmodule Bright.SkillPanels do
     from(q in SkillPanel,
       join: u in assoc(q, :user_skill_panels),
       where: u.user_id == ^user.id,
-      order_by: [u.is_star, desc: u.updated_at],
+      order_by: [desc: u.is_star, desc: u.updated_at],
       limit: 1
     )
     |> Repo.one()

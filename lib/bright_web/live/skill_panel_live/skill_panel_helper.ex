@@ -39,6 +39,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     display_user = socket.assigns.display_user
     skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
     is_star = Bright.UserSkillPanels.get_star!(display_user.id, skill_panel.id)
+
     assign(socket, :skill_panel, skill_panel)
     |> assign(:is_star, is_star)
   end
