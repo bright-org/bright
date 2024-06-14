@@ -19,6 +19,7 @@ defmodule BrightWeb.GraphLive.Graphs do
     socket
     |> assign_display_user(params)
     |> assign_skill_panel(params["skill_panel_id"])
+    |> assign(:is_star, false)
     |> assign(:select_label, "now")
     |> assign(:compared_user, nil)
     |> assign(:select_label_compared_user, nil)
@@ -80,7 +81,10 @@ defmodule BrightWeb.GraphLive.Graphs do
   end
 
   def handle_event("click_star_button", _params, socket) do
-    IO.inspect("kkkkkk")
+    socket =
+      socket
+      |> assign(:is_star, not socket.assigns.is_star)
+
     {:noreply, socket}
   end
 

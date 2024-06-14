@@ -24,6 +24,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      socket
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"])
+     |> assign(:is_star, false)
      |> assign(:page_title, "スキルパネル")
      |> assign(init_team_id: nil, init_timeline: nil)}
   end
@@ -73,7 +74,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("click_star_button", _params, socket) do
-    IO.inspect("sss")
+    socket =
+      socket
+      |> assign(:is_star, not socket.assigns.is_star)
+
     {:noreply, socket}
   end
 
