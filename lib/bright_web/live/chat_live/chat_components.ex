@@ -119,6 +119,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             chat={@chat}
             user_id={@current_user.id}
             anon={@chat.interview.recruiter_user_id == @current_user.id}
+            has_link={true}
           />
         </div>
 
@@ -162,19 +163,34 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :user_id, :string, required: true
   attr :anon, :boolean, default: true
   attr :member_ids, :any, default: []
+  attr :has_link, :boolean, default: false
 
   def switch_user_icon(assigns) do
-    assigns = set_user(assigns)
+    assigns =
+      set_user(assigns)
+      |> set_url()
 
     ~H"""
-    <%= if @anon and Interview.anon?(@chat.interview) and !@user.is_member do %>
-      <.user_icon path={nil} />
+    <%= if anon?(@anon, @chat, @user) do %>
+      <.user_icon path={nil} has_link={@has_link} url={@url} />
     <% else %>
       <div class="flex flex-col justify-end">
-        <.user_icon path={@user.icon} />
+        <.user_icon path={@user.icon} has_link={@has_link} url={@url}/>
         <p :if={@show_name} class="lg:w-24 break-words"><%= @user.name %></p>
       </div>
     <% end %>
+    """
+  end
+
+  attr :path, :any
+  attr :has_link, :boolean, default: false
+  attr :url, :string, default: nil
+
+  def user_icon(%{has_link: true} = assigns) do
+    ~H"""
+    <.link patch={@url} >
+      <.user_icon path={@path} />
+    </.link>
     """
   end
 
@@ -203,6 +219,26 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     Map.put(assigns, :user, user)
   end
 
+  defp set_url(%{user: user, chat: chat, anon: anon} = assigns) do
+    skill_panel =
+      chat.interview.skill_params
+      |> Jason.decode!()
+      |> List.first()
+      |> Map.get("skill_panel")
+
+    url =
+      if anon?(anon, chat, user) do
+        user_by_name = Bright.Accounts.get_user_by_name(user.name)
+        encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_by_name)
+        "/graphs/#{skill_panel}/anon/#{encrypted_name}"
+      else
+        "/graphs/#{skill_panel}/#{user.name}"
+      end
+
+    assigns
+    |> assign(url: url)
+  end
+
   defp nl_to_br(str), do: str |> String.replace(~r/\n/, "<br />") |> Phoenix.HTML.raw()
 
   defp datetime(naive_datetime, "Asia/Tokyo") do
@@ -211,4 +247,6 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     |> NaiveDateTime.to_string()
     |> String.slice(0, 16)
   end
+
+  defp anon?(anon, chat, user), do: anon and Interview.anon?(chat.interview) and !user.is_member
 end
