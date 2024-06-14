@@ -9,7 +9,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillCategoryReplaceFormComponent 
     <div id={@id}>
       <.header class="my-2">
         <p><%= @skill_category.name %></p>
-        <:subtitle>別知識エリアへの移動</:subtitle>
+        <:subtitle>他の知識エリアへの移動</:subtitle>
       </.header>
 
       <.simple_form

@@ -9,7 +9,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
     <div id={@id}>
       <.header class="my-2">
         <p><%= @skill.name %></p>
-        <:subtitle>別カテゴリーへの移動</:subtitle>
+        <:subtitle>他のカテゴリーへの移動</:subtitle>
       </.header>
 
       <.simple_form
@@ -20,26 +20,13 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
       >
         <.input field={@form[:draft_skill_category_id]} value={@skill_category && @skill_category.id} type="hidden" />
 
-        <ul>
-          <li :for={category <- @skill_categories} class="my-2">
-            <%= if @skill_category && @skill_category.id == category.id do %>
-              <button type="button" class="border rounded-lg bg-zinc-400">
-                <span class="p-2"><%= category.name %></span>
-              </button>
-            <% else %>
-              <button type="button" class="border rounded-lg bg-zinc-50 hover:bg-zinc-400" phx-click="select" phx-target={@myself} phx-value-id={category.id}>
-                <span class="p-2"><%= category.name %></span>
-              </button>
-            <% end %>
-          </li>
-        </ul>
-
-        <p>スキルクラス外への移動の場合は下記から選択してください</p>
-
         <.live_component
           id="skill-category-selection"
           module={SkillSelectionComponent}
           skill_panel={@this_skill_panel}
+          skill_class={@this_skill_class}
+          skill_unit={@skill_unit}
+          skill_category={@skill_category}
           target={Bright.DraftSkillUnits.DraftSkillCategory}
           on_select={on_select_skill_category(@id)}
         />
@@ -60,10 +47,12 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
   def update(%{skill: skill} = assigns, socket) do
     changeset = DraftSkillUnits.change_draft_skill(skill)
     skill_category = DraftSkillUnits.get_draft_skill_category!(skill.draft_skill_category_id)
+    skill_unit = DraftSkillUnits.get_draft_skill_unit!(skill_category.draft_skill_unit_id)
 
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:skill_unit, skill_unit)
      |> assign(:skill_category, skill_category)
      |> assign_form(changeset)}
   end
