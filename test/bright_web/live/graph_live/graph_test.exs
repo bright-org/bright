@@ -128,6 +128,33 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
       assert has_element?(show_live, "#job_searching_message")
     end
+
+    test "shows star", %{
+      conn: conn,
+      skill_panel: skill_panel
+    } do
+      {:ok, show_live, html} = live(conn, ~p"/graphs/#{skill_panel}")
+
+      assert html =~ ~r{class=".*border-brightGray-500.*"}
+
+      html =
+        show_live
+        |> element(~s{button[phx-click="click_star_button"]})
+        |> render_click()
+
+      assert html =~ ~r{class=".*border-brightGreen-300.*"}
+
+      {:ok, show_live, html} = live(conn, ~p"/graphs/#{skill_panel}")
+
+      assert html =~ ~r{class=".*border-brightGreen-300.*"}
+
+      html =
+        show_live
+        |> element(~s{button[phx-click="click_star_button"]})
+        |> render_click()
+
+      assert html =~ ~r{class=".*border-brightGray-500.*"}
+    end
   end
 
   describe "Show no skill panel" do

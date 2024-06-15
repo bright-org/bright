@@ -7,6 +7,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias Bright.UserJobProfiles
   alias BrightWeb.ProfileComponents
   alias BrightWeb.GuideMessageComponents
+  alias Bright.UserSkillPanels
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
@@ -77,6 +78,17 @@ defmodule BrightWeb.GraphLive.Graphs do
 
   def handle_event("close_income_consultation", _params, socket) do
     {:noreply, assign(socket, :open_income_consultation, false)}
+  end
+
+  def handle_event("click_star_button", _params, %{assigns: assigns} = socket) do
+    is_star = !assigns.is_star
+
+    socket =
+      socket
+      |> assign(:is_star, is_star)
+
+    UserSkillPanels.set_is_star(assigns.display_user, assigns.skill_panel, is_star)
+    {:noreply, socket}
   end
 
   @impl true

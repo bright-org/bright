@@ -218,6 +218,8 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   attr :is_anonymous, :boolean, default: false
+  attr :me, :boolean, default: false
+  attr :is_star, :boolean, default: false
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
   attr :icon_file_path, :string, default: ""
@@ -241,6 +243,16 @@ defmodule BrightWeb.ProfileComponents do
                 skill_panel={@skill_panel}
                 skill_class={@skill_class}
               />
+            </div>
+            <div class="pt-4" :if={@me}>
+              <button
+                class={"bg-white border border-#{get_star_style(@is_star)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+                phx-click="click_star_button"
+              >
+                <span class={"material-icons text-#{get_star_style(@is_star)}"}>
+                  star
+                </span>
+              </button>
             </div>
             <%= if @score_stats, do: render_slot(@score_stats) %>
           </div>
@@ -577,4 +589,7 @@ defmodule BrightWeb.ProfileComponents do
     </.link>
     """
   end
+
+  defp get_star_style(true), do: "brightGreen-300"
+  defp get_star_style(false), do: "brightGray-500"
 end

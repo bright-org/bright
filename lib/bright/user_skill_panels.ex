@@ -42,6 +42,40 @@ defmodule Bright.UserSkillPanels do
     do: Repo.get!(UserSkillPanel, id) |> Repo.preload([:user, :skill_panel])
 
   @doc """
+  Get is_star
+
+  ## Examples
+
+      iex> get_is_star!(user_id, skill_panel_id)
+      true
+
+  """
+  def get_is_star!(user_id, skill_panel_id) do
+    from(u in UserSkillPanel,
+      where:
+        u.user_id == ^user_id and
+          u.skill_panel_id == ^skill_panel_id,
+      select: u.is_star
+    )
+    |> Repo.one!()
+  end
+
+  @doc """
+  Set is_star
+
+  ## Examples
+
+      iex> set_is_star(user, skill_panel, is_star)
+      {:ok, %UserSkillPanel{}}
+
+  """
+  def set_is_star(user, skill_panel, is_star) do
+    Repo.get_by!(UserSkillPanel, user_id: user.id, skill_panel_id: skill_panel.id)
+    |> UserSkillPanel.is_star_changeset(%{is_star: is_star})
+    |> Repo.update()
+  end
+
+  @doc """
   Creates a user_skill_panel.
 
   合わせてスキルパネルに属するスキルクラスの各スコア用のレコードを生成している

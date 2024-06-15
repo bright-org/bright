@@ -17,6 +17,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.PathHelper
   alias BrightWeb.ProfileComponents
   alias BrightWeb.GuideMessageComponents
+  alias Bright.UserSkillPanels
 
   @impl true
   def mount(params, _session, socket) do
@@ -70,6 +71,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     move_to = get_path_to_switch_me("panels", current_user, skill_panel)
 
     {:noreply, push_redirect(socket, to: move_to)}
+  end
+
+  def handle_event("click_star_button", _params, %{assigns: assigns} = socket) do
+    is_star = !assigns.is_star
+
+    socket =
+      socket
+      |> assign(:is_star, is_star)
+
+    UserSkillPanels.set_is_star(assigns.display_user, assigns.skill_panel, is_star)
+    {:noreply, socket}
   end
 
   defp apply_action(socket, :show, params) do

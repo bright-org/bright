@@ -194,6 +194,16 @@ defmodule Bright.SkillPanelsTest do
     #   UserSkillPanels.touch_user_skill_panel_updated(user, skill_panel_2)
     #   assert SkillPanels.get_user_latest_skill_panel(user) == skill_panel_2
     # end
+
+    test "get_user_latest_skill_panel/1 returns the latest star skill_panel with given user" do
+      user = insert(:user)
+
+      insert(:user_skill_panel, user: user)
+      user_skill_panel_2 = insert(:user_skill_panel, user: user, is_star: true)
+      insert(:user_skill_panel, user: user)
+
+      assert SkillPanels.get_user_latest_skill_panel(user) == user_skill_panel_2.skill_panel
+    end
   end
 
   describe "skill_classes" do
