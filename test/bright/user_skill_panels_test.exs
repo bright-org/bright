@@ -130,10 +130,16 @@ defmodule Bright.UserSkillPanelsTest do
       user_skill_panel2 = insert(:user_skill_panel)
       refute user_skill_panel.is_star
       refute UserSkillPanels.get_star!(user_skill_panel.user_id, user_skill_panel.skill_panel_id)
-      assert {:ok, %UserSkillPanel{}} = UserSkillPanels.set_star(user_skill_panel.user, user_skill_panel.skill_panel, true)
-      assert UserSkillPanels.get_star!(user_skill_panel.user_id, user_skill_panel.skill_panel_id)
-      refute UserSkillPanels.get_star!(user_skill_panel2.user_id, user_skill_panel2.skill_panel_id)
-    end
 
+      assert {:ok, %UserSkillPanel{}} =
+               UserSkillPanels.set_star(user_skill_panel.user, user_skill_panel.skill_panel, true)
+
+      assert UserSkillPanels.get_star!(user_skill_panel.user_id, user_skill_panel.skill_panel_id)
+
+      refute UserSkillPanels.get_star!(
+               user_skill_panel2.user_id,
+               user_skill_panel2.skill_panel_id
+             )
+    end
   end
 end
