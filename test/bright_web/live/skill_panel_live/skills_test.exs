@@ -226,7 +226,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}")
 
       assert html =~
-               ~s{class="bg-white border border-brightGreen-500 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+               ~s{class="bg-white border border-brightGray-500 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
 
       html =
         show_live
@@ -247,7 +247,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
         |> render_click()
 
       assert html =~
-               ~s{class="bg-white border border-brightGreen-500 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+               ~s{class="bg-white border border-brightGray-500 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
     end
   end
 

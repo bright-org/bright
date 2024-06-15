@@ -591,5 +591,5 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   defp get_star_style(true), do: "brightGreen-300"
-  defp get_star_style(false), do: "brightGreen-500"
+  defp get_star_style(false), do: "brightGray-500"
 end
