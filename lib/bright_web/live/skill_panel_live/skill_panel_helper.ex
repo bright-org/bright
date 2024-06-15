@@ -39,13 +39,8 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     display_user = socket.assigns.display_user
     skill_panel = SkillPanels.get_user_latest_skill_panel(display_user)
 
-    is_star =
-      if is_nil(skill_panel),
-        do: false,
-        else: Bright.UserSkillPanels.get_star!(display_user.id, skill_panel.id)
-
     assign(socket, :skill_panel, skill_panel)
-    |> assign(:is_star, is_star)
+    |> assign_is_star_panel(display_user, skill_panel)
   end
 
   def assign_skill_panel(socket, skill_panel_id) do
@@ -53,10 +48,15 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
     raise_if_not_exists_skill_panel(skill_panel)
 
-    is_star = Bright.UserSkillPanels.get_star!(socket.assigns.display_user.id, skill_panel.id)
-
     assign(socket, :skill_panel, skill_panel)
-    |> assign(:is_star, is_star)
+    |> assign_is_star_panel(socket.assigns.display_user, skill_panel)
+  end
+
+  def assign_is_star_panel(socket, _display_user, nil), do: assign(socket, :is_star, false)
+
+  def assign_is_star_panel(socket, display_user, skill_panel) do
+    is_star = Bright.UserSkillPanels.get_star!(display_user.id, skill_panel.id)
+    assign(socket, :is_star, is_star)
   end
 
   def assign_skill_classes(socket) do
