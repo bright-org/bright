@@ -71,7 +71,8 @@ defmodule Bright.UserSkillPanels do
   """
   def set_is_star(user, skill_panel, is_star) do
     Repo.get_by!(UserSkillPanel, user_id: user.id, skill_panel_id: skill_panel.id)
-    |> update_user_skill_panel(%{is_star: is_star})
+    |> UserSkillPanel.is_star_changeset(%{is_star: is_star})
+    |> Repo.update()
   end
 
   @doc """

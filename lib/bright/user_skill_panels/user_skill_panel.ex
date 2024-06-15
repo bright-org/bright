@@ -21,7 +21,14 @@ defmodule Bright.UserSkillPanels.UserSkillPanel do
   def changeset(user_skill_panel, attrs) do
     user_skill_panel
     |> cast(attrs, [:user_id, :skill_panel_id, :is_star])
-    |> validate_required([:user_id, :skill_panel_id, :is_star])
+    |> validate_required([:user_id, :skill_panel_id])
     |> unique_constraint([:user_id, :skill_panel_id])
+  end
+
+  @doc false
+  def is_star_changeset(user_skill_panel, attrs) do
+    user_skill_panel
+    |> cast(attrs, [:user_id, :skill_panel_id, :is_star])
+    |> validate_required([:user_id, :skill_panel_id, :is_star])
   end
 end
