@@ -2,8 +2,6 @@ defmodule Bright.SkillPanelsTest do
   use Bright.DataCase
 
   alias Bright.SkillPanels
-  alias Bright.UserSkillPanels
-  alias Bright.UserSkillPanels.UserSkillPanel
 
   describe "skill_panels" do
     alias Bright.SkillPanels.SkillPanel
@@ -200,12 +198,9 @@ defmodule Bright.SkillPanelsTest do
     test "get_user_latest_skill_panel/1 returns the latest star skill_panel with given user" do
       user = insert(:user)
 
-      _user_skill_panel_1 = insert(:user_skill_panel, user: user)
-      user_skill_panel_2 = insert(:user_skill_panel, user: user)
-      _user_skill_panel_3 = insert(:user_skill_panel, user: user)
-
-      assert {:ok, %UserSkillPanel{}} =
-               UserSkillPanels.set_is_star(user, user_skill_panel_2.skill_panel, true)
+      insert(:user_skill_panel, user: user)
+      user_skill_panel_2 = insert(:user_skill_panel, user: user, is_star: true)
+      insert(:user_skill_panel, user: user)
 
       assert SkillPanels.get_user_latest_skill_panel(user) == user_skill_panel_2.skill_panel
     end
