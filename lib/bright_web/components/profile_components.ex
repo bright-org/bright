@@ -218,6 +218,7 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   attr :is_anonymous, :boolean, default: false
+  attr :me, :boolean, default: false
   attr :is_star, :boolean, default: false
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
