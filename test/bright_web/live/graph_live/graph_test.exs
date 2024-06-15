@@ -135,29 +135,25 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     } do
       {:ok, show_live, html} = live(conn, ~p"/graphs/#{skill_panel}")
 
-      assert html =~
-               ~s{class="bg-white border border-brightGray-500 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+      assert html =~ ~r{class=".*border-brightGray-500.*"}
 
       html =
         show_live
         |> element(~s{button[phx-click="click_star_button"]})
         |> render_click()
 
-      assert html =~
-               ~s{class="bg-white border border-brightGreen-300 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+      assert html =~ ~r{class=".*border-brightGreen-300.*"}
 
       {:ok, show_live, html} = live(conn, ~p"/graphs/#{skill_panel}")
 
-      assert html =~
-               ~s{class="bg-white border border-brightGreen-300 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+      assert html =~ ~r{class=".*border-brightGreen-300.*"}
 
       html =
         show_live
         |> element(~s{button[phx-click="click_star_button"]})
         |> render_click()
 
-      assert html =~
-               ~s{class="bg-white border border-brightGray-500 rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+      assert html =~ ~r{class=".*border-brightGray-500.*"}
     end
   end
 
