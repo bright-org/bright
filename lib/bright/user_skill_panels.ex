@@ -41,7 +41,16 @@ defmodule Bright.UserSkillPanels do
   def get_user_skill_panel!(id),
     do: Repo.get!(UserSkillPanel, id) |> Repo.preload([:user, :skill_panel])
 
-  def get_star!(user_id, skill_panel_id) do
+  @doc """
+  Get is_star
+
+  ## Examples
+
+      iex> get_is_star!(user_id, skill_panel_id)
+      true
+
+  """
+  def get_is_star!(user_id, skill_panel_id) do
     from(u in UserSkillPanel,
       where:
         u.user_id == ^user_id and
@@ -51,7 +60,16 @@ defmodule Bright.UserSkillPanels do
     |> Repo.one!()
   end
 
-  def set_star(user, skill_panel, is_star) do
+  @doc """
+  Set is_star
+
+  ## Examples
+
+      iex> set_is_star(user, skill_panel, is_star)
+      {:ok, %UserSkillPanel{}}
+
+  """
+  def set_is_star(user, skill_panel, is_star) do
     Repo.get_by!(UserSkillPanel, user_id: user.id, skill_panel_id: skill_panel.id)
     |> update_user_skill_panel(%{is_star: is_star})
   end

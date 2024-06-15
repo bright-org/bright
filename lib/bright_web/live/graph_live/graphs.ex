@@ -87,7 +87,7 @@ defmodule BrightWeb.GraphLive.Graphs do
       socket
       |> assign(:is_star, is_star)
 
-    UserSkillPanels.set_star(assigns.display_user, assigns.skill_panel, is_star)
+    UserSkillPanels.set_is_star(assigns.display_user, assigns.skill_panel, is_star)
     {:noreply, socket}
   end
 

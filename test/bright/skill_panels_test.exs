@@ -205,7 +205,7 @@ defmodule Bright.SkillPanelsTest do
       _user_skill_panel_3 = insert(:user_skill_panel, user: user)
 
       assert {:ok, %UserSkillPanel{}} =
-               UserSkillPanels.set_star(user, user_skill_panel_2.skill_panel, true)
+               UserSkillPanels.set_is_star(user, user_skill_panel_2.skill_panel, true)
 
       assert SkillPanels.get_user_latest_skill_panel(user) == user_skill_panel_2.skill_panel
     end
