@@ -81,7 +81,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   end
 
   def handle_event("click_star_button", _params, %{assigns: assigns} = socket) do
-    is_star = not assigns.is_star
+    is_star = !assigns.is_star
 
     socket =
       socket
