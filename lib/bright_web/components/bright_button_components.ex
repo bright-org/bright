@@ -24,7 +24,7 @@ defmodule BrightWeb.BrightButtonComponents do
     ~H"""
     <button
       type="button"
-      class="text-brightGreen-300 bg-white px-1 inline-flex rounded-md min-w-[60px] text-[10px] items-center border border-brightGreen-300 font-bold lg:px-2 lg:py-1 lg:text-sm hover:filter hover:brightness-90"
+      class="text-brightGreen-300 bg-white px-1 inline-flex rounded-md min-w-[60px] text-[10px] items-center border border-brightGreen-300 font-bold lg:px-2 lg:py-1 lg:text-sm hover:filter hover:brightness-[80%]"
       {@rest}
     >
       <%= render_slot(@inner_block) %>
@@ -128,7 +128,7 @@ defmodule BrightWeb.BrightButtonComponents do
     >
       <button
         type="button"
-        class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:filter hover:brightness-90 lg:px-2 lg:text-sm"
+        class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:filter hover:brightness-[80%] lg:px-2 lg:text-sm"
       >
         <span class="material-icons mr-1 material-icons-outlined lg:mr-2">upgrade</span>
         アップグレード
@@ -153,7 +153,7 @@ defmodule BrightWeb.BrightButtonComponents do
       rel="noopener noreferrer"
     >
       <button type="button"
-        class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:filter hover:brightness-90 lg:px-2 lg:text-sm">
+        class="text-white bg-brightGreen-300 px-1 inline-flex rounded-md text-xs items-center justify-center font-bold h-9 w-full hover:filter hover:brightness-[80%] lg:px-2 lg:text-sm">
         <span
             class="material-icons mr-1 material-icons-outlined lg:mr-2">sms</span>
         カスタマーサクセスに連絡

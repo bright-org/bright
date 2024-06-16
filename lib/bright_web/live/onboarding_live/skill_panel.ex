@@ -40,14 +40,14 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
       <p class="flex flex-col lg:flex-row gap-y-4 lg:gap-y-0 justify-center mt-8 lg:px-4 w-full lg:w-[1040px]">
         <button
           phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "input"})}
-          class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold px-4 py-2 rounded select-none text-white w-full lg:w-64 hover:filter hover:brightness-90"
+          class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold px-4 py-2 rounded select-none text-white w-full lg:w-64 hover:filter hover:brightness-[80%]"
         >
           このスキルでスキル入力に進む
         </button>
 
         <.link
           navigate={@return_to}
-          class="bg-white block border border-solid border-black font-bold lg:ml-16 px-4 py-2 rounded select-none text-black text-center w-full lg:w-40 hover:filter hover:brightness-90"
+          class="bg-white block border border-solid border-black font-bold lg:ml-16 px-4 py-2 rounded select-none text-black text-center w-full lg:w-40 hover:filter hover:brightness-[80%]"
         >
           戻る
         </.link>

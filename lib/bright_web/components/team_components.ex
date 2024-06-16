@@ -134,7 +134,7 @@ defmodule BrightWeb.TeamComponents do
       </h3>
       <button
         :if={show_star_button?(@current_users_team_member)}
-        class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-90"}
+        class={"bg-white border border-#{get_star_style(@current_users_team_member)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-[80%]"}
         phx-click="click_star_button"
       >
         <span class={"material-icons text-#{get_star_style(@current_users_team_member)}"}>

@@ -120,7 +120,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         <button
           class={
             "inline-flex items-center font-bold rounded-l-full gap-x-2 px-6 py-2 " <>
-            if @active == "graph", do: "button-toggle-active", else: "hover:filter hover:brightness-90"
+            if @active == "graph", do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"
           }
         >
           <div
@@ -136,7 +136,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         <button
           class={
             "inline-flex items-center font-bold rounded-r-full gap-x-2 px-4 py-2 " <>
-            if @active == "panel", do: "button-toggle-active", else: "hover:filter hover:brightness-90"
+            if @active == "panel", do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"
           }
         >
           <div
@@ -189,7 +189,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
             [
               "flex grow cursor-pointer justify-center items-center rounded-t px-1 lg:px-4 py-1 lg:py-3",
               selected_skill?(@select_skill_class, skill_class) && "text-brightGreen-300 border-x-2 border-x-brightGreen-300 border-t-2 border-t-brightGreen-300",
-              !selected_skill?(@select_skill_class, skill_class) && "hover:filter hover:brightness-90 hover:text-brightGreen-300 border-x-2 border-x-brightGray-100 border-t-2 border-t-brightGray-100 border-b-2 border-b-brightGreen-300"
+              !selected_skill?(@select_skill_class, skill_class) && "hover:filter hover:brightness-[80%] hover:text-brightGreen-300 border-x-2 border-x-brightGray-100 border-t-2 border-t-brightGray-100 border-b-2 border-b-brightGreen-300"
             ]
           }
           phx-click="skill_class_tab_click"
@@ -227,7 +227,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <ul class="flex relative z-1 text-normal font-bold text-brightGray-300 text-center lg:text-md w-full">
         <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
           <li class="w-1 lg:w-2 border-b-2 border-b-brightGreen-300"></li>
-          <li id={"class_tab_#{skill_class.class}"} class={["grow lg:grow-0 rounded-t", selected_skill?(@skill_class, skill_class) && "text-brightGreen-300 border-x-2 border-x-brightGreen-300 border-t-2 border-t-brightGreen-300", !selected_skill?(@skill_class, skill_class) && "hover:filter hover:brightness-90 hover:text-brightGreen-300 border-x-2 border-x-brightGray-100 border-t-2 border-t-brightGray-100 border-b-2 border-b-brightGreen-300"]}>
+          <li id={"class_tab_#{skill_class.class}"} class={["grow lg:grow-0 rounded-t", selected_skill?(@skill_class, skill_class) && "text-brightGreen-300 border-x-2 border-x-brightGreen-300 border-t-2 border-t-brightGreen-300", !selected_skill?(@skill_class, skill_class) && "hover:filter hover:brightness-[80%] hover:text-brightGreen-300 border-x-2 border-x-brightGray-100 border-t-2 border-t-brightGray-100 border-b-2 border-b-brightGreen-300"]}>
             <.link
               patch={"#{@path}?#{build_query(@query, %{"class" => skill_class.class})}"}
               class="flex justify-center items-center px-1 lg:px-10 py-2"
@@ -260,7 +260,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <div class="h-screen w-full flex flex-col justify-center items-center gap-y-2">
       <p class="text-2xl lg:text-4xl">スキルパネルがありません</p>
       <p class="text-md lg:text-xl">スキルを選ぶからスキルパネルを取得しましょう</p>
-      <a href={~p"/onboardings"} class="text-xl cursor-pointer bg-brightGray-900 !text-white font-bold px-6 py-4 rounded mt-10 hover:filter hover:brightness-90">
+      <a href={~p"/onboardings"} class="text-xl cursor-pointer bg-brightGray-900 !text-white font-bold px-6 py-4 rounded mt-10 hover:filter hover:brightness-[80%]">
       スキルを選ぶ
       </a>
     </div>

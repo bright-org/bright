@@ -10,7 +10,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
       <ul class="flex flex-wrap gap-4 justify-center p-4 lg:justify-start">
         <!-- やりたいこと ここから -->
         <%= for wants <- @career_wants do %>
-        <li class="bg-white px-4 py-4 rounded select-none w-72 hover:filter hover:brightness-90">
+        <li class="bg-white px-4 py-4 rounded select-none w-72 hover:filter hover:brightness-[80%]">
           <.link navigate={"#{@current_path}/wants/#{wants.id}"} class="block">
             <b class="block text-center"><%= wants.name %></b>
             <div class="flex flex-wrap gap-2 justify-center mt-2 py-2">
@@ -36,7 +36,7 @@ defmodule BrightWeb.OnboardingLive.WantToDoComponents do
           placeholder="やりたいことに関連するキーワードを入れてください"
           class="border border-solid border-black placeholder-brightGray-200 px-4 py-2 rounded-l w-[512px]"
         />
-        <button class="bg-white border border-l-0 border-solid border-black font-bold -ml-4 px-4 py-2 rounded-r w-20 hover:filter hover:brightness-90">
+        <button class="bg-white border border-l-0 border-solid border-black font-bold -ml-4 px-4 py-2 rounded-r w-20 hover:filter hover:brightness-[80%]">
           検索
         </button>
         <div class="w-full"><span class="px-4 text-brightGray-300">検索結果が表示されます。</span></div>
