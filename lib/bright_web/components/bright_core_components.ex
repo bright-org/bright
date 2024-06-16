@@ -96,7 +96,7 @@ defmodule BrightWeb.BrightCoreComponents do
     <button
       type={@type}
       class={[
-        "bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:filter hover:brightness-95",
+        "bg-brightGray-900 border border-solid border-brightGray-900 cursor-pointer font-bold px-4 py-2 rounded select-none text-center text-white w-80 hover:filter hover:brightness-90",
         "phx-submit-loading:opacity-75",
         @class
       ]}
@@ -119,7 +119,7 @@ defmodule BrightWeb.BrightCoreComponents do
 
   def action_button(%{icon: nil} = assigns) do
     ~H"""
-    <button type={@type} class={["bg-brightGray-10 text-xs lg:text-sm font-bold rounded border border-base hover:filter hover:brightness-95", @class]} {@rest}>
+    <button type={@type} class={["bg-brightGray-10 text-xs lg:text-sm font-bold rounded border border-base hover:filter hover:brightness-90", @class]} {@rest}>
       <%= render_slot(@inner_block) %>
     </button>
     """
@@ -129,7 +129,7 @@ defmodule BrightWeb.BrightCoreComponents do
     ~H"""
     <button
       type={@type}
-      class={["bg-brightGray-10 text-xs lg:text-sm font-bold border border-base rounded flex items-center hover:filter hover:brightness-95", @class]}
+      class={["bg-brightGray-10 text-xs lg:text-sm font-bold border border-base rounded flex items-center hover:filter hover:brightness-90", @class]}
       @rest
     >
       <%= render_slot(@inner_block) %>

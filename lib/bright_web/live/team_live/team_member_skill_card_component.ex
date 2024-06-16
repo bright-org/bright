@@ -49,7 +49,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
           <div class="flex gap-x-1 lg:gap-x-2">
             <.link
               :if={!is_nil(@display_skill_card.user_skill_class_score)}
-              class="h-8 bg-white flex items-center justify-center border border-solid border-brightGreen-300 px-1 rounded text-center hover:filter hover:brightness-95"
+              class="h-8 bg-white flex items-center justify-center border border-solid border-brightGreen-300 px-1 rounded text-center hover:filter hover:brightness-90"
               href={
                     skill_panel_path("graphs",@display_skill_panel, @display_skill_card.user, me, false)
                     <> "?class=#{@display_skill_card.select_skill_class.class}"
@@ -60,7 +60,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
             <.link
               :if={!is_nil(@display_skill_card.user_skill_class_score)}
-              class="h-8 bg-white flex items-center justify-center border border-solid border-brightGreen-300 px-1 rounded text-center hover:filter hover:brightness-95"
+              class="h-8 bg-white flex items-center justify-center border border-solid border-brightGreen-300 px-1 rounded text-center hover:filter hover:brightness-90"
               href={
                     skill_panel_path("panels",@display_skill_panel, @display_skill_card.user, me, false)
                     <> "?class=#{@display_skill_card.select_skill_class.class}"
