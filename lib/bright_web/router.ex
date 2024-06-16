@@ -146,6 +146,10 @@ defmodule BrightWeb.Router do
            DraftSkillClassLive.Show,
            :edit_skill_category
 
+      live "/draft_skill_classes/:id/skill_categories/:skill_category_id/replace",
+           DraftSkillClassLive.Show,
+           :replace_skill_category
+
       live "/draft_skill_classes/:id/skills/new", DraftSkillClassLive.Show, :new_skill
       live "/draft_skill_classes/:id/skills/:skill_id/edit", DraftSkillClassLive.Show, :edit_skill
 

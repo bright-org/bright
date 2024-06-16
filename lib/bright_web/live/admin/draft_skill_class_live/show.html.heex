@@ -105,7 +105,13 @@
                 <span class="cursor-pointer hero-arrow-down-circle" phx-click="position_down_skill_category" phx-value-row={row}  />
               <% end %>
 
-              <.link class="ml-1" patch={"#{@page_path}/skill_categories/#{col2.skill_category.id}/edit"}>
+              <%= if not single_row_data?(col2) do %>
+                <.link patch={"#{@page_path}/skill_categories/#{col2.skill_category.id}/replace"}>
+                  <span class="hero-arrow-top-right-on-square" />
+                </.link>
+              <% end %>
+
+              <.link class="ml-1" patch={"#{@page_path}/skill_categories/#{col2.skill_category.id}/edit?single=#{single_row_data?(col2)}"}>
                 <span class="hero-pencil-square" />
               </.link>
             </div>
@@ -135,11 +141,13 @@
                 <span class="cursor-pointer hero-arrow-down-circle" phx-click="position_down_skill" phx-value-row={row}  />
               <% end %>
 
-              <.link patch={"#{@page_path}/skills/#{col3.skill.id}/replace"}>
-                <span class="hero-arrow-top-right-on-square" />
-              </.link>
+              <%= if not single_row_data?(col3) do %>
+                <.link patch={"#{@page_path}/skills/#{col3.skill.id}/replace"}>
+                  <span class="hero-arrow-top-right-on-square" />
+                </.link>
+              <% end %>
 
-              <.link class="ml-1" patch={"#{@page_path}/skills/#{col3.skill.id}/edit"}>
+              <.link class="ml-1" patch={"#{@page_path}/skills/#{col3.skill.id}/edit?single=#{single_row_data?(col3)}"}>
                 <span class="hero-pencil-square" />
               </.link>
             </div>
@@ -198,6 +206,7 @@
     id={:add}
     title={"知識エリアの新規紐づけ"}
     action={@live_action}
+    this_skill_panel={@skill_panel}
     this_skill_class={@skill_class}
     patch={@page_path}
   />
@@ -216,9 +225,29 @@
     title={@skill_category.name || "カテゴリー新規追加"}
     action={@live_action}
     skill_category={@skill_category}
+    single_row_data?={@single_row_data?}
     patch={@page_path}
   />
 </.modal>
+
+<.modal
+  :if={@live_action in [:replace_skill_category]}
+  id="skill-category-replace-modal"
+  show
+  on_cancel={JS.patch("#{@page_path}")}
+>
+  <.live_component
+    module={SkillCategoryReplaceFormComponent}
+    id={@skill_category.id}
+    title={@skill_category.name}
+    action={@live_action}
+    skill_category={@skill_category}
+    this_skill_panel={@skill_panel}
+    this_skill_class={@skill_class}
+    patch={@page_path}
+  />
+</.modal>
+
 
 <%# スキル %>
 <.modal
@@ -233,6 +262,7 @@
     title={@skill.name || "スキル新規追加"}
     action={@live_action}
     skill={@skill}
+    single_row_data?={@single_row_data?}
     patch={@page_path}
   />
 </.modal>
@@ -250,6 +280,8 @@
     action={@live_action}
     skill={@skill}
     skill_categories={list_skill_categories_on_skill_class(@table_structure)}
+    this_skill_panel={@skill_panel}
+    this_skill_class={@skill_class}
     patch={@page_path}
   />
 </.modal>

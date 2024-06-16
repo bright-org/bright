@@ -23,7 +23,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillFormComponent do
         <:actions>
           <.button phx-disable-with="Saving...">保存</.button>
           <.button
-            :if={@action == :edit_skill}
+            :if={@action == :edit_skill && not @single_row_data?}
             class="!bg-red-600 hover:!bg-red-500"
             type="button"
             data-confirm="この操作は取り消せません。同じ名前で再作成しても削除したスキルとは違うものになります。削除しますか？"

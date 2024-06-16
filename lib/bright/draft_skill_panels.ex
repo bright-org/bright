@@ -39,6 +39,10 @@ defmodule Bright.DraftSkillPanels do
   """
   def get_skill_panel!(id), do: Repo.get!(SkillPanel, id)
 
+  def get_skill_panel(id) when id in ["", nil], do: nil
+
+  def get_skill_panel(id), do: Repo.get(SkillPanel, id)
+
   @doc """
   Creates a skill_panel.
 
@@ -135,6 +139,10 @@ defmodule Bright.DraftSkillPanels do
 
   """
   def get_draft_skill_class!(id), do: Repo.get!(DraftSkillClass, id)
+
+  def get_draft_skill_class(id) when id in ["", nil], do: nil
+
+  def get_draft_skill_class(id), do: Repo.get(DraftSkillClass, id)
 
   @doc """
   Creates a draft_skill_class.

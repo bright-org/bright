@@ -10,6 +10,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     SkillUnitFormComponent,
     SkillUnitAddFormComponent,
     SkillCategoryFormComponent,
+    SkillCategoryReplaceFormComponent,
     SkillFormComponent,
     SkillReplaceFormComponent
   }
@@ -145,11 +146,27 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     {:noreply,
      socket
      |> assign(:skill_category, skill_category)
+     |> assign(:single_row_data?, false)
      |> assign_base_page_attrs(params)}
   end
 
   defp assign_on_action(
          :edit_skill_category,
+         %{"skill_category_id" => category_id} = params,
+         socket
+       ) do
+    skill_category = DraftSkillUnits.get_draft_skill_category!(category_id)
+    single_row_data? = params["single"] == "true"
+
+    {:noreply,
+     socket
+     |> assign(:skill_category, skill_category)
+     |> assign(:single_row_data?, single_row_data?)
+     |> assign_base_page_attrs(params)}
+  end
+
+  defp assign_on_action(
+         :replace_skill_category,
          %{"skill_category_id" => category_id} = params,
          socket
        ) do
@@ -167,15 +184,18 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     {:noreply,
      socket
      |> assign(:skill, skill)
+     |> assign(:single_row_data?, false)
      |> assign_base_page_attrs(params)}
   end
 
   defp assign_on_action(:edit_skill, %{"skill_id" => skill_id} = params, socket) do
     skill = DraftSkillUnits.get_draft_skill!(skill_id)
+    single_row_data? = params["single"] == "true"
 
     {:noreply,
      socket
      |> assign(:skill, skill)
+     |> assign(:single_row_data?, single_row_data?)
      |> assign_base_page_attrs(params)}
   end
 
@@ -269,5 +289,10 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     table_structure
     |> Enum.slice(start_row..-1//1)
     |> Enum.find(&Enum.at(&1, focus_col))
+  end
+
+  defp single_row_data?(col) do
+    # 単一データを動かすと構造が消えてエラーになるため画面操作を制御する
+    Map.get(col, :first) && Map.get(col, :last)
   end
 end
