@@ -103,7 +103,7 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
                 <div class="text-base">支援中の採用・育成先チームはありません</div>
                 <p class="my-4">
                   <a href="https://bright-fun.org/plan" class="w-[calc(45%-6px)] lg:w-56" rel="noopener noreferrer" target="_blank">
-                    <button type="button" class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:filter hover:brightness-95 lg:px-2 lg:text-sm">
+                    <button type="button" class="text-white bg-planUpgrade-600 px-1 inline-flex justify-center rounded-md text-xs items-center font-bold h-9 w-full hover:filter hover:brightness-[80%] lg:px-2 lg:text-sm">
                       <span class="bg-white material-icons mr-1 !text-sm !text-planUpgrade-600 rounded-full h-5 w-5 !font-bold material-icons-outlined lg:mr-2 lg:h-6 lg:w-6">upgrade</span>
                       アップグレード
                     </button>

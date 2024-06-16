@@ -24,7 +24,7 @@ defmodule BrightWeb.NotificationLive.Evidence do
         </li>
         <%= for notification <- @notifications do %>
           <li class="flex flex-wrap my-5">
-            <div phx-click="click" phx-value-notification_evidence_id={notification.id} class="cursor-pointer hover:filter hover:brightness-90 text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap">
+            <div phx-click="click" phx-value-notification_evidence_id={notification.id} class="cursor-pointer hover:filter hover:brightness-[80%] text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap">
               <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 mr-2.5 items-center justify-center">
                 person
               </span>
@@ -32,7 +32,7 @@ defmodule BrightWeb.NotificationLive.Evidence do
               <.elapsed_time inserted_at={notification.inserted_at} />
             </div>
             <div class="flex gap-x-2 w-full justify-end lg:justify-start lg:w-auto">
-              <button phx-click="click" phx-value-notification_evidence_id={notification.id} class="hidden hover:filter hover:brightness-90 font-bold lg:inline-block bg-brightGray-900 text-white min-w-[76px] rounded p-2 text-sm">
+              <button phx-click="click" phx-value-notification_evidence_id={notification.id} class="hidden hover:filter hover:brightness-[80%] font-bold lg:inline-block bg-brightGray-900 text-white min-w-[76px] rounded p-2 text-sm">
                 内容を見る
               </button>
             </div>

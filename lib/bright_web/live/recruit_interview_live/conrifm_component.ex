@@ -85,20 +85,20 @@ defmodule BrightWeb.RecruitInterviewLive.ConfirmComponent do
                 </div>
                 <div class="flex justify-end gap-x-4 mt-16">
                   <.link navigate={@patch}>
-                  <button class="text-sm font-bold py-3 rounded border border-base w-44 hover:filter hover:brightness-90">
+                  <button class="text-sm font-bold py-3 rounded border border-base w-44 hover:filter hover:brightness-[80%]">
                   閉じる
                   </button>
                   </.link>
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :cancel_interview})}
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 hover:filter hover:brightness-90"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 hover:filter hover:brightness-[80%]"
                   >
                     面談をキャンセル
                   </button>
 
                   <button
                     phx-click={JS.push("decision", target: @myself, value: %{decision: :ongoing_interview})}
-                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 hover:filter hover:brightness-90"
+                    class="text-sm font-bold py-3 rounded text-white bg-base w-44 hover:filter hover:brightness-[80%]"
                   >
                     面談確定
                   </button>

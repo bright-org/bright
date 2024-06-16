@@ -226,7 +226,7 @@ defmodule BrightWeb.UserAuthComponents do
     ~H"""
     <button
       class={[
-        "bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs px-4 py-2 rounded select-none text-white w-full hover:filter hover:brightness-90 disabled:bg-gray-400 disabled:border-gray-400",
+        "bg-brightGray-900 border border-solid border-brightGray-900 font-bold max-w-xs px-4 py-2 rounded select-none text-white w-full hover:filter hover:brightness-[80%] disabled:bg-gray-400 disabled:border-gray-400",
         @variant == "normal" && "mt-12",
         @variant == "mx-auto" && "mt-12 mx-auto",
         @variant == "mt-sm" && "mt-8",
@@ -257,7 +257,7 @@ defmodule BrightWeb.UserAuthComponents do
       <button
         type="button"
         class={[
-          "bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs px-4 py-2 rounded select-none w-full hover:filter hover:brightness-90",
+          "bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs px-4 py-2 rounded select-none w-full hover:filter hover:brightness-[80%]",
           @variant == "google" && "bg-bgGoogle border-black mt-4 text-black",
           @variant == "github" && "bg-bgGithub bg-sns-github border-github mt-6 text-white",
           @variant == "facebook" && "bg-bgFacebook bg-gray-400 border-facebook mt-6 text-white",
