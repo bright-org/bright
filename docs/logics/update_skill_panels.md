@@ -154,6 +154,7 @@ erDiagram
   user_skill_panels {
     id user_id FK
     id skill_panel_id FK
+    boolean is_star
   }
 
   skill_improvements {
@@ -262,6 +263,7 @@ erDiagram
   user_skill_panels {
     id user_id FK
     id skill_panel_id FK
+    boolean is_star
   }
 
   historical_skill_class_scores {
