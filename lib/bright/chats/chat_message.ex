@@ -11,6 +11,7 @@ defmodule Bright.Chats.ChatMessage do
 
   schema "chat_messages" do
     field :text, :string
+    field :deleted_at, :naive_datetime
 
     belongs_to :chat, Bright.Chats.Chat
     belongs_to :sender_user, Bright.Accounts.User
@@ -28,5 +29,12 @@ defmodule Bright.Chats.ChatMessage do
       with: &Bright.Chats.ChatFile.changeset/2
     )
     |> validate_required([:text, :sender_user_id, :chat_id])
+  end
+
+  @doc false
+  def delete_changeset(chat_message, attrs \\ %{}) do
+    chat_message
+    |> cast(attrs, [:text, :deleted_at])
+    |> validate_required([:text, :deleted_at])
   end
 end
