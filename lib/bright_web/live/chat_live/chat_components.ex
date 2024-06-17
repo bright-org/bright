@@ -73,7 +73,14 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       <div class="flex justify-end">
         <div class="flex flex-col mb-4">
           <div class="flex justify-end">
-            <div class="break-words max-w-[80vw] text-xl mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
+            <div class={
+                [
+                  "break-words max-w-[80vw] text-xl mr-2 py-3 px-4 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white",
+                  @message.deleted_at == nil && "bg-blue-400",
+                  @message.deleted_at != nil && "bg-brightGray-300"
+                ]
+              }
+            >
               <%= nl_to_br(@message.text) %>
             </div>
             <div class="mt-4">
@@ -85,6 +92,12 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             <.elapsed_time extend_style="w-auto" inserted_at={@message.inserted_at} />
           </p>
           <p class="flex justify-end">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+          <div :if={@message.deleted_at == nil} class="flex justify-end cursor-pointer" phx-click="delete_message" phx-value-message_id={@message.id} data-confirm="メッセージを削除しますか？">
+            <span class="text-brightGray-500 hover:filter hover:brightness-[80%] hover:underline">削除&nbsp;</span><.icon name="hero-archive-box-x-mark-solid" class="w-6 h-6" />
+          </div>
+          <div :if={@message.deleted_at != nil} class="flex justify-end">
+            <span class="text-brightGray-500">削除日時：<%= datetime(@message.deleted_at, "Asia/Tokyo") %></span>
+          </div>
           <div class="flex justify-end gap-x-4">
             <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
               <div

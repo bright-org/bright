@@ -361,7 +361,8 @@ defmodule BrightWeb.ChatLive.Index do
 
     user = socket.assigns.current_user
     chat = Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
-    Phoenix.PubSub.subscribe(Bright.PubSub, "chat:#{chat.id}")
+
+    Chats.subscribe(chat.id)
 
     Chats.read_chat!(chat.id, user.id)
 
@@ -497,11 +498,38 @@ defmodule BrightWeb.ChatLive.Index do
     {:noreply, socket}
   end
 
-  @impl true
-  def handle_info(
-        {:send_message, message},
-        %{assigns: %{current_user: user, select_filter_type: select_filter_type}} = socket
+  def handle_event(
+        "delete_message",
+        %{"message_id" => message_id},
+        %{assigns: %{chat: chat}} = socket
       ) do
+    message =
+      socket.assigns.messages
+      |> Enum.find(&(&1.id == message_id))
+
+    Chats.delete_message_with_broadcast!(message)
+    Chats.update_chat(chat, %{updated_at: NaiveDateTime.utc_now()})
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:send_message, message}, socket) do
+    assign_new_chat(socket, message)
+    |> push_event("scroll_bottom", %{})
+    |> then(&{:noreply, &1})
+  end
+
+  @impl true
+  def handle_info({:delete_message, message}, socket) do
+    assign_new_chat(socket, message)
+    |> then(&{:noreply, &1})
+  end
+
+  defp assign_new_chat(
+         %{assigns: %{current_user: user, select_filter_type: select_filter_type}} = socket,
+         message
+       ) do
     chat = Chats.get_chat_with_messages_and_interview!(message.chat_id, user.id)
 
     Chats.read_chat!(chat.id, user.id)
@@ -510,8 +538,6 @@ defmodule BrightWeb.ChatLive.Index do
     |> assign(:chats, Chats.list_chats(user.id, select_filter_type))
     |> assign(:chat, chat)
     |> assign(:messages, chat.messages)
-    |> push_event("scroll_bottom", %{})
-    |> then(&{:noreply, &1})
   end
 
   @doc """
