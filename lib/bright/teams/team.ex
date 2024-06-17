@@ -34,8 +34,6 @@ defmodule Bright.Teams.Team do
                  join_keys: [supportee_team_id: :id, supporter_team_id: :id],
                  join_where: [status: :supporting]
 
-    field :default_skill_panel_id, Ecto.ULID
-
     timestamps()
   end
 
