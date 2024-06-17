@@ -1,10 +1,15 @@
 defmodule Bright.Teams.TeamDefaultSkillPanel do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Bright.SkillPanels.SkillPanel
+  alias Bright.Teams.Team
+
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "team_default_skill_panels" do
-    field :team_id, Ecto.UUID
-    field :skill_panel_id, Ecto.UUID
+    belongs_to :team, Team
+    belongs_to :skill_panel, SkillPanel
 
     timestamps()
   end
