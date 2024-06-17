@@ -1448,5 +1448,4 @@ defmodule Bright.Teams do
   end
 
   def get_invitation_validity_ago(), do: @invitation_validity_ago
-
 end

@@ -36,7 +36,8 @@ defmodule Bright.TeamDefaultSkillPanels do
       ** (Ecto.NoResultsError)
 
   """
-  def get_team_default_skill_panel!(id), do: Repo.get!(TeamDefaultSkillPanel, id) |> Repo.preload([:team, :skill_panel])
+  def get_team_default_skill_panel!(id),
+    do: Repo.get!(TeamDefaultSkillPanel, id) |> Repo.preload([:team, :skill_panel])
 
   @doc """
   Creates a team_default_skill_panel.
@@ -99,7 +100,10 @@ defmodule Bright.TeamDefaultSkillPanels do
       %Ecto.Changeset{data: %TeamDefaultSkillPanel{}}
 
   """
-  def change_team_default_skill_panel(%TeamDefaultSkillPanel{} = team_default_skill_panel, attrs \\ %{}) do
+  def change_team_default_skill_panel(
+        %TeamDefaultSkillPanel{} = team_default_skill_panel,
+        attrs \\ %{}
+      ) do
     TeamDefaultSkillPanel.changeset(team_default_skill_panel, attrs)
   end
 end
