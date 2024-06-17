@@ -1,4 +1,8 @@
 defmodule Bright.Teams.TeamDefaultSkillPanel do
+  @moduledoc """
+  チームの初期スキルパネルの設定を管理するスキーマ
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias Bright.SkillPanels.SkillPanel
