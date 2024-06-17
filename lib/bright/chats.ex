@@ -275,8 +275,35 @@ defmodule Bright.Chats do
     Chat.changeset(chat, attrs)
   end
 
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking chat_message changes.
+
+  ## Examples
+
+      iex> change_message(message)
+      %Ecto.Changeset{data: %ChatMessage{}}
+
+  """
   def change_message(%ChatMessage{} = message, attrs \\ %{}) do
     ChatMessage.changeset(message, attrs)
+  end
+
+  @doc """
+  Deletes chat message. After deleting, it broadcasts the message.
+
+  ## Examples
+      iex> delete_message_with_broadcast!(message)
+      %Bright.Chats.ChatMessage{}
+
+  """
+  def delete_message_with_broadcast!(
+        %ChatMessage{} = message,
+        deleted_at \\ NaiveDateTime.utc_now()
+      ) do
+    message
+    |> ChatMessage.delete_changeset(%{text: "メッセージを削除しました", deleted_at: deleted_at})
+    |> Repo.update!()
+    |> tap(fn deleted_message -> broadcast({:ok, deleted_message}, :delete_message) end)
   end
 
   @doc """
@@ -373,11 +400,25 @@ defmodule Bright.Chats do
     "chats/message_file_#{Ecto.UUID.generate()}" <> Path.extname(file_name)
   end
 
-  def broadcast({:ok, message}, :send_message) do
+  defp topic(chat_id) do
+    "chat:#{chat_id}"
+  end
+
+  @doc """
+  Subscribe to chat.
+  """
+  def subscribe(chat_id) do
+    Phoenix.PubSub.subscribe(Bright.PubSub, topic(chat_id))
+  end
+
+  @doc """
+  Broadcast message to subscribed chat.
+  """
+  def broadcast({:ok, message}, event_name) do
     Phoenix.PubSub.broadcast(
       Bright.PubSub,
-      "chat:#{message.chat_id}",
-      {:send_message, message}
+      topic(message.chat_id),
+      {event_name, message}
     )
 
     {:ok, message}

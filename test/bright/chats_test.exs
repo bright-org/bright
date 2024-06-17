@@ -79,7 +79,7 @@ defmodule Bright.ChatsTest do
       assert %Ecto.Changeset{} = Chats.change_message(message)
     end
 
-    test "create_message/2 with valid data creates a message" do
+    test "create_message/2 with valid data creates a message and broadcast" do
       sender_user = insert(:user)
       interview = insert(:interview)
       chat = insert(:recruit_chat, relation_id: interview.id, owner_user_id: sender_user.id)
@@ -93,6 +93,8 @@ defmodule Bright.ChatsTest do
       insert(:chat_user, chat: chat, user: sender_user, is_read: true)
       [chat_user1, chat_user2] = insert_list(2, :chat_user, chat: chat)
 
+      Chats.subscribe(chat.id)
+
       assert {:ok, %ChatMessage{} = message} = Chats.create_message(valid_attrs, nil)
       assert message.text == "some text"
       assert message.chat_id == chat.id
@@ -101,6 +103,33 @@ defmodule Bright.ChatsTest do
       refute Repo.get!(ChatUser, chat_user1.id).is_read
       refute Repo.get!(ChatUser, chat_user2.id).is_read
       assert Repo.get_by!(ChatUser, chat_id: chat.id, user_id: sender_user.id).is_read
+
+      assert_receive {:send_message, ^message}
+    end
+
+    test "delete_message_with_broadcast!/1 updates message for deleting and broadcast" do
+      message = insert(:chat_message, chat: build(:recruit_chat))
+      Chats.subscribe(message.chat_id)
+
+      now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+      deleted_message = Chats.delete_message_with_broadcast!(message, now)
+
+      assert deleted_message.text == "メッセージを削除しました"
+      assert deleted_message.deleted_at == now
+      assert Repo.get!(ChatMessage, message.id).deleted_at == now
+
+      assert_receive {:delete_message, ^deleted_message}
+    end
+
+    test "subscribe/1 and broadcast/2" do
+      %{id: chat_id} = insert(:recruit_chat)
+      message = insert(:chat_message, chat_id: chat_id)
+
+      Chats.subscribe(chat_id)
+      Chats.broadcast({:ok, message}, :send_message)
+
+      assert_receive {:send_message, ^message}
     end
 
     test "read_chat!/2" do
