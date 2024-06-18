@@ -237,4 +237,59 @@ defmodule BrightWeb.TeamLive.MyTeamTest do
       assert html =~ "面談の打診"
     end
   end
+
+  describe "my team skill_star_button" do
+    setup [:register_and_log_in_user]
+
+    setup do
+      skill_panel = insert(:skill_panel)
+      skill_class = insert(:skill_class, skill_panel: skill_panel)
+
+      %{skill_panel: skill_panel, skill_class: skill_class}
+    end
+
+    setup %{user: user} do
+      user_2 = insert(:user) |> with_user_profile()
+
+      team = insert(:team)
+      insert(:team_member_users, team: team, user: user, is_admin: true)
+      insert(:team_member_users, team: team, user: user_2)
+
+      %{team: team, user_2: user_2}
+    end
+
+    test "click skill_star_button ", %{
+      user: user,
+      conn: conn,
+      team: team,
+      skill_panel: skill_panel
+    } do
+      insert(:subscription_user_plan_subscribing_without_free_trial, user: user)
+      assert {:ok, lv, _html} = live(conn, ~p"/teams/#{team.id}/skill_panels/#{skill_panel.id}")
+
+      assert element(lv, "#skill_star_button") |> render() =~
+               ~r{class=".*border-brightGray-500.*"}
+
+      element(lv, "#skill_star_button") |> render_click()
+
+      assert {:ok, lv, _html} = live(conn, ~p"/teams/#{team.id}/skill_panels/#{skill_panel.id}")
+
+      assert element(lv, "#skill_star_button") |> render() =~
+               ~r{class=".*border-brightGreen-300.*"}
+    end
+  end
+
+  describe "my team not skill_star_button" do
+    setup [:register_and_log_in_user]
+
+    test "show my team", %{
+      user: user,
+      conn: conn
+    } do
+      insert(:subscription_user_plan_subscribing_without_free_trial, user: user)
+      assert {:ok, lv, _html} = live(conn, ~p"/teams")
+
+      refute has_element?(lv, "#skill_star_button")
+    end
+  end
 end

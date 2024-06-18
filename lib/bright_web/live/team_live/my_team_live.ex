@@ -47,7 +47,7 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, socket}
   end
 
-  def handle_event("click_skil_star_button", _params, %{assigns: assigns} = socket) do
+  def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do
     is_skill_star = !assigns.is_skill_star
 
     skill_panel_id =
