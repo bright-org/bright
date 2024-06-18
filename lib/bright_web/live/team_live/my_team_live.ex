@@ -46,6 +46,12 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, socket}
   end
 
+  def handle_event("click_skil_star_button", _params, socket) do
+    #display_skill_panel = socket.assigns.display_skill_panel
+
+    {:noreply, socket}
+  end
+
   def handle_event("on_card_row_click", %{"team_type" => "custom_group"} = params, socket) do
     # メガメニューのチームカードからカスタムグループの行をクリックした場合のハンドラー
     # display_teamを選択したカスタムグループで更新し、リダイレクトする。
