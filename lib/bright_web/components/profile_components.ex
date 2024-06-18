@@ -147,6 +147,7 @@ defmodule BrightWeb.ProfileComponents do
   attr :skill_class, :any, required: true
   attr :skill_panel, :any, required: true
   attr :is_team_admin, :boolean, default: false
+  attr :is_skill_star, :boolean, default: false
   slot :switch_button, default: nil
 
   def profile_with_selected_team(assigns) do
@@ -172,10 +173,10 @@ defmodule BrightWeb.ProfileComponents do
             <div>
               <button
                 :if={@is_team_admin}
-                class={"bg-white border border-#{get_star_style(true)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+                class={"bg-white border border-#{get_star_style(@is_skill_star)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
                 phx-click="click_skil_star_button"
               >
-                <span class={"material-icons text-#{get_star_style(true)}"}>
+                <span class={"material-icons text-#{get_star_style(@is_skill_star)}"}>
                   star
                 </span>
               </button>

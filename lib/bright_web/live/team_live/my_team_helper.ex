@@ -5,6 +5,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   import Phoenix.Component, only: [assign: 3]
   import Phoenix.LiveView, only: [push_navigate: 2]
 
+  alias Bright.TeamDefaultSkillPanels
   alias Bright.Accounts
   alias Bright.Teams
   alias Bright.Teams.Team
@@ -26,6 +27,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign_plan(subscription)
     |> assign_page_title()
     |> assign_display_type(params["type"])
+    |> assign(:is_skill_star, false)
     |> assign_display_skill_panel(nil)
     |> assign_display_skill_classes([])
     |> assign_display_skill_class(nil)
@@ -51,6 +53,10 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     current_users_team_member = get_current_users_team_member(user, display_team_members)
 
     display_skill_panel = get_display_skill_panel(params, display_team_members)
+
+    team_default_skill_panel =
+      TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
+
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
     member_skill_class_scores = list_skill_class_scores(display_team_members, display_skill_panel)
@@ -70,7 +76,8 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign_plan(subscription)
     |> assign_page_title()
     |> assign_display_type(params["type"])
-    |> assign_display_skill_panel(display_skill_panel)
+    |> assign_display_skill_panel(team_default_skill_panel || display_skill_panel)
+    |> assign(:is_skill_star, team_default_skill_panel == display_skill_panel)
     |> assign_display_skill_classes(display_skill_classes)
     |> assign_display_skill_class(selected_skill_class)
     |> assign_display_team(display_team)
