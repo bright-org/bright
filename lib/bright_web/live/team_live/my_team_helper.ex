@@ -52,15 +52,18 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
     current_users_team_member = get_current_users_team_member(user, display_team_members)
 
-    display_skill_panel = get_display_skill_panel(params, display_team_members)
-
     team_default_skill_panel =
       if is_nil(display_team),
         do: nil,
         else: TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
 
-    is_skill_star = team_default_skill_panel == display_skill_panel
-    display_skill_panel = team_default_skill_panel || display_skill_panel
+    display_skill_panel =
+      get_display_skill_panel(params, display_team_members, team_default_skill_panel)
+
+    is_skill_star =
+      if is_nil(team_default_skill_panel),
+        do: false,
+        else: team_default_skill_panel == display_skill_panel
 
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
@@ -106,7 +109,11 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> Enum.count(fn x -> x.skill_class.class == class and x.level == level end)
   end
 
-  defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team_members) do
+  defp get_display_skill_panel(
+         %{"skill_panel_id" => skill_panel_id},
+         _display_team_members,
+         _team_default_skill_panel
+       ) do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
     try do
       SkillPanels.get_skill_panel!(skill_panel_id)
@@ -117,12 +124,12 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     end
   end
 
-  defp get_display_skill_panel(_params, []) do
+  defp get_display_skill_panel(_params, [], _team_default_skill_panel) do
     # TODO スキルパネルIDが指定されていない場合、チームも取得できない場合はnil
     nil
   end
 
-  defp get_display_skill_panel(_params, display_team_members) do
+  defp get_display_skill_panel(_params, display_team_members, team_default_skill_panel) do
     # TODO スキルパネルIDが指定されていない場合、チームが取得できていれば第一優先のスキルパネルを取得する
     user_ids = Enum.map(display_team_members, & &1.user_id)
 
@@ -130,7 +137,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     %{page_number: _page, total_pages: _total_pages, entries: skill_panels} =
       SkillPanels.list_users_skill_panels(user_ids, 1)
 
-    List.first(skill_panels)
+    team_default_skill_panel || List.first(skill_panels)
   end
 
   defp list_display_skill_classes(%SkillPanel{} = skill_panel) do
