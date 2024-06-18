@@ -91,6 +91,15 @@ defmodule Bright.TeamDefaultSkillPanels do
     Repo.delete(team_default_skill_panel)
   end
 
+  @doc """
+  Get team default skill_panel from team_id
+
+  ## Examples
+
+      iex> get_team_default_skill_panel_from_team_id(team_id))
+      {:ok, %SkillPanel{}}
+
+  """
   def get_team_default_skill_panel_from_team_id(team_id) do
     from(td in TeamDefaultSkillPanel,
       left_join: s in assoc(td, :skill_panel),
@@ -102,6 +111,23 @@ defmodule Bright.TeamDefaultSkillPanels do
     |> Repo.one()
   end
 
+  @doc """
+  Set team default skill_panel from team_id
+
+  ## Examples
+
+      iex> set_team_default_skill_panel_from_team_id(team_id, nil)
+      {:ok, %{delete_all: {1, nil}}}
+
+      iex> set_team_default_skill_panel_from_team_id(team_id, skill_panel_id)
+      {:ok,
+        %{
+          delete_all: {0, nil},
+          team_default_skill_panel: %Bright.Teams.TeamDefaultSkillPanel{}
+        }
+      }
+
+  """
   def set_team_default_skill_panel_from_team_id(team_id, nil) do
     query = team_default_skill_panel_from_team_id_query(team_id)
 
