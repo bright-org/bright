@@ -91,6 +91,17 @@ defmodule Bright.TeamDefaultSkillPanels do
     Repo.delete(team_default_skill_panel)
   end
 
+  def get_team_default_skill_panel_from_team_id(team_id) do
+    from(td in TeamDefaultSkillPanel,
+      left_join: t in assoc(td, :team),
+      on: t.id == ^team_id,
+      limit: 1,
+      select: t,
+      order_by: t.id
+    )
+    |> Repo.one()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking team_default_skill_panel changes.
 
