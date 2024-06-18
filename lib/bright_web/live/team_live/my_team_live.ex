@@ -11,6 +11,7 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.Teams.Team
   alias Bright.CustomGroups
   alias BrightWeb.TeamLive.MyTeamHelper
+  alias Bright.TeamDefaultSkillPanels
 
   def mount(params, _session, socket) do
     # スキルとチームの取得結果に応じて各種assign
@@ -46,10 +47,20 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, socket}
   end
 
-  def handle_event("click_skil_star_button", _params, socket) do
-    # display_skill_panel = socket.assigns.display_skill_panel
+  def handle_event("click_skil_star_button", _params, %{assigns: assigns} = socket) do
+    is_skill_star = !assigns.is_skill_star
 
-    {:noreply, socket}
+    skill_panel_id =
+      if is_skill_star,
+        do: assigns.display_skill_panel.id,
+        else: nil
+
+    TeamDefaultSkillPanels.set_team_default_skill_panel_from_team_id(
+      assigns.display_team.id,
+      skill_panel_id
+    )
+
+    {:noreply, assign(socket, is_skill_star: is_skill_star)}
   end
 
   def handle_event("on_card_row_click", %{"team_type" => "custom_group"} = params, socket) do

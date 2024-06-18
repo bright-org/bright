@@ -93,11 +93,11 @@ defmodule Bright.TeamDefaultSkillPanels do
 
   def get_team_default_skill_panel_from_team_id(team_id) do
     from(td in TeamDefaultSkillPanel,
-      left_join: t in assoc(td, :team),
-      on: t.id == ^team_id,
+      left_join: s in assoc(td, :skill_panel),
+      where: td.team_id == ^team_id,
       limit: 1,
-      select: t,
-      order_by: t.id
+      select: s,
+      order_by: s.id
     )
     |> Repo.one()
   end
@@ -110,21 +110,21 @@ defmodule Bright.TeamDefaultSkillPanels do
     |> Repo.transaction()
   end
 
-  def set_team_default_skill_panel_from_team_id(team_id, skill_panel) do
+  def set_team_default_skill_panel_from_team_id(team_id, skill_panel_id) do
     query = team_default_skill_panel_from_team_id_query(team_id)
 
     Ecto.Multi.new()
     |> Ecto.Multi.delete_all(:delete_all, query)
     |> Ecto.Multi.insert(:team_default_skill_panel, %TeamDefaultSkillPanel{
       team_id: team_id,
-      skill_panel_id: skill_panel
+      skill_panel_id: skill_panel_id
     })
     |> Repo.transaction()
   end
 
   defp team_default_skill_panel_from_team_id_query(team_id) do
     from(td in TeamDefaultSkillPanel,
-      where: td.id == ^team_id
+      where: td.team_id == ^team_id
     )
   end
 

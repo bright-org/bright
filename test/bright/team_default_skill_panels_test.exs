@@ -86,7 +86,7 @@ defmodule Bright.TeamDefaultSkillPanelsTest do
       assert TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(
                team_default_skill_panel.team_id
              ) ==
-               team_default_skill_panel.team
+               team_default_skill_panel.skill_panel
     end
 
     test "get_team_default_skill_panel_from_team_id/1 returns the skill_panel with given team_id (Multiple items)" do
@@ -98,7 +98,7 @@ defmodule Bright.TeamDefaultSkillPanelsTest do
       assert TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(
                team_default_skill_panel.team_id
              ) ==
-               team_default_skill_panel.team
+               team_default_skill_panel.skill_panel
     end
 
     test "get_team_default_skill_panel_from_team_id/1 returns the nil with given team_id" do

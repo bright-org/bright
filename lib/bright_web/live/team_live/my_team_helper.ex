@@ -59,6 +59,9 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
         do: nil,
         else: TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
 
+    is_skill_star = team_default_skill_panel == display_skill_panel
+    display_skill_panel = team_default_skill_panel || display_skill_panel
+
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
     member_skill_class_scores = list_skill_class_scores(display_team_members, display_skill_panel)
@@ -78,8 +81,8 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign_plan(subscription)
     |> assign_page_title()
     |> assign_display_type(params["type"])
-    |> assign_display_skill_panel(team_default_skill_panel || display_skill_panel)
-    |> assign(:is_skill_star, team_default_skill_panel == display_skill_panel)
+    |> assign_display_skill_panel(display_skill_panel)
+    |> assign(:is_skill_star, is_skill_star)
     |> assign_display_skill_classes(display_skill_classes)
     |> assign_display_skill_class(selected_skill_class)
     |> assign_display_team(display_team)
