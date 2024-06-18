@@ -55,7 +55,9 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     display_skill_panel = get_display_skill_panel(params, display_team_members)
 
     team_default_skill_panel =
-      TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
+      if is_nil(display_team),
+        do: nil,
+        else: TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
 
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
