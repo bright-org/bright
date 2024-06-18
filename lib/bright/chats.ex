@@ -111,7 +111,7 @@ defmodule Bright.Chats do
       where: c.id == ^id and c.relation_type == "recruit",
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
-      preload: [:users, messages: :files],
+      preload: [:users, messages: ^ChatMessage.not_deleted_message_with_files_query()],
       join: i in Interview,
       on: i.id == c.relation_id,
       join: cu in User,
@@ -301,7 +301,7 @@ defmodule Bright.Chats do
         deleted_at \\ NaiveDateTime.utc_now()
       ) do
     message
-    |> ChatMessage.delete_changeset(%{text: "メッセージを削除しました", deleted_at: deleted_at})
+    |> ChatMessage.delete_changeset(%{deleted_at: deleted_at})
     |> Repo.update!()
     |> tap(fn deleted_message -> broadcast({:ok, deleted_message}, :delete_message) end)
   end

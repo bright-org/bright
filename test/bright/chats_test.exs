@@ -115,7 +115,6 @@ defmodule Bright.ChatsTest do
 
       deleted_message = Chats.delete_message_with_broadcast!(message, now)
 
-      assert deleted_message.text == "メッセージを削除しました"
       assert deleted_message.deleted_at == now
       assert Repo.get!(ChatMessage, message.id).deleted_at == now
 

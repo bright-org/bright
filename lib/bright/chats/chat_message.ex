@@ -5,6 +5,7 @@ defmodule Bright.Chats.ChatMessage do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query, warn: false
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
@@ -34,7 +35,17 @@ defmodule Bright.Chats.ChatMessage do
   @doc false
   def delete_changeset(chat_message, attrs \\ %{}) do
     chat_message
-    |> cast(attrs, [:text, :deleted_at])
-    |> validate_required([:text, :deleted_at])
+    |> cast(attrs, [:deleted_at])
+    |> validate_required([:deleted_at])
+  end
+
+  def not_deleted_message_with_files_query do
+    from cm in not_deleted_message_query(),
+      preload: [:files]
+  end
+
+  defp not_deleted_message_query do
+    from cm in Bright.Chats.ChatMessage,
+      where: is_nil(cm.deleted_at)
   end
 end

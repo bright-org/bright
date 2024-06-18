@@ -69,104 +69,96 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   def message(assigns) do
     ~H"""
-    <%= if @current_user.id == @message.sender_user_id do %>
-      <div class="flex justify-end">
-        <div class="flex flex-col mb-4">
-          <div class="flex justify-end">
-            <div class={
-                [
-                  "break-words max-w-[80vw] text-xl mr-2 py-3 px-4 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white",
-                  @message.deleted_at == nil && "bg-blue-400",
-                  @message.deleted_at != nil && "bg-brightGray-300"
-                ]
-              }
-            >
-              <%= nl_to_br(@message.text) %>
-            </div>
-            <div class="mt-4">
-              <.user_icon path={@sender_icon_path} />
-              <span><%= @current_user.name %></span>
-            </div>
-          </div>
-          <p class="mt-1 flex justify-end">
-            <.elapsed_time extend_style="w-auto" inserted_at={@message.inserted_at} />
-          </p>
-          <p class="flex justify-end">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
-          <div :if={@message.deleted_at == nil} class="flex justify-end cursor-pointer" phx-click="delete_message" phx-value-message_id={@message.id} data-confirm="メッセージを削除しますか？">
-            <span class="text-brightGray-500 hover:filter hover:brightness-[80%] hover:underline">削除&nbsp;</span><.icon name="hero-archive-box-x-mark-solid" class="w-6 h-6" />
-          </div>
-          <div :if={@message.deleted_at != nil} class="flex justify-end">
-            <span class="text-brightGray-500">削除日時：<%= datetime(@message.deleted_at, "Asia/Tokyo") %></span>
-          </div>
-          <div class="flex justify-end gap-x-4">
-            <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
-              <div
-                class="cursor-pointer hover:opacity-70"
-                phx-click="preview"
-                phx-value-preview={file.file_path}
-              >
-                <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
-                <%= file.file_name %>
+    <%= if is_nil(@message.deleted_at) do %>
+      <%= if @current_user.id == @message.sender_user_id do %>
+        <div class="flex justify-end">
+          <div class="flex flex-col mb-4">
+            <div class="flex justify-end">
+              <div class="break-words max-w-[80vw] text-xl mr-2 py-3 px-4 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white bg-blue-400">
+                <%= nl_to_br(@message.text) %>
               </div>
-            <% end %>
-          </div>
-          <div class="flex justify-end mt-4 gap-x-4">
-            <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
-              <a
-                class="cursor-pointer hover:opacity-70 underline"
-                href={Storage.public_url(file.file_path)}
-                target="_blank"
-                rel="noopener"
-              >
-                <.icon name="hero-document" class="w-24 h-24" /><br />
-                <%= file.file_name %>
-              </a>
-            <% end %>
+              <div class="mt-4">
+                <.user_icon path={@sender_icon_path} />
+                <span><%= @current_user.name %></span>
+              </div>
+            </div>
+            <p class="mt-1 flex justify-end">
+              <.elapsed_time extend_style="w-auto" inserted_at={@message.inserted_at} />
+            </p>
+            <p class="flex justify-end">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+            <div class="flex justify-end cursor-pointer" phx-click="delete_message" phx-value-message_id={@message.id} data-confirm="メッセージを削除しますか？">
+              <span class="text-brightGray-500 hover:filter hover:brightness-[80%] hover:underline">削除&nbsp;</span><.icon name="hero-archive-box-x-mark-solid" class="w-6 h-6" />
+            </div>
+            <div class="flex justify-end gap-x-4">
+              <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
+                <div
+                  class="cursor-pointer hover:opacity-70"
+                  phx-click="preview"
+                  phx-value-preview={file.file_path}
+                >
+                  <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
+                  <%= file.file_name %>
+                </div>
+              <% end %>
+            </div>
+            <div class="flex justify-end mt-4 gap-x-4">
+              <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
+                <a
+                  class="cursor-pointer hover:opacity-70 underline"
+                  href={Storage.public_url(file.file_path)}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <.icon name="hero-document" class="w-24 h-24" /><br />
+                  <%= file.file_name %>
+                </a>
+              <% end %>
+            </div>
           </div>
         </div>
-      </div>
-    <% else %>
-      <div class="flex justify-start mb-4">
-        <div class="mt-4">
-          <.switch_user_icon
-            chat={@chat}
-            user_id={@current_user.id}
-            anon={@chat.interview.recruiter_user_id == @current_user.id}
-            has_link={true}
-          />
-        </div>
+      <% else %>
+        <div class="flex justify-start mb-4">
+          <div class="mt-4">
+            <.switch_user_icon
+              chat={@chat}
+              user_id={@current_user.id}
+              anon={@chat.interview.recruiter_user_id == @current_user.id}
+              has_link={true}
+            />
+          </div>
 
-        <div class="break-words max-w-[80vw] text-xl ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
-          <%= nl_to_br(@message.text) %>
-        </div>
-      </div>
-      <p class="-ml-4"><.elapsed_time inserted_at={@message.inserted_at} /></p>
-      <p class="">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
-      <div class="flex justify-start">
-        <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
-          <div
-            class="cursor-pointer hover:opacity-70"
-            phx-click="preview"
-            phx-value-preview={file.file_path}
-          >
-            <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
-            <%= file.file_name %>
+          <div class="break-words max-w-[80vw] text-xl ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
+            <%= nl_to_br(@message.text) %>
           </div>
-        <% end %>
-      </div>
-      <div class="w-full flex flex-col justify-end mt-4">
-        <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
-          <a
-            class="cursor-pointer hover:opacity-70 underline text-xl"
-            href={Storage.public_url(file.file_path)}
-            target="_blank"
-            rel="noopener"
-          >
-            <.icon name="hero-document" class="w-24 h-24" /><br />
-            <%= file.file_name %>
-          </a>
-        <% end %>
-      </div>
+        </div>
+        <p class="-ml-4"><.elapsed_time inserted_at={@message.inserted_at} /></p>
+        <p class="">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+        <div class="flex justify-start">
+          <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
+            <div
+              class="cursor-pointer hover:opacity-70"
+              phx-click="preview"
+              phx-value-preview={file.file_path}
+            >
+              <img class="w-40 h-40" src={Storage.public_url(file.file_path)} />
+              <%= file.file_name %>
+            </div>
+          <% end %>
+        </div>
+        <div class="w-full flex flex-col justify-end mt-4">
+          <%= for file <- Enum.filter(@message.files, & &1.file_type == :files) do %>
+            <a
+              class="cursor-pointer hover:opacity-70 underline text-xl"
+              href={Storage.public_url(file.file_path)}
+              target="_blank"
+              rel="noopener"
+            >
+              <.icon name="hero-document" class="w-24 h-24" /><br />
+              <%= file.file_name %>
+            </a>
+          <% end %>
+        </div>
+      <% end %>
     <% end %>
     """
   end
