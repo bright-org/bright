@@ -102,6 +102,32 @@ defmodule Bright.TeamDefaultSkillPanels do
     |> Repo.one()
   end
 
+  def set_team_default_skill_panel_from_team_id(team_id, nil) do
+    query = team_default_skill_panel_from_team_id_query(team_id)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(:delete_all, query)
+    |> Repo.transaction()
+  end
+
+  def set_team_default_skill_panel_from_team_id(team_id, skill_panel) do
+    query = team_default_skill_panel_from_team_id_query(team_id)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(:delete_all, query)
+    |> Ecto.Multi.insert(:team_default_skill_panel, %TeamDefaultSkillPanel{
+      team_id: team_id,
+      skill_panel_id: skill_panel
+    })
+    |> Repo.transaction()
+  end
+
+  defp team_default_skill_panel_from_team_id_query(team_id) do
+    from(td in TeamDefaultSkillPanel,
+      where: td.id == ^team_id
+    )
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking team_default_skill_panel changes.
 
