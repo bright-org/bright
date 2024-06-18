@@ -5,5 +5,7 @@ defmodule Bright.Repo.Migrations.ChatMessageDeletedAt do
     alter table(:chat_messages) do
       add :deleted_at, :naive_datetime, default: nil
     end
+
+    create index(:chat_messages, [:deleted_at])
   end
 end
