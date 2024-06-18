@@ -143,9 +143,9 @@ defmodule Bright.HistoricalSkillScoresTest do
       historical_skill_unit_3 = insert(:historical_skill_unit, locked_date: @back_tl_2)
 
       [
-        {historical_skill_unit_1, 1},
-        {historical_skill_unit_2, 2},
-        {historical_skill_unit_3, 3}
+        {historical_skill_unit_1, 10},
+        {historical_skill_unit_2, 20},
+        {historical_skill_unit_3, 30}
       ]
       |> Enum.each(fn {historical_skill_unit, position} ->
         insert(:historical_skill_class_unit,
@@ -173,24 +173,33 @@ defmodule Bright.HistoricalSkillScoresTest do
         %{
           name: historical_skill_unit_1.name,
           trace_id: historical_skill_unit_1.trace_id,
-          position: 1,
+          position: 10,
           percentage: 0.1
         },
         %{
           name: historical_skill_unit_2.name,
           trace_id: historical_skill_unit_2.trace_id,
-          position: 2,
+          position: 20,
           percentage: 0.2
         },
         %{
           name: historical_skill_unit_3.name,
           trace_id: historical_skill_unit_3.trace_id,
-          position: 3,
+          position: 30,
           percentage: 0.3
         }
       ]
 
-      %{user: user, skill_panel: skill_panel, gem_data: gem_data}
+      %{
+        user: user,
+        skill_panel: skill_panel,
+        historical_skill_units: [
+          historical_skill_unit_1,
+          historical_skill_unit_2,
+          historical_skill_unit_3
+        ],
+        gem_data: gem_data
+      }
     end
 
     test "gets correct gem data given args", %{
@@ -235,6 +244,46 @@ defmodule Bright.HistoricalSkillScoresTest do
     } do
       ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_1)
       assert ret == []
+    end
+
+    test "returns same skill_panels historical_skill_class_units.position", %{
+      user: user,
+      skill_panel: skill_panel,
+      historical_skill_units: historical_skill_units,
+      gem_data: gem_data
+    } do
+      # スキルユニットを共有している状態で、指定したskill_panelでのpositionを取得できることの確認
+      # データ準備として別のスキルパネルを作っている。そちらでは共有のskill_units.position: 1としている
+      skill_panel_another = insert(:historical_skill_panel)
+
+      historical_skill_class_another =
+        insert(:historical_skill_class,
+          skill_panel: skill_panel_another,
+          class: 1,
+          locked_date: @back_tl_2
+        )
+
+      historical_skill_units
+      |> Enum.each(fn historical_skill_unit ->
+        insert(:historical_skill_class_unit,
+          historical_skill_class_id: historical_skill_class_another.id,
+          historical_skill_unit_id: historical_skill_unit.id,
+          position: 1
+        )
+      end)
+
+      historical_skill_units
+      |> Enum.each(fn historical_skill_unit ->
+        insert(:historical_skill_unit_score,
+          user: user,
+          historical_skill_unit: historical_skill_unit,
+          percentage: 0.1,
+          locked_date: @back_tl_1
+        )
+      end)
+
+      ret = HistoricalSkillScores.get_historical_skill_gem(user.id, skill_panel.id, 1, @back_tl_2)
+      assert ret == gem_data
     end
   end
 

@@ -71,11 +71,15 @@ defmodule Bright.HistoricalSkillScores do
   """
   def get_historical_skill_gem(user_id, skill_panel_id, class, locked_date) do
     from(historical_skill_unit in HistoricalSkillUnit,
-      join: historical_skill_classes in assoc(historical_skill_unit, :historical_skill_classes),
       join:
         historical_skill_class_units in assoc(
           historical_skill_unit,
           :historical_skill_class_units
+        ),
+      join:
+        historical_skill_classes in assoc(
+          historical_skill_class_units,
+          :historical_skill_class
         ),
       on: historical_skill_classes.class == ^class,
       on: historical_skill_classes.skill_panel_id == ^skill_panel_id,
@@ -89,6 +93,7 @@ defmodule Bright.HistoricalSkillScores do
     )
     |> Repo.all()
     |> Enum.map(fn historical_skill_unit ->
+      # historical_skill_unit_scoresは共有している数だけ取得しているがどれも同じ値のためfirstしている
       historical_skill_unit_score = List.first(historical_skill_unit.historical_skill_unit_scores)
       historical_skill_class_unit = List.first(historical_skill_unit.historical_skill_class_units)
 
