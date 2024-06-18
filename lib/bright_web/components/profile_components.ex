@@ -168,6 +168,17 @@ defmodule BrightWeb.ProfileComponents do
               skill_panel={@skill_panel}
               skill_class={@skill_class}
             />
+            <div>
+              <button
+                :if={true}
+                class={"bg-white border border-#{get_star_style(true)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
+                phx-click="click_skil_star_button"
+              >
+                <span class={"material-icons text-#{get_star_style(true)}"}>
+                  star
+                </span>
+              </button>
+            </div>
           </div>
           <%= if @switch_button, do: render_slot(@switch_button) %>
         </div>
