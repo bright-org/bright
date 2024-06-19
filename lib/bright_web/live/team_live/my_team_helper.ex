@@ -103,12 +103,10 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> Enum.count(fn x -> x.skill_class.class == class and x.level == level end)
   end
 
-  defp get_display_skill_panel(_, _, %SkillPanel{} = skill_panel), do: skill_panel
-
   defp get_display_skill_panel(
          %{"skill_panel_id" => skill_panel_id},
          _display_team_members,
-         nil
+         _
        ) do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
     try do
@@ -120,12 +118,14 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     end
   end
 
-  defp get_display_skill_panel(_params, [], nil) do
+  defp get_display_skill_panel(_, _, %SkillPanel{} = skill_panel), do: skill_panel
+
+  defp get_display_skill_panel(_params, [], _) do
     # TODO スキルパネルIDが指定されていない場合、チームも取得できない場合はnil
     nil
   end
 
-  defp get_display_skill_panel(_params, display_team_members, nil) do
+  defp get_display_skill_panel(_params, display_team_members, _) do
     # TODO スキルパネルIDが指定されていない場合、チームが取得できていれば第一優先のスキルパネルを取得する
     user_ids = Enum.map(display_team_members, & &1.user_id)
 
