@@ -57,10 +57,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     display_skill_panel =
       get_display_skill_panel(params, display_team_members, team_default_skill_panel)
 
-    is_skill_star =
-      if is_nil(team_default_skill_panel),
-        do: false,
-        else: team_default_skill_panel == display_skill_panel
+    is_skill_star = get_is_skill_star(team_default_skill_panel, display_skill_panel)
 
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
@@ -495,4 +492,10 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
   defp get_team_default_skill_panel(display_team),
     do: TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
+
+  defp get_is_skill_star(team_default_skill_panel, _) when is_nil(team_default_skill_panel),
+    do: false
+
+  defp get_is_skill_star(team_default_skill_panel, display_skill_panel),
+    do: team_default_skill_panel == display_skill_panel
 end

@@ -50,10 +50,7 @@ defmodule BrightWeb.MyTeamLive do
   def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do
     is_skill_star = !assigns.is_skill_star
 
-    skill_panel_id =
-      if is_skill_star,
-        do: assigns.display_skill_panel.id,
-        else: nil
+    skill_panel_id = get_skill_panel_id(is_skill_star, assigns.display_skill_panel.id)
 
     TeamDefaultSkillPanels.set_team_default_skill_panel_from_team_id(
       assigns.display_team.id,
@@ -182,4 +179,7 @@ defmodule BrightWeb.MyTeamLive do
     display_skill_cards
     |> Enum.filter(&String.contains?(&1.user.name, filter_name_list))
   end
+
+  defp get_skill_panel_id(false, _), do: nil
+  defp get_skill_panel_id(true, skill_panel_id), do: skill_panel_id
 end
