@@ -104,9 +104,7 @@ defmodule Bright.TeamDefaultSkillPanels do
     from(td in TeamDefaultSkillPanel,
       left_join: s in assoc(td, :skill_panel),
       where: td.team_id == ^team_id,
-      limit: 1,
-      select: s,
-      order_by: s.id
+      select: s
     )
     |> Repo.one()
   end

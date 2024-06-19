@@ -89,18 +89,6 @@ defmodule Bright.TeamDefaultSkillPanelsTest do
                team_default_skill_panel.skill_panel
     end
 
-    test "get_team_default_skill_panel_from_team_id/1 returns the skill_panel with given team_id (Multiple items)" do
-      insert(:team_default_skill_panel)
-
-      team_default_skill_panel =
-        insert(:team_default_skill_panel) |> Repo.preload([:team, :skill_panel])
-
-      assert TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(
-               team_default_skill_panel.team_id
-             ) ==
-               team_default_skill_panel.skill_panel
-    end
-
     test "get_team_default_skill_panel_from_team_id/1 returns the nil with given team_id" do
       team = insert(:team)
       assert TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(team.id) == nil

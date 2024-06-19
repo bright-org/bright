@@ -9,6 +9,7 @@ defmodule Bright.Repo.Migrations.CreateTeamDefaultSkillPanels do
       timestamps()
     end
 
-    create unique_index(:team_default_skill_panels, [:team_id, :skill_panel_id])
+    create unique_index(:team_default_skill_panels, [:team_id])
+    create index(:team_default_skill_panels, [:skill_panel_id])
   end
 end
