@@ -52,10 +52,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
     current_users_team_member = get_current_users_team_member(user, display_team_members)
 
-    team_default_skill_panel =
-      if is_nil(display_team),
-        do: nil,
-        else: TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
+    team_default_skill_panel = get_team_default_skill_panel(display_team)
 
     display_skill_panel =
       get_display_skill_panel(params, display_team_members, team_default_skill_panel)
@@ -491,4 +488,9 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   def get_my_team_path(display_team, skill_panel_id, skill_class_id) do
     "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
   end
+
+  defp get_team_default_skill_panel(display_team) when is_nil(display_team), do: nil
+
+  defp get_team_default_skill_panel(display_team),
+    do: TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
 end
