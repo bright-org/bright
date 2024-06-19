@@ -88,8 +88,9 @@ defmodule BrightWeb.MyTeamLive do
 
     display_team = Teams.get_team_with_member_users!(params["team_id"])
 
-    team_default_skill_panel =
-      MyTeamHelper.get_team_default_skill_panel(display_team) |> Map.get(:id)
+    team_default_skill_panel = MyTeamHelper.get_team_default_skill_panel(display_team)
+    team_default_skill_panel_id =
+      if is_nil(team_default_skill_panel), do: nil , else: team_default_skill_panel.id
 
     display_skill_panel_id =
       if is_nil(socket.assigns.display_skill_panel) do
@@ -101,7 +102,7 @@ defmodule BrightWeb.MyTeamLive do
     socket =
       socket
       |> assign(:display_team, display_team)
-      |> deside_redirect(display_team, team_default_skill_panel || display_skill_panel_id, nil)
+      |> deside_redirect(display_team, team_default_skill_panel_id || display_skill_panel_id, nil)
 
     {:noreply, socket}
   end
