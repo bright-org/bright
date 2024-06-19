@@ -488,9 +488,9 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
   end
 
-  defp get_team_default_skill_panel(display_team) when is_nil(display_team), do: nil
+  def get_team_default_skill_panel(display_team) when is_nil(display_team), do: nil
 
-  defp get_team_default_skill_panel(display_team),
+  def get_team_default_skill_panel(display_team),
     do: TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
 
   defp get_is_skill_star(team_default_skill_panel, _) when is_nil(team_default_skill_panel),
