@@ -25,8 +25,8 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
           module={SkillSelectionComponent}
           skill_panel={@this_skill_panel}
           skill_class={@this_skill_class}
-          skill_unit={@skill_unit}
-          skill_category={@skill_category}
+          skill_unit={@this_skill_unit}
+          skill_category={@this_skill_category}
           target={Bright.DraftSkillUnits.DraftSkillCategory}
           on_select={on_select_skill_category(@id)}
         />
@@ -52,7 +52,8 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillReplaceFormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:skill_unit, skill_unit)
+     |> assign(:this_skill_unit, skill_unit)
+     |> assign(:this_skill_category, skill_category)
      |> assign(:skill_category, skill_category)
      |> assign_form(changeset)}
   end
