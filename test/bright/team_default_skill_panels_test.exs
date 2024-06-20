@@ -98,11 +98,18 @@ defmodule Bright.TeamDefaultSkillPanelsTest do
       skill_panel = insert(:skill_panel)
       team = insert(:team)
 
-      assert {:ok, %{}} =
+      assert {:ok, _} =
                TeamDefaultSkillPanels.set_team_default_skill_panel_from_team_id(
                  team.id,
                  skill_panel.id
                )
+
+      query =
+        from(t in TeamDefaultSkillPanel,
+          where: t.skill_panel_id == ^skill_panel.id and t.team_id == ^team.id
+        )
+
+      assert Repo.all(query) |> Enum.count() == 1
     end
 
     test "set_team_default_skill_panel_from_team_id/2 with given skill_panel = nil" do
@@ -113,6 +120,10 @@ defmodule Bright.TeamDefaultSkillPanelsTest do
                  team_default_skill_panel.team_id,
                  nil
                )
+
+      query = from(t in TeamDefaultSkillPanel, where: t.id == ^team_default_skill_panel.id)
+
+      assert Repo.all(query) |> Enum.count() == 0
     end
 
     test "change_team_default_skill_panel/1 returns a team_default_skill_panel changeset" do
