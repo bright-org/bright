@@ -91,6 +91,7 @@ defmodule Bright.Factory do
   use Bright.TeamFactory
   use Bright.TeamMemberUsersFactory
   use Bright.TeamSupporterTeamFactory
+  use Bright.TeamDefaultSkillPanelFactory
 
   # NotificationsFactory context
   use Bright.NotificationOperationFactory

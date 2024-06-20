@@ -11,6 +11,7 @@ defmodule BrightWeb.MyTeamLive do
   alias Bright.Teams.Team
   alias Bright.CustomGroups
   alias BrightWeb.TeamLive.MyTeamHelper
+  alias Bright.TeamDefaultSkillPanels
 
   def mount(params, _session, socket) do
     # スキルとチームの取得結果に応じて各種assign
@@ -46,6 +47,20 @@ defmodule BrightWeb.MyTeamLive do
     {:noreply, socket}
   end
 
+  def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do
+    is_skill_star = !assigns.is_skill_star
+
+    skill_panel_id = get_skill_panel_id(is_skill_star, assigns.display_skill_panel.id)
+
+    {:ok, _} =
+      TeamDefaultSkillPanels.set_team_default_skill_panel_from_team_id(
+        assigns.display_team.id,
+        skill_panel_id
+      )
+
+    {:noreply, assign(socket, is_skill_star: is_skill_star)}
+  end
+
   def handle_event("on_card_row_click", %{"team_type" => "custom_group"} = params, socket) do
     # メガメニューのチームカードからカスタムグループの行をクリックした場合のハンドラー
     # display_teamを選択したカスタムグループで更新し、リダイレクトする。
@@ -74,6 +89,11 @@ defmodule BrightWeb.MyTeamLive do
 
     display_team = Teams.get_team_with_member_users!(params["team_id"])
 
+    team_default_skill_panel = MyTeamHelper.get_team_default_skill_panel(display_team)
+
+    team_default_skill_panel_id =
+      if is_nil(team_default_skill_panel), do: nil, else: team_default_skill_panel.id
+
     display_skill_panel_id =
       if is_nil(socket.assigns.display_skill_panel) do
         nil
@@ -84,7 +104,7 @@ defmodule BrightWeb.MyTeamLive do
     socket =
       socket
       |> assign(:display_team, display_team)
-      |> deside_redirect(display_team, display_skill_panel_id, nil)
+      |> deside_redirect(display_team, team_default_skill_panel_id || display_skill_panel_id, nil)
 
     {:noreply, socket}
   end
@@ -165,4 +185,7 @@ defmodule BrightWeb.MyTeamLive do
     display_skill_cards
     |> Enum.filter(&String.contains?(&1.user.name, filter_name_list))
   end
+
+  defp get_skill_panel_id(false, _), do: nil
+  defp get_skill_panel_id(true, skill_panel_id), do: skill_panel_id
 end

@@ -5,6 +5,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   import Phoenix.Component, only: [assign: 3]
   import Phoenix.LiveView, only: [push_navigate: 2]
 
+  alias Bright.TeamDefaultSkillPanels
   alias Bright.Accounts
   alias Bright.Teams
   alias Bright.Teams.Team
@@ -26,6 +27,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign_plan(subscription)
     |> assign_page_title()
     |> assign_display_type(params["type"])
+    |> assign(:is_skill_star, false)
     |> assign_display_skill_panel(nil)
     |> assign_display_skill_classes([])
     |> assign_display_skill_class(nil)
@@ -50,7 +52,13 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
 
     current_users_team_member = get_current_users_team_member(user, display_team_members)
 
-    display_skill_panel = get_display_skill_panel(params, display_team_members)
+    team_default_skill_panel = get_team_default_skill_panel(display_team)
+
+    display_skill_panel =
+      get_display_skill_panel(params, display_team_members, team_default_skill_panel)
+
+    is_skill_star = get_is_skill_star(team_default_skill_panel, display_skill_panel)
+
     display_skill_classes = list_display_skill_classes(display_skill_panel)
     selected_skill_class = get_selected_skill_class(params, display_skill_classes)
     member_skill_class_scores = list_skill_class_scores(display_team_members, display_skill_panel)
@@ -71,6 +79,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign_page_title()
     |> assign_display_type(params["type"])
     |> assign_display_skill_panel(display_skill_panel)
+    |> assign(:is_skill_star, is_skill_star)
     |> assign_display_skill_classes(display_skill_classes)
     |> assign_display_skill_class(selected_skill_class)
     |> assign_display_team(display_team)
@@ -94,7 +103,11 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> Enum.count(fn x -> x.skill_class.class == class and x.level == level end)
   end
 
-  defp get_display_skill_panel(%{"skill_panel_id" => skill_panel_id}, _display_team_members) do
+  defp get_display_skill_panel(
+         %{"skill_panel_id" => skill_panel_id},
+         _display_team_members,
+         _
+       ) do
     # TODO チームの誰も保有していないスキルパネルが指定された場合エラーにする必要はないはず
     try do
       SkillPanels.get_skill_panel!(skill_panel_id)
@@ -105,12 +118,14 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     end
   end
 
-  defp get_display_skill_panel(_params, []) do
+  defp get_display_skill_panel(_, _, %SkillPanel{} = skill_panel), do: skill_panel
+
+  defp get_display_skill_panel(_params, [], _) do
     # TODO スキルパネルIDが指定されていない場合、チームも取得できない場合はnil
     nil
   end
 
-  defp get_display_skill_panel(_params, display_team_members) do
+  defp get_display_skill_panel(_params, display_team_members, _) do
     # TODO スキルパネルIDが指定されていない場合、チームが取得できていれば第一優先のスキルパネルを取得する
     user_ids = Enum.map(display_team_members, & &1.user_id)
 
@@ -472,4 +487,15 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
   def get_my_team_path(display_team, skill_panel_id, skill_class_id) do
     "/teams/#{display_team.id}/skill_panels/#{skill_panel_id}?skill_class_id=#{skill_class_id}"
   end
+
+  def get_team_default_skill_panel(display_team) when is_nil(display_team), do: nil
+
+  def get_team_default_skill_panel(display_team),
+    do: TeamDefaultSkillPanels.get_team_default_skill_panel_from_team_id(display_team.id)
+
+  defp get_is_skill_star(team_default_skill_panel, _) when is_nil(team_default_skill_panel),
+    do: false
+
+  defp get_is_skill_star(team_default_skill_panel, display_skill_panel),
+    do: team_default_skill_panel == display_skill_panel
 end
