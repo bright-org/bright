@@ -108,7 +108,7 @@ defmodule Bright.TeamDefaultSkillPanelsTest do
     test "set_team_default_skill_panel_from_team_id/2 with given skill_panel = nil" do
       team_default_skill_panel = insert(:team_default_skill_panel)
 
-      assert {:ok, %{}} =
+      assert {:ok, _} =
                TeamDefaultSkillPanels.set_team_default_skill_panel_from_team_id(
                  team_default_skill_panel.team_id,
                  nil

@@ -34,6 +34,8 @@ defmodule Bright.Teams.Team do
                  join_keys: [supportee_team_id: :id, supporter_team_id: :id],
                  join_where: [status: :supporting]
 
+    has_one :team_default_skill_panel, Bright.Teams.TeamDefaultSkillPanel
+
     timestamps()
   end
 

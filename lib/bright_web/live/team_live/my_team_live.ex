@@ -52,7 +52,7 @@ defmodule BrightWeb.MyTeamLive do
 
     skill_panel_id = get_skill_panel_id(is_skill_star, assigns.display_skill_panel.id)
 
-    TeamDefaultSkillPanels.set_team_default_skill_panel_from_team_id(
+    {:ok, _} = TeamDefaultSkillPanels.set_team_default_skill_panel_from_team_id(
       assigns.display_team.id,
       skill_panel_id
     )
