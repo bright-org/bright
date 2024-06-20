@@ -170,6 +170,9 @@
 <.bright_modal
   :if={@live_action in [:new, :edit]}
   id="create-team-modal"
+  style_of_modal_flame="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-md bg-white px-5 py-9 sm:p-14 shadow-lg ring-1 transition"
+  style_of_modal_flame_out="p-2 lg:py-8"
+  style_of_cancel_button_rayout="absolute top-2 right-2 xl:top-6 xl:right-5"
   show
   on_cancel={JS.push("cancel_team_create")}
 >

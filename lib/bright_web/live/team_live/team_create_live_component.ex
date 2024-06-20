@@ -39,7 +39,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   def team_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="space-y-8 bg-white">
+      <div class="w-full space-y-8 bg-white">
         <%= render_slot(@inner_block, f) %>
         <div :for={action <- @actions} class="flex items-center justify-between">
           <%= render_slot(action, f) %>
