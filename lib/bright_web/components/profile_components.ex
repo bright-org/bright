@@ -260,6 +260,8 @@ defmodule BrightWeb.ProfileComponents do
               <.selected_skill
                 skill_panel={@skill_panel}
                 skill_class={@skill_class}
+                is_team_admin={false}
+                is_skill_star={false}
               />
             </div>
             <div class="pt-4" :if={@me}>
