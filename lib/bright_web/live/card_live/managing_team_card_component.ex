@@ -70,7 +70,7 @@ defmodule BrightWeb.CardLive.ManagingTeamCardComponent do
                 <div class="text-base">招待可能なチームはありません</div>
                 <p class="my-4">
                   <a href="/teams/new" class="text-sm font-bold px-5 py-3 rounded text-white bg-base">
-                    チームを作る（β）
+                    チームを作る
                   </a>
                 </p>
               </li>

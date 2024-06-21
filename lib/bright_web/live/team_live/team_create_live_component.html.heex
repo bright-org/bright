@@ -1,9 +1,9 @@
-<div id={@id} class="relative w-[1280px] max-h-full">
-  <div class="relative rounded-sm px-16 py-8">
+<div id={@id} class="relative w-full max-h-full">
+  <div class="relative rounded-sm py-8">
     <!-- Modal header -->
     <h3><%= @modal_title %></h3>
     <!-- Modal body -->
-    <div class="flex pt-8">
+    <div class="flex flex-col pt-8 xl:flex-row">
       <!-- modal left -->
       <.live_component
         id="team_add_user"
@@ -13,7 +13,7 @@
         plan={@plan}
       />
       <!-- modal-right -->
-      <div class="w-[580px] pl-10 flex flex-col justify-between">
+      <div class="xl:w-[580px] xl:pl-10 flex flex-col justify-between mt-4 xl:mt-0">
         <.team_form
           for={@team_form}
           id="team_form"
@@ -24,13 +24,14 @@
         >
           <div>
             <h5><%= @right_title %></h5>
-            <div class="bg-brightGray-10 rounded-sm px-10 pt-6 min-h-[360px]">
-              <dl class="flex flex-wrap">
-                <dt class="mb-10">
+            <div class="bg-brightGray-10 rounded-sm px-4 xl:px-10 pt-6 xl:min-h-[360px]">
+              <dl class="flex flex-col xl:flex-wrap xl:flex-row">
+                <dt class="mb-4 xl:mb-10">
                   <BrightCore.input
-                    label_class="w-[100px] text-base font-bold"
-                    input_class="border border-brightGray-100 rounded-sm flex-1 h-12 w-[340px]"
-                    error_class="ml-[100px] mt-2"
+                    container_class="flex-col !items-start xl:flex-row xl:!items-center"
+                    label_class="w-[100px] text-base font-bold mb-4 xl:mb-0"
+                    input_class="border border-brightGray-100 rounded-sm flex-1 h-12 w-full xl:w-[340px]"
+                    error_class="xl:ml-[100px] mt-2"
                     label="チーム名"
                     field={@team_form[:name]}
                     type="text"
@@ -38,10 +39,10 @@
                     placeholder="新しいチーム名を入力してください"
                   />
                 </dt>
-                <dt class="font-bold w-[100px] mb-10 text-base">
+                <dt class="font-bold w-[100px] mb-4 xl:mb-10 text-base">
                   チームタイプ
                 </dt>
-                <dd class="w-[340px] mb-6">
+                <dd class="w-full xl:w-[340px] mb-6">
                   <.team_type_select_dropdown_menue
                     selected_team_type={@selected_team_type}
                     phx_target={@myself}
@@ -49,10 +50,10 @@
                     user_id={@current_user.id}
                   />
                 </dd>
-                <dt class="font-bold w-[100px] mb-10 text-base">
+                <dt class="font-bold w-[100px] mb-4 xl:mb-10 text-base">
                   メンバー
                 </dt>
-                <dd class="w-[340px] mb-6">
+                <dd class="w-full xl:w-[340px] mb-6">
                   <ul class="flex flex-wrap gap-y-1">
                     <%= for user <- @users do %>
                       <.profile_small_with_remove_button
@@ -69,13 +70,13 @@
               </dl>
             </div>
           </div>
-          <div class="flex justify-end gap-x-4">
+          <div class="flex justify-center xl:justify-end gap-x-4 flex-col-reverse sm:flex-row">
             <.link :if={@action == :edit} phx-click={JS.push("delete_team", value: %{id: @team.id}, target: @myself)} data-confirm="削除してよろしいでしょうか？">
-              <button type="button" class="text-sm font-bold px-5 py-3 rounded text-white bg-attention-600">
+              <button type="button" class="text-sm font-bold px-5 py-3 rounded text-white bg-attention-600 w-full">
                 チームを削除する
               </button>
             </.link>
-            <button type="submit" class="text-sm font-bold px-5 py-3 rounded text-white bg-base hover:filter hover:brightness-[80%]">
+            <button type="submit" class="text-sm font-bold px-5 py-3 rounded text-white bg-base mb-4 sm:mb-0 hover:filter hover:brightness-[80%]">
               <%= @submit %>
             </button>
           </div>

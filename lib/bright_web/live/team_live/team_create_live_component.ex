@@ -39,7 +39,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   def team_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="space-y-8 bg-white">
+      <div class="w-full space-y-8 bg-white">
         <%= render_slot(@inner_block, f) %>
         <div :for={action <- @actions} class="flex items-center justify-between">
           <%= render_slot(action, f) %>
@@ -69,7 +69,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
     socket
     |> assign(assigns)
     |> validate_user_grant()
-    |> assign(:modal_title, "チームを編集する（β）")
+    |> assign(:modal_title, "チームを編集する")
     |> assign(:right_title, "編集後のチーム")
     |> assign(:submit, "チームを更新し、新規メンバーに招待メールを送る")
     |> assign(:selected_team_type, Teams.get_team_type_by_team(team))
@@ -83,7 +83,7 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
     socket
     |> assign(assigns)
-    |> assign(:modal_title, "チームを作る（β）")
+    |> assign(:modal_title, "チームを作る")
     |> assign(:right_title, "新しいチーム")
     |> assign(:submit, "チームを作成し、上記メンバーに招待を送る")
     |> assign(:selected_team_type, :general_team)

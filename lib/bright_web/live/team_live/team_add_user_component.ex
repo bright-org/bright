@@ -9,7 +9,7 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div id={@id} class="min-w-[580px] pr-10 border-r border-r-brightGray-200 border-dashed">
+    <div id={@id} class="xl:w-[580px] xl:pr-10 xl:border-r xl:border-r-brightGray-200 xl:border-dashed">
     <!-- TODO α対象外
       <p>
         <span class="font-bold">気になる</span>からメンバーとして追加
@@ -24,26 +24,32 @@ defmodule BrightWeb.TeamLive.TeamAddUserComponent do
           id="add_user_form"
           phx-target={@myself}
           phx-submit="add_user"
+          class="w-full"
         >
           <p class="pb-2 text-base">
             <span class="font-bold">Brightハンドル名もしくはメールアドレス</span>からメンバーとして追加
           </p>
-          <input
-            id="search_word"
-            name="search_word"
-            type="autocomplete"
-            placeholder="ハンドル名もしくはメールアドレスを入力してください"
-            class="px-5 py-2 border border-brightGray-100 rounded-sm flex-1 w-[390px]"
-            phx-change="change_add_user"
-            phx-target={@myself}
-            value={@search_word}
-          />
-          <.action_button type="submit" class="ml-2.5 px-5 py-2">
-            追加
-          </.action_button>
+          <div class="flex flex-col sm:flex-row">
+            <input
+              id="search_word"
+              name="search_word"
+              type="autocomplete"
+              placeholder="ハンドル名もしくはメールアドレスを入力してください"
+              class="px-2 xl:px-5 py-2 border border-brightGray-100 rounded-sm flex-1 xl:w-[390px] text-[0.7rem] sm:text-sm"
+              phx-change="change_add_user"
+              phx-target={@myself}
+              value={@search_word}
+            />
+            <div :if={@search_word_error != nil} class="block sm:hidden">
+              <p class= "text-error text-xs"><%= Phoenix.HTML.raw(@search_word_error) %></p>
+            </div>
+            <.action_button type="submit" class="sm:ml-2.5 px-5 py-2 flex-0.2 mt-4 sm:mt-0">
+              追加
+            </.action_button>
+          </div>
         </form>
       </div>
-      <div :if={@search_word_error != nil}>
+      <div :if={@search_word_error != nil} class="hidden sm:block mb-4">
         <p class= "text-error text-xs"><%= Phoenix.HTML.raw(@search_word_error) %></p>
       </div>
     </div>
