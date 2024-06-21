@@ -172,8 +172,6 @@ defmodule BrightWeb.ProfileComponents do
               is_star_button={@is_star_button}
               is_star={@is_star}
             />
-
-
           </div>
           <%= if @switch_button, do: render_slot(@switch_button) %>
         </div>
