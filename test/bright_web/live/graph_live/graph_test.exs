@@ -139,7 +139,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
       html =
         show_live
-        |> element(~s{button[phx-click="click_star_button"]})
+        |> element(~s{#skill_star_button})
         |> render_click()
 
       assert html =~ ~r{class=".*border-brightGreen-300.*"}
@@ -150,7 +150,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
       html =
         show_live
-        |> element(~s{button[phx-click="click_star_button"]})
+        |> element(~s{#skill_star_button})
         |> render_click()
 
       assert html =~ ~r{class=".*border-brightGray-500.*"}
