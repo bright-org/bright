@@ -219,7 +219,7 @@ defmodule BrightWeb.ProfileComponents do
           <button
               :if={@is_team_admin}
               id="skill_star_button"
-              class={"bg-white border border-#{get_star_style(@is_skill_star)} rounded mx-2 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
+              class={"bg-white border border-#{get_star_style(@is_skill_star)} rounded mx-6 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
               phx-click="click_skill_star_button"
             >
               <span class={"material-icons text-#{get_star_style(@is_skill_star)}"}>
