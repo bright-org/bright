@@ -169,19 +169,11 @@ defmodule BrightWeb.ProfileComponents do
             <.selected_skill
               skill_panel={@skill_panel}
               skill_class={@skill_class}
+              is_team_admin={@is_team_admin}
+              is_skill_star={@is_skill_star}
             />
-            <div>
-              <button
-                :if={@is_team_admin}
-                id="skill_star_button"
-                class={"bg-white border border-#{get_star_style(@is_skill_star)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-95"}
-                phx-click="click_skill_star_button"
-              >
-                <span class={"material-icons text-#{get_star_style(@is_skill_star)}"}>
-                  star
-                </span>
-              </button>
-            </div>
+
+
           </div>
           <%= if @switch_button, do: render_slot(@switch_button) %>
         </div>
@@ -222,7 +214,19 @@ defmodule BrightWeb.ProfileComponents do
   defp selected_skill(assigns) do
     ~H"""
       <div class="flex flex-col gap-y-2 font-bold justify-center">
-        <span id="profile-skill-panel-name" class="text-md lg:text-2xl"><%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
+        <div id="profile-skill-panel-name" class="flex text-md lg:text-2xl items-center">
+          <span> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
+          <button
+              :if={@is_team_admin}
+              id="skill_star_button"
+              class={"bg-white border border-#{get_star_style(@is_skill_star)} rounded mx-2 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
+              phx-click="click_skill_star_button"
+            >
+              <span class={"material-icons text-#{get_star_style(@is_skill_star)}"}>
+                star
+              </span>
+            </button>
+        </div>
         <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
           <span class="text-sm lg:text-normal">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
           <span class="text-sm lg:text-normal break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
