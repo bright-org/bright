@@ -245,7 +245,6 @@ defmodule BrightWeb.ProfileComponents do
   slot :score_stats, default: nil
   slot :switch_button, default: nil
 
-  @spec profile_with_skill(map()) :: Phoenix.LiveView.Rendered.t()
   def profile_with_skill(assigns) do
     assigns = assign_by_anonymous(assigns)
 
