@@ -86,6 +86,14 @@
           counter={@counter}
           num_skills={@num_skills}
         />
+        <.live_component
+          id="skill_list"
+          module={BrightWeb.SkillListComponent}
+          display_user={@display_user}
+          me={@me}
+          root="graphs"
+          anonymous={@anonymous}
+        />
       </:score_stats>
       <:switch_button>
         <div class="mt-4 lg:mt-2">

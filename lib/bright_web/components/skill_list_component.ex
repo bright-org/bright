@@ -3,7 +3,6 @@ defmodule BrightWeb.SkillListComponent do
   Skill Card Component
   """
   use BrightWeb, :live_component
-  import BrightWeb.TabComponents
   alias Bright.{CareerFields, SkillPanels}
   alias BrightWeb.PathHelper
   alias Bright.Teams
@@ -20,40 +19,31 @@ defmodule BrightWeb.SkillListComponent do
 
     ~H"""
     <div>
-      <.tab
-        id="skill_card"
-        selected_tab={@selected_tab}
-        target={@myself}
-        page={@page}
-        total_pages={@total_pages}
-        tabs={@tabs}
-      >
-        <div class="py-4 px-2 flex gap-y-4 flex-col lg:py-6 lg:px-7 lg:min-h-[464px]">
-          <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
-            <li class="flex">
-              <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-              <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はありません
-              </div>
-            </li>
-          </ul>
-          <div :if={Enum.count(@skill_panels) > 0} class="hidden lg:flex">
-            <div class="flex-1"></div>
-            <div class="w-36 font-bold">クラス1</div>
-            <div class="w-36 font-bold">クラス2</div>
-            <div class="w-36 font-bold">クラス3</div>
-          </div>
-          <%= for skill_panel <- @skill_panels do %>
-            <.skill_panel
-              skill_panel={skill_panel}
-              display_user={@display_user}
-              me={@me}
-              anonymous={@anonymous}
-              root={@root}
-              over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
-            />
-          <% end %>
+      <div class="py-4 px-2 flex gap-y-4 flex-col lg:py-6 lg:px-7 lg:min-h-[200px]">
+        <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
+          <li class="flex">
+            <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
+            <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はありません
+            </div>
+          </li>
+        </ul>
+        <div :if={Enum.count(@skill_panels) > 0} class="hidden lg:flex">
+          <div class="flex-1"></div>
+          <div class="w-10 font-bold">1</div>
+          <div class="w-10 font-bold">2</div>
+          <div class="w-10 font-bold">3</div>
         </div>
-      </.tab>
+        <%= for skill_panel <- @skill_panels do %>
+          <.skill_panel
+            skill_panel={skill_panel}
+            display_user={@display_user}
+            me={@me}
+            anonymous={@anonymous}
+            root={@root}
+            over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
+          />
+        <% end %>
+      </div>
     </div>
     """
   end
@@ -149,7 +139,7 @@ defmodule BrightWeb.SkillListComponent do
 
   defp skill_gem(%{score: nil} = assigns) do
     ~H"""
-    <div class="w-28 lg:w-36"></div>
+    <div class="w-10"></div>
     """
   end
 
@@ -161,7 +151,7 @@ defmodule BrightWeb.SkillListComponent do
       |> assign(:level, level)
 
     ~H"""
-    <div class="w-24 lg:w-36">
+    <div class="w-10">
       <p
         phx-click="on_skill_class_click"
         phx-value-skill_panel_id={@skill_panel.id}
@@ -169,7 +159,6 @@ defmodule BrightWeb.SkillListComponent do
         class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
         >
         <img src={@icon_path} class="mr-1" />
-        <span class="w-16"><%= level_text(@level) %></span>
       </p>
     </div>
     """
@@ -182,11 +171,10 @@ defmodule BrightWeb.SkillListComponent do
       |> assign(:level, level)
 
     ~H"""
-    <div class="w-24 lg:w-36">
+    <div class="w-10">
       <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
           <img src={@icon_path} class="mr-1" />
-          <span class="w-16"><%= level_text(@level) %></span>
         </p>
       </.link>
     </div>
