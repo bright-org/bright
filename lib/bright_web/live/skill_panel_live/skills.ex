@@ -73,7 +73,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, push_redirect(socket, to: move_to)}
   end
 
-  def handle_event("click_star_button", _params, %{assigns: assigns} = socket) do
+  def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do
     is_star = !assigns.is_star
 
     socket =

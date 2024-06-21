@@ -47,8 +47,8 @@
       team_size={@team_size}
       skill_panel={@display_skill_panel}
       skill_class={@display_skill_class}
-      is_team_admin={Teams.is_admin?(@display_team, @current_user)}
-      is_skill_star={@is_skill_star}
+      is_star_button={Teams.is_admin?(@display_team, @current_user)}
+      is_star={@is_skill_star}
     >
       <:switch_button>
         <div class="flex flex-col lg:flex-row gap-2 mt-4">
