@@ -146,8 +146,8 @@ defmodule BrightWeb.ProfileComponents do
   attr :team_size, :integer, default: 0
   attr :skill_class, :any, required: true
   attr :skill_panel, :any, required: true
-  attr :is_team_admin, :boolean, default: false
-  attr :is_skill_star, :boolean, default: false
+  attr :is_star_button, :boolean, default: false
+  attr :is_star, :boolean, default: false
   slot :switch_button, default: nil
 
   def profile_with_selected_team(assigns) do
@@ -169,8 +169,8 @@ defmodule BrightWeb.ProfileComponents do
             <.selected_skill
               skill_panel={@skill_panel}
               skill_class={@skill_class}
-              is_team_admin={@is_team_admin}
-              is_skill_star={@is_skill_star}
+              is_star_button={@is_star_button}
+              is_star={@is_star}
             />
 
 
@@ -217,12 +217,12 @@ defmodule BrightWeb.ProfileComponents do
         <div id="profile-skill-panel-name" class="flex text-md lg:text-2xl items-center">
           <span> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
           <button
-              :if={@is_team_admin}
+              :if={@is_star_button}
               id="skill_star_button"
-              class={"bg-white border border-#{get_star_style(@is_skill_star)} rounded mx-6 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
+              class={"bg-white border border-#{get_star_style(@is_star)} rounded mx-6 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
               phx-click="click_skill_star_button"
             >
-              <span class={"material-icons text-#{get_star_style(@is_skill_star)}"}>
+              <span class={"material-icons text-#{get_star_style(@is_star)}"}>
                 star
               </span>
             </button>
@@ -236,7 +236,7 @@ defmodule BrightWeb.ProfileComponents do
   end
 
   attr :is_anonymous, :boolean, default: false
-  attr :me, :boolean, default: false
+  attr :is_star_button, :boolean, default: false
   attr :is_star, :boolean, default: false
   attr :user_name, :string, default: ""
   attr :title, :string, default: ""
@@ -247,6 +247,7 @@ defmodule BrightWeb.ProfileComponents do
   slot :score_stats, default: nil
   slot :switch_button, default: nil
 
+  @spec profile_with_skill(map()) :: Phoenix.LiveView.Rendered.t()
   def profile_with_skill(assigns) do
     assigns = assign_by_anonymous(assigns)
 
@@ -260,19 +261,9 @@ defmodule BrightWeb.ProfileComponents do
               <.selected_skill
                 skill_panel={@skill_panel}
                 skill_class={@skill_class}
-                is_team_admin={false}
-                is_skill_star={false}
+                is_star_button={@is_star_button}
+                is_star={@is_star}
               />
-            </div>
-            <div class="pt-4" :if={@me}>
-              <button
-                class={"bg-white border border-#{get_star_style(@is_star)} rounded px-1 h-8 flex items-center mt-auto mb-1 hover:filter hover:brightness-[80%]"}
-                phx-click="click_star_button"
-              >
-                <span class={"material-icons text-#{get_star_style(@is_star)}"}>
-                  star
-                </span>
-              </button>
             </div>
             <%= if @score_stats, do: render_slot(@score_stats) %>
           </div>

@@ -80,7 +80,7 @@ defmodule BrightWeb.GraphLive.Graphs do
     {:noreply, assign(socket, :open_income_consultation, false)}
   end
 
-  def handle_event("click_star_button", _params, %{assigns: assigns} = socket) do
+  def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do
     is_star = !assigns.is_star
 
     socket =
