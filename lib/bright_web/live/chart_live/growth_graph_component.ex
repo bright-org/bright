@@ -20,43 +20,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     ~H"""
     <div class="flex flex-col w-full px-2">
       <% # 比較対象 選択 %>
-      <div class="py-2 lg:py-4 mt-4 order-last lg:order-none">
-        <div class="flex gap-x-4 justify-between lg:justify-start">
-          <div class="flex">
-            <BrightWeb.BrightCoreComponents.action_button
-              class="flex px-5 py-2 items-center"
-              phx-click="compare_myself"
-              phx-target={@myself}
-            >
-              <img class="mr-1" src="/images/common/icons/compareIndividual.svg" />
-              <span class="min-w-[5em]">自分と比較</span>
-            </BrightWeb.BrightCoreComponents.action_button>
-          </div>
-          <div
-            id="compare-indivividual-dropdown"
-            phx-hook="Dropdown"
-            data-dropdown-offset-skidding="307"
-            data-dropdown-placement="bottom"
-          >
-            <BrightWeb.BrightCoreComponents.action_button icon="add" class="dropdownTrigger flex py-2 pl-3">
-              <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
-              <span class="min-w-[5em]">他者と比較</span>
-            </BrightWeb.BrightCoreComponents.action_button>
-            <div
-              class="dropdownTarget bg-white rounded-md mt-1 w-full lg:w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
-            >
-              <.live_component
-                id="related-user-card-compare"
-                module={BrightWeb.CardLive.RelatedUserCardComponent}
-                current_user={@current_user}
-                display_menu={false}
-                purpose="compare"
-                card_row_click_target={@myself}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       <% # 成長グラフ %>
       <div class="flex justify-center pl-7 lg:pl-14">
@@ -140,6 +104,44 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           <% # スマホ版タイムライン移動ボタン %>
           <.btn_timeline_shift_past enabled={@compared_timeline.past_enabled} id="other" myself={@myself}/>
           <.btn_timeline_shift_future enabled={@compared_timeline.future_enabled} id="other" myself={@myself} />
+        </div>
+      </div>
+
+      <div class="py-2 lg:py-4 mt-4 order-last lg:order-none">
+        <div class="flex gap-x-4 justify-between lg:justify-start">
+          <div class="flex">
+            <BrightWeb.BrightCoreComponents.action_button
+              class="flex px-5 py-2 items-center"
+              phx-click="compare_myself"
+              phx-target={@myself}
+            >
+              <img class="mr-1" src="/images/common/icons/compareIndividual.svg" />
+              <span class="min-w-[5em]">自分と比較</span>
+            </BrightWeb.BrightCoreComponents.action_button>
+          </div>
+          <div
+            id="compare-indivividual-dropdown"
+            phx-hook="Dropdown"
+            data-dropdown-offset-skidding="307"
+            data-dropdown-placement="bottom"
+          >
+            <BrightWeb.BrightCoreComponents.action_button icon="add" class="dropdownTrigger flex py-2 pl-3">
+              <img class="mr-1" src="/images/common/icons/compareTeam.svg" />
+              <span class="min-w-[5em]">他者と比較</span>
+            </BrightWeb.BrightCoreComponents.action_button>
+            <div
+              class="dropdownTarget bg-white rounded-md mt-1 w-full lg:w-[750px] bottom border-brightGray-100 border shadow-md hidden z-10"
+            >
+              <.live_component
+                id="related-user-card-compare"
+                module={BrightWeb.CardLive.RelatedUserCardComponent}
+                current_user={@current_user}
+                display_menu={false}
+                purpose="compare"
+                card_row_click_target={@myself}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
