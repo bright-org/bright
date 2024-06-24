@@ -83,58 +83,60 @@
         me={@me}
       />
     </div>
-    <div :if={@me} class="relative flex flex-col mb-4 mt-4 ml-4 lg:mb-0">
-      <div class="flex justify-between items-center w-full lg:w-72 gap-x-2">
-        <.link
-          patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
-          id="link-skills-form"
-          class={[
-            "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-[80%]"
-          ]}
-        >
-          <span class="material-icons-outlined text-white text-md">edit</span> スキルを入力する
-        </.link>
 
-        <div
-          :if={@me}
-          id="btn-help-enter-skills-button"
-          class="flex-none cursor-pointer w-8 h-8 hover:filter hover:brightness-[80%] bg-[url('/images/icon_help.svg')]"
-          phx-click={
-            JS.push("open", target: "#help-enter-skills-button")
-            |> show("#help-enter-skills-button")
-          }
-        >
-        </div>
-      </div>
-
-      <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
-        <% # スキル入力するボタン 手動表示メッセージ %>
-        <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
-        <.live_component
-          module={BrightWeb.HelpMessageComponent}
-          id="help-enter-skills-button"
-          open={false}
-        >
-          <GuideMessageComponents.enter_skills_help_message reference_from="button" />
-        </.live_component>
-      </div>
-
-      <% # スキル入力後メッセージ（初回のみ） %>
-      <.help_messages_area flash={@flash} />
-    </div>
     <div class="shadow relative z-2 py-1 lg:px-6">
       <div class="mt-4 lg:mt-0 flex flex-col-reverse lg:flex-col 2xl:flex-row">
+        <div>
+          <div :if={@me} class="relative flex flex-col mb-4 mt-4 ml-4 lg:mb-0">
+            <div class="flex justify-between items-center w-full lg:w-72 gap-x-2">
+              <.link
+                patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
+                id="link-skills-form"
+                class={[
+                  "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-[80%]"
+                ]}
+              >
+                <span class="material-icons-outlined text-white text-md">edit</span> スキルを入力する
+              </.link>
 
-        <.live_component
-          id="rowth-graph"
-          module={BrightWeb.ChartLive.GrowthGraphComponent}
-          current_user={@current_user}
-          user_id={@display_user.id}
-          skill_panel_id={@skill_panel.id}
-          skill_class={@skill_class}
-          compared_user={@compared_user}
-        />
-        <div class="flex flex-col items-center justify-center w-full lg:mt-4">
+              <div
+                :if={@me}
+                id="btn-help-enter-skills-button"
+                class="flex-none cursor-pointer w-8 h-8 hover:filter hover:brightness-[80%] bg-[url('/images/icon_help.svg')]"
+                phx-click={
+                  JS.push("open", target: "#help-enter-skills-button")
+                  |> show("#help-enter-skills-button")
+                }
+              >
+              </div>
+            </div>
+
+            <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
+              <% # スキル入力するボタン 手動表示メッセージ %>
+              <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
+              <.live_component
+                module={BrightWeb.HelpMessageComponent}
+                id="help-enter-skills-button"
+                open={false}
+              >
+                <GuideMessageComponents.enter_skills_help_message reference_from="button" />
+              </.live_component>
+            </div>
+
+            <% # スキル入力後メッセージ（初回のみ） %>
+            <.help_messages_area flash={@flash} />
+          </div>
+          <.live_component
+            id="rowth-graph"
+            module={BrightWeb.ChartLive.GrowthGraphComponent}
+            current_user={@current_user}
+            user_id={@display_user.id}
+            skill_panel_id={@skill_panel.id}
+            skill_class={@skill_class}
+            compared_user={@compared_user}
+          />
+        </div>
+        <div class="flex flex-col items-center lg:items-start w-full ">
           <%!-- PC版 スキルジェム --%>
           <div class="hidden lg:block px-6">
             <.live_component
