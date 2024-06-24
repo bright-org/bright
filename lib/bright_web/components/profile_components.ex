@@ -181,7 +181,7 @@ defmodule BrightWeb.ProfileComponents do
 
   defp selected_skill_title(assigns) do
     ~H"""
-      <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4">
+      <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4 pt-2">
         <div>
           <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">
             <.icon name="hero-arrow-uturn-right" class="mr-2" />
@@ -250,13 +250,13 @@ defmodule BrightWeb.ProfileComponents do
 
     ~H"""
       <div class="flex flex-col gap-y-2 w-full">
-        <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
         <div class="p-4 lg:px-6 bg-white rounded-lg">
           <div class="flex flex-col lg:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
             <div class="flex gap-x-4 lg:gap-x-0">
               <div>
                 <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
                 <%= if @switch_button, do: render_slot(@switch_button) %>
+                 <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
               </div>
               <div>
                 <.selected_skill
