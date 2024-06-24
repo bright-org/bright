@@ -41,20 +41,22 @@
       is_star_button={@me}
     >
       <:score_stats>
-        <ProfileComponents.dounat_graph_with_score_stats
-          skill_class_score={@skill_class_score}
-          counter={@counter}
-          num_skills={@num_skills}
-        />
+        <div>
+          <ProfileComponents.dounat_graph_with_score_stats
+            skill_class_score={@skill_class_score}
+            counter={@counter}
+            num_skills={@num_skills}
+          />
 
-        <.live_component
-          id="skill_list"
-          module={BrightWeb.SkillListComponent}
-          display_user={@display_user}
-          me={@me}
-          root="graphs"
-          anonymous={@anonymous}
-        />
+          <.live_component
+            id="skill_list"
+            module={BrightWeb.SkillListComponent}
+            display_user={@display_user}
+            me={@me}
+            root="graphs"
+            anonymous={@anonymous}
+          />
+        </div>
       </:score_stats>
       <:switch_button>
         <div class="mt-4 lg:mt-2">

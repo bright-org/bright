@@ -367,8 +367,4 @@ defmodule BrightWeb.SkillListComponent do
   defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
   defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
   defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
-
-  defp level_text(:beginner), do: "見習い"
-  defp level_text(:normal), do: "平均"
-  defp level_text(:skilled), do: "ベテラン"
 end
