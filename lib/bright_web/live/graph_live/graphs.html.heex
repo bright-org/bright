@@ -15,8 +15,75 @@
       />
     </div>
 
-    <div :if={@me} class="relative flex flex-col mb-4 lg:mb-0">
-      <div class="flex justify-between items-center w-full gap-x-2">
+    <%!-- PC 成長パネル/スキルパネル切替 --%>
+    <div class="hidden lg:flex lg:ml-auto">
+      <.toggle_link
+        skill_panel={@skill_panel}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        skill_class={@skill_class.class}
+        active="graph"
+      />
+    </div>
+  </div>
+
+  <div class="flex mx-4 lg:mx-10 pb-6">
+    <ProfileComponents.profile_with_skill
+      user_name={@display_user.name}
+      title={@display_user.user_profile.title}
+      icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
+      skill_panel={@skill_panel}
+      skill_class={@skill_class}
+      display_return_to_yourself={!@me}
+      is_star={@is_star}
+      is_anonymous={@anonymous}
+      is_star_button={@me}
+    >
+      <:score_stats>
+        <ProfileComponents.dounat_graph_with_score_stats
+          skill_class_score={@skill_class_score}
+          counter={@counter}
+          num_skills={@num_skills}
+        />
+
+        <.live_component
+          id="skill_list"
+          module={BrightWeb.SkillListComponent}
+          display_user={@display_user}
+          me={@me}
+          root="graphs"
+          anonymous={@anonymous}
+        />
+      </:score_stats>
+      <:switch_button>
+        <div class="mt-4 lg:mt-2">
+          <.navigations
+            current_user={@current_user}
+            display_user={@display_user}
+            me={@me}
+            anonymous={@anonymous}
+            root="graphs"
+          />
+        </div>
+      </:switch_button>
+    </ProfileComponents.profile_with_skill>
+  </div>
+
+  <div class="mx-4 pb-20 lg:mx-10 lg:pb-0 bg-white">
+
+
+    <div class="flex justify-between lg:px-6">
+      <.class_tab
+        skill_classes={@skill_classes}
+        skill_class={@skill_class}
+        path={@path}
+        query={@query}
+        me={@me}
+      />
+    </div>
+    <div :if={@me} class="relative flex flex-col mb-4 mt-4 ml-4 lg:mb-0">
+      <div class="flex justify-between items-center w-full lg:w-72 gap-x-2">
         <.link
           patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
           id="link-skills-form"
@@ -54,73 +121,9 @@
       <% # スキル入力後メッセージ（初回のみ） %>
       <.help_messages_area flash={@flash} />
     </div>
-
-    <%!-- PC 成長パネル/スキルパネル切替 --%>
-    <div class="hidden lg:flex lg:ml-auto">
-      <.toggle_link
-        skill_panel={@skill_panel}
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        skill_class={@skill_class.class}
-        active="graph"
-      />
-    </div>
-  </div>
-
-  <div class="flex mx-4 lg:mx-10 pb-6">
-    <ProfileComponents.profile_with_skill
-      user_name={@display_user.name}
-      title={@display_user.user_profile.title}
-      icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
-      skill_panel={@skill_panel}
-      skill_class={@skill_class}
-      display_return_to_yourself={!@me}
-      is_star={@is_star}
-      is_anonymous={@anonymous}
-      is_star_button={@me}
-    >
-      <:score_stats>
-        <ProfileComponents.dounat_graph_with_score_stats
-          skill_class_score={@skill_class_score}
-          counter={@counter}
-          num_skills={@num_skills}
-        />
-        <.live_component
-          id="skill_list"
-          module={BrightWeb.SkillListComponent}
-          display_user={@display_user}
-          me={@me}
-          root="graphs"
-          anonymous={@anonymous}
-        />
-      </:score_stats>
-      <:switch_button>
-        <div class="mt-4 lg:mt-2">
-          <.navigations
-            current_user={@current_user}
-            display_user={@display_user}
-            me={@me}
-            anonymous={@anonymous}
-            root="graphs"
-          />
-        </div>
-      </:switch_button>
-    </ProfileComponents.profile_with_skill>
-  </div>
-
-  <div class="mx-4 pb-20 lg:mx-10 lg:pb-0 bg-white">
-    <div class="flex justify-between lg:px-6">
-      <.class_tab
-        skill_classes={@skill_classes}
-        skill_class={@skill_class}
-        path={@path}
-        query={@query}
-        me={@me}
-      />
-    </div>
     <div class="shadow relative z-2 py-1 lg:px-6">
       <div class="mt-4 lg:mt-0 flex flex-col-reverse lg:flex-col 2xl:flex-row">
+
         <.live_component
           id="rowth-graph"
           module={BrightWeb.ChartLive.GrowthGraphComponent}
