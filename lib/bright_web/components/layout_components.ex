@@ -76,6 +76,7 @@ defmodule BrightWeb.LayoutComponents do
   attr :current_user, :map
   attr :page_title, :string
   attr :page_sub_title, :string
+
   def user_header(assigns) do
     assigns =
       assigns
