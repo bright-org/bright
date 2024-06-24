@@ -182,7 +182,6 @@ defmodule BrightWeb.ProfileComponents do
   defp selected_skill_title(assigns) do
     ~H"""
       <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4">
-        <h4 class="w-full lg:w-auto">選択中のユーザー／スキル／クラス</h4>
         <div>
           <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">
             <.icon name="hero-arrow-uturn-right" class="mr-2" />
