@@ -254,7 +254,10 @@ defmodule BrightWeb.ProfileComponents do
         <div class="p-4 lg:px-6 bg-white rounded-lg">
           <div class="flex flex-col lg:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
             <div class="flex gap-x-4 lg:gap-x-0">
-              <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
+              <div>
+                <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
+                <%= if @switch_button, do: render_slot(@switch_button) %>
+              </div>
               <div>
                 <.selected_skill
                   skill_panel={@skill_panel}
@@ -267,7 +270,6 @@ defmodule BrightWeb.ProfileComponents do
               <%= if @skill_select, do: render_slot(@skill_select) %>
             </div>
           </div>
-          <%= if @switch_button, do: render_slot(@switch_button) %>
         </div>
       </div>
     """
