@@ -5,9 +5,6 @@ defmodule BrightWeb.SkillListComponent do
   use BrightWeb, :live_component
   alias Bright.{CareerFields, SkillPanels}
   alias BrightWeb.PathHelper
-  alias Bright.Teams
-  alias Bright.Teams.Team
-  alias Bright.CustomGroups.CustomGroup
 
   @impl true
   def render(assigns) do
@@ -280,9 +277,9 @@ defmodule BrightWeb.SkillListComponent do
   def handle_event(
         "next_button_click",
         _params,
-        %{assigns: %{display_team: team, display_user: user}} = socket
+        %{assigns: %{display_team: _team, _display_user: user}} = socket
       ) do
-    %{page: page, total_pages: total_pages, selected_tab: tab_name} = socket.assigns
+    %{page: page, total_pages: total_pages} = socket.assigns
     page = if page + 1 > total_pages, do: total_pages, else: page + 1
 
     socket
