@@ -1,6 +1,6 @@
 defmodule BrightWeb.SkillListComponent do
   @moduledoc """
-  Skill Card Component
+  Skill List Component
   """
   use BrightWeb, :live_component
   alias Bright.{CareerFields, SkillPanels}
@@ -16,7 +16,7 @@ defmodule BrightWeb.SkillListComponent do
 
     ~H"""
     <div>
-      <div class="py-4 px-2 flex gap-y-4 flex-col lg:py-6 lg:px-7 lg:min-h-[200px]">
+      <div class="py-4 px-2 flex gap-y-1 flex-col lg:py-6 lg:px-7 lg:min-h-[200px]">
         <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
           <li class="flex">
             <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
@@ -153,7 +153,7 @@ defmodule BrightWeb.SkillListComponent do
         phx-click="on_skill_class_click"
         phx-value-skill_panel_id={@skill_panel.id}
         phx-value-skill_class_id={@skill_class.id}
-        class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1"
+        class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end pl-1"
         >
         <img src={@icon_path} class="mr-1" />
       </p>
@@ -170,7 +170,7 @@ defmodule BrightWeb.SkillListComponent do
     ~H"""
     <div class="w-10">
       <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
-        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end p-1">
+        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end pl-1">
           <img src={@icon_path} class="mr-1" />
         </p>
       </.link>
