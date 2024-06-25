@@ -196,19 +196,18 @@ defmodule BrightWeb.SkillListComponent do
   def update(%{display_user: user} = assigns, socket) do
     socket
     |> assign(assigns)
-    |> assign_paginate(user.id, nil)
+    |> assign_paginate(user.id)
     |> then(&{:ok, &1})
   end
 
   def update(%{status: "level_changed"}, socket) do
     # 新しいスキルクラスを開放時のupdateを実施
     %{
-      selected_tab: career_field,
       display_user: display_user,
       page: page
     } = socket.assigns
 
-    {:ok, assign_paginate(socket, display_user.id, career_field, page)}
+    {:ok, assign_paginate(socket, display_user.id, page)}
   end
 
   defp assign_over_ride_on_card_row_click_target(
@@ -225,11 +224,11 @@ defmodule BrightWeb.SkillListComponent do
 
   defp update_socket(socket, _team, user, _selected_tab) do
     socket
-    |> assign_paginate(user, nil)
+    |> assign_paginate(user)
     |> then(&{:ok, &1})
   end
 
-  def assign_paginate(socket, user_id, _career_field, page \\ 1) do
+  def assign_paginate(socket, user_id, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
       SkillPanels.list_users_skill_panels_all_career_field([user_id], page)
 
@@ -249,7 +248,7 @@ defmodule BrightWeb.SkillListComponent do
     page = if page - 1 < 1, do: 1, else: page - 1
 
     socket
-    |> assign_paginate(user, nil, page)
+    |> assign_paginate(user, page)
     |> then(&{:noreply, &1})
   end
 
@@ -258,11 +257,11 @@ defmodule BrightWeb.SkillListComponent do
         _params,
         %{assigns: %{display_user: user}} = socket
       ) do
-    %{page: page, selected_tab: tab_name} = socket.assigns
+    %{page: page} = socket.assigns
     page = if page - 1 < 1, do: 1, else: page - 1
 
     socket
-    |> assign_paginate(user.id, tab_name, page)
+    |> assign_paginate(user.id, page)
     |> then(&{:noreply, &1})
   end
 
@@ -275,7 +274,7 @@ defmodule BrightWeb.SkillListComponent do
     page = if page + 1 > total_pages, do: total_pages, else: page + 1
 
     socket
-    |> assign_paginate(user, nil, page)
+    |> assign_paginate(user, page)
     |> then(&{:noreply, &1})
   end
 
@@ -284,11 +283,11 @@ defmodule BrightWeb.SkillListComponent do
         _params,
         %{assigns: %{display_user: user}} = socket
       ) do
-    %{page: page, total_pages: total_pages, selected_tab: tab_name} = socket.assigns
+    %{page: page, total_pages: total_pages} = socket.assigns
     page = if page + 1 > total_pages, do: total_pages, else: page + 1
 
     socket
-    |> assign_paginate(user.id, tab_name, page)
+    |> assign_paginate(user.id, page)
     |> then(&{:noreply, &1})
   end
 
