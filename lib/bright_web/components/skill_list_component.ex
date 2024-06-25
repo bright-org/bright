@@ -240,7 +240,6 @@ defmodule BrightWeb.SkillListComponent do
     |> then(&{:ok, &1})
   end
 
-
   def assign_paginate(socket, user_id, _career_field, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
       SkillPanels.list_users_skill_panels_all_career_field([user_id], page)
@@ -250,7 +249,6 @@ defmodule BrightWeb.SkillListComponent do
     |> assign(:page, page)
     |> assign(:total_pages, total_pages)
   end
-
 
   @impl true
   def handle_event(

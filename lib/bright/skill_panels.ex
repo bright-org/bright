@@ -69,9 +69,9 @@ defmodule Bright.SkillPanels do
   end
 
   def list_users_skill_panels_all_career_field(
-    user_ids,
-    page \\ 1
-  ) do
+        user_ids,
+        page \\ 1
+      ) do
     career_field_query =
       from(
         j in Job,
@@ -95,7 +95,7 @@ defmodule Bright.SkillPanels do
       distinct: true
     )
     |> Repo.paginate(page: page, page_size: 10)
-end
+  end
 
   def list_users_skill_panels(user_ids, page \\ 1) do
     from(u in UserSkillPanel,
