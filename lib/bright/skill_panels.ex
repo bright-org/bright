@@ -68,6 +68,35 @@ defmodule Bright.SkillPanels do
     |> Repo.paginate(page: page, page_size: 10)
   end
 
+  def list_users_skill_panels_all_career_field(
+    user_ids,
+    page \\ 1
+  ) do
+    career_field_query =
+      from(
+        j in Job,
+        join: cf in assoc(j, :career_fields),
+        join: s in assoc(j, :skill_panels),
+        select: s,
+        distinct: true
+      )
+
+    from(p in subquery(career_field_query),
+      join: u in assoc(p, :user_skill_panels),
+      on: u.skill_panel_id == p.id,
+      join: class in assoc(p, :skill_classes),
+      on: class.skill_panel_id == p.id,
+      join: score in assoc(class, :skill_class_scores),
+      on: class.id == score.skill_class_id,
+      where: u.user_id in ^user_ids,
+      where: score.user_id in ^user_ids,
+      preload: [skill_classes: [skill_class_scores: ^SkillClassScore.user_ids_query(user_ids)]],
+      order_by: p.updated_at,
+      distinct: true
+    )
+    |> Repo.paginate(page: page, page_size: 10)
+end
+
   def list_users_skill_panels(user_ids, page \\ 1) do
     from(u in UserSkillPanel,
       where: u.user_id in ^user_ids,

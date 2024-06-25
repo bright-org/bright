@@ -234,21 +234,16 @@ defmodule BrightWeb.SkillListComponent do
     socket
   end
 
-  defp update_socket(socket, team, user, selected_tab) do
+  defp update_socket(socket, _team, user, _selected_tab) do
     socket
-    |> assign_paginate_team(team, user, selected_tab)
+    |> assign_paginate(user, nil)
     |> then(&{:ok, &1})
   end
 
-  def assign_paginate_team(socket, team, user, career_field, page \\ 1)
 
-  def assign_paginate_team(socket, %Team{} = team, _user, career_field, page) do
-    user_ids =
-      Teams.list_confirmed_team_member_users_by_team(team)
-      |> Enum.map(& &1.user_id)
-
+  def assign_paginate(socket, user_id, _career_field, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      SkillPanels.list_users_skill_panels_by_career_field(user_ids, career_field, page)
+      SkillPanels.list_users_skill_panels_all_career_field([user_id], page)
 
     socket
     |> assign(:skill_panels, skill_panels)
@@ -256,71 +251,18 @@ defmodule BrightWeb.SkillListComponent do
     |> assign(:total_pages, total_pages)
   end
 
-  def assign_paginate_team(socket, %CustomGroup{} = custom_group, user, career_field, page) do
-    user_ids =
-      Bright.Repo.preload(custom_group, :member_users)
-      |> Map.get(:member_users)
-      |> Enum.map(& &1.user_id)
-      |> Kernel.++([user.id])
-
-    %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      SkillPanels.list_users_skill_panels_by_career_field(user_ids, career_field, page)
-
-    socket
-    |> assign(:skill_panels, skill_panels)
-    |> assign(:page, page)
-    |> assign(:total_pages, total_pages)
-  end
-
-  def assign_paginate_team(socket, _team, user, career_field, page) do
-    # TODO 要件不明 チームが取得出来ていない場合は個人の場合とおなじスキルパネルを取得する
-    assign_paginate(socket, user.id, career_field, page)
-  end
-
-  def assign_paginate(socket, user_id, career_field, page \\ 1) do
-    %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      SkillPanels.list_users_skill_panels_by_career_field([user_id], career_field, page)
-
-    socket
-    |> assign(:skill_panels, skill_panels)
-    |> assign(:page, page)
-    |> assign(:total_pages, total_pages)
-  end
 
   @impl true
-  def handle_event(
-        "tab_click",
-        %{"tab_name" => tab_name},
-        %{assigns: %{display_team: team, display_user: user}} = socket
-      ) do
-    socket
-    |> assign(:selected_tab, tab_name)
-    |> assign_paginate_team(team, user, tab_name)
-    |> then(&{:noreply, &1})
-  end
-
-  @impl true
-  def handle_event(
-        "tab_click",
-        %{"tab_name" => tab_name},
-        %{assigns: %{display_user: user}} = socket
-      ) do
-    socket
-    |> assign(:selected_tab, tab_name)
-    |> assign_paginate(user.id, tab_name)
-    |> then(&{:noreply, &1})
-  end
-
   def handle_event(
         "previous_button_click",
         _params,
-        %{assigns: %{display_team: team, display_user: user}} = socket
+        %{assigns: %{display_team: _team, display_user: user}} = socket
       ) do
-    %{page: page, selected_tab: tab_name} = socket.assigns
+    %{page: page, selected_tab: _tab_name} = socket.assigns
     page = if page - 1 < 1, do: 1, else: page - 1
 
     socket
-    |> assign_paginate_team(team, user, tab_name, page)
+    |> assign_paginate(user, nil, page)
     |> then(&{:noreply, &1})
   end
 
@@ -346,7 +288,7 @@ defmodule BrightWeb.SkillListComponent do
     page = if page + 1 > total_pages, do: total_pages, else: page + 1
 
     socket
-    |> assign_paginate_team(team, user, tab_name, page)
+    |> assign_paginate(user, nil, page)
     |> then(&{:noreply, &1})
   end
 
