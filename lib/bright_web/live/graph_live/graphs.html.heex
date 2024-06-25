@@ -4,7 +4,7 @@
     <GuideMessageComponents.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !UserJobProfiles.job_searching?(@current_user)} />
 
     <%!-- スマホ 成長パネル/スキルパネル切替 --%>
-    <div class="lg:hidden mb-4">
+    <div class="lg:hidden mb-4 mt-4">
       <.toggle_link
         skill_panel={@skill_panel}
         display_user={@display_user}
@@ -15,17 +15,7 @@
       />
     </div>
 
-    <%!-- PC 成長パネル/スキルパネル切替 --%>
-    <div class="hidden lg:flex lg:ml-auto">
-      <.toggle_link
-        skill_panel={@skill_panel}
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        skill_class={@skill_class.class}
-        active="graph"
-      />
-    </div>
+
   </div>
 
   <div class="flex mx-4 lg:mx-10 pb-6">
@@ -69,6 +59,17 @@
         </div>
       </:switch_button>
     </ProfileComponents.profile_with_skill>
+    <%!-- PC 成長パネル/スキルパネル切替 --%>
+    <div class="hidden lg:flex lg:ml-auto">
+      <.toggle_link
+        skill_panel={@skill_panel}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        skill_class={@skill_class.class}
+        active="graph"
+      />
+    </div>
   </div>
 
   <div class="mx-4 pb-20 lg:mx-10 lg:pb-0 bg-white">
