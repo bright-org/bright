@@ -25,10 +25,11 @@ defmodule BrightWeb.SkillListComponent do
           </li>
         </ul>
         <div :if={Enum.count(@skill_panels) > 0} class="hidden lg:flex">
-          <div class="flex-1"></div>
-          <div class="w-10 font-bold">1</div>
-          <div class="w-10 font-bold">2</div>
-          <div class="w-10 font-bold">3</div>
+          <div class="w-10 font-bold pl-2"></div>
+          <div class="font-bold flex-1 text-right pr-1">クラス</div>
+          <div class="w-10 font-bold pl-2">1</div>
+          <div class="w-10 font-bold pl-2">2</div>
+          <div class="w-10 font-bold pl-2">3</div>
         </div>
         <%= for skill_panel <- @skill_panels do %>
           <.skill_panel
@@ -106,6 +107,11 @@ defmodule BrightWeb.SkillListComponent do
 
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
+      <div class="w-10 font-bold pl-2">
+        <span class={"material-icons text-#{get_star_style(false)}"}>
+          star
+        </span>
+      </div>
       <div class="text-left font-bold w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
         <%= @skill_panel.name %>
       </div>
@@ -290,4 +296,6 @@ defmodule BrightWeb.SkillListComponent do
   defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
   defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
   defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
+  defp get_star_style(true), do: "brightGreen-300"
+  defp get_star_style(false), do: "brightGray-500"
 end
