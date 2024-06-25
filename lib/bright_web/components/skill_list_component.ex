@@ -3,7 +3,7 @@ defmodule BrightWeb.SkillListComponent do
   Skill List Component
   """
   use BrightWeb, :live_component
-  alias Bright.{CareerFields, SkillPanels}
+  alias Bright.SkillPanels
   alias BrightWeb.PathHelper
 
   @impl true
@@ -20,7 +20,7 @@ defmodule BrightWeb.SkillListComponent do
         <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
           <li class="flex">
             <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
-            <%= Enum.into(@tabs, %{}) |> Map.get(@selected_tab) %>はありません
+              データはありません
             </div>
           </li>
         </ul>
@@ -180,31 +180,17 @@ defmodule BrightWeb.SkillListComponent do
 
   @impl true
   def update(%{display_team: display_team, display_user: display_user} = assigns, socket) do
-    default_tab = "engineer"
-
-    tabs =
-      CareerFields.list_career_fields()
-      |> Enum.map(&{&1.name_en, &1.name_ja})
-
     socket
     |> assign(assigns)
     |> assign_over_ride_on_card_row_click_target(assigns)
-    |> assign(:tabs, tabs)
-    |> assign(:selected_tab, default_tab)
-    |> update_socket(display_team, display_user, default_tab)
+    |> update_socket(display_team, display_user, nil)
   end
 
   @impl true
   def update(%{display_user: user} = assigns, socket) do
-    tabs =
-      CareerFields.list_career_fields()
-      |> Enum.map(&{&1.name_en, &1.name_ja})
-
     socket
     |> assign(assigns)
-    |> assign(:tabs, tabs)
-    |> assign(:selected_tab, "engineer")
-    |> assign_paginate(user.id, "engineer")
+    |> assign_paginate(user.id, nil)
     |> then(&{:ok, &1})
   end
 
