@@ -253,12 +253,15 @@ defmodule BrightWeb.ProfileComponents do
         <div class="p-4 lg:px-6 bg-white rounded-lg">
           <div class="flex flex-col lg:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
             <div class="flex gap-x-4 lg:gap-x-0">
-              <div>
+              <div class="flex flex-row lg:flex-col">
                 <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
+                <div>
                 <%= if @switch_button, do: render_slot(@switch_button) %>
                  <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
+                </div>
               </div>
-              <div>
+            </div>
+            <div>
                 <.selected_skill
                   skill_panel={@skill_panel}
                   skill_class={@skill_class}
@@ -266,9 +269,8 @@ defmodule BrightWeb.ProfileComponents do
                   is_star={@is_star}
                 />
                 <%= if @score_stats, do: render_slot(@score_stats) %>
-              </div>
-              <%= if @skill_select, do: render_slot(@skill_select) %>
             </div>
+            <%= if @skill_select, do: render_slot(@skill_select) %>
           </div>
         </div>
       </div>
