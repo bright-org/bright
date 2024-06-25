@@ -108,7 +108,7 @@ defmodule BrightWeb.SkillListComponent do
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
       <div class="w-10 font-bold pl-2">
-        <span class={"material-icons text-#{get_star_style(false)}"}>
+        <span class={"material-icons text-#{get_star_style(@display_user, @skill_panel)}"}>
           star
         </span>
       </div>
@@ -296,6 +296,12 @@ defmodule BrightWeb.SkillListComponent do
   defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
   defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
   defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
+
+  defp get_star_style(display_user, skill_panel) do
+    Bright.UserSkillPanels.get_is_star!(display_user.id, skill_panel.id)
+    |> get_star_style()
+  end
+
   defp get_star_style(true), do: "brightGreen-300"
   defp get_star_style(false), do: "brightGray-500"
 end
