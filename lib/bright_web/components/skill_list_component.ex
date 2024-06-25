@@ -24,12 +24,12 @@ defmodule BrightWeb.SkillListComponent do
             </div>
           </li>
         </ul>
-        <div :if={Enum.count(@skill_panels) > 0} class="hidden lg:flex">
-          <div class="w-10 font-bold pl-2"></div>
+        <div :if={Enum.count(@skill_panels) > 0} class="flex">
+          <div class="w-8 font-bold pl-2"></div>
           <div class="font-bold flex-1 text-right pr-1">クラス</div>
-          <div class="w-10 font-bold pl-2">1</div>
-          <div class="w-10 font-bold pl-2">2</div>
-          <div class="w-10 font-bold pl-2">3</div>
+          <div class="w-8 font-bold pl-2">1</div>
+          <div class="w-8 font-bold pl-2">2</div>
+          <div class="w-8 font-bold pl-2">3</div>
         </div>
         <%= for skill_panel <- @skill_panels do %>
           <.skill_panel
@@ -107,12 +107,12 @@ defmodule BrightWeb.SkillListComponent do
 
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
-      <div class="w-10 font-bold pl-2">
+      <div class="w-8 font-bold pl-2">
         <span class={"material-icons text-#{get_star_style(@display_user, @skill_panel)}"}>
           star
         </span>
       </div>
-      <div class="text-left font-bold w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
+      <div class="text-left font-bold lg:w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
         <%= @skill_panel.name %>
       </div>
       <%= for skill_class <- @skill_classes do %>
@@ -142,7 +142,7 @@ defmodule BrightWeb.SkillListComponent do
 
   defp skill_gem(%{score: nil} = assigns) do
     ~H"""
-    <div class="w-10"></div>
+    <div class="w-8"></div>
     """
   end
 
@@ -154,7 +154,7 @@ defmodule BrightWeb.SkillListComponent do
       |> assign(:level, level)
 
     ~H"""
-    <div class="w-10">
+    <div class="w-8">
       <p
         phx-click="on_skill_class_click"
         phx-value-skill_panel_id={@skill_panel.id}
@@ -174,7 +174,7 @@ defmodule BrightWeb.SkillListComponent do
       |> assign(:level, level)
 
     ~H"""
-    <div class="w-10">
+    <div class="w-8">
       <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
         <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end pl-1">
           <img src={@icon_path} class="mr-1" />

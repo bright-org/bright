@@ -262,13 +262,13 @@ defmodule BrightWeb.ProfileComponents do
               </div>
             </div>
             <div>
-                <.selected_skill
-                  skill_panel={@skill_panel}
-                  skill_class={@skill_class}
-                  is_star_button={@is_star_button}
-                  is_star={@is_star}
-                />
-                <%= if @score_stats, do: render_slot(@score_stats) %>
+              <.selected_skill
+                skill_panel={@skill_panel}
+                skill_class={@skill_class}
+                is_star_button={@is_star_button}
+                is_star={@is_star}
+              />
+              <%= if @score_stats, do: render_slot(@score_stats) %>
             </div>
             <%= if @skill_select, do: render_slot(@skill_select) %>
           </div>
