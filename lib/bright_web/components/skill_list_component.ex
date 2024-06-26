@@ -107,15 +107,17 @@ defmodule BrightWeb.SkillListComponent do
   defp skill_panel(assigns) do
     skill_classes = assigns.skill_panel.skill_classes
     dummy_classes = cleate_dummy_classes(skill_classes)
+    is_star = assigns.skill_panel.user_skill_panels.is_star
 
     assigns =
       assigns
       |> assign(:skill_classes, skill_classes ++ dummy_classes)
+      |> assign(:is_star, is_star)
 
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
       <div class="w-8 font-bold pl-2">
-        <span class={"material-icons text-#{get_star_style(@display_user, @skill_panel)}"}>
+        <span class={"material-icons text-#{get_star_style(@is_star)}"}>
           star
         </span>
       </div>
@@ -302,11 +304,6 @@ defmodule BrightWeb.SkillListComponent do
   defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
   defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
   defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
-
-  defp get_star_style(display_user, skill_panel) do
-    Bright.UserSkillPanels.get_is_star!(display_user.id, skill_panel.id)
-    |> get_star_style()
-  end
 
   defp get_star_style(true), do: "brightGreen-300"
   defp get_star_style(false), do: "brightGray-500"
