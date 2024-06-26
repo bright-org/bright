@@ -48,12 +48,11 @@ defmodule BrightWeb.SkillListComponent do
 
   defp skill_panel(assigns) do
     skill_classes = assigns.skill_panel.skill_classes
-    dummy_classes = cleate_dummy_classes(skill_classes)
     is_star = assigns.skill_panel.user_skill_panels.is_star
 
     assigns =
       assigns
-      |> assign(:skill_classes, skill_classes ++ dummy_classes)
+      |> assign(:skill_classes, skill_classes)
       |> assign(:is_star, is_star)
 
     ~H"""
@@ -78,21 +77,6 @@ defmodule BrightWeb.SkillListComponent do
         />
       <% end %>
     </div>
-    """
-  end
-
-  defp cleate_dummy_classes(skill_classes) do
-    dummy =
-      %Bright.SkillPanels.SkillClass{}
-      |> Map.put(:skill_class_scores, [nil])
-
-    dummy_count = 3 - Enum.count(skill_classes)
-    List.duplicate(dummy, dummy_count)
-  end
-
-  defp skill_gem(%{score: nil} = assigns) do
-    ~H"""
-    <div class="w-8"></div>
     """
   end
 
