@@ -98,13 +98,6 @@ defmodule BrightWeb.SkillListComponent do
   end
 
   @impl true
-  def update(%{display_team: display_team, display_user: display_user} = assigns, socket) do
-    socket
-    |> assign(assigns)
-    |> update_socket(display_team, display_user, nil)
-  end
-
-  @impl true
   def update(%{display_user: user} = assigns, socket) do
     socket
     |> assign(assigns)
@@ -120,12 +113,6 @@ defmodule BrightWeb.SkillListComponent do
     } = socket.assigns
 
     {:ok, assign_paginate(socket, display_user.id, page)}
-  end
-
-  defp update_socket(socket, _team, user, _selected_tab) do
-    socket
-    |> assign_paginate(user)
-    |> then(&{:ok, &1})
   end
 
   def assign_paginate(socket, user_id, page \\ 1) do
