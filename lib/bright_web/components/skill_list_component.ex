@@ -213,5 +213,5 @@ defmodule BrightWeb.SkillListComponent do
   defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
 
   defp get_star_style(true), do: "brightGreen-300"
-  defp get_star_style(false), do: "brightGray-500"
+  defp get_star_style(false), do: "brightGray-100"
 end
