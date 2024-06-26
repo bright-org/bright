@@ -17,7 +17,7 @@ defmodule BrightWeb.SkillListComponent do
 
     ~H"""
     <div>
-      <div class="py-4 px-2 flex gap-y-1 flex-col lg:py-6 lg:px-7 lg:min-h-[200px]">
+      <div class="flex flex-col lg:min-h-[170px]">
         <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
           <li class="flex">
             <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
