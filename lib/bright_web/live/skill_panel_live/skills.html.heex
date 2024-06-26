@@ -4,7 +4,7 @@
   <GuideMessageComponents.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !UserJobProfiles.job_searching?(@current_user)} />
 
   <%!-- スマホ 成長パネル/スキルパネル切替 --%>
-  <div class="lg:hidden mb-4 mt-4">
+  <div class="lg:hidden mt-4">
     <.toggle_link
       skill_panel={@skill_panel}
       display_user={@display_user}
