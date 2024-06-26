@@ -68,6 +68,15 @@ defmodule Bright.SkillPanels do
     |> Repo.paginate(page: page, page_size: 10)
   end
 
+  @doc """
+    Returns the list skill panes.
+
+    ## Examples
+
+      iex> list_users_skill_panels_all_career_field(user_id)
+      [%SkillPanel{}]
+
+  """
   def list_users_skill_panels_all_career_field(
         user_ids,
         page \\ 1
