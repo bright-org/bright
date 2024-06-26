@@ -26,7 +26,7 @@ defmodule BrightWeb.SkillListComponent do
           </li>
         </ul>
         <div :if={Enum.count(@skill_panels) > 0} class="flex">
-          <div class="w-8 font-bold pl-2"></div>
+          <div class="w-8 font-bold"></div>
           <div class="font-bold flex-1 text-right pr-1">クラス</div>
           <div class="w-8 font-bold pl-2">1</div>
           <div class="w-8 font-bold pl-2">2</div>
@@ -116,7 +116,7 @@ defmodule BrightWeb.SkillListComponent do
 
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
-      <div class="w-8 font-bold pl-2">
+      <div class="w-8 font-bold">
         <span class={"material-icons text-#{get_star_style(@is_star)}"}>
           star
         </span>
