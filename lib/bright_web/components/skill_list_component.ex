@@ -5,6 +5,7 @@ defmodule BrightWeb.SkillListComponent do
   use BrightWeb, :live_component
   alias Bright.SkillPanels
   alias BrightWeb.PathHelper
+  import BrightWeb.TabComponents
 
   @impl true
   def render(assigns) do
@@ -42,6 +43,12 @@ defmodule BrightWeb.SkillListComponent do
           />
         <% end %>
       </div>
+      <.tab_footer
+          id={@id}
+          page={@page}
+          total_pages={@total_pages}
+          target={@myself}
+        />
     </div>
     """
   end
