@@ -21,10 +21,10 @@ defmodule BrightWeb.SkillListComponent do
         </ul>
         <div :if={Enum.count(@skill_panels) > 0} class="flex">
           <div :if={@me} class="w-8 font-bold"></div>
-          <div class="font-bold flex-1 text-right pr-1">クラス</div>
-          <div class="w-8 font-bold pl-2">1</div>
-          <div class="w-8 font-bold pl-2">2</div>
-          <div class="w-8 font-bold pl-2">3</div>
+          <div class="w-44 lg:w-full font-bold flex-1 text-right pr-1">クラス</div>
+          <div class="w-8 font-bold pl-1">1</div>
+          <div class="w-8 font-bold pl-1">2</div>
+          <div class="w-8 font-bold pl-1">3</div>
         </div>
         <%= for skill_panel <- @skill_panels do %>
           <.skill_panel
@@ -63,7 +63,7 @@ defmodule BrightWeb.SkillListComponent do
           star
         </span>
       </div>
-      <div class="text-left font-bold lg:w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
+      <div class="text-left font-bold w-44 lg:w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
         <%= @skill_panel.name %>
       </div>
       <%= for skill_class <- @skill_classes do %>
