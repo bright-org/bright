@@ -9,12 +9,6 @@ defmodule BrightWeb.SkillListComponent do
 
   @impl true
   def render(assigns) do
-    # スキルパネル用のリダイレクト処理が定義されてない場合の初期値設定
-    # PathHelper.skill_panel_pathを使用せずにクリック時のアクションを自分で用意したい時用
-    assigns =
-      assigns
-      |> set_default_attrs()
-
     ~H"""
     <div>
       <div class="flex flex-col lg:min-h-[170px]">
@@ -39,7 +33,6 @@ defmodule BrightWeb.SkillListComponent do
             me={@me}
             anonymous={@anonymous}
             root={@root}
-            over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
           />
         <% end %>
       </div>
@@ -49,57 +42,6 @@ defmodule BrightWeb.SkillListComponent do
           total_pages={@total_pages}
           target={@myself}
         />
-    </div>
-    """
-  end
-
-  defp set_default_attrs(assigns) do
-    assigns
-    |> set_default_over_ride_on_card_row_click_target()
-  end
-
-  defp set_default_over_ride_on_card_row_click_target(
-         %{over_ride_on_card_row_click_target: _over_ride_on_card_row_click_target} = assigns
-       ) do
-    assigns
-  end
-
-  defp set_default_over_ride_on_card_row_click_target(assigns) do
-    assigns
-    |> Map.put(:over_ride_on_card_row_click_target, false)
-  end
-
-  defp skill_panel(%{over_ride_on_card_row_click_target: true} = assigns) do
-    # over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
-    skill_classes = assigns.skill_panel.skill_classes
-    dummy_classes = cleate_dummy_classes(skill_classes)
-
-    assigns =
-      assigns
-      |> assign(:skill_classes, skill_classes ++ dummy_classes)
-
-    ~H"""
-    <div class="flex flex-wrap lg:flex-nowrap">
-      <div class="text-left font-bold w-full mb-2 lg:mb-0 lg:flex-1 lg:w-fit">
-        <p
-          phx-click="on_skill_pannel_click"
-          phx-value-skill_panel_id={@skill_panel.id}
-        >
-          <%= @skill_panel.name %>
-        </p>
-      </div>
-      <%= for skill_class <- @skill_classes do %>
-        <.skill_gem
-          score={List.first(skill_class.skill_class_scores)}
-          skill_class={skill_class}
-          skill_panel={@skill_panel}
-          display_user={@display_user}
-          me={@me}
-          anonymous={@anonymous}
-          root={@root}
-          over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
-        />
-      <% end %>
     </div>
     """
   end
@@ -133,7 +75,6 @@ defmodule BrightWeb.SkillListComponent do
           me={@me}
           anonymous={@anonymous}
           root={@root}
-          over_ride_on_card_row_click_target={@over_ride_on_card_row_click_target}
         />
       <% end %>
     </div>
@@ -152,27 +93,6 @@ defmodule BrightWeb.SkillListComponent do
   defp skill_gem(%{score: nil} = assigns) do
     ~H"""
     <div class="w-8"></div>
-    """
-  end
-
-  defp skill_gem(%{score: %{level: level}, over_ride_on_card_row_click_target: true} = assigns) do
-    # over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
-    assigns =
-      assigns
-      |> assign(:icon_path, icon_path(level))
-      |> assign(:level, level)
-
-    ~H"""
-    <div class="w-8">
-      <p
-        phx-click="on_skill_class_click"
-        phx-value-skill_panel_id={@skill_panel.id}
-        phx-value-skill_class_id={@skill_class.id}
-        class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end pl-1"
-        >
-        <img src={@icon_path} class="mr-1" />
-      </p>
-    </div>
     """
   end
 
@@ -197,7 +117,6 @@ defmodule BrightWeb.SkillListComponent do
   def update(%{display_team: display_team, display_user: display_user} = assigns, socket) do
     socket
     |> assign(assigns)
-    |> assign_over_ride_on_card_row_click_target(assigns)
     |> update_socket(display_team, display_user, nil)
   end
 
@@ -217,18 +136,6 @@ defmodule BrightWeb.SkillListComponent do
     } = socket.assigns
 
     {:ok, assign_paginate(socket, display_user.id, page)}
-  end
-
-  defp assign_over_ride_on_card_row_click_target(
-         socket,
-         %{over_ride_on_card_row_click_target: over_ride_on_card_row_click_target} = _assigns
-       ) do
-    socket
-    |> assign(:over_ride_on_card_row_click_target, over_ride_on_card_row_click_target)
-  end
-
-  defp assign_over_ride_on_card_row_click_target(socket, _assigns) do
-    socket
   end
 
   defp update_socket(socket, _team, user, _selected_tab) do
