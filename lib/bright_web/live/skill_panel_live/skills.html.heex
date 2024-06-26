@@ -105,7 +105,7 @@
       me={@me}
     />
   </div>
-  <div class="relative flex flex-col mb-4 mt-5 ml-6 lg:mb-0" :if={@me}>
+  <div class="relative flex flex-col mb-4 mt-5 lg:ml-6 lg:mb-0" :if={@me}>
     <div class="flex justify-between items-center w-full lg:w-72 gap-x-2">
       <.link
         patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
