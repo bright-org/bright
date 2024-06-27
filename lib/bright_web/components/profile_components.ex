@@ -256,8 +256,8 @@ defmodule BrightWeb.ProfileComponents do
               <div class="flex flex-row lg:flex-col">
                 <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
                 <div>
-                <%= if @switch_button, do: render_slot(@switch_button) %>
-                 <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
+                  <%= if @switch_button, do: render_slot(@switch_button) %>
+                  <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
                 </div>
               </div>
             </div>
@@ -268,7 +268,9 @@ defmodule BrightWeb.ProfileComponents do
                 is_star_button={@is_star_button}
                 is_star={@is_star}
               />
-              <%= if @score_stats, do: render_slot(@score_stats) %>
+              <div class="pt-4">
+                <%= if @score_stats, do: render_slot(@score_stats) %>
+              </div>
             </div>
             <%= if @skill_select, do: render_slot(@skill_select) %>
           </div>
