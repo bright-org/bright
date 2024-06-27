@@ -84,7 +84,7 @@ defmodule BrightWeb.LayoutComponents do
 
     ~H"""
     <div id="user-header" class="sticky top-0 z-40 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
-      <div class="bg-white fixed bottom-0 left-0 p-2 lg:mr-2 lg:static lg:p-0 w-full lg:w-[670px]">
+      <div class="bg-white fixed bottom-0 left-0 p-2 lg:mr-2 lg:static lg:p-0 w-full lg:w-[720px]">
         <div class="flex justify-between gap-2">
           <.page_top_title
             page_title={@page_title}
@@ -131,7 +131,7 @@ defmodule BrightWeb.LayoutComponents do
       |> assign(:page_sub_title, page_sub_title)
 
     ~H"""
-    <h3 id="page-top-title" class="w-[calc(45%-6px)] lg:w-56 hidden lg:block">
+    <h3 id="page-top-title" class="lg:w-64 hidden lg:block">
       <%= @page_title %><%= @page_sub_title %>
     </h3>
     """
