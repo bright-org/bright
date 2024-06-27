@@ -1,4 +1,4 @@
-defmodule BrightWeb.UserSettingsLive.CurrentSubscriptionPlan do
+defmodule BrightWeb.UserSettingsLive.CurrentSubscriptionPlanComponent do
   use BrightWeb, :live_component
 
   import Ecto.Query, warn: false

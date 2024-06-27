@@ -9,7 +9,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     "auth" => UserSettingsLive.AuthSettingComponent,
     "sns" => UserSettingsLive.SnsSettingComponent,
     "job" => UserSettingsLive.JobSettingComponent,
-    "plan" => UserSettingsLive.CurrentSubscriptionPlan
+    "plan" => UserSettingsLive.CurrentSubscriptionPlanComponent
     # NOTE: α版では通知機能はなし
     # "notification" => UserSettingsLive.NotificationSettingComponent　
   }
