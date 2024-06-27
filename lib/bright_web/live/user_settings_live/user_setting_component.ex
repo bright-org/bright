@@ -8,7 +8,8 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     "general" => UserSettingsLive.GeneralSettingComponent,
     "auth" => UserSettingsLive.AuthSettingComponent,
     "sns" => UserSettingsLive.SnsSettingComponent,
-    "job" => UserSettingsLive.JobSettingComponent
+    "job" => UserSettingsLive.JobSettingComponent,
+    "plan" => UserSettingsLive.CurrentSubscriptionPlan
     # NOTE: α版では通知機能はなし
     # "notification" => UserSettingsLive.NotificationSettingComponent　
   }
@@ -16,7 +17,8 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     {"general", "一般"},
     {"auth", "メール・パスワード"},
     {"sns", "SNS連携"},
-    {"job", "働く際の希望"}
+    {"job", "働く際の希望"},
+    {"plan", "利用プラン"}
     # NOTE: α版では通知機能はなし
     # {"notification", "通知"}
   ]
@@ -46,6 +48,8 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
             hidden_footer={true}
             selected_tab={@selected_tab}
             target={@myself}
+            header_rest="overflow-x-auto whitespace-nowrap scrollbar-hide"
+            item_rest="px-4 sm:px-0"
           >
             <.live_component
               module={@module}

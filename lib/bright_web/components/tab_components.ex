@@ -31,6 +31,7 @@ defmodule BrightWeb.TabComponents do
   attr :target, :any, default: nil
   attr :rest, :string, default: ""
   attr :header_rest, :string, default: ""
+  attr :item_rest, :string, default: ""
 
   def tab(assigns) do
     ~H"""
@@ -43,6 +44,7 @@ defmodule BrightWeb.TabComponents do
           menu_items={@menu_items}
           target={@target}
           rest={@header_rest}
+          item_rest={@item_rest}
         />
         <%= render_slot(@inner_block) %>
         <.tab_footer
@@ -63,6 +65,7 @@ defmodule BrightWeb.TabComponents do
   attr :menu_items, :list
   attr :target, :any
   attr :rest, :string, default: ""
+  attr :item_rest, :string, default: ""
 
   defp tab_header(assigns) do
     ~H"""
@@ -73,6 +76,7 @@ defmodule BrightWeb.TabComponents do
           tab_name={key}
           selected={key == @selected_tab}
           target={@target}
+          rest={@item_rest}
         >
           <%= value %>
         </.tab_header_item>
@@ -91,6 +95,7 @@ defmodule BrightWeb.TabComponents do
   attr :selected, :boolean
   slot :inner_block
   attr :target, :any
+  attr :rest, :string, default: ""
 
   defp tab_header_item(%{tab_name: ""} = assigns) do
     style = "py-3.5 w-full items-center justify-center inline-block"
@@ -120,7 +125,7 @@ defmodule BrightWeb.TabComponents do
         phx-target={@target}
         phx-value-id={@id}
         phx-value-tab_name={@tab_name}
-        class={@style}
+        class={[@style, @rest]}
       >
         <%= render_slot(@inner_block) %>
       </a>
