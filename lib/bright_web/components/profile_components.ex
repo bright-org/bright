@@ -251,7 +251,7 @@ defmodule BrightWeb.ProfileComponents do
     ~H"""
       <div class="flex flex-col gap-y-2 w-full lg:w-[1100px]">
         <div class="p-4 lg:px-6 bg-white rounded-lg">
-          <div class="flex flex-col lg:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
+          <div class="flex flex-col 2xl:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
             <div class="flex gap-x-4 lg:gap-x-0">
               <div class="flex flex-row lg:flex-col">
                 <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
