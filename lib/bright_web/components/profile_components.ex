@@ -272,7 +272,9 @@ defmodule BrightWeb.ProfileComponents do
                 <%= if @score_stats, do: render_slot(@score_stats) %>
               </div>
             </div>
-            <%= if @skill_select, do: render_slot(@skill_select) %>
+            <div class="pt-5 2xl:pt-0">
+              <%= if @skill_select, do: render_slot(@skill_select) %>
+            </div>
           </div>
         </div>
       </div>
