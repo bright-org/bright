@@ -69,7 +69,7 @@ defmodule Bright.SkillPanels do
   end
 
   @doc """
-    Returns the list skill panes.
+    Returns the list skill panels.
 
     ## Examples
 

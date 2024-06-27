@@ -19,9 +19,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   def render(assigns) do
     ~H"""
     <div class="flex flex-col w-full px-2">
-      <% # 比較対象 選択 %>
-
-
       <% # 成長グラフ %>
       <div class="flex justify-center pl-7 lg:pl-14">
         <div class="hidden lg:block">
