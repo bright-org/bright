@@ -225,8 +225,8 @@ defmodule BrightWeb.ProfileComponents do
             </button>
         </div>
         <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
-          <span class="text-sm lg:text-normal">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
-          <span class="text-sm lg:text-normal break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
+          <span class="text-sm lg:text-normal w-14">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
+          <span class="text-sm lg:text-normal w-[330px] break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
         </div>
       </div>
     """
