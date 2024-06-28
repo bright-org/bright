@@ -39,12 +39,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     ~H"""
     <div id="switch" class="flex flex-col lg:flex-row gap-y-2 lg:gap-y-0 lg:gap-x-2">
       <.target_user_switch current_user={@current_user} />
-      <.skill_panel_switch
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        root={@root}
-      />
     </div>
     """
   end

@@ -68,6 +68,39 @@ defmodule Bright.SkillPanels do
     |> Repo.paginate(page: page, page_size: 10)
   end
 
+  @doc """
+    Returns the list skill panels.
+
+    ## Examples
+
+      iex> list_users_skill_panels_all_career_field(user_id)
+      [%SkillPanel{}]
+
+  """
+  def list_users_skill_panels_all_career_field(
+        user_ids,
+        page \\ 1
+      ) do
+    from(p in SkillPanel,
+      join: u in assoc(p, :user_skill_panels),
+      on: u.skill_panel_id == p.id,
+      join: class in assoc(p, :skill_classes),
+      on: class.skill_panel_id == p.id,
+      join: score in assoc(class, :skill_class_scores),
+      on: class.id == score.skill_class_id,
+      where: u.user_id in ^user_ids,
+      where: score.user_id in ^user_ids,
+      preload: [
+        :user_skill_panels,
+        skill_classes: [skill_class_scores: ^SkillClassScore.user_ids_query(user_ids)]
+      ],
+      order_by: [desc: u.is_star, asc: p.updated_at],
+      distinct: true,
+      select: %{p | user_skill_panels: u}
+    )
+    |> Repo.paginate(page: page, page_size: 5)
+  end
+
   def list_users_skill_panels(user_ids, page \\ 1) do
     from(u in UserSkillPanel,
       where: u.user_id in ^user_ids,

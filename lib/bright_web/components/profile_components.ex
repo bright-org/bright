@@ -181,8 +181,7 @@ defmodule BrightWeb.ProfileComponents do
 
   defp selected_skill_title(assigns) do
     ~H"""
-      <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4">
-        <h4 class="w-full lg:w-auto">選択中のユーザー／スキル／クラス</h4>
+      <div class="flex flex-col lg:flex-row gap-y-2 lg:gap-x-4 pt-2">
         <div>
           <.profile_button :if={@display_return_to_yourself} phx-click="clear_display_user">
             <.icon name="hero-arrow-uturn-right" class="mr-2" />
@@ -196,14 +195,14 @@ defmodule BrightWeb.ProfileComponents do
   defp selected_user(assigns) do
     ~H"""
       <div class="flex flex-col lg:flex-row justify-center items-center">
-        <div class="lg:mr-5 w-12 lg:w-20">
+        <div class="lg:mr-2 w-12 lg:w-20">
           <img
             class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
             src={@icon_file_path}
           />
         </div>
-        <div class="flex mr-2 lg:mr-20">
-          <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+        <div class="flex mr-2 lg:mr-5">
+          <div class="text-md w-[110px] lg:w-[250px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
         </div>
       </div>
     """
@@ -213,11 +212,11 @@ defmodule BrightWeb.ProfileComponents do
     ~H"""
       <div class="flex flex-col gap-y-2 font-bold justify-center">
         <div id="profile-skill-panel-name" class="flex text-md lg:text-2xl items-center">
-          <span> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
+          <span class="truncate w-80"> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
           <button
               :if={@is_star_button}
               id="skill_star_button"
-              class={"bg-white border border-#{get_star_style(@is_star)} rounded mx-6 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
+              class={"bg-white border border-#{get_star_style(@is_star)} rounded mx-2 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
               phx-click="click_skill_star_button"
             >
               <span class={"material-icons text-#{get_star_style(@is_star)}"}>
@@ -243,28 +242,40 @@ defmodule BrightWeb.ProfileComponents do
   attr :skill_panel, :any, required: true
   attr :display_return_to_yourself, :boolean, default: false
   slot :score_stats, default: nil
+  slot :skill_select, default: nil
   slot :switch_button, default: nil
 
   def profile_with_skill(assigns) do
     assigns = assign_by_anonymous(assigns)
 
     ~H"""
-      <div class="flex flex-col gap-y-2 w-full">
-        <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
-        <div class="p-4 lg:px-6 bg-white rounded-lg">
-          <div class="flex flex-col lg:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
+      <div class="flex flex-col gap-y-2 w-full lg:max-w-[1100px]">
+        <div class="p-4 bg-white rounded-lg">
+          <div class="flex flex-col 2xl:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
             <div class="flex gap-x-4 lg:gap-x-0">
-              <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
+              <div class="flex flex-row lg:flex-col">
+                <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
+                <div>
+                  <%= if @switch_button, do: render_slot(@switch_button) %>
+                  <.selected_skill_title display_return_to_yourself={@display_return_to_yourself} />
+                </div>
+              </div>
+            </div>
+            <div>
               <.selected_skill
                 skill_panel={@skill_panel}
                 skill_class={@skill_class}
                 is_star_button={@is_star_button}
                 is_star={@is_star}
               />
+              <div class="pt-4">
+                <%= if @score_stats, do: render_slot(@score_stats) %>
+              </div>
             </div>
-            <%= if @score_stats, do: render_slot(@score_stats) %>
+            <div class="pt-5 2xl:pt-0">
+              <%= if @skill_select, do: render_slot(@skill_select) %>
+            </div>
           </div>
-          <%= if @switch_button, do: render_slot(@switch_button) %>
         </div>
       </div>
     """
