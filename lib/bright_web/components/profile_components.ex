@@ -202,7 +202,7 @@ defmodule BrightWeb.ProfileComponents do
           />
         </div>
         <div class="flex mr-2 lg:mr-5">
-          <div class="text-md w-[110px] lg:w-[250px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+          <div class="text-md w-[110px] lg:w-[200px] truncate lg:text-xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
         </div>
       </div>
     """
@@ -211,7 +211,7 @@ defmodule BrightWeb.ProfileComponents do
   defp selected_skill(assigns) do
     ~H"""
       <div class="flex flex-col gap-y-2 font-bold justify-center">
-        <div id="profile-skill-panel-name" class="flex text-md lg:text-2xl items-center">
+        <div id="profile-skill-panel-name" class="flex text-md lg:text-xl items-center">
           <span class="truncate w-80"> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
           <button
               :if={@is_star_button}
@@ -249,7 +249,7 @@ defmodule BrightWeb.ProfileComponents do
     assigns = assign_by_anonymous(assigns)
 
     ~H"""
-      <div class="flex flex-col gap-y-2 w-full lg:max-w-[1100px]">
+      <div class="flex flex-col gap-y-2 w-full lg:max-w-[1110px]">
         <div class="p-4 bg-white rounded-lg">
           <div class="flex flex-col 2xl:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
             <div class="flex gap-x-4 lg:gap-x-0">
@@ -272,7 +272,7 @@ defmodule BrightWeb.ProfileComponents do
                 <%= if @score_stats, do: render_slot(@score_stats) %>
               </div>
             </div>
-            <div class="pt-5 2xl:pt-0">
+            <div class="pt-5 2xl:pt-0 2xl:pl-5">
               <%= if @skill_select, do: render_slot(@skill_select) %>
             </div>
           </div>
