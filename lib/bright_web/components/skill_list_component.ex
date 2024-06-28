@@ -10,7 +10,7 @@ defmodule BrightWeb.SkillListComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col lg:min-h-[170px] w-80">
+    <div class="flex flex-col w-80">
       <ul :if={Enum.count(@skill_panels) == 0} class="flex gap-y-2.5 flex-col">
         <li class="flex">
           <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-2">
@@ -18,22 +18,24 @@ defmodule BrightWeb.SkillListComponent do
           </div>
         </li>
       </ul>
-      <div :if={Enum.count(@skill_panels) > 0} class="flex">
-        <div :if={@me} class="w-8 font-bold"></div>
-        <div class="w-44 font-bold text-right pr-1">クラス</div>
-        <div class="w-8 font-bold pl-2">1</div>
-        <div class="w-8 font-bold pl-2">2</div>
-        <div class="w-8 font-bold pl-2">3</div>
+      <div class="min-h-[170px]">
+        <div :if={Enum.count(@skill_panels) > 0} class="flex">
+          <div :if={@me} class="w-8 font-bold"></div>
+          <div class="w-44 font-bold text-right pr-1">クラス</div>
+          <div class="w-8 font-bold pl-2">1</div>
+          <div class="w-8 font-bold pl-2">2</div>
+          <div class="w-8 font-bold pl-2">3</div>
+        </div>
+        <%= for skill_panel <- @skill_panels do %>
+          <.skill_panel
+            skill_panel={skill_panel}
+            display_user={@display_user}
+            me={@me}
+            anonymous={@anonymous}
+            root={@root}
+          />
+        <% end %>
       </div>
-      <%= for skill_panel <- @skill_panels do %>
-        <.skill_panel
-          skill_panel={skill_panel}
-          display_user={@display_user}
-          me={@me}
-          anonymous={@anonymous}
-          root={@root}
-        />
-      <% end %>
       <.tab_footer
         id={@id}
         page={@page}
@@ -55,12 +57,12 @@ defmodule BrightWeb.SkillListComponent do
 
     ~H"""
     <div class="flex flex-wrap lg:flex-nowrap">
-      <div :if={@me} class="w-8 font-bold">
-        <span class={"material-icons text-#{get_star_style(@is_star)}"}>
+      <div class="w-8 font-bold">
+        <span :if={@me} class={"material-icons text-#{get_star_style(@is_star)}"}>
           star
         </span>
       </div>
-      <div class="text-left font-bold w-44 mb-2" >
+      <div class="text-left font-bold w-44 truncate mb-2" >
         <%= @skill_panel.name %>
       </div>
       <%= for skill_class <- @skill_classes do %>

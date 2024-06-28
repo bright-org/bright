@@ -195,14 +195,14 @@ defmodule BrightWeb.ProfileComponents do
   defp selected_user(assigns) do
     ~H"""
       <div class="flex flex-col lg:flex-row justify-center items-center">
-        <div class="lg:mr-5 w-12 lg:w-20">
+        <div class="lg:mr-2 w-12 lg:w-20">
           <img
             class="object-cover inline-block h-[42px] w-[42px] lg:h-16 lg:w-16 rounded-full"
             src={@icon_file_path}
           />
         </div>
-        <div class="flex mr-2 lg:mr-20">
-          <div class="text-md max-w-[155px] lg:max-w-[290px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+        <div class="flex mr-2 lg:mr-5">
+          <div class="text-md w-[110px] lg:w-[250px] truncate lg:text-2xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
         </div>
       </div>
     """
@@ -212,11 +212,11 @@ defmodule BrightWeb.ProfileComponents do
     ~H"""
       <div class="flex flex-col gap-y-2 font-bold justify-center">
         <div id="profile-skill-panel-name" class="flex text-md lg:text-2xl items-center">
-          <span> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
+          <span class="truncate w-80"> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
           <button
               :if={@is_star_button}
               id="skill_star_button"
-              class={"bg-white border border-#{get_star_style(@is_star)} rounded mx-6 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
+              class={"bg-white border border-#{get_star_style(@is_star)} rounded mx-2 px-1 h-8 flex items-center mt-auto  hover:filter hover:brightness-95"}
               phx-click="click_skill_star_button"
             >
               <span class={"material-icons text-#{get_star_style(@is_star)}"}>
@@ -249,9 +249,9 @@ defmodule BrightWeb.ProfileComponents do
     assigns = assign_by_anonymous(assigns)
 
     ~H"""
-      <div class="flex flex-col gap-y-2 w-full lg:w-[1100px]">
-        <div class="p-4 lg:px-6 bg-white rounded-lg">
-          <div class="flex flex-col 2xl:flex-row gap-x-8 gap-y-2 lg:gap-y-0">
+      <div class="flex flex-col gap-y-2 w-full lg:max-w-[1100px]">
+        <div class="p-4 bg-white rounded-lg">
+          <div class="flex flex-col 2xl:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
             <div class="flex gap-x-4 lg:gap-x-0">
               <div class="flex flex-row lg:flex-col">
                 <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
