@@ -20,7 +20,7 @@ defmodule BrightWeb.SkillListComponent do
       </ul>
       <div class="min-h-[170px]">
         <div :if={Enum.count(@skill_panels) > 0} class="flex">
-          <div :if={@me} class="w-8 font-bold"></div>
+          <div class="w-8 font-bold"></div>
           <div class="w-44 font-bold text-right pr-1">クラス</div>
           <div class="w-8 font-bold pl-2">1</div>
           <div class="w-8 font-bold pl-2">2</div>
