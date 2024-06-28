@@ -81,16 +81,7 @@ defmodule Bright.SkillPanels do
         user_ids,
         page \\ 1
       ) do
-    career_field_query =
-      from(
-        j in Job,
-        join: cf in assoc(j, :career_fields),
-        join: s in assoc(j, :skill_panels),
-        select: s,
-        distinct: true
-      )
-
-    from(p in subquery(career_field_query),
+    from(p in SkillPanel,
       join: u in assoc(p, :user_skill_panels),
       on: u.skill_panel_id == p.id,
       join: class in assoc(p, :skill_classes),
