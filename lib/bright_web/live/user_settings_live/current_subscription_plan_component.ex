@@ -1,8 +1,7 @@
 defmodule BrightWeb.UserSettingsLive.CurrentSubscriptionPlanComponent do
   use BrightWeb, :live_component
 
-  import Ecto.Query, warn: false
-  alias Bright.Repo
+  alias Bright.Subscriptions
   alias Bright.Subscriptions.SubscriptionUserPlan
 
   @impl true
@@ -25,14 +24,7 @@ defmodule BrightWeb.UserSettingsLive.CurrentSubscriptionPlanComponent do
 
   @impl true
   def update(assigns, socket) do
-    subscription_user_plan =
-      from(sup in SubscriptionUserPlan,
-        where:
-          sup.user_id == ^assigns.user.id and
-            sup.subscription_status in [:free_trial, :subscribing],
-        preload: :subscription_plan
-      )
-      |> Repo.one()
+    subscription_user_plan = Subscriptions.get_user_subscription_user_plan(assigns.user.id)
 
     current_datetime = NaiveDateTime.utc_now()
 
