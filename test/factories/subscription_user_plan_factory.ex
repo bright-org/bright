@@ -132,6 +132,7 @@ defmodule Bright.SubscriptionUserPlanFactory do
         insert(:subscription_user_plan_free_trial,
           user: user,
           subscription_plan: subscription_plan,
+          trial_start_datetime: NaiveDateTime.utc_now(),
           trial_end_datetime: NaiveDateTime.utc_now()
         )
 
