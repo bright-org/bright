@@ -88,7 +88,6 @@ defmodule BrightWeb.UserSettingsLive.CurrentSubscriptionPlanComponentTest do
       assert lv |> has_element?("#current_subscription_plan", "なし")
     end
 
-    # 課金中
     test "displays the plan name when the user is subscribed without a free trial",
          %{
            conn: conn,
