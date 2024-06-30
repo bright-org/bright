@@ -69,6 +69,16 @@ defmodule BrightWeb.DisplayUserHelper do
     end
   end
 
+  def assign_share_graph_url(socket) do
+    assign(
+      socket,
+      :share_graph_url,
+      url(
+        ~p"/share/#{encrypt_user_and_skill_class_id(socket.assigns.current_user.id, socket.assigns.skill_class.id)}/graphs"
+      )
+    )
+  end
+
   @doc """
   nameあるいはencrypted_nameからuserとanonymousかどうかを返す
   """
