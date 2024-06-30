@@ -40,15 +40,6 @@ defmodule BrightWeb.UserSettingsLive.CurrentSubscriptionPlanComponent do
           "#{name_jp}（無料トライアル中）"
 
         %SubscriptionUserPlan{
-          subscription_status: :free_trial,
-          subscription_plan: %{name_jp: name_jp},
-          trial_start_datetime: trial_start_datetime,
-          trial_end_datetime: trial_end_datetime
-        }
-        when current_datetime >= trial_start_datetime and current_datetime <= trial_end_datetime ->
-          "#{name_jp}（無料トライアル中）"
-
-        %SubscriptionUserPlan{
           subscription_status: :subscribing,
           subscription_plan: %{name_jp: name_jp}
         } ->
