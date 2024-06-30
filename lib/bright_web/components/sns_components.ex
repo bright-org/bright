@@ -51,6 +51,7 @@ defmodule BrightWeb.SnsComponents do
         class="flex flex-col lg:flex-row gap-2"
       >
         <.twitter_share_button url={@share_graph_url} text={@twitter_text}/>
+        <.facebook_share_button url={@share_graph_url}/>
       </div>
     """
   end
@@ -63,6 +64,18 @@ defmodule BrightWeb.SnsComponents do
         rel="nofollow noopener noreferrer"
       >
         <img class="h-6 w-24" src="/images/share_button/share_twitter.png" />
+      </a>
+    """
+  end
+
+  defp facebook_share_button(assigns) do
+    ~H"""
+      <a
+        href={"https://www.facebook.com/share.php?#{URI.encode_query(%{u: @url})}"}
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+      >
+        <img class="h-6 w-24" src="/images/share_button/share_facebook.png" />
       </a>
     """
   end
