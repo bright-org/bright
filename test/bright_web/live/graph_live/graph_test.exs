@@ -155,10 +155,6 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
       assert html =~ ~r{class=".*border-brightGray-500.*"}
     end
-  end
-
-  describe "Show no skill panel" do
-    setup [:register_and_log_in_user]
 
     test "show content with no skill panel message", %{conn: conn} do
       {:ok, show_live, html} = live(conn, ~p"/graphs")
