@@ -182,4 +182,15 @@ defmodule Bright.TestHelper do
   Returns support dir
   """
   def test_support_dir, do: @test_support_dir
+
+  def setup_subscription_plan(_context) do
+    subscription_plans = Bright.Seeds.SubscriptionPlan.insert()
+
+    %{subscription_plans: subscription_plans}
+  end
+
+  def find_subscription_plan(plans, name \\ "みんなでワイワイ") do
+    plans
+    |> Enum.find(fn plan -> plan.name_jp === name end)
+  end
 end

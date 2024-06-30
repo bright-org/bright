@@ -64,8 +64,9 @@ defmodule Bright.Seeds.SubscriptionPlan do
 
   def insert() do
     @plans
-    |> Enum.each(fn plan ->
-      Subscriptions.create_subscription_plan(plan)
+    |> Enum.map(fn plan ->
+      {:ok, subscription_plan} = Subscriptions.create_subscription_plan(plan)
+      subscription_plan
     end)
   end
 

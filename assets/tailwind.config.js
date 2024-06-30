@@ -380,6 +380,24 @@ module.exports = {
           outline: "1px solid #97acac",
           outlineOffset: "1",
         },
+        ".scrollbar-hide": {
+          scrollbarWidth: "none",
+          "-ms-overflow-style": "none",
+          "&::-webkit-scrollbar": {
+            width: "0px",
+            background: "transparent",
+            display: "none"
+          },
+          "& *::-webkit-scrollbar": {
+            width: "0px",
+            background: "transparent",
+            display: "none"
+          },
+          "& *": {
+            scrollbarWidth: "none",
+            "-ms-overflow-style": "none"
+          }
+        }
       });
     }),
   ],
