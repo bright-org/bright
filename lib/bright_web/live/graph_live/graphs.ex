@@ -8,6 +8,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias BrightWeb.ProfileComponents
   alias BrightWeb.GuideMessageComponents
   alias BrightWeb.SnsComponents
+  alias BrightWeb.UserSkillClassCrypto
   alias Bright.UserSkillPanels
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
@@ -41,7 +42,7 @@ defmodule BrightWeb.GraphLive.Graphs do
      |> assign_skill_score_dict()
      |> assign_counter()
      |> assign_compared_user(params["compare"])
-     |> assign_share_graph_url()
+     |> UserSkillClassCrypto.assign_share_graph_url()
      |> touch_user_skill_panel()}
   end
 
