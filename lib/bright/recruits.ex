@@ -564,6 +564,17 @@ defmodule Bright.Recruits do
     |> Repo.all()
   end
 
+  def list_employment(user_id, status) do
+    Employment
+    |> where(
+      [i],
+      i.recruiter_user_id == ^user_id and i.status == ^status
+    )
+    |> preload(candidates_user: :user_profile)
+    |> order_by(desc: :updated_at)
+    |> Repo.all()
+  end
+
   def list_acceptance_employment(user_id) do
     Employment
     |> where(

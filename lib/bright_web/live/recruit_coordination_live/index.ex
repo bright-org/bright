@@ -143,7 +143,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
             </.link>
           </li>
         <% end %>
-        <%= for coordination <- @waiting_acceptances do %>
+        <%= for coordination <- @waiting_decision do %>
           <% icon_path = coordination.candidates_user.user_profile.icon_file_path %>
           <li class="flex my-5">
             <.link
@@ -176,6 +176,38 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
             </.link>
           </li>
         <% end %>
+
+        <%= for employment <- @waiting_acceptances do %>
+        <% icon_path = employment.candidates_user.user_profile.icon_file_path %>
+          <li class="flex my-5">
+              <div class="flex flex-col">
+                <img
+                  src={UserProfiles.icon_url(icon_path)}
+                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  alt=""
+                />
+                <span>
+                  <%= employment.candidates_user.name %>
+                </span>
+              </div>
+              <div class="flex-1">
+                <span><%= employment.candidates_user.name %></span>
+                <br />
+                <span class="text-brightGray-300">
+                <%= NaiveDateTime.to_date(employment.inserted_at) %>
+                提示年収:<%= employment.income %>
+                </span>
+              </div>
+
+              <span class="flex-1">
+                <%= Gettext.gettext(BrightWeb.Gettext, to_string(employment.status)) %>
+              </span>
+              <span class="w-24">
+                <.elapsed_time inserted_at={employment.updated_at} />
+              </span>
+          </li>
+        <% end %>
+
         <%= for member <- @acceptance_members do %>
         <% icon_path = member.coordination.candidates_user.user_profile.icon_file_path %>
         <% recruiter = member.coordination.recruiter_user %>
@@ -286,7 +318,8 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
     |> assign(:coordination, nil)
     |> assign(:coordination_member, nil)
     |> assign(:acceptances, Recruits.list_acceptance_employment(user_id))
-    |> assign(:waiting_acceptances, Recruits.list_coordination(user_id, :hiring_decision))
+    |> assign(:waiting_decision, Recruits.list_coordination(user_id, :hiring_decision))
+    |> assign(:waiting_acceptances, Recruits.list_employment(user_id, :waiting_response))
     |> assign(:acceptance_members, Recruits.list_coordination_members(user_id, :hiring_decision))
     |> assign(:acceptance, nil)
     |> then(&{:ok, &1})
