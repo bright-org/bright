@@ -322,24 +322,14 @@ defmodule Bright.Recruits do
     |> Repo.all()
   end
 
-  def list_coordination(user_id, :not_complete) do
-    Coordination
-    |> where(
-      [i],
-      i.recruiter_user_id == ^user_id and
-        i.status in [:waiting_recruit_decision, :hiring_decision]
-    )
-    |> preload(candidates_user: :user_profile)
-    |> order_by(desc: :updated_at)
-    |> Repo.all()
-  end
-
   def list_coordination(user_id, status) do
     Coordination
     |> where(
       [i],
-      i.recruiter_user_id == ^user_id and i.status == ^status
+      i.recruiter_user_id == ^user_id and
+        i.status == ^status
     )
+    |> preload(candidates_user: :user_profile)
     |> order_by(desc: :updated_at)
     |> Repo.all()
   end
@@ -444,6 +434,19 @@ defmodule Bright.Recruits do
     |> where([m], m.user_id == ^user_id)
     |> preload(coordination: [candidates_user: :user_profile])
     |> order_by(desc: :updated_at)
+    |> Repo.all()
+  end
+
+  def list_coordination_members(user_id, :hiring_decision) do
+    from(m in CoordinationMember,
+      join: i in Coordination,
+      on:
+        i.id == m.coordination_id and
+          i.status == :hiring_decision,
+      where: m.user_id == ^user_id,
+      order_by: [desc: :updated_at],
+      preload: [coordination: [candidates_user: :user_profile, recruiter_user: :user_profile]]
+    )
     |> Repo.all()
   end
 
@@ -555,6 +558,17 @@ defmodule Bright.Recruits do
     |> where(
       [i],
       i.recruiter_user_id == ^user_id and i.status in [:acceptance_emplyoment]
+    )
+    |> preload(candidates_user: :user_profile)
+    |> order_by(desc: :updated_at)
+    |> Repo.all()
+  end
+
+  def list_employment(user_id, status) do
+    Employment
+    |> where(
+      [i],
+      i.recruiter_user_id == ^user_id and i.status == ^status
     )
     |> preload(candidates_user: :user_profile)
     |> order_by(desc: :updated_at)
