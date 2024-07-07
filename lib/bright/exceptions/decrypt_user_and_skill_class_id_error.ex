@@ -1,3 +1,3 @@
-defmodule Bright.Exceptions.DecryptUserAndSkillClassIdError do
-  defexception message: "Decrypt user and skill_class id error", plug_status: 404, exception: nil
+defmodule Bright.Exceptions.DecryptShareGraphTokenError do
+  defexception message: "Decrypt share graph token error", plug_status: 404, exception: nil
 end

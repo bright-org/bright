@@ -366,7 +366,7 @@ defmodule BrightWeb.Router do
         {BrightWeb.UserAuth, :mount_current_user},
         {BrightWeb.InitAssigns, :without_header}
       ] do
-      live "/:encrypted_user_id_and_skill_class_id/graphs", GraphLive.Graphs, :show
+      live "/:share_graph_token/graphs", GraphLive.Graphs, :show
     end
   end
 

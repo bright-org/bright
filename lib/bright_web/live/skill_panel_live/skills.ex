@@ -14,12 +14,12 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillReferences
   alias Bright.SkillExams
   alias Bright.UserJobProfiles
+  alias Bright.UserSkillPanels
   alias BrightWeb.PathHelper
   alias BrightWeb.ProfileComponents
   alias BrightWeb.GuideMessageComponents
   alias BrightWeb.SnsComponents
-  alias BrightWeb.UserSkillClassCrypto
-  alias Bright.UserSkillPanels
+  alias BrightWeb.Share.Helper, as: ShareHelper
 
   @impl true
   def mount(params, _session, socket) do
@@ -43,7 +43,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_score_dict()
      |> assign_counter()
      |> apply_action(socket.assigns.live_action, params)
-     |> UserSkillClassCrypto.assign_share_graph_url()
+     |> ShareHelper.assign_share_graph_url()
      |> touch_user_skill_panel()}
   end
 
