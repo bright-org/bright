@@ -121,7 +121,7 @@ defmodule BrightWeb.LayoutComponents do
     ~H"""
     <div id="user-share-header" class="bg-white sticky w-full top-0 z-40 flex justify-between px-4 lg:px-10 py-2 border-brightGray-100 border-b lg:flex-row lg:items-center lg:relative">
       <div class="w-full">
-        <.link href={"/users/log_in"}>
+        <.link href={"/users/register"}>
           <button class="text-center bg-brightGreen-300 font-bold text-xl mx-auto px-4 py-2 rounded-md text-white hover:filter hover:brightness-[80%]">
             Brightを体験してみる
           </button>
