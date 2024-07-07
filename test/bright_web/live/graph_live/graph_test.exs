@@ -14,8 +14,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       Date,
       [:passthrough],
       [
-        utc_today: fn -> ~D[2023-10-25] end,
-        new: fn y, m, d -> passthrough([y, m, d]) end
+        utc_today: fn -> ~D[2023-10-25] end
       ]
     }
   end
