@@ -1,4 +1,8 @@
 defmodule BrightWeb.Share.GraphLive.Graphs do
+  @moduledoc """
+  成長パネルのシェア画面
+  """
+
   use BrightWeb, :live_view
 
   alias BrightWeb.SkillPanelLive.SkillPanelHelper
