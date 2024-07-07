@@ -13,6 +13,10 @@ defmodule Bright.SkillClassFactory do
           class: sequence(:class, & &1, start_at: 1)
         }
       end
+
+      def skill_class_with_skill_panel_factory do
+        build(:skill_class, skill_panel: build(:skill_panel))
+      end
     end
   end
 end
