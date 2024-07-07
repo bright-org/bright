@@ -195,18 +195,29 @@ defmodule Bright.TestHelper do
   end
 
   def create_user_with_skill do
-    user = insert(:user)
+    create_skill_for_user(insert(:user))
+  end
+
+  def create_skill_for_user(user) do
     skill_panel = insert(:skill_panel)
     user_skill_panel = insert(:user_skill_panel, user: user, skill_panel: skill_panel)
-    skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
-    skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+    skill_class_1 = insert(:skill_class, skill_panel: skill_panel, class: 1)
+    skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+    skill_class_3 = insert(:skill_class, skill_panel: skill_panel, class: 3)
+    skill_class_score_1 = insert(:skill_class_score, user: user, skill_class: skill_class_1)
+    skill_class_score_2 = insert(:skill_class_score, user: user, skill_class: skill_class_2)
+    skill_class_score_3 = insert(:skill_class_score, user: user, skill_class: skill_class_3)
 
     %{
       user: user,
       skill_panel: skill_panel,
       user_skill_panel: user_skill_panel,
-      skill_class: skill_class,
-      skill_class_score: skill_class_score
+      skill_class_1: skill_class_1,
+      skill_class_2: skill_class_2,
+      skill_class_3: skill_class_3,
+      skill_class_score_1: skill_class_score_1,
+      skill_class_score_2: skill_class_score_2,
+      skill_class_score_3: skill_class_score_3
     }
   end
 

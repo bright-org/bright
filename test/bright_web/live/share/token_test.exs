@@ -19,7 +19,7 @@ defmodule BrightWeb.Share.TokenTest do
     test "decodes share_graph_token" do
       %{
         user: user,
-        skill_class: skill_class
+        skill_class_1: skill_class
       } = create_user_with_skill()
 
       share_graph_token = Token.encode_share_graph_token(user.id, skill_class.id)
@@ -41,7 +41,7 @@ defmodule BrightWeb.Share.TokenTest do
     test "raise Bright.Exceptions.DecryptShareGraphTokenError when invalid page_key" do
       %{
         user: user,
-        skill_class: skill_class
+        skill_class_1: skill_class
       } = create_user_with_skill()
 
       assert_raise Bright.Exceptions.DecryptShareGraphTokenError,

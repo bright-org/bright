@@ -23,7 +23,7 @@ defmodule BrightWeb.Share.HelperTest do
     test "assigns from params" do
       %{
         user: user,
-        skill_class: skill_class
+        skill_class_1: skill_class
       } = create_user_with_skill()
 
       %{user_id: user_id, skill_class_id: skill_class_id} =
