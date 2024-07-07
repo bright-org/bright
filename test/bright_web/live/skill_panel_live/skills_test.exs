@@ -245,6 +245,43 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert html =~ ~r{class=".*border-brightGray-500.*"}
     end
+
+    test "shows sns share button", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
+
+      assert has_element?(show_live, "#share-button-group")
+      assert has_element?(show_live, "#share-button-group-twitter")
+      assert has_element?(show_live, "#share-button-group-facebook")
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels")
+
+      assert has_element?(show_live, "#share-button-group")
+      assert has_element?(show_live, "#share-button-group-twitter")
+      assert has_element?(show_live, "#share-button-group-facebook")
+    end
+
+    test "does not show sns share button when other user", %{conn: conn, user: user} do
+      %{user: user_2, skill_panel: skill_panel_2} = create_user_with_skill()
+      user_2 |> with_user_profile()
+      create_team_with_team_member_users([user, user_2])
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel_2}/#{user_2.name}")
+
+      refute has_element?(show_live, "#share-button-group")
+      refute has_element?(show_live, "#share-button-group-twitter")
+      refute has_element?(show_live, "#share-button-group-facebook")
+    end
+
+    test "does not show sns share button when anon user", %{conn: conn} do
+      %{user: user_2, skill_panel: skill_panel_2} = create_user_with_skill()
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
+
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel_2}/anon/#{encrypted_name}")
+
+      refute has_element?(show_live, "#share-button-group")
+      refute has_element?(show_live, "#share-button-group-twitter")
+      refute has_element?(show_live, "#share-button-group-facebook")
+    end
   end
 
   describe "Show no skill panel" do
@@ -263,40 +300,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert path == "/onboardings"
     end
   end
-
-  # # TODO: 時間操作の対応
-  # describe "Show latest skill panel" do
-  #   setup [:register_and_log_in_user]
-  #
-  #   setup %{user: user} do
-  #     [skill_panel_1, skill_panel_2] =
-  #       insert_pair(:skill_panel)
-  #       |> Enum.map(fn skill_panel ->
-  #         insert(:user_skill_panel, user: user, skill_panel: skill_panel)
-  #         insert(:skill_class, skill_panel: skill_panel, class: 1)
-  #         skill_panel
-  #       end)
-  #
-  #     %{skill_panel_1: skill_panel_1, skill_panel_2: skill_panel_2}
-  #   end
-  #
-  #   test "switches latest skill panel by access", %{
-  #     skill_panel_1: skill_panel_1,
-  #     skill_panel_2: skill_panel_2,
-  #     conn: conn
-  #   } do
-  #     {:ok, _show_live, html} = live(conn, ~p"/panels/#{skill_panel_1}")
-  #     assert html =~ "スキルパネル / #{skill_panel_1.name}"
-  #     {:ok, _show_live, html} = live(conn, ~p"/panels")
-  #     assert html =~ "スキルパネル / #{skill_panel_1.name}"
-  #
-  #     :timer.sleep(1000)
-  #     {:ok, _show_live, html} = live(conn, ~p"/panels/#{skill_panel_2}")
-  #     assert html =~ "スキルパネル / #{skill_panel_2.name}"
-  #     {:ok, _show_live, html} = live(conn, ~p"/panels")
-  #     assert html =~ "スキルパネル / #{skill_panel_2.name}"
-  #   end
-  # end
 
   describe "Show skill scores" do
     setup [:register_and_log_in_user, :setup_skills]
@@ -348,9 +351,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       user_2: user_2,
       skill_panel: skill_panel
     } do
-      team = insert(:team)
-      insert(:team_member_users, user: user, team: team)
-      insert(:team_member_users, user: user_2, team: team)
+      create_team_with_team_member_users([user, user_2])
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
@@ -424,9 +425,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       user_2: user_2,
       skill_panel: skill_panel
     } do
-      team = insert(:team)
-      insert(:team_member_users, user: user, team: team)
-      insert(:team_member_users, user: user_2, team: team)
+      create_team_with_team_member_users([user, user_2])
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
       refute has_element?(show_live, ~s{button[phx-click="clear_display_user"]})
@@ -689,11 +688,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_panel: skill_panel
     } do
       # 対象者用意
-      user_2 = insert(:user)
-      skill_panel_2 = insert(:skill_panel)
-      insert(:user_skill_panel, user: user_2, skill_panel: skill_panel_2)
-      skill_class_2 = insert(:skill_class, skill_panel: skill_panel_2, class: 1)
-      insert(:skill_class_score, user: user_2, skill_class: skill_class_2)
+      %{user: user_2, skill_panel: skill_panel_2} = create_user_with_skill()
       encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
 
       # 対象者へアクセス
@@ -1003,10 +998,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     # 他者とのチーム関連付け
     setup %{user: user, user_2: user_2} do
-      team = insert(:team)
-      insert(:team_member_users, user: user, team: team)
-      insert(:team_member_users, user: user_2, team: team)
-      %{team: team}
+      create_team_with_team_member_users([user, user_2])
     end
 
     @tag score: :low
@@ -1084,10 +1076,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     # 他者とのチーム関連付け
     setup %{user: user, user_2: user_2, user_3: user_3} do
-      team = insert(:team)
-      insert(:team_member_users, user: user, team: team)
-      insert(:team_member_users, user: user_2, team: team)
-      insert(:team_member_users, user: user_3, team: team)
+      %{team: team} = create_team_with_team_member_users([user, user_2, user_3])
 
       # 招待が終わっていないメンバーをダミーとして追加
       user_dummy = insert(:user)
@@ -1211,10 +1200,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     # 他者とのチーム関連付け
     setup %{user: user} do
       [user_2, user_3] = users = insert_pair(:user) |> Enum.map(&with_user_profile/1)
-      team = insert(:team)
-      insert(:team_member_users, user: user, team: team)
-      insert(:team_member_users, user: user_2, team: team)
-      insert(:team_member_users, user: user_3, team: team)
+      %{team: team} = create_team_with_team_member_users([user, user_2, user_3])
 
       %{users: users, team: team}
     end
@@ -1621,9 +1607,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     test "shows 404 if skill_panel not exists, case related user", %{conn: conn, user: user} do
       user_2 = insert(:user) |> with_user_profile()
-      team = insert(:team)
-      insert(:team_member_users, user: user, team: team)
-      insert(:team_member_users, user: user_2, team: team)
+
+      create_team_with_team_member_users([user, user_2])
 
       assert_raise Ecto.NoResultsError, fn ->
         live(conn, ~p"/panels/#{Ecto.ULID.generate()}/#{user_2.name}")

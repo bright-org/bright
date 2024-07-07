@@ -193,4 +193,34 @@ defmodule Bright.TestHelper do
     plans
     |> Enum.find(fn plan -> plan.name_jp === name end)
   end
+
+  def create_user_with_skill do
+    user = insert(:user)
+    skill_panel = insert(:skill_panel)
+    user_skill_panel = insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+    skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+    skill_class_score = insert(:skill_class_score, user: user, skill_class: skill_class)
+
+    %{
+      user: user,
+      skill_panel: skill_panel,
+      user_skill_panel: user_skill_panel,
+      skill_class: skill_class,
+      skill_class_score: skill_class_score
+    }
+  end
+
+  def create_team_with_team_member_users(users) do
+    team = insert(:team)
+
+    team_members =
+      Enum.map(users, fn user ->
+        insert(:team_member_users, team: team, user: user)
+      end)
+
+    %{
+      team: team,
+      team_members: team_members
+    }
+  end
 end
