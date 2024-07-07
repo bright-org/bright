@@ -42,5 +42,18 @@ defmodule BrightWeb.Share.GraphLive.GraphsTest do
 
       assert live |> has_element?("#doughnut-graph-single")
     end
+
+    test "shows skill gem", %{conn: conn, share_graph_token: share_graph_token} do
+      {:ok, _live, html} = live(conn, "/share/#{share_graph_token}/graphs")
+
+      assert html =~ "該当時期には未だスキルパネルがアンロックされていません"
+    end
+
+    test "shows graph", %{conn: conn, share_graph_token: share_graph_token} do
+      {:ok, live, _html} = live(conn, "/share/#{share_graph_token}/graphs")
+
+      assert live |> has_element?("#growth-graph")
+      assert live |> has_element?("#growth-graph-sp")
+    end
   end
 end
