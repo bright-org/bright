@@ -1,4 +1,8 @@
-#
+# 決済
+
+## テーブル設計
+
+### Stripe の顧客 ID 情報を保存する user_stripe_customers テーブル
 
 ```mermaid
 erDiagram
@@ -12,6 +16,10 @@ user_stripe_customers {
 users ||--o| user_stripe_customers: contains
 
 ```
+
+### 決済履歴を保存するテーブル
+
+必要な場合作成
 
 ## 購入処理
 
@@ -45,6 +53,20 @@ sequenceDiagram
 ```
 
 ## 解約処理
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Bright
+    participant Stripe
+
+    User ->> Bright: ユーザ設定モーダル「利用プラン」タブの解約ボタン押下
+    Bright ->> Stripe: Stripe 解約API実行
+    Stripe ->> Bright: 解約成功通知
+    Stripe ->> Bright: 購入完了通知
+    Bright ->> Bright: subscription_user_plansテーブルを契約終了状態に更新
+    Bright ->> User: 解約完了メールを通知
+```
 
 ## プラン変更処理
 
