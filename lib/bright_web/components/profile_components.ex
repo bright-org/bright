@@ -76,7 +76,7 @@ defmodule BrightWeb.ProfileComponents do
     <div class="flex">
       <img class="bg-contain inline-block mr-5 h-16 w-16 rounded-full lg:h-20 lg:w-20" src={@icon_file_path} />
       <div class="flex-1">
-        <div class="flex pb-4 items-end pb-2">
+        <div class="flex pb-4 items-end">
           <div class="text-base lg:text-2xl font-bold max-w-[190px] truncate lg:max-w-[280px]"><%= @user_name %></div>
           <div class="flex gap-x-3 ml-1 lg:ml-4">
            <.excellent_person_button :if={@display_excellent_person}/>
@@ -529,6 +529,33 @@ defmodule BrightWeb.ProfileComponents do
         </span>
       </button>
     </li>
+    """
+  end
+
+  @doc """
+  シェア用プロフィール
+  """
+
+  attr :skill_panel, :any, required: true
+  attr :skill_class, :any, required: true
+  slot :score_stats, default: nil
+
+  def profile_for_share(assigns) do
+    ~H"""
+    <div class="bg-white px-4 lg:px-10 py-4 flex flex-col gap-y-2 w-full">
+      <div class=" rounded-lg">
+        <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
+          <.selected_skill
+            skill_panel={@skill_panel}
+            skill_class={@skill_class}
+            is_star_button={false}
+          />
+          <div class="pt-4">
+            <%= if @score_stats, do: render_slot(@score_stats) %>
+          </div>
+        </div>
+      </div>
+    </div>
     """
   end
 

@@ -15,6 +15,8 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
   alias BrightWeb.TimelineHelper
   alias BrightWeb.DisplayUserHelper
 
+  attr :compare_button?, :boolean, default: true
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -104,7 +106,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         </div>
       </div>
 
-      <div class="py-2 lg:py-4 mt-4 order-last lg:order-none">
+      <div :if={@compare_button?} class="py-2 lg:py-4 mt-4 order-last lg:order-none">
         <div class="flex gap-x-4 justify-between lg:justify-start">
           <div class="flex">
             <BrightWeb.BrightCoreComponents.action_button
@@ -154,7 +156,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       phx-click="shift_timeline_past"
       phx-value-id={@id}
       phx-target={@myself}
-      class={["w-8 h-6 lg:w-11 lg:h-9 flex justify-center items-center rounded", @id == "myself" && "bg-brightGreen-300", @id == "other" && "bg-brightPurple-300", @class]}
+      class={["w-8 h-6 lg:w-11 lg:h-9 flex justify-center items-center rounded hover:filter hover:brightness-[80%]", @id == "myself" && "bg-brightGreen-300", @id == "other" && "bg-brightPurple-300", @class]}
       disabled={false}
     >
       <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_left</span>
@@ -185,7 +187,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
       phx-click="shift_timeline_future"
       phx-value-id={@id}
       phx-target={@myself}
-      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded", @id == "myself" && "bg-brightGreen-300", @id == "other" && "bg-brightPurple-300", @class]}
+      class={["w-8 h-6 lg:w-11 lg:h-9 bg-brightGray-900 flex justify-center items-center rounded hover:filter hover:brightness-[80%]", @id == "myself" && "bg-brightGreen-300", @id == "other" && "bg-brightPurple-300", @class]}
       disabled={false}
     >
       <span class="material-icons text-white !text-xl lg:!text-4xl">arrow_right</span>
