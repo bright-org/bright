@@ -41,5 +41,16 @@ defmodule BrightWeb.UserSkillClassCryptoTest do
       assert socket.assigns.skill_class.id == skill_class.id
       assert socket.assigns.skill_class_score.id == skill_class_score.id
     end
+
+    test "raise Bright.Exceptions.DecryptUserAndSkillClassIdError when cannot decode" do
+      assert_raise Bright.Exceptions.DecryptUserAndSkillClassIdError,
+                   "Decrypt user and skill_class id error",
+                   fn ->
+                     %Phoenix.LiveView.Socket{}
+                     |> UserSkillClassCrypto.assign_from_encrypted_user_id_and_skill_class_id(%{
+                       "encrypted_user_id_and_skill_class_id" => "invalid"
+                     })
+                   end
+    end
   end
 end
