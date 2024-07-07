@@ -1,0 +1,11 @@
+<.root_layout page_title={assigns[:page_title]} csrf_token={get_csrf_token()} user_id="">
+  <body>
+    <div class="flex">
+      <main class="bg-background flex flex-col w-full">
+        <%= @inner_content %>
+      </main>
+    </div>
+    <% # sp/pc 表示サイズ判定利用 %>
+    <div id="sp-size" class="h-0 w-0 lg:hidden" />
+  </body>
+</.root_layout>

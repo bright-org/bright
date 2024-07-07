@@ -28,6 +28,10 @@ defmodule BrightWeb.Router do
     plug :put_root_layout, html: {BrightWeb.Layouts, :onboarding}
   end
 
+  pipeline :share do
+    plug :put_root_layout, html: {BrightWeb.Layouts, :share}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
