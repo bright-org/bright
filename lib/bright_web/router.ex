@@ -352,6 +352,20 @@ defmodule BrightWeb.Router do
     end
   end
 
+  # 認証前後問わない
+  ## シェア用のURL
+  scope "/share", BrightWeb.Share do
+    pipe_through [:browser, :share]
+
+    live_session :share,
+      on_mount: [
+        {BrightWeb.UserAuth, :mount_current_user},
+        {BrightWeb.InitAssigns, :without_header}
+      ] do
+      live "/:encrypted_user_id_and_skill_class_id/graphs", GraphLive.Graphs, :show
+    end
+  end
+
   scope "/api", BrightWeb.Api do
     pipe_through [:api, :api_basic_auth]
 
