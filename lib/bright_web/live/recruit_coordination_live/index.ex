@@ -127,7 +127,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
               <div class="flex flex-col mr-4">
                 <img
                   src={UserProfiles.icon_url(icon_path)}
-                  class="object-cover h-12 w-12 rounded-full ml-2"
+                  class="object-cover h-12 w-12 rounded-full mx-2"
                   alt=""
                 />
                 <span>
@@ -150,10 +150,10 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
                patch={~p"/recruits/coordinations/#{coordination.id}"}
               class="cursor-pointer hover:opacity-70 text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate"
             >
-              <div class="flex flex-col">
+              <div class="flex flex-col mr-4">
                 <img
                   src={UserProfiles.icon_url(icon_path)}
-                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  class="object-cover h-12 w-12 rounded-full mx-2"
                   alt=""
                 />
                 <span><%= coordination.candidates_user.name %></span>
@@ -180,31 +180,30 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         <%= for employment <- @waiting_acceptances do %>
         <% icon_path = employment.candidates_user.user_profile.icon_file_path %>
           <li class="flex my-5">
-              <div class="flex flex-col">
+            <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate" >
+              <div class="flex flex-col mr-4">
                 <img
                   src={UserProfiles.icon_url(icon_path)}
-                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  class="object-cover h-12 w-12 rounded-full mx-2"
                   alt=""
                 />
-                <span>
-                  <%= employment.candidates_user.name %>
-                </span>
+                <span><%= employment.candidates_user.name %></span>
               </div>
               <div class="flex-1">
-                <span><%= employment.candidates_user.name %></span>
+                <span><%= if employment.skill_panel_name == nil, do: "スキルパネルデータなし", else: employment.skill_panel_name %></span>
                 <br />
                 <span class="text-brightGray-300">
                 <%= NaiveDateTime.to_date(employment.inserted_at) %>
                 提示年収:<%= employment.income %>
                 </span>
               </div>
-
-              <span class="flex-1">
-                <%= Gettext.gettext(BrightWeb.Gettext, to_string(employment.status)) %>
-              </span>
-              <span class="w-24">
-                <.elapsed_time inserted_at={employment.updated_at} />
-              </span>
+            <span class="flex-1">
+              <%= Gettext.gettext(BrightWeb.Gettext, to_string(employment.status)) %>
+            </span>
+            <span class="w-24">
+              <.elapsed_time inserted_at={employment.updated_at} />
+            </span>
+            </div>
           </li>
         <% end %>
 
@@ -212,10 +211,11 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
         <% icon_path = member.coordination.candidates_user.user_profile.icon_file_path %>
         <% recruiter = member.coordination.recruiter_user %>
           <li class="flex my-5">
-              <div class="flex flex-col mr-4">
+          <div class="text-left flex items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap truncate" >
+              <div class="flex flex-col mr-4 text-base">
                 <img
                   src={UserProfiles.icon_url(recruiter.user_profile.icon_file_path)}
-                  class="object-cover h-12 w-12 rounded-full ml-2"
+                  class="object-cover h-12 w-12 rounded-full mx-2"
                   alt=""
                 />
                 <span><%= recruiter.name %></span>
@@ -224,7 +224,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
               <div class="flex flex-col">
                 <img
                   src={UserProfiles.icon_url(icon_path)}
-                  class="object-cover h-12 w-12 rounded-full mr-2"
+                  class="object-cover h-12 w-12 rounded-full"
                   alt=""
                 />
                 <span>
@@ -248,6 +248,7 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
               <span class="w-24">
                 <.elapsed_time inserted_at={member.updated_at} />
               </span>
+            </div>
           </li>
         <% end %>
       </div>
