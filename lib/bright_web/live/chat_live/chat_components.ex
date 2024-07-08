@@ -38,15 +38,19 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         <%= if @chat.interview.status == :one_on_one do %>
           1on1
         <% else %>
-          <div class="mr-2 lg:truncate lg:text-xl">
+          <div class="mr-2 lg:truncate max-w-48 lg:text-xl">
             <span>
               <%= if @chat.interview.skill_panel_name == nil,
-                do: "スキルパネルデータなし",
+                do: "保有スキルパネル無",
                 else: @chat.interview.skill_panel_name %>
             </span>
             <br />
             <span class="text-brightGray-300">
-              <%= NaiveDateTime.to_date(@chat.interview.inserted_at) %> 希望年収:<%= @chat.interview.desired_income %>
+              <%= NaiveDateTime.to_date(@chat.interview.inserted_at) %>
+            </span>
+            <br />
+            <span class="text-brightGray-300">
+              希望年収:<%= @chat.interview.desired_income %>
             </span>
             <br />
             <span class="text-brightGray-300">
@@ -176,14 +180,14 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       |> set_url()
 
     ~H"""
-    <%= if anon?(@anon, @chat, @user) do %>
-      <.user_icon path={nil} has_link={@has_link} url={@url} />
-    <% else %>
-      <div class="flex flex-col justify-end">
+    <div class="flex flex-col justify-end w-20 pl-2">
+      <%= if anon?(@anon, @chat, @user) do %>
+        <.user_icon path={nil} has_link={@has_link} url={@url} />
+      <% else %>
         <.user_icon path={@user.icon} has_link={@has_link} url={@url}/>
-        <p :if={@show_name} class="lg:w-24 break-words"><%= @user.name %></p>
-      </div>
-    <% end %>
+        <p :if={@show_name} class="lg:w-20 break-words"><%= @user.name %></p>
+      <% end %>
+    </div>
     """
   end
 
