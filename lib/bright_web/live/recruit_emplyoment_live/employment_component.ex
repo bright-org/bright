@@ -206,6 +206,11 @@ defmodule BrightWeb.RecruitEmploymentLive.EmploymentComponent do
     {:noreply, assign(socket, :users, removed_users)}
   end
 
+  def handle_event("create", _params, %{assigns: %{users: users}} = socket)
+      when users == [] do
+    {:noreply, assign(socket, :candidate_error, "ジョイン先チーム管理者を最低１名選択してくだい")}
+  end
+
   def handle_event("create", %{"employment" => employment_params}, socket) do
     employment = socket.assigns.employment
     users = socket.assigns.users
