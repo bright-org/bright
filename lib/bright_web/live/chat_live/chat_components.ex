@@ -38,7 +38,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         <%= if @chat.interview.status == :one_on_one do %>
           1on1
         <% else %>
-          <div class="mr-2 lg:truncate max-w-56 lg:text-xl">
+          <div class="mr-2 lg:truncate max-w-36">
             <span>
               <%= if @chat.interview.skill_panel_name == nil,
                 do: "スキルパネルデータなし",
