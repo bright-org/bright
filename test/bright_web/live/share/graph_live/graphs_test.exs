@@ -1,5 +1,5 @@
 defmodule BrightWeb.Share.GraphLive.GraphsTest do
-  alias BrightWeb.Share.Token
+  alias Bright.Share.Token
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest

@@ -1,7 +1,7 @@
-defmodule BrightWeb.Share.TokenTest do
+defmodule Bright.Share.TokenTest do
   use BrightWeb.ConnCase
 
-  alias BrightWeb.Share.Token
+  alias Bright.Share.Token
   alias Bright.Utils.Aes.Aes128
 
   describe "encode_share_graph_token/2" do

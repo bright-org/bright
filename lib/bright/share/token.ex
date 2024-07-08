@@ -1,4 +1,4 @@
-defmodule BrightWeb.Share.Token do
+defmodule Bright.Share.Token do
   @moduledoc """
   シェア画面用のトークン関連処理
   """

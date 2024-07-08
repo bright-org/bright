@@ -1,7 +1,7 @@
 defmodule BrightWeb.Share.HelperTest do
   use BrightWeb.ConnCase
 
-  alias BrightWeb.Share.Token
+  alias Bright.Share.Token
   alias BrightWeb.Share.Helper
 
   describe "assign_share_graph_url/1" do
