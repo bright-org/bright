@@ -112,7 +112,13 @@ defmodule BrightWeb.RecruitCoordinationLive.Index do
     <div id="coordination_member_container" class="bg-white rounded-md my-1 mb-20 lg:my-20 lg:w-3/5 m-auto p-5">
       <div class="text-sm font-medium text-center">
         <h4 class="text-start">選考結果</h4>
-        <li :if={Enum.count(@acceptances) + Enum.count(@waiting_acceptances) + Enum.count(@acceptance_members)== 0} class="flex">
+        <li :if={
+          Enum.count(@acceptances) +
+          Enum.count(@waiting_acceptances) +
+          Enum.count(@acceptance_members) +
+          Enum.count(@waiting_decision)
+          == 0
+          } class="flex">
           <div class="text-left flex items-center text-base py-4 flex-1 mr-2">
             未返答の選考結果はありません
           </div>
