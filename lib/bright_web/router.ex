@@ -28,6 +28,10 @@ defmodule BrightWeb.Router do
     plug :put_root_layout, html: {BrightWeb.Layouts, :onboarding}
   end
 
+  pipeline :share do
+    plug :put_root_layout, html: {BrightWeb.Layouts, :share}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -349,6 +353,20 @@ defmodule BrightWeb.Router do
     scope "/auth" do
       get "/:provider", OAuthController, :request
       get "/:provider/callback", OAuthController, :callback
+    end
+  end
+
+  # 認証前後問わない
+  ## シェア用のURL
+  scope "/share", BrightWeb.Share do
+    pipe_through [:browser, :share]
+
+    live_session :share,
+      on_mount: [
+        {BrightWeb.UserAuth, :mount_current_user},
+        {BrightWeb.InitAssigns, :without_header}
+      ] do
+      live "/:share_graph_token/graphs", GraphLive.Graphs, :show
     end
   end
 

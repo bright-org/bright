@@ -85,6 +85,20 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     size = socket.assigns[:size] || "base"
     skill_gem = get_skill_gem(display_user.id, skill_panel.id, class, select_label)
 
+    skill_gem_links =
+      if display_link == "false",
+        do: [],
+        else:
+          get_skill_gem_links(
+            skill_gem,
+            skill_panel,
+            class,
+            select_label,
+            display_user,
+            me,
+            anonymous
+          )
+
     socket
     |> update(:skill_gem_data, fn
       [_, other] when is_list(other) -> [get_skill_gem_data(skill_gem), other]
@@ -92,18 +106,7 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
     end)
     |> assign(:skill_gem_labels, get_skill_gem_labels(skill_gem))
     |> assign(:skill_gem_trace_ids, get_skill_gem_trace_ids(skill_gem))
-    |> assign(
-      :skill_gem_links,
-      get_skill_gem_links(
-        skill_gem,
-        skill_panel,
-        class,
-        select_label,
-        display_user,
-        me,
-        anonymous
-      )
-    )
+    |> assign(:skill_gem_links, skill_gem_links)
     |> assign(:display_link, display_link)
     |> assign(:size, size)
   end

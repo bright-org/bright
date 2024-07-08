@@ -14,8 +14,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       Date,
       [:passthrough],
       [
-        utc_today: fn -> ~D[2023-10-25] end,
-        new: fn y, m, d -> passthrough([y, m, d]) end
+        utc_today: fn -> ~D[2023-10-25] end
       ]
     }
   end
@@ -71,6 +70,23 @@ defmodule BrightWeb.GraphLive.GraphsTest do
         percentage: percentage
       )
     end)
+  end
+
+  describe "Show no skill panel" do
+    setup [:register_and_log_in_user]
+
+    test "shows content with no skill panel message", %{conn: conn} do
+      {:ok, show_live, html} = live(conn, ~p"/graphs")
+
+      assert html =~ "スキルパネルがありません"
+
+      show_live
+      |> element("a", "スキルを選ぶ")
+      |> render_click()
+
+      {path, _} = assert_redirect(show_live)
+      assert path == "/onboardings"
+    end
   end
 
   describe "Show" do
@@ -155,22 +171,42 @@ defmodule BrightWeb.GraphLive.GraphsTest do
 
       assert html =~ ~r{class=".*border-brightGray-500.*"}
     end
-  end
 
-  describe "Show no skill panel" do
-    setup [:register_and_log_in_user]
+    test "shows sns share button", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
 
-    test "show content with no skill panel message", %{conn: conn} do
-      {:ok, show_live, html} = live(conn, ~p"/graphs")
+      assert has_element?(show_live, "#share-button-group")
+      assert has_element?(show_live, "#share-button-group-twitter")
+      assert has_element?(show_live, "#share-button-group-facebook")
 
-      assert html =~ "スキルパネルがありません"
+      {:ok, show_live, _html} = live(conn, ~p"/graphs")
 
-      show_live
-      |> element("a", "スキルを選ぶ")
-      |> render_click()
+      assert has_element?(show_live, "#share-button-group")
+      assert has_element?(show_live, "#share-button-group-twitter")
+      assert has_element?(show_live, "#share-button-group-facebook")
+    end
 
-      {path, _} = assert_redirect(show_live)
-      assert path == "/onboardings"
+    test "does not show sns share button when other user", %{conn: conn, user: user} do
+      %{user: user_2, skill_panel: skill_panel_2} = create_user_with_skill()
+      user_2 |> with_user_profile()
+      create_team_with_team_member_users([user, user_2])
+
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel_2}/#{user_2.name}")
+
+      refute has_element?(show_live, "#share-button-group")
+      refute has_element?(show_live, "#share-button-group-twitter")
+      refute has_element?(show_live, "#share-button-group-facebook")
+    end
+
+    test "does not show sns share button when anon user", %{conn: conn} do
+      %{user: user_2, skill_panel: skill_panel_2} = create_user_with_skill()
+      encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
+
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel_2}/anon/#{encrypted_name}")
+
+      refute has_element?(show_live, "#share-button-group")
+      refute has_element?(show_live, "#share-button-group-twitter")
+      refute has_element?(show_live, "#share-button-group-facebook")
     end
   end
 
@@ -301,9 +337,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       # 他者のテストデータ準備
       user_2 = insert(:user) |> with_user_profile()
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
-      team = insert(:team)
-      insert(:team_member_users, team: team, user: user)
-      insert(:team_member_users, team: team, user: user_2)
+      create_team_with_team_member_users([user, user_2])
 
       percentages_202307 = [10, 11, 12]
       percentages_202310 = [20, 21, 22]
@@ -397,9 +431,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     } do
       user_2 = insert(:user) |> with_user_profile()
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
-      team = insert(:team)
-      insert(:team_member_users, team: team, user: user)
-      insert(:team_member_users, team: team, user: user_2)
+      %{team: team} = create_team_with_team_member_users([user, user_2])
 
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
@@ -639,9 +671,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       create_historical_skill_class_score(user_2, h_skill_class_2, ~D[2023-07-01], 10.0)
 
       # 比較対象ユーザーとチームメンバー化
-      team = insert(:team)
-      insert(:team_member_users, team: team, user: user)
-      insert(:team_member_users, team: team, user: user_2)
+      create_team_with_team_member_users([user, user_2])
 
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
@@ -713,9 +743,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       user_2 = insert(:user) |> with_user_profile()
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
 
-      team = insert(:team)
-      insert(:team_member_users, team: team, user: user)
-      insert(:team_member_users, team: team, user: user_2)
+      create_team_with_team_member_users([user, user_2])
 
       with_mocks([date_mock()]) do
         {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}?compare=#{user_2.name}")

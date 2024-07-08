@@ -28,6 +28,60 @@ defmodule BrightWeb.SnsComponents do
     """
   end
 
+  @doc """
+  SNSシェアボタングループ
+
+  ## Examples
+      <.sns_share_button_group share_graph_url="https://bright-fun.org" />
+  """
+  attr :id, :string, default: "share-button-group"
+  attr :share_graph_url, :string, required: true
+
+  def sns_share_button_group(assigns) do
+    assigns =
+      assigns
+      |> Map.put(:twitter_text, """
+      #bright_skill
+      成長パネルをシェアしました！あなたも成長パネルを作成してみませんか？
+      """)
+
+    ~H"""
+      <div
+        id={@id}
+        class="flex flex-col lg:flex-row gap-2"
+      >
+        <.twitter_share_button id={"#{@id}-twitter"} url={@share_graph_url} text={@twitter_text}/>
+        <.facebook_share_button id={"#{@id}-facebook"} url={@share_graph_url}/>
+      </div>
+    """
+  end
+
+  defp twitter_share_button(assigns) do
+    ~H"""
+      <a
+        id={@id}
+        href={"https://x.com/intent/tweet?#{URI.encode_query(%{text: @text, url: @url})}"}
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+      >
+        <img class="h-6 w-24" src="/images/share_button/share_twitter.png" />
+      </a>
+    """
+  end
+
+  defp facebook_share_button(assigns) do
+    ~H"""
+      <a
+        id={@id}
+        href={"https://www.facebook.com/share.php?#{URI.encode_query(%{u: @url})}"}
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+      >
+        <img class="h-6 w-24" src="/images/share_button/share_facebook.png" />
+      </a>
+    """
+  end
+
   attr :url, :string
   attr :sns_type, :string, values: ~w(twitter github facebook)
 
