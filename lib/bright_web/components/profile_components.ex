@@ -202,7 +202,7 @@ defmodule BrightWeb.ProfileComponents do
           />
         </div>
         <div class="flex mr-2 lg:mr-5">
-          <div class="text-md w-[110px] lg:w-[200px] truncate lg:text-xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
+          <div class="text-md w-[110px] lg:w-[120px] break-all lg:text-xl font-bold lg:-mt-[4px]"><%= @user_name %></div>
         </div>
       </div>
     """
@@ -251,7 +251,7 @@ defmodule BrightWeb.ProfileComponents do
     ~H"""
       <div class="flex flex-col gap-y-2 w-full lg:max-w-[1110px]">
         <div class="p-4 bg-white rounded-lg">
-          <div class="flex flex-col 2xl:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
+          <div class="flex flex-col 2xl:flex-row gap-x-7 gap-y-2 lg:gap-y-0">
             <div class="flex gap-x-4 lg:gap-x-0">
               <div class="flex flex-row lg:flex-col">
                 <.selected_user icon_file_path={@icon_file_path} user_name={@user_name} />
