@@ -2,7 +2,9 @@
 
 ## テーブル設計
 
-### Stripe の顧客 ID 情報を保存する user_stripe_customers テーブル
+### user_stripe_customers テーブル
+
+- Stripe の顧客 ID 情報を保存する
 
 ```mermaid
 erDiagram
@@ -15,6 +17,31 @@ user_stripe_customers {
 
 users ||--o| user_stripe_customers: contains
 
+```
+
+### subscription_user_plans テーブル
+
+```mermaid
+erDiagram
+subscription_user_plans {
+    uuid id PK "ID"
+    uuid user_id FK "ユーザID:users.id"
+    uuid subscription_plan_id FK "サブスクリプションプランID:subscription_plans.id"
+    string subscription_status "サブスクリプションステータス"
+    datetime subscription_start_datetime "サブスクリプション開始日時"
+    datetime subscription_end_datetime "サブスクリプション終了日時"
+    datetime trial_start_datetime "無料トライアル開始日時"
+    datetime trial_end_datetime "無料トライアル終了日時"
+    datetime inserted_at "登録日時"
+    datetime updated_at "更新日時"
+    string company_name "企業名"
+    string phone_number "電話番号"
+    string pic_name "担当者名"
+    string stripe_subscription_id "StripeサブスクリプションID（Stripe連携時追加項目）"
+}
+
+users ||--o{ subscription_user_plans: contains
+subscription_plans ||--o{ subscription_user_plans: contains
 ```
 
 ### 決済履歴を保存するテーブル
@@ -60,16 +87,47 @@ sequenceDiagram
     participant Bright
     participant Stripe
 
-    User ->> Bright: ユーザ設定モーダル「利用プラン」タブの解約ボタン押下
+    User ->> Bright: 解約ボタン押下
     Bright ->> Stripe: Stripe 解約API実行
     Stripe ->> Bright: 解約成功通知
-    Stripe ->> Bright: 購入完了通知
+
     Bright ->> Bright: subscription_user_plansテーブルを契約終了状態に更新
     Bright ->> User: 解約完了メールを通知
 ```
 
 ## プラン変更処理
 
+TODO
+
 ## 支払い履歴
 
+```mermaid
+sequenceDiagram
+    participant User
+    participant Bright
+    participant Stripe
+
+    User ->> Bright: お支払い履歴の確認ボタン押下
+    Bright ->> Stripe: Portal Configuration作成API実行(invoiceのみ許可)
+    Stripe ->> Bright: Configuration Object返却
+    Bright ->> Stripe: Customer Portal SessionAPI実行(configurationId指定)
+    Stripe ->> User: 請求履歴情報のみのCustomer Portal表示
+    User ->> User: 請求書確認・PDFダウンロード
+```
+
+- [Portal Configuration 作成 API](https://docs.stripe.com/api/customer_portal/configurations/create)
+
+- [Customer Portal SessionAPI](https://docs.stripe.com/api/customer_portal/sessions)
+
 ## 継続課金処理
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Bright
+    participant Stripe
+
+    Stripe ->> Bright: 継続課金失敗通知
+    Bright ->> Bright: subscription_user_plansテーブルを契約終了状態に更新
+    Bright ->> User: プラン解約メール
+```
