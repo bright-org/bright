@@ -46,7 +46,7 @@ subscription_plans ||--o{ subscription_user_plans: contains
 
 ### 決済履歴を保存するテーブル
 
-必要な場合作成
+Bright 側に不要とのことで作成しない
 
 ## 購入処理
 
