@@ -44,6 +44,8 @@ users ||--o{ subscription_user_plans: contains
 subscription_plans ||--o{ subscription_user_plans: contains
 ```
 
+- Stripe サブスクリプション ID は Stripe でサブスクリプションを管理するための ID で API で解約する際などに必要となる。
+
 ### 決済履歴を保存するテーブル
 
 Bright 側に不要とのことで作成しない
