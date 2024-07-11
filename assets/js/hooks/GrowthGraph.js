@@ -561,6 +561,8 @@ const afterDatasetsDraw = (chart, ease) => {
     getOtherSelectedColor(data),
     otherSelectedIndex
   );
+  // 成長グラフ生成後のイメージ作成試験
+  console.log(context.canvas.toDataURL("image/png"));
 };
 
 const createChartFromJSON = (data, size) => {
