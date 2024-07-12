@@ -168,7 +168,7 @@ defmodule BrightWeb.GraphLive.Graphs do
     growth_graph_data = assigns.growth_graph_data
     local_file_name = "#{System.tmp_dir()}/#{file_name}"
     File.write(local_file_name, growth_graph_data)
-    :ok = Storage.upload!(local_file_name,  "ogp/" <> file_name)
+    :ok = Storage.upload!(local_file_name, "ogp/" <> file_name)
     File.rm(local_file_name)
   end
 end
