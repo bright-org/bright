@@ -98,7 +98,7 @@ defmodule BrightWeb.GraphLive.Graphs do
     [_, value] = String.split(value, ",")
     value = Base.decode64!(value)
     socket = assign(socket, :growth_graph_data, value)
-    upload_growth_graph_data(socket.assigns, "./test.png")
+    upload_growth_graph_data(socket.assigns, "test.png")
     {:noreply, socket}
   end
 
@@ -165,6 +165,7 @@ defmodule BrightWeb.GraphLive.Graphs do
 
   defp upload_growth_graph_data(assigns, file_name) do
     growth_graph_data = assigns.growth_graph_data
+    file_name = "#{System.tmp_dir()}/#{file_name}"
     File.write(file_name, growth_graph_data)
   end
 end
