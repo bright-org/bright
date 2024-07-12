@@ -94,6 +94,10 @@ defmodule BrightWeb.GraphLive.Graphs do
     {:noreply, socket}
   end
 
+  def handle_event("growth_graph_data_click", %{"value" => value},  socket) do
+    {:noreply,  assign(socket, :growth_graph_data, value)}
+  end
+
   @impl true
   def handle_info(
         %{event_name: "timeline_bar_button_click", params: %{"id" => "myself", "date" => date}},

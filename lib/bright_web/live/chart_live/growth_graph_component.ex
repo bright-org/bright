@@ -29,7 +29,7 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
         <div class="lg:hidden">
           <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
         </div>
-        <input id="growth_graph_data" type="text" />
+        <p class="hidden" id="growth_graph_data" phx-click="growth_graph_data_click" />
         <div class="ml-1 flex flex-col relative text-xs lg:text-xl text-brightGray-500 text-bold w-20 lg:ml-5 lg:w-20">
           <p class="py-4 lg:py-5">ベテラン</p>
           <p class="py-3 lg:py-20">平均</p>
