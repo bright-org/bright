@@ -10,6 +10,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias BrightWeb.SnsComponents
   alias Bright.UserSkillPanels
   alias BrightWeb.Share.Helper, as: ShareHelper
+  alias Bright.Utils.GoogleCloud.Storage
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
@@ -165,7 +166,9 @@ defmodule BrightWeb.GraphLive.Graphs do
 
   defp upload_growth_graph_data(assigns, file_name) do
     growth_graph_data = assigns.growth_graph_data
-    file_name = "#{System.tmp_dir()}/#{file_name}"
-    File.write(file_name, growth_graph_data)
+    local_file_name = "#{System.tmp_dir()}/#{file_name}"
+    File.write(local_file_name, growth_graph_data)
+    :ok = Storage.upload!(local_file_name,  "ogp/" <> file_name)
+    File.rm(local_file_name)
   end
 end
