@@ -562,7 +562,10 @@ const afterDatasetsDraw = (chart, ease) => {
     otherSelectedIndex
   );
   // 成長グラフ生成後のイメージ作成試験
-  console.log(context.canvas.toDataURL("image/png"));
+  let growth_graph_data = document.getElementById("growth_graph_data")
+  if (growth_graph_data != null) {
+    growth_graph_data.value = context.canvas.toDataURL("image/png")
+  }
 };
 
 const createChartFromJSON = (data, size) => {
