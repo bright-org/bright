@@ -94,11 +94,12 @@ defmodule BrightWeb.GraphLive.Graphs do
     {:noreply, socket}
   end
 
-  def handle_event("growth_graph_data_click", %{"value" => value},  socket) do
+  def handle_event("growth_graph_data_click", %{"value" => value}, socket) do
     [_, value] = String.split(value, ",")
     value = Base.decode64!(value)
-    File.write("./gr.png", value)
-    {:noreply,  assign(socket, :growth_graph_data, value)}
+    socket = assign(socket, :growth_graph_data, value)
+    upload_growth_graph_data(socket.assigns, "./test.png")
+    {:noreply, socket}
   end
 
   @impl true
@@ -160,5 +161,10 @@ defmodule BrightWeb.GraphLive.Graphs do
       </.live_component>
     </div>
     """
+  end
+
+  defp upload_growth_graph_data(assigns, file_name) do
+    growth_graph_data = assigns.growth_graph_data
+    File.write(file_name, growth_graph_data)
   end
 end
