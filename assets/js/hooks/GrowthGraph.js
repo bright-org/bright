@@ -563,9 +563,9 @@ const afterDatasetsDraw = (chart, ease) => {
   );
   // 成長グラフ生成後のイメージ作成試験
   let growth_graph_data = document.getElementById("growth_graph_data")
-  if (growth_graph_data != null) {
-    growth_graph_data.value = context.canvas.toDataURL("image/png")
-  }
+  if (growth_graph_data == null) return;
+  if (context.canvas.width > 714) return;
+  growth_graph_data.value = context.canvas.toDataURL("image/png")
 };
 
 const createChartFromJSON = (data, size) => {
