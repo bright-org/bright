@@ -13,6 +13,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
   alias Bright.SkillScores
   alias BrightWeb.CardLive.SkillCardComponent
+  alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
 
   # キーボード入力 1,2,3 と対応するスコア
   @shortcut_key_score %{
@@ -390,6 +391,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
     if prev_level != new_level do
       send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
+      send_update(GrowthShareModalComponent, id: "growth_share", open: true)
     end
   end
 
