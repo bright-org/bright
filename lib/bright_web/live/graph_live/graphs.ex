@@ -95,6 +95,9 @@ defmodule BrightWeb.GraphLive.Graphs do
   end
 
   def handle_event("growth_graph_data_click", %{"value" => value},  socket) do
+    [_, value] = String.split(value, ",")
+    value = Base.decode64!(value)
+    File.write("./gr.png", value)
     {:noreply,  assign(socket, :growth_graph_data, value)}
   end
 
