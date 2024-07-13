@@ -46,6 +46,37 @@ subscription_plans ||--o{ subscription_user_plans: contains
 
 - Stripe サブスクリプション ID は Stripe でサブスクリプションを管理するための ID で API で解約する際などに必要となる。
 
+### subscription_plans テーブル
+
+```mermaid
+erDiagram
+subscription_plans {
+    uuid id PK "プランID"
+    varchar plan_code "プランコード"
+    varchar name_jp "プラン名"
+    int create_teams_limit "チーム上限数"
+    int create_enable_hr_functions_teams_limit "育成チーム上限数"
+    int team_members_limit "チーム所属上限人数"
+    timestamp available_contract_end_datetime ""
+    int free_trial_priority "無料トライアル優先度"
+    timestamp inserted_at "登録日時"
+    timestamp updated_at "更新日時"
+    int authorization_priority ""
+    varchar stripe_product_id "Stripe商品ID（Stripe連携時追加項目）"
+}
+
+stripe_prices {
+    uuid id PK "ID"
+    varchar stripe_price_id "Stripe価格ID"
+    varchar subscription_plan_id "サブスクリプションプランID:subscription_plans.id"
+    varchar stripe_lookup_key "Stripe価格lookupキー"
+    timestamp inserted_at "登録日時"
+    timestamp updated_at "更新日時"
+}
+
+subscription_plans ||--o{ stripe_prices : "has many"
+```
+
 ### 決済履歴を保存するテーブル
 
 Bright 側に不要とのことで作成しない
@@ -98,6 +129,20 @@ sequenceDiagram
 ```
 
 ## プラン変更処理
+
+### 無料トライアルプランから無料トライアルプランへの変更
+
+TODO
+
+### 無料トライアルプランから課金プランへの変更
+
+TODO
+
+### 課金プランから無料トライアルプランへの変更
+
+TODO
+
+### 課金プランから課金プランへの変更
 
 TODO
 
