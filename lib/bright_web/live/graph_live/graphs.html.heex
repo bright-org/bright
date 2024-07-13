@@ -122,7 +122,8 @@
           <% # スキル入力後メッセージ（初回のみ） %>
           <.help_messages_area flash={@flash} />
         </div>
-        <div class="ml-auto">
+        <div class="ml-auto flex gap-x-4">
+          <QrCodeComponents.qr_icon_button id="share_qr_icon_button" phx-click="open_qr_code_modal" />
           <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} />
         </div>
       </div>
@@ -192,6 +193,8 @@
       </div>
     </div>
   </div>
+
+  <QrCodeComponents.qr_code_modal qr_code_url={@share_graph_url} open_qr_code_modal={@open_qr_code_modal} on_cancel={JS.push("close_qr_code_modal")} />
 
   <.bright_modal :if={@open_income_consultation}id="incomecoordination-create-modal" on_cancel={JS.push("close_income_consultation")} show>
     <.live_component

@@ -10,6 +10,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias BrightWeb.SnsComponents
   alias Bright.UserSkillPanels
   alias BrightWeb.Share.Helper, as: ShareHelper
+  alias BrightWeb.QrCodeComponents
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
@@ -27,6 +28,7 @@ defmodule BrightWeb.GraphLive.Graphs do
     |> assign(:select_label_compared_user, nil)
     |> assign(:page_title, "成長パネル")
     |> assign(:open_income_consultation, false)
+    |> assign(:open_qr_code_modal, false)
     |> then(&{:ok, &1})
   end
 
@@ -81,6 +83,14 @@ defmodule BrightWeb.GraphLive.Graphs do
 
   def handle_event("close_income_consultation", _params, socket) do
     {:noreply, assign(socket, :open_income_consultation, false)}
+  end
+
+  def handle_event("open_qr_code_modal", _params, socket) do
+    {:noreply, assign(socket, :open_qr_code_modal, true)}
+  end
+
+  def handle_event("close_qr_code_modal", _params, socket) do
+    {:noreply, assign(socket, :open_qr_code_modal, false)}
   end
 
   def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do
