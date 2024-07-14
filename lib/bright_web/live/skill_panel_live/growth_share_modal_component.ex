@@ -9,6 +9,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
 
   alias BrightWeb.SnsComponents
   alias BrightWeb.TimelineHelper
+  alias BrightWeb.Share.Helper, as: ShareHelper
 
   alias Bright.Accounts
   alias Bright.SkillPanels
@@ -24,21 +25,27 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
         show
       >
         <.header>ナイス ブライト！</.header>
-        <div class="mt-4">
+
+        <div class="my-4">
           <p><%= @user.name %> さんの最近の活動です</p>
 
-          <hr class="my-2" />
+          <hr class="mt-2 mb-4" />
 
-          <.skill_class_level_record_message
-            skill_class={@skill_class}
-            skill_class_score={@skill_class_score}
-            historical_skill_class_score={@historical_skill_class_score} />
+          <div class="flex flex-col gap-y-2">
+            <.skill_class_level_record_message
+              skill_class={@skill_class}
+              skill_class_score={@skill_class_score}
+              historical_skill_class_score={@historical_skill_class_score} />
 
-          <.skill_units_record_message user={@user} skill_class={@skill_class} />
+            <div class="flex flex-col gap-y-1">
+              <.skill_units_record_message
+                skill_unit_scores={@skill_unit_scores}
+                historical_skill_unit_scores={@historical_skill_unit_scores} />
+            </div>
+          </div>
         </div>
 
-        <SnsComponents.sns_share_button_group :if={false} />
-        ＜ここにシェアボタン とりあえずkoyoさん作成のものにする＞
+        <SnsComponents.sns_share_button_group share_graph_url={ShareHelper.gen_share_graph_url(@user, @skill_class)} />
       </.bright_modal>
     </div>
     """
@@ -79,11 +86,12 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
   end
 
   defp assign_historicals(socket) do
-    %{user: user, skill_class: skill_class} = socket.assigns
+    %{user: user, skill_class: skill_class, skill_unit_scores: skill_unit_scores} = socket.assigns
     date = TimelineHelper.get_prev_date_from_now()
+    skill_units = Enum.map(skill_unit_scores, & &1.skill_unit)
 
     historical_skill_class_score = HistoricalSkillScores.get_historical_skill_class_score_by_user_skill_class(user, skill_class, date)
-    historical_skill_unit_scores = []
+    historical_skill_unit_scores = HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(user, skill_units, date)
 
     assign(socket,
       historical_skill_class_score: historical_skill_class_score,
@@ -128,6 +136,36 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
   end
 
   defp skill_units_record_message(assigns) do
-    ~H""
+    ~H"""
+    <p>最近の道のり</p>
+
+    <div :for={{skill_unit_score, index} <- Enum.with_index(@skill_unit_scores)}>
+      <.skill_unit_record_message
+        skill_unit_score={skill_unit_score}
+        historical_skill_unit_score={Enum.at(@historical_skill_unit_scores, index)} />
+    </div>
+    """
+  end
+
+  defp skill_unit_record_message(%{historical_skill_unit_score: nil} = assigns) do
+    ~H"""
+    <p>
+      ・<%= @skill_unit_score.skill_unit.name %>： <%= get_percentage(@skill_unit_score) %> New！
+    </p>
+    """
+  end
+
+  defp skill_unit_record_message(assigns) do
+    ~H"""
+    <p>
+      ・<%= @skill_unit_score.skill_unit.name %>： <%= get_percentage(@historical_skill_unit_score) %> → <%= get_percentage(@skill_unit_score) %>
+    </p>
+    """
+  end
+
+  defp get_percentage(score) do
+    score.percentage
+    |> floor()
+    |> then(& "#{&1}%")
   end
 end

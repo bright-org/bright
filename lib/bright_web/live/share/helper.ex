@@ -15,11 +15,14 @@ defmodule BrightWeb.Share.Helper do
   def assign_share_graph_url(
         %{assigns: %{current_user: current_user, skill_class: skill_class}} = socket
       ) do
-    assign(
-      socket,
-      :share_graph_url,
-      url(~p"/share/#{Token.encode_share_graph_token(current_user.id, skill_class.id)}/graphs")
-    )
+    assign(socket, :share_graph_url, gen_share_graph_url(current_user, skill_class))
+  end
+
+  @doc """
+  share_graph_urlを生成する
+  """
+  def gen_share_graph_url(user, skill_class) do
+    url(~p"/share/#{Token.encode_share_graph_token(user.id, skill_class.id)}/graphs")
   end
 
   @doc """
