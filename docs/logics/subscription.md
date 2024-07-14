@@ -4,7 +4,7 @@
 
 ### user_stripe_customers テーブル
 
-- Stripe の顧客 ID 情報を保存する
+- Stripe の顧客 ID 情報を保存するテーブルを新設する。
 
 ```mermaid
 erDiagram
@@ -20,6 +20,8 @@ users ||--o| user_stripe_customers: contains
 ```
 
 ### subscription_user_plans テーブル
+
+- Bright の契約テーブルに Stripe のサブスクリプション ID を保存する項目を追加する。Stripe サブスクリプション ID は解約時に必要となる。
 
 ```mermaid
 erDiagram
@@ -44,9 +46,10 @@ users ||--o{ subscription_user_plans: contains
 subscription_plans ||--o{ subscription_user_plans: contains
 ```
 
-- Stripe サブスクリプション ID は Stripe でサブスクリプションを管理するための ID で API で解約する際などに必要となる。
+### subscription_plans テーブルと stripe_prices テーブル
 
-### subscription_plans テーブル
+- Bright のプランを保存する subscription_plans テーブルに Stripe の商品 ID を保存する項目を追加する。
+- Stripe の価格情報を保存するために stripe_prices テーブルを新設する。Stripe Checkout セッション開始時に利用する。
 
 ```mermaid
 erDiagram
@@ -75,6 +78,21 @@ stripe_prices {
 }
 
 subscription_plans ||--o{ stripe_prices : "has many"
+```
+
+### stripe_customer_portal_configurations テーブル
+
+- Stripe のカスタマーポータルを開く際に機能を限定するために利用する ConfigurationID を保存するためのテーブルを新設する。
+
+```mermaid
+erDiagram
+stripe_customer_portal_configurations {
+    uuid id PK "ID"
+    varchar configuration_id "Configuration ID"
+    varchar lookup_key "Stripe側のConfigurationのmetaにlookup_keyを用意して対応させるための項目"
+    timestamp inserted_at "登録日時"
+    timestamp updated_at "更新日時"
+}
 ```
 
 ### 決済履歴を保存するテーブル
@@ -121,7 +139,16 @@ sequenceDiagram
     participant Stripe
 
     User ->> Bright: 解約ボタン押下
-    Bright ->> Stripe: Stripe 解約API実行
+    Bright ->> Bright: cancel用のConfigurationを取得
+    alt cancel用のConfigurationが存在しない場合
+        Bright ->> Stripe: Portal Configuration作成API実行(cancelのみ許可)
+        Stripe ->> Bright: Configuration Object返却
+        Bright ->> Bright: Configurationを保存
+    end
+
+    Bright ->> Stripe: Customer Portal SessionAPI実行(cancel用configurationId指定)
+    Stripe ->> User: 解約のみのCustomer Portal表示
+    User ->> Stripe: 解約ボタン押下
     Stripe ->> Bright: 解約成功通知
 
     Bright ->> Bright: subscription_user_plansテーブルを契約終了状態に更新
@@ -132,19 +159,70 @@ sequenceDiagram
 
 ### 無料トライアルプランから無料トライアルプランへの変更
 
-TODO
+既存の無料トライアル申込の流れと同様のため割愛する
+※とはいえ、後で既存の流れを確認した上で追記しておきたい
 
 ### 無料トライアルプランから課金プランへの変更
 
-TODO
+購入処理の流れと同様
+※とはいえ、後で既存の流れを確認した上で追記しておきたい
+
+無料トライアルの終了日時を入れるべきか？
+ただし、現状無料トライアル申込中に上位プランの無料トライアルを申し込んでも下位プランの終了日時は入らない
 
 ### 課金プランから無料トライアルプランへの変更
 
-TODO
+```mermaid
+sequenceDiagram
+    participant User
+    participant BrightLP
+    participant Bright
+    participant Stripe
+
+    User ->> BrightLP: 料金プランページにアクセス
+    BrightLP ->> User: 料金プランページ表示
+    User ->> BrightLP: 無料トライアルボタン押下
+    BrightLP ->> Bright: 無料トライアルページに遷移
+    Bright ->> Bright: user_stripe_customersテーブルにユーザIDとStripe顧客IDを検索・取得
+    User ->> Bright: 開始ボタン押下
+    Bright ->> Stripe: Stripe 解約API実行
+    Stripe ->> Bright: 解約成功
+    Bright ->> User: 解約メールを通知
+    Bright ->> Bright: subscription_user_plansテーブルに契約情報とユーザを登録
+    Bright ->> User: プラン変更完了画面を表示
+    Bright ->> User: 無料トライアル申込完了メール(現状送られていない？)
+```
 
 ### 課金プランから課金プランへの変更
 
-TODO
+```mermaid
+sequenceDiagram
+    participant User
+    participant BrightLP
+    participant Bright
+    participant Stripe
+
+    User ->> BrightLP: 料金プランページにアクセス
+    BrightLP ->> User: 料金プランページ表示
+    User ->> BrightLP: 無料トライアルボタン押下
+    BrightLP ->> Bright: 無料トライアルページに遷移
+    Bright ->> Bright: user_stripe_customersテーブルにユーザIDとStripe顧客IDを検索・取得
+    User ->> Bright: プラン変更ボタン押下
+    Bright ->> Bright: update用のConfigurationを取得
+    alt update用のConfigurationが存在しない場合
+        Bright ->> Stripe: Portal Configuration作成API実行(subscription update, payment update許可)
+        Stripe ->> Bright: Configuration Object返却
+        Bright ->> Bright: Configurationを保存
+    end
+    Bright ->> Stripe: Customer Portal SessionAPI実行(update用configurationId指定)
+    Stripe ->> User: プラン変更のCustomer Portal表示
+    User ->> Stripe: プラン変更および支払い方法を入力し購入完了
+    Stripe ->> Bright: プラン変更完了通知
+    Bright ->> Bright: subscription_user_plansテーブルに契約情報とユーザを登録
+    Bright ->> User: プラン変更完了画面を表示
+    Bright ->> User: 変更前プランの解約メールを通知
+    Bright ->> User: 変更後プランの購入完了メールを通知
+```
 
 ## 支払い履歴
 
@@ -155,9 +233,13 @@ sequenceDiagram
     participant Stripe
 
     User ->> Bright: お支払い履歴の確認ボタン押下
-    Bright ->> Stripe: Portal Configuration作成API実行(invoiceのみ許可)
-    Stripe ->> Bright: Configuration Object返却
-    Bright ->> Stripe: Customer Portal SessionAPI実行(configurationId指定)
+    Bright ->> Bright: invoice用のConfigurationを取得
+    alt invoice用のConfigurationが存在しない場合
+        Bright ->> Stripe: Portal Configuration作成API実行(invoiceのみ許可)
+        Stripe ->> Bright: Configuration Object返却
+        Bright ->> Bright: Configurationを保存
+    end
+    Bright ->> Stripe: Customer Portal SessionAPI実行(invoice用configurationId指定)
     Stripe ->> User: 請求履歴情報のみのCustomer Portal表示
     User ->> User: 請求書確認・PDFダウンロード
 ```
@@ -176,5 +258,5 @@ sequenceDiagram
 
     Stripe ->> Bright: 継続課金失敗通知
     Bright ->> Bright: subscription_user_plansテーブルを契約終了状態に更新
-    Bright ->> User: プラン解約メール
+    Bright ->> User: プラン解約メールを通知
 ```
