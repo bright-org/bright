@@ -457,6 +457,23 @@ defmodule Bright.SkillScores do
   def get_skill_unit_score!(id), do: Repo.get!(SkillUnitScore, id)
 
   @doc """
+  Returns the list of skill_unit_scores with given user and skill_units
+  """
+  def list_skill_unit_scores_by_user_skill_class(user, skill_class) do
+    query_skill_unit_ids = from(su in Ecto.assoc(skill_class, :skill_units), select: su.id)
+
+    from(sus in SkillUnitScore,
+      where: sus.user_id == ^user.id,
+      where: sus.skill_unit_id in subquery(query_skill_unit_ids),
+      join: su in assoc(sus, :skill_unit),
+      join: scu in assoc(su, :skill_class_units),
+      order_by: {:asc, scu.position},
+      preload: [skill_unit: su]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Inserts or updates a skill_unit_score aggregation columns.
   """
   def insert_or_update_skill_unit_scores_stats(skill_units, user) do

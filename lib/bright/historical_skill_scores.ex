@@ -150,9 +150,9 @@ defmodule Bright.HistoricalSkillScores do
   end
 
   @doc """
-  Returns historical_skill_class_scores.percentage with given date
+  Returns historical_skill_class_score with given date
   """
-  def get_historical_skill_class_score_percentage(user, skill_class, date) do
+  def get_historical_skill_class_score_by_user_skill_class(user, skill_class, date) do
     from(hscs in HistoricalSkillClassScore,
       join: hsc in assoc(hscs, :historical_skill_class),
       where: hscs.user_id == ^user.id,
@@ -162,6 +162,13 @@ defmodule Bright.HistoricalSkillScores do
       limit: 1
     )
     |> Repo.one()
+  end
+
+  @doc """
+  Returns historical_skill_class_scores.percentage with given date
+  """
+  def get_historical_skill_class_score_percentage(user, skill_class, date) do
+    get_historical_skill_class_score_by_user_skill_class(user, skill_class, date)
     |> Kernel.||(%{})
     |> Map.get(:percentage)
   end
