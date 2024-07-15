@@ -72,7 +72,7 @@ defmodule Bright.MixProject do
       {:earmark, "~> 1.4"},
       {:boruta, "~> 2.3"},
       {:mox, "~> 1.1", only: :test},
-      {:qr_code, "~> 3.0.0"}
+      {:eqrcode, "~> 0.1.10"}
     ]
   end
 

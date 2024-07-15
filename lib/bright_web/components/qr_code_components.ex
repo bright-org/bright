@@ -49,12 +49,9 @@ defmodule BrightWeb.QrCodeComponents do
   end
 
   defp qr_code_image_src(url) do
-    QRCode.create(url)
-    |> QRCode.render(:png)
-    |> QRCode.to_base64()
-    |> case do
-      {:ok, base64} -> "data:image/png;base64,#{base64}"
-      _ -> ""
-    end
+    EQRCode.encode(url)
+    |> EQRCode.png()
+    |> Base.encode64()
+    |> then(fn base64 -> "data:image/png;base64,#{base64}" end)
   end
 end
