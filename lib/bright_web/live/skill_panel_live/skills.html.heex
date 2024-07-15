@@ -123,7 +123,7 @@
       </div>
 
       <div class="ml-auto flex gap-x-4">
-        <QrCodeComponents.qr_icon_button id="share_qr_icon_button" phx-click="open_qr_code_modal" />
+        <QrCodeComponents.qr_code_image qr_code_url={@share_graph_url} width="150px" height="150px" />
         <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} />
       </div>
     </div>
@@ -147,8 +147,6 @@
     />
   </div>
 </div>
-
-<QrCodeComponents.qr_code_modal qr_code_url={@share_graph_url} open_qr_code_modal={@open_qr_code_modal} on_cancel={JS.push("close_qr_code_modal")} />
 
 <% # スコア入力用モーダル %>
 <.bright_modal
