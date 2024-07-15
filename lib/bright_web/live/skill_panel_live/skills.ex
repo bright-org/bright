@@ -20,6 +20,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.GuideMessageComponents
   alias BrightWeb.SnsComponents
   alias BrightWeb.Share.Helper, as: ShareHelper
+  alias BrightWeb.QrCodeComponents
 
   @impl true
   def mount(params, _session, socket) do
@@ -28,6 +29,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"])
      |> assign(:page_title, "スキルパネル")
+     |> assign(:open_qr_code_modal, false)
      |> assign(init_team_id: nil, init_timeline: nil)}
   end
 
@@ -85,6 +87,14 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     UserSkillPanels.set_is_star(assigns.display_user, assigns.skill_panel, is_star)
     {:noreply, socket}
+  end
+
+  def handle_event("open_qr_code_modal", _params, socket) do
+    {:noreply, assign(socket, :open_qr_code_modal, true)}
+  end
+
+  def handle_event("close_qr_code_modal", _params, socket) do
+    {:noreply, assign(socket, :open_qr_code_modal, false)}
   end
 
   defp apply_action(socket, :show, params) do

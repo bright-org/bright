@@ -48,7 +48,7 @@ defmodule BrightWeb.SnsComponents do
     ~H"""
       <div
         id={@id}
-        class="flex flex-col lg:flex-row gap-2"
+        class="flex gap-2"
       >
         <.twitter_share_button id={"#{@id}-twitter"} url={@share_graph_url} text={@twitter_text}/>
         <.facebook_share_button id={"#{@id}-facebook"} url={@share_graph_url}/>

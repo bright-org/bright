@@ -186,7 +186,29 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       assert has_element?(show_live, "#share-button-group-facebook")
     end
 
-    test "does not show sns share button when other user", %{conn: conn, user: user} do
+    test "shows qr share button and model", %{conn: conn, skill_panel: skill_panel} do
+      {:ok, show_live, _html} = live(conn, ~p"/graphs/#{skill_panel}")
+
+      assert has_element?(show_live, "#share_qr_icon_button")
+      refute has_element?(show_live, "#qr-code-modal")
+
+      element(show_live, "#share_qr_icon_button")
+      |> render_click()
+
+      assert has_element?(show_live, "#qr-code-modal")
+
+      {:ok, show_live, _html} = live(conn, ~p"/graphs")
+
+      assert has_element?(show_live, "#share_qr_icon_button")
+      refute has_element?(show_live, "#qr-code-modal")
+
+      element(show_live, "#share_qr_icon_button")
+      |> render_click()
+
+      assert has_element?(show_live, "#qr-code-modal")
+    end
+
+    test "does not show sns and qr share button when other user", %{conn: conn, user: user} do
       %{user: user_2, skill_panel: skill_panel_2} = create_user_with_skill()
       user_2 |> with_user_profile()
       create_team_with_team_member_users([user, user_2])
@@ -196,9 +218,10 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       refute has_element?(show_live, "#share-button-group")
       refute has_element?(show_live, "#share-button-group-twitter")
       refute has_element?(show_live, "#share-button-group-facebook")
+      refute has_element?(show_live, "#share_qr_icon_button")
     end
 
-    test "does not show sns share button when anon user", %{conn: conn} do
+    test "does not show sns and qr share button when anon user", %{conn: conn} do
       %{user: user_2, skill_panel: skill_panel_2} = create_user_with_skill()
       encrypted_name = BrightWeb.DisplayUserHelper.encrypt_user_name(user_2)
 
@@ -207,6 +230,7 @@ defmodule BrightWeb.GraphLive.GraphsTest do
       refute has_element?(show_live, "#share-button-group")
       refute has_element?(show_live, "#share-button-group-twitter")
       refute has_element?(show_live, "#share-button-group-facebook")
+      refute has_element?(show_live, "#share_qr_icon_button")
     end
   end
 
