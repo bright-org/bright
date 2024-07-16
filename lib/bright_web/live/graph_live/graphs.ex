@@ -100,6 +100,11 @@ defmodule BrightWeb.GraphLive.Graphs do
     [_, value] = String.split(value, ",")
     value = Base.decode64!(value)
     socket = assign(socket, :growth_graph_data, value)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("sns_up_click", _params, socket) do
     upload_growth_graph_data(socket.assigns, "test.png")
     {:noreply, socket}
   end
