@@ -123,7 +123,7 @@
           <.help_messages_area flash={@flash} />
         </div>
         <div class="ml-auto flex gap-x-4">
-          <p phx-click="sns_up_click">test</p>
+          <a href="https://x.com" target="_blank" phx-click="sns_up_click">test</a>
           <QrCodeComponents.qr_code_image class="border border-b-2 border-brightGray-200" qr_code_url={@share_graph_url} width="100px" height="100px" />
           <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} />
         </div>
