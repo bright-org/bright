@@ -82,7 +82,7 @@
     </div>
 
     <div class="shadow relative z-2 lg:px-6">
-      <div :if={@me} class="flex flex-col lg:flex-row my-4 px-2 lg:px-0 lg:items-center lg:mb-0 gap-y-4">
+      <div :if={@me} class="flex flex-col lg:flex-row my-4 px-2 lg:px-0 lg:mb-0 gap-y-4">
         <div class="relative flex flex-col">
           <div class="flex justify-between items-center w-full lg:w-72 gap-x-2">
             <.link
@@ -122,7 +122,8 @@
           <% # スキル入力後メッセージ（初回のみ） %>
           <.help_messages_area flash={@flash} />
         </div>
-        <div class="ml-auto">
+        <div class="ml-auto flex gap-x-4">
+          <QrCodeComponents.qr_code_image class="border border-b-2 border-brightGray-200" qr_code_url={@share_graph_url} width="100px" height="100px" />
           <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} />
         </div>
       </div>

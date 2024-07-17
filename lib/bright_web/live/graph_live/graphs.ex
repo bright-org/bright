@@ -10,6 +10,7 @@ defmodule BrightWeb.GraphLive.Graphs do
   alias BrightWeb.SnsComponents
   alias Bright.UserSkillPanels
   alias BrightWeb.Share.Helper, as: ShareHelper
+  alias BrightWeb.QrCodeComponents
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper

@@ -93,6 +93,7 @@ defmodule BrightWeb.BrightModalComponents do
             <%= if @enable_cancel_button do %>
               <div class={@style_of_cancel_button_rayout} >
                 <button
+                  id={"#{@id}-cancel"}
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
                   class={@style_of_cancel_button}

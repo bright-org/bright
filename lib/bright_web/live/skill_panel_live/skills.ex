@@ -20,6 +20,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.GuideMessageComponents
   alias BrightWeb.SnsComponents
   alias BrightWeb.Share.Helper, as: ShareHelper
+  alias BrightWeb.QrCodeComponents
   alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
 
   @impl true
