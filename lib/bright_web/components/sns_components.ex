@@ -63,6 +63,7 @@ defmodule BrightWeb.SnsComponents do
         href={"https://x.com/intent/tweet?#{URI.encode_query(%{text: @text, url: @url})}"}
         target="_blank"
         rel="nofollow noopener noreferrer"
+        phx-click="sns_up_click"
       >
         <img class="h-6 w-24" src="/images/share_button/share_twitter.png" />
       </a>
@@ -76,6 +77,7 @@ defmodule BrightWeb.SnsComponents do
         href={"https://www.facebook.com/share.php?#{URI.encode_query(%{u: @url})}"}
         target="_blank"
         rel="nofollow noopener noreferrer"
+        phx-click="sns_up_click"
       >
         <img class="h-6 w-24" src="/images/share_button/share_facebook.png" />
       </a>
