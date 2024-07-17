@@ -29,7 +29,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"])
      |> assign(:page_title, "スキルパネル")
-     |> assign(init_team_id: nil, init_timeline: nil)}
+     |> assign(:view, :table)
+     |> assign(init_team_id: nil, init_timeline: nil)
+     |> assign(:selected_unit, nil)}
   end
 
   @impl true
@@ -88,6 +90,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, socket}
   end
 
+  def handle_event("change_view", %{"view" => view}, socket) do
+    {:noreply, assign(socket, :view, String.to_atom(view))}
+  end
+
   defp apply_action(socket, :show, params) do
     socket
     |> assign(:init_team_id, params["team"])
@@ -95,7 +101,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> put_flash_first_skills_edit()
   end
 
-  defp apply_action(socket, :edit, _params), do: socket
+  defp apply_action(socket, :edit, params) do
+    assign(socket, :selected_unit, Map.get(params, "unit"))
+  end
 
   defp apply_action(socket, :show_evidences, params) do
     socket

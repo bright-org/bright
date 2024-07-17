@@ -97,7 +97,21 @@
             id="btn-help-enter-skills-button"
             class="flex-none cursor-pointer w-8 h-8 hover:filter hover:brightness-[80%] bg-[url('/images/icon_help.svg')]"
             phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
-          </div>
+          </div>          
+        </div>
+        <div class="bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 mt-8 w-48">
+          <button
+            phx-click="change_view"
+            phx-value-view="table"
+            class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >Table
+          </button>      
+          <button
+            phx-click="change_view"
+            phx-value-view="card"
+            class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >Card
+          </button>
         </div>
 
         <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
@@ -130,21 +144,37 @@
   </div>
 
   <div class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-4">
-    <.live_component
-      id="skills-field"
-      module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
-      current_user={@current_user}
-      skill_panel={@skill_panel}
-      skill_class={@skill_class}
-      current_skill_score_dict={@skill_score_dict}
-      path={@path}
-      query={@query}
-      display_user={@display_user}
-      me={@me}
-      anonymous={@anonymous}
-      init_team_id={@init_team_id}
-      init_timeline={@init_timeline}
-    />
+    <%= if @view == :table do %>
+      <.live_component
+        id="skills-field"
+        module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
+        current_user={@current_user}
+        skill_panel={@skill_panel}
+        skill_class={@skill_class}
+        current_skill_score_dict={@skill_score_dict}
+        path={@path}
+        query={@query}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        init_team_id={@init_team_id}
+        init_timeline={@init_timeline}
+      />
+    <% else %>
+      <.live_component
+        id="skills-card"
+        module={BrightWeb.SkillPanelLive.SkillsCardComponent}
+        current_user={@current_user}
+        skill_panel={@skill_panel}
+        skill_class={@skill_class}
+        current_skill_score_dict={@skill_score_dict}
+        path={@path}
+        query={@query}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+      />
+    <% end %>
   </div>
 </div>
 
@@ -167,6 +197,7 @@
     skill_class={@skill_class}
     skill_class_score={@skill_class_score}
     skill_score_dict={@skill_score_dict}
+    skill_unit={@selected_unit}
     panels_path={PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
     graphs_path={PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}
   />

@@ -178,6 +178,55 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
     """
   end
 
+  def skills_card(assigns) do
+    ~H"""
+    <div id="skills-table-field" class="">
+      <div class="flex flex-col gap-2">
+        <%= for skill_unit <- @skill_units do %>
+          <div class="border p-4 bg-brightGray-50">
+            <div class="flex gap-x-4">
+              <span class="text-lg"><%= skill_unit.name %></span>
+              <.link
+                patch={~p"/panels/#{@skill_panel}/edit?#{Map.put(@query, "unit", skill_unit.id)}"}
+                id={"link-skills-form-" <> skill_unit.id}
+                class={"w-10 text-sm font-bold  px-2 py-1 rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-[80%]"}>
+                <span class="material-icons-outlined text-white text-md">edit</span>
+              </.link>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <%= for skill_category <- skill_unit.skill_categories do %>
+                <div class="border-2 border-black p-4 m-4">
+                    <%= skill_category.name %>
+                  <div class="flex flex-wrap">
+                    <%= for skill <- skill_category.skills do %>
+                      <% skill_score = @skill_score_dict[skill.id]  %>
+                      <% current_skill = Map.get(@current_skill_dict, skill.trace_id, %{}) %>
+                      <% current_skill_score = Map.get(@current_skill_score_dict, Map.get(current_skill, :id)) %>
+
+                      <div class="w-44 border p-4 m-2 bg-white">
+                        <p class="h-16"><%= skill.name %></p>
+                        <div class="flex justify-between items-center gap-x-2 p-2">
+                          <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                        </div>
+
+                        <div class="flex justify-start p-2 items-start h-4">
+                          <span class={[score_mark_class(skill_score.score, :green), "inline-block", "score-mark-#{skill_score.score}", "#{if skill_score.score == :low, do: "mt-[6px]"}"]} />
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    """
+  end
+
   def skills_table(assigns) do
     ~H"""
     <div id="skills-table-field" class="h-[70vh] overflow-auto scroll-pt-[76px] mt-4 h-[50vh]">

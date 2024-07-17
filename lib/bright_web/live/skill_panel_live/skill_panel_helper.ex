@@ -21,7 +21,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   # NOTE:
   #   初期状態を指定するteamなどのパラメータは含めないこと。
   #   含めるとその状態で初期化される。
-  @queries ~w(class)
+  @queries ~w(class unit)
 
   def assign_path(socket, url) do
     %{path: path, query: query} = URI.parse(url)
