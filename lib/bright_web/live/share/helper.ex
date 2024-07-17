@@ -16,6 +16,7 @@ defmodule BrightWeb.Share.Helper do
         %{assigns: %{current_user: current_user, skill_class: skill_class}} = socket
       ) do
     encode_share_graph_token = Token.encode_share_graph_token(current_user.id, skill_class.id)
+
     assign(
       socket,
       :share_graph_url,
