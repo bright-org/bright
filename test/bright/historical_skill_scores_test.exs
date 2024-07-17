@@ -421,4 +421,66 @@ defmodule Bright.HistoricalSkillScoresTest do
       assert ret == []
     end
   end
+
+  describe "list_historical_skill_unit_scores_by_user_skill_units" do
+    test "returns historical_skill_unit_scores" do
+      [user_1, user_2] = insert_pair(:user)
+
+      [skill_unit_1, skill_unit_2] = skill_units = insert_pair(:skill_unit)
+      dummy_skill_unit = insert(:skill_unit)
+
+      historical_1 = insert(:historical_skill_unit, trace_id: skill_unit_1.trace_id)
+      historical_2 = insert(:historical_skill_unit, trace_id: skill_unit_2.trace_id)
+
+      date = ~D[2024-07-01]
+
+      historical_score_1 =
+        insert(:historical_skill_unit_score,
+          user: user_1,
+          historical_skill_unit: historical_1,
+          locked_date: date
+        )
+
+      historical_score_2 =
+        insert(:historical_skill_unit_score,
+          user: user_1,
+          historical_skill_unit: historical_2,
+          locked_date: date
+        )
+
+      # # 指定の条件で取れること
+      [%{id: id_1}, %{id: id_2}] =
+        HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(
+          user_1,
+          skill_units,
+          date
+        )
+
+      assert Enum.sort([id_1, id_2]) == Enum.sort([historical_score_1.id, historical_score_2.id])
+
+      # 別ユーザー指定で取れないこと
+      assert [nil, nil] ==
+               HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(
+                 user_2,
+                 skill_units,
+                 date
+               )
+
+      # 別スキルユニット指定で取れないこと
+      assert [nil] ==
+               HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(
+                 user_1,
+                 [dummy_skill_unit],
+                 date
+               )
+
+      # 別日指定で取れないこと
+      assert [nil, nil] ==
+               HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(
+                 user_1,
+                 skill_units,
+                 ~D[2024-08-01]
+               )
+    end
+  end
 end
