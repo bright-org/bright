@@ -26,21 +26,18 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
       >
         <.header>ナイス ブライト！</.header>
 
-        <div class="my-4">
-          <p><%= @user.name %> さんの最近の活動です</p>
-
-          <hr class="mt-2 mb-4" />
-
+        <div class="my-4 min-w-80">
           <div class="flex flex-col gap-y-2">
             <.skill_class_level_record_message
               skill_class={@skill_class}
               skill_class_score={@skill_class_score}
               historical_skill_class_score={@historical_skill_class_score} />
 
-            <div class="flex flex-col gap-y-1">
+            <div class="flex flex-col gap-y-1 mt-4 mb-2">
               <.skill_units_record_message
                 skill_unit_scores={@skill_unit_scores}
-                historical_skill_unit_scores={@historical_skill_unit_scores} />
+                historical_skill_unit_scores={@historical_skill_unit_scores}
+                date_from={@date_from} />
             </div>
           </div>
         </div>
@@ -87,13 +84,14 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
 
   defp assign_historicals(socket) do
     %{user: user, skill_class: skill_class, skill_unit_scores: skill_unit_scores} = socket.assigns
-    date = TimelineHelper.get_prev_date_from_now()
+    date_from = TimelineHelper.get_prev_date_from_now()
     skill_units = Enum.map(skill_unit_scores, & &1.skill_unit)
 
-    historical_skill_class_score = HistoricalSkillScores.get_historical_skill_class_score_by_user_skill_class(user, skill_class, date)
-    historical_skill_unit_scores = HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(user, skill_units, date)
+    historical_skill_class_score = HistoricalSkillScores.get_historical_skill_class_score_by_user_skill_class(user, skill_class, date_from)
+    historical_skill_unit_scores = HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(user, skill_units, date_from)
 
     assign(socket,
+      date_from: date_from,
       historical_skill_class_score: historical_skill_class_score,
       historical_skill_unit_scores: historical_skill_unit_scores)
   end
@@ -126,7 +124,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     # TODO: レベルの日本語化
     ~H"""
     <p>
-      「<%= @skill_class.name %>」のレベルが「<%= @historical_skill_class_score.level %>」から「<%= @skill_class_score.level %>」にアップしました！
+      「<%= @skill_class.name %>」のレベルが「<%= get_level_text(@historical_skill_class_score.level) %>」から「<%= get_level_text(@skill_class_score.level) %>」にアップしました！
     </p>
     """
   end
@@ -137,7 +135,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
 
   defp skill_units_record_message(assigns) do
     ~H"""
-    <p>最近の道のり</p>
+    <p><%= Calendar.strftime(@date_from, "%Y-%m-%d") %> からの道のり</p>
 
     <div :for={{skill_unit_score, index} <- Enum.with_index(@skill_unit_scores)}>
       <.skill_unit_record_message
@@ -167,5 +165,9 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     score.percentage
     |> floor()
     |> then(& "#{&1}%")
+  end
+
+  defp get_level_text(level) do
+    Gettext.gettext(BrightWeb.Gettext, "level_#{level}")
   end
 end

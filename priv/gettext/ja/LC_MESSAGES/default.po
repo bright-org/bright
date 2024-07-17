@@ -102,6 +102,8 @@ msgstr "派遣社員"
 msgid "part_time_job"
 msgstr "アルバイト・パートタイム"
 
+msgid "level_beginner"
+msgstr "見習い"
 
 msgid "level_normal"
 msgstr "平均"
