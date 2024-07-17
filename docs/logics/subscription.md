@@ -122,12 +122,24 @@ sequenceDiagram
         Bright ->> Bright: user_stripe_customersテーブルにユーザIDと顧客IDを登録
         Bright ->> Stripe: Stripe Checkout セッション開始
     end
+    Stripe ->> Bright: Checkoutセッション返却
+    Bright ->> Stripe: Checkoutセッションのレスポンスに含まれるURLにリダイレクト
+
     Stripe ->> User: 支払い方法選択・入力画面を表示
     User ->> Stripe: 支払い方法を入力し購入完了
+    Stripe ->> Bright: 購入完了ページへリダイレクト
+    alt subscription_user_plansテーブルに契約情報が登録されていない場合
+        Bright ->> Bright: subscription_user_plansテーブルに契約情報とユーザを登録
+        Bright ->> User: 購入完了画面を表示
+        Bright ->> User: 購入完了メールを通知
+    else
+        Bright ->> User: 購入完了画面を表示
+    end
     Stripe ->> Bright: 購入完了通知
-    Bright ->> Bright: subscription_user_plansテーブルに契約情報とユーザを登録
-    Bright ->> User: 購入完了画面を表示
-    Bright ->> User: 購入完了メールを通知
+    alt subscription_user_plansテーブルに契約情報が登録されていない場合
+        Bright ->> Bright: subscription_user_plansテーブルに契約情報とユーザを登録
+        Bright ->> User: 購入完了メールを通知
+    end
 ```
 
 ## 解約処理
@@ -139,20 +151,47 @@ sequenceDiagram
     participant Stripe
 
     User ->> Bright: 解約ボタン押下
-    Bright ->> Bright: cancel用のConfigurationを取得
+    Bright ->> Bright: stripe_customer_portal_configurationsテーブルからcancel用のConfigurationを取得
     alt cancel用のConfigurationが存在しない場合
         Bright ->> Stripe: Portal Configuration作成API実行(cancelのみ許可)
         Stripe ->> Bright: Configuration Object返却
-        Bright ->> Bright: Configurationを保存
+        Bright ->> Bright: stripe_customer_portal_configurationsテーブルにConfigurationを保存
     end
 
     Bright ->> Stripe: Customer Portal SessionAPI実行(cancel用configurationId指定)
+    Stripe ->> Bright: Customer Portal SessionAPIレスポンス返却
+    Bright ->> Stripe: APIレスポンスのURLにリダイレクト
     Stripe ->> User: 解約のみのCustomer Portal表示
     User ->> Stripe: 解約ボタン押下
+    Stripe ->> Bright: mypageに戻る
     Stripe ->> Bright: 解約成功通知
 
     Bright ->> Bright: subscription_user_plansテーブルを契約終了状態に更新
     Bright ->> User: 解約完了メールを通知
+```
+
+## 支払い方法変更処理(クレカ変更)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Bright
+    participant Stripe
+
+    User ->> Bright: 支払い方法変更ボタン押下
+    Bright ->> Bright: stripe_customer_portal_configurationsテーブルからpayment_method_update用のConfigurationを取得
+    alt payment_method_update用のConfigurationが存在しない場合
+        Bright ->> Stripe: Portal Configuration作成API実行(payment_method_updateのみ許可)
+        Stripe ->> Bright: Configuration Object返却
+        Bright ->> Bright: stripe_customer_portal_configurationsテーブルにConfigurationを保存
+    end
+
+    Bright ->> Stripe: Customer Portal SessionAPI実行(payment_method_update用configurationId指定)
+    Stripe ->> Bright: Customer Portal SessionAPIレスポンス返却
+    Bright ->> Stripe: APIレスポンスのURLにリダイレクト
+    Stripe ->> User: 支払い方法変更のみのCustomer Portal表示
+    User ->> Stripe: 支払い方法変更
+    Stripe ->> Bright: mypageに戻る
 ```
 
 ## プラン変更処理
@@ -208,13 +247,15 @@ sequenceDiagram
     BrightLP ->> Bright: 無料トライアルページに遷移
     Bright ->> Bright: user_stripe_customersテーブルにユーザIDとStripe顧客IDを検索・取得
     User ->> Bright: プラン変更ボタン押下
-    Bright ->> Bright: update用のConfigurationを取得
+    Bright ->> Bright: stripe_customer_portal_configurationsテーブルからupdate用のConfigurationを取得
     alt update用のConfigurationが存在しない場合
         Bright ->> Stripe: Portal Configuration作成API実行(subscription update, payment update許可)
         Stripe ->> Bright: Configuration Object返却
-        Bright ->> Bright: Configurationを保存
+        Bright ->> Bright: stripe_customer_portal_configurationsテーブルにConfigurationを保存
     end
     Bright ->> Stripe: Customer Portal SessionAPI実行(update用configurationId指定)
+    Stripe ->> Bright: Customer Portal SessionAPIレスポンス返却
+    Bright ->> Stripe: APIレスポンスのURLにリダイレクト
     Stripe ->> User: プラン変更のCustomer Portal表示
     User ->> Stripe: プラン変更および支払い方法を入力し購入完了
     Stripe ->> Bright: プラン変更完了通知
@@ -240,6 +281,8 @@ sequenceDiagram
         Bright ->> Bright: Configurationを保存
     end
     Bright ->> Stripe: Customer Portal SessionAPI実行(invoice用configurationId指定)
+    Stripe ->> Bright: Customer Portal SessionAPIレスポンス返却
+    Bright ->> Stripe: APIレスポンスのURLにリダイレクト
     Stripe ->> User: 請求履歴情報のみのCustomer Portal表示
     User ->> User: 請求書確認・PDFダウンロード
 ```
