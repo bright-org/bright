@@ -46,4 +46,13 @@ defmodule BrightWeb.Share.Helper do
       skill_class_id: skill_class_id
     }
   end
+
+  def assign_share_graph_og_image(
+        socket,
+        %{
+          "share_graph_token" => share_graph_token
+        } = _params
+      ) do
+    assign(socket, :og_image, "#{share_graph_token}.pnd")
+  end
 end

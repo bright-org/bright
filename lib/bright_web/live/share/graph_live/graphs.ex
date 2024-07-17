@@ -37,11 +37,19 @@ defmodule BrightWeb.Share.GraphLive.Graphs do
     {:noreply, assign(socket, :select_label, date)}
   end
 
+  @impl true
+  def handle_event("growth_graph_data_click", _, socket) do
+    # growth_graph_data_clickは何もしない
+    # この画面ではグラフのイメージ化をしない
+    {:noreply, socket}
+  end
+
   defp assign_by_params(socket, params) do
     ShareHelper.decode_share_graph_token!(params)
     |> then(fn %{user_id: user_id, skill_class_id: skill_class_id} ->
       assign_by_user_id_and_skill_class(socket, user_id, skill_class_id)
     end)
+    |> ShareHelper.assign_share_graph_og_image(params)
   end
 
   defp assign_by_user_id_and_skill_class(socket, user_id, skill_class_id) do
