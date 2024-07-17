@@ -6,6 +6,7 @@ defmodule BrightWeb.Share.Helper do
   use BrightWeb, :verified_routes
   import Phoenix.Component, only: [assign: 3]
   alias Bright.Share.Token
+  alias Bright.Utils.GoogleCloud.Storage
 
   @doc """
   socket に assign されている current_user と skill_ckass から share_graph_url を assign する。
@@ -53,6 +54,7 @@ defmodule BrightWeb.Share.Helper do
           "share_graph_token" => share_graph_token
         } = _params
       ) do
-    assign(socket, :og_image, "#{share_graph_token}.pnd")
+    og_image = Storage.public_url("ogp/#{share_graph_token}.png")
+    assign(socket, :og_image, og_image)
   end
 end
