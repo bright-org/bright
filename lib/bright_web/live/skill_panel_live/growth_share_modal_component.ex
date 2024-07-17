@@ -56,30 +56,34 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     # スキルクラスも取る
     # 現状と3か月前を比べての成果も出す
     {:ok,
-      socket
-      |> assign(:open, true)
-      |> assign(:user, user)
-      |> assign(:skill_class, skill_class)
-      |> assign(:skill_panel, skill_panel)
-      |> assign_presents()
-      |> assign_historicals()}
+     socket
+     |> assign(:open, true)
+     |> assign(:user, user)
+     |> assign(:skill_class, skill_class)
+     |> assign(:skill_panel, skill_panel)
+     |> assign_presents()
+     |> assign_historicals()}
   end
 
   def update(assigns, socket) do
     {:ok,
-      socket
-      |> assign(assigns)
-      |> assign(:open, false)}
+     socket
+     |> assign(assigns)
+     |> assign(:open, false)}
   end
 
   defp assign_presents(socket) do
     %{user: user, skill_class: skill_class} = socket.assigns
-    skill_class_score = SkillScores.get_skill_class_score_by(user_id: user.id, skill_class_id: skill_class.id)
+
+    skill_class_score =
+      SkillScores.get_skill_class_score_by(user_id: user.id, skill_class_id: skill_class.id)
+
     skill_unit_scores = SkillScores.list_skill_unit_scores_by_user_skill_class(user, skill_class)
 
     assign(socket,
       skill_class_score: skill_class_score,
-      skill_unit_scores: skill_unit_scores)
+      skill_unit_scores: skill_unit_scores
+    )
   end
 
   defp assign_historicals(socket) do
@@ -87,13 +91,25 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     date_from = TimelineHelper.get_prev_date_from_now()
     skill_units = Enum.map(skill_unit_scores, & &1.skill_unit)
 
-    historical_skill_class_score = HistoricalSkillScores.get_historical_skill_class_score_by_user_skill_class(user, skill_class, date_from)
-    historical_skill_unit_scores = HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(user, skill_units, date_from)
+    historical_skill_class_score =
+      HistoricalSkillScores.get_historical_skill_class_score_by_user_skill_class(
+        user,
+        skill_class,
+        date_from
+      )
+
+    historical_skill_unit_scores =
+      HistoricalSkillScores.list_historical_skill_unit_scores_by_user_skill_units(
+        user,
+        skill_units,
+        date_from
+      )
 
     assign(socket,
       date_from: date_from,
       historical_skill_class_score: historical_skill_class_score,
-      historical_skill_unit_scores: historical_skill_unit_scores)
+      historical_skill_unit_scores: historical_skill_unit_scores
+    )
   end
 
   # private components
@@ -102,14 +118,16 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     ~H""
   end
 
-  defp skill_class_level_record_message(%{
-    skill_class_score: %{level: level_before},
-    historical_skill_class_score: %{level: level_after}
-  } = assigns) when level_before == level_after do
+  defp skill_class_level_record_message(
+         %{
+           skill_class_score: %{level: level_before},
+           historical_skill_class_score: %{level: level_after}
+         } = assigns
+       )
+       when level_before == level_after do
     # レベルアップ変化がない場合には非表示
     ~H""
   end
-
 
   defp skill_class_level_record_message(%{historical_skill_class_score: nil} = assigns) do
     # TODO: レベルの日本語化
@@ -164,7 +182,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
   defp get_percentage(score) do
     score.percentage
     |> floor()
-    |> then(& "#{&1}%")
+    |> then(&"#{&1}%")
   end
 
   defp get_level_text(level) do

@@ -415,7 +415,9 @@ defmodule Bright.SkillScoresTest do
       skill_unit_score_2 = insert(:skill_unit_score, user: user_1, skill_unit: skill_unit_2)
 
       # 指定の条件で取れること
-      [%{id: id_1}, %{id: id_2}] = SkillScores.list_skill_unit_scores_by_user_skill_class(user_1, skill_class_1)
+      [%{id: id_1}, %{id: id_2}] =
+        SkillScores.list_skill_unit_scores_by_user_skill_class(user_1, skill_class_1)
+
       assert Enum.sort([id_1, id_2]) == Enum.sort([skill_unit_score_1.id, skill_unit_score_2.id])
 
       # 別ユーザー指定で取れないこと

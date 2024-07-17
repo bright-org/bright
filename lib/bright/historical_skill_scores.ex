@@ -188,11 +188,11 @@ defmodule Bright.HistoricalSkillScores do
         preload: [historical_skill_unit: hsc]
       )
       |> Repo.all()
-      |> Map.new(& {&1.historical_skill_unit.trace_id, &1})
+      |> Map.new(&{&1.historical_skill_unit.trace_id, &1})
 
     # 指定のskill_unitsと同じ並びで返している
     # 意図的に一致するものがないときにnilを返しているので変更しないように注意
     skill_units
-    |> Enum.map(& Map.get(historical_score_by_trace_id, &1.trace_id))
+    |> Enum.map(&Map.get(historical_score_by_trace_id, &1.trace_id))
   end
 end
