@@ -21,7 +21,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     <div id={@id}>
       <.bright_modal
         id={"#{@id}_modal"}
-        :if={@open}
+        :if={@open && growth_up?(@skill_class_score, @historical_skill_class_score)}
         show
       >
         <.header>ナイス ブライト！</.header>
@@ -112,6 +112,10 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     )
   end
 
+  defp growth_up?(skill_class_score, historical_skill_class_score) do
+    skill_class_score.percentage > historical_skill_class_score.percentage
+  end
+
   # private components
 
   defp skill_class_level_record_message(%{skill_class_score: nil} = assigns) do
@@ -120,17 +124,16 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
 
   defp skill_class_level_record_message(
          %{
-           skill_class_score: %{level: level_before},
-           historical_skill_class_score: %{level: level_after}
+           skill_class_score: %{level: level_after},
+           historical_skill_class_score: %{level: level_before}
          } = assigns
        )
        when level_before == level_after do
-    # レベルアップ変化がない場合には非表示
+    # 履歴データがあってレベル変化がない場合には非表示
     ~H""
   end
 
   defp skill_class_level_record_message(%{historical_skill_class_score: nil} = assigns) do
-    # TODO: レベルの日本語化
     ~H"""
     <p>
       「<%= @skill_class.name %>」のレベルを「<%= @skill_class_score.level %>」からスタートしました！
@@ -139,7 +142,6 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
   end
 
   defp skill_class_level_record_message(assigns) do
-    # TODO: レベルの日本語化
     ~H"""
     <p>
       「<%= @skill_class.name %>」のレベルが「<%= get_level_text(@historical_skill_class_score.level) %>」から「<%= get_level_text(@skill_class_score.level) %>」にアップしました！

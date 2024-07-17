@@ -393,7 +393,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
       send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
       # レベルアップ時の表示モーダル
       # TODO: 現在はガワだけ実装のためコメントアウトしている。シェアするURLやOGPに対応したら有効化する
-      # send_update(GrowthShareModalComponent, id: "growth_share", open: true, user_id: skill_class_score.user_id, skill_class_id: skill_class_score.skill_class_id)
+      # send_update(GrowthShareModalComponent,
+      #   id: "growth_share",
+      #   open: true,
+      #   user_id: skill_class_score.user_id,
+      #   skill_class_id: skill_class_score.skill_class_id
+      # )
     end
   end
 
