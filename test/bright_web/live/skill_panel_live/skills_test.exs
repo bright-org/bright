@@ -2,6 +2,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
+  import Ecto.Query
 
   alias Bright.Repo
   alias Bright.UserJobProfiles
@@ -573,6 +574,52 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       submit_form(show_live)
       {path, _flash} = assert_redirect(show_live)
       assert path == ~p"/graphs/#{skill_panel}?class=1"
+    end
+
+    @tag score: :low
+    test "update scores from card ui", %{
+      conn: conn,
+      user: user,
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_1: skill_1,
+      skill_2: skill_2,
+      skill_3: skill_3
+    } do
+      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=#{skill_class.class}")
+
+      show_live
+      |> element("#switch_card")
+      |> render_click()
+
+      show_live
+      |> element("#score-#{skill_1.id}-high")
+      |> render_click()
+
+      show_live
+      |> element("#score-#{skill_2.id}-middle")
+      |> render_click()
+
+      show_live
+      |> element("#score-#{skill_3.id}-low")
+      |> render_click()
+
+      assert has_element?(show_live, ".score-mark-high")
+
+      # スキルクラススコアのログ作成確認
+      user_id = user.id
+      skill_class_id = skill_class.id
+      today = Date.utc_today()
+
+      skill_class_score_log =
+        from(l in SkillClassScoreLog,
+          where: [user_id: ^user_id, skill_class_id: ^skill_class_id, date: ^today],
+          order_by: [desc: :updated_at],
+          limit: 1
+        )
+        |> Repo.one()
+
+      assert round(skill_class_score_log.percentage) == 33
     end
   end
 
