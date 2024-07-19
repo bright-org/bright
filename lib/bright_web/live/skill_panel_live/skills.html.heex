@@ -83,7 +83,27 @@
   <div class="relative z-2 lg:px-6" :if={@me}>
     <div class="flex flex-col lg:flex-row my-4 px-2 lg:px-0 lg:mb-0 gap-y-4">
       <div class="relative flex flex-col">
-        <div class="flex justify-between items-center w-full lg:w-72 gap-x-2">
+        <div class="bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-48">
+          <button
+            id="switch_table"
+            phx-click="change_view"
+            phx-value-view="table"
+            class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >Table
+          </button>      
+          <button
+            id="switch_card"
+            phx-click="change_view"
+            phx-value-view="card"
+            class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >Card
+          </button>
+        </div>
+
+        <div 
+          :if={@view == :table} 
+          class="flex justify-between items-center w-full lg:w-72 gap-x-2 mt-4"
+        >
           <.link
             patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
             id="link-skills-form"
@@ -99,21 +119,6 @@
             phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
           </div>          
         </div>
-        <div class="bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 mt-8 w-48">
-          <button
-            phx-click="change_view"
-            phx-value-view="table"
-            class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
-          >Table
-          </button>      
-          <button
-            phx-click="change_view"
-            phx-value-view="card"
-            class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
-          >Card
-          </button>
-        </div>
-
         <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
           <% # スキル入力前メッセージ %>
           <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
