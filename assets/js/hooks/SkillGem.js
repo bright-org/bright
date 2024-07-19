@@ -5,6 +5,7 @@ const myselfColorPattern = ["#72EAD9C0", "#1DA091C0", "#3CC0A8C0"];
 const otherColorPattern = ["#D659F0AA", "#7B0D92AA", "#BC14E0AA"];
 const pastColorPattern = ["#FFFFFF55", "#FFFFFF55", "#FFFFFF55"];
 const linkColor = "#0000FF";
+const backgroundColor = "#FFFFFF";
 const minValue = -5;
 const gemSizeSet = {
   // サイズと主な使用箇所
@@ -114,6 +115,12 @@ const drawUnderline = (chart, i) => {
   context.stroke();
 };
 
+const beforeDraw = (chart) => {
+  const context = chart.ctx;
+  context.fillStyle=backgroundColor;
+  context.fillRect(0,0,context.canvas.width, context.canvas.height);
+};
+
 const beforeDatasetsDraw = (chart) => {
   const context = chart.ctx;
   const colorTheme = chart.canvas.parentNode.dataset.colorTheme;
@@ -125,6 +132,7 @@ const beforeDatasetsDraw = (chart) => {
   const pastColor = getColorPattern(myselfData.length, pastColorPattern);
   const diffColor = colorTheme === "myself" ? pastColor : otherColor;
   const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink);
+
 
   if (colorTheme === "myself") {
     fillSurfaces(chart, myselfData, myselfColor);
@@ -160,6 +168,16 @@ const beforeDatasetsDraw = (chart) => {
   for (let i = 0; i < myselfData.length; i++) {
     drawUnderline(chart, i);
   }
+};
+
+const afterDatasetsDraw = (chart, ease) => {
+    const context = chart.ctx;
+    // グラフ生成後のイメージ作成
+    let growth_graph_data = document.getElementById("growth_graph_data");
+    if (growth_graph_data == null) return;
+    if (context.canvas.width > 714) return;
+    growth_graph_data.value = context.canvas.toDataURL("image/png");
+    growth_graph_data.click();
 };
 
 const createChartFromJSON = (labels, datasets, isLink, labelFont) => {
@@ -218,7 +236,11 @@ const createChartFromJSON = (labels, datasets, isLink, labelFont) => {
         },
       },
     },
-    plugins: [{ beforeDatasetsDraw: beforeDatasetsDraw }],
+    plugins: [{ beforeDraw: beforeDraw,
+                beforeDatasetsDraw: beforeDatasetsDraw,
+                afterDatasetsDraw: afterDatasetsDraw,
+              }
+    ],
   };
 };
 

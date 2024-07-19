@@ -15,7 +15,6 @@ const rolePointColor = "#D5DCDC";
 const futurePointColor = "#FFFFFF";
 const nowColor = "#B77285";
 const nowSelectColor = "#B71225";
-const backgroundColor = "#FFFFFF";
 
 const graphSizeSet = {
   // 成長グラフのサイズ
@@ -509,8 +508,6 @@ const beforeDatasetsDraw = (chart, ease) => {
   const otherSelected = (element) => element == data["otherSelected"];
   const otherSelectedIndex = (data["otherLabels"] || []).findIndex(otherSelected);
 
-  context.fillStyle=backgroundColor;
-  context.fillRect(0,0,context.canvas.width, context.canvas.height);
   drawVerticalLine(context, scales, data.labels);
   drawHorizonLine(context, scales);
   fillMyselfData(chart, scales);
@@ -561,12 +558,6 @@ const afterDatasetsDraw = (chart, ease) => {
     getOtherSelectedColor(data),
     otherSelectedIndex
   );
-  // 成長グラフ生成後のイメージ作成試験
-  let growth_graph_data = document.getElementById("growth_graph_data");
-  if (growth_graph_data == null) return;
-  if (context.canvas.width > 714) return;
-  growth_graph_data.value = context.canvas.toDataURL("image/png");
-  growth_graph_data.click();
 };
 
 const createChartFromJSON = (data, size) => {

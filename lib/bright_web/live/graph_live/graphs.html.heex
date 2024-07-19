@@ -1,4 +1,18 @@
 <%= if @skill_panel do %>
+  <div class="hidden">
+    <.live_component
+      id="skill-ogp-gem"
+      module={BrightWeb.ChartLive.SkillGemComponent}
+      display_user={@display_user}
+      skill_panel={@skill_panel}
+      class={@skill_class.class}
+      select_label={@select_label}
+      me={@me}
+      anonymous={@anonymous}
+      select_label_compared_user={@select_label_compared_user}
+      compared_user={@compared_user}
+    />
+  </div>
   <div class="flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
     <% # 働く際の希望の入力を促すメッセージ %>
     <GuideMessageComponents.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !UserJobProfiles.job_searching?(@current_user)} />
