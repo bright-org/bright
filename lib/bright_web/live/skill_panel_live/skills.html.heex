@@ -85,18 +85,18 @@
       <div class="relative flex flex-col">
         <div class="bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-48">
           <button
-            id="switch_table"
-            phx-click="change_view"
-            phx-value-view="table"
-            class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
-          >Table
-          </button>      
-          <button
             id="switch_card"
             phx-click="change_view"
             phx-value-view="card"
-            class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+            class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
           >Card
+          </button>      
+          <button
+            id="switch_table"            
+            phx-click="change_view"
+            phx-value-view="table"
+            class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >Table
           </button>
         </div>
 

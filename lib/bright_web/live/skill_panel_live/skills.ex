@@ -30,7 +30,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"])
      |> assign(:page_title, "スキルパネル")
-     |> assign(:view, :table)
+     |> assign(:view, :card)
      |> assign(init_team_id: nil, init_timeline: nil)
      |> assign(:selected_unit, nil)}
   end
