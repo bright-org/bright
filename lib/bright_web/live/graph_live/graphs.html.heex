@@ -1,32 +1,33 @@
 <%= if @skill_panel do %>
-  <div class="absolute flow -left-[1000px] ">
-    <div id="og_image" >
+   <div class="absolute flow -left-[1000px]">
+    <div id="og_image" class="pl-4">
 
       <div class="flex flex-col gap-y-2 font-bold justify-center">
 
-        <span class="truncate w-80"> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
+        <span class="truncate w-80 h-10 text-lg"> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
 
-        <div class="flex flex-col lg:flex-row gap-x-4 gap-y-2 lg:gap-y-0">
-          <span class="text-sm lg:text-normal w-14">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
-          <span class="text-sm lg:text-normal w-[360px] break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
+        <div class="flex flex-row gap-x-4 gap-y-2 lgap-y-0">
+          <span class="text-normal w-14">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
+          <span class="text-normal w-[360px] break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
         </div>
-        <p class="text-brightGreen-300 font-bold flex ml-[7px] lg:ml-4 mt-2 mb-1">
+        <p class="text-brightGreen-300 font-bold flextext-brightGreen-300 font-bold flex ml-[7px] mt-2 ml-4 mb-8">
           <.profile_skill_class_level level={@skill_class_score.level} />
         </p>
       </div>
-
-      <.live_component
-        id="skill-ogp-gem"
-        module={BrightWeb.ChartLive.SkillGemComponent}
-        display_user={@display_user}
-        skill_panel={@skill_panel}
-        class={@skill_class.class}
-        select_label={@select_label}
-        me={@me}
-        anonymous={@anonymous}
-        select_label_compared_user={@select_label_compared_user}
-        compared_user={@compared_user}
-      />
+      <div class="min-h-[450px]">
+        <.live_component
+          id="skill-ogp-gem"
+          module={BrightWeb.ChartLive.SkillGemComponent}
+          display_user={@display_user}
+          skill_panel={@skill_panel}
+          class={@skill_class.class}
+          select_label={@select_label}
+          me={@me}
+          anonymous={@anonymous}
+          select_label_compared_user={@select_label_compared_user}
+          compared_user={@compared_user}
+        />
+      </div>
     </div>
   </div>
   <div class="flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
