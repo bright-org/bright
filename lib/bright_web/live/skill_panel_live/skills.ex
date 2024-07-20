@@ -21,7 +21,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.SnsComponents
   alias BrightWeb.Share.Helper, as: ShareHelper
   alias BrightWeb.QrCodeComponents
-  alias Bright.Utils.GoogleCloud.Storage
 
   @impl true
   def mount(params, _session, socket) do
@@ -97,8 +96,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("sns_up_click", _params, socket) do
-    encode_share_graph_token = socket.assigns.encode_share_graph_token
-    upload_ogp_data(socket.assigns, "#{encode_share_graph_token}.png")
+    upload_ogp_data(socket.assigns)
     {:noreply, socket}
   end
 
@@ -214,12 +212,4 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp put_flash_first_skills_edit(socket), do: socket
-
-  defp upload_ogp_data(assigns, file_name) do
-    og_image_data = assigns.og_image_data
-    local_file_name = "#{System.tmp_dir()}/#{file_name}"
-    File.write(local_file_name, og_image_data)
-    :ok = Storage.upload!(local_file_name, "ogp/" <> file_name)
-    File.rm(local_file_name)
-  end
 end
