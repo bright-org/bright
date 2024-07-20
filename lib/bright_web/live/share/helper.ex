@@ -54,7 +54,16 @@ defmodule BrightWeb.Share.Helper do
           "share_graph_token" => share_graph_token
         } = _params
       ) do
+    ogp_path = "ogp/#{share_graph_token}.png"
     og_image = Storage.public_url("ogp/#{share_graph_token}.png")
+
+    og_image =
+      Storage.get(ogp_path)
+      |> get_og_image(og_image)
+
     assign(socket, :og_image, og_image)
   end
+
+  defp get_og_image({:ok, _}, og_image), do: og_image
+  defp get_og_image({:error, _}, _og_image), do: "https://bright-fun.org/images/ogp_a.png"
 end
