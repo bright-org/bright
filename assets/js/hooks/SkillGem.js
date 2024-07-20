@@ -135,7 +135,6 @@ const beforeDatasetsDraw = (chart) => {
   const diffColor = colorTheme === "myself" ? pastColor : otherColor;
   const isLink = JSON.parse(context.canvas.parentElement.dataset.displayLink);
 
-
   if (colorTheme === "myself") {
     fillSurfaces(chart, myselfData, myselfColor);
     fillSurfaces(chart, diffData, diffColor);
