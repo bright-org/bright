@@ -1,4 +1,6 @@
 import { Chart } from "chart.js/auto";
+import html2canvas from 'html2canvas';
+
 const scalesBackgroundColor = "#D4F9F7";
 const gridColor = "#FFFFFF44";
 const myselfColorPattern = ["#72EAD9C0", "#1DA091C0", "#3CC0A8C0"];
