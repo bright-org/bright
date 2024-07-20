@@ -296,4 +296,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   defp raise_if_not_exists_skill_panel(_skill_panel), do: nil
+
+  def assign_og_image_data(socket, value) do
+    [_, value] = String.split(value, ",")
+    value = Base.decode64!(value)
+    assign(socket, :og_image_data, value)
+  end
 end

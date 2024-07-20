@@ -93,11 +93,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("og_image_data_click", %{"value" => value}, socket) do
-    [_, value] = String.split(value, ",")
-    value = Base.decode64!(value)
-    socket = assign(socket, :og_image_data, value)
-
-    {:noreply, socket}
+    {:noreply, assign_og_image_data(socket, value)}
   end
 
   def handle_event("sns_up_click", _params, socket) do
