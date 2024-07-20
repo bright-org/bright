@@ -1,7 +1,5 @@
 defmodule BrightWeb.SkillPanelLive.SkillsCardComponent do
-  # スキルパネル画面 スキル一覧を表示するコンポーネント
-  # タイムライン操作に基づいて適当なスキル一覧の表示を行う
-  #
+  # スキルパネル画面 スキル一覧をカード形式で表示するコンポーネント
   # （スキルスコア入力に関しては、LiveViewで行いこちらでは制御しない）
 
   use BrightWeb, :live_component
@@ -27,9 +25,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsCardComponent do
 
       <div class="px-6 mt-4 lg:mt-8">
       <div class="flex flex-col gap-2">
-        <%= for skill_unit <- @skill_units do %>
-          <div class="border p-4 bg-brightGray-50">
-            <div class="flex gap-x-4">
+        <%= for {skill_unit, index} <- Enum.with_index(@skill_units) do %>
+          <div id={"unit-#{index + 1}"} class="border p-4 bg-brightGray-50">
+            <div id={"unit-#{index + 1}-sp"} class="flex gap-x-4">
               <span class="text-lg"><%= skill_unit.name %></span>
             </div>
             <div class="flex flex-wrap gap-2">
@@ -132,8 +130,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsCardComponent do
   end
 
   defp assign_assigns_with_current_if_updated(socket, assigns) do
-    # 基本的には assigns をアサインするのみ
-    # ただし、表示上「現在」の情報を必要とするため、スキルクラスが更新されている場合には「現在」の情報を更新する
     prev_skill_class = socket.assigns.skill_class
     new_skill_class = assigns.skill_class
 

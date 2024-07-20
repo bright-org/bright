@@ -25,14 +25,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   @impl true
   def mount(params, _session, socket) do
-    {:ok,
-     socket
-     |> assign_display_user(params)
-     |> assign_skill_panel(params["skill_panel_id"])
-     |> assign(:page_title, "スキルパネル")
-     |> assign(:view, :card)
-     |> assign(init_team_id: nil, init_timeline: nil)
-     |> assign(:selected_unit, nil)}
+    socket
+    |> assign_display_user(params)
+    |> assign_skill_panel(params["skill_panel_id"])
+    |> assign(:page_title, "スキルパネル")
+    |> assign(:view, :card)
+    |> assign(init_team_id: nil, init_timeline: nil)
+    |> assign(:selected_unit, nil)
+    |> push_event("scroll_to_unit", %{})
+    |> then(&{:ok, &1})
   end
 
   @impl true
@@ -92,7 +93,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("change_view", %{"view" => view}, socket) do
-    {:noreply, assign(socket, :view, String.to_atom(view))}
+    socket
+    |> assign(:view, String.to_atom(view))
+    |> push_event("scroll_to_unit", %{})
+    |> then(&{:noreply, &1})
   end
 
   def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
@@ -120,7 +124,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   defp assign_renew(socket, class) do
     socket
     |> assign_skill_class_and_score(class)
-    |> create_skill_class_score_if_not_existing()
     |> assign_skill_score_dict()
     |> assign_counter()
     |> then(&{:noreply, &1})
@@ -133,9 +136,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> put_flash_first_skills_edit()
   end
 
-  defp apply_action(socket, :edit, params) do
-    assign(socket, :selected_unit, Map.get(params, "unit"))
-  end
+  defp apply_action(socket, :edit, _params), do: socket
 
   defp apply_action(socket, :show_evidences, params) do
     socket
