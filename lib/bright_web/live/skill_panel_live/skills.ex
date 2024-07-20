@@ -21,6 +21,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.SnsComponents
   alias BrightWeb.Share.Helper, as: ShareHelper
   alias BrightWeb.QrCodeComponents
+  alias Bright.Utils.GoogleCloud.Storage
 
   @impl true
   def mount(params, _session, socket) do
@@ -28,6 +29,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      socket
      |> assign_display_user(params)
      |> assign_skill_panel(params["skill_panel_id"])
+     |> assign(:select_label, "now")
+     |> assign(:select_label_compared_user, nil)
+     |> assign(:compared_user, nil)
      |> assign(:page_title, "スキルパネル")
      |> assign(init_team_id: nil, init_timeline: nil)}
   end
@@ -87,6 +91,21 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     UserSkillPanels.set_is_star(assigns.display_user, assigns.skill_panel, is_star)
     {:noreply, socket}
   end
+
+  def handle_event("growth_graph_data_click", %{"value" => value}, socket) do
+    [_, value] = String.split(value, ",")
+    value = Base.decode64!(value)
+    socket = assign(socket, :growth_graph_data, value)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("sns_up_click", _params, socket) do
+    encode_share_graph_token = socket.assigns.encode_share_graph_token
+    upload_growth_graph_data(socket.assigns, "#{encode_share_graph_token}.png")
+    {:noreply, socket}
+  end
+
 
   defp apply_action(socket, :show, params) do
     socket
@@ -200,4 +219,12 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   defp put_flash_first_skills_edit(socket), do: socket
+
+  defp upload_growth_graph_data(assigns, file_name) do
+    growth_graph_data = assigns.growth_graph_data
+    local_file_name = "#{System.tmp_dir()}/#{file_name}"
+    File.write(local_file_name, growth_graph_data)
+    :ok = Storage.upload!(local_file_name, "ogp/" <> file_name)
+    File.rm(local_file_name)
+  end
 end

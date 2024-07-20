@@ -37,6 +37,7 @@ defmodule BrightWeb.OgpComponents do
   def ogp(assigns) do
     ~H"""
     <div class="absolute flow -left-[1000px]">
+      <p class="hidden" id="growth_graph_data" phx-click="growth_graph_data_click" />
       <div id="og_image" class="pl-4">
         <div class="flex flex-col gap-y-2 font-bold justify-center">
           <span class="truncate w-80 h-10 text-lg"> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>
