@@ -175,17 +175,17 @@ const beforeDatasetsDraw = (chart) => {
 const afterDatasetsDraw = (chart, ease) => {
     const context = chart.ctx;
     // グラフ生成後のイメージ作成
-    let growth_graph_data = document.getElementById("growth_graph_data");
-    if (growth_graph_data == null) return;
+    let og_image_data = document.getElementById("og_image_data");
+    if (og_image_data == null) return;
     if (context.canvas.width > 714) return;
     let og_image = document.getElementById("og_image");
     if (og_image == null) return;
     html2canvas(document.querySelector("#og_image")).then(canvas => {
       console.log(canvas)
-      let growth_graph_data = document.getElementById("growth_graph_data");
-      if (growth_graph_data == null) return;
-      growth_graph_data.value = canvas.toDataURL("image/png");
-      growth_graph_data.click();
+      let og_image_data = document.getElementById("og_image_data");
+      if (og_image_data == null) return;
+      og_image_data.value = canvas.toDataURL("image/png");
+      og_image_data.click();
     });
 
 };

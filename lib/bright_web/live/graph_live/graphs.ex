@@ -96,10 +96,10 @@ defmodule BrightWeb.GraphLive.Graphs do
     {:noreply, socket}
   end
 
-  def handle_event("growth_graph_data_click", %{"value" => value}, socket) do
+  def handle_event("og_image_data_click", %{"value" => value}, socket) do
     [_, value] = String.split(value, ",")
     value = Base.decode64!(value)
-    socket = assign(socket, :growth_graph_data, value)
+    socket = assign(socket, :og_image_data, value)
 
     {:noreply, socket}
   end
@@ -172,9 +172,9 @@ defmodule BrightWeb.GraphLive.Graphs do
   end
 
   defp upload_ogp_data(assigns, file_name) do
-    growth_graph_data = assigns.growth_graph_data
+    og_image_data = assigns.og_image_data
     local_file_name = "#{System.tmp_dir()}/#{file_name}"
-    File.write(local_file_name, growth_graph_data)
+    File.write(local_file_name, og_image_data)
     :ok = Storage.upload!(local_file_name, "ogp/" <> file_name)
     File.rm(local_file_name)
   end

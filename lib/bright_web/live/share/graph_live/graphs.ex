@@ -38,8 +38,8 @@ defmodule BrightWeb.Share.GraphLive.Graphs do
   end
 
   @impl true
-  def handle_event("growth_graph_data_click", _, socket) do
-    # growth_graph_data_clickは何もしない
+  def handle_event("og_image_data_click", _, socket) do
+    # og_image_data_clickは何もしない
     # この画面ではグラフのイメージ化をしない
     {:noreply, socket}
   end
