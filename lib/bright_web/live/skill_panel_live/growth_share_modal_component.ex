@@ -21,7 +21,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     <div id={@id}>
       <.bright_modal
         id={"#{@id}_modal"}
-        :if={@open && growth_up?(@skill_class_score, @historical_skill_class_score)}
+        :if={@open}
         show
       >
         <.header>ナイス ブライト！</.header>
@@ -112,10 +112,6 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     )
   end
 
-  defp growth_up?(skill_class_score, historical_skill_class_score) do
-    skill_class_score.percentage > historical_skill_class_score.percentage
-  end
-
   # private components
 
   defp skill_class_level_record_message(%{skill_class_score: nil} = assigns) do
@@ -136,7 +132,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
   defp skill_class_level_record_message(%{historical_skill_class_score: nil} = assigns) do
     ~H"""
     <p>
-      「<%= @skill_class.name %>」のレベルを「<%= @skill_class_score.level %>」からスタートしました！
+      「<%= @skill_class.name %>」のレベルを「<%= get_level_text(@skill_class_score.level) %>」からスタートしました！
     </p>
     """
   end

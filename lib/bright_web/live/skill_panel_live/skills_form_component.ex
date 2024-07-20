@@ -386,20 +386,26 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
   defp maybe_update_skill_card_component(skill_class_score) do
     prev_level = skill_class_score.level
+    # prev_percentage = skill_class_score.percentage
+
     skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
     new_level = skill_class_score.level
+    # new_percentage = skill_class_score.percentage
 
     if prev_level != new_level do
       send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
-      # レベルアップ時の表示モーダル
-      # TODO: 現在はガワだけ実装のためコメントアウトしている。シェアするURLやOGPに対応したら有効化する
-      # send_update(GrowthShareModalComponent,
-      #   id: "growth_share",
-      #   open: true,
-      #   user_id: skill_class_score.user_id,
-      #   skill_class_id: skill_class_score.skill_class_id
-      # )
     end
+
+    # if prev_level != new_level && prev_percentage < new_percentage do
+    #   # レベルアップ時の表示モーダル
+    #   # TODO: 現在はガワだけ実装のためコメントアウトしている。シェアするURLやOGPに対応したら有効化する
+    #   send_update(GrowthShareModalComponent,
+    #     id: "growth_share",
+    #     open: true,
+    #     user_id: skill_class_score.user_id,
+    #     skill_class_id: skill_class_score.skill_class_id
+    #   )
+    # end
   end
 
   # スキル初回入力（全体初）後に表示するメッセージのためのflashを設定
