@@ -8,10 +8,17 @@ defmodule BrightWeb.GuideMessageComponents do
   @doc """
   スキル入力解説メッセージ
   """
-  def enter_skills_help_message(%{reference_from: "button"} = assigns) do
+  def enter_skills_help_message(%{reference_from: "button", view: :table} = assigns) do
     # 現状はスキル入力前メッセージと同様
     ~H"""
     <.first_skills_edit_message />
+    """
+  end
+
+  def enter_skills_help_message(%{reference_from: "button", view: :card} = assigns) do
+    # 現状はスキル入力前メッセージと同様
+    ~H"""
+    <.first_card_skills_edit_message />
     """
   end
 
@@ -34,6 +41,13 @@ defmodule BrightWeb.GuideMessageComponents do
     <p>スキル入力は、途中保存可能でいつでも変更できます。</p>
     <.score_mark_description />
     <.shortcut_key_description />
+    <.evidence_introduction_description />
+    """
+  end
+
+  def first_card_skills_edit_message(assigns) do
+    ~H"""
+    <.score_mark_description />
     <.evidence_introduction_description />
     """
   end
