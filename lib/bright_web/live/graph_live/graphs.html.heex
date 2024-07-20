@@ -1,7 +1,8 @@
 <%= if @skill_panel do %>
-  <div class="hidden">
-    <div id="og_image">
-      <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+  <div class="absolute flow -left-[1000px] ">
+    <div id="og_image" >
+
       <div class="flex flex-col gap-y-2 font-bold justify-center">
 
         <span class="truncate w-80"> <%= if @skill_panel, do: @skill_panel.name, else: "" %></span>

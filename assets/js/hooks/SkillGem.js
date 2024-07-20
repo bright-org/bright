@@ -176,8 +176,16 @@ const afterDatasetsDraw = (chart, ease) => {
     let growth_graph_data = document.getElementById("growth_graph_data");
     if (growth_graph_data == null) return;
     if (context.canvas.width > 714) return;
-    growth_graph_data.value = context.canvas.toDataURL("image/png");
-    growth_graph_data.click();
+    let og_image = document.getElementById("og_image");
+    if (og_image == null) return;
+    html2canvas(document.querySelector("#og_image")).then(canvas => {
+      console.log(canvas)
+      let growth_graph_data = document.getElementById("growth_graph_data");
+      if (growth_graph_data == null) return;
+      growth_graph_data.value = canvas.toDataURL("image/png");
+      growth_graph_data.click();
+    });
+
 };
 
 const createChartFromJSON = (labels, datasets, isLink, labelFont) => {
