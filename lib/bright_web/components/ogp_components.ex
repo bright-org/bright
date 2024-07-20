@@ -3,8 +3,9 @@ defmodule BrightWeb.OgpComponents do
   Tab Components
   """
   use Phoenix.Component
+
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
-  only: [profile_skill_class_level: 1]
+    only: [profile_skill_class_level: 1]
 
   @doc """
   Renders a Ogp
@@ -31,7 +32,7 @@ defmodule BrightWeb.OgpComponents do
   attr :select_label, :any
   attr :me, :any
   attr :anonymous, :any
-  attr :select_label_compared_user,:any
+  attr :select_label_compared_user, :any
   attr :compared_user, :any
 
   def ogp(assigns) do

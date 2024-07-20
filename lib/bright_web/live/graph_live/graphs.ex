@@ -106,7 +106,7 @@ defmodule BrightWeb.GraphLive.Graphs do
 
   def handle_event("sns_up_click", _params, socket) do
     encode_share_graph_token = socket.assigns.encode_share_graph_token
-    upload_growth_graph_data(socket.assigns, "#{encode_share_graph_token}.png")
+    upload_ogp_data(socket.assigns, "#{encode_share_graph_token}.png")
     {:noreply, socket}
   end
 
@@ -171,7 +171,7 @@ defmodule BrightWeb.GraphLive.Graphs do
     """
   end
 
-  defp upload_growth_graph_data(assigns, file_name) do
+  defp upload_ogp_data(assigns, file_name) do
     growth_graph_data = assigns.growth_graph_data
     local_file_name = "#{System.tmp_dir()}/#{file_name}"
     File.write(local_file_name, growth_graph_data)

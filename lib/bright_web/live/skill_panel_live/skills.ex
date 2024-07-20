@@ -102,10 +102,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   def handle_event("sns_up_click", _params, socket) do
     encode_share_graph_token = socket.assigns.encode_share_graph_token
-    upload_growth_graph_data(socket.assigns, "#{encode_share_graph_token}.png")
+    upload_ogp_data(socket.assigns, "#{encode_share_graph_token}.png")
     {:noreply, socket}
   end
-
 
   defp apply_action(socket, :show, params) do
     socket
@@ -220,7 +219,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp put_flash_first_skills_edit(socket), do: socket
 
-  defp upload_growth_graph_data(assigns, file_name) do
+  defp upload_ogp_data(assigns, file_name) do
     growth_graph_data = assigns.growth_graph_data
     local_file_name = "#{System.tmp_dir()}/#{file_name}"
     File.write(local_file_name, growth_graph_data)
