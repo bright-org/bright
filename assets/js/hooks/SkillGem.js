@@ -173,15 +173,9 @@ const beforeDatasetsDraw = (chart) => {
 };
 
 const afterDatasetsDraw = (chart, ease) => {
-    const context = chart.ctx;
+   if (chart.canvas.parentNode.id !== "skill-ogp-gem") return;
     // グラフ生成後のイメージ作成
-    let og_image_data = document.getElementById("og_image_data");
-    if (og_image_data == null) return;
-    if (context.canvas.width > 714) return;
-    let og_image = document.getElementById("og_image");
-    if (og_image == null) return;
     html2canvas(document.querySelector("#og_image")).then(canvas => {
-      console.log(canvas)
       let og_image_data = document.getElementById("og_image_data");
       if (og_image_data == null) return;
       og_image_data.value = canvas.toDataURL("image/png");
