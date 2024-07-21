@@ -174,7 +174,10 @@ const beforeDatasetsDraw = (chart) => {
 const afterDatasetsDraw = (chart, ease) => {
    if (chart.canvas.parentNode.id !== "skill-ogp-gem") return;
     // グラフ生成後のイメージ作成
-    html2canvas(document.querySelector("#og_image")).then(canvas => {
+    html2canvas(document.querySelector("#og_image"), {
+      width: 1200,
+      height: 630,
+    }).then(canvas => {
       let og_image_data = document.getElementById("og_image_data");
       if (og_image_data == null) return;
       og_image_data.value = canvas.toDataURL("image/png");

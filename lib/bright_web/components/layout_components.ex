@@ -41,6 +41,8 @@ defmodule BrightWeb.LayoutComponents do
         <meta property="og:title" content="Bright｜過去と今、未来のスキルから、あなたの輝きを見える化します">
         <meta property="og:description" content={"ITで世の中に価値をもたらすエンジニアやインフラ、デザイナー、マーケッターから、気になるスキルを選び、あなたがどのような\"輝き\"を放つかを体験してください。"}>
         <meta property="og:image" content={@og_image}>
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="og:type" content="article">
         <meta property="og:url" contetnt="https://bright-fun.org/">
         <.live_title>
