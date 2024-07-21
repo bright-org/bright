@@ -47,7 +47,7 @@ defmodule BrightWeb.OgpComponents do
               <span class="text-normal w-14">クラス<%= if @skill_class, do: @skill_class.class, else: "" %></span>
               <span class="text-normal w-[360px] break-all"><%= if @skill_class, do: @skill_class.name, else: ""  %></span>
             </div>
-            <p class="text-brightGreen-300 font-bold flextext-brightGreen-300 font-bold flex ml-[7px] mt-2 ml-4">
+            <p class="text-brightGreen-300 font-bold flextext-brightGreen-300 font-bold flex ml-[7px] mt-2 ml-4 mb-8">
               <.profile_skill_class_level level={@skill_class_score.level} />
             </p>
           </div>
