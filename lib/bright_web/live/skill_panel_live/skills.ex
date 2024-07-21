@@ -28,6 +28,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     socket
     |> assign_display_user(params)
     |> assign_skill_panel(params["skill_panel_id"])
+    |> assign(:select_label, "now")
+    |> assign(:select_label_compared_user, nil)
+    |> assign(:compared_user, nil)
     |> assign(:page_title, "スキルパネル")
     |> assign(:view, :card)
     |> assign(init_team_id: nil, init_timeline: nil)
@@ -89,6 +92,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       |> assign(:is_star, is_star)
 
     UserSkillPanels.set_is_star(assigns.display_user, assigns.skill_panel, is_star)
+    {:noreply, socket}
+  end
+
+  def handle_event("og_image_data_click", %{"value" => value}, socket) do
+    {:noreply, assign_og_image_data(socket, value)}
+  end
+
+  def handle_event("sns_up_click", _params, socket) do
+    upload_ogp_data(socket.assigns)
     {:noreply, socket}
   end
 

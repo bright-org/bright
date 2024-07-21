@@ -14,7 +14,7 @@ defmodule BrightWeb.LayoutComponents do
   attr :user_id, :string, required: true
   attr :page_title, :string
   attr :enable_google_tag_manager, :boolean, default: true
-
+  attr :og_image, :string, default: "https://bright-fun.org/images/ogp_a.png"
   slot :inner_block, required: true
 
   def root_layout(assigns) do
@@ -40,7 +40,9 @@ defmodule BrightWeb.LayoutComponents do
         <meta name="twitter:card" content="summary_large_image">
         <meta property="og:title" content="Bright｜過去と今、未来のスキルから、あなたの輝きを見える化します">
         <meta property="og:description" content={"ITで世の中に価値をもたらすエンジニアやインフラ、デザイナー、マーケッターから、気になるスキルを選び、あなたがどのような\"輝き\"を放つかを体験してください。"}>
-        <meta property="og:image" content="https://bright-fun.org/images/ogp_a.png">
+        <meta property="og:image" content={@og_image}>
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="og:type" content="article">
         <meta property="og:url" contetnt="https://bright-fun.org/">
         <.live_title>

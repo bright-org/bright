@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "chart.js": "4.3.0",
-    "flowbite": "1.6.5"
+    "flowbite": "1.6.5",
+    "html2canvas": "^1.4.1"
   }
 }
