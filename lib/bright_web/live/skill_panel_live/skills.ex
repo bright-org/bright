@@ -10,6 +10,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
   alias Bright.SkillScores
+  alias Bright.SkillScores.SkillScore
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
@@ -24,15 +25,18 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   @impl true
   def mount(params, _session, socket) do
-    {:ok,
-     socket
-     |> assign_display_user(params)
-     |> assign_skill_panel(params["skill_panel_id"])
-     |> assign(:select_label, "now")
-     |> assign(:select_label_compared_user, nil)
-     |> assign(:compared_user, nil)
-     |> assign(:page_title, "スキルパネル")
-     |> assign(init_team_id: nil, init_timeline: nil)}
+    socket
+    |> assign_display_user(params)
+    |> assign_skill_panel(params["skill_panel_id"])
+    |> assign(:select_label, "now")
+    |> assign(:select_label_compared_user, nil)
+    |> assign(:compared_user, nil)
+    |> assign(:page_title, "スキルパネル")
+    |> assign(:view, :card)
+    |> assign(init_team_id: nil, init_timeline: nil)
+    |> assign(:selected_unit, nil)
+    |> push_event("scroll_to_unit", %{})
+    |> then(&{:ok, &1})
   end
 
   @impl true
@@ -98,6 +102,43 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   def handle_event("sns_up_click", _params, socket) do
     upload_ogp_data(socket.assigns)
     {:noreply, socket}
+  end
+
+  def handle_event("change_view", %{"view" => view}, socket) do
+    socket
+    |> assign(:view, String.to_atom(view))
+    |> push_event("scroll_to_unit", %{})
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
+    SkillScores.get_skill_score!(id)
+    |> Map.put(:score, String.to_atom(score))
+    |> then(&[&1])
+    |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
+
+    assign_renew(socket, params["class"])
+  end
+
+  def handle_event("update_score", %{"skill_id" => id, "score" => score} = params, socket) do
+    [
+      %SkillScore{
+        skill_id: id,
+        score: String.to_atom(score),
+        user_id: socket.assigns.current_user.id
+      }
+    ]
+    |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
+
+    assign_renew(socket, params["class"])
+  end
+
+  defp assign_renew(socket, class) do
+    socket
+    |> assign_skill_class_and_score(class)
+    |> assign_skill_score_dict()
+    |> assign_counter()
+    |> then(&{:noreply, &1})
   end
 
   defp apply_action(socket, :show, params) do

@@ -82,7 +82,7 @@ defmodule BrightWeb.SkillListComponent do
 
   defp skill_gem(%{score: nil} = assigns) do
     ~H"""
-    <div class="w-28 lg:w-36"></div>
+    <div class="w-8" />
     """
   end
 
