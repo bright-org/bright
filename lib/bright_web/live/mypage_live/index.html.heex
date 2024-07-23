@@ -28,42 +28,301 @@
     />
   </div>
 </div>
+
 <!-- コンテンツ -->
-<div class="px-4 py-3 flex flex-col items-center pb-20 lg:pb-4 lg:px-10">
-  <div class="flex flex-col gap-y-6 w-full">
-    <!-- 保有スキル（ジェムをクリックすると成長パネルが見れます） -->
-    <div>
-      <h5>保有スキル（ジェムをクリック）</h5>
-      <.live_component
-        id="skill_card"
-        module={BrightWeb.CardLive.SkillCardComponent}
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        root="graphs"
-      />
+<div class="flex justify-between">
+  <div class="px-4 py-3 grow flex flex-col items-center pb-20 lg:pb-4 lg:px-5">
+    <div class="flex flex-col gap-y-6 w-full">
+      <div>
+        <h5>保有スキル（ジェムをクリック）</h5>
+        <.live_component
+          id="skill_card"
+          module={BrightWeb.CardLive.SkillCardComponent}
+          display_user={@display_user}
+          me={@me}
+          anonymous={@anonymous}
+          root="graphs"
+        />
+      </div>
+    </div>
+    <div class="flex flex-col mt-6 gap-y-6 w-full lt-0">
+      <div :if={@me}>
+        <h5>関わっているチーム</h5>
+        <.live_component
+          id="related_team_card"
+          module={BrightWeb.CardLive.RelatedTeamCardComponent}
+          display_user={@current_user}
+          show_menu={true}
+        />
+
+      </div>
+      <div :if={@me}>
+        <h5>関わっているユーザー</h5>
+        <.live_component
+          id="intriguing_card"
+          module={BrightWeb.CardLive.RelatedUserCardComponent}
+          current_user={@current_user}
+        />
+      </div>
     </div>
   </div>
-  <div class="flex flex-col mt-6 gap-y-6 w-full lt-0">
-    <!-- 関わっているチーム -->
-    <div :if={@me}>
-      <h5>関わっているチーム</h5>
-      <.live_component
-        id="related_team_card"
-        module={BrightWeb.CardLive.RelatedTeamCardComponent}
-        display_user={@current_user}
-        show_menu={true}
-      />
 
-    </div>
-    <!-- 関わっているユーザー -->
-    <div :if={@me}>
-      <h5>関わっているユーザー</h5>
-      <.live_component
-        id="intriguing_card"
-        module={BrightWeb.CardLive.RelatedUserCardComponent}
-        current_user={@current_user}
-      />
+  <%# 新鮮な情報 ダミー %>
+  <div if={@me} class="px-4 py-3 flex flex-col items-center pb-20 lg:pb-4 lg:px-5">
+    <div class="flex flex-col gap-y-6 w-full">
+      <section>
+        <h5>いま学んでいます</h5>
+        <div class="bg-white rounded-md mt-1">
+          <p>5日?程度以内の5件ほどの学習メモ一覧</p>
+          <p>チームメンバー由来のもの</p>
+          <p>ガチャ要素が欲しいので差別化せずに最新から並べる</p>
+          <p>ヘルプ通知一覧のリンクも置いておく</p>
+
+          <p>以下はイメージで、スキルパネル名等割愛</p>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section>
+        <h5>一緒に学ぶ</h5>
+        <div class="bg-white rounded-md mt-1">
+          <p>自身が△になっているスキルの他者学習メモを並べる</p>
+          <p>検索負荷が高いかもしれない</p>
+          <p>そのため裏で良い学習メモを探して準備するのもありかもしれない</p>
+          <p>（蛇足 AIからのとか...）</p>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h5>あなたの学習メモ</h5>
+        <div class="bg-white rounded-md mt-1">
+          <p>自身が△になっているスキルの学習メモを並べる</p>
+          <p>続けて学習するためのショートカット</p>
+          <p>↑の上段要素は表自分が存在するとは限らない</p>
+          <p>サイド領域に何もないと寂しい</p>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
+            <div class="w-[50px] flex justify-center flex-col items-center">
+              <div class="min-h-content">
+                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+              </div>
+              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+            </div>
+            <div class="w-[370px] pb-4">
+              <div class="text-base">
+                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
+                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
+                </div>
+                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </div>
