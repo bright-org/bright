@@ -1,4 +1,15 @@
 <%= if @skill_panel do %>
+<BrightWeb.OgpComponents.ogp
+  skill_panel={@skill_panel}
+  skill_class={@skill_class}
+  skill_class_score={@skill_class_score}
+  display_user={@display_user}
+  select_label={@select_label}
+  me={@me}
+  anonymous={@anonymous}
+  select_label_compared_user={@select_label_compared_user}
+  compared_user={@compared_user}
+/>
 <div class="relative flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
   <% # 働く際の希望の入力を促すメッセージ %>
   <GuideMessageComponents.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !UserJobProfiles.job_searching?(@current_user)} />
@@ -80,11 +91,49 @@
       me={@me}
     />
   </div>
+  <div 
+    class="z-2 my-4 mx-4 bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-48"
+    :if={!@me}
+  >
+    <button
+      id="switch_card"
+      phx-click="change_view"
+      phx-value-view="card"
+      class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+    >Card
+    </button>      
+    <button
+      id="switch_table"            
+      phx-click="change_view"
+      phx-value-view="table"
+      class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+    >Table
+    </button>
+  </div>
+
   <div class="relative z-2 lg:px-6" :if={@me}>
     <div class="flex flex-col lg:flex-row my-4 px-2 lg:px-0 lg:mb-0 gap-y-4">
       <div class="relative flex flex-col">
-        <div class="flex justify-between items-center w-full lg:w-72 gap-x-2">
+        <div class="bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-48">
+          <button
+            id="switch_card"
+            phx-click="change_view"
+            phx-value-view="card"
+            class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >Card
+          </button>      
+          <button
+            id="switch_table"            
+            phx-click="change_view"
+            phx-value-view="table"
+            class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >Table
+          </button>
+        </div>
+
+        <div class="flex justify-between items-center w-full lg:w-72 gap-x-2 mt-4">
           <.link
+            :if={@view == :table} 
             patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
             id="link-skills-form"
             class={[Map.get(@flash, "first_skills_edit") && "z-20", "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-[80%]"]}>
@@ -93,14 +142,21 @@
           </.link>
 
           <div
-            :if={@me}
+            :if={@me && @view == :table}
             id="btn-help-enter-skills-button"
             class="flex-none cursor-pointer w-8 h-8 hover:filter hover:brightness-[80%] bg-[url('/images/icon_help.svg')]"
             phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
           </div>
-        </div>
+          <div
+            :if={@me && @view == :card}
+            id="btn-help-enter-skills-button"
+            class="text-sm cursor-pointer font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-[80%]"
+            phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
+            マークの基準について
+          </div>          
 
-        <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
+        </div>
+        <div class="lg:absolute lg:left-0 lg:top-24 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
           <% # スキル入力前メッセージ %>
           <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
           <.live_component
@@ -108,7 +164,8 @@
             module={BrightWeb.HelpMessageComponent}
             id="help-enter-skills"
             overlay={true}>
-            <.first_skills_edit_message />
+            <.first_skills_edit_message :if={@view == :table} />
+            <.first_card_skills_edit_message :if={@view == :card} />
           </.live_component>
 
           <% # スキル入力するボタン 手動表示メッセージ %>
@@ -117,7 +174,7 @@
             module={BrightWeb.HelpMessageComponent}
             id="help-enter-skills-button"
             open={false}>
-            <.enter_skills_help_message reference_from={"button"} />
+            <.enter_skills_help_message reference_from={"button"} view={@view} />
           </.live_component>
         </div>
       </div>
@@ -129,22 +186,42 @@
     </div>
   </div>
 
-  <div class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-4">
-    <.live_component
-      id="skills-field"
-      module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
-      current_user={@current_user}
-      skill_panel={@skill_panel}
-      skill_class={@skill_class}
-      current_skill_score_dict={@skill_score_dict}
-      path={@path}
-      query={@query}
-      display_user={@display_user}
-      me={@me}
-      anonymous={@anonymous}
-      init_team_id={@init_team_id}
-      init_timeline={@init_timeline}
-    />
+  <div 
+    id="skills"
+    phx-hook="SkillUnitScrolling"
+    class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-4"
+  >
+    <%= if @view == :table do %>
+      <.live_component
+        id="skills-field"
+        module={BrightWeb.SkillPanelLive.SkillsFieldComponent}
+        current_user={@current_user}
+        skill_panel={@skill_panel}
+        skill_class={@skill_class}
+        current_skill_score_dict={@skill_score_dict}
+        path={@path}
+        query={@query}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+        init_team_id={@init_team_id}
+        init_timeline={@init_timeline}
+      />
+    <% else %>
+      <.live_component
+        id="skills-card"
+        module={BrightWeb.SkillPanelLive.SkillsCardComponent}
+        current_user={@current_user}
+        skill_panel={@skill_panel}
+        skill_class={@skill_class}
+        current_skill_score_dict={@skill_score_dict}
+        path={@path}
+        query={@query}
+        display_user={@display_user}
+        me={@me}
+        anonymous={@anonymous}
+      />
+    <% end %>
   </div>
 </div>
 

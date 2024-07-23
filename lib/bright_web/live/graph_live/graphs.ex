@@ -95,6 +95,15 @@ defmodule BrightWeb.GraphLive.Graphs do
     {:noreply, socket}
   end
 
+  def handle_event("og_image_data_click", %{"value" => value}, socket) do
+    {:noreply, assign_og_image_data(socket, value)}
+  end
+
+  def handle_event("sns_up_click", _params, socket) do
+    upload_ogp_data(socket.assigns)
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_info(
         %{event_name: "timeline_bar_button_click", params: %{"id" => "myself", "date" => date}},

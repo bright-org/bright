@@ -7,6 +7,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   alias BrightWeb.DisplayUserHelper
   alias Bright.UserSkillPanels
   alias Bright.Teams
+  alias Bright.Utils.GoogleCloud.Storage
 
   @counter %{
     low: 0,
@@ -296,4 +297,20 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   defp raise_if_not_exists_skill_panel(_skill_panel), do: nil
+
+  def assign_og_image_data(socket, value) do
+    [_, value] = String.split(value, ",")
+    value = Base.decode64!(value)
+    assign(socket, :og_image_data, value)
+  end
+
+  def upload_ogp_data(assigns) do
+    encode_share_graph_token = assigns.encode_share_graph_token
+    file_name = "#{encode_share_graph_token}.png"
+    og_image_data = assigns.og_image_data
+    local_file_name = "#{System.tmp_dir()}/#{file_name}"
+    File.write(local_file_name, og_image_data)
+    :ok = Storage.upload!(local_file_name, "ogp/" <> file_name)
+    File.rm(local_file_name)
+  end
 end

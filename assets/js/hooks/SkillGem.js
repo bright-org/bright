@@ -1,10 +1,13 @@
 import { Chart } from "chart.js/auto";
+import html2canvas from 'html2canvas';
+
 const scalesBackgroundColor = "#D4F9F7";
 const gridColor = "#FFFFFF44";
 const myselfColorPattern = ["#72EAD9C0", "#1DA091C0", "#3CC0A8C0"];
 const otherColorPattern = ["#D659F0AA", "#7B0D92AA", "#BC14E0AA"];
 const pastColorPattern = ["#FFFFFF55", "#FFFFFF55", "#FFFFFF55"];
 const linkColor = "#0000FF";
+const backgroundColor = "#FFFFFF";
 const minValue = -5;
 const gemSizeSet = {
   // サイズと主な使用箇所
@@ -114,6 +117,12 @@ const drawUnderline = (chart, i) => {
   context.stroke();
 };
 
+const beforeDraw = (chart) => {
+  const context = chart.ctx;
+  context.fillStyle=backgroundColor;
+  context.fillRect(0,0,context.canvas.width, context.canvas.height);
+};
+
 const beforeDatasetsDraw = (chart) => {
   const context = chart.ctx;
   const colorTheme = chart.canvas.parentNode.dataset.colorTheme;
@@ -160,6 +169,21 @@ const beforeDatasetsDraw = (chart) => {
   for (let i = 0; i < myselfData.length; i++) {
     drawUnderline(chart, i);
   }
+};
+
+const afterDatasetsDraw = (chart, ease) => {
+   if (chart.canvas.parentNode.id !== "skill-ogp-gem") return;
+    // グラフ生成後のイメージ作成
+    html2canvas(document.querySelector("#og_image"), {
+      width: 1200,
+      height: 630,
+    }).then(canvas => {
+      let og_image_data = document.getElementById("og_image_data");
+      if (og_image_data == null) return;
+      og_image_data.value = canvas.toDataURL("image/png");
+      og_image_data.click();
+    });
+
 };
 
 const createChartFromJSON = (labels, datasets, isLink, labelFont) => {
@@ -218,7 +242,11 @@ const createChartFromJSON = (labels, datasets, isLink, labelFont) => {
         },
       },
     },
-    plugins: [{ beforeDatasetsDraw: beforeDatasetsDraw }],
+    plugins: [{ beforeDraw: beforeDraw,
+                beforeDatasetsDraw: beforeDatasetsDraw,
+                afterDatasetsDraw: afterDatasetsDraw,
+              }
+    ],
   };
 };
 
