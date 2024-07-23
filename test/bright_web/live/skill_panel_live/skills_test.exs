@@ -1768,7 +1768,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#btn-help-enter-skills-button")
       |> render_click()
 
-      assert has_element?(show_live, "#btn-help-enter-skills-button-good")
+      assert has_element?(show_live, "#skills_edit_guide")
     end
 
     @tag score: :low
@@ -1789,7 +1789,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#btn-help-enter-skills-modal")
       |> render_click()
 
-      assert has_element?(show_live, "#btn-help-enter-skills-modal-good")
+      assert has_element?(show_live, "#skills_edit_guide")
     end
   end
 
