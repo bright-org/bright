@@ -22,6 +22,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
       <.bright_modal
         id={"#{@id}_modal"}
         :if={@open}
+        on_cancel={JS.push("close", target: @myself)}
         show
       >
         <.header>ナイス ブライト！</.header>
@@ -70,6 +71,10 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
      socket
      |> assign(assigns)
      |> assign(:open, false)}
+  end
+
+  def handle_event("close", _params, socket) do
+    {:noreply, assign(socket, :open, false)}
   end
 
   defp assign_presents(socket) do
