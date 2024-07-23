@@ -150,9 +150,9 @@ defmodule Bright.HistoricalSkillScores do
   end
 
   @doc """
-  Returns historical_skill_class_scores.percentage with given date
+  Returns historical_skill_class_score with given date
   """
-  def get_historical_skill_class_score_percentage(user, skill_class, date) do
+  def get_historical_skill_class_score_by_user_skill_class(user, skill_class, date) do
     from(hscs in HistoricalSkillClassScore,
       join: hsc in assoc(hscs, :historical_skill_class),
       where: hscs.user_id == ^user.id,
@@ -162,7 +162,37 @@ defmodule Bright.HistoricalSkillScores do
       limit: 1
     )
     |> Repo.one()
+  end
+
+  @doc """
+  Returns historical_skill_class_scores.percentage with given date
+  """
+  def get_historical_skill_class_score_percentage(user, skill_class, date) do
+    get_historical_skill_class_score_by_user_skill_class(user, skill_class, date)
     |> Kernel.||(%{})
     |> Map.get(:percentage)
+  end
+
+  @doc """
+  Returns historical_skill_unit_scores with given date
+  """
+  def list_historical_skill_unit_scores_by_user_skill_units(user, skill_units, date) do
+    trace_ids = Enum.map(skill_units, & &1.trace_id)
+
+    historical_score_by_trace_id =
+      from(hscs in HistoricalSkillUnitScore,
+        join: hsc in assoc(hscs, :historical_skill_unit),
+        where: hscs.user_id == ^user.id,
+        where: hscs.locked_date == ^date,
+        where: hsc.trace_id in ^trace_ids,
+        preload: [historical_skill_unit: hsc]
+      )
+      |> Repo.all()
+      |> Map.new(&{&1.historical_skill_unit.trace_id, &1})
+
+    # 指定のskill_unitsと同じ並びで返している
+    # 意図的に一致するものがないときにnilを返しているので変更しないように注意
+    skill_units
+    |> Enum.map(&Map.get(historical_score_by_trace_id, &1.trace_id))
   end
 end

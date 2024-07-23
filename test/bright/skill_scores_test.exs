@@ -401,6 +401,31 @@ defmodule Bright.SkillScoresTest do
       assert %{percentage: 100.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_1.id)
       assert %{percentage: +0.0} = Repo.get!(SkillScores.SkillUnitScore, skill_unit_score_2.id)
     end
+
+    test "list_skill_unit_scores_by_user_skill_class" do
+      [user_1, user_2] = insert_pair(:user)
+
+      [skill_unit_1, skill_unit_2] = insert_pair(:skill_unit)
+      [skill_class_1, skill_class_2] = insert_pair(:skill_class, skill_panel: build(:skill_panel))
+
+      insert(:skill_class_unit, skill_class: skill_class_1, skill_unit: skill_unit_1)
+      insert(:skill_class_unit, skill_class: skill_class_1, skill_unit: skill_unit_2)
+
+      skill_unit_score_1 = insert(:skill_unit_score, user: user_1, skill_unit: skill_unit_1)
+      skill_unit_score_2 = insert(:skill_unit_score, user: user_1, skill_unit: skill_unit_2)
+
+      # 指定の条件で取れること
+      [%{id: id_1}, %{id: id_2}] =
+        SkillScores.list_skill_unit_scores_by_user_skill_class(user_1, skill_class_1)
+
+      assert Enum.sort([id_1, id_2]) == Enum.sort([skill_unit_score_1.id, skill_unit_score_2.id])
+
+      # 別ユーザー指定で取れないこと
+      assert [] == SkillScores.list_skill_unit_scores_by_user_skill_class(user_2, skill_class_1)
+
+      # 別スキルクラス指定で取れないこと
+      assert [] == SkillScores.list_skill_unit_scores_by_user_skill_class(user_1, skill_class_2)
+    end
   end
 
   # TODO get_skill_gemテスト未実装

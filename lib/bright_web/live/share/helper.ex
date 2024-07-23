@@ -5,8 +5,10 @@ defmodule BrightWeb.Share.Helper do
 
   use BrightWeb, :verified_routes
   import Phoenix.Component, only: [assign: 3]
+
   alias Bright.Share.Token
   alias Bright.Utils.GoogleCloud.Storage
+  alias Bright.Accounts.User
 
   @doc """
   socket に assign されている current_user と skill_ckass から share_graph_url を assign する。
@@ -16,14 +18,23 @@ defmodule BrightWeb.Share.Helper do
   def assign_share_graph_url(
         %{assigns: %{current_user: current_user, skill_class: skill_class}} = socket
       ) do
-    encode_share_graph_token = Token.encode_share_graph_token(current_user.id, skill_class.id)
+    encoded_share_graph_token = Token.encode_share_graph_token(current_user.id, skill_class.id)
+    share_graph_url = gen_share_graph_url(encoded_share_graph_token)
 
-    assign(
-      socket,
-      :share_graph_url,
-      url(~p"/share/#{encode_share_graph_token}/graphs")
-    )
-    |> assign(:encode_share_graph_token, encode_share_graph_token)
+    socket
+    |> assign(:share_graph_url, share_graph_url)
+    |> assign(:encode_share_graph_token, encoded_share_graph_token)
+  end
+
+  @doc """
+  share_graph_urlを生成する
+  """
+  def gen_share_graph_url(token) do
+    url(~p"/share/#{token}/graphs")
+  end
+
+  def gen_share_graph_url(%User{} = user, skill_class) do
+    url(~p"/share/#{Token.encode_share_graph_token(user.id, skill_class.id)}/graphs")
   end
 
   @doc """

@@ -119,6 +119,10 @@ defmodule BrightWeb.TimelineHelper do
   @doc """
   現在より1つ前のラベルの日付を返す
   """
+  def get_prev_date_from_now do
+    get_current() |> get_prev_date_from_now()
+  end
+
   def get_prev_date_from_now(%{selected_label: "now"} = timeline) do
     # 最後のラベルは未来なので2つ前のindexの日付を返す
     get_date_at(timeline, -2)

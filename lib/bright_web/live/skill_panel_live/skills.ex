@@ -22,6 +22,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.SnsComponents
   alias BrightWeb.Share.Helper, as: ShareHelper
   alias BrightWeb.QrCodeComponents
+  alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
 
   @impl true
   def mount(params, _session, socket) do
@@ -41,7 +42,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   @impl true
   def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}}} = socket) do
-    # TODO: データ取得方法検討／LiveVIewコンポーネント化検討
     {:noreply,
      socket
      |> assign_path(url)
