@@ -92,42 +92,42 @@
     />
   </div>
   <div 
-    class="z-2 my-4 mx-4 bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-48"
+    class="z-2 my-4 mx-4 bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-56"
     :if={!@me}
   >
     <button
       id="switch_card"
       phx-click="change_view"
       phx-value-view="card"
-      class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
-    >Card
+      class={"w-28 rounded-l-full px-4 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+    >カード表示
     </button>      
     <button
       id="switch_table"            
       phx-click="change_view"
       phx-value-view="table"
-      class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
-    >Table
+      class={"w-28 font-bold rounded-r-full px-4 py-2 " <>if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+    >一覧表示
     </button>
   </div>
 
   <div class="relative z-2 lg:px-6" :if={@me}>
     <div class="flex flex-col lg:flex-row my-4 px-2 lg:px-0 lg:mb-0 gap-y-4">
       <div class="relative flex flex-col">
-        <div class="bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-48">
+        <div class="bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-56">
           <button
             id="switch_card"
             phx-click="change_view"
             phx-value-view="card"
-            class={"w-24 rounded-l-full px-6 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
-          >Card
+            class={"w-28 rounded-l-full px-4 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >カード表示
           </button>      
           <button
             id="switch_table"            
             phx-click="change_view"
             phx-value-view="table"
-            class={"w-24 font-bold rounded-r-full px-4 py-2 " <>if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
-          >Table
+            class={"w-28 font-bold rounded-r-full px-4 py-2 " <> if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
+          >一覧表示
           </button>
         </div>
 

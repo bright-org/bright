@@ -47,8 +47,12 @@ defmodule BrightWeb.GuideMessageComponents do
 
   def first_card_skills_edit_message(assigns) do
     ~H"""
-    <.score_mark_description />
-    <.evidence_introduction_description />
+    <div class="mt-4">
+      <h5>スキル入力のやり方について</h5>
+      <p>各スキルをマークする際は、以下の基準で入力してください。</p>
+      <.score_mark_description />
+      <.evidence_introduction_description />
+    </div>
     """
   end
 
