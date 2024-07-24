@@ -91,7 +91,7 @@
       me={@me}
     />
   </div>
-  <div 
+  <div
     class="z-2 my-4 mx-4 bg-brightGray-100 text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10 w-56"
     :if={!@me}
   >
@@ -101,9 +101,9 @@
       phx-value-view="card"
       class={"w-28 rounded-l-full px-4 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
     >カード表示
-    </button>      
+    </button>
     <button
-      id="switch_table"            
+      id="switch_table"
       phx-click="change_view"
       phx-value-view="table"
       class={"w-28 font-bold rounded-r-full px-4 py-2 " <>if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
@@ -121,9 +121,9 @@
             phx-value-view="card"
             class={"w-28 rounded-l-full px-4 py-2 " <> if @view == :card, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
           >カード表示
-          </button>      
+          </button>
           <button
-            id="switch_table"            
+            id="switch_table"
             phx-click="change_view"
             phx-value-view="table"
             class={"w-28 font-bold rounded-r-full px-4 py-2 " <> if @view == :table, do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"}
@@ -133,7 +133,7 @@
 
         <div class="flex justify-between items-center w-full lg:w-72 gap-x-2 mt-4">
           <.link
-            :if={@view == :table} 
+            :if={@view == :table}
             patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
             id="link-skills-form"
             class={[Map.get(@flash, "first_skills_edit") && "z-20", "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-[80%]"]}>
@@ -153,7 +153,7 @@
             class="text-sm cursor-pointer font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-[80%]"
             phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
             マークの基準について
-          </div>          
+          </div>
 
         </div>
         <div class="lg:absolute lg:left-0 lg:top-24 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
@@ -180,13 +180,13 @@
       </div>
 
       <div class="ml-auto flex gap-x-4">
-        <QrCodeComponents.qr_code_image class="border border-b-2 border-brightGray-200" qr_code_url={@share_graph_url} width="100px" height="100px" />
+        <QrCodeComponents.qr_code_image class="border border-b-2 border-brightGray-200" qr_code_url={@share_graph_url} width="110px" height="110px" />
         <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} />
       </div>
     </div>
   </div>
 
-  <div 
+  <div
     id="skills"
     phx-hook="SkillUnitScrolling"
     class="bg-white shadow relative z-2 pb-10 pt-1 lg:pt-4"

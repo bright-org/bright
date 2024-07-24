@@ -13,6 +13,12 @@ defmodule BrightWeb.Share.GraphLive.GraphsTest do
       %{share_graph_token: Token.encode_share_graph_token(user.id, skill_class_1.id)}
     end
 
+    test "shows qr", %{conn: conn, share_graph_token: share_graph_token} do
+      {:ok, live, _html} = live(conn, "/share/#{share_graph_token}/graphs")
+
+      assert has_element?(live, ~s{img[alt="二次元バーコード"]})
+    end
+
     test "shows header", %{conn: conn, share_graph_token: share_graph_token} do
       {:ok, live, _html} = live(conn, "/share/#{share_graph_token}/graphs")
 

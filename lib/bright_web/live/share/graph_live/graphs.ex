@@ -12,6 +12,7 @@ defmodule BrightWeb.Share.GraphLive.Graphs do
   alias Bright.SkillPanels
   alias Bright.Accounts
   alias Bright.Repo
+  alias BrightWeb.QrCodeComponents
 
   @impl true
   def mount(_params, _session, socket) do
@@ -21,11 +22,12 @@ defmodule BrightWeb.Share.GraphLive.Graphs do
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
+  def handle_params(params, url, socket) do
     socket
     |> assign_by_params(params)
     |> SkillPanelHelper.assign_skill_score_dict()
     |> SkillPanelHelper.assign_counter()
+    |> assign(:share_graph_url, url)
     |> then(&{:noreply, &1})
   end
 
