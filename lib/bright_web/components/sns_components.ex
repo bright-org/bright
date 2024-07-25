@@ -36,13 +36,14 @@ defmodule BrightWeb.SnsComponents do
   """
   attr :id, :string, default: "share-button-group"
   attr :share_graph_url, :string, required: true
+  attr :skill_panel, :string, required: true
 
   def sns_share_button_group(assigns) do
     assigns =
       assigns
       |> Map.put(:twitter_text, """
+      \"#{assigns.skill_panel}\"スキルパネルをシェアしました！あなたも成長パネルを作成してみませんか？
       #bright_skill
-      成長パネルをシェアしました！あなたも成長パネルを作成してみませんか？
       """)
 
     ~H"""
