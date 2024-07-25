@@ -136,7 +136,7 @@
         </div>
         <div class="ml-auto flex gap-x-4">
           <QrCodeComponents.qr_code_image class="border border-b-2 border-brightGray-200" qr_code_url={@share_graph_url} width="110px" height="110px" />
-          <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} />
+          <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} skill_panel={@skill_panel.name} />
         </div>
       </div>
       <div class="mt-4 lg:mt-0 flex flex-col-reverse lg:flex-col 2xl:flex-row">

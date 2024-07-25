@@ -41,8 +41,8 @@ defmodule BrightWeb.SnsComponents do
     assigns =
       assigns
       |> Map.put(:twitter_text, """
+      \"#{assigns.skill_panel}\"スキルパネルをシェアしました！あなたも成長パネルを作成してみませんか？
       #bright_skill
-      成長パネルをシェアしました！あなたも成長パネルを作成してみませんか？
       """)
 
     ~H"""
