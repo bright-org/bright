@@ -36,6 +36,7 @@ defmodule BrightWeb.SnsComponents do
   """
   attr :id, :string, default: "share-button-group"
   attr :share_graph_url, :string, required: true
+  attr :skill_panel, :string, required: true
 
   def sns_share_button_group(assigns) do
     assigns =
