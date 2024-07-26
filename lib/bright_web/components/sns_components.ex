@@ -86,7 +86,7 @@ defmodule BrightWeb.SnsComponents do
   end
 
   attr :url, :string
-  attr :sns_type, :string, values: ~w(twitter github facebook)
+  attr :sns_type, :string, values: ~w(x github facebook)
 
   defp icon_button(%{url: url} = assigns) when url in ["", nil] do
     ~H"""

@@ -17,7 +17,7 @@ defmodule BrightWeb.MypageLiveTest do
       assert index_live |> has_element?("div .pt-5", user.user_profile.detail)
       # SNSアイコン表示
       assert index_live
-             |> has_element?("button:nth-child(1) img[src='/images/common/twitter.svg']")
+             |> has_element?("button:nth-child(1) img[src='/images/common/x.svg']")
 
       assert index_live
              |> has_element?("button:nth-child(2) img[src='/images/common/github.svg']")
