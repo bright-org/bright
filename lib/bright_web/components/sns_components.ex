@@ -21,7 +21,7 @@ defmodule BrightWeb.SnsComponents do
   def sns(assigns) do
     ~H"""
     <div class="flex gap-x-4 lg:gap-x-6 mr-2 mt-1">
-      <.icon_button sns_type="twitter" url={@twitter_url} />
+      <.icon_button sns_type="x" url={@twitter_url} />
       <.icon_button sns_type="github" url={@github_url} />
       <.icon_button sns_type="facebook" url={@facebook_url} />
     </div>
