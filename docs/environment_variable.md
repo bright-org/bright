@@ -80,7 +80,7 @@ dev /stg 環境に設定していないなど、何かしらの理由で確認�
 
 - https://app.terraform.io/app/bright-org/workspaces/bright-dev/runs/run-nVP5xVkoEkraUwzZ
 
-### 確認用に一時的にローカルに環境変数を設定したいとき
+### 確認用に一時的にローカルに環境変数を設定したい場合
 
 一時的に `docker-compose.yml` を書き換えるなどして、ローカルの実行時に環境変数を設定すればよいです。
 
