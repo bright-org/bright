@@ -1,5 +1,5 @@
 <!-- プロフィール -->
-<div class="flex flex-col lg:flex-row justify-between px-4 py-2 bg-white lg:px-10 lg:py-6">
+<div class="flex flex-col gap-y-2 lg:flex-row gap-x-4 bg-white py-4 lg:py-6 px-4 lg:px-10">
   <div class="pt-4 lg:w-full lg:max-w-[850px]">
     <.profile
       user_name={@display_user.name}
@@ -15,10 +15,6 @@
   </div>
 
   <div :if={@skillset_gem} class="chart-container flex flex-col justify-center items-center my-2 lg:my-0">
-    <% # TODO: リンクは成長パネル側の対応後に開放 %>
-    <p class="text-base !font-bold">
-      スキルバランス<span :if={false} class="font-normal text-xs ml-2">※クリックすると詳細</span>
-    </p>
     <.skill_gem
       id="skillset-gem"
       labels={@skillset_gem.labels}
@@ -27,299 +23,401 @@
       display_link="false"
     />
   </div>
+
+  <div>
+    <.live_component
+      id="skill_list"
+      module={BrightWeb.SkillListComponent}
+      display_user={@display_user}
+      me={@me}
+      root="panels"
+      anonymous={@anonymous}
+    />
+  </div>
 </div>
 
 <!-- コンテンツ -->
 <div class="flex justify-between">
   <div class="px-4 py-3 grow flex flex-col items-center pb-20 lg:pb-4 lg:px-5">
     <div class="flex flex-col gap-y-6 w-full">
-      <div>
-        <h5>保有スキル（ジェムをクリック）</h5>
-        <.live_component
-          id="skill_card"
-          module={BrightWeb.CardLive.SkillCardComponent}
-          display_user={@display_user}
-          me={@me}
-          anonymous={@anonymous}
-          root="graphs"
-        />
-      </div>
-    </div>
-    <div class="flex flex-col mt-6 gap-y-6 w-full lt-0">
-      <div :if={@me}>
-        <h5>関わっているチーム</h5>
-        <.live_component
-          id="related_team_card"
-          module={BrightWeb.CardLive.RelatedTeamCardComponent}
-          display_user={@current_user}
-          show_menu={true}
-        />
+      <section>
+        <h5>スキルアップ</h5>
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5">
+          <ul class="text-sm font-medium text-center gap-y-2">
+            <li class="flex flex-wrap my-2">
+              <div class="cursor-pointer hover:filter hover:brightness-[80%] text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap">
+                <img src="/images/common/icons/skill.svg" class="w-6 h-6 mr-2.5">
+                <span class="order-3 lg:order-2 flex-1 mr-2">
+                  PM(プロジェクトマネージャ)【PJ規模10MM未満の零細PJを完結可】を「見習い」からスタートしました
+                </span>
+              </div>
+            </li>
 
-      </div>
-      <div :if={@me}>
-        <h5>関わっているユーザー</h5>
-        <.live_component
-          id="intriguing_card"
-          module={BrightWeb.CardLive.RelatedUserCardComponent}
-          current_user={@current_user}
-        />
-      </div>
+            <li class="flex flex-wrap my-2">
+              <div class="cursor-pointer hover:filter hover:brightness-[80%] text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap">
+                <img src="/images/common/icons/skill.svg" class="w-6 h-6 mr-2.5">
+                <span class="order-3 lg:order-2 flex-1 mr-2">
+                  Webアプリ開発 Elixir【小規模Web開発／マイクロサービスできる】で「平均」レベルになりました
+                </span>
+              </div>
+            </li>
+
+            <li class="flex flex-wrap my-2">
+              <div class="cursor-pointer hover:filter hover:brightness-[80%] text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap">
+                <img src="/images/common/icons/skill.svg" class="w-6 h-6 mr-2.5">
+                <span class="order-3 lg:order-2 flex-1 mr-2">
+                  Elixir入門【サポート有ならWeb+DBチーム開発できる】で「ベテラン」レベルになりました
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h5>学習メモ</h5>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > 基本 > 基本型／演算子／パイプ</p>
+              <p>2024-07-22 11:37</p>
+            </div>
+            <p class="break-all">これはテストです。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > 基本 > hexdocsでの関数確認</p>
+              <p>2024-07-22 11:37</p>
+            </div>
+            <p class="break-all">これはテストです。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > 基本 > Stringモジュール</p>
+              <p>2024-07-22 11:37</p>
+            </div>
+            <p class="break-all">これはテストです。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > データ処理 > リスト／マップ</p>
+              <p>2024-07-22 11:37</p>
+            </div>
+            <p class="break-all">これはテストです。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > デバッグ > IO.putsデバッグ</p>
+              <p>2024-07-22 11:37</p>
+            </div>
+            <p class="break-all">これはテストです。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > 基本 > タイムゾーン指定DateTime</p>
+              <p>2024-07-22 11:37</p>
+            </div>
+            <p class="break-all">これはテストです。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > 基本 > for／while</p>
+              <p>2024-07-22 11:37</p>
+            </div>
+            <p class="break-all">これはテストです。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          さらに表示
+        </div>
+      </section>
     </div>
   </div>
 
   <%# 新鮮な情報 ダミー %>
-  <div if={@me} class="px-4 py-3 flex flex-col items-center pb-20 lg:pb-4 lg:px-5">
+  <div if={@me} class="px-4 py-3 flex flex-col items-center pb-20 lg:pb-4 lg:px-5 max-w-md">
     <div class="flex flex-col gap-y-6 w-full">
       <section>
         <h5>いま学んでいます</h5>
-        <div class="bg-white rounded-md mt-1">
-          <p>5日?程度以内の5件ほどの学習メモ一覧</p>
-          <p>チームメンバー由来のもの</p>
-          <p>ガチャ要素が欲しいので差別化せずに最新から並べる</p>
-          <p>ヘルプ通知一覧のリンクも置いておく</p>
 
-          <p>以下はイメージで、スキルパネル名等割愛</p>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="flex-none pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
           </div>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>PHP本体 > 基本 > 基本型／演算子</p>
             </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+            <p class="break-all">これは関わっているユーザー分です。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 items-center justify-center">
+                  person
+                </span>
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
           </div>
+        </div>
 
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="flex-none pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
           </div>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>PHP本体 > 基本 > 基本型／演算子</p>
             </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+            <p class="break-all">これは関わっているユーザー分です。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 items-center justify-center">
+                  person
+                </span>
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
           </div>
+        </div>
 
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="flex-none pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
           </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>PHP本体 > 基本 > 基本型／演算子</p>
+              <p>ヘルプ！</p>
+            </div>
+            <p class="break-all">これは関わっているユーザー分です。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 items-center justify-center">
+                  person
+                </span>
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
 
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="flex-none pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>PHP本体 > 基本 > 基本型／演算子</p>
+            </div>
+            <p class="break-all">これは関わっているユーザー分です。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 items-center justify-center">
+                  person
+                </span>
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="pt-4 mx-2">
+            <img class="flex-none h-10 w-10 rounded-full" src="/images/avatar.png">
+          </div>
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>PHP本体 > 基本 > 基本型／演算子</p>
+            </div>
+            <p class="break-all">これは関わっているユーザー分です。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 items-center justify-center">
+                  person
+                </span>
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          学習メモのヘルプをみる
         </div>
       </section>
 
       <section>
-        <h5>一緒に学ぶ</h5>
-        <div class="bg-white rounded-md mt-1">
-          <p>自身が△になっているスキルの他者学習メモを並べる</p>
-          <p>検索負荷が高いかもしれない</p>
-          <p>そのため裏で良い学習メモを探して準備するのもありかもしれない</p>
-          <p>（蛇足 AIからのとか...）</p>
+        <h5>あなたへのヒント(仮)</h5>
 
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="flex-none pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
           </div>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > 基本 > リスト／マップ</p>
             </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+            <p class="break-all">これは自分の△スキルに対して、関わっているユーザーが残しているメモ分です。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 items-center justify-center">
+                  person
+                </span>
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
           </div>
         </div>
-      </section>
 
-      <section>
-        <h5>あなたの学習メモ</h5>
-        <div class="bg-white rounded-md mt-1">
-          <p>自身が△になっているスキルの学習メモを並べる</p>
-          <p>続けて学習するためのショートカット</p>
-          <p>↑の上段要素は表自分が存在するとは限らない</p>
-          <p>サイド領域に何もないと寂しい</p>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+        <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+          <div class="flex-none pt-4 mx-2">
+            <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
           </div>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
+          <div class="grow flex flex-col gap-y-2 mx-2">
+            <div class="text-sm flex justify-between">
+              <p>Elixir本体 > デバッグ > IO.putsデバッグ</p>
             </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap my-2" data-phx-stream="16-0">
-            <div class="w-[50px] flex justify-center flex-col items-center">
-              <div class="min-h-content">
-                <img class="h-10 w-10 rounded-full" src="/images/avatar.png">
-              </div>
-              <hr class="w-[1px] bg-brightGray-200 h-full mt-2">
-            </div>
-            <div class="w-[370px] pb-4">
-              <div class="text-base">
-                <div id="timestamp-skill_evidence_posts-01J3C4SP4RQ99EHYKAG5EX0TB2" class="flex justify-end" phx-hook="LocalTime" phx-update="ignore" data-iso="2024-07-22T02:37:13">
-                  <p class="text-sm" data-local-time="%x %H:%M">2024-07-22 11:37</p>
-                </div>
-                <p class="break-all first:mt-0 mt-3">これはテストです。</p>
-              </div>
-            </div>
+            <p class="break-all">これは自分の△スキルに対して、関わっているユーザーが残しているメモ分です。適当な文字でtruncateされます</p>
+            <nav class="flex items-center gap-x-4">
+              <a href="" class="link-evidence">
+                <img src="/images/common/icons/skillEvidenceActive.svg">
+              </a>
+              <a href="" class="link-evidence">
+                <span class="material-icons text-lg text-white bg-brightGreen-300 rounded-full flex w-6 h-6 items-center justify-center">
+                  person
+                </span>
+              </a>
+              <a href="" class="link-evidence">
+                <div class="inline-block h-6 w-6 [mask-image:url('/images/common/icons/skillPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat] bg-brightGreen-300"></div>
+              </a>
+            </nav>
           </div>
         </div>
       </section>
