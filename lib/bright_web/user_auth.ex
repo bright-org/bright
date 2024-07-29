@@ -266,7 +266,7 @@ defmodule BrightWeb.UserAuth do
     else
       conn
       |> put_flash(:error, "ログインが必要です")
-      |> put_session(:user_return, conn.request_path)
+      |> put_session(:user_return_to, conn.request_path)
       |> redirect(to: require_authenticated_user_redirect_path(conn))
       |> halt()
     end
