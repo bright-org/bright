@@ -8,7 +8,7 @@ defmodule BrightWeb.CardLive.ManagingTeamCardComponent do
   ## Examples
     <.live_component
       id={@id}
-      module={BrightWeb.CardLive.RelatedTeamCardComponent}
+      module={BrightWeb.CardLive.ManagingTeamCardComponent}
       display_user={@display_user}
       over_ride_on_card_row_click_target={:true}
     />
