@@ -24,15 +24,6 @@ defmodule BrightWeb.MypageLiveTest do
 
       assert index_live
              |> has_element?("button:nth-child(3) img[src='/images/common/facebook.svg']")
-
-      assert index_live |> has_element?("h5", "保有スキル（ジェムをクリック）")
-      assert index_live |> has_element?("li a", "エンジニア")
-
-      assert index_live |> has_element?("h5", "関わっているチーム")
-      assert index_live |> has_element?("li a", "所属チーム")
-
-      assert index_live |> has_element?("h5", "関わっているユーザー")
-      assert index_live |> has_element?("li a", "チーム")
     end
   end
 

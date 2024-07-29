@@ -99,7 +99,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         id="related_user"
         module={BrightWeb.CardLive.RelatedUserCardComponent}
         current_user={@current_user}
-        display_menu={false}
         purpose="menu"
       />
     </.mega_menu_button>

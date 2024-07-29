@@ -27,10 +27,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     "candidate_for_employment" => "採用候補者はいません"
   }
 
-  @menu_items [
-    # αリリース対象外 %{text: "カスタムグループを作る", href: "/"}, %{text: "カスタムグループの編集", href: "/"}
-  ]
-
   @page_size 6
 
   @impl true
@@ -38,7 +34,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     socket =
       socket
       |> assign(:current_user, nil)
-      |> assign(:menu_items, set_menu_items(socket.assigns[:display_menu]))
       |> assign(:tabs, @tabs)
       # TODO タブが増えたら初期選択タブの変更に対応する
       |> assign(:selected_tab, "team")
@@ -63,7 +58,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
         id={"related-user-card-#{@id}"}
         tabs={@tabs}
         selected_tab={@selected_tab}
-        menu_items={@menu_items}
         target={@myself}
         page={@page}
         total_pages={@total_pages}
@@ -216,9 +210,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     |> assign_first_inner_tab()
     |> assign_selected_card(selected_tab)
   end
-
-  defp set_menu_items(false), do: []
-  defp set_menu_items(_), do: @menu_items
 
   defp inner_tab(assigns) do
     ~H"""

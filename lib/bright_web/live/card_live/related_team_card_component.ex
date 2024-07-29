@@ -28,8 +28,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
     {"supportee_teams", "採用・育成支援先"}
   ]
 
-  @menu_items []
-
   @impl true
   def render(assigns) do
     assigns =
@@ -49,7 +47,6 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
         selected_tab={@card.selected_tab}
         page={@card.page_params.page}
         total_pages={@card.total_pages}
-        menu_items={show_menu(assigns)}
         target={@myself}
       >
         <div class="pt-3 pb-1 px-6 lg:h-[226px]">
@@ -284,17 +281,8 @@ defmodule BrightWeb.CardLive.RelatedTeamCardComponent do
       entries: [],
       page_params: %{page: page, page_size: 5},
       total_entries: 0,
-      total_pages: 0,
-      menu_items: @menu_items
+      total_pages: 0
     }
-  end
-
-  defp show_menu(assings) do
-    if Map.has_key?(assings, :show_menu) && assings.show_menu == true do
-      assings.card.menu_items
-    else
-      []
-    end
   end
 
   defp convert_team_params_from_custom_groups(custom_groups) do
