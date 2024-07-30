@@ -12,7 +12,7 @@ credo:
 
 #「test」とラベルが使えない為「test1」というラベルを使ってます
 test1:
-	docker compose run --rm web mix test
+	docker compose run --rm web mix test --warnings-as-errors
 
 testwatch:
 	docker compose run --rm web mix test.watch
