@@ -61,27 +61,17 @@ defmodule BrightWeb.UserAuth do
     |> renew_session()
     |> put_token_in_session(token)
     |> write_cookie(token)
-    |> redirect(to: user_return_to || log_in_redirect_path(user, user_return_to))
-  end
-
-  defp log_in_redirect_path(user) do
-    if Accounts.onboarding_finished?(user) do
-      ~p"/graphs"
-    else
-      ~p"/onboardings/welcome"
-    end
+    |> redirect(to: log_in_redirect_path(user, user_return_to))
   end
 
   defp log_in_redirect_path(user, user_return_to) do
     cond do
-      Accounts.onboarding_finished?(user) == false ->
-        ~p"/onboardings/welcome"
-
-      Accounts.onboarding_finished?(user) && user_return_to != nil ->
-        ~p"/" <> user_return_to
-
-      Accounts.onboarding_finished?(user) && user_return_to == nil ->
-        ~p"/graphs"
+      Accounts.onboarding_finished?(user) == false
+        -> ~p"/onboardings/welcome"
+      Accounts.onboarding_finished?(user) && user_return_to != nil
+        -> ~p"/#{user_return_to}"
+      Accounts.onboarding_finished?(user) && user_return_to == nil
+        -> ~p"/graphs"
     end
   end
 
