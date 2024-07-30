@@ -80,21 +80,6 @@ stripe_prices {
 subscription_plans ||--o{ stripe_prices : "has many"
 ```
 
-### stripe_customer_portal_configurations テーブル
-
-- Stripe のカスタマーポータルを開く際に機能を限定するために利用する ConfigurationID を保存するためのテーブルを新設する。
-
-```mermaid
-erDiagram
-stripe_customer_portal_configurations {
-    uuid id PK "ID"
-    varchar configuration_id "Configuration ID"
-    varchar lookup_key "Stripe側のConfigurationのmetaにlookup_keyを用意して対応させるための項目"
-    timestamp inserted_at "登録日時"
-    timestamp updated_at "更新日時"
-}
-```
-
 ### 決済履歴を保存するテーブル
 
 Bright 側に不要とのことで作成しない
@@ -151,21 +136,13 @@ sequenceDiagram
     participant Stripe
 
     User ->> Bright: 解約ボタン押下
-    Bright ->> Bright: stripe_customer_portal_configurationsテーブルからcancel用のConfigurationを取得
-    alt cancel用のConfigurationが存在しない場合
-        Bright ->> Stripe: Portal Configuration作成API実行(cancelのみ許可)
-        Stripe ->> Bright: Configuration Object返却
-        Bright ->> Bright: stripe_customer_portal_configurationsテーブルにConfigurationを保存
-    end
-
-    Bright ->> Stripe: Customer Portal SessionAPI実行(cancel用configurationId指定)
+    Bright ->> Stripe: Customer Portal SessionAPI実行(cancel用設定IDを環境変数から取得してパラメータ指定)
     Stripe ->> Bright: Customer Portal SessionAPIレスポンス返却
     Bright ->> Stripe: APIレスポンスのURLにリダイレクト
     Stripe ->> User: 解約のみのCustomer Portal表示
     User ->> Stripe: 解約ボタン押下
     Stripe ->> Bright: mypageに戻る
     Stripe ->> Bright: 解約成功通知
-
     Bright ->> Bright: subscription_user_plansテーブルを契約終了状態に更新
     Bright ->> User: 解約完了メールを通知
 ```
@@ -179,14 +156,7 @@ sequenceDiagram
     participant Stripe
 
     User ->> Bright: 支払い方法変更ボタン押下
-    Bright ->> Bright: stripe_customer_portal_configurationsテーブルからpayment_method_update用のConfigurationを取得
-    alt payment_method_update用のConfigurationが存在しない場合
-        Bright ->> Stripe: Portal Configuration作成API実行(payment_method_updateのみ許可)
-        Stripe ->> Bright: Configuration Object返却
-        Bright ->> Bright: stripe_customer_portal_configurationsテーブルにConfigurationを保存
-    end
-
-    Bright ->> Stripe: Customer Portal SessionAPI実行(payment_method_update用configurationId指定)
+    Bright ->> Stripe: Customer Portal SessionAPI実行(payment_method_update用設定IDを環境変数から取得してパラメータ指定)
     Stripe ->> Bright: Customer Portal SessionAPIレスポンス返却
     Bright ->> Stripe: APIレスポンスのURLにリダイレクト
     Stripe ->> User: 支払い方法変更のみのCustomer Portal表示
@@ -247,13 +217,7 @@ sequenceDiagram
     BrightLP ->> Bright: 無料トライアルページに遷移
     Bright ->> Bright: user_stripe_customersテーブルにユーザIDとStripe顧客IDを検索・取得
     User ->> Bright: プラン変更ボタン押下
-    Bright ->> Bright: stripe_customer_portal_configurationsテーブルからupdate用のConfigurationを取得
-    alt update用のConfigurationが存在しない場合
-        Bright ->> Stripe: Portal Configuration作成API実行(subscription update, payment update許可)
-        Stripe ->> Bright: Configuration Object返却
-        Bright ->> Bright: stripe_customer_portal_configurationsテーブルにConfigurationを保存
-    end
-    Bright ->> Stripe: Customer Portal SessionAPI実行(update用configurationId指定)
+    Bright ->> Stripe: Customer Portal SessionAPI実行(update用設定IDを環境変数から取得してパラメータ指定)
     Stripe ->> Bright: Customer Portal SessionAPIレスポンス返却
     Bright ->> Stripe: APIレスポンスのURLにリダイレクト
     Stripe ->> User: プラン変更のCustomer Portal表示
@@ -274,13 +238,7 @@ sequenceDiagram
     participant Stripe
 
     User ->> Bright: お支払い履歴の確認ボタン押下
-    Bright ->> Bright: invoice用のConfigurationを取得
-    alt invoice用のConfigurationが存在しない場合
-        Bright ->> Stripe: Portal Configuration作成API実行(invoiceのみ許可)
-        Stripe ->> Bright: Configuration Object返却
-        Bright ->> Bright: Configurationを保存
-    end
-    Bright ->> Stripe: Customer Portal SessionAPI実行(invoice用configurationId指定)
+    Bright ->> Stripe: Customer Portal SessionAPI実行(invoice用設定IDを環境変数から取得してパラメータ指定)
     Stripe ->> Bright: Customer Portal SessionAPIレスポンス返却
     Bright ->> Stripe: APIレスポンスのURLにリダイレクト
     Stripe ->> User: 請求履歴情報のみのCustomer Portal表示
