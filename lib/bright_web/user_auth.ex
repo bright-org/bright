@@ -74,12 +74,14 @@ defmodule BrightWeb.UserAuth do
 
   defp log_in_redirect_path(user, user_return_to) do
     cond do
-      Accounts.onboarding_finished?(user) == false
-        -> ~p"/onboardings/welcome"
-      Accounts.onboarding_finished?(user) && user_return_to != nil
-        -> ~p"/" <> user_return_to
-      Accounts.onboarding_finished?(user) && user_return_to == nil
-        -> ~p"/graphs"
+      Accounts.onboarding_finished?(user) == false ->
+        ~p"/onboardings/welcome"
+
+      Accounts.onboarding_finished?(user) && user_return_to != nil ->
+        ~p"/" <> user_return_to
+
+      Accounts.onboarding_finished?(user) && user_return_to == nil ->
+        ~p"/graphs"
     end
   end
 
