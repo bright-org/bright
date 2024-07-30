@@ -22,6 +22,7 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
     field :company_name, :string
     field :phone_number, :string
     field :pic_name, :string
+    field :stripe_subscription_id, :string
 
     belongs_to :user, Bright.Accounts.User
     belongs_to :subscription_plan, Bright.Subscriptions.SubscriptionPlan
@@ -42,7 +43,8 @@ defmodule Bright.Subscriptions.SubscriptionUserPlan do
       :trial_end_datetime,
       :company_name,
       :phone_number,
-      :pic_name
+      :pic_name,
+      :stripe_subscription_id
     ])
     |> validate_required([
       :user_id,
