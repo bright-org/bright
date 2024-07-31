@@ -1,23 +1,17 @@
-<section class="bg-white p-2 mb-12 relative rounded-lg lg:p-8 lg:pb-8 lg:min-h-[720px] lg:min-w-[1000px]">
+<section class="bg-brightGray-50 p-2 mb-12 relative rounded-lg lg:p-8 lg:pb-8 lg:min-h-[720px] lg:min-w-[1000px]">
   <h1 class={["font-bold text-3xl",hidden_more_skills(@current_path)]}>
     <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:align-[-5px] before:w-9">
       スキルを選ぶ
     </span>
   </h1>
-  <div class="mt-4 lg:mt-0 text-base">なりたいジョブからスキルを選んでください</div>
+  <div class="mt-4 lg:mt-0 text-engineer-dark">ジョブパネルを選ぶ</div>
 
-  <div class="flex flex-col mt-2 relative">
-    <section class="accordion flex mt-4 max-w-[1236px]">
-      <div class="bg-brightGray-50 rounded w-full">
-        <.live_component
-          id="wants_job"
-          current_path={@current_path}
-          tab={@tab}
-          module={BrightWeb.OnboardingLive.WantsJobComponents}
-        />
-      </div>
-    </section>
-  </div>
+  <.live_component
+    id="wants_job"
+    current_path={@current_path}
+    scores={@scores}
+    module={BrightWeb.OnboardingLive.WantsJobComponents}
+  />
 
   <div class="mt-8 max-w-[1236px] text-base" :if={@current_user.user_onboardings == nil}>
     <p>スキル評価やチーム育成、スカウトを行う方は、まずチームを作成してください</p>
