@@ -5,24 +5,28 @@ defmodule BrightWeb.OnboardingLive.Index do
   alias Bright.Onboardings
   alias Bright.Onboardings.UserOnboarding
 
+  @default_pos "engineer"
+
   @impl true
   def mount(_params, _session, socket) do
     scores = SkillPanels.list_skill_panels_with_score(socket.assigns.current_user.id)
 
     socket
-    |> assign(:open_want_todo, false)
-    |> assign(:open_wants_job, false)
     |> assign(:scores, scores)
+    |> assign(:pos, @default_pos)
     |> then(&{:ok, &1})
   end
 
   @impl true
-  def handle_params(_, uri, socket) do
+  def handle_params(params, uri, socket) do
     current_path = URI.parse(uri).path
 
     socket
     |> assign(:current_path, current_path)
     |> assign(:page_title, page_title(current_path))
+    |> push_event("scroll-to", %{
+      "id" => "#{Map.get(params, "career_field")}-#{Map.get(params, "job")}"
+    })
     |> then(&{:noreply, &1})
   end
 
@@ -38,6 +42,16 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   def handle_event("request", _params, socket) do
     {:noreply, put_flash(socket, :info, "ジョブパネルのリクエストを受け付けました")}
+  end
+
+  def handle_event("scroll_to", %{"pos" => pos}, socket) do
+    socket
+    |> push_event("scroll-to", %{"id" => pos})
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("position", %{"pos" => pos}, socket) do
+    {:noreply, assign(socket, :pos, pos)}
   end
 
   defp skip_onboarding(nil, user_id) do
