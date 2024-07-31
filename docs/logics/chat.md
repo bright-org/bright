@@ -15,8 +15,14 @@
 
 
 ## Chatデータ変換仕様
-* 前提 ChatとInterviewがリンクしている前提
-* 下記条件　updated_at = inserted_at を条件の箇所は1秒でもずれるとヒットしないため別途対策は必要
+
+### before
+
+ChatはInterviewのみがリンク
+
+### after
+
+Chatはrelation_typeによってInterview、Coordination、Employmentをリンク
 
 |Chat.relation_type|条件|
 |--------------|--------|
@@ -26,22 +32,15 @@
 
 詳細変換条件
 
-### Chat.relation_type = :coordination, relation_id = Chat.Coordination.id に変換条件
+#### Chat.relation_type = :coordination, relation_id = Chat.Coordination.id に変換条件
 
 * Interview.status = :completed_interview
 * Interview.recruiter_user_id = Coordination.recruiter_user_id
-* Interview.updated_at = Coordination.inserted_at
+* Interview.updated_at = Coordination.inserted_at (1秒でもずれるとヒットしないため別途対策は必要)
 
-### Chat.relation_type = :employment, relation_id = Chat.Employment.id に変換条件
+#### Chat.relation_type = :employment, relation_id = Chat.Employment.id に変換条件
 
 * Coordination.status = :completed_coordination
 * Coordination.recruiter_user_id = Employment.recruiter_user_id
-* Coordination.updated_at = Employment.inserted_at
-
-
-![関連付イメージ図](../images/chats_data_conversion.png)
-
-
-
-
+* Coordination.updated_at = Employment.inserted_at (1秒でもずれるとヒットしないため別途対策は必要)
 
