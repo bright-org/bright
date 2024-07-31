@@ -39,11 +39,11 @@ Chatはrelation_typeによってInterview、Coordination、Employmentをリン�
 
 * Interview.status = :completed_interview
 * Interview.recruiter_user_id = Coordination.recruiter_user_id
-* Interview.updated_at = Coordination.inserted_at (1秒でもずれるとヒットしないため別途対策は必要)
+* Interview.updated_at <= Coordination.inserted_at <= Interview.updated_at + 10 sec
 
 #### Chat.relation_type = :employment, relation_id = Chat.Employment.id に変換条件
 
 * Coordination.status = :completed_coordination
 * Coordination.recruiter_user_id = Employment.recruiter_user_id
-* Coordination.updated_at = Employment.inserted_at (1秒でもずれるとヒットしないため別途対策は必要)
+* Coordination.updated_at <= Employment.inserted_at <= Coordination.updated_at + 10 sec
 
