@@ -1060,4 +1060,115 @@ defmodule Bright.SkillScoresTest do
       assert [nil, nil, nil, 30] == list
     end
   end
+
+  describe "list_recent_level_up_skill_class_scores" do
+    setup do
+      user = insert(:user)
+      skill_panel = insert(:skill_panel)
+
+      skill_classes = [
+        insert(:skill_class, skill_panel: skill_panel, class: 1),
+        insert(:skill_class, skill_panel: skill_panel, class: 2),
+        insert(:skill_class, skill_panel: skill_panel, class: 3)
+      ]
+
+      %{user: user, skill_panel: skill_panel, skill_classes: skill_classes}
+    end
+
+    test "returns skill_class_scores", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_classes: [skill_class_1, skill_class_2, skill_class_3]
+    } do
+      # class1 ベテラン, class2 平均, class3 平均 とする
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+
+      skill_class_score_1 =
+        insert(:skill_class_score,
+          user: user,
+          skill_class: skill_class_1,
+          level: :skilled,
+          became_skilled_at: ~N[2024-07-27 10:00:00]
+        )
+
+      skill_class_score_2 =
+        insert(:skill_class_score,
+          user: user,
+          skill_class: skill_class_2,
+          level: :normal,
+          became_normal_at: ~N[2024-07-28 10:00:00]
+        )
+
+      skill_class_score_3 =
+        insert(:skill_class_score,
+          user: user,
+          skill_class: skill_class_3,
+          level: :normal,
+          became_normal_at: ~N[2024-07-29 10:00:00]
+        )
+
+      # それぞれレベルアップ済みのため取得できること
+      [latest, second, third] = SkillScores.list_recent_level_up_skill_class_scores(user)
+      assert latest.id == skill_class_score_3.id
+      assert second.id == skill_class_score_2.id
+      assert third.id == skill_class_score_1.id
+    end
+
+    test "returns init skill_class_scores", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_classes: [skill_class_1, skill_class_2, skill_class_3]
+    } do
+      # スキルパネル取得直後とする
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+
+      skill_class_score_1 =
+        insert(:skill_class_score, user: user, skill_class: skill_class_1, level: :beginner)
+
+      _skill_class_score_2 =
+        insert(:skill_class_score, user: user, skill_class: skill_class_2, level: :beginner)
+
+      _skill_class_score_3 =
+        insert(:skill_class_score, user: user, skill_class: skill_class_3, level: :beginner)
+
+      # クラス1のみ「見習い」スタートのため返すこと
+      [latest] = SkillScores.list_recent_level_up_skill_class_scores(user)
+      assert latest.id == skill_class_score_1.id
+    end
+
+    test "returns data with given condition", %{
+      user: user,
+      skill_panel: skill_panel,
+      skill_classes: [skill_class_1 | _]
+    } do
+      skill_panel_2 = insert(:skill_panel)
+      skill_class_2_1 = insert(:skill_class, skill_panel: skill_panel_2, class: 1)
+
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel)
+      insert(:user_skill_panel, user: user, skill_panel: skill_panel_2)
+
+      skill_class_score_1 =
+        insert(:skill_class_score,
+          user: user,
+          skill_class: skill_class_1,
+          level: :skilled,
+          became_skilled_at: ~N[2024-07-27 10:00:00]
+        )
+
+      skill_class_score_2_1 =
+        insert(:skill_class_score, user: user, skill_class: skill_class_2_1, level: :beginner)
+
+      [latest, second] = SkillScores.list_recent_level_up_skill_class_scores(user)
+      assert latest.id == skill_class_score_2_1.id
+      assert second.id == skill_class_score_1.id
+
+      # size指定
+      [latest] = SkillScores.list_recent_level_up_skill_class_scores(user, 1)
+      assert latest.id == skill_class_score_2_1.id
+
+      # user指定
+      user_2 = insert(:user)
+      assert [] = SkillScores.list_recent_level_up_skill_class_scores(user_2)
+    end
+  end
 end
