@@ -66,6 +66,7 @@ defmodule Bright.JobsTest do
       skill_panel = insert(:skill_panel)
       insert(:career_field_job, career_field_id: career_field.id, job_id: job.id)
       insert(:job_skill_panel, job_id: job.id, skill_panel_id: skill_panel.id)
+      job = Jobs.get_job!(job.id) |> Repo.preload([:career_fields, :skill_panels])
 
       assert %{"engineer" => %{basic: [job]}} ==
                Jobs.list_jobs_group_by_career_field_and_rank()
