@@ -177,7 +177,8 @@ defmodule Bright.Jobs do
   def list_jobs_group_by_career_field_and_rank() do
     from(job in Job,
       join: cf in assoc(job, :career_fields),
-      select: {cf.name_en, job}
+      select: {cf.name_en, job},
+      preload: [:career_fields, :skill_panels]
     )
     |> Repo.all()
     |> Enum.group_by(fn {cf, _job} -> cf end, fn {_cf, job} -> job end)
