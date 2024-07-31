@@ -14,6 +14,8 @@ defmodule Bright.Chats.Chat do
     field :relation_type, :string
     field :relation_id, Ecto.ULID
     field :interview, :any, virtual: true
+    field :coordination, :any, virtual: true
+    field :employment, :any, virtual: true
 
     belongs_to :owner_user, Bright.Accounts.User
 
