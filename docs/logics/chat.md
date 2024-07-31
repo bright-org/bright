@@ -11,7 +11,7 @@
 |面談確定|Interview|ongoing_interview|
 |面談キャンセル|Interview|cancel_interview|
 |選考中|Coordination|waiting_recruit_decision|
-| （すべて）|Interview & Coordination|Interview(waiting_decision, consume_interview, dismiss_interview,ongoing_interview,cancel_interview, one_on_one) & Coordination(すべて)|
+| （すべて）|Interview & Coordination & Employment|Interview(waiting_decision, consume_interview, dismiss_interview,ongoing_interview,cancel_interview, one_on_one) & Coordination(すべて) & Employment(すべて)|
 
 
 
