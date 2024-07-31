@@ -71,7 +71,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
     socket
     |> assign(:current_path, current_path)
     |> assign(:route, "wants")
-    |> assign(:return_to, "/#{current_path}?open=want_todo_panel")
+    |> assign(:return_to, "/#{current_path}")
     |> assign(:id, id)
     |> assign(:career_fields, career_fields)
     |> then(&{:noreply, &1})
@@ -89,7 +89,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         socket
         |> assign(:current_path, current_path)
         |> assign(:route, "jobs")
-        |> assign(:return_to, "/#{current_path}?open=wants_job_panel&tab=#{career_field.name_en}")
+        |> assign(:return_to, "/#{current_path}?career_field=#{career_field.name_en}&job=#{id}")
         |> assign(:id, id)
         |> assign(:career_fields, career_fields)
         |> then(&{:noreply, &1})
