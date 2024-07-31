@@ -15,6 +15,9 @@
 
 
 ## Chatデータ変換仕様
+上記「フィルター仕様」を実現するために、予めChatデータを変換する必要がある
+
+変換ルールを「Chatデータ変換仕様」として定義する
 
 ### before
 
@@ -30,7 +33,7 @@ Chatはrelation_typeによってInterview、Coordination、Employmentをリン�
 |coordination|Coordination.status != :completed_coordination|
 |employment|Coordination.status = :completed_coordination|
 
-詳細変換条件
+### 詳細変換条件
 
 #### Chat.relation_type = :coordination, relation_id = Chat.Coordination.id に変換条件
 
