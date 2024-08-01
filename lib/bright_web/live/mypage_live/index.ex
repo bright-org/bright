@@ -5,11 +5,13 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
+  alias Bright.SkillUnits
+  alias Bright.SkillEvidences
+  alias Bright.UserProfiles
   alias Bright.SkillScores
   alias BrightWeb.PathHelper
   alias BrightWeb.DisplayUserHelper
 
-  @impl true
   def mount(params, _session, socket) do
     socket
     |> DisplayUserHelper.assign_display_user(params)
@@ -17,24 +19,54 @@ defmodule BrightWeb.MypageLive.Index do
     |> then(&{:ok, &1})
   end
 
-  @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    {:noreply,
+     socket
+     |> assign_skillset_gem()
+     |> assign_recent_level_up_skill_classes()
+     |> assign_recent_skill_evidences()
+     |> apply_action(socket.assigns.live_action, params)}
+  end
+
+  def handle_event("edit_skill_evidence", %{"id" => id}, socket) do
+    skill_evidence = Enum.find(socket.assigns.recent_skill_evidences, &(&1.id == id))
+    skill = SkillUnits.get_skill!(skill_evidence.skill_id)
+
+    # モーダルを開き、表示内容を選択した学習メモで初期化する
+    # モーダルを閉じたときは、一覧を最新にしている
+    send_update(BrightWeb.ModalComponent,
+      id: "skill-evidence-modal",
+      open: true,
+      on_open: fn ->
+        send_update(BrightWeb.SkillPanelLive.SkillEvidenceComponent,
+          id: "skill-evidence",
+          reset: true,
+          skill_evidence: skill_evidence,
+          skill: skill,
+          user: socket.assigns.current_user
+        )
+      end,
+      on_close: fn ->
+        send(self(), :reload_recent_skill_evidences)
+      end
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_info(:reload_recent_skill_evidences, socket) do
+    {:noreply, assign_recent_skill_evidences(socket)}
   end
 
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "保有スキル")
-    |> assign_skillset_gem()
-    |> assign_recent_level_up_skill_classes()
     |> assign(:search, false)
   end
 
   defp apply_action(socket, :search, _params) do
     socket
     |> assign(:page_title, "スキル検索／スカウト")
-    |> assign_skillset_gem()
-    |> assign_recent_level_up_skill_classes()
     |> assign(:search, true)
   end
 
@@ -43,8 +75,6 @@ defmodule BrightWeb.MypageLive.Index do
 
     socket
     |> assign(:page_title, "無料トライアル")
-    |> assign_skillset_gem()
-    |> assign_recent_level_up_skill_classes()
     |> assign(:plan, plan)
     |> assign(:search, false)
   end
@@ -72,6 +102,17 @@ defmodule BrightWeb.MypageLive.Index do
     assign(socket, :recent_level_up_skill_class_scores, recent_level_up_skill_class_scores)
   end
 
+  defp assign_recent_skill_evidences(socket) do
+    %{display_user: display_user} = socket.assigns
+
+    # 必要に応じてstream化のこと
+    recent_skill_evidences =
+      SkillEvidences.list_recent_skill_evidences(display_user)
+      |> Bright.Repo.preload(skill_evidence_posts: [user: [:user_profile]])
+
+    assign(socket, :recent_skill_evidences, recent_skill_evidences)
+  end
+
   # local components
   # ---
 
@@ -81,7 +122,10 @@ defmodule BrightWeb.MypageLive.Index do
       <h5>スキルアップ</h5>
       <div class="bg-white rounded-md mt-1 px-2 py-0.5">
         <ul class="text-sm font-medium text-center gap-y-2">
-          <li :for={skill_class_score <- @recent_level_up_skill_class_scores} class="flex flex-wrap my-2">
+          <li
+            :for={skill_class_score <- @recent_level_up_skill_class_scores}
+            class="flex flex-wrap my-2"
+          >
             <.link
               class="cursor-pointer hover:filter hover:brightness-[80%] text-left flex flex-wrap items-center text-base px-1 py-1 flex-1 mr-4 w-full lg:w-auto lg:flex-nowrap"
               href={skill_panel_path(skill_class_score, @display_user, @me, @anonymous)}
@@ -95,6 +139,65 @@ defmodule BrightWeb.MypageLive.Index do
         </ul>
       </div>
     </section>
+    """
+  end
+
+  defp skill_evidences(assigns) do
+    ~H"""
+    <section>
+      <h5>学習メモ</h5>
+      <div
+        :if={@recent_skill_evidences == []}
+        class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
+      >
+        学習メモはありません
+      </div>
+
+      <div
+        :for={skill_evidence <- @recent_skill_evidences}
+        class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
+      >
+        <.skill_evidence
+          skill_evidence={skill_evidence}
+          latest_post={get_latest_skill_evidence_post(skill_evidence)}
+          skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
+          anonymous={@anonymous}
+        />
+      </div>
+    </section>
+    """
+  end
+
+  defp skill_evidence(assigns) do
+    ~H"""
+    <div class="flex-none pt-4 mx-2">
+      <img class="h-10 w-10 rounded-full" src={icon_file_path(@latest_post.user, @anonymous)} />
+    </div>
+    <div class="grow flex flex-col gap-y-2 mx-2">
+      <div class="text-sm flex justify-between">
+        <p><%= @skill_breadcrumb %></p>
+        <div
+          id={"timestamp-#{@latest_post.id}"}
+          phx-hook="LocalTime"
+          phx-update="ignore"
+          data-iso={NaiveDateTime.to_iso8601(@latest_post.inserted_at)}
+          >
+          <p class="text-sm" data-local-time="%x %H:%M"></p>
+        </div>
+      </div>
+      <p class="break-all">
+        <%= SkillEvidences.truncate_post_content(@latest_post.content, 200) %>
+      </p>
+      <nav class="flex items-center gap-x-4">
+        <button
+          class="link-evidence"
+          phx-click="edit_skill_evidence"
+          phx-value-id={@skill_evidence.id}
+        >
+          <img src="/images/common/icons/skillEvidenceActive.svg">
+        </button>
+      </nav>
+    </div>
     """
   end
 
@@ -126,5 +229,17 @@ defmodule BrightWeb.MypageLive.Index do
       _ ->
         "#{skill_panel_name}【#{skill_class_name}】が「#{level_name}」にレベルアップしました"
     end
+  end
+
+  defp get_latest_skill_evidence_post(skill_evidence) do
+    skill_evidence.skill_evidence_posts
+    |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+    |> List.first()
+  end
+
+  defp icon_file_path(_user, true), do: UserProfiles.icon_url(nil)
+
+  defp icon_file_path(user, _anonymous) do
+    UserProfiles.icon_url(user.user_profile.icon_file_path)
   end
 end

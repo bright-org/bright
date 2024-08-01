@@ -27,6 +27,34 @@ defmodule Bright.SkillEvidences do
   end
 
   @doc """
+  直近のコメント順に学習メモを返す
+  """
+  def list_recent_skill_evidences(user, size \\ 10) do
+    my_evidences = Ecto.assoc(user, :skill_evidences)
+    my_evidence_ids = from(q in my_evidences, select: q.id)
+
+    latest_post =
+      from(
+        sep in SkillEvidencePost,
+        where: sep.skill_evidence_id in subquery(my_evidence_ids),
+        group_by: sep.skill_evidence_id,
+        select: %{
+          skill_evidence_id: sep.skill_evidence_id,
+          latest_post_time: max(sep.inserted_at)
+        }
+      )
+
+    from(
+      se in subquery(my_evidences),
+      join: latest_sep in subquery(latest_post),
+      on: se.id == latest_sep.skill_evidence_id,
+      order_by: {:desc, latest_sep.latest_post_time},
+      limit: ^size
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single skill_evidence.
 
   Raises `Ecto.NoResultsError` if the Skill evidence does not exist.
@@ -281,6 +309,11 @@ defmodule Bright.SkillEvidences do
   @doc """
   スキル階層名を返す
   スキルユニット名 > スキルカテゴリ名 > スキル名
+
+  ## Examples
+
+      iex> get_skill_breadcrumb(skill)
+      "Elixir本体 > 基本 > 基本型／演算子／パイプ"
   """
   def get_skill_breadcrumb(%{id: skill_id}) do
     from(
@@ -323,5 +356,17 @@ defmodule Bright.SkillEvidences do
   """
   def calc_filled_percentage(value, size) do
     Percentage.calc_floor_percentage(value, size)
+  end
+
+  @doc """
+  指定sizeでtruncateした文字列を返す
+  """
+  def truncate_post_content(str, size) do
+    String.at(str, size)
+    |> if do
+      String.slice(str, 0, size - 3) <> "..."
+    else
+      str
+    end
   end
 end
