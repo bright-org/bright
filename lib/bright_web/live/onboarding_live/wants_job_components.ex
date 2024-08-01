@@ -110,7 +110,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         <hr />
         <div class="flex gap-x-2 mt-2 h-[28px]" >
           <%= for tag <- @job.career_fields do %>
-            <p :if={tag.name_en != "engineer"} class={"border rounded-full p-1 text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
+            <p class={"border rounded-full p-1 text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
           <% end %>
         </div>
       </div>
