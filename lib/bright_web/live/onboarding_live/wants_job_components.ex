@@ -59,8 +59,8 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   defp locked_job(assigns) do
     ~H"""
-    <div class="border-[3px] px-4 py-2 m-2 rounded w-[330px] h-30 flex flex-col bg-brightGray-50">
-      <div class="flex justify-between h-[48px]">
+    <div class="border-[3px] px-4 pt-2 pb-[40px] m-2 rounded w-[330px] h-30 flex flex-col bg-brightGray-50">
+      <div class="flex justify-between h-[48px] ">
         <p class="font-bold my-2 w-44 truncate text-[#777777] opacity-85"><%= @job.name %></p>
         <button
           class="rounded-lg border bg-white py-1 px-2 mb-2 text-xs hover:filter hover:brightness-[80%]"
@@ -108,9 +108,9 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
           <% end %>
         </div>
         <hr />
-        <div class="flex gap-x-2 mt-2">
-          <%= for tag <-  @job.career_fields do %>
-            <p class={"border rounded-full p-1 text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
+        <div class="flex gap-x-2 mt-2 h-[28px]" >
+          <%= for tag <- @job.career_fields do %>
+            <p :if={tag.name_en != "engineer"} class={"border rounded-full p-1 text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
           <% end %>
         </div>
       </div>
