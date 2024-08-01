@@ -63,7 +63,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
       <div class="flex justify-between h-[48px]">
         <p class="font-bold my-2 w-44 truncate text-[#777777] opacity-85"><%= @job.name %></p>
         <button
-          class="rounded-lg border bg-white py-1 px-2 mb-2 text-xs"
+          class="rounded-lg border bg-white py-1 px-2 mb-2 text-xs hover:filter hover:brightness-[80%]"
           phx-click="request"
           phx-value-job={@job.id}
         >
