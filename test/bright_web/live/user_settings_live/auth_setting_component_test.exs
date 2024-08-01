@@ -1,12 +1,15 @@
 defmodule BrightWeb.UserSettingsLive.AuthSettingComponentTest do
   use BrightWeb.ConnCase
 
+  import Phoenix.LiveViewTest
+  import Swoosh.TestAssertions
+
   alias Bright.Repo
   alias Bright.Accounts
   alias Bright.Accounts.UserToken
   alias Bright.Accounts.UserSubEmail
-  import Phoenix.LiveViewTest
-  import Swoosh.TestAssertions
+
+  setup :set_swoosh_global
 
   describe "メール・パスワード" do
     setup [:register_and_log_in_user]

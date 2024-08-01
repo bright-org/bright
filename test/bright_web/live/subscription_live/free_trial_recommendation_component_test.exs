@@ -2,6 +2,9 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
+  import Swoosh.TestAssertions
+
+  setup :set_swoosh_global
 
   def submit_trial_form(live, params \\ %{}) do
     change_trial_form(live, params)
