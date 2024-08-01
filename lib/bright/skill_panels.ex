@@ -28,6 +28,26 @@ defmodule Bright.SkillPanels do
     |> Repo.all()
   end
 
+  def list_skill_panels_with_score(user_id) do
+    from(p in SkillPanel,
+      join: u in assoc(p, :user_skill_panels),
+      on: u.skill_panel_id == p.id,
+      join: class in assoc(p, :skill_classes),
+      on: class.skill_panel_id == p.id,
+      join: score in assoc(class, :skill_class_scores),
+      on: class.id == score.skill_class_id,
+      where: u.user_id == ^user_id,
+      where: score.user_id == ^user_id,
+      preload: [
+        :user_skill_panels,
+        skill_classes: [skill_class_scores: ^SkillClassScore.user_ids_query([user_id])]
+      ],
+      distinct: true,
+      select: %{p | user_skill_panels: u}
+    )
+    |> Repo.all()
+  end
+
   @doc """
     Returns the list skill panes witin class and score by career_field name.
 
