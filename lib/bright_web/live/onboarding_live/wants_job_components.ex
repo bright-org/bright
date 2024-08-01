@@ -80,7 +80,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     <.link navigate={"#{@current_path}/jobs/#{@job.id}"}>
       <div
         id={"#{@career_field.name_en}-#{@job.id}"}
-        class={"border-[3px] px-4 py-2 m-2 ounded w-[330px] h-30 flex flex-col  hover:bg-#{@career_field.name_en}-light #{if is_nil(@score), do: "", else: "border-brightGreen-300"}"}
+        class={"border-[3px] px-4 py-2 m-2 ounded w-[330px] h-30 flex flex-col  hover:bg-[#F5FBFB] #{if is_nil(@score), do: "", else: "border-brightGreen-300"}"}
       >
         <div class="flex justify-between mt-2">
           <p class="font-bold mb-2 w-48 truncate h-[28px]"><%= @job.name %></p>
