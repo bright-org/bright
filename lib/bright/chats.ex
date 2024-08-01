@@ -57,14 +57,14 @@ defmodule Bright.Chats do
 
   def list_chats(user_id, status) when is_atom(status), do: list_chats(user_id, [status])
 
-  def list_chats(user_id, status) when is_list(status) do
+  def list_chats(user_id, status, relation_type \\ ["recruit"]) when is_list(status) do
     from(
       c in Chat,
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
-      join: i in Interview,
+      left_join: i in Interview,
       on: i.id == c.relation_id,
-      where: c.relation_type == "recruit",
+      where: c.relation_type in ^relation_type,
       order_by: [desc: :updated_at],
       join: cu in User,
       on: cu.id == i.candidates_user_id,
