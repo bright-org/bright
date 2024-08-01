@@ -45,7 +45,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
       <div class="w-full lg:w-60 lg:ml-12 bg-white h-full p-2 sticky top-16 lg:top-2 order-1 lg:order-2 flex flex-row lg:flex-col">
         <%= for career_field <- @career_fields do %>
           <p
-            class={"cursor-default px-2 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
+            class={"cursor-pointer px-2 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
             phx-click="scroll_to"
             phx-value-pos={career_field.name_en}
           >
@@ -59,11 +59,11 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   defp locked_job(assigns) do
     ~H"""
-    <div class="border-[3px] px-4 py-2 m-2 rounded w-[330px] h-40 flex flex-col bg-brightGray-50">
-      <div class="flex justify-between">
-        <p class="font-bold mb-2 w-44 truncate text-[#777777] opacity-85"><%= @job.name %></p>
+    <div class="border-[3px] px-4 py-2 m-2 rounded w-[330px] h-30 flex flex-col bg-brightGray-50">
+      <div class="flex justify-between h-[48px]">
+        <p class="font-bold my-2 w-44 truncate text-[#777777] opacity-85"><%= @job.name %></p>
         <button
-          class="rounded-lg border bg-white py-1 px-2 -mt-1 mb-2 text-xs"
+          class="rounded-lg border bg-white py-1 px-2 mb-2 text-xs hover:filter hover:brightness-[80%]"
           phx-click="request"
           phx-value-job={@job.id}
         >
@@ -71,9 +71,6 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         </button>
       </div>
       <hr />
-      <p class="mt-2 text-[#777777] opacity-85 h-[40px] overflow-hidden">
-        <%= String.split(@job.description, "。") |> List.first() %>
-      </p>
     </div>
     """
   end
@@ -83,12 +80,12 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     <.link navigate={"#{@current_path}/jobs/#{@job.id}"}>
       <div
         id={"#{@career_field.name_en}-#{@job.id}"}
-        class={"border-[3px] px-4 py-2 m-2 ounded w-[330px] h-40 flex flex-col #{if is_nil(@score), do: "", else: "border-brightGreen-300"}"}
+        class={"border-[3px] px-4 py-2 m-2 ounded w-[330px] h-30 flex flex-col  hover:bg-[#F5FBFB] #{if is_nil(@score), do: "", else: "border-brightGreen-300"}"}
       >
         <div class="flex justify-between mt-2">
-          <p class="font-bold mb-2 w-48 truncate"><%= @job.name %></p>
+          <p class="font-bold mb-2 w-48 truncate h-[28px]"><%= @job.name %></p>
           <%= if is_nil(@score) do %>
-            <p class="flex gap-x-2 h-8 mb-2 -mt-2">
+            <p class="flex gap-x-2 h-8 mb-4 -mt-2">
               <img src={icon_path(:none)} width="20" height="23" />
               <img src={icon_path(:none)} width="20" height="23" />
               <img src={icon_path(:none)} width="20" height="23" />
@@ -103,7 +100,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
                   </.link>
                 <% else %>
                   <.link navigate={~p"/panels/#{@panel_id}?class=#{class.class}"} >
-                    <img src={icon_path(class_score.level)}  />
+                    <img src={icon_path(class_score.level)}  class="hover:filter hover:brightness-[80%]" />
                   </.link>
                 <% end %>
               <% end %>
@@ -111,9 +108,6 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
           <% end %>
         </div>
         <hr />
-        <p class="mt-2 text-[#777777] text-sm opacity-85 h-[60px] overflow-scroll">
-          <%= String.split(@job.description, "。") |> List.first() %>
-        </p>
         <div class="flex gap-x-2 mt-2">
           <%= for tag <-  @job.career_fields do %>
             <p class={"border rounded-full p-1 text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
