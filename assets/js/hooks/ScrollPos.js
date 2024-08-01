@@ -1,30 +1,27 @@
 const ScrollPos = {
   mounted() {
-    const engineer = document.getElementById("engineer");
-    const product = document.getElementById("product");
-    const designer = document.getElementById("designer");
-    const marketer = document.getElementById("marketer");
-    const cxo = document.getElementById("cxo");
+    const cf = document.getElementById("wants_job_panel").children;
+
     const pos = [
-      engineer ? engineer.clientHeight : 0,
-      product ? product.clientHeight : 0,
-      designer ? designer.clientHeight : 0,
-      marketer ? marketer.clientHeight : 0,
-      cxo ? cxo.clientHeight : 0,
+      cf[0].clientHeight,
+      cf[1].clientHeight,
+      cf[2].clientHeight,
+      cf[3].clientHeight,
+      cf[4].clientHeight,
     ];
 
     document.addEventListener("scroll", () => {
       const y = window.scrollY;
       if (y < pos[0]) {
-        this.pushEvent("position", { pos: "engineer" });
+        this.pushEvent("position", { pos: cf[0].id });
       } else if (y < pos[0] + pos[1]) {
-        this.pushEvent("position", { pos: "product" });
+        this.pushEvent("position", { pos: cf[1].id });
       } else if (y < pos[0] + pos[1] + pos[2]) {
-        this.pushEvent("position", { pos: "designer" });
+        this.pushEvent("position", { pos: cf[2].id });
       } else if (y < pos[0] + pos[1] + pos[2] + pos[3]) {
-        this.pushEvent("position", { pos: "marketer" });
+        this.pushEvent("position", { pos: cf[3].id });
       } else {
-        this.pushEvent("position", { pos: "cxo" });
+        this.pushEvent("position", { pos: cf[4].id });
       }
     });
   },
