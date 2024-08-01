@@ -4,6 +4,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
   alias Bright.Recruits
   alias Bright.Recruits.Employment
   alias BrightWeb.BrightCoreComponents, as: BrightCore
+  alias Bright.Chats
 
   import BrightWeb.ProfileComponents, only: [profile: 1]
   import Bright.UserProfiles, only: [icon_url: 1]
@@ -231,6 +232,9 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
       {:ok, employment} ->
         Recruits.get_coordination!(coordination.id)
         |> Recruits.update_coordination(%{status: :completed_coordination})
+
+        Chats.get_chat_by_coordination_id(coordination.id)
+        |> Chats.update_chat(%{relation_type: "employment", relation_id: employment.id})
 
         send_acceptance_mails(employment, coordination, recruiter)
 

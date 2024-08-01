@@ -210,6 +210,12 @@ defmodule Bright.Chats do
     |> Repo.one()
   end
 
+  def get_chat_by_coordination_id(coordination_id) do
+    Chat
+    |> where([c], c.relation_type == "coordination" and c.relation_id == ^coordination_id)
+    |> Repo.one()
+  end
+
   @doc """
   Creates a chat.
 
