@@ -172,6 +172,30 @@ module "secret_bright_env" {
   data = "stg"
 }
 
+module "secret_zoho_client_id" {
+  source     = "../../modules/google/secret"
+  depends_on = [module.googleapis]
+
+  name = "bright-zoho-client-id"
+  data = var.zoho_client_id
+}
+
+module "secret_zoho_client_secret" {
+  source     = "../../modules/google/secret"
+  depends_on = [module.googleapis]
+
+  name = "bright-zoho-client-secret"
+  data = var.zoho_client_secret
+}
+
+module "secret_zoho_crm_zsoid" {
+  source     = "../../modules/google/secret"
+  depends_on = [module.googleapis]
+
+  name = "bright-zoho-crm-zsoid"
+  data = var.zoho_crm_zsoid
+}
+
 module "service_account_cloud_run" {
   source     = "../../modules/google/service_account"
   depends_on = [module.googleapis]

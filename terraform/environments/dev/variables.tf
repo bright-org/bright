@@ -47,3 +47,18 @@ variable "github_client_secret" {
   description = "Bright GitHub OAuth2 CLIENT SECRET"
   type        = string
 }
+
+variable "zoho_client_id" {
+  description = "Bright ZOHO OAuth2 CLIENT ID"
+  type        = string
+}
+
+variable "zoho_client_secret" {
+  description = "Bright ZOHO OAuth2 CLIENT SECRET"
+  type        = string
+}
+
+variable "zoho_crm_zsoid" {
+  description = "Bright ZOHO CRM zsoid"
+  type        = string
+}
