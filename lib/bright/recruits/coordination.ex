@@ -35,6 +35,7 @@ defmodule Bright.Recruits.Coordination do
     field :recruiter_user_icon, :string, virtual: true
     field :candidates_user_name, :string, virtual: true
     field :candidates_user_icon, :string, virtual: true
+    field :is_read?, :boolean, virtual: true
 
     belongs_to :candidates_user, User
     belongs_to :recruiter_user, User

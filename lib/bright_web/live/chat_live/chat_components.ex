@@ -13,6 +13,14 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :select_filter_type, :atom
 
   def chat_list(assigns) do
+    if assigns.chat.interview == nil do
+      chat_list_coordination(assigns)
+    else
+      chat_list_interview(assigns)
+    end
+  end
+
+  defp chat_list_interview(assigns) do
     ~H"""
     <.link
       class={[
@@ -55,6 +63,60 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             <br />
             <span class="text-brightGray-300">
               <%= BrightWeb.ChatLive.Index.get_status(@chat.interview.status) %>
+            </span>
+          </div>
+        <% end %>
+        <div>
+          <.elapsed_time inserted_at={@chat.updated_at} />
+        </div>
+      </div>
+    </.link>
+    """
+  end
+
+  defp chat_list_coordination(assigns) do
+    ~H"""
+    <.link
+      class={[
+        "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
+        @selected_chat != nil && @selected_chat.id == @chat.id && "border-l-4 border-l-blue-400",
+        !@chat.coordination.is_read? && "bg-attention-50"
+      ]}
+      patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}
+    >
+      <div class="mr-2">
+        <.switch_user_icon
+          chat={@chat}
+          user_id={@user_id}
+          anon={@chat.coordination.recruiter_user_id == @user_id}
+          member_ids={@member_ids}
+        />
+      </div>
+      <div class="w-full flex justify-between p-1 relative">
+        <span
+          :if={!@chat.coordination.is_read?}
+          class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
+        />
+        <%= if @chat.coordination.status == :one_on_one do %>
+          1on1
+        <% else %>
+          <div class="mr-2 lg:truncate max-w-48 lg:text-xl">
+            <span>
+              <%= if @chat.coordination.skill_panel_name == nil,
+                do: "保有スキルパネル無",
+                else: @chat.coordination.skill_panel_name %>
+            </span>
+            <br />
+            <span class="text-brightGray-300">
+              <%= NaiveDateTime.to_date(@chat.coordination.inserted_at) %>
+            </span>
+            <br />
+            <span class="text-brightGray-300">
+              希望年収:<%= @chat.coordination.desired_income %>
+            </span>
+            <br />
+            <span class="text-brightGray-300">
+              <%= BrightWeb.ChatLive.Index.get_status(@chat.coordination.status) %>
             </span>
           </div>
         <% end %>
@@ -209,19 +271,27 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     """
   end
 
+  # 試作
   defp set_user(assigns) do
+    interview =
+      if assigns.chat.interview == nil do
+        assigns.chat.coordination
+      else
+        assigns.chat.interview
+      end
+
     user =
       if assigns.chat.owner_user_id == assigns.user_id do
         %{
-          name: assigns.chat.interview.candidates_user_name,
-          icon: assigns.chat.interview.candidates_user_icon,
-          is_member: Enum.member?(assigns.member_ids, assigns.chat.interview.candidates_user_id)
+          name: interview.candidates_user_name,
+          icon: interview.candidates_user_icon,
+          is_member: Enum.member?(assigns.member_ids, interview.candidates_user_id)
         }
       else
         %{
-          name: assigns.chat.interview.recruiter_user_name,
-          icon: assigns.chat.interview.recruiter_user_icon,
-          is_member: Enum.member?(assigns.member_ids, assigns.chat.interview.recruiter_user_id)
+          name: interview.recruiter_user_name,
+          icon: interview.recruiter_user_icon,
+          is_member: Enum.member?(assigns.member_ids, interview.recruiter_user_id)
         }
       end
 
@@ -229,8 +299,15 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   end
 
   defp set_url(%{user: user, chat: chat, anon: anon} = assigns) do
+    interview =
+      if chat.interview == nil do
+        chat.coordination
+      else
+        chat.interview
+      end
+
     skill_panel =
-      chat.interview.skill_params
+      interview.skill_params
       |> Jason.decode!()
       |> List.first()
       |> Map.get("skill_panel")
@@ -257,5 +334,11 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     |> String.slice(0, 16)
   end
 
-  defp anon?(anon, chat, user), do: anon and Interview.anon?(chat.interview) and !user.is_member
+  defp anon?(anon, chat, user) do
+    if chat.interview == nil do
+      anon
+    else
+      anon and Interview.anon?(chat.interview) and !user.is_member
+    end
+  end
 end

@@ -12,6 +12,7 @@ defmodule Bright.Chats do
   alias Bright.Chats.ChatUser
   alias Bright.Chats.ChatMessage
   alias Bright.Recruits.Interview
+  alias Bright.Recruits.Coordination
   alias Bright.Utils.GoogleCloud.Storage
 
   @interview_status_all [
@@ -53,6 +54,42 @@ defmodule Bright.Chats do
 
   def list_chats(user_id, :cancel_interview) do
     list_chats(user_id, [:cancel_interview, :dismiss_interview])
+  end
+
+  # TODO 試作
+  def list_chats(user_id, :waiting_recruit_decision) do
+    status = [:waiting_recruit_decision]
+
+    from(
+      c in Chat,
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
+      left_join: i in Coordination,
+      on: i.id == c.relation_id,
+      where: c.relation_type == "coordination",
+      order_by: [desc: :updated_at],
+      join: cu in User,
+      on: cu.id == i.candidates_user_id,
+      join: cp in UserProfile,
+      on: cp.user_id == i.candidates_user_id,
+      join: ru in User,
+      on: ru.id == i.recruiter_user_id,
+      join: rp in UserProfile,
+      on: rp.user_id == i.recruiter_user_id,
+      where: i.status in ^status,
+      select: %{
+        c
+        | coordination: %{
+            i
+            | candidates_user_name: cu.name,
+              candidates_user_icon: cp.icon_file_path,
+              recruiter_user_name: ru.name,
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
+          }
+      }
+    )
+    |> Repo.all()
   end
 
   def list_chats(user_id, status) when is_atom(status), do: list_chats(user_id, [status])
