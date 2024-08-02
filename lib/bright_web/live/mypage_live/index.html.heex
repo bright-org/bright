@@ -40,8 +40,20 @@
   </div>
 </div>
 
-<div class="flex flex-col md:flex-row justify-between">
-  <div class="px-4 py-3 grow flex flex-col items-center lg:pb-8 lg:px-5">
+<%# 2つの領域からなる。SPではJSでの切り替え表示、PCではflexでのメイン/サイド分割表示 %>
+<div class="lg:flex lg:flex-row lg:justify-between pb-16">
+  <%# SP用切り替え部 %>
+  <div class="lg:hidden text-md text-center px-2 mt-8 mb-2">
+    <button id="btn-my-field" class="inline-flex items-center font-bold rounded-l-full gap-x-2 px-6 py-2 button-toggle-active" phx-click={js_show_my_field()}>
+      マイページ
+    </button>
+    <button id="btn-others-field" class="inline-flex items-center font-bold rounded-r-full gap-x-2 px-4 py-2" phx-click={js_show_others_field()} >
+      チームメンバー
+    </button>
+  </div>
+
+  <%# メイン部 %>
+  <div id="my-field" class="px-4 pt-3 lg:grow flex flex-col items-center">
     <div class="flex flex-col gap-y-6 w-full">
       <%# スキルアップ %>
       <.skill_ups
@@ -60,8 +72,8 @@
     </div>
   </div>
 
-  <%# サイド部 %>
-  <div :if={@me} class="px-4 py-3 flex flex-col items-center pb-20 lg:pb-4 lg:px-5 max-w-md">
+  <%# サイド部 SPではメインとして切り替え表示 %>
+  <div id="others-field" :if={@me} class="hidden lg:block px-4 pt-3 flex flex-col items-center lg:max-w-md">
     <div class="flex flex-col gap-y-6 w-full">
       <%# いま学んでいます %>
       <.others_skill_evidences recent_others_skill_evidences={@recent_others_skill_evidences} />

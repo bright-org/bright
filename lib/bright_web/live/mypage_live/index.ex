@@ -5,6 +5,7 @@ defmodule BrightWeb.MypageLive.Index do
   import BrightWeb.ChartComponents
   import BrightWeb.BrightModalComponents, only: [bright_modal: 1]
 
+  alias Phoenix.LiveView.JS
   alias Bright.SkillUnits
   alias Bright.SkillEvidences
   alias Bright.UserProfiles
@@ -137,13 +138,29 @@ defmodule BrightWeb.MypageLive.Index do
     assign(socket, :recent_others_skill_evidences, nil)
   end
 
+  defp js_show_my_field(js \\ %JS{}) do
+    js
+    |> JS.remove_class("button-toggle-active", to: "#btn-others-field")
+    |> JS.hide(to: "#others-field")
+    |> JS.add_class("button-toggle-active")
+    |> JS.show(to: "#my-field")
+  end
+
+  defp js_show_others_field(js \\ %JS{}) do
+    js
+    |> JS.remove_class("button-toggle-active", to: "#btn-my-field")
+    |> JS.hide(to: "#my-field")
+    |> JS.add_class("button-toggle-active")
+    |> JS.show(to: "#others-field")
+  end
+
   # local components
   # ---
 
   defp skill_ups(assigns) do
     ~H"""
     <section>
-      <h5>スキルアップ</h5>
+      <h5 class="text-base lg:text-lg">スキルアップ</h5>
       <div class="bg-white rounded-md mt-1 px-2 py-0.5">
         <ul class="text-sm font-medium text-center gap-y-2">
           <li
@@ -169,7 +186,7 @@ defmodule BrightWeb.MypageLive.Index do
   defp skill_evidences(assigns) do
     ~H"""
     <section>
-      <h5>学習メモ</h5>
+      <h5 class="text-base lg:text-lg">学習メモ</h5>
       <div
         :if={@recent_skill_evidences == []}
         class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
@@ -197,7 +214,7 @@ defmodule BrightWeb.MypageLive.Index do
   defp others_skill_evidences(assigns) do
     ~H"""
     <section>
-      <h5>いま学んでいます</h5>
+      <h5 class="text-base lg:text-lg">いま学んでいます</h5>
       <div
         :for={skill_evidence <- @recent_others_skill_evidences}
         class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
@@ -241,7 +258,7 @@ defmodule BrightWeb.MypageLive.Index do
           phx-update="ignore"
           data-iso={NaiveDateTime.to_iso8601(@skill_evidence_post.inserted_at)}
           >
-          <p data-local-time="%x %H:%M"></p>
+          <p class="hidden lg:block" data-local-time="%x %H:%M"></p>
         </div>
       </div>
       <p class="break-all">
