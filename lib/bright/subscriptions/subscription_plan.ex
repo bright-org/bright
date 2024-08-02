@@ -20,6 +20,7 @@ defmodule Bright.Subscriptions.SubscriptionPlan do
     field :stripe_product_id, :string
 
     has_many :subscription_plan_services, Bright.Subscriptions.SubscriptionPlanService
+    has_many :stripe_prices, Bright.Stripe.StripePrice
 
     timestamps()
   end
