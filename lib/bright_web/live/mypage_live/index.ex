@@ -9,6 +9,7 @@ defmodule BrightWeb.MypageLive.Index do
   alias Bright.SkillEvidences
   alias Bright.UserProfiles
   alias Bright.SkillScores
+  alias Bright.Teams
   alias BrightWeb.PathHelper
   alias BrightWeb.DisplayUserHelper
 
@@ -25,11 +26,12 @@ defmodule BrightWeb.MypageLive.Index do
      |> assign_skillset_gem()
      |> assign_recent_level_up_skill_classes()
      |> assign_recent_skill_evidences()
+     |> assign_recent_others_skill_evidences()
      |> apply_action(socket.assigns.live_action, params)}
   end
 
   def handle_event("edit_skill_evidence", %{"id" => id}, socket) do
-    skill_evidence = Enum.find(socket.assigns.recent_skill_evidences, &(&1.id == id))
+    skill_evidence = SkillEvidences.get_skill_evidence!(id)
     skill = SkillUnits.get_skill!(skill_evidence.skill_id)
 
     # モーダルを開き、表示内容を選択した学習メモで初期化する
@@ -107,10 +109,32 @@ defmodule BrightWeb.MypageLive.Index do
 
     # 必要に応じてstream化のこと
     recent_skill_evidences =
-      SkillEvidences.list_recent_skill_evidences(display_user)
+      SkillEvidences.list_recent_skill_evidences([display_user.id])
       |> Bright.Repo.preload(skill_evidence_posts: [user: [:user_profile]])
 
     assign(socket, :recent_skill_evidences, recent_skill_evidences)
+  end
+
+  defp assign_recent_others_skill_evidences(%{assigns: %{me: true}} = socket) do
+    %{current_user: user} = socket.assigns
+
+    related_user_ids = Teams.list_user_ids_related_team_by_user(user)
+
+    # 必要に応じてstream化のこと
+    recent_others_skill_evidences =
+      SkillEvidences.list_recent_skill_evidences(related_user_ids)
+      |> Bright.Repo.preload(skill_evidence_posts: [user: [:user_profile]])
+      |> Enum.filter(fn skill_evidence ->
+        # メモ所有者本人の投稿があることを前提とする
+        Enum.find(skill_evidence.skill_evidence_posts, &(&1.user_id == skill_evidence.user_id))
+      end)
+
+    assign(socket, :recent_others_skill_evidences, recent_others_skill_evidences)
+  end
+
+  defp assign_recent_others_skill_evidences(socket) do
+    # 他者表示のときは使用しない
+    assign(socket, :recent_others_skill_evidences, nil)
   end
 
   # local components
@@ -159,10 +183,38 @@ defmodule BrightWeb.MypageLive.Index do
       >
         <.skill_evidence
           skill_evidence={skill_evidence}
-          latest_post={get_latest_skill_evidence_post(skill_evidence)}
+          skill_evidence_post={get_latest_skill_evidence_post(skill_evidence)}
           skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
           anonymous={@anonymous}
+          display_time={true}
+          me={@me}
         />
+      </div>
+    </section>
+    """
+  end
+
+  defp others_skill_evidences(assigns) do
+    ~H"""
+    <section>
+      <h5>いま学んでいます</h5>
+      <div
+        :for={skill_evidence <- @recent_others_skill_evidences}
+        class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
+      >
+        <.skill_evidence
+          skill_evidence={skill_evidence}
+          skill_evidence_post={get_latest_my_skill_evidence_post(skill_evidence)}
+          skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
+          anonymous={false}
+          display_time={false}
+          me={false}
+        />
+      </div>
+      <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
+        <.link navigate={~p"/notifications/evidences"}>
+          「学習メモのヘルプ」をみる
+        </.link>
       </div>
     </section>
     """
@@ -170,23 +222,30 @@ defmodule BrightWeb.MypageLive.Index do
 
   defp skill_evidence(assigns) do
     ~H"""
-    <div class="flex-none pt-4 mx-2">
-      <img class="h-10 w-10 rounded-full" src={icon_file_path(@latest_post.user, @anonymous)} />
+    <div class="flex-none text-center pt-4 mx-2">
+      <%= if @me do %>
+        <img class="h-10 w-10 rounded-full" src={icon_file_path(@skill_evidence_post.user, @anonymous)} />
+      <% else %>
+        <.link :if={not @me} navigate={~p"/mypage/#{@skill_evidence_post.user.name}"}>
+          <img class="h-10 w-10 rounded-full" src={icon_file_path(@skill_evidence_post.user, @anonymous)} />
+        </.link>
+      <% end %>
     </div>
     <div class="grow flex flex-col gap-y-2 mx-2">
-      <div class="text-sm flex justify-between">
-        <p><%= @skill_breadcrumb %></p>
+      <div class="text-xs flex justify-between">
+        <p class="font-bold"><%= @skill_breadcrumb %></p>
         <div
-          id={"timestamp-#{@latest_post.id}"}
+          :if={@display_time}
+          id={"timestamp-#{@skill_evidence_post.id}"}
           phx-hook="LocalTime"
           phx-update="ignore"
-          data-iso={NaiveDateTime.to_iso8601(@latest_post.inserted_at)}
+          data-iso={NaiveDateTime.to_iso8601(@skill_evidence_post.inserted_at)}
           >
-          <p class="text-sm" data-local-time="%x %H:%M"></p>
+          <p data-local-time="%x %H:%M"></p>
         </div>
       </div>
       <p class="break-all">
-        <%= SkillEvidences.truncate_post_content(@latest_post.content, 200) %>
+        <%= SkillEvidences.truncate_post_content(@skill_evidence_post.content, 200) %>
       </p>
       <nav class="flex items-center gap-x-4">
         <button
@@ -235,6 +294,13 @@ defmodule BrightWeb.MypageLive.Index do
     skill_evidence.skill_evidence_posts
     |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
     |> List.first()
+  end
+
+  defp get_latest_my_skill_evidence_post(skill_evidence) do
+    # 「いま学んでいます」では自分自身の最新投稿を参照する
+    skill_evidence.skill_evidence_posts
+    |> Enum.sort_by(& &1.inserted_at, {:desc, NaiveDateTime})
+    |> Enum.find(&(&1.user_id == skill_evidence.user_id))
   end
 
   defp icon_file_path(_user, true), do: UserProfiles.icon_url(nil)

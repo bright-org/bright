@@ -29,14 +29,14 @@ defmodule Bright.SkillEvidences do
   @doc """
   直近のコメント順に学習メモを返す
   """
-  def list_recent_skill_evidences(user, size \\ 10) do
-    my_evidences = Ecto.assoc(user, :skill_evidences)
-    my_evidence_ids = from(q in my_evidences, select: q.id)
+  def list_recent_skill_evidences(user_ids, size \\ 10) do
+    target_evidences = from(q in SkillEvidence, where: q.user_id in ^user_ids)
+    target_evidence_ids = from(q in target_evidences, select: q.id)
 
     latest_post =
       from(
         sep in SkillEvidencePost,
-        where: sep.skill_evidence_id in subquery(my_evidence_ids),
+        where: sep.skill_evidence_id in subquery(target_evidence_ids),
         group_by: sep.skill_evidence_id,
         select: %{
           skill_evidence_id: sep.skill_evidence_id,
@@ -45,7 +45,7 @@ defmodule Bright.SkillEvidences do
       )
 
     from(
-      se in subquery(my_evidences),
+      se in subquery(target_evidences),
       join: latest_sep in subquery(latest_post),
       on: se.id == latest_sep.skill_evidence_id,
       order_by: {:desc, latest_sep.latest_post_time},
