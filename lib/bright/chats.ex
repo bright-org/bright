@@ -174,6 +174,38 @@ defmodule Bright.Chats do
     |> Repo.one!()
   end
 
+  # TODO　試作
+  def get_chat_with_messages_and_coordination!(id, user_id) do
+    from(c in Chat,
+      where: c.id == ^id and c.relation_type == "coordination",
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
+      preload: [:users, messages: ^ChatMessage.not_deleted_message_with_files_query()],
+      join: i in Coordination,
+      on: i.id == c.relation_id,
+      join: cu in User,
+      on: cu.id == i.candidates_user_id,
+      join: cp in UserProfile,
+      on: cp.user_id == i.candidates_user_id,
+      join: ru in User,
+      on: ru.id == i.recruiter_user_id,
+      join: rp in UserProfile,
+      on: rp.user_id == i.recruiter_user_id,
+      select: %{
+        c
+        | coordination: %{
+            i
+            | candidates_user_name: cu.name,
+              candidates_user_icon: cp.icon_file_path,
+              recruiter_user_name: ru.name,
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
+          }
+      }
+    )
+    |> Repo.one!()
+  end
+
   def get_or_create_chat(owner_user_id, relation_id, relation_type, chat_users) do
     query =
       from(

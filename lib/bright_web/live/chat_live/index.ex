@@ -16,7 +16,7 @@ defmodule BrightWeb.ChatLive.Index do
     %{name: "面談打診中", value: :waiting_decision},
     %{name: "面談確定待ち", value: :consume_interview},
     %{name: "面談確定", value: :ongoing_interview},
-    %{name: "選考中 or 配属調整中", value: :waiting_recruit_decision},
+    %{name: "選考中", value: :waiting_recruit_decision},
     %{name: "面談キャンセル", value: :cancel_interview},
     %{name: "（すべて）", value: :recruit}
   ]
@@ -59,7 +59,7 @@ defmodule BrightWeb.ChatLive.Index do
             :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id)}
             class="lg:ml-12 text-xl"
           >
-            <%= if @chat.interview.status == :consume_interview do %>
+            <%= if @chat.interview != nil and @chat.interview.status == :consume_interview do %>
               <p>本チャットで面談対象者と連絡を取り、「面談調整の確認」ボタンを押してください</p>
               <p class="mt-2 text-attention-600">面談確定するとチャットに（担当者から面談が確定されました）が自動投入され、メールも送信されます</p>
             <% end %>
@@ -167,7 +167,7 @@ defmodule BrightWeb.ChatLive.Index do
                   }
                   class="order-2 flex justify-end"
                 >
-                  <%= if @chat.interview.status == :one_on_one do %>
+                  <%= if @chat.interview != nil and @chat.interview.status == :one_on_one do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -177,7 +177,7 @@ defmodule BrightWeb.ChatLive.Index do
                     </button>
                   <% end %>
 
-                  <%= if @chat.interview.status == :consume_interview do %>
+                  <%= if @chat.interview != nil and @chat.interview.status == :consume_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -188,7 +188,7 @@ defmodule BrightWeb.ChatLive.Index do
                       面談調整の確認
                     </button>
                   <% end %>
-                  <%= if @chat.interview.status == :ongoing_interview do %>
+                  <%= if @chat.interview != nil and @chat.interview.status == :ongoing_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -360,7 +360,13 @@ defmodule BrightWeb.ChatLive.Index do
     select_filter_type = get_select_filter_type(params)
 
     user = socket.assigns.current_user
-    chat = Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
+
+    chat =
+      if select_filter_type == :waiting_recruit_decision do
+        Chats.get_chat_with_messages_and_coordination!(chat_id, user.id)
+      else
+        Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
+      end
 
     Chats.subscribe(chat.id)
 

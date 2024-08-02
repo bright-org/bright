@@ -336,7 +336,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   defp anon?(anon, chat, user) do
     if chat.interview == nil do
-      anon
+      false
     else
       anon and Interview.anon?(chat.interview) and !user.is_member
     end
