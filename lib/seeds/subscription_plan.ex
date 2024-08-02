@@ -13,7 +13,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_enable_hr_functions_teams_limit: 0,
       team_members_limit: 7,
       free_trial_priority: 2,
-      authorization_priority: 100
+      authorization_priority: 100,
+      stripe_product_id: "dummy_id"
     },
     %{
       plan_code: "together_limit_extended",
@@ -22,7 +23,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_enable_hr_functions_teams_limit: 0,
       team_members_limit: 28,
       free_trial_priority: nil,
-      authorization_priority: 110
+      authorization_priority: 110,
+      stripe_product_id: "dummy_id"
     },
     %{
       plan_code: "team_up_plan",
@@ -31,7 +33,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_enable_hr_functions_teams_limit: 0,
       team_members_limit: 14,
       free_trial_priority: 3,
-      authorization_priority: 200
+      authorization_priority: 200,
+      stripe_product_id: "dummy_id"
     },
     %{
       plan_code: "team_up_plan_limit_extended",
@@ -40,7 +43,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_enable_hr_functions_teams_limit: 0,
       team_members_limit: 64,
       free_trial_priority: nil,
-      authorization_priority: 210
+      authorization_priority: 210,
+      stripe_product_id: "dummy_id"
     },
     %{
       plan_code: "hr_plan",
@@ -49,7 +53,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_enable_hr_functions_teams_limit: 2,
       team_members_limit: 28,
       free_trial_priority: 4,
-      authorization_priority: 300
+      authorization_priority: 300,
+      stripe_product_id: "dummy_id"
     },
     %{
       plan_code: "hr_plan_limit_exended",
@@ -58,7 +63,8 @@ defmodule Bright.Seeds.SubscriptionPlan do
       create_enable_hr_functions_teams_limit: 8,
       team_members_limit: 112,
       free_trial_priority: nil,
-      authorization_priority: 310
+      authorization_priority: 310,
+      stripe_product_id: "dummy_id"
     }
   ]
 
