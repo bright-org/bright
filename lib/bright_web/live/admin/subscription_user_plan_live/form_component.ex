@@ -40,6 +40,7 @@ defmodule BrightWeb.Admin.SubscriptionUserPlanLive.FormComponent do
         <.input field={@form[:subscription_end_datetime]} type="datetime-local" label="Subscription end datetime" />
         <.input field={@form[:trial_start_datetime]} type="datetime-local" label="Trial start datetime" />
         <.input field={@form[:trial_end_datetime]} type="datetime-local" label="Trial end datetime" />
+        <.input field={@form[:stripe_subscription_id]} type="text" label="Stripe subscription id" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Subscription user plan</.button>
         </:actions>

@@ -23,6 +23,7 @@
   <:col :let={{_id, subscription_user_plan}} label="Subscription end datetime"><%= subscription_user_plan.subscription_end_datetime %></:col>
   <:col :let={{_id, subscription_user_plan}} label="Trial start datetime"><%= subscription_user_plan.trial_start_datetime %></:col>
   <:col :let={{_id, subscription_user_plan}} label="Trial end datetime"><%= subscription_user_plan.trial_end_datetime %></:col>
+  <:col :let={{_id, subscription_user_plan}} label="Stripe subscription id"><%= subscription_user_plan.stripe_subscription_id %></:col>
   <:action :let={{_id, subscription_user_plan}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/subscription_user_plans/#{subscription_user_plan}"}>Show</.link>
