@@ -26,6 +26,7 @@ defmodule BrightWeb.Admin.SubscriptionPlanLive.FormComponent do
         <.input field={@form[:team_members_limit]} type="number" label="Team members limit" />
         <.input field={@form[:available_contract_end_datetime]} type="datetime-local" label="Available contract end datetime" />
         <.input field={@form[:free_trial_priority]} type="number" label="Free trial priority" />
+        <.input field={@form[:stripe_product_id]} type="text" label="Stripe product id" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Subscription plan</.button>
         </:actions>
