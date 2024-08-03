@@ -68,6 +68,8 @@ defmodule Bright.Accounts.User do
 
     has_one :user_notification, Bright.Notifications.UserNotification
 
+    has_one :user_stripe_customer, Bright.Stripe.UserStripeCustomer
+
     timestamps()
   end
 

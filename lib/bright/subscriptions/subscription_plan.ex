@@ -17,8 +17,10 @@ defmodule Bright.Subscriptions.SubscriptionPlan do
     field :name_jp, :string
     field :plan_code, :string
     field :team_members_limit, :integer
+    field :stripe_product_id, :string
 
     has_many :subscription_plan_services, Bright.Subscriptions.SubscriptionPlanService
+    has_many :stripe_prices, Bright.Stripe.StripePrice
 
     timestamps()
   end
@@ -34,7 +36,8 @@ defmodule Bright.Subscriptions.SubscriptionPlan do
       :team_members_limit,
       :available_contract_end_datetime,
       :free_trial_priority,
-      :authorization_priority
+      :authorization_priority,
+      :stripe_product_id
     ])
     |> validate_required([
       :plan_code,
@@ -42,7 +45,8 @@ defmodule Bright.Subscriptions.SubscriptionPlan do
       :create_teams_limit,
       :create_enable_hr_functions_teams_limit,
       :team_members_limit,
-      :authorization_priority
+      :authorization_priority,
+      :stripe_product_id
     ])
   end
 end
