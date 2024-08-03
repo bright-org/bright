@@ -27,6 +27,7 @@ defmodule BrightWeb.MypageLive.Index do
      |> assign_skillset_gem()
      |> assign_recent_level_up_skill_classes()
      |> assign_recent_skill_evidences()
+     |> assign_related_user_ids()
      |> assign_recent_others_skill_evidences()
      |> apply_action(socket.assigns.live_action, params)}
   end
@@ -116,10 +117,13 @@ defmodule BrightWeb.MypageLive.Index do
     assign(socket, :recent_skill_evidences, recent_skill_evidences)
   end
 
-  defp assign_recent_others_skill_evidences(%{assigns: %{me: true}} = socket) do
+  defp assign_related_user_ids(socket) do
     %{current_user: user} = socket.assigns
+    assign(socket, :related_user_ids, Teams.list_user_ids_related_team_by_user(user))
+  end
 
-    related_user_ids = Teams.list_user_ids_related_team_by_user(user)
+  defp assign_recent_others_skill_evidences(%{assigns: %{me: true}} = socket) do
+    %{related_user_ids: related_user_ids} = socket.assigns
 
     # 必要に応じてstream化のこと
     recent_others_skill_evidences =
@@ -161,6 +165,13 @@ defmodule BrightWeb.MypageLive.Index do
     ~H"""
     <section>
       <h5 class="text-base lg:text-lg">スキルアップ</h5>
+      <div
+        :if={@recent_level_up_skill_class_scores == []}
+        class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
+      >
+        まだスキルを選択していません
+      </div>
+
       <div class="bg-white rounded-md mt-1 px-2 py-0.5">
         <ul class="text-sm font-medium text-center gap-y-2">
           <li
@@ -191,7 +202,7 @@ defmodule BrightWeb.MypageLive.Index do
         :if={@recent_skill_evidences == []}
         class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
       >
-        学習メモはありません
+        まだ学習メモがありません
       </div>
 
       <div
@@ -202,9 +213,10 @@ defmodule BrightWeb.MypageLive.Index do
           skill_evidence={skill_evidence}
           skill_evidence_post={get_latest_skill_evidence_post(skill_evidence)}
           skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
+          current_user={@current_user}
           anonymous={@anonymous}
+          related_user_ids={@related_user_ids}
           display_time={true}
-          me={@me}
         />
       </div>
     </section>
@@ -223,9 +235,10 @@ defmodule BrightWeb.MypageLive.Index do
           skill_evidence={skill_evidence}
           skill_evidence_post={get_latest_my_skill_evidence_post(skill_evidence)}
           skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
-          anonymous={false}
+          current_user={@current_user}
+          anonymous={@anonymous}
+          related_user_ids={@related_user_ids}
           display_time={false}
-          me={false}
         />
       </div>
       <div class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2">
@@ -239,15 +252,21 @@ defmodule BrightWeb.MypageLive.Index do
 
   defp skill_evidence(assigns) do
     ~H"""
+    <%# アイコン表示 %>
     <div class="flex-none text-center pt-4 mx-2">
-      <%= if @me do %>
-        <img class="h-10 w-10 rounded-full" src={icon_file_path(@skill_evidence_post.user, @anonymous)} />
+      <% my_post? = @current_user.id == @skill_evidence_post.user_id %>
+      <% anonymous? = @anonymous || @skill_evidence_post.user_id not in @related_user_ids %>
+
+      <%= if my_post? do %>
+        <img class="h-10 w-10 rounded-full" src={icon_file_path(@current_user, false)} />
       <% else %>
-        <.link :if={not @me} navigate={~p"/mypage/#{@skill_evidence_post.user.name}"}>
-          <img class="h-10 w-10 rounded-full" src={icon_file_path(@skill_evidence_post.user, @anonymous)} />
+        <.link navigate={PathHelper.mypage_path(@skill_evidence_post.user, anonymous?)}>
+          <img class="h-10 w-10 rounded-full" src={icon_file_path(@skill_evidence_post.user, anonymous?)} />
         </.link>
       <% end %>
     </div>
+
+    <%# 投稿表示 %>
     <div class="grow flex flex-col gap-y-2 mx-2">
       <div class="text-xs flex justify-between">
         <p class="font-bold"><%= @skill_breadcrumb %></p>
