@@ -166,6 +166,12 @@ defmodule BrightWeb.Router do
       end
 
       live "/user_tokens", UserTokenLive.Index, :index
+
+      live "/stripe_prices", StripePriceLive.Index, :index
+      live "/stripe_prices/new", StripePriceLive.Index, :new
+      live "/stripe_prices/:id/edit", StripePriceLive.Index, :edit
+      live "/stripe_prices/:id", StripePriceLive.Show, :show
+      live "/stripe_prices/:id/show/edit", StripePriceLive.Show, :edit
     end
   end
 
