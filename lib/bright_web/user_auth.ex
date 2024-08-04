@@ -61,7 +61,7 @@ defmodule BrightWeb.UserAuth do
     |> renew_session()
     |> put_token_in_session(token)
     |> write_cookie(token)
-    |> redirect(to: user_return_to || log_in_redirect_path(user))
+    |> redirect(to: log_in_redirect_path(user, user_return_to))
   end
 
   defp log_in_redirect_path(user) do
@@ -69,6 +69,19 @@ defmodule BrightWeb.UserAuth do
       ~p"/graphs"
     else
       ~p"/onboardings/welcome"
+    end
+  end
+
+  defp log_in_redirect_path(user, user_return_to) do
+    cond do
+      Accounts.onboarding_finished?(user) == false ->
+        ~p"/onboardings/welcome"
+
+      Accounts.onboarding_finished?(user) && user_return_to != nil ->
+        Path.join(~p"/", user_return_to)
+
+      true ->
+        ~p"/graphs"
     end
   end
 
@@ -266,6 +279,7 @@ defmodule BrightWeb.UserAuth do
     else
       conn
       |> put_flash(:error, "ログインが必要です")
+      |> put_session(:user_return_to, conn.request_path)
       |> redirect(to: require_authenticated_user_redirect_path(conn))
       |> halt()
     end

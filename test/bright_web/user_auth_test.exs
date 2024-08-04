@@ -67,6 +67,7 @@ defmodule BrightWeb.UserAuthTest do
     end
 
     test "redirects to the configured path", %{conn: conn, user: user} do
+      insert(:user_onboarding, user: user)
       conn = conn |> UserAuth.log_in_user(user, "/hello")
       assert redirected_to(conn) == "/hello"
     end
