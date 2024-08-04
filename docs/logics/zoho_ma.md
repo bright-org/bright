@@ -105,8 +105,6 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 - GET xxx
 - PUT xxx
 
-※ API 実行がエラーになった場合でも、ユーザー情報更新処理全体はエラーにせず error レベルのログを出すに留める。（ZOHO がエラーになった時にユーザー情報が更新できないのは困るため）
-
 ## コミュニティ機能
 
 ※ ZOHO のカスタムタブの機能を使用する。
