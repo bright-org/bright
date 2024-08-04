@@ -36,8 +36,7 @@ defmodule Bright.Zoho.Crm do
          status: status,
          body: %{
            "api_domain" => api_domain,
-           "access_token" => access_token,
-           "expires_in" => expires_in
+           "access_token" => access_token
          }
        }}
       when status in 200..299 ->
