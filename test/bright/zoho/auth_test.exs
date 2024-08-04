@@ -1,6 +1,6 @@
 defmodule Bright.Zoho.AuthTest do
   use ExUnit.Case, async: true
-  use Bright.Zoho.MockAuthSetup
+  use Bright.Zoho.MockSetup
 
   alias Bright.Zoho.Auth
 
@@ -11,7 +11,7 @@ defmodule Bright.Zoho.AuthTest do
   end
 
   describe "auth/1" do
-    @tag zoho_auth_mock: :auth_success
+    @tag zoho_mock: :auth_success
     test "returns a Tesla.Env" do
       assert {:ok,
               %Tesla.Env{
@@ -23,12 +23,12 @@ defmodule Bright.Zoho.AuthTest do
               }} = Auth.new() |> Auth.auth()
     end
 
-    @tag zoho_auth_mock: :auth_failure
+    @tag zoho_mock: :auth_failure
     test "returns an error" do
       assert {:ok, %Tesla.Env{body: %{"error" => "invalid_client"}}} = Auth.new() |> Auth.auth()
     end
 
-    @tag zoho_auth_mock: :auth_connection_refused
+    @tag zoho_mock: :auth_connection_refused
     test "returns an :econnrefused error" do
       assert {:error, :econnrefused} = Auth.new() |> Auth.auth()
     end
