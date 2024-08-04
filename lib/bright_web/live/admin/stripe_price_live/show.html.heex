@@ -18,7 +18,7 @@
 
 <.modal :if={@live_action == :edit} id="stripe_price-modal" show on_cancel={JS.patch(~p"/admin/stripe_prices/#{@stripe_price}")}>
   <.live_component
-    module={BrightWeb.StripePriceLive.FormComponent}
+    module={BrightWeb.Admin.StripePriceLive.FormComponent}
     id={@stripe_price.id}
     title={@page_title}
     action={@live_action}

@@ -18,7 +18,9 @@ defmodule Bright.Stripe do
 
   """
   def list_stripe_prices do
-    Repo.all(StripePrice)
+    StripePrice
+    |> preload(:subscription_plan)
+    |> Repo.all()
   end
 
   @doc """
@@ -35,7 +37,11 @@ defmodule Bright.Stripe do
       ** (Ecto.NoResultsError)
 
   """
-  def get_stripe_price!(id), do: Repo.get!(StripePrice, id)
+  def get_stripe_price!(id) do
+    StripePrice
+    |> preload(:subscription_plan)
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a stripe_price.

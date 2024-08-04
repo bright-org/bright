@@ -478,8 +478,7 @@ defmodule Bright.SubscriptionsTest do
       plan_2 =
         insert(:subscription_plans, %{
           create_enable_hr_functions_teams_limit: 2,
-          free_trial_priority: 3,
-          stripe_product_id: "dummy_id"
+          free_trial_priority: 3
         })
 
       assert plan_2 ==
@@ -492,8 +491,7 @@ defmodule Bright.SubscriptionsTest do
       plan_3 =
         insert(:subscription_plans, %{
           create_enable_hr_functions_teams_limit: 2,
-          free_trial_priority: 2,
-          stripe_product_id: "dummy_id"
+          free_trial_priority: 2
         })
 
       assert plan_3 ==
@@ -508,8 +506,7 @@ defmodule Bright.SubscriptionsTest do
         create_teams_limit: 5,
         create_enable_hr_functions_teams_limit: 2,
         team_members_limit: 5,
-        authorization_priority: 2,
-        stripe_product_id: "dummy_id"
+        authorization_priority: 2
       }
 
       limit_order = 3
@@ -588,8 +585,7 @@ defmodule Bright.SubscriptionsTest do
       plan_2 =
         insert(:subscription_plans, %{
           create_teams_limit: 2,
-          free_trial_priority: 3,
-          stripe_product_id: "dummy_id"
+          free_trial_priority: 3
         })
 
       assert plan_2 ==
@@ -602,8 +598,7 @@ defmodule Bright.SubscriptionsTest do
       plan_3 =
         insert(:subscription_plans, %{
           create_teams_limit: 2,
-          free_trial_priority: 2,
-          stripe_product_id: "dummy_id"
+          free_trial_priority: 2
         })
 
       assert plan_3 ==
@@ -618,8 +613,7 @@ defmodule Bright.SubscriptionsTest do
         create_teams_limit: 5,
         create_enable_hr_functions_teams_limit: 2,
         team_members_limit: 5,
-        authorization_priority: 2,
-        stripe_product_id: "dummy_id"
+        authorization_priority: 2
       }
 
       limit_order = 6
@@ -701,8 +695,7 @@ defmodule Bright.SubscriptionsTest do
       plan_2 =
         insert(:subscription_plans, %{
           team_members_limit: 6,
-          free_trial_priority: 3,
-          stripe_product_id: "dummy_id"
+          free_trial_priority: 3
         })
 
       assert plan_2 ==
@@ -715,8 +708,7 @@ defmodule Bright.SubscriptionsTest do
       plan_3 =
         insert(:subscription_plans, %{
           team_members_limit: 6,
-          free_trial_priority: 2,
-          stripe_product_id: "dummy_id"
+          free_trial_priority: 2
         })
 
       assert plan_3 ==
@@ -731,8 +723,7 @@ defmodule Bright.SubscriptionsTest do
         create_teams_limit: 5,
         create_enable_hr_functions_teams_limit: 2,
         team_members_limit: 10,
-        authorization_priority: 2,
-        stripe_product_id: "dummy_id"
+        authorization_priority: 2
       }
 
       limit_order = 11

@@ -124,4 +124,7 @@ defmodule Bright.Factory do
   use Bright.ChatFactory
   use Bright.ChatMessageFactory
   use Bright.ChatUserFactory
+
+  # Stripe context
+  use Bright.StripePriceFactory
 end

@@ -13,7 +13,8 @@ defmodule Bright.SubscriptionPlanFactory do
           create_enable_hr_functions_teams_limit: Enum.random(0..2),
           team_members_limit: Enum.random(0..15),
           free_trial_priority: Enum.random(0..15),
-          authorization_priority: Enum.random(0..15)
+          authorization_priority: Enum.random(0..15),
+          stripe_product_id: "dummy_id"
         }
       end
 
