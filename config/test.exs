@@ -67,3 +67,5 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
 
 config :bright, :oauth_module, Boruta.OauthMock
 config :bright, :openid_module, Boruta.OpenidMock
+
+config :tesla, Tesla, adapter: Tesla.Mock
