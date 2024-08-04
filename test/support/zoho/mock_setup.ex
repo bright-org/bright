@@ -51,7 +51,7 @@ defmodule Bright.Zoho.MockSetup do
       %{method: :post, url: "https://accounts.zoho.jp/oauth/v2/token"} ->
         %Tesla.Env{
           status: 500,
-          body: %{"error" => "server_error"}
+          body: %{}
         }
     end)
   end
