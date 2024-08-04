@@ -1,0 +1,42 @@
+<.header>
+  Listing Stripe prices
+  <:actions>
+    <.link patch={~p"/stripe_prices/new"}>
+      <.button>New Stripe price</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="stripe_prices"
+  rows={@streams.stripe_prices}
+  row_click={fn {_id, stripe_price} -> JS.navigate(~p"/stripe_prices/#{stripe_price}") end}
+>
+  <:col :let={{_id, stripe_price}} label="Stripe price"><%= stripe_price.stripe_price_id %></:col>
+  <:col :let={{_id, stripe_price}} label="Stripe lookup key"><%= stripe_price.stripe_lookup_key %></:col>
+  <:action :let={{_id, stripe_price}}>
+    <div class="sr-only">
+      <.link navigate={~p"/stripe_prices/#{stripe_price}"}>Show</.link>
+    </div>
+    <.link patch={~p"/stripe_prices/#{stripe_price}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, stripe_price}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: stripe_price.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="stripe_price-modal" show on_cancel={JS.patch(~p"/stripe_prices")}>
+  <.live_component
+    module={BrightWeb.StripePriceLive.FormComponent}
+    id={@stripe_price.id || :new}
+    title={@page_title}
+    action={@live_action}
+    stripe_price={@stripe_price}
+    patch={~p"/stripe_prices"}
+  />
+</.modal>

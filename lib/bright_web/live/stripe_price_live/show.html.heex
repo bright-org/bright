@@ -1,0 +1,27 @@
+<.header>
+  Stripe price <%= @stripe_price.id %>
+  <:subtitle>This is a stripe_price record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/stripe_prices/#{@stripe_price}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit stripe_price</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Stripe price"><%= @stripe_price.stripe_price_id %></:item>
+  <:item title="Stripe lookup key"><%= @stripe_price.stripe_lookup_key %></:item>
+</.list>
+
+<.back navigate={~p"/stripe_prices"}>Back to stripe_prices</.back>
+
+<.modal :if={@live_action == :edit} id="stripe_price-modal" show on_cancel={JS.patch(~p"/stripe_prices/#{@stripe_price}")}>
+  <.live_component
+    module={BrightWeb.StripePriceLive.FormComponent}
+    id={@stripe_price.id}
+    title={@page_title}
+    action={@live_action}
+    stripe_price={@stripe_price}
+    patch={~p"/stripe_prices/#{@stripe_price}"}
+  />
+</.modal>
