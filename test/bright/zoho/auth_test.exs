@@ -28,8 +28,13 @@ defmodule Bright.Zoho.AuthTest do
       assert {:ok, %Tesla.Env{body: %{"error" => "invalid_client"}}} = Auth.new() |> Auth.auth()
     end
 
+    @tag zoho_mock: :auth_server_error
+    test "returns a server error" do
+      assert {:ok, %Tesla.Env{body: %{"error" => "server_error"}}} = Auth.new() |> Auth.auth()
+    end
+
     @tag zoho_mock: :auth_connection_refused
-    test "returns an :econnrefused error" do
+    test "returns a :econnrefused error" do
       assert {:error, :econnrefused} = Auth.new() |> Auth.auth()
     end
   end

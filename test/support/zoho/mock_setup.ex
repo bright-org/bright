@@ -46,6 +46,16 @@ defmodule Bright.Zoho.MockSetup do
     end)
   end
 
+  def mock_zoho_api(%{zoho_mock: :auth_server_error}) do
+    Tesla.Mock.mock(fn
+      %{method: :post, url: "https://accounts.zoho.jp/oauth/v2/token"} ->
+        %Tesla.Env{
+          status: 500,
+          body: %{"error" => "server_error"}
+        }
+    end)
+  end
+
   def mock_zoho_api(%{zoho_mock: :auth_connection_refused}) do
     Tesla.Mock.mock(fn
       %{method: :post, url: "https://accounts.zoho.jp/oauth/v2/token"} ->
