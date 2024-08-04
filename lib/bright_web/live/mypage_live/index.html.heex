@@ -43,10 +43,17 @@
 <div class="flex justify-between">
   <div class="px-4 py-3 grow flex flex-col items-center pb-20 lg:pb-4 lg:px-5">
     <div class="flex flex-col gap-y-6 w-full">
+      <%# スキルアップ %>
       <.skill_ups
         recent_level_up_skill_class_scores={@recent_level_up_skill_class_scores}
         display_user={@display_user}
         me={@me}
+        anonymous={@anonymous}
+      />
+
+      <%# 学習メモ %>
+      <.skill_evidences
+        recent_skill_evidences={@recent_skill_evidences}
         anonymous={@anonymous}
       />
     </div>
@@ -54,6 +61,7 @@
 </div>
 
 
+<% # 無料体験申し込み用モーダル %>
 <.bright_modal
   :if={@live_action == :free_trial}
   id="free-trial-modal"
@@ -68,6 +76,28 @@
     navigate={~p"/mypage"}
   />
 </.bright_modal>
+
+
+<% # 学習メモ用モーダル %>
+<.live_component
+  id="skill-evidence-modal"
+  module={BrightWeb.ModalComponent}
+  modal_styles={
+    %{
+      style_of_modal_flame_out: "w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+    }
+  }
+>
+  <.live_component
+    module={BrightWeb.SkillPanelLive.SkillEvidenceComponent}
+    id="skill-evidence"
+    skill_evidence={nil}
+    skill={nil}
+    user={@current_user}
+    anonymous={@anonymous}
+    me={@me}
+  />
+</.live_component>
 
 
 <div phx-mounted={if @search, do: JS.show(to: "#skill_search_modal")}></div>

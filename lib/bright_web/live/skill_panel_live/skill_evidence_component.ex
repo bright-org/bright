@@ -15,7 +15,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   def render(assigns) do
     ~H"""
     <div id={@id} class="max-h-[80vh] overflow-y-auto">
-      <div class="flex justify-center items-center">
+      <div :if={@skill_evidence} class="flex justify-center items-center">
         <div class="w-full lg:w-[450px]">
           <p class="pb-2 text-base font-bold">
             <%= @title %>
@@ -203,22 +203,19 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   end
 
   @impl true
-  def update(assigns, socket) do
-    skill_evidence = Bright.Repo.preload(assigns.skill_evidence, :user)
-
-    skill_evidence_posts =
-      SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
-
-    title = SkillEvidences.get_skill_breadcrumb(assigns.skill)
-
+  def update(%{reset: true} = assigns, socket) do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:title, title)
-     |> assign(:skill_evidence, skill_evidence)
-     |> stream(:skill_evidence_posts, skill_evidence_posts)
+     |> assign_skill_evidence(assigns)}
+  end
+
+  def update(assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
      |> update(:user, &Bright.Repo.preload(&1, :user_profile))
-     |> assign(:postable?, postable_user?(skill_evidence, assigns.user))
+     |> assign_skill_evidence(assigns)
      |> assign_form()}
   end
 
@@ -291,6 +288,25 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   def handle_event("cancel_upload", %{"ref" => ref}, socket) do
     {:noreply, cancel_upload(socket, :image, ref)}
+  end
+
+  defp assign_skill_evidence(socket, %{skill_evidence: nil}) do
+    socket
+  end
+
+  defp assign_skill_evidence(socket, assigns) do
+    skill_evidence = Bright.Repo.preload(assigns.skill_evidence, :user)
+
+    skill_evidence_posts =
+      SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
+
+    title = SkillEvidences.get_skill_breadcrumb(assigns.skill)
+
+    socket
+    |> assign(:title, title)
+    |> assign(:skill_evidence, skill_evidence)
+    |> stream(:skill_evidence_posts, skill_evidence_posts)
+    |> assign(:postable?, postable_user?(skill_evidence, assigns.user))
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do

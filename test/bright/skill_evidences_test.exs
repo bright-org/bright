@@ -472,4 +472,82 @@ defmodule Bright.SkillEvidencesTest do
       assert 0 == SkillEvidences.calc_filled_percentage(1, 0)
     end
   end
+
+  describe "list_recent_skill_evidences/2" do
+    setup do
+      skill_category = insert(:skill_category, skill_unit: build(:skill_unit), position: 1)
+      skill_1 = insert(:skill, skill_category: skill_category, position: 1)
+      skill_2 = insert(:skill, skill_category: skill_category, position: 2)
+
+      %{skills: [skill_1, skill_2]}
+    end
+
+    test "returns list ordered by post time", %{
+      skills: [skill_1, skill_2]
+    } do
+      user = insert(:user)
+      skill_evidence_1 = insert(:skill_evidence, user: user, skill: skill_1)
+
+      insert(:skill_evidence_post,
+        skill_evidence: skill_evidence_1,
+        user: user,
+        content: "post_1",
+        inserted_at: ~N[2024-08-01 09:38:00]
+      )
+
+      skill_evidence_2 = insert(:skill_evidence, user: user, skill: skill_2)
+
+      insert(:skill_evidence_post,
+        skill_evidence: skill_evidence_2,
+        user: user,
+        content: "post_2",
+        inserted_at: ~N[2024-08-01 09:38:01]
+      )
+
+      [latest, second] = SkillEvidences.list_recent_skill_evidences(user)
+      assert latest.id == skill_evidence_2.id
+      assert second.id == skill_evidence_1.id
+
+      # skill_evidence_1に2つ目の最新投稿を追加して並びがかわること
+      insert(:skill_evidence_post,
+        skill_evidence: skill_evidence_1,
+        user: user,
+        content: "post_1_added",
+        inserted_at: ~N[2024-08-01 09:38:02]
+      )
+
+      [latest, second] = SkillEvidences.list_recent_skill_evidences(user)
+      assert latest.id == skill_evidence_1.id
+      assert second.id == skill_evidence_2.id
+    end
+
+    test "returns list with given condition", %{
+      skills: [skill | _]
+    } do
+      user = insert(:user)
+      skill_evidence = insert(:skill_evidence, user: user, skill: skill)
+      insert(:skill_evidence_post, skill_evidence: skill_evidence, user: user, content: "post")
+
+      # 指定したuser分が返ること
+      [latest] = SkillEvidences.list_recent_skill_evidences(user)
+      assert latest.id == skill_evidence.id
+
+      user_2 = insert(:user)
+      assert [] = SkillEvidences.list_recent_skill_evidences(user_2)
+
+      # 指定したsize分が返ること
+      assert [] = SkillEvidences.list_recent_skill_evidences(user, 0)
+    end
+  end
+
+  describe "truncate_post_content/2" do
+    test "returns not truncated str" do
+      assert "これはテスト" == SkillEvidences.truncate_post_content("これはテスト", 6)
+      assert "これはテスト" == SkillEvidences.truncate_post_content("これはテスト", 7)
+    end
+
+    test "returns truncated str" do
+      assert "これ..." == SkillEvidences.truncate_post_content("これはテスト", 5)
+    end
+  end
 end
