@@ -45,7 +45,8 @@ defmodule Bright.MixProject do
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
-      {:finch, "~> 0.13"},
+      # NOTE: 0.17 以降だと nimble_options の warning が出て煩わしいので低いバージョンに固定。修正されたら ~> 0.16 にする。
+      {:finch, "~> 0.16.0"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
@@ -72,7 +73,8 @@ defmodule Bright.MixProject do
       {:earmark, "~> 1.4"},
       {:boruta, "~> 2.3"},
       {:mox, "~> 1.1", only: :test},
-      {:eqrcode, "~> 0.1.10"}
+      {:eqrcode, "~> 0.1.10"},
+      {:tesla, "~> 1.12"}
     ]
   end
 
