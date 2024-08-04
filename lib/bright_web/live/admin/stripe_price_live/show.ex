@@ -1,4 +1,4 @@
-defmodule BrightWeb.StripePriceLive.Show do
+defmodule BrightWeb.Admin.StripePriceLive.Show do
   use BrightWeb, :live_view
 
   alias Bright.Stripe

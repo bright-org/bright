@@ -1,4 +1,4 @@
-defmodule BrightWeb.StripePriceLive.FormComponent do
+defmodule BrightWeb.Admin.StripePriceLive.FormComponent do
   use BrightWeb, :live_component
 
   alias Bright.Stripe
@@ -21,6 +21,7 @@ defmodule BrightWeb.StripePriceLive.FormComponent do
       >
         <.input field={@form[:stripe_price_id]} type="text" label="Stripe price" />
         <.input field={@form[:stripe_lookup_key]} type="text" label="Stripe lookup key" />
+        <.input field={@form[:subscription_plan_id]} type="text" label="Subscription plan id" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Stripe price</.button>
         </:actions>

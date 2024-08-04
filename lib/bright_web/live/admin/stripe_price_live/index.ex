@@ -1,4 +1,4 @@
-defmodule BrightWeb.StripePriceLive.Index do
+defmodule BrightWeb.Admin.StripePriceLive.Index do
   use BrightWeb, :live_view
 
   alias Bright.Stripe
@@ -33,7 +33,7 @@ defmodule BrightWeb.StripePriceLive.Index do
   end
 
   @impl true
-  def handle_info({BrightWeb.StripePriceLive.FormComponent, {:saved, stripe_price}}, socket) do
+  def handle_info({BrightWeb.Admin.StripePriceLive.FormComponent, {:saved, stripe_price}}, socket) do
     {:noreply, stream_insert(socket, :stripe_prices, stripe_price)}
   end
 
