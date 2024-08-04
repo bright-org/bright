@@ -21,6 +21,8 @@ ZOHO CRM とは API 経由で連携を行う。
 
 様々な形式があるが、今回は Self Client の Client credentials flow を用いる。
 
+※ Self Client を作成したアカウントに紐づいて API の実行が行われるので、作成するアカウントには注意が必要
+
 https://www.zoho.com/accounts/protocol/oauth/self-client/client-credentials-flow.html
 
 ### アクセストークンの取得形式
@@ -71,7 +73,7 @@ erDiagram
 
 ### アクセストークンを用いた API のリクエスト
 
-URL が API トークン取得時（https://accounts.zoho.jp）とは異なり、ベースのアクセストークンリクエスト時に返却される api_domain で行う必要があることに注意。
+URL が API トークン取得時（https://accounts.zoho.jp）とは異なり、アクセストークンリクエスト時に返却される api_domain で行う必要があることに注意。
 
 ドキュメントは以下。
 
@@ -118,6 +120,12 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 
 ### コミュニティの作成
 
+WIP
+
 ### コミュニティの所属・脱退
 
+WIP
+
 ## ユーザーのステージ変化
+
+WIP
