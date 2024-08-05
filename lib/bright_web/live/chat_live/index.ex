@@ -21,6 +21,42 @@ defmodule BrightWeb.ChatLive.Index do
     %{name: "（すべて）", value: :recruit}
   ]
 
+  # TODO 試作
+  @coordination_status_all [
+    %{
+      name: Gettext.gettext(BrightWeb.Gettext, to_string(:hiring_decision)),
+      value: :hiring_decision
+    },
+    %{
+      name: Gettext.gettext(BrightWeb.Gettext, to_string(:completed_coordination)),
+      value: :completed_coordination
+    },
+    %{
+      name: Gettext.gettext(BrightWeb.Gettext, to_string(:cancel_coordination)),
+      value: :cancel_coordination
+    }
+  ]
+
+  @employment_status_all [
+    %{
+      name: Gettext.gettext(BrightWeb.Gettext, to_string(:waiting_response)),
+      value: :waiting_response
+    },
+    %{
+      name: Gettext.gettext(BrightWeb.Gettext, to_string(:cancel_recruiter)),
+      value: :cancel_recruiter
+    },
+    %{
+      name: Gettext.gettext(BrightWeb.Gettext, to_string(:cancel_candidates)),
+      value: :cancel_candidates
+    },
+    %{
+      name: Gettext.gettext(BrightWeb.Gettext, to_string(:acceptance_emplyoment)),
+      value: :acceptance_emplyoment
+    },
+    %{name: Gettext.gettext(BrightWeb.Gettext, to_string(:requested)), value: :requested}
+  ]
+
   @default_filter_type "not_completed_interview"
 
   @impl true
@@ -550,7 +586,10 @@ defmodule BrightWeb.ChatLive.Index do
   """
   def get_status(value) do
     filter_type =
-      [%{name: "面談キャンセル", value: :dismiss_interview} | @filter_types]
+      [%{name: "面談キャンセル", value: :dismiss_interview}]
+      |> Enum.concat(@filter_types)
+      |> Enum.concat(@coordination_status_all)
+      |> Enum.concat(@employment_status_all)
       |> Enum.find(fn x ->
         x.value == value
       end)
