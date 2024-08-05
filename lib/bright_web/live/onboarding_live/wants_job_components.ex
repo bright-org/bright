@@ -45,7 +45,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
       <div class="w-full lg:w-60 lg:ml-12 bg-white h-full p-2 sticky top-16 lg:top-2 order-1 lg:order-2 flex flex-row lg:flex-col">
         <%= for career_field <- @career_fields do %>
           <p
-            class={"cursor-pointer px-2 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
+            class={"cursor-pointer px-1 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
             phx-click="scroll_to"
             phx-value-pos={career_field.name_en}
           >
