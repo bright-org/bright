@@ -132,6 +132,39 @@ defmodule Bright.Chats do
     |> Repo.all()
   end
 
+  def list_chats_employment(user_id, status) do
+    from(
+      c in Chat,
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
+      join: i in Employment,
+      on: i.id == c.relation_id,
+      where: c.relation_type == "employment",
+      order_by: [desc: :updated_at],
+      join: cu in User,
+      on: cu.id == i.candidates_user_id,
+      join: cp in UserProfile,
+      on: cp.user_id == i.candidates_user_id,
+      join: ru in User,
+      on: ru.id == i.recruiter_user_id,
+      join: rp in UserProfile,
+      on: rp.user_id == i.recruiter_user_id,
+      where: i.status in ^status,
+      select: %{
+        c
+        | employment: %{
+            i
+            | candidates_user_name: cu.name,
+              candidates_user_icon: cp.icon_file_path,
+              recruiter_user_name: ru.name,
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
+          }
+      }
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single chat.
 
