@@ -13,16 +13,9 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :select_filter_type, :atom
 
   def chat_list(assigns) do
-    relation =
-      if assigns.chat.relation_type == "coordination" do
-        assigns.chat.coordination
-      else
-        assigns.chat.interview
-      end
-
     assigns =
       assigns
-      |> assign(:relation, relation)
+      |> assign(:relation, get_relation(assigns.chat))
 
     ~H"""
     <.link
@@ -290,4 +283,8 @@ defmodule BrightWeb.ChatLive.ChatComponents do
       anon and Interview.anon?(chat.interview) and !user.is_member
     end
   end
+
+  defp get_relation(%{relation_type: "coordination"} = chat), do: chat.coordination
+  defp get_relation(chat), do: chat.interview
+
 end
