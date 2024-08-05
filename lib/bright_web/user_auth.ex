@@ -75,7 +75,7 @@ defmodule BrightWeb.UserAuth do
 
   defp log_in_redirect_path(user, user_return_to) do
     cond do
-      !Accounts.onboarding_finished?(user) && Regex.match?(~r"panels", user_return_to) ->
+      !Accounts.onboarding_finished?(user) && Regex.match?(~r"panels", to_string(user_return_to)) ->
         id_info = %{user_id: user.id, completed_at: NaiveDateTime.utc_now()}
         UserSkillPanels.create_user_skill_panel(id_info)
         Onboardings.create_user_onboarding(id_info)
