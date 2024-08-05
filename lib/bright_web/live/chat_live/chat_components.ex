@@ -213,27 +213,21 @@ defmodule BrightWeb.ChatLive.ChatComponents do
     """
   end
 
-  # 試作
   defp set_user(assigns) do
-    interview =
-      if assigns.chat.interview == nil do
-        assigns.chat.coordination
-      else
-        assigns.chat.interview
-      end
+    relation = get_relation(assigns.chat)
 
     user =
       if assigns.chat.owner_user_id == assigns.user_id do
         %{
-          name: interview.candidates_user_name,
-          icon: interview.candidates_user_icon,
-          is_member: Enum.member?(assigns.member_ids, interview.candidates_user_id)
+          name: relation.candidates_user_name,
+          icon: relation.candidates_user_icon,
+          is_member: Enum.member?(assigns.member_ids, relation.candidates_user_id)
         }
       else
         %{
-          name: interview.recruiter_user_name,
-          icon: interview.recruiter_user_icon,
-          is_member: Enum.member?(assigns.member_ids, interview.recruiter_user_id)
+          name: relation.recruiter_user_name,
+          icon: relation.recruiter_user_icon,
+          is_member: Enum.member?(assigns.member_ids, relation.recruiter_user_id)
         }
       end
 
@@ -241,15 +235,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   end
 
   defp set_url(%{user: user, chat: chat, anon: anon} = assigns) do
-    interview =
-      if chat.interview == nil do
-        chat.coordination
-      else
-        chat.interview
-      end
+    relation = get_relation(assigns.chat)
 
     skill_panel =
-      interview.skill_params
+      relation.skill_params
       |> Jason.decode!()
       |> List.first()
       |> Map.get("skill_panel")
