@@ -536,7 +536,14 @@ defmodule BrightWeb.ChatLive.Index do
          %{assigns: %{current_user: user, select_filter_type: select_filter_type}} = socket,
          message
        ) do
-    chat = Chats.get_chat_with_messages_and_interview!(message.chat_id, user.id)
+    chat = Chats.get_chat!(message.chat_id)
+
+    chat =
+      if chat.relation_type == "coordination" do
+        Chats.get_chat_with_messages_and_coordination!(message.chat_id, user.id)
+      else
+        Chats.get_chat_with_messages_and_interview!(message.chat_id, user.id)
+      end
 
     Chats.read_chat!(chat.id, user.id)
 
