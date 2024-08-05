@@ -66,7 +66,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
               <div>
                 <% filter = String.split(@job.name) |> List.last() %>
-                <p class="text-lg text-brightGray-400"><%= filter %>のジョブルート</p>
+                <p class="text-base lg:text-lg text-brightGray-400"><%= filter %>のジョブルート</p>
                 <hr class="h-[2px] bg-brightGray-50 mb-4" />
                 <.live_component
                   id="job_route"
@@ -82,7 +82,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
               </div>
             </div>
             <div class="lg:w-1/2 lg:ml-8">
-              <p class="text-lg text-brightGray-400"><%= "#{@job.name} に含まれる知識エリア" %></p>
+              <p class="text-base lg:text-lg text-brightGray-400"><%= "#{@job.name} に含まれる知識エリア／習得率" %></p>
               <hr class="h-[2px] bg-brightGray-50 my-2" />
               <ul class="mt-4 px-4">
                   <%= for skill_unit <- @skill_units do %>
