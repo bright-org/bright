@@ -261,7 +261,10 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
         }
       )
 
-    Recruits.cancel_employment(employment_params)
+    {:ok, employment} = Recruits.cancel_employment(employment_params)
+
+    Chats.get_chat_by_coordination_id(coordination.id)
+    |> Chats.update_chat(%{relation_type: "employment", relation_id: employment.id})
 
     {:ok, _coordination} =
       Recruits.update_coordination(coordination, %{

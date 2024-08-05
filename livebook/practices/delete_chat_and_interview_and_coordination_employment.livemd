@@ -6,15 +6,19 @@
 alias Bright.Chats
 alias Bright.Recruits
 
-Chats.list_chats()
-|> Enum.map(fn x -> Chats.delete_chat(x) end)
+# Chats.list_chats()
+# # |> Enum.map(fn x -> Chats.delete_chat(x) end)
+# |> IO.inspect()
 
-Recruits.list_interview()
-|> Enum.map(fn x -> Recruits.delete_interview(x) end)
+# Recruits.list_interview()
+# # |> Enum.map(fn x -> Recruits.delete_interview(x) end)
+# |> IO.inspect()
 
-Recruits.list_coordination()
-|> Enum.map(fn x -> Recruits.delete_coordination(x) end)
+# Recruits.list_coordination()
+# # |> Enum.map(fn x -> Recruits.delete_coordination(x) end)
+# |> IO.inspect()
 
-Recruits.list_employment()
-|> Enum.map(fn x -> Recruits.delete_employment(x) end)
+# Recruits.list_employment()
+# # |> Enum.map(fn x -> Recruits.delete_employment(x) end)
+# |> IO.inspect()
 ```
