@@ -13,20 +13,23 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :select_filter_type, :atom
 
   def chat_list(assigns) do
-    if assigns.chat.interview == nil do
-      chat_list_coordination(assigns)
-    else
-      chat_list_interview(assigns)
-    end
-  end
+    relation =
+      if assigns.chat.relation_type == "coordination" do
+        assigns.chat.coordination
+      else
+        assigns.chat.interview
+      end
 
-  defp chat_list_interview(assigns) do
+    assigns =
+      assigns
+      |> assign(:relation, relation)
+
     ~H"""
     <.link
       class={[
         "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
         @selected_chat != nil && @selected_chat.id == @chat.id && "border-l-4 border-l-blue-400",
-        !@chat.interview.is_read? && "bg-attention-50"
+        !@relation.is_read? && "bg-attention-50"
       ]}
       patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}
     >
@@ -34,89 +37,35 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         <.switch_user_icon
           chat={@chat}
           user_id={@user_id}
-          anon={@chat.interview.recruiter_user_id == @user_id}
+          anon={@relation.recruiter_user_id == @user_id}
           member_ids={@member_ids}
         />
       </div>
       <div class="w-full flex justify-between p-1 relative">
         <span
-          :if={!@chat.interview.is_read?}
+          :if={!@relation.is_read?}
           class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
         />
-        <%= if @chat.interview.status == :one_on_one do %>
+        <%= if @relation.status == :one_on_one do %>
           1on1
         <% else %>
           <div class="mr-2 lg:truncate max-w-48 lg:text-xl">
             <span>
-              <%= if @chat.interview.skill_panel_name == nil,
+              <%= if @relation.skill_panel_name == nil,
                 do: "保有スキルパネル無",
-                else: @chat.interview.skill_panel_name %>
+                else: @relation.skill_panel_name %>
             </span>
             <br />
             <span class="text-brightGray-300">
-              <%= NaiveDateTime.to_date(@chat.interview.inserted_at) %>
+              <%= NaiveDateTime.to_date(@relation.inserted_at) %>
             </span>
             <br />
             <span class="text-brightGray-300">
-              希望年収:<%= @chat.interview.desired_income %>
+              希望年収:<%= @relation.desired_income %>
             </span>
             <br />
             <span class="text-brightGray-300">
-              <%= BrightWeb.ChatLive.Index.get_status(@chat.interview.status) %>
-            </span>
-          </div>
-        <% end %>
-        <div>
-          <.elapsed_time inserted_at={@chat.updated_at} />
-        </div>
-      </div>
-    </.link>
-    """
-  end
-
-  defp chat_list_coordination(assigns) do
-    ~H"""
-    <.link
-      class={[
-        "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
-        @selected_chat != nil && @selected_chat.id == @chat.id && "border-l-4 border-l-blue-400",
-        !@chat.coordination.is_read? && "bg-attention-50"
-      ]}
-      patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}
-    >
-      <div class="mr-2">
-        <.switch_user_icon
-          chat={@chat}
-          user_id={@user_id}
-          anon={@chat.coordination.recruiter_user_id == @user_id}
-          member_ids={@member_ids}
-        />
-      </div>
-      <div class="w-full flex justify-between p-1 relative">
-        <span
-          :if={!@chat.coordination.is_read?}
-          class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
-        />
-        <%= if @chat.coordination.status == :one_on_one do %>
-          1on1
-        <% else %>
-          <div class="mr-2 lg:truncate max-w-48 lg:text-xl">
-            <span>
-              <%= if @chat.coordination.skill_panel_name == nil,
-                do: "保有スキルパネル無",
-                else: @chat.coordination.skill_panel_name %>
-            </span>
-            <br />
-            <span class="text-brightGray-300">
-              <%= NaiveDateTime.to_date(@chat.coordination.inserted_at) %>
-            </span>
-            <br />
-            <span class="text-brightGray-300">
-              希望年収:<%= @chat.coordination.desired_income %>
-            </span>
-            <br />
-            <span class="text-brightGray-300">
-              <%= BrightWeb.ChatLive.Index.get_status(@chat.coordination.status) %>
+              <%= BrightWeb.ChatLive.Index.get_status(@relation.status) %>
             </span>
           </div>
         <% end %>
@@ -188,7 +137,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             <.switch_user_icon
               chat={@chat}
               user_id={@current_user.id}
-              anon={@chat.interview.recruiter_user_id == @current_user.id}
+              anon={@relation.recruiter_user_id == @current_user.id}
               has_link={true}
             />
           </div>
