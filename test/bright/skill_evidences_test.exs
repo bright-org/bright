@@ -504,7 +504,7 @@ defmodule Bright.SkillEvidencesTest do
         inserted_at: ~N[2024-08-01 09:38:01]
       )
 
-      [latest, second] = SkillEvidences.list_recent_skill_evidences(user)
+      [latest, second] = SkillEvidences.list_recent_skill_evidences([user.id])
       assert latest.id == skill_evidence_2.id
       assert second.id == skill_evidence_1.id
 
@@ -516,7 +516,7 @@ defmodule Bright.SkillEvidencesTest do
         inserted_at: ~N[2024-08-01 09:38:02]
       )
 
-      [latest, second] = SkillEvidences.list_recent_skill_evidences(user)
+      [latest, second] = SkillEvidences.list_recent_skill_evidences([user.id])
       assert latest.id == skill_evidence_1.id
       assert second.id == skill_evidence_2.id
     end
@@ -529,14 +529,14 @@ defmodule Bright.SkillEvidencesTest do
       insert(:skill_evidence_post, skill_evidence: skill_evidence, user: user, content: "post")
 
       # 指定したuser分が返ること
-      [latest] = SkillEvidences.list_recent_skill_evidences(user)
+      [latest] = SkillEvidences.list_recent_skill_evidences([user.id])
       assert latest.id == skill_evidence.id
 
       user_2 = insert(:user)
-      assert [] = SkillEvidences.list_recent_skill_evidences(user_2)
+      assert [] = SkillEvidences.list_recent_skill_evidences([user_2.id])
 
       # 指定したsize分が返ること
-      assert [] = SkillEvidences.list_recent_skill_evidences(user, 0)
+      assert [] = SkillEvidences.list_recent_skill_evidences([user.id], 0)
     end
   end
 
