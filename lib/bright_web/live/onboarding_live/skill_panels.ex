@@ -64,10 +64,10 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                 <p :if={false} class="text-end">具体例を知りたい</p>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <% filter = String.split(@job.name) |> List.last() %>
                 <p class="text-base lg:text-lg text-brightGray-400"><%= filter %>のジョブルート</p>
-                <hr class="h-[2px] bg-brightGray-50 mb-4" />
+                <hr class="h-[3px] bg-brightGray-50 mb-4" />
                 <.live_component
                   id="job_route"
                   job={@job}
