@@ -361,12 +361,9 @@ defmodule BrightWeb.ChatLive.Index do
 
     user = socket.assigns.current_user
 
-    chat =
-      if select_filter_type == :waiting_recruit_decision do
-        Chats.get_chat_with_messages_and_coordination!(chat_id, user.id)
-      else
-        Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
-      end
+    chat = Chats.get_chat!(chat_id)
+
+    chat = get_chat_with_messages!(chat, user.id)
 
     Chats.subscribe(chat.id)
 
@@ -537,13 +534,7 @@ defmodule BrightWeb.ChatLive.Index do
          message
        ) do
     chat = Chats.get_chat!(message.chat_id)
-
-    chat =
-      if chat.relation_type == "coordination" do
-        Chats.get_chat_with_messages_and_coordination!(message.chat_id, user.id)
-      else
-        Chats.get_chat_with_messages_and_interview!(message.chat_id, user.id)
-      end
+    chat = get_chat_with_messages!(chat, user.id)
 
     Chats.read_chat!(chat.id, user.id)
 
@@ -612,4 +603,13 @@ defmodule BrightWeb.ChatLive.Index do
 
   defp is_interview?(%{relation_type: "recruit"} = _chat), do: true
   defp is_interview?(_), do: false
+
+  defp get_chat_with_messages!(%{relation_type: "recruit"} = chat, user_id),
+    do: Chats.get_chat_with_messages_and_interview!(chat.id, user_id)
+
+  defp get_chat_with_messages!(%{relation_type: "coordination"} = chat, user_id),
+    do: Chats.get_chat_with_messages_and_coordination!(chat.id, user_id)
+
+  defp get_chat_with_messages!(%{relation_type: "employment"} = chat, user_id),
+    do: Chats.get_chat_with_messages_and_employment!(chat.id, user_id)
 end
