@@ -55,7 +55,9 @@ defmodule Bright.Chats do
   end
 
   def list_chats(user_id, :recruit) do
-    list_chats(user_id, @interview_status_all)
+    list_chats_interview(user_id, @interview_status_all)
+    |> Enum.concat(list_chats_coordination(user_id, @coordination_status_all))
+    |> Enum.concat(list_chats_employment(user_id, @employment_status_all))
   end
 
   def list_chats(user_id, :not_completed_interview) do
