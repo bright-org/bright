@@ -56,7 +56,8 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
           </button>
           <div class="flex flex-col lg:flex-row w-full">
             <div class="lg:w-1/2">
-              <div class="mb-8">
+              <% # descriptionの準備が整うまで非表示 %>
+              <div :if={false} class="mb-8">
                 <p class="text-lg text-brightGray-400"><%= @job.name %>とは？</p>
                 <hr class="h-[2px] bg-brightGray-50 my-2" />
                 <p class="pl-4 words-break"><%= @job.description %></p>
