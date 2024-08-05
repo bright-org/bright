@@ -17,7 +17,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
               <h3 class={"border-l-4 px-2 border-#{career_field.name_en}-dark"}><%= career_field.name_ja %></h3>
               <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
                 <div class="my-8">
-                  <p class="text-left text-[#777777] text-xl"><%= @rank[rank] %></p>
+                  <p class="text-left text-brightGray-400 text-xl"><%= @rank[rank] %></p>
                   <hr class="h-[2px] bg-brightGray-50 mb-4" />
                   <div class="flex flex-wrap justify-center mt-2 lg:justify-start">
                     <% jobs = Map.get(@jobs, career_field.name_en, %{}) %>
@@ -45,7 +45,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
       <div class="w-full lg:w-60 lg:ml-12 bg-white h-full p-2 sticky top-16 lg:top-2 order-1 lg:order-2 flex flex-row lg:flex-col">
         <%= for career_field <- @career_fields do %>
           <p
-            class={"cursor-pointer px-2 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
+            class={"cursor-pointer px-1 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
             phx-click="scroll_to"
             phx-value-pos={career_field.name_en}
           >
@@ -61,7 +61,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     ~H"""
     <div class="border-[3px] px-4 pt-2 pb-[40px] m-2 rounded w-[330px] h-30 flex flex-col bg-brightGray-50">
       <div class="flex justify-between h-[48px] ">
-        <p class="font-bold my-2 w-44 truncate text-[#777777] opacity-85"><%= @job.name %></p>
+        <p class="font-bold my-2 w-44 truncate text-brightGray-400 opacity-85"><%= @job.name %></p>
         <button
           class="rounded-lg border bg-white py-1 px-2 mb-2 text-xs hover:filter hover:brightness-[80%]"
           phx-click="request"
@@ -77,7 +77,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   defp unlocked_job(assigns) do
     ~H"""
-    <.link navigate={"#{@current_path}/jobs/#{@job.id}"}>
+    <.link navigate={"#{@current_path}/jobs/#{@job.id}?career_field=#{@career_field.name_en}"}>
       <div
         id={"#{@career_field.name_en}-#{@job.id}"}
         class={"border-[3px] px-4 py-2 m-2 ounded w-[330px] h-30 flex flex-col  hover:bg-[#F5FBFB] #{if is_nil(@score), do: "", else: "border-brightGreen-300"}"}
