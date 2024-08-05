@@ -134,17 +134,15 @@ defmodule BrightWeb.OnboardingLive.JobRouteComponents do
   end
 
   def filter_job(jobs, career_field, rank, filter) do
-    case rank do
-      rank when rank in [:entry, :basic] ->
-        jobs
-        |> Map.get(career_field.name_en, %{})
-        |> Map.get(rank, [])
-        |> Enum.filter(&String.match?(&1.name, ~r/#{filter}/))
-
-      _ ->
-        jobs
-        |> Map.get(career_field.name_en, %{})
-        |> Map.get(rank, [])
+    if rank in [:entry, :basic] && career_field.name_en == "engineer" do
+      jobs
+      |> Map.get(career_field.name_en, %{})
+      |> Map.get(rank, [])
+      |> Enum.filter(&String.match?(&1.name, ~r/#{filter}/))
+    else
+      jobs
+      |> Map.get(career_field.name_en, %{})
+      |> Map.get(rank, [])
     end
   end
 
