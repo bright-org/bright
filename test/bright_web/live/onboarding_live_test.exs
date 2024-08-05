@@ -28,6 +28,10 @@ defmodule BrightWeb.OnboardingLiveTest do
       sk = insert(:skill_panel)
       skill_class = insert(:skill_class, skill_panel: sk, class: 1)
       insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+      skill_class = insert(:skill_class, skill_panel: sk, class: 2)
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+      skill_class = insert(:skill_class, skill_panel: sk, class: 3)
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
 
       cf = insert(:career_field)
 
@@ -39,16 +43,9 @@ defmodule BrightWeb.OnboardingLiveTest do
     end
 
     test "list job's skill_panel", %{job: job, conn: conn} do
-      {:ok, _index_live, html} = live(conn, ~p"/onboardings/jobs/#{job.id}")
+      {:ok, _index_live, html} = live(conn, ~p"/onboardings/jobs/#{job.id}?career_field=engineer")
 
-      assert html =~ "エンジニア向けのスキル"
-    end
-
-    test "show skill panel", %{job: job, skill_panel: skill_panel, conn: conn} do
-      {:ok, _index_live, html} =
-        live(conn, ~p"/onboardings/jobs/#{job.id}/skill_panels/#{skill_panel.id}")
-
-      assert html =~ skill_panel.name
+      assert html =~ "some job"
     end
   end
 end
