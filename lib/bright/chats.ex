@@ -67,11 +67,11 @@ defmodule Bright.Chats do
         key in [:completed_interview, :cancel_interview, :dismiss_interview]
       end)
 
-    list_chats(user_id, status)
+    list_chats_interview(user_id, status)
   end
 
   def list_chats(user_id, :cancel_interview) do
-    list_chats(user_id, [:cancel_interview, :dismiss_interview])
+    list_chats_interview(user_id, [:cancel_interview, :dismiss_interview])
   end
 
   def list_chats(user_id, :waiting_recruit_decision) do
