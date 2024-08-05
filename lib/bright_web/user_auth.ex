@@ -58,7 +58,6 @@ defmodule BrightWeb.UserAuth do
   def log_in_user(conn, user, user_return_to \\ nil) do
     token = Accounts.generate_user_session_token(user)
     user_return_to = get_session(conn, :user_return_to) || user_return_to
-
     conn
     |> renew_session()
     |> put_token_in_session(token)
@@ -77,12 +76,11 @@ defmodule BrightWeb.UserAuth do
   defp log_in_redirect_path(user, user_return_to) do
     cond do
       !Accounts.onboarding_finished?(user) && Regex.match?(~r"panels", user_return_to) ->
-        IO.inspect("User_return_toの確認")
-        id_info = %{user_id: user.id}
+        id_info = %{user_id: user.id, completed_at: NaiveDateTime.utc_now()}
         UserSkillPanels.create_user_skill_panel(id_info)
-        # Onboardings.create_user_onboarding({user_return_to, user.id})
-        ~p"/graphs"
-        # Path.join(~p"/", user_return_to)
+        Onboardings.create_user_onboarding(id_info)
+
+        Path.join(~p"/", user_return_to)
 
       !Accounts.onboarding_finished?(user) ->
         ~p"/onboardings/welcome"
