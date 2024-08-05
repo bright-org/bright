@@ -166,6 +166,10 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   end
 
   @impl true
+  def handle_event("request", _params, socket) do
+    {:noreply, put_flash(socket, :info, "ジョブパネルのリクエストを受け付けました")}
+  end
+
   def handle_event(
         "select_skill_panel",
         %{"id" => skill_panel_id, "name" => name},
