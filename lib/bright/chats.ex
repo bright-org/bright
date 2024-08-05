@@ -13,6 +13,7 @@ defmodule Bright.Chats do
   alias Bright.Chats.ChatMessage
   alias Bright.Recruits.Interview
   alias Bright.Recruits.Coordination
+  alias Bright.Recruits.Employment
   alias Bright.Utils.GoogleCloud.Storage
 
   @interview_status_all [
@@ -23,6 +24,21 @@ defmodule Bright.Chats do
     :completed_interview,
     :cancel_interview,
     :one_on_one
+  ]
+
+  @coordination_status_all [
+    :waiting_recruit_decision,
+    :hiring_decision,
+    :completed_coordination,
+    :cancel_coordination
+  ]
+
+  @employment_status_all [
+    :waiting_response,
+    :cancel_recruiter,
+    :cancel_candidates,
+    :acceptance_emplyoment,
+    :requested
   ]
 
   @doc """
