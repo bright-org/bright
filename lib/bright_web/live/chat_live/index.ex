@@ -59,7 +59,7 @@ defmodule BrightWeb.ChatLive.Index do
             :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id)}
             class="lg:ml-12 text-xl"
           >
-            <%= if @chat.interview != nil and @chat.interview.status == :consume_interview do %>
+            <%= if is_interview?(@chat) and @chat.interview.status == :consume_interview do %>
               <p>本チャットで面談対象者と連絡を取り、「面談調整の確認」ボタンを押してください</p>
               <p class="mt-2 text-attention-600">面談確定するとチャットに（担当者から面談が確定されました）が自動投入され、メールも送信されます</p>
             <% end %>
@@ -167,7 +167,7 @@ defmodule BrightWeb.ChatLive.Index do
                   }
                   class="order-2 flex justify-end"
                 >
-                  <%= if @chat.interview != nil and @chat.interview.status == :one_on_one do %>
+                  <%= if is_interview?(@chat) and @chat.interview.status == :one_on_one do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -177,7 +177,7 @@ defmodule BrightWeb.ChatLive.Index do
                     </button>
                   <% end %>
 
-                  <%= if @chat.interview != nil and @chat.interview.status == :consume_interview do %>
+                  <%= if is_interview?(@chat) and @chat.interview.status == :consume_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -188,7 +188,7 @@ defmodule BrightWeb.ChatLive.Index do
                       面談調整の確認
                     </button>
                   <% end %>
-                  <%= if @chat.interview != nil and @chat.interview.status == :ongoing_interview do %>
+                  <%= if is_interview?(@chat) and @chat.interview.status == :ongoing_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -609,4 +609,7 @@ defmodule BrightWeb.ChatLive.Index do
     |> Map.get("select_filter_type", @default_filter_type)
     |> String.to_atom()
   end
+
+  defp is_interview?(%{relation_type: "recruit"} = _chat), do: true
+  defp is_interview?(_), do: false
 end
