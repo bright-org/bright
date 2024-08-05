@@ -150,7 +150,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
       skill_panel
       |> Bright.Repo.preload(:skill_classes)
       |> Map.get(:skill_classes, [])
-      |> Enum.find(&(&1.class == 3))
+      |> Enum.max_by(& &1.class)
 
     socket
     |> assign(:job, job)

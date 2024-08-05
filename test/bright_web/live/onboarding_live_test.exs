@@ -28,10 +28,6 @@ defmodule BrightWeb.OnboardingLiveTest do
       sk = insert(:skill_panel)
       skill_class = insert(:skill_class, skill_panel: sk, class: 1)
       insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
-      skill_class = insert(:skill_class, skill_panel: sk, class: 2)
-      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
-      skill_class = insert(:skill_class, skill_panel: sk, class: 3)
-      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
 
       cf = insert(:career_field)
 
