@@ -1,0 +1,25 @@
+# 面談チャットデータコンバート
+
+## Section
+
+```elixir
+defmodule DataConvertChat do
+  alias Bright.Chats.Chat
+  alias Bright.Repo
+  alias Bright.Recruits
+  import Ecto.Query, warn: false
+
+  def convert do
+    from(c in Chat, where: c.relation_type == "recruit")
+    |> Repo.all()
+    |> Enum.each(fn x -> update(x) end)
+  end
+
+  def update(chat) do
+    Chat.changeset(chat, %{relation_type: "interview"})
+    |> Repo.update()
+  end
+end
+
+DataConvertChat.convert()
+```
