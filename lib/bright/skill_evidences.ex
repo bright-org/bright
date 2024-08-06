@@ -30,6 +30,16 @@ defmodule Bright.SkillEvidences do
   直近のコメント順に学習メモを返す
   """
   def list_recent_skill_evidences(user_ids, size \\ 10) do
+    from(q in query_recent_skill_evidences(user_ids), limit: ^size)
+    |> Repo.all()
+  end
+
+  def page_recent_skill_evidences(user_ids, page_params \\ [page: 1, page_size: 10]) do
+    query_recent_skill_evidences(user_ids)
+    |> Repo.paginate(page_params)
+  end
+
+  defp query_recent_skill_evidences(user_ids) do
     target_evidences = from(q in SkillEvidence, where: q.user_id in ^user_ids)
     target_evidence_ids = from(q in target_evidences, select: q.id)
 
@@ -48,10 +58,8 @@ defmodule Bright.SkillEvidences do
       se in subquery(target_evidences),
       join: latest_sep in subquery(latest_post),
       on: se.id == latest_sep.skill_evidence_id,
-      order_by: {:desc, latest_sep.latest_post_time},
-      limit: ^size
+      order_by: {:desc, latest_sep.latest_post_time}
     )
-    |> Repo.all()
   end
 
   @doc """

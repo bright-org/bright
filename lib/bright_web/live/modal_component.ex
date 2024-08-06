@@ -54,8 +54,6 @@ defmodule BrightWeb.ModalComponent do
   defp call_on_open(_), do: nil
 
   defp call_on_close(%{on_close: func}) do
-    func.()
+    func && func.()
   end
-
-  defp call_on_close(_), do: nil
 end

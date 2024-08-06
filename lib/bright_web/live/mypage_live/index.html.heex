@@ -64,8 +64,10 @@
       />
 
       <%# 学習メモ %>
-      <.skill_evidences
-        recent_skill_evidences={@recent_skill_evidences}
+      <.live_component
+        module={MySkillEvidencesComponent}
+        id="my-skill-evidences"
+        display_user={@display_user}
         current_user={@current_user}
         anonymous={@anonymous}
         related_user_ids={@related_user_ids}
@@ -121,7 +123,7 @@
     skill={nil}
     user={@current_user}
     anonymous={@anonymous}
-    me={@me}
+    me={nil}
   />
 </.live_component>
 

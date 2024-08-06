@@ -157,6 +157,35 @@ defmodule BrightWeb.MypageLiveTest do
       {:ok, lv, _html} = live(conn, ~p"/mypage")
       refute has_element?(lv, "#my-field", "最初の投稿")
     end
+
+    test "paginations", %{conn: conn, user: user} do
+      # 1~11 の投稿作成
+      gen_timestamps(11)
+      |> Enum.with_index(1)
+      |> Enum.map(fn {timestamp, i} ->
+        skill_evidence = create_first_skill_evidence(user)
+
+        insert(:skill_evidence_post,
+          user: user,
+          skill_evidence: skill_evidence,
+          content: "投稿#{i}です",
+          inserted_at: timestamp
+        )
+      end)
+
+      {:ok, lv, html} = live(conn, ~p"/mypage")
+
+      assert html =~ "投稿11です"
+      assert html =~ "投稿2です"
+      refute html =~ "投稿1です"
+
+      # さらに表示
+      lv
+      |> element("button", "さらに表示")
+      |> render_click()
+
+      assert render(lv) =~ "投稿1です"
+    end
   end
 
   # いま学んでいます確認
