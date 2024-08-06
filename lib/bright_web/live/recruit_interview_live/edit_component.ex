@@ -177,7 +177,7 @@ defmodule BrightWeb.RecruitInterviewLive.EditComponent do
           Chats.get_or_create_chat(
             interview.recruiter_user_id,
             interview.id,
-            "recruit",
+            "interview",
             [
               %{user_id: interview.recruiter_user_id},
               %{user_id: interview.candidates_user_id}
