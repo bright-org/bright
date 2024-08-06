@@ -21,42 +21,6 @@ defmodule BrightWeb.ChatLive.Index do
     %{name: "（すべて）", value: :recruit}
   ]
 
-  # TODO 試作
-  @coordination_status_all [
-    %{
-      name: Gettext.gettext(BrightWeb.Gettext, to_string(:hiring_decision)),
-      value: :hiring_decision
-    },
-    %{
-      name: Gettext.gettext(BrightWeb.Gettext, to_string(:completed_coordination)),
-      value: :completed_coordination
-    },
-    %{
-      name: Gettext.gettext(BrightWeb.Gettext, to_string(:cancel_coordination)),
-      value: :cancel_coordination
-    }
-  ]
-
-  @employment_status_all [
-    %{
-      name: Gettext.gettext(BrightWeb.Gettext, to_string(:waiting_response)),
-      value: :waiting_response
-    },
-    %{
-      name: Gettext.gettext(BrightWeb.Gettext, to_string(:cancel_recruiter)),
-      value: :cancel_recruiter
-    },
-    %{
-      name: Gettext.gettext(BrightWeb.Gettext, to_string(:cancel_candidates)),
-      value: :cancel_candidates
-    },
-    %{
-      name: Gettext.gettext(BrightWeb.Gettext, to_string(:acceptance_emplyoment)),
-      value: :acceptance_emplyoment
-    },
-    %{name: Gettext.gettext(BrightWeb.Gettext, to_string(:requested)), value: :requested}
-  ]
-
   @default_filter_type "not_completed_interview"
 
   @impl true
@@ -584,18 +548,9 @@ defmodule BrightWeb.ChatLive.Index do
   チャットのステータスを表示する
   get_display_name差はフィルターで集約している内容も追加している
   """
-  def get_status(value) do
-    filter_type =
-      [%{name: "面談キャンセル", value: :dismiss_interview}]
-      |> Enum.concat(@filter_types)
-      |> Enum.concat(@coordination_status_all)
-      |> Enum.concat(@employment_status_all)
-      |> Enum.find(fn x ->
-        x.value == value
-      end)
-
-    filter_type.name
-  end
+  def get_status(:dismiss_interview), do: "面談キャンセル"
+  def get_status(:ongoing_interview), do: "面談確定"
+  def get_status(value), do: Gettext.gettext(BrightWeb.Gettext, to_string(value))
 
   defp gen_params(%{current_user: user, chat: chat, uploads: uploads}, text) do
     images = Enum.map(uploads.images.entries, &Chats.ChatFile.build(:images, &1))
