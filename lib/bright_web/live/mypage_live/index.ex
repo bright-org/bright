@@ -32,6 +32,10 @@ defmodule BrightWeb.MypageLive.Index do
      |> apply_action(socket.assigns.live_action, params)}
   end
 
+  def handle_event("clear_display_user", _params, socket) do
+    {:noreply, push_redirect(socket, to: ~p"/mypage")}
+  end
+
   def handle_event("edit_skill_evidence", %{"id" => id}, socket) do
     skill_evidence = SkillEvidences.get_skill_evidence!(id)
     skill = SkillUnits.get_skill!(skill_evidence.skill_id)
