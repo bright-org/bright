@@ -64,6 +64,7 @@ defmodule BrightWeb.SkillEvidenceComponents do
         >
           <img src="/images/common/icons/skillEvidenceActive.svg">
         </button>
+        <p :if={@skill_evidence.progress == :help} class="border rounded-full p-1 text-xs text-gray-800 bg-gray-50">ヘルプ</p>
       </nav>
     </div>
     """

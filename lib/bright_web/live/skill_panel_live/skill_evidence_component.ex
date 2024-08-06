@@ -150,6 +150,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   :if={@me}
                   class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
                   type="submit"
+                  data-confirm="ヘルプを出しますか？"
                   phx-disable-with="送信中..."
                   phx-click={JS.set_attribute({"value", "on"}, to: "#checkbox-help")}
                 >
@@ -259,6 +260,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         maybe_make_filled(user, skill, me)
         maybe_make_notification_evidence_by_help(user, skill_evidence, help?)
         maybe_make_notification_evidence_by_other_post(user, skill_evidence, me)
+        maybe_make_skill_evidence_help(skill_evidence, help?)
 
         {:noreply,
          socket
@@ -365,6 +367,12 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   defp maybe_make_notification_evidence_by_other_post(user, skill_evidence, false) do
     SkillEvidences.receive_post(skill_evidence, user)
+  end
+
+  defp maybe_make_skill_evidence_help(_skill_evidence, false), do: nil
+
+  defp maybe_make_skill_evidence_help(skill_evidence, true) do
+    SkillEvidences.update_skill_evidence(skill_evidence, %{progress: :help})
   end
 
   defp icon_file_path(_user, true), do: UserProfiles.icon_url(nil)
