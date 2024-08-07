@@ -7,11 +7,12 @@ defmodule Bright.Stripe.StripePrice do
   import Ecto.Changeset
 
   @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
 
   schema "stripe_prices" do
     field :stripe_price_id, :string
     field :stripe_lookup_key, :string
-    belongs_to :subscription_plan, Bright.Subscriptions.SubscriptionPlan, type: Ecto.ULID
+    belongs_to :subscription_plan, Bright.Subscriptions.SubscriptionPlan
 
     timestamps()
   end
