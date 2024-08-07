@@ -30,6 +30,12 @@ defmodule DataConvertChat do
       where: c.relation_type == "interview"
     )
     |> Repo.all()
+    |> Enum.each(fn x -> update_chat(x) end)
+  end
+
+  def update_chat(chat) do
+    Chat.changeset(chat, %{relation_type: "coordination", updated_at: chat.updated_at})
+    |> Repo.update()
   end
 end
 
