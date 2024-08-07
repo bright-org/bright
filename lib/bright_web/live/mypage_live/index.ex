@@ -230,7 +230,7 @@ defmodule BrightWeb.MypageLive.Index do
         "#{skill_panel_name}【#{skill_class_name}】を始めました"
 
       _ ->
-        "#{skill_panel_name}【#{skill_class_name}】が「#{level_name}」にレベルアップしました"
+        "#{skill_panel_name}【クラス#{class}：#{skill_class_name}】が「#{level_name}」にレベルアップしました"
     end
   end
 
