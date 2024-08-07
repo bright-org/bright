@@ -19,6 +19,25 @@ defmodule Bright.TestHelper do
   @test_support_dir __DIR__
 
   @doc """
+  時間差を付けたulidを降順で返す
+  """
+  def gen_ulids(num) do
+    gen_timestamps(num)
+    |> Enum.map(&Ecto.ULID.generate(DateTime.to_unix(&1, :millisecond)))
+  end
+
+  @doc """
+  時間差を付けたDateTimeを昇順（先頭が最も過去）で返す
+  """
+  def gen_timestamps(num) do
+    num..1//-1
+    |> Enum.map(fn n ->
+      DateTime.utc_now()
+      |> DateTime.add(-1 * n, :second)
+    end)
+  end
+
+  @doc """
   Setup helper that registers and logs in users.
 
       setup :register_and_log_in_user

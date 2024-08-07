@@ -135,7 +135,6 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
                 id="related-user-card-compare"
                 module={BrightWeb.CardLive.RelatedUserCardComponent}
                 current_user={@current_user}
-                display_menu={false}
                 purpose="compare"
                 card_row_click_target={@myself}
               />

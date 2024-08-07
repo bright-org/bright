@@ -1,6 +1,6 @@
 defmodule Bright.SkillEvidences.SkillEvidence do
   @moduledoc """
-  スキルエビデンスを扱うスキーマ。
+  学習メモを扱うスキーマ。
   """
 
   use Ecto.Schema
