@@ -16,7 +16,7 @@ defmodule DataConvertChat do
     |> Repo.update_all(set: [relation_type: "interview"])
   end
 
-  def test_coordination do
+  def convert_coordination do
     from(c in Chat,
       join: i in Interview,
       on:
@@ -28,15 +28,18 @@ defmodule DataConvertChat do
           i.updated_at <= co.inserted_at and
           co.inserted_at <= fragment("? + interval '10 seconds'", i.updated_at),
       where: c.relation_type == "interview",
-      select: %{c | coordination: co}
+      select: %{c | interview: i}
     )
     |> Repo.all()
-
-    # |> Enum.each(fn x -> update_chat(x) end)
+    |> Enum.each(fn x -> update_chat_coordination(x) end)
   end
 
-  def update_chat(chat) do
-    Chat.changeset(chat, %{relation_type: "coordination", updated_at: chat.updated_at})
+  def update_chat_coordination(chat) do
+    Chat.changeset(chat, %{
+      relation_id: chat.interview.id,
+      relation_type: "coordination",
+      updated_at: chat.updated_at
+    })
     |> Repo.update()
   end
 
@@ -47,6 +50,6 @@ defmodule DataConvertChat do
 end
 
 DataConvertChat.convert()
-DataConvertChat.test_coordination()
+DataConvertChat.convert_coordination()
 DataConvertChat.test_v()
 ```
