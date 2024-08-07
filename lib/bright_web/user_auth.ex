@@ -58,6 +58,7 @@ defmodule BrightWeb.UserAuth do
   def log_in_user(conn, user, user_return_to \\ nil) do
     token = Accounts.generate_user_session_token(user)
     user_return_to = get_session(conn, :user_return_to) || user_return_to
+
     conn
     |> renew_session()
     |> put_token_in_session(token)
@@ -79,7 +80,6 @@ defmodule BrightWeb.UserAuth do
     cond do
       !Accounts.onboarding_finished?(user) &&
           Regex.match?(regex, to_string(user_return_to)) ->
-
         panel_id = String.split(user_return_to, "?")
         skill_panel_id = String.split(List.first(panel_id), "/")
 
@@ -88,6 +88,7 @@ defmodule BrightWeb.UserAuth do
           completed_at: NaiveDateTime.utc_now(),
           skill_panel_id: List.last(skill_panel_id)
         }
+
         UserSkillPanels.create_user_skill_panel(id_info)
         Onboardings.create_user_onboarding(id_info)
         Path.join(~p"/", user_return_to)
