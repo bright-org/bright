@@ -104,16 +104,16 @@ defmodule BrightWeb.SkillListComponent do
   end
 
   @impl true
-  def update(%{display_user: user} = assigns, socket) do
+  def update(assigns, socket) do
     socket
     |> assign(assigns)
-    |> assign_paginate(user.id)
+    |> assign_paginate(assigns.display_user, Map.get(assigns, :career_field))
     |> then(&{:ok, &1})
   end
 
-  def assign_paginate(socket, user_id, page \\ 1) do
+  def assign_paginate(socket, user, career_field, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      SkillPanels.list_users_skill_panels_all_career_field([user_id], page)
+      list_skill_panels(user, career_field, page)
 
     socket
     |> assign(:skill_panels, skill_panels)
@@ -122,22 +122,41 @@ defmodule BrightWeb.SkillListComponent do
   end
 
   @impl true
-  def handle_event("previous_button_click", _params, %{assigns: %{display_user: user}} = socket) do
-    %{page: page} = socket.assigns
+  def handle_event("previous_button_click", _params, socket) do
+    %{
+      display_user: user,
+      career_field: career_field,
+      page: page
+    } = socket.assigns
+
     page = if page - 1 < 1, do: 1, else: page - 1
 
     socket
-    |> assign_paginate(user.id, page)
+    |> assign_paginate(user, career_field, page)
     |> then(&{:noreply, &1})
   end
 
-  def handle_event("next_button_click", _params, %{assigns: %{display_user: user}} = socket) do
-    %{page: page, total_pages: total_pages} = socket.assigns
+  def handle_event("next_button_click", _params, socket) do
+    %{
+      display_user: user,
+      career_field: career_field,
+      page: page,
+      total_pages: total_pages
+    } = socket.assigns
+
     page = if page + 1 > total_pages, do: total_pages, else: page + 1
 
     socket
-    |> assign_paginate(user.id, page)
+    |> assign_paginate(user, career_field, page)
     |> then(&{:noreply, &1})
+  end
+
+  defp list_skill_panels(user, nil, page) do
+    SkillPanels.list_users_skill_panels_all_career_field([user.id], page)
+  end
+
+  defp list_skill_panels(user, career_field, page) do
+    SkillPanels.list_users_skill_panels_by_career_field([user.id], career_field.name_en, page)
   end
 
   defp icon_base_path(file), do: "/images/common/icons/#{file}"

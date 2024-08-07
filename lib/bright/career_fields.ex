@@ -39,6 +39,10 @@ defmodule Bright.CareerFields do
   """
   def get_career_field!(id), do: Repo.get!(CareerField, id)
 
+  def get_career_field_by!(condition) do
+    Repo.get_by!(CareerField, condition)
+  end
+
   @doc """
   Creates a career_field.
 

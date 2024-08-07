@@ -11,6 +11,7 @@ defmodule BrightWeb.MypageLive.Index do
   alias Bright.SkillEvidences
   alias Bright.SkillScores
   alias Bright.Teams
+  alias Bright.CareerFields
   alias BrightWeb.PathHelper
   alias BrightWeb.DisplayUserHelper
   alias BrightWeb.MypageLive.MySkillEvidencesComponent
@@ -25,6 +26,7 @@ defmodule BrightWeb.MypageLive.Index do
   def handle_params(params, _url, socket) do
     {:noreply,
      socket
+     |> assign_career_field(params["q"])
      |> assign_skillset_gem()
      |> assign_recent_level_up_skill_classes()
      |> assign_related_user_ids()
@@ -81,15 +83,28 @@ defmodule BrightWeb.MypageLive.Index do
     |> assign(:search, false)
   end
 
+  defp assign_career_field(socket, nil) do
+    assign(socket, :career_field, nil)
+  end
+
+  defp assign_career_field(socket, name_en) do
+    career_field = CareerFields.get_career_field_by!(name_en: name_en)
+    assign(socket, :career_field, career_field)
+  end
+
   defp assign_skillset_gem(socket) do
     skillset_gem =
       SkillScores.get_skillset_gem(socket.assigns.display_user.id)
       |> Enum.sort_by(& &1.position, :asc)
-      |> Enum.map(&[&1.name, floor(&1.percentage)])
+      |> Enum.map(&[&1.key, &1.name, floor(&1.percentage)])
       |> Enum.zip_reduce([], &(&2 ++ [&1]))
       |> then(fn
-        [] -> nil
-        [names, percentags] -> %{labels: names, data: percentags}
+        [] ->
+          nil
+
+        [keys, names, percentags] ->
+          links = Enum.map(keys, &"?q=#{&1}")
+          %{labels: names, data: percentags, links: links}
       end)
 
     assign(socket, :skillset_gem, skillset_gem)
