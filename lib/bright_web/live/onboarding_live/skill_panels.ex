@@ -20,7 +20,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         </span>
       </h1>
 
-      <div class="px-4 py-8">
+      <div class="p-4 lg:p-8">
         <ol class="mt-4 lg:mt-0 mb-1 flex items-center whitespace-nowrap">
           <li class="inline-flex items-center">
             <.link navigate={@return_to} class="flex items-center text-sm text-engineer-dark">
@@ -36,7 +36,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
           </li>
         </ol>
 
-        <div class="bg-white p-4 rounded">
+        <div class="bg-white p-2 lg:p-4 rounded">
           <div class="flex flex-col lg:flex-row justify-between">
             <div class="flex flex-col lg:flex-row flex-start mb-4">
               <p class="text-xl py-2 pr-4"><%= @job.name %></p>
@@ -87,28 +87,28 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
               <ul class="mt-4 px-4">
                   <%= for skill_unit <- @skill_units do %>
                     <% score = Enum.find(@skill_score, & &1.skill_unit_id == skill_unit.id) || %{percentage: 0}%>
-                    <li class="rounderd border-2 p-2 mb-3 flex flex-col">
+                    <li class="rounderd border-2 px-4 py-2 mb-3 flex flex-col">
                       <div class="flex flex-col lg:flex-row justify-between overflow-x-hidden">
-                        <span class="mr-4"><%= skill_unit.name %></span>
+                        <span class="mr-4 text-lg text-brightGray-400"><%= skill_unit.name %></span>
                         <div class="flex flex-wrap">
-                        <%= for {category, index} <- Enum.with_index(skill_unit.skill_categories) do %>
-                          <span :if={index < 5} class="rounded-full bg-brightGray-50 mt-2 mr-2 p-2">
-                            <%= category.name %>
-                          </span>
-                        <% end %>
-                        <span :if={length(skill_unit.skill_categories) > 5} class="rounded-full bg-brightGray-50 mr-2 mt-2 p-2">
+                          <%= for {category, index} <- Enum.with_index(skill_unit.skill_categories) do %>
+                            <span :if={index < 5} class="rounded-full bg-brightGray-50 mt-2 mr-2 p-1 px-2 text-xs">
+                              <%= category.name %>
+                            </span>
+                          <% end %>
+                        <span :if={length(skill_unit.skill_categories) > 5} class="rounded-full bg-brightGray-50 mr-2 mt-2 px-2 py-1 text-xs">
                           <%= "+#{length(skill_unit.skill_categories) - 5}"%>
                         </span>
                         </div>
                       </div>
-                      <div class="flex my-2 ">
-                      <div class="flex w-full h-4 mr-1 bg-gray-200 rounded-full overflow-hidden " role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                        <div
-                          class="flex flex-col justify-center rounded-full overflow-hidden bg-blue-600 whitespace-nowrap transition duration-500 "
-                          style={"width: #{score.percentage}%"}
-                        />
-                      </div>
-                      <span class="-mt-[2px]"><%= round(score.percentage) %>%</span>
+                      <div class="flex mt-4">
+                        <div class="flex w-full h-2 mr-1 bg-gray-200 rounded-full overflow-hidden " role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                          <div
+                            class="flex flex-col justify-center rounded-full overflow-hidden bg-brightGreen-300 whitespace-nowrap transition duration-500 "
+                            style={"width: #{score.percentage}%"}
+                          />
+                        </div>
+                        <span class="-mt-[8px] lg:-mt-[2px]"><%= round(score.percentage) %>%</span>
                       </div>
                   </li>
                   <% end %>
@@ -130,7 +130,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   @impl true
   def handle_params(%{"job_id" => id, "career_field" => career_field}, uri, socket) do
     job = Jobs.get_job!(id)
-    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1) |> String.replace("/", "")
     career_fields = Jobs.list_skill_panels_group_by_career_field(id)
     [skill_panel | _] = Map.values(career_fields) |> List.flatten() |> Enum.uniq()
     skill_class = SkillPanels.get_skill_class_by_skill_panel_id(skill_panel.id)

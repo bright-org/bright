@@ -93,7 +93,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
             <div>
               <% # コメント入力 %>
               <div class="flex flex-wrap pb-2">
-                <div class="w-[50px] flex justify-center flex-col items-center">
+                <div class="w-[50px] flex justify-start flex-col items-center">
                   <img class="inline-block h-10 w-10 rounded-full" src={icon_file_path(@user, @anonymous)} />
                 </div>
                 <div class="w-[370px]">
@@ -424,6 +424,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       <textarea
         id={@id}
         name={@name}
+        rows="8"
         placeholder="学習メモを入力"
         class="w-full min-h-1 outline-none border-none focus:ring-0 p-2"
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
