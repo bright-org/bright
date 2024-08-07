@@ -58,7 +58,6 @@ defmodule BrightWeb.UserAuth do
   def log_in_user(conn, user, user_return_to \\ nil) do
     token = Accounts.generate_user_session_token(user)
     user_return_to = get_session(conn, :user_return_to) || user_return_to
-
     conn
     |> renew_session()
     |> put_token_in_session(token)
@@ -75,20 +74,23 @@ defmodule BrightWeb.UserAuth do
   end
 
   defp log_in_redirect_path(user, user_return_to) do
+    regex = ~r/panels\/.+$/
+
     cond do
       !Accounts.onboarding_finished?(user) &&
-          Regex.match?(~r"panels/[a-zA-Z0-9]+$", to_string(user_return_to)) ->
+          Regex.match?(regex, to_string(user_return_to)) ->
+
         skill_panel_id = Path.split(user_return_to)
+
+        IO.inspect(Enum.at(skill_panel_id, 2))
 
         id_info = %{
           user_id: user.id,
           completed_at: NaiveDateTime.utc_now(),
           skill_panel_id: Enum.at(skill_panel_id, 2)
         }
-
         UserSkillPanels.create_user_skill_panel(id_info)
         Onboardings.create_user_onboarding(id_info)
-
         Path.join(~p"/", user_return_to)
 
       !Accounts.onboarding_finished?(user) ->
