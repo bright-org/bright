@@ -6,14 +6,33 @@
 defmodule DataConvertChat do
   alias Bright.Chats.Chat
   alias Bright.Repo
-  alias Bright.Recruits
+  alias Bright.Recruits.Interview
+  alias Bright.Recruits.Coordination
+
   import Ecto.Query, warn: false
 
   def convert do
     from(c in Chat, where: c.relation_type == "recruit")
     |> Repo.update_all(set: [relation_type: "interview"])
   end
+
+  def test_coordination do
+    from(c in Chat,
+      join: i in Interview,
+      on:
+        i.id == c.relation_id and
+          i.status == :completed_interview,
+      join: co in Coordination,
+      on:
+        i.recruiter_user_id == co.recruiter_user_id and
+          i.updated_at <= co.inserted_at and
+          co.inserted_at <= fragment("? + interval '10 seconds'", i.updated_at),
+      where: c.relation_type == "interview"
+    )
+    |> Repo.all()
+  end
 end
 
-DataConvertChat.convert()
+# DataConvertChat.convert()
+DataConvertChat.test_coordination()
 ```
