@@ -63,9 +63,9 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     ~H"""
     <div class="border-[3px] px-2 lg:px-4 m-2 rounded w-[150px] lg:w-[340px] h-[100px] lg:h-[74px] flex flex-col bg-brightGray-50">
       <div class="flex flex-col lg:flex-row justify-between">
-        <p class="flex my-2 lg:w-44 truncate text-xs lg:text-base text-brightGray-400 opacity-85">
-          <img class="w-[22px] h-[22px] -mt-[2px] mr-[2px]" src="/images/common/icons/biLock.svg" />
-          <%= @job.name %>
+        <p class="flex my-2 lg:w-44 truncate text-xs text-brightGray-400 opacity-85">
+          <img  class="w-[22px] h-[22px] -mt-[2px] mr-[2px]" src="/images/common/icons/biLock.svg" />
+          <%= String.replace(@job.name, "🔐", "") %>
         </p>
         <button
           class="rounded border bg-white h-[28px] mt-1 px-2 text-xs hover:filter hover:brightness-[80%]"
@@ -87,7 +87,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
         class={"px-2 lg:px-4 m-2 rounded w-[150px] lg:w-[340px] h-[100px] lg:h-[74px] flex flex-col hover:bg-[#F5FBFB] #{if is_nil(@score), do: "border-[2px]", else: "border border-brightGreen-300"}"}
       >
         <div class="flex flex-col lg:flex-row justify-between mt-2 mb-[4px]">
-          <p class="text-xs lg:text-base lg:w-44 lg:font-bold truncate mb-1 lg:mb-0"><%= @job.name %></p>
+          <p class="text-xs lg:w-44 lg:font-bold lg:mt-1 mb-1 lg:mb-0"><%= @job.name %></p>
           <%= if is_nil(@score) do %>
             <p class="flex mb-[4px] ">
               <img src={icon_path(:none)} width="20" height="23" class="mr-2" />
