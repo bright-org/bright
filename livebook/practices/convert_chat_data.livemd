@@ -8,10 +8,11 @@ defmodule DataConvertChat do
   alias Bright.Repo
   alias Bright.Recruits.Interview
   alias Bright.Recruits.Coordination
+  alias Bright.Recruits.Employment
 
   import Ecto.Query, warn: false
 
-  def convert do
+  def convert_interview do
     from(c in Chat, where: c.relation_type == "recruit")
     |> Repo.update_all(set: [relation_type: "interview"])
   end
@@ -43,13 +44,41 @@ defmodule DataConvertChat do
     |> Repo.update()
   end
 
+  def convert_employment do
+    from(c in Chat,
+      join: co in Coordination,
+      on:
+        co.id == c.relation_id and
+          co.status == :completed_coordination,
+      join: e in Employment,
+      on:
+        co.recruiter_user_id == e.recruiter_user_id and
+          co.updated_at <= e.inserted_at and
+          e.inserted_at <= fragment("? + interval '10 seconds'", co.updated_at),
+      where: c.relation_type == "coordination",
+      select: %{c | employment: e}
+    )
+    |> Repo.all()
+    |> Enum.each(fn x -> update_chat_employment(x) end)
+  end
+
+  def update_chat_employment(chat) do
+    Chat.changeset(chat, %{
+      relation_id: chat.employment.id,
+      relation_type: "employment",
+      updated_at: chat.updated_at
+    })
+    |> Repo.update()
+  end
+
   def test_v do
     from(c in Chat)
     |> Repo.all()
   end
 end
 
-DataConvertChat.convert()
+DataConvertChat.convert_interview()
 DataConvertChat.convert_coordination()
+DataConvertChat.convert_employment()
 DataConvertChat.test_v()
 ```
