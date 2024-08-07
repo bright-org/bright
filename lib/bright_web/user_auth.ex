@@ -8,7 +8,6 @@ defmodule BrightWeb.UserAuth do
 
   alias Bright.Accounts
   alias Bright.Repo
-  alias Bright.UserSkillPanels
   alias Bright.Onboardings
 
   # Make the cookie valid for 60 days.
@@ -77,7 +76,7 @@ defmodule BrightWeb.UserAuth do
   defp log_in_redirect_path(user, user_return_to) do
     cond do
       !Accounts.onboarding_finished?(user) &&
-          String.match?(to_string(user_return_to), ~r/get_panels/) ->
+          String.match?(to_string(user_return_to), ~r/get_skill_panel/) ->
         finish_onboarding(user, user_return_to)
         user_return_to
 
@@ -101,7 +100,6 @@ defmodule BrightWeb.UserAuth do
       skill_panel_id: skill_panel_id
     }
 
-    UserSkillPanels.create_user_skill_panel(attrs)
     Onboardings.create_user_onboarding(attrs)
   end
 
