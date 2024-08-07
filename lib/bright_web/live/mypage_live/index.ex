@@ -18,7 +18,7 @@ defmodule BrightWeb.MypageLive.Index do
   def mount(params, _session, socket) do
     socket
     |> DisplayUserHelper.assign_display_user(params)
-    |> assign(:page_title, "保有スキル")
+    |> assign(:page_title, "マイページ")
     |> then(&{:ok, &1})
   end
 
@@ -62,7 +62,7 @@ defmodule BrightWeb.MypageLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "保有スキル")
+    |> assign(:page_title, "マイページ")
     |> assign(:search, false)
   end
 
