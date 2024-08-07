@@ -1,4 +1,8 @@
 defmodule BrightWeb.SkillPanelController do
+  @moduledoc """
+  SkillPanel controller
+  """
+
   use BrightWeb, :controller
 
   alias Bright.UserSkillPanels
