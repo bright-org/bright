@@ -16,6 +16,7 @@
   <:item title="Team members limit"><%= @subscription_plan.team_members_limit %></:item>
   <:item title="Available contract end datetime"><%= @subscription_plan.available_contract_end_datetime %></:item>
   <:item title="Free trial priority"><%= @subscription_plan.free_trial_priority %></:item>
+  <:item title="Stripe product id"><%= @subscription_plan.stripe_product_id %></:item>
 </.list>
 
 <.back navigate={~p"/admin/subscription_plans"}>Back to subscription_plans</.back>

@@ -19,6 +19,7 @@
   <:col :let={{_id, subscription_plan}} label="Team members limit"><%= subscription_plan.team_members_limit %></:col>
   <:col :let={{_id, subscription_plan}} label="Available contract end datetime"><%= subscription_plan.available_contract_end_datetime %></:col>
   <:col :let={{_id, subscription_plan}} label="Free trial priority"><%= subscription_plan.free_trial_priority %></:col>
+  <:col :let={{_id, subscription_plan}} label="Stripe product id"><%= subscription_plan.stripe_product_id %></:col>
   <:action :let={{_id, subscription_plan}}>
     <div class="sr-only">
       <.link navigate={~p"/admin/subscription_plans/#{subscription_plan}"}>Show</.link>

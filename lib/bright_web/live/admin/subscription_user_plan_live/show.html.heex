@@ -16,6 +16,7 @@
   <:item title="Subscription end datetime"><%= @subscription_user_plan.subscription_end_datetime %></:item>
   <:item title="Trial start datetime"><%= @subscription_user_plan.trial_start_datetime %></:item>
   <:item title="Trial end datetime"><%= @subscription_user_plan.trial_end_datetime %></:item>
+  <:item title="Stripe subscription id"><%= @subscription_user_plan.stripe_subscription_id %></:item>
 </.list>
 
 <.back navigate={~p"/admin/subscription_user_plans"}>Back to subscription_user_plans</.back>
