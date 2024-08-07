@@ -27,18 +27,26 @@ defmodule DataConvertChat do
         i.recruiter_user_id == co.recruiter_user_id and
           i.updated_at <= co.inserted_at and
           co.inserted_at <= fragment("? + interval '10 seconds'", i.updated_at),
-      where: c.relation_type == "interview"
+      where: c.relation_type == "interview",
+      select: %{c | coordination: co}
     )
     |> Repo.all()
-    |> Enum.each(fn x -> update_chat(x) end)
+
+    # |> Enum.each(fn x -> update_chat(x) end)
   end
 
   def update_chat(chat) do
     Chat.changeset(chat, %{relation_type: "coordination", updated_at: chat.updated_at})
     |> Repo.update()
   end
+
+  def test_v do
+    from(c in Chat)
+    |> Repo.all()
+  end
 end
 
-# DataConvertChat.convert()
+DataConvertChat.convert()
 DataConvertChat.test_coordination()
+DataConvertChat.test_v()
 ```
