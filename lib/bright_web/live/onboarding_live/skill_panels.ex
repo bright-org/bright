@@ -20,7 +20,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
         </span>
       </h1>
 
-      <div class="p-8">
+      <div class="p-4 lg:p-8">
         <ol class="mt-4 lg:mt-0 mb-1 flex items-center whitespace-nowrap">
           <li class="inline-flex items-center">
             <.link navigate={@return_to} class="flex items-center text-sm text-engineer-dark">
@@ -36,7 +36,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
           </li>
         </ol>
 
-        <div class="bg-white p-4 rounded">
+        <div class="bg-white p-2 lg:p-4 rounded">
           <div class="flex flex-col lg:flex-row justify-between">
             <div class="flex flex-col lg:flex-row flex-start mb-4">
               <p class="text-xl py-2 pr-4"><%= @job.name %></p>
@@ -108,7 +108,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
                             style={"width: #{score.percentage}%"}
                           />
                         </div>
-                        <span class="-mt-[2px]"><%= round(score.percentage) %>%</span>
+                        <span class="-mt-[8px] lg:-mt-[2px]"><%= round(score.percentage) %>%</span>
                       </div>
                   </li>
                   <% end %>

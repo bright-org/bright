@@ -61,9 +61,9 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   def locked_job(assigns) do
     ~H"""
-    <div class="border-[3px] px-4 m-2 rounded w-[340px] h-[70px] flex flex-col bg-brightGray-50">
-      <div class="flex justify-between ">
-        <p class="flex my-2 w-44 truncate text-brightGray-400 opacity-85">
+    <div class="border-[3px] px-2 lg:px-4 m-2 rounded w-[150px] lg:w-[340px] h-[100px] lg:h-[70px] flex flex-col bg-brightGray-50">
+      <div class="flex flex-col lg:flex-row justify-between">
+        <p class="flex my-2 lg:w-44 truncate text-xs lg:text-base text-brightGray-400 opacity-85">
           <img class="w-[22px] h-[22px] -mt-[2px] mr-[2px]" src="/images/common/icons/biLock.svg" />
           <%= @job.name %>
         </p>
@@ -84,27 +84,27 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     <.link navigate={"/#{@current_path}/jobs/#{@job.id}?career_field=#{@career_field.name_en}"}>
       <div
         id={"#{@career_field.name_en}-#{@job.id}"}
-        class={"px-4 m-2 ounded w-[340px] h-[70px] flex flex-col  hover:bg-[#F5FBFB] #{if is_nil(@score), do: "border-[3px]", else: "border border-brightGreen-300"}"}
+        class={"px-2 lg:px-4 m-2 rounded w-[150px] lg:w-[340px] h-[100px] lg:h-[70px] flex flex-col hover:bg-[#F5FBFB] #{if is_nil(@score), do: "border-[3px]", else: "border border-brightGreen-300"}"}
       >
-        <div class="flex justify-between mt-2">
-          <p class="font-bold w-48 truncate h-[28px]"><%= @job.name %></p>
+        <div class="flex flex-col lg:flex-row justify-between mt-2 mb-[4px]">
+          <p class="text-xs lg:text-base lg:w-44 lg:font-bold truncate mb-1 lg:mb-0"><%= @job.name %></p>
           <%= if is_nil(@score) do %>
-            <p class="flex gap-x-2 mb-[4px] -mt-2">
-              <img src={icon_path(:none)} width="20" height="23" />
-              <img src={icon_path(:none)} width="20" height="23" />
-              <img src={icon_path(:none)} width="20" height="23" />
+            <p class="flex mb-[4px] ">
+              <img src={icon_path(:none)} width="20" height="23" class="mr-2" />
+              <img src={icon_path(:none)} width="20" height="23" class="mr-2" />
+              <img src={icon_path(:none)} width="20" height="23" class="mr-2" />
             </p>
           <% else %>
-            <p class="flex gap-x-2 mb-[4px]">
+            <p class="flex mb-[4px]">
               <%= for class <- @score.skill_classes do %>
                 <% class_score = List.first(class.skill_class_scores)%>
                 <%= if is_nil(class_score) do %>
-                  <.link >
-                    <img src={icon_path(:none)} />
+                  <.link>
+                    <img src={icon_path(:none)} class="mr-2" />
                   </.link>
                 <% else %>
                   <.link navigate={~p"/panels/#{@panel_id}?class=#{class.class}"} >
-                    <img src={icon_path(class_score.level)}  class="hover:filter hover:brightness-[80%]" />
+                    <img src={icon_path(class_score.level)}  class="hover:filter hover:brightness-[80%] mr-2" />
                   </.link>
                 <% end %>
               <% end %>
@@ -112,9 +112,9 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
           <% end %>
         </div>
         <hr />
-        <div class="flex gap-x-2 mt-1" >
+        <div class="flex gap-x-1 lg:gap-x-2 mt-2 lg:mt-1" >
           <%= for tag <- @job.career_fields do %>
-            <p class={"border rounded-full px-1 h-[20px] text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
+            <p class={"border rounded-full px-[1px] lg:px-1 h-[20px] text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
           <% end %>
         </div>
       </div>

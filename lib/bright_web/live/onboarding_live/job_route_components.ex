@@ -16,7 +16,7 @@ defmodule BrightWeb.OnboardingLive.JobRouteComponents do
         <div id={career_field.name_en} class="flex">
           <%= for rank <- @ranks do %>
             <% jobs = filter_job(@jobs, career_field, rank, @filter) %>
-            <div class="mr-4 flex flex-col w-1/2 lg:w-full">
+            <div class="mr-2 lg:mr-4 flex flex-col w-1/2 lg:w-full">
               <div class="flex h-8">
                 <%= if rank == @job.rank do  %>
                   <p class="flex-none text-left px-2 h-[20px] lg:h-[24px] rounded-full bg-brightGreen-300  text-xs lg:text-sm text-white mr-2">
