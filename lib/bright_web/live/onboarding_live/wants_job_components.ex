@@ -59,7 +59,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     """
   end
 
-  defp locked_job(assigns) do
+  def locked_job(assigns) do
     ~H"""
     <div class="border-[3px] px-4 m-2 rounded w-[340px] h-[70px] flex flex-col bg-brightGray-50">
       <div class="flex justify-between ">
@@ -79,9 +79,9 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
     """
   end
 
-  defp unlocked_job(assigns) do
+  def unlocked_job(assigns) do
     ~H"""
-    <.link navigate={"#{@current_path}/jobs/#{@job.id}?career_field=#{@career_field.name_en}"}>
+    <.link navigate={~p"/#{@current_path}/jobs/#{@job.id}?career_field=#{@career_field.name_en}"}>
       <div
         id={"#{@career_field.name_en}-#{@job.id}"}
         class={"px-4 m-2 ounded w-[340px] h-[70px] flex flex-col  hover:bg-[#F5FBFB] #{if is_nil(@score), do: "border-[3px]", else: "border border-brightGreen-300"}"}

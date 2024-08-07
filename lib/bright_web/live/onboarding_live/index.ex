@@ -19,7 +19,7 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   @impl true
   def handle_params(params, uri, socket) do
-    current_path = URI.parse(uri).path
+    current_path = URI.parse(uri).path |> String.replace("/", "")
 
     socket
     |> assign(:current_path, current_path)
@@ -64,8 +64,8 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   defp skip_onboarding(%UserOnboarding{}, _), do: false
 
-  defp page_title(<<"/onboardings", _rest::binary>>), do: "オンボーディング"
-  defp page_title(<<"/more_skills", _rest::binary>>), do: "ジョブパネル"
+  defp page_title(<<"onboardings", _rest::binary>>), do: "オンボーディング"
+  defp page_title(<<"more_skills", _rest::binary>>), do: "ジョブパネル"
 
   def hidden_more_skills(current_path) do
     if String.match?(current_path, ~r/onboarding/), do: "", else: "hidden"

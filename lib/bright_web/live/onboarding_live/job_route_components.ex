@@ -4,6 +4,8 @@ defmodule BrightWeb.OnboardingLive.JobRouteComponents do
   alias Bright.Jobs
   alias Bright.Jobs.Job
 
+  import BrightWeb.OnboardingLive.WantsJobComponents, only: [locked_job: 1, unlocked_job: 1]
+
   @rank Ecto.Enum.values(Job, :rank)
 
   @impl true
@@ -53,67 +55,6 @@ defmodule BrightWeb.OnboardingLive.JobRouteComponents do
     """
   end
 
-  def locked_job(assigns) do
-    ~H"""
-    <div class="border-[3px] px-2 lg:px-4 lg:pt-2 pb-[34px] lg:pb-[40px] my-2 rounded w-[150px] lg:w-[330px] h-30 flex flex-col bg-brightGray-50">
-      <div class="flex flex-col lg:flex-row justify-between mt-2">
-        <p class="font-bold my-2 lg:w-44 truncate text-xs lg:text-base text-brightGray-400 opacity-85 h-[28px]"><%= @job.name %></p>
-        <button
-          class="rounded-lg border bg-white py-1 px-2 mb-2 text-xs hover:filter hover:brightness-[80%]"
-          phx-click="request"
-          phx-value-job={@job.id}
-        >
-          リクエスト
-        </button>
-      </div>
-      <hr />
-    </div>
-    """
-  end
-
-  def unlocked_job(assigns) do
-    ~H"""
-    <.link navigate={"/#{@current_path}/jobs/#{@job.id}?career_field=#{@career_field.name_en}"}>
-      <div
-        id={"#{@career_field.name_en}-#{@job.id}"}
-        class={"border-[3px] px-2 lg:px-4 py-2 my-2 rounded w-[150px] lg:w-[330px] h-30 flex flex-col  hover:bg-[#F5FBFB] #{if is_nil(@score), do: "", else: "border-brightGreen-300"}"}
-      >
-        <div class="flex flex-col lg:flex-row justify-between mt-2">
-          <p class="font-bold text-xs lg:text-base mb-2 lg:w-48 truncate h-[28px]"><%= @job.name %></p>
-          <%= if is_nil(@score) do %>
-            <p class="flex gap-x-2 h-8 mb-4 -mt-2">
-              <img src={icon_path(:none)} width="20" height="23" />
-              <img src={icon_path(:none)} width="20" height="23" />
-              <img src={icon_path(:none)} width="20" height="23" />
-            </p>
-          <% else %>
-            <p class="flex gap-x-2 h-8 mb-2">
-              <%= for class <- @score.skill_classes do %>
-                <% class_score = List.first(class.skill_class_scores)%>
-                <%= if is_nil(class_score) do %>
-                  <.link >
-                    <img src={icon_path(:none)} />
-                  </.link>
-                <% else %>
-                  <.link navigate={~p"/panels/#{@panel_id}?class=#{class.class}"} >
-                    <img src={icon_path(class_score.level)}  class="hover:filter hover:brightness-[80%]" />
-                  </.link>
-                <% end %>
-              <% end %>
-            </p>
-          <% end %>
-        </div>
-        <hr />
-        <div class="flex gap-x-2 mt-2 h-[28px]" >
-          <%= for tag <- @job.career_fields do %>
-            <p class={"border rounded-full p-1 text-xs lg:text-sm text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
-          <% end %>
-        </div>
-      </div>
-    </.link>
-    """
-  end
-
   @impl true
   def update(assigns, socket) do
     jobs = Jobs.list_jobs_group_by_career_field_and_rank(assigns.career_field.name_en)
@@ -145,10 +86,4 @@ defmodule BrightWeb.OnboardingLive.JobRouteComponents do
       |> Map.get(rank, [])
     end
   end
-
-  defp icon_base_path(file), do: "/images/common/icons/#{file}"
-  defp icon_path(:none), do: icon_base_path("gemGray.svg")
-  defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
-  defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
-  defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
 end
