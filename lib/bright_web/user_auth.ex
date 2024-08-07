@@ -80,14 +80,13 @@ defmodule BrightWeb.UserAuth do
       !Accounts.onboarding_finished?(user) &&
           Regex.match?(regex, to_string(user_return_to)) ->
 
-        skill_panel_id = Path.split(user_return_to)
-
-        IO.inspect(Enum.at(skill_panel_id, 2))
+        panel_id = String.split(user_return_to, "?")
+        skill_panel_id = String.split(List.first(panel_id), "/")
 
         id_info = %{
           user_id: user.id,
           completed_at: NaiveDateTime.utc_now(),
-          skill_panel_id: Enum.at(skill_panel_id, 2)
+          skill_panel_id: List.last(skill_panel_id)
         }
         UserSkillPanels.create_user_skill_panel(id_info)
         Onboardings.create_user_onboarding(id_info)
