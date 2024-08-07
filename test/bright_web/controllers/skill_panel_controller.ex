@@ -13,6 +13,7 @@ defmodule BrightWeb.SkillPanelControllerTest do
   describe "GET /get_skill_panel/:id" do
     test "exists skill_panel", %{conn: conn, skill_panel: skill_panel} do
       conn = get(conn, "/get_skill_panel/#{skill_panel.id}")
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "スキルパネル:#{skill_panel.name}を取得しました"
       assert redirected_to(conn) == ~p"/panels/#{skill_panel.id}"
     end
 
