@@ -130,7 +130,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   @impl true
   def handle_params(%{"job_id" => id, "career_field" => career_field}, uri, socket) do
     job = Jobs.get_job!(id)
-    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
+    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1) |> String.replace("/", "")
     career_fields = Jobs.list_skill_panels_group_by_career_field(id)
     [skill_panel | _] = Map.values(career_fields) |> List.flatten() |> Enum.uniq()
     skill_class = SkillPanels.get_skill_class_by_skill_panel_id(skill_panel.id)
