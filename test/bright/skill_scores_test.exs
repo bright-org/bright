@@ -157,7 +157,7 @@ defmodule Bright.SkillScoresTest do
           page_size: 1
         })
 
-      assert notification.message == "HogeさんがElixir基本【零細Web開発】で「平均」レベルになりました"
+      assert notification.message == "HogeさんがElixir基本【クラス1：零細Web開発】で「平均」レベルになりました"
       assert notification.url == "/panels/#{skill_panel.id}/#{user.name}?class=1"
     end
 
