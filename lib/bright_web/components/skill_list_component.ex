@@ -104,6 +104,11 @@ defmodule BrightWeb.SkillListComponent do
   end
 
   @impl true
+  def mount(socket) do
+    {:ok, assign(socket, :career_field, nil)}
+  end
+
+  @impl true
   def update(assigns, socket) do
     socket
     |> assign(assigns)
@@ -156,7 +161,15 @@ defmodule BrightWeb.SkillListComponent do
   end
 
   defp list_skill_panels(user, career_field, page) do
+    # アクセス方法の統一のためis_startを`user_skill_panels.is_star`で引けるようにしている
+    user_skill_panels =
+      Bright.Repo.preload(user, [:user_skill_panels]).user_skill_panels
+      |> Map.new(&{&1.skill_panel_id, &1})
+
     SkillPanels.list_users_skill_panels_by_career_field([user.id], career_field.name_en, page)
+    |> Map.update!(:entries, fn skill_panels ->
+      Enum.map(skill_panels, &Map.put(&1, :user_skill_panels, Map.get(user_skill_panels, &1.id)))
+    end)
   end
 
   defp icon_base_path(file), do: "/images/common/icons/#{file}"
