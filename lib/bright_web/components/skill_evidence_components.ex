@@ -21,6 +21,7 @@ defmodule BrightWeb.SkillEvidenceComponents do
   attr :display_time, :boolean, default: true
   attr :anonymous, :boolean, default: true
   attr :myself, :string, default: nil
+  attr :content_length, :integer, default: 200
 
   def skill_evidence(assigns) do
     ~H"""
@@ -52,9 +53,9 @@ defmodule BrightWeb.SkillEvidenceComponents do
           <p class="hidden lg:block" data-local-time="%x %H:%M"></p>
         </div>
       </div>
-      <p class="break-all">
-        <%= SkillEvidences.truncate_post_content(@skill_evidence_post.content, 200) %>
-      </p>
+      <div class="markdown-body break-all">
+        <%= raw content_to_html_shortly(@skill_evidence_post, @content_length) %>
+      </div>
       <nav class="flex items-center gap-x-4">
         <button
           class="link-evidence"
@@ -73,5 +74,12 @@ defmodule BrightWeb.SkillEvidenceComponents do
 
   defp icon_file_path(user, _anonymous) do
     UserProfiles.icon_url(user.user_profile.icon_file_path)
+  end
+
+  defp content_to_html_shortly(skill_evidence, length) do
+    # truncateがマークダウン書式途中(巨大なコードブロック等)になる可能性はある
+    skill_evidence.content
+    |> SkillEvidences.truncate_post_content(length)
+    |> SkillEvidences.make_content_as_html()
   end
 end

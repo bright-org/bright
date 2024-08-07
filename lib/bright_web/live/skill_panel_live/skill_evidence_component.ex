@@ -5,7 +5,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   alias Bright.SkillScores
   alias Bright.UserProfiles
   alias Bright.Utils.GoogleCloud.Storage
-  alias BrightWeb.BrightCoreComponents
 
   @help_message """
   （このメモでヘルプを出しました）
@@ -34,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 <hr class="w-[1px] bg-brightGray-200 h-full mt-2" />
               </div>
 
-              <div class="w-[370px] pb-4">
+              <div class="w-[370px] pb-4 ml-1">
                 <% # 投稿内容表示 %>
                 <div class="text-base">
                   <div
@@ -46,7 +45,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                    >
                     <p class="text-sm" data-local-time="%x %H:%M"></p>
                   </div>
-                  <BrightCoreComponents.text_to_html_with_link text={post.content} attributes={[class: "break-all first:mt-0 mt-3"]} />
+
+                  <div class="markdown-body break-all mt-2">
+                    <%= raw SkillEvidences.make_content_as_html(post.content) %>
+                  </div>
                 </div>
 
                 <% # 画像表示 %>

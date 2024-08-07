@@ -6,12 +6,14 @@ defmodule Bright.SkillEvidences do
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.SkillEvidences.{SkillEvidence, SkillEvidencePost}
+  alias Bright.SkillEvidences.{SkillEvidence, SkillEvidencePost, Markdown}
   alias Bright.Teams
   alias Bright.Notifications
   alias Bright.SkillUnits
   alias Bright.Utils.Percentage
   alias Bright.Utils.GoogleCloud.Storage
+
+  defdelegate make_content_as_html(content), to: Markdown, as: :as_html
 
   @doc """
   Returns the list of skill_evidences.
