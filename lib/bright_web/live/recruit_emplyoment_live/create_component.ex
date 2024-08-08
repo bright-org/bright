@@ -252,7 +252,6 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
 
     coordination_db =
       Recruits.get_coordination!(coordination.id)
-      |> IO.inspect()
 
     recruiter = socket.assigns.current_user
 
