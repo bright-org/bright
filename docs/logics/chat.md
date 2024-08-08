@@ -20,9 +20,9 @@
 
 |条件|リンクするテーブル|
 |----|------------------|
-|relation_coordination_id == nil and relation_employment_id == nil|Interview|
-|relation_employment_id == nil|Coordination|
-|relation_employment_id != nil|Employment|
+|coordination_id == nil and employment_id == nil|Interview|
+|employment_id == nil|Coordination|
+|employment_id != nil|Employment|
 
 
 ## Chatテーブルマイグレーションルール
@@ -44,8 +44,8 @@ ChatはInterviewのみがリンク
 |項目名|格納内容|
 |-------|--------|
 |relation_id|Interview.id|
-|relation_coordination_id|Coordination.id|
-|relation_employment_id|Employment.id|
+|coordination_id|Coordination.id|
+|employment_id|Employment.id|
 
 ChatはInterview、Coordination、Employmentをリンク
 
