@@ -66,7 +66,7 @@ defmodule BrightWeb.SnsComponents do
         rel="nofollow noopener noreferrer"
         phx-click="sns_up_click"
       >
-        <img class="h-6 w-24" src="/images/share_button/share_twitter.png" />
+        <img class="h-6 w-24" src="/images/share_button/share_x.png" />
       </a>
     """
   end
