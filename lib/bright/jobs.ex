@@ -188,6 +188,21 @@ defmodule Bright.Jobs do
     end)
   end
 
+  def list_jobs_group_by_career_field_and_rank(career_field) do
+    from(job in Job,
+      join: cf in assoc(job, :career_fields),
+      on: cf.name_en == ^career_field,
+      select: {cf.name_en, job},
+      preload: [:career_fields, :skill_panels]
+    )
+    |> Repo.all()
+    |> Enum.group_by(fn {cf, _job} -> cf end, fn {_cf, job} -> job end)
+    |> Enum.reduce(%{}, fn {key, value}, acc ->
+      sorted = Enum.sort_by(value, & &1.position)
+      Map.put(acc, key, Enum.group_by(sorted, & &1.rank))
+    end)
+  end
+
   @doc """
   Returns Job Related SkillPanels group by CareerField
 

@@ -1,5 +1,5 @@
 defmodule Bright.Utils.EnvTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
   use ExUnit.Parameterized
   import Mock
 

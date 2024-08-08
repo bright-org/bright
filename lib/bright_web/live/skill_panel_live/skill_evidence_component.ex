@@ -5,7 +5,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   alias Bright.SkillScores
   alias Bright.UserProfiles
   alias Bright.Utils.GoogleCloud.Storage
-  alias BrightWeb.BrightCoreComponents
 
   @help_message """
   （このメモでヘルプを出しました）
@@ -15,7 +14,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   def render(assigns) do
     ~H"""
     <div id={@id} class="max-h-[80vh] overflow-y-auto">
-      <div class="flex justify-center items-center">
+      <div :if={@skill_evidence} class="flex justify-center items-center">
         <div class="w-full lg:w-[450px]">
           <p class="pb-2 text-base font-bold">
             <%= @title %>
@@ -34,7 +33,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                 <hr class="w-[1px] bg-brightGray-200 h-full mt-2" />
               </div>
 
-              <div class="w-[370px] pb-4">
+              <div class="w-[370px] pb-4 ml-1">
                 <% # 投稿内容表示 %>
                 <div class="text-base">
                   <div
@@ -46,7 +45,10 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                    >
                     <p class="text-sm" data-local-time="%x %H:%M"></p>
                   </div>
-                  <BrightCoreComponents.text_to_html_with_link text={post.content} attributes={[class: "break-all first:mt-0 mt-3"]} />
+
+                  <div class="markdown-body break-all mt-2">
+                    <%= raw SkillEvidences.make_content_as_html(post.content) %>
+                  </div>
                 </div>
 
                 <% # 画像表示 %>
@@ -91,7 +93,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
             <div>
               <% # コメント入力 %>
               <div class="flex flex-wrap pb-2">
-                <div class="w-[50px] flex justify-center flex-col items-center">
+                <div class="w-[50px] flex justify-start flex-col items-center">
                   <img class="inline-block h-10 w-10 rounded-full" src={icon_file_path(@user, @anonymous)} />
                 </div>
                 <div class="w-[370px]">
@@ -150,6 +152,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   :if={@me}
                   class="text-sm font-bold px-5 py-2 rounded border bg-base text-white"
                   type="submit"
+                  data-confirm="ヘルプを出しますか？"
                   phx-disable-with="送信中..."
                   phx-click={JS.set_attribute({"value", "on"}, to: "#checkbox-help")}
                 >
@@ -203,22 +206,19 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
   end
 
   @impl true
-  def update(assigns, socket) do
-    skill_evidence = Bright.Repo.preload(assigns.skill_evidence, :user)
-
-    skill_evidence_posts =
-      SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
-
-    title = SkillEvidences.get_skill_breadcrumb(assigns.skill)
-
+  def update(%{reset: true} = assigns, socket) do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:title, title)
-     |> assign(:skill_evidence, skill_evidence)
-     |> stream(:skill_evidence_posts, skill_evidence_posts)
+     |> assign_skill_evidence(assigns)}
+  end
+
+  def update(assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
      |> update(:user, &Bright.Repo.preload(&1, :user_profile))
-     |> assign(:postable?, postable_user?(skill_evidence, assigns.user))
+     |> assign_skill_evidence(assigns)
      |> assign_form()}
   end
 
@@ -262,6 +262,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
         maybe_make_filled(user, skill, me)
         maybe_make_notification_evidence_by_help(user, skill_evidence, help?)
         maybe_make_notification_evidence_by_other_post(user, skill_evidence, me)
+        maybe_make_skill_evidence_help(skill_evidence, help?)
 
         {:noreply,
          socket
@@ -291,6 +292,25 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
 
   def handle_event("cancel_upload", %{"ref" => ref}, socket) do
     {:noreply, cancel_upload(socket, :image, ref)}
+  end
+
+  defp assign_skill_evidence(socket, %{skill_evidence: nil}) do
+    socket
+  end
+
+  defp assign_skill_evidence(socket, assigns) do
+    skill_evidence = Bright.Repo.preload(assigns.skill_evidence, :user)
+
+    skill_evidence_posts =
+      SkillEvidences.list_skill_evidence_posts_from_skill_evidence(skill_evidence)
+
+    title = SkillEvidences.get_skill_breadcrumb(assigns.skill)
+
+    socket
+    |> assign(:title, title)
+    |> assign(:skill_evidence, skill_evidence)
+    |> stream(:skill_evidence_posts, skill_evidence_posts)
+    |> assign(:postable?, postable_user?(skill_evidence, assigns.user))
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
@@ -351,6 +371,12 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
     SkillEvidences.receive_post(skill_evidence, user)
   end
 
+  defp maybe_make_skill_evidence_help(_skill_evidence, false), do: nil
+
+  defp maybe_make_skill_evidence_help(skill_evidence, true) do
+    SkillEvidences.update_skill_evidence(skill_evidence, %{progress: :help})
+  end
+
   defp icon_file_path(_user, true), do: UserProfiles.icon_url(nil)
 
   defp icon_file_path(user, _anonymous) do
@@ -398,6 +424,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
       <textarea
         id={@id}
         name={@name}
+        rows="8"
         placeholder="学習メモを入力"
         class="w-full min-h-1 outline-none border-none focus:ring-0 p-2"
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>

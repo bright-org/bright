@@ -1,6 +1,6 @@
 defmodule Bright.SkillEvidences.SkillEvidencePost do
   @moduledoc """
-  スキルエビデンス投稿を扱うスキーマ。
+  学習メモ投稿を扱うスキーマ。
   """
 
   use Ecto.Schema
