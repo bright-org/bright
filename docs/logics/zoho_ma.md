@@ -54,9 +54,9 @@ https://www.zoho.com/accounts/protocol/oauth/token-limits.html
 
 ```mermaid
 erDiagram
-  external_access_tokens {
+  external_tokens {
     uuid id PK
-    string type "アクセストークンの種類（zoho_crm など）"
+    string token_type "アクセストークンの種類（zoho_crm など）"
     string token "トークン文字列"
     string api_domain "API リクエスト先のドメイン"
     datetime expired_at "トークンの期限切れ日時"
