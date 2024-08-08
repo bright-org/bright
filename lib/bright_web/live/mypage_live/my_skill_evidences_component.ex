@@ -125,7 +125,9 @@ defmodule BrightWeb.MypageLive.MySkillEvidencesComponent do
         page_size: @page_size
       )
 
-    entries = Bright.Repo.preload(page.entries, skill_evidence_posts: [user: [:user_profile]])
+    entries =
+      Bright.Repo.preload(page.entries, skill_evidence_posts: [user: [:user_profile]])
+      |> Enum.filter(&(&1.skill_evidence_posts != []))
 
     page_number = if(page.entries != [], do: page_number + 1, else: page_number)
 
