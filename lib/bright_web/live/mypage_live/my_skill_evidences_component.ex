@@ -70,7 +70,12 @@ defmodule BrightWeb.MypageLive.MySkillEvidencesComponent do
       SkillEvidences.get_skill_evidence!(skill_evidence_id)
       |> Bright.Repo.preload(skill_evidence_posts: [user: [:user_profile]])
 
-    {:ok, stream_insert(socket, :skill_evidences, skill_evidence)}
+    if skill_evidence.skill_evidence_posts != [] do
+      {:ok, stream_insert(socket, :skill_evidences, skill_evidence)}
+    else
+      # 更新時に投稿がなくなっているなら表示から削除する
+      {:ok, stream_delete(socket, :skill_evidences, skill_evidence)}
+    end
   end
 
   def update(assigns, socket) do
