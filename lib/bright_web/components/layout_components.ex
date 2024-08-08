@@ -206,9 +206,8 @@ defmodule BrightWeb.LayoutComponents do
     [
       {"マイページ", "/mypage", nil, "/images/common/icons/mypage.svg"},
       {"スキルを選ぶ", "/more_skills", nil, "/images/common/icons/skillSelect.svg"},
-      {"保有スキル", "/graphs", nil, "/images/common/icons/mySkill.svg"},
+      {"成長パネル", "/graphs", nil, "/images/common/icons/mySkill.svg"},
       {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/, "/images/common/icons/skillAnalyze.svg"},
-      {"チームを作る", "/teams/new", nil, "/images/common/icons/teamAdd.svg"},
       {"面談チャット", "/recruits/chats", nil, "/images/common/icons/oneOnOneChat.svg"}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
