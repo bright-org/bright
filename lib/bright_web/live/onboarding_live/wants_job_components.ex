@@ -81,7 +81,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
 
   def unlocked_job(assigns) do
     ~H"""
-    <.link navigate={"/#{@current_path}/jobs/#{@job.id}?career_field=#{@career_field.name_en}"}>
+    <div phx-click={JS.navigate("/#{@current_path}/jobs/#{@job.id}?career_field=#{@career_field.name_en}")} class="cursor-pointer">
       <div
         id={"#{@career_field.name_en}-#{@job.id}"}
         class={"px-2 lg:px-4 m-2 rounded w-[150px] lg:w-[340px] h-[100px] lg:h-[74px] flex flex-col hover:bg-[#F5FBFB] #{if is_nil(@score), do: "border-[2px]", else: "border border-brightGreen-300"}"}
@@ -118,7 +118,7 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
           <% end %>
         </div>
       </div>
-    </.link>
+    </div>
     """
   end
 
