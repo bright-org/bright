@@ -129,13 +129,13 @@ defmodule BrightWeb.MypageLive.MySkillEvidencesComponent do
       Bright.Repo.preload(page.entries, skill_evidence_posts: [user: [:user_profile]])
       |> Enum.filter(&(&1.skill_evidence_posts != []))
 
-    page_number = if(page.entries != [], do: page_number + 1, else: page_number)
+    page_number = if(entries != [], do: page_number + 1, else: page_number)
 
     Enum.reduce(entries, socket, fn skill_evidence, acc ->
       stream_insert(acc, :skill_evidences, skill_evidence)
     end)
     |> assign(:page_number, page_number)
-    |> assign(:read_more, page.total_pages > page_number)
+    |> assign(:read_more, page.total_entries != 0 && page.total_pages > page_number)
   end
 
   defp get_latest_skill_evidence_post(skill_evidence) do

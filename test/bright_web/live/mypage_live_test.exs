@@ -107,6 +107,7 @@ defmodule BrightWeb.MypageLiveTest do
     test "shows empty message", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, ~p"/mypage")
       assert html =~ "まだ学習メモがありません"
+      refute html =~ "さらに表示"
     end
 
     test "adds new post", %{conn: conn, user: user} do
