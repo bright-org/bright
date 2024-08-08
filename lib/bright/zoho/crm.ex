@@ -18,7 +18,7 @@ defmodule Bright.Zoho.Crm do
     end
   end
 
-  # TODO: トークン使いまわし処理を追加する
+  # TODO: まず DB に問い合わせる。なければ Zoho に問い合わせる。
   defp get_access_token_and_api_domain() do
     Auth.new()
     |> Auth.auth()
@@ -36,7 +36,8 @@ defmodule Bright.Zoho.Crm do
          status: status,
          body: %{
            "api_domain" => api_domain,
-           "access_token" => access_token
+           "access_token" => access_token,
+           "expires_in" => expires_in
          }
        }}
       when status in 200..299 ->
