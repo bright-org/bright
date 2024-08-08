@@ -247,7 +247,13 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
 
   def handle_event("decision", %{"reason" => reason}, socket) do
     params = socket.assigns.form.params
+
     coordination = socket.assigns.coordination
+
+    coordination_db =
+      Recruits.get_coordination!(coordination.id)
+      |> IO.inspect()
+
     recruiter = socket.assigns.current_user
 
     employment_params =
@@ -257,13 +263,15 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
           "recruiter_user_id" => recruiter.id,
           "candidates_user_id" => coordination.candidates_user_id,
           "cancel_reason" => reason,
-          "status" => :cancel_recruiter
+          "status" => :cancel_recruiter,
+          "skill_panel_name" => coordination_db.skill_panel_name,
+          "skill_params" => coordination_db.skill_params
         }
       )
 
     {:ok, employment} = Recruits.cancel_employment(employment_params)
 
-    Chats.get_chat_by_coordination_id(coordination.id)
+    Chats.get_chat_by_coordination_id(socket.assigns.coordination.id)
     |> Chats.update_chat(%{relation_type: "employment", relation_id: employment.id})
 
     {:ok, _coordination} =

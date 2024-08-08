@@ -100,7 +100,9 @@ defmodule Bright.Recruits.Employment do
       :used_sample,
       :recruiter_reason,
       :recruiter_user_id,
-      :candidates_user_id
+      :candidates_user_id,
+      :skill_params,
+      :skill_panel_name
     ])
     |> validate_required([:message, :status, :recruiter_user_id, :candidates_user_id])
   end
