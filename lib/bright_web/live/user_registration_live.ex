@@ -20,7 +20,7 @@ defmodule BrightWeb.UserRegistrationLive do
         <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">Google</UserAuthComponents.social_auth_button>
         <UserAuthComponents.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UserAuthComponents.social_auth_button>
         <UserAuthComponents.social_auth_button href="#" variant="facebook">Facebook</UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href="#" variant="twitter">Twitter</UserAuthComponents.social_auth_button>
+        <UserAuthComponents.social_auth_button href="#" variant="twitter">X</UserAuthComponents.social_auth_button>
       </UserAuthComponents.form_section>
 
       <UserAuthComponents.or_text>または</UserAuthComponents.or_text>
