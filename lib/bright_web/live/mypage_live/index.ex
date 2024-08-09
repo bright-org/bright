@@ -174,7 +174,7 @@ defmodule BrightWeb.MypageLive.Index do
                 <%= skill_up_message(skill_class_score) %>
               </span>
             </.link>
-            <%= format_datetime(skill_class_score.updated_at, "Asia/Tokyo") %>
+            <%= format_datetime(skill_up_datetime(skill_class_score), "Asia/Tokyo", "%Y-%m-%d") %>
           </li>
         </ul>
       </div>
@@ -242,6 +242,10 @@ defmodule BrightWeb.MypageLive.Index do
       _ ->
         "#{skill_panel_name}【クラス#{class}：#{skill_class_name}】が「#{level_name}」にレベルアップしました"
     end
+  end
+
+  defp skill_up_datetime(skill_class_score) do
+    SkillScores.get_skill_class_score_action_timestamp(skill_class_score)
   end
 
   defp get_latest_my_skill_evidence_post(skill_evidence) do

@@ -3,10 +3,9 @@ defmodule BrightWeb.ViewHelper do
   汎用的な表示用のヘルパー
   """
 
-  def format_datetime(naive_datetime, "Asia/Tokyo") do
+  def format_datetime(naive_datetime, "Asia/Tokyo", string_format \\ "%Y-%m-%d %H:%M") do
     naive_datetime
     |> NaiveDateTime.add(9, :hour)
-    |> NaiveDateTime.to_string()
-    |> String.slice(0, 16)
+    |> Calendar.strftime(string_format)
   end
 end
