@@ -185,7 +185,10 @@ defmodule BrightWeb.MypageLive.Index do
   defp others_skill_evidences(assigns) do
     ~H"""
     <section>
-      <h5 class="text-base lg:text-lg">いま学んでいます</h5>
+      <h5 class="text-base lg:text-lg flex gap-x-2">
+        いま学んでいます
+        <img src="/images/common/icons/skillEvidenceActive.svg" />
+      </h5>
       <div
         :for={skill_evidence <- @recent_others_skill_evidences}
         class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2 flex flex-col"
@@ -201,9 +204,6 @@ defmodule BrightWeb.MypageLive.Index do
             display_time={false}
           />
         </div>
-        <span class="text-end">
-          <%= format_datetime(skill_evidence.updated_at, "Asia/Tokyo") %>
-        </span>
       </div>
       <div class="bg-white rounded-md px-2 py-2 my-2 text-sm font-medium">
         <.link navigate={~p"/notifications/evidences"}>

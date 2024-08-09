@@ -16,7 +16,7 @@ defmodule BrightWeb.MypageLiveTest do
 
   defp open_skill_evidence_modal(lv, skill_evidence) do
     lv
-    |> element("button[class='link-evidence'][phx-value-id='#{skill_evidence.id}']")
+    |> element("div[phx-click='edit_skill_evidence'][phx-value-id='#{skill_evidence.id}']")
     |> render_click()
   end
 
