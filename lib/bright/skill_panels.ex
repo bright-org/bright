@@ -28,6 +28,57 @@ defmodule Bright.SkillPanels do
     |> Repo.all()
   end
 
+  def list_skill_panels_with_score(user_id) do
+    from(p in SkillPanel,
+      join: u in assoc(p, :user_skill_panels),
+      on: u.skill_panel_id == p.id,
+      join: class in assoc(p, :skill_classes),
+      on: class.skill_panel_id == p.id,
+      join: score in assoc(class, :skill_class_scores),
+      on: class.id == score.skill_class_id,
+      where: u.user_id == ^user_id,
+      where: score.user_id == ^user_id,
+      preload: [
+        :user_skill_panels,
+        skill_classes: [skill_class_scores: ^SkillClassScore.user_ids_query([user_id])]
+      ],
+      distinct: true,
+      select: %{p | user_skill_panels: u}
+    )
+    |> Repo.all()
+  end
+
+  def list_skill_panels_with_score(user_id, career_field_name) do
+    career_field_query =
+      from(
+        j in Job,
+        join: cf in assoc(j, :career_fields),
+        on: cf.name_en == ^career_field_name,
+        join: s in assoc(j, :skill_panels),
+        select: s,
+        distinct: true
+      )
+
+    from(p in subquery(career_field_query),
+      join: u in assoc(p, :user_skill_panels),
+      on: u.skill_panel_id == p.id,
+      join: class in assoc(p, :skill_classes),
+      on: class.skill_panel_id == p.id,
+      join: score in assoc(class, :skill_class_scores),
+      on: class.id == score.skill_class_id,
+      where: u.user_id == ^user_id,
+      where: score.user_id == ^user_id,
+      preload: [
+        :jobs,
+        skill_classes: [skill_class_scores: ^SkillClassScore.user_ids_query([user_id])]
+      ],
+      order_by: p.updated_at,
+      distinct: true,
+      select: %{p | user_skill_panels: u}
+    )
+    |> Repo.all()
+  end
+
   @doc """
     Returns the list skill panes witin class and score by career_field name.
 
@@ -289,7 +340,7 @@ defmodule Bright.SkillPanels do
         where:
           sc.skill_panel_id == ^skill_panel_id and
             sc.class == ^class_num,
-        preload: :skill_units
+        preload: [skill_units: :skill_categories]
 
     Repo.one(query)
   end

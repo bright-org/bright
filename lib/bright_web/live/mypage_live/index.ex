@@ -19,7 +19,7 @@ defmodule BrightWeb.MypageLive.Index do
   def mount(params, _session, socket) do
     socket
     |> DisplayUserHelper.assign_display_user(params)
-    |> assign(:page_title, "保有スキル")
+    |> assign(:page_title, "マイページ")
     |> then(&{:ok, &1})
   end
 
@@ -64,7 +64,7 @@ defmodule BrightWeb.MypageLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "保有スキル")
+    |> assign(:page_title, "マイページ")
     |> assign(:search, false)
   end
 
@@ -189,6 +189,7 @@ defmodule BrightWeb.MypageLive.Index do
                 <%= skill_up_message(skill_class_score) %>
               </span>
             </.link>
+            <%= format_datetime(skill_class_score.updated_at, "Asia/Tokyo") %>
           </li>
         </ul>
       </div>
@@ -202,17 +203,22 @@ defmodule BrightWeb.MypageLive.Index do
       <h5 class="text-base lg:text-lg">いま学んでいます</h5>
       <div
         :for={skill_evidence <- @recent_others_skill_evidences}
-        class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
+        class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2 flex flex-col"
       >
-        <.skill_evidence
-          skill_evidence={skill_evidence}
-          skill_evidence_post={get_latest_my_skill_evidence_post(skill_evidence)}
-          skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
-          current_user={@current_user}
-          anonymous={@anonymous}
-          related_user_ids={@related_user_ids}
-          display_time={false}
-        />
+        <div class="flex">
+          <.skill_evidence
+            skill_evidence={skill_evidence}
+            skill_evidence_post={get_latest_my_skill_evidence_post(skill_evidence)}
+            skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
+            current_user={@current_user}
+            anonymous={@anonymous}
+            related_user_ids={@related_user_ids}
+            display_time={false}
+          />
+        </div>
+        <span class="text-end">
+          <%= format_datetime(skill_evidence.updated_at, "Asia/Tokyo") %>
+        </span>
       </div>
       <div class="bg-white rounded-md px-2 py-2 my-2 text-sm font-medium">
         <.link navigate={~p"/notifications/evidences"}>
@@ -249,7 +255,7 @@ defmodule BrightWeb.MypageLive.Index do
         "#{skill_panel_name}【#{skill_class_name}】を始めました"
 
       _ ->
-        "#{skill_panel_name}【#{skill_class_name}】が「#{level_name}」にレベルアップしました"
+        "#{skill_panel_name}【クラス#{class}：#{skill_class_name}】が「#{level_name}」にレベルアップしました"
     end
   end
 

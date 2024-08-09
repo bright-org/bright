@@ -37,7 +37,7 @@ defmodule Bright.Jobs.Job do
     |> cast_assoc(:job_skill_panels,
       with: &JobSkillPanel.changeset/2,
       sort_param: :job_skill_panels_sort,
-      drop_param: :job_skill_Panels_drop
+      drop_param: :job_skill_panels_drop
     )
     |> validate_required([:name, :position, :description, :rank])
   end

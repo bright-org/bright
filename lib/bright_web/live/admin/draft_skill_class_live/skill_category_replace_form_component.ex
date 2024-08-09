@@ -55,8 +55,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillCategoryReplaceFormComponent 
   def handle_event("save", %{"draft_skill_category" => params}, socket) do
     skill_category = socket.assigns.skill_category
 
-    skill_unit =
-      DraftSkillUnits.get_draft_skill_unit!(params["draft_skill_unit_id"])
+    skill_unit = DraftSkillUnits.get_draft_skill_unit!(params["draft_skill_unit_id"])
 
     # 末尾追加とする
     position =

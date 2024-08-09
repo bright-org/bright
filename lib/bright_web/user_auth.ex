@@ -8,6 +8,8 @@ defmodule BrightWeb.UserAuth do
 
   alias Bright.Accounts
   alias Bright.Repo
+  alias Bright.UserSkillPanels
+  alias Bright.Onboardings
 
   # Make the cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -61,7 +63,7 @@ defmodule BrightWeb.UserAuth do
     |> renew_session()
     |> put_token_in_session(token)
     |> write_cookie(token)
-    |> redirect(to: user_return_to || log_in_redirect_path(user))
+    |> redirect(to: log_in_redirect_path(user, user_return_to))
   end
 
   defp log_in_redirect_path(user) do
@@ -69,6 +71,36 @@ defmodule BrightWeb.UserAuth do
       ~p"/graphs"
     else
       ~p"/onboardings/welcome"
+    end
+  end
+
+  defp log_in_redirect_path(user, user_return_to) do
+    regex = ~r/panels\/.+$/
+
+    cond do
+      !Accounts.onboarding_finished?(user) &&
+          Regex.match?(regex, to_string(user_return_to)) ->
+        panel_id = String.split(user_return_to, "?")
+        skill_panel_id = String.split(List.first(panel_id), "/")
+
+        id_info = %{
+          user_id: user.id,
+          completed_at: NaiveDateTime.utc_now(),
+          skill_panel_id: List.last(skill_panel_id)
+        }
+
+        UserSkillPanels.create_user_skill_panel(id_info)
+        Onboardings.create_user_onboarding(id_info)
+        Path.join(~p"/", user_return_to)
+
+      !Accounts.onboarding_finished?(user) ->
+        ~p"/onboardings/welcome"
+
+      Accounts.onboarding_finished?(user) && user_return_to != nil ->
+        Path.join(~p"/", user_return_to)
+
+      true ->
+        ~p"/graphs"
     end
   end
 
@@ -266,6 +298,7 @@ defmodule BrightWeb.UserAuth do
     else
       conn
       |> put_flash(:error, "ログインが必要です")
+      |> put_session(:user_return_to, conn.request_path)
       |> redirect(to: require_authenticated_user_redirect_path(conn))
       |> halt()
     end

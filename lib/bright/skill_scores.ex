@@ -229,7 +229,7 @@ defmodule Bright.SkillScores do
     base_attrs = %{
       from_user_id: user.id,
       message:
-        "#{user.name}さんが#{skill_panel.name}【#{skill_class.name}】で「#{Gettext.gettext(BrightWeb.Gettext, "level_#{level}")}」レベルになりました",
+        "#{user.name}さんが#{skill_panel.name}【クラス#{skill_class.class}：#{skill_class.name}】で「#{Gettext.gettext(BrightWeb.Gettext, "level_#{level}")}」レベルになりました",
       url: "/panels/#{skill_panel.id}/#{user.name}?class=#{skill_class.class}",
       inserted_at: timestamp,
       updated_at: timestamp

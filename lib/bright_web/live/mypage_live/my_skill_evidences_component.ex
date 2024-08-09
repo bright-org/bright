@@ -70,7 +70,12 @@ defmodule BrightWeb.MypageLive.MySkillEvidencesComponent do
       SkillEvidences.get_skill_evidence!(skill_evidence_id)
       |> Bright.Repo.preload(skill_evidence_posts: [user: [:user_profile]])
 
-    {:ok, stream_insert(socket, :skill_evidences, skill_evidence)}
+    if skill_evidence.skill_evidence_posts != [] do
+      {:ok, stream_insert(socket, :skill_evidences, skill_evidence)}
+    else
+      # 更新時に投稿がなくなっているなら表示から削除する
+      {:ok, stream_delete(socket, :skill_evidences, skill_evidence)}
+    end
   end
 
   def update(assigns, socket) do
@@ -125,15 +130,17 @@ defmodule BrightWeb.MypageLive.MySkillEvidencesComponent do
         page_size: @page_size
       )
 
-    entries = Bright.Repo.preload(page.entries, skill_evidence_posts: [user: [:user_profile]])
+    entries =
+      Bright.Repo.preload(page.entries, skill_evidence_posts: [user: [:user_profile]])
+      |> Enum.filter(&(&1.skill_evidence_posts != []))
 
-    page_number = if(page.entries != [], do: page_number + 1, else: page_number)
+    page_number = if(entries != [], do: page_number + 1, else: page_number)
 
     Enum.reduce(entries, socket, fn skill_evidence, acc ->
       stream_insert(acc, :skill_evidences, skill_evidence)
     end)
     |> assign(:page_number, page_number)
-    |> assign(:read_more, page.total_pages > page_number)
+    |> assign(:read_more, page.total_entries != 0 && page.total_pages > page_number)
   end
 
   defp get_latest_skill_evidence_post(skill_evidence) do

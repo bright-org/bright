@@ -261,7 +261,7 @@ defmodule BrightWeb.UserAuthComponents do
           @variant == "google" && "bg-bgGoogle border-black mt-4 text-black",
           @variant == "github" && "bg-bgGithub bg-sns-github border-github mt-6 text-white",
           @variant == "facebook" && "bg-bgFacebook bg-gray-400 border-facebook mt-6 text-white",
-          @variant == "twitter" && "bg-bgTwitter bg-gray-400 border-twitter mt-6 text-white"
+          @variant == "twitter" && "bg-bgNewTwitter bg-gray-400 border-twitter mt-6 text-white"
         ]}
       >
         <%= render_slot(@inner_block) %>
