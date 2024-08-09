@@ -549,6 +549,7 @@ defmodule BrightWeb.ChatLive.Index do
   get_display_name差はフィルターで集約している内容も追加している
   """
   def get_status(:dismiss_interview), do: "面談キャンセル"
+  def get_status(:cancel_interview), do: "面談キャンセル"
   def get_status(:ongoing_interview), do: "面談確定"
   def get_status(:cancel_coordination), do: "不採用"
   def get_status(value), do: Gettext.gettext(BrightWeb.Gettext, to_string(value))
