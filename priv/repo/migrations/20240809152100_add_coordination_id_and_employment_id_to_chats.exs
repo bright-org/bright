@@ -17,7 +17,7 @@ defmodule Bright.Repo.Migrations.AddCoordinationIdAndEmploymentIdToChats do
     flush()
 
     update_coordination_id()
-    convert_employment()
+    update_employment_id()
   end
 
   def down do
@@ -49,26 +49,25 @@ defmodule Bright.Repo.Migrations.AddCoordinationIdAndEmploymentIdToChats do
     |> Repo.update_all(set: [coordination_id: chat.coordination.id])
   end
 
-  defp convert_employment do
+  defp update_employment_id do
     from(c in Chat,
       join: co in Coordination,
       on:
-        co.id == c.relation_id and
+        co.id == c.coordination_id and
           co.status == :completed_coordination,
       join: e in Employment,
       on:
         co.recruiter_user_id == e.recruiter_user_id and
           co.updated_at <= e.inserted_at and
           e.inserted_at <= fragment("? + interval '10 seconds'", co.updated_at),
-      where: c.relation_type == "coordination",
       select: %{c | employment: e}
     )
     |> Repo.all()
-    |> Enum.each(fn x -> update_chat_employment(x) end)
+    |> Enum.each(fn x -> update_chat_employment_id(x) end)
   end
 
-  defp update_chat_employment(chat) do
+  defp update_chat_employment_id(chat) do
     from(c in Chat, where: c.id == ^chat.id)
-    |> Repo.update_all(set: [relation_id: chat.employment.id, relation_type: "employment"])
+    |> Repo.update_all(set: [employment_id: chat.employment.id])
   end
 end
