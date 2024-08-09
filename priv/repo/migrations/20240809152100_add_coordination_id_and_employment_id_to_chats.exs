@@ -16,7 +16,6 @@ defmodule Bright.Repo.Migrations.AddCoordinationIdAndEmploymentIdToChats do
 
     flush()
 
-    convert_interview()
     convert_coordination()
     convert_employment()
   end
@@ -26,11 +25,6 @@ defmodule Bright.Repo.Migrations.AddCoordinationIdAndEmploymentIdToChats do
       remove :coordination_id
       remove :employment_id
     end
-  end
-
-  def convert_interview do
-    from(c in Chat, where: c.relation_type == "recruit")
-    |> Repo.update_all(set: [relation_type: "interview"])
   end
 
   def convert_coordination do
