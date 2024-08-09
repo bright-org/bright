@@ -26,13 +26,13 @@ defmodule Bright.ChatsTest do
       interview = insert(:interview)
 
       valid_attrs = %{
-        relation_type: "interview",
+        relation_type: "recruit",
         relation_id: interview.id,
         owner_user_id: user.id
       }
 
       assert {:ok, %Chat{} = chat} = Chats.create_chat(valid_attrs)
-      assert chat.relation_type == "interview"
+      assert chat.relation_type == "recruit"
       assert chat.relation_id == interview.id
     end
 

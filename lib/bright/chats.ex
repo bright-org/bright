@@ -92,7 +92,7 @@ defmodule Bright.Chats do
       on: m.user_id == ^user_id and m.chat_id == c.id,
       join: i in Interview,
       on: i.id == c.relation_id,
-      where: c.relation_type == "interview",
+      where: c.relation_type == "recruit",
       order_by: [desc: :updated_at],
       join: cu in User,
       on: cu.id == i.candidates_user_id,
@@ -125,7 +125,7 @@ defmodule Bright.Chats do
       on: m.user_id == ^user_id and m.chat_id == c.id,
       join: i in Coordination,
       on: i.id == c.relation_id,
-      where: c.relation_type == "coordination",
+      where: c.relation_type == "recruit",
       order_by: [desc: :updated_at],
       join: cu in User,
       on: cu.id == i.candidates_user_id,
@@ -158,7 +158,7 @@ defmodule Bright.Chats do
       on: m.user_id == ^user_id and m.chat_id == c.id,
       join: i in Employment,
       on: i.id == c.relation_id,
-      where: c.relation_type == "employment",
+      where: c.relation_type == "recruit",
       order_by: [desc: :updated_at],
       join: cu in User,
       on: cu.id == i.candidates_user_id,
@@ -202,7 +202,7 @@ defmodule Bright.Chats do
 
   def get_chat_with_messages_and_interview!(id, user_id) do
     from(c in Chat,
-      where: c.id == ^id and c.relation_type == "interview",
+      where: c.id == ^id and c.relation_type == "recruit",
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
       preload: [:users, messages: ^ChatMessage.not_deleted_message_with_files_query()],
@@ -233,7 +233,7 @@ defmodule Bright.Chats do
 
   def get_chat_with_messages_and_coordination!(id, user_id) do
     from(c in Chat,
-      where: c.id == ^id and c.relation_type == "coordination",
+      where: c.id == ^id and c.relation_type == "recruit",
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
       preload: [:users, messages: ^ChatMessage.not_deleted_message_with_files_query()],
@@ -264,7 +264,7 @@ defmodule Bright.Chats do
 
   def get_chat_with_messages_and_employment!(id, user_id) do
     from(c in Chat,
-      where: c.id == ^id and c.relation_type == "employment",
+      where: c.id == ^id and c.relation_type == "recruit",
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
       preload: [:users, messages: ^ChatMessage.not_deleted_message_with_files_query()],
@@ -362,13 +362,13 @@ defmodule Bright.Chats do
 
   def get_chat_by_interview_id(interview_id) do
     Chat
-    |> where([c], c.relation_type == "interview" and c.relation_id == ^interview_id)
+    |> where([c], c.relation_type == "recruit" and c.relation_id == ^interview_id)
     |> Repo.one()
   end
 
   def get_chat_by_coordination_id(coordination_id) do
     Chat
-    |> where([c], c.relation_type == "coordination" and c.relation_id == ^coordination_id)
+    |> where([c], c.relation_type == "recruit" and c.relation_id == ^coordination_id)
     |> Repo.one()
   end
 

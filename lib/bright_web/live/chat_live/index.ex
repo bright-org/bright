@@ -596,15 +596,15 @@ defmodule BrightWeb.ChatLive.Index do
     |> String.to_atom()
   end
 
-  defp is_interview?(%{relation_type: "interview"} = _chat), do: true
+  defp is_interview?(%{relation_type: "recruit"} = _chat), do: true
   defp is_interview?(_), do: false
 
-  defp get_chat_with_messages!(%{relation_type: "interview"} = chat, user_id),
+  defp get_chat_with_messages!(%{relation_type: "recruit"} = chat, user_id),
     do: Chats.get_chat_with_messages_and_interview!(chat.id, user_id)
 
-  defp get_chat_with_messages!(%{relation_type: "coordination"} = chat, user_id),
-    do: Chats.get_chat_with_messages_and_coordination!(chat.id, user_id)
+  # defp get_chat_with_messages!(%{relation_type: "coordination"} = chat, user_id),
+  #   do: Chats.get_chat_with_messages_and_coordination!(chat.id, user_id)
 
-  defp get_chat_with_messages!(%{relation_type: "employment"} = chat, user_id),
-    do: Chats.get_chat_with_messages_and_employment!(chat.id, user_id)
+  # defp get_chat_with_messages!(%{relation_type: "employment"} = chat, user_id),
+  #   do: Chats.get_chat_with_messages_and_employment!(chat.id, user_id)
 end

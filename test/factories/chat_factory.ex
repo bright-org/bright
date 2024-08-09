@@ -7,7 +7,7 @@ defmodule Bright.ChatFactory do
     quote do
       def recruit_chat_factory do
         %Bright.Chats.Chat{
-          relation_type: "interview"
+          relation_type: "recruit"
         }
       end
     end
