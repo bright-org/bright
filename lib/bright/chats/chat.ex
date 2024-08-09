@@ -13,6 +13,8 @@ defmodule Bright.Chats.Chat do
   schema "chats" do
     field :relation_type, :string
     field :relation_id, Ecto.ULID
+    field :coordination_id, Ecto.ULID
+    field :employment_id, Ecto.ULID
     field :interview, :any, virtual: true
     field :coordination, :any, virtual: true
     field :employment, :any, virtual: true

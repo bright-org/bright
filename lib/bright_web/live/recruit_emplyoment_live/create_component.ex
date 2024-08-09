@@ -234,7 +234,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
         |> Recruits.update_coordination(%{status: :completed_coordination})
 
         Chats.get_chat_by_coordination_id(coordination.id)
-        |> Chats.update_chat(%{relation_type: "employment", relation_id: employment.id})
+        |> Chats.update_chat(%{employment_id: employment.id})
 
         send_acceptance_mails(employment, coordination, recruiter)
 
@@ -271,7 +271,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
     {:ok, employment} = Recruits.cancel_employment(employment_params)
 
     Chats.get_chat_by_coordination_id(socket.assigns.coordination.id)
-    |> Chats.update_chat(%{relation_type: "employment", relation_id: employment.id})
+    |> Chats.update_chat(%{employment_id: employment.id})
 
     {:ok, _coordination} =
       Recruits.update_coordination(coordination, %{

@@ -292,7 +292,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
         |> Recruits.update_interview(%{status: :completed_interview})
 
         Chats.get_chat_by_interview_id(intervie_id)
-        |> Chats.update_chat(%{relation_type: "coordination", relation_id: coordination.id})
+        |> Chats.update_chat(%{coordination_id: coordination.id})
 
         preloaded_coordination =
           Recruits.get_coordination_with_member_users!(coordination.id, recruiter.id)
