@@ -76,6 +76,7 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponent do
                   phx-click="delete"
                   phx-target={@myself}
                   phx-value-id={post.id}
+                  data-confirm="投稿を削除しますか？"
                 >
                   <span class="material-symbols-outlined text-brightGray-500 font-xs hover:filter hover:brightness-[80%]">delete</span>
                 </div>
