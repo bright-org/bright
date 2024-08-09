@@ -820,7 +820,7 @@ defmodule Bright.SkillScores do
     |> Enum.slice(0, size)
   end
 
-  defp get_skill_class_score_action_timestamp(skill_class_score) do
+  def get_skill_class_score_action_timestamp(skill_class_score) do
     case {skill_class_score.became_skilled_at, skill_class_score.became_normal_at} do
       {nil, nil} ->
         # 平均, ベテランになければスキルパネル取得日時とする.
