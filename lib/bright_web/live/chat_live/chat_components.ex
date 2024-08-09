@@ -258,13 +258,6 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   defp nl_to_br(str), do: str |> String.replace(~r/\n/, "<br />") |> Phoenix.HTML.raw()
 
-  defp datetime(naive_datetime, "Asia/Tokyo") do
-    naive_datetime
-    |> NaiveDateTime.add(9, :hour)
-    |> NaiveDateTime.to_string()
-    |> String.slice(0, 16)
-  end
-
   defp anon?(anon, chat, user) do
     if chat.interview == nil do
       false
