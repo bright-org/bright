@@ -276,5 +276,4 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   defp get_relation(%{relation_type: "interview"} = chat), do: chat.interview
   defp get_relation(%{relation_type: "coordination"} = chat), do: chat.coordination
   defp get_relation(%{relation_type: "employment"} = chat), do: chat.employment
-
 end
