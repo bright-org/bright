@@ -596,7 +596,7 @@ defmodule BrightWeb.ChatLive.Index do
     |> String.to_atom()
   end
 
-  defp is_interview?(%{relation_type: "recruit"} = _chat), do: true
+  defp is_interview?(%{coordination_id: nil, employment_id: nil} = _chat), do: true
   defp is_interview?(_), do: false
 
   defp get_chat_with_messages!(%{coordination_id: nil, employment_id: nil} = chat, user_id),
