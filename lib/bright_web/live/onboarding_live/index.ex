@@ -1,39 +1,33 @@
 defmodule BrightWeb.OnboardingLive.Index do
   use BrightWeb, :live_view
 
+  alias Bright.SkillPanels
   alias Bright.Onboardings
   alias Bright.Onboardings.UserOnboarding
 
-  @default_tab "engineer"
-  @panels %{
-    "want_todo_panel" => :open_want_todo,
-    "wants_job_panel" => :open_wants_job
-  }
+  @default_pos "engineer"
 
   @impl true
   def mount(_params, _session, socket) do
+    scores = SkillPanels.list_skill_panels_with_score(socket.assigns.current_user.id)
+
     socket
-    |> assign(:open_want_todo, false)
-    |> assign(:open_wants_job, false)
-    |> assign(:tab, @default_tab)
+    |> assign(:scores, scores)
+    |> assign(:pos, @default_pos)
     |> then(&{:ok, &1})
   end
 
   @impl true
   def handle_params(params, uri, socket) do
-    current_path = URI.parse(uri).path
+    current_path = URI.parse(uri).path |> String.replace("/", "")
 
     socket
     |> assign(:current_path, current_path)
     |> assign(:page_title, page_title(current_path))
-    |> assign_params(params)
+    |> push_event("scroll-to", %{
+      "id" => "#{Map.get(params, "career_field")}-#{Map.get(params, "job")}"
+    })
     |> then(&{:noreply, &1})
-  end
-
-  defp assign_params(socket, params) do
-    socket
-    |> assign(:open, Map.get(params, "open", false))
-    |> assign(:tab, Map.get(params, "tab", "engineer"))
   end
 
   @impl true
@@ -46,32 +40,19 @@ defmodule BrightWeb.OnboardingLive.Index do
     |> then(&{:noreply, &1})
   end
 
-  @impl true
-  def handle_event("toggle_panel", %{"panel" => panel}, socket) do
+  def handle_event("request", _params, socket) do
+    {:noreply, put_flash(socket, :info, "ジョブパネルのリクエストを受け付けました")}
+  end
+
+  def handle_event("scroll_to", %{"pos" => pos}, socket) do
     socket
-    |> assign(@panels[panel], !Map.get(socket.assigns, @panels[panel]))
-    |> assign(@panels[hide_panel(panel)], false)
+    |> push_event("scroll-to", %{"id" => pos})
     |> then(&{:noreply, &1})
   end
 
-  def toggle(js \\ %JS{}, id) do
-    js
-    |> JS.push("toggle_panel", value: %{panel: id})
-    |> JS.toggle(to: "##{id}")
-    |> JS.hide(to: "##{hide_panel(id)}")
+  def handle_event("position", %{"pos" => pos}, socket) do
+    {:noreply, assign(socket, :pos, pos)}
   end
-
-  def hide_panel(id) do
-    Map.keys(@panels)
-    |> Enum.reject(&(&1 == id))
-    |> List.first()
-  end
-
-  def close(),
-    do: "before:-mt-2 before:rotate-225"
-
-  def open(),
-    do: "rounded-bl-none rounded-br-none before:-mt-0.5 before:rotate-45"
 
   defp skip_onboarding(nil, user_id) do
     {:ok, _onboarding} =
@@ -83,8 +64,8 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   defp skip_onboarding(%UserOnboarding{}, _), do: false
 
-  defp page_title(<<"/onboardings", _rest::binary>>), do: "オンボーディング"
-  defp page_title(<<"/more_skills", _rest::binary>>), do: "スキルを選ぶ"
+  defp page_title(<<"onboardings", _rest::binary>>), do: "オンボーディング"
+  defp page_title(<<"more_skills", _rest::binary>>), do: "ジョブパネル"
 
   def hidden_more_skills(current_path) do
     if String.match?(current_path, ~r/onboarding/), do: "", else: "hidden"

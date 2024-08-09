@@ -50,7 +50,7 @@ defmodule BrightWeb.UserTwoFactorAuthControllerTest do
           "user_2fa_code" => %{"code" => user_2fa_code.code, "token" => token}
         })
 
-      assert redirected_to(conn) == ~p"/graphs"
+      assert redirected_to(conn) == ~p"/mypage"
     end
 
     test "redirects back if code is invalid", %{conn: conn} do

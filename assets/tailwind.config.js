@@ -63,6 +63,7 @@ module.exports = {
           100: "#D4DBDB",
           200: "#97ACAC",
           300: "#97ACAC",
+          400: "#777777",
           500: "#688888",
           700: "#4D6363",
           900: "#2E3A3A",
@@ -113,7 +114,7 @@ module.exports = {
           dazzle: "#FFE9EF",
         },
         cxo: {
-          dark: "#CB2744",
+          dark: "#F265D3",
           light: "#FFF1F7",
           dazzle: "#E0E0E5",
         },

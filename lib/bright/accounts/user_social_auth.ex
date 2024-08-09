@@ -68,7 +68,7 @@ defmodule Bright.Accounts.UserSocialAuth do
       google: "Google",
       github: "GitHub",
       facebook: "Facebook",
-      twitter: "Twitter"
+      twitter: "X"
     }
     |> Map.fetch!(provider)
   end

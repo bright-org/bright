@@ -98,25 +98,14 @@
         <div class="relative flex flex-col">
           <div class="flex justify-between items-center w-full lg:w-72 gap-x-2">
             <.link
-              patch={~p"/panels/#{@skill_panel}/edit?#{@query}"}
-              id="link-skills-form"
+              navigate={~p"/panels/#{@skill_panel}?#{@query}"}
+              id="link-skills"
               class={[
                 "w-56 flex-1 flex items-center text-sm font-bold justify-center px-4 py-1.5 relative rounded-md !text-white bg-brightGray-900 hover:filter hover:brightness-[80%]"
               ]}
             >
               <span class="material-icons-outlined text-white text-md">edit</span> スキルを入力する
             </.link>
-
-            <div
-              :if={@me}
-              id="btn-help-enter-skills-button"
-              class="flex-none cursor-pointer w-8 h-8 hover:filter hover:brightness-[80%] bg-[url('/images/icon_help.svg')]"
-              phx-click={
-                JS.push("open", target: "#help-enter-skills-button")
-                |> show("#help-enter-skills-button")
-              }
-            >
-            </div>
           </div>
 
           <div class="lg:absolute lg:left-0 lg:top-16 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">

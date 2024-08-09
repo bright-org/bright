@@ -4,73 +4,120 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   alias Bright.{Jobs, CareerFields}
   alias Bright.Jobs.Job
 
-  @rank %{entry: "入門", basic: "基本", advanced: "応用", expert: "高度"}
+  @rank %{entry: "基礎", basic: "基本", advanced: "応用", expert: "高度"}
 
   @impl true
   def render(assigns) do
     ~H"""
-    <div id="wants_job_panel" class="p-4 lg:p-8">
-      <!-- タブここから -->
-      <aside id="select_job">
-        <ul class="flex relative text-xs">
+    <div class="flex flex-col lg:flex-row">
+      <div class="bg-white rounded w-full order-2 mt-4 lg:mt-0 lg:order-1">
+        <div id="wants_job_panel" class="p-4" phx-hook="ScrollPos">
           <%= for career_field <- @career_fields do %>
-            <li
-              class={
-                  "cursor-pointer select-none py-2 text-center w-40 " <>
-                  add_edge_style(@career_fields, career_field) <>
-                  if @selected_career.name_en == career_field.name_en,
-                    do: "bg-#{career_field.name_en}-dark text-white",
-                    else: "bg-#{career_field.name_en}-dazzle hover:bg-#{career_field.name_en}-dark text-brightGray-200 hover:text-white"
-                }
-              phx-click={JS.push("tab_click", target: @myself, value: %{id: career_field.id})}
-            >
-              <%= career_field.name_ja %>
-            </li>
-          <% end %>
-          <!-- αは落とす -->
-          <li :if={false}>
-            <a
-              href="#"
-              class="absolute bg-brightGray-900 block cursor-pointer font-bold select-none py-2 right-0 rounded text-center text-white -top-1.5 w-48 hover:filter hover:brightness-[80%]"
-            >
-              キャリアパスを見直す
-            </a>
-          </li>
-        </ul>
-      </aside>
-      <!-- タブここまで -->
-
-      <!-- ジョブセクションここから -->
-      <section>
-        <%= if @selected_career do %>
-        <section
-          class={"bg-#{@selected_career.name_en}-dazzle px-4 py-4"}
-        >
-          <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
-          <div class="mb-8">
-            <p class="font-bold text-center lg:text-left"><%= @rank[rank] %></p>
-            <ul class="flex flex-wrap gap-4 justify-center mt-2 lg:justify-start">
-
-              <% jobs = Map.get(@jobs, @selected_career.name_en, %{}) %>
-              <%= for job <- Map.get(jobs, rank, []) do %>
-              <li>
-                <.link navigate={"#{@current_path}/jobs/#{job.id}"} class="block">
-                  <label
-                    class={"bg-#{@selected_career.name_en}-dark block border border-solid border-#{@selected_career.name_en}-dark cursor-pointer font-bold px-2 rounded select-none text-white text-center hover:filter hover:brightness-[80%] min-w-[220px] h-10 leading-10"}
-                  >
-                    <%= job.name %>
-                  </label>
-                </.link>
-              </li>
+            <div id={career_field.name_en}>
+              <h3 class={"border-l-4 px-2 border-#{career_field.name_en}-dark"}><%= career_field.name_ja %></h3>
+              <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
+                <div class="my-8">
+                  <p class="text-left text-brightGray-400 text-xl"><%= @rank[rank] %></p>
+                  <hr class="h-[2px] bg-brightGray-50 mb-4" />
+                  <div class="flex flex-wrap justify-center mt-2 lg:justify-start">
+                    <% jobs = Map.get(@jobs, career_field.name_en, %{}) %>
+                    <%= for job <- Map.get(jobs, rank, []) do %>
+                      <%= if Enum.count(job.skill_panels) == 0 do %>
+                        <.locked_job job={job} />
+                      <% else %>
+                        <% panel_id = List.first(job.skill_panels) |> Map.get(:id, nil) %>
+                        <.unlocked_job
+                          panel_id={panel_id}
+                          score={Enum.find(@scores, & &1.id == panel_id)}
+                          current_path={@current_path}
+                          job={job}
+                          career_field={career_field}
+                        />
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
               <% end %>
-              <!-- ジョブここまで -->
-            </ul>
-          </div>
+            </div>
           <% end %>
-        </section>
+        </div>
+      </div>
+      <div class="lg:ml-12 bg-white h-full p-2 sticky top-16 lg:top-2 order-1 lg:order-2">
+        <div class="flex flex-row lg:flex-col w-full lg:w-[240px] ">
+        <%= for career_field <- @career_fields do %>
+          <p
+            class={"cursor-pointer px-1 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
+            phx-click="scroll_to"
+            phx-value-pos={career_field.name_en}
+          >
+            <%= career_field.name_ja %>
+          </p>
         <% end %>
-      </section>
-      <!-- ジョブセクション ここまで -->
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  def locked_job(assigns) do
+    ~H"""
+    <div class="border-[3px] px-2 lg:px-4 m-2 rounded w-[150px] lg:w-[340px] h-[100px] lg:h-[74px] flex flex-col bg-brightGray-50">
+      <div class="flex flex-col lg:flex-row justify-between">
+        <p class="flex my-2 lg:w-44 truncate text-xs text-brightGray-400 opacity-85">
+          <img  class="w-[22px] h-[22px] -mt-[2px] mr-[2px]" src="/images/common/icons/biLock.svg" />
+          <%= String.replace(@job.name, "🔐", "") %>
+        </p>
+        <button
+          class="rounded border bg-white h-[28px] mt-1 px-2 text-xs hover:filter hover:brightness-[80%]"
+          phx-click="request"
+          phx-value-job={@job.id}
+        >
+          リクエストを送る
+        </button>
+      </div>
+    </div>
+    """
+  end
+
+  def unlocked_job(assigns) do
+    ~H"""
+    <div phx-click={JS.navigate("/#{@current_path}/jobs/#{@job.id}?career_field=#{@career_field.name_en}")} class="cursor-pointer">
+      <div
+        id={"#{@career_field.name_en}-#{@job.id}"}
+        class={"px-2 lg:px-4 m-2 rounded w-[150px] lg:w-[340px] h-[100px] lg:h-[74px] flex flex-col hover:bg-[#F5FBFB] #{if is_nil(@score), do: "border-[2px]", else: "border border-brightGreen-300"}"}
+      >
+        <div class="flex flex-col lg:flex-row justify-between mt-2 mb-[4px]">
+          <p class="text-xs lg:w-44 lg:font-bold lg:mt-1 mb-1 lg:mb-0"><%= @job.name %></p>
+          <%= if is_nil(@score) do %>
+            <p class="flex mb-[4px] ">
+              <img src={icon_path(:none)} width="20" height="23" class="mr-2" />
+              <img src={icon_path(:none)} width="20" height="23" class="mr-2" />
+              <img src={icon_path(:none)} width="20" height="23" class="mr-2" />
+            </p>
+          <% else %>
+            <p class="flex mb-[4px]">
+              <%= for class <- @score.skill_classes do %>
+                <% class_score = List.first(class.skill_class_scores)%>
+                <%= if is_nil(class_score) do %>
+                  <.link>
+                    <img src={icon_path(:none)} class="mr-2" />
+                  </.link>
+                <% else %>
+                  <.link navigate={~p"/panels/#{@panel_id}?class=#{class.class}"} >
+                    <img src={icon_path(class_score.level)}  class="hover:filter hover:brightness-[80%] mr-2" />
+                  </.link>
+                <% end %>
+              <% end %>
+            </p>
+          <% end %>
+        </div>
+        <hr />
+        <div class="flex gap-x-1 lg:gap-x-2 mt-2 lg:mt-1 mb-[4px]" >
+          <%= for tag <- @job.career_fields do %>
+            <p class={"border rounded-full px-[1px] lg:px-1 h-[20px] text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
+          <% end %>
+        </div>
+      </div>
     </div>
     """
   end
@@ -86,34 +133,18 @@ defmodule BrightWeb.OnboardingLive.WantsJobComponents do
   end
 
   @impl true
-  def update(%{tab: tab} = assigns, socket) do
+  def update(assigns, socket) do
     career_fields = CareerFields.list_career_fields()
 
     socket
     |> assign(assigns)
     |> assign(:career_fields, career_fields)
-    |> assign(:selected_career, Enum.find(career_fields, &(&1.name_en == tab)))
     |> then(&{:ok, &1})
   end
 
-  @impl true
-  def handle_event(
-        "tab_click",
-        %{"id" => career_field_id},
-        %{assigns: %{career_fields: career_fields}} = socket
-      ) do
-    socket
-    |> assign(:selected_career, Enum.find(career_fields, fn c -> c.id == career_field_id end))
-    |> then(&{:noreply, &1})
-  end
-
-  defp add_edge_style(career_fields, career_field) do
-    index = Enum.find_index(career_fields, &(&1 == career_field))
-
-    case index do
-      0 -> "rounded-tl "
-      3 -> "rounded-tr "
-      _ -> ""
-    end
-  end
+  defp icon_base_path(file), do: "/images/common/icons/#{file}"
+  defp icon_path(:none), do: icon_base_path("gemGray.svg")
+  defp icon_path(:beginner), do: icon_base_path("jemLow.svg")
+  defp icon_path(:normal), do: icon_base_path("jemMiddle.svg")
+  defp icon_path(:skilled), do: icon_base_path("jemHigh.svg")
 end

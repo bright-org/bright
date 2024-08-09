@@ -93,7 +93,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             <p class="mt-1 flex justify-end">
               <.elapsed_time extend_style="w-auto" inserted_at={@message.inserted_at} />
             </p>
-            <p class="flex justify-end">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+            <p class="flex justify-end">(<%= format_datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
             <div class="flex justify-end cursor-pointer" phx-click="delete_message" phx-value-message_id={@message.id} data-confirm="メッセージを削除しますか？">
               <span class="text-brightGray-500 hover:filter hover:brightness-[80%] hover:underline">削除&nbsp;</span><.icon name="hero-archive-box-x-mark-solid" class="w-6 h-6" />
             </div>
@@ -140,7 +140,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           </div>
         </div>
         <p class="-ml-4"><.elapsed_time inserted_at={@message.inserted_at} /></p>
-        <p class="">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+        <p class="">(<%= format_datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
         <div class="flex justify-start">
           <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
             <div
@@ -276,4 +276,5 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   defp get_relation(%{relation_type: "interview"} = chat), do: chat.interview
   defp get_relation(%{relation_type: "coordination"} = chat), do: chat.coordination
   defp get_relation(%{relation_type: "employment"} = chat), do: chat.employment
+
 end

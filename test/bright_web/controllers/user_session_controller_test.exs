@@ -79,7 +79,7 @@ defmodule BrightWeb.UserSessionControllerTest do
           "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
-      assert redirected_to(conn) == ~p"/graphs"
+      assert redirected_to(conn) == ~p"/mypage"
     end
 
     test "redirects to login page with invalid credentials", %{conn: conn} do

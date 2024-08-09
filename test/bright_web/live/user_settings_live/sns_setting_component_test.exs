@@ -32,7 +32,7 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
       assert lv
              |> has_element?(
                ~s{#user_settings_sns_unlinked_provider_4 a[href="#"]},
-               "Twitterと連携する"
+               "Xと連携する"
              )
     end
 
@@ -86,7 +86,7 @@ defmodule BrightWeb.UserSettingsLive.SnsSettingComponentTest do
       assert lv
              |> has_element?(
                ~s{#user_settings_sns_unlinked_provider_4 a[href="#"]},
-               "Twitterと連携する"
+               "Xと連携する"
              )
 
       el =
