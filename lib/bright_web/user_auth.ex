@@ -8,7 +8,6 @@ defmodule BrightWeb.UserAuth do
 
   alias Bright.Accounts
   alias Bright.Repo
-  alias Bright.UserSkillPanels
   alias Bright.Onboardings
 
   # Make the cookie valid for 60 days.
@@ -75,33 +74,41 @@ defmodule BrightWeb.UserAuth do
   end
 
   defp log_in_redirect_path(user, user_return_to) do
-    regex = ~r/panels\/.+$/
-
     cond do
       !Accounts.onboarding_finished?(user) &&
-          Regex.match?(regex, to_string(user_return_to)) ->
-        panel_id = String.split(user_return_to, "?")
-        skill_panel_id = String.split(List.first(panel_id), "/")
-
-        id_info = %{
-          user_id: user.id,
-          completed_at: NaiveDateTime.utc_now(),
-          skill_panel_id: List.last(skill_panel_id)
-        }
-
-        UserSkillPanels.create_user_skill_panel(id_info)
-        Onboardings.create_user_onboarding(id_info)
-        Path.join(~p"/", user_return_to)
+          String.match?(to_string(user_return_to), ~r/get_skill_panel/) ->
+        finish_onboarding(user, user_return_to)
+        user_return_to
 
       !Accounts.onboarding_finished?(user) ->
         ~p"/onboardings/welcome"
 
       Accounts.onboarding_finished?(user) && user_return_to != nil ->
-        Path.join(~p"/", user_return_to)
+        user_return_to
 
       true ->
-        ~p"/graphs"
+        ~p"/mypage"
     end
+  end
+
+  defp finish_onboarding(user, user_return_to) do
+    skill_panel_id = get_skill_panel_id(user_return_to)
+
+    attrs = %{
+      user_id: user.id,
+      completed_at: NaiveDateTime.utc_now(),
+      skill_panel_id: skill_panel_id
+    }
+
+    Onboardings.create_user_onboarding(attrs)
+  end
+
+  defp get_skill_panel_id(user_return_to) do
+    user_return_to
+    |> String.split("?")
+    |> List.first()
+    |> String.split("/")
+    |> List.last()
   end
 
   defp write_cookie(conn, token) do
