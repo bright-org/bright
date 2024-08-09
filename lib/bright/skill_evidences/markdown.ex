@@ -15,7 +15,17 @@ defmodule Bright.SkillEvidences.Markdown do
   }
 
   def as_html(content) do
-    {:ok, ast, _} = Earmark.Parser.as_ast(content)
+    ast =
+      case Earmark.Parser.as_ast(content) do
+        {:ok, ast, _} ->
+          ast
+
+        {:error, ast, _message} ->
+          # コードブロック閉じがない等でエラーになるが無視してastのみ返す
+          # error時の例
+          # {:error, <ast:略>, [{:error, 1, "Fenced Code Block opened with ``` not closed at end of input"}]
+          ast
+      end
 
     ast
     |> Earmark.Transform.map_ast(&post_processor/1)

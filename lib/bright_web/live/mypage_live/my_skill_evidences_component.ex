@@ -19,7 +19,7 @@ defmodule BrightWeb.MypageLive.MySkillEvidencesComponent do
     <section id={@id}>
       <h5 class="text-base lg:text-lg">学習メモ</h5>
       <div
-        :if={@page_number ==  0}
+        :if={@page_number == 0}
         class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
       >
         まだ学習メモがありません
