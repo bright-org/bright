@@ -21,7 +21,7 @@ defmodule Bright.Chats do
     :consume_interview,
     :dismiss_interview,
     :ongoing_interview,
-    :completed_interview,
+    #:completed_interview,
     :cancel_interview,
     :one_on_one
   ]
@@ -29,7 +29,7 @@ defmodule Bright.Chats do
   @coordination_status_all [
     :waiting_recruit_decision,
     :hiring_decision,
-    :completed_coordination,
+    #:completed_coordination,
     :cancel_coordination
   ]
 

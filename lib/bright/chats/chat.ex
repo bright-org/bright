@@ -35,7 +35,7 @@ defmodule Bright.Chats.Chat do
   @doc false
   def changeset(chat, attrs) do
     chat
-    |> cast(attrs, [:relation_type, :relation_id, :owner_user_id, :updated_at])
+    |> cast(attrs, [:relation_type, :relation_id, :coordination_id, :employment_id, :owner_user_id, :updated_at])
     |> cast_assoc(:chat_users, with: &ChatUser.changeset/2)
     |> validate_required([:relation_type, :relation_id, :owner_user_id])
   end
