@@ -39,16 +39,9 @@ defmodule BrightWeb.OnboardingLiveTest do
     end
 
     test "list job's skill_panel", %{job: job, conn: conn} do
-      {:ok, _index_live, html} = live(conn, ~p"/onboardings/jobs/#{job.id}")
+      {:ok, _index_live, html} = live(conn, ~p"/onboardings/jobs/#{job.id}?career_field=engineer")
 
-      assert html =~ "エンジニア向けのスキル"
-    end
-
-    test "show skill panel", %{job: job, skill_panel: skill_panel, conn: conn} do
-      {:ok, _index_live, html} =
-        live(conn, ~p"/onboardings/jobs/#{job.id}/skill_panels/#{skill_panel.id}")
-
-      assert html =~ skill_panel.name
+      assert html =~ "some job"
     end
   end
 end

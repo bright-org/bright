@@ -229,7 +229,7 @@ defmodule Bright.SkillScores do
     base_attrs = %{
       from_user_id: user.id,
       message:
-        "#{user.name}さんが#{skill_panel.name}【#{skill_class.name}】で「#{Gettext.gettext(BrightWeb.Gettext, "level_#{level}")}」レベルになりました",
+        "#{user.name}さんが#{skill_panel.name}【クラス#{skill_class.class}：#{skill_class.name}】で「#{Gettext.gettext(BrightWeb.Gettext, "level_#{level}")}」レベルになりました",
       url: "/panels/#{skill_panel.id}/#{user.name}?class=#{skill_class.class}",
       inserted_at: timestamp,
       updated_at: timestamp
@@ -792,5 +792,48 @@ defmodule Bright.SkillScores do
       |> Kernel.++([prev_value])
 
     values_before_prev ++ values_after_prev
+  end
+
+  @doc """
+  ユーザーが取得あるいはレベルアップした直近のスキルクラススコアを返す
+  """
+  def list_recent_level_up_skill_class_scores(user, size \\ 3) do
+    # 並び替えはレコード取得後に行っている。1ユーザーのスキルクラススコアは多くはないため
+    # 当該クラススコアの `became_normal_at` / `became_skilled_at` をみるが
+    # クラス1についてはスキルパネル取得（見習いスタート）を出すために `user_skill_panels.inserted_at` もみる
+    from(
+      scs in SkillClassScore,
+      where: scs.user_id == ^user.id,
+      join: sc in assoc(scs, :skill_class),
+      join: sp in assoc(sc, :skill_panel),
+      join: usp in assoc(sp, :user_skill_panels),
+      on: usp.user_id == ^user.id,
+      preload: [skill_class: {sc, skill_panel: {sp, user_skill_panels: usp}}]
+    )
+    |> Repo.all()
+    |> Enum.reject(fn skill_class_score ->
+      # クラス2,3 に対して作成されただけの状態は除外する
+      skill_class_score.level == :beginner &&
+        skill_class_score.skill_class.class in [2, 3]
+    end)
+    |> Enum.sort_by(&get_skill_class_score_action_timestamp/1, {:desc, NaiveDateTime})
+    |> Enum.slice(0, size)
+  end
+
+  def get_skill_class_score_action_timestamp(skill_class_score) do
+    case {skill_class_score.became_skilled_at, skill_class_score.became_normal_at} do
+      {nil, nil} ->
+        # 平均, ベテランになければスキルパネル取得日時とする.
+        # skill_class_scores.inserted_atを使わないのは、
+        # スキルパネル更新処理時に再作成され適切な時間とならないため.
+        [user_skill_panel] = skill_class_score.skill_class.skill_panel.user_skill_panels
+        user_skill_panel.inserted_at
+
+      {nil, became_normal_at} ->
+        became_normal_at
+
+      {became_skilled_at, _became_normal_at} ->
+        became_skilled_at
+    end
   end
 end

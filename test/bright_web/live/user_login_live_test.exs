@@ -67,7 +67,7 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       conn = conn |> set_two_factor_auth_done(user) |> then(&submit_form(form, &1))
 
-      assert redirected_to(conn) == ~p"/graphs"
+      assert redirected_to(conn) == ~p"/mypage"
     end
 
     test "redirects if user already finished onboardings and already done two factor auth in operating browser",
@@ -83,7 +83,7 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       conn = conn |> set_two_factor_auth_done(user) |> then(&submit_form(form, &1))
 
-      assert redirected_to(conn) == ~p"/graphs"
+      assert redirected_to(conn) == ~p"/mypage"
     end
 
     test "redirects to login page with a flash error if there are no valid credentials", %{
@@ -169,7 +169,7 @@ defmodule BrightWeb.UserLoginLiveTest do
       assert lv
              |> has_element?(
                ~s{a[href="#"]},
-               "Twitter"
+               "X"
              )
     end
 

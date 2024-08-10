@@ -3,6 +3,21 @@ defmodule BrightWeb.PathHelper do
   URL構築用の補助モジュール
   """
 
+  import BrightWeb.DisplayUserHelper, only: [encrypt_user_name: 1]
+
+  @doc """
+  指定条件で /mypage へ遷移するURLを返す
+  """
+  def mypage_path(user, anonymous)
+
+  def mypage_path(user, true) do
+    "/mypage/anon/#{encrypt_user_name(user)}"
+  end
+
+  def mypage_path(user, false) do
+    "/mypage/#{user.name}"
+  end
+
   @doc """
   指定条件で /graphs, /panels へ遷移するURLを返す
   """

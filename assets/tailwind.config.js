@@ -34,7 +34,7 @@ module.exports = {
           900: "#004D36",
         },
         brightPurple: {
-          300: "#EC32AD"
+          300: "#EC32AD",
         },
         lapislazuli: {
           50: "#ECE7F9",
@@ -63,6 +63,7 @@ module.exports = {
           100: "#D4DBDB",
           200: "#97ACAC",
           300: "#97ACAC",
+          400: "#777777",
           500: "#688888",
           700: "#4D6363",
           900: "#2E3A3A",
@@ -88,23 +89,23 @@ module.exports = {
         // キャリアフィールドを追加した場合は合わせて以下のページに色見本を追加してください
         // lib/bright_web/live/admin/career_field_live/index.html.heex
         product: {
-          dark: "#51971A",
-          light: "#8CEB14",
+          dark: "#06594A",
+          light: "#ECF7EE",
           dazzle: "#F2FFE1",
         },
         engineer: {
           dark: "#165BC8",
-          light: "#6BDDFE",
+          light: "#E6F0FF",
           dazzle: "#EEFBFF",
         },
         designer: {
-          dark: "#E96500",
-          light: "#E3E312",
+          dark: "#CF3614",
+          light: "#FFEFE0",
           dazzle: "#FFFFDC",
         },
         marketer: {
-          dark: "#6B50A4",
-          light: "#C6A2EA",
+          dark: "#78247F",
+          light: "#F1F0FF",
           dazzle: "#F1E3FF",
         },
         sales: {
@@ -113,8 +114,8 @@ module.exports = {
           dazzle: "#FFE9EF",
         },
         cxo: {
-          dark: "#A9A9AF",
-          light: "#F0F0F9",
+          dark: "#F265D3",
+          light: "#FFF1F7",
           dazzle: "#E0E0E5",
         },
         skillPanel: {
@@ -136,26 +137,26 @@ module.exports = {
         "fade-in-left": "fade-in-left 0.3s ease-in-out both",
       },
       keyframes: {
-          "fade-in-bottom": {
-              "0%": {
-                  transform: "translateY(50px)",
-                  opacity: "0"
-              },
-              to: {
-                  transform: "translateY(0)",
-                  opacity: "1"
-              }
+        "fade-in-bottom": {
+          "0%": {
+            transform: "translateY(50px)",
+            opacity: "0",
           },
-          "fade-in-left": {
-            "0%": {
-              transform: "translateX(-100%)",
-              opacity: "0"
-            },
-            to: {
-                transform: "translateX(0%)",
-                opacity: "1"
-            }
-          }
+          to: {
+            transform: "translateY(0)",
+            opacity: "1",
+          },
+        },
+        "fade-in-left": {
+          "0%": {
+            transform: "translateX(-100%)",
+            opacity: "0",
+          },
+          to: {
+            transform: "translateX(0%)",
+            opacity: "1",
+          },
+        },
       },
       backgroundImage: (theme) => ({
         bgGem: "url('/images/bg_gem_title.png')",
@@ -188,7 +189,7 @@ module.exports = {
         sans: ["Noto Sans JP"],
       }),
       fontSize: {
-        normal: ["1rem", "1.5rem"]
+        normal: ["1rem", "1.5rem"],
       },
       rotate: (theme) => ({
         225: "225deg",
@@ -386,18 +387,18 @@ module.exports = {
           "&::-webkit-scrollbar": {
             width: "0px",
             background: "transparent",
-            display: "none"
+            display: "none",
           },
           "& *::-webkit-scrollbar": {
             width: "0px",
             background: "transparent",
-            display: "none"
+            display: "none",
           },
           "& *": {
             scrollbarWidth: "none",
-            "-ms-overflow-style": "none"
-          }
-        }
+            "-ms-overflow-style": "none",
+          },
+        },
       });
     }),
   ],

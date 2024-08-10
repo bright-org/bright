@@ -20,7 +20,7 @@ defmodule BrightWeb.SnsComponents do
 
   def sns(assigns) do
     ~H"""
-    <div class="flex gap-x-4 lg:gap-x-6 mr-2 mt-1">
+    <div class="flex-none flex gap-x-3 lg:gap-x-4 mt-1">
       <.icon_button sns_type="x" url={@twitter_url} />
       <.icon_button sns_type="github" url={@github_url} />
       <.icon_button sns_type="facebook" url={@facebook_url} />
@@ -66,7 +66,7 @@ defmodule BrightWeb.SnsComponents do
         rel="nofollow noopener noreferrer"
         phx-click="sns_up_click"
       >
-        <img class="h-6 w-24" src="/images/share_button/share_twitter.png" />
+        <img class="h-6 w-24" src="/images/share_button/share_x.png" />
       </a>
     """
   end

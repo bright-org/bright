@@ -107,6 +107,12 @@ defmodule Bright.UserSkillPanels do
     |> Repo.transaction()
   end
 
+  def user_skill_panel_exists?(user_id, skill_panel_id) do
+    UserSkillPanel
+    |> where([u], u.user_id == ^user_id and u.skill_panel_id == ^skill_panel_id)
+    |> Repo.exists?()
+  end
+
   @doc """
   Updates a user_skill_panel.
 

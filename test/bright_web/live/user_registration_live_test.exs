@@ -155,7 +155,7 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       assert lv
              |> has_element?(
                ~s{a[href="#"]},
-               "Twitter"
+               "X"
              )
     end
 

@@ -95,7 +95,7 @@ defmodule BrightWeb.SkillListComponent do
     ~H"""
     <div class="w-8">
       <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
-        <p class="hover:bg-brightGray-50 hover:cursor-pointer inline-flex items-end pl-1">
+        <p class="hover:filter hover:brightness-[80%] hover:cursor-pointer inline-flex items-end pl-1">
           <img src={@icon_path} class="mr-1" />
         </p>
       </.link>
