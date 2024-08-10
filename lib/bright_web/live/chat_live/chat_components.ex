@@ -76,6 +76,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :sender_icon_path, :string, required: true
 
   def message(assigns) do
+    assigns =
+      assigns
+      |> assign(:relation, get_relation(assigns.chat))
+
     ~H"""
     <%= if is_nil(@message.deleted_at) do %>
       <%= if @current_user.id == @message.sender_user_id do %>
