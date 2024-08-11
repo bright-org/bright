@@ -21,7 +21,6 @@ defmodule Bright.Chats do
     :consume_interview,
     :dismiss_interview,
     :ongoing_interview,
-    # :completed_interview,
     :cancel_interview,
     :one_on_one
   ]
@@ -29,7 +28,6 @@ defmodule Bright.Chats do
   @coordination_status_all [
     :waiting_recruit_decision,
     :hiring_decision,
-    # :completed_coordination,
     :cancel_coordination
   ]
 
@@ -58,7 +56,7 @@ defmodule Bright.Chats do
     list_chats_interview(user_id, @interview_status_all)
     |> Enum.concat(list_chats_coordination(user_id, @coordination_status_all))
     |> Enum.concat(list_chats_employment(user_id, @employment_status_all))
-    |> Enum.sort_by(fn x -> x.updated_at end, :desc)
+    |> Enum.sort_by(& &1.updated_at, :desc)
   end
 
   def list_chats(user_id, :not_completed_interview) do
