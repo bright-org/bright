@@ -16,7 +16,7 @@ defmodule BrightWeb.ChatLive.Index do
     %{name: "面談打診中", value: :waiting_decision},
     %{name: "面談確定待ち", value: :consume_interview},
     %{name: "面談確定", value: :ongoing_interview},
-    %{name: "選考中 or 配属調整中", value: :completed_interview},
+    %{name: "選考中", value: :waiting_recruit_decision},
     %{name: "面談キャンセル", value: :cancel_interview},
     %{name: "（すべて）", value: :recruit}
   ]
@@ -59,7 +59,7 @@ defmodule BrightWeb.ChatLive.Index do
             :if={@current_user.id == @chat.owner_user_id && Accounts.hr_enabled?(@current_user.id)}
             class="lg:ml-12 text-xl"
           >
-            <%= if @chat.interview.status == :consume_interview do %>
+            <%= if is_interview?(@chat) and @chat.interview.status == :consume_interview do %>
               <p>本チャットで面談対象者と連絡を取り、「面談調整の確認」ボタンを押してください</p>
               <p class="mt-2 text-attention-600">面談確定するとチャットに（担当者から面談が確定されました）が自動投入され、メールも送信されます</p>
             <% end %>
@@ -167,7 +167,7 @@ defmodule BrightWeb.ChatLive.Index do
                   }
                   class="order-2 flex justify-end"
                 >
-                  <%= if @chat.interview.status == :one_on_one do %>
+                  <%= if is_interview?(@chat) and @chat.interview.status == :one_on_one do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -177,7 +177,7 @@ defmodule BrightWeb.ChatLive.Index do
                     </button>
                   <% end %>
 
-                  <%= if @chat.interview.status == :consume_interview do %>
+                  <%= if is_interview?(@chat) and @chat.interview.status == :consume_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -188,7 +188,7 @@ defmodule BrightWeb.ChatLive.Index do
                       面談調整の確認
                     </button>
                   <% end %>
-                  <%= if @chat.interview.status == :ongoing_interview do %>
+                  <%= if is_interview?(@chat) and @chat.interview.status == :ongoing_interview do %>
                     <button
                       class="text-sm font-bold ml-auto px-2 py-3 rounded border bg-base text-white w-56"
                       type="button"
@@ -360,7 +360,10 @@ defmodule BrightWeb.ChatLive.Index do
     select_filter_type = get_select_filter_type(params)
 
     user = socket.assigns.current_user
-    chat = Chats.get_chat_with_messages_and_interview!(chat_id, user.id)
+
+    chat = Chats.get_chat!(chat_id)
+
+    chat = get_chat_with_messages!(chat, user.id)
 
     Chats.subscribe(chat.id)
 
@@ -530,7 +533,8 @@ defmodule BrightWeb.ChatLive.Index do
          %{assigns: %{current_user: user, select_filter_type: select_filter_type}} = socket,
          message
        ) do
-    chat = Chats.get_chat_with_messages_and_interview!(message.chat_id, user.id)
+    chat = Chats.get_chat!(message.chat_id)
+    chat = get_chat_with_messages!(chat, user.id)
 
     Chats.read_chat!(chat.id, user.id)
 
@@ -544,15 +548,13 @@ defmodule BrightWeb.ChatLive.Index do
   チャットのステータスを表示する
   get_display_name差はフィルターで集約している内容も追加している
   """
-  def get_status(value) do
-    filter_type =
-      [%{name: "面談キャンセル", value: :dismiss_interview} | @filter_types]
-      |> Enum.find(fn x ->
-        x.value == value
-      end)
-
-    filter_type.name
-  end
+  def get_status(:dismiss_interview), do: "面談キャンセル"
+  def get_status(:cancel_interview), do: "面談キャンセル"
+  def get_status(:ongoing_interview), do: "面談確定"
+  def get_status(:cancel_coordination), do: "不採用"
+  def get_status(:cancel_recruiter), do: "不採用"
+  def get_status(:cancel_candidates), do: "採用辞退"
+  def get_status(value), do: Gettext.gettext(BrightWeb.Gettext, to_string(value))
 
   defp gen_params(%{current_user: user, chat: chat, uploads: uploads}, text) do
     images = Enum.map(uploads.images.entries, &Chats.ChatFile.build(:images, &1))
@@ -596,4 +598,16 @@ defmodule BrightWeb.ChatLive.Index do
     |> Map.get("select_filter_type", @default_filter_type)
     |> String.to_atom()
   end
+
+  defp is_interview?(%{coordination_id: nil, employment_id: nil} = _chat), do: true
+  defp is_interview?(_), do: false
+
+  defp get_chat_with_messages!(%{coordination_id: nil, employment_id: nil} = chat, user_id),
+    do: Chats.get_chat_with_messages_and_interview!(chat.id, user_id)
+
+  defp get_chat_with_messages!(%{employment_id: nil} = chat, user_id),
+    do: Chats.get_chat_with_messages_and_coordination!(chat.id, user_id)
+
+  defp get_chat_with_messages!(chat, user_id),
+    do: Chats.get_chat_with_messages_and_employment!(chat.id, user_id)
 end

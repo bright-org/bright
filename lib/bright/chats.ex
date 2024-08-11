@@ -12,6 +12,8 @@ defmodule Bright.Chats do
   alias Bright.Chats.ChatUser
   alias Bright.Chats.ChatMessage
   alias Bright.Recruits.Interview
+  alias Bright.Recruits.Coordination
+  alias Bright.Recruits.Employment
   alias Bright.Utils.GoogleCloud.Storage
 
   @interview_status_all [
@@ -19,9 +21,22 @@ defmodule Bright.Chats do
     :consume_interview,
     :dismiss_interview,
     :ongoing_interview,
-    :completed_interview,
     :cancel_interview,
     :one_on_one
+  ]
+
+  @coordination_status_all [
+    :waiting_recruit_decision,
+    :hiring_decision,
+    :cancel_coordination
+  ]
+
+  @employment_status_all [
+    :waiting_response,
+    :cancel_recruiter,
+    :cancel_candidates,
+    :acceptance_emplyoment,
+    :requested
   ]
 
   @doc """
@@ -38,7 +53,10 @@ defmodule Bright.Chats do
   end
 
   def list_chats(user_id, :recruit) do
-    list_chats(user_id, @interview_status_all)
+    list_chats_interview(user_id, @interview_status_all)
+    |> Enum.concat(list_chats_coordination(user_id, @coordination_status_all))
+    |> Enum.concat(list_chats_employment(user_id, @employment_status_all))
+    |> Enum.sort_by(& &1.updated_at, :desc)
   end
 
   def list_chats(user_id, :not_completed_interview) do
@@ -48,23 +66,32 @@ defmodule Bright.Chats do
         key in [:completed_interview, :cancel_interview, :dismiss_interview]
       end)
 
-    list_chats(user_id, status)
+    list_chats_interview(user_id, status)
   end
 
   def list_chats(user_id, :cancel_interview) do
-    list_chats(user_id, [:cancel_interview, :dismiss_interview])
+    list_chats_interview(user_id, [:cancel_interview, :dismiss_interview])
+  end
+
+  def list_chats(user_id, :waiting_recruit_decision) do
+    list_chats_coordination(user_id, [:waiting_recruit_decision])
   end
 
   def list_chats(user_id, status) when is_atom(status), do: list_chats(user_id, [status])
 
   def list_chats(user_id, status) when is_list(status) do
+    list_chats_interview(user_id, status)
+  end
+
+  def list_chats_interview(user_id, status) do
     from(
       c in Chat,
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
       join: i in Interview,
       on: i.id == c.relation_id,
-      where: c.relation_type == "recruit",
+      where:
+        c.relation_type == "recruit" and is_nil(c.coordination_id) and is_nil(c.employment_id),
       order_by: [desc: :updated_at],
       join: cu in User,
       on: cu.id == i.candidates_user_id,
@@ -78,6 +105,75 @@ defmodule Bright.Chats do
       select: %{
         c
         | interview: %{
+            i
+            | candidates_user_name: cu.name,
+              candidates_user_icon: cp.icon_file_path,
+              recruiter_user_name: ru.name,
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
+          }
+      }
+    )
+    |> Repo.all()
+  end
+
+  def list_chats_coordination(user_id, status) do
+    from(
+      c in Chat,
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
+      join: i in Coordination,
+      on: i.id == c.coordination_id,
+      where:
+        c.relation_type == "recruit" and not is_nil(c.coordination_id) and is_nil(c.employment_id),
+      order_by: [desc: :updated_at],
+      join: cu in User,
+      on: cu.id == i.candidates_user_id,
+      join: cp in UserProfile,
+      on: cp.user_id == i.candidates_user_id,
+      join: ru in User,
+      on: ru.id == i.recruiter_user_id,
+      join: rp in UserProfile,
+      on: rp.user_id == i.recruiter_user_id,
+      where: i.status in ^status,
+      select: %{
+        c
+        | coordination: %{
+            i
+            | candidates_user_name: cu.name,
+              candidates_user_icon: cp.icon_file_path,
+              recruiter_user_name: ru.name,
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
+          }
+      }
+    )
+    |> Repo.all()
+  end
+
+  def list_chats_employment(user_id, status) do
+    from(
+      c in Chat,
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
+      join: i in Employment,
+      on: i.id == c.employment_id,
+      where:
+        c.relation_type == "recruit" and not is_nil(c.coordination_id) and
+          not is_nil(c.employment_id),
+      order_by: [desc: :updated_at],
+      join: cu in User,
+      on: cu.id == i.candidates_user_id,
+      join: cp in UserProfile,
+      on: cp.user_id == i.candidates_user_id,
+      join: ru in User,
+      on: ru.id == i.recruiter_user_id,
+      join: rp in UserProfile,
+      on: rp.user_id == i.recruiter_user_id,
+      where: i.status in ^status,
+      select: %{
+        c
+        | employment: %{
             i
             | candidates_user_name: cu.name,
               candidates_user_icon: cp.icon_file_path,
@@ -108,7 +204,9 @@ defmodule Bright.Chats do
 
   def get_chat_with_messages_and_interview!(id, user_id) do
     from(c in Chat,
-      where: c.id == ^id and c.relation_type == "recruit",
+      where:
+        c.id == ^id and c.relation_type == "recruit" and is_nil(c.coordination_id) and
+          is_nil(c.employment_id),
       join: m in ChatUser,
       on: m.user_id == ^user_id and m.chat_id == c.id,
       preload: [:users, messages: ^ChatMessage.not_deleted_message_with_files_query()],
@@ -125,6 +223,72 @@ defmodule Bright.Chats do
       select: %{
         c
         | interview: %{
+            i
+            | candidates_user_name: cu.name,
+              candidates_user_icon: cp.icon_file_path,
+              recruiter_user_name: ru.name,
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
+          }
+      }
+    )
+    |> Repo.one!()
+  end
+
+  def get_chat_with_messages_and_coordination!(id, user_id) do
+    from(c in Chat,
+      where:
+        c.id == ^id and c.relation_type == "recruit" and not is_nil(c.coordination_id) and
+          is_nil(c.employment_id),
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
+      preload: [:users, messages: ^ChatMessage.not_deleted_message_with_files_query()],
+      join: i in Coordination,
+      on: i.id == c.coordination_id,
+      join: cu in User,
+      on: cu.id == i.candidates_user_id,
+      join: cp in UserProfile,
+      on: cp.user_id == i.candidates_user_id,
+      join: ru in User,
+      on: ru.id == i.recruiter_user_id,
+      join: rp in UserProfile,
+      on: rp.user_id == i.recruiter_user_id,
+      select: %{
+        c
+        | coordination: %{
+            i
+            | candidates_user_name: cu.name,
+              candidates_user_icon: cp.icon_file_path,
+              recruiter_user_name: ru.name,
+              recruiter_user_icon: rp.icon_file_path,
+              is_read?: m.is_read
+          }
+      }
+    )
+    |> Repo.one!()
+  end
+
+  def get_chat_with_messages_and_employment!(id, user_id) do
+    from(c in Chat,
+      where:
+        c.id == ^id and c.relation_type == "recruit" and not is_nil(c.coordination_id) and
+          not is_nil(c.employment_id),
+      join: m in ChatUser,
+      on: m.user_id == ^user_id and m.chat_id == c.id,
+      preload: [:users, messages: ^ChatMessage.not_deleted_message_with_files_query()],
+      join: i in Employment,
+      on: i.id == c.employment_id,
+      join: cu in User,
+      on: cu.id == i.candidates_user_id,
+      join: cp in UserProfile,
+      on: cp.user_id == i.candidates_user_id,
+      join: ru in User,
+      on: ru.id == i.recruiter_user_id,
+      join: rp in UserProfile,
+      on: rp.user_id == i.recruiter_user_id,
+      select: %{
+        c
+        | employment: %{
             i
             | candidates_user_name: cu.name,
               candidates_user_icon: cp.icon_file_path,
@@ -207,6 +371,12 @@ defmodule Bright.Chats do
   def get_chat_by_interview_id(interview_id) do
     Chat
     |> where([c], c.relation_type == "recruit" and c.relation_id == ^interview_id)
+    |> Repo.one()
+  end
+
+  def get_chat_by_coordination_id(coordination_id) do
+    Chat
+    |> where([c], c.relation_type == "recruit" and c.coordination_id == ^coordination_id)
     |> Repo.one()
   end
 
