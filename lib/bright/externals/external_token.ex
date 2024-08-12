@@ -1,4 +1,8 @@
 defmodule Bright.Externals.ExternalToken do
+  @moduledoc """
+  外部サービスとの連携に使用するトークンを管理するモジュール
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
