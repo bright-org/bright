@@ -19,6 +19,7 @@ defmodule Bright.Zoho.Crm do
     end
   end
 
+  # NOTE: 期限切れでないトークンがあればそれを返し、なければ ZOHO API から取得する
   defp get_access_token_and_api_domain() do
     case get_unexpired_external_token() do
       %Externals.ExternalToken{} = external_token ->
@@ -64,6 +65,7 @@ defmodule Bright.Zoho.Crm do
          }
        }}
       when status in 200..299 ->
+        # NOTE: 期限内で使いまわせるようにトークンをDBに保存する
         create_or_update_access_token(access_token, api_domain, expires_in)
         %{api_domain: api_domain, access_token: access_token}
 
