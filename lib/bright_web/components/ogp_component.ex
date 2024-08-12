@@ -1,4 +1,4 @@
-defmodule BrightWeb.OgpComponents do
+defmodule BrightWeb.OgpComponent do
   @moduledoc """
   Tab Components
   """
@@ -6,34 +6,6 @@ defmodule BrightWeb.OgpComponents do
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
     only: [profile_skill_class_level: 1]
-
-  @doc """
-  Renders a Ogp
-
-  ## Examples
-    <BrightWeb.OgpComponents.ogp
-      skill_panel={@skill_panel}
-      skill_class={@skill_class}
-      skill_class_score={@skill_class_score}
-      display_user={@display_user}
-      select_label={@select_label}
-      me={@me}
-      anonymous={@anonymous}
-      select_label_compared_user={@select_label_compared_user}
-      compared_user={@compared_user}
-    />
-
-  """
-
-  # attr :skill_panel, :any
-  # attr :skill_class, :any
-  # attr :skill_class_score, :any
-  # attr :display_user, :any
-  # attr :select_label, :any
-  # attr :me, :any
-  # attr :anonymous, :any
-  # attr :select_label_compared_user, :any
-  # attr :compared_user, :any
 
   def render(assigns) do
     ~H"""
