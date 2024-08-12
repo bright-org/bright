@@ -13,12 +13,16 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :select_filter_type, :atom
 
   def chat_list(assigns) do
+    assigns =
+      assigns
+      |> assign(:relation, get_relation(assigns.chat))
+
     ~H"""
     <.link
       class={[
         "flex py-4 px-4 justify-center items-center border-b-2 cursor-pointer",
         @selected_chat != nil && @selected_chat.id == @chat.id && "border-l-4 border-l-blue-400",
-        !@chat.interview.is_read? && "bg-attention-50"
+        !@relation.is_read? && "bg-attention-50"
       ]}
       patch={~p"/recruits/chats/#{@chat.id}?select_filter_type=#{@select_filter_type}"}
     >
@@ -26,35 +30,35 @@ defmodule BrightWeb.ChatLive.ChatComponents do
         <.switch_user_icon
           chat={@chat}
           user_id={@user_id}
-          anon={@chat.interview.recruiter_user_id == @user_id}
+          anon={@relation.recruiter_user_id == @user_id}
           member_ids={@member_ids}
         />
       </div>
       <div class="w-full flex justify-between p-1 relative">
         <span
-          :if={!@chat.interview.is_read?}
+          :if={!@relation.is_read?}
           class="absolute bottom-0 right-0 h-3 w-3 bg-attention-300 rounded-full"
         />
-        <%= if @chat.interview.status == :one_on_one do %>
+        <%= if @relation.status == :one_on_one do %>
           1on1
         <% else %>
           <div class="mr-2 lg:truncate max-w-48 lg:text-xl">
             <span>
-              <%= if @chat.interview.skill_panel_name == nil,
+              <%= if @relation.skill_panel_name == nil,
                 do: "保有スキルパネル無",
-                else: @chat.interview.skill_panel_name %>
+                else: @relation.skill_panel_name %>
             </span>
             <br />
             <span class="text-brightGray-300">
-              <%= NaiveDateTime.to_date(@chat.interview.inserted_at) %>
+              <%= NaiveDateTime.to_date(@relation.inserted_at) %>
             </span>
             <br />
             <span class="text-brightGray-300">
-              希望年収:<%= @chat.interview.desired_income %>
+              希望年収:<%= @relation.desired_income %>
             </span>
             <br />
             <span class="text-brightGray-300">
-              <%= BrightWeb.ChatLive.Index.get_status(@chat.interview.status) %>
+              <%= BrightWeb.ChatLive.Index.get_status(@relation.status) %>
             </span>
           </div>
         <% end %>
@@ -72,6 +76,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   attr :sender_icon_path, :string, required: true
 
   def message(assigns) do
+    assigns =
+      assigns
+      |> assign(:relation, get_relation(assigns.chat))
+
     ~H"""
     <%= if is_nil(@message.deleted_at) do %>
       <%= if @current_user.id == @message.sender_user_id do %>
@@ -89,7 +97,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             <p class="mt-1 flex justify-end">
               <.elapsed_time extend_style="w-auto" inserted_at={@message.inserted_at} />
             </p>
-            <p class="flex justify-end">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+            <p class="flex justify-end">(<%= format_datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
             <div class="flex justify-end cursor-pointer" phx-click="delete_message" phx-value-message_id={@message.id} data-confirm="メッセージを削除しますか？">
               <span class="text-brightGray-500 hover:filter hover:brightness-[80%] hover:underline">削除&nbsp;</span><.icon name="hero-archive-box-x-mark-solid" class="w-6 h-6" />
             </div>
@@ -126,7 +134,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
             <.switch_user_icon
               chat={@chat}
               user_id={@current_user.id}
-              anon={@chat.interview.recruiter_user_id == @current_user.id}
+              anon={@relation.recruiter_user_id == @current_user.id}
               has_link={true}
             />
           </div>
@@ -136,7 +144,7 @@ defmodule BrightWeb.ChatLive.ChatComponents do
           </div>
         </div>
         <p class="-ml-4"><.elapsed_time inserted_at={@message.inserted_at} /></p>
-        <p class="">(<%= datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
+        <p class="">(<%= format_datetime(@message.inserted_at, "Asia/Tokyo") %>)</p>
         <div class="flex justify-start">
           <%= for file <- Enum.filter(@message.files, & &1.file_type == :images) do %>
             <div
@@ -210,18 +218,20 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   end
 
   defp set_user(assigns) do
+    relation = get_relation(assigns.chat)
+
     user =
       if assigns.chat.owner_user_id == assigns.user_id do
         %{
-          name: assigns.chat.interview.candidates_user_name,
-          icon: assigns.chat.interview.candidates_user_icon,
-          is_member: Enum.member?(assigns.member_ids, assigns.chat.interview.candidates_user_id)
+          name: relation.candidates_user_name,
+          icon: relation.candidates_user_icon,
+          is_member: Enum.member?(assigns.member_ids, relation.candidates_user_id)
         }
       else
         %{
-          name: assigns.chat.interview.recruiter_user_name,
-          icon: assigns.chat.interview.recruiter_user_icon,
-          is_member: Enum.member?(assigns.member_ids, assigns.chat.interview.recruiter_user_id)
+          name: relation.recruiter_user_name,
+          icon: relation.recruiter_user_icon,
+          is_member: Enum.member?(assigns.member_ids, relation.recruiter_user_id)
         }
       end
 
@@ -229,8 +239,10 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   end
 
   defp set_url(%{user: user, chat: chat, anon: anon} = assigns) do
+    relation = get_relation(assigns.chat)
+
     skill_panel =
-      chat.interview.skill_params
+      relation.skill_params
       |> Jason.decode!()
       |> List.first()
       |> Map.get("skill_panel")
@@ -250,12 +262,15 @@ defmodule BrightWeb.ChatLive.ChatComponents do
 
   defp nl_to_br(str), do: str |> String.replace(~r/\n/, "<br />") |> Phoenix.HTML.raw()
 
-  defp datetime(naive_datetime, "Asia/Tokyo") do
-    naive_datetime
-    |> NaiveDateTime.add(9, :hour)
-    |> NaiveDateTime.to_string()
-    |> String.slice(0, 16)
+  defp anon?(anon, chat, user) do
+    if chat.interview == nil do
+      false
+    else
+      anon and Interview.anon?(chat.interview) and !user.is_member
+    end
   end
 
-  defp anon?(anon, chat, user), do: anon and Interview.anon?(chat.interview) and !user.is_member
+  defp get_relation(%{coordination_id: nil, employment_id: nil} = chat), do: chat.interview
+  defp get_relation(%{employment_id: nil} = chat), do: chat.coordination
+  defp get_relation(chat), do: chat.employment
 end

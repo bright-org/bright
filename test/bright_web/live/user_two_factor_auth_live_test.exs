@@ -118,7 +118,7 @@ defmodule BrightWeb.UserTwoFactorAuthLiveTest do
 
       assert get_session(conn, :user_token)
       assert conn.resp_cookies["_bright_web_user"]
-      assert redirected_to(conn) == ~p"/graphs"
+      assert redirected_to(conn) == ~p"/mypage"
     end
 
     test "redirects back with flash submits invalid code", %{

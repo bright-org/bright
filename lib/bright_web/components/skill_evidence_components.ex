@@ -40,33 +40,29 @@ defmodule BrightWeb.SkillEvidenceComponents do
     </div>
 
     <%# 投稿表示 %>
-    <div class="grow flex flex-col gap-y-2 mx-2">
+    <div
+      class="grow flex flex-col gap-y-2 mx-2 cursor-pointer link-evidence"
+      phx-click="edit_skill_evidence"
+      phx-target={@myself}
+      phx-value-id={@skill_evidence.id}
+    >
       <div class="text-xs flex justify-between">
         <p class="font-bold"><%= @skill_breadcrumb %></p>
-        <div
-          :if={@display_time}
-          id={"timestamp-#{@skill_evidence_post.id}"}
-          phx-hook="LocalTime"
-          phx-update="ignore"
-          data-iso={NaiveDateTime.to_iso8601(@skill_evidence_post.inserted_at)}
-          >
-          <p class="hidden lg:block" data-local-time="%x %H:%M"></p>
-        </div>
       </div>
       <div class="markdown-body break-all">
         <%= raw content_to_html_shortly(@skill_evidence_post, @content_length) %>
       </div>
-      <nav class="flex items-center gap-x-4">
-        <button
-          class="link-evidence"
-          phx-click="edit_skill_evidence"
-          phx-target={@myself}
-          phx-value-id={@skill_evidence.id}
+      <div class="flex flex-row-reverse justify-between">
+        <div
+          id={"timestamp-#{@skill_evidence_post.id}"}
+          phx-hook="LocalTime"
+          phx-update="ignore"
+          data-iso={NaiveDateTime.to_iso8601(@skill_evidence_post.inserted_at)}
         >
-          <img src="/images/common/icons/skillEvidenceActive.svg">
-        </button>
-        <p :if={@skill_evidence.progress == :help} class="border rounded-full p-1 text-xs text-gray-800 bg-gray-50">ヘルプ</p>
-      </nav>
+          <p data-local-time="%x %H:%M"></p>
+        </div>
+        <p :if={@skill_evidence.progress == :help} class="border rounded-full p-1 text-xs text-white bg-brightGreen-300">ヘルプ</p>
+      </div>
     </div>
     """
   end

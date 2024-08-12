@@ -183,6 +183,45 @@ defmodule Bright.SkillEvidences.MarkdownTest do
     end
   end
 
+  describe "Incomplete format" do
+    test "code block" do
+      text =
+        String.trim("""
+        ```
+        あああ
+        """)
+
+      html = SkillEvidences.make_content_as_html(text)
+
+      # 中途半端でもエラー無視して解析結果に任せて出力されること
+      assert html == "<pre><code>あああ</code></pre>"
+    end
+
+    test "link" do
+      text =
+        String.trim("""
+        [link](https://
+        """)
+
+      html = SkillEvidences.make_content_as_html(text)
+
+      # 中途半端でもエラー無視して解析結果に任せて出力されること
+      assert html == "<p>[link](https://</p>"
+    end
+
+    test "tag" do
+      text =
+        String.trim("""
+        <a href="https://example.com">test
+        """)
+
+      html = SkillEvidences.make_content_as_html(text)
+
+      # 中途半端でもエラー無視して解析結果に任せて出力されること
+      assert html == "<a href=\"https://example.com\" target=\"_blank\">test</a>"
+    end
+  end
+
   describe "Forbidden format" do
     test "javascript" do
       # tags

@@ -26,7 +26,7 @@ defmodule BrightWeb.GraphLive.Graphs do
     |> assign(:select_label, "now")
     |> assign(:compared_user, nil)
     |> assign(:select_label_compared_user, nil)
-    |> assign(:page_title, "保有スキル")
+    |> assign(:page_title, "成長パネル")
     |> assign(:open_income_consultation, false)
     |> then(&{:ok, &1})
   end

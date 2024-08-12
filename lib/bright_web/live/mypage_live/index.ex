@@ -174,6 +174,7 @@ defmodule BrightWeb.MypageLive.Index do
                 <%= skill_up_message(skill_class_score) %>
               </span>
             </.link>
+            <%= format_datetime(skill_up_datetime(skill_class_score), "Asia/Tokyo", "%Y-%m-%d") %>
           </li>
         </ul>
       </div>
@@ -184,20 +185,25 @@ defmodule BrightWeb.MypageLive.Index do
   defp others_skill_evidences(assigns) do
     ~H"""
     <section>
-      <h5 class="text-base lg:text-lg">いま学んでいます</h5>
+      <h5 class="text-base lg:text-lg flex gap-x-2">
+        いま学んでいます
+        <img src="/images/common/icons/skillEvidenceActive.svg" />
+      </h5>
       <div
         :for={skill_evidence <- @recent_others_skill_evidences}
-        class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
+        class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2 flex flex-col"
       >
-        <.skill_evidence
-          skill_evidence={skill_evidence}
-          skill_evidence_post={get_latest_my_skill_evidence_post(skill_evidence)}
-          skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
-          current_user={@current_user}
-          anonymous={@anonymous}
-          related_user_ids={@related_user_ids}
-          display_time={false}
-        />
+        <div class="flex">
+          <.skill_evidence
+            skill_evidence={skill_evidence}
+            skill_evidence_post={get_latest_my_skill_evidence_post(skill_evidence)}
+            skill_breadcrumb={SkillEvidences.get_skill_breadcrumb(%{id: skill_evidence.skill_id})}
+            current_user={@current_user}
+            anonymous={@anonymous}
+            related_user_ids={@related_user_ids}
+            display_time={false}
+          />
+        </div>
       </div>
       <div class="bg-white rounded-md px-2 py-2 my-2 text-sm font-medium">
         <.link navigate={~p"/notifications/evidences"}>
@@ -236,6 +242,10 @@ defmodule BrightWeb.MypageLive.Index do
       _ ->
         "#{skill_panel_name}【クラス#{class}：#{skill_class_name}】が「#{level_name}」にレベルアップしました"
     end
+  end
+
+  defp skill_up_datetime(skill_class_score) do
+    SkillScores.get_skill_class_score_action_timestamp(skill_class_score)
   end
 
   defp get_latest_my_skill_evidence_post(skill_evidence) do

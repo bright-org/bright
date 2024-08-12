@@ -94,7 +94,7 @@ defmodule BrightWeb do
       # Core UI components and translation
       import BrightWeb.CoreComponents
       import BrightWeb.Gettext
-
+      import BrightWeb.ViewHelper
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 

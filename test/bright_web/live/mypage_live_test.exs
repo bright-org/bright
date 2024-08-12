@@ -16,7 +16,7 @@ defmodule BrightWeb.MypageLiveTest do
 
   defp open_skill_evidence_modal(lv, skill_evidence) do
     lv
-    |> element("button[class='link-evidence'][phx-value-id='#{skill_evidence.id}']")
+    |> element("div[phx-click='edit_skill_evidence'][phx-value-id='#{skill_evidence.id}']")
     |> render_click()
   end
 
@@ -107,6 +107,7 @@ defmodule BrightWeb.MypageLiveTest do
     test "shows empty message", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, ~p"/mypage")
       assert html =~ "まだ学習メモがありません"
+      refute html =~ "さらに表示"
     end
 
     test "adds new post", %{conn: conn, user: user} do
@@ -185,6 +186,29 @@ defmodule BrightWeb.MypageLiveTest do
       |> render_click()
 
       assert render(lv) =~ "投稿1です"
+    end
+
+    test "skill_evidence that has no posts", %{conn: conn, user: user} do
+      # 投稿のない学習メモがあっても表示されること
+      _skill_evidence = create_first_skill_evidence(user)
+
+      assert {:ok, lv, _html} = live(conn, ~p"/mypage")
+      assert has_element?(lv, "#my-field")
+    end
+
+    test "skill_evidence that has no my posts", %{conn: conn, user: user} do
+      user_2 = insert(:user)
+      skill_evidence = create_first_skill_evidence(user)
+
+      insert(:skill_evidence_post,
+        user: user_2,
+        skill_evidence: skill_evidence,
+        content: "他者投稿のみ",
+        inserted_at: ~N[2024-08-01 00:00:00]
+      )
+
+      assert {:ok, lv, _html} = live(conn, ~p"/mypage")
+      assert has_element?(lv, "#my-field")
     end
   end
 
