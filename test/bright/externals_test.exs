@@ -2,64 +2,106 @@ defmodule Bright.ExternalsTest do
   use Bright.DataCase
 
   alias Bright.Externals
+  alias Bright.Externals.ExternalToken
 
-  describe "external_tokens" do
-    alias Bright.Externals.ExternalTokens
-
-    import Bright.ExternalsFixtures
-
-    @invalid_attrs %{token: nil, token_type: nil, api_domain: nil, expired_at: nil}
-
-    test "list_external_tokens/0 returns all external_tokens" do
-      external_tokens = external_tokens_fixture()
-      assert Externals.list_external_tokens() == [external_tokens]
+  describe "get_external_token/1" do
+    test "returns the external_tokens with given type" do
+      external_token = insert(:external_token, token_type: :ZOHO_CRM)
+      assert Externals.get_external_token(%{token_type: :ZOHO_CRM}) == external_token
     end
 
-    test "get_external_tokens!/1 returns the external_tokens with given id" do
-      external_tokens = external_tokens_fixture()
-      assert Externals.get_external_tokens!(external_tokens.id) == external_tokens
+    test "returns nil when no external_tokens with given type" do
+      assert Externals.get_external_token(%{token_type: :ZOHO_CRM}) == nil
+    end
+  end
+
+  describe "create_external_token/1" do
+    @valid_attrs %{
+      token: "some token",
+      token_type: :ZOHO_CRM,
+      api_domain: "some api_domain",
+      expired_at: ~N[2024-08-06 15:38:00]
+    }
+
+    test "creates with valid data" do
+      assert {:ok, %ExternalToken{} = external_token} =
+               Externals.create_external_token(@valid_attrs)
+
+      assert external_token.token == @valid_attrs[:token]
+      assert external_token.token_type == @valid_attrs[:token_type]
+      assert external_token.api_domain == @valid_attrs[:api_domain]
+      assert external_token.expired_at == @valid_attrs[:expired_at]
     end
 
-    test "create_external_tokens/1 with valid data creates a external_tokens" do
-      valid_attrs = %{token: "some token", token_type: "some token_type", api_domain: "some api_domain", expired_at: ~N[2024-08-06 15:38:00]}
-
-      assert {:ok, %ExternalTokens{} = external_tokens} = Externals.create_external_tokens(valid_attrs)
-      assert external_tokens.token == "some token"
-      assert external_tokens.token_type == "some token_type"
-      assert external_tokens.api_domain == "some api_domain"
-      assert external_tokens.expired_at == ~N[2024-08-06 15:38:00]
+    test "returns error when invalid data" do
+      assert {:error, %Ecto.Changeset{}} = Externals.create_external_token(%{})
     end
 
-    test "create_external_tokens/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Externals.create_external_tokens(@invalid_attrs)
+    test "returns error when invalid token_type" do
+      assert {:error, %Ecto.Changeset{}} =
+               @valid_attrs |> Map.put(:token_type, :INVALID) |> Externals.create_external_token()
+    end
+  end
+
+  describe "update_external_token/2" do
+    test "updates with valid data" do
+      external_token = insert(:external_token)
+
+      assert {:ok, %ExternalToken{} = external_token} =
+               Externals.update_external_token(external_token, @valid_attrs)
+
+      assert external_token.token == @valid_attrs[:token]
+      assert external_token.token_type == @valid_attrs[:token_type]
+      assert external_token.api_domain == @valid_attrs[:api_domain]
+      assert external_token.expired_at == @valid_attrs[:expired_at]
     end
 
-    test "update_external_tokens/2 with valid data updates the external_tokens" do
-      external_tokens = external_tokens_fixture()
-      update_attrs = %{token: "some updated token", token_type: "some updated token_type", api_domain: "some updated api_domain", expired_at: ~N[2024-08-07 15:38:00]}
+    test "returns error when invalid data" do
+      external_token = insert(:external_token)
 
-      assert {:ok, %ExternalTokens{} = external_tokens} = Externals.update_external_tokens(external_tokens, update_attrs)
-      assert external_tokens.token == "some updated token"
-      assert external_tokens.token_type == "some updated token_type"
-      assert external_tokens.api_domain == "some updated api_domain"
-      assert external_tokens.expired_at == ~N[2024-08-07 15:38:00]
+      assert {:error, %Ecto.Changeset{}} =
+               Externals.update_external_token(
+                 external_token,
+                 @valid_attrs |> Map.put(:token_type, :INVALID)
+               )
+    end
+  end
+
+  describe "expired?/2" do
+    test "returns true when expired" do
+      external_token =
+        insert(:external_token,
+          expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1, :second)
+        )
+
+      assert Externals.expired?(external_token, 0)
     end
 
-    test "update_external_tokens/2 with invalid data returns error changeset" do
-      external_tokens = external_tokens_fixture()
-      assert {:error, %Ecto.Changeset{}} = Externals.update_external_tokens(external_tokens, @invalid_attrs)
-      assert external_tokens == Externals.get_external_tokens!(external_tokens.id)
+    test "returns true when expired with default expiry_margin_sec 300s" do
+      external_token =
+        insert(:external_token,
+          expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(295, :second)
+        )
+
+      assert Externals.expired?(external_token)
     end
 
-    test "delete_external_tokens/1 deletes the external_tokens" do
-      external_tokens = external_tokens_fixture()
-      assert {:ok, %ExternalTokens{}} = Externals.delete_external_tokens(external_tokens)
-      assert_raise Ecto.NoResultsError, fn -> Externals.get_external_tokens!(external_tokens.id) end
+    test "returns false when not expired" do
+      external_token =
+        insert(:external_token,
+          expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(5, :second)
+        )
+
+      refute Externals.expired?(external_token, 0)
     end
 
-    test "change_external_tokens/1 returns a external_tokens changeset" do
-      external_tokens = external_tokens_fixture()
-      assert %Ecto.Changeset{} = Externals.change_external_tokens(external_tokens)
+    test "returns false when not expired with default expiry_margin_sec 300s" do
+      external_token =
+        insert(:external_token,
+          expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(305, :second)
+        )
+
+      refute Externals.expired?(external_token)
     end
   end
 end

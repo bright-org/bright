@@ -1,104 +1,88 @@
 defmodule Bright.Externals do
   @moduledoc """
-  The Externals context.
+  外部サービスとの連携を行うモジュール
   """
 
   import Ecto.Query, warn: false
   alias Bright.Repo
 
-  alias Bright.Externals.ExternalTokens
+  alias Bright.Externals.ExternalToken
+
+  @valid_token_types ExternalToken.token_types()
 
   @doc """
-  Returns the list of external_tokens.
+  Gets a single external_token by token_type.
 
   ## Examples
 
-      iex> list_external_tokens()
-      [%ExternalTokens{}, ...]
+      iex> get_external_token(%{token_type: :ZOHO_CRM})
+      %ExternalToken{}
+
+      iex> get_external_token(%{token_type: :ZOHO_CRM})
+      nil
 
   """
-  def list_external_tokens do
-    Repo.all(ExternalTokens)
+  def get_external_token(%{token_type: token_type}) when token_type in @valid_token_types do
+    Repo.get_by(ExternalToken, token_type: token_type)
   end
 
   @doc """
-  Gets a single external_tokens.
-
-  Raises `Ecto.NoResultsError` if the External tokens does not exist.
+  Creates a external_token.
 
   ## Examples
 
-      iex> get_external_tokens!(123)
-      %ExternalTokens{}
+      iex> create_external_token(%{field: value})
+      {:ok, %ExternalToken{}}
 
-      iex> get_external_tokens!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_external_tokens!(id), do: Repo.get!(ExternalTokens, id)
-
-  @doc """
-  Creates a external_tokens.
-
-  ## Examples
-
-      iex> create_external_tokens(%{field: value})
-      {:ok, %ExternalTokens{}}
-
-      iex> create_external_tokens(%{field: bad_value})
+      iex> create_external_token(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_external_tokens(attrs \\ %{}) do
-    %ExternalTokens{}
-    |> ExternalTokens.changeset(attrs)
+  def create_external_token(attrs \\ %{}) do
+    %ExternalToken{}
+    |> ExternalToken.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a external_tokens.
+  Updates a external_token.
 
   ## Examples
 
-      iex> update_external_tokens(external_tokens, %{field: new_value})
-      {:ok, %ExternalTokens{}}
+      iex> update_external_token(external_token, %{field: new_value})
+      {:ok, %ExternalToken{}}
 
-      iex> update_external_tokens(external_tokens, %{field: bad_value})
+      iex> update_external_token(external_token, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_external_tokens(%ExternalTokens{} = external_tokens, attrs) do
-    external_tokens
-    |> ExternalTokens.changeset(attrs)
+  def update_external_token(%ExternalToken{} = external_token, attrs) do
+    external_token
+    |> ExternalToken.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a external_tokens.
+  取得したトークンが期限切れかどうかを判定する。
+  判定後に使用する際、期限切れになることを防ぐため、現在時刻 + 一定秒数を基準に判定する。
+  第二引数で設定、単位は秒、デフォルト300秒。
 
   ## Examples
 
-      iex> delete_external_tokens(external_tokens)
-      {:ok, %ExternalTokens{}}
+      iex> expired?(%ExternalToken{})
+      true
 
-      iex> delete_external_tokens(external_tokens)
-      {:error, %Ecto.Changeset{}}
+      iex> expired?(%ExternalToken{}, 60)
+      true
 
-  """
-  def delete_external_tokens(%ExternalTokens{} = external_tokens) do
-    Repo.delete(external_tokens)
-  end
+      iex> expired?(%ExternalToken{})
+      false
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking external_tokens changes.
-
-  ## Examples
-
-      iex> change_external_tokens(external_tokens)
-      %Ecto.Changeset{data: %ExternalTokens{}}
 
   """
-  def change_external_tokens(%ExternalTokens{} = external_tokens, attrs \\ %{}) do
-    ExternalTokens.changeset(external_tokens, attrs)
+  def expired?(%ExternalToken{} = external_token, expiry_margin_sec \\ 300) do
+    base_time = NaiveDateTime.utc_now() |> NaiveDateTime.add(expiry_margin_sec, :second)
+
+    NaiveDateTime.before?(external_token.expired_at, base_time)
   end
 end
