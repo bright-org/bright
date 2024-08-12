@@ -11,6 +11,7 @@ defmodule Bright.Accounts do
   alias Bright.Accounts.UserSubEmail
   alias Bright.UserProfiles
   alias Bright.UserJobProfiles
+  alias Bright.Zoho.Crm
   alias Bright.Repo
 
   alias Bright.Accounts.{User, UserToken, UserNotifier}
@@ -524,7 +525,8 @@ defmodule Bright.Accounts do
   # NOTE: 外部サービスである ZOHO との連携が失敗しても全体の処理は失敗させたくないためエラーハンドリングを行いつつ、ログを残す
   def try_create_zoho_contact(user) do
     try do
-      Bright.Zoho.Crm.create_contact(%{name: user.name, email: user.email})
+      Crm.build_create_contact_payload(%{name: user.name, email: user.email})
+      |> Crm.create_contact()
     rescue
       e ->
         Logger.error(
