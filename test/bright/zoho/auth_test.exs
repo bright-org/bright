@@ -16,7 +16,7 @@ defmodule Bright.Zoho.AuthTest do
       assert {:ok,
               %Tesla.Env{
                 body: %{
-                  "access_token" => "xxxxx",
+                  "access_token" => "new_token",
                   "expires_in" => 3600,
                   "api_domain" => "https://www.zohoapis.jp"
                 }
