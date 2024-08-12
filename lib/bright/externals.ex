@@ -69,18 +69,18 @@ defmodule Bright.Externals do
 
   ## Examples
 
-      iex> expired?(%ExternalToken{})
+      iex> token_expired?(%ExternalToken{})
       true
 
-      iex> expired?(%ExternalToken{}, 60)
+      iex> token_expired?(%ExternalToken{}, 60)
       true
 
-      iex> expired?(%ExternalToken{})
+      iex> token_expired?(%ExternalToken{})
       false
 
 
   """
-  def expired?(%ExternalToken{} = external_token, expiry_margin_sec \\ 300) do
+  def token_expired?(%ExternalToken{} = external_token, expiry_margin_sec \\ 300) do
     base_time = NaiveDateTime.utc_now() |> NaiveDateTime.add(expiry_margin_sec, :second)
 
     NaiveDateTime.before?(external_token.expired_at, base_time)

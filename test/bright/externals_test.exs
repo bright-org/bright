@@ -67,14 +67,14 @@ defmodule Bright.ExternalsTest do
     end
   end
 
-  describe "expired?/2" do
+  describe "token_expired?/2" do
     test "returns true when expired" do
       external_token =
         insert(:external_token,
           expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(-1, :second)
         )
 
-      assert Externals.expired?(external_token, 0)
+      assert Externals.token_expired?(external_token, 0)
     end
 
     test "returns true when expired with default expiry_margin_sec 300s" do
@@ -83,7 +83,7 @@ defmodule Bright.ExternalsTest do
           expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(295, :second)
         )
 
-      assert Externals.expired?(external_token)
+      assert Externals.token_expired?(external_token)
     end
 
     test "returns false when not expired" do
@@ -92,7 +92,7 @@ defmodule Bright.ExternalsTest do
           expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(5, :second)
         )
 
-      refute Externals.expired?(external_token, 0)
+      refute Externals.token_expired?(external_token, 0)
     end
 
     test "returns false when not expired with default expiry_margin_sec 300s" do
@@ -101,7 +101,7 @@ defmodule Bright.ExternalsTest do
           expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(305, :second)
         )
 
-      refute Externals.expired?(external_token)
+      refute Externals.token_expired?(external_token)
     end
   end
 end
