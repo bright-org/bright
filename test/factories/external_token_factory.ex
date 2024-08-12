@@ -9,7 +9,7 @@ defmodule Bright.ExternalTokenFactory do
         %Bright.Externals.ExternalToken{
           token: "token",
           token_type: :ZOHO_CRM,
-          api_domain: "https://accounts.zoho.jp",
+          api_domain: "https://www.zohoapis.jp",
           expired_at: NaiveDateTime.utc_now() |> NaiveDateTime.add(3600, :second)
         }
       end
