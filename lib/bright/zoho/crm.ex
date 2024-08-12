@@ -4,6 +4,7 @@ defmodule Bright.Zoho.Crm do
   """
 
   require Logger
+  alias Bright.Externals
   alias Bright.Zoho.Auth
   alias Bright.Zoho.Crm.Client
 
@@ -18,11 +19,33 @@ defmodule Bright.Zoho.Crm do
     end
   end
 
-  # TODO: まず DB に問い合わせる。なければ Zoho に問い合わせる。
   defp get_access_token_and_api_domain() do
-    Auth.new()
-    |> Auth.auth()
-    |> handle_auth()
+    case get_unexpired_external_token() do
+      %Externals.ExternalToken{} = external_token ->
+        %{api_domain: external_token.api_domain, access_token: external_token.token}
+
+      # NOTE: トークンがない場合は ZOHO API から取得する
+      nil ->
+        Auth.new()
+        |> Auth.auth()
+        |> handle_auth()
+    end
+  end
+
+  defp get_unexpired_external_token() do
+    case Externals.get_external_token(%{token_type: :ZOHO_CRM}) do
+      %Externals.ExternalToken{} = external_token ->
+        case Externals.token_expired?(external_token) do
+          true ->
+            nil
+
+          false ->
+            external_token
+        end
+
+      nil ->
+        nil
+    end
   end
 
   defp handle_auth(result) do
@@ -36,11 +59,12 @@ defmodule Bright.Zoho.Crm do
          status: status,
          body: %{
            "api_domain" => api_domain,
-           "access_token" => access_token
+           "access_token" => access_token,
+           "expires_in" => expires_in
          }
        }}
       when status in 200..299 ->
-        # TODO: expires_in 使って期限を計算し、保存する
+        create_or_update_access_token(access_token, api_domain, expires_in)
         %{api_domain: api_domain, access_token: access_token}
 
       # NOTE: 200 系以外はエラーとして扱う
@@ -51,6 +75,27 @@ defmodule Bright.Zoho.Crm do
       {:error, error} ->
         Logger.error("Failed to Zoho Auth: #{inspect(error)}")
         :error
+    end
+  end
+
+  defp create_or_update_access_token(access_token, api_domain, expires_in) do
+    expired_at = NaiveDateTime.utc_now() |> NaiveDateTime.add(expires_in, :second)
+
+    case Externals.get_external_token(%{token_type: :ZOHO_CRM}) do
+      %Externals.ExternalToken{} = external_token ->
+        Externals.update_external_token(external_token, %{
+          token: access_token,
+          api_domain: api_domain,
+          expired_at: expired_at
+        })
+
+      nil ->
+        Externals.create_external_token(%{
+          token_type: :ZOHO_CRM,
+          token: access_token,
+          api_domain: api_domain,
+          expired_at: expired_at
+        })
     end
   end
 
@@ -94,8 +139,10 @@ defmodule Bright.Zoho.Crm do
 
   @doc """
   連絡先作成用のペイロードを生成する
+
+  field_9 は「連携元」項目
   """
   def build_create_contact_payload(%{name: name, email: email}) do
-    %{"data" => [%{"Last_Name" => name, "Email" => email}]}
+    %{"data" => [%{"Last_Name" => name, "Email" => email, "field_9" => "Brightユーザー"}]}
   end
 end
