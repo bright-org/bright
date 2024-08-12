@@ -2,7 +2,7 @@ defmodule BrightWeb.OgpComponents do
   @moduledoc """
   Tab Components
   """
-  use Phoenix.Component
+  use BrightWeb, :live_component
 
   import BrightWeb.SkillPanelLive.SkillPanelComponents,
     only: [profile_skill_class_level: 1]
@@ -25,17 +25,17 @@ defmodule BrightWeb.OgpComponents do
 
   """
 
-  attr :skill_panel, :any
-  attr :skill_class, :any
-  attr :skill_class_score, :any
-  attr :display_user, :any
-  attr :select_label, :any
-  attr :me, :any
-  attr :anonymous, :any
-  attr :select_label_compared_user, :any
-  attr :compared_user, :any
+  # attr :skill_panel, :any
+  # attr :skill_class, :any
+  # attr :skill_class_score, :any
+  # attr :display_user, :any
+  # attr :select_label, :any
+  # attr :me, :any
+  # attr :anonymous, :any
+  # attr :select_label_compared_user, :any
+  # attr :compared_user, :any
 
-  def ogp(assigns) do
+  def render(assigns) do
     ~H"""
      <div class="absolute flow -left-[1200px] w-[1200px]">
       <p class="hidden" id="og_image_data" phx-click="og_image_data_click" />
