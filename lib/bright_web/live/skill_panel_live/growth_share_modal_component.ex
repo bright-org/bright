@@ -9,7 +9,6 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
 
   alias BrightWeb.SnsComponents
   alias BrightWeb.TimelineHelper
-  alias BrightWeb.Share.Helper, as: ShareHelper
 
   alias Bright.Accounts
   alias Bright.SkillPanels
@@ -43,7 +42,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
           </div>
         </div>
 
-        <SnsComponents.sns_share_button_group share_graph_url={ShareHelper.gen_share_graph_url(@user, @skill_class)} skill_panel={@skill_panel.name} />
+        <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} skill_panel={@skill_panel.name} />
       </.bright_modal>
     </div>
     """
