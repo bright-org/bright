@@ -23,7 +23,7 @@ defmodule Bright.Zoho.MockSetup do
     %Tesla.Env{
       status: 200,
       body: %{
-        "access_token" => "xxxxx",
+        "access_token" => "new_token",
         "expires_in" => 3600,
         "api_domain" => "https://www.zohoapis.jp"
       }
@@ -68,6 +68,29 @@ defmodule Bright.Zoho.MockSetup do
       %{method: :post, url: "https://accounts.zoho.jp/oauth/v2/token"} ->
         auth_success_response()
 
+      %{method: :post, url: "https://www.zohoapis.jp/crm/v6/Contacts"} ->
+        %Tesla.Env{
+          status: 201,
+          body: %{
+            "data" => [
+              %{
+                "code" => "SUCCESS",
+                "details" => %{
+                  "id" => "100",
+                  "Created_Time" => "2024-08-05T00:00:00+09:00",
+                  "Modified_Time" => "2024-08-05T00:00:00+09:00"
+                },
+                "message" => "record added",
+                "status" => "success"
+              }
+            ]
+          }
+        }
+    end)
+  end
+
+  def mock_zoho_api(%{zoho_mock: :create_contact_success_without_token_request}) do
+    Tesla.Mock.mock(fn
       %{method: :post, url: "https://www.zohoapis.jp/crm/v6/Contacts"} ->
         %Tesla.Env{
           status: 201,

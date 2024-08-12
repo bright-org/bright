@@ -4,14 +4,56 @@ defmodule Bright.Zoho.CrmTest do
 
   import ExUnit.CaptureLog
 
+  alias Bright.Externals
   alias Bright.Zoho.Crm
 
   describe "create_contact/1" do
     @tag zoho_mock: :create_contact_success
-    test "creates contact" do
+    test "creates contact when no external_tokens record" do
       assert {:ok, %Tesla.Env{status: 201}} =
                Crm.build_create_contact_payload(%{name: "test", email: "email"})
                |> Crm.create_contact()
+
+      new_token = Externals.get_external_token(%{token_type: :ZOHO_CRM})
+      assert new_token.token == "new_token"
+      assert new_token.token_type == :ZOHO_CRM
+      refute new_token |> Externals.token_expired?()
+    end
+
+    @tag zoho_mock: :create_contact_success_without_token_request
+    test "creates contact when external_tokens record exists" do
+      insert(:external_token,
+        token: "unexpired_token",
+        token_type: :ZOHO_CRM,
+        api_domain: "https://www.zohoapis.jp",
+        expired_at: DateTime.utc_now() |> DateTime.add(3600, :second)
+      )
+
+      assert {:ok, %Tesla.Env{status: 201}} =
+               Crm.build_create_contact_payload(%{name: "test", email: "email"})
+               |> Crm.create_contact()
+
+      new_token = Externals.get_external_token(%{token_type: :ZOHO_CRM})
+      assert new_token.token == "unexpired_token"
+    end
+
+    @tag zoho_mock: :create_contact_success
+    test "creates contact when external_tokens record exists but expired" do
+      insert(:external_token,
+        token: "expired_token",
+        token_type: :ZOHO_CRM,
+        api_domain: "https://www.zohoapis.jp",
+        expired_at: DateTime.utc_now()
+      )
+
+      assert {:ok, %Tesla.Env{status: 201}} =
+               Crm.build_create_contact_payload(%{name: "test", email: "email"})
+               |> Crm.create_contact()
+
+      new_token = Externals.get_external_token(%{token_type: :ZOHO_CRM})
+      assert new_token.token == "new_token"
+      assert new_token.token_type == :ZOHO_CRM
+      refute new_token |> Externals.token_expired?()
     end
 
     @tag zoho_mock: :auth_failure
@@ -77,7 +119,9 @@ defmodule Bright.Zoho.CrmTest do
 
   describe "build_create_contact_payload/1" do
     test "builds payload" do
-      assert %{"data" => [%{"Email" => "email", "Last_Name" => "test"}]} =
+      assert %{
+               "data" => [%{"Email" => "email", "Last_Name" => "test", "field_9" => "Brightユーザー"}]
+             } =
                Crm.build_create_contact_payload(%{name: "test", email: "email"})
     end
   end
