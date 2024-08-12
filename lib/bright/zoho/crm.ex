@@ -142,9 +142,9 @@ defmodule Bright.Zoho.Crm do
   @doc """
   連絡先作成用のペイロードを生成する
 
-  field_9 は「連携元」項目
+  field9 は「連携元」項目
   """
   def build_create_contact_payload(%{name: name, email: email}) do
-    %{"data" => [%{"Last_Name" => name, "Email" => email, "field_9" => "Brightユーザー"}]}
+    %{"data" => [%{"Last_Name" => name, "Email" => email, "field9" => "Brightユーザー"}]}
   end
 end

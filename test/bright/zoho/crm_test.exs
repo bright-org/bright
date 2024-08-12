@@ -120,7 +120,7 @@ defmodule Bright.Zoho.CrmTest do
   describe "build_create_contact_payload/1" do
     test "builds payload" do
       assert %{
-               "data" => [%{"Email" => "email", "Last_Name" => "test", "field_9" => "Brightユーザー"}]
+               "data" => [%{"Email" => "email", "Last_Name" => "test", "field9" => "Brightユーザー"}]
              } =
                Crm.build_create_contact_payload(%{name: "test", email: "email"})
     end
