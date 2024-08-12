@@ -1357,6 +1357,40 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "try_create_zoho_contact/1" do
+    use Bright.Zoho.MockSetup
+    import ExUnit.CaptureLog
+
+    setup do
+      %{user: insert(:user)}
+    end
+
+    @tag zoho_mock: :create_contact_success
+    test "creates a contact in Zoho", %{user: user} do
+      assert {:ok, _} = Accounts.try_create_zoho_contact(user)
+    end
+
+    @tag zoho_mock: :create_contact_failure
+    test "fails to create a contact in Zoho", %{user: user} do
+      log =
+        capture_log([level: :error], fn ->
+          assert :error = Accounts.try_create_zoho_contact(user)
+        end)
+
+      assert log =~ "Failed to create_contact"
+    end
+
+    # NOTE: mock してないことによるエラーが出る
+    test "unexpected error", %{user: user} do
+      log =
+        capture_log([level: :error], fn ->
+          assert :error = Accounts.try_create_zoho_contact(user)
+        end)
+
+      assert log =~ "Unexpected error when creating zoho contact: user: #{inspect(user)}"
+    end
+  end
+
   describe "deliver_user_reset_password_instructions/2" do
     setup do
       %{user: insert(:user)}
