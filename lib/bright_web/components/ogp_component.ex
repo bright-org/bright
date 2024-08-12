@@ -36,10 +36,20 @@ defmodule BrightWeb.OgpComponent do
             anonymous={@anonymous}
             select_label_compared_user={@select_label_compared_user}
             compared_user={@compared_user}
+            updated_gem_dt={@updated_gem_dt}
           />
         </div>
       </div>
     </div>
     """
+  end
+
+  def update(assigns, socket) do
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign(updated_gem_dt: DateTime.utc_now())
+
+    {:ok, socket}
   end
 end
