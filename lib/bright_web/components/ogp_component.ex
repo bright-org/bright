@@ -1,6 +1,6 @@
 defmodule BrightWeb.OgpComponent do
   @moduledoc """
-  Tab Components
+  Ogp Component
   """
   use BrightWeb, :live_component
 
