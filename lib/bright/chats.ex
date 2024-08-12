@@ -69,6 +69,14 @@ defmodule Bright.Chats do
     list_chats_interview(user_id, status)
   end
 
+  def list_chats(user_id, :waiting_response) do
+    list_chats_employment(user_id, [:waiting_response])
+  end
+
+  def list_chats(user_id, :cancel_recruiter) do
+    list_chats_employment(user_id, [:cancel_recruiter])
+  end
+
   def list_chats(user_id, :cancel_interview) do
     list_chats_interview(user_id, [:cancel_interview, :dismiss_interview])
   end
