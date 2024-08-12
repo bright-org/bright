@@ -6,6 +6,50 @@ defmodule BrightWeb.ChatLive.ChatComponents do
   alias Bright.Utils.GoogleCloud.Storage
   import BrightWeb.BrightCoreComponents, only: [elapsed_time: 1]
 
+  attr :filter_types, :any, required: true
+  attr :select_filter_type, :atom, required: true
+
+  def filter_type_select_dropdown_menue(assigns) do
+    ~H"""
+    <div
+      id="filter_select"
+      phx-hook="Dropdown"
+      data-dropdown-offset-skidding="0"
+      data-dropdown-placement="bottom"
+    >
+      <bottun
+        class="cursor-pointer text-left flex justify-between items-center text-base p-1 m-2 rounded border border-brightGray-100 bg-white  w-[270px] hover:bg-brightGray-50 dropdownTrigger"
+        type="button"
+      >
+        <%= get_display_name(@select_filter_type, @filter_types) %>
+        <.icon name="hero-chevron-down" />
+      </bottun>
+      <!-- menue list-->
+      <div
+        class="dropdownTarget z-30 hidden bg-white border-2 rounded-sm shadow static w-[270px]"
+      >
+        <ul class="p-2">
+          <%= for filter_type <- @filter_types do %>
+            <li
+              class="text-left flex items-center text-base hover:bg-brightGray-50 bg-white w-full"
+              phx-click="select_filter_type"
+              phx-value-select_filter_type={filter_type.value}
+            >
+              <%= filter_type.name %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    """
+  end
+
+  defp get_display_name(value, filter_types) do
+    filter_types
+    |> Enum.find(Enum.at(filter_types, 0), &(&1.value == value))
+    |> Map.get(:name)
+  end
+
   attr :chat, :any, required: true
   attr :selected_chat, :any, required: true
   attr :user_id, :string, required: true
