@@ -584,6 +584,7 @@ defmodule Bright.SkillScores do
       %{
         position: career_field.position,
         name: career_field.name_ja,
+        key: career_field.name_en,
         percentage: Map.get(career_field_ids_scores, career_field.id, 0.0)
       }
     end)
