@@ -4,6 +4,7 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
   alias Bright.Recruits
   alias Bright.Recruits.Employment
   alias BrightWeb.BrightCoreComponents, as: BrightCore
+  alias Bright.Chats
 
   import BrightWeb.ProfileComponents, only: [profile: 1]
   import Bright.UserProfiles, only: [icon_url: 1]
@@ -232,6 +233,9 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
         Recruits.get_coordination!(coordination.id)
         |> Recruits.update_coordination(%{status: :completed_coordination})
 
+        Chats.get_chat_by_coordination_id(coordination.id)
+        |> Chats.update_chat(%{employment_id: employment.id})
+
         send_acceptance_mails(employment, coordination, recruiter)
 
         {:noreply, redirect(socket, to: ~p"/recruits/employments")}
@@ -243,7 +247,12 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
 
   def handle_event("decision", %{"reason" => reason}, socket) do
     params = socket.assigns.form.params
+
     coordination = socket.assigns.coordination
+
+    coordination_db =
+      Recruits.get_coordination!(coordination.id)
+
     recruiter = socket.assigns.current_user
 
     employment_params =
@@ -253,11 +262,16 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
           "recruiter_user_id" => recruiter.id,
           "candidates_user_id" => coordination.candidates_user_id,
           "cancel_reason" => reason,
-          "status" => :cancel_recruiter
+          "status" => :cancel_recruiter,
+          "skill_panel_name" => coordination_db.skill_panel_name,
+          "skill_params" => coordination_db.skill_params
         }
       )
 
-    Recruits.cancel_employment(employment_params)
+    {:ok, employment} = Recruits.cancel_employment(employment_params)
+
+    Chats.get_chat_by_coordination_id(socket.assigns.coordination.id)
+    |> Chats.update_chat(%{employment_id: employment.id})
 
     {:ok, _coordination} =
       Recruits.update_coordination(coordination, %{

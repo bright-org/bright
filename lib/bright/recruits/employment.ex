@@ -43,6 +43,12 @@ defmodule Bright.Recruits.Employment do
         :part_time_job
       ]
 
+    field :recruiter_user_name, :string, virtual: true
+    field :recruiter_user_icon, :string, virtual: true
+    field :candidates_user_name, :string, virtual: true
+    field :candidates_user_icon, :string, virtual: true
+    field :is_read?, :boolean, virtual: true
+
     field :used_sample, Ecto.Enum, values: [:none, :adoption, :not_adoption], default: :none
 
     field :recruiter_reason, :string
@@ -94,7 +100,9 @@ defmodule Bright.Recruits.Employment do
       :used_sample,
       :recruiter_reason,
       :recruiter_user_id,
-      :candidates_user_id
+      :candidates_user_id,
+      :skill_params,
+      :skill_panel_name
     ])
     |> validate_required([:message, :status, :recruiter_user_id, :candidates_user_id])
   end

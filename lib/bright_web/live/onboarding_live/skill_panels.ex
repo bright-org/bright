@@ -186,8 +186,16 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   defp select_skill_panel(socket, user_id, skill_panel_id, name) do
     case UserSkillPanels.user_skill_panel_exists?(user_id, skill_panel_id) do
-      true -> socket
-      false -> put_flash(socket, :info, "スキルパネル:#{name}を取得しました")
+      true ->
+        socket
+
+      false ->
+        UserSkillPanels.create_user_skill_panel(%{
+          user_id: user_id,
+          skill_panel_id: skill_panel_id
+        })
+
+        put_flash(socket, :info, "スキルパネル:#{name}を取得しました")
     end
   end
 

@@ -17,9 +17,12 @@ defmodule BrightWeb.MypageLive.MySkillEvidencesComponent do
   def render(assigns) do
     ~H"""
     <section id={@id}>
-      <h5 class="text-base lg:text-lg">学習メモ</h5>
+      <h5 class="text-base lg:text-lg flex gap-x-2">
+        学習メモ
+        <img src="/images/common/icons/skillEvidenceActive.svg" />
+      </h5>
       <div
-        :if={@page_number ==  0}
+        :if={@page_number == 0}
         class="bg-white rounded-md mt-1 px-2 py-0.5 text-sm font-medium gap-y-2 flex py-2 my-2"
       >
         まだ学習メモがありません

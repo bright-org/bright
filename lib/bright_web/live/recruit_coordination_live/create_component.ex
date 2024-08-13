@@ -7,6 +7,7 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
   alias Bright.Recruits
   alias Bright.Recruits.Coordination
   alias BrightWeb.BrightCoreComponents, as: BrightCore
+  alias Bright.Chats
   import BrightWeb.ProfileComponents, only: [profile_small_with_remove_button: 1]
 
   @impl true
@@ -289,6 +290,9 @@ defmodule BrightWeb.RecruitCoordinationLive.CreateComponent do
       {:ok, coordination} ->
         Recruits.get_interview!(intervie_id)
         |> Recruits.update_interview(%{status: :completed_interview})
+
+        Chats.get_chat_by_interview_id(intervie_id)
+        |> Chats.update_chat(%{coordination_id: coordination.id})
 
         preloaded_coordination =
           Recruits.get_coordination_with_member_users!(coordination.id, recruiter.id)

@@ -111,18 +111,6 @@ defmodule Bright.UserSkillPanels do
     UserSkillPanel
     |> where([u], u.user_id == ^user_id and u.skill_panel_id == ^skill_panel_id)
     |> Repo.exists?()
-    |> case do
-      true ->
-        true
-
-      false ->
-        create_user_skill_panel(%{
-          user_id: user_id,
-          skill_panel_id: skill_panel_id
-        })
-
-        false
-    end
   end
 
   @doc """

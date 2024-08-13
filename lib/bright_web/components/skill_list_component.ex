@@ -33,6 +33,7 @@ defmodule BrightWeb.SkillListComponent do
             me={@me}
             anonymous={@anonymous}
             root={@root}
+            current_skill_class={@current_skill_class}
           />
         <% end %>
       </div>
@@ -74,6 +75,7 @@ defmodule BrightWeb.SkillListComponent do
           me={@me}
           anonymous={@anonymous}
           root={@root}
+          current_skill_class={@current_skill_class}
         />
       <% end %>
     </div>
@@ -95,12 +97,23 @@ defmodule BrightWeb.SkillListComponent do
     ~H"""
     <div class="w-8">
       <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
-        <p class="hover:filter hover:brightness-[80%] hover:cursor-pointer inline-flex items-end pl-1">
+        <p class={"border hover:cursor-pointer inline-flex items-end pl-1 #{if selected?(@skill_class, @current_skill_class), do: "border-[003D36] bg-[#004D36]", else: "border-[#12B7A3] hover:border-[#004D36] hover:bg-[#EDFFF8]" }"}>
           <img src={@icon_path} class="mr-1" />
         </p>
       </.link>
     </div>
     """
+  end
+
+  defp selected?(_, nil), do: false
+
+  defp selected?(skill_class, current_skill_class) do
+    skill_class.id == current_skill_class.id
+  end
+
+  @impl true
+  def mount(socket) do
+    {:ok, assign(socket, current_skill_class: nil)}
   end
 
   @impl true
