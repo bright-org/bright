@@ -268,20 +268,24 @@ defmodule BrightWeb.RecruitEmploymentLive.CreateComponent do
         }
       )
 
-    {:ok, employment} = Recruits.cancel_employment(employment_params)
+    case Recruits.cancel_employment(employment_params) do
+      {:ok, employment} ->
+        Chats.get_chat_by_coordination_id(socket.assigns.coordination.id)
+        |> Chats.update_chat(%{employment_id: employment.id})
 
-    Chats.get_chat_by_coordination_id(socket.assigns.coordination.id)
-    |> Chats.update_chat(%{employment_id: employment.id})
+        {:ok, _coordination} =
+          Recruits.update_coordination(coordination, %{
+            status: :cancel_coordination,
+            cancel_reason: reason
+          })
 
-    {:ok, _coordination} =
-      Recruits.update_coordination(coordination, %{
-        status: :cancel_coordination,
-        cancel_reason: reason
-      })
+        Recruits.send_coordination_cancel_notification_mails(coordination.id, params["message"])
 
-    Recruits.send_coordination_cancel_notification_mails(coordination.id, params["message"])
+        {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
 
-    {:noreply, push_navigate(socket, to: ~p"/recruits/coordinations")}
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_employment_form(socket, changeset)}
+    end
   end
 
   defp send_acceptance_mails(employment, coordination, recruiter) do
