@@ -29,3 +29,10 @@ setup_for_docker_user:
 	echo "host_group_name=${USER}" >> .env
 	echo "host_uid=`id -u`" >> .env
 	echo "host_gid=`id -g`" >> .env
+
+
+## bright-jobへDBと繋ぐためのnetwork作成
+
+```
+docker network create bright-network
+```
