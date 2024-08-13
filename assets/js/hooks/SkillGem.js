@@ -186,10 +186,10 @@ const afterDatasetsDraw = (chart, ease) => {
 
 };
 
-const createChartFromJSON = (labels, datasets, isLink, labelFont) => {
+const createChartFromJSON = (labels, datasets, isLink, labelFont, pointLabelsPadding) => {
   const color = isLink ? linkColor : "#000000";
   const rightPadding = isLink ? 22 : 0;
-  const pointLabelsPadding = isLink ? 25 : 5;
+
   return {
     type: "radar",
     data: {
@@ -250,6 +250,17 @@ const createChartFromJSON = (labels, datasets, isLink, labelFont) => {
   };
 };
 
+const getPointLabelsPadding = (dataset) => {
+  // 角に表示するラベルの余白を決める
+  // 余白が大きいほどジェムから離れて表示される
+  const size = dataset.size;
+  const isLink = JSON.parse(dataset.displayLink);
+
+  if(size == "sm") { return 5; }
+
+  return isLink ? 25 : 5;
+};
+
 export const SkillGem = {
   drawRaderGraph(element) {
     if (window.myRadar == undefined) window.myRadar = [];
@@ -259,6 +270,7 @@ export const SkillGem = {
     const gemSize = gemSizeSet[dataset.size] || gemSizeSet["default"]
     const labelFont = labelFontSet[dataset.size] || labelFontSet["default"]
     const isLink = JSON.parse(dataset.displayLink);
+    const pointLabelsPadding = getPointLabelsPadding(dataset)
     const datasets = [];
 
     if (labels.length < 3) return;
@@ -270,9 +282,10 @@ export const SkillGem = {
     }
 
     this.ctx = document.querySelector("#" + element.id + " canvas");
+
     window.myRadar[element.id] = new Chart(
       this.ctx,
-      createChartFromJSON(labels, datasets, isLink, labelFont)
+      createChartFromJSON(labels, datasets, isLink, labelFont, pointLabelsPadding)
     );
     window.myRadar[element.id].canvas.parentNode.style.width = gemSize.width;
     window.myRadar[element.id].canvas.parentNode.style.height = gemSize.height;
