@@ -117,6 +117,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> then(&[&1])
     |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
 
+    send_update(BrightWeb.OgpComponent, id: "ogp")
     assign_renew(socket, params["class"])
   end
 
