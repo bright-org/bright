@@ -258,6 +258,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     end
   end
 
+  defp put_flash_first_skills_edit(socket), do: socket
+
   defp open_growth_share(skill_class_score) do
     prev_level = skill_class_score.level
     prev_percentage = skill_class_score.percentage
