@@ -59,10 +59,13 @@ defmodule BrightWeb.ChartLive.SkillGemComponent do
 
   @impl true
   def update(assigns, socket) do
-    skill_gem_update_required = skill_gem_update_required?(socket.assigns, assigns)
+    updated_gem_flg = !is_nil(Map.get(assigns, :updated_gem_dt))
+
+    skill_gem_update_required =
+      skill_gem_update_required?(socket.assigns, assigns) || updated_gem_flg
 
     skill_gem_compared_user_update_required =
-      skill_gem_compared_user_update_required?(socket.assigns, assigns)
+      skill_gem_compared_user_update_required?(socket.assigns, assigns) || updated_gem_flg
 
     {:ok,
      socket
