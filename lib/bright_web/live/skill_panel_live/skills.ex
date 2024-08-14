@@ -112,12 +112,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
+    skill_class_score = socket.assigns.skill_class_score
+    prev_skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
+
     SkillScores.get_skill_score!(id)
     |> Map.put(:score, String.to_atom(score))
     |> then(&[&1])
     |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
 
     send_update(BrightWeb.OgpComponent, id: "ogp")
+
+    maybe_update_skill_card_component(prev_skill_class_score)
     assign_renew(socket, params["class"])
   end
 
@@ -253,5 +258,25 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     end
   end
 
-  defp put_flash_first_skills_edit(socket), do: socket
+  defp maybe_update_skill_card_component(skill_class_score) do
+    prev_level = skill_class_score.level
+    prev_percentage = skill_class_score.percentage
+
+    skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
+    new_level = skill_class_score.level
+    new_percentage = skill_class_score.percentage
+
+    # if prev_level != new_level do
+    #  send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
+    # end
+
+    if prev_level != new_level && prev_percentage < new_percentage do
+      send_update(GrowthShareModalComponent,
+        id: "growth_share",
+        open: true,
+        user_id: skill_class_score.user_id,
+        skill_class_id: skill_class_score.skill_class_id
+      )
+    end
+  end
 end
