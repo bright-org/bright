@@ -122,7 +122,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     send_update(BrightWeb.OgpComponent, id: "ogp")
 
-    maybe_update_skill_card_component(prev_skill_class_score)
+    open_growth_share(prev_skill_class_score)
     assign_renew(socket, params["class"])
   end
 
@@ -258,17 +258,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     end
   end
 
-  defp maybe_update_skill_card_component(skill_class_score) do
+  defp open_growth_share(skill_class_score) do
     prev_level = skill_class_score.level
     prev_percentage = skill_class_score.percentage
 
     skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
     new_level = skill_class_score.level
     new_percentage = skill_class_score.percentage
-
-    # if prev_level != new_level do
-    #  send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
-    # end
 
     if prev_level != new_level && prev_percentage < new_percentage do
       send_update(GrowthShareModalComponent,
