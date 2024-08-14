@@ -11,44 +11,58 @@ defmodule Bright.Batches.UpdateCareerFieldScores do
   alias Bright.CareerFields.CareerField
   alias Bright.Jobs.Job
   alias Bright.SkillPanels.SkillPanel
-  alias Bright.SkillUnits.SkillUnit
   alias Bright.Accounts.User
   alias Bright.SkillScores.{SkillScore, CareerFieldScore}
 
   def call do
-    users = list_users()
-    dict_skill_ids = map_skill_ids_career_field()
-    career_fields = Repo.all(CareerField)
+    career_fields = list_career_fields()
 
-    Enum.each(users, &run_each_user(&1, career_fields, dict_skill_ids))
+    # 処理効率化のために先に辞書生成している. 2つある
+    # - ユーザーごとの母数を出すためにスキルパネルからスキル
+    # - 習得数を出すためにキャリアフィールドからスキルパネル
+    dict_skill_ids = map_skill_by_skill_panel()
+    dict_skill_panel_ids = map_skill_panel_by_career_field(career_fields)
+
+    list_users()
+    |> Enum.each(fn user ->
+      run_each_user(
+        user,
+        career_fields,
+        dict_skill_panel_ids,
+        dict_skill_ids
+      )
+    end)
   end
 
   # ユーザー単位のキャリアフィールドスコア更新処理
   # - スキルスコアを取得していないユーザー（登録後未操作）は処理対象から除外している
-  defp run_each_user(user, career_fields, dict_skill_ids) do
+  defp run_each_user(user, career_fields, dict_skill_panel_ids, dict_skill_ids) do
+    dict_user_skill_ids =
+      map_skill_ids_on_user(user, career_fields, dict_skill_panel_ids, dict_skill_ids)
+
     dict_counts =
       Map.new(career_fields, fn career_field ->
-        skill_ids = Map.get(dict_skill_ids, career_field.id) || []
+        skill_ids = Map.get(dict_user_skill_ids, career_field.id) || []
+        skills_count = Enum.count(skill_ids)
         high_skills_count = count_high_skills(user, skill_ids)
-        {career_field, high_skills_count}
-      end)
+        percentage = if(skills_count == 0, do: 0.0, else: 100 * high_skills_count / skills_count)
 
-    sum_counts = dict_counts |> Map.values() |> Enum.sum()
+        {career_field, {high_skills_count, percentage}}
+      end)
 
     # 更新対象判定
     # NOTE: スキルスコア取得後に「全て」未取得に戻すケースも厳密には更新対象だが運用上起こりにくくチェックを省いている
+    sum_counts = dict_user_skill_ids |> Map.values() |> Enum.map(&Enum.count/1) |> Enum.sum()
     upsert_required? = sum_counts != 0
 
-    upsert_required? &&
-      upsert_career_field_scores(user, career_fields, dict_counts, sum_counts)
+    upsert_required? && upsert_career_field_scores(user, career_fields, dict_counts)
   end
 
-  def upsert_career_field_scores(user, career_fields, dict_counts, sum_counts) do
+  def upsert_career_field_scores(user, career_fields, dict_counts) do
     scores =
       career_fields
       |> Enum.map(fn career_field ->
-        high_skills_count = Map.get(dict_counts, career_field) || 0
-        percentage = if sum_counts == 0, do: 0.0, else: 100 * (high_skills_count / sum_counts)
+        {high_skills_count, percentage} = Map.get(dict_counts, career_field) || {0, 0.0}
 
         %{
           id: Ecto.ULID.generate(),
@@ -87,34 +101,86 @@ defmodule Bright.Batches.UpdateCareerFieldScores do
     |> Repo.aggregate(:count)
   end
 
-  # 対象となるユーザーを取得
-  defp list_users do
-    from(user in User, where: not is_nil(user.confirmed_at))
-    |> Repo.all()
-  end
-
-  # キャリアフィールド単位のskillsを取得
-  # career_fields - jobs - skill_panels - ... - skills と関連が深いので分割取得している
-  defp map_skill_ids_career_field do
-    career_fields = list_career_fields()
-    dict_skill_panels_job = map_jobs()
-    dict_skill_units_skill_panel = map_skill_panels()
-    dict_skills_skill_unit = map_skill_units()
+  # userのキャリアフィールドごとの対象スキル参照を返す
+  # スキルパネルではなくスキルレベルで見ることで共有スキルも考慮している
+  defp map_skill_ids_on_user(user, career_fields, dict_skill_panel_ids, dict_skill_ids) do
+    user_skill_panel_ids = Enum.map(user.user_skill_panels, & &1.skill_panel_id)
+    user_skill_ids = Enum.flat_map(user_skill_panel_ids, &(Map.get(dict_skill_ids, &1) || []))
 
     career_fields
     |> Map.new(fn career_field ->
-      jobs = career_field.jobs
-      skill_panels = Enum.flat_map(jobs, &(Map.get(dict_skill_panels_job, &1.id) || []))
+      career_field_skill_panel_ids = Map.get(dict_skill_panel_ids, career_field.id) || []
 
-      skill_units =
-        Enum.flat_map(skill_panels, &(Map.get(dict_skill_units_skill_panel, &1.id) || []))
+      career_field_skill_ids =
+        Enum.flat_map(career_field_skill_panel_ids, &(Map.get(dict_skill_ids, &1) || []))
 
-      skills =
-        skill_units
-        |> Enum.flat_map(&(Map.get(dict_skills_skill_unit, &1.id) || []))
+      skill_ids = intersection(career_field_skill_ids, user_skill_ids) |> Enum.uniq()
+
+      {career_field.id, skill_ids}
+    end)
+  end
+
+  # 対象となるユーザーを取得
+  defp list_users do
+    from(
+      user in User,
+      where: not is_nil(user.confirmed_at),
+      join: usp in assoc(user, :user_skill_panels),
+      preload: [user_skill_panels: usp]
+    )
+    |> Repo.all()
+  end
+
+  # スキルパネルに紐づくスキル参照の準備
+  defp map_skill_by_skill_panel do
+    from(
+      panel in SkillPanel,
+      join: classes in assoc(panel, :skill_classes),
+      join: units in assoc(classes, :skill_units),
+      join: categories in assoc(units, :skill_categories),
+      join: skills in assoc(categories, :skills),
+      preload: [
+        skill_classes:
+          {classes,
+           [
+             skill_units:
+               {units,
+                [
+                  skill_categories:
+                    {categories,
+                     [
+                       skills: skills
+                     ]}
+                ]}
+           ]}
+      ]
+    )
+    |> Repo.all()
+    |> Map.new(fn skill_panel ->
+      skill_ids =
+        skill_panel.skill_classes
+        |> Enum.flat_map(& &1.skill_units)
+        |> Enum.flat_map(& &1.skill_categories)
+        |> Enum.flat_map(& &1.skills)
+        |> Enum.map(& &1.id)
+
+      {skill_panel.id, skill_ids}
+    end)
+  end
+
+  # キャリアフィールドに紐づくスキルパネル参照の準備
+  defp map_skill_panel_by_career_field(career_fields) do
+    dict_skill_panels_job = map_jobs()
+
+    career_fields
+    |> Map.new(fn career_field ->
+      skill_panel_ids =
+        career_field.jobs
+        |> Enum.flat_map(&(Map.get(dict_skill_panels_job, &1.id) || []))
         |> Enum.uniq()
+        |> Enum.map(& &1.id)
 
-      {career_field.id, Enum.map(skills, & &1.id)}
+      {career_field.id, skill_panel_ids}
     end)
   end
 
@@ -137,31 +203,7 @@ defmodule Bright.Batches.UpdateCareerFieldScores do
     |> Map.new(&{&1.id, &1.skill_panels})
   end
 
-  defp map_skill_panels do
-    from(
-      skill_panel in SkillPanel,
-      join: skill_classes in assoc(skill_panel, :skill_classes),
-      join: skill_units in assoc(skill_classes, :skill_units),
-      preload: [skill_classes: {skill_classes, skill_units: skill_units}]
-    )
-    |> Repo.all()
-    |> Map.new(fn skill_panel ->
-      skill_units = Enum.flat_map(skill_panel.skill_classes, & &1.skill_units)
-      {skill_panel.id, skill_units}
-    end)
-  end
-
-  defp map_skill_units do
-    from(
-      skill_unit in SkillUnit,
-      join: skill_categories in assoc(skill_unit, :skill_categories),
-      join: skills in assoc(skill_categories, :skills),
-      preload: [skill_categories: {skill_categories, skills: skills}]
-    )
-    |> Repo.all()
-    |> Map.new(fn skill_unit ->
-      skills = Enum.flat_map(skill_unit.skill_categories, & &1.skills)
-      {skill_unit.id, skills}
-    end)
+  defp intersection(list_1, list_2) do
+    MapSet.intersection(MapSet.new(list_1), MapSet.new(list_2))
   end
 end
