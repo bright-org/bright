@@ -23,10 +23,10 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
     <div class="flex flex-col w-full px-2">
       <% # 成長グラフ %>
       <div class="flex justify-center pl-7 lg:pl-14">
-        <div class="hidden lg:block">
+        <div class="hidden lg:block w-[714px] h-[357px]">
           <.growth_graph data={@data} id="growth-graph"/>
         </div>
-        <div class="lg:hidden">
+        <div class="lg:hidden w-[270px] h-[135px]">
           <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
         </div>
         <div class="ml-1 flex flex-col relative text-xs lg:text-xl text-brightGray-500 text-bold w-20 lg:ml-5 lg:w-20">
