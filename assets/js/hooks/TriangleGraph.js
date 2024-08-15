@@ -4,15 +4,24 @@ const skilledColor = "#72EAD9";
 const textColor = "#000000";
 const maxPercent = 100;
 
-const drawTriangle = (ctx, l, c) => {
-  let f = 100 - l;
+const drawTriangle = (ctx, percent, color) => {
+  let xDiff = 100 - percent;
   ctx.beginPath();
-  ctx.moveTo(l + f, 0);
-  ctx.lineTo(0 + f, l);
-  ctx.lineTo(l * 2 + f, l);
+  ctx.moveTo(percent + xDiff, 0);
+  ctx.lineTo(0 + xDiff, percent);
+  ctx.lineTo(percent * 2 + xDiff, percent);
   ctx.closePath();
-  ctx.fillStyle = c;
+  ctx.fillStyle = color;
   ctx.fill();
+}
+
+const getPercent = (number, total) => {
+  return Math.floor(number / total * maxPercent)
+}
+
+const drawLevel = (ctx, levelText, number, percent, x, y) => {
+  ctx.fillStyle = textColor;
+  ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
 }
 
 const drawTriangleGraph = (element) => {
@@ -21,19 +30,18 @@ const drawTriangleGraph = (element) => {
   const canvas = document.querySelector("#" + element.id + " canvas")
   const ctx = canvas.getContext('2d');
 
-  let total = data.beginner + data.normal + data.skilled
-  let beginnerPercent = data.beginner / total * maxPercent
-  let normalPercent = data.normal / total * maxPercent
-  let skilledPercent = data.skilled / total * maxPercent
+  let total = data.beginner + data.normal + data.skilled;
+  let beginnerPercent = getPercent(data.beginner, total);
+  let normalPercent = getPercent(data.normal, total);
+  let skilledPercent = getPercent(data.skilled, total);
 
   drawTriangle(ctx, maxPercent, beginnerColor);
   drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
   drawTriangle(ctx, skilledPercent, skilledColor);
 
-  ctx.fillStyle = textColor;
-  ctx.fillText("ベテラン " + data.beginner + "人 " + Math.floor(skilledPercent) + "%", 210, 10);
-  ctx.fillText("平均 " + data.normal + "人 " + Math.floor(normalPercent) + "%", 210, 40);
-  ctx.fillText("見習い " + data.skilled + "人 " + Math.floor(beginnerPercent) + "%", 210, 90)
+  drawLevel(ctx, "ベテラン", data.beginner, beginnerPercent, 210, 10);
+  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 40);
+  drawLevel(ctx, "見習い", + data.skilled, skilledPercent, 210, 90)
 }
 
 export const TriangleGraph = {
