@@ -9,9 +9,9 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
         id: :default,
         attributes: %{
           data: %{
-            beginner: 33,
-            normal: 33,
-            skilled: 33
+            beginner: 35,
+            normal: 35,
+            skilled: 30
           }
         }
       },
@@ -20,7 +20,7 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
         attributes: %{
           data: %{
             beginner: 50,
-            normal: 100,
+            normal: 30,
             skilled: 20
           }
         }
@@ -30,8 +30,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
         attributes: %{
           data: %{
             beginner: 20,
-            normal: 100,
-            skilled: 50
+            normal: 50,
+            skilled: 30
           }
         }
       },
@@ -42,6 +42,26 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
             beginner: 100,
             normal: 50,
             skilled: 20
+          }
+        }
+      },
+      %Variation{
+        id: :data5,
+        attributes: %{
+          data: %{
+            beginner: 1000,
+            normal: 500,
+            skilled: 200
+          }
+        }
+      },
+      %Variation{
+        id: :data6,
+        attributes: %{
+          data: %{
+            beginner: 1000,
+            normal: 100,
+            skilled: 50
           }
         }
       }
