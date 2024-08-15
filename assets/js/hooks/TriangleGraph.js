@@ -1,11 +1,11 @@
 const beginnerColor = "#1DA091";
 const normalColor = "#3CC0A8";
 const skilledColor = "#72EAD9";
-const textColor = "#000000";
+const textColor = "#688888";
 const maxPercent = 100;
 
 const drawTriangle = (ctx, percent, color) => {
-  let xDiff = 100 - percent;
+  let xDiff = maxPercent - percent;
   ctx.beginPath();
   ctx.moveTo(percent + xDiff, 0);
   ctx.lineTo(0 + xDiff, percent);
@@ -21,6 +21,7 @@ const getPercent = (number, total) => {
 
 const drawLevel = (ctx, levelText, number, percent, x, y) => {
   ctx.fillStyle = textColor;
+  ctx.font = "14px 'Noto Sans JP'";
   ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
 }
 
@@ -39,7 +40,7 @@ const drawTriangleGraph = (element) => {
   drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
   drawTriangle(ctx, skilledPercent, skilledColor);
 
-  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 10);
+  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15);
   drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
   drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90)
 }
