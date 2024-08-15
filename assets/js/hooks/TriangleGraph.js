@@ -33,7 +33,7 @@ const drawTriangleGraph = (element) => {
   let total = data.beginner + data.normal + data.skilled;
   let beginnerPercent = getPercent(data.beginner, total);
   let normalPercent = getPercent(data.normal, total);
-  let skilledPercent = getPercent(data.skilled, total);
+  let skilledPercent = maxPercent - beginnerPercent - normalPercent
 
   drawTriangle(ctx, maxPercent, beginnerColor);
   drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
