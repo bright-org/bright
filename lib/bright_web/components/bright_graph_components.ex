@@ -9,11 +9,11 @@ defmodule BrightWeb.BrightGraphComponents do
 
   ## Examples
 
-      <.TriangleGraph id="trianglegraph" />
+      <.triangle_graph data={%{normal: 35, beginner: 35, skilled: 30}} id="triangle-graph-single-default"/>
 
   """
   attr :id, :string, required: true
-  attr :data, :list, required: true
+  attr :data, :map, required: true
 
   def triangle_graph(assigns) do
     assigns =
