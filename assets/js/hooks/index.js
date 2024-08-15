@@ -2,6 +2,7 @@ import LocalStorageBackup from "./LocalStorageBackup.js";
 import { SkillGem } from "./SkillGem.js";
 import { GrowthGraph } from "./GrowthGraph.js";
 import { DoughnutGraph } from "./DoughnutGraph.js";
+import { TriangleGraph } from "./TriangleGraph.js";
 import IframeSizeFitting from "./IframeSizeFitting.js";
 import TabSlideScroll from "./TabSlideScroll.js";
 import Dropdown from "./Dropdown.js";
@@ -28,4 +29,5 @@ export const Hooks = {
   LocalTime: LocalTime,
   HideFlashTimeout: HideFlashTimeout,
   Chat: Chat,
+  TriangleGraph: TriangleGraph,
 };

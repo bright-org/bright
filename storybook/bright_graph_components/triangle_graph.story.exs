@@ -6,10 +6,10 @@ defmodule Storybook.ChartComponents.DoughnutGraph do
   def variations do
     [
       %Variation{
-        id: :default
-        # attributes: %{
-        #  data: [10, 20, 30]
-        # }
+        id: :default,
+        attributes: %{
+          data: [33, 33, 33]
+        }
       }
     ]
   end
