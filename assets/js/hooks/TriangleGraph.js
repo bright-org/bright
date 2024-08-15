@@ -1,20 +1,12 @@
-// const dash = [5, 3];
-// const padding = 70;
-// const dashColor = "#97ACAC";
 
 export const TriangleGraph = {
   drawTriangleGraph(element) {
-    const canvas = document.getElementById('myCanvas1');
+    const dataset = element.dataset;
+    const data = JSON.parse(dataset.data);
+    console.log(data.data);
+    const canvas = document.querySelector("#" +  element.id + " canvas")
     const ctx = canvas.getContext('2d');
-    drawTriangleGraph(ctx,[10, 30, 60])
-
-    const canvas2 = document.getElementById('myCanvas2');
-    const ctx2 = canvas2.getContext('2d');
-    drawTriangleGraph(ctx2,[60, 30, 10] )
-
-    const canvas3 = document.getElementById('myCanvas3');
-    const ctx3 = canvas3.getContext('2d');
-    drawTriangleGraph(ctx3,[30, 30, 30] )
+    drawTriangleGraph(ctx, data.data)
 
     function drawTriangleGraph (ctx, x) {
 

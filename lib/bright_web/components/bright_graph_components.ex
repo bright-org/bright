@@ -16,6 +16,10 @@ defmodule BrightWeb.BrightGraphComponents do
   attr :data, :list, required: true
 
   def triangle_graph(assigns) do
+    assigns =
+      assigns
+      |> assign(:data, assigns.data |> Jason.encode!())
+
     ~H"""
     <div
       id={@id}
@@ -23,9 +27,7 @@ defmodule BrightWeb.BrightGraphComponents do
       hx-update="ignore"
       data-data={@data}
     >
-      <canvas id="myCanvas1" width="300" height="200"></canvas>
-      <canvas id="myCanvas2" width="300" height="200"></canvas>
-      <canvas id="myCanvas3" width="300" height="200"></canvas>
+      <canvas width="300" height="200"></canvas>
     </div>
     """
   end
