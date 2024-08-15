@@ -40,7 +40,7 @@ const drawTriangleGraph = (element) => {
   drawTriangle(ctx, skilledPercent, skilledColor);
 
   drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 10);
-  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 40);
+  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
   drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90)
 }
 

@@ -27,7 +27,7 @@ defmodule BrightWeb.BrightGraphComponents do
       hx-update="ignore"
       data-data={@data}
     >
-      <canvas width="300" height="200"></canvas>
+      <canvas width="350" height="100"></canvas>
     </div>
     """
   end
