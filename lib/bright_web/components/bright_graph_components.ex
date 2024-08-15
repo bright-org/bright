@@ -24,7 +24,7 @@ defmodule BrightWeb.BrightGraphComponents do
     <div
       id={@id}
       phx-hook="TriangleGraph"
-      hx-update="ignore"
+      phx-update="ignore"
       data-data={@data}
     >
       <canvas width="350" height="100"></canvas>
