@@ -29,6 +29,7 @@ const drawTriangle = (ctx, percent, color) => {
 
 // %を求める関数
 const getPercent = (number, total) => {
+  if (total == 0) return 0;
   return Math.floor(number / total * maxPercent);
 }
 
@@ -46,9 +47,14 @@ const drawTriangleGraph = (element) => {
   const ctx = canvas.getContext('2d');
 
   const total = data.beginner + data.normal + data.skilled;
-  const beginnerPercent = getPercent(data.beginner, total);
+
+  const skilledPercent = getPercent(data.skilled, total);
   const normalPercent = getPercent(data.normal, total);
-  const skilledPercent = maxPercent - beginnerPercent - normalPercent;
+  const beginnerPercent = total == 0 ? 0 : maxPercent - skilledPercent - normalPercent;
+
+  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15);
+  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
+  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90);
 
   // 三角形を重ねて描画します
   // ・見習い
@@ -57,12 +63,11 @@ const drawTriangleGraph = (element) => {
   // の順に描画します
   // 頂点を基準で重ねて描画する為順序が大事です
   drawTriangle(ctx, maxPercent, beginnerColor);
+
+  if (total == 0) return;
   drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
   drawTriangle(ctx, skilledPercent, skilledColor);
 
-  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15);
-  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
-  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90);
 }
 
 export const TriangleGraph = {

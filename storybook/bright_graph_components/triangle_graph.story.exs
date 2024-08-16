@@ -64,6 +64,76 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
             skilled: 50
           }
         }
+      },
+      %Variation{
+        id: :data7,
+        attributes: %{
+          data: %{
+            beginner: 0,
+            normal: 0,
+            skilled: 0
+          }
+        }
+      },
+      %Variation{
+        id: :data8,
+        attributes: %{
+          data: %{
+            beginner: 1,
+            normal: 0,
+            skilled: 0
+          }
+        }
+      },
+      %Variation{
+        id: :data8_1,
+        attributes: %{
+          data: %{
+            beginner: 0,
+            normal: 1,
+            skilled: 0
+          }
+        }
+      },
+      %Variation{
+        id: :data8_2,
+        attributes: %{
+          data: %{
+            beginner: 0,
+            normal: 0,
+            skilled: 1
+          }
+        }
+      },
+      %Variation{
+        id: :data9_1,
+        attributes: %{
+          data: %{
+            beginner: 0,
+            normal: 1,
+            skilled: 1
+          }
+        }
+      },
+      %Variation{
+        id: :data9_2,
+        attributes: %{
+          data: %{
+            beginner: 1,
+            normal: 0,
+            skilled: 1
+          }
+        }
+      },
+      %Variation{
+        id: :data10,
+        attributes: %{
+          data: %{
+            beginner: 1,
+            normal: 1,
+            skilled: 0
+          }
+        }
       }
     ]
   end
