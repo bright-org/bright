@@ -76,7 +76,7 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
         }
       },
       %Variation{
-        id: :data8,
+        id: :data8_1,
         attributes: %{
           data: %{
             beginner: 1,
@@ -86,7 +86,7 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
         }
       },
       %Variation{
-        id: :data8_1,
+        id: :data8_2,
         attributes: %{
           data: %{
             beginner: 0,
@@ -96,7 +96,7 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
         }
       },
       %Variation{
-        id: :data8_2,
+        id: :data8_3,
         attributes: %{
           data: %{
             beginner: 0,
@@ -126,7 +126,7 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
         }
       },
       %Variation{
-        id: :data10,
+        id: :data9_3,
         attributes: %{
           data: %{
             beginner: 1,
