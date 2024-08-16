@@ -64,6 +64,7 @@ const drawTriangleGraph = (element) => {
   // 頂点を基準で重ねて描画する為順序が大事です
   drawTriangle(ctx, maxPercent, beginnerColor);
 
+  // 合計が0の場合は「見習い」のみ描画
   if (total == 0) return;
   drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
   drawTriangle(ctx, skilledPercent, skilledColor);
