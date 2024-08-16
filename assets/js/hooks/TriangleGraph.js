@@ -1,24 +1,38 @@
+// グラフの色定義
 const beginnerColor = "#1DA091";
 const normalColor = "#3CC0A8";
 const skilledColor = "#72EAD9";
+
+// 文字の色定義
 const textColor = "#688888";
+
 const maxPercent = 100;
 
+// 三角形の描画関数
+// 三角形を一つだけ描きます
 const drawTriangle = (ctx, percent, color) => {
+  // 100％の三角形から小さくしていき、x座標がずれるので差分を求めています
   let xDiff = maxPercent - percent;
   ctx.beginPath();
+  // 三角形の頂点を開始位置にします
   ctx.moveTo(percent + xDiff, 0);
+  // 三角形の左下まで線を描きます
   ctx.lineTo(0 + xDiff, percent);
+  // 三角形の右下まで線を描きます
+  // percent * 2 の理由は頂点を基準に左右で倍の長さにしたいからです
   ctx.lineTo(percent * 2 + xDiff, percent);
+  // ここでパスを閉じると頂点と結ばれます
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
 }
 
+// %を求める関数
 const getPercent = (number, total) => {
-  return Math.floor(number / total * maxPercent)
+  return Math.floor(number / total * maxPercent);
 }
 
+// 各レベルのテキストを描画する関数
 const drawLevel = (ctx, levelText, number, percent, x, y) => {
   ctx.fillStyle = textColor;
   ctx.font = "14px 'Noto Sans JP'";
@@ -28,28 +42,31 @@ const drawLevel = (ctx, levelText, number, percent, x, y) => {
 const drawTriangleGraph = (element) => {
   const dataset = element.dataset;
   const data = JSON.parse(dataset.data);
-  const canvas = document.querySelector("#" + element.id + " canvas")
+  const canvas = document.querySelector("#" + element.id + " canvas");
   const ctx = canvas.getContext('2d');
 
-  let total = data.beginner + data.normal + data.skilled;
-  let beginnerPercent = getPercent(data.beginner, total);
-  let normalPercent = getPercent(data.normal, total);
-  let skilledPercent = maxPercent - beginnerPercent - normalPercent
+  const total = data.beginner + data.normal + data.skilled;
+  const beginnerPercent = getPercent(data.beginner, total);
+  const normalPercent = getPercent(data.normal, total);
+  const skilledPercent = maxPercent - beginnerPercent - normalPercent;
 
+  // 三角形を重ねて描画します
+  // ・見習い
+  // ・平均
+  // ・ベテラン
+  // の順に描画します
+  // 頂点を基準で重ねて描画する為順序が大事です
   drawTriangle(ctx, maxPercent, beginnerColor);
   drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
   drawTriangle(ctx, skilledPercent, skilledColor);
 
   drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15);
   drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
-  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90)
+  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90);
 }
 
 export const TriangleGraph = {
   mounted() {
-    drawTriangleGraph(this.el);
-  },
-  updated() {
     drawTriangleGraph(this.el);
   }
 };
