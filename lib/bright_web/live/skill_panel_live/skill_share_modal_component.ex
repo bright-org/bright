@@ -10,13 +10,12 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
   import BrightWeb.BrightGraphComponents
   import BrightWeb.GuideMessageComponents
 
-  # id={@id}  id={"#{@id}_modal"}
   def render(assigns) do
     ~H"""
-    <div >
+    <div id={@id}>
       <.bright_modal
-        id="test"
-        :if={false}
+        id={"#{@id}_modal"}
+        :if={@open}
         on_cancel={JS.push("close", target: @myself)}
         show
       >
@@ -24,9 +23,9 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
 
         <div class="my-4 min-w-80">
           <div class="flex flex-col gap-y-2">
-            <p>「XXXスキル」をスタートしました！</p>
+            <p>「<%= @data.name %>」をスタートしました！</p>
             <p>まずは平均を目指しましょう</p>
-            <.triangle_graph data={%{normal: 50, beginner: 20, skilled: 30, name: "プロダクトスキル"}} id="triangle-graph-single-data3"/>
+            <.triangle_graph data={@data} id="triangle-graph"/>
 
           </div>
         </div>
@@ -39,8 +38,10 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
     """
   end
 
-  def update(%{open: true} = _assigns, socket) do
-    {:ok, socket}
+  def update(%{open: true} = assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)}
   end
 
   def update(assigns, socket) do

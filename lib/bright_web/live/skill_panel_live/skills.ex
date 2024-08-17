@@ -47,6 +47,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      socket
      |> assign_path(url)
      |> assign_skill_classes()
+     # TODO テスト用
+     |> assign(:skill_share_open, false)
+     # TODO テスト用
+     |> assign(:skill_share_data, %{
+       normal: 50,
+       beginner: 20,
+       skilled: 30,
+       name: socket.assigns.skill_panel.name
+     })
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_score_dict()
