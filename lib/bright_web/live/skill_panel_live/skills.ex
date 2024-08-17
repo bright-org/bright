@@ -49,12 +49,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_skill_classes()
      # TODO テスト用
      |> assign(:skill_share_open, false)
-     # TODO テスト用
-     |> assign(
-       :skill_share_data,
-       Bright.SkillScores.get_level_count_from_skill_panel_id(socket.assigns.skill_panel.id)
-       |> Map.merge(%{name: socket.assigns.skill_panel.name})
-     )
+     |> assign_skill_share_data()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_score_dict()
@@ -285,5 +280,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
         skill_class_id: skill_class_score.skill_class_id
       )
     end
+  end
+
+  defp assign_skill_share_data(%{assigns: assigns} = socket) do
+    skill_share_data =
+      SkillScores.get_level_count_from_skill_panel_id(assigns.skill_panel.id)
+      |> Map.merge(%{name: assigns.skill_panel.name})
+
+    assign(socket, :skill_share_data, skill_share_data)
   end
 end
