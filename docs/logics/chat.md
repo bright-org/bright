@@ -5,7 +5,7 @@
 
 |フィルター名|テーブル名|ステータス|
 |--------------|--------|--------- |
-|（条件を選択してください）|Interview & Coordination|Interview(waiting_decision, consume_interview, ongoing_interview, one_on_one) & Coordination(waiting_recruit_decision以外)|
+|（条件を選択してください）|Interview & Coordination & Employment|Interview(waiting_decision, consume_interview, ongoing_interview, one_on_one) & Coordination(waiting_recruit_decision) & Employment(waiting_response)|
 |面談打診中|Interview|waiting_decision|
 |面談確定待ち|Interview|consume_interview|
 |面談確定|Interview|ongoing_interview|
