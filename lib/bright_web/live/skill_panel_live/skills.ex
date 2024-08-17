@@ -248,7 +248,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   # 初回入力時のみメッセージを表示
   # 初回入力: スキルクラスがclass: 1でスキルスコアがない状態とする
-  # メッセージ表示にはflashを利用している
+  # メッセージ表示にはSkillShareModalComponentを利用している
   defp put_flash_first_skills_edit(%{assigns: %{me: true}} = socket) do
     %{skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
     skill_scores = Map.values(skill_score_dict)
