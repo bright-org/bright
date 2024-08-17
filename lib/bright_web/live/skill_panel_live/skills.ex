@@ -23,6 +23,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.Share.Helper, as: ShareHelper
   alias BrightWeb.QrCodeComponents
   alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
+  alias BrightWeb.SkillPanelLive.SkillShareModalComponent
 
   @impl true
   def mount(params, _session, socket) do
