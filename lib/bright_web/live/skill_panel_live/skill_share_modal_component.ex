@@ -25,7 +25,7 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
           <div class="flex flex-col gap-y-2">
             <p>「<%= @data.name %>」をスタートしました！</p>
             <p>まずは平均を目指しましょう</p>
-            <.triangle_graph data={@data} id="triangle-graph"/>
+            <.triangle_graph data={@data} id="triangle_graph"/>
 
           </div>
         </div>
