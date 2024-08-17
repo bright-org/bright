@@ -38,6 +38,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(init_team_id: nil, init_timeline: nil)
     |> assign(:selected_unit, nil)
     |> push_event("scroll_to_unit", %{})
+    |> assign(:skill_share_open, false)
     |> then(&{:ok, &1})
   end
 
@@ -47,8 +48,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      socket
      |> assign_path(url)
      |> assign_skill_classes()
-     # TODO テスト用
-     |> assign(:skill_share_open, false)
      |> assign_skill_share_data()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
@@ -256,7 +255,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     (skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil)))
     |> if do
-      put_flash(socket, :first_skills_edit, true)
+      assign(socket, :skill_share_open, true)
     else
       socket
     end
