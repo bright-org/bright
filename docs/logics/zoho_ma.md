@@ -110,6 +110,8 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 
 `email` で検索して、 `record_id` を取得する
 
+※ ZOHO 側にユーザーが見つからなくても、登録処理全体はエラーにせず warn レベルのログを出すに留める。
+
 - PUT {api_domain}/crm/v6/Contacts/{record_id}
 
 ```json
