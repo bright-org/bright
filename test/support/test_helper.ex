@@ -8,6 +8,7 @@ defmodule Bright.TestHelper do
   import Phoenix.ConnTest
   import Swoosh.TestAssertions
   import ExUnit.Assertions
+  import Mock
 
   alias Bright.Accounts
   alias BrightWeb.Endpoint
@@ -252,5 +253,11 @@ defmodule Bright.TestHelper do
       team: team,
       team_members: team_members
     }
+  end
+
+  def with_mock_env_prod(func) do
+    with_mock(Bright.Utils.Env, [:passthrough], prod?: fn -> true end) do
+      func.()
+    end
   end
 end
