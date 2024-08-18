@@ -89,7 +89,7 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 
 - POST {api_domain}/crm/v6/Contacts
 
-```
+```json
 {
   "data": [
     {
@@ -106,8 +106,24 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 
 ## Bright ユーザーの情報変化時のフロー
 
-- GET xxx
-- PUT xxx
+- GET {api_domain}/crm/v6/Contacts/search?email={user_email}
+
+`email` で検索して、 `record_id` を取得する
+
+- PUT {api_domain}/crm/v6/Contacts/{record_id}
+
+```json
+{
+  "data": [
+    {
+      "Last_Name": "ハンドル名",
+      "Email": "xxx@example.com"
+    }
+  ]
+}
+```
+
+で更新する。
 
 ## コミュニティ機能
 
