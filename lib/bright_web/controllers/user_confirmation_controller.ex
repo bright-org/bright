@@ -7,6 +7,8 @@ defmodule BrightWeb.UserConfirmationController do
   def confirm(conn, %{"token" => token}) do
     case Accounts.confirm_user(token) do
       {:ok, user} ->
+        Accounts.try_create_zoho_contact(user)
+
         conn
         |> UserAuth.log_in_user(user)
 
