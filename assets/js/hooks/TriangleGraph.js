@@ -1,3 +1,5 @@
+import html2canvas from 'html2canvas';
+
 // グラフの色定義
 const beginnerColor = "#1DA091";
 const normalColor = "#3CC0A8";
@@ -56,6 +58,8 @@ const drawTriangleGraph = (element) => {
   drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
   drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90);
 
+  ctx.fillText( "「 " + data.name + "」登録者 " + total + "人", 5, 120);
+
   // 三角形を重ねて描画します
   // ・見習い
   // ・平均
@@ -65,9 +69,22 @@ const drawTriangleGraph = (element) => {
   drawTriangle(ctx, maxPercent, beginnerColor);
 
   // 合計が0の場合は「見習い」のみ描画
-  if (total == 0) return;
-  drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
-  drawTriangle(ctx, skilledPercent, skilledColor);
+  if (total > 0) {
+    drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
+    drawTriangle(ctx, skilledPercent, skilledColor);
+  }
+
+  if (ctx.canvas.parentNode.id !== "ogp_triangle_graph") return;
+
+  html2canvas(document.querySelector("#skill_shara_og_image"), {
+    width: 1200,
+    height: 630,
+  }).then(canvas => {
+    let og_image_data = document.getElementById("skill_shara_og_image_data");
+    if (og_image_data == null) return;
+    og_image_data.value = canvas.toDataURL("image/png");
+    og_image_data.click();
+  });
 
 }
 

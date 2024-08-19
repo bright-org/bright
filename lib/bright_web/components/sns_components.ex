@@ -120,6 +120,13 @@ defmodule BrightWeb.SnsComponents do
   defp disable_icon_suffix(true), do: "_gray.svg"
   defp disable_icon_suffix(false), do: ".svg"
 
+  defp twitter_text(skill_panel, "start") do
+    """
+    \"#{skill_panel}\"スキルパネルをスタートしました！あなたも成長パネルを作成してみませんか？
+    #bright_skill
+    """
+  end
+
   defp twitter_text(skill_panel, nil) do
     """
     \"#{skill_panel}\"スキルパネルをシェアしました！あなたも成長パネルを作成してみませんか？

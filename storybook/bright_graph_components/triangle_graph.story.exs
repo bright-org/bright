@@ -11,7 +11,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 35,
             normal: 35,
-            skilled: 30
+            skilled: 30,
+            name: "テスト1"
           }
         }
       },
@@ -21,7 +22,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 50,
             normal: 30,
-            skilled: 20
+            skilled: 20,
+            name: "テスト2"
           }
         }
       },
@@ -31,7 +33,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 20,
             normal: 50,
-            skilled: 30
+            skilled: 30,
+            name: "テスト3"
           }
         }
       },
@@ -41,7 +44,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 100,
             normal: 50,
-            skilled: 20
+            skilled: 20,
+            name: "テスト4"
           }
         }
       },
@@ -51,7 +55,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 1000,
             normal: 500,
-            skilled: 200
+            skilled: 200,
+            name: "テスト5"
           }
         }
       },
@@ -61,7 +66,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 1000,
             normal: 100,
-            skilled: 50
+            skilled: 50,
+            name: "テスト6"
           }
         }
       },
@@ -71,7 +77,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 0,
             normal: 0,
-            skilled: 0
+            skilled: 0,
+            name: "テスト7"
           }
         }
       },
@@ -81,7 +88,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 1,
             normal: 0,
-            skilled: 0
+            skilled: 0,
+            name: "テスト8"
           }
         }
       },
@@ -91,7 +99,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 0,
             normal: 1,
-            skilled: 0
+            skilled: 0,
+            name: "テスト9"
           }
         }
       },
@@ -101,7 +110,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 0,
             normal: 0,
-            skilled: 1
+            skilled: 1,
+            name: "テスト10"
           }
         }
       },
@@ -111,7 +121,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 0,
             normal: 1,
-            skilled: 1
+            skilled: 1,
+            name: "テスト11"
           }
         }
       },
@@ -121,7 +132,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 1,
             normal: 0,
-            skilled: 1
+            skilled: 1,
+            name: "テスト12"
           }
         }
       },
@@ -131,7 +143,8 @@ defmodule Storybook.BrightGraphComponents.TriangleGraph do
           data: %{
             beginner: 1,
             normal: 1,
-            skilled: 0
+            skilled: 0,
+            name: "テスト13"
           }
         }
       }
