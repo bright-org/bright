@@ -165,6 +165,30 @@ defmodule BrightWeb.Router do
            DraftSkillClassLive.Show,
            :replace_skill
 
+      # 現行編集ツール
+      live "/skill_classes/:id", SkillClassLive.Show, :show
+      live "/skill_classes/:id/edit", SkillClassLive.Show, :edit_skill_class
+      live "/skill_classes/:id/skill_units/new", SkillClassLive.Show, :new_skill_unit
+      live "/skill_classes/:id/skill_units/add", SkillClassLive.Show, :add_skill_unit
+
+      live "/skill_classes/:id/skill_units/:skill_unit_id/edit",
+           SkillClassLive.Show,
+           :edit_skill_unit
+
+      live "/skill_classes/:id/skill_categories/new", SkillClassLive.Show, :new_skill_category
+
+      live "/skill_classes/:id/skill_categories/:skill_category_id/edit",
+           SkillClassLive.Show,
+           :edit_skill_category
+
+      live "/skill_classes/:id/skill_categories/:skill_category_id/replace",
+           SkillClassLive.Show,
+           :replace_skill_category
+
+      live "/skill_classes/:id/skills/new", SkillClassLive.Show, :new_skill
+      live "/skill_classes/:id/skills/:skill_id/edit", SkillClassLive.Show, :edit_skill
+      live "/skill_classes/:id/skills/:skill_id/replace", SkillClassLive.Show, :replace_skill
+
       if System.get_env("SERVER") == "dev" do
         live "/user_tokens", UserTokenLive.Index, :index
       end

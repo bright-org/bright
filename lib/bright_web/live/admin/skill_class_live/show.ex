@@ -1,15 +1,14 @@
-defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
+defmodule BrightWeb.Admin.SkillClassLive.Show do
   use BrightWeb, :live_view
 
-  alias Bright.DraftSkillPanels
-  alias Bright.DraftSkillUnits
+  alias Bright.SkillPanels
+  alias Bright.SkillUnits
   alias Bright.Utils.SkillsTableStructure
 
-  alias BrightWeb.Admin.DraftSkillClassLive.{
+  alias BrightWeb.Admin.SkillClassLive.{
     SkillClassFormComponent,
     SkillUnitFormComponent,
     SkillUnitAddFormComponent,
-    SkillUnitReplaceFormComponent,
     SkillCategoryFormComponent,
     SkillCategoryReplaceFormComponent,
     SkillFormComponent,
@@ -55,7 +54,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     [_, %{skill_category: skill_category_to}, _] =
       find_previous_structure_data(table_structure, 1, index - 1)
 
-    DraftSkillUnits.replace_position(skill_category_from, skill_category_to)
+    SkillUnits.replace_position(skill_category_from, skill_category_to)
 
     {:noreply,
      socket
@@ -71,7 +70,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     [_, %{skill_category: skill_category_to}, _] =
       find_next_structure_data(table_structure, 1, index + 1)
 
-    DraftSkillUnits.replace_position(skill_category_from, skill_category_to)
+    SkillUnits.replace_position(skill_category_from, skill_category_to)
 
     {:noreply,
      socket
@@ -84,7 +83,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     index = String.to_integer(row) - 1
     [_, _, %{skill: skill_from}] = Enum.at(table_structure, index)
     [_, _, %{skill: skill_to}] = Enum.at(table_structure, index - 1)
-    DraftSkillUnits.replace_position(skill_from, skill_to)
+    SkillUnits.replace_position(skill_from, skill_to)
 
     {:noreply,
      socket
@@ -97,7 +96,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     index = String.to_integer(row) - 1
     [_, _, %{skill: skill_from}] = Enum.at(table_structure, index)
     [_, _, %{skill: skill_to}] = Enum.at(table_structure, index + 1)
-    DraftSkillUnits.replace_position(skill_from, skill_to)
+    SkillUnits.replace_position(skill_from, skill_to)
 
     {:noreply,
      socket
@@ -117,7 +116,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_on_action(:new_skill_unit, params, socket) do
-    skill_unit = %DraftSkillUnits.DraftSkillUnit{}
+    skill_unit = %SkillUnits.SkillUnit{}
 
     {:noreply,
      socket
@@ -132,20 +131,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_on_action(:edit_skill_unit, %{"skill_unit_id" => unit_id} = params, socket) do
-    skill_unit = DraftSkillUnits.get_draft_skill_unit!(unit_id)
-
-    {:noreply,
-     socket
-     |> assign(:skill_unit, skill_unit)
-     |> assign_base_page_attrs(params)}
-  end
-
-  defp assign_on_action(
-         :replace_skill_unit,
-         %{"skill_unit_id" => unit_id} = params,
-         socket
-       ) do
-    skill_unit = DraftSkillUnits.get_draft_skill_unit!(unit_id)
+    skill_unit = SkillUnits.get_skill_unit!(unit_id)
 
     {:noreply,
      socket
@@ -154,7 +140,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_on_action(:new_skill_category, %{"unit" => unit_id} = params, socket) do
-    skill_category = %DraftSkillUnits.DraftSkillCategory{draft_skill_unit_id: unit_id}
+    skill_category = %SkillUnits.SkillCategory{skill_unit_id: unit_id}
 
     {:noreply,
      socket
@@ -168,7 +154,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
          %{"skill_category_id" => category_id} = params,
          socket
        ) do
-    skill_category = DraftSkillUnits.get_draft_skill_category!(category_id)
+    skill_category = SkillUnits.get_skill_category!(category_id)
     single_row_data? = params["single"] == "true"
 
     {:noreply,
@@ -183,7 +169,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
          %{"skill_category_id" => category_id} = params,
          socket
        ) do
-    skill_category = DraftSkillUnits.get_draft_skill_category!(category_id)
+    skill_category = SkillUnits.get_skill_category!(category_id)
 
     {:noreply,
      socket
@@ -192,7 +178,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_on_action(:new_skill, %{"category" => category_id} = params, socket) do
-    skill = %DraftSkillUnits.DraftSkill{draft_skill_category_id: category_id}
+    skill = %SkillUnits.Skill{skill_category_id: category_id}
 
     {:noreply,
      socket
@@ -202,7 +188,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_on_action(:edit_skill, %{"skill_id" => skill_id} = params, socket) do
-    skill = DraftSkillUnits.get_draft_skill!(skill_id)
+    skill = SkillUnits.get_skill!(skill_id)
     single_row_data? = params["single"] == "true"
 
     {:noreply,
@@ -213,7 +199,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_on_action(:replace_skill, %{"skill_id" => skill_id} = params, socket) do
-    skill = DraftSkillUnits.get_draft_skill!(skill_id)
+    skill = SkillUnits.get_skill!(skill_id)
 
     {:noreply,
      socket
@@ -222,14 +208,14 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_base_page_attrs(%{assigns: %{base_load: false}} = socket, %{"id" => id}) do
-    skill_class = DraftSkillPanels.get_draft_skill_class!(id)
-    skill_panel = DraftSkillPanels.get_skill_panel!(skill_class.skill_panel_id)
+    skill_class = SkillPanels.get_skill_class!(id)
+    skill_panel = SkillPanels.get_skill_panel!(skill_class.skill_panel_id)
 
     socket
     |> assign(:skill_panel, skill_panel)
     |> assign(:skill_class, skill_class)
     |> assign_table_structure()
-    |> assign(:page_path, ~p"/admin/draft_skill_classes/#{skill_class}")
+    |> assign(:page_path, ~p"/admin/skill_classes/#{skill_class}")
     |> assign(:base_load, true)
   end
 
@@ -239,10 +225,10 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     %{skill_class: skill_class} = socket.assigns
 
     skill_units =
-      DraftSkillUnits.list_draft_skill_units_on_class(skill_class)
+      SkillUnits.list_skill_units_on_class(skill_class)
       |> Bright.Repo.preload(
-        draft_skill_categories: [:draft_skills],
-        draft_skill_classes: [:skill_panel]
+        skill_categories: [:skills],
+        skill_classes: [:skill_panel]
       )
 
     table_structure = SkillsTableStructure.build(skill_units)
@@ -251,7 +237,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp list_shared_skill_classes(skill_unit, skill_class) do
-    skill_unit.draft_skill_classes
+    skill_unit.skill_classes
     |> Enum.filter(&(&1.id != skill_class.id))
   end
 
@@ -276,16 +262,16 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
           find_next_structure_data(table_structure, 0, index + 1)
       end
 
-    skill_class_unit_1 = get_draft_skill_class_unit(skill_class, skill_unit_1)
-    skill_class_unit_2 = get_draft_skill_class_unit(skill_class, skill_unit_2)
+    skill_class_unit_1 = get_skill_class_unit(skill_class, skill_unit_1)
+    skill_class_unit_2 = get_skill_class_unit(skill_class, skill_unit_2)
 
-    DraftSkillUnits.replace_position(skill_class_unit_1, skill_class_unit_2)
+    SkillUnits.replace_position(skill_class_unit_1, skill_class_unit_2)
   end
 
-  defp get_draft_skill_class_unit(skill_class, skill_unit) do
-    DraftSkillUnits.get_draft_skill_class_unit_by(
-      draft_skill_class_id: skill_class.id,
-      draft_skill_unit_id: skill_unit.id
+  defp get_skill_class_unit(skill_class, skill_unit) do
+    SkillUnits.get_skill_class_unit_by(
+      skill_class_id: skill_class.id,
+      skill_unit_id: skill_unit.id
     )
   end
 
