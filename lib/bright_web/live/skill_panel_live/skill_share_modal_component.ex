@@ -11,6 +11,10 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
   import BrightWeb.GuideMessageComponents
 
   def render(assigns) do
+    assigns =
+      assigns
+      |> assign(url: url(~p"/get_skill_panel/#{assigns.skill_panel.id}"))
+
     ~H"""
     <div id={@id}>
       <.bright_modal
@@ -30,7 +34,7 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
           </div>
         </div>
 
-        <SnsComponents.sns_share_button_group share_graph_url={"test"} skill_panel={"test"}  />
+        <SnsComponents.sns_share_button_group share_graph_url={@url} skill_panel={nil}  />
 
         <.first_card_skills_edit_message />
       </.bright_modal>
