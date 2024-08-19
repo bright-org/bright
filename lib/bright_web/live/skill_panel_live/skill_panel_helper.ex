@@ -305,7 +305,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def upload_ogp_data(assigns, key \\ :og_image_data) do
-    encode_share_graph_token = assigns.encode_share_graph_token
+    encode_share_graph_token =
+      if key == :og_image_data do
+        assigns.encode_share_graph_token
+      else
+        assigns.encode_share_ogp
+      end
+
     file_name = "#{encode_share_graph_token}.png"
     og_image_data = Map.get(assigns, key)
     local_file_name = "#{System.tmp_dir()}/#{file_name}"
