@@ -25,11 +25,12 @@ defmodule BrightWeb.ChartComponents do
       |> assign(:labels, assigns.labels |> Jason.encode!())
       |> assign(:data, assigns.data |> Jason.encode!())
       |> assign(:links, assigns.links |> Jason.encode!())
+      |> assign(:size_css, assigns.size |> get_gem_size_css())
 
     ~H"""
     <div
       id={@id}
-      class="w-full"
+      style={@size_css}
       phx-hook="SkillGem"
       phx-update="ignore"
       data-data={@data}
@@ -129,4 +130,9 @@ defmodule BrightWeb.ChartComponents do
   end
 
   defp maybe_cut_down_past_one(data), do: data
+
+  defp get_gem_size_css("sm"), do: "width: 250px; height: 165px;"
+  defp get_gem_size_css("sp"), do: "width: 340px; height: 300px;"
+  defp get_gem_size_css("md"), do: "width: 535px; height: 450px;"
+  defp get_gem_size_css(_), do: "width: 450px; height: 450px;"
 end

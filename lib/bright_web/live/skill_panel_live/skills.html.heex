@@ -1,5 +1,7 @@
 <%= if @skill_panel do %>
-<BrightWeb.OgpComponents.ogp
+<.live_component
+  module={BrightWeb.OgpComponent}
+  id="ogp"
   skill_panel={@skill_panel}
   skill_class={@skill_class}
   skill_class_score={@skill_class_score}
@@ -9,7 +11,16 @@
   anonymous={@anonymous}
   select_label_compared_user={@select_label_compared_user}
   compared_user={@compared_user}
-/>
+>
+</.live_component>
+
+<.live_component
+  module={BrightWeb.SkillSharaOgpComponent}
+  id="skill_share_ogp"
+  data={@skill_share_data}
+>
+</.live_component>
+
 <div class="relative flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
   <% # 働く際の希望の入力を促すメッセージ %>
   <GuideMessageComponents.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !UserJobProfiles.job_searching?(@current_user)} />
@@ -54,7 +65,7 @@
         me={@me}
         root="panels"
         anonymous={@anonymous}
-        current_skill_panel={@skill_panel}
+        career_field={nil}
         current_skill_class={@skill_class}
       />
     </:skill_select>
@@ -303,7 +314,19 @@
 <% # SNSシェア用モーダル %>
 <.live_component
    module={GrowthShareModalComponent}
-   id="growth_share">
+   id="growth_share"
+   share_graph_url={@share_graph_url}
+   >
+</.live_component>
+
+<% # スキルパネルSNSシェア用モーダル %>
+<.live_component
+   module={SkillShareModalComponent}
+   id="skill_shara"
+   data={@skill_share_data}
+   open={@skill_share_open}
+   skill_panel={@skill_panel}
+   >
 </.live_component>
 
 

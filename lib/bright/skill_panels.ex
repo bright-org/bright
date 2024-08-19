@@ -113,7 +113,7 @@ defmodule Bright.SkillPanels do
       where: u.user_id in ^user_ids,
       where: score.user_id in ^user_ids,
       preload: [skill_classes: [skill_class_scores: ^SkillClassScore.user_ids_query(user_ids)]],
-      order_by: p.updated_at,
+      order_by: [asc: p.updated_at],
       distinct: true
     )
     |> Repo.paginate(page: page, page_size: 10)
@@ -132,6 +132,7 @@ defmodule Bright.SkillPanels do
         user_ids,
         page \\ 1
       ) do
+    # NOTE: user_idsを配列で利用する際は動作を要確認してください
     from(p in SkillPanel,
       join: u in assoc(p, :user_skill_panels),
       on: u.skill_panel_id == p.id,
@@ -142,7 +143,6 @@ defmodule Bright.SkillPanels do
       where: u.user_id in ^user_ids,
       where: score.user_id in ^user_ids,
       preload: [
-        :user_skill_panels,
         skill_classes: [skill_class_scores: ^SkillClassScore.user_ids_query(user_ids)]
       ],
       order_by: [desc: u.is_star, asc: p.updated_at],

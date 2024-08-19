@@ -9,7 +9,6 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
 
   alias BrightWeb.SnsComponents
   alias BrightWeb.TimelineHelper
-  alias BrightWeb.Share.Helper, as: ShareHelper
 
   alias Bright.Accounts
   alias Bright.SkillPanels
@@ -43,7 +42,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
           </div>
         </div>
 
-        <SnsComponents.sns_share_button_group share_graph_url={ShareHelper.gen_share_graph_url(@user, @skill_class)} skill_panel={@skill_panel.name} />
+        <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} skill_panel={@skill_panel.name} level_text={@level_text} />
       </.bright_modal>
     </div>
     """
@@ -85,9 +84,12 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
 
     skill_unit_scores = SkillScores.list_skill_unit_scores_by_user_skill_class(user, skill_class)
 
+    level_text = get_level_text(skill_class_score.level)
+
     assign(socket,
       skill_class_score: skill_class_score,
-      skill_unit_scores: skill_unit_scores
+      skill_unit_scores: skill_unit_scores,
+      level_text: level_text
     )
   end
 

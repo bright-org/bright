@@ -298,16 +298,16 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
   defp raise_if_not_exists_skill_panel(_skill_panel), do: nil
 
-  def assign_og_image_data(socket, value) do
+  def assign_og_image_data(socket, value, key \\ :og_image_data) do
     [_, value] = String.split(value, ",")
     value = Base.decode64!(value)
-    assign(socket, :og_image_data, value)
+    assign(socket, key, value)
   end
 
-  def upload_ogp_data(assigns) do
+  def upload_ogp_data(assigns, key \\ :og_image_data) do
     encode_share_graph_token = assigns.encode_share_graph_token
     file_name = "#{encode_share_graph_token}.png"
-    og_image_data = assigns.og_image_data
+    og_image_data = Map.get(assigns, key)
     local_file_name = "#{System.tmp_dir()}/#{file_name}"
     File.write(local_file_name, og_image_data)
     :ok = Storage.upload!(local_file_name, "ogp/" <> file_name)

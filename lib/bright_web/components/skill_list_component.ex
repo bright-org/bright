@@ -33,7 +33,6 @@ defmodule BrightWeb.SkillListComponent do
             me={@me}
             anonymous={@anonymous}
             root={@root}
-            current_skill_panel={@current_skill_panel}
             current_skill_class={@current_skill_class}
           />
         <% end %>
@@ -76,7 +75,6 @@ defmodule BrightWeb.SkillListComponent do
           me={@me}
           anonymous={@anonymous}
           root={@root}
-          current_skill_panel={@current_skill_panel}
           current_skill_class={@current_skill_class}
         />
       <% end %>
@@ -99,7 +97,7 @@ defmodule BrightWeb.SkillListComponent do
     ~H"""
     <div class="w-8">
       <.link href={PathHelper.skill_panel_path(@root, @skill_panel, @display_user, @me, @anonymous) <> "?class=#{@skill_class.class}"}>
-        <p class={"border hover:cursor-pointer inline-flex items-end pl-1 #{if selected?(@skill_panel, @skill_class, @current_skill_panel, @current_skill_class), do: "border-[003D36] bg-[#004D36]", else: "border-[#12B7A3] hover:border-[#004D36] hover:bg-[#EDFFF8]" }"}>
+        <p class={"border hover:cursor-pointer inline-flex items-end pl-1 #{if selected?(@skill_class, @current_skill_class), do: "border-[003D36] bg-[#004D36]", else: "border-[#12B7A3] hover:border-[#004D36] hover:bg-[#EDFFF8]" }"}>
           <img src={@icon_path} class="mr-1" />
         </p>
       </.link>
@@ -107,28 +105,28 @@ defmodule BrightWeb.SkillListComponent do
     """
   end
 
-  defp selected?(_, _, nil, nil), do: false
+  defp selected?(_, nil), do: false
 
-  defp selected?(skill_panel, skill_class, current_skill_panel, current_skill_class) do
-    skill_panel.id == current_skill_panel.id && skill_class.id == current_skill_class.id
+  defp selected?(skill_class, current_skill_class) do
+    skill_class.id == current_skill_class.id
   end
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, current_skill_panel: nil, current_skill_class: nil)}
+    {:ok, assign(socket, current_skill_class: nil)}
   end
 
   @impl true
-  def update(%{display_user: user} = assigns, socket) do
+  def update(assigns, socket) do
     socket
     |> assign(assigns)
-    |> assign_paginate(user.id)
+    |> assign_paginate(assigns.display_user, Map.get(assigns, :career_field))
     |> then(&{:ok, &1})
   end
 
-  def assign_paginate(socket, user_id, page \\ 1) do
+  def assign_paginate(socket, user, career_field, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      SkillPanels.list_users_skill_panels_all_career_field([user_id], page)
+      list_skill_panels(user, career_field, page)
 
     socket
     |> assign(:skill_panels, skill_panels)
@@ -137,22 +135,49 @@ defmodule BrightWeb.SkillListComponent do
   end
 
   @impl true
-  def handle_event("previous_button_click", _params, %{assigns: %{display_user: user}} = socket) do
-    %{page: page} = socket.assigns
+  def handle_event("previous_button_click", _params, socket) do
+    %{
+      display_user: user,
+      career_field: career_field,
+      page: page
+    } = socket.assigns
+
     page = if page - 1 < 1, do: 1, else: page - 1
 
     socket
-    |> assign_paginate(user.id, page)
+    |> assign_paginate(user, career_field, page)
     |> then(&{:noreply, &1})
   end
 
-  def handle_event("next_button_click", _params, %{assigns: %{display_user: user}} = socket) do
-    %{page: page, total_pages: total_pages} = socket.assigns
+  def handle_event("next_button_click", _params, socket) do
+    %{
+      display_user: user,
+      career_field: career_field,
+      page: page,
+      total_pages: total_pages
+    } = socket.assigns
+
     page = if page + 1 > total_pages, do: total_pages, else: page + 1
 
     socket
-    |> assign_paginate(user.id, page)
+    |> assign_paginate(user, career_field, page)
     |> then(&{:noreply, &1})
+  end
+
+  defp list_skill_panels(user, nil, page) do
+    SkillPanels.list_users_skill_panels_all_career_field([user.id], page)
+  end
+
+  defp list_skill_panels(user, career_field, page) do
+    # アクセス方法の統一のためis_startを`user_skill_panels.is_star`で引けるようにしている
+    user_skill_panels =
+      Bright.Repo.preload(user, [:user_skill_panels]).user_skill_panels
+      |> Map.new(&{&1.skill_panel_id, &1})
+
+    SkillPanels.list_users_skill_panels_by_career_field([user.id], career_field.name_en, page)
+    |> Map.update!(:entries, fn skill_panels ->
+      Enum.map(skill_panels, &Map.put(&1, :user_skill_panels, Map.get(user_skill_panels, &1.id)))
+    end)
   end
 
   defp icon_base_path(file), do: "/images/common/icons/#{file}"

@@ -588,6 +588,7 @@ defmodule Bright.SkillScores do
       %{
         position: career_field.position,
         name: career_field.name_ja,
+        key: career_field.name_en,
         percentage: percentage,
         high_skills_count: high_skills_count
       }
@@ -840,5 +841,38 @@ defmodule Bright.SkillScores do
       {became_skilled_at, _became_normal_at} ->
         became_skilled_at
     end
+  end
+
+  @doc """
+  スキルパネルIDを指定して、指定したスキルパネルの「見習い」「平均」「ベテラン」
+  の人数をカウントする
+  """
+  def get_level_count_from_skill_panel_id(skill_panel_id) do
+    datas =
+      from(scs in SkillClassScore,
+        join: sc in assoc(scs, :skill_class),
+        where: sc.class == 1 and sc.skill_panel_id == ^skill_panel_id,
+        group_by: [scs.level],
+        select: %{
+          level: scs.level,
+          count: count()
+        }
+      )
+      |> Repo.all()
+
+    %{
+      beginner: level_count_filter(datas, :beginner),
+      normal: level_count_filter(datas, :normal),
+      skilled: level_count_filter(datas, :skilled)
+    }
+  end
+
+  defp level_count_filter(datas, level) do
+    data =
+      datas
+      |> Enum.filter(&(&1.level == level))
+      |> List.first()
+
+    if is_nil(data), do: 0, else: Map.get(data, :count)
   end
 end

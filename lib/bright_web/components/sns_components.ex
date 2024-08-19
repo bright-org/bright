@@ -37,14 +37,12 @@ defmodule BrightWeb.SnsComponents do
   attr :id, :string, default: "share-button-group"
   attr :share_graph_url, :string, required: true
   attr :skill_panel, :string, required: true
+  attr :level_text, :string, default: nil
 
   def sns_share_button_group(assigns) do
     assigns =
       assigns
-      |> Map.put(:twitter_text, """
-      \"#{assigns.skill_panel}\"スキルパネルをシェアしました！あなたも成長パネルを作成してみませんか？
-      #bright_skill
-      """)
+      |> Map.put(:twitter_text, twitter_text(assigns.skill_panel, assigns.level_text))
 
     ~H"""
       <div
@@ -121,4 +119,25 @@ defmodule BrightWeb.SnsComponents do
 
   defp disable_icon_suffix(true), do: "_gray.svg"
   defp disable_icon_suffix(false), do: ".svg"
+
+  defp twitter_text(skill_panel, "start") do
+    """
+    \"#{skill_panel}\"スキルパネルをスタートしました！あなたも成長パネルを作成してみませんか？
+    #bright_skill
+    """
+  end
+
+  defp twitter_text(skill_panel, nil) do
+    """
+    \"#{skill_panel}\"スキルパネルをシェアしました！あなたも成長パネルを作成してみませんか？
+    #bright_skill
+    """
+  end
+
+  defp twitter_text(skill_panel, level_text) do
+    """
+    \"#{skill_panel}\"の「#{level_text}」にレベルアップしました！
+    #bright_skill
+    """
+  end
 end

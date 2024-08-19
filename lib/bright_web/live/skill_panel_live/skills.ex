@@ -23,6 +23,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.Share.Helper, as: ShareHelper
   alias BrightWeb.QrCodeComponents
   alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
+  alias BrightWeb.SkillPanelLive.SkillShareModalComponent
 
   @impl true
   def mount(params, _session, socket) do
@@ -37,6 +38,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(init_team_id: nil, init_timeline: nil)
     |> assign(:selected_unit, nil)
     |> push_event("scroll_to_unit", %{})
+    |> assign(:skill_share_open, false)
     |> then(&{:ok, &1})
   end
 
@@ -46,6 +48,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      socket
      |> assign_path(url)
      |> assign_skill_classes()
+     |> assign_skill_share_data()
      |> assign_skill_class_and_score(params["class"])
      |> create_skill_class_score_if_not_existing()
      |> assign_skill_score_dict()
@@ -99,6 +102,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, assign_og_image_data(socket, value)}
   end
 
+  def handle_event("skill_shara_og_image_data_click", %{"value" => value}, socket) do
+    socket = assign_og_image_data(socket, value, :skill_shara_og_image_data)
+    # TODO　作成中
+    # upload_ogp_data(socket.assigns)
+    {:noreply, socket}
+  end
+
   def handle_event("sns_up_click", _params, socket) do
     upload_ogp_data(socket.assigns)
     {:noreply, socket}
@@ -112,11 +122,17 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
+    skill_class_score = socket.assigns.skill_class_score
+    prev_skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
+
     SkillScores.get_skill_score!(id)
     |> Map.put(:score, String.to_atom(score))
     |> then(&[&1])
     |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
 
+    send_update(BrightWeb.OgpComponent, id: "ogp")
+
+    open_growth_share(prev_skill_class_score)
     assign_renew(socket, params["class"])
   end
 
@@ -239,18 +255,44 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   # 初回入力時のみメッセージを表示
   # 初回入力: スキルクラスがclass: 1でスキルスコアがない状態とする
-  # メッセージ表示にはflashを利用している
+  # メッセージ表示にはSkillShareModalComponentを利用している
   defp put_flash_first_skills_edit(%{assigns: %{me: true}} = socket) do
     %{skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
     skill_scores = Map.values(skill_score_dict)
 
     (skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil)))
     |> if do
-      put_flash(socket, :first_skills_edit, true)
+      assign(socket, :skill_share_open, true)
     else
       socket
     end
   end
 
   defp put_flash_first_skills_edit(socket), do: socket
+
+  defp open_growth_share(skill_class_score) do
+    prev_level = skill_class_score.level
+    prev_percentage = skill_class_score.percentage
+
+    skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
+    new_level = skill_class_score.level
+    new_percentage = skill_class_score.percentage
+
+    if prev_level != new_level && prev_percentage < new_percentage do
+      send_update(GrowthShareModalComponent,
+        id: "growth_share",
+        open: true,
+        user_id: skill_class_score.user_id,
+        skill_class_id: skill_class_score.skill_class_id
+      )
+    end
+  end
+
+  defp assign_skill_share_data(%{assigns: assigns} = socket) do
+    skill_share_data =
+      SkillScores.get_level_count_from_skill_panel_id(assigns.skill_panel.id)
+      |> Map.merge(%{name: assigns.skill_panel.name})
+
+    assign(socket, :skill_share_data, skill_share_data)
+  end
 end
