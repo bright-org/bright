@@ -30,12 +30,9 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
             <p>「<%= @data.name %>」をスタートしました！</p>
             <p>まずは平均を目指しましょう</p>
             <.triangle_graph data={@data} id="triangle_graph"/>
-
           </div>
         </div>
-
-        <SnsComponents.sns_share_button_group share_graph_url={@url} skill_panel={nil}  />
-
+        <SnsComponents.sns_share_button_group share_graph_url={@url} skill_panel={@skill_panel.name} level_text={"start"} />
         <.first_card_skills_edit_message />
       </.bright_modal>
     </div>
