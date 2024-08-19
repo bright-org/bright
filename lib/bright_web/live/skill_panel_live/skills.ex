@@ -103,10 +103,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("skill_shara_og_image_data_click", %{"value" => value}, socket) do
-    socket = assign_og_image_data(socket, value, :skill_shara_og_image_data)
-    # TODO　作成中
-    # upload_ogp_data(socket.assigns)
-    {:noreply, socket}
+    {:noreply, assign_og_image_data(socket, value, :skill_shara_og_image_data)}
   end
 
   def handle_event("sns_up_click", _params, socket) do
