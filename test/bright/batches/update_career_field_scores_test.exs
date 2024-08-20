@@ -47,8 +47,6 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
 
     skill_panels = [shared_skill_panel] ++ own_skill_panels
 
-    %{career_fields: career_fields}
-
     # skill_classes
     skill_classes = Enum.map(skill_panels, &insert(:skill_class, skill_panel: &1))
 
@@ -137,13 +135,13 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
         career_field
       ] = career_fields
 
-      # 取得済みのスキルパネルにはスキルが2つがあり習得は1なので50%
+      # 取得済みのスキルパネルにはスキルが2つがあるがこのキャリアフィールドが最高のため100%
       assert %{
                high_skills_count: 1,
-               percentage: 50.0
+               percentage: 100.0
              } = Repo.get_by(CareerFieldScore, user_id: user.id, career_field_id: career_field.id)
 
-      # その他キャリアフィールドは現状取得していない、かつ該当スキルではないのでゼロ
+      # その他キャリアフィールドは現状取得していないためゼロ
       assert %{
                high_skills_count: 0,
                percentage: +0.0
@@ -165,46 +163,42 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
 
     test "create career_field_scores, case user has one high shared skill", %{
       user: user,
-      career_fields: career_fields,
+      career_fields: [career_field_1, career_field_2, career_field_3],
       skill_panels: skill_panels,
-      skills: [shared_skill | _]
+      skills: [shared_skill | _] = skills
     } do
-      skill_panel = List.last(skill_panels)
-      insert(:user_skill_panel, skill_panel: skill_panel, user: user)
+      # 準備としてcareer_field_3のスキルと共通スキルをhighにしている
+      Enum.each(skill_panels, &insert(:user_skill_panel, skill_panel: &1, user: user))
+      skill = List.last(skills)
+      insert(:skill_score, skill: skill, user: user, score: :high)
       insert(:skill_score, skill: shared_skill, user: user, score: :high)
 
       UpdateCareerFieldScores.call()
 
-      [
-        unfocus_career_field_1,
-        unfocus_career_field_2,
-        career_field
-      ] = career_fields
+      # career_field_3 が2スキルで相対的にトップのため100%
+      assert %{
+               high_skills_count: 2,
+               percentage: 100.0
+             } =
+               Repo.get_by(CareerFieldScore, user_id: user.id, career_field_id: career_field_3.id)
 
-      # 取得済みのスキルパネルにはスキルが2つがあり習得は1なので50%
+      # その他キャリアフィールドは1スキルのため相対的に50%
       assert %{
                high_skills_count: 1,
                percentage: 50.0
-             } = Repo.get_by(CareerFieldScore, user_id: user.id, career_field_id: career_field.id)
-
-      # その他キャリアフィールドは現状取得していない、かつ該当スキルのため習得率が入る
-      # NOTE: ここが現状で母数が小さく100%になるため対応が必要と思われる
-      assert %{
-               high_skills_count: 1,
-               percentage: 100.0
              } =
                Repo.get_by(CareerFieldScore,
                  user_id: user.id,
-                 career_field_id: unfocus_career_field_1.id
+                 career_field_id: career_field_2.id
                )
 
       assert %{
                high_skills_count: 1,
-               percentage: 100.0
+               percentage: 50.0
              } =
                Repo.get_by(CareerFieldScore,
                  user_id: user.id,
-                 career_field_id: unfocus_career_field_2.id
+                 career_field_id: career_field_1.id
                )
     end
 
@@ -215,22 +209,22 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
       skills: [shared_skill | _]
     } do
       insert(:user_skill_panel, skill_panel: skill_panel, user: user)
-      insert(:skill_score, skill: shared_skill, user: user, score: :low)
+      insert(:skill_score, skill: shared_skill, user: user, score: :high)
 
       # でたらめなデータを作成し、更新で是正されるかを確認
       career_field_score =
         insert(:career_field_score,
           user: user,
           career_field: career_field,
-          percentage: 100.0,
+          percentage: 0.0,
           high_skills_count: 10
         )
 
       UpdateCareerFieldScores.call()
 
       career_field_score = Repo.get(CareerFieldScore, career_field_score.id)
-      assert career_field_score.percentage == 0
-      assert career_field_score.high_skills_count == 0
+      assert career_field_score.percentage == 100.0
+      assert career_field_score.high_skills_count == 1
     end
 
     test "no error occured if job_skill_panels is empty", %{
