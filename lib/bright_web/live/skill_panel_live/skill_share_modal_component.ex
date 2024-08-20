@@ -13,7 +13,7 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
   def render(assigns) do
     assigns =
       assigns
-      |> assign(url: url(~p"/get_skill_panel/#{assigns.skill_panel.id}?ogp=#{assigns.ogp}"))
+      |> assign(url: url(~p"/get_skill_panel/#{assigns.skill_panel.id}/#{assigns.ogp}"))
 
     ~H"""
     <div id={@id}>

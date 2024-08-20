@@ -317,6 +317,7 @@ defmodule BrightWeb.Router do
     get "/users/confirm_email/:token", UserConfirmEmailController, :confirm
     get "/users/confirm_sub_email/:token", UserConfirmSubEmailController, :confirm
     get "/get_skill_panel/:skill_panel_id", SkillPanelController, :get_skill_panel
+    get "/get_skill_panel/:skill_panel_id/:ogp", SkillPanelController, :get_skill_panel
   end
 
   # オンボーディング
