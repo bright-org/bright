@@ -110,8 +110,7 @@ defmodule Bright.Batches.UpdateCareerFieldScores do
     |> Repo.aggregate(:count)
   end
 
-  # userのキャリアフィールドごとの対象スキル参照を返す
-  # スキルパネルではなくスキルレベルで見ることで共有スキルも考慮している
+  # キャリアフィールドごとの対象スキル参照を返す
   defp map_skill_ids_on_user(
          user,
          career_fields,
