@@ -14,13 +14,13 @@ defmodule BrightWeb.SkillPanelControllerTest do
     test "exists skill_panel", %{conn: conn, skill_panel: skill_panel} do
       conn = get(conn, "/get_skill_panel/#{skill_panel.id}")
       assert Phoenix.Flash.get(conn.assigns.flash, :info) == "スキルパネル:#{skill_panel.name}を取得しました"
-      assert redirected_to(conn) == ~p"/panels/#{skill_panel.id}"
+      assert redirected_to(conn) == ~p"/panels/#{skill_panel.id}?share_graph_token="
     end
 
     test "exists skill_panel and already get", %{conn: conn, skill_panel: skill_panel, user: user} do
       insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       conn = get(conn, "/get_skill_panel/#{skill_panel.id}")
-      assert redirected_to(conn) == ~p"/panels/#{skill_panel.id}"
+      assert redirected_to(conn) == ~p"/panels/#{skill_panel.id}?share_graph_token="
     end
 
     test "not exists skill panels", %{conn: conn} do

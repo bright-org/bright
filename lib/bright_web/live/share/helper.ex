@@ -75,6 +75,8 @@ defmodule BrightWeb.Share.Helper do
     assign(socket, :og_image, og_image)
   end
 
+  def assign_share_graph_og_image(socket, _), do: socket
+
   defp get_og_image({:ok, _}, og_image), do: og_image
   defp get_og_image({:error, _}, _og_image), do: "https://bright-fun.org/images/ogp_a.png"
 end

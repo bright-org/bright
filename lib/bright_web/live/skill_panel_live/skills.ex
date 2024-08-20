@@ -25,10 +25,12 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
   alias BrightWeb.SkillPanelLive.SkillShareModalComponent
   alias Bright.Utils.Aes.Aes128
+  alias BrightWeb.Share.Helper
 
   @impl true
   def mount(params, _session, socket) do
     socket
+    |> Helper.assign_share_graph_og_image(params)
     |> assign_display_user(params)
     |> assign_skill_panel(params["skill_panel_id"])
     |> assign(:select_label, "now")
