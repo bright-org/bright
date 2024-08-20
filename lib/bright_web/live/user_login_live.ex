@@ -46,7 +46,7 @@ defmodule BrightWeb.UserLoginLive do
 
   def mount(_params, session, socket) do
     share_graph_token =
-      Map.get(session, "user_return_to")
+      Map.get(session, "user_return_to", "")
       |> String.split("/")
       |> List.last()
 
