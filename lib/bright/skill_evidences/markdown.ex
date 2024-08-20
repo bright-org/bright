@@ -46,7 +46,7 @@ defmodule Bright.SkillEvidences.Markdown do
   end
 
   defp _permit({"a", attrs, [content], _meta}) when is_bitstring(content) do
-    {"a", make_safe_attrs("a", attrs ++ [{"target", "_blank"}]), [content], %{}}
+    {"a", make_safe_attrs("a", attrs ++ [{"target", "_blank"}]), [make_safe_string(content)], %{}}
   end
 
   defp _permit({tag, attrs, [content], _meta}) when is_bitstring(content) do
