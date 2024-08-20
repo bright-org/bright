@@ -391,6 +391,16 @@ defmodule Bright.DraftSkillUnits do
     end
   end
 
+  def update_draft_skill_class_unit(%DraftSkillClassUnit{} = draft_skill_class_unit, attrs \\ %{}) do
+    draft_skill_class_unit
+    |> DraftSkillClassUnit.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def change_draft_skill_class_unit(%DraftSkillClassUnit{} = draft_skill_class_unit, attrs \\ %{}) do
+    DraftSkillClassUnit.changeset(draft_skill_class_unit, attrs)
+  end
+
   def delete_draft_skill_class_unit(
         %DraftSkillPanels.DraftSkillClass{} = draft_skill_class,
         %DraftSkillUnit{} = draft_skill_unit

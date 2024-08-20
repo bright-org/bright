@@ -9,6 +9,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     SkillClassFormComponent,
     SkillUnitFormComponent,
     SkillUnitAddFormComponent,
+    SkillUnitReplaceFormComponent,
     SkillCategoryFormComponent,
     SkillCategoryReplaceFormComponent,
     SkillFormComponent,
@@ -132,6 +133,19 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_on_action(:edit_skill_unit, %{"skill_unit_id" => unit_id} = params, socket) do
+    skill_unit = DraftSkillUnits.get_draft_skill_unit!(unit_id)
+
+    {:noreply,
+     socket
+     |> assign(:skill_unit, skill_unit)
+     |> assign_base_page_attrs(params)}
+  end
+
+  defp assign_on_action(
+         :replace_skill_unit,
+         %{"skill_unit_id" => unit_id} = params,
+         socket
+       ) do
     skill_unit = DraftSkillUnits.get_draft_skill_unit!(unit_id)
 
     {:noreply,
