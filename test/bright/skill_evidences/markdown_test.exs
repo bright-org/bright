@@ -181,6 +181,17 @@ defmodule Bright.SkillEvidences.MarkdownTest do
 
       assert html == "<p>リストです</p><ul><li>リストアイテム1</li><li>リストアイテム2</li></ul>"
     end
+
+    test "html_escape cases" do
+      text =
+        String.trim("""
+        => こうなった
+        """)
+
+      html = SkillEvidences.make_content_as_html(text)
+
+      assert html == "<p>=&gt; こうなった</p>"
+    end
   end
 
   describe "Incomplete format" do
@@ -241,7 +252,7 @@ defmodule Bright.SkillEvidences.MarkdownTest do
 
       html = SkillEvidences.make_content_as_html(text)
 
-      assert html == "<p>&amp;lt;javascript&amp;gt;alert(1);&amp;lt;/javascript&amp;gt;</p>"
+      assert html == "<p>&lt;javascript&gt;alert(1);&lt;/javascript&gt;</p>"
 
       text =
         String.trim("""

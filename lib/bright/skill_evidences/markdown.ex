@@ -30,7 +30,7 @@ defmodule Bright.SkillEvidences.Markdown do
     ast
     |> Earmark.Transform.map_ast(&post_processor/1)
     |> permit()
-    |> Earmark.Transform.transform(%Earmark.Options{compact_output: true})
+    |> Earmark.Transform.transform(%Earmark.Options{compact_output: true, escape: false})
   end
 
   defp permit(ast) do
