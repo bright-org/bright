@@ -191,6 +191,18 @@ defmodule Bright.SkillEvidences.MarkdownTest do
       html = SkillEvidences.make_content_as_html(text)
 
       assert html == "<p>=&gt; こうなった</p>"
+
+      text =
+        String.trim("""
+        ```
+        <javascript>alert("test")</javascript>
+        ```
+        """)
+
+      html = SkillEvidences.make_content_as_html(text)
+
+      assert html ==
+               "<pre><code>&lt;javascript&gt;alert(&quot;test&quot;)&lt;/javascript&gt;</code></pre>"
     end
   end
 
