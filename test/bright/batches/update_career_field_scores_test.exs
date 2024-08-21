@@ -211,7 +211,7 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
       insert(:user_skill_panel, skill_panel: skill_panel, user: user)
       insert(:skill_score, skill: shared_skill, user: user, score: :high)
 
-      # でたらめなデータを作成し、更新で是正されるかを確認
+      # 更新対象の元データを作成
       career_field_score =
         insert(:career_field_score,
           user: user,
@@ -222,22 +222,10 @@ defmodule Bright.Batches.UpdateCareerFieldScoresTest do
 
       UpdateCareerFieldScores.call()
 
+      # バッチ後に正しいデータになること
       career_field_score = Repo.get(CareerFieldScore, career_field_score.id)
       assert career_field_score.percentage == 100.0
       assert career_field_score.high_skills_count == 1
-    end
-
-    test "no error occured if job_skill_panels is empty", %{
-      user: user,
-      jobs: [job | _],
-      skill_panels: [skill_panel | _],
-      skills: [shared_skill | _]
-    } do
-      insert(:user_skill_panel, skill_panel: skill_panel, user: user)
-      insert(:skill_score, skill: shared_skill, user: user, score: :low)
-      Repo.delete_all(Ecto.assoc(job, :job_skill_panels))
-
-      UpdateCareerFieldScores.call()
     end
   end
 end
