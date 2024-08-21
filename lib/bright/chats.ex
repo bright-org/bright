@@ -56,7 +56,7 @@ defmodule Bright.Chats do
     list_chats_interview(user_id, @interview_status_all)
     |> Enum.concat(list_chats_coordination(user_id, @coordination_status_all))
     |> Enum.concat(list_chats_employment(user_id, @employment_status_all))
-    |> Enum.sort_by(& &1.updated_at, :desc)
+    |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
   end
 
   def list_chats(user_id, :not_completed_interview) do
@@ -69,7 +69,7 @@ defmodule Bright.Chats do
     list_chats_interview(user_id, status)
     |> Enum.concat(list_chats_coordination(user_id, [:waiting_recruit_decision]))
     |> Enum.concat(list_chats_employment(user_id, [:waiting_response]))
-    |> Enum.sort_by(& &1.updated_at, :desc)
+    |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
   end
 
   def list_chats(user_id, :waiting_response) do
