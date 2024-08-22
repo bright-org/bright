@@ -13,7 +13,7 @@ const maxPercent = 100;
 
 // 三角形の描画関数
 // 三角形を一つだけ描きます
-const drawTriangle = (ctx, percent, color, color2) => {
+const drawTriangle = (ctx, percent, color2, color) => {
   // 100％の三角形から小さくしていき、x座標がずれるので差分を求めています
   let xDiff = maxPercent - percent;
   ctx.beginPath();
