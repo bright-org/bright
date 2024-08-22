@@ -3,7 +3,8 @@ import html2canvas from 'html2canvas';
 // グラフの色定義
 const beginnerColor = "#76D3B9";
 const normalColor = "#4857AD";
-const skilledColor = "#F2E994";
+const skilledColor1 = "#AE959A";
+const skilledColor2 = "#F2E994";
 
 // 文字の色定義
 const textColor = "#688888";
@@ -12,7 +13,7 @@ const maxPercent = 100;
 
 // 三角形の描画関数
 // 三角形を一つだけ描きます
-const drawTriangle = (ctx, percent, color) => {
+const drawTriangle = (ctx, percent, color, color2) => {
   // 100％の三角形から小さくしていき、x座標がずれるので差分を求めています
   let xDiff = maxPercent - percent;
   ctx.beginPath();
@@ -25,7 +26,12 @@ const drawTriangle = (ctx, percent, color) => {
   ctx.lineTo(percent * 2 + xDiff, percent);
   // ここでパスを閉じると頂点と結ばれます
   ctx.closePath();
-  ctx.fillStyle = color;
+  let lineargradient = ctx.createLinearGradient(0, 0, 0, 150);
+  lineargradient.addColorStop(0, color);
+  lineargradient.addColorStop(1, color2);
+
+  ctx.fillStyle = lineargradient;
+  // ctx.fillStyle = color;
   ctx.fill();
 }
 
@@ -70,12 +76,12 @@ const drawTriangleGraph = (element) => {
   // ・ベテラン
   // の順に描画します
   // 三角形全体を見習いで描画後、平均やベテラン分を頂点を基準に描画する為順序が大事です. 重ねて描画されなかった領域が見習い領域になります。
-  drawTriangle(ctx, maxPercent, beginnerColor);
+  drawTriangle(ctx, maxPercent, beginnerColor, normalColor);
 
   // 合計が0の場合は「見習い」のみ描画
   if (total > 0) {
-    drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
-    drawTriangle(ctx, skilledPercent, skilledColor);
+    drawTriangle(ctx, maxPercent - beginnerPercent, normalColor, skilledColor1);
+    drawTriangle(ctx, skilledPercent, skilledColor1, skilledColor2);
   }
 
   if (ctx.canvas.parentNode.id !== "ogp_triangle_graph") return;
