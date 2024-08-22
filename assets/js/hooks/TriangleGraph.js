@@ -39,7 +39,10 @@ const getPercent = (number, total) => {
 const drawLevel = (ctx, levelText, number, percent, x, y) => {
   ctx.fillStyle = textColor;
   ctx.font = "14px 'Noto Sans JP'";
-  ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
+
+  // 人数は一定期間は封印の為コメントアウト
+  ctx.fillText(levelText + " " + percent + "%", x, y);
+  // ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
 }
 
 const drawTriangleGraph = (element) => {
@@ -58,7 +61,8 @@ const drawTriangleGraph = (element) => {
   drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
   drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90);
 
-  ctx.fillText( "「 " + data.name + "」登録者 " + total + "人", 5, 120);
+  // 人数は一定期間は封印の為コメントアウト
+  // ctx.fillText( "「 " + data.name + "」登録者 " + total + "人", 5, 120);
 
   // 三角形を重ねて描画します
   // ・見習い
