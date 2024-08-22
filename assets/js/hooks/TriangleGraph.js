@@ -26,7 +26,7 @@ const drawTriangle = (ctx, percent, color2, color) => {
   ctx.lineTo(percent * 2 + xDiff, percent);
   // ここでパスを閉じると頂点と結ばれます
   ctx.closePath();
-  let lineargradient = ctx.createLinearGradient(0, 0, 0, 150);
+  let lineargradient = ctx.createLinearGradient(0, 0, 0, percent);
   lineargradient.addColorStop(0, color);
   lineargradient.addColorStop(1, color2);
 
