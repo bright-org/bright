@@ -1,9 +1,9 @@
 import html2canvas from 'html2canvas';
 
 // グラフの色定義
-const beginnerColor = "#1DA091";
-const normalColor = "#3CC0A8";
-const skilledColor = "#72EAD9";
+const beginnerColor = "#76D3B9";
+const normalColor = "#4857AD";
+const skilledColor = "#F2E994";
 
 // 文字の色定義
 const textColor = "#688888";
