@@ -65,6 +65,12 @@
                 <span class="cursor-pointer hero-arrow-down-circle" phx-click="position_down_skill_unit" phx-value-row={row}  />
               <% end %>
 
+              <%= if not single_row_data?(col1) do %>
+                <.link patch={"#{@page_path}/skill_units/#{col1.skill_unit.id}/replace"}>
+                  <span class="hero-arrow-top-right-on-square" />
+                </.link>
+              <% end %>
+
               <.link class="ml-1" patch={"#{@page_path}/skill_units/#{col1.skill_unit.id}/edit"}>
                 <span class="hero-pencil-square" />
               </.link>
@@ -211,6 +217,25 @@
     patch={@page_path}
   />
 </.modal>
+
+<.modal
+  :if={@live_action in [:replace_skill_unit]}
+  id="skill-unit-replace-modal"
+  show
+  on_cancel={JS.patch("#{@page_path}")}
+>
+  <.live_component
+    module={SkillUnitReplaceFormComponent}
+    id={@skill_unit.id}
+    title={@skill_unit.name}
+    action={@live_action}
+    skill_unit={@skill_unit}
+    skill_class={@skill_class}
+    this_skill_panel={@skill_panel}
+    patch={@page_path}
+  />
+</.modal>
+
 
 <%# スキルカテゴリ %>
 <.modal

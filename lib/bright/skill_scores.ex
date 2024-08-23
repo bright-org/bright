@@ -577,15 +577,20 @@ defmodule Bright.SkillScores do
     career_field_ids_scores =
       from(q in CareerFieldScore, where: q.user_id == ^user_id)
       |> Repo.all()
-      |> Map.new(&{&1.career_field_id, &1.percentage || 0.0})
+      |> Map.new(&{&1.career_field_id, &1})
 
     career_fields
     |> Enum.map(fn career_field ->
+      career_field_score = Map.get(career_field_ids_scores, career_field.id) || %{}
+      percentage = Map.get(career_field_score, :percentage) || 0.0
+      high_skills_count = Map.get(career_field_score, :high_skills_count) || 0
+
       %{
         position: career_field.position,
         name: career_field.name_ja,
         key: career_field.name_en,
-        percentage: Map.get(career_field_ids_scores, career_field.id, 0.0)
+        percentage: percentage,
+        high_skills_count: high_skills_count
       }
     end)
   end

@@ -24,7 +24,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitFormComponent do
 
           <div class="flex gap-x-2">
             <.button
-              :if={@action == :edit_skill_unit}
+              :if={@action == :edit_skill_unit && @removable?}
               class="!bg-orange-400 hover:!bg-orange-300"
               type="button"
               data-confirm="このスキルクラスとの紐づけを解除しますか？"
@@ -50,10 +50,12 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitFormComponent do
   @impl true
   def update(%{skill_unit: skill_unit} = assigns, socket) do
     changeset = DraftSkillUnits.change_draft_skill_unit(skill_unit)
+    removable? = get_removable_skill_unit?(skill_unit)
 
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:removable?, removable?)
      |> assign_form(changeset)}
   end
 
@@ -127,5 +129,13 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitFormComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  defp get_removable_skill_unit?(skill_unit) do
+    # スキルクラスに１つしか紐づいていないなら紐づき解除不可とする
+    # UI上でデータが行方不明になるため
+    Ecto.assoc(skill_unit, :draft_skill_class_units)
+    |> Bright.Repo.aggregate(:count)
+    |> then(&(&1 > 1))
   end
 end
