@@ -11,7 +11,7 @@ defmodule BrightWeb.SkillSharaOgpComponent do
       <p class="hidden" id="skill_shara_og_image_data" phx-click="skill_shara_og_image_data_click" />
       <div id="skill_shara_og_image" class="min-h-[630px] min-w-[1200px] content-center">
         <div class="flex flex-col gap-y-10 m-auto w-[350px]">
-          <div><%= @data.name %></div>
+          <div><%= @data.name %>ができるようになる</div>
           <.triangle_graph data={@data} id="ogp_triangle_graph"/>
         </div>
       </div>
