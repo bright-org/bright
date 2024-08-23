@@ -10,7 +10,8 @@ defmodule BrightWeb.SkillSharaOgpComponent do
      <div class="absolute flow -left-[1200px] w-[1200px]">
       <p class="hidden" id="skill_shara_og_image_data" phx-click="skill_shara_og_image_data_click" />
       <div id="skill_shara_og_image" class="min-h-[630px] min-w-[1200px] content-center">
-        <div class="flex justify-center">
+        <div class="flex flex-col gap-y-10  m-auto w-[400px]">
+          <div><%= @data.name %></div>
           <.triangle_graph data={@data} id="ogp_triangle_graph"/>
         </div>
       </div>
