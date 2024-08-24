@@ -5,7 +5,12 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
   alias Bright.Subscriptions.FreeTrialForm, as: FreeTrial
   import BrightWeb.BrightButtonComponents, only: [plan_upgrade_button: 1]
   import BrightWeb.Forms, only: [free_trial_form: 1]
+  import BrightWeb.CoreComponents, only: [error: 1, translate_error: 1]
 
+  require Logger
+
+  #TODO: デザインは適当。
+  #TODO: どんなケースでも契約するボタンを表示しているため、修正が必要
   @impl true
   def render(assigns) do
     ~H"""
@@ -57,9 +62,11 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
                 <p class="my-4">
                   下記「プランのアップグレード」ボタンよりアップグレードできます（別タブで開きます）
                 </p>
+                <.error :if={@error}><%= translate_error({@error, []}) %></.error>
                 <div class="flex justify-center">
                   <.plan_upgrade_button />
                 </div>
+                <button type="submit" class="bg-brightGray-900 block border border-solid border-brightGray-900 cursor-pointer font-bold px-2 py-1 rounded select-none text-center text-white w-full lg:w-28 hover:filter hover:brightness-[80%]" phx-click="subscribe_plan">プランを契約する</button>
               </div>
             </div>
           </section>
@@ -71,10 +78,11 @@ defmodule BrightWeb.SubscriptionLive.CreateFreeTrialComponent do
 
   @impl true
   def update(assigns, socket) do
+    Logger.info("######UPDATE assigns: #{inspect(assigns)}")
     user = assigns.current_user
 
     plan =
-      case Subscriptions.get_plan_by_plan_code(assigns.plan_code) do
+      case Subscriptions.get_plan_by_plan_code(assigns.plan.plan_code) do
         nil -> Subscriptions.get_plan_by_plan_code("hr_plan")
         plan -> plan
       end

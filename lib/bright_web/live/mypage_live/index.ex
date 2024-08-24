@@ -11,9 +11,12 @@ defmodule BrightWeb.MypageLive.Index do
   alias Bright.SkillEvidences
   alias Bright.SkillScores
   alias Bright.Teams
+  alias Bright.Stripe
   alias BrightWeb.PathHelper
   alias BrightWeb.DisplayUserHelper
   alias BrightWeb.MypageLive.MySkillEvidencesComponent
+
+  require Logger
 
   def mount(params, _session, socket) do
     socket
@@ -60,6 +63,23 @@ defmodule BrightWeb.MypageLive.Index do
     {:noreply, socket}
   end
 
+  def handle_event("subscribe_plan", params, socket) do
+    Logger.info("########START SUBSCRIPTION SOCKET: #{inspect(socket)}")
+    Logger.info("########START SUBSCRIPTION PARAMS: #{inspect(params)}")
+    plan_code = socket.assigns.plan.plan_code
+    stripe_lookup_key = socket.assigns.plan.stripe_lookup_key
+    user = socket.assigns.current_user
+
+    case Stripe.start_checkout_session(user, plan_code, stripe_lookup_key) do
+      {:ok, session} ->
+        {:noreply, redirect(socket, external: session.url)}
+
+      {:error, _reason} ->
+        # TODO: errors.poのエラーメッセージと共通化したいがやり方不明。この方法だと日本語のみになってしまう
+        {:noreply, socket |> put_flash(:error, "契約ができませんでした。再度お試しください")}
+    end
+  end
+
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "マイページ")
@@ -73,13 +93,29 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   defp apply_action(socket, :free_trial, params) do
-    plan = Map.get(params, "plan", "hr_plan")
+    plan_code = Map.get(params, "plan", "hr_plan")
+    stripe_lookup_key = Map.get(params, "stripe_lookup_key", "default")
+
+    plan = %{
+      plan_code: plan_code,
+      stripe_lookup_key: stripe_lookup_key
+    }
+
+    error =
+      params
+      |> Map.get("error")
+      |> decode_error()
 
     socket
     |> assign(:page_title, "無料トライアル")
     |> assign(:plan, plan)
     |> assign(:search, false)
+    |> assign(:error, error)
   end
+
+  defp decode_error(nil), do: nil
+
+  defp decode_error(error), do: URI.decode(error)
 
   defp assign_skillset_gem(socket) do
     skillset_gem =
