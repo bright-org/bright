@@ -1,0 +1,15 @@
+<div class="flex h-screen items-center justify-center p-10 w-screen">
+  <div class="p-8">
+  <%= if @loading do %>
+    <p>Processing your payment, please wait...</p>
+  <% else %>
+    <%= if @success do %>
+      <h1 class="font-bold text-brightGreen-300 text-3xl">プランの契約が完了しました</h1>
+      <b class="font-bold text-brightGreen-300 text-xl"></b>
+      <p class="mt-2">購入完了しました。</p>
+    <% else %>
+      <p>Something went wrong: <%= @error %></p>
+    <% end %>
+  <% end %>
+  </div>
+</div>
