@@ -6,6 +6,8 @@ defmodule Bright.Stripe.UserStripeCustomer do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @foreign_key_type Ecto.ULID
   schema "user_stripe_customers" do
     field :stripe_customer_id, :string
     belongs_to :user, Bright.Accounts.User
