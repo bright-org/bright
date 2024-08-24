@@ -24,6 +24,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias BrightWeb.QrCodeComponents
   alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
   alias BrightWeb.SkillPanelLive.SkillShareModalComponent
+  alias Bright.Utils.Aes.Aes128
 
   @impl true
   def mount(params, _session, socket) do
@@ -55,6 +56,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
      |> assign_counter()
      |> apply_action(socket.assigns.live_action, params)
      |> ShareHelper.assign_share_graph_url()
+     |> assign(encode_share_ogp: Aes128.encrypt("#{socket.assigns.skill_panel.id}},ogp"))
      |> touch_user_skill_panel()}
   end
 
@@ -103,14 +105,16 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("skill_shara_og_image_data_click", %{"value" => value}, socket) do
-    socket = assign_og_image_data(socket, value, :skill_shara_og_image_data)
-    # TODO　作成中
-    # upload_ogp_data(socket.assigns)
-    {:noreply, socket}
+    {:noreply, assign_og_image_data(socket, value, :skill_shara_og_image_data)}
   end
 
   def handle_event("sns_up_click", _params, socket) do
     upload_ogp_data(socket.assigns)
+    {:noreply, socket}
+  end
+
+  def handle_event("skill_sns_up_click", _params, socket) do
+    upload_ogp_data(socket.assigns, :skill_shara_og_image_data)
     {:noreply, socket}
   end
 

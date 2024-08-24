@@ -13,7 +13,9 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
   def render(assigns) do
     assigns =
       assigns
-      |> assign(url: url(~p"/get_skill_panel/#{assigns.skill_panel.id}"))
+      |> assign(
+        share_skill_panel_url: url(~p"/get_skill_panel/#{assigns.skill_panel.id}/#{assigns.ogp}")
+      )
 
     ~H"""
     <div id={@id}>
@@ -32,7 +34,7 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
             <.triangle_graph data={@data} id="triangle_graph"/>
           </div>
         </div>
-        <SnsComponents.sns_share_button_group share_graph_url={@url} skill_panel={@skill_panel.name} level_text={"start"} />
+        <SnsComponents.sns_share_button_group share_graph_url={@share_skill_panel_url} skill_panel={@skill_panel.name} level_text={"start"} phx_click="skill_sns_up_click" />
         <.first_card_skills_edit_message />
       </.bright_modal>
     </div>

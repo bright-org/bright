@@ -18,6 +18,13 @@ defmodule BrightWeb.LayoutComponents do
   slot :inner_block, required: true
 
   def root_layout(assigns) do
+    og_image =
+      if is_nil(assigns.og_image),
+        do: "https://bright-fun.org/images/ogp_a.png",
+        else: assigns.og_image
+
+    assigns = assign(assigns, og_image: og_image)
+
     ~H"""
     <!DOCTYPE html>
     <html lang="ja">
