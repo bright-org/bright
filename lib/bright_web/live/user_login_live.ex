@@ -44,18 +44,15 @@ defmodule BrightWeb.UserLoginLive do
     """
   end
 
-  def mount(_params, session, socket) do
-    share_graph_token =
-      Map.get(session, "user_return_to", "")
-      |> String.split("/")
-      |> List.last()
+  def mount(params, _session, socket) do
+    ogp = Map.get(params, "ogp", "")
 
     email = live_flash(socket.assigns.flash, :email)
     form = to_form(%{"email" => email}, as: "user")
 
     socket =
       assign(socket, form: form)
-      |> Helper.assign_share_graph_og_image(%{"share_graph_token" => share_graph_token})
+      |> Helper.assign_share_graph_og_image(%{"share_graph_token" => ogp})
 
     {:ok, socket, temporary_assigns: [form: form]}
   end
