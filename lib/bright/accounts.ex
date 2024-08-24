@@ -938,8 +938,9 @@ defmodule Bright.Accounts do
   """
   def get_user_by_stripe_customer(stripe_customer_id) do
     from(u in User,
-      join: usc in UserStripeCustomer, on: usc.user_id == u.id,
-      where: usc.stripe_customer_id == ^stripe_customer_id,
+      join: usc in UserStripeCustomer,
+      on: usc.user_id == u.id,
+      where: usc.stripe_customer_id == ^stripe_customer_id
     )
     |> Repo.one()
   end
