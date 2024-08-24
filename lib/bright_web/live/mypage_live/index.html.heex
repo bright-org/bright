@@ -102,7 +102,8 @@
     id="free_trial_modal"
     module={BrightWeb.SubscriptionLive.CreateFreeTrialComponent}
     current_user={@current_user}
-    plan_code={@plan}
+    plan={@plan}
+    error={@error}
     navigate={~p"/mypage"}
   />
 </.bright_modal>

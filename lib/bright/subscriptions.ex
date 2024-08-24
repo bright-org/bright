@@ -7,6 +7,10 @@ defmodule Bright.Subscriptions do
   alias Bright.Repo
   alias Bright.Accounts.UserNotifier
   alias Bright.Subscriptions.SubscriptionPlan
+  alias Bright.Accounts
+  alias Bright.Accounts.User
+
+  require Logger
 
   @create_teams_limit_without_plan 1
   @create_enable_hr_functions_teams_limit_without_plan 0
@@ -360,6 +364,21 @@ defmodule Bright.Subscriptions do
   end
 
   @doc """
+  StripeプロダクトIDを引数にサブスクリプションプランを取得する
+
+  ## Examples
+
+      iex> get_plan_by_stripe_product_id("prod_NppuJWzzNnD5Ut")
+      %SubscriptionPlan{}
+      iex> get_plan_by_stripe_product_id("hogehoge")
+      nil
+  """
+  def get_plan_by_stripe_product_id(stripe_product_id) do
+    SubscriptionPlan
+    |> Repo.get_by(stripe_product_id: stripe_product_id)
+  end
+
+  @doc """
   サービスコードを指定してサブスクリプションプランサービスを削除する
 
   ## Examples
@@ -412,6 +431,62 @@ defmodule Bright.Subscriptions do
     |> create_free_trial_subscription_user_plan()
   end
 
+  def start_subscription(session_id) do
+    # Checkout Sessionのidからsession objectを取得する
+    with {:ok, session} <-
+           Bright.Stripe.checkout_session_retrieve(session_id) |> log_result("Session retrieved"),
+         # Checkout Sessionのidから商品情報を取得する
+         {:ok, product_id} <-
+           Bright.Stripe.session_retrieve_list_line_items(session.id)
+           |> log_result("Items retrieved"),
+         # 商品情報で取得したproduct_idを元にDBからsubscription_plan_idを取得する
+         %SubscriptionPlan{id: subscription_plan_id} <-
+           get_plan_by_stripe_product_id(product_id) |> log_result("SubscriptionPlan: "),
+         # session objectの顧客IDを元にDBユーザIDを取得する
+         %User{id: user_id} <-
+           Accounts.get_user_by_stripe_customer(session.customer) |> log_result("User: "),
+         # すでに同一サブスクリプションIDで契約があるか確認する(StripeからのWebhookによる契約の可能性があるため)
+         false <- subscription_exists?(user_id, session.subscription) do
+      Logger.info("Starting subscription for user #{user_id} with plan #{subscription_plan_id}")
+      # 契約発行処理を実行する
+      start_subscription(user_id, subscription_plan_id, session.subscription)
+    else
+      # TODO: エラーハンドリングは見直しが必要
+      {:error, reason} ->
+        Logger.error("Error occurred: #{inspect(reason)}")
+        {:error, reason}
+
+      true ->
+        {:error, :already_subscribed}
+
+      _ ->
+        Logger.error("Invalid subscription plan")
+        {:error, :invalid_subscription_plan}
+    end
+  end
+
+  def start_subscription(user_id, subscription_plan_id, stripe_subscription_id) do
+    Logger.info(
+      "############ START SUBSCRIPTION user_id: #{user_id}, subscription_plan_id: #{subscription_plan_id}, stripe_subscription_id: #{stripe_subscription_id}"
+    )
+
+    start_datetime = NaiveDateTime.utc_now()
+
+    %{
+      user_id: user_id,
+      subscription_plan_id: subscription_plan_id,
+      subscription_status: :subscribing,
+      subscription_start_datetime: start_datetime,
+      stripe_subscription_id: stripe_subscription_id
+    }
+    |> create_subscription_user_plan()
+    |> log_result("create_subscription_user_plan: ")
+    |> case do
+      {:ok, _} -> :ok
+      _ -> {:error, "error"}
+    end
+  end
+
   @doc """
   プランを指定してプランの有料利用を開始する
 
@@ -431,6 +506,19 @@ defmodule Bright.Subscriptions do
       subscription_start_datetime: start_datetime
     }
     |> create_subscription_user_plan()
+  end
+
+  defp subscription_exists?(user_id, stripe_subscription_id) do
+    query =
+      from sup in SubscriptionUserPlan,
+        where: sup.user_id == ^user_id and sup.stripe_subscription_id == ^stripe_subscription_id
+
+    Repo.exists?(query)
+  end
+
+  defp log_result(result, message) do
+    Logger.info("#{message}: #{inspect(result)}")
+    result
   end
 
   @doc """

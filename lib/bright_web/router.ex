@@ -312,6 +312,10 @@ defmodule BrightWeb.Router do
 
       live "/recruits/chats", ChatLive.Index, :recruit
       live "/recruits/chats/:id", ChatLive.Index, :recruit
+
+      #TODO: 認証前後問わないところにおきたいが、どうすればいいかよくわからない。
+      # 一方で基本的に認証しているはずなので、この場所のままでもいいかも
+      live "/subscription/activate", SubscriptionLive.Activate, :activate
     end
 
     ## OAuth

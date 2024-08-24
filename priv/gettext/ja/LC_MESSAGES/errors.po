@@ -130,3 +130,6 @@ msgstr "アップロードするファイルが多すぎます"
 
 msgid "already has max number of sub emails"
 msgstr "サブメールアドレスはこれ以上追加できません"
+
+msgid "Failed to complete the contract. Please try again"
+msgstr "契約ができませんでした。再度お試しください"

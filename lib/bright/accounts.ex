@@ -15,6 +15,7 @@ defmodule Bright.Accounts do
   alias Bright.Accounts.{User, UserToken, UserNotifier}
   alias Bright.Onboardings.UserOnboarding
   alias Bright.Utils.GoogleCloud.Storage
+  alias Bright.Stripe.UserStripeCustomer
 
   ## Database getters
 
@@ -930,5 +931,17 @@ defmodule Bright.Accounts do
         Bright.Teams.joined_supporter_teams_owner_ids(user_id)
         |> Bright.Subscriptions.service_enabled?("hr_basic")
     end
+  end
+
+  @doc """
+  Gets a single user by stripe customer id.
+  """
+  def get_user_by_stripe_customer(stripe_customer_id) do
+    from(u in User,
+      join: usc in UserStripeCustomer,
+      on: usc.user_id == u.id,
+      where: usc.stripe_customer_id == ^stripe_customer_id
+    )
+    |> Repo.one()
   end
 end
