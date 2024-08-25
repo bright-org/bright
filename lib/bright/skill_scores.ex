@@ -847,11 +847,11 @@ defmodule Bright.SkillScores do
   スキルパネルIDを指定して、指定したスキルパネルの「見習い」「平均」「ベテラン」
   の人数をカウントする
   """
-  def get_level_count_from_skill_panel_id(skill_panel_id) do
+  def get_level_count_from_skill_panel_id(skill_panel_id, class \\ 1) do
     datas =
       from(scs in SkillClassScore,
         join: sc in assoc(scs, :skill_class),
-        where: sc.class == 1 and sc.skill_panel_id == ^skill_panel_id,
+        where: sc.class == ^class and sc.skill_panel_id == ^skill_panel_id,
         group_by: [scs.level],
         select: %{
           level: scs.level,
