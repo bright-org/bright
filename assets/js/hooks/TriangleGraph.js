@@ -36,12 +36,17 @@ const getPercent = (number, total) => {
 }
 
 // 各レベルのテキストを描画する関数
-const drawLevel = (ctx, levelText, number, percent, x, y) => {
+const drawLevel = (ctx, levelText, number, percent, x, y, isDisplay) => {
   ctx.fillStyle = textColor;
   ctx.font = "14px 'Noto Sans JP'";
 
   // 人数は一定期間は封印の為コメントアウト
   ctx.fillText(levelText + " " + percent + "%", x, y);
+
+  // アイコン取得
+  image = document.querySelector("#user_menu_dropmenu img")
+  if (isDisplay) ctx.drawImage(image, x + 100, y - 15, 20, 20);
+
   // ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
 }
 
@@ -57,9 +62,9 @@ const drawTriangleGraph = (element) => {
   const normalPercent = getPercent(data.normal, total);
   const beginnerPercent = total == 0 ? 0 : maxPercent - skilledPercent - normalPercent;
 
-  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15);
-  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
-  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90);
+  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15, false);
+  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50, true);
+  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90, false);
 
   // 人数は一定期間は封印の為コメントアウト
   // ctx.fillText( "「 " + data.name + "」登録者 " + total + "人", 5, 120);

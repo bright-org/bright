@@ -40,7 +40,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
                 historical_skill_unit_scores={@historical_skill_unit_scores}
                 date_from={@date_from} />
             </div>
-            <div class="flex flex-row">
+            <div class="lg:flex lg:flex-row">
               <.triangle_graph data={@skill_share_data_past} id="triangle_graph_past"/>
               <div>
                 <p class="text-lg">Level Up!</p>
