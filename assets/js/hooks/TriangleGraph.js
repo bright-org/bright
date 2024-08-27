@@ -10,6 +10,9 @@ const textColor = "#688888";
 
 const maxPercent = 100;
 
+// アイコン取得のセレクタ
+const iconQuery = "#user_menu_dropmenu img";
+
 // 三角形の描画関数
 // 三角形を一つだけ描きます
 const drawTriangle = (ctx, percent, color) => {
@@ -44,7 +47,7 @@ const drawLevel = (ctx, levelText, number, percent, x, y, isDisplay) => {
   ctx.fillText(levelText + " " + percent + "%", x, y);
 
   // アイコン取得
-  image = document.querySelector("#user_menu_dropmenu img")
+  image = document.querySelector(iconQuery)
   if (isDisplay) ctx.drawImage(image, x + 100, y - 15, 20, 20);
 
   // ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);

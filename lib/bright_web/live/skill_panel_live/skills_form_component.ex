@@ -398,12 +398,13 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
 
     if prev_level != new_level && prev_percentage < new_percentage do
       # レベルアップ時の表示モーダル
-      # TODO: 現在はガワだけ実装のためコメントアウトしている。シェアするURLやOGPに対応したら有効化する
       send_update(GrowthShareModalComponent,
         id: "growth_share",
         open: true,
         user_id: skill_class_score.user_id,
-        skill_class_id: skill_class_score.skill_class_id
+        skill_class_id: skill_class_score.skill_class_id,
+        new_level: new_level,
+        prev_level: prev_level
       )
     end
   end
