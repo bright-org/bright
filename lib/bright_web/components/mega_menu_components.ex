@@ -31,6 +31,8 @@ defmodule BrightWeb.MegaMenuComponents do
   attr :id, :string, required: true
   attr :dropdown_offset_skidding, :string, required: true
   attr :menu_width, :string, required: false, default: "lg:w-[750px]"
+  attr :color, :string, default: "bg-brightGreen-300 text-white"
+  attr :divide, :boolean, default: true
   slot :button_content, required: true
   slot :inner_block
 
@@ -43,14 +45,15 @@ defmodule BrightWeb.MegaMenuComponents do
       data-dropdown-placement="bottom"
     >
       <button
-        class="dropdownTrigger text-white bg-brightGreen-300 rounded-md py-1.5 pl-3 flex items-center font-bold hover:filter hover:brightness-[80%]"
+        class={"dropdownTrigger #{@color} rounded-md py-1.5 pl-3 flex items-center font-bold hover:filter hover:brightness-[80%]"}
         type="button"
       >
         <span class="inline-flex gap-x-2 min-w-[4em] lg:min-w-[6em]">
           <%= render_slot(@button_content) %>
         </span>
         <span
-          class="material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]">
+          :if={@divide}
+          class={"material-icons relative ml-2 px-1 before:content[''] before:absolute before:left-0 before:top-[-8px] before:bg-brightGray-50 before:w-[1px] before:h-[42px]"}>
           expand_more
         </span>
       </button>
