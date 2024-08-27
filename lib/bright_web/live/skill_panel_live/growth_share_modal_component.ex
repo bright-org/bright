@@ -67,7 +67,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
       |> Map.merge(%{name: skill_panel.name, level: assigns.new_level})
 
     skill_share_data_past =
-      socket.assigns.skill_share_data_past
+      Map.get(assigns, :skill_share_data_past, socket.assigns.skill_share_data_past)
       |> Map.merge(%{level: assigns.prev_level})
 
     # スキルクラスも取る
