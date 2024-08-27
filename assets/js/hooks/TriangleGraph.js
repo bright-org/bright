@@ -47,7 +47,7 @@ const drawLevel = (ctx, levelText, number, percent, x, y, isDisplay) => {
   ctx.fillText(levelText + " " + percent + "%", x, y);
 
   // アイコン取得
-  image = document.querySelector(iconQuery)
+  const image = document.querySelector(iconQuery)
   if (isDisplay) ctx.drawImage(image, x + 100, y - 15, 20, 20);
 
   // ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
