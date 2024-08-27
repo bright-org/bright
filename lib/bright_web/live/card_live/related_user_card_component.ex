@@ -30,27 +30,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
   @page_size 6
 
   @impl true
-  def mount(socket) do
-    socket =
-      socket
-      |> assign(:current_user, nil)
-      |> assign(:tabs, @tabs)
-      # TODO タブが増えたら初期選択タブの変更に対応する
-      |> assign(:selected_tab, "team")
-      |> assign(:user_profiles, [])
-      |> assign(:inner_tab, [])
-      |> assign(:inner_selected_tab, nil)
-      |> assign(:page, 1)
-      |> assign(:total_pages, 0)
-      |> assign(:page_size, @page_size)
-      |> assign(:card_row_click_target, nil)
-      |> assign(:purpose, nil)
-      |> assign(:hr_enabled, false)
-
-    {:ok, socket}
-  end
-
-  @impl true
   def render(assigns) do
     ~H"""
     <div>
@@ -119,6 +98,62 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
       </.tab>
     </div>
     """
+  end
+
+  defp inner_tab(assigns) do
+    ~H"""
+    <div id={"#{@id}-#{@selected_tab}"} class="flex border-b border-brightGray-50" phx-hook="TabSlideScroll">
+      <div class="overflow-hidden">
+        <ul class="inner_tab_list overflow-hidden flex text-base !text-sm">
+          <%= for {key, value} <- @inner_tab do %>
+            <li
+              class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
+              phx-click="inner_tab_click"
+              phx-target={@target}
+              phx-value-tab_name={@selected_tab}
+              phx-value-inner_tab_name={key}
+            >
+              <%= value %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="inner_tab_slide_buttons flex">
+        <button class="px-1 border-l border-brightGray-50">
+          <span
+            class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+          ></span>
+        </button>
+        <button class="px-1 border-l border-brightGray-50">
+          <span
+            class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
+          ></span>
+        </button>
+      </div>
+    </div>
+    """
+  end
+
+  @impl true
+  def mount(socket) do
+    socket =
+      socket
+      |> assign(:current_user, nil)
+      |> assign(:tabs, @tabs)
+      # TODO タブが増えたら初期選択タブの変更に対応する
+      |> assign(:selected_tab, "team")
+      |> assign(:user_profiles, [])
+      |> assign(:inner_tab, [])
+      |> assign(:inner_selected_tab, nil)
+      |> assign(:page, 1)
+      |> assign(:total_pages, 0)
+      |> assign(:page_size, @page_size)
+      |> assign(:card_row_click_target, nil)
+      |> assign(:purpose, nil)
+      |> assign(:hr_enabled, false)
+      |> assign(:without_me, true)
+
+    {:ok, socket}
   end
 
   @impl true
@@ -211,40 +246,6 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     |> assign_selected_card(selected_tab)
   end
 
-  defp inner_tab(assigns) do
-    ~H"""
-    <div id={"#{@id}-#{@selected_tab}"} class="flex border-b border-brightGray-50" phx-hook="TabSlideScroll">
-      <div class="overflow-hidden">
-        <ul class="inner_tab_list overflow-hidden flex text-base !text-sm">
-          <%= for {key, value} <- @inner_tab do %>
-            <li
-              class={["p-2 select-none cursor-pointer truncate w-[200px] border-r border-brightGray-50", key == @inner_selected_tab  && "bg-brightGreen-50" ]}
-              phx-click="inner_tab_click"
-              phx-target={@target}
-              phx-value-tab_name={@selected_tab}
-              phx-value-inner_tab_name={key}
-            >
-              <%= value %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-      <div class="inner_tab_slide_buttons flex">
-        <button class="px-1 border-l border-brightGray-50">
-          <span
-            class="w-0 h-0 border-solid border-l-0 border-r-[10px] border-r-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-          ></span>
-        </button>
-        <button class="px-1 border-l border-brightGray-50">
-          <span
-            class="w-0 h-0 border-solid border-r-0 border-l-[10px] border-l-brightGray-300 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent inline-block"
-          ></span>
-        </button>
-      </div>
-    </div>
-    """
-  end
-
   defp assign_inner_tab(socket, "team") do
     # 所属チームの一覧を取得
     page =
@@ -284,7 +285,8 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
         %{
           page: socket.assigns.page,
           page_size: socket.assigns.page_size
-        }
+        },
+        socket.assigns.without_me
       )
 
     socket
@@ -360,17 +362,24 @@ defmodule BrightWeb.CardLive.RelatedUserCardComponent do
     end
   end
 
-  defp get_team_member_user_profiles(_user_id, nil, _page_params) do
+  defp get_team_member_user_profiles(_user_id, nil, _page_params, _without_me) do
     %{user_smalls: [], total_pages: 0}
   end
 
-  defp get_team_member_user_profiles(user_id, team_id, page_params) do
+  defp get_team_member_user_profiles(user_id, team_id, page_params, without_me) do
     page =
-      Teams.list_joined_users_and_profiles_by_team_id_without_myself(
-        user_id,
-        team_id,
-        page_params
-      )
+      if without_me do
+        Teams.list_joined_users_and_profiles_by_team_id_without_myself(
+          user_id,
+          team_id,
+          page_params
+        )
+      else
+        Teams.list_joined_users_and_profiles_by_team_id(
+          team_id,
+          page_params
+        )
+      end
 
     member_and_users = Enum.map(page.entries, &build_user_profile(&1.user))
 
