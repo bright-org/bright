@@ -2,10 +2,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   use BrightWeb, :live_view
 
   import BrightWeb.BrightModalComponents
-  import BrightWeb.SkillPanelLive.SkillPanelComponents
+
+  import BrightWeb.SkillPanelLive.SkillPanelComponents,
+    only: [profile_skill_class_level: 1, score_mark_class: 2, no_skill_panel: 1]
+
+  import BrightWeb.SkillPanelLive.SkillCardComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
   import BrightWeb.GuideMessageComponents
+  import BrightWeb.ChartComponents, only: [skill_gem: 1]
 
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
@@ -14,17 +19,33 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
-  alias Bright.UserJobProfiles
-  alias Bright.UserSkillPanels
   alias BrightWeb.PathHelper
-  alias BrightWeb.ProfileComponents
-  alias BrightWeb.GuideMessageComponents
   alias BrightWeb.SnsComponents
   alias BrightWeb.Share.Helper, as: ShareHelper
   alias BrightWeb.QrCodeComponents
   alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
   alias BrightWeb.SkillPanelLive.SkillShareModalComponent
   alias Bright.Utils.Aes.Aes128
+
+  # キーボード入力 1,2,3 と対応するスコア
+  @shortcut_key_score %{
+    "1" => :high,
+    "2" => :middle,
+    "3" => :low
+  }
+
+  # 入力時間目安表示のための１スキルあたりの時間(分): 約20秒
+  @minute_per_skill 0.33
+
+  # スコアと対応するHTML class属性
+  @score_mark_class %{
+    "high" =>
+      "bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:h-4 before:w-4 before:rounded-full before:bg-brightGray-300 before:block peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white hover:filter hover:brightness-[80%]",
+    "middle" =>
+      "bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:h-0 before:w-0 before:border-solid before:border-t-0 before:border-r-8 before:border-l-8 before:border-transparent before:border-b-[14px] before:border-b-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:border-b-white hover:filter hover:brightness-[80%]",
+    "low" =>
+      "bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:block before:w-4 before:h-1 before:bg-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white hover:filter hover:brightness-[80%]"
+  }
 
   @impl true
   def mount(params, _session, socket) do
@@ -35,29 +56,33 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(:select_label_compared_user, nil)
     |> assign(:compared_user, nil)
     |> assign(:page_title, "スキルパネル")
-    |> assign(:view, :card)
-    |> assign(init_team_id: nil, init_timeline: nil)
     |> assign(:selected_unit, nil)
+    |> assign(:gem_labels, [])
+    |> assign(:gem_values, nil)
     |> push_event("scroll_to_unit", %{})
     |> assign(:skill_share_open, false)
     |> then(&{:ok, &1})
   end
 
   @impl true
-  def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}}} = socket) do
-    {:noreply,
-     socket
-     |> assign_path(url)
-     |> assign_skill_classes()
-     |> assign_skill_share_data()
-     |> assign_skill_class_and_score(params["class"])
-     |> create_skill_class_score_if_not_existing()
-     |> assign_skill_score_dict()
-     |> assign_counter()
-     |> apply_action(socket.assigns.live_action, params)
-     |> ShareHelper.assign_share_graph_url()
-     |> assign(encode_share_ogp: Aes128.encrypt("#{socket.assigns.skill_panel.id}},ogp"))
-     |> touch_user_skill_panel()}
+  def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}} = assigns} = socket) do
+    socket
+    |> assign_path(url)
+    |> assign_skill_classes()
+    |> assign_skill_share_data()
+    |> assign_skill_class_and_score(params["class"])
+    |> create_skill_class_score_if_not_existing()
+    |> assign_skill_score_dict()
+    |> assign_skill_units()
+    |> assign_row_dict()
+    |> assign_counter()
+    |> assign_gem_data()
+    |> assign(:links, create_links(assigns))
+    |> apply_action(socket.assigns.live_action, params)
+    |> ShareHelper.assign_share_graph_url()
+    |> assign(encode_share_ogp: Aes128.encrypt("#{socket.assigns.skill_panel.id}},ogp"))
+    |> touch_user_skill_panel()
+    |> then(&{:noreply, &1})
   end
 
   def handle_params(_params, _url, %{assigns: %{skill_panel: nil}} = socket),
@@ -82,24 +107,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     end
   end
 
-  def handle_event("clear_display_user", _params, socket) do
-    %{current_user: current_user, skill_panel: skill_panel} = socket.assigns
-    move_to = get_path_to_switch_me("panels", current_user, skill_panel)
-
-    {:noreply, push_redirect(socket, to: move_to)}
-  end
-
-  def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do
-    is_star = !assigns.is_star
-
-    socket =
-      socket
-      |> assign(:is_star, is_star)
-
-    UserSkillPanels.set_is_star(assigns.display_user, assigns.skill_panel, is_star)
-    {:noreply, socket}
-  end
-
   def handle_event("og_image_data_click", %{"value" => value}, socket) do
     {:noreply, assign_og_image_data(socket, value)}
   end
@@ -118,11 +125,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     {:noreply, socket}
   end
 
-  def handle_event("change_view", %{"view" => view}, socket) do
-    socket
-    |> assign(:view, String.to_atom(view))
-    |> push_event("scroll_to_unit", %{})
-    |> then(&{:noreply, &1})
+  def handle_event("update_score", _params, %{assigns: %{me: false}} = socket) do
+    {:noreply, socket}
   end
 
   def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
@@ -153,6 +157,140 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     assign_renew(socket, params["class"])
   end
 
+  defp assign_skill_units(socket) do
+    skill_units =
+      socket.assigns.skill_class
+      |> Bright.Repo.preload(skill_units: [skill_categories: [:skills]])
+      |> Map.get(:skill_units)
+
+    assign(socket, :skill_units, skill_units)
+  end
+
+  defp assign_row_dict(socket) do
+    # 指定行をハイライトすることなどのためのUI便宜上の準備
+    dict =
+      socket.assigns.skill_units
+      |> Enum.flat_map(& &1.skill_categories)
+      |> Enum.flat_map(& &1.skills)
+      |> Enum.with_index(1)
+      |> Map.new(fn {skill, row} -> {skill.id, row} end)
+
+    socket
+    |> assign(:row_dict, dict)
+    |> assign(:num_skills, Enum.count(dict))
+  end
+
+  defp update_by_score_change(socket, skill_score, score) do
+    # 表示スコア更新
+    # 永続化は全体一括のため、ここでは実施してない
+    skill_score_dict =
+      socket.assigns.skill_score_dict
+      |> Map.put(skill_score.skill_id, %{skill_score | score: score, changed: true})
+
+    socket
+    |> assign(:skill_score_dict, skill_score_dict)
+    |> assign_counter()
+  end
+
+  defp assign_gem_data(socket) do
+    %{skill_units: skill_units, skill_score_dict: skill_score_dict} = socket.assigns
+
+    {gem_labels, gem_values} =
+      Enum.reduce(skill_units, {[], []}, fn skill_unit, {labels, values} ->
+        percentage = get_percentage_in_skill_unit(skill_unit, skill_score_dict)
+        {labels ++ [skill_unit.name], values ++ [percentage]}
+      end)
+
+    assign(socket, gem_labels: gem_labels, gem_values: gem_values)
+  end
+
+  defp get_percentage_in_skill_unit(skill_unit, skill_score_dict) do
+    skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
+    size = Enum.count(skills)
+
+    if size == 0 do
+      0
+    else
+      num_high_skills = Enum.count(skills, &(Map.get(skill_score_dict, &1.id).score == :high))
+      floor(num_high_skills / size * 100)
+    end
+  end
+
+  defp assign_first_time(socket) do
+    # スキルを初めて入力したときのメッセージ表示用のフラグ管理
+    %{user: user, skill_class: skill_class, skill_score_dict: skill_score_dict} = socket.assigns
+    skill_scores = Map.values(skill_score_dict)
+    first_time_in_skill_panel = skill_class.class == 1 && Enum.all?(skill_scores, &(&1.id == nil))
+
+    first_time_overall =
+      first_time_in_skill_panel && !SkillScores.get_user_entered_skill_score_at_least_one?(user)
+
+    socket
+    |> assign(:first_time_in_overall, first_time_overall)
+    |> assign(:first_time_in_skill_panel, first_time_in_skill_panel)
+  end
+
+  defp maybe_update_skill_card_component(skill_class_score) do
+    prev_level = skill_class_score.level
+    prev_percentage = skill_class_score.percentage
+
+    skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
+    new_level = skill_class_score.level
+    new_percentage = skill_class_score.percentage
+
+    if prev_level != new_level do
+      send_update(SkillCardComponent, id: "skill_card", status: "level_changed")
+    end
+
+    if prev_level != new_level && prev_percentage < new_percentage do
+      # レベルアップ時の表示モーダル
+      # TODO: 現在はガワだけ実装のためコメントアウトしている。シェアするURLやOGPに対応したら有効化する
+      send_update(GrowthShareModalComponent,
+        id: "growth_share",
+        open: true,
+        user_id: skill_class_score.user_id,
+        skill_class_id: skill_class_score.skill_class_id
+      )
+    end
+  end
+
+  # スキル初回入力（全体初）後に表示するメッセージのためのflashを設定
+  defp put_flash_first_submit_in_overall(socket) do
+    socket.assigns.first_time_in_overall
+    |> if(do: put_flash(socket, :first_submit_in_overall, true), else: socket)
+  end
+
+  # スキル初回入力（本スキルパネル初）後に表示するメッセージのためのflashを設定
+  defp put_flash_first_submit_in_skill_panel(socket) do
+    socket.assigns.first_time_in_skill_panel
+    |> if(do: put_flash(socket, :first_submit_in_skill_panel, true), else: socket)
+  end
+
+  defp push_scroll_to(socket) do
+    %{focus_row: row} = socket.assigns
+    # キーショートカットによる入力時スクロール
+    push_event(socket, "scroll-to-parent", %{
+      target: "skill-#{row}-form",
+      parent_selector: ".category-top"
+    })
+  end
+
+  defp score_mark_class, do: @score_mark_class
+
+  defp get_level(counter, num_skills) do
+    percentage = SkillScores.calc_high_skills_percentage(counter.high, num_skills)
+    SkillScores.get_level(percentage)
+  end
+
+  defp minute_per_skill, do: @minute_per_skill
+
+  defp create_links(assigns) do
+    link = "#input-unit-"
+
+    1..length(assigns.gem_labels)
+    |> Enum.map(fn x -> link <> "#{x}" end)
+  end
+
   defp assign_renew(socket, class) do
     socket
     |> assign_skill_class_and_score(class)
@@ -163,8 +301,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp apply_action(socket, :show, params) do
     socket
-    |> assign(:init_team_id, params["team"])
-    |> assign(:init_timeline, params["timeline"])
     |> put_flash_first_skills_edit()
   end
 
