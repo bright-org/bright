@@ -287,7 +287,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
         id: "growth_share",
         open: true,
         user_id: skill_class_score.user_id,
-        skill_class_id: skill_class_score.skill_class_id
+        skill_class_id: skill_class_score.skill_class_id,
+        new_level: new_level,
+        prev_level: prev_level
       )
     end
   end

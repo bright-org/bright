@@ -55,6 +55,7 @@ const drawTriangleGraph = (element) => {
   const data = JSON.parse(dataset.data);
   const canvas = document.querySelector("#" + element.id + " canvas");
   const ctx = canvas.getContext('2d');
+  const level = data.level;
 
   const total = data.beginner + data.normal + data.skilled;
 
@@ -62,9 +63,9 @@ const drawTriangleGraph = (element) => {
   const normalPercent = getPercent(data.normal, total);
   const beginnerPercent = total == 0 ? 0 : maxPercent - skilledPercent - normalPercent;
 
-  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15, false);
-  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50, true);
-  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90, false);
+  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15, level === "skilled");
+  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50, level === "normal");
+  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90, level === "beginner");
 
   // 人数は一定期間は封印の為コメントアウト
   // ctx.fillText( "「 " + data.name + "」登録者 " + total + "人", 5, 120);

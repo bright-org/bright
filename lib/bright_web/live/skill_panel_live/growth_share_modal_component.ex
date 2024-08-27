@@ -64,7 +64,11 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
 
     skill_share_data =
       SkillScores.get_level_count_from_skill_panel_id(skill_panel.id)
-      |> Map.merge(%{name: skill_panel.name})
+      |> Map.merge(%{name: skill_panel.name, level: assigns.new_level})
+
+    skill_share_data_past =
+      socket.assigns.skill_share_data_past
+      |> Map.merge(%{level: assigns.prev_level})
 
     # スキルクラスも取る
     # 現状と3か月前を比べての成果も出す
@@ -75,6 +79,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
      |> assign(:skill_class, skill_class)
      |> assign(:skill_panel, skill_panel)
      |> assign(:skill_share_data, skill_share_data)
+     |> assign(:skill_share_data_past, skill_share_data_past)
      |> assign_presents()
      |> assign_historicals()}
   end
