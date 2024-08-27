@@ -42,9 +42,10 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
             </div>
             <div class="lg:flex lg:flex-row">
               <.triangle_graph data={@prev_skill_share_data} id="triangle_graph_past"/>
-              <div>
-                <p class="text-lg">Level Up!</p>
-                <p class="material-icons text-7xl">arrow_right_alt</p>
+              <div class="w-[75px] ml-[65px] mb-[5px] flex flex-col justify-center lg:ml-0 lg:block">
+                <span class="text-lg">Level Up!</span>
+                <span class="hidden lg:inline material-icons text-7xl">arrow_right_alt</span>
+                <span class="lg:hidden material-icons text-7xl">arrow_downward</span>
               </div>
               <.triangle_graph data={@skill_share_data} id="triangle_graph"/>
             </div>
