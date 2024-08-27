@@ -41,7 +41,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
                 date_from={@date_from} />
             </div>
             <div class="lg:flex lg:flex-row">
-              <.triangle_graph data={@skill_share_data_past} id="triangle_graph_past"/>
+              <.triangle_graph data={@prev_skill_share_data} id="triangle_graph_past"/>
               <div>
                 <p class="text-lg">Level Up!</p>
                 <p class="material-icons text-7xl">arrow_right_alt</p>
@@ -66,8 +66,8 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
       SkillScores.get_level_count_from_skill_panel_id(skill_panel.id)
       |> Map.merge(%{name: skill_panel.name, level: assigns.new_level})
 
-    skill_share_data_past =
-      Map.get(assigns, :skill_share_data_past, socket.assigns.skill_share_data_past)
+    prev_skill_share_data =
+      Map.get(assigns, :prev_skill_share_data, socket.assigns.prev_skill_share_data)
       |> Map.merge(%{level: assigns.prev_level})
 
     # スキルクラスも取る
@@ -79,7 +79,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
      |> assign(:skill_class, skill_class)
      |> assign(:skill_panel, skill_panel)
      |> assign(:skill_share_data, skill_share_data)
-     |> assign(:skill_share_data_past, skill_share_data_past)
+     |> assign(:prev_skill_share_data, prev_skill_share_data)
      |> assign_presents()
      |> assign_historicals()}
   end
