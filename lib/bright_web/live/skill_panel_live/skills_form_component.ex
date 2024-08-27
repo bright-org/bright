@@ -239,11 +239,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
       user: user,
       skill_class_score: skill_class_score,
       skill_score_dict: skill_score_dict,
-      skill_panel: skill_panel
+      skill_panel: skill_panel,
+      skill_class: skill_class
     } = socket.assigns
 
     prev_skill_share_data =
-      SkillScores.get_level_count_from_skill_panel_id(skill_panel.id)
+      SkillScores.get_level_count_from_skill_panel_id(skill_panel.id, skill_class.class)
 
     target_skill_scores = skill_score_dict |> Map.values() |> Enum.filter(& &1.changed)
     {:ok, _updated_result} = SkillScores.insert_or_update_skill_scores(target_skill_scores, user)

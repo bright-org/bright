@@ -130,7 +130,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     prev_skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
 
     prev_skill_share_data =
-      SkillScores.get_level_count_from_skill_panel_id(socket.assigns.skill_panel.id)
+      SkillScores.get_level_count_from_skill_panel_id(
+        socket.assigns.skill_panel.id,
+        socket.assigns.skill_class.class
+      )
 
     SkillScores.get_skill_score!(id)
     |> Map.put(:score, String.to_atom(score))

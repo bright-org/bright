@@ -64,7 +64,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     skill_panel = SkillPanels.get_skill_panel!(skill_class.skill_panel_id)
 
     skill_share_data =
-      SkillScores.get_level_count_from_skill_panel_id(skill_panel.id)
+      SkillScores.get_level_count_from_skill_panel_id(skill_panel.id, skill_class.class)
       |> Map.merge(%{name: skill_panel.name, level: assigns.new_level})
 
     prev_skill_share_data =
