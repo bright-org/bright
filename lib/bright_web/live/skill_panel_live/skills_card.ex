@@ -1,4 +1,4 @@
-defmodule BrightWeb.SkillPanelLive.SkillsCardComponent do
+defmodule BrightWeb.SkillPanelLive.SkillsCard do
   # スキルパネル画面 スキル一覧をカード形式で表示するコンポーネント
   # （スキルスコア入力に関しては、LiveViewで行いこちらでは制御しない）
 
@@ -24,7 +24,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsCardComponent do
       <BrightCoreComponents.flash_group flash={@inner_flash} />
       <div class="flex flex-col gap-2">
         <%= for {skill_unit, index} <- Enum.with_index(@skill_units) do %>
-          <div id={"unit-#{index + 1}"} class="px-8 py-2">
+          <div id={"unit-#{index + 1}"} class="mb-4">
 
             <div id={"unit-#{index + 1}-sp"} class="flex gap-x-4">
               <span class="text-lg font-bold"><%= skill_unit.name %></span>
@@ -32,7 +32,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsCardComponent do
 
             <div class="flex flex-wrap gap-2">
               <%= for skill_category <- skill_unit.skill_categories do %>
-                <div class="bg-white rounded-lg px-4 pt-4 pb-2">
+                <div class="bg-white rounded-lg px-2 lg:px-4 pt-4 pb-2">
                     <%= skill_category.name %>
                   <div class="flex flex-wrap mt-2">
                     <%= for skill <- skill_category.skills do %>
@@ -118,10 +118,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsCardComponent do
   end
 
   def mount(socket) do
-    {:ok,
-     socket
-     |> assign(skill_class: nil)
-     |> clear_inner_flash()}
+    socket
+    |> assign(skill_class: nil)
+    |> clear_inner_flash()
+    |> then(&{:ok, &1})
   end
 
   def update(assigns, socket) do
