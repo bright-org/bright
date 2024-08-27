@@ -28,7 +28,7 @@ defmodule Bright.SkillUnits.SkillCategory do
   @doc false
   def changeset(skill_category, attrs) do
     skill_category
-    |> cast(attrs, [:name, :position, :skill_unit_id])
+    |> cast(attrs, [:name, :position])
     |> cast_assoc(:skills,
       with: &Skill.changeset/2,
       sort_param: :skills_sort,

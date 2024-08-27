@@ -18,18 +18,17 @@ defmodule BrightWeb.Admin.SkillClassLive.SkillFormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:name]} type="text" label="スキル名" />
-        <.input field={@form[:skill_category_id]} type="hidden" />
+        <.label>教材リンク</.label>
+        <.inputs_for :let={sr} field={@form[:skill_reference]}>
+          <.input field={sr[:url]} type="text" label="URL" />
+        </.inputs_for>
+        <.label>試験リンク</.label>
+        <.inputs_for :let={se} field={@form[:skill_exam]}>
+          <.input field={se[:url]} type="text" label="URL" />
+        </.inputs_for>
+
         <:actions>
           <.button phx-disable-with="Saving...">保存</.button>
-          <.button
-            :if={@action == :edit_skill && not @single_row_data?}
-            class="!bg-red-600 hover:!bg-red-500"
-            type="button"
-            data-confirm="この操作は取り消せません。同じ名前で再作成しても削除したスキルとは違うものになります。削除しますか？"
-            phx-click="delete"
-            phx-target={@myself}
-          >削除</.button>
         </:actions>
       </.simple_form>
     </div>
@@ -38,11 +37,13 @@ defmodule BrightWeb.Admin.SkillClassLive.SkillFormComponent do
 
   @impl true
   def update(%{skill: skill} = assigns, socket) do
+    skill = preload_assoc(skill)
     changeset = SkillUnits.change_skill(skill)
 
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(skill: skill)
      |> assign_form(changeset)}
   end
 
@@ -60,16 +61,6 @@ defmodule BrightWeb.Admin.SkillClassLive.SkillFormComponent do
     save_skill(socket, socket.assigns.action, skill_params)
   end
 
-  def handle_event("delete", _params, socket) do
-    skill = socket.assigns.skill
-    SkillUnits.delete_skill(skill)
-
-    {:noreply,
-     socket
-     |> put_flash(:info, "スキルを削除しました")
-     |> push_patch(to: socket.assigns.patch)}
-  end
-
   defp save_skill(socket, :edit_skill, skill_params) do
     skill = socket.assigns.skill
 
@@ -85,20 +76,12 @@ defmodule BrightWeb.Admin.SkillClassLive.SkillFormComponent do
     end
   end
 
-  defp save_skill(socket, :new_skill, skill_params) do
-    case SkillUnits.create_skill(skill_params) do
-      {:ok, _skill} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "スキルを作成しました")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign_form(socket, changeset)}
-    end
-  end
-
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  defp preload_assoc(skill_category) do
+    skill_category
+    |> Bright.Repo.preload([:skill_reference, :skill_exam])
   end
 end

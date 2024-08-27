@@ -24,8 +24,7 @@ defmodule Bright.SkillUnits.SkillUnit do
 
     has_many :skill_class_units, SkillClassUnit,
       preload_order: [asc: :position],
-      on_replace: :delete,
-      on_delete: :delete_all
+      on_replace: :delete
 
     has_many :skill_classes, through: [:skill_class_units, :skill_class]
 

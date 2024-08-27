@@ -195,8 +195,6 @@ defmodule Bright.SkillPanels do
   """
   def get_skill_panel!(id), do: Repo.get!(SkillPanel, id)
 
-  def get_skill_panel(id), do: Repo.get(SkillPanel, id)
-
   def get_user_skill_panel!(user, skill_panel_id) do
     user
     |> Ecto.assoc(:skill_panels)
@@ -355,36 +353,5 @@ defmodule Bright.SkillPanels do
         preload: :skill_units
 
     Repo.all(query)
-  end
-
-  @doc """
-  Updates a skill_class.
-
-  ## Examples
-
-      iex> update_skill_class(skill_class, %{field: new_value})
-      {:ok, %DraftSkillClass{}}
-
-      iex> update_skill_class(skill_class, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_skill_class(%SkillClass{} = skill_class, attrs) do
-    skill_class
-    |> SkillClass.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking skill_class changes.
-
-  ## Examples
-
-      iex> change_skill_class(skill_class)
-      %Ecto.Changeset{data: %SkillClass{}}
-
-  """
-  def change_skill_class(%SkillClass{} = skill_class, attrs \\ %{}) do
-    SkillClass.changeset(skill_class, attrs)
   end
 end
