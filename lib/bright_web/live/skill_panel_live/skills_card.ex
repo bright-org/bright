@@ -11,11 +11,11 @@ defmodule BrightWeb.SkillPanelLive.SkillsCard do
   # スコアと対応するHTML class属性
   @score_mark_class %{
     "high" =>
-      "score-mark-high bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:h-3 before:w-3 before:rounded-full before:bg-brightGray-300 before:block peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white hover:filter hover:brightness-[80%]",
+      "score-mark-high bg-white border border-brightGray-300 flex h-6 items-center justify-center rounded w-6 before:content-[''] before:h-3 before:w-3 before:rounded-full before:bg-brightGray-300 before:block peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white ",
     "middle" =>
-      "score-mark-middle bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:h-0 before:w-0 before:border-solid before:border-t-0 before:border-r-8 before:border-l-8 before:border-transparent before:border-b-[14px] before:border-b-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:border-b-white hover:filter hover:brightness-[80%]",
+      "score-mark-middle bg-white border border-brightGray-300 flex h-6 items-center justify-center rounded w-6 before:content-[''] before:h-0 before:w-0 before:border-solid before:border-t-0 before:border-r-8 before:border-l-8 before:border-transparent before:border-b-[14px] before:border-b-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:border-b-white ",
     "low" =>
-      "score-mark-low bg-white border border-brightGray-300 flex cursor-pointer h-6 items-center justify-center rounded w-6 before:content-[''] before:block before:w-3 before:h-1 before:bg-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white hover:filter hover:brightness-[80%]"
+      "score-mark-low bg-white border border-brightGray-300 flex h-6 items-center justify-center rounded w-6 before:content-[''] before:block before:w-3 before:h-1 before:bg-brightGray-300 peer-checked:bg-brightGreen-300 peer-checked:border-brightGreen-300 peer-checked:before:bg-white "
   }
 
   def render(assigns) do
@@ -64,8 +64,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsCard do
                               name={"score-#{skill.id}-high"}
                               checked={skill_score.score == :high}
                               class="hidden peer"
+                              disabled={!@me}
                             />
-                            <span class={Map.get(score_mark_class(), "high")}></span>
+                            <span class={Map.get(score_mark_class(), "high") <> editable_class(@me)}></span>
                           </label>
 
                           <label
@@ -82,8 +83,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsCard do
                               name={"score-#{skill.id}-middle"}
                               checked={skill_score.score == :middle}
                               class="hidden peer"
+                              disabled={!@me}
                             />
-                            <span class={Map.get(score_mark_class(), "middle")}></span>
+                            <span class={Map.get(score_mark_class(), "middle") <> editable_class(@me)}></span>
                           </label>
 
                           <label
@@ -100,8 +102,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsCard do
                               name={"score-#{skill.id}-low"}
                               checked={skill_score.score == :low}
                               class="hidden peer"
+                              disabled={!@me}
                             />
-                            <span class={Map.get(score_mark_class(), "low")}></span>
+                            <span class={Map.get(score_mark_class(), "low") <> editable_class(@me)}></span>
                           </label>
                         </div>
                       </div>
@@ -170,9 +173,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsCard do
     |> assign(current_skill_dict: current_skill_dict)
   end
 
-  defp clear_inner_flash(socket) do
-    assign(socket, :inner_flash, %{})
-  end
-
+  defp clear_inner_flash(socket), do: assign(socket, :inner_flash, %{})
   defp score_mark_class, do: @score_mark_class
+  defp editable_class(true), do: "cursor-pointer hover:filter hover:brightness-[80%]"
+  defp editable_class(false), do: ""
 end
