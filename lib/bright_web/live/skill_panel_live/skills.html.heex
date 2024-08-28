@@ -26,14 +26,16 @@
         <div id="skill_gem_in_skills_form" class="flex flex-col lg:flex-row items-center justify-between mt-1 lg:px-4">
           <p class="border p-[2px] mb-1 rounded-full hidden lg:flex"><.icon name="hero-chevron-left"/></p>
           <div class="flex justify-center flex-col">
-            <.skill_gem
-              id={"sk-#{@skill_class.id}-gem"}
-              labels={@gem_labels}
-              data={[@gem_values]}
-              size="base"
-              links={@links}
-              display_link="true"
-            />
+            <div phx-click="scroll_to_unit">
+              <.skill_gem              
+                id={"sk-#{@skill_class.id}-gem"}
+                labels={@gem_labels}
+                data={[@gem_values]}
+                size="base"
+                links={@links}
+                display_link="true"
+              />
+            </div>
             <div class="flex flex-col lg:flex-row px-2 lg:px-0 gap-x-2">
               <div class="flex flex-col px-9 lg:px-0 lg:mr-4 pt-2">
                 <div class="flex gap-x-1">
@@ -100,7 +102,7 @@
           </div>
 
         </div>
-        <div class="lg:absolute lg:left-0 lg:top-24 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
+        <div class="lg:absolute lg:right-0 lg:top-8 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
           <% # スキル入力前メッセージ %>
           <% # NOTE: idはGAイベントトラッキング対象、変更の際は確認と共有必要 %>
           <.live_component
