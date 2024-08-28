@@ -9,6 +9,7 @@ defmodule Bright.SkillUnits do
   alias Bright.SkillUnits.SkillUnit
   alias Bright.SkillUnits.SkillCategory
   alias Bright.SkillUnits.Skill
+  alias Bright.SkillUnits.SkillClassUnit
 
   @doc """
   Returns the list of skill_units.
@@ -21,6 +22,16 @@ defmodule Bright.SkillUnits do
   """
   def list_skill_units(query \\ SkillUnit) do
     Repo.all(query)
+  end
+
+  def list_skill_units_on_class(skill_class) do
+    from(q in SkillClassUnit,
+      where: q.skill_class_id == ^skill_class.id,
+      join: su in assoc(q, :skill_unit),
+      order_by: {:asc, q.position},
+      select: su
+    )
+    |> Repo.all()
   end
 
   @doc """

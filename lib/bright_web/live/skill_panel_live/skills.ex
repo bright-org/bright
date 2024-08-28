@@ -312,7 +312,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp put_flash_first_skills_edit(socket), do: socket
 
-  defp open_growth_share(skill_class_score) do
+  defp open_growth_share(skill_class_score, prev_skill_share_data) do
     prev_level = skill_class_score.level
     prev_percentage = skill_class_score.percentage
 
@@ -325,7 +325,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
         id: "growth_share",
         open: true,
         user_id: skill_class_score.user_id,
-        skill_class_id: skill_class_score.skill_class_id
+        skill_class_id: skill_class_score.skill_class_id,
+        new_level: new_level,
+        prev_level: prev_level,
+        prev_skill_share_data: prev_skill_share_data
       )
     end
   end

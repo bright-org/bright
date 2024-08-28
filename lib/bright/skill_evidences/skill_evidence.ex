@@ -16,7 +16,8 @@ defmodule Bright.SkillEvidences.SkillEvidence do
     belongs_to :skill, Bright.SkillUnits.Skill
 
     has_many :skill_evidence_posts, Bright.SkillEvidences.SkillEvidencePost,
-      preload_order: [asc: :inserted_at]
+      preload_order: [asc: :inserted_at],
+      on_delete: :delete_all
 
     timestamps()
   end

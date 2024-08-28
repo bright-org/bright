@@ -17,8 +17,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   }
 
   def mount(_params, _session, socket) do
-    # base_loadは開発都合でいれているフラグです。
-    # patch移動時にエラーがでるとアサインが整わない状態になり開発に手がかかるため対応しています。
+    # base_loadは開発都合でいれているフラグです。patch移動時にエラーがでるとアサインが整わない状態になり開発に手がかかるため入れていますが効率のみ求めるなら不要です
     {:ok, assign(socket, :base_load, false)}
   end
 
