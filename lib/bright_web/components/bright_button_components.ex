@@ -197,7 +197,9 @@ defmodule BrightWeb.BrightButtonComponents do
       class="fixed top-2 right-0 mr-4 hover:opacity-70 lg:top-0 lg:ml-4 lg:mr-0 lg:relative"
       phx-click={JS.toggle(to: "#personal_setting_modal")}
     >
+     <% # TriangleGraph.jsでもuser_iconを使用しています %>
       <img
+        id="user_icon"
         class="object-cover inline-block h-10 w-10 rounded-full"
         src={@icon_file_path}
       />

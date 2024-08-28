@@ -10,6 +10,9 @@ const textColor = "#688888";
 
 const maxPercent = 100;
 
+// アイコン取得のセレクタ BrightWeb.BrightButtonComponentsのuser_buttonのimgを指定してます
+const iconQuery = "#user_icon";
+
 // 三角形の描画関数
 // 三角形を一つだけ描きます
 const drawTriangle = (ctx, percent, color) => {
@@ -36,12 +39,17 @@ const getPercent = (number, total) => {
 }
 
 // 各レベルのテキストを描画する関数
-const drawLevel = (ctx, levelText, number, percent, x, y) => {
+const drawLevel = (ctx, levelText, number, percent, x, y, withAvator) => {
   ctx.fillStyle = textColor;
   ctx.font = "14px 'Noto Sans JP'";
 
   // 人数は一定期間は封印の為コメントアウト
   ctx.fillText(levelText + " " + percent + "%", x, y);
+
+  // アイコン取得
+  const image = document.querySelector(iconQuery);
+  if (withAvator) ctx.drawImage(image, x + 100, y - 15, 20, 20);
+
   // ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
 }
 
@@ -50,6 +58,7 @@ const drawTriangleGraph = (element) => {
   const data = JSON.parse(dataset.data);
   const canvas = document.querySelector("#" + element.id + " canvas");
   const ctx = canvas.getContext('2d');
+  const level = data.level;
 
   const total = data.beginner + data.normal + data.skilled;
 
@@ -57,9 +66,9 @@ const drawTriangleGraph = (element) => {
   const normalPercent = getPercent(data.normal, total);
   const beginnerPercent = total == 0 ? 0 : maxPercent - skilledPercent - normalPercent;
 
-  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15);
-  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
-  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90);
+  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15, level === "skilled");
+  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50, level === "normal");
+  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90, level === "beginner");
 
   // 人数は一定期間は封印の為コメントアウト
   // ctx.fillText( "「 " + data.name + "」登録者 " + total + "人", 5, 120);
