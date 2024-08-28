@@ -62,12 +62,12 @@
               </.link>
 
               <%# 教材と試験のプレビュー %>
-              <.link :if={col3.skill.skill_exam && col3.skill.skill_exam.url} class="link-exam" patch={"#{@page_path}/skills/#{col3.skill.id}/show_exam"}>
-                <img src="/images/common/icons/skillTest.svg" />
-              </.link>
-
               <.link :if={col3.skill.skill_reference && col3.skill.skill_reference.url} class="link-reference" patch={"#{@page_path}/skills/#{col3.skill.id}/show_reference"}>
                 <img src="/images/common/icons/skillStudy.svg" />
+              </.link>
+
+              <.link :if={col3.skill.skill_exam && col3.skill.skill_exam.url} class="link-exam" patch={"#{@page_path}/skills/#{col3.skill.id}/show_exam"}>
+                <img src="/images/common/icons/skillTest.svg" />
               </.link>
             </div>
           </div>
