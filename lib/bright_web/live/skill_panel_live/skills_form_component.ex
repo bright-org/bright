@@ -250,7 +250,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     {:ok, _updated_result} = SkillScores.insert_or_update_skill_scores(target_skill_scores, user)
 
     # スキルクラスのレベル変更時に保有スキルカードの表示変更を通知
-    maybe_update_skill_card_component(skill_class_score, prev_skill_share_data)
+    maybe_update_related_component(skill_class_score, prev_skill_share_data)
 
     {:noreply,
      socket
@@ -389,7 +389,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
     |> assign(:first_time_in_skill_panel, first_time_in_skill_panel)
   end
 
-  defp maybe_update_skill_card_component(skill_class_score, prev_skill_share_data) do
+  defp maybe_update_related_component(skill_class_score, prev_skill_share_data) do
     prev_level = skill_class_score.level
     prev_percentage = skill_class_score.percentage
 
