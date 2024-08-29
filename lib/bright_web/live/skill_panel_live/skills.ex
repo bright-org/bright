@@ -2,11 +2,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   use BrightWeb, :live_view
 
   import BrightWeb.BrightModalComponents
-  import BrightWeb.SkillPanelLive.SkillCardComponents
+  import BrightWeb.SkillPanelLive.SkillPanelComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
   import BrightWeb.GuideMessageComponents
-  import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [no_skill_panel: 1]
 
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
@@ -15,9 +14,15 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
+  alias Bright.UserJobProfiles
+  alias Bright.UserSkillPanels
   alias BrightWeb.PathHelper
-  alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
+  alias BrightWeb.ProfileComponents
+  alias BrightWeb.GuideMessageComponents
+  alias BrightWeb.SnsComponents
   alias BrightWeb.Share.Helper, as: ShareHelper
+  alias BrightWeb.QrCodeComponents
+  alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
   alias BrightWeb.SkillPanelLive.SkillShareModalComponent
   alias Bright.Utils.Aes.Aes128
 
@@ -30,9 +35,9 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(:select_label_compared_user, nil)
     |> assign(:compared_user, nil)
     |> assign(:page_title, "スキルパネル")
+    |> assign(:view, :card)
+    |> assign(init_team_id: nil, init_timeline: nil)
     |> assign(:selected_unit, nil)
-    |> assign(:gem_labels, [])
-    |> assign(:gem_values, nil)
     |> push_event("scroll_to_unit", %{})
     |> assign(:skill_share_open, false)
     |> then(&{:ok, &1})
@@ -40,29 +45,136 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   @impl true
   def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}}} = socket) do
-    socket
-    |> assign_path(url)
-    |> assign_skill_classes()
-    |> assign_skill_share_data()
-    |> assign_skill_class_and_score(params["class"])
-    |> create_skill_class_score_if_not_existing()
-    |> assign_skill_score_dict()
-    |> assign_skill_units()
-    |> assign_counter()
-    |> assign_gem_data()
-    |> assign_links()
-    |> apply_action(socket.assigns.live_action, params)
-    |> ShareHelper.assign_share_graph_url()
-    |> assign(encode_share_ogp: Aes128.encrypt("#{socket.assigns.skill_panel.id}},ogp"))
-    |> touch_user_skill_panel()
-    |> then(&{:noreply, &1})
+    {:noreply,
+     socket
+     |> assign_path(url)
+     |> assign_skill_classes()
+     |> assign_skill_share_data()
+     |> assign_skill_class_and_score(params["class"])
+     |> create_skill_class_score_if_not_existing()
+     |> assign_skill_score_dict()
+     |> assign_counter()
+     |> apply_action(socket.assigns.live_action, params)
+     |> ShareHelper.assign_share_graph_url()
+     |> assign(encode_share_ogp: Aes128.encrypt("#{socket.assigns.skill_panel.id}},ogp"))
+     |> touch_user_skill_panel()}
   end
 
-  def handle_params(_params, _url, %{assigns: %{skill_panel: nil}} = socket) do
+  def handle_params(_params, _url, %{assigns: %{skill_panel: nil}} = socket),
+    do: {:noreply, socket}
+
+  @impl true
+  def handle_event("click_on_related_user_card_menu", params, socket) do
+    skill_panel = socket.assigns.skill_panel
+
+    {user, anonymous} =
+      get_user_from_name_or_name_encrypted(params["name"], params["encrypt_user_name"])
+
+    get_path_to_switch_display_user("panels", user, skill_panel, anonymous)
+    |> case do
+      {:ok, path} ->
+        {:noreply, push_redirect(socket, to: path)}
+
+      :error ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "選択された対象者がスキルパネルを保有していないため、対象者を表示できません")}
+    end
+  end
+
+  def handle_event("clear_display_user", _params, socket) do
+    %{current_user: current_user, skill_panel: skill_panel} = socket.assigns
+    move_to = get_path_to_switch_me("panels", current_user, skill_panel)
+
+    {:noreply, push_redirect(socket, to: move_to)}
+  end
+
+  def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do
+    is_star = !assigns.is_star
+
+    socket =
+      socket
+      |> assign(:is_star, is_star)
+
+    UserSkillPanels.set_is_star(assigns.display_user, assigns.skill_panel, is_star)
     {:noreply, socket}
   end
 
-  defp apply_action(socket, :show, _params), do: put_flash_first_skills_edit(socket)
+  def handle_event("og_image_data_click", %{"value" => value}, socket) do
+    {:noreply, assign_og_image_data(socket, value)}
+  end
+
+  def handle_event("skill_shara_og_image_data_click", %{"value" => value}, socket) do
+    {:noreply, assign_og_image_data(socket, value, :skill_shara_og_image_data)}
+  end
+
+  def handle_event("sns_up_click", _params, socket) do
+    upload_ogp_data(socket.assigns)
+    {:noreply, socket}
+  end
+
+  def handle_event("skill_sns_up_click", _params, socket) do
+    upload_ogp_data(socket.assigns, :skill_shara_og_image_data)
+    {:noreply, socket}
+  end
+
+  def handle_event("change_view", %{"view" => view}, socket) do
+    socket
+    |> assign(:view, String.to_atom(view))
+    |> push_event("scroll_to_unit", %{})
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
+    skill_class_score = socket.assigns.skill_class_score
+    prev_skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
+
+    prev_skill_share_data =
+      SkillScores.get_level_count_from_skill_panel_id(
+        socket.assigns.skill_panel.id,
+        socket.assigns.skill_class.class
+      )
+
+    SkillScores.get_skill_score!(id)
+    |> Map.put(:score, String.to_atom(score))
+    |> then(&[&1])
+    |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
+
+    send_update(BrightWeb.OgpComponent, id: "ogp")
+
+    open_growth_share(prev_skill_class_score, prev_skill_share_data)
+    assign_renew(socket, params["class"])
+  end
+
+  def handle_event("update_score", %{"skill_id" => id, "score" => score} = params, socket) do
+    [
+      %SkillScore{
+        skill_id: id,
+        score: String.to_atom(score),
+        user_id: socket.assigns.current_user.id
+      }
+    ]
+    |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
+
+    assign_renew(socket, params["class"])
+  end
+
+  defp assign_renew(socket, class) do
+    socket
+    |> assign_skill_class_and_score(class)
+    |> assign_skill_score_dict()
+    |> assign_counter()
+    |> then(&{:noreply, &1})
+  end
+
+  defp apply_action(socket, :show, params) do
+    socket
+    |> assign(:init_team_id, params["team"])
+    |> assign(:init_timeline, params["timeline"])
+    |> put_flash_first_skills_edit()
+  end
+
+  defp apply_action(socket, :edit, _params), do: socket
 
   defp apply_action(socket, :show_evidences, params) do
     socket
@@ -85,84 +197,28 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> update_exam_progress_wip()
   end
 
-  @impl true
-  def handle_event("click_on_related_user_card_menu", params, socket) do
-    skill_panel = socket.assigns.skill_panel
+  defp assign_skill(socket, skill_id) do
+    skill = SkillUnits.get_skill!(skill_id)
 
-    {user, anonymous} =
-      get_user_from_name_or_name_encrypted(params["name"], params["encrypt_user_name"])
-
-    get_path_to_switch_display_user("panels", user, skill_panel, anonymous)
-    |> case do
-      {:ok, path} ->
-        {:noreply, push_redirect(socket, to: path)}
-
-      :error ->
-        {:noreply, put_flash(socket, :error, "選択された対象者がスキルパネルを保有していないため、対象者を表示できません")}
-    end
+    socket |> assign(skill: skill)
   end
 
-  def handle_event("og_image_data_click", %{"value" => value}, socket) do
-    {:noreply, assign_og_image_data(socket, value)}
-  end
-
-  def handle_event("skill_shara_og_image_data_click", %{"value" => value}, socket) do
-    {:noreply, assign_og_image_data(socket, value, :skill_shara_og_image_data)}
-  end
-
-  def handle_event("sns_up_click", _params, socket) do
-    upload_ogp_data(socket.assigns)
-    {:noreply, socket}
-  end
-
-  def handle_event("skill_sns_up_click", _params, socket) do
-    upload_ogp_data(socket.assigns, :skill_shara_og_image_data)
-    {:noreply, socket}
-  end
-
-  def handle_event("update_score", _params, %{assigns: %{me: false}} = socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
-    prev_skill_class_score = socket.assigns.skill_class_score
-
-    prev_skill_share_data =
-      SkillScores.get_level_count_from_skill_panel_id(
-        socket.assigns.skill_panel.id,
-        socket.assigns.skill_class.class
+  defp assign_skill_evidence(socket) do
+    skill_evidence =
+      SkillEvidences.get_skill_evidence_by(
+        user_id: socket.assigns.display_user.id,
+        skill_id: socket.assigns.skill.id
       )
 
-    SkillScores.get_skill_score!(id)
-    |> Map.put(:score, String.to_atom(score))
-    |> then(&[&1])
-    |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
+    socket
+    |> assign(skill_evidence: skill_evidence)
+  end
 
-    send_update(BrightWeb.OgpComponent, id: "ogp")
-
-    open_growth_share(prev_skill_class_score, prev_skill_share_data)
+  defp assign_skill_reference(socket) do
+    skill_reference = SkillReferences.get_skill_reference_by!(skill_id: socket.assigns.skill.id)
 
     socket
-    |> assign_renew(params["class"])
-    |> assign_gem_data()
-    |> then(&{:noreply, &1})
-  end
-
-  def handle_event("update_score", %{"skill_id" => id, "score" => score} = params, socket) do
-    [
-      %SkillScore{
-        skill_id: id,
-        score: String.to_atom(score),
-        user_id: socket.assigns.current_user.id
-      }
-    ]
-    |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
-
-    {:noreply, assign_renew(socket, params["class"])}
-  end
-
-  def handle_event("scroll_to_unit", _params, socket) do
-    {:noreply, push_event(socket, "scroll_to_unit", %{})}
+    |> assign(skill_reference: skill_reference)
   end
 
   defp update_reference_read(socket) do
@@ -170,6 +226,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
     {:ok, skill_score} = SkillScores.make_skill_score_reference_read(user, skill)
     update(socket, :skill_score_dict, &Map.put(&1, skill.id, skill_score))
+  end
+
+  defp assign_skill_exam(socket) do
+    skill_exam = SkillExams.get_skill_exam_by!(skill_id: socket.assigns.skill.id)
+
+    socket
+    |> assign(skill_exam: skill_exam)
   end
 
   defp update_exam_progress_wip(socket) do
@@ -185,86 +248,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     end
   end
 
-  defp assign_gem_data(socket) do
-    %{skill_units: skill_units, skill_score_dict: skill_score_dict} = socket.assigns
-
-    {gem_labels, gem_values} =
-      Enum.reduce(skill_units, {[], []}, fn skill_unit, {labels, values} ->
-        percentage = get_percentage_in_skill_unit(skill_unit, skill_score_dict)
-        {labels ++ [skill_unit.name], values ++ [percentage]}
-      end)
-
-    assign(socket, gem_labels: gem_labels, gem_values: gem_values)
-  end
-
-  defp assign_skill_units(socket) do
-    skill_units =
-      socket.assigns.skill_class
-      |> Bright.Repo.preload(skill_units: [skill_categories: [:skills]])
-      |> Map.get(:skill_units)
-
-    assign(socket, :skill_units, skill_units)
-  end
-
-  defp assign_renew(socket, class) do
-    socket
-    |> assign_skill_class_and_score(class)
-    |> assign_skill_score_dict()
-    |> assign_counter()
-  end
-
-  defp assign_skill(socket, skill_id) do
-    assign(socket, skill: SkillUnits.get_skill!(skill_id))
-  end
-
-  defp assign_skill_evidence(socket) do
-    skill_evidence =
-      SkillEvidences.get_skill_evidence_by(
-        user_id: socket.assigns.display_user.id,
-        skill_id: socket.assigns.skill.id
-      )
-
-    assign(socket, skill_evidence: skill_evidence)
-  end
-
-  defp assign_skill_reference(socket) do
-    skill_reference = SkillReferences.get_skill_reference_by!(skill_id: socket.assigns.skill.id)
-
-    assign(socket, skill_reference: skill_reference)
-  end
-
-  defp assign_skill_exam(socket) do
-    skill_exam = SkillExams.get_skill_exam_by!(skill_id: socket.assigns.skill.id)
-
-    assign(socket, skill_exam: skill_exam)
-  end
-
-  defp assign_skill_share_data(%{assigns: assigns} = socket) do
-    skill_share_data =
-      SkillScores.get_level_count_from_skill_panel_id(assigns.skill_panel.id)
-      |> Map.merge(%{name: assigns.skill_panel.name})
-
-    assign(socket, :skill_share_data, skill_share_data)
-  end
-
-  defp get_percentage_in_skill_unit(skill_unit, skill_score_dict) do
-    skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
-    size = Enum.count(skills)
-
-    if size == 0 do
-      0
-    else
-      num_high_skills = Enum.count(skills, &(Map.get(skill_score_dict, &1.id).score == :high))
-      floor(num_high_skills / size * 100)
-    end
-  end
-
-  def assign_links(%{assigns: assigns} = socket) do
-    1..length(assigns.gem_labels)
-    |> Enum.map(fn x -> "#unit-" <> "#{x}" end)
-    |> then(&assign(socket, :links, &1))
-  end
-
   defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do
     {:ok, skill_evidence} =
       SkillEvidences.create_skill_evidence(%{
@@ -274,7 +257,8 @@ defmodule BrightWeb.SkillPanelLive.Skills do
         skill_evidence_posts: []
       })
 
-    assign(socket, skill_evidence: skill_evidence)
+    socket
+    |> assign(skill_evidence: skill_evidence)
   end
 
   defp create_skill_evidence_if_not_existing(socket), do: socket
@@ -315,5 +299,13 @@ defmodule BrightWeb.SkillPanelLive.Skills do
         prev_skill_share_data: prev_skill_share_data
       )
     end
+  end
+
+  defp assign_skill_share_data(%{assigns: assigns} = socket) do
+    skill_share_data =
+      SkillScores.get_level_count_from_skill_panel_id(assigns.skill_panel.id)
+      |> Map.merge(%{name: assigns.skill_panel.name})
+
+    assign(socket, :skill_share_data, skill_share_data)
   end
 end
