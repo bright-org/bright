@@ -2,15 +2,11 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   use BrightWeb, :live_view
 
   import BrightWeb.BrightModalComponents
-
-  import BrightWeb.SkillPanelLive.SkillPanelComponents,
-    only: [profile_skill_class_level: 1, score_mark_class: 2, no_skill_panel: 1]
-
   import BrightWeb.SkillPanelLive.SkillCardComponents
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.DisplayUserHelper
   import BrightWeb.GuideMessageComponents
-  import BrightWeb.ChartComponents, only: [skill_gem: 1]
+  import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [no_skill_panel: 1]
 
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
@@ -20,15 +16,10 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   alias Bright.SkillReferences
   alias Bright.SkillExams
   alias BrightWeb.PathHelper
-  alias BrightWeb.SnsComponents
-  alias BrightWeb.Share.Helper, as: ShareHelper
-  alias BrightWeb.QrCodeComponents
   alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
+  alias BrightWeb.Share.Helper, as: ShareHelper
   alias BrightWeb.SkillPanelLive.SkillShareModalComponent
   alias Bright.Utils.Aes.Aes128
-
-  # 入力時間目安表示のための１スキルあたりの時間(分): 約20秒
-  @minute_per_skill 0.33
 
   @impl true
   def mount(params, _session, socket) do
@@ -73,8 +64,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
 
   defp apply_action(socket, :show, _params), do: put_flash_first_skills_edit(socket)
 
-  defp apply_action(socket, :edit, _params), do: socket
-
   defp apply_action(socket, :show_evidences, params) do
     socket
     |> assign_skill(params["skill_id"])
@@ -109,9 +98,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
         {:noreply, push_redirect(socket, to: path)}
 
       :error ->
-        {:noreply,
-         socket
-         |> put_flash(:error, "選択された対象者がスキルパネルを保有していないため、対象者を表示できません")}
+        {:noreply, put_flash(socket, :error, "選択された対象者がスキルパネルを保有していないため、対象者を表示できません")}
     end
   end
 
@@ -175,7 +162,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
   end
 
   def handle_event("scroll_to_unit", _params, socket) do
-    IO.inspect("click")
     {:noreply, push_event(socket, "scroll_to_unit", %{})}
   end
 
@@ -272,13 +258,6 @@ defmodule BrightWeb.SkillPanelLive.Skills do
       floor(num_high_skills / size * 100)
     end
   end
-
-  defp get_level(counter, num_skills) do
-    SkillScores.calc_high_skills_percentage(counter.high, num_skills)
-    |> SkillScores.get_level()
-  end
-
-  defp minute_per_skill, do: @minute_per_skill
 
   def assign_links(%{assigns: assigns} = socket) do
     1..length(assigns.gem_labels)
