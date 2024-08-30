@@ -15,7 +15,7 @@ const maxPercent = 100;
 // 三角形を一つだけ描きます
 const drawTriangle = (ctx, percent, color2, color) => {
   // 100％の三角形から小さくしていき、x座標がずれるので差分を求めています
-  let xDiff = maxPercent - percent;
+  let xDiff = 0;
   ctx.beginPath();
   // 三角形の頂点を開始位置にします
   ctx.moveTo(percent + xDiff, 0);
@@ -27,8 +27,8 @@ const drawTriangle = (ctx, percent, color2, color) => {
   // ここでパスを閉じると頂点と結ばれます
   ctx.closePath();
   let lineargradient = ctx.createLinearGradient(0, 0, 0, percent);
-  lineargradient.addColorStop(0, color);
-  lineargradient.addColorStop(1, color2);
+  lineargradient.addColorStop(0, color + "FF");
+  lineargradient.addColorStop(1, color2 + "00");
 
   ctx.fillStyle = lineargradient;
   // ctx.fillStyle = color;
