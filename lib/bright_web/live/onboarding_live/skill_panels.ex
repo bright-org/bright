@@ -8,6 +8,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   import BrightWeb.GuideMessageComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [no_skill_panel: 1]
 
+  alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel
   alias Bright.SkillUnits
   alias Bright.SkillScores
@@ -29,9 +30,13 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
 
   @impl true
   def mount(params, _session, socket) do
+    skill_panel_params =
+      %{user_id: socket.assigns.current_user.id, skill_panel_id: params["skill_panel_id"]}
+
     socket
     |> assign_display_user(params)
-    |> assign_skill_panel(params["skill_panel_id"])
+    |> assign_skill_panel(skill_panel_params)
+    |> assign(:return_to, "")
     |> assign(:select_label, "now")
     |> assign(:select_label_compared_user, nil)
     |> assign(:compared_user, nil)
@@ -49,6 +54,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
   def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}}} = socket) do
     socket
     |> assign_path(url)
+    |> assign_return_to(params, url)
     |> assign_skill_classes()
     |> assign_skill_share_data()
     |> assign_skill_class_and_score(params["class"])
@@ -254,6 +260,34 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
     assign(socket, :skill_share_data, skill_share_data)
   end
 
+  defp assign_return_to(socket, params, url) do
+    # パンくずから一つ前に戻った時のスクロール先設定
+    current_path = URI.parse(url).path |> Path.split() |> Enum.at(1) |> String.replace("/", "")
+    id = params["skill_panel_id"]
+
+    career_field =
+      Map.get(
+        params,
+        "career_field",
+        SkillPanels.get_skill_panel_with_career_fields!(id)
+        |> Map.get(:career_fields, [%{name_en: "engineer"}])
+        |> List.first()
+        |> Map.get(:name_en)
+      )
+
+    assign(
+      socket,
+      :return_to,
+      "/#{current_path}?panel=#{id}&career_field=#{career_field}"
+    )
+  end
+
+  def assign_links(%{assigns: assigns} = socket) do
+    1..length(assigns.gem_labels)
+    |> Enum.map(fn x -> "#unit-" <> "#{x}" end)
+    |> then(&assign(socket, :links, &1))
+  end
+
   defp get_percentage_in_skill_unit(skill_unit, skill_score_dict) do
     skills = skill_unit.skill_categories |> Enum.flat_map(& &1.skills)
     size = Enum.count(skills)
@@ -264,12 +298,6 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
       num_high_skills = Enum.count(skills, &(Map.get(skill_score_dict, &1.id).score == :high))
       floor(num_high_skills / size * 100)
     end
-  end
-
-  def assign_links(%{assigns: assigns} = socket) do
-    1..length(assigns.gem_labels)
-    |> Enum.map(fn x -> "#unit-" <> "#{x}" end)
-    |> then(&assign(socket, :links, &1))
   end
 
   defp create_skill_evidence_if_not_existing(%{assigns: %{skill_evidence: nil}} = socket) do
