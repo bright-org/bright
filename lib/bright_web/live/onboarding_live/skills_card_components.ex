@@ -62,7 +62,7 @@ defmodule BrightWeb.SkillPanelLive.SkillCardComponents do
         module={BrightWeb.SkillListComponent}
         display_user={@display_user}
         me={@me}
-        root="panels"
+        root="more_skills"
         anonymous={@anonymous}
         career_field={nil}
         current_skill_class={@skill_class}
