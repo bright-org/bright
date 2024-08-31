@@ -1,6 +1,8 @@
 defmodule Bright.DraftSkillPanels.ReleaseTest do
   use Bright.DataCase, async: true
 
+  import Mock
+
   alias Bright.DraftSkillPanels.Release
 
   alias Bright.Repo
@@ -10,6 +12,17 @@ defmodule Bright.DraftSkillPanels.ReleaseTest do
   alias Bright.SkillUnits.SkillCategory
   alias Bright.SkillUnits.Skill
   alias Bright.SkillUnits.SkillClassUnit
+
+  # mock date固定, 新規作成時にlocked_dateが現在時参照で決まるため
+  defp date_mock do
+    {
+      Date,
+      [:passthrough],
+      [
+        utc_today: fn -> ~D[2024-08-29] end
+      ]
+    }
+  end
 
   # テストデータ生成の共通処理
   defp create_draft_skill do
@@ -65,12 +78,15 @@ defmodule Bright.DraftSkillPanels.ReleaseTest do
       # スキルクラスの新規作成確認
       draft_skill_class = insert(:draft_skill_class, skill_panel_id: ctx.skill_panel.id)
 
-      Release.commit(ctx.skill_panel)
+      with_mocks([date_mock()]) do
+        Release.commit(ctx.skill_panel)
 
-      new_one = Repo.get_by!(SkillClass, trace_id: draft_skill_class.trace_id)
-      assert new_one.name == draft_skill_class.name
-      assert new_one.class == draft_skill_class.class
-      assert new_one.skill_panel_id == draft_skill_class.skill_panel_id
+        new_one = Repo.get_by!(SkillClass, trace_id: draft_skill_class.trace_id)
+        assert new_one.name == draft_skill_class.name
+        assert new_one.class == draft_skill_class.class
+        assert new_one.skill_panel_id == draft_skill_class.skill_panel_id
+        assert new_one.locked_date == ~D[2024-07-01]
+      end
     end
 
     test "updates skill_classes", ctx do
@@ -100,29 +116,32 @@ defmodule Bright.DraftSkillPanels.ReleaseTest do
           draft_skill_unit: draft_skill_unit
         )
 
-      Release.commit(ctx.skill_panel)
+      with_mocks([date_mock()]) do
+        Release.commit(ctx.skill_panel)
 
-      # 作成されていることを確認
-      new_skill_unit = Repo.get_by!(SkillUnit, trace_id: draft_skill_unit.trace_id)
-      new_skill_category = Repo.get_by!(SkillCategory, trace_id: draft_skill_category.trace_id)
-      new_skill = Repo.get_by!(Skill, trace_id: draft_skill.trace_id)
-      new_skill_class = Repo.get_by!(SkillClass, trace_id: draft_skill_class.trace_id)
+        # 作成されていることを確認
+        new_skill_unit = Repo.get_by!(SkillUnit, trace_id: draft_skill_unit.trace_id)
+        new_skill_category = Repo.get_by!(SkillCategory, trace_id: draft_skill_category.trace_id)
+        new_skill = Repo.get_by!(Skill, trace_id: draft_skill.trace_id)
+        new_skill_class = Repo.get_by!(SkillClass, trace_id: draft_skill_class.trace_id)
 
-      new_skill_class_unit =
-        Repo.get_by!(SkillClassUnit, trace_id: draft_skill_class_unit.trace_id)
+        new_skill_class_unit =
+          Repo.get_by!(SkillClassUnit, trace_id: draft_skill_class_unit.trace_id)
 
-      assert new_skill_unit.name == draft_skill_unit.name
+        assert new_skill_unit.name == draft_skill_unit.name
+        assert new_skill_unit.locked_date == ~D[2024-07-01]
 
-      assert new_skill_category.name == draft_skill_category.name
-      assert new_skill_category.position == draft_skill_category.position
-      assert new_skill_category.skill_unit_id == new_skill_unit.id
+        assert new_skill_category.name == draft_skill_category.name
+        assert new_skill_category.position == draft_skill_category.position
+        assert new_skill_category.skill_unit_id == new_skill_unit.id
 
-      assert new_skill.name == draft_skill.name
-      assert new_skill.position == draft_skill.position
-      assert new_skill.skill_category_id == new_skill_category.id
+        assert new_skill.name == draft_skill.name
+        assert new_skill.position == draft_skill.position
+        assert new_skill.skill_category_id == new_skill_category.id
 
-      assert new_skill_class_unit.skill_class_id == new_skill_class.id
-      assert new_skill_class_unit.skill_unit_id == new_skill_unit.id
+        assert new_skill_class_unit.skill_class_id == new_skill_class.id
+        assert new_skill_class_unit.skill_unit_id == new_skill_unit.id
+      end
     end
 
     test "updates skill_unit / skill_category / skill", ctx do
@@ -359,11 +378,12 @@ defmodule Bright.DraftSkillPanels.ReleaseTest do
       )
 
       # 移動先とドラフトデータ上での移動の準備
-      draft_skill_class_2 = insert(:draft_skill_class, skill_panel_id: ctx.skill_panel.id)
+      skill_panel_2 = insert(:skill_panel)
+      draft_skill_class_2 = insert(:draft_skill_class, skill_panel_id: skill_panel_2.id)
 
       skill_class_2 =
         insert(:skill_class,
-          skill_panel_id: ctx.skill_panel.id,
+          skill_panel_id: skill_panel_2.id,
           trace_id: draft_skill_class_2.trace_id
         )
 
@@ -487,11 +507,12 @@ defmodule Bright.DraftSkillPanels.ReleaseTest do
       )
 
       # 移動元とドラフトデータ上での移動の準備
-      draft_skill_class_2 = insert(:draft_skill_class, skill_panel_id: ctx.skill_panel.id)
+      skill_panel_2 = insert(:skill_panel)
+      draft_skill_class_2 = insert(:draft_skill_class, skill_panel_id: skill_panel_2.id)
 
       skill_class_2 =
         insert(:skill_class,
-          skill_panel_id: ctx.skill_panel.id,
+          skill_panel_id: skill_panel_2.id,
           trace_id: draft_skill_class_2.trace_id
         )
 

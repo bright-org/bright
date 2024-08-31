@@ -15,7 +15,6 @@ defmodule Bright.DraftSkillPanels.Release do
   alias Bright.SkillUnits.SkillCategory
   alias Bright.SkillUnits.Skill
 
-  alias Bright.DraftSkillPanels.SkillPanel, as: DraftSkillPanel
   alias Bright.DraftSkillPanels.DraftSkillClass
   alias Bright.DraftSkillUnits.DraftSkillClassUnit
   alias Bright.DraftSkillUnits.DraftSkill
@@ -56,17 +55,24 @@ defmodule Bright.DraftSkillPanels.Release do
     {c_skills, c_skill_categories, c_skill_units} =
       list_skill_structures(all_target_skill_trace_ids)
 
+    #   本番データは、移動時に関連紐づけがあるため必要なデータをさらに集めている
+    c_skill_categories =
+      (c_skill_categories ++ list_skill_categories_by_tarce_id(d_skill_categories)) |> Enum.uniq()
+
+    c_skill_units = (c_skill_units ++ list_skill_units_by_tarce_id(d_skill_units)) |> Enum.uniq()
+
     d_skill_class_units = list_draft_skill_class_units(d_skill_units)
     c_skill_class_units = list_skill_class_units(c_skill_units)
 
     Repo.transaction(fn ->
-      # スキルクラス
+      # スキルクラスの更新
       {_count, skill_classes} = commit_skill_classes(d_skill_classes, c_skill_classes)
 
-      # スキルユニット
+      # スキルユニットの更新, 更新後のskill_unitsは下階層の関連付けに使用する
       {_count, skill_units} = commit_skill_units(d_skill_units, c_skill_units)
+      skill_units = Enum.uniq_by(skill_units ++ c_skill_units, & &1.trace_id)
 
-      # スキルカテゴリ
+      # スキルカテゴリの更新, 更新後のskill_categoriesは下階層の関連付けに使用する
       {_count, skill_categories} =
         commit_skill_categories(
           d_skill_categories,
@@ -75,7 +81,9 @@ defmodule Bright.DraftSkillPanels.Release do
           d_skill_units
         )
 
-      # スキル
+      skill_categories = Enum.uniq_by(skill_categories ++ c_skill_categories, & &1.trace_id)
+
+      # スキルの更新
       {_count, _skills} = commit_skills(d_skills, c_skills, skill_categories, d_skill_categories)
 
       # スキルクラス-スキルユニット関連
@@ -377,8 +385,22 @@ defmodule Bright.DraftSkillPanels.Release do
     |> reduce_skill_structures()
   end
 
-  defp list_draft_skill_classes(%DraftSkillPanel{} = skill_panel) do
-    from(q in DraftSkillClass, where: q.skill_panel_id == ^skill_panel.id)
+  defp list_skill_categories_by_tarce_id(d_skill_categories) do
+    trace_ids = Enum.map(d_skill_categories, & &1.trace_id)
+
+    from(q in SkillCategory, where: q.trace_id in ^trace_ids)
+    |> Repo.all()
+  end
+
+  defp list_skill_units_by_tarce_id(d_skill_units) do
+    trace_ids = Enum.map(d_skill_units, & &1.trace_id)
+
+    from(q in SkillUnit, where: q.trace_id in ^trace_ids)
+    |> Repo.all()
+  end
+
+  defp list_draft_skill_classes(%{id: skill_panel_id}) do
+    from(q in DraftSkillClass, where: q.skill_panel_id == ^skill_panel_id)
     |> Repo.all()
   end
 
@@ -394,8 +416,8 @@ defmodule Bright.DraftSkillPanels.Release do
     |> Repo.all()
   end
 
-  defp list_skill_classes(%DraftSkillPanel{} = skill_panel) do
-    from(q in SkillClass, where: q.skill_panel_id == ^skill_panel.id)
+  defp list_skill_classes(%{id: skill_panel_id}) do
+    from(q in SkillClass, where: q.skill_panel_id == ^skill_panel_id)
     |> Repo.all()
   end
 

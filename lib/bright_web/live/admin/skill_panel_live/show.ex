@@ -29,9 +29,13 @@ defmodule BrightWeb.Admin.SkillPanelLive.Show do
 
   @impl true
   def handle_event("commit", _params, socket) do
+    %{skill_panel: skill_panel} = socket.assigns
     DraftSkillPanels.commit_to_release(socket.assigns.skill_panel)
 
-    {:noreply, put_flash(socket, :info, "反映を行いました")}
+    {:noreply,
+     socket
+     |> put_flash(:info, "反映を行いました")
+     |> push_navigate(to: ~p"/admin/skill_panels/#{skill_panel}")}
   end
 
   defp page_title(:show), do: "Show Skill panel"
