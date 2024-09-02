@@ -171,7 +171,10 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     ]
     |> SkillScores.insert_or_update_skill_scores(socket.assigns.current_user)
 
-    {:noreply, assign_renew(socket, params["class"])}
+    socket
+    |> assign_renew(params["class"])
+    |> assign_gem_data()
+    |> then(&{:noreply, &1})
   end
 
   def handle_event("scroll_to_unit", _params, socket) do
