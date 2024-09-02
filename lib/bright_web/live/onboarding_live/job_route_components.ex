@@ -4,7 +4,7 @@ defmodule BrightWeb.OnboardingLive.JobRouteComponents do
   alias Bright.Jobs
   alias Bright.Jobs.Job
 
-  import BrightWeb.OnboardingLive.WantsJobComponents, only: [locked_job: 1, unlocked_job: 1]
+  import BrightWeb.OnboardingLive.JobPanelComponents, only: [locked_job: 1, unlocked_job: 1]
 
   @rank Ecto.Enum.values(Job, :rank)
 
