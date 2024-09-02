@@ -105,7 +105,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanels do
     {user, anonymous} =
       get_user_from_name_or_name_encrypted(params["name"], params["encrypt_user_name"])
 
-    get_path_to_switch_display_user("panels", user, skill_panel, anonymous)
+    get_path_to_switch_display_user("more_skills", user, skill_panel, anonymous)
     |> case do
       {:ok, path} ->
         {:noreply, push_redirect(socket, to: path)}
