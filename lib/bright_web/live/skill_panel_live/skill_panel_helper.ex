@@ -156,6 +156,12 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
   def assign_skill_score_dict(socket) do
     %{skill_class_score: skill_class_score} = socket.assigns
+
+    socket
+    |> assign(skill_score_dict: get_skill_score_dict(skill_class_score))
+  end
+
+  def get_skill_score_dict(skill_class_score) do
     skills = SkillUnits.list_skills_on_skill_class(%{id: skill_class_score.skill_class_id})
 
     # skillからskill_scoreを引く辞書を生成
@@ -167,18 +173,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
       )
       |> Map.new(&{&1.skill_id, &1})
 
-    skill_score_dict =
-      Map.new(skills, fn skill ->
-        skill_score =
-          Map.get(skill_score_dict, skill.id)
-          |> Kernel.||(%SkillScores.SkillScore{skill_id: skill.id, score: :low})
-          |> Map.put(:changed, false)
+    Map.new(skills, fn skill ->
+      skill_score =
+        Map.get(skill_score_dict, skill.id)
+        |> Kernel.||(%SkillScores.SkillScore{skill_id: skill.id, score: :low})
+        |> Map.put(:changed, false)
 
-        {skill.id, skill_score}
-      end)
-
-    socket
-    |> assign(skill_score_dict: skill_score_dict)
+      {skill.id, skill_score}
+    end)
   end
 
   def assign_counter(socket) do
