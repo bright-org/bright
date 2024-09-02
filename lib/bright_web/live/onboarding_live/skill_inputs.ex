@@ -2,11 +2,12 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   use BrightWeb, :live_view
 
   import BrightWeb.BrightModalComponents
-  import BrightWeb.SkillPanelLive.SkillCardComponents
-  import BrightWeb.SkillPanelLive.SkillPanelHelper
-  import BrightWeb.DisplayUserHelper
   import BrightWeb.GuideMessageComponents
+  import BrightWeb.OnboardingLive.SkillInputsComponents
   import BrightWeb.SkillPanelLive.SkillPanelComponents, only: [no_skill_panel: 1]
+  import BrightWeb.DisplayUserHelper
+  import BrightWeb.SkillPanelLive.SkillPanelHelper
+  import BrightWeb.Share.Helper, only: [assign_share_graph_url: 1]
 
   alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel
@@ -16,16 +17,22 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
+  alias Bright.Utils.Aes.Aes128
   alias BrightWeb.PathHelper
   alias BrightWeb.SkillPanelLive.GrowthShareModalComponent
-  alias BrightWeb.Share.Helper, as: ShareHelper
   alias BrightWeb.SkillPanelLive.SkillShareModalComponent
-  alias Bright.Utils.Aes.Aes128
+  alias BrightWeb.OnboardingLive.SkillCardComponent
 
   @class_color %{
     1 => "from-[#76D3B9] to-[#4857AD]",
     2 => "from-[#4857AD] to-[#AE959A]",
     3 => "from-[#AE959A] to-[#F2E994]"
+  }
+
+  @label_color %{
+    1 => "bg-[#76D3B9]",
+    2 => "bg-[#4857AD]",
+    3 => "bg-[#E2C974]"
   }
 
   @impl true
@@ -36,17 +43,10 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     socket
     |> assign_display_user(params)
     |> assign_skill_panel(skill_panel_params)
-    |> assign(:return_to, "")
-    |> assign(:select_label, "now")
-    |> assign(:select_label_compared_user, nil)
-    |> assign(:compared_user, nil)
     |> assign(:page_title, "スキルパネル")
-    |> assign(:selected_unit, nil)
-    |> assign(:gem_labels, [])
-    |> assign(:gem_values, nil)
     |> assign(:class_color, @class_color)
+    |> assign(:label_color, @label_color)
     |> assign(:skill_share_open, false)
-    |> push_event("scroll_to_unit", %{})
     |> then(&{:ok, &1})
   end
 
@@ -56,18 +56,21 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     |> assign_path(url)
     |> assign_return_to(params, url)
     |> assign_skill_classes()
-    |> assign_skill_share_data()
     |> assign_skill_class_and_score(params["class"])
+    |> assign_prev_skill_class_and_score(params["class"])
+    |> assign_next_skill_class_and_score(params["class"])
     |> create_skill_class_score_if_not_existing()
     |> assign_skill_score_dict()
     |> assign_skill_units()
     |> assign_counter()
     |> assign_gem_data()
     |> assign_links()
-    |> apply_action(socket.assigns.live_action, params)
-    |> ShareHelper.assign_share_graph_url()
+    |> assign_skill_share_data()
+    |> assign_share_graph_url()
     |> assign(encode_share_ogp: Aes128.encrypt("#{socket.assigns.skill_panel.id}},ogp"))
+    |> apply_action(socket.assigns.live_action, params)
     |> touch_user_skill_panel()
+    |> push_event("scroll_to_unit", %{})
     |> then(&{:noreply, &1})
   end
 
@@ -201,16 +204,66 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     end
   end
 
+  defp assign_prev_skill_class_and_score(socket, "1"), do: assign(socket, :prev_skill_class, nil)
+
+  defp assign_prev_skill_class_and_score(socket, class) do
+    prev_skill_class = create_skill_class_data(socket, String.to_integer(class) - 1)
+    assign(socket, :prev_skill_class, prev_skill_class)
+  end
+
+  defp assign_next_skill_class_and_score(socket, "3"), do: assign(socket, :next_skill_class, nil)
+
+  defp assign_next_skill_class_and_score(socket, class) do
+    prev_skill_class = create_skill_class_data(socket, String.to_integer(class) + 1)
+    assign(socket, :next_skill_class, prev_skill_class)
+  end
+
+  defp create_skill_class_data(socket, class) do
+    skill_class =
+      socket.assigns.skill_classes
+      |> Enum.find(&(&1.class == class))
+
+    skill_units =
+      skill_class
+      |> Bright.Repo.preload(skill_units: [skill_categories: [:skills]])
+      |> Map.get(:skill_units)
+
+    skill_score_dict =
+      skill_class.skill_class_scores
+      |> List.first()
+      |> get_skill_score_dict()
+
+    {gem_labels, gem_values} = get_gem_data(skill_units, skill_score_dict)
+
+    counter = count_skill_scores(skill_score_dict)
+    num_skills = Enum.count(skill_score_dict)
+
+    links =
+      1..length(gem_labels)
+      |> Enum.map(fn _x -> "" end)
+
+    %{
+      gem_labels: gem_labels,
+      gem_values: gem_values,
+      counter: counter,
+      num_skills: num_skills,
+      links: links
+    }
+  end
+
   defp assign_gem_data(socket) do
     %{skill_units: skill_units, skill_score_dict: skill_score_dict} = socket.assigns
 
-    {gem_labels, gem_values} =
-      Enum.reduce(skill_units, {[], []}, fn skill_unit, {labels, values} ->
-        percentage = get_percentage_in_skill_unit(skill_unit, skill_score_dict)
-        {labels ++ [skill_unit.name], values ++ [percentage]}
-      end)
+    {gem_labels, gem_values} = get_gem_data(skill_units, skill_score_dict)
 
     assign(socket, gem_labels: gem_labels, gem_values: gem_values)
+  end
+
+  defp get_gem_data(skill_units, skill_score_dict) do
+    Enum.reduce(skill_units, {[], []}, fn skill_unit, {labels, values} ->
+      percentage = get_percentage_in_skill_unit(skill_unit, skill_score_dict)
+      {labels ++ [skill_unit.name], values ++ [percentage]}
+    end)
   end
 
   defp assign_skill_units(socket) do
