@@ -1,4 +1,4 @@
-defmodule BrightWeb.SkillPanelLive.SkillsCard do
+defmodule BrightWeb.OnboardingLive.SkillCardComponent do
   # スキルパネル画面 スキル一覧をカード形式で表示するコンポーネント
   # （スキルスコア入力に関しては、LiveViewで行いこちらでは制御しない）
 
