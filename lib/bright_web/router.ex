@@ -260,12 +260,11 @@ defmodule BrightWeb.Router do
       live "/searches", MypageLive.Index, :search
       live "/free_trial", MypageLive.Index, :free_trial
       live "/more_skills", OnboardingLive.Index, :index
-      live "/more_skills/wants/:want_id", OnboardingLive.SkillPanels
-      live "/more_skills/:skill_panel_id", OnboardingLive.SkillPanels, :show
-      live "/more_skills/:skill_panel_id/:user_name", OnboardingLive.SkillPanels, :show
+      live "/more_skills/:skill_panel_id", OnboardingLive.SkillInputs, :show
+      live "/more_skills/:skill_panel_id/:user_name", OnboardingLive.SkillInputs, :show
 
       live "/more_skills/:skill_panel_id/anon/:user_name_encrypted",
-           OnboardingLive.SkillPanels,
+           OnboardingLive.SkillInputs,
            :show
 
       live "/graphs", GraphLive.Graphs, :show
@@ -354,7 +353,7 @@ defmodule BrightWeb.Router do
       ] do
       live "/", OnboardingLive.Index, :index
       live "/welcome", OnboardingLive.Welcome
-      live "/jobs/:skill_panel_id", OnboardingLive.SkillPanels
+      live "/:job_id", OnboardingLive.SkillPanel
     end
   end
 

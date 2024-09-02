@@ -1,4 +1,4 @@
-defmodule BrightWeb.OnboardingLive.SkillPanels do
+defmodule BrightWeb.OnboardingLive.SkillInputs do
   use BrightWeb, :live_view
 
   import BrightWeb.BrightModalComponents
