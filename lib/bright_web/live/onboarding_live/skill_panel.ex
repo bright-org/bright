@@ -48,6 +48,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
           </div>
 
           <button
+            id="select_skill"
             class="rounded-md px-4 py-2 mb-8 bg-brightGreen-300 text-white flex text-lg"
             phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "input"})}
           >
