@@ -96,7 +96,8 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
           />
         </div>
         <% else %>
-          <div id={"class-#{class.id}"} class={"hidden lg:block lg:w-[40vw] #{margin(class.class, @skill_class.class)}"} phx-update="ignore">
+        <div class="hidden lg:block">
+          <div id={"class-#{class.id}"} class={"w-[40vw] #{margin(class.class, @skill_class.class)}"} phx-update="ignore">
           <.non_active_gem_area
             class_num={class.class}
             path={@path}
@@ -110,6 +111,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
             current_class={@skill_class.class}
           />
           </div>
+        </div>
         <% end %>
       <% end %>
     </div>
@@ -249,7 +251,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
     ~H"""
     <%= if assigns.skill_class.class != 1 do %>
       <p class="border p-[2px] mb-1 rounded-full">
-        <.link patch={"#{@path}?#{build_query(@query, %{"class" => @skill_class.class - 1})}"}>
+        <.link navigate={"#{@path}?#{build_query(@query, %{"class" => @skill_class.class - 1})}"}>
           <.icon name="hero-chevron-left"/>
         </.link>
       </p>
@@ -263,7 +265,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
     ~H"""
     <%= if assigns.skill_class.class != 3 do %>
       <p class="border p-[2px] mb-1 rounded-full">
-        <.link patch={"#{@path}?#{build_query(@query, %{"class" => @skill_class.class + 1})}"}>
+        <.link navigate={"#{@path}?#{build_query(@query, %{"class" => @skill_class.class + 1})}"}>
           <.icon name="hero-chevron-right"/>
         </.link>
       </p>
@@ -288,15 +290,15 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
 
   defp margin(class, current_class) do
     case {class, current_class} do
-      {1, 1} -> "lg:ml-[30vw] lg:mr-6"
+      {1, 1} -> "ml-[30vw] mr-6"
       {2, 1} -> "mx-12"
       {3, 1} -> "hidden"
       {1, 2} -> "-ml-[20vw] mr-6"
-      {2, 2} -> "lg:mx-12"
+      {2, 2} -> "mx-12"
       {3, 2} -> "mx-6"
       {1, 3} -> "hidden"
       {2, 3} -> "-ml-[20vw] mr-6"
-      {3, 3} -> "lg:mx-12 lg:mr-[20vw]"
+      {3, 3} -> "mx-12 mr-[20vw]"
     end
   end
 end

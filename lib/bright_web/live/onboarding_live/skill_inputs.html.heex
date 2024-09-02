@@ -32,6 +32,11 @@
       share_graph_url={@share_graph_url}
       color={@label_color}
     />
+    <div class="flex justify-center mt-4 text-4xl text-white">
+      <span class={"#{if @skill_class.class == 1, do: "text-[#777777]"}"}>・</span>
+      <span class={"#{if @skill_class.class == 2, do: "text-[#777777]"}"}>・</span>
+      <span class={"#{if @skill_class.class == 3, do: "text-[#777777]"}"}>・</span>
+    </div>
   </div>
 
   
