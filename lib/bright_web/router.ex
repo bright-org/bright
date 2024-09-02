@@ -261,7 +261,13 @@ defmodule BrightWeb.Router do
       live "/free_trial", MypageLive.Index, :free_trial
       live "/more_skills", OnboardingLive.Index, :index
       live "/more_skills/wants/:want_id", OnboardingLive.SkillPanels
-      live "/more_skills/:skill_panel_id", OnboardingLive.SkillPanels
+      live "/more_skills/:skill_panel_id", OnboardingLive.SkillPanels, :show
+      live "/more_skills/:skill_panel_id/:user_name", OnboardingLive.SkillPanels, :show
+
+      live "/more_skills/:skill_panel_id/anon/:user_name_encrypted",
+           OnboardingLive.SkillPanels,
+           :show
+
       live "/graphs", GraphLive.Graphs, :show
       live "/graphs/:skill_panel_id", GraphLive.Graphs, :show
       live "/graphs/:skill_panel_id/:user_name", GraphLive.Graphs, :show
