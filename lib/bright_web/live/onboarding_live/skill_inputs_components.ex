@@ -75,10 +75,10 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
 
   def gem_carousel(assigns) do
     ~H"""
-    <div class="w-[4000px] mt-8 flex overflow-x-hidden">
+    <div class="lg:w-[4000px] mt-8 flex lg:overflow-x-hidden">
       <%= for class <- @skill_classes do %>
         <%= if class.id == @skill_class.id do %>
-        <div class={"w-[40vw] #{margin(class.class, @skill_class.class)}"}>
+        <div class={"w-full lg:w-[40vw] #{margin(class.class, @skill_class.class)}"}>
           <.gem_area
             class={class.class}
             path={@path}
@@ -96,7 +96,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
           />
         </div>
         <% else %>
-          <div id={"class-#{class.id}"} class={"w-[40vw] #{margin(class.class, @skill_class.class)}"} phx-update="ignore">
+          <div id={"class-#{class.id}"} class={"hidden lg:block lg:w-[40vw] #{margin(class.class, @skill_class.class)}"} phx-update="ignore">
           <.non_active_gem_area
             class_num={class.class}
             path={@path}
@@ -176,12 +176,17 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
   def gem_area(assigns) do
     ~H"""
     <div class="bg-white rounded-lg flex flex-col py-8 h-full lg:h-[470px]">
+      <div class="lg:hidden flex justify-between -mt-4 px-4">
+        <.prev_class skill_class={@skill_class} path={@path} query={@query} />
+        <.next_class skill_class={@skill_class} path={@path} query={@query}/>
+      </div>
+
       <div class="flex justify-center">
         <span class={"#{@color} text-white py-[3px] px-2 rounded-lg mr-1"}>クラス<%= @skill_class.class %></span>
         <span class="font-bold"><%= @skill_class.name %></span>
       </div>
       <div class="flex flex-col lg:flex-row items-center justify-between mt-1 lg:px-4">
-        <.prev_class skill_class={@skill_class} path={@path} query={@query} />
+        <div class="hidden lg:block"><.prev_class skill_class={@skill_class} path={@path} query={@query} /></div>
         <div class="flex justify-center flex-col">
           <div phx-click="scroll_to_unit">
             <.skill_gem
@@ -201,7 +206,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
             </div>
           </div>
         </div>
-        <.next_class skill_class={@skill_class} path={@path} query={@query}/>
+        <div class="hidden lg:block"><.next_class skill_class={@skill_class} path={@path} query={@query}/></div>
       </div>
     </div>
     """
@@ -243,7 +248,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
   def prev_class(assigns) do
     ~H"""
     <%= if assigns.skill_class.class != 1 do %>
-      <p class="border p-[2px] mb-1 rounded-full hidden lg:flex">
+      <p class="border p-[2px] mb-1 rounded-full">
         <.link patch={"#{@path}?#{build_query(@query, %{"class" => @skill_class.class - 1})}"}>
           <.icon name="hero-chevron-left"/>
         </.link>
@@ -257,7 +262,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
   def next_class(assigns) do
     ~H"""
     <%= if assigns.skill_class.class != 3 do %>
-      <p class="border p-[2px] mb-1 rounded-full hidden lg:flex">
+      <p class="border p-[2px] mb-1 rounded-full">
         <.link patch={"#{@path}?#{build_query(@query, %{"class" => @skill_class.class + 1})}"}>
           <.icon name="hero-chevron-right"/>
         </.link>
@@ -283,15 +288,15 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
 
   defp margin(class, current_class) do
     case {class, current_class} do
-      {1, 1} -> "ml-[30vw] mr-6"
+      {1, 1} -> "lg:ml-[30vw] lg:mr-6"
       {2, 1} -> "mx-12"
       {3, 1} -> "hidden"
       {1, 2} -> "-ml-[20vw] mr-6"
-      {2, 2} -> "mx-12"
+      {2, 2} -> "lg:mx-12"
       {3, 2} -> "mx-6"
       {1, 3} -> "hidden"
       {2, 3} -> "-ml-[20vw] mr-6"
-      {3, 3} -> "mx-12 mr-[20vw]"
+      {3, 3} -> "lg:mx-12 lg:mr-[20vw]"
     end
   end
 end

@@ -204,7 +204,9 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     end
   end
 
-  defp assign_prev_skill_class_and_score(socket, "1"), do: assign(socket, :prev_skill_class, nil)
+  defp assign_prev_skill_class_and_score(socket, class) when is_nil(class) or class == "1" do
+    assign(socket, :prev_skill_class, nil)
+  end
 
   defp assign_prev_skill_class_and_score(socket, class) do
     prev_skill_class = create_skill_class_data(socket, String.to_integer(class) - 1)
@@ -212,6 +214,11 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   end
 
   defp assign_next_skill_class_and_score(socket, "3"), do: assign(socket, :next_skill_class, nil)
+
+  defp assign_next_skill_class_and_score(socket, nil) do
+    prev_skill_class = create_skill_class_data(socket, 2)
+    assign(socket, :next_skill_class, prev_skill_class)
+  end
 
   defp assign_next_skill_class_and_score(socket, class) do
     prev_skill_class = create_skill_class_data(socket, String.to_integer(class) + 1)
