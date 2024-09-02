@@ -1,4 +1,4 @@
-defmodule BrightWeb.SkillPanelLive.SkillCardComponents do
+defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
   use BrightWeb, :component
 
   import BrightWeb.MegaMenuComponents, only: [mega_menu_button: 1]
@@ -73,11 +73,111 @@ defmodule BrightWeb.SkillPanelLive.SkillCardComponents do
     """
   end
 
+  def gem_carousel(assigns) do
+    ~H"""
+    <div class="w-[4000px] mt-8 flex overflow-x-hidden">
+      <%= for class <- @skill_classes do %>
+        <%= if class.id == @skill_class.id do %>
+        <div class={"w-[40vw] #{margin(class.class, @skill_class.class)}"}>
+          <.gem_area
+            class={class.class}
+            path={@path}
+            query={@query}
+            links={@links}
+            skill_panel={@skill_panel}
+            skill_class={class}
+            counter={@counter}
+            num_skills={@num_skills}
+            gem_labels={@gem_labels}
+            gem_values={@gem_values}
+            share_graph_url={@share_graph_url}
+            color={Map.get(@color,class.class)}
+            show_qr={true}
+          />
+        </div>
+        <% else %>
+          <div id={"class-#{class.id}"} class={"w-[40vw] #{margin(class.class, @skill_class.class)}"} phx-update="ignore">
+          <.non_active_gem_area
+            class_num={class.class}
+            path={@path}
+            query={@query}
+            skill_panel={@skill_panel}
+            class={class}
+            prev_skill_class={@prev_skill_class}
+            next_skill_class={@next_skill_class}
+            color={Map.get(@color, class.class)}
+            show_qr={false}
+            current_class={@skill_class.class}
+          />
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    """
+  end
+
+  def non_active_gem_area(%{current_class: current, class_num: class} = assigns) do
+    case {class, current} do
+      {2, 1} -> next_gem_area(assigns)
+      {3, 1} -> hidden_gem_area(assigns)
+      {1, 2} -> prev_gem_area(assigns)
+      {3, 2} -> next_gem_area(assigns)
+      {1, 3} -> hidden_gem_area(assigns)
+      {2, 3} -> prev_gem_area(assigns)
+    end
+  end
+
+  def next_gem_area(assigns) do
+    ~H"""
+    <.gem_area
+        class={@class_num}
+        path={@path}
+        query={@query}
+        skill_panel={@skill_panel}
+        skill_class={@class}
+        links={@next_skill_class.links}
+        counter={@next_skill_class.counter}
+        num_skills={@next_skill_class.num_skills}
+        gem_labels={@next_skill_class.gem_labels}
+        gem_values={@next_skill_class.gem_values}
+        share_graph_url={""}
+        color={@color}
+        show_qr={false}
+      />
+    """
+  end
+
+  def prev_gem_area(assigns) do
+    ~H"""
+    <.gem_area
+        class={@class.class}
+        path={@path}
+        query={@query}
+        skill_panel={@skill_panel}
+        skill_class={@class}
+        links={@prev_skill_class.links}
+        counter={@prev_skill_class.counter}
+        num_skills={@prev_skill_class.num_skills}
+        gem_labels={@prev_skill_class.gem_labels}
+        gem_values={@prev_skill_class.gem_values}
+        share_graph_url={""}
+        color={@color}
+        show_qr={false}
+      />
+    """
+  end
+
+  def hidden_gem_area(assigns) do
+    ~H"""
+    <div />
+    """
+  end
+
   def gem_area(assigns) do
     ~H"""
     <div class="bg-white rounded-lg flex flex-col py-8 h-full lg:h-[470px]">
       <div class="flex justify-center">
-        <span class="bg-brightGreen-300 text-white py-[3px] px-2 rounded-lg mr-1">クラス<%= @skill_class.class %></span>
+        <span class={"#{@color} text-white py-[3px] px-2 rounded-lg mr-1"}>クラス<%= @skill_class.class %></span>
         <span class="font-bold"><%= @skill_class.name %></span>
       </div>
       <div class="flex flex-col lg:flex-row items-center justify-between mt-1 lg:px-4">
@@ -85,7 +185,7 @@ defmodule BrightWeb.SkillPanelLive.SkillCardComponents do
         <div class="flex justify-center flex-col">
           <div phx-click="scroll_to_unit">
             <.skill_gem
-              id={"sk-#{@skill_class.id}"}
+              id={"sk-#{@skill_class.id}-#{@class}"}
               labels={@gem_labels}
               data={[@gem_values]}
               size="base"
@@ -95,7 +195,7 @@ defmodule BrightWeb.SkillPanelLive.SkillCardComponents do
           </div>
           <div class="flex flex-col lg:flex-row px-2 lg:px-0 gap-x-2">
             <.skill_stat counter={@counter}  num_skills={@num_skills} />
-            <div class="flex gap-x-2 items-end px-8 lg:px-0 -mt-8 lg:mt-0">
+            <div class="flex gap-x-2 items-end px-8 lg:px-0 -mt-8 lg:mt-0" :if={@show_qr}>
               <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} skill_panel={@skill_panel.name} direction="lg:flex-col lg:justify-between lg:h-[75px] lg:py-1" />
               <QrCodeComponents.qr_code_image class="border border-b-2 border-brightGray-200" qr_code_url={@share_graph_url} width="80px" height="80px" />
             </div>
@@ -179,5 +279,19 @@ defmodule BrightWeb.SkillPanelLive.SkillCardComponents do
     base
     |> Map.merge(query)
     |> URI.encode_query()
+  end
+
+  defp margin(class, current_class) do
+    case {class, current_class} do
+      {1, 1} -> "ml-[30vw] mr-6"
+      {2, 1} -> "mx-12"
+      {3, 1} -> "hidden"
+      {1, 2} -> "-ml-[20vw] mr-6"
+      {2, 2} -> "mx-12"
+      {3, 2} -> "mx-6"
+      {1, 3} -> "hidden"
+      {2, 3} -> "-ml-[20vw] mr-6"
+      {3, 3} -> "mx-12 mr-[20vw]"
+    end
   end
 end
