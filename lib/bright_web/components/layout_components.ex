@@ -212,7 +212,7 @@ defmodule BrightWeb.LayoutComponents do
   def links() do
     [
       {"マイページ", "/mypage", nil, "/images/common/icons/mypage.svg"},
-      {"スキルを選ぶ", "/more_skills", nil, "/images/common/icons/skillSelect.svg"},
+      {"スキルを選ぶ", "/skills", nil, "/images/common/icons/skillSelect.svg"},
       {"成長パネル", "/graphs", nil, "/images/common/icons/mySkill.svg"},
       {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/, "/images/common/icons/skillAnalyze.svg"},
       {"面談チャット", "/recruits/chats", nil, "/images/common/icons/oneOnOneChat.svg"}

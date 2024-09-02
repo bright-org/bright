@@ -8,13 +8,13 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
   alias Bright.Onboardings
   alias Bright.Onboardings.UserOnboarding
 
-  import BrightWeb.OnboardingLive.Index, only: [hidden_more_skills: 1]
+  import BrightWeb.OnboardingLive.Index, only: [hide_when_skills: 1]
 
   @impl true
   def render(assigns) do
     ~H"""
     <section class="p-2 lg:p-8 bg-brightGray-50">
-      <h1 class={["font-bold text-3xl mb-8",hidden_more_skills(@current_path)]}>
+      <h1 class={["font-bold text-3xl mb-8",hide_when_skills(@current_path)]}>
         <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
           スキルを選ぶ
         </span>
@@ -181,7 +181,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
 
     socket
     |> select_skill_panel(user.id, skill_panel_id, name)
-    |> redirect(to: "/more_skills/#{skill_panel_id}")
+    |> redirect(to: "/skills/#{skill_panel_id}")
     |> then(&{:noreply, &1})
   end
 

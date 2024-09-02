@@ -47,7 +47,7 @@ defmodule BrightWeb.OnboardingLiveTest do
       lv
       |> element("#select_skill")
       |> render_click()
-      |> follow_redirect(conn, ~p"/more_skills/#{skill_panel.id}")
+      |> follow_redirect(conn, ~p"/skills/#{skill_panel.id}")
 
       assert Bright.Repo.aggregate(Bright.Onboardings.UserOnboarding, :count) == 1
     end
@@ -72,7 +72,7 @@ defmodule BrightWeb.OnboardingLiveTest do
 
     test "show skill_panel input page", %{skill_panel: skill_panel, conn: conn} do
       {:ok, _lv, html} =
-        live(conn, ~p"/more_skills/#{skill_panel.id}")
+        live(conn, ~p"/skills/#{skill_panel.id}")
 
       assert html =~ skill_panel.name
     end

@@ -10,7 +10,7 @@ defmodule BrightWeb.NotificationLive.NotificationHeaderComponentTest do
     setup [:register_and_log_in_user]
 
     test "opens header", %{conn: conn} do
-      {:ok, lv, _html} = live(conn, ~p"/more_skills")
+      {:ok, lv, _html} = live(conn, ~p"/skills")
 
       refute lv |> has_element?(~s{a[href="/notifications/operations"]})
       refute lv |> has_element?(~s{a[href="/notifications/communities"]})

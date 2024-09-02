@@ -122,7 +122,7 @@ defmodule BrightWeb.OnboardingLive.JobPanelComponents do
     """
   end
 
-  def unlocked_job(%{current_path: "more_skills"} = assigns) do
+  def unlocked_job(%{current_path: "skills"} = assigns) do
     ~H"""
     <div class="cursor-pointer">
       <.link navigate={"/#{@current_path}/#{@panel_id}?career_field=#{@career_field.name_en}"} >

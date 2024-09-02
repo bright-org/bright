@@ -65,9 +65,9 @@ defmodule BrightWeb.OnboardingLive.Index do
   defp skip_onboarding(%UserOnboarding{}, _), do: false
 
   defp page_title(<<"onboardings", _rest::binary>>), do: "オンボーディング"
-  defp page_title(<<"more_skills", _rest::binary>>), do: "スキルを選ぶ"
+  defp page_title(<<"skills", _rest::binary>>), do: "スキルを選ぶ"
 
-  def hidden_more_skills(current_path) do
+  def hide_when_skills(current_path) do
     if String.match?(current_path, ~r/onboarding/), do: "", else: "hidden"
   end
 end
