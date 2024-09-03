@@ -549,6 +549,36 @@ defmodule Bright.Accounts do
     end
   end
 
+  @doc """
+  Try to update zoho contact record. It updates only name and email.
+
+  ## Examples
+
+      iex> try_update_zoho_contact(user)
+      {:ok, %Tesla.Env{status: 200}}
+
+      iex> try_update_zoho_contact(user)
+      :error
+
+  """
+  def update_zoho_contact(user) do
+    case Crm.get_contacts_by_email(user.email) do
+      {:ok, []} ->
+        Logger.warning("Empty set when get contact by email: #{user.email}")
+        :error
+
+      {:ok, contacts} ->
+        record_id = contacts |> List.first() |> Map.get("id")
+
+        Crm.build_update_contact_payload(%{name: user.name, email: user.email})
+        |> then(&Bright.Zoho.Crm.update_contact(record_id, &1))
+
+      :error ->
+        Logger.warning("Failed to get contact by email: #{user.email}")
+        :error
+    end
+  end
+
   ## Reset password
 
   @doc ~S"""

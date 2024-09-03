@@ -1391,6 +1391,41 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "update_zoho_contact/1" do
+    use Bright.Zoho.MockSetup
+    import ExUnit.CaptureLog
+
+    setup do
+      %{user: insert(:user, email: "hoge@example.com")}
+    end
+
+    @tag zoho_mock:
+           {:search_and_update_contact_success, %{email: "hoge@example.com", record_id: "100"}}
+    test "updates a contact in Zoho", %{user: user} do
+      assert {:ok, _} = Accounts.update_zoho_contact(user)
+    end
+
+    @tag zoho_mock: {:search_contact_missing, "hoge@example.com"}
+    test "fails to update a contact in Zoho with empty log", %{user: user} do
+      log =
+        capture_log([level: :warning], fn ->
+          assert :error = Accounts.update_zoho_contact(user)
+        end)
+
+      assert log =~ "Empty set when get contact by email: hoge@example.com"
+    end
+
+    @tag zoho_mock: {:search_contact_failure, "hoge@example.com"}
+    test "fails to update a contact in Zoho with failed log", %{user: user} do
+      log =
+        capture_log([level: :warning], fn ->
+          assert :error = Accounts.update_zoho_contact(user)
+        end)
+
+      assert log =~ "Failed to get contact by email: hoge@example.com"
+    end
+  end
+
   describe "deliver_user_reset_password_instructions/2" do
     setup do
       %{user: insert(:user)}

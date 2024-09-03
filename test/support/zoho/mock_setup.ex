@@ -300,5 +300,23 @@ defmodule Bright.Zoho.MockSetup do
     end)
   end
 
+  def mock_zoho_api(%{
+        zoho_mock: {:search_and_update_contact_success, %{email: email, record_id: record_id}}
+      }) do
+    search_contact_url = search_contact_url(email)
+    update_contact_url = update_contact_url(record_id)
+
+    Tesla.Mock.mock(fn
+      %{method: :post, url: "https://accounts.zoho.jp/oauth/v2/token"} ->
+        auth_success_response()
+
+      %{method: :get, url: ^search_contact_url} ->
+        search_contact_success_response()
+
+      %{method: :put, url: ^update_contact_url} ->
+        update_contact_success_response()
+    end)
+  end
+
   def mock_zoho_api(_), do: :ok
 end
