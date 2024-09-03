@@ -142,6 +142,10 @@ defmodule BrightWeb.Router do
            DraftSkillClassLive.Show,
            :edit_skill_unit
 
+      live "/draft_skill_classes/:id/skill_units/:skill_unit_id/replace",
+           DraftSkillClassLive.Show,
+           :replace_skill_unit
+
       live "/draft_skill_classes/:id/skill_categories/new",
            DraftSkillClassLive.Show,
            :new_skill_category
@@ -160,6 +164,16 @@ defmodule BrightWeb.Router do
       live "/draft_skill_classes/:id/skills/:skill_id/replace",
            DraftSkillClassLive.Show,
            :replace_skill
+
+      # 本番編集ツール
+      live "/skill_classes/:id", SkillClassLive.Show, :show
+      live "/skill_classes/:id/skills/:skill_id/edit", SkillClassLive.Show, :edit_skill
+
+      live "/skill_classes/:id/skills/:skill_id/show_reference",
+           SkillClassLive.Show,
+           :show_reference
+
+      live "/skill_classes/:id/skills/:skill_id/show_exam", SkillClassLive.Show, :show_exam
 
       if System.get_env("SERVER") == "dev" do
         live "/user_tokens", UserTokenLive.Index, :index
@@ -317,6 +331,7 @@ defmodule BrightWeb.Router do
     get "/users/confirm_email/:token", UserConfirmEmailController, :confirm
     get "/users/confirm_sub_email/:token", UserConfirmSubEmailController, :confirm
     get "/get_skill_panel/:skill_panel_id", SkillPanelController, :get_skill_panel
+    get "/get_skill_panel/:skill_panel_id/:ogp", SkillPanelController, :get_skill_panel
   end
 
   # オンボーディング

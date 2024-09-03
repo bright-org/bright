@@ -312,10 +312,13 @@ defmodule BrightWeb.UserAuth do
   end
 
   defp require_authenticated_user_redirect_path(conn) do
+    ogp = conn.params |> Map.get("ogp", "")
+    ogp = if String.length(ogp) == 0, do: "", else: "?ogp=" <> ogp
+
     if conn.request_path == "/graphs" do
       ~p"/users/register"
     else
-      ~p"/users/log_in"
+      ~p"/users/log_in" <> ogp
     end
   end
 

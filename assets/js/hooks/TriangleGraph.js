@@ -1,3 +1,5 @@
+import html2canvas from 'html2canvas';
+
 // グラフの色定義
 const beginnerColor = "#1DA091";
 const normalColor = "#3CC0A8";
@@ -7,6 +9,9 @@ const skilledColor = "#72EAD9";
 const textColor = "#688888";
 
 const maxPercent = 100;
+
+// アイコン取得のセレクタ BrightWeb.BrightButtonComponentsのuser_buttonのimgを指定してます
+const iconQuery = "#user_icon";
 
 // 三角形の描画関数
 // 三角形を一つだけ描きます
@@ -34,10 +39,18 @@ const getPercent = (number, total) => {
 }
 
 // 各レベルのテキストを描画する関数
-const drawLevel = (ctx, levelText, number, percent, x, y) => {
+const drawLevel = (ctx, levelText, number, percent, x, y, withAvator) => {
   ctx.fillStyle = textColor;
   ctx.font = "14px 'Noto Sans JP'";
-  ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
+
+  // 人数は一定期間は封印の為コメントアウト
+  ctx.fillText(levelText + " " + percent + "%", x, y);
+
+  // アイコン取得
+  const image = document.querySelector(iconQuery);
+  if (withAvator) ctx.drawImage(image, x + 100, y - 15, 20, 20);
+
+  // ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
 }
 
 const drawTriangleGraph = (element) => {
@@ -45,6 +58,7 @@ const drawTriangleGraph = (element) => {
   const data = JSON.parse(dataset.data);
   const canvas = document.querySelector("#" + element.id + " canvas");
   const ctx = canvas.getContext('2d');
+  const level = data.level;
 
   const total = data.beginner + data.normal + data.skilled;
 
@@ -52,9 +66,12 @@ const drawTriangleGraph = (element) => {
   const normalPercent = getPercent(data.normal, total);
   const beginnerPercent = total == 0 ? 0 : maxPercent - skilledPercent - normalPercent;
 
-  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15);
-  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50);
-  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90);
+  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15, level === "skilled");
+  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50, level === "normal");
+  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90, level === "beginner");
+
+  // 人数は一定期間は封印の為コメントアウト
+  // ctx.fillText( "「 " + data.name + "」登録者 " + total + "人", 5, 120);
 
   // 三角形を重ねて描画します
   // ・見習い
@@ -65,9 +82,22 @@ const drawTriangleGraph = (element) => {
   drawTriangle(ctx, maxPercent, beginnerColor);
 
   // 合計が0の場合は「見習い」のみ描画
-  if (total == 0) return;
-  drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
-  drawTriangle(ctx, skilledPercent, skilledColor);
+  if (total > 0) {
+    drawTriangle(ctx, maxPercent - beginnerPercent, normalColor);
+    drawTriangle(ctx, skilledPercent, skilledColor);
+  }
+
+  if (ctx.canvas.parentNode.id !== "ogp_triangle_graph") return;
+
+  html2canvas(document.querySelector("#skill_shara_og_image"), {
+    width: 1200,
+    height: 630,
+  }).then(canvas => {
+    let og_image_data = document.getElementById("skill_shara_og_image_data");
+    if (og_image_data == null) return;
+    og_image_data.value = canvas.toDataURL("image/png");
+    og_image_data.click();
+  });
 
 }
 

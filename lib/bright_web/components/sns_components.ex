@@ -38,6 +38,7 @@ defmodule BrightWeb.SnsComponents do
   attr :share_graph_url, :string, required: true
   attr :skill_panel, :string, required: true
   attr :level_text, :string, default: nil
+  attr :phx_click, :string, default: "sns_up_click"
 
   def sns_share_button_group(assigns) do
     assigns =
@@ -49,8 +50,8 @@ defmodule BrightWeb.SnsComponents do
         id={@id}
         class="flex gap-2"
       >
-        <.twitter_share_button id={"#{@id}-twitter"} url={@share_graph_url} text={@twitter_text}/>
-        <.facebook_share_button id={"#{@id}-facebook"} url={@share_graph_url}/>
+        <.twitter_share_button id={"#{@id}-twitter"} url={@share_graph_url} text={@twitter_text} phx_click={@phx_click}/>
+        <.facebook_share_button id={"#{@id}-facebook"} url={@share_graph_url} phx_click={@phx_click}/>
       </div>
     """
   end
@@ -62,7 +63,7 @@ defmodule BrightWeb.SnsComponents do
         href={"https://x.com/intent/tweet?#{URI.encode_query(%{text: @text, url: @url})}"}
         target="_blank"
         rel="nofollow noopener noreferrer"
-        phx-click="sns_up_click"
+        phx-click={@phx_click}
       >
         <img class="h-6 w-24" src="/images/share_button/share_x.png" />
       </a>
@@ -76,7 +77,7 @@ defmodule BrightWeb.SnsComponents do
         href={"https://www.facebook.com/share.php?#{URI.encode_query(%{u: @url})}"}
         target="_blank"
         rel="nofollow noopener noreferrer"
-        phx-click="sns_up_click"
+        phx-click={@phx_click}
       >
         <img class="h-6 w-24" src="/images/share_button/share_facebook.png" />
       </a>
@@ -119,6 +120,13 @@ defmodule BrightWeb.SnsComponents do
 
   defp disable_icon_suffix(true), do: "_gray.svg"
   defp disable_icon_suffix(false), do: ".svg"
+
+  defp twitter_text(skill_panel, "start") do
+    """
+    \"#{skill_panel}\"スキルパネルをスタートしました！あなたも成長パネルを作成してみませんか？
+    #bright_skill
+    """
+  end
 
   defp twitter_text(skill_panel, nil) do
     """

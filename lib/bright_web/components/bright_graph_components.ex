@@ -27,7 +27,7 @@ defmodule BrightWeb.BrightGraphComponents do
       phx-update="ignore"
       data-data={@data}
     >
-      <canvas width="350" height="100"></canvas>
+      <canvas width="350" height="130"></canvas>
     </div>
     """
   end

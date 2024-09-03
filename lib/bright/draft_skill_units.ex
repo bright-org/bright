@@ -391,6 +391,16 @@ defmodule Bright.DraftSkillUnits do
     end
   end
 
+  def update_draft_skill_class_unit(%DraftSkillClassUnit{} = draft_skill_class_unit, attrs \\ %{}) do
+    draft_skill_class_unit
+    |> DraftSkillClassUnit.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def change_draft_skill_class_unit(%DraftSkillClassUnit{} = draft_skill_class_unit, attrs \\ %{}) do
+    DraftSkillClassUnit.changeset(draft_skill_class_unit, attrs)
+  end
+
   def delete_draft_skill_class_unit(
         %DraftSkillPanels.DraftSkillClass{} = draft_skill_class,
         %DraftSkillUnit{} = draft_skill_unit
@@ -404,14 +414,14 @@ defmodule Bright.DraftSkillUnits do
   end
 
   @doc """
-  位置の最大を取得する
+  表示位置の最大を取得する
   """
   def get_max_position(struct, relation) do
     struct |> Ecto.assoc(relation) |> Repo.aggregate(:max, :position) |> Kernel.||(0)
   end
 
   @doc """
-  位置(position)を入れ替える
+  表示位置(position)を入れ替える
 
   positionを属性でもっていればよくStructを問わない
   """

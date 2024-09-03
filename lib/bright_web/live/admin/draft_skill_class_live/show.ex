@@ -9,6 +9,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
     SkillClassFormComponent,
     SkillUnitFormComponent,
     SkillUnitAddFormComponent,
+    SkillUnitReplaceFormComponent,
     SkillCategoryFormComponent,
     SkillCategoryReplaceFormComponent,
     SkillFormComponent,
@@ -16,8 +17,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   }
 
   def mount(_params, _session, socket) do
-    # base_loadは開発都合でいれているフラグです。
-    # patch移動時にエラーがでるとアサインが整わない状態になり開発に手がかかるため対応しています。
+    # base_loadは開発都合でいれているフラグです。patch移動時にエラーがでるとアサインが整わない状態になり開発に手がかかるため入れていますが効率のみ求めるなら不要です
     {:ok, assign(socket, :base_load, false)}
   end
 
@@ -132,6 +132,19 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.Show do
   end
 
   defp assign_on_action(:edit_skill_unit, %{"skill_unit_id" => unit_id} = params, socket) do
+    skill_unit = DraftSkillUnits.get_draft_skill_unit!(unit_id)
+
+    {:noreply,
+     socket
+     |> assign(:skill_unit, skill_unit)
+     |> assign_base_page_attrs(params)}
+  end
+
+  defp assign_on_action(
+         :replace_skill_unit,
+         %{"skill_unit_id" => unit_id} = params,
+         socket
+       ) do
     skill_unit = DraftSkillUnits.get_draft_skill_unit!(unit_id)
 
     {:noreply,

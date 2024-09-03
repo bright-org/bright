@@ -2,6 +2,7 @@ defmodule BrightWeb.UserLoginLive do
   use BrightWeb, :live_view
 
   alias BrightWeb.UserAuthComponents
+  alias BrightWeb.Share.Helper
 
   def render(assigns) do
     ~H"""
@@ -43,9 +44,16 @@ defmodule BrightWeb.UserLoginLive do
     """
   end
 
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
+    ogp = Map.get(params, "ogp", "")
+
     email = live_flash(socket.assigns.flash, :email)
     form = to_form(%{"email" => email}, as: "user")
-    {:ok, assign(socket, form: form), temporary_assigns: [form: form]}
+
+    socket =
+      assign(socket, form: form)
+      |> Helper.assign_share_graph_og_image(%{"share_graph_token" => ogp})
+
+    {:ok, socket, temporary_assigns: [form: form]}
   end
 end

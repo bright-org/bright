@@ -49,42 +49,45 @@ defmodule BrightWeb.UserConfirmationControllerTest do
 
     @tag zoho_mock: :create_contact_success
     test "confirm user and logs the user in", %{conn: conn, user: user} do
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_user_confirmation_instructions(user, url)
-        end)
+      with_mock_env_prod(fn ->
+        token =
+          extract_user_token(fn url ->
+            Accounts.deliver_user_confirmation_instructions(user, url)
+          end)
 
-      conn = get(conn, ~p"/users/confirm/#{token}")
+        conn = get(conn, ~p"/users/confirm/#{token}")
 
-      assert get_session(conn, :user_token)
-      assert conn.resp_cookies["_bright_web_user"]
-      assert redirected_to(conn) == ~p"/onboardings/welcome"
-      assert Repo.get!(User, user.id).confirmed_at
-      assert Repo.all(from(u in UserToken, where: u.context == "confirm")) == []
+        assert get_session(conn, :user_token)
+        assert conn.resp_cookies["_bright_web_user"]
+        assert redirected_to(conn) == ~p"/onboardings/welcome"
+        assert Repo.get!(User, user.id).confirmed_at
+        assert Repo.all(from(u in UserToken, where: u.context == "confirm")) == []
+      end)
     end
 
     @tag zoho_mock: :create_contact_failure
     test "confirm user even if zoho api error", %{conn: conn, user: user} do
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_user_confirmation_instructions(user, url)
-        end)
+      with_mock_env_prod(fn ->
+        token =
+          extract_user_token(fn url ->
+            Accounts.deliver_user_confirmation_instructions(user, url)
+          end)
 
-      log =
-        capture_log(fn ->
-          conn = get(conn, ~p"/users/confirm/#{token}")
+        log =
+          capture_log(fn ->
+            conn = get(conn, ~p"/users/confirm/#{token}")
 
-          assert get_session(conn, :user_token)
-          assert conn.resp_cookies["_bright_web_user"]
-          assert redirected_to(conn) == ~p"/onboardings/welcome"
-          assert Repo.get!(User, user.id).confirmed_at
-          assert Repo.all(from(u in UserToken, where: u.context == "confirm")) == []
-        end)
+            assert get_session(conn, :user_token)
+            assert conn.resp_cookies["_bright_web_user"]
+            assert redirected_to(conn) == ~p"/onboardings/welcome"
+            assert Repo.get!(User, user.id).confirmed_at
+            assert Repo.all(from(u in UserToken, where: u.context == "confirm")) == []
+          end)
 
-      assert log =~ "Failed to create_contact:"
+        assert log =~ "Failed to create_contact:"
+      end)
     end
 
-    @tag zoho_mock: :create_contact_success
     test "confirms 2 times", %{conn: conn, user: user} do
       token =
         extract_user_token(fn url ->
@@ -99,7 +102,6 @@ defmodule BrightWeb.UserConfirmationControllerTest do
       assert redirected_to(conn) == ~p"/onboardings/welcome"
     end
 
-    @tag zoho_mock: :create_contact_success
     test "confirms and logs out and confirms again", %{conn: conn, user: user} do
       token =
         extract_user_token(fn url ->

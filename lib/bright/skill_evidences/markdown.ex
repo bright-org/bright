@@ -30,7 +30,7 @@ defmodule Bright.SkillEvidences.Markdown do
     ast
     |> Earmark.Transform.map_ast(&post_processor/1)
     |> permit()
-    |> Earmark.Transform.transform(%Earmark.Options{compact_output: true})
+    |> Earmark.Transform.transform(%Earmark.Options{compact_output: true, escape: false})
   end
 
   defp permit(ast) do
@@ -45,12 +45,8 @@ defmodule Bright.SkillEvidences.Markdown do
     make_safe_string(content)
   end
 
-  defp _permit({"code", attrs, [content], _meta}) when is_bitstring(content) do
-    {"code", make_safe_attrs("code", attrs), [content], %{}}
-  end
-
   defp _permit({"a", attrs, [content], _meta}) when is_bitstring(content) do
-    {"a", make_safe_attrs("a", attrs ++ [{"target", "_blank"}]), [content], %{}}
+    {"a", make_safe_attrs("a", attrs ++ [{"target", "_blank"}]), [make_safe_string(content)], %{}}
   end
 
   defp _permit({tag, attrs, [content], _meta}) when is_bitstring(content) do

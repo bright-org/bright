@@ -107,15 +107,25 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillSelectionComponent do
 
   def handle_event("select_skill_class", params, socket) do
     %{"skill_class_id" => skill_class_id} = params
+    %{target: target, on_select: on_select} = socket.assigns
+
     skill_class = DraftSkillPanels.get_draft_skill_class!(skill_class_id)
 
-    {:noreply,
-     socket
-     |> assign(:skill_class, skill_class)
-     |> assign(:skill_unit, nil)
-     |> assign(:skill_category, nil)
-     |> assign_skill_unit_options()
-     |> assign_skill_category_options()}
+    if is_struct(skill_class, target) do
+      on_select.(skill_class)
+
+      {:noreply,
+       socket
+       |> assign(:skill_class, skill_class)}
+    else
+      {:noreply,
+       socket
+       |> assign(:skill_class, skill_class)
+       |> assign(:skill_unit, nil)
+       |> assign(:skill_category, nil)
+       |> assign_skill_unit_options()
+       |> assign_skill_category_options()}
+    end
   end
 
   def handle_event("select_skill_unit", params, socket) do

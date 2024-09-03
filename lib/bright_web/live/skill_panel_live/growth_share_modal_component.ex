@@ -6,6 +6,7 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
   use BrightWeb, :live_component
 
   import BrightWeb.BrightModalComponents
+  import BrightWeb.BrightGraphComponents
 
   alias BrightWeb.SnsComponents
   alias BrightWeb.TimelineHelper
@@ -39,6 +40,15 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
                 historical_skill_unit_scores={@historical_skill_unit_scores}
                 date_from={@date_from} />
             </div>
+            <div class="lg:flex lg:flex-row">
+              <.triangle_graph data={@prev_skill_share_data} id="triangle_graph_past"/>
+              <div class="w-[75px] ml-[65px] mb-[5px] flex flex-col justify-center lg:ml-0 lg:block">
+                <span class="text-lg">Level Up!</span>
+                <span class="hidden lg:inline material-icons text-7xl">arrow_right_alt</span>
+                <span class="lg:hidden material-icons text-7xl">arrow_downward</span>
+              </div>
+              <.triangle_graph data={@skill_share_data} id="triangle_graph"/>
+            </div>
           </div>
         </div>
 
@@ -53,6 +63,14 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
     skill_class = SkillPanels.get_skill_class!(assigns.skill_class_id)
     skill_panel = SkillPanels.get_skill_panel!(skill_class.skill_panel_id)
 
+    skill_share_data =
+      SkillScores.get_level_count_from_skill_panel_id(skill_panel.id, skill_class.class)
+      |> Map.merge(%{name: skill_panel.name, level: assigns.new_level})
+
+    prev_skill_share_data =
+      assigns.prev_skill_share_data
+      |> Map.merge(%{level: assigns.prev_level})
+
     # スキルクラスも取る
     # 現状と3か月前を比べての成果も出す
     {:ok,
@@ -61,6 +79,8 @@ defmodule BrightWeb.SkillPanelLive.GrowthShareModalComponent do
      |> assign(:user, user)
      |> assign(:skill_class, skill_class)
      |> assign(:skill_panel, skill_panel)
+     |> assign(:skill_share_data, skill_share_data)
+     |> assign(:prev_skill_share_data, prev_skill_share_data)
      |> assign_presents()
      |> assign_historicals()}
   end

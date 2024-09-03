@@ -1571,7 +1571,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       |> element("#switch_table")
       |> render_click()
 
-      assert has_element?(show_live, "#help-enter-skills")
+      assert has_element?(show_live, "#skill_shara_modal-container")
 
       # 入力後に表示されないことの確認
       start_edit(show_live)
@@ -1587,7 +1587,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       assert flash["first_submit_in_overall"]
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      refute has_element?(show_live, "#help-enter-skills")
+      refute has_element?(show_live, "#skill_shara_modal-container")
     end
 
     @tag score: nil
