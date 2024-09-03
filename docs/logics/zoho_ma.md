@@ -106,6 +106,7 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 ```
 
 ※ "field9" は「連携元」カスタム項目（※エンタープライズ機能のみ）のフィールド名。`/crm/orgxxxxxx/settings/api/modules/Contacts?step=FieldsList` で確認可（xxxxxx は ZOHO の soid）。
+
 ※ API 実行がエラーになった場合でも、ユーザー登録処理全体はエラーにせず error レベルのログを出すに留める。（ZOHO がエラーになった時にユーザー登録ができないのは困るため）
 
 ## Bright ユーザーの情報変化時のフロー
