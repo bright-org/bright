@@ -288,14 +288,24 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
     |> URI.encode_query()
   end
 
-  defp margin(class, current_class) do
+  defp margin(class, 1 = current_class) do
     case {class, current_class} do
       {1, 1} -> "ml-[30vw] mr-6"
       {2, 1} -> "mx-12"
       {3, 1} -> "hidden"
+    end
+  end
+
+  defp margin(class, 2 = current_class) do
+    case {class, current_class} do
       {1, 2} -> "-ml-[20vw] mr-6"
       {2, 2} -> "mx-12"
       {3, 2} -> "mx-6"
+    end
+  end
+
+  defp margin(class, 3 = current_class) do
+    case {class, current_class} do
       {1, 3} -> "hidden"
       {2, 3} -> "-ml-[20vw] mr-6"
       {3, 3} -> "mx-12 mr-[20vw]"
