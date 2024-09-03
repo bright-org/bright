@@ -39,8 +39,10 @@ defmodule Bright.DraftSkillPanels.Release do
 
   defp commit_structures(skill_panel) do
     # 指定スキルパネルのスキルクラス以下のデータを生成、更新、削除している
-    # - スキルクラスに関しては削除はない（スキルパネルごと削除がそれにあたる）
     # - 返値は、後続処理の便宜上、スコア変動が発生する可能性があるスキルユニット一覧としている
+    # - スキルクラスに関しては削除はない（スキルパネルごと削除がそれにあたる）
+
+    # NOTE 以下、大まかな流れは、対象データを収集、スキルクラスからドラフトを本番に反映、不要分を削除になります。
 
     # 移動前後を含めて考慮するため、最小単位のスキルから、ドラフトと本番の指定スキルパネルの全対象データを得ている
     all_target_skill_trace_ids = list_target_skill_trace_ids(skill_panel)
@@ -87,7 +89,7 @@ defmodule Bright.DraftSkillPanels.Release do
       {_count, _skills} = commit_skills(d_skills, c_skills, skill_categories, d_skill_categories)
 
       # スキルクラス-スキルユニット関連
-      # 移動を考慮すると指定スキルパネル以外に紐づくスキルクラスも必要のため再取得
+      # 移動を考慮すると指定スキルパネル以外に紐づくデータも必要のためスキルクラスを再取得
       d_skill_classes = list_draft_skill_classes(d_skill_units)
       skill_classes = Enum.uniq(list_skill_classes(d_skill_classes) ++ skill_classes)
 
