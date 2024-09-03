@@ -132,7 +132,7 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 }
 ```
 
-で更新する。
+で更新する。更新に失敗したら例外を発生させる。
 
 ## コミュニティ機能
 
