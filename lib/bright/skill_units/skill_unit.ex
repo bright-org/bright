@@ -28,7 +28,7 @@ defmodule Bright.SkillUnits.SkillUnit do
 
     has_many :skill_classes, through: [:skill_class_units, :skill_class]
 
-    has_many(:skill_unit_scores, Bright.SkillScores.SkillUnitScore)
+    has_many :skill_unit_scores, Bright.SkillScores.SkillUnitScore, on_delete: :delete_all
 
     timestamps()
   end

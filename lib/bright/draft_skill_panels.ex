@@ -9,6 +9,9 @@ defmodule Bright.DraftSkillPanels do
 
   alias Bright.DraftSkillPanels.SkillPanel
   alias Bright.DraftSkillPanels.DraftSkillClass
+  alias Bright.DraftSkillPanels.Release
+
+  defdelegate commit_to_release(skill_panel), to: Release, as: :commit
 
   @doc """
   Returns the list of skill_panels.

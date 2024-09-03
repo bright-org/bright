@@ -21,10 +21,10 @@ defmodule Bright.SkillUnits.Skill do
 
     belongs_to :skill_category, SkillCategory
 
-    has_many :skill_scores, Bright.SkillScores.SkillScore
+    has_many :skill_scores, Bright.SkillScores.SkillScore, on_delete: :delete_all
     has_many :skill_evidences, Bright.SkillEvidences.SkillEvidence
-    has_one :skill_exam, Bright.SkillExams.SkillExam
-    has_one :skill_reference, Bright.SkillReferences.SkillReference
+    has_one :skill_exam, Bright.SkillExams.SkillExam, on_delete: :delete_all
+    has_one :skill_reference, Bright.SkillReferences.SkillReference, on_delete: :delete_all
 
     timestamps()
   end
