@@ -117,7 +117,7 @@ defmodule Bright.Zoho.CrmTest do
     end
   end
 
-  describe "get_contact_by_email/1" do
+  describe "get_contacts_by_email/1" do
     @tag zoho_mock: {:search_contact_by_email_success, "hoge@example.com"}
     test "gets contact successfully" do
       assert {:ok,
@@ -127,39 +127,39 @@ defmodule Bright.Zoho.CrmTest do
                   "Last_Name" => "koyo2"
                 }
               ]} =
-               Crm.get_contact_by_email("hoge@example.com")
+               Crm.get_contacts_by_email("hoge@example.com")
     end
 
     @tag zoho_mock: {:search_contact_missing, "hoge@example.com"}
     test "gets contact with no data" do
-      assert {:ok, []} = Crm.get_contact_by_email("hoge@example.com")
+      assert {:ok, []} = Crm.get_contacts_by_email("hoge@example.com")
     end
 
     @tag zoho_mock: {:search_contact_failure, "hoge@example.com"}
     test "gets contact failure with invalid error" do
       log =
         capture_log(fn ->
-          assert :error = Crm.get_contact_by_email("hoge@example.com")
+          assert :error = Crm.get_contacts_by_email("hoge@example.com")
         end)
 
-      assert log =~ "Failed to get_contact_by_email:"
+      assert log =~ "Failed to get_contacts_by_email:"
     end
 
     @tag zoho_mock: {:search_contact_connection_refused, "hoge@example.com"}
     test "gets contact failure with connection error" do
       log =
         capture_log(fn ->
-          assert :error = Crm.get_contact_by_email("hoge@example.com")
+          assert :error = Crm.get_contacts_by_email("hoge@example.com")
         end)
 
-      assert log =~ "Failed to get_contact_by_email:"
+      assert log =~ "Failed to get_contacts_by_email:"
     end
 
     @tag zoho_mock: :auth_failure
     test "returns error when auth failure" do
       log =
         capture_log(fn ->
-          assert :error = Crm.get_contact_by_email(%{name: "test", email: "email"})
+          assert :error = Crm.get_contacts_by_email(%{name: "test", email: "email"})
         end)
 
       assert log =~ "Failed to Zoho Auth: invalid_client"

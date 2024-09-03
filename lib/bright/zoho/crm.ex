@@ -143,8 +143,23 @@ defmodule Bright.Zoho.Crm do
   連絡先を email から検索する。
 
   NOTE: email は一意であるため最大1件の連絡先が返却されることを期待する
+
+  ## Examples
+
+      iex> Bright.Zoho.Crm.get_contacts_by_email("hoge@example.com")
+      {:ok,
+        [
+          %{
+            "id" => "100",
+            "Last_Name" => "koyo2"
+          }
+        ]
+      }
+
+      iex> Bright.Zoho.Crm.get_contacts_by_email("hoge@example.com")
+      :error
   """
-  def get_contact_by_email(email) do
+  def get_contacts_by_email(email) do
     build_client()
     |> case do
       %Tesla.Client{} = client ->
@@ -167,11 +182,11 @@ defmodule Bright.Zoho.Crm do
 
       # NOTE: 200 系以外はエラーとして扱う
       {:ok, response} ->
-        Logger.error("Failed to get_contact_by_email: #{inspect(Map.get(response, :body))}")
+        Logger.error("Failed to get_contacts_by_email: #{inspect(Map.get(response, :body))}")
         :error
 
       {:error, error} ->
-        Logger.error("Failed to get_contact_by_email: #{inspect(error)}")
+        Logger.error("Failed to get_contacts_by_email: #{inspect(error)}")
         :error
     end
   end
