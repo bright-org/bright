@@ -25,6 +25,10 @@ ZOHO CRM とは API 経由で連携を行う。
 
 https://www.zoho.com/accounts/protocol/oauth/self-client/client-credentials-flow.html
 
+以下 URL で作成可能。
+
+https://api-console.zoho.jp/
+
 ### アクセストークンの取得形式
 
 Client ID と Client Secret のペアを用いてアクセストークンの取得を行う。
