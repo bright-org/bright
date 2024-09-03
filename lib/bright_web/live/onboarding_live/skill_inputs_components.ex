@@ -290,7 +290,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
 
   defp margin(class, 1 = current_class) do
     case {class, current_class} do
-      {1, 1} -> "ml-[30vw] mr-6"
+      {1, 1} -> "lg:ml-[30vw] lg:mr-6"
       {2, 1} -> "mx-12"
       {3, 1} -> "hidden"
     end
@@ -299,7 +299,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
   defp margin(class, 2 = current_class) do
     case {class, current_class} do
       {1, 2} -> "-ml-[20vw] mr-6"
-      {2, 2} -> "mx-12"
+      {2, 2} -> "lg:mx-12"
       {3, 2} -> "mx-6"
     end
   end
@@ -308,7 +308,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
     case {class, current_class} do
       {1, 3} -> "hidden"
       {2, 3} -> "-ml-[20vw] mr-6"
-      {3, 3} -> "mx-12 mr-[20vw]"
+      {3, 3} -> "lg:mx-12 lg:mr-[20vw]"
     end
   end
 end
