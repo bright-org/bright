@@ -150,6 +150,22 @@ defmodule Bright.SkillUnits do
   end
 
   @doc """
+  Deletes a skill_category.
+
+  ## Examples
+
+      iex> delete_skill_category(skill_category)
+      {:ok, %SkillCategory{}}
+
+      iex> delete_skill_category(skill_category)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_skill_category(%SkillCategory{} = skill_category) do
+    Repo.delete(skill_category)
+  end
+
+  @doc """
   Returns an `%Ecto.Changeset{}` for tracking skill_category changes.
 
   ## Examples
@@ -200,6 +216,16 @@ defmodule Bright.SkillUnits do
     |> Repo.update()
   end
 
+  def delete_skill(%Skill{} = skill) do
+    Repo.transaction(fn ->
+      Ecto.assoc(skill, :skill_evidences)
+      |> Repo.all()
+      |> Enum.each(&Repo.delete/1)
+
+      Repo.delete!(skill)
+    end)
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking skill changes.
 
@@ -211,5 +237,9 @@ defmodule Bright.SkillUnits do
   """
   def change_skill(%Skill{} = skill, attrs \\ %{}) do
     Skill.changeset(skill, attrs)
+  end
+
+  def delete_skill_class_unit(%SkillClassUnit{} = skill_class_unit) do
+    Repo.delete(skill_class_unit)
   end
 end

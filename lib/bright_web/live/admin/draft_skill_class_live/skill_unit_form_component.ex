@@ -33,7 +33,7 @@ defmodule BrightWeb.Admin.DraftSkillClassLive.SkillUnitFormComponent do
             >紐づけ解除</.button>
 
             <.button
-              :if={@action == :edit_skill_unit}
+              :if={@action == :edit_skill_unit && !@removable?}
               class="!bg-red-600 hover:!bg-red-500"
               type="button"
               data-confirm="この操作は取り消せません。同じ名前で再作成しても削除した知識エリアとは違うものになります。削除しますか？"

@@ -41,6 +41,17 @@
         </li>
       <% end %>
     </ul>
+
+    <button
+      class={[
+        "rounded-lg bg-red-700 hover:bg-red-900 py-2 px-3",
+        "text-sm font-semibold leading-6 text-white active:text-white/80 mt-4"
+      ]}
+      data-confirm={"「#{@skill_panel.name}」を本番系に反映しますか？"}
+      phx-click="commit"
+    >
+      本番系へ反映
+    </button>
   </:item>
 </.list>
 
