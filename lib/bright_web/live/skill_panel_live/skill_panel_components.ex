@@ -109,7 +109,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   def toggle_link(assigns) do
     ~H"""
     <div class="bg-white text-brightGray-500 rounded-full inline-flex flex-row text-sm font-bold h-10">
-      <.link navigate={"#{PathHelper.skill_panel_path("graphs", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
+      <.link navigate={"#{PathHelper.skill_panel_path("skills", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
         <button
           class={
             "inline-flex items-center font-bold rounded-l-full gap-x-2 px-6 py-2 " <>
@@ -122,7 +122,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
               @active == "graph" && "bg-white", @active != "graph" && "bg-brightGray-500"]
             }
           />
-          成長パネル
+          スキル入力
         </button>
       </.link>
       <.link navigate={"#{PathHelper.skill_panel_path("panels", @skill_panel, @display_user, @me, @anonymous)}?class=#{@skill_class}"}>
@@ -138,7 +138,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
               @active == "panel" && "bg-white", @active != "panel" && "bg-brightGray-500"]
             }
           />
-          スキルパネル
+          スキル比較
         </button>
       </.link>
     </div>
