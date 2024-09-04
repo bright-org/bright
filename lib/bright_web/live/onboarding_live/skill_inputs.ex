@@ -326,7 +326,6 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
 
   defp assign_return_to(socket, params, url) do
     # パンくずから一つ前に戻った時のスクロール先設定
-    current_path = URI.parse(url).path |> Path.split() |> Enum.at(1) |> String.replace("/", "")
     id = socket.assigns.skill_panel.id
 
     career_field =
@@ -342,7 +341,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     assign(
       socket,
       :return_to,
-      "/#{current_path}?panel=#{id}&career_field=#{career_field}"
+      "/skill_select?panel=#{id}&career_field=#{career_field}"
     )
   end
 

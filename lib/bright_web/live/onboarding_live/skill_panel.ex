@@ -158,7 +158,7 @@ defmodule BrightWeb.OnboardingLive.SkillPanel do
     |> assign(:job, job)
     |> assign(:scores, job_with_scores)
     |> assign(:current_path, current_path)
-    |> assign(:return_to, "/#{current_path}?panel=#{skill_panel.id}&career_field=#{career_field}")
+    |> assign(:return_to, "/onboardings?panel=#{skill_panel.id}&career_field=#{career_field}")
     |> assign(:class, class3)
     |> assign(:skill_panel, skill_panel)
     |> assign(:skill_units, skill_class.skill_units)
