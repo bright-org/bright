@@ -158,7 +158,7 @@ defmodule BrightWeb.OnboardingLive.JobPanelComponents do
               <p class={"border rounded-full px-[1px] lg:px-1 h-[20px] text-xs text-#{tag.name_en}-dark bg-#{tag.name_en}-light"}><%= tag.name_ja %></p>
             <% end %>
           </div>
-          <.link navigate={~p"/graphs/#{@panel_id}"}>
+          <.link :if={!is_nil(@score)} navigate={~p"/graphs/#{@panel_id}"}>
             <button class="rounded border bg-white h-[20px] mt-1 px-2 text-xs hover:filter hover:brightness-[80%]" type="button">
               成長履歴を見る
             </button>
