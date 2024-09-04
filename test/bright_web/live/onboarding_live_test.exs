@@ -21,13 +21,17 @@ defmodule BrightWeb.OnboardingLiveTest do
     end
   end
 
-  describe "skill_panels" do
+  describe "onboarding" do
     setup [:register_and_log_in_user_not_onboarding]
 
     setup %{user: user} do
       sk = insert(:skill_panel)
-      skill_class = insert(:skill_class, skill_panel: sk, class: 1)
-      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+      skill_class_1 = insert(:skill_class, skill_panel: sk, class: 1)
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_1.id, position: 1}])
+      skill_class_2 = insert(:skill_class, skill_panel: sk, class: 2)
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_2.id, position: 1}])
+      skill_class_3 = insert(:skill_class, skill_panel: sk, class: 3)
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_3.id, position: 1}])
 
       cf = insert(:career_field)
 
@@ -38,10 +42,47 @@ defmodule BrightWeb.OnboardingLiveTest do
       %{job: job, user: user, skill_panel: sk}
     end
 
-    test "list job's skill_panel", %{job: job, conn: conn} do
-      {:ok, _index_live, html} = live(conn, ~p"/onboardings/jobs/#{job.id}?career_field=engineer")
+    test "show job's skill_panel", %{job: job, skill_panel: skill_panel, conn: conn} do
+      {:ok, lv, html} =
+        live(conn, ~p"/onboardings/#{job.id}?career_field=engineer")
 
       assert html =~ "some job"
+
+      lv
+      |> element("#select_skill")
+      |> render_click()
+      |> follow_redirect(conn, ~p"/skills/#{skill_panel.id}")
+
+      assert Bright.Repo.aggregate(Bright.Onboardings.UserOnboarding, :count) == 1
+    end
+  end
+
+  describe "select_skill" do
+    setup [:register_and_log_in_user]
+
+    setup %{user: user} do
+      sk = insert(:skill_panel)
+      skill_class_1 = insert(:skill_class, skill_panel: sk, class: 1)
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_1.id, position: 1}])
+      skill_class_2 = insert(:skill_class, skill_panel: sk, class: 2)
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_2.id, position: 1}])
+      skill_class_3 = insert(:skill_class, skill_panel: sk, class: 3)
+      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_3.id, position: 1}])
+
+      cf = insert(:career_field)
+
+      job = insert(:job)
+      insert(:career_field_job, career_field_id: cf.id, job_id: job.id)
+      insert(:job_skill_panel, job_id: job.id, skill_panel_id: sk.id)
+
+      %{job: job, user: user, skill_panel: sk}
+    end
+
+    test "show skill_panel input page", %{skill_panel: skill_panel, conn: conn} do
+      {:ok, _lv, html} =
+        live(conn, ~p"/skills/#{skill_panel.id}")
+
+      assert html =~ skill_panel.name
     end
   end
 end

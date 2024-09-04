@@ -1,131 +1,203 @@
 defmodule BrightWeb.OnboardingLive.SkillPanel do
+  alias Bright.SkillScores
   use BrightWeb, :live_view
 
-  alias Bright.{SkillPanels, UserSkillPanels, Onboardings}
+  alias Bright.Jobs
+  alias Bright.SkillPanels
+  alias Bright.UserSkillPanels
+  alias Bright.Onboardings
   alias Bright.Onboardings.UserOnboarding
 
-  import BrightWeb.OnboardingLive.Index, only: [hidden_more_skills: 1]
+  import BrightWeb.OnboardingLive.Index, only: [hide_when_skills: 1]
 
   @impl true
   def render(assigns) do
     ~H"""
-    <section class="bg-white pt-6 pb-24 px-8 lg:py-8 min-h-[720px] relative rounded-lg">
-      <h1 class={["font-bold text-3xl",hidden_more_skills(@current_path)] }>
+    <section class="p-2 lg:p-8 bg-brightGray-50">
+      <h1 class={["font-bold text-3xl mb-8",hide_when_skills(@current_path)]}>
         <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
           スキルを選ぶ
         </span>
       </h1>
 
-      <div class="mt-0 lg:mt-8">
-        <!-- スキルセクション　ここから -->
-        <section>
-          <h2 class="font-bold text-base lg:text-xl"><%= "#{@skill_panel.name} に含まれるスキル" %></h2>
-          <!-- スキルWebアプリ開発セクション　ここから -->
-          <section class="mt-1 lg:px-4 py-4 w-full lg:w-[1040px]">
-            <ul>
-              <%= for skill_unit <- @skill_units do %>
-              <li>
-                <span class={"bg-#{@career_field.name_en}-dazzle block mt-3 px-4 py-2 rounded select-none text-base w-full before:relative before:top-[3px] before:bg-bgGem#{String.capitalize(@career_field.name_en)} before:bg-5 before:bg-left before:bg-no-repeat before:content-[''] before:h-5 before:inline-block before:mr-1 before:w-5"}>
-                  <%= skill_unit.name %>
-                </span>
-              </li>
-              <% end %>
-            </ul>
-          </section>
-          <!-- スキルデスクトップアプリ開発セクションセクション　ここまで -->
-        </section>
-        <!-- スキルセクション　ここまで -->
+      <div class="">
+        <ol class="mt-4 lg:mt-0 mb-1 flex items-center whitespace-nowrap">
+          <li class="inline-flex items-center">
+            <.link navigate={@return_to} class="flex items-center text-sm text-engineer-dark">
+              スキルを選ぶ
+            </.link>
+            <p class="shrink-0 size-5 text-engineer-dark dark:text-neutral-600 ml-4">/</p>
+          </li>
+          <li class="inline-flex items-center">
+            <p class="flex items-center text-sm text-engineer-dark">
+              <%= @job.name %>
+            </p>
+            <p class="shrink-0 size-5 text-engineer-dark dark:text-neutral-600 ml-4">/</p>
+          </li>
+        </ol>
+
+        <div class="bg-white p-2 lg:p-4 rounded">
+          <div class="flex flex-col lg:flex-row justify-between">
+            <div class="flex flex-col lg:flex-row flex-start mb-4">
+              <p class="text-xl py-2 pr-4"><%= @job.name %></p>
+              <p class="pl-4 border-l-4 border-[#555555] inline-flex items-center">MAX : <%= @class.name %></p>
+            </div>
+            <span class={"px-2 lg:px-4 py-2 mb-4 w-24 rounded-full text-xs h-8 text-center bg-#{@career_field.name_en}-light text-#{@career_field.name_en}-dark"}>
+              <%= @career_field.name_ja %>
+            </span>
+          </div>
+
+          <button
+            id="select_skill"
+            class="rounded-md px-4 py-2 mb-8 bg-brightGreen-300 text-white flex text-lg"
+            phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "input"})}
+          >
+            <span class="material-icons-outlined mt-[3px] mr-1 text-white text-md">edit</span>
+            スキルを入力
+          </button>
+          <div class="flex flex-col lg:flex-row w-full">
+            <div class="lg:w-1/2">
+              <% # descriptionの準備が整うまで非表示 %>
+              <div :if={false} class="mb-8">
+                <p class="text-lg text-brightGray-400"><%= @job.name %>とは？</p>
+                <hr class="h-[2px] bg-brightGray-50 my-2" />
+                <p class="pl-4 words-break"><%= @job.description %></p>
+                <p :if={false} class="text-end">具体例を知りたい</p>
+              </div>
+
+              <div >
+                <% filter = String.split(@job.name) |> List.last() %>
+                <p class="text-base lg:text-lg text-brightGray-400"><%= filter %>のジョブルート</p>
+                <hr class="h-[2px] bg-brightGray-50 my-2" />
+                <.live_component
+                  id="job_route"
+                  job={@job}
+                  current_path={@current_path}
+                  career_field={@career_field}
+                  skill_panel={@skill_panel}
+                  scores={@scores}
+                  filter={filter}
+                  module={BrightWeb.OnboardingLive.JobRouteComponents}
+                />
+
+              </div>
+            </div>
+            <div class="lg:w-1/2 lg:ml-8">
+              <p class="text-base lg:text-lg text-brightGray-400"><%= "#{@job.name} に含まれる知識エリア／習得率" %></p>
+              <hr class="h-[2px] bg-brightGray-50 my-2" />
+              <ul class="mt-4 px-4">
+                  <%= for skill_unit <- @skill_units do %>
+                    <% score = Enum.find(@skill_score, & &1.skill_unit_id == skill_unit.id) || %{percentage: 0}%>
+                    <li class="rounderd border-2 px-4 py-2 mb-3 flex flex-col">
+                      <div class="flex flex-col lg:flex-row justify-between overflow-x-hidden">
+                        <span class="mr-4 text-lg text-brightGray-400"><%= skill_unit.name %></span>
+                        <div class="flex flex-wrap">
+                          <%= for {category, index} <- Enum.with_index(skill_unit.skill_categories) do %>
+                            <span :if={index < 5} class="rounded-full bg-brightGray-50 mt-2 mr-2 p-1 px-2 text-xs">
+                              <%= category.name %>
+                            </span>
+                          <% end %>
+                        <span :if={length(skill_unit.skill_categories) > 5} class="rounded-full bg-brightGray-50 mr-2 mt-2 px-2 py-1 text-xs">
+                          <%= "+#{length(skill_unit.skill_categories) - 5}"%>
+                        </span>
+                        </div>
+                      </div>
+                      <div class="flex mt-4">
+                        <div class="flex w-full h-2 mr-1 bg-gray-200 rounded-full overflow-hidden " role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                          <div
+                            class="flex flex-col justify-center rounded-full overflow-hidden bg-brightGreen-300 whitespace-nowrap transition duration-500 "
+                            style={"width: #{score.percentage}%"}
+                          />
+                        </div>
+                        <span class="-mt-[8px] lg:-mt-[2px]"><%= round(score.percentage) %>%</span>
+                      </div>
+                  </li>
+                  <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <p class="flex flex-col lg:flex-row gap-y-4 lg:gap-y-0 justify-center mt-8 lg:px-4 w-full lg:w-[1040px]">
-        <button
-          phx-click={JS.push("select_skill_panel", value: %{id: @skill_panel.id, name: @skill_panel.name, type: "input"})}
-          class="bg-brightGray-900 border border-solid border-brightGray-900 font-bold px-4 py-2 rounded select-none text-white w-full lg:w-64 hover:filter hover:brightness-[80%]"
-        >
-          このスキルでスキル入力に進む
-        </button>
-
-        <.link
-          navigate={@return_to}
-          class="bg-white block border border-solid border-black font-bold lg:ml-16 px-4 py-2 rounded select-none text-black text-center w-full lg:w-40 hover:filter hover:brightness-[80%]"
-        >
-          戻る
-        </.link>
-      </p>
     </section>
     """
   end
 
   @impl true
-  def mount(%{"id" => id}, _session, socket) do
-    skill_panel = SkillPanels.get_skill_panel_with_career_fields!(id)
+  def mount(_params, _session, socket) do
+    {:ok, assign(socket, :page_title, "ジョブパネル")}
+  end
 
-    career_fields =
-      skill_panel.jobs
-      |> List.first()
-      |> Map.get(:career_fields)
+  @impl true
+  def handle_params(%{"job_id" => id, "career_field" => career_field}, uri, socket) do
+    job = Jobs.get_job!(id)
+    current_path = URI.parse(uri).path |> Path.split() |> Enum.at(1) |> String.replace("/", "")
+    career_fields = Jobs.list_skill_panels_group_by_career_field(id)
+    [skill_panel | _] = Map.values(career_fields) |> List.flatten() |> Enum.uniq()
+    skill_class = SkillPanels.get_skill_class_by_skill_panel_id(skill_panel.id)
 
-    skill_class = SkillPanels.get_skill_class_by_skill_panel_id(id)
+    skill_score =
+      SkillScores.list_skill_unit_scores_by_user_skill_class(
+        socket.assigns.current_user,
+        skill_class
+      )
+
+    job_with_scores =
+      SkillPanels.list_skill_panels_with_score(
+        socket.assigns.current_user.id,
+        career_field
+      )
+
+    class3 =
+      skill_panel
+      |> Bright.Repo.preload(:skill_classes)
+      |> Map.get(:skill_classes, [])
+      |> Enum.max_by(& &1.class)
 
     socket
-    |> assign(:page_title, "スキルを選ぶ")
+    |> assign(:job, job)
+    |> assign(:scores, job_with_scores)
+    |> assign(:current_path, current_path)
+    |> assign(:return_to, "/#{current_path}?panel=#{skill_panel.id}&career_field=#{career_field}")
+    |> assign(:class, class3)
     |> assign(:skill_panel, skill_panel)
-    |> assign(:career_field, List.first(career_fields))
     |> assign(:skill_units, skill_class.skill_units)
-    |> then(&{:ok, &1})
-  end
-
-  @impl true
-  def handle_params(%{"job_id" => job_id}, uri, socket) do
-    path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-
-    socket
-    |> assign(:current_path, path)
-    |> assign(:return_to, "/#{path}/jobs/#{job_id}")
+    |> assign(:skill_score, skill_score)
+    |> assign(:career_field, Map.keys(career_fields) |> Enum.find(&(&1.name_en == career_field)))
     |> then(&{:noreply, &1})
   end
 
   @impl true
-  def handle_params(%{"want_id" => want_id}, uri, socket) do
-    path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-
-    socket
-    |> assign(:current_path, path)
-    |> assign(:return_to, "/#{path}/wants/#{want_id}")
-    |> then(&{:noreply, &1})
+  def handle_event("request", _params, socket) do
+    {:noreply, put_flash(socket, :info, "ジョブパネルのリクエストを受け付けました")}
   end
 
-  @impl true
-  def handle_params(%{"team_id" => team_id, "id" => id}, uri, socket) do
-    path = URI.parse(uri).path |> Path.split() |> Enum.at(1)
-
-    socket
-    |> assign(:current_path, path)
-    |> assign(:return_to, ~p"/teams/#{team_id}/skill_panels/#{id}")
-    |> then(&{:noreply, &1})
-  end
-
-  @impl true
   def handle_event(
         "select_skill_panel",
         %{"id" => skill_panel_id, "name" => name},
         %{assigns: %{current_user: user}} = socket
       ) do
     finish_onboarding(user.user_onboardings, user.id, skill_panel_id)
-    select_skill_panel(user.id, skill_panel_id)
 
     socket
-    |> put_flash(:info, "スキルパネル:#{name}を取得しました")
-    |> redirect(to: "/panels/#{skill_panel_id}")
+    |> select_skill_panel(user.id, skill_panel_id, name)
+    |> redirect(to: "/skills/#{skill_panel_id}")
     |> then(&{:noreply, &1})
   end
 
-  defp select_skill_panel(user_id, skill_panel_id) do
-    # 一度取得したスキルパネルを再度選択した際に作成自体が行われないが問題ないため、処理を入れていない。
-    UserSkillPanels.create_user_skill_panel(%{
-      user_id: user_id,
-      skill_panel_id: skill_panel_id
-    })
+  defp select_skill_panel(socket, user_id, skill_panel_id, name) do
+    case UserSkillPanels.user_skill_panel_exists?(user_id, skill_panel_id) do
+      true ->
+        socket
+
+      false ->
+        UserSkillPanels.create_user_skill_panel(%{
+          user_id: user_id,
+          skill_panel_id: skill_panel_id
+        })
+
+        put_flash(socket, :info, "スキルパネル:#{name}を取得しました")
+    end
   end
 
   defp finish_onboarding(nil, user_id, skill_panel_id) do

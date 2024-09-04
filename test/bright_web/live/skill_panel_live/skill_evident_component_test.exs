@@ -53,10 +53,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       assert_patch(lv, ~p"/panels/#{skill_panel}/skills/#{skill}/evidences?class=1")
@@ -71,10 +67,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     } do
       insert(:skill_score, user: user, skill: skill, score: :high)
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       open_modal(lv)
 
@@ -99,10 +91,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
 
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       assert render(lv) =~ skill_evidence_post.content
@@ -125,10 +113,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
         )
 
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       open_modal(lv)
 
@@ -156,10 +140,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       lv
@@ -170,10 +150,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
 
       # 永続化確認
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       open_modal(lv)
       assert has_element?(lv, "#skill_evidence_posts", "input")
@@ -196,10 +172,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
 
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       assert has_element?(lv, "#skill_evidence_posts", "input")
@@ -213,10 +185,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       # 永続化確認
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
       refute has_element?(lv, "#skill_evidence_posts", "input")
     end
@@ -226,10 +194,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       skill_panel: skill_panel
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       open_modal(lv)
 
@@ -249,10 +213,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       %{entries: [%{"ref" => ref}]} = image = upload_image(lv, ~w(sample.png))
@@ -268,10 +228,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       # 永続化確認
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
       assert has_element?(lv, "#skill_evidence_posts .evidence-image img")
     end
@@ -281,10 +237,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       skill_panel: skill_panel
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       open_modal(lv)
 
@@ -308,10 +260,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       %{entries: [%{"ref" => ref}]} = image = upload_image(lv, ~w(sample.png))
@@ -331,10 +279,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       skill_panel: skill_panel
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       # アップロード
       open_modal(lv)
@@ -364,10 +308,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       names = ~w(sample.png sample.jpg sample.jpeg sample_2.png sample_2.jpg)
@@ -396,10 +336,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       file_input(lv, "#skill_evidence_post-form", :image, [
@@ -423,10 +359,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       skill_panel: skill_panel
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       open_modal(lv)
 
@@ -457,10 +389,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
     } do
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       lv
@@ -484,10 +412,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
       insert(:team_member_users, team: team, user: user_2)
 
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       open_modal(lv)
 
@@ -523,10 +447,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
 
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}/anon/#{encrypted_name}")
 
-      lv
-      |> element("#switch_table")
-      |> render_click()
-
       open_modal(lv)
 
       assert has_element?(lv, "#skill-evidence-modal-content")
@@ -549,10 +469,6 @@ defmodule BrightWeb.SkillPanelLive.SkillEvidenceComponentTest do
         insert(:skill_evidence_post, user: user_2, skill_evidence: skill_evidence)
 
       {:ok, lv, _html} = live(conn, ~p"/panels/#{skill_panel}/anon/#{encrypted_name}")
-
-      lv
-      |> element("#switch_table")
-      |> render_click()
 
       open_modal(lv)
 

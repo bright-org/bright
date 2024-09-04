@@ -23,7 +23,7 @@ defmodule BrightWeb.DisplayUserHelper do
     )
 
     socket
-    |> assign(:me, false)
+    |> assign(:me, user.id == current_user.id)
     |> assign(:anonymous, false)
     |> assign(:display_user, user)
   end

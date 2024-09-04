@@ -212,8 +212,9 @@ defmodule BrightWeb.LayoutComponents do
   def links() do
     [
       {"マイページ", "/mypage", nil, "/images/common/icons/mypage.svg"},
-      {"スキルを選ぶ", "/more_skills", nil, "/images/common/icons/skillSelect.svg"},
-      {"成長パネル", "/graphs", nil, "/images/common/icons/mySkill.svg"},
+      {"スキルを選ぶ", "/skill_select", nil, "/images/common/icons/skillSelect.svg"},
+      {"スキル入力・比較", "/skills", nil, "/images/common/icons/growthPanel.svg"},
+      {"成長履歴", "/graphs", nil, "/images/common/icons/mySkill.svg"},
       {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/, "/images/common/icons/skillAnalyze.svg"},
       {"面談チャット", "/recruits/chats", nil, "/images/common/icons/oneOnOneChat.svg"}
       # TODO α版はskill_upを表示しない

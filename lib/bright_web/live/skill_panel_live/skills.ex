@@ -34,7 +34,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     |> assign(:select_label, "now")
     |> assign(:select_label_compared_user, nil)
     |> assign(:compared_user, nil)
-    |> assign(:page_title, "スキルパネル")
+    |> assign(:page_title, "スキル比較")
     |> assign(:view, :card)
     |> assign(init_team_id: nil, init_timeline: nil)
     |> assign(:selected_unit, nil)

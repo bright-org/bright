@@ -377,7 +377,7 @@ defmodule BrightWeb.UserAuthTest do
       insert(:user_onboarding, user: user)
       conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_onboarding_finished([])
       assert conn.halted
-      assert redirected_to(conn) == ~p"/more_skills"
+      assert redirected_to(conn) == ~p"/skills"
     end
 
     test "does not redirect if user is not authenticated", %{conn: conn, user: user} do

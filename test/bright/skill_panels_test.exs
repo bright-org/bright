@@ -104,14 +104,14 @@ defmodule Bright.SkillPanelsTest do
       insert(:skill_class_score, user: user_2, skill_class: skill_class_2, percentage: 10.0)
 
       # uesr_1 について、スキルクラスは１つまでロードされていること
-      ret = SkillPanels.list_users_skill_panels_all_career_field([user_1.id])
+      ret = SkillPanels.list_users_skill_panels_all_career_field([user_1.id], 1)
       assert %{entries: [ret_skill_panel]} = ret
       assert [ret_skill_class_1, ret_skill_class_2] = ret_skill_panel.skill_classes
       assert 20.0 == hd(ret_skill_class_1.skill_class_scores).percentage
       assert [] == ret_skill_class_2.skill_class_scores
 
       # uesr_2 について、スキルクラスは２つまでロードされていること
-      ret = SkillPanels.list_users_skill_panels_all_career_field([user_2.id])
+      ret = SkillPanels.list_users_skill_panels_all_career_field([user_2.id], 1)
       assert %{entries: [ret_skill_panel]} = ret
       assert [ret_skill_class_1, ret_skill_class_2] = ret_skill_panel.skill_classes
       assert 40.0 == hd(ret_skill_class_1.skill_class_scores).percentage

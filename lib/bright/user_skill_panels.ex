@@ -113,6 +113,14 @@ defmodule Bright.UserSkillPanels do
     |> Repo.exists?()
   end
 
+  def find_or_create_skill_panel(%{user_id: user_id, skill_panel_id: skill_panel_id} = attrs) do
+    if !user_skill_panel_exists?(user_id, skill_panel_id) do
+      {:ok, _multi} = create_user_skill_panel(attrs)
+    end
+
+    SkillPanels.get_skill_panel!(skill_panel_id)
+  end
+
   @doc """
   Updates a user_skill_panel.
 

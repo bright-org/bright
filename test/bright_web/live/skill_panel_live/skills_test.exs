@@ -2,10 +2,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
   use BrightWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Ecto.Query
 
   alias Bright.Repo
-  alias Bright.UserJobProfiles
   alias Bright.SkillScores.SkillClassScore
   alias Bright.SkillScores.SkillClassScoreLog
   alias Bright.Teams.TeamMemberUsers
@@ -44,20 +42,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       skill_2: skill_2,
       skill_3: skill_3
     }
-  end
-
-  # 共通処理: 入力開始
-  defp start_edit(show_live) do
-    show_live
-    |> element("#link-skills-form")
-    |> render_click()
-  end
-
-  # 共通処理: 入力完了
-  defp submit_form(show_live) do
-    show_live
-    |> element(~s{button[phx-click="submit"]})
-    |> render_click()
   end
 
   describe "Show" do
@@ -119,10 +103,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}")
 
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
       assert html =~ "スキルパネル"
 
       # 知識エリアの表示確認
@@ -166,10 +146,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:full_mark_skill_score, user: user, skill: skill_1)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       # ドーナツグラフまわりの表記
       assert has_element?(show_live, ~s{#profile_score_stats}, "平均")
@@ -454,314 +430,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     end
   end
 
-  describe "Input skill score item score" do
-    setup [:register_and_log_in_user, :setup_skills]
-
-    @tag score: :low
-    test "update scores", %{
-      conn: conn,
-      user: user,
-      skill_panel: skill_panel,
-      skill_class: skill_class
-    } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      # skill_1
-      # lowからlowのキャンセル操作相当
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="low"]})
-      |> render_click()
-
-      show_live
-      |> element(~s{#skill-2-form label[phx-value-score="middle"]})
-      |> render_click()
-
-      show_live
-      |> element(~s{#skill-3-form label[phx-value-score="high"]})
-      |> render_click()
-
-      submit_form(show_live)
-      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
-      refute has_element?(show_live, "#skills-form")
-
-      # 永続化確認のための再描画
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      assert has_element?(show_live, "#skill-1 .score-mark-low")
-      assert has_element?(show_live, "#skill-2 .score-mark-middle")
-      assert has_element?(show_live, "#skill-3 .score-mark-high")
-
-      # スキルクラススコアのログ作成確認
-      skill_class_score_log =
-        Repo.get_by(SkillClassScoreLog, %{
-          user_id: user.id,
-          skill_class_id: skill_class.id,
-          date: Date.utc_today()
-        })
-
-      assert round(skill_class_score_log.percentage) == 33
-    end
-
-    @tag score: nil
-    test "edits by key input", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      # 1を押してスコアを設定する。以下、2, 3と続く
-      # 最終行は押してもそのままフォーカスした状態を継続する
-      show_live
-      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "1"})
-
-      refute has_element?(show_live, ~s{#skill-1-form [phx-window-keydown="shortcut"]})
-
-      show_live
-      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "2"})
-
-      refute has_element?(show_live, ~s{#skill-2-form [phx-window-keydown="shortcut"]})
-
-      show_live
-      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "3"})
-
-      assert has_element?(show_live, ~s{#skill-3-form [phx-window-keydown="shortcut"]})
-
-      submit_form(show_live)
-      {path, _flash} = assert_redirect(show_live)
-      assert path == ~p"/graphs/#{skill_panel}?class=1"
-
-      # 永続化確認のための再描画
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      assert has_element?(show_live, "#skill-1 .score-mark-high")
-      assert has_element?(show_live, "#skill-2 .score-mark-middle")
-      assert has_element?(show_live, "#skill-3 .score-mark-low")
-    end
-
-    @tag score: nil
-    test "move by key input", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      # ↓、Enter、↑による移動
-      # 最初と最終行は押してもそのままフォーカスした状態を継続する
-      show_live
-      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "ArrowUp"})
-
-      show_live
-      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "ArrowDown"})
-
-      refute has_element?(show_live, ~s{#skill-1-form [phx-window-keydown="shortcut"]})
-
-      show_live
-      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "Enter"})
-
-      refute has_element?(show_live, ~s{#skill-2-form [phx-window-keydown="shortcut"]})
-
-      show_live
-      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "ArrowDown"})
-
-      show_live
-      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "ArrowUp"})
-
-      refute has_element?(show_live, ~s{#skill-3-form [phx-window-keydown="shortcut"]})
-
-      submit_form(show_live)
-      {path, _flash} = assert_redirect(show_live)
-      assert path == ~p"/graphs/#{skill_panel}?class=1"
-    end
-
-    @tag score: :low
-    test "update scores from card ui", %{
-      conn: conn,
-      user: user,
-      skill_panel: skill_panel,
-      skill_class: skill_class,
-      skill_1: skill_1,
-      skill_2: skill_2,
-      skill_3: skill_3
-    } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=#{skill_class.class}")
-
-      show_live
-      |> element("#score-#{skill_1.id}-high")
-      |> render_click()
-
-      show_live
-      |> element("#score-#{skill_2.id}-high")
-      |> render_click()
-
-      show_live
-      |> element("#score-#{skill_3.id}-high")
-      |> render_click()
-
-      assert has_element?(show_live, ".score-mark-high")
-
-      # スキルクラススコアのログ作成確認
-      user_id = user.id
-      skill_class_id = skill_class.id
-      today = Date.utc_today()
-
-      skill_class_score_log =
-        from(l in SkillClassScoreLog,
-          where: [
-            user_id: ^user_id,
-            skill_class_id: ^skill_class_id,
-            date: ^today,
-            percentage: ^100
-          ],
-          limit: 1
-        )
-        |> Repo.one()
-
-      assert skill_class_score_log.percentage == 100
-    end
-  end
-
-  describe "Shows skill score percentages" do
-    setup [:register_and_log_in_user, :setup_skills]
-
-    @tag score: nil
-    test "shows updated value", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      # 初期表示
-      assert has_element?(show_live, ".score-high-percentage", "0％")
-      assert has_element?(show_live, ".score-middle-percentage", "0％")
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      assert has_element?(show_live, "#skill_gem_in_skills_form", "見習い")
-      assert has_element?(show_live, "#skill_gem_in_skills_form .score-high-percentage", "0％")
-
-      assert has_element?(
-               show_live,
-               "#skill_gem_in_skills_form .score-middle-percentage",
-               "0％"
-             )
-
-      show_live
-      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "1"})
-
-      show_live
-      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "1"})
-
-      show_live
-      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "2"})
-
-      assert has_element?(show_live, "#skill_gem_in_skills_form", "ベテラン")
-
-      assert has_element?(
-               show_live,
-               "#skill_gem_in_skills_form .score-high-percentage",
-               "66％"
-             )
-
-      assert has_element?(
-               show_live,
-               "#skill_gem_in_skills_form .score-middle-percentage",
-               "34％"
-             )
-
-      data = [[66]] |> Jason.encode!()
-      assert has_element?(show_live, ~s(#skills-form-gem[data-data='#{data}']))
-
-      submit_form(show_live)
-      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
-
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      assert has_element?(show_live, ".score-high-percentage", "66％")
-      assert has_element?(show_live, ".score-middle-percentage", "34％")
-
-      # 各スキルスコアの削除（lowにする操作）と、習得率表示更新
-      start_edit(show_live)
-      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element(~s{#skill-1-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "3"})
-
-      show_live
-      |> element(~s{#skill-2-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "3"})
-
-      show_live
-      |> element(~s{#skill-3-form [phx-window-keydown="shortcut"]})
-      |> render_keydown(%{"key" => "3"})
-
-      assert has_element?(show_live, "#skill_gem_in_skills_form", "見習い")
-      assert has_element?(show_live, "#skill_gem_in_skills_form .score-high-percentage", "0％")
-
-      assert has_element?(
-               show_live,
-               "#skill_gem_in_skills_form .score-middle-percentage",
-               "0％"
-             )
-
-      data = [[0]] |> Jason.encode!()
-      assert has_element?(show_live, ~s(#skills-form-gem[data-data='#{data}']))
-
-      submit_form(show_live)
-      refute has_element?(show_live, "#skills-form")
-
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      assert has_element?(show_live, ".score-high-percentage", "0％")
-      assert has_element?(show_live, ".score-middle-percentage", "0％")
-    end
-  end
-
   # 対象者の切り替え
   describe "Display user" do
     setup [:register_and_log_in_user]
@@ -819,10 +487,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      show_live
       |> element("#skill-1 .link-reference")
       |> render_click()
 
@@ -843,10 +507,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       skill_reference = insert(:skill_reference, skill: skill_1)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       show_live
       |> element("#skill-1 .link-reference")
@@ -891,10 +551,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      show_live
       |> element("#skill-1 .link-exam")
       |> render_click()
 
@@ -913,10 +569,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      show_live
       |> element("#skill-1 .link-exam")
       |> render_click()
 
@@ -928,10 +580,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     @tag score: nil
     test "試験がないスキルのリンクが表示されないこと", %{conn: conn, skill_panel: skill_panel} do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       refute has_element?(show_live, "#skill-1 .link-exam")
     end
@@ -1037,10 +685,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
 
       show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      show_live
       |> element("button", past_label)
       |> render_click()
 
@@ -1078,10 +722,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       end)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       show_live
       |> element("button", past_label)
@@ -1128,10 +768,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
       # 「個人とスキルを比較」 チームタブ選択
       show_live
       |> element(~s{#related-user-card-related-user-card-compare a[phx-value-tab_name="team"]})
@@ -1155,10 +791,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       user_2: user_2
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       # 「個人とスキルを比較」 チームタブ選択
       show_live
@@ -1222,10 +854,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
       # 「チーム全員と比較」 チームタブ選択
       show_live
       |> element(
@@ -1261,10 +889,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1&team=#{team.id}")
 
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
       assert has_element?(show_live, "#skills-table-field", user_2.name)
       assert has_element?(show_live, "#skills-table-field", user_3.name)
       assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
@@ -1292,10 +916,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       user_2: user_2
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       # 「チーム全員と比較」 チームタブ選択
       show_live
@@ -1327,10 +947,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       # 自身をteamから除外して参照不可状況をつくっている
       Repo.get_by(TeamMemberUsers, team_id: team.id, user_id: user.id) |> Repo.delete!()
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1&team=#{team.id}")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       refute has_element?(show_live, "#skills-table-field", user_2.name)
     end
@@ -1366,11 +982,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       users: [user_2, _user_3]
     } do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
       add_user_to_list(show_live, user_2)
 
       show_live
@@ -1396,10 +1007,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:recruitment_stock_user, recruiter: user, user: user_4)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       show_live
       |> element(
@@ -1436,11 +1043,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
         )
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
       add_user_to_list(show_live, user_3)
 
       show_live
@@ -1474,10 +1076,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      show_live
       |> element(
         ~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"])
       )
@@ -1500,10 +1098,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       custom_group = insert(:custom_group, user: user, name: "更新前")
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       show_live
       |> element(
@@ -1541,10 +1135,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      show_live
       |> element(
         ~s(#custom-groups-list-dropdown div[phx-click="select"][phx-value-name="#{custom_group.name}"])
       )
@@ -1556,240 +1146,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       refute has_element?(show_live, "#selected-custom-group-name")
       assert %{custom_groups: []} = Repo.preload(user, :custom_groups)
-    end
-  end
-
-  # 案内メッセージ
-  describe "Messages" do
-    setup [:register_and_log_in_user, :setup_skills]
-
-    @tag score: nil
-    test "shows first skills edit message", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      assert has_element?(show_live, "#skill_shara_modal-container")
-
-      # 入力後に表示されないことの確認
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="middle"]})
-      |> render_click()
-
-      submit_form(show_live)
-      {path, flash} = assert_redirect(show_live)
-      assert path == ~p"/graphs/#{skill_panel}?class=1"
-      assert flash["first_submit_in_overall"]
-
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-      refute has_element?(show_live, "#skill_shara_modal-container")
-    end
-
-    @tag score: nil
-    test "shows first time submit message", %{conn: conn, skill_panel: skill_panel} do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="low"]})
-      |> render_click()
-
-      submit_form(show_live)
-      {path, flash} = assert_redirect(show_live)
-      assert path == ~p"/graphs/#{skill_panel}?class=1"
-      assert flash["first_submit_in_overall"]
-    end
-
-    @tag score: :low
-    test "not shows first time submit message when score is already existing", %{
-      conn: conn,
-      skill_panel: skill_panel
-    } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="low"]})
-      |> render_click()
-
-      submit_form(show_live)
-      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
-      refute has_element?(show_live, "#skills-form")
-      refute has_element?(show_live, "#help-first-skill-submit-in-overall")
-    end
-
-    @tag score: nil
-    test "shows job searching message when first submit in overall", %{
-      conn: conn,
-      user: user,
-      skill_panel: skill_panel
-    } do
-      # job_searching: false に設定
-      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
-      |> UserJobProfiles.update_user_job_profile(%{job_searching: false})
-
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="low"]})
-      |> render_click()
-
-      submit_form(show_live)
-      {path, flash} = assert_redirect(show_live)
-      assert path == ~p"/graphs/#{skill_panel}?class=1"
-      assert flash["first_submit_in_overall"]
-      assert flash["first_submit_in_skill_panel"]
-    end
-
-    @tag score: nil
-    test "shows job searching message when first submit in skill panel", %{
-      conn: conn,
-      user: user,
-      skill_panel: skill_panel
-    } do
-      # job_searching: false に設定
-      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
-      |> UserJobProfiles.update_user_job_profile(%{job_searching: false})
-
-      insert_user_skill_panel(user, :low)
-
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="low"]})
-      |> render_click()
-
-      submit_form(show_live)
-      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
-      assert has_element?(show_live, "#job_searching_message")
-    end
-
-    @tag score: :low
-    test "not shows job searching message when job_searching is already true", %{
-      conn: conn,
-      user: user,
-      skill_panel: skill_panel
-    } do
-      # job_searching: true に設定
-      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
-      |> UserJobProfiles.update_user_job_profile(%{job_searching: true})
-
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="low"]})
-      |> render_click()
-
-      submit_form(show_live)
-      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
-      refute has_element?(show_live, "#skills-form")
-      refute has_element?(show_live, "#job_searching_message")
-    end
-
-    @tag score: :low
-    test "not shows job searching message when score is already existing", %{
-      conn: conn,
-      user: user,
-      skill_panel: skill_panel
-    } do
-      # job_searching: false に設定
-      UserJobProfiles.get_user_job_profile_by_user_id!(user.id)
-      |> UserJobProfiles.update_user_job_profile(%{job_searching: false})
-
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element(~s{#skill-1-form label[phx-value-score="low"]})
-      |> render_click()
-
-      submit_form(show_live)
-      assert_patched(show_live, ~p"/panels/#{skill_panel}/edit?class=1")
-      refute has_element?(show_live, "#skills-form")
-      refute has_element?(show_live, "job_searching_message")
-    end
-
-    @tag score: :low
-    test "shows help message for entering skills on the button side", %{
-      conn: conn,
-      skill_panel: skill_panel
-    } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      show_live
-      |> element("#btn-help-enter-skills-button")
-      |> render_click()
-
-      assert has_element?(show_live, "#skills_edit_guide")
-    end
-
-    @tag score: :low
-    test "shows help message for entering skills on the modal", %{
-      conn: conn,
-      skill_panel: skill_panel
-    } do
-      {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
-
-      start_edit(show_live)
-      assert has_element?(show_live, "#skills-form")
-
-      show_live
-      |> element("#btn-help-enter-skills-modal")
-      |> render_click()
-
-      assert has_element?(show_live, "#skills_edit_guide")
     end
   end
 
@@ -1873,10 +1229,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:skill_score, user: dummy_user, skill: skill, score: :high)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
-
-      show_live
-      |> element("#switch_table")
-      |> render_click()
 
       refute has_element?(show_live, ".score-mark-high")
 

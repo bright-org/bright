@@ -9,7 +9,11 @@ const SkillUnitScrolling = {
       const anchor = location.hash || "";
       if (anchor === "") {
         return;
+      } else if (window.anchor === anchor) {
+        // 文字リンク以外をクリックした場合は何もしない
+        return;
       }
+      window.anchor = anchor;
 
       const headerSize = document.querySelector("#user-header").offsetHeight;
 

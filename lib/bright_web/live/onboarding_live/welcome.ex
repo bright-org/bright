@@ -3,7 +3,7 @@ defmodule BrightWeb.OnboardingLive.Welcome do
 
   def render(assigns) do
     ~H"""
-    <section class="w-screen bg-white p-8 min-h-[720px] rounded-lg">
+    <section class="lg:p-20 w-screen bg-white p-8 min-h-[720px] rounded-lg">
       <div class="flex place-content-center lg:place-content-start mb-12">
           <img src={~p"/images/logo_tagline_skill.svg"} width="256" />
       </div>

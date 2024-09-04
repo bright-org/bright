@@ -1,5 +1,5 @@
 import { Chart } from "chart.js/auto";
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 
 const scalesBackgroundColor = "#D4F9F7";
 const gridColor = "#FFFFFF44";
@@ -14,17 +14,20 @@ const gemSizeSet = {
   // sm: スキル検索(スキルジェム), マイページ(スキルバランス)
   // sp: スマートフォン用途 スキルジェム
   // md: チームスキル分析
-  "default": {width: "535px", height: "450px"},
-  "sm": {width: "250px", height: "165px"},
-  "sp": {width: "340px", height: "300px"},
-  "md": {width: "450px", height: "400px"}
-}
+  // base: スキル入力
+  default: { width: "535px", height: "450px" },
+  sm: { width: "250px", height: "165px" },
+  sp: { width: "340px", height: "300px" },
+  md: { width: "450px", height: "300px" },
+  base: { width: "400px", height: "300px" },
+};
 const labelFontSet = {
-  "default": {size: 12},
-  "sm": {size: 10},
-  "sp": {size: 12},
-  "md": {size: 12}
-}
+  default: { size: 12 },
+  sm: { size: 10 },
+  sp: { size: 12 },
+  md: { size: 12 },
+  base: { size: 10 },
+};
 
 const getColorPattern = (length, colors) => {
   const pattern = [];
@@ -119,8 +122,8 @@ const drawUnderline = (chart, i) => {
 
 const beforeDraw = (chart) => {
   const context = chart.ctx;
-  context.fillStyle=backgroundColor;
-  context.fillRect(0,0,context.canvas.width, context.canvas.height);
+  context.fillStyle = backgroundColor;
+  context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 };
 
 const beforeDatasetsDraw = (chart) => {
@@ -172,21 +175,26 @@ const beforeDatasetsDraw = (chart) => {
 };
 
 const afterDatasetsDraw = (chart, ease) => {
-   if (chart.canvas.parentNode.id !== "skill-ogp-gem") return;
-    // グラフ生成後のイメージ作成
-    html2canvas(document.querySelector("#og_image"), {
-      width: 1200,
-      height: 630,
-    }).then(canvas => {
-      let og_image_data = document.getElementById("og_image_data");
-      if (og_image_data == null) return;
-      og_image_data.value = canvas.toDataURL("image/png");
-      og_image_data.click();
-    });
-
+  if (chart.canvas.parentNode.id !== "skill-ogp-gem") return;
+  // グラフ生成後のイメージ作成
+  html2canvas(document.querySelector("#og_image"), {
+    width: 1200,
+    height: 630,
+  }).then((canvas) => {
+    let og_image_data = document.getElementById("og_image_data");
+    if (og_image_data == null) return;
+    og_image_data.value = canvas.toDataURL("image/png");
+    og_image_data.click();
+  });
 };
 
-const createChartFromJSON = (labels, datasets, isLink, labelFont, pointLabelsPadding) => {
+const createChartFromJSON = (
+  labels,
+  datasets,
+  isLink,
+  labelFont,
+  pointLabelsPadding
+) => {
   const color = isLink ? linkColor : "#000000";
   const rightPadding = isLink ? 22 : 0;
 
@@ -237,15 +245,17 @@ const createChartFromJSON = (labels, datasets, isLink, labelFont, pointLabelsPad
             color: color,
             backdropPadding: 5,
             padding: pointLabelsPadding,
-            font: labelFont
+            font: labelFont,
           },
         },
       },
     },
-    plugins: [{ beforeDraw: beforeDraw,
-                beforeDatasetsDraw: beforeDatasetsDraw,
-                afterDatasetsDraw: afterDatasetsDraw,
-              }
+    plugins: [
+      {
+        beforeDraw: beforeDraw,
+        beforeDatasetsDraw: beforeDatasetsDraw,
+        afterDatasetsDraw: afterDatasetsDraw,
+      },
     ],
   };
 };
@@ -256,7 +266,9 @@ const getPointLabelsPadding = (dataset) => {
   const size = dataset.size;
   const isLink = JSON.parse(dataset.displayLink);
 
-  if(size == "sm") { return 5; }
+  if (size == "sm") {
+    return 5;
+  }
 
   return isLink ? 25 : 5;
 };
@@ -267,10 +279,10 @@ export const SkillGem = {
     const dataset = element.dataset;
     const labels = JSON.parse(dataset.labels);
     const data = JSON.parse(dataset.data);
-    const gemSize = gemSizeSet[dataset.size] || gemSizeSet["default"]
-    const labelFont = labelFontSet[dataset.size] || labelFontSet["default"]
+    const gemSize = gemSizeSet[dataset.size] || gemSizeSet["default"];
+    const labelFont = labelFontSet[dataset.size] || labelFontSet["default"];
     const isLink = JSON.parse(dataset.displayLink);
-    const pointLabelsPadding = getPointLabelsPadding(dataset)
+    const pointLabelsPadding = getPointLabelsPadding(dataset);
     const datasets = [];
 
     if (labels.length < 3) return;
@@ -285,7 +297,13 @@ export const SkillGem = {
 
     window.myRadar[element.id] = new Chart(
       this.ctx,
-      createChartFromJSON(labels, datasets, isLink, labelFont, pointLabelsPadding)
+      createChartFromJSON(
+        labels,
+        datasets,
+        isLink,
+        labelFont,
+        pointLabelsPadding
+      )
     );
     window.myRadar[element.id].canvas.parentNode.style.width = gemSize.width;
     window.myRadar[element.id].canvas.parentNode.style.height = gemSize.height;

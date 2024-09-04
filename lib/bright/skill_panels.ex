@@ -130,7 +130,8 @@ defmodule Bright.SkillPanels do
   """
   def list_users_skill_panels_all_career_field(
         user_ids,
-        page \\ 1
+        page,
+        per_page \\ 5
       ) do
     # NOTE: user_idsを配列で利用する際は動作を要確認してください
     from(p in SkillPanel,
@@ -149,7 +150,7 @@ defmodule Bright.SkillPanels do
       distinct: true,
       select: %{p | user_skill_panels: u}
     )
-    |> Repo.paginate(page: page, page_size: 5)
+    |> Repo.paginate(page: page, page_size: per_page)
   end
 
   def list_users_skill_panels(user_ids, page \\ 1) do

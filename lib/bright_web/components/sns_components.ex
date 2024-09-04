@@ -39,6 +39,7 @@ defmodule BrightWeb.SnsComponents do
   attr :skill_panel, :string, required: true
   attr :level_text, :string, default: nil
   attr :phx_click, :string, default: "sns_up_click"
+  attr :direction, :string, default: "flex-row"
 
   def sns_share_button_group(assigns) do
     assigns =
@@ -48,7 +49,7 @@ defmodule BrightWeb.SnsComponents do
     ~H"""
       <div
         id={@id}
-        class="flex gap-2"
+        class={"flex gap-2 #{@direction}"}
       >
         <.twitter_share_button id={"#{@id}-twitter"} url={@share_graph_url} text={@twitter_text} phx_click={@phx_click}/>
         <.facebook_share_button id={"#{@id}-facebook"} url={@share_graph_url} phx_click={@phx_click}/>

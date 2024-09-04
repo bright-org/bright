@@ -25,7 +25,7 @@ defmodule BrightWeb.OnboardingLive.Index do
     |> assign(:current_path, current_path)
     |> assign(:page_title, page_title(current_path))
     |> push_event("scroll-to", %{
-      "id" => "#{Map.get(params, "career_field")}-#{Map.get(params, "job")}"
+      "id" => "#{Map.get(params, "career_field")}-#{Map.get(params, "panel")}"
     })
     |> then(&{:noreply, &1})
   end
@@ -65,9 +65,9 @@ defmodule BrightWeb.OnboardingLive.Index do
   defp skip_onboarding(%UserOnboarding{}, _), do: false
 
   defp page_title(<<"onboardings", _rest::binary>>), do: "オンボーディング"
-  defp page_title(<<"more_skills", _rest::binary>>), do: "ジョブパネル"
+  defp page_title(<<"skill_select", _rest::binary>>), do: "スキルを選ぶ"
 
-  def hidden_more_skills(current_path) do
+  def hide_when_skills(current_path) do
     if String.match?(current_path, ~r/onboarding/), do: "", else: "hidden"
   end
 end

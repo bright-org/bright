@@ -44,6 +44,29 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> assign_is_star(display_user, skill_panel)
   end
 
+  def assign_skill_panel(socket, %{skill_panel_id: nil} = skill_panel_params) do
+    latest_panel = SkillPanels.get_user_latest_skill_panel(socket.assigns.display_user)
+
+    skill_panel =
+      skill_panel_params
+      |> Map.put(:skill_panel_id, latest_panel.id)
+      |> UserSkillPanels.find_or_create_skill_panel()
+
+    raise_if_not_exists_skill_panel(skill_panel)
+
+    assign(socket, :skill_panel, skill_panel)
+    |> assign_is_star(socket.assigns.display_user, skill_panel)
+  end
+
+  def assign_skill_panel(socket, skill_panel_params) when is_map(skill_panel_params) do
+    skill_panel = UserSkillPanels.find_or_create_skill_panel(skill_panel_params)
+
+    raise_if_not_exists_skill_panel(skill_panel)
+
+    assign(socket, :skill_panel, skill_panel)
+    |> assign_is_star(socket.assigns.display_user, skill_panel)
+  end
+
   def assign_skill_panel(socket, skill_panel_id) do
     skill_panel = SkillPanels.get_user_skill_panel(socket.assigns.display_user, skill_panel_id)
 
@@ -147,6 +170,12 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
 
   def assign_skill_score_dict(socket) do
     %{skill_class_score: skill_class_score} = socket.assigns
+
+    socket
+    |> assign(skill_score_dict: get_skill_score_dict(skill_class_score))
+  end
+
+  def get_skill_score_dict(skill_class_score) do
     skills = SkillUnits.list_skills_on_skill_class(%{id: skill_class_score.skill_class_id})
 
     # skillからskill_scoreを引く辞書を生成
@@ -158,18 +187,14 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
       )
       |> Map.new(&{&1.skill_id, &1})
 
-    skill_score_dict =
-      Map.new(skills, fn skill ->
-        skill_score =
-          Map.get(skill_score_dict, skill.id)
-          |> Kernel.||(%SkillScores.SkillScore{skill_id: skill.id, score: :low})
-          |> Map.put(:changed, false)
+    Map.new(skills, fn skill ->
+      skill_score =
+        Map.get(skill_score_dict, skill.id)
+        |> Kernel.||(%SkillScores.SkillScore{skill_id: skill.id, score: :low})
+        |> Map.put(:changed, false)
 
-        {skill.id, skill_score}
-      end)
-
-    socket
-    |> assign(skill_score_dict: skill_score_dict)
+      {skill.id, skill_score}
+    end)
   end
 
   def assign_counter(socket) do

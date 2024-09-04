@@ -113,7 +113,7 @@ defmodule BrightWeb.SkillListComponent do
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, current_skill_class: nil)}
+    {:ok, assign(socket, current_skill_class: nil, per_page: 5)}
   end
 
   @impl true
@@ -126,7 +126,7 @@ defmodule BrightWeb.SkillListComponent do
 
   def assign_paginate(socket, user, career_field, page \\ 1) do
     %{page_number: page, total_pages: total_pages, entries: skill_panels} =
-      list_skill_panels(user, career_field, page)
+      list_skill_panels(user, career_field, page, socket.assigns.per_page)
 
     socket
     |> assign(:skill_panels, skill_panels)
@@ -164,11 +164,11 @@ defmodule BrightWeb.SkillListComponent do
     |> then(&{:noreply, &1})
   end
 
-  defp list_skill_panels(user, nil, page) do
-    SkillPanels.list_users_skill_panels_all_career_field([user.id], page)
+  defp list_skill_panels(user, nil, page, per_page) do
+    SkillPanels.list_users_skill_panels_all_career_field([user.id], page, per_page)
   end
 
-  defp list_skill_panels(user, career_field, page) do
+  defp list_skill_panels(user, career_field, page, _per_page) do
     # アクセス方法の統一のためis_startを`user_skill_panels.is_star`で引けるようにしている
     user_skill_panels =
       Bright.Repo.preload(user, [:user_skill_panels]).user_skill_panels
