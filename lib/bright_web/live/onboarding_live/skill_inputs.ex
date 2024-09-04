@@ -327,7 +327,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   defp assign_return_to(socket, params, url) do
     # パンくずから一つ前に戻った時のスクロール先設定
     current_path = URI.parse(url).path |> Path.split() |> Enum.at(1) |> String.replace("/", "")
-    id = params["skill_panel_id"]
+    id = socket.assigns.skill_panel.id
 
     career_field =
       Map.get(

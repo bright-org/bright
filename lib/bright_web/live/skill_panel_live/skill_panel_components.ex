@@ -113,13 +113,13 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
         <button
           class={
             "inline-flex items-center font-bold rounded-l-full gap-x-2 px-6 py-2 " <>
-            if @active == "graph", do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"
+            if @active == "skills", do: "button-toggle-active", else: "hover:filter hover:brightness-[80%]"
           }
         >
           <div
             class={[
               "inline-block h-6 w-6 [mask-image:url('/images/common/icons/growthPanel.svg')] [mask-position:center_center] [mask-size:100%] [mask-repeat:no-repeat]",
-              @active == "graph" && "bg-white", @active != "graph" && "bg-brightGray-500"]
+              @active == "skills" && "bg-white", @active != "skills" && "bg-brightGray-500"]
             }
           />
           スキル入力

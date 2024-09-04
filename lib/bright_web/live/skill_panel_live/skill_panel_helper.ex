@@ -44,6 +44,20 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     |> assign_is_star(display_user, skill_panel)
   end
 
+  def assign_skill_panel(socket, %{skill_panel_id: nil} = skill_panel_params) do
+    latest_panel = SkillPanels.get_user_latest_skill_panel(socket.assigns.display_user)
+
+    skill_panel =
+      skill_panel_params
+      |> Map.put(:skill_panel_id, latest_panel.id)
+      |> UserSkillPanels.find_or_create_skill_panel()
+
+    raise_if_not_exists_skill_panel(skill_panel)
+
+    assign(socket, :skill_panel, skill_panel)
+    |> assign_is_star(socket.assigns.display_user, skill_panel)
+  end
+
   def assign_skill_panel(socket, skill_panel_params) when is_map(skill_panel_params) do
     skill_panel = UserSkillPanels.find_or_create_skill_panel(skill_panel_params)
 

@@ -15,15 +15,15 @@
         <.switch_user current_user={@current_user}  display_user={@display_user}/>
 
       </div>
-      <%!-- PC スキル入力/スキル比較切替 --%>
-      <div class="hidden 2xl:flex lg:ml-auto w-[330px] pl-6">
+      <%!-- スキル入力/スキル比較切替 --%>
+      <div class="mt-4 lg:mt-0 lg:ml-auto w-[330px] lg:pl-6">
         <.toggle_link
           skill_panel={@skill_panel}
           display_user={@display_user}
           me={@me}
           anonymous={@anonymous}
           skill_class={@skill_class.class}
-          active="graph"
+          active="skills"
         />
       </div>
 

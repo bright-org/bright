@@ -259,7 +259,10 @@ defmodule BrightWeb.Router do
 
       live "/searches", MypageLive.Index, :search
       live "/free_trial", MypageLive.Index, :free_trial
-      live "/skills", OnboardingLive.Index, :index
+      live "/skill_select", OnboardingLive.Index, :index
+      live "/skill_select/:skill_panel_id", OnboardingLive.SkillInputs, :show
+
+      live "/skills", OnboardingLive.SkillInputs, :show
       live "/skills/:skill_panel_id", OnboardingLive.SkillInputs, :show
       live "/skills/:skill_panel_id/:user_name", OnboardingLive.SkillInputs, :show
 
