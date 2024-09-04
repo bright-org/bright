@@ -59,7 +59,15 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
   end
 
   def assign_skill_panel(socket, skill_panel_params) when is_map(skill_panel_params) do
-    skill_panel = UserSkillPanels.find_or_create_skill_panel(skill_panel_params)
+    skill_panel =
+      if socket.assigns.me do
+        UserSkillPanels.find_or_create_skill_panel(skill_panel_params)
+      else
+        SkillPanels.get_user_skill_panel(
+          socket.assigns.display_user,
+          skill_panel_params.skill_panel_id
+        )
+      end
 
     raise_if_not_exists_skill_panel(skill_panel)
 

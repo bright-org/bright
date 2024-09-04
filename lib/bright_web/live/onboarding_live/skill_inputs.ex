@@ -55,7 +55,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   def handle_params(params, url, %{assigns: %{skill_panel: %SkillPanel{}}} = socket) do
     socket
     |> assign_path(url)
-    |> assign_return_to(params, url)
+    |> assign_return_to(params)
     |> assign_skill_classes()
     |> assign_skill_class_and_score(params["class"])
     |> assign_prev_skill_class_and_score(params["class"])
@@ -236,27 +236,33 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
       |> Bright.Repo.preload(skill_units: [skill_categories: [:skills]])
       |> Map.get(:skill_units)
 
-    skill_score_dict =
-      skill_class.skill_class_scores
-      |> List.first()
-      |> get_skill_score_dict()
+    skill_class_score =
+      List.first(skill_class.skill_class_scores)
 
-    {gem_labels, gem_values} = get_gem_data(skill_units, skill_score_dict)
+    case skill_class_score do
+      nil ->
+        nil
 
-    counter = count_skill_scores(skill_score_dict)
-    num_skills = Enum.count(skill_score_dict)
+      _ ->
+        skill_score_dict = get_skill_score_dict(skill_class_score)
 
-    links =
-      1..length(gem_labels)
-      |> Enum.map(fn _x -> "" end)
+        {gem_labels, gem_values} = get_gem_data(skill_units, skill_score_dict)
 
-    %{
-      gem_labels: gem_labels,
-      gem_values: gem_values,
-      counter: counter,
-      num_skills: num_skills,
-      links: links
-    }
+        counter = count_skill_scores(skill_score_dict)
+        num_skills = Enum.count(skill_score_dict)
+
+        links =
+          1..length(gem_labels)
+          |> Enum.map(fn _x -> "" end)
+
+        %{
+          gem_labels: gem_labels,
+          gem_values: gem_values,
+          counter: counter,
+          num_skills: num_skills,
+          links: links
+        }
+    end
   end
 
   defp assign_gem_data(socket) do
@@ -324,7 +330,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     assign(socket, :skill_share_data, skill_share_data)
   end
 
-  defp assign_return_to(socket, params, url) do
+  defp assign_return_to(socket, params) do
     # パンくずから一つ前に戻った時のスクロール先設定
     id = socket.assigns.skill_panel.id
 
