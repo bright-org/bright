@@ -16,18 +16,6 @@
   <div class="flex flex-col lg:flex-row mx-4 pb-4 lg:mx-10 lg:pb-3 lg:gap-x-2">
     <% # 働く際の希望の入力を促すメッセージ %>
     <GuideMessageComponents.prompt_job_searching_message :if={Map.get(@flash, "first_submit_in_skill_panel") && !UserJobProfiles.job_searching?(@current_user)} />
-
-    <%!-- スマホ 成長パネル/スキルパネル切替 --%>
-    <div class="2xl:hidden my-4">
-      <.toggle_link
-        skill_panel={@skill_panel}
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        skill_class={@skill_class.class}
-        active="graph"
-      />
-    </div>
   </div>
 
   <div class="flex mx-4 lg:mx-10 pb-6">
@@ -74,16 +62,6 @@
       </:switch_button>
     </ProfileComponents.profile_with_skill>
     <%!-- PC 成長パネル/スキルパネル切替 --%>
-    <div class="hidden 2xl:flex lg:ml-auto  w-[330px] pl-6">
-      <.toggle_link
-        skill_panel={@skill_panel}
-        display_user={@display_user}
-        me={@me}
-        anonymous={@anonymous}
-        skill_class={@skill_class.class}
-        active="graph"
-      />
-    </div>
   </div>
 
   <div class="mx-4 pb-20 lg:mx-10 lg:pb-0 bg-white">

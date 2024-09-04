@@ -8,6 +8,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   import BrightWeb.DisplayUserHelper
   import BrightWeb.SkillPanelLive.SkillPanelHelper
   import BrightWeb.Share.Helper, only: [assign_share_graph_url: 1]
+  import BrightWeb.SkillPanelLive.SkillPanelComponents
 
   alias Bright.SkillPanels
   alias Bright.SkillPanels.SkillPanel

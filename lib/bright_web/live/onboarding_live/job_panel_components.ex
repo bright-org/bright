@@ -160,7 +160,7 @@ defmodule BrightWeb.OnboardingLive.JobPanelComponents do
           </div>
           <.link navigate={~p"/graphs/#{@panel_id}"}>
             <button class="rounded border bg-white h-[20px] mt-1 px-2 text-xs hover:filter hover:brightness-[80%]" type="button">
-              成長パネルを見る
+              成長履歴を見る
             </button>
           </.link>
         </div>
