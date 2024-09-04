@@ -129,6 +129,12 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
     end
   end
 
+  def next_gem_area(%{next_skill_class: nil} = assigns) do
+    ~H"""
+    <div />
+    """
+  end
+
   def next_gem_area(assigns) do
     ~H"""
     <.gem_area
@@ -146,6 +152,12 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
         color={@color}
         show_qr={false}
       />
+    """
+  end
+
+  def prev_gem_area(%{prev_skill_class: nil} = assigns) do
+    ~H"""
+    <div />
     """
   end
 

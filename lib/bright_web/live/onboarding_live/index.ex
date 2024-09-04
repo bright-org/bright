@@ -9,19 +9,18 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    scores = SkillPanels.list_skill_panels_with_score(socket.assigns.current_user.id)
-
     socket
-    |> assign(:scores, scores)
     |> assign(:pos, @default_pos)
     |> then(&{:ok, &1})
   end
 
   @impl true
   def handle_params(params, uri, socket) do
+    scores = SkillPanels.list_skill_panels_with_score(socket.assigns.current_user.id)
     current_path = URI.parse(uri).path |> String.replace("/", "")
 
     socket
+    |> assign(:scores, scores)
     |> assign(:current_path, current_path)
     |> assign(:page_title, page_title(current_path))
     |> push_event("scroll-to", %{
