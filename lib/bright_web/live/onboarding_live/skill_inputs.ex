@@ -401,7 +401,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
 
   defp put_flash_first_skills_edit(socket), do: socket
 
-  defp open_growth_share(skill_class_score, prev_skill_share_data) do
+  def open_growth_share(skill_class_score, prev_skill_share_data) do
     prev_level = skill_class_score.level
     prev_percentage = skill_class_score.percentage
 
