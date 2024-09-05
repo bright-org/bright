@@ -17,7 +17,7 @@ defmodule BrightWeb.SkillPanelController do
            panel.id
          ) do
       true ->
-        redirect(conn, to: ~p"/panels/#{panel.id}")
+        redirect(conn, to: ~p"/skills/#{panel.id}")
 
       false ->
         UserSkillPanels.create_user_skill_panel(%{
@@ -27,7 +27,7 @@ defmodule BrightWeb.SkillPanelController do
 
         conn
         |> put_flash(:info, "スキルパネル:#{panel.name}を取得しました")
-        |> redirect(to: ~p"/panels/#{panel.id}")
+        |> redirect(to: ~p"/skills/#{panel.id}")
     end
   end
 end
