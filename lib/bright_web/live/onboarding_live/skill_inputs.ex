@@ -44,7 +44,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     socket
     |> assign_display_user(params)
     |> assign_skill_panel(skill_panel_params)
-    |> assign(:page_title, "スキルパネル")
+    |> assign(:page_title, "スキル入力")
     |> assign(:class_color, @class_color)
     |> assign(:label_color, @label_color)
     |> assign(:skill_share_open, false)
@@ -142,13 +142,13 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   end
 
   def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
-    prev_skill_class_score = socket.assigns.skill_class_score
+    # prev_skill_class_score = socket.assigns.skill_class_score
 
-    prev_skill_share_data =
-      SkillScores.get_level_count_from_skill_panel_id(
-        socket.assigns.skill_panel.id,
-        socket.assigns.skill_class.class
-      )
+    # prev_skill_share_data =
+    #  SkillScores.get_level_count_from_skill_panel_id(
+    #    socket.assigns.skill_panel.id,
+    #    socket.assigns.skill_class.class
+    #  )
 
     SkillScores.get_skill_score!(id)
     |> Map.put(:score, String.to_atom(score))
@@ -157,7 +157,8 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
 
     send_update(BrightWeb.OgpComponent, id: "ogp")
 
-    open_growth_share(prev_skill_class_score, prev_skill_share_data)
+    # バグがあったので一旦落とす
+    # open_growth_share(prev_skill_class_score, prev_skill_share_data)
 
     socket
     |> assign_renew(params["class"])
@@ -400,7 +401,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
 
   defp put_flash_first_skills_edit(socket), do: socket
 
-  defp open_growth_share(skill_class_score, prev_skill_share_data) do
+  def open_growth_share(skill_class_score, prev_skill_share_data) do
     prev_level = skill_class_score.level
     prev_percentage = skill_class_score.percentage
 
