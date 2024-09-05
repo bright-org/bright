@@ -142,13 +142,14 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   end
 
   def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
-    prev_skill_class_score = socket.assigns.skill_class_score
+    # TODO 開始時のレベル表示が修正されるまで封印
+    # prev_skill_class_score = socket.assigns.skill_class_score
 
-    prev_skill_share_data =
-      SkillScores.get_level_count_from_skill_panel_id(
-        socket.assigns.skill_panel.id,
-        socket.assigns.skill_class.class
-      )
+    # prev_skill_share_data =
+    #   SkillScores.get_level_count_from_skill_panel_id(
+    #     socket.assigns.skill_panel.id,
+    #     socket.assigns.skill_class.class
+    #   )
 
     SkillScores.get_skill_score!(id)
     |> Map.put(:score, String.to_atom(score))
@@ -157,7 +158,8 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
 
     send_update(BrightWeb.OgpComponent, id: "ogp")
 
-    open_growth_share(prev_skill_class_score, prev_skill_share_data)
+    # TODO 開始時のレベル表示が修正されるまで封印
+    # open_growth_share(prev_skill_class_score, prev_skill_share_data)
 
     socket
     |> assign_renew(params["class"])
@@ -400,24 +402,25 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
 
   defp put_flash_first_skills_edit(socket), do: socket
 
-  defp open_growth_share(skill_class_score, prev_skill_share_data) do
-    prev_level = skill_class_score.level
-    prev_percentage = skill_class_score.percentage
+  # TODO 開始時のレベル表示が修正されるまで封印
+  # defp open_growth_share(skill_class_score, prev_skill_share_data) do
+  #   prev_level = skill_class_score.level
+  #   prev_percentage = skill_class_score.percentage
 
-    skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
-    new_level = skill_class_score.level
-    new_percentage = skill_class_score.percentage
+  #   skill_class_score = SkillScores.get_skill_class_score!(skill_class_score.id)
+  #   new_level = skill_class_score.level
+  #   new_percentage = skill_class_score.percentage
 
-    if prev_level != new_level && prev_percentage < new_percentage do
-      send_update(GrowthShareModalComponent,
-        id: "growth_share",
-        open: true,
-        user_id: skill_class_score.user_id,
-        skill_class_id: skill_class_score.skill_class_id,
-        new_level: new_level,
-        prev_level: prev_level,
-        prev_skill_share_data: prev_skill_share_data
-      )
-    end
-  end
+  #   if prev_level != new_level && prev_percentage < new_percentage do
+  #     send_update(GrowthShareModalComponent,
+  #       id: "growth_share",
+  #       open: true,
+  #       user_id: skill_class_score.user_id,
+  #       skill_class_id: skill_class_score.skill_class_id,
+  #       new_level: new_level,
+  #       prev_level: prev_level,
+  #       prev_skill_share_data: prev_skill_share_data
+  #     )
+  #   end
+  # end
 end
