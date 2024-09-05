@@ -44,7 +44,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     socket
     |> assign_display_user(params)
     |> assign_skill_panel(skill_panel_params)
-    |> assign(:page_title, "スキルパネル")
+    |> assign(:page_title, "スキル入力")
     |> assign(:class_color, @class_color)
     |> assign(:label_color, @label_color)
     |> assign(:skill_share_open, false)
