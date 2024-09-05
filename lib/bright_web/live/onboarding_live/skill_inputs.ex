@@ -142,13 +142,13 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   end
 
   def handle_event("update_score", %{"score_id" => id, "score" => score} = params, socket) do
-    prev_skill_class_score = socket.assigns.skill_class_score
+    # prev_skill_class_score = socket.assigns.skill_class_score
 
-    prev_skill_share_data =
-      SkillScores.get_level_count_from_skill_panel_id(
-        socket.assigns.skill_panel.id,
-        socket.assigns.skill_class.class
-      )
+    # prev_skill_share_data =
+    #  SkillScores.get_level_count_from_skill_panel_id(
+    #    socket.assigns.skill_panel.id,
+    #    socket.assigns.skill_class.class
+    #  )
 
     SkillScores.get_skill_score!(id)
     |> Map.put(:score, String.to_atom(score))
@@ -157,7 +157,8 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
 
     send_update(BrightWeb.OgpComponent, id: "ogp")
 
-    open_growth_share(prev_skill_class_score, prev_skill_share_data)
+    # バグがあったので一旦落とす
+    # open_growth_share(prev_skill_class_score, prev_skill_share_data)
 
     socket
     |> assign_renew(params["class"])
