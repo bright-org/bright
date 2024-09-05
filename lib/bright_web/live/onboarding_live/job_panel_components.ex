@@ -125,7 +125,7 @@ defmodule BrightWeb.OnboardingLive.JobPanelComponents do
   def unlocked_job(%{current_path: "skill_select"} = assigns) do
     ~H"""
     <div class="cursor-pointer">
-      <.link navigate={"/#{@current_path}/#{@panel_id}?career_field=#{@career_field.name_en}"} >
+      <.link navigate={"/#{@current_path}/#{@panel_id}?career_field=#{@career_field.name_en}&class=1"} >
       <div
         id={"#{@career_field.name_en}-#{@panel_id}"}
         class={"px-2 lg:px-4 m-2 rounded w-[150px] lg:w-[340px] min-h-[140px] lg:min-h-[74px] flex flex-col hover:bg-[#F5FBFB] #{if is_nil(@score), do: "border-[2px]", else: "border border-brightGreen-300"}"}
