@@ -200,7 +200,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
         <span class="font-bold"><%= @skill_class.name %></span>
       </div>
       <div class="flex flex-col lg:flex-row items-center justify-between mt-1 lg:px-4">
-        <div :if={@active} class="hidden lg:block"><.prev_class skill_class={@skill_class} path={@path} query={@query} /></div>
+        <div class="hidden lg:block"><.prev_class :if={@active} skill_class={@skill_class} path={@path} query={@query} /></div>
         <div class="flex justify-center flex-col">
           <div phx-click="scroll_to_unit">
             <.skill_gem
@@ -220,7 +220,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
             </div>
           </div>
         </div>
-        <div :if={@active} class="hidden lg:block"><.next_class skill_class={@skill_class} path={@path} query={@query}/></div>
+        <div class="hidden lg:block"><.next_class :if={@active} skill_class={@skill_class} path={@path} query={@query}/></div>
       </div>
     </div>
     """
