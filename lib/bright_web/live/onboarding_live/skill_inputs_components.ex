@@ -92,7 +92,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
             gem_values={@gem_values}
             share_graph_url={@share_graph_url}
             color={Map.get(@color,class.class)}
-            show_qr={true}
+            active={true}
           />
         </div>
         <% else %>
@@ -107,7 +107,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
             prev_skill_class={@prev_skill_class}
             next_skill_class={@next_skill_class}
             color={Map.get(@color, class.class)}
-            show_qr={false}
+            active={false}
             current_class={@skill_class.class}
           />
           </div>
@@ -150,7 +150,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
         gem_values={@next_skill_class.gem_values}
         share_graph_url={""}
         color={@color}
-        show_qr={false}
+        active={false}
       />
     """
   end
@@ -176,7 +176,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
         gem_values={@prev_skill_class.gem_values}
         share_graph_url={""}
         color={@color}
-        show_qr={false}
+        active={false}
       />
     """
   end
@@ -190,7 +190,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
   def gem_area(assigns) do
     ~H"""
     <div class="bg-white rounded-lg flex flex-col py-8 h-full lg:h-[470px]">
-      <div class="lg:hidden flex justify-between -mt-4 px-4">
+      <div :if={@active} class="lg:hidden flex justify-between -mt-4 px-4">
         <.prev_class skill_class={@skill_class} path={@path} query={@query} />
         <.next_class skill_class={@skill_class} path={@path} query={@query}/>
       </div>
@@ -200,7 +200,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
         <span class="font-bold"><%= @skill_class.name %></span>
       </div>
       <div class="flex flex-col lg:flex-row items-center justify-between mt-1 lg:px-4">
-        <div class="hidden lg:block"><.prev_class skill_class={@skill_class} path={@path} query={@query} /></div>
+        <div :if={@active} class="hidden lg:block"><.prev_class skill_class={@skill_class} path={@path} query={@query} /></div>
         <div class="flex justify-center flex-col">
           <div phx-click="scroll_to_unit">
             <.skill_gem
@@ -214,13 +214,13 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
           </div>
           <div class="flex flex-col lg:flex-row px-2 lg:px-0 gap-x-2">
             <.skill_stat counter={@counter}  num_skills={@num_skills} />
-            <div class="flex gap-x-2 items-end px-8 lg:px-0 -mt-8 lg:mt-0" :if={@show_qr}>
+            <div class="flex gap-x-2 items-end px-8 lg:px-0 -mt-8 lg:mt-0" :if={@active}>
               <SnsComponents.sns_share_button_group share_graph_url={@share_graph_url} skill_panel={@skill_panel.name} direction="lg:flex-col lg:justify-between lg:h-[75px] lg:py-1" />
               <QrCodeComponents.qr_code_image class="border border-b-2 border-brightGray-200" qr_code_url={@share_graph_url} width="80px" height="80px" />
             </div>
           </div>
         </div>
-        <div class="hidden lg:block"><.next_class skill_class={@skill_class} path={@path} query={@query}/></div>
+        <div :if={@active} class="hidden lg:block"><.next_class skill_class={@skill_class} path={@path} query={@query}/></div>
       </div>
     </div>
     """
