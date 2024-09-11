@@ -46,9 +46,15 @@
       color={@label_color}
     />
     <div class="flex justify-center mt-4 text-4xl text-white">
-      <span class={"#{if @skill_class.class == 1, do: "text-[#777777]"}"}>・</span>
-      <span class={"#{if @skill_class.class == 2, do: "text-[#777777]"}"}>・</span>
-      <span class={"#{if @skill_class.class == 3, do: "text-[#777777]"}"}>・</span>
+      <.link navigate={~p"/skills/#{@skill_panel.id}?class=1"}>
+        <span class={"#{if @skill_class.class == 1, do: "text-[#777777]"}"}>・</span>
+      </.link>
+      <.link navigate={~p"/skills/#{@skill_panel.id}?class=2"}>
+        <span class={"#{if @skill_class.class == 2, do: "text-[#777777]"}"}>・</span>
+      </.link>
+      <.link navigate={~p"/skills/#{@skill_panel.id}?class=3"}>
+        <span class={"#{if @skill_class.class == 3, do: "text-[#777777]"}"}>・</span>
+      </.link>
     </div>
   </div>
 
@@ -84,7 +90,7 @@
             class="w-full lg:w-44 text-center text-sm cursor-pointer mx-2 mt-2 lg:mt-0 lg:mz-0 px-4 py-2 border rounded-md bg-white hover:filter hover:brightness-[80%]"
             phx-click={JS.push("open", target: "#help-enter-skills-button") |> show("#help-enter-skills-button")}>
             マークの基準について
-          </div>
+          </div>          
 
         </div>
         <div class="lg:absolute lg:right-0 lg:top-8 z-10 flex items-center lg:items-end flex-col lg:min-w-[600px]">
