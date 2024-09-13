@@ -382,7 +382,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_evidence_link(assigns) do
     ~H"""
-    <.link class="link-evidence" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/evidences?#{@query}"}>
+    <.link class="link-evidence" patch={~p"/skills/#{@skill_panel}/skills/#{@skill}/evidences?#{@query}"}>
       <%= if @skill_score.evidence_filled do %>
         <img src="/images/common/icons/skillEvidenceActive.svg" />
       <% else %>
@@ -396,7 +396,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_reference_link(assigns) do
     ~H"""
-    <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}>
+    <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={~p"/skills/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}>
       <%= if @skill_score.reference_read do %>
         <img src="/images/common/icons/skillStudyActive.svg" />
       <% else %>
@@ -410,7 +410,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_exam_link(assigns) do
     ~H"""
-    <.link :if={skill_exam_existing?(@skill.skill_exam)} class="link-exam" patch={~p"/panels/#{@skill_panel}/skills/#{@skill}/exam?#{@query}"}>
+    <.link :if={skill_exam_existing?(@skill.skill_exam)} class="link-exam" patch={~p"/skills/#{@skill_panel}/skills/#{@skill}/exam?#{@query}"}>
       <%= if @skill_score.exam_progress in [:wip, :done] do %>
         <img src="/images/common/icons/skillTestActive.svg" />
       <% else %>
