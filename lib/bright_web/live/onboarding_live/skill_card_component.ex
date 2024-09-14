@@ -44,9 +44,9 @@ defmodule BrightWeb.OnboardingLive.SkillCardComponent do
                       <div class="w-40 border mb-2 mr-2 bg-white">
                         <p class="h-12 text-xs p-2"><%= skill.name %></p>
                         <div class="flex justify-between items-center gap-x-2 p-2">
-                          <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                          <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                          <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_evidence_link path={~p"/skills/#{@skill_panel}/skills/#{current_skill}/evidences?#{@query}"} skill_score={current_skill_score} />
+                          <.skill_reference_link :if={@me} path={~p"/skills/#{@skill_panel}/skills/#{current_skill}/reference?#{@query}"} skill={current_skill} skill_score={current_skill_score} />
+                          <.skill_exam_link :if={@me} path={~p"/skills/#{@skill_panel}/skills/#{current_skill}/exam?#{@query}"} skill={current_skill} skill_score={current_skill_score} />
                         </div>
 
                         <div class="flex justify-end gap-2 p-2 bg-[#F5FBFB]">

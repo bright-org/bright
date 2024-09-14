@@ -270,6 +270,20 @@ defmodule BrightWeb.Router do
            OnboardingLive.SkillInputs,
            :show
 
+      live "/skills/:skill_panel_id/skills/:skill_id/evidences",
+           OnboardingLive.SkillInputs,
+           :show_evidences
+
+      live "/skills/:skill_panel_id/skills/:skill_id/reference",
+           OnboardingLive.SkillInputs,
+           :show_reference
+
+      live "/skills/:skill_panel_id/skills/:skill_id/exam",
+           OnboardingLive.SkillInputs,
+           :show_exam
+
+      live "/skills/:skill_panel_id/edit", OnboardingLive.SkillInputs, :edit
+
       live "/graphs", GraphLive.Graphs, :show
       live "/graphs/:skill_panel_id", GraphLive.Graphs, :show
       live "/graphs/:skill_panel_id/:user_name", GraphLive.Graphs, :show
