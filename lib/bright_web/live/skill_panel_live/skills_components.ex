@@ -268,9 +268,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
               <div class="flex justify-between items-center">
                 <p><%= col3.skill.name %></p>
                 <div class="flex justify-between items-center gap-x-2">
-                  <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                  <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                  <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_evidence_link path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/evidences?#{@query}"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_reference_link :if={@me} path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/reference?#{@query}"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                  <.skill_exam_link :if={@me} path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/exam?#{@query}"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                 </div>
               </div>
             </td>
@@ -347,9 +347,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
                       <th class="flex justify-between align-middle w-full mb-2 min-h-8 p-2 text-left">
                         <span class="break-words max-w-[172px]"><%= skill.name %></span>
                         <div class="flex justify-end items-center gap-x-2 min-w-[80px]">
-                          <.skill_evidence_link skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                          <.skill_reference_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                          <.skill_exam_link :if={@me} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_evidence_link path={"panels"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_reference_link :if={@me} path={"panels"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                          <.skill_exam_link :if={@me} path={"panels"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
                         </div>
                       </th>
 
@@ -382,7 +382,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_evidence_link(assigns) do
     ~H"""
-    <.link class="link-evidence" patch={~p"/skills/#{@skill_panel}/skills/#{@skill}/evidences?#{@query}"}>
+    <.link class="link-evidence" patch={@path}>
       <%= if @skill_score.evidence_filled do %>
         <img src="/images/common/icons/skillEvidenceActive.svg" />
       <% else %>
@@ -396,7 +396,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_reference_link(assigns) do
     ~H"""
-    <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={~p"/skills/#{@skill_panel}/skills/#{@skill}/reference?#{@query}"}>
+    <.link :if={skill_reference_existing?(@skill.skill_reference)} class="link-reference" patch={@path}>
       <%= if @skill_score.reference_read do %>
         <img src="/images/common/icons/skillStudyActive.svg" />
       <% else %>
@@ -410,7 +410,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
 
   def skill_exam_link(assigns) do
     ~H"""
-    <.link :if={skill_exam_existing?(@skill.skill_exam)} class="link-exam" patch={~p"/skills/#{@skill_panel}/skills/#{@skill}/exam?#{@query}"}>
+    <.link :if={skill_exam_existing?(@skill.skill_exam)} class="link-exam" patch={@path}>
       <%= if @skill_score.exam_progress in [:wip, :done] do %>
         <img src="/images/common/icons/skillTestActive.svg" />
       <% else %>
