@@ -267,10 +267,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsComponents do
             <td class="sticky left-[400px] bg-white sticky-border">
               <div class="flex justify-between items-center">
                 <p><%= col3.skill.name %></p>
-                <div class="flex justify-between items-center gap-x-2">
-                  <.skill_evidence_link path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/evidences?#{@query}"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                  <.skill_reference_link :if={@me} path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/reference?#{@query}"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
-                  <.skill_exam_link :if={@me} path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/exam?#{@query}"} skill_panel={@skill_panel} skill={current_skill} skill_score={current_skill_score} query={@query} />
+                <div :if={map_size(current_skill) > 0} class="flex justify-between items-center gap-x-2">
+                  <.skill_evidence_link  path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/evidences?#{@query}"}  skill_score={current_skill_score} />
+                  <.skill_reference_link :if={@me} path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/reference?#{@query}"}  skill={current_skill} skill_score={current_skill_score}  />
+                  <.skill_exam_link :if={@me} path={~p"/panels/#{@skill_panel}/skills/#{current_skill}/exam?#{@query}"} skill={current_skill} skill_score={current_skill_score} />
                 </div>
               </div>
             </td>
