@@ -522,7 +522,19 @@ defmodule Bright.Accounts do
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
   end
 
-  # NOTE: 外部サービスである ZOHO との連携が失敗しても全体の処理は失敗させたくないためエラーハンドリングを行いつつ、ログを残す
+  @doc """
+  Try to create zoho contact record.
+
+  NOTE: 外部サービスである ZOHO との連携が失敗しても全体の処理は失敗させたくないためエラーハンドリングを行いつつ、ログを残す
+
+  ## Examples
+
+      iex> try_create_zoho_contact(user)
+      {:ok, %Tesla.Env{status: 201}}
+
+      iex> try_create_zoho_contact(user)
+      :error
+  """
   def try_create_zoho_contact(user) do
     try do
       Crm.build_create_contact_payload(%{name: user.name, email: user.email})
@@ -533,6 +545,36 @@ defmodule Bright.Accounts do
           "Unexpected error when creating zoho contact: user: #{inspect(user)} error: #{inspect(e)}"
         )
 
+        :error
+    end
+  end
+
+  @doc """
+  Try to update zoho contact record. It updates only name and email.
+
+  ## Examples
+
+      iex> try_update_zoho_contact(user)
+      {:ok, %Tesla.Env{status: 200}}
+
+      iex> try_update_zoho_contact(user)
+      :error
+
+  """
+  def update_zoho_contact(user) do
+    case Crm.get_contacts_by_email(user.email) do
+      {:ok, []} ->
+        Logger.warning("Empty set when get contact by email: #{user.email}")
+        :error
+
+      {:ok, contacts} ->
+        record_id = contacts |> List.first() |> Map.get("id")
+
+        Crm.build_update_contact_payload(%{name: user.name, email: user.email})
+        |> then(&Bright.Zoho.Crm.update_contact(record_id, &1))
+
+      :error ->
+        Logger.warning("Failed to get contact by email: #{user.email}")
         :error
     end
   end

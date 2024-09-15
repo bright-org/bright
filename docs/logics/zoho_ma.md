@@ -27,6 +27,10 @@ ZOHO CRM とは API 経由で連携を行う。
 
 https://www.zoho.com/accounts/protocol/oauth/self-client/client-credentials-flow.html
 
+以下 URL で作成可能。
+
+https://api-console.zoho.jp/
+
 ### アクセストークンの取得形式
 
 Client ID と Client Secret のペアを用いてアクセストークンの取得を行う。
@@ -91,7 +95,7 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 
 - POST {api_domain}/crm/v6/Contacts
 
-```
+```json
 {
   "data": [
     {
@@ -103,17 +107,36 @@ HTTP Client は [Tesla](https://github.com/elixir-tesla/tesla/) を使用。
 }
 ```
 
-※ "field9" は「連携元」カスタム項目のフィールド名。`/crm/orgxxxxxx/settings/api/modules/Contacts?step=FieldsList` で確認可（xxxxxx は ZOHO の soid）。
+※ "field9" は「連携元」カスタム項目（※エンタープライズ機能のみ）のフィールド名。`/crm/orgxxxxxx/settings/api/modules/Contacts?step=FieldsList` で確認可（xxxxxx は ZOHO の soid）。
+
 ※ API 実行がエラーになった場合でも、ユーザー登録処理全体はエラーにせず error レベルのログを出すに留める。（ZOHO がエラーになった時にユーザー登録ができないのは困るため）
 
 ## Bright ユーザーの情報変化時のフロー
 
-- GET xxx
-- PUT xxx
+- GET {api_domain}/crm/v6/Contacts/search?email={user_email}
+
+`email` で検索して、 `record_id` を取得する
+
+※ ZOHO 側にユーザーが見つからなくても、登録処理全体はエラーにせず warn レベルのログを出すに留める。
+
+- PUT {api_domain}/crm/v6/Contacts/{record_id}
+
+```json
+{
+  "data": [
+    {
+      "Last_Name": "ハンドル名",
+      "Email": "xxx@example.com"
+    }
+  ]
+}
+```
+
+で更新する。更新に失敗したら例外を発生させる。
 
 ## コミュニティ機能
 
-※ ZOHO のカスタムタブの機能を使用する。
+※ ZOHO のカスタムタブの機能を使用する。（エンタープライズ機能のみ）
 
 1 ユーザーが複数のコミュニティに参加できるようにするため N:N で紐づけができる必要がある。
 
@@ -133,3 +156,11 @@ WIP
 ## ユーザーのステージ変化
 
 WIP
+
+## ローカル環境での動作確認方法
+
+無料トライアルができるので、そこで動作確認可能。
+
+https://www.zoho.com/jp/crm/welcome.html
+
+一部機能はエンタープライズ機能である必要があり、これは 15 日間のみ有効なので、確認が必要な場合はこの間に行う。

@@ -196,6 +196,8 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
     )
   end
 
+  # TODO: ZOHO 連携
+  # 本番のみ
   defp update_user_with_user_profile(socket, user_params, uploaded_icon_file_path) do
     socket.assigns.user
     |> Bright.Repo.preload(:user_profile)

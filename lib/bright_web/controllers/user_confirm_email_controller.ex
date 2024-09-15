@@ -3,6 +3,8 @@ defmodule BrightWeb.UserConfirmEmailController do
 
   alias Bright.Accounts
 
+  # TODO: ZOHO 連携
+  # 本番のみ
   def confirm(
         conn,
         %{"token" => token}

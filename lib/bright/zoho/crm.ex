@@ -140,11 +140,108 @@ defmodule Bright.Zoho.Crm do
   end
 
   @doc """
+  連絡先を email から検索する。
+
+  NOTE: email は一意であるため最大1件の連絡先が返却されることを期待する
+
+  ## Examples
+
+      iex> Bright.Zoho.Crm.get_contacts_by_email("hoge@example.com")
+      {:ok,
+        [
+          %{
+            "id" => "100",
+            "Last_Name" => "koyo2"
+          }
+        ]
+      }
+
+      iex> Bright.Zoho.Crm.get_contacts_by_email("hoge@example.com")
+      :error
+  """
+  def get_contacts_by_email(email) do
+    build_client()
+    |> case do
+      %Tesla.Client{} = client ->
+        Client.search_contact_by_email(client, email) |> handle_search_contact()
+
+      _ ->
+        :error
+    end
+  end
+
+  defp handle_search_contact(result) do
+    case result do
+      # NOTE: 204 の場合は body がないので空リストを返す
+      {:ok, %Tesla.Env{status: status, body: _body}} when status == 204 ->
+        {:ok, []}
+
+      {:ok, %Tesla.Env{status: status, body: %{"data" => data_array}}}
+      when status in 200..299 ->
+        {:ok, data_array}
+
+      # NOTE: 200 系以外はエラーとして扱う
+      {:ok, response} ->
+        Logger.error("Failed to get_contacts_by_email: #{inspect(Map.get(response, :body))}")
+        :error
+
+      {:error, error} ->
+        Logger.error("Failed to get_contacts_by_email: #{inspect(error)}")
+        :error
+    end
+  end
+
+  @doc """
+  連絡先を更新する
+
+  ## Examples
+
+      iex> build_update_contact_payload(%{name: "koyo", email: "koyo@example.com"}) |> then(&Bright.Zoho.Crm.update_contact("1", &1))
+      {:ok, %Tesla.Env{status: 201}}
+
+      iex> build_update_contact_payload(%{name: "koyo", email: "koyo@example.com"}) |> then(&Bright.Zoho.Crm.update_contact("1", &1))
+      :error
+  """
+  def update_contact(contact_id, payload) do
+    build_client()
+    |> case do
+      %Tesla.Client{} = client ->
+        Client.update_contact(client, contact_id, payload) |> handle_update_contact()
+
+      _ ->
+        :error
+    end
+  end
+
+  defp handle_update_contact(result) do
+    case result do
+      {:ok, %Tesla.Env{status: status} = response} when status in 200..299 ->
+        {:ok, response}
+
+      # NOTE: 200 系以外はエラーとして扱う
+      {:ok, response} ->
+        Logger.error("Failed to update_contact: #{inspect(Map.get(response, :body))}")
+        :error
+
+      {:error, error} ->
+        Logger.error("Failed to update_contact: #{inspect(error)}")
+        :error
+    end
+  end
+
+  @doc """
   連絡先作成用のペイロードを生成する
 
   field9 は「連携元」項目
   """
   def build_create_contact_payload(%{name: name, email: email}) do
     %{"data" => [%{"Last_Name" => name, "Email" => email, "field9" => "Brightユーザー"}]}
+  end
+
+  @doc """
+  連絡先更新用のペイロードを生成する
+  """
+  def build_update_contact_payload(%{name: name, email: email}) do
+    %{"data" => [%{"Last_Name" => name, "Email" => email}]}
   end
 end

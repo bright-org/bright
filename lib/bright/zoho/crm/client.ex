@@ -27,4 +27,18 @@ defmodule Bright.Zoho.Crm.Client do
   def create_contact(client, data) do
     client |> Tesla.post("/Contacts", data)
   end
+
+  @doc """
+  「連絡先」を email から検索する
+  """
+  def search_contact_by_email(client, email) do
+    client |> Tesla.get("/Contacts/search?email=#{email}")
+  end
+
+  @doc """
+  「連絡先」を更新する
+  """
+  def update_contact(client, contact_id, data) do
+    client |> Tesla.put("/Contacts/#{contact_id}", data)
+  end
 end
