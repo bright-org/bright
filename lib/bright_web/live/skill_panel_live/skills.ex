@@ -73,7 +73,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     get_path_to_switch_display_user("panels", user, skill_panel, anonymous)
     |> case do
       {:ok, path} ->
-        {:noreply, push_redirect(socket, to: path)}
+        {:noreply, push_navigate(socket, to: path)}
 
       :error ->
         {:noreply,
@@ -86,7 +86,7 @@ defmodule BrightWeb.SkillPanelLive.Skills do
     %{current_user: current_user, skill_panel: skill_panel} = socket.assigns
     move_to = get_path_to_switch_me("panels", current_user, skill_panel)
 
-    {:noreply, push_redirect(socket, to: move_to)}
+    {:noreply, push_navigate(socket, to: move_to)}
   end
 
   def handle_event("click_skill_star_button", _params, %{assigns: assigns} = socket) do

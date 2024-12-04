@@ -430,7 +430,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
   # NOTE: 登録後初回入力時は成長パネルに、それ以外はスキルパネルに遷移
   defp redirect_or_patch(%{assigns: %{first_time_in_overall: true}} = socket) do
     socket
-    |> push_redirect(to: socket.assigns.graphs_path)
+    |> push_navigate(to: socket.assigns.graphs_path)
   end
 
   defp redirect_or_patch(socket) do

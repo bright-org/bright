@@ -112,7 +112,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
     get_path_to_switch_display_user("skills", user, skill_panel, anonymous)
     |> case do
       {:ok, path} ->
-        {:noreply, push_redirect(socket, to: path)}
+        {:noreply, push_navigate(socket, to: path)}
 
       :error ->
         {:noreply, put_flash(socket, :error, "選択された対象者がスキルパネルを保有していないため、対象者を表示できません")}

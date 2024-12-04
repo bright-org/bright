@@ -41,7 +41,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       []
     )
     # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
-    |> assign_push_redirect(params, nil, nil)
+    |> assign_push_navigate(params, nil, nil)
   end
 
   def init_assign(params, %{assigns: %{current_user: user}} = socket) do
@@ -92,7 +92,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
       member_skill_class_scores
     )
     # パラメータの指定内容とデータの取得結果によってリダイレクトを指定
-    |> assign_push_redirect(params, display_team, display_skill_panel)
+    |> assign_push_navigate(params, display_team, display_skill_panel)
     |> assign(:team_size, length(display_team_members))
     |> assign(:level_count, level_count)
     |> assign(:filter_name, "")
@@ -330,7 +330,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> assign(:display_skill_classes, display_skill_classes)
   end
 
-  defp assign_push_redirect(
+  defp assign_push_navigate(
          %{assigns: %{live_action: :index}} = socket,
          %{"team_id" => _team_id, "skill_panel_id" => _skill_panel_id},
          _display_team,
@@ -340,7 +340,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     socket
   end
 
-  defp assign_push_redirect(
+  defp assign_push_navigate(
          %{assigns: %{live_action: :index}} = socket,
          _params,
          %Team{} = display_team,
@@ -351,7 +351,7 @@ defmodule BrightWeb.TeamLive.MyTeamHelper do
     |> push_navigate(to: "/teams/#{display_team.id}/skill_panels/#{display_skill_panel.id}")
   end
 
-  defp assign_push_redirect(socket, _params, _display_team, _display_skill_panel) do
+  defp assign_push_navigate(socket, _params, _display_team, _display_skill_panel) do
     # それ以外
     # パラメータが完全に指定されておらず、必要なデータも集められなかった場合
     # リダイレクトはしない

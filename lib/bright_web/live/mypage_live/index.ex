@@ -35,7 +35,7 @@ defmodule BrightWeb.MypageLive.Index do
   end
 
   def handle_event("clear_display_user", _params, socket) do
-    {:noreply, push_redirect(socket, to: ~p"/mypage")}
+    {:noreply, push_navigate(socket, to: ~p"/mypage")}
   end
 
   def handle_event("edit_skill_evidence", %{"id" => id}, socket) do
