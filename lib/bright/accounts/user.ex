@@ -23,7 +23,7 @@ defmodule Bright.Accounts.User do
     field :hashed_password, :string, redact: true
     field :password_registered, :boolean
     field :confirmed_at, :naive_datetime
-    field :type, Ecto.Enum, values: [:engineer, :medical]
+    field :type, Ecto.Enum, values: [:engineer, :medical], default: :engineer
     # 検索用 ソートカラム
     field :last_updated, :naive_datetime, virtual: true
     field :desired_income, :integer, virtual: true
@@ -218,10 +218,10 @@ defmodule Bright.Accounts.User do
       attrs = merge_dummy_password(attrs)
 
       user
-      |> cast(attrs, [:name, :email, :password, :password_registered])
+      |> cast(attrs, [:name, :email, :password, :type, :password_registered])
     else
       user
-      |> cast(attrs, [:name, :email])
+      |> cast(attrs, [:name, :email, :type])
     end
   end
 
