@@ -82,6 +82,32 @@ defmodule BrightWeb.UserRegistrationLiveTest do
       assert user
       refute user.confirmed_at
       assert user.password_registered
+      assert user.type == :engineer
+      assert Repo.get_by(UserToken, user_id: user.id, context: "confirm")
+    end
+
+    test "creates medical account and redirect finish registartion page", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/medical/register")
+
+      name = unique_user_name()
+      email_address = unique_user_email()
+
+      form(lv, "#registration_form",
+        user:
+          params_for(:user_before_registration, name: name, email: email_address)
+          |> Map.take([:name, :email, :password])
+      )
+      |> render_submit()
+      |> follow_redirect(conn, ~p"/users/finish_registration")
+
+      assert_confirmation_mail_sent(email_address)
+
+      user = Repo.get_by(User, name: name)
+
+      assert user
+      refute user.confirmed_at
+      assert user.password_registered
+      assert user.type == :medical
       assert Repo.get_by(UserToken, user_id: user.id, context: "confirm")
     end
 
