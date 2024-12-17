@@ -6,7 +6,9 @@ defmodule BrightWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <UserAuthComponents.header>ログイン</UserAuthComponents.header>
+    <h1 class="font-bold text-center text-3xl">
+      <.gem>ログイン</.gem>
+    </h1>
 
     <UserAuthComponents.auth_form
       for={@form}
@@ -38,7 +40,8 @@ defmodule BrightWeb.UserLoginLive do
         </UserAuthComponents.input_with_label>
 
         <UserAuthComponents.button variant="mt-xs">ログイン</UserAuthComponents.button>
-        <UserAuthComponents.link_text href={~p"/users/register"}>ユーザー新規作成はこちら</UserAuthComponents.link_text>
+        <p class="mt-8 text-link text-center text-xs"><.link href={~p"/users/register"} class="underline">ユーザー新規作成はこちら</.link></p>
+        <p class="mt-2 text-link text-center text-xs"><.link href={~p"/medical/register"} class="underline">医療版ユーザー新規作成はこちら</.link></p>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
     """
@@ -47,7 +50,7 @@ defmodule BrightWeb.UserLoginLive do
   def mount(params, _session, socket) do
     ogp = Map.get(params, "ogp", "")
 
-    email = live_flash(socket.assigns.flash, :email)
+    email = Phoenix.Flash.get(socket.assigns.flash, :email)
     form = to_form(%{"email" => email}, as: "user")
 
     socket =
