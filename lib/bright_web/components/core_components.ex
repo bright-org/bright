@@ -577,6 +577,14 @@ defmodule BrightWeb.CoreComponents do
     """
   end
 
+  def gem(assigns) do
+    ~H"""
+    <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
+    <%= render_slot(@inner_block) %>
+    </span>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
