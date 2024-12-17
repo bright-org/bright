@@ -9,7 +9,7 @@ defmodule BrightWeb.UserRegistrationLive do
     ~H"""
     <p :if={@type == :medical} class="bg-attention-300 text-white text-center border rounded w-28 p-2">Bright Medical</p>
     <h1 class="font-bold text-center text-3xl">
-      <.gem>ユーザー新規登録</.gem>
+      <.gem>ユーザー新規作成</.gem>
     </h1>
 
     <UA.auth_form
