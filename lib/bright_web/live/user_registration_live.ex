@@ -3,34 +3,37 @@ defmodule BrightWeb.UserRegistrationLive do
 
   alias Bright.Accounts
   alias Bright.Accounts.User
-  alias BrightWeb.UserAuthComponents
+  alias BrightWeb.UserAuthComponents, as: UA
 
   def render(assigns) do
     ~H"""
-    <UserAuthComponents.header>ユーザー新規作成</UserAuthComponents.header>
+    <p :if={@type == :medical} class="bg-attention-300 text-white text-center border rounded w-28 p-2">Bright Medical</p>
+    <h1 class="font-bold text-center text-3xl">
+      <.gem>ユーザー新規登録</.gem>
+    </h1>
 
-    <UserAuthComponents.auth_form
+    <UA.auth_form
       :let={_f}
       for={@form}
       id="registration_form"
       phx-submit="save"
       phx-change="validate"
     >
-      <UserAuthComponents.form_section variant="left">
-        <UserAuthComponents.social_auth_button href={~p"/auth/google"} variant="google">Google</UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href="#" variant="facebook">Facebook</UserAuthComponents.social_auth_button>
-        <UserAuthComponents.social_auth_button href="#" variant="twitter">X</UserAuthComponents.social_auth_button>
-      </UserAuthComponents.form_section>
+      <UA.form_section variant="left">
+        <UA.social_auth_button href={~p"/auth/google"} variant="google">Google</UA.social_auth_button>
+        <UA.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UA.social_auth_button>
+        <UA.social_auth_button href="#" variant="facebook">Facebook</UA.social_auth_button>
+        <UA.social_auth_button href="#" variant="twitter">X</UA.social_auth_button>
+      </UA.form_section>
 
-      <UserAuthComponents.or_text>または</UserAuthComponents.or_text>
+      <UA.or_text>または</UA.or_text>
 
-      <UserAuthComponents.form_section variant="right">
-        <UserAuthComponents.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドル名" required/>
+      <UA.form_section variant="right">
+        <UA.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドル名" required/>
 
-        <UserAuthComponents.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+        <UA.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
 
-        <UserAuthComponents.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required/>
+        <UA.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required/>
 
         <div phx-click="toggre_is_terms_of_service_checked" class="mt-1">
           <input type="checkbox" id="terms_of_service" class="rounded" checked={@is_terms_of_service_checked?} />
@@ -53,19 +56,22 @@ defmodule BrightWeb.UserRegistrationLive do
           </label>
         </div>
 
-        <UserAuthComponents.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UserAuthComponents.button>
-        <UserAuthComponents.link_text href={~p"/users/log_in"}>ログインはこちら</UserAuthComponents.link_text>
-      </UserAuthComponents.form_section>
-    </UserAuthComponents.auth_form>
+        <UA.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UA.button>
+        <p class="mt-8 text-link text-center text-xs"><.link href={~p"/users/log_in"} class="underline">ログインはこちら</.link></p>
+      </UA.form_section>
+    </UA.auth_form>
 
     """
   end
 
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
+    {prefix, type} = fetch_prefix(session)
     changeset = Accounts.change_user_registration(%User{})
 
     socket =
       socket
+      |> assign(prefix: prefix)
+      |> assign(type: type)
       |> assign(check_errors: false)
       |> assign(is_terms_of_service_checked?: false)
       |> assign(is_privacy_policy_checked?: false)
@@ -106,6 +112,8 @@ defmodule BrightWeb.UserRegistrationLive do
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
+    user_params = Map.put(user_params, "type", socket.assigns.type)
+
     case Accounts.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =
@@ -134,5 +142,20 @@ defmodule BrightWeb.UserRegistrationLive do
     else
       assign(socket, form: form)
     end
+  end
+
+  defp fetch_prefix(session) do
+    prefix =
+      session["current_request_path"]
+      |> String.split("/")
+      |> Enum.at(1)
+
+    type =
+      case prefix do
+        "users" -> :engineer
+        "medical" -> :medical
+      end
+
+    {prefix, type}
   end
 end

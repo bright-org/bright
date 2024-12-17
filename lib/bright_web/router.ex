@@ -228,6 +228,7 @@ defmodule BrightWeb.Router do
         {BrightWeb.InitAssigns, :without_header}
       ] do
       live "/users/register", UserRegistrationLive, :new
+      live "/medical/register", UserRegistrationLive, :new
       live "/users/finish_registration", UserFinishRegistrationLive, :show
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
