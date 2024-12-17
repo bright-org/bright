@@ -57,7 +57,7 @@ defmodule BrightWeb.UserRegistrationLive do
         </div>
 
         <UA.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UA.button>
-        <p class="mt-8 text-link text-center text-xs"><.link href={~p"/users/log_in"} class="underline">ログインはこちら</.link></p>
+        <p class="mt-8 text-link text-center text-xs"><.link navigate={~p"/users/log_in"} class="underline">ログインはこちら</.link></p>
       </UA.form_section>
     </UA.auth_form>
 
