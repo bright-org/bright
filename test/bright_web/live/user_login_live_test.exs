@@ -127,7 +127,7 @@ defmodule BrightWeb.UserLoginLiveTest do
         |> follow_redirect(conn, ~p"/medical/register")
 
       assert conn.resp_body =~ "ユーザー新規作成"
-      assert conn.resp_body =~ "Bright Medical"
+      assert conn.resp_body =~ "Bright for Medical"
     end
 
     test "redirects to forgot password page when the Forgot Password link is clicked", %{
