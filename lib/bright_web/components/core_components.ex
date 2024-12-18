@@ -17,7 +17,7 @@ defmodule BrightWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import BrightWeb.Gettext
+  use Gettext, backend: BrightWeb.Gettext
 
   @doc """
   Renders a modal.
