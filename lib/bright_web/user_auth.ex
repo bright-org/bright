@@ -343,6 +343,19 @@ defmodule BrightWeb.UserAuth do
     end
   end
 
+  def only_engineer(conn, _ops) do
+    case conn.assigns.current_user.type do
+      :engineer ->
+        conn
+
+      :medical ->
+        conn
+        |> put_status(:not_found)
+        |> put_view(html: BrightWeb.ErrorHTML, json: BrightWeb.ErrorJSON)
+        |> render(:"404")
+    end
+  end
+
   defp put_token_in_session(conn, token) do
     conn
     |> put_session(:user_token, token)
