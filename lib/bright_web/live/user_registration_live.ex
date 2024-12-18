@@ -5,20 +5,59 @@ defmodule BrightWeb.UserRegistrationLive do
   alias Bright.Accounts.User
   alias BrightWeb.UserAuthComponents, as: UA
 
-  def render(assigns) do
+  def render(%{type: :medical} = assigns) do
     ~H"""
-    <p :if={@type == :medical} class="bg-attention-300 text-white text-center border rounded w-28 p-2">Bright Medical</p>
     <h1 class="font-bold text-center text-3xl">
       <.gem>ユーザー新規作成</.gem>
     </h1>
 
-    <UA.auth_form
+    <p class="bg-attention-300 text-white text-center border rounded justify-self-center py-2 px-4 mt-4 ">Bright for Medical</p>
+    <.form
       :let={_f}
       for={@form}
       id="registration_form"
+      class={"flex mx-auto relative flex-col-reverse lg:flex-row #{}"}
       phx-submit="save"
       phx-change="validate"
     >
+
+
+      <UA.form_section variant="center">
+        <UA.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドル名" required/>
+
+        <UA.input_with_label field={@form[:email]} id="email" type="email" label_text="メールアドレス" required/>
+
+        <UA.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required/>
+
+        <.user_agreements
+          is_terms_of_service_checked?={@is_terms_of_service_checked?}
+          is_privacy_policy_checked?={@is_privacy_policy_checked?}
+          is_law_checked?={@is_law_checked?}
+        />
+
+        <UA.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UA.button>
+        <p class="mt-8 text-link text-center text-xs"><.link navigate={~p"/users/log_in"} class="underline">ログインはこちら</.link></p>
+      </UA.form_section>
+    </.form>
+
+    """
+  end
+
+  def render(assigns) do
+    ~H"""
+    <h1 class="font-bold text-center text-3xl">
+      <.gem>ユーザー新規作成</.gem>
+    </h1>
+
+    <.form
+      :let={_f}
+      for={@form}
+      id="registration_form"
+      class={"flex mt-8 mx-auto relative flex-col-reverse lg:flex-row"}
+      phx-submit="save"
+      phx-change="validate"
+    >
+
       <UA.form_section variant="left">
         <UA.social_auth_button href={~p"/auth/google"} variant="google">Google</UA.social_auth_button>
         <UA.social_auth_button href={~p"/auth/github"} variant="github">GitHub</UA.social_auth_button>
@@ -35,32 +74,43 @@ defmodule BrightWeb.UserRegistrationLive do
 
         <UA.input_with_label field={@form[:password]} id="password" type="password" label_text="パスワード" required/>
 
-        <div phx-click="toggre_is_terms_of_service_checked" class="mt-1">
-          <input type="checkbox" id="terms_of_service" class="rounded" checked={@is_terms_of_service_checked?} />
-          <label for="terms_of_service" class="pl-1 text-xs">
-            <a href="https://bright-fun.org/terms/terms.pdf" class="text-link underline font-semibold" target="_blank">利用規約</a>に同意する
-          </label>
-        </div>
-
-        <div phx-click="toggre_is_privacy_policy_checked" class="mt-1">
-          <input type="checkbox" id="privacy_policy" class="rounded" checked={@is_privacy_policy_checked?} />
-          <label for="privacy_policy" class="pl-1 text-xs">
-            <a href="https://bright-fun.org/privacy/privacy.pdf" class="text-link underline font-semibold" target="_blank">プライバシーポリシー</a>に同意する
-          </label>
-        </div>
-
-        <div phx-click="toggre_is_law_checked" class="mt-1">
-          <input type="checkbox" id="law" class="rounded" checked={@is_law_checked?} />
-          <label for="law" class="pl-1 text-xs">
-            <a href="https://bright-fun.org/laws/laws.pdf" class="text-link underline font-semibold" target="_blank">法令に基づく表記</a>を確認した
-          </label>
-        </div>
+        <.user_agreements
+          is_terms_of_service_checked?={@is_terms_of_service_checked?}
+          is_privacy_policy_checked?={@is_privacy_policy_checked?}
+          is_law_checked?={@is_law_checked?}
+        />
 
         <UA.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UA.button>
         <p class="mt-8 text-link text-center text-xs"><.link navigate={~p"/users/log_in"} class="underline">ログインはこちら</.link></p>
       </UA.form_section>
-    </UA.auth_form>
+    </.form>
+    """
+  end
 
+  def user_agreements(assigns) do
+    ~H"""
+    <div>
+    <div phx-click="toggre_is_terms_of_service_checked" class="mt-1">
+      <input type="checkbox" id="terms_of_service" class="rounded" checked={@is_terms_of_service_checked?} />
+      <label for="terms_of_service" class="pl-1 text-xs">
+        <a href="https://bright-fun.org/terms/terms.pdf" class="text-link underline font-semibold" target="_blank">利用規約</a>に同意する
+      </label>
+    </div>
+
+    <div phx-click="toggre_is_privacy_policy_checked" class="mt-1">
+      <input type="checkbox" id="privacy_policy" class="rounded" checked={@is_privacy_policy_checked?} />
+      <label for="privacy_policy" class="pl-1 text-xs">
+        <a href="https://bright-fun.org/privacy/privacy.pdf" class="text-link underline font-semibold" target="_blank">プライバシーポリシー</a>に同意する
+      </label>
+    </div>
+
+    <div phx-click="toggre_is_law_checked" class="mt-1">
+      <input type="checkbox" id="law" class="rounded" checked={@is_law_checked?} />
+      <label for="law" class="pl-1 text-xs">
+        <a href="https://bright-fun.org/laws/laws.pdf" class="text-link underline font-semibold" target="_blank">法令に基づく表記</a>を確認した
+      </label>
+    </div>
+    </div>
     """
   end
 
