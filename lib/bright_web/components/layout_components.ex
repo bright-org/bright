@@ -4,6 +4,7 @@ defmodule BrightWeb.LayoutComponents do
   """
   use Phoenix.Component
   import BrightWeb.BrightButtonComponents
+  alias BrightWeb.Layouts
   alias Bright.UserProfiles
 
   @doc """
@@ -94,12 +95,12 @@ defmodule BrightWeb.LayoutComponents do
     ~H"""
     <div id="user-header" class="sticky top-0 z-40 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
       <div class="bg-white fixed bottom-0 left-0 p-2 lg:mr-2 lg:static lg:p-0 w-full lg:w-[720px]">
-        <div class="flex justify-between gap-2">
+        <div class={"flex gap-2 #{if Layouts.get_user_type(assigns) == :engineer, do: "justify-between"}"}>
           <.page_top_title
             page_title={@page_title}
             page_sub_title={@page_sub_title}
           />
-          <.plan_upgrade_button />
+          <.plan_upgrade_button :if={Layouts.get_user_type(assigns) == :engineer} />
           <.contact_customer_success_button />
         </div>
       </div>
@@ -111,6 +112,7 @@ defmodule BrightWeb.LayoutComponents do
           current_user={Map.get(assigns, :current_user)}
         />
         <.live_component
+          :if={Layouts.get_user_type(assigns) == :engineer}
           id="recruit_notification_header"
           module={BrightWeb.RecruitNotificationHeaderComponent}
           current_user={Map.get(assigns, :current_user)}
@@ -172,6 +174,7 @@ defmodule BrightWeb.LayoutComponents do
   """
 
   attr :href, :string
+  attr :type, :atom, default: :engineer
 
   def side_menu(assigns) do
     ~H"""
@@ -182,9 +185,14 @@ defmodule BrightWeb.LayoutComponents do
       </label>
       <label id="sp_navi_background" for="sp_navi_input" class="cursor-pointer hidden peer-checked:block bg-pureGray-600/90 h-full fixed right-0 top-0 w-full z-20 -ml-2"></label>
       <div class="lg:gap-y-10 pt-2 fixed bg-brightGray-900 min-h-svh h-full overflow-y-scroll lg:overflow-y-visible flex-col w-[110px] z-40 lg:flex lg:items-center lg:static hidden peer-checked:flex peer-checked:animate-fade-in-left">
-        <.link href="/mypage"><img src="/images/common/logo.svg" width="110" class="hidden lg:block" /></.link>
+        <.link href="/mypage">
+          <img src="/images/common/logo.svg" width="110" class="hidden lg:block" />
+          <%= if @type == :medical do %>
+          <p class="text-white ml-1 px-1 w-[100px] text-center rounded bg-attention-300">medical</p>
+            <% end %>
+        </.link>
         <ul class="grid lg:flex lg:flex-col lg:items-center lg:gap-y-2">
-          <%= for {title, path, regex, img_src} <- links() do %>
+          <%= for {title, path, regex, img_src} <- links(@type) do %>
             <li>
               <.link class={menu_active_style(match_link?(@href, path, regex))} href={path}>
                 <img src={img_src} alt="path image">
@@ -209,7 +217,7 @@ defmodule BrightWeb.LayoutComponents do
   end
 
   # {title, path, regex, img_src}
-  def links() do
+  def links(:engineer) do
     [
       {"マイページ", "/mypage", nil, "/images/common/icons/mypage.svg"},
       {"スキルを選ぶ", "/skill_select", nil, "/images/common/icons/skillSelect.svg"},
@@ -220,6 +228,16 @@ defmodule BrightWeb.LayoutComponents do
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
       # {"キャリアパスを選ぶ", "https://bright-fun.org/demo/select_career.html", nil},
+    ]
+  end
+
+  def links(:medical) do
+    [
+      {"マイページ", "/mypage", nil, "/images/common/icons/mypage.svg"},
+      {"スキルを選ぶ", "/skill_select", nil, "/images/common/icons/skillSelect.svg"},
+      {"スキル入力・比較", "/skills", nil, "/images/common/icons/growthPanel.svg"},
+      {"成長履歴", "/graphs", nil, "/images/common/icons/mySkill.svg"},
+      {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/, "/images/common/icons/skillAnalyze.svg"}
     ]
   end
 
