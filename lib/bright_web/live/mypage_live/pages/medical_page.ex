@@ -1,0 +1,113 @@
+defmodule BrightWeb.MypageLive.MedicalPage do
+  use BrightWeb, :component
+
+  import BrightWeb.MypageLive.MypageComponent
+  import BrightWeb.ProfileComponents
+
+  def medical(assigns) do
+    assigns = assigns.assigns
+
+    ~H"""
+    <!-- プロフィール -->
+    <div class="bg-brightGray-50">
+      <div class="flex flex-col lg:flex-row justify-between mx-4 mt-4 lg:mx-10 p-4 rounded bg-white lg:max-w-[1110px]">
+        <div id="profile-field" class="">
+          <.profile
+            user_name={@display_user.name}
+            title={@display_user.user_profile.title}
+            detail={@display_user.user_profile.detail}
+            icon_file_path={Bright.UserProfiles.icon_url(@display_user.user_profile.icon_file_path)}
+            is_anonymous={@anonymous}
+            display_return_to_yourself={!@me}
+          />
+        </div>
+
+        <div>
+          <.live_component
+            id="skill_list"
+            module={BrightWeb.SkillListComponent}
+            display_user={@display_user}
+            me={@me}
+            root="skills"
+            anonymous={@anonymous}
+            career_field={@career_field}
+          />
+        </div>
+      </div>
+
+      <%# 2つの領域からなる。SPではJSでの切り替え表示、PCではflexでのメイン/サイド分割表示 %>
+      <div class="lg:flex lg:flex-row lg:justify-between pb-16 mx-4 lg:mx-10">
+        <%# SP用切り替え部 %>
+        <div :if={@me} class="lg:hidden text-md text-center mt-8 mb-2">
+          <button id="btn-my-field" class="inline-flex items-center font-bold rounded-l-full gap-x-2 px-6 py-2 button-toggle-active" phx-click={js_show_my_field()}>
+            マイページ
+          </button>
+          <button id="btn-others-field" class="inline-flex items-center font-bold rounded-r-full gap-x-2 px-4 py-2" phx-click={js_show_others_field()} >
+            チームメンバー
+          </button>
+        </div>
+
+        <%# メイン部 %>
+        <div id="my-field" class="pt-3 lg:grow flex flex-col items-center">
+          <div class="flex flex-col gap-y-6 w-full">
+            <%# スキルアップ %>
+            <.skill_ups
+              recent_level_up_skill_class_scores={@recent_level_up_skill_class_scores}
+              display_user={@display_user}
+              me={@me}
+              anonymous={@anonymous}
+            />
+
+            <%# 学習メモ %>
+            <.live_component
+              module={MySkillEvidencesComponent}
+              id="my-skill-evidences"
+              display_user={@display_user}
+              current_user={@current_user}
+              anonymous={@anonymous}
+              related_user_ids={@related_user_ids}
+            />
+          </div>
+        </div>
+
+        <%# サイド部 SPではメインとして切り替え表示 %>
+        <div id="others-field" :if={@me} class="hidden lg:block px-4 pt-3 flex flex-col items-center lg:max-w-md">
+          <div class="flex flex-col gap-y-6 w-full">
+            <%# いま学んでいます %>
+            <.others_skill_evidences
+              recent_others_skill_evidences={@recent_others_skill_evidences}
+              current_user={@current_user}
+              anonymous={@anonymous}
+              related_user_ids={@related_user_ids}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% # 学習メモ用モーダル %>
+    <.live_component
+      id="skill-evidence-modal"
+      module={BrightWeb.ModalComponent}
+      modal_styles={
+        %{
+          style_of_modal_flame_out: "w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+        }
+      }
+    >
+      <.live_component
+        module={BrightWeb.SkillPanelLive.SkillEvidenceComponent}
+        id="skill-evidence"
+        skill_evidence={nil}
+        skill={nil}
+        user={@current_user}
+        anonymous={@anonymous}
+        me={nil}
+      />
+    </.live_component>
+
+
+    <div phx-mounted={if @search, do: JS.show(to: "#skill_search_modal")}></div>
+    """
+  end
+end
