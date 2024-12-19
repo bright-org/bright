@@ -38,6 +38,25 @@ defmodule BrightWeb.MypageLiveTest do
       assert has_element?(lv, "button:nth-child(2) img[src='/images/common/github.svg']")
       assert has_element?(lv, "button:nth-child(3) img[src='/images/common/facebook.svg']")
     end
+
+    test "view medical user mypages", %{conn: conn, user: user} do
+      Ecto.Changeset.change(user, type: :medical)
+      |> Bright.Repo.update()
+
+      {:ok, lv, html} = live(conn, ~p"/mypage")
+
+      assert html =~ "マイページ"
+
+      # プロフィールの検証
+      assert has_element?(lv, "#profile-field", user.name)
+      assert has_element?(lv, "#profile-field", user.user_profile.title)
+      assert has_element?(lv, "#profile-field", user.user_profile.detail)
+
+      # SNSアイコンは非表示
+      refute has_element?(lv, "button:nth-child(1) img[src='/images/common/x.svg']")
+      refute has_element?(lv, "button:nth-child(2) img[src='/images/common/github.svg']")
+      refute has_element?(lv, "button:nth-child(3) img[src='/images/common/facebook.svg']")
+    end
   end
 
   # スキルセットジェム確認

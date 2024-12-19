@@ -4,6 +4,8 @@ defmodule BrightWeb.MypageLive.MedicalPage do
   import BrightWeb.MypageLive.MypageComponent
   import BrightWeb.ProfileComponents
 
+  alias BrightWeb.MypageLive.MySkillEvidencesComponent
+
   def medical(assigns) do
     assigns = assigns.assigns
 
