@@ -95,13 +95,15 @@ defmodule BrightWeb.LayoutComponents do
     ~H"""
     <div id="user-header" class="sticky top-0 z-40 flex flex-col-reverse justify-between px-4 py-2 border-brightGray-100 border-b bg-white w-full lg:flex-row lg:items-center lg:px-10 lg:relative">
       <div class="bg-white fixed bottom-0 left-0 p-2 lg:mr-2 lg:static lg:p-0 w-full lg:w-[720px]">
-        <div class={"flex gap-2 #{if Layouts.get_user_type(assigns) == :engineer, do: "justify-between"}"}>
+        <div class={"flex gap-2 justify-between"}>
           <.page_top_title
             page_title={@page_title}
             page_sub_title={@page_sub_title}
           />
-          <.plan_upgrade_button :if={Layouts.get_user_type(assigns) == :engineer} />
-          <.contact_customer_success_button />
+          <%= if Layouts.get_user_type(assigns) == :engineer do %>
+            <.plan_upgrade_button />
+            <.contact_customer_success_button />
+          <% end %>
         </div>
       </div>
       <div class="flex gap-2 items-center lg:w-fit h-10">
