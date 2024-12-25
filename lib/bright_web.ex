@@ -43,7 +43,7 @@ defmodule BrightWeb do
         layouts: [html: BrightWeb.Layouts]
 
       import Plug.Conn
-      import BrightWeb.Gettext
+      use Gettext, backend: BrightWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -93,7 +93,7 @@ defmodule BrightWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import BrightWeb.CoreComponents
-      import BrightWeb.Gettext
+      use Gettext, backend: BrightWeb.Gettext
       import BrightWeb.ViewHelper
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

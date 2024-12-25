@@ -7,7 +7,7 @@ defmodule BrightWeb.BrightModalComponents do
   import BrightWeb.CoreComponents, only: [hide_modal: 1, icon: 1, show: 2]
 
   alias Phoenix.LiveView.JS
-  import BrightWeb.Gettext
+  use Gettext, backend: BrightWeb.Gettext
 
   @doc """
   Renders a modal.

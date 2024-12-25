@@ -17,7 +17,7 @@ defmodule BrightWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import BrightWeb.Gettext
+  use Gettext, backend: BrightWeb.Gettext
 
   @doc """
   Renders a modal.
@@ -574,6 +574,14 @@ defmodule BrightWeb.CoreComponents do
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
     <span class={[@name, @class]} />
+    """
+  end
+
+  def gem(assigns) do
+    ~H"""
+    <span class="before:bg-bgGem before:bg-9 before:bg-left before:bg-no-repeat before:content-[''] before:h-9 before:inline-block before:relative before:top-[5px] before:w-9">
+    <%= render_slot(@inner_block) %>
+    </span>
     """
   end
 

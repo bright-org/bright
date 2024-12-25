@@ -228,6 +228,7 @@ defmodule BrightWeb.Router do
         {BrightWeb.InitAssigns, :without_header}
       ] do
       live "/users/register", UserRegistrationLive, :new
+      live "/medical/register", UserRegistrationLive, :new
       live "/users/finish_registration", UserFinishRegistrationLive, :show
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
@@ -243,7 +244,7 @@ defmodule BrightWeb.Router do
     post "/users/two_factor_auth", UserTwoFactorAuthController, :create
   end
 
-  # 認証後
+  # 認証後 共通
   scope "/", BrightWeb do
     pipe_through [:browser, :require_authenticated_user, :require_onboarding]
 
@@ -258,7 +259,6 @@ defmodule BrightWeb.Router do
       live "/mypage/anon/:user_name_encrypted", MypageLive.Index, :index
 
       live "/searches", MypageLive.Index, :search
-      live "/free_trial", MypageLive.Index, :free_trial
       live "/skill_select", OnboardingLive.Index, :index
       live "/skill_select/:skill_panel_id", OnboardingLive.SkillInputs, :show
 
@@ -321,6 +321,32 @@ defmodule BrightWeb.Router do
       live "/notifications/evidences", NotificationLive.Evidence, :index
       live "/notifications/evidences/:skill_evidence_id", NotificationLive.Evidence, :show
       live "/notifications/skill_updates", NotificationLive.SkillUpdate, :index
+    end
+
+    ## OAuth
+    scope "/auth" do
+      delete "/:provider", OAuthController, :delete
+    end
+
+    post "/users/password_reset", UserPasswordResetController, :create
+    get "/users/confirm_email/:token", UserConfirmEmailController, :confirm
+    get "/users/confirm_sub_email/:token", UserConfirmSubEmailController, :confirm
+    get "/get_skill_panel/:skill_panel_id", SkillPanelController, :get_skill_panel
+    get "/get_skill_panel/:skill_panel_id/:ogp", SkillPanelController, :get_skill_panel
+  end
+
+  # 認証後 Engineerのみ
+
+  scope "/", BrightWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_onboarding, :only_engineer]
+
+    live_session :only_engineer,
+      on_mount: [
+        {BrightWeb.UserAuth, :ensure_authenticated},
+        {BrightWeb.UserAuth, :ensure_onboarding},
+        BrightWeb.InitAssigns
+      ] do
+      live "/free_trial", MypageLive.Index, :free_trial
 
       live "/recruits/interviews", RecruitInterviewLive.Index, :index
       live "/recruits/interviews/:id", RecruitInterviewLive.Index, :show_interview
@@ -340,17 +366,6 @@ defmodule BrightWeb.Router do
       live "/recruits/chats", ChatLive.Index, :recruit
       live "/recruits/chats/:id", ChatLive.Index, :recruit
     end
-
-    ## OAuth
-    scope "/auth" do
-      delete "/:provider", OAuthController, :delete
-    end
-
-    post "/users/password_reset", UserPasswordResetController, :create
-    get "/users/confirm_email/:token", UserConfirmEmailController, :confirm
-    get "/users/confirm_sub_email/:token", UserConfirmSubEmailController, :confirm
-    get "/get_skill_panel/:skill_panel_id", SkillPanelController, :get_skill_panel
-    get "/get_skill_panel/:skill_panel_id/:ogp", SkillPanelController, :get_skill_panel
   end
 
   # オンボーディング

@@ -2,7 +2,7 @@
   <body>
     <.google_tag_manager_noscript />
     <div class="flex">
-      <.side_menu  href={@conn.request_path} />
+      <.side_menu  href={@conn.request_path} type={get_user_type(assigns)} />
       <main class="bg-background flex flex-col flex-1 w-full">
         <%= @inner_content %>
       </main>

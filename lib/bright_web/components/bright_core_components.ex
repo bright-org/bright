@@ -5,7 +5,7 @@ defmodule BrightWeb.BrightCoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import BrightWeb.Gettext
+  use Gettext, backend: BrightWeb.Gettext
 
   import BrightWeb.CoreComponents,
     only: [
