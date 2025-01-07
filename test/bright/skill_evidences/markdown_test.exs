@@ -182,6 +182,20 @@ defmodule Bright.SkillEvidences.MarkdownTest do
       assert html == "<p>リストです</p><ul><li>リストアイテム1</li><li>リストアイテム2</li></ul>"
     end
 
+    test "inner tag cases" do
+      text =
+        String.trim("""
+        1. first
+          - inner1
+          - inner2
+        2. second
+        """)
+
+      html = SkillEvidences.make_content_as_html(text)
+
+      assert html == "<li>first</li><ul><li>inner1</li><li>inner2</li></ul><li>second</li>"
+    end
+
     test "html_escape cases" do
       text =
         String.trim("""
@@ -273,7 +287,7 @@ defmodule Bright.SkillEvidences.MarkdownTest do
 
       html = SkillEvidences.make_content_as_html(text)
 
-      assert html == "<script></script>"
+      assert html == ""
 
       # in attrs
       text =
@@ -306,7 +320,7 @@ defmodule Bright.SkillEvidences.MarkdownTest do
 
       html = SkillEvidences.make_content_as_html(text)
 
-      assert html == "<img>"
+      assert html == ""
 
       # img書式
       text =
@@ -316,7 +330,7 @@ defmodule Bright.SkillEvidences.MarkdownTest do
 
       html = SkillEvidences.make_content_as_html(text)
 
-      assert html == "<p><img></p>"
+      assert html == "<p></p>"
     end
   end
 end
