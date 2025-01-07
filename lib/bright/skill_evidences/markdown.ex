@@ -41,8 +41,8 @@ defmodule Bright.SkillEvidences.Markdown do
 
   defp _permit(content) when is_bitstring(content), do: content
 
-  defp _permit({tag, _attrs, [content], _meta}) when tag not in @tags do
-    make_safe_string(content)
+  defp _permit({tag, _attrs, inner_ast, _meta}) when tag not in @tags do
+    permit(inner_ast)
   end
 
   defp _permit({"a", attrs, [content], _meta}) when is_bitstring(content) do
