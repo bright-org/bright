@@ -1,0 +1,104 @@
+defmodule Bright.CareerGroups do
+  @moduledoc """
+  The CareerGroups context.
+  """
+
+  import Ecto.Query, warn: false
+  alias Bright.Repo
+
+  alias Bright.CareerGroups.CareerGroup
+
+  @doc """
+  Returns the list of career_groups.
+
+  ## Examples
+
+      iex> list_career_groups()
+      [%CareerGroup{}, ...]
+
+  """
+  def list_career_groups do
+    Repo.all(CareerGroup)
+  end
+
+  @doc """
+  Gets a single career_group.
+
+  Raises `Ecto.NoResultsError` if the Career group does not exist.
+
+  ## Examples
+
+      iex> get_career_group!(123)
+      %CareerGroup{}
+
+      iex> get_career_group!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_career_group!(id), do: Repo.get!(CareerGroup, id)
+
+  @doc """
+  Creates a career_group.
+
+  ## Examples
+
+      iex> create_career_group(%{field: value})
+      {:ok, %CareerGroup{}}
+
+      iex> create_career_group(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_career_group(attrs \\ %{}) do
+    %CareerGroup{}
+    |> CareerGroup.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a career_group.
+
+  ## Examples
+
+      iex> update_career_group(career_group, %{field: new_value})
+      {:ok, %CareerGroup{}}
+
+      iex> update_career_group(career_group, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_career_group(%CareerGroup{} = career_group, attrs) do
+    career_group
+    |> CareerGroup.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a career_group.
+
+  ## Examples
+
+      iex> delete_career_group(career_group)
+      {:ok, %CareerGroup{}}
+
+      iex> delete_career_group(career_group)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_career_group(%CareerGroup{} = career_group) do
+    Repo.delete(career_group)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking career_group changes.
+
+  ## Examples
+
+      iex> change_career_group(career_group)
+      %Ecto.Changeset{data: %CareerGroup{}}
+
+  """
+  def change_career_group(%CareerGroup{} = career_group, attrs \\ %{}) do
+    CareerGroup.changeset(career_group, attrs)
+  end
+end

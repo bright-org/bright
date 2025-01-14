@@ -32,6 +32,10 @@ defmodule Bright.Factory do
   use Bright.CareerFieldFactory
   use Bright.CareerFieldJobFactory
 
+  # CareerGroups context
+  use Bright.CareerGroupFactory
+  use Bright.CareerGroupCareerFieldFactory
+
   # UserJobProfiles context
   use Bright.UserJobProfileFactory
 

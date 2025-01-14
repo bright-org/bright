@@ -1,0 +1,47 @@
+<.header>
+  Listing Career groups
+  <:actions>
+    <.link patch={~p"/admin/career_groups/new"}>
+      <.button>New Career group</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="career_groups"
+  rows={@streams.career_groups}
+  row_click={fn {_id, career_group} -> JS.navigate(~p"/admin/career_groups/#{career_group}") end}
+>
+  <:col :let={{_id, career_group}} label="Name"><%= career_group.name %></:col>
+  <:col :let={{_id, career_group}} label="type"><%= career_group.type %></:col>
+  <:col :let={{_id, career_group}} label="position"><%= career_group.position %></:col>
+  <:col :let={{_id, career_group}} label="Career Fields">
+      <%= Enum.map(career_group.career_fields, & &1.name_en) |> Enum.join(",") %>
+  </:col>
+
+  <:action :let={{_id, career_group}}>
+    <div class="sr-only">
+      <.link navigate={~p"/admin/career_groups/#{career_group}"}>Show</.link>
+    </div>
+    <.link patch={~p"/admin/career_groups/#{career_group}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, career_group}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: career_group.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="career_group-modal" show on_cancel={JS.patch(~p"/admin/career_groups")}>
+  <.live_component
+    module={BrightWeb.Admin.CareerGroupLive.FormComponent}
+    id={@career_group.id || :new}
+    title={@page_title}
+    action={@live_action}
+    career_group={@career_group}
+    patch={~p"/admin/career_groups"}
+  />
+</.modal>

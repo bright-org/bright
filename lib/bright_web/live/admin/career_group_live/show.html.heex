@@ -1,0 +1,32 @@
+<.header>
+  Career group <%= @career_group.id %>
+  <:subtitle>This is a career_group record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/admin/career_groups/#{@career_group}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit Career group</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @career_group.name %></:item>
+  <:item title="Type"><%= @career_group.type %></:item>
+  <:item title="position"><%= @career_group.position %></:item>
+</.list>
+
+<.list :for={career <- @career_group.career_fields}>
+  <:item title="career_field"><%= career.name %></:item>
+</.list>
+
+<.back navigate={~p"/admin/career_groups"}>Back to career_groups</.back>
+
+<.modal :if={@live_action == :edit} id="career_group-modal" show on_cancel={JS.patch(~p"/admin/career_groups/#{@career_group}")}>
+  <.live_component
+    module={BrightWeb.Admin.CareerGroupLive.FormComponent}
+    id={@career_group.id}
+    title={@page_title}
+    action={@live_action}
+    career_group={@career_group}
+    patch={~p"/admin/career_groups/#{@career_group}"}
+  />
+</.modal>
