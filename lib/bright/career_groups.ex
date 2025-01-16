@@ -21,6 +21,12 @@ defmodule Bright.CareerGroups do
     Repo.all(CareerGroup)
   end
 
+  def list_career_groups_with_career_field() do
+    CareerGroup
+    |> preload(:career_fields)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single career_group.
 
