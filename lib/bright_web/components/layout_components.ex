@@ -101,7 +101,7 @@ defmodule BrightWeb.LayoutComponents do
             page_sub_title={@page_sub_title}
           />
           <.plan_upgrade_button :if={Layouts.get_user_type(assigns) == :engineer} />
-          <.contact_customer_success_button />
+          <.contact_customer_success_button :if={Layouts.get_user_type(assigns) == :engineer} />
         </div>
       </div>
       <div class="flex gap-2 items-center lg:w-fit h-10">
