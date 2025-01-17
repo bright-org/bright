@@ -3,6 +3,11 @@ defmodule BrightWeb.UserSettingsLive.CurrentSubscriptionPlanComponentTest do
 
   import Phoenix.LiveViewTest
 
+  setup do
+    insert(:career_group, name: "Bright IT", type: :engineer, position: 1)
+    :ok
+  end
+
   describe "利用プラン" do
     setup [:register_and_log_in_user, :setup_subscription_plan]
 
@@ -140,6 +145,20 @@ defmodule BrightWeb.UserSettingsLive.CurrentSubscriptionPlanComponentTest do
       lv |> element("a", "利用プラン") |> render_click()
 
       assert lv |> has_element?("#current_subscription_plan", "誰でもダイレクト採用")
+    end
+
+    test "update user type and redirect mypage", %{conn: conn, user: user} do
+      insert(:career_group, name: "Bright 医療", type: :medical, position: 2)
+      {:ok, lv, _html} = live(conn, ~p"/mypage")
+      lv |> element("a", "利用プラン") |> render_click()
+
+      assert lv
+             |> element("button", "切り替える")
+             |> render_click()
+             |> follow_redirect(conn, ~p"/mypage")
+
+      user = Bright.Repo.get(Bright.Accounts.User, user.id)
+      assert user.type == :medical
     end
   end
 end

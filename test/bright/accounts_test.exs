@@ -870,6 +870,18 @@ defmodule Bright.AccountsTest do
     end
   end
 
+  describe "update_user_type/2" do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "update user type", %{user: user} do
+      {:ok, user} = Accounts.update_user_type(user, %{type: :medical})
+
+      assert user.type == :medical
+    end
+  end
+
   describe "change_new_user_sub_email/2" do
     setup do
       %{user: insert(:user)}
