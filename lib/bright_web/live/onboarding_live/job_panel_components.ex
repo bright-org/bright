@@ -1,7 +1,7 @@
 defmodule BrightWeb.OnboardingLive.JobPanelComponents do
   use BrightWeb, :live_component
 
-  alias Bright.{Jobs, CareerFields, CareerGroups}
+  alias Bright.{Jobs, CareerGroups}
   alias Bright.Jobs.Job
 
   @rank %{entry: "入門", basic: "基本", advanced: "応用", expert: "高度"}
