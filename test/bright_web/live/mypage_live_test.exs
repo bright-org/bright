@@ -37,6 +37,14 @@ defmodule BrightWeb.MypageLiveTest do
       assert has_element?(lv, "button:nth-child(1) img[src='/images/common/x.svg']")
       assert has_element?(lv, "button:nth-child(2) img[src='/images/common/github.svg']")
       assert has_element?(lv, "button:nth-child(3) img[src='/images/common/facebook.svg']")
+
+      # アップグレード、カスタマーサクセス表示
+      assert has_element?(lv, "#user-header a[href='https://bright-fun.org/plan']")
+
+      assert has_element?(
+               lv,
+               "#user-header a[href='https://docs.google.com/forms/d/e/1FAIpQLScKrQbJajiE18Abh7HloDcJYTSY-HbiX280XcoHDIsfJKhpAA/viewform']"
+             )
     end
 
     test "view medical user mypages", %{conn: conn, user: user} do
@@ -56,6 +64,14 @@ defmodule BrightWeb.MypageLiveTest do
       refute has_element?(lv, "button:nth-child(1) img[src='/images/common/x.svg']")
       refute has_element?(lv, "button:nth-child(2) img[src='/images/common/github.svg']")
       refute has_element?(lv, "button:nth-child(3) img[src='/images/common/facebook.svg']")
+
+      # アップグレード、カスタマーサクセスは非表示
+      refute has_element?(lv, "#user-header a[href='https://bright-fun.org/plan']")
+
+      refute has_element?(
+               lv,
+               "#user-header a[href='https://docs.google.com/forms/d/e/1FAIpQLScKrQbJajiE18Abh7HloDcJYTSY-HbiX280XcoHDIsfJKhpAA/viewform']"
+             )
     end
   end
 

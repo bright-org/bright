@@ -41,7 +41,7 @@ defmodule BrightWeb.SkillEvidenceComponents do
 
     <%# 投稿表示 %>
     <div
-      class="grow flex flex-col gap-y-2 mx-2 cursor-pointer link-evidence"
+      class="grow flex flex-col gap-y-2 mx-2 cursor-pointer link-evidence w-full overflow-x-auto"
       phx-click="edit_skill_evidence"
       phx-target={@myself}
       phx-value-id={@skill_evidence.id}
