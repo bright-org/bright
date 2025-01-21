@@ -1,4 +1,8 @@
 defmodule Bright.CareerGroups.CareerGroupCareerField do
+  @moduledoc """
+  キャリアグループとキャリアフィールドを関連づけるスキーマ。
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

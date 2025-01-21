@@ -1,4 +1,9 @@
 defmodule Bright.CareerGroups.CareerGroup do
+  @moduledoc """
+  キャリアフィールドの上位のグループ
+  ITや医療など業種自体が違うグルーピングを行う
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias Bright.CareerGroups.CareerGroupCareerField
