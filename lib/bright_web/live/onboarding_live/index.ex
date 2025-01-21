@@ -3,14 +3,32 @@ defmodule BrightWeb.OnboardingLive.Index do
 
   alias Bright.SkillPanels
   alias Bright.Onboardings
+  alias Bright.Jobs
+  alias Bright.CareerGroups
   alias Bright.Onboardings.UserOnboarding
+  alias Bright.Jobs.Job
 
+  import BrightWeb.OnboardingLive.JobPanelComponents
+
+  @rank %{entry: "入門", basic: "基本", advanced: "応用", expert: "高度"}
   @default_pos "engineer"
 
   @impl true
   def mount(_params, _session, socket) do
+    user = socket.assigns.current_user
+    jobs = Jobs.list_jobs_group_by_career_field_and_rank()
+
+    career_groups =
+      CareerGroups.list_career_groups_with_career_field(user.type)
+      |> Enum.sort_by(&(&1.type != user.type))
+
     socket
+    |> assign(:open, false)
+    |> assign(:rank, @rank)
+    |> assign(:jobs, jobs)
     |> assign(:pos, @default_pos)
+    |> assign(:career_groups, career_groups)
+    |> assign(:user_type, user.type)
     |> then(&{:ok, &1})
   end
 
