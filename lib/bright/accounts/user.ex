@@ -313,6 +313,13 @@ defmodule Bright.Accounts.User do
   end
 
   @doc """
+  A user changeset for changing user type.
+  """
+  def user_type_changeset(user, attrs) do
+    cast(user, attrs, [:type])
+  end
+
+  @doc """
   Verifies the password.
 
   If there is no user or the user doesn't have a password, we call

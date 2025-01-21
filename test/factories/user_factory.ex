@@ -10,6 +10,7 @@ defmodule Bright.UserFactory do
           name: sequence(:name, &"user_name_#{&1}"),
           email: sequence(:email, &"user#{&1}@example.com"),
           hashed_password: Bcrypt.hash_pwd_salt(valid_user_password()),
+          type: :engineer,
           password_registered: true,
           confirmed_at: NaiveDateTime.utc_now()
         }

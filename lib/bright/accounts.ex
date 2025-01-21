@@ -250,6 +250,15 @@ defmodule Bright.Accounts do
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
   end
 
+  @doc """
+  update user type
+  """
+  def update_user_type(%User{} = user, attrs) do
+    user
+    |> User.user_type_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc ~S"""
   Delivers the update email instructions to the given user.
 

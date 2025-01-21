@@ -1,28 +1,23 @@
 const ScrollPos = {
   mounted() {
-    const cf = document.getElementById("wants_job_panel").children;
+    const cf = document.getElementsByClassName("career_field");
+    const pos = [...cf].map((c) => c.clientHeight);
 
-    const pos = [
-      cf[0].clientHeight,
-      cf[1].clientHeight,
-      cf[2].clientHeight,
-      cf[3].clientHeight,
-      cf[4].clientHeight,
-    ];
+    this.pushEvent("position", { pos: cf[0].id });
 
     document.addEventListener("scroll", () => {
       const y = window.scrollY;
-      if (y < pos[0]) {
-        this.pushEvent("position", { pos: cf[0].id });
-      } else if (y < pos[0] + pos[1]) {
-        this.pushEvent("position", { pos: cf[1].id });
-      } else if (y < pos[0] + pos[1] + pos[2]) {
-        this.pushEvent("position", { pos: cf[2].id });
-      } else if (y < pos[0] + pos[1] + pos[2] + pos[3]) {
-        this.pushEvent("position", { pos: cf[3].id });
-      } else {
-        this.pushEvent("position", { pos: cf[4].id });
+
+      let cumulativePosition = 0;
+      for (let i = 0; i < pos.length - 1; i++) {
+        cumulativePosition += pos[i];
+        if (y < cumulativePosition + 120) {
+          this.pushEvent("position", { pos: cf[i].id });
+          return;
+        }
       }
+
+      this.pushEvent("position", { pos: cf[cf.length - 1].id });
     });
   },
 };
