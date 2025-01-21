@@ -37,7 +37,7 @@
               <% end %>
             </div>
           <% else %>
-            <.accordion_group open={@open} career_group={career_group}>
+            <.accordion_group career_group={career_group}>
               <div class="bg-white rounded mb-4 p-2 lg:p-4">
                 <%= for career_field <- career_group.career_fields do %>
                   <div id={career_field.name_en} class="career_field">

@@ -23,7 +23,6 @@ defmodule BrightWeb.OnboardingLive.Index do
       |> Enum.sort_by(&(&1.type != user.type))
 
     socket
-    |> assign(:open, false)
     |> assign(:rank, @rank)
     |> assign(:jobs, jobs)
     |> assign(:pos, @default_pos)

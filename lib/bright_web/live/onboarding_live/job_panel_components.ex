@@ -1,7 +1,7 @@
 defmodule BrightWeb.OnboardingLive.JobPanelComponents do
   use BrightWeb, :component
 
-  attr :carrer_group, :any
+  attr :career_group, :any
   slot :inner_block
 
   def accordion_group(%{career_group: %{type: :engineer}} = assigns) do
