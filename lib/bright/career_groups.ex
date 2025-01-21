@@ -21,7 +21,14 @@ defmodule Bright.CareerGroups do
     Repo.all(CareerGroup)
   end
 
-  def list_career_groups_with_career_field() do
+  def list_career_groups_with_career_field(type) when type == :engineer do
+    CareerGroup
+    |> where(type: ^type)
+    |> preload(:career_fields)
+    |> Repo.all()
+  end
+
+  def list_career_groups_with_career_field(_type) do
     CareerGroup
     |> preload(:career_fields)
     |> Repo.all()

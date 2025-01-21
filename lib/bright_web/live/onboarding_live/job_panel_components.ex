@@ -1,69 +1,65 @@
 defmodule BrightWeb.OnboardingLive.JobPanelComponents do
-  use BrightWeb, :live_component
+  use BrightWeb, :component
 
-  alias Bright.{Jobs, CareerGroups}
-  alias Bright.Jobs.Job
+  attr :career_group, :any
+  slot :inner_block
 
-  @rank %{entry: "入門", basic: "基本", advanced: "応用", expert: "高度"}
-
-  @impl true
-  def render(assigns) do
+  def accordion_group(%{career_group: %{type: :engineer}} = assigns) do
     ~H"""
-    <div class="flex flex-col lg:flex-row">
-      <div class="w-full order-2 mt-4 lg:mt-0 lg:order-1">
-        <div id="wants_job_panel" class="" phx-hook="ScrollPos">
-          <%= for career_group <- @career_groups do %>
-          <p class="text-2xl"><%= career_group.name %></p>
-          <div class="bg-white rounded mb-4 p-2 lg:p-4">
-            <%= for career_field <- career_group.career_fields do %>
-              <div id={career_field.name_en} class="career_field">
-                <h3 class={"border-l-4 px-2 border-#{career_field.name_en}-dark"}><%= career_field.name_ja %></h3>
-                <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
-                  <div class="my-8">
-                    <p class="text-left text-brightGray-400 text-xl"><%= @rank[rank] %></p>
-                    <hr class="h-[2px] bg-brightGray-50 mb-4" />
-                    <div class="flex flex-wrap justify-center mt-2 lg:justify-start">
-                      <% jobs = Map.get(@jobs, career_field.name_en, %{}) %>
-                      <%= for job <- Map.get(jobs, rank, []) do %>
-                        <%= if Enum.count(job.skill_panels) == 0 do %>
-                          <.locked_job job={job} />
-                        <% else %>
-                          <% panel_id = List.first(job.skill_panels) |> Map.get(:id, nil) %>
-                          <.unlocked_job
-                            panel_id={panel_id}
-                            score={Enum.find(@scores, & &1.id == panel_id)}
-                            current_path={@current_path}
-                            job={job}
-                            career_field={career_field}
-                          />
-                        <% end %>
-                      <% end %>
-                    </div>
-                  </div>
-                <% end %>
-              </div>
-            <% end %>
-            </div>
-          <% end %>
+    <div class="divide-y divide-gray-100">
+      <div class="">
+        <div
+          class="flex cursor-pointer list-none items-center py-4"
+          phx-click={
+            JS.toggle_class("rotate-180", to: "#arrow")
+            |> JS.toggle(
+              to: "#jobs",
+              in: {"ease-out duration-700", "opacity-0 translate-y-0", "opacity-100 translate-y-full"},
+              out: {"ease-out duration-700", "pacity-100 translate-y-full", "opacity-0 translate-y-0"}
+            )
+          }
+        >
+          <p class="text-2xl mr-4"><%= @career_group.name %></p>
+          <div id="arrow" class="text-secondary-500 text-2xl">
+            <.icon name="hero-chevron-down-solid" class="h-5 w-5" />
+          </div>
+        </div>
+        <div id="jobs" class="pb-4 text-secondary-500 hidden">
+          <%= render_slot(@inner_block) %>
         </div>
       </div>
-      <div class="lg:ml-12 h-full p-2 sticky top-16 lg:top-2 order-1 lg:order-2">
-        <div class="flex flex-col">
-          <%= for career_group <- @career_groups do %>
-          <p class="p-2 lg:w-[240px] bg-white underline"><%= career_group.name %></p>
-            <div class="flex flex-row lg:flex-col w-full lg:w-[240px] bg-white mb-4">
-              <%= for career_field <- career_group.career_fields do %>
-                <p
-                  class={"cursor-pointer px-1 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
-                  phx-click="scroll_to"
-                  phx-value-pos={career_field.name_en}
-                >
-                  <%= career_field.name_ja %>
-                </p>
-              <% end %>
-            </div>
+    </div>
+    """
+  end
+
+  def accordion_group(assigns) do
+    ~H"""
+    <p class="text-2xl"><%= @career_group.name %></p>
+    <%= render_slot(@inner_block) %>
+    """
+  end
+
+  def rank_jobs(assigns) do
+    ~H"""
+    <div class="my-8">
+      <p class="text-left text-brightGray-400 text-xl"><%= @rank_list[@rank] %></p>
+      <hr class="h-[2px] bg-brightGray-50 mb-4" />
+      <div class="flex flex-wrap justify-center mt-2 lg:justify-start">
+        <% jobs = Map.get(@jobs, @career_field.name_en, %{}) %>
+        <%= for job <- Map.get(jobs, @rank, []) do %>
+          <%= if Enum.count(job.skill_panels) == 0 do %>
+            <.locked_job job={job} />
+          <% else %>
+            <% panel_id = List.first(job.skill_panels) |> Map.get(:id, nil) %>
+            <.unlocked_job
+              panel_id={panel_id}
+              score={Enum.find(@scores, & &1.id == panel_id)}
+              current_path={@current_path}
+              job={job}
+              career_field={@career_field}
+            />
           <% end %>
-        </div>
+        <% end %>
       </div>
     </div>
     """
@@ -178,28 +174,6 @@ defmodule BrightWeb.OnboardingLive.JobPanelComponents do
       </.link>
     </div>
     """
-  end
-
-  @impl true
-  def mount(socket) do
-    jobs = Jobs.list_jobs_group_by_career_field_and_rank()
-
-    socket
-    |> assign(:rank, @rank)
-    |> assign(:jobs, jobs)
-    |> then(&{:ok, &1})
-  end
-
-  @impl true
-  def update(assigns, socket) do
-    career_groups =
-      CareerGroups.list_career_groups_with_career_field()
-      |> Enum.sort_by(&(&1.type != assigns.user_type))
-
-    socket
-    |> assign(assigns)
-    |> assign(:career_groups, career_groups)
-    |> then(&{:ok, &1})
   end
 
   defp icon_base_path(file), do: "/images/common/icons/#{file}"

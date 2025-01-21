@@ -14,15 +14,86 @@
     </li>
   </ol>
 
-  <.live_component
-    id="wants_job"
-    current_path={@current_path}
-    user_type={@current_user.type}
-    pos={@pos}
-    scores={@scores}
-    module={BrightWeb.OnboardingLive.JobPanelComponents}
-  />
-
+  <div class="flex flex-col lg:flex-row">
+    <div class="w-full order-2 mt-4 lg:mt-0 lg:order-1">
+      <div id="wants_job_panel" class="" phx-hook="ScrollPos">
+        <%= for career_group <- @career_groups do %>
+          <%= if @user_type == :engineer do %>
+            <div class="bg-white rounded mb-4 p-2 lg:p-4">
+              <%= for career_field <- career_group.career_fields do %>
+                <div id={career_field.name_en} class="career_field">
+                  <h3 class={"border-l-4 px-2 border-#{career_field.name_en}-dark"}><%= career_field.name_ja %></h3>
+                  <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
+                    <.rank_jobs
+                      rank_list={@rank}
+                      career_field={career_field}
+                      rank={rank}
+                      jobs={@jobs}
+                      scores={@scores}
+                      current_path={@current_path}
+                    />
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <.accordion_group career_group={career_group}>
+              <div class="bg-white rounded mb-4 p-2 lg:p-4">
+                <%= for career_field <- career_group.career_fields do %>
+                  <div id={career_field.name_en} class="career_field">
+                    <h3 class={"border-l-4 px-2 border-#{career_field.name_en}-dark"}><%= career_field.name_ja %></h3>
+                    <%= for rank <- Ecto.Enum.values(Job, :rank) do %>
+                      <.rank_jobs
+                        rank_list={@rank}
+                        career_field={career_field}
+                        rank={rank}
+                        jobs={@jobs}
+                        scores={@scores}
+                        current_path={@current_path}
+                      />
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </.accordion_group>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div class="lg:ml-12 h-full p-2 sticky top-16 lg:top-2 order-1 lg:order-2">
+      <div class="flex flex-col">
+        <%= for career_group <- @career_groups do %>
+          <p :if={@user_type == :medical} class="p-2 lg:w-[240px] bg-white underline"><%= career_group.name %></p>
+          <div class="flex flex-row lg:flex-col w-full lg:w-[240px] bg-white mb-4">
+            <%= for career_field <- career_group.career_fields do %>
+              <%= if @user_type == :medical && career_group.type == :engineer do %>
+                <p
+                  class={"cursor-pointer px-1 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
+                  phx-click={
+                    JS.add_class("rotate-180", to: "#arrow")
+                    |> JS.show(to: "#jobs")
+                    |> JS.push("scroll_to", value: %{pos: career_field.name_en})
+                  }
+                >
+                  <%= career_field.name_ja %>
+                </p>
+              <% else %>
+                <p
+                  class={"cursor-pointer px-1 lg:px-4 py-2 lg:mb-2 text-xs lg:text-lg text-[#004D36] #{if @pos == career_field.name_en, do: "border-l-4 border-#{career_field.name_en}-dark bg-#{career_field.name_en}-light", else: "ml-1"}"}
+                  phx-click={
+                    JS.push("scroll_to", value: %{pos: career_field.name_en})
+                  }
+                >
+                  <%= career_field.name_ja %>
+                </p>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  
   <div class="mt-8 max-w-[1236px] text-base bg-white border rounded p-4" :if={@current_user.user_onboardings == nil}>
     <p>スキル評価やチーム育成、スカウトを行う方は、まずチームを作成してください</p>
     <a

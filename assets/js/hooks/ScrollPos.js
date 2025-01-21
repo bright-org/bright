@@ -1,12 +1,12 @@
 const ScrollPos = {
   mounted() {
-    const cf = document.getElementsByClassName("career_field");
-    const pos = [...cf].map((c) => c.clientHeight);
-
-    this.pushEvent("position", { pos: cf[0].id });
+    const cf_init = document.getElementsByClassName("career_field");
+    this.pushEvent("position", { pos: cf_init[0].id });
 
     document.addEventListener("scroll", () => {
       const y = window.scrollY;
+      const cf = document.getElementsByClassName("career_field");
+      const pos = [...cf_init].map((c) => c.clientHeight);
 
       let cumulativePosition = 0;
       for (let i = 0; i < pos.length - 1; i++) {
