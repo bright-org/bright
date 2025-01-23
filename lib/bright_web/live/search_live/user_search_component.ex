@@ -1,7 +1,7 @@
 defmodule BrightWeb.SearchLive.UserSearchComponent do
   use BrightWeb, :live_component
 
-  alias Bright.{CareerFields, SkillPanels, UserSearches}
+  alias Bright.{CareerGroups, SkillPanels, UserSearches}
   alias Bright.SearchForm.{UserSearch, SkillSearch}
   alias Bright.UserJobProfiles.UserJobProfile
   alias BrightWeb.SearchLive.SearchResultsComponent
@@ -25,10 +25,6 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     search = %UserSearch{skills: [%SkillSearch{}]}
     changeset = UserSearch.changeset(search, %{})
 
-    career_fields =
-      CareerFields.list_career_fields()
-      |> Enum.map(&{&1.name_ja, &1.name_en})
-
     skill_panels =
       SkillPanels.list_skill_panel_with_career_field()
       |> Enum.group_by(& &1.career_field, &{&1.name, &1.id})
@@ -36,7 +32,7 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
     socket
     |> assign(:user_search, search)
-    |> assign(:career_fields, career_fields)
+    |> assign(:career_fields, [])
     |> assign(:skill_panels, skill_panels)
     |> assign(:class, @class)
     |> assign(:level, @level)
@@ -54,7 +50,16 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
   end
 
   @impl true
-  def update(assigns, socket), do: {:ok, assign(socket, assigns)}
+  def update(assigns, socket) do
+    career_fields =
+      CareerGroups.get_career_group_related_career_field(:engineer)
+      |> Enum.map(&{&1.name_ja, &1.name_en})
+
+    socket
+    |> assign(assigns)
+    |> assign(:career_fields, career_fields)
+    |> then(&{:ok, &1})
+  end
 
   @impl true
   def handle_event(
