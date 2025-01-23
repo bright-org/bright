@@ -51,6 +51,29 @@ defmodule Bright.CareerGroups do
   def get_career_group!(id), do: Repo.get!(CareerGroup, id)
 
   @doc """
+  Gets a single career_group's related career_fields.
+
+  Raises `Ecto.Query.CastError` if type not a member in User.type Enum's
+
+  ## Examples
+
+      iex> get_career_group_related_career_field(:engineer)
+      [%CareerField{}]
+
+      iex> get_career_group_related_career_field(:none)
+      ** (Ecto.Query.CastError)
+
+  """
+
+  def get_career_group_related_career_field(type) do
+    CareerGroup
+    |> where(type: ^type)
+    |> preload(:career_fields)
+    |> Repo.one()
+    |> then(& &1.career_fields)
+  end
+
+  @doc """
   Creates a career_group.
 
   ## Examples
