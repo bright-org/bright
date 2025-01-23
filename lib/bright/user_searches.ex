@@ -51,9 +51,9 @@ defmodule Bright.UserSearches do
         {job_params, job_range_params, skill_params},
         options \\ []
       ) do
-    default = [exclude_user_ids: [], page: 1, sort: :last_updated_desc]
+    default = [exclude_user_ids: [], page: 1, sort: :last_updated_desc, user_type: :engineer]
 
-    %{exclude_user_ids: exclude_user_ids, page: page, sort: sort} =
+    %{exclude_user_ids: exclude_user_ids, page: page, sort: sort, user_type: user_type} =
       Keyword.merge(default, options)
       |> Enum.into(%{})
 
@@ -73,7 +73,7 @@ defmodule Bright.UserSearches do
 
     from(
       u in User,
-      where: u.id in ^user_ids,
+      where: u.id in ^user_ids and u.type == ^user_type,
       left_join: s_score in assoc(u, :skill_scores),
       join: job in assoc(u, :user_job_profile),
       left_join: sc_score in assoc(u, :skill_class_scores),
