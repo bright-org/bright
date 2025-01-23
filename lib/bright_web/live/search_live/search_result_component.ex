@@ -84,7 +84,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
               />
             </div>
           </div>
-          <div :if={@search} class="flex justify-end mt-8">
+          <div :if={@search && @current_user_type == :engineer} class="flex justify-end mt-8">
             <a
               phx-click={
                 if @hr_enabled,

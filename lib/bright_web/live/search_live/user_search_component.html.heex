@@ -205,7 +205,7 @@
         />
       </form>
 
-      <p class="ml-2">※採用面談が決まるまで匿名で表示されます</p>
+      <p :if={@current_user.type == :engineer} class="ml-2">※採用面談が決まるまで匿名で表示されます</p>
     </div>
     <.tab_footer
       id="user_search_result_footer"
