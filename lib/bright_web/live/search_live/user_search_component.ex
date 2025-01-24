@@ -30,9 +30,13 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       |> Enum.group_by(& &1.career_field, &{&1.name, &1.id})
       |> Map.put(nil, [])
 
+    career_fields =
+      CareerGroups.get_career_group_related_career_field(:engineer)
+      |> Enum.map(&{&1.name_ja, &1.name_en})
+
     socket
     |> assign(:user_search, search)
-    |> assign(:career_fields, [])
+    |> assign(:career_fields, career_fields)
     |> assign(:skill_panels, skill_panels)
     |> assign(:class, @class)
     |> assign(:level, @level)
@@ -51,13 +55,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
   @impl true
   def update(assigns, socket) do
-    career_fields =
-      CareerGroups.get_career_group_related_career_field(:engineer)
-      |> Enum.map(&{&1.name_ja, &1.name_en})
-
     socket
     |> assign(assigns)
-    |> assign(:career_fields, career_fields)
     |> then(&{:ok, &1})
   end
 

@@ -76,9 +76,15 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
   @impl true
   def update(%{action: action} = assigns, socket) do
     tabs =
-      case assigns.current_user.type do
-        :engineer -> @tabs
-        :medical -> @medical_tabs
+      case Map.get(assigns, :current_user, nil) do
+        nil ->
+          @tabs
+
+        user ->
+          case user.type do
+            :engineer -> @tabs
+            :medical -> @medical_tabs
+          end
       end
 
     socket

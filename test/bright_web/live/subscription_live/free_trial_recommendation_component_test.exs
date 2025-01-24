@@ -75,6 +75,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       job = insert(:job)
       insert(:career_field_job, career_field: career_field, job: job)
       insert(:job_skill_panel, job: job, skill_panel: skill_panel)
+      insert(:career_group, career_fields: [career_field])
 
       %{
         skill_panel: skill_panel,
@@ -130,6 +131,7 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       skill_panel: skill_panel,
       subscription_plan: subscription_plan
     } do
+      IO.inspect(career_field)
       {:ok, live, _html} = live(conn, ~p"/mypage")
       submit_search_form(live, career_field, skill_panel)
 
