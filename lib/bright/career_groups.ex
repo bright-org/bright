@@ -66,11 +66,13 @@ defmodule Bright.CareerGroups do
   """
 
   def get_career_group_related_career_field(type) do
-    CareerGroup
-    |> where(type: ^type)
-    |> preload(:career_fields)
-    |> Repo.one()
-    |> then(& &1.career_fields)
+    group =
+      CareerGroup
+      |> where(type: ^type)
+      |> preload(:career_fields)
+      |> Repo.one()
+
+    if is_nil(group), do: [], else: group.career_fields
   end
 
   @doc """
