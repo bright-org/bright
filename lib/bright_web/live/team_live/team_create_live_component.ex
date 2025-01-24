@@ -165,8 +165,15 @@ defmodule BrightWeb.TeamCreateLiveComponent do
 
     if team_count >= limit do
       # 上限になっており追加できないケース
-      changeset = changeset_with_teams_limit_msg(team, team_params, limit)
-      open_free_trial_modal(team_count + 1, team, team_params, team_type, id)
+      changeset =
+        case user.type do
+          :engineer ->
+            open_free_trial_modal(team_count + 1, team, team_params, team_type, id)
+            changeset_with_teams_limit_msg(team, team_params, limit)
+
+          :medical ->
+            changeset_without_teams_limit_msg(team, team_params, limit)
+        end
 
       {:ng, assign_team_form(socket, changeset)}
     else
@@ -284,6 +291,16 @@ defmodule BrightWeb.TeamCreateLiveComponent do
   defp changeset_with_teams_limit_msg(team, params, limit) do
     msg =
       "現在のプランでは、チーム数の上限は#{limit}です<br /><br />「アップグレード」ボタンから上位プランをご購入いただくと<br />作成できるチーム数を増やせます"
+
+    team
+    |> Team.registration_changeset(params)
+    |> Ecto.Changeset.add_error(:name, msg)
+    |> Map.put(:action, :validate)
+  end
+
+  defp changeset_without_teams_limit_msg(team, params, limit) do
+    msg =
+      "現在のプランでは、チーム数の上限は#{limit}です"
 
     team
     |> Team.registration_changeset(params)

@@ -115,7 +115,7 @@ defmodule BrightWeb.SearchLive.ResultComponents do
 
   def action_area(assigns) do
     ~H"""
-    <div class="border-l border-brightGray-200 border-dashed ml-2 pl-2 w-28">
+    <div class={"ml-2 pl-2 w-28 #{if @user.type == :engineer, do: "border-l border-brightGray-200 border-dashed" }"}>
       <%= if @user.id in @stock_user_ids do %>
         <p class="mb-2 justify-center text-gray-300 bg-white px-2 py-1 inline-flex font-medium rounded-md text-sm items-center border border-gray-300 w-28 cursor-default">
           <span

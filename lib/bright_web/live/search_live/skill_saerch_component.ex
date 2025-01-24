@@ -3,14 +3,22 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
 
   alias Bright.RecruitmentStockUsers
   alias BrightWeb.SearchLive.UserSearchComponent
+  alias BrightWeb.SearchLive.DoctorSearchComponent
   import BrightWeb.TabComponents
 
   @tabs [
     {"user", "スキル検索"}
+  ]
+
+  @medical_tabs [
+    {"medical", "専門医検索"},
+    {"user", "エンジニア検索"}
     # αでは落とす
     # {"team", "チーム検索"}
   ]
+
   @default_tab "user"
+  @default_medical_tab "medical"
 
   @impl true
   def render(assigns) do
@@ -37,12 +45,21 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
             selected_tab={@selected_tab}
             target={@myself}
           >
+            <%= if @selected_tab == "user" do %>
             <.live_component
               id="user_search_tab"
               module={UserSearchComponent}
               current_user={@current_user}
               stock_user_ids={@stock_user_ids}
             />
+            <% else %>
+            <.live_component
+              id="doctor_search_tab"
+              module={DoctorSearchComponent}
+              current_user={@current_user}
+              stock_user_ids={@stock_user_ids}
+            />
+            <% end %>
           </.tab>
         </section>
       </div>
@@ -52,10 +69,16 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
 
   @impl true
   def update(%{current_user: user} = assigns, socket) do
+    {tabs, tab} =
+      case user.type do
+        :engineer -> {@tabs, @default_tab}
+        :medical -> {@medical_tabs, @default_medical_tab}
+      end
+
     socket
     |> assign(assigns)
-    |> assign(:tabs, @tabs)
-    |> assign(:selected_tab, @default_tab)
+    |> assign(:tabs, tabs)
+    |> assign(:selected_tab, tab)
     |> assign(:click_away_disable, false)
     |> assign(:stock_user_ids, RecruitmentStockUsers.list_stock_user_ids(user.id))
     |> then(&{:ok, &1})

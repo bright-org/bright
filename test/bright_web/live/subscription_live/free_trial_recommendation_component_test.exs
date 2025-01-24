@@ -72,9 +72,15 @@ defmodule BrightWeb.SubscriptionLive.FreeTrialRecommendationComponentTest do
       [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
 
       career_field = insert(:career_field)
+      career_group = insert(:career_group)
       job = insert(:job)
       insert(:career_field_job, career_field: career_field, job: job)
       insert(:job_skill_panel, job: job, skill_panel: skill_panel)
+
+      insert(:career_group_career_field,
+        career_group_id: career_group.id,
+        career_field_id: career_field.id
+      )
 
       %{
         skill_panel: skill_panel,

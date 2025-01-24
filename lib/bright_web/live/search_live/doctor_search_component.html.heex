@@ -6,7 +6,7 @@
     phx-change="validate"
     phx-submit="search"
   >
-    <div class="border-b border-brightGray-200 flex flex-wrap items-center">
+    <div :if={false} class="border-b border-brightGray-200 flex flex-wrap items-center">
       <div class="w-fit">
         <label class="flex items-center py-4">
           <span class="w-36 text-start">希望年収で絞り込む</span>
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
+    <div :if={false} class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
       <span class="w-36 text-start">業務可否で絞り込む</span>
       <div class="flex items-center">
         <BrightCore.input
@@ -52,7 +52,7 @@
       </div>
     </div>
 
-    <div class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
+    <div :if={false} class="border-b border-brightGray-200 flex flex-wrap py-4 w-full">
       <span class="py-1 w-36 text-start">勤務可否で絞り込む</span>
       <div>
         <div class="flex items-center">
@@ -205,7 +205,7 @@
         />
       </form>
 
-      <p :if={@current_user.type == :engineer} class="ml-2">※採用面談が決まるまで匿名で表示されます</p>
+      <p :if={false} class="ml-2">※採用面談が決まるまで匿名で表示されます</p>
     </div>
     <.tab_footer
       id="user_search_result_footer"

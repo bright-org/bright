@@ -13,6 +13,7 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     # NOTE: α版では通知機能はなし
     # "notification" => UserSettingsLive.NotificationSettingComponent　
   }
+
   @tabs [
     {"general", "一般"},
     {"auth", "メール・パスワード"},
@@ -21,6 +22,13 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
     {"plan", "利用プラン"}
     # NOTE: α版では通知機能はなし
     # {"notification", "通知"}
+  ]
+
+  @medical_tabs [
+    {"general", "一般"},
+    {"auth", "メール・パスワード"},
+    {"sns", "SNS連携"},
+    {"plan", "利用プラン"}
   ]
 
   @impl true
@@ -67,9 +75,21 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
 
   @impl true
   def update(%{action: action} = assigns, socket) do
+    tabs =
+      case Map.get(assigns, :current_user, nil) do
+        nil ->
+          @tabs
+
+        user ->
+          case user.type do
+            :engineer -> @tabs
+            :medical -> @medical_tabs
+          end
+      end
+
     socket
     |> assign(assigns)
-    |> assign(:tabs, @tabs)
+    |> assign(:tabs, tabs)
     |> assign(:selected_tab, action)
     |> assign(:module, Map.get(@tab_module, action))
     |> assign(:modal_flash, Map.get(assigns, :modal_flash, %{}))

@@ -1,4 +1,4 @@
-defmodule BrightWeb.SearchLive.UserSearchComponent do
+defmodule BrightWeb.SearchLive.DoctorSearchComponent do
   use BrightWeb, :live_component
 
   alias Bright.{CareerGroups, SkillPanels, UserSearches}
@@ -30,13 +30,9 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       |> Enum.group_by(& &1.career_field, &{&1.name, &1.id})
       |> Map.put(nil, [])
 
-    career_fields =
-      CareerGroups.get_career_group_related_career_field(:engineer)
-      |> Enum.map(&{&1.name_ja, &1.name_en})
-
     socket
     |> assign(:user_search, search)
-    |> assign(:career_fields, career_fields)
+    |> assign(:career_fields, [])
     |> assign(:skill_panels, skill_panels)
     |> assign(:class, @class)
     |> assign(:level, @level)
@@ -55,8 +51,13 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
 
   @impl true
   def update(assigns, socket) do
+    career_fields =
+      CareerGroups.get_career_group_related_career_field(:medical)
+      |> Enum.map(&{&1.name_ja, &1.name_en})
+
     socket
     |> assign(assigns)
+    |> assign(:career_fields, career_fields)
     |> then(&{:ok, &1})
   end
 
@@ -120,7 +121,8 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
       UserSearches.search_users_by_job_profile_and_skill_score(
         search_params,
         exclude_user_ids: [user.id],
-        sort: sort
+        sort: sort,
+        user_type: user.type
       )
 
     socket
@@ -139,10 +141,12 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     {_, search_params} = convert_changes_to_search_params(changeset.changes)
 
     result =
-      UserSearches.search_users_by_job_profile_and_skill_score(search_params,
+      UserSearches.search_users_by_job_profile_and_skill_score(
+        search_params,
         exclude_user_ids: [user.id],
         page: page,
-        sort: sort
+        sort: sort,
+        user_type: user.type
       )
 
     socket
@@ -169,10 +173,12 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     {_, search_params} = convert_changes_to_search_params(changeset.changes)
 
     result =
-      UserSearches.search_users_by_job_profile_and_skill_score(search_params,
+      UserSearches.search_users_by_job_profile_and_skill_score(
+        search_params,
         exclude_user_ids: [user.id],
         page: page,
-        sort: sort
+        sort: sort,
+        user_type: user.type
       )
 
     socket
@@ -188,9 +194,11 @@ defmodule BrightWeb.SearchLive.UserSearchComponent do
     {_, search_params} = convert_changes_to_search_params(changeset.changes)
 
     %{entries: users} =
-      UserSearches.search_users_by_job_profile_and_skill_score(search_params,
+      UserSearches.search_users_by_job_profile_and_skill_score(
+        search_params,
         exclude_user_ids: [user.id],
-        sort: String.to_atom(sort)
+        sort: String.to_atom(sort),
+        user_type: user.type
       )
 
     socket

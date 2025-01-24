@@ -74,7 +74,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
         <% end %>
         <div class="border-l border-brightGray-200 border-dashed w-[512px] ml-2 px-2">
           <div class="flex">
-            <.job_area job={@user.user_job_profile} last_updated={@user.last_updated} />
+            <.job_area :if={@user.type == :engineer} job={@user.user_job_profile} last_updated={@user.last_updated} />
             <div :if={@search}>
               <.action_area
                 user={@user}
@@ -84,7 +84,7 @@ defmodule BrightWeb.SearchLive.SearchResultComponent do
               />
             </div>
           </div>
-          <div :if={@search} class="flex justify-end mt-8">
+          <div :if={@search && @current_user_type == :engineer} class="flex justify-end mt-8">
             <a
               phx-click={
                 if @hr_enabled,

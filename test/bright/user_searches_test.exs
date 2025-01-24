@@ -434,5 +434,35 @@ defmodule Bright.UserSearchesTest do
       assert %{entries: [%{id: ^id}]} =
                UserSearches.search_users_by_job_profile_and_skill_score(query)
     end
+
+    test "only engineer user", %{
+      user_1: %{id: id} = user_1,
+      user_2: user_2
+    } do
+      Bright.Accounts.update_user_type(user_2, %{type: :medical})
+      insert(:user_job_profile, user: user_1)
+      insert(:user_job_profile, user: user_2)
+
+      query = {[], %{}, []}
+
+      assert %{entries: [%{id: ^id}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query)
+    end
+
+    test "only medical user", %{
+      user_1: %{id: id} = user_1,
+      user_2: user_2
+    } do
+      Bright.Accounts.update_user_type(user_1, %{type: :medical})
+      insert(:user_job_profile, user: user_1)
+      insert(:user_job_profile, user: user_2)
+
+      query = {[], %{}, []}
+
+      assert %{entries: [%{id: ^id}]} =
+               UserSearches.search_users_by_job_profile_and_skill_score(query,
+                 user_type: :medical
+               )
+    end
   end
 end
