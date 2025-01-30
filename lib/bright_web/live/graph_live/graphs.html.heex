@@ -154,7 +154,7 @@
               size="sp"
             />
           </div>
-          <div class="flex pb-4">
+          <div :if={is_engineer?(@current_user)} class="flex pb-4">
             <div class="flex flex-col lg:flex-row">
               <.next_level_announce
                 :if={@select_label == "now"}
