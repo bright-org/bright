@@ -24,7 +24,7 @@
           </button>
         </.link>
         <button
-          :if={!is_nil(@display_team) && Teams.is_admin?(@display_team, @current_user) && @current_user.type == :engineer}
+          :if={!is_nil(@display_team) && Teams.is_admin?(@display_team, @current_user) && is_engineer?(@current_user)}
           class="inline-flex gap-x-2 justify-center text-sm text-center font-bold px-4 py-1.5 rounded-md text-white bg-base w-full lg:w-64 hover:filter hover:brightness-[80%]"
           phx-click="toggle_show_hr_support_modal"
           phx-value-team_id={@display_team.id}

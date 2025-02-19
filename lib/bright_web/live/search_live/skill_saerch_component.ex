@@ -11,8 +11,8 @@ defmodule BrightWeb.SearchLive.SkillSearchComponent do
   ]
 
   @medical_tabs [
-    {"medical", "専門医検索"},
-    {"user", "エンジニア検索"}
+    {"medical", "ヘルスケア"},
+    {"user", "IT"}
     # αでは落とす
     # {"team", "チーム検索"}
   ]

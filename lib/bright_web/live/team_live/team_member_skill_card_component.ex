@@ -125,7 +125,7 @@ defmodule BrightWeb.TeamMemberSkillCardComponent do
 
       <div class="pb-2 flex w-full gap-x-1 lg:gap-x-2 justify-around">
         <button
-          :if={@display_skill_card.user.id != @current_user.id}
+          :if={@display_skill_card.user.id != @current_user.id && is_engineer?(@current_user)}
           class="flex gap-x-1 lg:gap-x-2 items-center text-xs lg:text-sm font-bold px-1 lg:px-3 py-2 rounded text-white bg-base hover:filter hover:brightness-[80%]"
           phx-click={
             if @hr_enabled,

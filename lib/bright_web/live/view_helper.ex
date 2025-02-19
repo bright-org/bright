@@ -8,4 +8,6 @@ defmodule BrightWeb.ViewHelper do
     |> NaiveDateTime.add(9, :hour)
     |> Calendar.strftime(string_format)
   end
+
+  def is_engineer?(user), do: user.type == :engineer
 end
