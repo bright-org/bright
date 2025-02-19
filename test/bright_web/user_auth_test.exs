@@ -100,6 +100,24 @@ defmodule BrightWeb.UserAuthTest do
       refute Accounts.get_user_by_session_token(user_token)
     end
 
+    test "change medical user redirect", %{conn: conn, user: user} do
+      {:ok, user} = Accounts.update_user_type(user, %{type: :medical})
+      user_token = Accounts.generate_user_session_token(user)
+
+      conn =
+        conn
+        |> put_session(:user_token, user_token)
+        |> put_req_cookie(@cookie_key, user_token)
+        |> fetch_cookies()
+        |> UserAuth.log_out_user()
+
+      refute get_session(conn, :user_token)
+      refute conn.cookies[@cookie_key]
+      assert %{max_age: 0} = conn.resp_cookies[@cookie_key]
+      assert redirected_to(conn) == ~p"/users/log_in?type=medical"
+      refute Accounts.get_user_by_session_token(user_token)
+    end
+
     test "broadcasts to the given live_socket_id", %{conn: conn} do
       live_socket_id = "users_sessions:abcdef-token"
       BrightWeb.Endpoint.subscribe(live_socket_id)

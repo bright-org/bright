@@ -143,7 +143,18 @@ defmodule BrightWeb.UserAuth do
   """
   def log_out_user(conn) do
     user_token = get_session(conn, :user_token)
+    user = user_token && Accounts.get_user_by_session_token(user_token)
     user_token && Accounts.delete_user_session_token(user_token)
+
+    return_to =
+      if user do
+        case Map.get(user, :type) do
+          :engineer -> ~p"/users/log_in"
+          :medical -> ~p"/users/log_in?type=medical"
+        end
+      else
+        ~p"/users/log_in"
+      end
 
     if live_socket_id = get_session(conn, :live_socket_id) do
       BrightWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
@@ -152,7 +163,7 @@ defmodule BrightWeb.UserAuth do
     conn
     |> renew_session()
     |> delete_resp_cookie(@cookie_key)
-    |> redirect(to: ~p"/users/log_in")
+    |> redirect(to: return_to)
   end
 
   @doc """
