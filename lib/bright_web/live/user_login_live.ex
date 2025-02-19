@@ -40,8 +40,9 @@ defmodule BrightWeb.UserLoginLive do
         </UserAuthComponents.input_with_label>
 
         <UserAuthComponents.button variant="mt-xs">ログイン</UserAuthComponents.button>
-        <p class="mt-8 text-link text-center text-xs"><.link href={~p"/users/register"} id="register" class="underline">ユーザー新規作成はこちら</.link></p>
-        <p class="mt-2 text-link text-center text-xs"><.link href={~p"/medical/register"}  id="register-medical" class="underline">医療版ユーザー新規作成はこちら</.link></p>
+        <p class="mt-8 text-link text-center text-xs">
+          <.link href={if @type == "medical", do: ~p"/medical/register",else: ~p"/users/register"} id="register" class="underline">ユーザー新規作成はこちら</.link>
+        </p>
       </UserAuthComponents.form_section>
     </UserAuthComponents.auth_form>
     """
@@ -49,12 +50,14 @@ defmodule BrightWeb.UserLoginLive do
 
   def mount(params, _session, socket) do
     ogp = Map.get(params, "ogp", "")
-
+    type = Map.get(params, "type", "")
     email = Phoenix.Flash.get(socket.assigns.flash, :email)
     form = to_form(%{"email" => email}, as: "user")
 
     socket =
-      assign(socket, form: form)
+      socket
+      |> assign(form: form)
+      |> assign(:type, type)
       |> Helper.assign_share_graph_og_image(%{"share_graph_token" => ogp})
 
     {:ok, socket, temporary_assigns: [form: form]}
