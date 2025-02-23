@@ -21,6 +21,13 @@ defmodule BrightWeb.UserRegistrationLive do
       phx-change="validate"
     >
 
+    <UA.form_section variant="left">
+        <UA.social_auth_button href="#" variant="google-dis">Google</UA.social_auth_button>
+        <UA.social_auth_button href="#" variant="facebook">Facebook</UA.social_auth_button>
+        <UA.social_auth_button href="#" variant="twitter">X</UA.social_auth_button>
+      </UA.form_section>
+
+      <UA.or_text>または</UA.or_text>
 
       <UA.form_section variant="center">
         <UA.input_with_label field={@form[:name]} id="handle_name" type="text" label_text="ハンドル名" required/>
@@ -36,7 +43,7 @@ defmodule BrightWeb.UserRegistrationLive do
         />
 
         <UA.button variant="mt-sm" disabled={!(@is_terms_of_service_checked? && @is_privacy_policy_checked? && @is_law_checked?)}>ユーザーを新規作成する</UA.button>
-        <p class="mt-8 text-link text-center text-xs"><.link navigate={~p"/users/log_in"} class="underline">ログインはこちら</.link></p>
+        <p class="mt-8 text-link text-center text-xs"><.link navigate={~p"/users/log_in?type=medical"} class="underline">ログインはこちら</.link></p>
       </UA.form_section>
     </.form>
 

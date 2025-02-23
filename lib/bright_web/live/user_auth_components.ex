@@ -242,7 +242,7 @@ defmodule BrightWeb.UserAuthComponents do
   @doc """
   Social auth button for auth form.
   """
-  attr :variant, :string, values: ~w(google github facebook twitter)
+  attr :variant, :string, values: ~w(google google-dis github facebook twitter)
   attr :href, :string
   attr :method, :string, default: "get"
 
@@ -259,6 +259,7 @@ defmodule BrightWeb.UserAuthComponents do
         class={[
           "bg-no-repeat border-solid bg-5 bg-left-2.5 border font-bold max-w-xs px-4 py-2 rounded select-none w-full hover:filter hover:brightness-[80%]",
           @variant == "google" && "bg-bgGoogle border-black mt-4 text-black",
+          @variant == "google-dis" && "bg-bgGoogle bg-gray-400 border-facebook mt-4 text-white",
           @variant == "github" && "bg-bgGithub bg-sns-github border-github mt-6 text-white",
           @variant == "facebook" && "bg-bgFacebook bg-gray-400 border-facebook mt-6 text-white",
           @variant == "twitter" && "bg-bgNewTwitter bg-gray-400 border-twitter mt-6 text-white"

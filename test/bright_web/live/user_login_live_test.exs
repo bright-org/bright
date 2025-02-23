@@ -9,7 +9,6 @@ defmodule BrightWeb.UserLoginLiveTest do
 
       assert html =~ "ログイン"
       assert html =~ "ユーザー新規作成はこちら"
-      assert html =~ "医療版ユーザー新規作成はこちら"
       assert html =~ "パスワードを忘れた方はこちら"
       assert html =~ "確認メールの再送はこちら"
     end
@@ -118,11 +117,11 @@ defmodule BrightWeb.UserLoginLiveTest do
     test "redirects to registration page when the Register for medical button is clicked", %{
       conn: conn
     } do
-      {:ok, lv, _html} = live(conn, ~p"/users/log_in")
+      {:ok, lv, _html} = live(conn, ~p"/users/log_in?type=medical")
 
       {:ok, conn} =
         lv
-        |> element("#register-medical", "医療版ユーザー新規作成はこちら")
+        |> element("#register", "ユーザー新規作成はこちら")
         |> render_click()
         |> follow_redirect(conn, ~p"/medical/register")
 
