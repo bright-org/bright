@@ -190,7 +190,7 @@ defmodule BrightWeb.LayoutComponents do
         <.link href="/mypage">
           <img src="/images/common/logo.svg" width="110" class="hidden lg:block" />
           <%= if @type == :medical do %>
-          <p class="text-white ml-1 px-1 w-[100px] text-center rounded bg-attention-300">medical</p>
+          <p class="text-white ml-1 px-1 w-[100px] text-center rounded bg-attention-300">医療</p>
             <% end %>
         </.link>
         <ul class="grid lg:flex lg:flex-col lg:items-center lg:gap-y-2">
