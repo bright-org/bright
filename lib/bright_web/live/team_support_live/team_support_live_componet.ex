@@ -13,7 +13,7 @@ defmodule BrightWeb.TeamSupportLiveComponent do
   import BrightWeb.TabComponents
 
   alias Bright.UserProfiles
-  alias alias Bright.Teams
+  alias Bright.Teams
 
   @tabs [
     {"supporter_teams", "採用・育成チーム"}
