@@ -11,11 +11,13 @@ defmodule BrightWeb.OnboardingLive.Index do
   import BrightWeb.OnboardingLive.JobPanelComponents
 
   @rank %{entry: "入門", basic: "基本", advanced: "応用", expert: "高度"}
+  @rank_medical %{basic: "一般", advanced: "専門", expert: "高度"}
   @default_pos "engineer"
 
   @impl true
   def mount(_params, _session, socket) do
     user = socket.assigns.current_user
+    rank = if is_engineer?(user), do: @rank, else: @rank_medical
     jobs = Jobs.list_jobs_group_by_career_field_and_rank()
 
     career_groups =
@@ -23,7 +25,7 @@ defmodule BrightWeb.OnboardingLive.Index do
       |> Enum.sort_by(&(&1.type != user.type))
 
     socket
-    |> assign(:rank, @rank)
+    |> assign(:rank, rank)
     |> assign(:jobs, jobs)
     |> assign(:pos, @default_pos)
     |> assign(:career_groups, career_groups)

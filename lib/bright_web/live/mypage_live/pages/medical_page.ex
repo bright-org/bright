@@ -37,9 +37,9 @@ defmodule BrightWeb.MypageLive.MedicalPage do
         </div>
       </div>
 
-      <%# 2つの領域からなる。SPではJSでの切り替え表示、PCではflexでのメイン/サイド分割表示 %>
+      <%!-- 2つの領域からなる。SPではJSでの切り替え表示、PCではflexでのメイン/サイド分割表示 --%>
       <div class="lg:flex lg:flex-row lg:justify-between pb-16 mx-4 lg:mx-10">
-        <%# SP用切り替え部 %>
+        <%!-- SP用切り替え部 --%>
         <div :if={@me} class="lg:hidden text-md text-center mt-8 mb-2">
           <button id="btn-my-field" class="inline-flex items-center font-bold rounded-l-full gap-x-2 px-6 py-2 button-toggle-active" phx-click={js_show_my_field()}>
             マイページ
@@ -49,10 +49,10 @@ defmodule BrightWeb.MypageLive.MedicalPage do
           </button>
         </div>
 
-        <%# メイン部 %>
+        <%!-- メイン部 --%>
         <div id="my-field" class="pt-3 lg:grow flex flex-col items-center">
           <div class="flex flex-col gap-y-6 w-full">
-            <%# スキルアップ %>
+            <%!-- スキルアップ --%>
             <.skill_ups
               recent_level_up_skill_class_scores={@recent_level_up_skill_class_scores}
               display_user={@display_user}
@@ -60,7 +60,7 @@ defmodule BrightWeb.MypageLive.MedicalPage do
               anonymous={@anonymous}
             />
 
-            <%# 学習メモ %>
+            <%!-- 学習メモ --%>
             <.live_component
               module={MySkillEvidencesComponent}
               id="my-skill-evidences"
@@ -72,10 +72,10 @@ defmodule BrightWeb.MypageLive.MedicalPage do
           </div>
         </div>
 
-        <%# サイド部 SPではメインとして切り替え表示 %>
+        <%!-- サイド部 SPではメインとして切り替え表示 --%>
         <div id="others-field" :if={@me} class="hidden lg:block px-4 pt-3 flex flex-col items-center lg:max-w-md">
           <div class="flex flex-col gap-y-6 w-full">
-            <%# いま学んでいます %>
+            <%!-- いま学んでいます --%>
             <.others_skill_evidences
               recent_others_skill_evidences={@recent_others_skill_evidences}
               current_user={@current_user}
@@ -87,7 +87,7 @@ defmodule BrightWeb.MypageLive.MedicalPage do
       </div>
     </div>
 
-    <% # 学習メモ用モーダル %>
+    <%!-- 学習メモ用モーダル --%>
     <.live_component
       id="skill-evidence-modal"
       module={BrightWeb.ModalComponent}

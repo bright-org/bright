@@ -10,6 +10,37 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
   import BrightWeb.BrightGraphComponents
   import BrightWeb.GuideMessageComponents
 
+  def render(%{type: :medical} = assigns) do
+    assigns =
+      assigns
+      |> assign(
+        share_skill_panel_url: url(~p"/get_skill_panel/#{assigns.skill_panel.id}/#{assigns.ogp}")
+      )
+
+    ~H"""
+    <div id={@id}>
+      <.bright_modal
+        id={"#{@id}_modal"}
+        :if={@open}
+        on_cancel={JS.push("close", target: @myself)}
+        show
+      >
+        <.header>スキルパネル取得</.header>
+
+        <div class="my-4 min-w-80">
+          <div class="flex flex-col gap-y-2">
+            <p>「<%= @data.name %>」をスタートしました！</p>
+            <p>まずは平均を目指しましょう</p>
+            <.triangle_graph data={@data} id="triangle_graph"/>
+          </div>
+        </div>
+        <SnsComponents.sns_share_button_group share_graph_url={@share_skill_panel_url} skill_panel={@skill_panel.name} level_text={"start"} phx_click="skill_sns_up_click" />
+        <.first_card_skills_edit_message type={:medical}/>
+      </.bright_modal>
+    </div>
+    """
+  end
+
   def render(assigns) do
     assigns =
       assigns
@@ -35,7 +66,7 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
           </div>
         </div>
         <SnsComponents.sns_share_button_group share_graph_url={@share_skill_panel_url} skill_panel={@skill_panel.name} level_text={"start"} phx_click="skill_sns_up_click" />
-        <.first_card_skills_edit_message />
+        <.first_card_skills_edit_message type={:engineer} />
       </.bright_modal>
     </div>
     """

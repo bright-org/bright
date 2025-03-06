@@ -11,14 +11,14 @@ defmodule BrightWeb.GuideMessageComponents do
   def enter_skills_help_message(%{reference_from: "button", view: :table} = assigns) do
     # 現状はスキル入力前メッセージと同様
     ~H"""
-    <.first_skills_edit_message />
+    <.first_skills_edit_message type={@type} />
     """
   end
 
   def enter_skills_help_message(%{reference_from: "button", view: :card} = assigns) do
     # 現状はスキル入力前メッセージと同様
     ~H"""
-    <.first_card_skills_edit_message />
+    <.first_card_skills_edit_message type={@type}/>
     """
   end
 
@@ -39,7 +39,7 @@ defmodule BrightWeb.GuideMessageComponents do
       <span class="font-bold">まずは「スキル入力する」ボタンをクリック</span>してスキル入力を始めてください。
     </p>
     <p>スキル入力は、途中保存可能でいつでも変更できます。</p>
-    <.score_mark_description />
+    <.score_mark_description type={@type} />
     <.shortcut_key_description />
     <.evidence_introduction_description />
     """
@@ -50,7 +50,7 @@ defmodule BrightWeb.GuideMessageComponents do
     <div class="mt-4">
       <h5>スキル入力のやり方について</h5>
       <p>各スキルをマークする際は、以下の基準で入力してください。</p>
-      <.score_mark_description />
+      <.score_mark_description type={@type} />
       <.evidence_introduction_description />
     </div>
     """
@@ -91,6 +91,25 @@ defmodule BrightWeb.GuideMessageComponents do
       </div>
       <div id="arrow-to-job-searching" class="arrow ml-1"></div>
     </div>
+    """
+  end
+
+  defp score_mark_description(%{type: :medical} = assigns) do
+    ~H"""
+    <ul class="my-2">
+      <li class="flex items-center">
+        <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
+        十分な知識と実践経験を持つ
+      </li>
+      <li class="flex items-center">
+        <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
+        知識・実務経験が少ない、トレーニング中
+      </li>
+      <li class="flex items-center">
+        <span class={[score_mark_class(:low, :green), "inline-block mr-1"]} />
+        知識・実務経験が無い
+      </li>
+    </ul>
     """
   end
 

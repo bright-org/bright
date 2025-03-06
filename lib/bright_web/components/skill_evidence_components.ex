@@ -25,7 +25,7 @@ defmodule BrightWeb.SkillEvidenceComponents do
 
   def skill_evidence(assigns) do
     ~H"""
-    <%# アイコン表示 %>
+    <%!-- アイコン表示 --%>
     <div class="flex-none text-center pt-4 mx-2">
       <% my_post? = @current_user.id == @skill_evidence_post.user_id %>
       <% anonymous? = @anonymous || @skill_evidence_post.user_id not in @related_user_ids %>
@@ -39,7 +39,7 @@ defmodule BrightWeb.SkillEvidenceComponents do
       <% end %>
     </div>
 
-    <%# 投稿表示 %>
+    <%!-- 投稿表示 --%>
     <div
       class="grow flex flex-col gap-y-2 mx-2 cursor-pointer link-evidence w-full overflow-x-auto"
       phx-click="edit_skill_evidence"

@@ -55,13 +55,13 @@
           <div class="flex justify-between items-center">
             <p><%= col3.skill.name %></p>
 
-            <%# スキル操作ボタン %>
+            <%!-- スキル操作ボタン --%>
             <div class="flex items-center gap-x-2">
               <.link class="ml-1" patch={"#{@page_path}/skills/#{col3.skill.id}/edit"}>
                 <span class="hero-pencil-square" />
               </.link>
 
-              <%# 教材と試験のプレビュー %>
+              <%!-- 教材と試験のプレビュー --%>
               <.link :if={col3.skill.skill_reference && col3.skill.skill_reference.url} class="link-reference" patch={"#{@page_path}/skills/#{col3.skill.id}/show_reference"}>
                 <img src="/images/common/icons/skillStudy.svg" />
               </.link>
@@ -77,7 +77,7 @@
   </table>
 </div>
 
-<%# スキル 編集用モーダル %>
+<%!-- スキル 編集用モーダル --%>
 <.modal
   :if={@live_action in [:edit_skill]}
   id="skill-modal"
@@ -94,7 +94,7 @@
   />
 </.modal>
 
-<% # 教材用モーダル %>
+<%!-- 教材用モーダル --%>
 <.bright_modal
   :if={@live_action in [:show_reference]}
   id="skill-reference-modal"
@@ -109,7 +109,7 @@
   </div>
 </.bright_modal>
 
-<% # 試験用モーダル %>
+<%!-- 試験用モーダル --%>
 <.bright_modal
   :if={@live_action in [:show_exam]}
   id="skill-exam-modal"

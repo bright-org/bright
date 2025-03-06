@@ -15,7 +15,11 @@ defmodule BrightWeb.OnboardingLive.Welcome do
         Brightは今と過去、そして未来のスキルから “あなたの輝き” を見える化します
       </h1>
       <h1 class="text-xl my-4">
+        <%= if is_engineer?(@current_user) do %>
         エンジニアやインフラ、デザイナー、マーケッターなど幅広い分野からスキルが選べます
+        <% else %>
+        臨床医学・社会医学の各専門領域からスキルが選べます
+        <% end %>
       </h1>
       <h1 class="text-xl mt-4 mb-12">
         自分に合ったスキルパネルを選び、スキル入力することで、あなたの輝きを体験してください

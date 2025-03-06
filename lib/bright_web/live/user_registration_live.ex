@@ -11,7 +11,7 @@ defmodule BrightWeb.UserRegistrationLive do
       <.gem>ユーザー新規作成</.gem>
     </h1>
 
-    <p class="bg-attention-300 text-white text-center border rounded justify-self-center py-2 px-4 mt-4 ">Bright for Medical</p>
+    <p class="bg-attention-300 text-white text-center border rounded justify-self-center py-2 px-4 mt-4 ">Bright 医療</p>
     <.form
       :let={_f}
       for={@form}
