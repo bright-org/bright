@@ -113,7 +113,6 @@ defmodule BrightWeb.GuideMessageComponents do
     """
   end
 
-
   defp score_mark_description(assigns) do
     ~H"""
     <ul class="my-2">

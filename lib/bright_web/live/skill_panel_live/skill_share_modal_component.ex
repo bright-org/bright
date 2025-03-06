@@ -10,7 +10,7 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
   import BrightWeb.BrightGraphComponents
   import BrightWeb.GuideMessageComponents
 
-  def render(%{type: :medical}=assigns) do
+  def render(%{type: :medical} = assigns) do
     assigns =
       assigns
       |> assign(
@@ -71,7 +71,6 @@ defmodule BrightWeb.SkillPanelLive.SkillShareModalComponent do
     </div>
     """
   end
-
 
   def update(%{open: true} = assigns, socket) do
     {:ok,
