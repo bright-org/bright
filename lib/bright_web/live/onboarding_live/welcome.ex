@@ -37,7 +37,7 @@ defmodule BrightWeb.OnboardingLive.Welcome do
     """
   end
 
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     socket
     |> assign(:page_title, "ようこそ")
     |> then(&{:ok, &1})

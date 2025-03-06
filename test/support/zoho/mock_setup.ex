@@ -10,7 +10,7 @@ defmodule Bright.Zoho.MockSetup do
   end
   """
 
-  use ExUnit.Callbacks
+  use ExUnit.Case
 
   defmacro __using__(_opts) do
     quote do
