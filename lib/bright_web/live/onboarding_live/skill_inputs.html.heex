@@ -110,7 +110,7 @@
             module={BrightWeb.HelpMessageComponent}
             id="help-enter-skills-button"
             open={false}>
-            <.enter_skills_help_message reference_from={"button"} view={:card} />
+            <.enter_skills_help_message reference_from={"button"} view={:card} type={@current_user.type} />
           </.live_component>
         </div>
       </div>
@@ -199,6 +199,7 @@
    open={@skill_share_open}
    skill_panel={@skill_panel}
    ogp={@encode_share_ogp}
+   type={@current_user.type}
    >
 </.live_component>
 

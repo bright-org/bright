@@ -71,7 +71,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsFormComponent do
           module={BrightWeb.HelpMessageComponent}
           id="help-enter-skills-modal"
           open={false}>
-          <.enter_skills_help_message reference_from={"modal"} />
+          <.enter_skills_help_message reference_from={"modal"} type={@current_user.type} />
         </.live_component>
 
         <p :if={@restore} class="bg-attention-50 text-attention-900 shadow-md ring-attention-600 fill-attention-900 p-2 text-sm">

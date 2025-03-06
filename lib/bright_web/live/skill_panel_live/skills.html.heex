@@ -118,7 +118,7 @@
             module={BrightWeb.HelpMessageComponent}
             id="help-enter-skills"
             overlay={true}>
-            <.first_skills_edit_message />
+            <.first_skills_edit_message type={@current_user.type} />
           </.live_component>
 
           <% # スキル入力するボタン 手動表示メッセージ %>
@@ -127,7 +127,7 @@
             module={BrightWeb.HelpMessageComponent}
             id="help-enter-skills-button"
             open={false}>
-            <.enter_skills_help_message reference_from={"button"} view={:table} />
+            <.enter_skills_help_message reference_from={"button"} view={:table} type={@current_user.type} />
           </.live_component>
         </div>
       </div>
@@ -252,6 +252,7 @@
    open={@skill_share_open}
    skill_panel={@skill_panel}
    ogp={@encode_share_ogp}
+   type={@current_user.type}
    >
 </.live_component>
 
