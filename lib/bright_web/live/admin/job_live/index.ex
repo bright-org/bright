@@ -3,11 +3,20 @@ defmodule BrightWeb.Admin.JobLive.Index do
 
   alias Bright.Jobs
   alias Bright.Jobs.Job
+  alias Bright.CareerGroups
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok,
-     stream(socket, :jobs, Bright.Repo.preload(Jobs.list_jobs(), [:career_fields, :skill_panels]))}
+    jobs = Jobs.list_jobs_group_by_career_field_and_rank()
+
+    career_groups =
+      CareerGroups.list_career_groups_with_career_field(:medical)
+      |> Enum.sort_by(&(&1.type == :medical))
+
+    socket
+    |> assign(:jobs, jobs)
+    |> assign(:career_groups, career_groups)
+    |> then(&{:ok, &1})
   end
 
   @impl true
@@ -34,8 +43,8 @@ defmodule BrightWeb.Admin.JobLive.Index do
   end
 
   @impl true
-  def handle_info({BrightWeb.Admin.JobLive.FormComponent, {:saved, job}}, socket) do
-    {:noreply, stream_insert(socket, :jobs, job)}
+  def handle_info({BrightWeb.Admin.JobLive.FormComponent, {:saved, _job}}, socket) do
+    {:noreply, assign(socket, :jobs, Jobs.list_jobs_group_by_career_field_and_rank())}
   end
 
   @impl true
@@ -43,6 +52,43 @@ defmodule BrightWeb.Admin.JobLive.Index do
     job = Jobs.get_job!(id)
     {:ok, _} = Jobs.delete_job(job)
 
-    {:noreply, stream_delete(socket, :jobs, job)}
+    {:noreply, assign(socket, :jobs, Jobs.list_jobs_group_by_career_field_and_rank())}
+  end
+
+  def rank_jobs(assigns) do
+    ~H"""
+    <div class="my-8">
+      <p class="text-left text-brightGray-400 text-xl"><%= @rank_list[@rank] %></p>
+      <hr class="h-[2px] bg-brightGray-50 mb-4" />
+      <div class="flex flex-wrap justify-center mt-2 lg:justify-start">
+        <% jobs = Map.get(@jobs, @career_field.name_en, %{}) %>
+        <%= for job <- Map.get(jobs, @rank, []) do %>
+        <div class="border m-1">
+            <div
+              class={"px-2 rounded w-[150px] lg:w-[340px] min-h-[100px] lg:min-h-[74px] flex flex-col"}
+            >
+              <div class="flex flex-col lg:flex-row justify-between mt-2 mb-[4px]">
+                <p class="text-xs lg:w-44 lg:font-bold lg:mt-1 mb-1 lg:mb-0"><%= job.name %></p>
+                <.link navigate={~p"/admin/jobs/#{job}"}>Show</.link>
+                <.link patch={~p"/admin/jobs/#{job}/edit"}>Edit</.link>
+                <.link
+                    phx-click={JS.push("delete", value: %{id: job.id})}
+                    data-confirm="Are you sure?"
+                >Delete</.link>
+              </div>
+              <hr />
+              <div class="flex justify-between">
+                <div class="flex-row">
+                  <%= for panel <- job.skill_panels do %>
+                  <p><%= panel.name %></p>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    """
   end
 end
