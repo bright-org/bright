@@ -28,6 +28,26 @@ defmodule Bright.CareerGroups do
     |> Repo.all()
   end
 
+  def list_career_groups_with_career_field(:all) do
+    cg =
+      CareerGroup
+      |> preload(:career_fields)
+      |> Repo.all()
+
+    cf_ids =
+      Enum.map(cg, & &1.career_fields)
+      |> List.flatten()
+      |> Enum.map(& &1.id)
+      |> Enum.uniq()
+
+    other_cf =
+      Bright.CareerFields.CareerField
+      |> where([cf], cf.id not in ^cf_ids)
+      |> Repo.all()
+
+    Enum.concat(cg, [%{name: :other, career_fields: other_cf}])
+  end
+
   def list_career_groups_with_career_field(_type) do
     CareerGroup
     |> preload(:career_fields)

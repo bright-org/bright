@@ -7,11 +7,13 @@ defmodule BrightWeb.Admin.JobLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    jobs = Jobs.list_jobs_group_by_career_field_and_rank()
+    jobs = Jobs.list_jobs_group_by_career_field_and_rank(:all)
 
     career_groups =
-      CareerGroups.list_career_groups_with_career_field(:medical)
-      |> Enum.sort_by(&(&1.type == :medical))
+      CareerGroups.list_career_groups_with_career_field(:all)
+      |> Enum.concat([
+        %{career_fields: [%{name_en: "other", name_ja: "その他"}]}
+      ])
 
     socket
     |> assign(:jobs, jobs)
@@ -44,7 +46,7 @@ defmodule BrightWeb.Admin.JobLive.Index do
 
   @impl true
   def handle_info({BrightWeb.Admin.JobLive.FormComponent, {:saved, _job}}, socket) do
-    {:noreply, assign(socket, :jobs, Jobs.list_jobs_group_by_career_field_and_rank())}
+    {:noreply, assign(socket, :jobs, Jobs.list_jobs_group_by_career_field_and_rank(:all))}
   end
 
   @impl true
@@ -52,7 +54,7 @@ defmodule BrightWeb.Admin.JobLive.Index do
     job = Jobs.get_job!(id)
     {:ok, _} = Jobs.delete_job(job)
 
-    {:noreply, assign(socket, :jobs, Jobs.list_jobs_group_by_career_field_and_rank())}
+    {:noreply, assign(socket, :jobs, Jobs.list_jobs_group_by_career_field_and_rank(:all))}
   end
 
   def rank_jobs(assigns) do
@@ -63,7 +65,7 @@ defmodule BrightWeb.Admin.JobLive.Index do
       <div class="flex flex-wrap justify-center mt-2 lg:justify-start">
         <% jobs = Map.get(@jobs, @career_field.name_en, %{}) %>
         <%= for job <- Map.get(jobs, @rank, []) do %>
-        <div class="border m-1">
+        <div id={"jobs-#{job.id}"} class="border m-1">
             <div
               class={"px-2 rounded w-[150px] lg:w-[340px] min-h-[100px] lg:min-h-[74px] flex flex-col"}
             >
