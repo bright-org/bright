@@ -188,6 +188,32 @@ defmodule Bright.Jobs do
     end)
   end
 
+  def list_jobs_group_by_career_field_and_rank(:all) do
+    jobs =
+      from(job in Job,
+        join: cf in assoc(job, :career_fields),
+        select: {cf.name_en, job},
+        preload: [:career_fields, :skill_panels]
+      )
+      |> Repo.all()
+
+    job_ids = Enum.map(jobs, fn {_, job} -> job.id end)
+
+    no_related_jobs =
+      Job
+      |> where([j], j.id not in ^job_ids)
+      |> preload([:career_fields, :skill_panels])
+      |> select([j], {"other", j})
+      |> Repo.all()
+
+    Enum.concat(jobs, no_related_jobs)
+    |> Enum.group_by(fn {cf, _job} -> cf end, fn {_cf, job} -> job end)
+    |> Enum.reduce(%{}, fn {key, value}, acc ->
+      sorted = Enum.sort_by(value, & &1.position)
+      Map.put(acc, key, Enum.group_by(sorted, & &1.rank))
+    end)
+  end
+
   def list_jobs_group_by_career_field_and_rank(career_field) do
     from(job in Job,
       join: cf in assoc(job, :career_fields),

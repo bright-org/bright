@@ -17,9 +17,9 @@ defmodule Bright.Jobs.Job do
     field :position, :integer
     field :rank, Ecto.Enum, values: [:entry, :basic, :advanced, :expert]
 
-    has_many :career_field_jobs, CareerFieldJob, on_replace: :delete
+    has_many :career_field_jobs, CareerFieldJob, on_replace: :delete, on_delete: :delete_all
     has_many :career_fields, through: [:career_field_jobs, :career_field]
-    has_many :job_skill_panels, JobSkillPanel, on_replace: :delete
+    has_many :job_skill_panels, JobSkillPanel, on_replace: :delete, on_delete: :delete_all
     has_many :skill_panels, through: [:job_skill_panels, :skill_panel]
 
     timestamps()

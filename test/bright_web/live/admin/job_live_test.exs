@@ -13,8 +13,20 @@ defmodule BrightWeb.Admin.JobLiveTest do
   @invalid_attrs %{name: nil, position: nil, description: nil}
 
   defp create_job(_) do
-    job = insert(:job)
-    %{job: job}
+    career_field = insert(:career_field)
+
+    insert(:career_group,
+      career_group_career_fields: [
+        build(:career_group_career_field, career_field_id: career_field.id)
+      ]
+    )
+
+    job =
+      insert(:job,
+        career_field_jobs: [build(:career_field_job, career_field_id: career_field.id)]
+      )
+
+    %{job: job, career_field: career_field}
   end
 
   describe "Index" do
@@ -40,7 +52,9 @@ defmodule BrightWeb.Admin.JobLiveTest do
              |> render_change() =~ "入力してください"
 
       assert index_live
-             |> form("#job-form", job: @create_attrs)
+             |> form("#job-form",
+               job: @create_attrs
+             )
              |> render_submit()
 
       assert_patch(index_live, ~p"/admin/jobs")

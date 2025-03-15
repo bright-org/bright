@@ -15,7 +15,7 @@
 </.list>
 
 <.list :for={career <- @career_group.career_fields}>
-  <:item title="career_field"><%= career.name %></:item>
+  <:item title="career_field"><%= career.name_ja %>(<%= career.name_en %>)</:item>
 </.list>
 
 <.back navigate={~p"/admin/career_groups"}>Back to career_groups</.back>
