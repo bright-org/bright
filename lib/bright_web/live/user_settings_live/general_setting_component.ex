@@ -17,13 +17,13 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
               <span class="w-32">ハンドル名</span>
               <BrightCore.input field={f[:name]} type="text" size="20" input_class="px-2 py-1 rounded w-60" />
             </label>
-            <label class="border-b border-brightGray-200 flex items-center py-4">
+            <label class={"flex items-center py-4 #{if is_engineer?(@user), do: "border-b border-brightGray-200"}"}>
               <span class="w-32">役割・自称</span>
               <.inputs_for :let={ff} field={f[:user_profile]}>
                 <BrightCore.input field={ff[:title]} type="text" size="20" input_class="px-2 py-1 rounded w-60" />
               </.inputs_for>
             </label>
-
+            <%= if is_engineer?(@user) do %>
             <label class="flex items-center pt-4 pb-2">
               <span class="w-32">GitHub</span>
               <.inputs_for :let={ff} field={f[:user_profile]}>
@@ -44,6 +44,7 @@ defmodule BrightWeb.UserSettingsLive.GeneralSettingComponent do
                 <BrightCore.input field={ff[:facebook_url]} type="text" size="20" input_class="px-2 py-1 rounded w-60 placeholder-brightGray-100" placeholder="https://www.facebook.com/" />
               </.inputs_for>
             </label>
+            <% end %>
           </div>
 
           <div class="w-full flex lg:relative py-4 lg:w-1/2">

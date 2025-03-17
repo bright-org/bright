@@ -2,7 +2,7 @@ defmodule BrightWeb.BrightGraphComponents do
   @moduledoc """
   Graph
   """
-  use Phoenix.Component
+  use BrightWeb, :component
 
   @doc """
   Renders a TriangleGraph
@@ -26,6 +26,7 @@ defmodule BrightWeb.BrightGraphComponents do
       phx-hook="TriangleGraph"
       phx-update="ignore"
       data-data={@data}
+      data-label={%{beginner: gettext("level_beginner"), normal: gettext("level_normal"), skilled: gettext("level_skilled")} |> Jason.encode!()}
     >
       <canvas width="350" height="130"></canvas>
     </div>

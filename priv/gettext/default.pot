@@ -111,3 +111,12 @@ msgstr ""
 
 msgid "level_skilled"
 msgstr ""
+
+msgid "mark_high"
+msgstr ""
+
+msgid "mark_middle"
+msgstr ""
+
+msgid "mark_low"
+msgstr ""

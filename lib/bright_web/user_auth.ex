@@ -237,6 +237,9 @@ defmodule BrightWeb.UserAuth do
     socket = mount_current_user(socket, session)
 
     if socket.assigns.current_user do
+      locale = if socket.assigns.current_user.type == :medical, do: "ja_medical", else: "ja"
+      Gettext.put_locale(BrightWeb.Gettext, locale)
+
       {:cont, socket}
     else
       socket =

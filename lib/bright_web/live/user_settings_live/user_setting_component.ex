@@ -27,7 +27,6 @@ defmodule BrightWeb.UserSettingsLive.UserSettingComponent do
   @medical_tabs [
     {"general", "一般"},
     {"auth", "メール・パスワード"},
-    {"sns", "SNS連携"},
     {"plan", "利用プラン"}
   ]
 

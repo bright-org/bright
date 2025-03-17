@@ -11,14 +11,14 @@ defmodule BrightWeb.GuideMessageComponents do
   def enter_skills_help_message(%{reference_from: "button", view: :table} = assigns) do
     # 現状はスキル入力前メッセージと同様
     ~H"""
-    <.first_skills_edit_message type={@type} />
+    <.first_skills_edit_message />
     """
   end
 
   def enter_skills_help_message(%{reference_from: "button", view: :card} = assigns) do
     # 現状はスキル入力前メッセージと同様
     ~H"""
-    <.first_card_skills_edit_message type={@type}/>
+    <.first_card_skills_edit_message />
     """
   end
 
@@ -39,7 +39,7 @@ defmodule BrightWeb.GuideMessageComponents do
       <span class="font-bold">まずは「スキル入力する」ボタンをクリック</span>してスキル入力を始めてください。
     </p>
     <p>スキル入力は、途中保存可能でいつでも変更できます。</p>
-    <.score_mark_description type={@type} />
+    <.score_mark_description />
     <.shortcut_key_description />
     <.evidence_introduction_description />
     """
@@ -50,7 +50,7 @@ defmodule BrightWeb.GuideMessageComponents do
     <div class="mt-4">
       <h5>スキル入力のやり方について</h5>
       <p>各スキルをマークする際は、以下の基準で入力してください。</p>
-      <.score_mark_description type={@type} />
+      <.score_mark_description />
       <.evidence_introduction_description />
     </div>
     """
@@ -64,7 +64,7 @@ defmodule BrightWeb.GuideMessageComponents do
     <div>
       <p>スキル入力完了おめでとうございます！</p>
       <p class="mt-4">
-        <span class={[score_mark_class(:high, :green), "inline-block align-middle mr-1"]} /><span class="align-middle">が40％より下は「見習い」、40％以上で「平均」、60％以上で「ベテラン」となります。</span>
+        <span class={[score_mark_class(:high, :green), "inline-block align-middle mr-1"]} /><span class="align-middle">が40％より下は「<%= gettext("level_beginner") %>」、40％以上で「<%= gettext("level_normal")%>」、60％以上で「<%= gettext("level_skilled") %>」となります。</span>
       </p>
       <p class="mt-2">
         スキル入力後は「成長パネル」メニューで現在のスキルレベルを確認できます。
@@ -94,39 +94,20 @@ defmodule BrightWeb.GuideMessageComponents do
     """
   end
 
-  defp score_mark_description(%{type: :medical} = assigns) do
-    ~H"""
-    <ul class="my-2">
-      <li class="flex items-center">
-        <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
-        十分な知識と実践経験を持つ
-      </li>
-      <li class="flex items-center">
-        <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
-        知識・実務経験が少ない、トレーニング中
-      </li>
-      <li class="flex items-center">
-        <span class={[score_mark_class(:low, :green), "inline-block mr-1"]} />
-        知識・実務経験が無い
-      </li>
-    </ul>
-    """
-  end
-
   defp score_mark_description(assigns) do
     ~H"""
     <ul class="my-2">
       <li class="flex items-center">
         <span class={[score_mark_class(:high, :green), "inline-block mr-1"]} />
-        実務経験がある、もしくは依頼されたら短期間で実行できる
+        <%= gettext("mark_high") %>
       </li>
       <li class="flex items-center">
         <span class={[score_mark_class(:middle, :green), "inline-block mr-1"]} />
-        知識はあるが、実務経験が浅く、自信が無い（調査が必要）
+        <%= gettext("mark_middle") %>
       </li>
       <li class="flex items-center">
         <span class={[score_mark_class(:low, :green), "inline-block mr-1"]} />
-        知識や実務経験が無い
+        <%= gettext("mark_low") %>
       </li>
     </ul>
     """

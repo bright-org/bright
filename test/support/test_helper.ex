@@ -85,6 +85,16 @@ defmodule Bright.TestHelper do
 
   def setup_career_fields(_context) do
     career_fields = Bright.Seeds.CareerField.insert()
+    career_group = insert(:career_group)
+
+    Enum.each(
+      career_fields,
+      &insert(:career_group_career_field,
+        career_group_id: career_group.id,
+        career_field_id: &1.id
+      )
+    )
+
     %{career_fields: career_fields}
   end
 

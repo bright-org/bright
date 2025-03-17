@@ -2,7 +2,7 @@ defmodule BrightWeb.TeamComponents do
   @moduledoc """
   Team Components
   """
-  use Phoenix.Component
+  use BrightWeb, :component
 
   import BrightWeb.CoreComponents, only: [icon: 1]
 
@@ -159,9 +159,9 @@ defmodule BrightWeb.TeamComponents do
         <td class={@css}>クラス2</td>
         <td class={@css}>クラス3</td>
       </tr>
-      <.team_header_sum_row name="見習い" row={Enum.at(@level_count, 0)} />
-      <.team_header_sum_row name="平均" row={Enum.at(@level_count, 1)} />
-      <.team_header_sum_row name="ベテラン" row={Enum.at(@level_count, 2)} />
+      <.team_header_sum_row name={gettext("level_beginner")} row={Enum.at(@level_count, 0)} />
+      <.team_header_sum_row name={gettext("level_normal")} row={Enum.at(@level_count, 1)} />
+      <.team_header_sum_row name={gettext("level_skilled")} row={Enum.at(@level_count, 2)} />
     </table>
     """
   end

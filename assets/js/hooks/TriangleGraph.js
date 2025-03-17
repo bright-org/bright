@@ -1,4 +1,4 @@
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 
 // グラフの色定義
 const beginnerColor = "#1DA091";
@@ -30,13 +30,13 @@ const drawTriangle = (ctx, percent, color) => {
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
-}
+};
 
 // %を求める関数
 const getPercent = (number, total) => {
   if (total == 0) return 0;
-  return Math.floor(number / total * maxPercent);
-}
+  return Math.floor((number / total) * maxPercent);
+};
 
 // 各レベルのテキストを描画する関数
 const drawLevel = (ctx, levelText, number, percent, x, y, withAvator) => {
@@ -51,24 +51,50 @@ const drawLevel = (ctx, levelText, number, percent, x, y, withAvator) => {
   if (withAvator) ctx.drawImage(image, x + 100, y - 15, 20, 20);
 
   // ctx.fillText(levelText + " " + number + "人 " + percent + "%", x, y);
-}
+};
 
 const drawTriangleGraph = (element) => {
   const dataset = element.dataset;
+  const label = JSON.parse(dataset.label);
   const data = JSON.parse(dataset.data);
   const canvas = document.querySelector("#" + element.id + " canvas");
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   const level = data.level;
 
   const total = data.beginner + data.normal + data.skilled;
 
   const skilledPercent = getPercent(data.skilled, total);
   const normalPercent = getPercent(data.normal, total);
-  const beginnerPercent = total == 0 ? 0 : maxPercent - skilledPercent - normalPercent;
+  const beginnerPercent =
+    total == 0 ? 0 : maxPercent - skilledPercent - normalPercent;
 
-  drawLevel(ctx, "ベテラン", data.skilled, skilledPercent, 210, 15, level === "skilled");
-  drawLevel(ctx, "平均", data.normal, normalPercent, 210, 50, level === "normal");
-  drawLevel(ctx, "見習い", + data.beginner, beginnerPercent, 210, 90, level === "beginner");
+  drawLevel(
+    ctx,
+    label.skilled,
+    data.skilled,
+    skilledPercent,
+    210,
+    15,
+    level === "skilled"
+  );
+  drawLevel(
+    ctx,
+    label.normal,
+    data.normal,
+    normalPercent,
+    210,
+    50,
+    level === "normal"
+  );
+  drawLevel(
+    ctx,
+    label.beginner,
+    +data.beginner,
+    beginnerPercent,
+    210,
+    90,
+    level === "beginner"
+  );
 
   // 人数は一定期間は封印の為コメントアウト
   // ctx.fillText( "「 " + data.name + "」登録者 " + total + "人", 5, 120);
@@ -92,17 +118,16 @@ const drawTriangleGraph = (element) => {
   html2canvas(document.querySelector("#skill_shara_og_image"), {
     width: 1200,
     height: 630,
-  }).then(canvas => {
+  }).then((canvas) => {
     let og_image_data = document.getElementById("skill_shara_og_image_data");
     if (og_image_data == null) return;
     og_image_data.value = canvas.toDataURL("image/png");
     og_image_data.click();
   });
-
-}
+};
 
 export const TriangleGraph = {
   mounted() {
     drawTriangleGraph(this.el);
-  }
+  },
 };
