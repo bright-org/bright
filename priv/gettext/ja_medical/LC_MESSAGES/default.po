@@ -8,8 +8,8 @@
 ### to merge POT files into PO files.
 msgid ""
 msgstr ""
-"Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ja_medical\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: lib/bright_web/components/core_components.ex:461
 #, elixir-autogen, elixir-format
@@ -25,95 +25,97 @@ msgid "close"
 msgstr ""
 
 msgid "waiting_decision"
-msgstr ""
+msgstr "面談打診中"
 
 msgid "consume_interview"
-msgstr ""
+msgstr "面談確定待ち"
 
 msgid "dismiss_interview"
-msgstr ""
+msgstr "面談却下"
 
 msgid "ongoing_interview"
-msgstr ""
+msgstr "面談確定／採用選考前"
 
 msgid "cancel_interview"
-msgstr ""
+msgstr "面談確定待ち"
 
 msgid "complete_interview"
-msgstr ""
+msgstr "面談完了"
 
 msgid "waiting_recruit_decision"
-msgstr ""
+msgstr "採用選考中"
 
 msgid "hiring_decision"
-msgstr ""
+msgstr "採用確定"
 
 msgid "dismiss_coordination"
-msgstr ""
+msgstr "不採用"
 
 msgid "cancel_coordination"
 msgstr ""
 
 msgid "complete_coordination"
-msgstr ""
+msgstr "採用完了"
 
 msgid "not_answered"
-msgstr ""
+msgstr "未回答"
 
 msgid "wants"
-msgstr ""
+msgstr "同席したい"
 
 msgid "not_wants"
-msgstr ""
+msgstr "同席しない"
 
 msgid "keep"
-msgstr ""
+msgstr "今は同席しない"
 
 msgid "recruit_wants"
-msgstr ""
+msgstr "採用したい"
 
 msgid "recruit_not_wants"
-msgstr ""
+msgstr "採用しない"
 
 msgid "recruit_keep"
-msgstr ""
+msgstr "今は採用しない"
 
 msgid "waiting_response"
-msgstr ""
+msgstr "承諾待ち"
 
 msgid "acceptance_emplyoment"
-msgstr ""
+msgstr "採用承諾済み"
 
 msgid "requested"
-msgstr ""
+msgstr "チーム招待待ち"
 
 msgid "employee"
-msgstr ""
+msgstr "正社員"
 
 msgid "subcontracting"
-msgstr ""
+msgstr "業務委託（フリーランス・副業）"
 
 msgid "contract_employee"
-msgstr ""
+msgstr "契約社員"
 
 msgid "temporary_employee"
-msgstr ""
+msgstr "派遣社員"
 
 msgid "part_time_job"
-msgstr ""
+msgstr "アルバイト・パートタイム"
 
+msgid "level_beginner"
+msgstr "ビギナー"
 
 msgid "level_normal"
-msgstr ""
+msgstr "平均"
 
 msgid "level_skilled"
-msgstr ""
+msgstr "シニア"
 
 msgid "mark_high"
-msgstr ""
+msgstr "十分な知識と実践経験を持つ"
 
 msgid "mark_middle"
-msgstr ""
+msgstr "知識・実務経験が少ない、トレーニング中"
 
 msgid "mark_low"
-msgstr ""
+msgstr "知識・実務経験が無い"

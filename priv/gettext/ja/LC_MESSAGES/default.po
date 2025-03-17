@@ -110,3 +110,12 @@ msgstr "平均"
 
 msgid "level_skilled"
 msgstr "ベテラン"
+
+msgid "mark_high"
+msgstr "実務経験がある、もしくは依頼されたら短期間で実行できる"
+
+msgid "mark_middle"
+msgstr "知識はあるが、実務経験が浅く、自信が無い（調査が必要）"
+
+msgid "mark_low"
+msgstr "知識や実務経験が無い"
