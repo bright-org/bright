@@ -452,13 +452,13 @@ defmodule Bright.SkillScoresTest do
         )
       end)
 
-      ret = SkillScores.get_skillset_gem(user.id)
+      ret = SkillScores.get_skillset_gem(user.id, :engineer)
       assert ^names = Enum.map(ret, & &1.name)
       assert ^percentages = Enum.map(ret, & &1.percentage)
 
       # ユーザー条件確認
       user_2 = insert(:user)
-      ret = SkillScores.get_skillset_gem(user_2.id)
+      ret = SkillScores.get_skillset_gem(user_2.id, :engineer)
       assert ^names = Enum.map(ret, & &1.name)
       assert [+0.0, +0.0, +0.0, +0.0] = Enum.map(ret, & &1.percentage)
     end
