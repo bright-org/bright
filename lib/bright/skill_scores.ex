@@ -9,7 +9,7 @@ defmodule Bright.SkillScores do
   alias Bright.Accounts
   alias Bright.SkillPanels
   alias Bright.SkillUnits
-  alias Bright.CareerFields
+  alias Bright.CareerGroups
   alias Bright.HistoricalSkillScores
 
   alias Bright.SkillScores.{
@@ -280,7 +280,10 @@ defmodule Bright.SkillScores do
   @doc """
   Returns the list of skill_scores from skill_class_score
   """
-  def list_skill_scores_from_skill_class_score(%{skill_class_id: skill_class_id, user_id: user_id}) do
+  def list_skill_scores_from_skill_class_score(%{
+        skill_class_id: skill_class_id,
+        user_id: user_id
+      }) do
     SkillUnits.list_skills_on_skill_class(%{id: skill_class_id})
     |> Repo.preload(skill_scores: SkillScore.user_id_query(user_id))
     |> Enum.flat_map(& &1.skill_scores)
@@ -571,8 +574,11 @@ defmodule Bright.SkillScores do
   @doc """
   Get Gem data for SkillSet
   """
-  def get_skillset_gem(user_id) do
-    career_fields = CareerFields.list_career_fields()
+  def get_skillset_gem(user_id, type) do
+    career_fields =
+      CareerGroups.list_career_groups_with_career_field(type)
+      |> Enum.map(& &1.career_fields)
+      |> List.flatten()
 
     career_field_ids_scores =
       from(q in CareerFieldScore, where: q.user_id == ^user_id)
