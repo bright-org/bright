@@ -30,9 +30,9 @@ defmodule BrightWeb.ChartLive.GrowthGraphComponent do
           <.growth_graph data={@data} id="growth-graph-sp" size="sp" />
         </div>
         <div class="ml-1 flex flex-col relative text-xs lg:text-xl text-brightGray-500 text-bold w-20 lg:ml-5 lg:w-20">
-          <p class="py-4 lg:py-5">ベテラン</p>
-          <p class="py-3 lg:py-20">平均</p>
-          <p class="py-2 lg:py-6">見習い</p>
+          <p class="py-4 lg:py-5"><%= gettext("level_skilled")%></p>
+          <p class="py-3 lg:py-20"><%= gettext("level_normal") %></p>
+          <p class="py-2 lg:py-6"><%= gettext("level_normal") %></p>
         </div>
       </div>
 

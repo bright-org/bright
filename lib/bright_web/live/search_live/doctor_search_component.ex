@@ -10,7 +10,7 @@ defmodule BrightWeb.SearchLive.DoctorSearchComponent do
   import BrightWeb.TabComponents, only: [tab_footer: 1]
 
   @class [クラス1: 1, クラス2: 2, クラス3: 3]
-  @level [見習い: "beginner", 平均: "normal", ベテラン: "skilled"]
+  @level [ビギナー: "beginner", 平均: "normal", シニア: "skilled"]
   @sort_options [
     スキルパネルの最終更新日降順: :last_updated_desc,
     スキルパネルの最終更新日昇順: :last_updated_asc,
