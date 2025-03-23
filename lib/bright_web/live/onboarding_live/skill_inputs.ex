@@ -211,27 +211,40 @@ defmodule BrightWeb.OnboardingLive.SkillInputs do
   end
 
   defp assign_prev_skill_class_and_score(socket, class) do
-    prev_skill_class = create_skill_class_data(socket, String.to_integer(class) - 1)
+    prev_skill_class =
+      socket
+      |> get_skill_class_data(String.to_integer(class) - 1)
+      |> create_skill_class_data()
+
     assign(socket, :prev_skill_class, prev_skill_class)
   end
 
   defp assign_next_skill_class_and_score(socket, "3"), do: assign(socket, :next_skill_class, nil)
 
   defp assign_next_skill_class_and_score(socket, nil) do
-    prev_skill_class = create_skill_class_data(socket, 2)
-    assign(socket, :next_skill_class, prev_skill_class)
+    next_skill_class =
+      socket
+      |> get_skill_class_data(2)
+      |> create_skill_class_data()
+
+    assign(socket, :next_skill_class, next_skill_class)
   end
 
   defp assign_next_skill_class_and_score(socket, class) do
-    prev_skill_class = create_skill_class_data(socket, String.to_integer(class) + 1)
-    assign(socket, :next_skill_class, prev_skill_class)
+    next_skill_class =
+      socket
+      |> get_skill_class_data(String.to_integer(class) + 1)
+      |> create_skill_class_data()
+
+    assign(socket, :next_skill_class, next_skill_class)
   end
 
-  defp create_skill_class_data(socket, class) do
-    skill_class =
-      socket.assigns.skill_classes
-      |> Enum.find(&(&1.class == class))
+  defp get_skill_class_data(socket, class),
+    do: socket.assigns.skill_classes |> Enum.find(&(&1.class == class))
 
+  defp create_skill_class_data(nil), do: nil
+
+  defp create_skill_class_data(skill_class) do
     skill_units =
       skill_class
       |> Bright.Repo.preload(skill_units: [skill_categories: [:skills]])
