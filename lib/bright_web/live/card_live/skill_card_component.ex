@@ -4,7 +4,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   """
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
-  alias Bright.{CareerFields, SkillPanels}
+  alias Bright.{CareerGroups, SkillPanels}
   alias BrightWeb.PathHelper
   alias Bright.Teams
   alias Bright.Teams.Team
@@ -198,7 +198,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     default_tab = "engineer"
 
     tabs =
-      CareerFields.list_career_fields()
+      CareerGroups.list_career_group_career_fields(display_user.type)
       |> Enum.map(&{&1.name_en, &1.name_ja})
 
     socket
@@ -212,7 +212,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   @impl true
   def update(%{display_user: user} = assigns, socket) do
     tabs =
-      CareerFields.list_career_fields()
+      CareerGroups.list_career_group_career_fields(user.type)
       |> Enum.map(&{&1.name_en, &1.name_ja})
 
     socket
