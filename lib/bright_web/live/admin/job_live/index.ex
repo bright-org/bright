@@ -10,7 +10,7 @@ defmodule BrightWeb.Admin.JobLive.Index do
     jobs = Jobs.list_jobs_group_by_career_field_and_rank(:all)
 
     career_groups =
-      CareerGroups.list_career_groups_with_career_field(:all)
+      CareerGroups.list_career_group_career_fields(:all)
       |> Enum.concat([
         %{career_fields: [%{name_en: "other", name_ja: "その他"}]}
       ])

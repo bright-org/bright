@@ -4,7 +4,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   """
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
-  alias Bright.{CareerFields, SkillPanels}
+  alias Bright.{CareerGroups, SkillPanels}
   alias BrightWeb.PathHelper
   alias Bright.Teams
   alias Bright.Teams.Team
@@ -195,10 +195,10 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   @impl true
   def update(%{display_team: display_team, display_user: display_user} = assigns, socket) do
-    default_tab = "engineer"
+    default_tab = if is_engineer?(display_user), do: "engineer", else: "social"
 
     tabs =
-      CareerFields.list_career_fields()
+      CareerGroups.list_career_group_career_fields(display_user.type)
       |> Enum.map(&{&1.name_en, &1.name_ja})
 
     socket
@@ -212,13 +212,15 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   @impl true
   def update(%{display_user: user} = assigns, socket) do
     tabs =
-      CareerFields.list_career_fields()
+      CareerGroups.list_career_group_career_fields(user.type)
       |> Enum.map(&{&1.name_en, &1.name_ja})
+
+    default = if is_engineer?(user), do: "engineer", else: "social"
 
     socket
     |> assign(assigns)
     |> assign(:tabs, tabs)
-    |> assign(:selected_tab, "engineer")
+    |> assign(:selected_tab, default)
     |> assign_paginate(user.id, "engineer")
     |> then(&{:ok, &1})
   end

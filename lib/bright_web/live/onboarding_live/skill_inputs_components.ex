@@ -90,6 +90,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
             num_skills={@num_skills}
             gem_labels={@gem_labels}
             gem_values={@gem_values}
+            no_next_skill_class={is_nil(@next_skill_class)}
             share_graph_url={@share_graph_url}
             color={Map.get(@color,class.class)}
             active={true}
@@ -192,7 +193,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
     <div class="bg-white rounded-lg flex flex-col py-8 h-full lg:h-[470px]">
       <div :if={@active} class="lg:hidden flex justify-between -mt-4 px-4">
         <.prev_class skill_class={@skill_class} path={@path} query={@query} />
-        <.next_class skill_class={@skill_class} path={@path} query={@query}/>
+        <.next_class skill_class={@skill_class} path={@path} query={@query} :if={!@no_next_skill_class} />
       </div>
 
       <div class="flex justify-center">
@@ -202,6 +203,11 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
       <div class="flex flex-col lg:flex-row items-center justify-between mt-1 lg:px-4">
         <div class="hidden lg:block"><.prev_class :if={@active} skill_class={@skill_class} path={@path} query={@query} /></div>
         <div class="flex justify-center flex-col">
+          <%= if Enum.count(@gem_labels) < 3 do %>
+            <div class="h-[300px] p-8 text-center">
+              <p class="text-2xl mt-12 ">ジェムを描画できません</p>
+            </div>
+          <% else %>
           <div phx-click="scroll_to_unit">
             <.skill_gem
               id={"sk-#{@skill_class.id}-#{@class}"}
@@ -212,6 +218,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
               display_link="true"
             />
           </div>
+          <% end %>
           <div class="flex flex-col lg:flex-row px-2 lg:px-0 gap-x-2">
             <.skill_stat counter={@counter}  num_skills={@num_skills} />
             <div class="flex gap-x-2 items-end px-8 lg:px-0 -mt-8 lg:mt-0" :if={@active}>
@@ -220,7 +227,7 @@ defmodule BrightWeb.OnboardingLive.SkillInputsComponents do
             </div>
           </div>
         </div>
-        <div class="hidden lg:block"><.next_class :if={@active} skill_class={@skill_class} path={@path} query={@query}/></div>
+        <div class="hidden lg:block"><.next_class :if={@active && !@no_next_skill_class} skill_class={@skill_class} path={@path} query={@query}/></div>
       </div>
     </div>
     """

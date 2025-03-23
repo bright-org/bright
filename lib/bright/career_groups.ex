@@ -28,7 +28,13 @@ defmodule Bright.CareerGroups do
     |> Repo.all()
   end
 
-  def list_career_groups_with_career_field(:all) do
+  def list_career_groups_with_career_field(_type) do
+    CareerGroup
+    |> preload(:career_fields)
+    |> Repo.all()
+  end
+
+  def list_career_group_career_fields(:all) do
     cg =
       CareerGroup
       |> preload(:career_fields)
@@ -48,10 +54,20 @@ defmodule Bright.CareerGroups do
     Enum.concat(cg, [%{name: :other, career_fields: other_cf}])
   end
 
-  def list_career_groups_with_career_field(_type) do
+  def list_career_group_career_fields(type) do
     CareerGroup
+    |> where(type: ^type)
     |> preload(:career_fields)
-    |> Repo.all()
+    |> Repo.one()
+    |> case do
+      nil ->
+        []
+
+      cg ->
+        cg
+        |> Map.get(:career_fields)
+        |> Enum.sort_by(& &1.position)
+    end
   end
 
   @doc """
