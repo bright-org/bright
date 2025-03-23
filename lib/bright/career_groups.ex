@@ -55,20 +55,19 @@ defmodule Bright.CareerGroups do
   end
 
   def list_career_group_career_fields(type) do
-    cg =
-      CareerGroup
-      |> where(type: ^type)
-      |> preload(:career_fields)
-      |> Repo.one()
-      |> case do
-        nil ->
-          []
+    CareerGroup
+    |> where(type: ^type)
+    |> preload(:career_fields)
+    |> Repo.one()
+    |> case do
+      nil ->
+        []
 
-        cg ->
-          cg
-          |> Map.get(:career_fields)
-          |> Enum.sort_by(& &1.position)
-      end
+      cg ->
+        cg
+        |> Map.get(:career_fields)
+        |> Enum.sort_by(& &1.position)
+    end
   end
 
   @doc """
