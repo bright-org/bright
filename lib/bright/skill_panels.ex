@@ -144,7 +144,10 @@ defmodule Bright.SkillPanels do
       where: u.user_id in ^user_ids,
       where: score.user_id in ^user_ids,
       preload: [
-        skill_classes: [skill_class_scores: ^SkillClassScore.user_ids_query(user_ids)]
+        skill_classes: [
+          :skill_class_units,
+          skill_class_scores: ^SkillClassScore.user_ids_query(user_ids)
+        ]
       ],
       order_by: [desc: u.is_star, asc: p.updated_at],
       distinct: true,
