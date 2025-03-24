@@ -97,7 +97,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelHelper do
     skill_classes =
       socket.assigns.skill_panel
       |> Bright.Repo.preload(
-        skill_classes: [skill_class_scores: Ecto.assoc(display_user, :skill_class_scores)]
+        skill_classes: [
+          :skill_class_units,
+          skill_class_scores: Ecto.assoc(display_user, :skill_class_scores)
+        ]
       )
       |> Map.get(:skill_classes)
 
