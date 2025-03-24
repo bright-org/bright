@@ -47,7 +47,7 @@
     <div class="flex justify-center mt-4 text-4xl text-white">
       <%= if  Enum.count(@skill_classes) - (is_nil(@next_skill_class) && 1 || 0) > 1 do %>
         <%= for class <- @skill_classes do %>
-        <.link navigate={~p"/skills/#{@skill_panel.id}?class=#{class.class}"}>
+        <.link :if={Enum.count(class.skill_class_units) > 2} navigate={~p"/skills/#{@skill_panel.id}?class=#{class.class}"}>
           <span class={"#{if @skill_class.class == class.class, do: "text-[#14D6BE]"}"}>・</span>
         </.link>
         <% end %>
