@@ -18,11 +18,33 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     insert(:user_skill_panel, user: user, skill_panel: skill_panel)
     skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
 
-    skill_unit =
-      insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class.id, position: 1}])
+    skill_unit = insert(:skill_unit)
+    skill_unit2 = insert(:skill_unit)
+    skill_unit3 = insert(:skill_unit)
+
+    insert(:skill_class_unit,
+      skill_class_id: skill_class.id,
+      skill_unit_id: skill_unit.id,
+      position: 1
+    )
+
+    insert(:skill_class_unit,
+      skill_class_id: skill_class.id,
+      skill_unit_id: skill_unit2.id,
+      position: 2
+    )
+
+    insert(:skill_class_unit,
+      skill_class_id: skill_class.id,
+      skill_unit_id: skill_unit3.id,
+      position: 3
+    )
 
     [%{skills: [skill_1, skill_2, skill_3]} = skill_category] =
       insert_skill_categories_and_skills(skill_unit, [3])
+
+    insert_skill_categories_and_skills(skill_unit2, [3])
+    insert_skill_categories_and_skills(skill_unit3, [3])
 
     if score do
       insert(:init_skill_class_score, user: user, skill_class: skill_class)
@@ -44,6 +66,34 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     }
   end
 
+  defp insert_3_skill_unit(skill_class) do
+    skill_unit1 = insert(:skill_unit)
+    skill_unit2 = insert(:skill_unit)
+    skill_unit3 = insert(:skill_unit)
+
+    insert(:skill_class_unit,
+      skill_class_id: skill_class.id,
+      skill_unit_id: skill_unit1.id,
+      position: 1
+    )
+
+    insert(:skill_class_unit,
+      skill_class_id: skill_class.id,
+      skill_unit_id: skill_unit2.id,
+      position: 2
+    )
+
+    insert(:skill_class_unit,
+      skill_class_id: skill_class.id,
+      skill_unit_id: skill_unit3.id,
+      position: 3
+    )
+
+    insert_skill_categories_and_skills(skill_unit1, [3])
+    insert_skill_categories_and_skills(skill_unit2, [3])
+    insert_skill_categories_and_skills(skill_unit3, [3])
+  end
+
   describe "Show" do
     setup [:register_and_log_in_user]
 
@@ -52,14 +102,17 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:user_skill_panel, user: user, skill_panel: skill_panel)
       skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
       skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
-
       %{skill_panel: skill_panel, skill_class: skill_class, skill_class_2: skill_class_2}
     end
 
     test "shows content", %{
       conn: conn,
-      skill_panel: skill_panel
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_class_2: skill_class_2
     } do
+      insert_3_skill_unit(skill_class)
+      insert_3_skill_unit(skill_class_2)
       {:ok, show_live, html} = live(conn, ~p"/panels/#{skill_panel}")
 
       assert html =~ "スキルパネル"
@@ -69,8 +122,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     test "shows content without parameters", %{
       conn: conn,
-      skill_panel: skill_panel
+      skill_panel: skill_panel,
+      skill_class: skill_class
     } do
+      insert_3_skill_unit(skill_class)
       {:ok, show_live, html} = live(conn, ~p"/panels")
 
       assert html =~ skill_panel.name
@@ -159,8 +214,12 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
     test "shows the skill class by query string parameter", %{
       conn: conn,
-      skill_panel: skill_panel
+      skill_panel: skill_panel,
+      skill_class: skill_class,
+      skill_class_2: skill_class_2
     } do
+      insert_3_skill_unit(skill_class)
+      insert_3_skill_unit(skill_class_2)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=2")
       assert has_element?(show_live, ~s(#class_tab_2 a[aria-current="page"]))
     end
@@ -169,8 +228,36 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       conn: conn,
       user: user,
       skill_panel: skill_panel,
+      skill_class: skill_class,
       skill_class_2: skill_class_2
     } do
+      insert_3_skill_unit(skill_class)
+      skill_unit = insert(:skill_unit)
+      skill_unit2 = insert(:skill_unit)
+      skill_unit3 = insert(:skill_unit)
+
+      insert(:skill_class_unit,
+        skill_class_id: skill_class_2.id,
+        skill_unit_id: skill_unit.id,
+        position: 1
+      )
+
+      insert(:skill_class_unit,
+        skill_class_id: skill_class_2.id,
+        skill_unit_id: skill_unit2.id,
+        position: 2
+      )
+
+      insert(:skill_class_unit,
+        skill_class_id: skill_class_2.id,
+        skill_unit_id: skill_unit3.id,
+        position: 3
+      )
+
+      [%{skills: [skill, skill2, skill3]}] = insert_skill_categories_and_skills(skill_unit, [3])
+      insert_skill_categories_and_skills(skill_unit2, [3])
+      insert_skill_categories_and_skills(skill_unit3, [3])
+
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}")
 
       refute Repo.get_by(SkillClassScore,
@@ -178,11 +265,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
                skill_class_id: skill_class_2.id
              )
 
-      skill_unit =
-        insert(:skill_unit, skill_class_units: [%{skill_class_id: skill_class_2.id, position: 1}])
-
-      [%{skills: [skill]}] = insert_skill_categories_and_skills(skill_unit, [1])
       insert(:skill_score, user: user, skill: skill, score: :high)
+      insert(:skill_score, user: user, skill: skill2, score: :high)
+      insert(:skill_score, user: user, skill: skill3, score: :high)
 
       show_live
       |> element("#class_tab_2 a")
@@ -196,7 +281,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
              )
 
       # スキルクラススコアのログ作成確認
-      assert %{percentage: 100.0} =
+      assert %{percentage: 33.33333333333333} =
                Repo.get_by(SkillClassScoreLog, %{
                  user_id: user.id,
                  skill_class_id: skill_class_2.id,
@@ -751,7 +836,6 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       insert(:user_skill_panel, user: user_2, skill_panel: skill_panel)
       insert(:skill_score, user: user_2, skill: skill_1, score: :high)
       insert(:init_skill_class_score, user: user_2, skill_class: skill_class)
-
       %{user_2: user_2}
     end
 
@@ -764,8 +848,10 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
     test "shows compared user skills percentage", %{
       conn: conn,
       skill_panel: skill_panel,
+      skill_class: skill_class,
       user_2: user_2
     } do
+      insert_3_skill_unit(skill_class)
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       # 「個人とスキルを比較」 チームタブ選択
@@ -780,7 +866,7 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert has_element?(show_live, "#skills-table-field", user_2.name)
       assert has_element?(show_live, "#user-1-percentages .score-middle-percentage", "0％")
-      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
+      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "5％")
     end
 
     @tag score: :low
@@ -852,6 +938,9 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       user_2: user_2,
       user_3: user_3
     } do
+      insert(:skill_class, skill_panel: skill_panel, class: 2)
+      insert(:skill_class, skill_panel: skill_panel, class: 3)
+
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1")
 
       # 「チーム全員と比較」 チームタブ選択
@@ -868,8 +957,8 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
 
       assert has_element?(show_live, "#skills-table-field", user_2.name)
       assert has_element?(show_live, "#skills-table-field", user_3.name)
-      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
-      assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "33％")
+      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "11％")
+      assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "11％")
 
       # 招待済みでない3人目がいないこと
       refute has_element?(show_live, "#user-3-percentages")
@@ -885,14 +974,15 @@ defmodule BrightWeb.SkillPanelLive.SkillsTest do
       user_3: user_3
     } do
       skill_class_2 = insert(:skill_class, skill_panel: skill_panel, class: 2)
+      insert_3_skill_unit(skill_class_2)
       insert(:skill_class_score, user: user, skill_class: skill_class_2)
 
       {:ok, show_live, _html} = live(conn, ~p"/panels/#{skill_panel}?class=1&team=#{team.id}")
 
       assert has_element?(show_live, "#skills-table-field", user_2.name)
       assert has_element?(show_live, "#skills-table-field", user_3.name)
-      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "33％")
-      assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "33％")
+      assert has_element?(show_live, "#user-1-percentages .score-high-percentage", "11％")
+      assert has_element?(show_live, "#user-2-percentages .score-high-percentage", "11％")
       refute has_element?(show_live, "#user-3-percentages")
 
       # 比較対象を変更してクラス切り替えで再初期化されないこと

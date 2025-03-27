@@ -95,7 +95,28 @@ defmodule BrightWeb.GraphLive.GraphsTest do
     setup %{user: user} do
       skill_panel = insert(:skill_panel)
       insert(:user_skill_panel, user: user, skill_panel: skill_panel)
-      insert(:skill_class, skill_panel: skill_panel, class: 1)
+      skill_class = insert(:skill_class, skill_panel: skill_panel, class: 1)
+      skill_unit1 = insert(:skill_unit)
+      skill_unit2 = insert(:skill_unit)
+      skill_unit3 = insert(:skill_unit)
+
+      insert(:skill_class_unit,
+        skill_class_id: skill_class.id,
+        skill_unit_id: skill_unit1.id,
+        position: 1
+      )
+
+      insert(:skill_class_unit,
+        skill_class_id: skill_class.id,
+        skill_unit_id: skill_unit2.id,
+        position: 2
+      )
+
+      insert(:skill_class_unit,
+        skill_class_id: skill_class.id,
+        skill_unit_id: skill_unit3.id,
+        position: 3
+      )
 
       %{skill_panel: skill_panel}
     end

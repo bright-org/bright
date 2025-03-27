@@ -95,7 +95,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       </div>
       <%= for skill_class <- @skill_classes do %>
         <.skill_gem
-          score={List.first(skill_class.skill_class_scores)}
+          score={get_skill_score(skill_class)}
           skill_class={skill_class}
           skill_panel={@skill_panel}
           display_user={@display_user}
@@ -124,7 +124,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
       </div>
       <%= for skill_class <- @skill_classes do %>
         <.skill_gem
-          score={List.first(skill_class.skill_class_scores)}
+          score={get_skill_score(skill_class)}
           skill_class={skill_class}
           skill_panel={@skill_panel}
           display_user={@display_user}
@@ -375,6 +375,16 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     socket
     |> assign_paginate(user.id, tab_name, page)
     |> then(&{:noreply, &1})
+  end
+
+  defp get_skill_score(skill_class) do
+    case Enum.count(skill_class.skill_class_units) > 2 do
+      true ->
+        List.first(skill_class.skill_class_scores)
+
+      false ->
+        nil
+    end
   end
 
   defp icon_base_path(file), do: "/images/common/icons/#{file}"

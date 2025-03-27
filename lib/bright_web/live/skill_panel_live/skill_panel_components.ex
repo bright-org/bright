@@ -178,6 +178,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <li class="w-1 lg:w-2 border-b-2 border-b-brightGreen-300"></li>
       <%= if skill_class_score do %>
         <li
+          :if={Enum.count(skill_class.skill_units) > 2}
           class={
             [
               "flex grow cursor-pointer justify-center items-center rounded-t px-1 lg:px-4 py-1 lg:py-3",
@@ -200,7 +201,10 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
           </span>
         </li>
       <% else %>
-        <li class="flex grow rounded-t bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3">
+        <li
+          :if={Enum.count(skill_class.skill_units) > 2}
+          class="flex grow rounded-t bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3"
+        >
           <span
             class="select-none text-sm lg:text-normal"
           >
@@ -219,6 +223,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     <div class="w-full bg-white">
       <ul class="flex relative z-1 text-normal font-bold text-brightGray-300 text-center lg:text-md w-full">
         <%= for {skill_class, skill_class_score} <- pair_skill_class_score(@skill_classes) do %>
+          <%= if Enum.count(skill_class.skill_class_units) > 2 do %>
           <li class="w-1 lg:w-2 border-b-2 border-b-brightGreen-300"></li>
           <li id={"class_tab_#{skill_class.class}"} class={["grow lg:grow-0 rounded-t", selected_skill?(@skill_class, skill_class) && "text-brightGreen-300 border-x-2 border-x-brightGreen-300 border-t-2 border-t-brightGreen-300", !selected_skill?(@skill_class, skill_class) && "hover:filter hover:brightness-[80%] hover:text-brightGreen-300 border-x-2 border-x-brightGray-100 border-t-2 border-t-brightGray-100 border-b-2 border-b-brightGreen-300"]}>
             <.link
@@ -237,6 +242,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
               </span>
             </.link>
           </li>
+          <% end %>
         <% end %>
         <li class="grow border-b-2 border-b-brightGreen-300"></li>
       </ul>
