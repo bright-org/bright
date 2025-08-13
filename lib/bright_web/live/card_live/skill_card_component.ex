@@ -5,6 +5,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   use BrightWeb, :live_component
   import BrightWeb.TabComponents
   alias Bright.{CareerGroups, SkillPanels}
+  alias Bright.SkillPanels.SkillClass
   alias BrightWeb.PathHelper
   alias Bright.Teams
   alias Bright.Teams.Team
@@ -77,7 +78,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   defp skill_panel(%{over_ride_on_card_row_click_target: true} = assigns) do
     # over_ride_on_card_row_click_target = true が指定されている場合、on_skill_pannel_clickで定義した呼び出し元の画面に処理をゆだねる
     skill_classes = assigns.skill_panel.skill_classes
-    dummy_classes = cleate_dummy_classes(skill_classes)
+    dummy_classes = create_dummy_classes(skill_classes)
 
     assigns =
       assigns
@@ -111,7 +112,7 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
 
   defp skill_panel(assigns) do
     skill_classes = assigns.skill_panel.skill_classes
-    dummy_classes = cleate_dummy_classes(skill_classes)
+    dummy_classes = create_dummy_classes(skill_classes)
 
     assigns =
       assigns
@@ -138,9 +139,11 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
     """
   end
 
-  defp cleate_dummy_classes(skill_classes) do
+  defp create_dummy_classes(skill_classes) do
+    IO.inspect("dummy")
+
     dummy =
-      %Bright.SkillPanels.SkillClass{}
+      %SkillClass{}
       |> Map.put(:skill_class_scores, [nil])
 
     dummy_count = 3 - Enum.count(skill_classes)
@@ -378,9 +381,15 @@ defmodule BrightWeb.CardLive.SkillCardComponent do
   end
 
   defp get_skill_score(skill_class) do
-    case Enum.count(skill_class.skill_class_units) > 2 do
+    case Ecto.assoc_loaded?(skill_class.skill_class_units) do
       true ->
-        List.first(skill_class.skill_class_scores)
+        case Enum.count(skill_class.skill_class_units) > 2 do
+          true ->
+            List.first(skill_class.skill_class_scores)
+
+          false ->
+            nil
+        end
 
       false ->
         nil
