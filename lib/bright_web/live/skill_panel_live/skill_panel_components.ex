@@ -7,7 +7,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
   alias Bright.SkillEvidences
   alias Bright.SkillReferences
   alias Bright.SkillExams
-  alias BrightWeb.PathHelper
 
   # スコア（〇 △ー） 各スタイルと色の定義
   @score_mark %{
@@ -164,7 +163,7 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
       <% else %>
         <li
           :if={Enum.count(skill_class.skill_units) > 2}
-          class="flex grow rounded-t bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3"
+          class="grow rounded-t bg-pureGray-600 text-pureGray-100 flex justify-center items-center px-1 lg:px-4 py-1 lg:py-3"
         >
           <span
             class="select-none text-sm lg:text-normal"
