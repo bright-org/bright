@@ -104,7 +104,6 @@ defmodule BrightWeb.SkillPanelLive.SkillPanelComponents do
     """
   end
 
-
   attr :user, Bright.Accounts.User
   attr :user_skill_class_score, :map
   attr :select_skill_class, Bright.SkillPanels.SkillClass
