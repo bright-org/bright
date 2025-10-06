@@ -224,9 +224,9 @@ defmodule BrightWeb.LayoutComponents do
       {"マイページ", "/mypage", nil, "/images/common/icons/mypage.svg"},
       {"スキルを選ぶ", "/skill_select", nil, "/images/common/icons/skillSelect.svg"},
       {"スキル入力", "/skills", nil, "/images/common/icons/mySkill.svg"},
-      {"スキル比較", "/panels", nil, "/images/common/icons/skillPanel.svg"},
       {"成長履歴", "/graphs", nil, "/images/common/icons/growthPanel.svg"},
       {"チームスキル分析", "/teams", ~r/\/teams(?!\/new)/, "/images/common/icons/skillAnalyze.svg"},
+      {"スキル比較", "/panels", nil, "/images/common/icons/skillPanel.svg"},
       {"面談チャット", "/recruits/chats", nil, "/images/common/icons/oneOnOneChat.svg"}
       # TODO α版はskill_upを表示しない
       # {"スキルアップする", "/skill_up"},
