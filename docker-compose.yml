@@ -14,6 +14,8 @@ services:
       GOOGLE_CLIENT_SECRET:
       GITHUB_CLIENT_ID:
       GITHUB_CLIENT_SECRET:
+    networks:
+      - bright-network
     links:
       - db
       - gcs
@@ -24,6 +26,7 @@ services:
     working_dir: /work
     command: "elixir --sname bright@web --cookie bright -S mix phx.server"
   db:
+    container_name: bright-db
     image: postgres:15.3-alpine
     environment:
       POSTGRES_PASSWORD: postgres
@@ -31,6 +34,8 @@ services:
       - 5432:5432
     volumes:
       - dbdata:/var/lib/postgresql/data
+    networks:
+      - bright-network
   livebook:
     image: ghcr.io/livebook-dev/livebook:0.9.3
     environment:
@@ -44,6 +49,8 @@ services:
       - 8080:8080
     volumes:
       - ./livebook:/data
+    networks:
+      - bright-network
   gcs:
     image: ghcr.io/s12m/fake-gcs-server:1.45.2
     ports:
@@ -51,6 +58,12 @@ services:
     volumes:
       - gcsdata:/storage/bright_storage_local
       - ./gcs/initial_data:/data
+    networks:
+      - bright-network
 volumes:
   dbdata:
   gcsdata:
+
+networks:
+  bright-network:
+    external: true
